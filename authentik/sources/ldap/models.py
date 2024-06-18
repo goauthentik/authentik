@@ -6,12 +6,12 @@ from shutil import rmtree
 from ssl import CERT_REQUIRED
 from tempfile import NamedTemporaryFile, mkdtemp
 
-from django.core.cache import cache
+import pglock
 from django.db import connection, models
+from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from ldap3 import ALL, NONE, RANDOM, Connection, Server, ServerPool, Tls
 from ldap3.core.exceptions import LDAPException, LDAPInsufficientAccessRightsResult, LDAPSchemaError
-from redis.lock import Lock
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import Group, PropertyMapping, Source
@@ -126,6 +126,10 @@ class LDAPSource(Source):
 
         return LDAPSourceSerializer
 
+    @property
+    def icon_url(self) -> str:
+        return static("authentik/sources/ldap.png")
+
     def server(self, **kwargs) -> ServerPool:
         """Get LDAP Server/ServerPool"""
         servers = []
@@ -204,15 +208,12 @@ class LDAPSource(Source):
         return RuntimeError("Failed to bind")
 
     @property
-    def sync_lock(self) -> Lock:
-        """Redis lock for syncing LDAP to prevent multiple parallel syncs happening"""
-        return Lock(
-            cache.client.get_client(),
-            name=f"goauthentik.io/sources/ldap/sync/{connection.schema_name}-{self.slug}",
-            # Convert task timeout hours to seconds, and multiply times 3
-            # (see authentik/sources/ldap/tasks.py:54)
-            # multiply by 3 to add even more leeway
-            timeout=(60 * 60 * CONFIG.get_int("ldap.task_timeout_hours")) * 3,
+    def sync_lock(self) -> pglock.advisory:
+        """Postgres lock for syncing LDAP to prevent multiple parallel syncs happening"""
+        return pglock.advisory(
+            lock_id=f"goauthentik.io/{connection.schema_name}/sources/ldap/sync/{self.slug}",
+            timeout=0,
+            side_effect=pglock.Return,
         )
 
     def check_connection(self) -> dict[str, dict[str, str]]:

@@ -208,7 +208,7 @@ class Prompt(SerializerModel):
             try:
                 return evaluator.evaluate(self.placeholder)
             except Exception as exc:  # pylint:disable=broad-except
-                wrapped = PropertyMappingExpressionException(str(exc))
+                wrapped = PropertyMappingExpressionException(str(exc), None)
                 LOGGER.warning(
                     "failed to evaluate prompt placeholder",
                     exc=wrapped,

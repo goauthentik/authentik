@@ -58,7 +58,7 @@ from authentik.outposts.models import OutpostServiceConnection
 from authentik.policies.models import Policy, PolicyBindingModel
 from authentik.policies.reputation.models import Reputation
 from authentik.providers.oauth2.models import AccessToken, AuthorizationCode, RefreshToken
-from authentik.providers.scim.models import SCIMGroup, SCIMUser
+from authentik.providers.scim.models import SCIMProviderGroup, SCIMProviderUser
 from authentik.sources.scim.models import SCIMSourceGroup, SCIMSourceUser
 from authentik.stages.authenticator_webauthn.models import WebAuthnDeviceType
 from authentik.tenants.models import Tenant
@@ -97,8 +97,8 @@ def excluded_models() -> list[type[Model]]:
         # FIXME: these shouldn't need to be explicitly listed, but rather based off of a mixin
         FlowToken,
         LicenseUsage,
-        SCIMGroup,
-        SCIMUser,
+        SCIMProviderGroup,
+        SCIMProviderUser,
         Tenant,
         SystemTask,
         ConnectionToken,

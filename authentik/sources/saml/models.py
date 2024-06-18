@@ -181,6 +181,13 @@ class SAMLSource(Source):
 
         return SAMLSourceSerializer
 
+    @property
+    def icon_url(self) -> str:
+        icon = super().icon_url
+        if not icon:
+            return static("authentik/sources/saml.png")
+        return icon
+
     def get_issuer(self, request: HttpRequest) -> str:
         """Get Source's Issuer, falling back to our Metadata URL if none is set"""
         if self.issuer is None:
@@ -209,9 +216,6 @@ class SAMLSource(Source):
         )
 
     def ui_user_settings(self) -> UserSettingSerializer | None:
-        icon = self.icon_url
-        if not icon:
-            icon = static(f"authentik/sources/{self.slug}.svg")
         return UserSettingSerializer(
             data={
                 "title": self.name,
@@ -220,7 +224,7 @@ class SAMLSource(Source):
                     "authentik_sources_saml:login",
                     kwargs={"source_slug": self.slug},
                 ),
-                "icon_url": icon,
+                "icon_url": self.icon_url,
             }
         )
 

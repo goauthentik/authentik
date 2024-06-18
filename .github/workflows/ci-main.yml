@@ -50,7 +50,6 @@ jobs:
       fail-fast: false
       matrix:
         psql:
-          - 12-alpine
           - 15-alpine
           - 16-alpine
     steps:
@@ -104,7 +103,6 @@ jobs:
       fail-fast: false
       matrix:
         psql:
-          - 12-alpine
           - 15-alpine
           - 16-alpine
     steps:
@@ -242,7 +240,7 @@ jobs:
       - name: generate ts client
         run: make gen-client-ts
       - name: Build Docker Image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           secrets: |
@@ -252,8 +250,8 @@ jobs:
           push: ${{ steps.ev.outputs.shouldBuild == 'true' }}
           build-args: |
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=registry,ref=ghcr.io/goauthentik/dev-server:buildcache
+          cache-to: type=registry,ref=ghcr.io/goauthentik/dev-server:buildcache,mode=max
           platforms: linux/${{ matrix.arch }}
   pr-comment:
     needs:

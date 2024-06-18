@@ -77,6 +77,28 @@ To check if your config has been applied correctly, you can run the following co
 -   `AUTHENTIK_POSTGRESQL__SSLCERT`: Path to x509 client certificate to authenticate to server
 -   `AUTHENTIK_POSTGRESQL__SSLKEY`: Path to private key of `SSLCERT` certificate
 
+All PostgreSQL settings, apart from `USE_PGBOUNCER` and `USE_PGPOOL`, support hot-reloading. Adding and removing read replicas doesn't support hot-reloading.
+
+### Read replicas
+
+You can configure additional read replica databases that are used only for read operations. To configure authentik to use replicas, add the settings below to your [configuration file](./configuration.mdx#set-your-environment-variables). If you have multiple replicas, add additional settings for each replica, replacing the default `0` with a unique value for each additional replica.
+
+If read replicas are configured, the main database is not used for reads. If you'd like the main database to be included for reads, add it as a read replica.
+
+The same PostgreSQL settings as described above are used for each read replica.
+
+-   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__HOST`
+-   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__NAME`
+-   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__USER`
+-   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__PORT`
+-   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__PASSWORD`
+-   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__SSLMODE`
+-   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__SSLROOTCERT`
+-   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__SSLCERT`
+-   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__SSLKEY`
+
+Note that `USE_PGBOUNCER` and `USE_PGPOOL` are inherited from the main database configuration and are _not_ overridable on read replicas.
+
 ## Redis Settings
 
 -   `AUTHENTIK_REDIS__HOST`: Redis server host when not using configuration URL

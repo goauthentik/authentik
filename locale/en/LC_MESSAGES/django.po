@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-13 00:08+0000\n"
+"POT-Creation-Date: 2024-06-16 00:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -91,14 +91,6 @@ msgstr ""
 msgid ""
 "When not set all providers are returned. When set to true, only backchannel "
 "providers are returned. When set to false, backchannel providers are excluded"
-msgstr ""
-
-#: authentik/core/api/providers.py
-msgid "SAML Provider from Metadata"
-msgstr ""
-
-#: authentik/core/api/providers.py
-msgid "Create a SAML Provider by importing its Metadata."
 msgstr ""
 
 #: authentik/core/api/users.py
@@ -424,6 +416,22 @@ msgid "Feature only accessible for internal users."
 msgstr ""
 
 #: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider User"
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Users"
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Group"
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Groups"
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/models.py
 #: authentik/enterprise/providers/microsoft_entra/models.py
 #: authentik/providers/scim/models.py authentik/sources/ldap/models.py
 msgid "Property mappings used for group creation/updating."
@@ -445,20 +453,16 @@ msgstr ""
 msgid "Google Workspace Provider Mappings"
 msgstr ""
 
-#: authentik/enterprise/providers/google_workspace/models.py
-msgid "Google Workspace Provider User"
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider User"
 msgstr ""
 
-#: authentik/enterprise/providers/google_workspace/models.py
-msgid "Google Workspace Provider Users"
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Group"
 msgstr ""
 
-#: authentik/enterprise/providers/google_workspace/models.py
-msgid "Google Workspace Provider Group"
-msgstr ""
-
-#: authentik/enterprise/providers/google_workspace/models.py
-msgid "Google Workspace Provider Groups"
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Groups"
 msgstr ""
 
 #: authentik/enterprise/providers/microsoft_entra/models.py
@@ -475,18 +479,6 @@ msgstr ""
 
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Provider Mappings"
-msgstr ""
-
-#: authentik/enterprise/providers/microsoft_entra/models.py
-msgid "Microsoft Entra Provider User"
-msgstr ""
-
-#: authentik/enterprise/providers/microsoft_entra/models.py
-msgid "Microsoft Entra Provider Group"
-msgstr ""
-
-#: authentik/enterprise/providers/microsoft_entra/models.py
-msgid "Microsoft Entra Provider Groups"
 msgstr ""
 
 #: authentik/enterprise/providers/rac/models.py
@@ -1462,10 +1454,6 @@ msgstr ""
 msgid "GitHub Compatibility: Access your Groups"
 msgstr ""
 
-#: authentik/providers/oauth2/views/userinfo.py
-msgid "authentik API Access on behalf of your user"
-msgstr ""
-
 #: authentik/providers/proxy/api.py
 msgid "User and password attributes must be set when basic auth is enabled."
 msgstr ""
@@ -1706,6 +1694,14 @@ msgstr ""
 msgid "SAML Property Mappings"
 msgstr ""
 
+#: authentik/providers/saml/models.py
+msgid "SAML Provider from Metadata"
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid "SAML Providers from Metadata"
+msgstr ""
+
 #: authentik/providers/scim/models.py
 msgid "Base URL to SCIM requests, usually ends in /v2"
 msgstr ""
@@ -1748,14 +1744,6 @@ msgstr ""
 
 #: authentik/rbac/models.py
 msgid "Can view system info"
-msgstr ""
-
-#: authentik/rbac/models.py
-msgid "Can view system tasks"
-msgstr ""
-
-#: authentik/rbac/models.py
-msgid "Can run system tasks"
 msgstr ""
 
 #: authentik/rbac/models.py
@@ -2376,11 +2364,36 @@ msgid "Private key, acquired your captcha Provider."
 msgstr ""
 
 #: authentik/stages/captcha/models.py
+msgid ""
+"When enabled and the received captcha score is outside of the given "
+"threshold, the stage will show an error message. When not enabled, the flow "
+"will continue, but the data from the captcha will be available in the "
+"context for policy decisions"
+msgstr ""
+
+#: authentik/stages/captcha/models.py
 msgid "Captcha Stage"
 msgstr ""
 
 #: authentik/stages/captcha/models.py
 msgid "Captcha Stages"
+msgstr ""
+
+#: authentik/stages/captcha/stage.py
+msgid "Unknown error"
+msgstr ""
+
+#: authentik/stages/captcha/stage.py
+#, python-brace-format
+msgid "Failed to validate token: {error}"
+msgstr ""
+
+#: authentik/stages/captcha/stage.py
+msgid "Invalid captcha response"
+msgstr ""
+
+#: authentik/stages/captcha/stage.py
+msgid "Failed to validate token"
 msgstr ""
 
 #: authentik/stages/consent/models.py

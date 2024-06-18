@@ -5,6 +5,7 @@ import socket
 from collections.abc import Iterable
 from ipaddress import ip_address, ip_network
 from textwrap import indent
+from types import CodeType
 from typing import Any
 
 from cachetools import TLRUCache, cached
@@ -184,7 +185,7 @@ class BaseEvaluator:
         full_expression += f"\nresult = handler({handler_signature})"
         return full_expression
 
-    def compile(self, expression: str) -> Any:
+    def compile(self, expression: str) -> CodeType:
         """Parse expression. Raises SyntaxError or ValueError if the syntax is incorrect."""
         param_keys = self._context.keys()
         return compile(self.wrap_expression(expression, param_keys), self._filename, "exec")

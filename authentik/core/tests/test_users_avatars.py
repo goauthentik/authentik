@@ -42,8 +42,8 @@ class TestUsersAvatars(APITestCase):
         with Mocker() as mocker:
             mocker.head(
                 (
-                    "https://secure.gravatar.com/avatar/84730f9c1851d1ea03f1a"
-                    "a9ed85bd1ea?size=158&rating=g&default=404"
+                    "https://www.gravatar.com/avatar/76eb3c74c8beb6faa037f1b6e2ecb3e252bdac"
+                    "6cf71fb567ae36025a9d4ea86b?size=158&rating=g&default=404"
                 ),
                 text="foo",
             )

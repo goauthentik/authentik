@@ -97,6 +97,18 @@ const docsSidebar = {
                 },
                 {
                     type: "category",
+                    label: "Microsoft Entra ID Provider",
+                    link: {
+                        type: "doc",
+                        id: "providers/entra/index",
+                    },
+                    items: [
+                        "providers/entra/setup-entra",
+                        "providers/entra/add-entra-provider",
+                    ],
+                },
+                {
+                    type: "category",
                     label: "OAuth2 Provider",
                     link: {
                         type: "doc",
@@ -181,6 +193,7 @@ const docsSidebar = {
                         "sources/apple/index",
                         "sources/azure-ad/index",
                         "sources/discord/index",
+                        "sources/facebook/index",
                         "sources/github/index",
                         "sources/google/index",
                         "sources/mailcow/index",
@@ -396,16 +409,17 @@ const docsSidebar = {
                 type: "generated-index",
                 title: "Releases",
                 slug: "releases",
-                description: "Release notes for recent authentik versions",
+                description: "Release Notes for recent authentik versions",
             },
             items: [
+                "releases/2024/v2024.6",
                 "releases/2024/v2024.4",
                 "releases/2024/v2024.2",
-                "releases/2023/v2023.10",
                 {
                     type: "category",
                     label: "Previous versions",
                     items: [
+                        "releases/2023/v2023.10",
                         "releases/2023/v2023.8",
                         "releases/2023/v2023.6",
                         "releases/2023/v2023.5",
@@ -470,7 +484,10 @@ const docsSidebar = {
                 {
                     type: "category",
                     label: "PostgreSQL",
-                    items: ["troubleshooting/postgres/upgrade_kubernetes"],
+                    items: [
+                        "troubleshooting/postgres/upgrade_kubernetes",
+                        "troubleshooting/postgres/upgrade_docker",
+                    ],
                 },
                 "troubleshooting/access",
                 "troubleshooting/login",

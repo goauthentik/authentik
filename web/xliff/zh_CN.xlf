@@ -1544,21 +1544,6 @@
         <target>选择类型</target>
         
       </trans-unit>
-      <trans-unit id="s0b3bf19b31dd6bac">
-        <source>Try the new application wizard</source>
-        <target>尝试新应用程序向导</target>
-        
-      </trans-unit>
-      <trans-unit id="sa18e1c6e0e6f16cc">
-        <source>The new application wizard greatly simplifies the steps required to create applications and providers.</source>
-        <target>新应用程序向导大幅度简化了创建应用程序和提供程序所需的操作步骤。</target>
-        
-      </trans-unit>
-      <trans-unit id="s01ef54f5d7c6ed47">
-        <source>Try it now</source>
-        <target>现在尝试</target>
-        
-      </trans-unit>
       <trans-unit id="s382a2aa3984474dd">
         <source>Create</source>
         <target>创建</target>
@@ -7186,10 +7171,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Send us feedback!</source>
   <target>给我们发送反馈！</target>
 </trans-unit>
-<trans-unit id="s4015746f55a8d89f">
-  <source>Get a license</source>
-  <target>获取许可证</target>
-</trans-unit>
 <trans-unit id="sb2cbd06f8e25b47e">
   <source>Go to Customer Portal</source>
   <target>前往客户中心</target>
@@ -8299,10 +8280,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>This option configures the footer links on the flow executor pages. It must be a valid YAML or JSON list and can be used as follows:</source>
   <target>此选项配置流程执行器页面上的页脚链接。必须为有效的 YAML 或 JSON 列表，可以使用以下值：</target>
 </trans-unit>
-<trans-unit id="sb2275335377069aa">
-  <source>This feature requires an enterprise license.</source>
-  <target>此功能需要企业版许可证。</target>
-</trans-unit>
 <trans-unit id="s6d3f81dc4bcacbda">
   <source>Last used</source>
   <target>上次使用</target>
@@ -8750,6 +8727,86 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sd520a4089006ca93">
   <source>Update Google Workspace Provider</source>
   <target>Google Workspace 提供程序</target>
+</trans-unit>
+<trans-unit id="sfdfa5bb4ddd99d70">
+  <source>Enterprise only</source>
+  <target>仅限企业版</target>
+</trans-unit>
+<trans-unit id="scffa59cfac1951f2">
+  <source><x id="0" equiv-text="${type.name}"/> Icon</source>
+  <target><x id="0" equiv-text="${type.name}"/> 图标</target>
+</trans-unit>
+<trans-unit id="s1da3499258024860">
+  <source><x id="0" equiv-text="${versionString}"/> (build <x id="1" equiv-text="${this.outpostHealth.buildHash.substring(0, 8)}"/>)</source>
+  <target><x id="0" equiv-text="${versionString}"/>（构建 <x id="1" equiv-text="${this.outpostHealth.buildHash.substring(0, 8)}"/>）</target>
+</trans-unit>
+<trans-unit id="s001fd928369d4ddc">
+  <source><x id="0" equiv-text="${versionString}"/> (FIPS)</source>
+  <target><x id="0" equiv-text="${versionString}"/>（FIPS）</target>
+</trans-unit>
+<trans-unit id="sce17c2bdea3e6ace">
+  <source>Score minimum threshold</source>
+  <target>分数最小阈值</target>
+</trans-unit>
+<trans-unit id="sf2fcb974c62625fc">
+  <source>Minimum required score to allow continuing</source>
+  <target>允许继续所需的最小分数</target>
+</trans-unit>
+<trans-unit id="s7452199a73ce8b78">
+  <source>Score maximum threshold</source>
+  <target>分数最大阈值</target>
+</trans-unit>
+<trans-unit id="s2d3a6cd50b46b44d">
+  <source>Maximum allowed score to allow continuing</source>
+  <target>允许继续所需的最大分数</target>
+</trans-unit>
+<trans-unit id="s9d6e40d9a9a58fbf">
+  <source>Error on invalid score</source>
+  <target>分数无效时报错</target>
+</trans-unit>
+<trans-unit id="s2af59e2f9f12847a">
+  <source>When enabled and the resultant score is outside the threshold, the user will not be able to continue. When disabled, the user will be able to continue and the score can be used in policies to customize further stages.</source>
+  <target>启用时，如果结果分数超出阈值，用户将无法继续。禁用时，用户可以继续，分数可用于自定义下一阶段的策略。</target>
+</trans-unit>
+<trans-unit id="s10092327ad833090">
+  <source>Microsoft Entra Group(s)</source>
+  <target>Microsoft Entra 组</target>
+</trans-unit>
+<trans-unit id="s811c45ad24a5feae">
+  <source>Microsoft Entra User(s)</source>
+  <target>Microsoft Entra 用户</target>
+</trans-unit>
+<trans-unit id="s7d2d3d298fdccfc8">
+  <source>Google Workspace Group(s)</source>
+  <target>Google Workspace 组</target>
+</trans-unit>
+<trans-unit id="s8c9cf2c004755526">
+  <source>Google Workspace User(s)</source>
+  <target>Google Workspace 用户</target>
+</trans-unit>
+<trans-unit id="sd000b42fea07c34a">
+  <source>SCIM Group(s)</source>
+  <target>SCIM 组</target>
+</trans-unit>
+<trans-unit id="s146769fb55f1ee50">
+  <source>SCIM User(s)</source>
+  <target>SCIM 用户</target>
+</trans-unit>
+<trans-unit id="s35f47dbd321aaf15">
+  <source>FIPS compliance: passing</source>
+  <target>FIPS 合规性：通过</target>
+</trans-unit>
+<trans-unit id="sc94578030c702562">
+  <source>Unverified</source>
+  <target>未验证</target>
+</trans-unit>
+<trans-unit id="s16749cce7c4c1589">
+  <source>FIPS compliance: unverified</source>
+  <target>FIPS 合规性：未验证</target>
+</trans-unit>
+<trans-unit id="s0b2ad58c3deaa8dd">
+  <source>FIPS Status</source>
+  <target>FIPS 状态</target>
 </trans-unit>
     </body>
   </file>

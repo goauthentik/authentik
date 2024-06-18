@@ -6,17 +6,21 @@ from drf_spectacular.utils import OpenApiResponse, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework import mixins
 from rest_framework.decorators import action
+from rest_framework.fields import SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework.viewsets import GenericViewSet
 from structlog.stdlib import get_logger
 
 from authentik.core.api.applications import user_app_cache_key
+from authentik.core.api.object_types import TypesMixin
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import CacheSerializer, MetaNameSerializer, TypeCreateSerializer
+from authentik.core.api.utils import (
+    CacheSerializer,
+    MetaNameSerializer,
+    ModelSerializer,
+)
 from authentik.events.logs import LogEventSerializer, capture_logs
-from authentik.lib.utils.reflection import all_subclasses
 from authentik.policies.api.exec import PolicyTestResultSerializer, PolicyTestSerializer
 from authentik.policies.models import Policy, PolicyBinding
 from authentik.policies.process import PolicyProcess
@@ -69,6 +73,7 @@ class PolicySerializer(ModelSerializer, MetaNameSerializer):
 
 
 class PolicyViewSet(
+    TypesMixin,
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
     UsedByMixin,
@@ -88,23 +93,6 @@ class PolicyViewSet(
 
     def get_queryset(self):  # pragma: no cover
         return Policy.objects.select_subclasses().prefetch_related("bindings", "promptstage_set")
-
-    @extend_schema(responses={200: TypeCreateSerializer(many=True)})
-    @action(detail=False, pagination_class=None, filter_backends=[])
-    def types(self, request: Request) -> Response:
-        """Get all creatable policy types"""
-        data = []
-        for subclass in all_subclasses(self.queryset.model):
-            subclass: Policy
-            data.append(
-                {
-                    "name": subclass._meta.verbose_name,
-                    "description": subclass.__doc__,
-                    "component": subclass().component,
-                    "model_name": subclass._meta.model_name,
-                }
-            )
-        return Response(TypeCreateSerializer(data, many=True).data)
 
     @permission_required(None, ["authentik_policies.view_policy_cache"])
     @extend_schema(responses={200: CacheSerializer(many=False)})

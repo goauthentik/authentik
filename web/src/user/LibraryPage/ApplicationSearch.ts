@@ -35,6 +35,9 @@ export class LibraryPageApplicationList extends AKElement {
                 input:focus {
                     outline: 0;
                 }
+                :host([theme="dark"]) input {
+                    color: var(--ak-dark-foreground) !important;
+                }
             `,
         ];
     }
