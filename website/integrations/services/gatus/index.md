@@ -28,7 +28,7 @@ Everything else is up to you and what you want, just don't forget to grab the cl
 
 ## Gatus configuration
 
-In the config.yml file of Gatus, add the following:
+In the `config.yaml` file of Gatus, add the following:
 
 ```yml
 security:
