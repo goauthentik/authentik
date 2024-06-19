@@ -17,27 +17,26 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        lint:
-          - cmd: lint
-          - cmd: lint:lockfile
-          - cmd: tsc
-          - cmd: prettier-check
-          - cmd: lit-analyse
+        command:
+          - lint
+          - lint:lockfile
+          - tsc
+          - prettier-check
+        project:
+          - web
+          - tests/wdio
+        include:
+          - command: lit-analyse
+            project: web
             extra_setup: |
               # lit-analyse doesn't understand path rewrites, so make it
               # belive it's an actual module
               cd node_modules/@goauthentik
               ln -s ../../src/ web
-          - cmd: lint
-        project:
-          - web
-          - tests/wdio
         exclude:
           - cmd: lint:lockfile
             project: tests/wdio
           - cmd: tsc
-            project: tests/wdio
-          - cmd: lit-analyse
             project: tests/wdio
     steps:
       - uses: actions/checkout@v4
