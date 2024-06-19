@@ -11,12 +11,12 @@ title: GitLab
 > -- https://about.gitlab.com/what-is-gitlab/
 
 :::info
-In case something goes wrong with the configuration or you need to login as admin, you can use the URL `https://gitlab.company/users/sign_in?auto_sign_in=false` to log in using the built-in authentication.
+In case something goes wrong with the configuration or you need to log in as admin, you can use the URL `https://gitlab.company/users/sign_in?auto_sign_in=false` to log in using the built-in authentication.
 :::
 
 ## Authentication
 
-There are 2 ways to setup single sign on (SSO) for GitLab:
+There are 2 ways to configure single sign on (SSO) for GitLab:
 
 -   [via SAML](#saml-auth)
 -   [via OIDC Connect (OAuth)](#openid-connect-auth)
