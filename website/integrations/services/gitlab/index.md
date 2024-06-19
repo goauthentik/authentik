@@ -11,7 +11,7 @@ title: GitLab
 > -- https://about.gitlab.com/what-is-gitlab/
 
 :::info
-In case something goes wrong with the configuration or you need to login as admin, you can use the URL `https://gitlab.company/users/sign_in?auto_sign_in=false` to log in using the built-in authentication.
+In case something goes wrong with the configuration or you need to log in as admin, you can use the URL `https://gitlab.company/users/sign_in?auto_sign_in=false` to log in using the built-in authentication.
 :::
 
 ## Authentication
