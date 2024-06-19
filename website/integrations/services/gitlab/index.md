@@ -18,8 +18,9 @@ In case something goes wrong with the configuration or you need to login as admi
 
 There are 2 ways to setup single sign on (SSO) for GitLab:
 
--   [via OIDC Connect (OAuth)](#openid-connect-auth)
 -   [via SAML](#saml-auth)
+-   [via OIDC Connect (OAuth)](#openid-connect-auth)
+
 
 ### SAML auth
 
