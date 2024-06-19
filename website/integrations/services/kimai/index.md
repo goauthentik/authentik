@@ -6,7 +6,7 @@ title: Kimai
 
 ## What is Kimai
 
-> Kimai is a free & open source timetracker.
+> Kimai is a free & open source timetracker and tracks work time and prints out a summary of your activities on demand.
 >
 > -- https://www.kimai.org/about/
 
