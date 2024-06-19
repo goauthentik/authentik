@@ -22,6 +22,8 @@ RUN npm run build-bundled
 # Stage 2: Build webui
 FROM --platform=${BUILDPLATFORM} docker.io/node:22 as web-builder
 
+ARG GIT_BUILD_HASH
+ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
 ENV NODE_ENV=production
 
 WORKDIR /work/web
