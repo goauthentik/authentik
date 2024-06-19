@@ -4,7 +4,10 @@ from django.db.models import QuerySet
 from django.http import HttpRequest
 
 from authentik.core.expression.evaluator import PropertyMappingEvaluator
-from authentik.core.expression.exceptions import PropertyMappingExpressionException
+from authentik.core.expression.exceptions import (
+    PropertyMappingExpressionException,
+    SkipObjectException,
+)
 from authentik.core.models import PropertyMapping, User
 
 
@@ -57,6 +60,10 @@ class PropertyMappingManager:
             mapping.set_context(user, request, **kwargs)
             try:
                 value = mapping.evaluate(mapping.model.expression)
+            except SkipObjectException as exc:
+                exc.exc = exc
+                exc.mapping = mapping
+                raise exc from exc
             except PropertyMappingExpressionException as exc:
                 raise exc from exc
             except Exception as exc:
