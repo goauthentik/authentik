@@ -17,8 +17,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - working-directory: website/
-        run: |
-          [ -z "$(jq -r '.packages | to_entries[] | select((.key | startswith("node_modules")) and (.value | has("resolved") | not)) | .key' < package-lock.json)" ]
+        run: npm ci
+      - name: Test lockfile validity
+        run: npm run lint:lockfile
   lint-prettier:
     runs-on: ubuntu-latest
     steps:
