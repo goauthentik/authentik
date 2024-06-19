@@ -41,6 +41,7 @@ jobs:
       - working-directory: web/
         run: npm ci
       - name: Test lockfile validity
+        working-directory: web/
         run: npm run lint:lockfile
   lint-build:
     runs-on: ubuntu-latest

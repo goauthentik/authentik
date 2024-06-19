@@ -19,6 +19,7 @@ jobs:
       - working-directory: website/
         run: npm ci
       - name: Test lockfile validity
+        working-directory: website/
         run: npm run lint:lockfile
   lint-prettier:
     runs-on: ubuntu-latest
