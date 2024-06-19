@@ -34,9 +34,9 @@ jobs:
               cd node_modules/@goauthentik
               ln -s ../../src/ web
         exclude:
-          - cmd: lint:lockfile
+          - command: lint:lockfile
             project: tests/wdio
-          - cmd: tsc
+          - command: tsc
             project: tests/wdio
     steps:
       - uses: actions/checkout@v4
@@ -48,12 +48,12 @@ jobs:
       - working-directory: ${{ matrix.project }}/
         run: |
           npm ci
-          ${{ matrix.lint.extra_setup }}
+          ${{ matrix.extra_setup }}
       - name: Generate API
         run: make gen-client-ts
       - name: Lint
         working-directory: ${{ matrix.project }}/
-        run: npm run ${{ matrix.lint.cmd }}
+        run: npm run ${{ matrix.command }}
   ci-web-mark:
     needs:
       - lint
