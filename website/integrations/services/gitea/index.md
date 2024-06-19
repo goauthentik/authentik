@@ -31,7 +31,7 @@ Only settings that have been modified from default have been listed.
 
 **General Settings**
 
-- Redirect URIs: `https://gitea.company/user/oauth2/authentik/callback`
+-   Redirect URIs: `https://gitea.company/user/oauth2/authentik/callback`
 
 **Protocol Settings**
 
