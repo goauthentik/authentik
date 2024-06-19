@@ -33,26 +33,28 @@ jobs:
           - web
           - tests/wdio
         exclude:
-          - lint.cmd: lint:lockfile
+          - cmd: lint:lockfile
             project: tests/wdio
-          - lint.cmd: tsc
+          - cmd: tsc
             project: tests/wdio
-          - lint.cmd: lit-analyse
+          - cmd: lit-analyse
             project: tests/wdio
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version-file: ${{ matrix.lint.project }}/package.json
+          node-version-file: ${{ matrix.project }}/package.json
           cache: "npm"
-          cache-dependency-path: ${{ matrix.lint.project }}/package-lock.json
-      - working-directory: ${{ matrix.lint.project }}/
-        run: npm ci
+          cache-dependency-path: ${{ matrix.project }}/package-lock.json
+      - working-directory: ${{ matrix.project }}/
+        run: |
+          npm ci
+          ${{ matrix.lint.extra_setup }}
       - name: Generate API
         run: make gen-client-ts
       - name: Lint
-        working-directory: ${{ matrix.lint.project }}/
-        run: npm run ${{ matrix.lint.command }}
+        working-directory: ${{ matrix.project }}/
+        run: npm run ${{ matrix.lint.cmd }}
   ci-web-mark:
     needs:
       - lint
