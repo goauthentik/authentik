@@ -6,18 +6,19 @@ from django_filters.filters import ModelMultipleChoiceFilter
 from django_filters.filterset import FilterSet
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
-from rest_framework.fields import BooleanField, CharField, DateTimeField
+from rest_framework.exceptions import ValidationError
+from rest_framework.fields import BooleanField, CharField, DateTimeField, SerializerMethodField
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer, ValidationError
 from rest_framework.viewsets import ModelViewSet
 
 from authentik import get_build_hash
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import JSONDictField, PassiveSerializer
+from authentik.core.api.utils import JSONDictField, ModelSerializer, PassiveSerializer
 from authentik.core.models import Provider
+from authentik.enterprise.license import LicenseKey
 from authentik.enterprise.providers.rac.models import RACProvider
 from authentik.outposts.api.service_connections import ServiceConnectionSerializer
 from authentik.outposts.apps import MANAGED_OUTPOST, MANAGED_OUTPOST_NAME
@@ -117,14 +118,24 @@ class OutpostHealthSerializer(PassiveSerializer):
     uid = CharField(read_only=True)
     last_seen = DateTimeField(read_only=True)
     version = CharField(read_only=True)
-    version_should = CharField(read_only=True)
+    golang_version = CharField(read_only=True)
+    openssl_enabled = BooleanField(read_only=True)
+    openssl_version = CharField(read_only=True)
+    fips_enabled = SerializerMethodField()
 
+    version_should = CharField(read_only=True)
     version_outdated = BooleanField(read_only=True)
 
     build_hash = CharField(read_only=True, required=False)
     build_hash_should = CharField(read_only=True, required=False)
 
     hostname = CharField(read_only=True, required=False)
+
+    def get_fips_enabled(self, obj: dict) -> bool | None:
+        """Get FIPS enabled"""
+        if not LicenseKey.get_total().is_valid():
+            return None
+        return obj["fips_enabled"]
 
 
 class OutpostFilter(FilterSet):
@@ -173,6 +184,10 @@ class OutpostViewSet(UsedByMixin, ModelViewSet):
                     "version_should": state.version_should,
                     "version_outdated": state.version_outdated,
                     "build_hash": state.build_hash,
+                    "golang_version": state.golang_version,
+                    "openssl_enabled": state.openssl_enabled,
+                    "openssl_version": state.openssl_version,
+                    "fips_enabled": state.fips_enabled,
                     "hostname": state.hostname,
                     "build_hash_should": get_build_hash(),
                 }

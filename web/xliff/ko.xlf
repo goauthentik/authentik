@@ -1541,21 +1541,6 @@
         <target>유형 선택</target>
 
       </trans-unit>
-      <trans-unit id="s0b3bf19b31dd6bac">
-        <source>Try the new application wizard</source>
-        <target>새로운 애플리케이션 마법사 사용</target>
-
-      </trans-unit>
-      <trans-unit id="sa18e1c6e0e6f16cc">
-        <source>The new application wizard greatly simplifies the steps required to create applications and providers.</source>
-        <target>새로운 애플리케이션 마법사는 애플리케이션 및 공급자 생성에 필요한 스테이지를 크게 간소화합니다.</target>
-
-      </trans-unit>
-      <trans-unit id="s01ef54f5d7c6ed47">
-        <source>Try it now</source>
-        <target>지금 사용</target>
-
-      </trans-unit>
       <trans-unit id="s382a2aa3984474dd">
         <source>Create</source>
         <target>생성</target>
@@ -7150,10 +7135,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Send us feedback!</source>
   <target>feedback 부탁드립니다!</target>
 </trans-unit>
-<trans-unit id="s4015746f55a8d89f">
-  <source>Get a license</source>
-  <target>라이선스 얻기</target>
-</trans-unit>
 <trans-unit id="sb2cbd06f8e25b47e">
   <source>Go to Customer Portal</source>
   <target>고객 포털로 가기</target>
@@ -8159,9 +8140,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s862505f29064fc72">
   <source>This option configures the footer links on the flow executor pages. It must be a valid YAML or JSON list and can be used as follows:</source>
 </trans-unit>
-<trans-unit id="sb2275335377069aa">
-  <source>This feature requires an enterprise license.</source>
-</trans-unit>
 <trans-unit id="s6d3f81dc4bcacbda">
   <source>Last used</source>
 </trans-unit>
@@ -8497,6 +8475,66 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sd520a4089006ca93">
   <source>Update Google Workspace Provider</source>
+</trans-unit>
+<trans-unit id="sfdfa5bb4ddd99d70">
+  <source>Enterprise only</source>
+</trans-unit>
+<trans-unit id="scffa59cfac1951f2">
+  <source><x id="0" equiv-text="${type.name}"/> Icon</source>
+</trans-unit>
+<trans-unit id="s1da3499258024860">
+  <source><x id="0" equiv-text="${versionString}"/> (build <x id="1" equiv-text="${this.outpostHealth.buildHash.substring(0, 8)}"/>)</source>
+</trans-unit>
+<trans-unit id="s001fd928369d4ddc">
+  <source><x id="0" equiv-text="${versionString}"/> (FIPS)</source>
+</trans-unit>
+<trans-unit id="sce17c2bdea3e6ace">
+  <source>Score minimum threshold</source>
+</trans-unit>
+<trans-unit id="sf2fcb974c62625fc">
+  <source>Minimum required score to allow continuing</source>
+</trans-unit>
+<trans-unit id="s7452199a73ce8b78">
+  <source>Score maximum threshold</source>
+</trans-unit>
+<trans-unit id="s2d3a6cd50b46b44d">
+  <source>Maximum allowed score to allow continuing</source>
+</trans-unit>
+<trans-unit id="s9d6e40d9a9a58fbf">
+  <source>Error on invalid score</source>
+</trans-unit>
+<trans-unit id="s2af59e2f9f12847a">
+  <source>When enabled and the resultant score is outside the threshold, the user will not be able to continue. When disabled, the user will be able to continue and the score can be used in policies to customize further stages.</source>
+</trans-unit>
+<trans-unit id="s10092327ad833090">
+  <source>Microsoft Entra Group(s)</source>
+</trans-unit>
+<trans-unit id="s811c45ad24a5feae">
+  <source>Microsoft Entra User(s)</source>
+</trans-unit>
+<trans-unit id="s7d2d3d298fdccfc8">
+  <source>Google Workspace Group(s)</source>
+</trans-unit>
+<trans-unit id="s8c9cf2c004755526">
+  <source>Google Workspace User(s)</source>
+</trans-unit>
+<trans-unit id="sd000b42fea07c34a">
+  <source>SCIM Group(s)</source>
+</trans-unit>
+<trans-unit id="s146769fb55f1ee50">
+  <source>SCIM User(s)</source>
+</trans-unit>
+<trans-unit id="s35f47dbd321aaf15">
+  <source>FIPS compliance: passing</source>
+</trans-unit>
+<trans-unit id="sc94578030c702562">
+  <source>Unverified</source>
+</trans-unit>
+<trans-unit id="s16749cce7c4c1589">
+  <source>FIPS compliance: unverified</source>
+</trans-unit>
+<trans-unit id="s0b2ad58c3deaa8dd">
+  <source>FIPS Status</source>
 </trans-unit>
     </body>
   </file>

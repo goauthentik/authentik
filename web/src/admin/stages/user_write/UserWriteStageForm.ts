@@ -164,6 +164,7 @@ export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
                             .fetchObjects=${async (query?: string): Promise<Group[]> => {
                                 const args: CoreGroupsListRequest = {
                                     ordering: "name",
+                                    includeUsers: false,
                                 };
                                 if (query !== undefined) {
                                     args.search = query;

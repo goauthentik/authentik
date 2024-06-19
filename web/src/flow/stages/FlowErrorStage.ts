@@ -49,7 +49,7 @@ export class FlowErrorStage extends BaseStage<FlowErrorChallenge, FlowChallengeR
                     <ak-empty-state
                         icon="fa-times"
                         header=${this.challenge.error
-                            ? html`${this.challenge.error}`
+                            ? this.challenge.error
                             : msg("Something went wrong! Please try again later.")}
                     >
                         <div slot="body">

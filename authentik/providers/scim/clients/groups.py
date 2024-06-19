@@ -1,73 +1,54 @@
 """Group client"""
 
-from deepmerge import always_merger
 from pydantic import ValidationError
 from pydanticscim.group import GroupMember
 from pydanticscim.responses import PatchOp, PatchOperation
 
-from authentik.core.expression.exceptions import (
-    PropertyMappingExpressionException,
-    SkipObjectException,
-)
 from authentik.core.models import Group
-from authentik.events.models import Event, EventAction
+from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.lib.sync.outgoing.base import Direction
 from authentik.lib.sync.outgoing.exceptions import (
     NotFoundSyncException,
     ObjectExistsSyncException,
     StopSync,
 )
-from authentik.lib.utils.errors import exception_to_string
 from authentik.policies.utils import delete_none_values
 from authentik.providers.scim.clients.base import SCIMClient
 from authentik.providers.scim.clients.exceptions import (
     SCIMRequestException,
 )
+from authentik.providers.scim.clients.schema import SCIM_GROUP_SCHEMA, PatchRequest
 from authentik.providers.scim.clients.schema import Group as SCIMGroupSchema
-from authentik.providers.scim.clients.schema import PatchRequest
-from authentik.providers.scim.models import SCIMGroup, SCIMMapping, SCIMUser
+from authentik.providers.scim.models import (
+    SCIMMapping,
+    SCIMProvider,
+    SCIMProviderGroup,
+    SCIMProviderUser,
+)
 
 
-class SCIMGroupClient(SCIMClient[Group, SCIMGroup, SCIMGroupSchema]):
+class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
     """SCIM client for groups"""
 
-    connection_type = SCIMGroup
+    connection_type = SCIMProviderGroup
     connection_type_query = "group"
+    mapper: PropertyMappingManager
 
-    def to_schema(self, obj: Group, creating: bool) -> SCIMGroupSchema:
+    def __init__(self, provider: SCIMProvider):
+        super().__init__(provider)
+        self.mapper = PropertyMappingManager(
+            self.provider.property_mappings_group.all().order_by("name").select_subclasses(),
+            SCIMMapping,
+            ["group", "provider", "connection"],
+        )
+
+    def to_schema(self, obj: Group, connection: SCIMProviderGroup) -> SCIMGroupSchema:
         """Convert authentik user into SCIM"""
-        raw_scim_group = {
-            "schemas": ("urn:ietf:params:scim:schemas:core:2.0:Group",),
-        }
-        for mapping in (
-            self.provider.property_mappings_group.all().order_by("name").select_subclasses()
-        ):
-            if not isinstance(mapping, SCIMMapping):
-                continue
-            try:
-                mapping: SCIMMapping
-                value = mapping.evaluate(
-                    user=None,
-                    request=None,
-                    group=obj,
-                    provider=self.provider,
-                    creating=creating,
-                )
-                if value is None:
-                    continue
-                always_merger.merge(raw_scim_group, value)
-            except SkipObjectException as exc:
-                raise exc from exc
-            except (PropertyMappingExpressionException, ValueError) as exc:
-                # Value error can be raised when assigning invalid data to an attribute
-                Event.new(
-                    EventAction.CONFIGURATION_ERROR,
-                    message=f"Failed to evaluate property-mapping {exception_to_string(exc)}",
-                    mapping=mapping,
-                ).save()
-                raise StopSync(exc, obj, mapping) from exc
-        if not raw_scim_group:
-            raise StopSync(ValueError("No group mappings configured"), obj)
+        raw_scim_group = super().to_schema(
+            obj,
+            connection,
+            schemas=(SCIM_GROUP_SCHEMA,),
+        )
         try:
             scim_group = SCIMGroupSchema.model_validate(delete_none_values(raw_scim_group))
         except ValidationError as exc:
@@ -76,7 +57,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroup, SCIMGroupSchema]):
             scim_group.externalId = str(obj.pk)
 
         users = list(obj.users.order_by("id").values_list("id", flat=True))
-        connections = SCIMUser.objects.filter(provider=self.provider, user__pk__in=users)
+        connections = SCIMProviderUser.objects.filter(provider=self.provider, user__pk__in=users)
         members = []
         for user in connections:
             members.append(
@@ -90,7 +71,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroup, SCIMGroupSchema]):
 
     def delete(self, obj: Group):
         """Delete group"""
-        scim_group = SCIMGroup.objects.filter(provider=self.provider, group=obj).first()
+        scim_group = SCIMProviderGroup.objects.filter(provider=self.provider, group=obj).first()
         if not scim_group:
             self.logger.debug("Group does not exist in SCIM, skipping")
             return None
@@ -100,7 +81,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroup, SCIMGroupSchema]):
 
     def create(self, group: Group):
         """Create group from scratch and create a connection object"""
-        scim_group = self.to_schema(group, True)
+        scim_group = self.to_schema(group, None)
         response = self._request(
             "POST",
             "/Groups",
@@ -112,11 +93,13 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroup, SCIMGroupSchema]):
         scim_id = response.get("id")
         if not scim_id or scim_id == "":
             raise StopSync("SCIM Response with missing or invalid `id`")
-        return SCIMGroup.objects.create(provider=self.provider, group=group, scim_id=scim_id)
+        return SCIMProviderGroup.objects.create(
+            provider=self.provider, group=group, scim_id=scim_id
+        )
 
-    def update(self, group: Group, connection: SCIMGroup):
+    def update(self, group: Group, connection: SCIMProviderGroup):
         """Update existing group"""
-        scim_group = self.to_schema(group, False)
+        scim_group = self.to_schema(group, connection)
         scim_group.id = connection.scim_id
         try:
             return self._request(
@@ -182,16 +165,16 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroup, SCIMGroupSchema]):
         """Add users in users_set to group"""
         if len(users_set) < 1:
             return
-        scim_group = SCIMGroup.objects.filter(provider=self.provider, group=group).first()
+        scim_group = SCIMProviderGroup.objects.filter(provider=self.provider, group=group).first()
         if not scim_group:
             self.logger.warning(
                 "could not sync group membership, group does not exist", group=group
             )
             return
         user_ids = list(
-            SCIMUser.objects.filter(user__pk__in=users_set, provider=self.provider).values_list(
-                "scim_id", flat=True
-            )
+            SCIMProviderUser.objects.filter(
+                user__pk__in=users_set, provider=self.provider
+            ).values_list("scim_id", flat=True)
         )
         if len(user_ids) < 1:
             return
@@ -208,16 +191,16 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroup, SCIMGroupSchema]):
         """Remove users in users_set from group"""
         if len(users_set) < 1:
             return
-        scim_group = SCIMGroup.objects.filter(provider=self.provider, group=group).first()
+        scim_group = SCIMProviderGroup.objects.filter(provider=self.provider, group=group).first()
         if not scim_group:
             self.logger.warning(
                 "could not sync group membership, group does not exist", group=group
             )
             return
         user_ids = list(
-            SCIMUser.objects.filter(user__pk__in=users_set, provider=self.provider).values_list(
-                "scim_id", flat=True
-            )
+            SCIMProviderUser.objects.filter(
+                user__pk__in=users_set, provider=self.provider
+            ).values_list("scim_id", flat=True)
         )
         if len(user_ids) < 1:
             return

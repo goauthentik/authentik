@@ -75,7 +75,7 @@ class BlueprintEntry:
     _state: BlueprintEntryState = field(default_factory=BlueprintEntryState)
 
     def __post_init__(self, *args, **kwargs) -> None:
-        self.__tag_contexts: list["YAMLTagContext"] = []
+        self.__tag_contexts: list[YAMLTagContext] = []
 
     @staticmethod
     def from_model(model: SerializerModel, *extra_identifier_names: str) -> "BlueprintEntry":
