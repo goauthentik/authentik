@@ -120,6 +120,7 @@ compliance:
     enabled: false
 
 cert_discovery_dir: /certs
+primary_password_encryption: null
 
 tenants:
   enabled: false

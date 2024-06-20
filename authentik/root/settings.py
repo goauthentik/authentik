@@ -211,6 +211,18 @@ CACHES = {
         "REVERSE_KEY_FUNCTION": "django_tenants.cache.reverse_key",
     }
 }
+
+PRIMARY_PASSWORD_ENCRYPTION = CONFIG.get("primary_password_encryption", None)
+if PRIMARY_PASSWORD_ENCRYPTION:
+    PASSWORD_HASHERS = [
+        PRIMARY_PASSWORD_ENCRYPTION,
+        "django.contrib.auth.hashers.PBKDF2PasswordHasher",
+        "django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher",
+        "django.contrib.auth.hashers.Argon2PasswordHasher",
+        "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
+        "django.contrib.auth.hashers.BCryptPasswordHasher",
+    ]
+
 DJANGO_REDIS_SCAN_ITERSIZE = 1000
 DJANGO_REDIS_IGNORE_EXCEPTIONS = True
 DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = True
