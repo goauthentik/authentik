@@ -302,18 +302,17 @@ DATABASES = {
         "TEST": {
             "NAME": CONFIG.get("postgresql.test.name"),
         },
+        # https://docs.djangoproject.com/en/4.0/ref/databases/#transaction-pooling-server-side-cursors
+        "DISABLE_SERVER_SIDE_CURSORS": CONFIG.get_bool(
+            "postgresql.disable_server_side_cursors", False
+        ),
+        # https://docs.djangoproject.com/en/4.0/ref/databases/#persistent-connections
+        # Not a PostgreSQL-specific setting, but a database-specific setting.
+        # Only PostgreSQL is supported as a database, so we place this setting it in the
+        # 'postgresql' path.
+        "CONN_MAX_AGE": CONFIG.get_optional_int("postgresql.conn_max_age", 0),
     }
 }
-
-# https://docs.djangoproject.com/en/4.0/ref/databases/#transaction-pooling-server-side-cursors
-DATABASES["default"]["DISABLE_SERVER_SIDE_CURSORS"] = CONFIG.get_bool(
-    "postgresql.disable_server_side_cursors", False
-)
-# https://docs.djangoproject.com/en/4.0/ref/databases/#persistent-connections
-# Not a PostgreSQL-specific setting, but a database-specific setting.
-# Only PostgreSQL is supported as a database, so we place this setting it in the 'postgresql' path.
-DATABASES["default"]["CONN_MAX_AGE"] = CONFIG.get("postgresql.conn_max_age", None)
-
 
 for replica in CONFIG.get_keys("postgresql.read_replicas"):
     _database = DATABASES["default"].copy()
