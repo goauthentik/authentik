@@ -1,7 +1,7 @@
+import "@goauthentik/admin/rbac/UserObjectPermissionForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
-import "@goauthentik/elements/rbac/RoleObjectPermissionForm";
 import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
@@ -13,14 +13,14 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import {
     PaginatedPermissionList,
     RbacApi,
-    RbacPermissionsAssignedByRolesListModelEnum,
-    RoleAssignedObjectPermission,
+    RbacPermissionsAssignedByUsersListModelEnum,
+    UserAssignedObjectPermission,
 } from "@goauthentik/api";
 
-@customElement("ak-rbac-role-object-permission-table")
-export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectPermission> {
+@customElement("ak-rbac-user-object-permission-table")
+export class UserAssignedObjectPermissionTable extends Table<UserAssignedObjectPermission> {
     @property()
-    model?: RbacPermissionsAssignedByRolesListModelEnum;
+    model?: RbacPermissionsAssignedByUsersListModelEnum;
 
     @property()
     objectPk?: string | number;
@@ -31,11 +31,11 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
     checkbox = true;
     clearOnRefresh = true;
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<RoleAssignedObjectPermission>> {
-        const perms = await new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByRolesList({
+    async apiEndpoint(page: number): Promise<PaginatedResponse<UserAssignedObjectPermission>> {
+        const perms = await new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByUsersList({
             page: page,
             // TODO: better default
-            model: this.model || RbacPermissionsAssignedByRolesListModelEnum.CoreUser,
+            model: this.model || RbacPermissionsAssignedByUsersListModelEnum.CoreUser,
             objectPk: this.objectPk?.toString(),
         });
         const [appLabel, modelName] = (this.model || "").split(".");
@@ -45,7 +45,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
             ordering: "codename",
         });
         modelPermissions.results = modelPermissions.results.filter((value) => {
-            return !value.codename.startsWith("add_");
+            return value.codename !== `add_${this.model?.split(".")[1]}`;
         });
         this.modelPermissions = modelPermissions;
         return perms;
@@ -63,32 +63,37 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
     renderObjectCreate(): TemplateResult {
         return html`<ak-forms-modal>
             <span slot="submit"> ${msg("Assign")} </span>
-            <span slot="header"> ${msg("Assign permission to role")} </span>
-            <ak-rbac-role-object-permission-form
+            <span slot="header"> ${msg("Assign permission to user")} </span>
+            <ak-rbac-user-object-permission-form
                 model=${ifDefined(this.model)}
                 objectPk=${ifDefined(this.objectPk)}
                 slot="form"
             >
-            </ak-rbac-role-object-permission-form>
+            </ak-rbac-user-object-permission-form>
             <button slot="trigger" class="pf-c-button pf-m-primary">
-                ${msg("Assign to new role")}
+                ${msg("Assign to new user")}
             </button>
         </ak-forms-modal>`;
     }
 
     renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length < 1;
+        const disabled =
+            this.selectedElements.length < 1 ||
+            this.selectedElements.filter((item) => item.isSuperuser).length > 0;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Permission(s)")}
-            .objects=${this.selectedElements}
-            .metadata=${(item: RoleAssignedObjectPermission) => {
+            .objects=${this.selectedElements.filter((item) => !item.isSuperuser)}
+            .metadata=${(item: UserAssignedObjectPermission) => {
                 return [{ key: msg("Permission"), value: item.name }];
             }}
-            .delete=${(item: RoleAssignedObjectPermission) => {
+            .delete=${(item: UserAssignedObjectPermission) => {
+                if (item.isSuperuser) {
+                    return Promise.resolve();
+                }
                 return new RbacApi(
                     DEFAULT_CONFIG,
-                ).rbacPermissionsAssignedByRolesUnassignPartialUpdate({
-                    uuid: item.rolePk,
+                ).rbacPermissionsAssignedByUsersUnassignPartialUpdate({
+                    id: item.pk,
                     patchedPermissionAssignRequest: {
                         objectPk: this.objectPk?.toString(),
                         model: this.model,
@@ -105,18 +110,20 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: RoleAssignedObjectPermission): TemplateResult[] {
-        const baseRow = [html` <a href="#/identity/roles/${item.rolePk}">${item.name}</a>`];
+    row(item: UserAssignedObjectPermission): TemplateResult[] {
+        const baseRow = [html` <a href="#/identity/users/${item.pk}"> ${item.username} </a> `];
         this.modelPermissions?.results.forEach((perm) => {
-            const granted =
-                item.permissions.filter((uperm) => uperm.codename === perm.codename).length > 0;
-            baseRow.push(
-                html`${granted
-                    ? html`<pf-tooltip position="top" content=${msg("Directly assigned")}
-                          ><i class="fas fa-check pf-m-success"></i
-                      ></pf-tooltip>`
-                    : html`<i class="fas fa-times pf-m-danger"></i>`} `,
-            );
+            let cell = html`<i class="fas fa-times pf-m-danger"></i>`;
+            if (item.permissions.filter((uperm) => uperm.codename === perm.codename).length > 0) {
+                cell = html`<pf-tooltip position="top" content=${msg("Directly assigned")}
+                    ><i class="fas fa-check pf-m-success"></i
+                ></pf-tooltip>`;
+            } else if (item.isSuperuser) {
+                cell = html`<pf-tooltip position="top" content=${msg("Superuser")}
+                    ><i class="fas fa-check pf-m-success"></i
+                ></pf-tooltip>`;
+            }
+            baseRow.push(cell);
         });
         return baseRow;
     }

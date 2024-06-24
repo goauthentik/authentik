@@ -1,5 +1,6 @@
 import "@goauthentik/admin/groups/RelatedGroupList";
 import "@goauthentik/admin/providers/rac/ConnectionTokenList";
+import "@goauthentik/admin/rbac/ObjectPermissionsPage";
 import "@goauthentik/admin/users/UserActiveForm";
 import "@goauthentik/admin/users/UserApplicationTable";
 import "@goauthentik/admin/users/UserChart";
@@ -33,7 +34,6 @@ import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/ModalForm";
 import "@goauthentik/elements/oauth/UserAccessTokenList";
 import "@goauthentik/elements/oauth/UserRefreshTokenList";
-import "@goauthentik/elements/rbac/ObjectPermissionsPage";
 import "@goauthentik/elements/user/SessionList";
 import "@goauthentik/elements/user/UserConsentList";
 import "@goauthentik/elements/user/sources/SourceSettings";
