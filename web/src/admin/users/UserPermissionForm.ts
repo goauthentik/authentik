@@ -36,7 +36,7 @@ export class UserPermissionForm extends ModelForm<UserPermissionAssign, number> 
         return msg("Successfully assigned permission.");
     }
 
-    async send(data: UserPermissionAssign): Promise<unknown> {
+    async send(data: UserPermissionAssign) {
         await new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByUsersAssignCreate({
             id: this.userId || 0,
             permissionAssignRequest: {
@@ -44,7 +44,6 @@ export class UserPermissionForm extends ModelForm<UserPermissionAssign, number> 
             },
         });
         this.permissionsToAdd = [];
-        return;
     }
 
     renderForm(): TemplateResult {
