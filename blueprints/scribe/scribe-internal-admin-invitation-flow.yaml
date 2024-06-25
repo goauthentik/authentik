@@ -1,0 +1,99 @@
+version: 1
+metadata:
+  name: Scribe - Internal admin invitation flow
+entries:
+#dependencies
+  - attrs:
+      identifiers:
+        name: Scribe - Enrollment with email verification
+      required: true
+    model: authentik_blueprints.metaapplyblueprint
+    state: present
+#flow
+  - attrs:
+      authentication: none
+      denied_action: message_continue
+      designation: enrollment
+      layout: sidebar_right
+      name: Internal Admin Invitation
+      slug: internal-admin-invitation
+      title: Authentik admin sign-up
+    id: internal-admin-invitation-flow
+    identifiers:
+      slug: internal-admin-invitation
+    model: authentik_flows.flow
+    state: present
+# stages
+  - attrs:
+      name: internal-admin-invitation
+    conditions: []
+    id: internal-admin-invitation-stage
+    identifiers:
+      name: internal-admin-invitation
+    model: authentik_stages_invitation.invitationstage
+    state: present
+  - attrs:
+      create_users_group: !Find [authentik_core.group, [name, "authentik Admins"]]
+      name: internal-admin-invitation-write
+      user_creation_mode: create_when_required
+      user_type: internal
+    conditions: []
+    id: internal-admin-invitation-write-stage
+    identifiers:
+      name: internal-admin-invitation-write
+    model: authentik_stages_user_write.userwritestage
+    state: present
+#stage bindings
+  - attrs:
+      invalid_response_action: retry
+      order: 10
+      re_evaluate_policies: true
+    conditions: []
+    identifiers:
+      stage: !KeyOf internal-admin-invitation-stage
+      target: !KeyOf internal-admin-invitation-flow
+    model: authentik_flows.flowstagebinding
+    state: present
+  - attrs:
+      invalid_response_action: retry
+      order: 20
+      re_evaluate_policies: true
+    conditions: []
+    id: null
+    identifiers:
+      stage: !Find [authentik_stages_prompt.promptstage, [name, default-enrollment-prompt]]
+      target: !KeyOf internal-admin-invitation-flow
+    model: authentik_flows.flowstagebinding
+    state: present
+  - attrs:
+      invalid_response_action: retry
+      order: 30
+      re_evaluate_policies: true
+    conditions: []
+    id: internal-admin-invitation-write-stage-binding
+    identifiers:
+      stage: !KeyOf internal-admin-invitation-write-stage
+      target: !KeyOf internal-admin-invitation-flow
+    model: authentik_flows.flowstagebinding
+    state: present
+  - attrs:
+      enabled: true
+      order: 0
+      timeout: 30
+    id: null
+    identifiers:
+      policy: !Find [authentik_policies_expression.expressionpolicy, [name, default-enrollment-username-from-email]]
+      target: !KeyOf internal-admin-invitation-write-stage-binding
+    model: authentik_policies.policybinding
+    state: present
+  - attrs:
+      invalid_response_action: retry
+      order: 40
+      re_evaluate_policies: true
+    conditions: []
+    id: null
+    identifiers:
+      stage: !Find [authentik_stages_user_login.userloginstage, [name, default-enrollment-user-login]]
+      target: !KeyOf internal-admin-invitation-flow
+    model: authentik_flows.flowstagebinding
+    state: present

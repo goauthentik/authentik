@@ -1,0 +1,170 @@
+version: 1
+metadata:
+  name: Scribe - Applications - Providers
+context:
+  scribe_hub_provider_client_id: !Env [AUTHENTIK_SCRIBE_HUB_CLIENT_ID, null]
+  scribe_service_provider_client_id: !Env [AUTHENTIK_SCRIBE_SERVICE_CLIENT_ID, null]
+  scribe_service_provider_client_secret: !Env [AUTHENTIK_SCRIBE_SERVICE_CLIENT_SECRET, null]
+  scribe_hub_redirect_uri_1: !Env [AUTHENTIK_SCRIBE_HUB_REDIRECT_URI, "https://app.scribesecurity.com"]
+  scribe_hub_redirect_uri_2: !Env [AUTHENTIK_SCRIBE_HUB_REDIRECT_URI_2, "https://scribehub.scribesecurity.com"]
+  scribe_hub_redirect_uri_3: !Env [AUTHENTIK_SCRIBE_HUB_REDIRECT_URI_3, "http://localhost:3000"]
+  scribe_hub_app_name: !Format [scribe-hub-app%s, !Env [AUTHENTIK_SCRIBE_ENVIRONMENT_SUFFIX, ""]]
+  scribe_hub_provider_name: !Format [scribe-hub-provider%s, !Env [AUTHENTIK_SCRIBE_ENVIRONMENT_SUFFIX, ""]]
+  scribe_service_app_name: !Format [scribe-service-app%s, !Env [AUTHENTIK_SCRIBE_ENVIRONMENT_SUFFIX, ""]]
+  scribe_service_provider_name: !Format [scribe-service-provider%s, !Env [AUTHENTIK_SCRIBE_ENVIRONMENT_SUFFIX, ""]]
+  sh_service_account_group_name: !Format [sh-service-accounts%s, !Env [AUTHENTIK_SCRIBE_ENVIRONMENT_SUFFIX, ""]]
+  sh_service_account_group_pk: !Env [AUTHENTIK_SERVICE_ACCOUNT_GROUP, null]
+
+entries:
+#dependencies
+- attrs:
+    identifiers:
+      name: Scribe - Groups And Service Accounts
+    required: true
+  model: authentik_blueprints.metaapplyblueprint
+  state: present
+# service account groups
+- model: authentik_core.group
+  identifiers:
+    pk: !Context sh_service_account_group_pk
+  attrs:
+    name: !Context sh_service_account_group_name
+    attributes:
+      is_superuser: false
+  id: sh-service-accounts-group
+  state: present
+
+#scope mappings
+- attrs:
+    expression: 'return {
+
+      "https://scribe-security/roles": ["ProductAdminWriter"] if ak_is_group_member(request.user,
+      name="sh-admin-writers") else ["ProductAdminReader"] if ak_is_group_member(request.user,
+      name="sh-admin-readers") else [],
+
+      }'
+    managed: null
+    name: ScribeHub API permissions
+    scope_name: sh-roles
+  conditions: []
+  id: sh-roles-scope-mapping
+  identifiers:
+    scope_name: sh-roles
+  model: authentik_providers_oauth2.scopemapping
+  state: present
+- attrs:
+    expression: 'return {
+      "authentik_internal_id": request.user.pk,
+      "hubspot_email": request.user.attributes.get("hubspot-email", "")
+      }'
+    managed: null
+    name: Scribe Profile
+    scope_name: sh-profile
+  conditions: []
+  id: sh-profile-scope-mapping
+  identifiers:
+    scope_name: sh-profile
+  model: authentik_providers_oauth2.scopemapping
+  state: present
+
+# providers
+- attrs:
+    access_code_validity: minutes=1
+    access_token_validity: minutes=5
+    authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
+    client_id: !Context scribe_service_provider_client_id
+    client_secret: !Context scribe_service_provider_client_secret
+    client_type: confidential
+    include_claims_in_id_token: true
+    issuer_mode: per_provider
+    name: !Context scribe_service_provider_name
+    property_mappings:
+    - !Find [authentik_providers_oauth2.scopemapping, [scope_name, openid]]
+    - !Find [authentik_providers_oauth2.scopemapping, [scope_name, email]]
+    - !Find [authentik_providers_oauth2.scopemapping, [scope_name, profile]]
+    redirect_uris: https://app.scribesecurity.com/callback
+    refresh_token_validity: days=30
+    signing_key: !Find [authentik_crypto.certificatekeypair, [name, "authentik Self-signed Certificate"]]
+    sub_mode: hashed_user_id
+  conditions: []
+  id: scribe-service-provider
+  identifiers:
+    name: !Context scribe_service_provider_name
+  model: authentik_providers_oauth2.oauth2provider
+  state: present
+- attrs:
+    access_code_validity: minutes=1
+    access_token_validity: minutes=5
+    authentication_flow: !Find [authentik_flows.flow, [slug, default-authentication-flow]]
+    authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
+    client_id: !Context scribe_hub_provider_client_id
+    client_type: public
+    include_claims_in_id_token: true
+    issuer_mode: per_provider
+    name: !Context scribe_hub_provider_name
+    property_mappings:
+    - !KeyOf sh-roles-scope-mapping
+    - !KeyOf sh-profile-scope-mapping
+    - !Find [authentik_providers_oauth2.scopemapping, [scope_name, openid]]
+    - !Find [authentik_providers_oauth2.scopemapping, [scope_name, email]]
+    - !Find [authentik_providers_oauth2.scopemapping, [scope_name, profile]]
+    redirect_uris: !Format ["%s/callback\n%s/authentication/silent-callback\n%s/callback\n%s/authentication/silent-callback\n%s/callback\n%s/authentication/silent-callback\n", !Context scribe_hub_redirect_uri_1, !Context scribe_hub_redirect_uri_1, !Context scribe_hub_redirect_uri_2, !Context scribe_hub_redirect_uri_2, !Context scribe_hub_redirect_uri_3, !Context scribe_hub_redirect_uri_3 ]
+    refresh_token_validity: days=30
+    signing_key: !Find [authentik_crypto.certificatekeypair, [name, "authentik Self-signed Certificate"]]
+    sub_mode: hashed_user_id
+  conditions: []
+  id: scribe-hub-provider
+  identifiers:
+    name: !Context scribe_hub_provider_name
+  model: authentik_providers_oauth2.oauth2provider
+  state: present
+
+#applications
+- attrs:
+    name: !Context scribe_service_app_name
+    policy_engine_mode: any
+    provider: !KeyOf scribe-service-provider
+    slug: !Context scribe_service_app_name
+  conditions: []
+  id: scribe-service-app
+  identifiers:
+    name: !Context scribe_service_app_name
+  model: authentik_core.application
+  state: present
+- attrs:
+    enabled: true
+    group: !KeyOf sh-service-accounts-group
+    order: 0
+    target: !KeyOf scribe-service-app
+    timeout: 30
+  conditions: []
+  id: scribe-service-app-group-binding
+  identifiers:
+    group: !KeyOf sh-service-accounts-group
+    target: !KeyOf scribe-service-app
+  model: authentik_policies.policybinding
+  state: present
+- attrs:
+    name: !Context scribe_hub_app_name
+    policy_engine_mode: any
+    provider: !KeyOf scribe-hub-provider
+    slug: !Context scribe_hub_app_name
+  conditions: []
+  id: scribe-hub-app
+  identifiers:
+    name: !Context scribe_hub_app_name
+  model: authentik_core.application
+  state: present
+- attrs:
+    enabled: true
+    group: !Find [authentik_core.group, [name, "sh-users"]]
+    order: 0
+    target: !KeyOf scribe-hub-app
+    timeout: 30
+  conditions: []
+  id: scribe-hub-app-group-binding
+  identifiers:
+    group: !Find [authentik_core.group, [name, "sh-users"]]
+    target: !KeyOf scribe-hub-app
+  model: authentik_policies.policybinding
+  state: present

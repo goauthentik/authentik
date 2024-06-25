@@ -1,0 +1,238 @@
+version: 1
+metadata:
+  name: Scribe - Enrollment with email verification
+context:
+  scribe_hub_redirect_uri: !Env [ AUTHENTIK_SCRIBE_HUB_REDIRECT_AFTER_LOGIN_URI, null ]
+entries:
+#dependencies
+  - attrs:
+      identifiers:
+        name: Scribe - Groups And Service Accounts
+      required: true
+    model: authentik_blueprints.metaapplyblueprint
+    state: present
+  - attrs:
+      identifiers:
+        name: Scribe - Enrollment Policies
+      required: true
+    model: authentik_blueprints.metaapplyblueprint
+    state: present
+  - attrs:
+      identifiers:
+        name: Scribe - Redirect Policy
+      required: true
+    model: authentik_blueprints.metaapplyblueprint
+    state: present
+#flow
+  - identifiers:
+      slug: scribe-enrollment-flow
+    id: scribe-enrollment-flow
+    model: authentik_flows.flow
+    attrs:
+      name: Default enrollment Flow
+      title: Sign up to Scribe!
+      designation: enrollment
+      layout: sidebar_right
+      authentication: require_unauthenticated
+    state: present
+# prompts
+  - identifiers:
+      name: default-enrollment-field-name
+    id: prompt-field-name
+    model: authentik_stages_prompt.prompt
+    attrs:
+      field_key: name
+      label: Name
+      type: text
+      required: true
+      placeholder: Name
+      placeholder_expression: false
+      order: 0
+      initial_value: 'from django.http import QueryDict
+
+        q = QueryDict(request.http_request.GET.get(''query''))
+
+        return q.dict().get(''name'', '''')'
+      initial_value_expression: true
+    state: present
+  - identifiers:
+      name: default-enrollment-field-email
+    id: prompt-field-email
+    model: authentik_stages_prompt.prompt
+    attrs:
+      field_key: email
+      label: Email
+      type: email
+      required: true
+      placeholder: Email
+      placeholder_expression: false
+      order: 1
+      initial_value: 'from django.http import QueryDict
+
+        q = QueryDict(request.http_request.GET.get(''query''))
+
+        return q.dict().get(''email'', '''')'
+      initial_value_expression: true
+    state: present
+  - identifiers:
+      name: default-enrollment-field-password
+    id: prompt-field-password
+    model: authentik_stages_prompt.prompt
+    attrs:
+      field_key: password
+      label: Password
+      type: password
+      required: true
+      placeholder: Password
+      placeholder_expression: false
+      order: 2
+    state: present
+  - identifiers:
+      name: default-enrollment-field-password-repeat
+    id: prompt-field-password-repeat
+    model: authentik_stages_prompt.prompt
+    attrs:
+      field_key: password_repeat
+      label: Password (repeat)
+      type: password
+      required: true
+      placeholder: Password (repeat)
+      placeholder_expression: false
+      order: 3
+    state: present
+  - identifiers:
+      name: scribe-enrollment-field-hubspot-email
+    id: scribe-enrollment-field-hubspot-email
+    model: authentik_stages_prompt.prompt
+    attrs:
+      field_key: attributes.hubspot-email
+      label: Hubspot Email
+      type: hidden
+      initial_value: 'from django.http import QueryDict
+
+        q = QueryDict(request.http_request.GET.get(''query''))
+
+        return q.dict().get(''sign_up_email'', '''')'
+      initial_value_expression: true
+      order: 500
+    state: present
+# policies
+  - attrs:
+      expression: 'email = request.context["prompt_data"]["email"]
+
+        existing_user = ak_user_by(email=email.lower())
+
+        if existing_user is not None: ak_message("User already registered.")
+
+        return existing_user is None'
+      name: assert-user-not-exists
+    conditions: []
+    id: assert-user-not-exists
+    identifiers:
+      name: assert-user-not-exists
+    model: authentik_policies_expression.expressionpolicy
+    state: present
+  - attrs:
+      expression: 'name = request.context["prompt_data"]["name"]
+
+        if "@" in name: ak_message("Name must not contain the @ sign.")
+
+        return "@" not in name'
+      name: default-enrollment-name-validation
+    conditions: []
+    id: default-enrollment-name-validation
+    identifiers:
+      name: default-enrollment-name-validation
+    model: authentik_policies_expression.expressionpolicy
+    state: present
+# stages
+  - identifiers:
+      name: default-enrollment-email-verification
+    id: default-enrollment-email-verification
+    model: authentik_stages_email.emailstage
+    attrs:
+      use_global_settings: true
+      subject: Welcome to Scribe
+      template: email.html
+      activate_user_on_success: true
+    state: present
+  - identifiers:
+      name: default-enrollment-prompt
+    id: default-enrollment-prompt
+    model: authentik_stages_prompt.promptstage
+    attrs:
+      fields:
+        - !KeyOf prompt-field-name
+        - !KeyOf prompt-field-email
+        - !KeyOf prompt-field-password
+        - !KeyOf prompt-field-password-repeat
+        - !KeyOf scribe-enrollment-field-hubspot-email
+      validation_policies:
+      - !Find [ authentik_policies_password.passwordpolicy, [ name, scribe-password-policy ]]
+      - !KeyOf assert-user-not-exists
+      - !KeyOf default-enrollment-name-validation
+    state: present
+  - identifiers:
+      name: default-enrollment-user-login
+    id: default-enrollment-user-login
+    model: authentik_stages_user_login.userloginstage
+    state: present
+  - identifiers:
+      name: default-enrollment-user-write
+    id: default-enrollment-user-write
+    model: authentik_stages_user_write.userwritestage
+    attrs:
+      create_users_as_inactive: true
+      user_creation_mode: always_create
+      create_users_group: !Find [authentik_core.group, [name, "sh-users"]]
+    state: present
+  - identifiers:
+      target: !KeyOf scribe-enrollment-flow
+      stage: !KeyOf default-enrollment-prompt
+      order: 10
+    model: authentik_flows.flowstagebinding
+    state: present
+  - identifiers:
+      target: !KeyOf scribe-enrollment-flow
+      stage: !KeyOf default-enrollment-user-write
+      order: 20
+    id: default-enrollment-user-write-stage-binding
+    model: authentik_flows.flowstagebinding
+    state: present
+  - identifiers:
+      order: 0
+      policy: !Find [ authentik_policies_expression.expressionpolicy, [name, default-enrollment-username-from-email ]]
+      target: !KeyOf default-enrollment-user-write-stage-binding
+    model: authentik_policies.policybinding
+    state: present
+  - identifiers:
+      target: !KeyOf scribe-enrollment-flow
+      stage: !KeyOf default-enrollment-email-verification
+      order: 30
+    model: authentik_flows.flowstagebinding
+    state: present
+  - identifiers:
+      target: !KeyOf scribe-enrollment-flow
+      stage: !KeyOf default-enrollment-user-login
+      order: 100
+    model: authentik_flows.flowstagebinding
+    state: present
+  - identifiers:
+      order: 200
+      stage: !KeyOf default-enrollment-user-login
+      target: !KeyOf scribe-enrollment-flow
+    id: dummy-login-for-redirection
+    conditions:
+      - !If [!Context scribe_hub_redirect_uri]
+    model: authentik_flows.flowstagebinding
+  - attrs:
+      enabled: true
+      timeout: 30
+    conditions:
+      - !If [!Context scribe_hub_redirect_uri]
+    identifiers:
+      order: 0
+      policy: !Find [authentik_policies_expression.expressionpolicy, [name, scribe-hub-redirect]]
+      target: !KeyOf dummy-login-for-redirection
+    model: authentik_policies.policybinding
+    state: present

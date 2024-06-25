@@ -1,12 +1,33 @@
 version: 1
 metadata:
   name: Default - Source enrollment flow
+context:
+  scribe_hub_redirect_uri: !Env [AUTHENTIK_SCRIBE_HUB_REDIRECT_AFTER_LOGIN_URI, null]
 entries:
+#dependencies
+- attrs:
+    identifiers:
+      name: Scribe - Groups And Service Accounts
+    required: true
+  model: authentik_blueprints.metaapplyblueprint
+- attrs:
+    identifiers:
+      name: Scribe - Enrollment Policies
+    required: true
+  model: authentik_blueprints.metaapplyblueprint
+- attrs:
+    identifiers:
+      name: Scribe - Redirect Policy
+    required: true
+  model: authentik_blueprints.metaapplyblueprint
+  state: present
+#flow
 - attrs:
     designation: enrollment
-    name: Welcome to authentik! Please select a username.
-    title: Welcome to authentik! Please select a username.
+    name: Welcome to Scribe!
+    title: Welcome to Scribe!
     authentication: none
+    layout: sidebar_right
   identifiers:
     slug: default-source-enrollment
   model: authentik_flows.flow
@@ -57,6 +78,7 @@ entries:
   id: default-source-enrollment-write
   model: authentik_stages_user_write.userwritestage
   attrs:
+    create_users_group: !Find [authentik_core.group, [name, "sh-users"]]
     user_creation_mode: always_create
 - attrs:
     re_evaluate_policies: true
@@ -83,6 +105,44 @@ entries:
   model: authentik_policies.policybinding
 - identifiers:
     order: 0
+    policy: !Find [ authentik_policies_expression.expressionpolicy, [name, default-enrollment-username-from-email ]]
+    target: !KeyOf prompt-binding
+  attrs:
+    negate: true
+  model: authentik_policies.policybinding
+- identifiers:
+    order: 0
     policy: !KeyOf default-source-enrollment-if-username
     target: !KeyOf prompt-binding
+  attrs:
+    enabled: true
+    timeout: 30
   model: authentik_policies.policybinding
+  state: absent
+- identifiers:
+    order: 1
+    policy: !KeyOf default-source-enrollment-if-username
+    target: !KeyOf prompt-binding
+  attrs:
+    enabled: true
+    timeout: 30
+  model: authentik_policies.policybinding
+- identifiers:
+    order: 100
+    stage: !KeyOf default-source-enrollment-login
+    target: !KeyOf flow
+  id: dummy-login-for-redirection
+  conditions:
+    - !If [!Context scribe_hub_redirect_uri]
+  model: authentik_flows.flowstagebinding
+- attrs:
+    enabled: true
+    timeout: 30
+  conditions:
+    - !If [!Context scribe_hub_redirect_uri]
+  identifiers:
+    order: 0
+    policy: !Find [authentik_policies_expression.expressionpolicy, [name, scribe-hub-redirect]]
+    target: !KeyOf dummy-login-for-redirection
+  model: authentik_policies.policybinding
+  state: present

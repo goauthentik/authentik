@@ -1,0 +1,36 @@
+version: 1
+metadata:
+  name: Scribe - Sources - Google
+context:
+  consumer_key: !Env [AUTHENTIK_GOOGLE_CONSUMER_KEY, null]
+  consumer_secret: !Env [AUTHENTIK_GOOGLE_CONSUMER_SECRET, null]
+entries:
+# dependencies
+  - attrs:
+      identifiers:
+        name: Default - Source authentication flow
+      required: true
+    model: authentik_blueprints.metaapplyblueprint
+  - attrs:
+      identifiers:
+        name: Default - Source enrollment flow
+      required: true
+    model: authentik_blueprints.metaapplyblueprint
+# sources
+  - attrs:
+      consumer_key: !Context consumer_key
+      consumer_secret: !Context consumer_secret
+      enabled: true
+      authentication_flow: !Find [authentik_flows.flow, [slug, default-source-authentication]]
+      enrollment_flow: !Find [authentik_flows.flow, [slug, default-source-enrollment]]
+      name: google
+      provider_type: google
+      user_matching_mode: email_link
+      user_path_template: goauthentik.io/sources/%(slug)s
+    conditions:
+      - !If [!Context consumer_key]
+      - !If [!Context consumer_secret]
+    identifiers:
+      slug: google
+    model: authentik_sources_oauth.oauthsource
+    state: present

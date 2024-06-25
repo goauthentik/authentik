@@ -1,0 +1,217 @@
+version: 1
+metadata:
+  name: Scribe - Password recovery flow
+entries:
+#dependencies
+  - attrs:
+      identifiers:
+        name: Scribe - Enrollment Policies
+      required: true
+    model: authentik_blueprints.metaapplyblueprint
+    state: present
+#flow
+  - identifiers:
+      slug: default-recovery-flow
+    id: default-recovery-flow
+    model: authentik_flows.flow
+    attrs:
+      name: Default recovery flow
+      title: Reset your password
+      designation: recovery
+      authentication: require_unauthenticated
+      layout: sidebar_right
+    state: present
+# prompts
+  - identifiers:
+      name: default-recovery-field-password
+    id: prompt-field-password
+    model: authentik_stages_prompt.prompt
+    attrs:
+      field_key: password
+      label: Password
+      type: password
+      required: true
+      placeholder: Password
+      order: 0
+      placeholder_expression: false
+    state: present
+  - identifiers:
+      name: default-recovery-field-password-repeat
+    id: prompt-field-password-repeat
+    model: authentik_stages_prompt.prompt
+    attrs:
+      field_key: password_repeat
+      label: Password (repeat)
+      type: password
+      required: true
+      placeholder: Password (repeat)
+      order: 1
+      placeholder_expression: false
+    state: present
+# policies
+  - identifiers:
+      name: default-recovery-skip-if-restored
+    id: default-recovery-skip-if-restored
+    model: authentik_policies_expression.expressionpolicy
+    attrs:
+      expression: |
+        return bool(request.context.get('is_restored', True))
+    state: present
+  - attrs:
+      expression: "if request.user.id is None:\n  return True\nif request.user.path\
+      \ is not None and request.user.path.startswith(\"goauthentik.io/sources\"):\n\
+      \  return True\nreturn not ak_is_group_member(request.user, name=\"sh-users\"\
+      )"
+    conditions: []
+    id: deny-password-reset-policy
+    identifiers:
+      name: deny-password-reset
+    model: authentik_policies_expression.expressionpolicy
+    state: present
+# stages
+  - identifiers:
+      name: default-recovery-email
+    id: default-recovery-email
+    model: authentik_stages_email.emailstage
+    attrs:
+      use_global_settings: true
+      host: localhost
+      port: 25
+      username: ""
+      use_tls: false
+      use_ssl: false
+      timeout: 10
+      from_address: system@authentik.local
+      token_expiry: 30
+      subject: Change your Scribe password
+      template: reset-email/reset.html
+      activate_user_on_success: true
+    state: present
+  - identifiers:
+      name: default-recovery-user-write
+    id: default-recovery-user-write
+    model: authentik_stages_user_write.userwritestage
+    attrs:
+      user_creation_mode: never_create
+    state: present
+  - identifiers:
+      name: default-recovery-identification
+    id: default-recovery-identification
+    model: authentik_stages_identification.identificationstage
+    attrs:
+      user_fields:
+        - email
+        - username
+    state: present
+  - attrs:
+      deny_message: Password reset is not allowed for this user
+    id: default-recovery-deny
+    identifiers:
+      name: default-recovery-deny
+    model: authentik_stages_deny.denystage
+    state: present
+  - identifiers:
+      name: default-recovery-user-login
+    id: default-recovery-user-login
+    model: authentik_stages_user_login.userloginstage
+    state: present
+  - identifiers:
+      name: Change your password
+    id: stages-prompt-password
+    model: authentik_stages_prompt.promptstage
+    attrs:
+      fields:
+        - !KeyOf prompt-field-password
+        - !KeyOf prompt-field-password-repeat
+      validation_policies:
+        - !Find [authentik_policies_password.passwordpolicy, [name, scribe-password-policy]]
+    state: present
+# stage bindings
+  - identifiers:
+      target: !KeyOf default-recovery-flow
+      stage: !KeyOf default-recovery-identification
+      order: 10
+    model: authentik_flows.flowstagebinding
+    id: flow-binding-identification
+    attrs:
+      evaluate_on_plan: true
+      re_evaluate_policies: true
+      policy_engine_mode: any
+      invalid_response_action: retry
+    state: present
+  - attrs:
+      invalid_response_action: retry
+      policy_engine_mode: any
+      re_evaluate_policies: true
+    id: default-recovery-deny-binding
+    identifiers:
+      order: 15
+      stage: !KeyOf default-recovery-deny
+      target: !KeyOf default-recovery-flow
+    model: authentik_flows.flowstagebinding
+    state: present
+  - identifiers:
+      target: !KeyOf default-recovery-flow
+      stage: !KeyOf default-recovery-email
+      order: 20
+    model: authentik_flows.flowstagebinding
+    id: flow-binding-email
+    attrs:
+      evaluate_on_plan: true
+      re_evaluate_policies: true
+      policy_engine_mode: any
+      invalid_response_action: retry
+    state: present
+  - identifiers:
+      target: !KeyOf default-recovery-flow
+      stage: !KeyOf stages-prompt-password
+      order: 30
+    model: authentik_flows.flowstagebinding
+    attrs:
+      evaluate_on_plan: true
+      re_evaluate_policies: false
+      policy_engine_mode: any
+      invalid_response_action: retry
+    state: present
+  - identifiers:
+      target: !KeyOf default-recovery-flow
+      stage: !KeyOf default-recovery-user-write
+      order: 40
+    model: authentik_flows.flowstagebinding
+    attrs:
+      evaluate_on_plan: true
+      re_evaluate_policies: false
+      policy_engine_mode: any
+      invalid_response_action: retry
+    state: present
+  - identifiers:
+      target: !KeyOf default-recovery-flow
+      stage: !KeyOf default-recovery-user-login
+      order: 100
+    model: authentik_flows.flowstagebinding
+    attrs:
+      evaluate_on_plan: true
+      re_evaluate_policies: false
+      policy_engine_mode: any
+      invalid_response_action: retry
+    state: present
+# policy bindings
+  - identifiers:
+      policy: !KeyOf default-recovery-skip-if-restored
+      target: !KeyOf flow-binding-identification
+      order: 0
+    model: authentik_policies.policybinding
+    attrs:
+      negate: false
+      enabled: true
+      timeout: 30
+    state: present
+  - attrs:
+      enabled: true
+      timeout: 30
+    identifiers:
+      order: 0
+      policy: !KeyOf deny-password-reset-policy
+      target: !KeyOf default-recovery-deny-binding
+    model: authentik_policies.policybinding
+    state: present

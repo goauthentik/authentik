@@ -1,0 +1,46 @@
+version: 1
+metadata:
+  name: Scribe - Enrollment Policies
+entries:
+# policies
+  - attrs:
+      amount_digits: 1
+      amount_lowercase: 1
+      amount_symbols: 1
+      amount_uppercase: 1
+      check_have_i_been_pwned: true
+      check_static_rules: true
+      check_zxcvbn: true
+      error_message: Password needs to be at least 8 characters long, containing upper
+        and lower case letter, a digit and a special character
+      hibp_allowed_count: 0
+      length_min: 8
+      name: scribe-password-policy
+      password_field: password
+      symbol_charset: '!\"#$%&''()*+,-./:;<=>?@[]^_`{|}~'
+      zxcvbn_score_threshold: 2
+    conditions: []
+    id: scribe-password-policy
+    identifiers:
+      name: scribe-password-policy
+    model: authentik_policies_password.passwordpolicy
+    state: present
+  - attrs:
+      expression: "email = request.context[\"prompt_data\"][\"email\"]\n\
+        name = request.context[\"prompt_data\"].get(\"name\")\n\
+        username = request.context[\"prompt_data\"].get(\"username\")\n\
+        # Store email in lowercase\n\
+        request.context[\"prompt_data\"][\"email\"] = email.lower()\n\
+        # Direct set username to email\n\
+        request.context[\"prompt_data\"][\"username\"] = email.lower()\n\
+        # Set name to username or email without domain\n\
+        if name is None:\n\
+        \  request.context[\"prompt_data\"][\"name\"] = username if username is not None else email.split(\"@\")[0]\n\
+        return True"
+      name: default-enrollment-username-from-email
+    conditions: []
+    id: default-enrollment-username-from-email
+    identifiers:
+      name: default-enrollment-username-from-email
+    model: authentik_policies_expression.expressionpolicy
+    state: present

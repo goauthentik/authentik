@@ -1,0 +1,41 @@
+version: 1
+metadata:
+  name: Scribe - Sources - Github
+context:
+  consumer_key: !Env [AUTHENTIK_GITHUB_CONSUMER_KEY, null]
+  consumer_secret: !Env [AUTHENTIK_GITHUB_CONSUMER_SECRET, null]
+entries:
+  # dependencies
+  - attrs:
+      identifiers:
+        name: Default - Source authentication flow
+      required: true
+    model: authentik_blueprints.metaapplyblueprint
+  - attrs:
+      identifiers:
+        name: Default - Source enrollment flow
+      required: true
+    model: authentik_blueprints.metaapplyblueprint
+  # sources
+  - attrs:
+      consumer_key: !Context consumer_key
+      consumer_secret: !Context consumer_secret
+      enabled: true
+      authentication_flow: !Find [authentik_flows.flow, [slug, default-source-authentication]]
+      enrollment_flow: !Find [authentik_flows.flow, [slug, default-source-enrollment]]
+      name: github
+      provider_type: github
+      user_matching_mode: email_link
+      user_path_template: goauthentik.io/sources/%(slug)s
+      authorization_url: https://github.com/login/oauth/authorize
+      access_token_url: https://github.com/login/oauth/access_token
+      profile_url: https://api.github.com/user
+      oidc_jwks_url: https://token.actions.githubusercontent.com/.well-known/jwks
+      oidc_well_known_url: https://token.actions.githubusercontent.com/.well-known/openid-configuration
+    conditions:
+      - !If [!Context consumer_key]
+      - !If [!Context consumer_secret]
+    identifiers:
+      slug: github
+    model: authentik_sources_oauth.oauthsource
+    state: present

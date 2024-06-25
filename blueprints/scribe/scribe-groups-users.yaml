@@ -1,0 +1,100 @@
+version: 1
+metadata:
+  name: Scribe - Groups And Service Accounts
+context:
+  scribe_hub_api_token: !Env [AUTHENTIK_SCRIBE_HUB_API_TOKEN, null]
+  scribe_service_api_token: !Env [AUTHENTIK_SCRIBE_SERVICE_API_TOKEN, null]
+
+entries:
+# admin group for service and hub technical users
+- model: authentik_core.group
+  state: present
+  identifiers:
+    name: authentik-api-admin
+  attrs:
+    is_superuser: true
+  id: authentik-api-admin
+
+#service accounts
+- attrs:
+    attributes: {}
+    groups:
+    - !KeyOf authentik-api-admin
+    is_active: true
+    name: scribe-hub
+    path: service-accounts
+    type: service_account
+    username: scribe-hub
+  conditions: []
+  id: scribe-hub-service-account
+  identifiers:
+    username: scribe-hub
+  model: authentik_core.user
+  state: present
+- attrs:
+    attributes: {}
+    groups:
+    - !KeyOf authentik-api-admin
+    is_active: true
+    name: scribe-service
+    path: service-accounts
+    type: service_account
+    username: scribe-service
+  conditions: []
+  id: scribe-service-service-account
+  identifiers:
+    username: scribe-service
+  model: authentik_core.user
+  state: present
+
+#service account tokens
+- attrs:
+    key: !Context scribe_hub_api_token
+  state: created
+  conditions:
+    - !If [!Context scribe_hub_api_token]
+  identifiers:
+    identifier: scribe-hub-api-token
+    intent: api
+    expiring: false
+    user: !KeyOf scribe-hub-service-account
+  model: authentik_core.token
+- attrs:
+    key: !Context scribe_service_api_token
+  state: created
+  conditions:
+    - !If [!Context scribe_service_api_token]
+  identifiers:
+    identifier: scribe-service-api-token
+    intent: api
+    expiring: false
+    user: !KeyOf scribe-service-service-account
+  model: authentik_core.token
+
+#user groups
+- model: authentik_core.group
+  state: created
+  identifiers:
+    name: sh-users
+  attrs:
+    attributes:
+      is_superuser: false
+  id: sh-users
+- model: authentik_core.group
+  state: created
+  identifiers:
+    name: sh-admin-readers
+    parent: !KeyOf sh-users
+  attrs:
+    attributes:
+      is_superuser: false
+  id: sh-admin-readers
+- model: authentik_core.group
+  state: created
+  identifiers:
+    name: sh-admin-writers
+    parent: !KeyOf sh-users
+  attrs:
+    attributes:
+      is_superuser: false
+  id: sh-admin-writers

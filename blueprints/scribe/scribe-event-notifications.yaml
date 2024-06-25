@@ -1,0 +1,145 @@
+version: 1
+metadata:
+  name: Scribe - Event Notifications
+context:
+  notification_webhook: !Env [AUTHENTIK_SCRIBE_HUB_NOTIFICATION_WEBHOOK, "changeme"]
+  sh_service_account_group_name: !Format [sh-service-accounts%s, !Env [AUTHENTIK_SCRIBE_ENVIRONMENT_SUFFIX, ""]]
+entries:
+#dependencies
+- attrs:
+    identifiers:
+      name: Scribe - Groups And Service Accounts
+    required: true
+  model: authentik_blueprints.metaapplyblueprint
+# event matcher policies
+- attrs:
+    action: login
+    app: authentik.events
+    client_ip: null
+    model: authentik_events.event
+    name: scribe-hub-login-event-policy
+  conditions: []
+  id: scribe-hub-login-event-policy
+  identifiers:
+    name: scribe-hub-login-event-policy
+  model: authentik_policies_event_matcher.eventmatcherpolicy
+  state: present
+- attrs:
+    action: logout
+    app: authentik.events
+    client_ip: null
+    model: authentik_events.event
+    name: scribe-hub-logout-event-policy
+  conditions: []
+  id: scribe-hub-logout-event-policy
+  identifiers:
+    name: scribe-hub-logout-event-policy
+  model: authentik_policies_event_matcher.eventmatcherpolicy
+  state: present
+- attrs:
+    action: login_failed
+    app: authentik.events
+    client_ip: null
+    model: authentik_events.event
+    name: scribe-hub-login-failed-event-policy
+  conditions: []
+  id: scribe-hub-login-failed-event-policy
+  identifiers:
+    name: scribe-hub-login-failed-event-policy
+  model: authentik_policies_event_matcher.eventmatcherpolicy
+  state: present
+
+#notification mapping
+- attrs:
+    expression: !Format ["def customer_source(user):\n\
+      \    user_sources = user.attributes.get(\"goauthentik.io/user/sources\", None) if user is not None else None\n\
+      \    if not user_sources:\n\
+      \        return None\n\
+      \    applicable_sources = [\"okta-test-saml\"]\n\
+      \    intersection = set(user_sources) & set(applicable_sources)\n\
+      \    return next(iter(intersection)) if intersection else None\n\n\
+      action = notification.event.action\n\
+      username = notification.event.user.get(\"username\", None) if action != \"login_failed\" else notification.event.context.get(\"username\", None)\n\
+      email = notification.event.user.get(\"email\", None) if action != \"login_failed\" else notification.event.context.get(\"username\", None)\n\
+      user = ak_user_by(username=username)\n\
+      return {\n\
+      \    \"action\": action,\n\
+      \    \"user_email\": email,\n\
+      \    \"user_username\": username,\n\
+      \    \"user_name\": user.name if user is not None else None,\n\
+      \    \"user_hubspot_email\": user.attributes.get(\"hubspot-email\", None) if user is not None else None,\n\
+      \    \"is_sh_user\": ak_is_group_member(user, name=\"sh-users\") if user is not None else False,\n\
+      \    \"is_sh_service_account\": ak_is_group_member(user, name=\"%s\") if user is not None else False,\n\
+      \    \"token_id\": notification.event.context.get(\"auth_method_args\", {}).get(\"identifier\", None),\n\
+      \    \"args\": notification.event.context.get(\"http_request\", {}).get(\"args\", None),\n\
+      \    \"authentik_internal_id\": user.pk if user is not None else None,\n\
+      \    \"customer_source\": customer_source(user),\n\
+      \    \"scribe_teams\": user.attributes.get(\"scribe-teams\", None) if user is not None else None,\n\
+      }", !Context sh_service_account_group_name]
+    name: scribe-hub-notification-mapping
+  conditions: []
+  id: scribe-hub-notification-mapping
+  identifiers:
+    name: scribe-hub-notification-mapping
+  model: authentik_events.notificationwebhookmapping
+  state: present
+
+#notification transport
+- attrs:
+    mode: webhook
+    name: scribe-hub-notify-transport
+    send_once: true
+    webhook_mapping: !KeyOf scribe-hub-notification-mapping
+    webhook_url: !Context notification_webhook
+  conditions: []
+  id: scribe-hub-notify-transport
+  identifiers:
+    name: scribe-hub-notify-transport
+  model: authentik_events.notificationtransport
+  state: present
+
+#notification rule
+- attrs:
+    group: !Find [authentik_core.group, [name, "sh-users"]]
+    name: scribe-hub-notify-rule
+    severity: notice
+    transports:
+    - !KeyOf scribe-hub-notify-transport
+  conditions: []
+  id: scribe-hub-notify-rule
+  identifiers:
+    name: scribe-hub-notify-rule
+  model: authentik_events.notificationrule
+  state: present
+
+#event matcher policy bindings
+- attrs:
+    enabled: true
+    timeout: 30
+  conditions: []
+  identifiers:
+    order: 0
+    policy: !KeyOf scribe-hub-login-event-policy
+    target: !KeyOf scribe-hub-notify-rule
+  model: authentik_policies.policybinding
+  state: present
+- attrs:
+    enabled: true
+    timeout: 30
+  conditions: []
+  identifiers:
+    order: 0
+    policy: !KeyOf scribe-hub-logout-event-policy
+    target: !KeyOf scribe-hub-notify-rule
+  model: authentik_policies.policybinding
+  state: present
+- attrs:
+    enabled: true
+    timeout: 30
+  conditions: []
+  identifiers:
+    order: 0
+    policy: !KeyOf scribe-hub-login-failed-event-policy
+    target: !KeyOf scribe-hub-notify-rule
+  model: authentik_policies.policybinding
+  state: present
