@@ -91,3 +91,9 @@ export class RecentEventsCard extends Table<Event> {
         );
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-recent-events": RecentEventsCard;
+    }
+}

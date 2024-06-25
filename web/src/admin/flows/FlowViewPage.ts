@@ -286,3 +286,9 @@ export class FlowViewPage extends AKElement {
             </ak-tabs>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-flow-view": FlowViewPage;
+    }
+}

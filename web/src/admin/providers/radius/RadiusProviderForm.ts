@@ -122,3 +122,9 @@ export class RadiusProviderFormPage extends WithBrandConfig(BaseProviderForm<Rad
             </ak-form-group>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-radius-form": RadiusProviderFormPage;
+    }
+}

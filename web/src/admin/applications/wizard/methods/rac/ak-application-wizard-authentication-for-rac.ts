@@ -107,3 +107,9 @@ export class ApplicationWizardAuthenticationByRAC extends BaseProviderPanel {
 }
 
 export default ApplicationWizardAuthenticationByRAC;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-wizard-authentication-for-rac": ApplicationWizardAuthenticationByRAC;
+    }
+}

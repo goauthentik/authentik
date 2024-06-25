@@ -163,3 +163,9 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
             </ak-form-group>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-captcha-form": CaptchaStageForm;
+    }
+}

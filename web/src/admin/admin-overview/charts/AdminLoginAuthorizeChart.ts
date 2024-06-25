@@ -65,3 +65,9 @@ export class AdminLoginAuthorizeChart extends AKChart<LoginMetrics> {
         };
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-charts-admin-login-authorization": AdminLoginAuthorizeChart;
+    }
+}

@@ -114,3 +114,9 @@ export class PolicyWizard extends AKElement {
         `;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-policy-wizard": PolicyWizard;
+    }
+}

@@ -59,3 +59,9 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
         return html`<a href=${link} target="_blank">${text}</a>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-admin-status-version": VersionStatusCard;
+    }
+}

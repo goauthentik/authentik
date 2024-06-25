@@ -165,3 +165,9 @@ export class ApplicationWizardApplicationDetails extends WithBrandConfig(BasePro
 }
 
 export default ApplicationWizardApplicationDetails;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-wizard-authentication-by-ldap": ApplicationWizardApplicationDetails;
+    }
+}

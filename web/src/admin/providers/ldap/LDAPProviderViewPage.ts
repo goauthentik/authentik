@@ -240,3 +240,9 @@ export class LDAPProviderViewPage extends AKElement {
         </div>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-ldap-view": LDAPProviderViewPage;
+    }
+}

@@ -144,3 +144,9 @@ export class UserSourceSettingsPage extends AKElement {
         </ul>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-settings-source": UserSourceSettingsPage;
+    }
+}

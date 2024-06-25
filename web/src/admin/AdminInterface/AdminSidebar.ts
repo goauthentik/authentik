@@ -212,3 +212,9 @@ export class AkAdminSidebar extends WithCapabilitiesConfig(AKElement) {
             : nothing;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-admin-sidebar": AkAdminSidebar;
+    }
+}

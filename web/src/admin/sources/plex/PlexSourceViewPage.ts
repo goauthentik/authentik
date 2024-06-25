@@ -145,3 +145,9 @@ export class PlexSourceViewPage extends AKElement {
         </ak-tabs>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-source-plex-view": PlexSourceViewPage;
+    }
+}

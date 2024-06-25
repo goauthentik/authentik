@@ -77,3 +77,9 @@ export class FormGroup extends AKElement {
         </div>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-form-group": FormGroup;
+    }
+}

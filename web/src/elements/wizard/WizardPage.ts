@@ -54,3 +54,9 @@ export class WizardPage extends AKElement {
         return html`<slot></slot>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-wizard-page": WizardPage;
+    }
+}

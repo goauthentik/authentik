@@ -46,3 +46,9 @@ export class UserDeleteStageForm extends BaseStageForm<UserDeleteStage> {
             </ak-form-element-horizontal>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-user-delete-form": UserDeleteStageForm;
+    }
+}

@@ -188,3 +188,9 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
             ${this.result ? this.renderResult() : html``}`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-property-mapping-test-form": PolicyTestForm;
+    }
+}

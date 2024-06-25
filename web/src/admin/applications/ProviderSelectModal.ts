@@ -85,3 +85,9 @@ export class ProviderSelectModal extends TableModal<Provider> {
             </footer>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-select-table": ProviderSelectModal;
+    }
+}

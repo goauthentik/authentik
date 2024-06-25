@@ -159,3 +159,9 @@ export class SystemTaskListPage extends TablePage<SystemTask> {
         ];
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-system-task-list": SystemTaskListPage;
+    }
+}

@@ -209,3 +209,9 @@ export class GroupViewPage extends AKElement {
         </ak-tabs>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-group-view": GroupViewPage;
+    }
+}

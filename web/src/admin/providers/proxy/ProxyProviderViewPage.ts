@@ -413,3 +413,9 @@ export class ProxyProviderViewPage extends AKElement {
             </div>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-proxy-view": ProxyProviderViewPage;
+    }
+}

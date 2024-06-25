@@ -75,3 +75,9 @@ export class AppleLoginInit extends BaseStage<AppleLoginChallenge, AppleChalleng
             </footer>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-flow-source-oauth-apple": AppleLoginInit;
+    }
+}

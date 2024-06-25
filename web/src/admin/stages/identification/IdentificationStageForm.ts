@@ -310,3 +310,9 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
             </ak-form-group>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-identification-form": IdentificationStageForm;
+    }
+}

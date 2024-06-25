@@ -26,3 +26,9 @@ export class DeviceCodeFinish extends BaseStage<
         </ak-empty-state>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-flow-provider-oauth2-code-finish": DeviceCodeFinish;
+    }
+}

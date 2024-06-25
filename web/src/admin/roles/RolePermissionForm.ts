@@ -86,3 +86,9 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
         </form>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-role-permission-form": RolePermissionForm;
+    }
+}

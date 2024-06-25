@@ -95,3 +95,9 @@ export class PlexLoginInit extends BaseStage<
             </footer>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-flow-source-plex": PlexLoginInit;
+    }
+}

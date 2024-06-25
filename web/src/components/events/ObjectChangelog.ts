@@ -102,3 +102,9 @@ export class ObjectChangelog extends Table<Event> {
         );
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-object-changelog": ObjectChangelog;
+    }
+}

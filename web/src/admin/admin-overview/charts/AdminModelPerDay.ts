@@ -51,3 +51,9 @@ export class AdminModelPerDay extends AKChart<Coordinate[]> {
         };
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-charts-admin-model-per-day": AdminModelPerDay;
+    }
+}

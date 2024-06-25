@@ -42,3 +42,9 @@ export class UserLogoutStageForm extends BaseStageForm<UserLogoutStage> {
             </ak-form-element-horizontal>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-user-logout-form": UserLogoutStageForm;
+    }
+}

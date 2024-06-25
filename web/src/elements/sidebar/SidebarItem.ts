@@ -225,3 +225,9 @@ export class SidebarItem extends AKElement {
         </li>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-sidebar-item": SidebarItem;
+    }
+}

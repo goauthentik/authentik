@@ -244,3 +244,9 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
         </form>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-form": ApplicationForm;
+    }
+}

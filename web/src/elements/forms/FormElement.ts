@@ -65,3 +65,9 @@ export class FormElement extends AKElement {
         </div>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-form-element": FormElement;
+    }
+}

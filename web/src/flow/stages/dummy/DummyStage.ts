@@ -49,3 +49,9 @@ export class DummyStage extends BaseStage<DummyChallenge, DummyChallengeResponse
             </footer>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-dummy": DummyStage;
+    }
+}

@@ -94,3 +94,9 @@ export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPerm
         ];
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-role-assigned-object-permissions-table": RoleAssignedObjectPermissionTable;
+    }
+}

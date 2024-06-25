@@ -118,3 +118,9 @@ export class PromptListPage extends TablePage<Prompt> {
         `;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-prompt-list": PromptListPage;
+    }
+}

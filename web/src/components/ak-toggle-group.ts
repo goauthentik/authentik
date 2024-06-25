@@ -90,3 +90,9 @@ export class AkToggleGroup extends CustomEmitterElement(AKElement) {
 }
 
 export default AkToggleGroup;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-toggle-group": AkToggleGroup;
+    }
+}

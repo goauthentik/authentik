@@ -61,3 +61,9 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
         ];
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-scim-groups-list": SCIMProviderGroupList;
+    }
+}

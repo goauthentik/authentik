@@ -225,3 +225,9 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
         </div>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-checkbox-group": CheckboxGroup;
+    }
+}

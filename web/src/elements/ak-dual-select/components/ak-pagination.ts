@@ -92,3 +92,9 @@ export class AkPagination extends CustomEmitterElement(AKElement) {
 }
 
 export default AkPagination;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-pagination": AkPagination;
+    }
+}

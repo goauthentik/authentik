@@ -134,3 +134,9 @@ export class LibraryApplication extends AKElement {
         </div>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-library-app": LibraryApplication;
+    }
+}

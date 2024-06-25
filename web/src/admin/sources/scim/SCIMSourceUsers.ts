@@ -50,3 +50,9 @@ export class SCIMSourceUserList extends Table<SCIMSourceUser> {
         ];
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-source-scim-users-list": SCIMSourceUserList;
+    }
+}

@@ -74,3 +74,9 @@ export class LibraryPageApplicationEmptyList extends AKElement {
         </div>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-library-application-empty-list": LibraryPageApplicationEmptyList;
+    }
+}

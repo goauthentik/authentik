@@ -115,3 +115,9 @@ export class Tabs extends AKElement {
             <slot name="${ifDefined(this.currentPage)}"></slot>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-tabs": Tabs;
+    }
+}

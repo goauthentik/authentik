@@ -195,3 +195,9 @@ export class UserForm extends ModelForm<User, number> {
             </ak-form-element-horizontal>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-form": UserForm;
+    }
+}

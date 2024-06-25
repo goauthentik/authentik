@@ -321,3 +321,9 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
 }
 
 export default ApplicationWizardAuthenticationByOauth;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-wizard-authentication-by-oauth": ApplicationWizardAuthenticationByOauth;
+    }
+}

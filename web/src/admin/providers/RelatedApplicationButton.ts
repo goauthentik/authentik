@@ -35,3 +35,9 @@ export class RelatedApplicationButton extends AKElement {
         </ak-forms-modal>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-related-application": RelatedApplicationButton;
+    }
+}

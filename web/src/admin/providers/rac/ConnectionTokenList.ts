@@ -96,3 +96,9 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
         return [html`${item.providerObj.name}`, html`${item.endpointObj.name}`];
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-rac-connection-token-list": ConnectionTokenListPage;
+    }
+}

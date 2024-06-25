@@ -218,3 +218,9 @@ export class SCIMProviderViewPage extends AKElement {
             </div>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-scim-view": SCIMProviderViewPage;
+    }
+}

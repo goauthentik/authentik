@@ -590,3 +590,9 @@ export class SAMLProviderViewPage extends AKElement {
         </div>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-saml-view": SAMLProviderViewPage;
+    }
+}

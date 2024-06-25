@@ -82,3 +82,9 @@ export class TablePagination extends AKElement {
         </div>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-table-pagination": TablePagination;
+    }
+}

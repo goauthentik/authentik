@@ -24,3 +24,9 @@ export class AkHintFooter extends AKElement {
 }
 
 export default AkHintFooter;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-hint-footer": AkHintFooter;
+    }
+}

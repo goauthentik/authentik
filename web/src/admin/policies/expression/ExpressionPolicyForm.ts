@@ -96,3 +96,9 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
             </ak-form-group>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-policy-expression-form": ExpressionPolicyForm;
+    }
+}

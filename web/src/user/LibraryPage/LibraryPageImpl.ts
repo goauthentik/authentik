@@ -153,3 +153,9 @@ export class LibraryPage extends AKElement {
         </main>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-library-impl": LibraryPage;
+    }
+}

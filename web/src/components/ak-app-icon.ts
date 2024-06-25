@@ -83,3 +83,9 @@ export class AppIcon extends AKElement {
 }
 
 export default AppIcon;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-app-icon": AppIcon;
+    }
+}

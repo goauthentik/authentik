@@ -77,3 +77,9 @@ export class UserApplicationTable extends Table<Application> {
         ];
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-application-table": UserApplicationTable;
+    }
+}

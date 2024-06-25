@@ -312,3 +312,9 @@ ${prompt.initialValue}</textarea
             </footer>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-prompt": PromptStage;
+    }
+}

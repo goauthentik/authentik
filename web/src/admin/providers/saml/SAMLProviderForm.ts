@@ -393,3 +393,9 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
             </ak-form-group>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-saml-form": SAMLProviderFormPage;
+    }
+}

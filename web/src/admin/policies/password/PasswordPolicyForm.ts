@@ -339,3 +339,9 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
             ${this.showZxcvbn ? this.renderZxcvbn() : html``}`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-policy-password-form": PasswordPolicyForm;
+    }
+}

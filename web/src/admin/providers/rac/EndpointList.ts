@@ -141,3 +141,9 @@ export class EndpointListPage extends Table<Endpoint> {
         `;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-rac-endpoint-list": EndpointListPage;
+    }
+}

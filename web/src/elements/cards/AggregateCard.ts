@@ -88,3 +88,9 @@ export class AggregateCard extends AKElement {
         </div>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-aggregate-card": AggregateCard;
+    }
+}

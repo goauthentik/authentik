@@ -109,3 +109,4 @@ temp/
 # End of https://www.gitignore.io/api/node
 api/**
 storybook-static/
+custom-elements.json

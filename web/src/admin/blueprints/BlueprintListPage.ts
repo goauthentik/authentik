@@ -198,3 +198,9 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
         `;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-blueprint-list": BlueprintListPage;
+    }
+}

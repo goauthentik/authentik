@@ -213,3 +213,9 @@ export class SCIMSourceViewPage extends AKElement {
         </ak-tabs>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-source-scim-view": SCIMSourceViewPage;
+    }
+}

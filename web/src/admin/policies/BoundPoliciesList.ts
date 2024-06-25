@@ -214,3 +214,9 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
             </ak-forms-modal> `;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-bound-policies-list": BoundPoliciesList;
+    }
+}

@@ -483,3 +483,9 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
             </ak-form-group>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-source-ldap-form": LDAPSourceForm;
+    }
+}

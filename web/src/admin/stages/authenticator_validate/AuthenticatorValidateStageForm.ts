@@ -280,3 +280,9 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
         `;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-authenticator-validate-form": AuthenticatorValidateStageForm;
+    }
+}

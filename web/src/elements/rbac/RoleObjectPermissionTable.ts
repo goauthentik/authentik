@@ -121,3 +121,9 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
         return baseRow;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-rbac-role-object-permission-table": RoleAssignedObjectPermissionTable;
+    }
+}

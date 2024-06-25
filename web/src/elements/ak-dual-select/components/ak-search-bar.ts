@@ -67,3 +67,9 @@ export class AkSearchbar extends CustomEmitterElement(AKElement) {
 }
 
 export default AkSearchbar;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-search-bar": AkSearchbar;
+    }
+}

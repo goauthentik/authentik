@@ -49,3 +49,9 @@ export class SCIMSourceGroupList extends Table<SCIMSourceGroup> {
         ];
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-source-scim-groups-list": SCIMSourceGroupList;
+    }
+}

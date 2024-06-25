@@ -219,3 +219,9 @@ export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
             </ak-form-group>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-scim-form": SCIMProviderFormPage;
+    }
+}
