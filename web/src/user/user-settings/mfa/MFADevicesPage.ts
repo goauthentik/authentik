@@ -138,3 +138,9 @@ export class MFADevicesPage extends Table<Device> {
         ];
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-settings-mfa": MFADevicesPage;
+    }
+}

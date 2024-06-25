@@ -143,3 +143,9 @@ export class LibraryPageApplicationList extends AKElement {
         />`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-library-list-search": LibraryPageApplicationList;
+    }
+}

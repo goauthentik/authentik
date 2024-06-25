@@ -112,3 +112,9 @@ export class LogViewer extends Table<LogEvent> {
         ];
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-log-viewer": LogViewer;
+    }
+}

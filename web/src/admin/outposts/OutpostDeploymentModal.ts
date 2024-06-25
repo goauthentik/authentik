@@ -98,3 +98,9 @@ export class OutpostDeploymentModal extends ModalButton {
             </footer>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-outpost-deployment-modal": OutpostDeploymentModal;
+    }
+}

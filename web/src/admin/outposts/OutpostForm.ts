@@ -256,3 +256,9 @@ export class OutpostForm extends ModelForm<Outpost, string> {
             </ak-form-group>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-outpost-form": OutpostForm;
+    }
+}

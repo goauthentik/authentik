@@ -503,3 +503,9 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
             </ak-form-group>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-source-saml-form": SAMLSourceForm;
+    }
+}

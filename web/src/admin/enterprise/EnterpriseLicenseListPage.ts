@@ -281,3 +281,9 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         `;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-enterprise-license-list": EnterpriseLicenseListPage;
+    }
+}

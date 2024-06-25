@@ -92,3 +92,9 @@ export class UserSettingsPromptStage extends PromptStage {
             </footer>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-stage-prompt": UserSettingsPromptStage;
+    }
+}

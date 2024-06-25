@@ -103,3 +103,9 @@ export class GroupSelectModal extends TableModal<Group> {
             </footer>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-group-select-table": GroupSelectModal;
+    }
+}

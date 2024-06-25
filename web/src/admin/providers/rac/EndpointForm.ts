@@ -157,3 +157,9 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
         `;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-rac-endpoint-form": EndpointForm;
+    }
+}

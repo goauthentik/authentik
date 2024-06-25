@@ -221,3 +221,9 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
             </div>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-google-workspace-view": GoogleWorkspaceProviderViewPage;
+    }
+}

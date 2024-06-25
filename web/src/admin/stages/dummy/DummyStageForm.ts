@@ -62,3 +62,9 @@ export class DummyStageForm extends BaseStageForm<DummyStage> {
             </ak-form-element-horizontal>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-dummy-form": DummyStageForm;
+    }
+}

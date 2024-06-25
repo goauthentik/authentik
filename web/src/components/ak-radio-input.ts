@@ -37,4 +37,10 @@ export class AkRadioInput<T> extends HorizontalLightComponent {
     }
 }
 
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-radio-input": AkRadioInput<unknown>;
+    }
+}
+
 export default AkRadioInput;

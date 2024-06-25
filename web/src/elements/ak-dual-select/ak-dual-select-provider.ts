@@ -148,3 +148,9 @@ export class AkDualSelectProvider extends CustomListenerElement(AKElement) {
         ></ak-dual-select>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-dual-select-provider": AkDualSelectProvider;
+    }
+}

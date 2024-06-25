@@ -74,3 +74,9 @@ export class UserEvents extends Table<Event> {
         );
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-events-user": UserEvents;
+    }
+}

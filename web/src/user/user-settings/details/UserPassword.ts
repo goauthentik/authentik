@@ -41,3 +41,9 @@ export class UserSettingsPassword extends AKElement {
         </div>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-settings-password": UserSettingsPassword;
+    }
+}

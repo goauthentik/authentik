@@ -198,3 +198,9 @@ export class LDAPSourceViewPage extends AKElement {
         </ak-tabs>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-source-ldap-view": LDAPSourceViewPage;
+    }
+}

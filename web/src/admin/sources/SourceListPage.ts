@@ -132,3 +132,9 @@ export class SourceListPage extends TablePage<Source> {
         return html`<ak-source-wizard> </ak-source-wizard> `;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-source-list": SourceListPage;
+    }
+}

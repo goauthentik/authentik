@@ -159,3 +159,9 @@ export class PolicyListPage extends TablePage<Policy> {
             </ak-forms-confirm>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-policy-list": PolicyListPage;
+    }
+}

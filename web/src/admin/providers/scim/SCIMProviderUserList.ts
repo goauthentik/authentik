@@ -62,3 +62,9 @@ export class SCIMProviderUserList extends Table<SCIMProviderUser> {
         ];
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-scim-users-list": SCIMProviderUserList;
+    }
+}

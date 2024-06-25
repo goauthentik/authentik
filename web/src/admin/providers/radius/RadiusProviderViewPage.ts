@@ -175,3 +175,9 @@ export class RadiusProviderViewPage extends AKElement {
         </ak-tabs>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-radius-view": RadiusProviderViewPage;
+    }
+}

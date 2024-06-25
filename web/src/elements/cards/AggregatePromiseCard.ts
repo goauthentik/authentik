@@ -25,3 +25,9 @@ export class AggregatePromiseCard extends AggregateCard {
         </p>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-aggregate-card-promise": AggregatePromiseCard;
+    }
+}

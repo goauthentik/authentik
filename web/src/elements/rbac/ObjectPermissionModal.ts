@@ -78,3 +78,10 @@ export class ObjectPermissionModal extends AKElement {
         `;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-rbac-object-permission-modal-form": ObjectPermissionsPageForm;
+        "ak-rbac-object-permission-modal": ObjectPermissionModal;
+    }
+}

@@ -78,3 +78,9 @@ export class Sidebar extends AKElement {
         </nav>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-sidebar": Sidebar;
+    }
+}

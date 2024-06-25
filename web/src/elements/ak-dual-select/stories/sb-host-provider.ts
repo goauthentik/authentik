@@ -20,3 +20,9 @@ export class SbHostProvider extends LitElement {
         return html`<slot></slot>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "sb-dual-select-host-provider": SbHostProvider;
+    }
+}

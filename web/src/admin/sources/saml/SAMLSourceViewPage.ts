@@ -222,3 +222,9 @@ export class SAMLSourceViewPage extends AKElement {
         </ak-tabs>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-source-saml-view": SAMLSourceViewPage;
+    }
+}

@@ -162,3 +162,9 @@ export class BoundStagesList extends Table<FlowStageBinding> {
         `;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-bound-stages-list": BoundStagesList;
+    }
+}

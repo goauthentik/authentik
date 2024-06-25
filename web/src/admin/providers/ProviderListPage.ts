@@ -136,3 +136,9 @@ export class ProviderListPage extends TablePage<Provider> {
         return html`<ak-provider-wizard> </ak-provider-wizard> `;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-list": ProviderListPage;
+    }
+}

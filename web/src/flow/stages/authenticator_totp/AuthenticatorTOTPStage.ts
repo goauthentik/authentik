@@ -143,3 +143,9 @@ export class AuthenticatorTOTPStage extends BaseStage<
             </footer>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-authenticator-totp": AuthenticatorTOTPStage;
+    }
+}

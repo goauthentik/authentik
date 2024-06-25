@@ -187,3 +187,9 @@ export class ObjectPermissionPage extends AKElement {
         `;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-rbac-object-permission-page": ObjectPermissionPage;
+    }
+}
