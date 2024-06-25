@@ -161,32 +161,27 @@ Now bind this policy to the chosen enrollment and authentication flows for the D
 Ensure that the Discord OAuth source in 'Federation & Social login' has the additional `guilds.members.read` scopes added under the 'Protocol settings'.
 :::
 
+:::info
+Any authentik role you want to sync with a discord role needs to have the attribute `discord_role_id` with a value of the discord role's id set.  
+The settings can be found in `Authentik > Admin Interface > Directory > Groups > YOUR_GROUP > Attributes`  
+Example attribute: ``discord_role_id: "<ROLE ID>"``
+:::
+
 Create a new 'Expression Policy' with the content below, adjusting the variables where required.
 
 #### Sync on enrollment
 
 ```python
-# To get the role and guild ID numbers for the parameters, open Discord, go to Settings > Advanced and
-# enable developer mode.
-# Right-click on the server/guild title and select "Copy ID" to get the guild ID.
-# Right-click on the server/guild title and select server settings > roles, right click on the role and click
-# "Copy ID" to get the role ID.
-
 from authentik.core.models import Group
-
-GUILD_ID = "<YOUR GUILD ID>"
-MAPPED_ROLES = {
-    "<Discord Role Id 1>": Group.objects.get_or_create(name="<Authentik Role Name 1>")[0],
-    "<Discord Role Id 2>": Group.objects.get_or_create(name="<Authentik Role Name 2>")[0],
-    # You can add mapped roles by copying the above line and adjusting to your needs
-}
-
-# Only change below here if you know what you are doing.
 GUILD_API_URL = "https://discord.com/api/users/@me/guilds/{guild_id}/member"
 
-# Ensure flow is only run during OAuth logins via Discord
-if context["source"].provider_type != "discord":
-    return True
+### CONFIG ###
+guild_id = "<YOUR GUILD ID>"
+##############
+
+# Ensure flow is only run during oatuh logins via Discord
+if context['source'].provider_type != "discord":
+  return True
 
 # Get the user-source connection object from the context, and get the access token
 connection = context.get("goauthentik.io/sources/connection")
@@ -195,28 +190,36 @@ if not connection:
 access_token = connection.access_token
 
 guild_member_info = requests.get(
-    GUILD_API_URL.format(guild_id=GUILD_ID),
-    headers={"Authorization": "Bearer " + access_token},
+  GUILD_API_URL.format(guild_id=guild_id),
+  headers={
+    "Authorization": "Bearer " + access_token
+  },
 ).json()
 
 # Ensure user is a member of the guild
 if "code" in guild_member_info:
-    if guild_member_info["code"] == 10004:
+    if guild_member_info['code'] == 10004:
         ak_message("User is not a member of the guild")
     else:
-        ak_create_event(
-            "discord_error", source=context["source"], code=guild_member_info["code"]
-        )
+        ak_create_event("discord_error", source=context['source'], code=guild_member_info['code'])
         ak_message("Discord API error, try again later.")
     return False
 
-# Add all mapped roles the user has in the guild
-groups_to_add = []
-for role_id in MAPPED_ROLES:
-    if role_id in guild_member_info["roles"]:
-        groups_to_add.append(MAPPED_ROLES[role_id])
+# Get all discord_groups
+discord_groups = Group.objects.filter(attributes__discord_role_id__isnull=False)
 
-request.context["flow_plan"].context["groups"] = groups_to_add
+# Filter matching roles based on guild_member_info['roles']
+matching_roles = discord_groups.filter(attributes__discord_role_id__in=guild_member_info['roles'])
+
+# Set matchin_roles in flow context
+request.context["flow_plan"].context["groups"] = matching_roles
+
+# Create event with roles added
+ak_create_event(
+    "discord_role_sync",
+    discord_roles_added=', '.join(str(group) for group in matching_roles),
+)
+
 return True
 
 ```
@@ -226,23 +229,12 @@ Now bind this policy to the chosen enrollment flows for the Discord OAuth source
 #### Sync on authentication
 
 ```python
-# To get the role and guild ID numbers for the parameters, open Discord, go to Settings > Advanced and
-# enable developer mode.
-# Right-click on the server/guild title and select "Copy ID" to get the guild ID.
-# Right-click on the server/guild title and select server settings > roles, right click on the role and click
-# "Copy ID" to get the role ID.
-
 from authentik.core.models import Group
-
-GUILD_ID = "<YOUR GUILD ID>"
-MAPPED_ROLES = {
-    "<Discord Role Id 1>": Group.objects.get_or_create(name="<Authentik Role Name 1>")[0],
-    "<Discord Role Id 2>": Group.objects.get_or_create(name="<Authentik Role Name 2>")[0],
-    # You can add mapped roles by copying the above line and adjusting to your needs
-}
-
-# Only change below here if you know what you are doing.
 GUILD_API_URL = "https://discord.com/api/users/@me/guilds/{guild_id}/member"
+
+### CONFIG ###
+guild_id = "<YOUR GUILD ID>"
+##############
 
 # Ensure flow is only run during OAuth logins via Discord
 if context["source"].provider_type != "discord":
@@ -255,34 +247,44 @@ if not connection:
 access_token = connection.access_token
 
 guild_member_info = requests.get(
-    GUILD_API_URL.format(guild_id=GUILD_ID),
-    headers={"Authorization": "Bearer " + access_token},
+  GUILD_API_URL.format(guild_id=guild_id),
+  headers={
+    "Authorization": "Bearer " + access_token
+  },
 ).json()
 
 # Ensure user is a member of the guild
 if "code" in guild_member_info:
-    if guild_member_info["code"] == 10004:
+    if guild_member_info['code'] == 10004:
         ak_message("User is not a member of the guild")
     else:
-        ak_create_event(
-            "discord_error", source=context["source"], code=guild_member_info["code"]
-        )
+        ak_create_event("discord_error", source=context['source'], code=guild_member_info['code'])
         ak_message("Discord API error, try again later.")
     return False
 
-# Get the user's current roles and remove all roles we want to remap
-new_groups = [
-    role for role in request.user.ak_groups.all() if role not in MAPPED_ROLES.values()
-]
+# Get all discord_groups
+discord_groups = Group.objects.filter(attributes__discord_role_id__isnull=False)
 
-# Add back mapped roles which the user has in the guild
-for role_id in MAPPED_ROLES:
-    if role_id in guild_member_info["roles"]:
-        new_groups.append(MAPPED_ROLES[role_id])
+# Get all user groups except discord_groups
+user_groups = request.user.ak_groups.exclude(pk__in=discord_groups.values_list('pk', flat=True))
 
-# Update user's groups
-request.user.ak_groups.set(new_groups)
+# Filter matching roles based on guild_member_info['roles']
+matching_roles = discord_groups.filter(attributes__discord_role_id__in=guild_member_info['roles'])
+
+# Combine user_groups and matching_roles
+combined_groups = user_groups.union(matching_roles)
+
+# Update user's groups directly without converting to a list first
+request.user.ak_groups.set(combined_groups)
 request.user.save()
+
+
+# Create event with roles changed
+ak_create_event(
+    "discord_role_sync",
+    discord_roles_before=', '.join(str(group) for group in request.user.ak_groups.filter(pk__in=discord_groups.values_list('pk', flat=True))),
+    discord_roles_after=', '.join(str(group) for group in matching_roles),
+)
 
 return True
 
