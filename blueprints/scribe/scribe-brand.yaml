@@ -1,0 +1,40 @@
+metadata:
+  name: Scribe - Brand
+version: 1
+entries:
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
+        name: Default - Authentication flow
+      required: false
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
+        name: Default - Invalidation flow
+      required: false
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
+        name: Default - User settings flow
+      required: false
+  - attrs:
+      attributes:
+        settings:
+          theme:
+            base: light
+      branding_favicon: /static/dist/assets/icons/icon.png
+      branding_logo: /static/dist/assets/icons/icon_left_brand.svg
+      branding_title: Scribe Security
+      domain: scribesecurity.com
+      flow_authentication:
+        !Find [authentik_flows.flow, [slug, default-authentication-flow]]
+      flow_invalidation:
+        !Find [authentik_flows.flow, [slug, default-invalidation-flow]]
+      flow_user_settings:
+        !Find [authentik_flows.flow, [slug, default-user-settings-flow]]
+    conditions: []
+    id: null
+    identifiers:
+      domain: scribesecurity.com
+    model: authentik_brands.brand
+    state: present
