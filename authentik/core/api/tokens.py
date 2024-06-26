@@ -46,8 +46,8 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
 
     def validate_user(self, user: User):
         """Ensure user of token cannot be changed"""
-        if self.instance:
-            if user.pk != self.instance.user:
+        if self.instance and self.instance.user_id:
+            if user.pk != self.instance.user_id:
                 raise ValidationError("User cannot be changed")
         return user
 
