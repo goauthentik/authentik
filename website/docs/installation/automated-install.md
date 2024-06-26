@@ -2,7 +2,7 @@
 title: Automated install
 ---
 
-To install authentik automatically (skipping the Out-of-box experience), you can use the following environment variables:
+To install authentik automatically (skipping the Out-of-box experience), you can use the following environment variables on the worker container:
 
 ### `AUTHENTIK_BOOTSTRAP_PASSWORD`
 

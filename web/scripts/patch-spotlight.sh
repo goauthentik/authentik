@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 TARGET="./node_modules/@spotlightjs/overlay/dist/index-[0-9a-f]*.js";
+
+if ! grep -GL 'QX2 = ' $TARGET > /dev/null ; then
 patch --forward --no-backup-if-mismatch -p0 $TARGET <<EOF
 --- a/index-5682ce90.js	2024-06-13 16:19:28
 +++ b/index-5682ce90.js	2024-06-13 16:20:23
@@ -19,3 +21,6 @@ patch --forward --no-backup-if-mismatch -p0 $TARGET <<EOF
    clipboardEnabled: o = !1,
    displayDataTypes: c = !1,
 EOF
+else
+    echo "spotlight overlay.js patch already applied"
+fi
