@@ -20,7 +20,7 @@ from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserSerializer
 from authentik.core.api.utils import PassiveSerializer
-from authentik.core.models import USER_ATTRIBUTE_TOKEN_EXPIRING, Token, TokenIntents
+from authentik.core.models import USER_ATTRIBUTE_TOKEN_EXPIRING, Token, TokenIntents, User
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import model_to_dict
 from authentik.rbac.decorators import permission_required
@@ -35,6 +35,13 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
         super().__init__(*args, **kwargs)
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
             self.fields["key"] = CharField(required=False)
+
+    def validate_user(self, user: User):
+        """Ensure user of token cannot be changed"""
+        if self.instance and self.instance.user_id:
+            if user.pk != self.instance.user_id:
+                raise ValidationError("User cannot be changed")
+        return user
 
     def validate(self, attrs: dict[Any, str]) -> dict[Any, str]:
         """Ensure only API or App password tokens are created."""
