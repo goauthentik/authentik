@@ -76,8 +76,6 @@ services:
       - ./media:/media
       - ./certs:/certs
       - ./custom-templates:/templates
-      - ./blueprints/default:/blueprints/default
-      - ./blueprints/scribe:/blueprints/scribe
     env_file:
       - .env
     depends_on:
