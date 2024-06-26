@@ -25,17 +25,15 @@ let css: Promise<string[]> | undefined;
 function fetchCustomCSS(): Promise<string[]> {
     if (!css) {
         css = Promise.all(
-            Array.of(...document.head.querySelectorAll<HTMLLinkElement>("link[data-inject]")).map(
-                (link) => {
-                    return fetch(link.href)
-                        .then((res) => {
-                            return res.text();
-                        })
-                        .finally(() => {
-                            return "";
-                        });
-                },
-            ),
+            Array.of(...document.head.querySelectorAll<HTMLLinkElement>("link[data-inject]")).map((link) => {
+                return fetch(link.href)
+                    .then((res) => {
+                        return res.text();
+                    })
+                    .finally(() => {
+                        return "";
+                    });
+            })
         );
     }
     return css;
@@ -58,13 +56,8 @@ export class AKElement extends LitElement {
     }
 
     setInitialStyles(root: DocumentOrShadowRoot) {
-        const styleRoot: DocumentOrShadowRoot = (
-            "ShadyDOM" in window ? document : root
-        ) as DocumentOrShadowRoot;
-        styleRoot.adoptedStyleSheets = adaptCSS([
-            ...styleRoot.adoptedStyleSheets,
-            ensureCSSStyleSheet(AKGlobal),
-        ]);
+        const styleRoot: DocumentOrShadowRoot = ("ShadyDOM" in window ? document : root) as DocumentOrShadowRoot;
+        styleRoot.adoptedStyleSheets = adaptCSS([...styleRoot.adoptedStyleSheets, ensureCSSStyleSheet(AKGlobal)]);
         this._initTheme(styleRoot);
         this._initCustomCSS(styleRoot);
     }
@@ -77,8 +70,7 @@ export class AKElement extends LitElement {
     }
 
     async getTheme(): Promise<UiThemeEnum> {
-        // return rootInterface()?.getTheme() || UiThemeEnum.Automatic;
-        return UiThemeEnum.Light;
+        return rootInterface()?.getTheme() || UiThemeEnum.Light;
     }
 
     fixElementStyles() {
@@ -119,10 +111,7 @@ export class AKElement extends LitElement {
             if (!this._mediaMatcher) {
                 this._mediaMatcher = window.matchMedia(QUERY_MEDIA_COLOR_LIGHT);
                 this._mediaMatcherHandler = (ev?: MediaQueryListEvent) => {
-                    const theme =
-                        ev?.matches || this._mediaMatcher?.matches
-                            ? UiThemeEnum.Light
-                            : UiThemeEnum.Dark;
+                    const theme = ev?.matches || this._mediaMatcher?.matches ? UiThemeEnum.Light : UiThemeEnum.Dark;
                     this._activateTheme(root, theme);
                 };
                 this._mediaMatcher.addEventListener("change", this._mediaMatcherHandler);
@@ -154,7 +143,7 @@ export class AKElement extends LitElement {
                 bubbles: true,
                 composed: true,
                 detail: theme,
-            }),
+            })
         );
         this.setAttribute("theme", theme);
         const stylesheet = AKElement.themeToStylesheet(theme);
