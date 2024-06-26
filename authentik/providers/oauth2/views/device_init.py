@@ -1,11 +1,9 @@
 """Device flow views"""
 
-from typing import Optional
+from typing import Any, Optional
 
 from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext as _
-from typing import Any
-
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, IntegerField
 from structlog.stdlib import get_logger
@@ -20,7 +18,7 @@ from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.utils.urls import redirect_with_qs
 from authentik.policies.views import PolicyAccessView
-from authentik.providers.oauth2.models import DeviceToken
+from authentik.providers.oauth2.models import DeviceToken, OAuth2Provider
 from authentik.providers.oauth2.views.device_finish import (
     PLAN_CONTEXT_DEVICE,
     OAuthDeviceCodeFinishStage,
