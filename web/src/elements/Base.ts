@@ -77,6 +77,7 @@ export class AKElement extends LitElement {
     }
 
     async getTheme(): Promise<UiThemeEnum> {
+        // return rootInterface()?.getTheme() || UiThemeEnum.Automatic;
         return rootInterface()?.getTheme() || UiThemeEnum.Light;
     }
 
