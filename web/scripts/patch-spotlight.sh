@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 TARGET=$(find "./node_modules/@spotlightjs/overlay/dist/" -name "index-[0-9a-f]*.js");
-echo "FOUND: $TARGET";
 
 if ! grep -GL 'QX2 = ' "$TARGET" > /dev/null ; then
 patch --forward --no-backup-if-mismatch -p0 "$TARGET" <<EOF
