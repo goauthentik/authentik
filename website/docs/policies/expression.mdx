@@ -69,7 +69,7 @@ import Objects from "../expressions/_objects.md";
 
     -   `asn`: the autonomous system number associated with the IP address.
     -   `as_org`: the organization associated with the registered autonomous system number for the IP address.
-    -   `network`: the network associated with the record. In particular, this is the largest network where all of the fields besides ip_address have the same value.
+    -   `network`: the network associated with the record. In particular, this is the largest network where all of the fields except `ip_address` have the same value.
 
     ```python
     return context["asn"]["asn"] == 64496
