@@ -13,11 +13,30 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 import type { Application } from "@goauthentik/api";
 
-import { SEARCH_ITEM_SELECTED, SEARCH_UPDATED } from "./constants";
-import { customEvent } from "./helpers";
+import {
+    LibraryPageSearchEmpty,
+    LibraryPageSearchReset,
+    LibraryPageSearchSelected,
+    LibraryPageSearchUpdated,
+} from "./events.js";
 
-@customElement("ak-library-list-search")
-export class LibraryPageApplicationList extends AKElement {
+/**
+ * @element ak-library-list-search
+ *
+ * @class LibraryPageApplicationSearch
+ *
+ * @classdesc
+ *
+ * The interface between our list of applications shown to the user, an input box, and the Fuse
+ * fuzzy search library.
+ *
+ * @fires LibraryPageSearchUpdated
+ * @fires LibraryPageSearchEmpty
+ * @fires LibraryPageSearchReset
+ *
+ */
+@customElement("ak-library-application-search")
+export class LibraryPageApplicationSearch extends AKElement {
     static get styles() {
         return [
             PFBase,
@@ -75,11 +94,7 @@ export class LibraryPageApplicationList extends AKElement {
     }
 
     onSelected(apps: FuseResult<Application>[]) {
-        this.dispatchEvent(
-            customEvent(SEARCH_UPDATED, {
-                apps: apps.map((app) => app.item),
-            }),
-        );
+        this.dispatchEvent(new LibraryPageSearchUpdated(apps.map((app) => app.item)));
     }
 
     connectedCallback() {
@@ -102,7 +117,7 @@ export class LibraryPageApplicationList extends AKElement {
         updateURLParams({
             search: this.query,
         });
-        this.onSelected([]);
+        this.dispatchEvent(new LibraryPageSearchReset());
     }
 
     onInput(ev: InputEvent) {
@@ -113,8 +128,13 @@ export class LibraryPageApplicationList extends AKElement {
         updateURLParams({
             search: this.query,
         });
+
         const apps = this.fuse.search(this.query);
-        if (apps.length < 1) return;
+        if (apps.length < 1) {
+            this.dispatchEvent(new LibraryPageSearchEmpty());
+            return;
+        }
+
         this.onSelected(apps);
     }
 
@@ -125,7 +145,7 @@ export class LibraryPageApplicationList extends AKElement {
                 return;
             }
             case "Enter": {
-                this.dispatchEvent(customEvent(SEARCH_ITEM_SELECTED));
+                this.dispatchEvent(new LibraryPageSearchSelected());
                 return;
             }
         }
