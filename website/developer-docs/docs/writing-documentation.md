@@ -48,7 +48,7 @@ Following the guidelines will make getting your PRs merged much easier and faste
 
 In addition to following the [Style Guide](./style-guide.mdx) please review the following guidelines.
 
-For new integration documentation, please use the Integrations template in our [Github repo](https://github.com/goauthentik/authentik) at `/website/integrations/_template/service.md`.
+For new integration documentation, please use the Integrations template in our [Github repo](https://github.com/goauthentik/authentik) at `/website/integrations/template/service.md`.
 
 -   Make sure to add the service to a fitting category in `/website/sidebarsIntegrations.js`. If this is not done the service will not appear in the table of contents to the left.
 

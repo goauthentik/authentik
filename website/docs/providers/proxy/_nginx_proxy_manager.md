@@ -48,7 +48,7 @@ location / {
 
 # all requests to /outpost.goauthentik.io must be accessible without authentication
 location /outpost.goauthentik.io {
-    proxy_pass              http://outpost.company:9000/outpost.goauthentik.io;
+    proxy_pass              http://outpost.company:9000;
     # ensure the host of this vserver matches your external URL you've configured
     # in authentik
     proxy_set_header        Host $host;

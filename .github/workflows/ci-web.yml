@@ -78,3 +78,21 @@ jobs:
       - name: build
         working-directory: web/
         run: npm run build
+  test:
+    needs:
+      - ci-web-mark
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: web/package.json
+          cache: "npm"
+          cache-dependency-path: web/package-lock.json
+      - working-directory: web/
+        run: npm ci
+      - name: Generate API
+        run: make gen-client-ts
+      - name: test
+        working-directory: web/
+        run: npm run test
