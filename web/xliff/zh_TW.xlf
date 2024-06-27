@@ -8497,6 +8497,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s0b2ad58c3deaa8dd">
   <source>FIPS Status</source>
 </trans-unit>
+<trans-unit id="s4facec1106c91cf9">
+  <source>Search returned no results.</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
