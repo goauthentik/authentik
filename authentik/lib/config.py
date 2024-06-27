@@ -310,10 +310,6 @@ class ConfigLoader:
         attr: Attr = get_path_from_dict(root, path, sep=sep, default=Attr({}))
         return attr.keys()
 
-    def get_dict(self, path: str, default={}, sep=".") -> dict[str, Any]:
-        """Get dictionary at a specific path."""
-        return get_path_from_dict(self.raw, path, sep=sep, default=default)
-
     def get_dict_from_b64_json(self, path: str, default=None) -> dict:
         """Wrapper for get that converts value from Base64 encoded string into dictionary"""
         config_value = self.get(path)

@@ -60,7 +60,7 @@ def sentry_init(**sentry_init_kwargs):
             "profiles_sample_rate": float(CONFIG.get("error_reporting.sample_rate", 0.1)),
         },
         **sentry_init_kwargs,
-        **CONFIG.get_dict("error_reporting.extra_args", {}),
+        **CONFIG.get_dict_from_b64_json("error_reporting.extra_args", {}),
     }
 
     sentry_sdk_init(

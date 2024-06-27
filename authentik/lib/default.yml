@@ -71,7 +71,6 @@ error_reporting:
   environment: customer
   send_pii: false
   sample_rate: 0.1
-  extra_args: {}
 
 # Global email settings
 email:
