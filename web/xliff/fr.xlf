@@ -8802,6 +8802,9 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="s0b2ad58c3deaa8dd">
   <source>FIPS Status</source>
 </trans-unit>
+<trans-unit id="s4facec1106c91cf9">
+  <source>Search returned no results.</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
