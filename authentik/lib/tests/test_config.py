@@ -113,6 +113,13 @@ class TestConfig(TestCase):
         config.set("foo", "bar")
         self.assertEqual(config.get_int("foo", 1234), 1234)
 
+    def test_get_dict(self):
+        """Test get_dict"""
+        config = ConfigLoader()
+        config.set("foo.bar", "baz")
+        config.set("foo.foo", "bar")
+        self.assertEqual(config.get_dict("foo"), {"bar": "baz", "foo": "bar"})
+
     def test_get_dict_from_b64_json(self):
         """Test get_dict_from_b64_json"""
         config = ConfigLoader()
