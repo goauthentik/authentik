@@ -44,8 +44,6 @@ services:
     volumes:
       - ./media:/media
       - ./custom-templates:/templates
-      - ./blueprints/default:/blueprints/default
-      - ./blueprints/scribe:/blueprints/scribe
     env_file:
       - .env
     ports:
