@@ -1,10 +1,15 @@
 import "@goauthentik/admin/applications/wizard/ak-wizard-title";
+import {
+    makeProxyPropertyMappingsSelector,
+    proxyPropertyMappingsProvider,
+} from "@goauthentik/admin/providers/proxy/ProxyProviderPropertyMappings.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";
 import "@goauthentik/components/ak-toggle-group";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
 import { msg } from "@lit/localize";
@@ -16,7 +21,6 @@ import {
     FlowsInstancesListDesignationEnum,
     PaginatedOAuthSourceList,
     PaginatedScopeMappingList,
-    PropertymappingsApi,
     ProxyMode,
     ProxyProvider,
     SourcesApi,
@@ -29,12 +33,6 @@ type MaybeTemplateResult = TemplateResult | typeof nothing;
 export class AkTypeProxyApplicationWizardPage extends BaseProviderPanel {
     constructor() {
         super();
-        new PropertymappingsApi(DEFAULT_CONFIG)
-            .propertymappingsScopeList({ ordering: "scope_name" })
-            .then((propertyMappings: PaginatedScopeMappingList) => {
-                this.propertyMappings = propertyMappings;
-            });
-
         new SourcesApi(DEFAULT_CONFIG)
             .sourcesOauthList({
                 ordering: "name",
@@ -88,29 +86,8 @@ export class AkTypeProxyApplicationWizardPage extends BaseProviderPanel {
             </ak-text-input>`;
     }
 
-    scopeMappingConfiguration(provider?: ProxyProvider) {
-        const propertyMappings = this.propertyMappings?.results ?? [];
-
-        const defaultScopes = () =>
-            propertyMappings
-                .filter((scope) => !(scope?.managed ?? "").startsWith("goauthentik.io/providers"))
-                .map((pm) => pm.pk);
-
-        const configuredScopes = (providerMappings: string[]) =>
-            propertyMappings.map((scope) => scope.pk).filter((pk) => providerMappings.includes(pk));
-
-        const scopeValues = provider?.propertyMappings
-            ? configuredScopes(provider?.propertyMappings ?? [])
-            : defaultScopes();
-
-        const scopePairs = propertyMappings.map((scope) => [scope.pk, scope.name]);
-
-        return { scopePairs, scopeValues };
-    }
-
     render() {
         const errors = this.wizard.errors.provider;
-        const { scopePairs, scopeValues } = this.scopeMappingConfiguration(this.instance);
 
         return html` <ak-wizard-title>${msg("Configure Proxy Provider")}</ak-wizard-title>
             <form class="pf-c-form pf-m-horizontal" @input=${this.handleChange}>
@@ -179,24 +156,22 @@ export class AkTypeProxyApplicationWizardPage extends BaseProviderPanel {
                                 certificate=${ifDefined(this.instance?.certificate ?? undefined)}
                             ></ak-crypto-certificate-search>
                         </ak-form-element-horizontal>
-
-                        <ak-multi-select
-                            label=${msg("AdditionalScopes")}
+                        <ak-form-element-horizontal
+                            label=${msg("Additional scopes")}
                             name="propertyMappings"
-                            .options=${scopePairs}
-                            .values=${scopeValues}
-                            .errorMessages=${errors?.propertyMappings ?? []}
-                            .richhelp=${html`
-                                <p class="pf-c-form__helper-text">
-                                    ${msg(
-                                        "Additional scope mappings, which are passed to the proxy.",
-                                    )}
-                                </p>
-                                <p class="pf-c-form__helper-text">
-                                    ${msg("Hold control/command to select multiple items.")}
-                                </p>
-                            `}
-                        ></ak-multi-select>
+                        >
+                            <ak-dual-select-dynamic-selected
+                                .provider=${proxyPropertyMappingsProvider}
+                                .selector=${makeProxyPropertyMappingsSelector(
+                                    this.instance?.propertyMappings,
+                                )}
+                                available-label="${msg("Available Scopes")}"
+                                selected-label="${msg("Selected Scopes")}"
+                            ></ak-dual-select-dynamic-selected>
+                            <p class="pf-c-form__helper-text">
+                                ${msg("Additional scope mappings, which are passed to the proxy.")}
+                            </p>
+                        </ak-form-element-horizontal>
 
                         <ak-textarea-input
                             name="skipPathRegex"
