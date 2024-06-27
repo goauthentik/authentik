@@ -1425,17 +1425,17 @@ websockets = ["websocket-client (>=1.3.0)"]
 
 [[package]]
 name = "drf-jsonschema-serializer"
-version = "2.0.0"
+version = "3.0.0"
 description = "JSON Schema support for Django REST Framework"
 optional = false
-python-versions = "*"
+python-versions = ">=3.10"
 files = [
-    {file = "drf-jsonschema-serializer-2.0.0.tar.gz", hash = "sha256:bfeea9f2e49f6f14d12ae5a55680657abb70066615739682351589cda67c3f4f"},
-    {file = "drf_jsonschema_serializer-2.0.0-py3-none-any.whl", hash = "sha256:02b4e4f19d680b0565a4231f1cba29371c01af0e1682944f1e2d1093bbd07d86"},
+    {file = "drf_jsonschema_serializer-3.0.0-py3-none-any.whl", hash = "sha256:d0e5cce095a5638b0bb7867aa060ed59ab9eed2f54ba5058dd9b483c9c887ed5"},
+    {file = "drf_jsonschema_serializer-3.0.0.tar.gz", hash = "sha256:8a42c6079225f789cd55321897073b576d15db3406d008e92f44febb017a232a"},
 ]
 
 [package.dependencies]
-django = ">=3.2"
+django = ">=4.2"
 djangorestframework = ">=3.13"
 jsonschema = ">=4.0.0"
 
@@ -1443,7 +1443,7 @@ jsonschema = ">=4.0.0"
 all-format-validators = ["fqdn", "idna", "isoduration", "jsonpointer", "rfc3339-validator", "rfc3987", "uri-template", "webcolors"]
 coverage = ["pytest-cov"]
 docs = ["sphinx", "sphinx-rtd-theme"]
-release = ["bump2version", "twine"]
+release = ["bump-my-version", "twine"]
 tests = ["black", "django-stubs[compatible-mypy]", "djangorestframework-stubs[compatible-mypy]", "flake8", "fqdn", "idna", "isoduration", "isort", "jsonpointer", "mypy", "pytest", "pytest-django", "rfc3339-validator", "rfc3987", "tox", "types-jsonschema", "uri-template", "webcolors"]
 
 [[package]]
