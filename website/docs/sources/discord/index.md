@@ -56,7 +56,7 @@ For more details on how-to have the new source display on the Login Page see [he
 ### Checking for membership of a Discord Guild
 
 :::info
-Ensure that the Discord OAuth source in 'Federation & Social login' has the additional `guilds` scope added under the 'Protocol settings'.
+Ensure that the Discord OAuth source in 'Federation & Social login' has the additional `guilds` scope added under 'Protocol settings'.
 :::
 
 Create a new 'Expression Policy' with the content below, adjusting the variables where required:
@@ -98,7 +98,7 @@ Now bind this policy to the chosen enrollment and authentication flows for the D
 ### Checking for membership of a Discord Guild role
 
 :::info
-Ensure that the Discord OAuth source in 'Federation & Social login' has the additional `guilds guilds.members.read` scopes added under the 'Protocol settings'.
+Ensure that the Discord OAuth source in 'Federation & Social login' has the additional `guilds guilds.members.read` scopes added under 'Protocol settings'.
 :::
 
 Create a new 'Expression Policy' with the content below, adjusting the variables where required:
@@ -158,18 +158,24 @@ Now bind this policy to the chosen enrollment and authentication flows for the D
 ### Syncing Discord roles to authentik groups
 
 :::info
-Ensure that the Discord OAuth source in 'Federation & Social login' has the additional `guilds.members.read` scopes added under the 'Protocol settings'.
+Ensure that the Discord OAuth source in 'Federation & Social login' has the additional `guilds.members.read` scopes added under 'Protocol settings'.
 :::
 
 :::info
 Any authentik role you want to sync with a discord role needs to have the attribute `discord_role_id` with a value of the discord role's id set.  
-The settings can be found in `Authentik > Admin Interface > Directory > Groups > YOUR_GROUP > Attributes`  
-Example attribute: ``discord_role_id: "<ROLE ID>"``
+The settings can be found at `Authentik > Admin Interface > Directory > Groups > YOUR_GROUP > Attributes`  
+Blueprint attribute: ``discord_role_id: "<ROLE ID>"``
 :::
+
+The following two policies will allow you to synchronize roles in a discord guild with roles in authentik.  
+Whenever a user enrolls or signs in to authentik via discord source, these policies will check the user's discord roles and apply the user's authentik roles accordingly.  
+All roles with the attribute ``discord_role_id`` defined will be added or removed depending on whether the user is a member of the defined discord role.
 
 Create a new 'Expression Policy' with the content below, adjusting the variables where required.
 
 #### Sync on enrollment
+
+The following policy will apply the above behaviour when a user enrolls.
 
 ```python
 from authentik.core.models import Group
@@ -179,7 +185,7 @@ GUILD_API_URL = "https://discord.com/api/users/@me/guilds/{guild_id}/member"
 guild_id = "<YOUR GUILD ID>"
 ##############
 
-# Ensure flow is only run during oatuh logins via Discord
+# Ensure flow is only run during OAuth logins via Discord
 if context['source'].provider_type != "discord":
   return True
 
@@ -228,6 +234,8 @@ Now bind this policy to the chosen enrollment flows for the Discord OAuth source
 
 #### Sync on authentication
 
+The following policy will apply the above behaviour when a user logs in.
+
 ```python
 from authentik.core.models import Group
 GUILD_API_URL = "https://discord.com/api/users/@me/guilds/{guild_id}/member"
@@ -274,10 +282,9 @@ matching_roles = discord_groups.filter(attributes__discord_role_id__in=guild_mem
 # Combine user_groups and matching_roles
 combined_groups = user_groups.union(matching_roles)
 
-# Update user's groups directly without converting to a list first
+# Update user's groups
 request.user.ak_groups.set(combined_groups)
 request.user.save()
-
 
 # Create event with roles changed
 ak_create_event(
@@ -295,7 +302,7 @@ Now bind this policy to the chosen authentication flows for the Discord OAuth so
 ### Store OAuth info in attribute and create avatar attribute from Discord avatar
 
 :::info
-Ensure that the Discord OAuth source in 'Federation & Social login' has the additional `guilds.members.read` scopes added under the 'Protocol settings'.
+Ensure that the Discord OAuth source in 'Federation & Social login' has the additional `guilds.members.read` scopes added under 'Protocol settings'.
 :::
 
 :::info
