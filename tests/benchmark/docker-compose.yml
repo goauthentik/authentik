@@ -1,0 +1,30 @@
+---
+services:
+  prometheus:
+    image: quay.io/prometheus/prometheus:latest
+    restart: unless-stopped
+    command:
+      - --enable-feature=native-histograms
+      - --web.enable-remote-write-receiver
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.console.libraries=/usr/share/prometheus/console_libraries
+      - --web.console.templates=/usr/share/prometheus/consoles
+    ports:
+      - 127.0.0.1:9090:9090
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus:/prometheus
+    user: root
+
+  grafana:
+    image: grafana/grafana:latest
+    restart: unless-stopped
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+    ports:
+      - 127.0.0.1:3000:3000
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro

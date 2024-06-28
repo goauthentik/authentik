@@ -2,6 +2,7 @@ services:
   postgresql:
     container_name: postgres
     image: docker.io/library/postgres:16
+    command: "-c max_connections=500"
     volumes:
       - db-data:/var/lib/postgresql/data
     environment:
