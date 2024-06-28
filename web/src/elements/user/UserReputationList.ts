@@ -21,7 +21,7 @@ export class UserReputationList extends Table<Reputation> {
     targetEmail!: string | undefined;
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<Reputation>> {
-        let identifiers = [this.targetUsername];
+        const identifiers = [this.targetUsername];
         if (this.targetEmail !== undefined) {
             identifiers.push(this.targetEmail);
         }

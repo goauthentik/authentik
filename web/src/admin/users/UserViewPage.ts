@@ -42,6 +42,7 @@ import "@goauthentik/elements/user/sources/SourceSettings";
 import { msg, str } from "@lit/localize";
 import { TemplateResult, css, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -284,7 +285,7 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                         <div class="pf-c-card__body">
                             <ak-user-reputation-list
                                 targetUsername=${user.username}
-                                targetEmail=${user.email}
+                                targetEmail=${ifDefined(user.email)}
                             >
                             </ak-user-reputation-list>
                         </div>
