@@ -1,4 +1,4 @@
-import { adminSettings } from "@goauthentik/app/common/oauth/settings";
+import { adminSettings } from "@goauthentik/common/oauth/settings";
 import { UserManager } from "oidc-client-ts";
 
 import { FetchParams, Middleware, RequestContext } from "@goauthentik/api";

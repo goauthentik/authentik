@@ -27,6 +27,10 @@ entries:
             authentik_providers_oauth2.scopemapping,
             [managed, goauthentik.io/providers/oauth2/scope-profile],
           ]
+        - !Find [
+            authentik_providers_oauth2.scopemapping,
+            [managed, goauthentik.io/providers/oauth2/scope-authentik_api],
+          ]
       signing_key:
         !Find [
           authentik_crypto.certificatekeypair,

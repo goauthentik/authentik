@@ -1,7 +1,7 @@
 import "@goauthentik/admin/admin-overview/AdminOverviewPage";
-import "@goauthentik/app/common/oauth/callback";
-import { adminSettings } from "@goauthentik/app/common/oauth/settings";
-import "@goauthentik/app/common/oauth/signout";
+import "@goauthentik/common/oauth/callback";
+import { adminSettings } from "@goauthentik/common/oauth/settings";
+import "@goauthentik/common/oauth/signout";
 import { ID_REGEX, Route, SLUG_REGEX, UUID_REGEX } from "@goauthentik/elements/router/Route";
 
 import { html } from "lit";

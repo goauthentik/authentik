@@ -1,4 +1,4 @@
-import { MemoryStore } from "@goauthentik/app/common/oauth/storage";
+import { MemoryStore } from "@goauthentik/common/oauth/storage";
 import { Log, OidcClientSettings, UserManagerSettings } from "oidc-client-ts";
 
 Log.setLogger(console);

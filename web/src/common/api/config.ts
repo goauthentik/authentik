@@ -1,4 +1,3 @@
-import { TokenMiddleware } from "@goauthentik/app/common/oauth/middleware";
 import {
     CSRFMiddleware,
     EventMiddleware,
@@ -6,6 +5,7 @@ import {
 } from "@goauthentik/common/api/middleware";
 import { EVENT_LOCALE_REQUEST, VERSION } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
+import { TokenMiddleware } from "@goauthentik/common/oauth/middleware";
 
 import { Config, Configuration, CoreApi, CurrentBrand, RootApi } from "@goauthentik/api";
 
