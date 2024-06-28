@@ -18,11 +18,15 @@ export class UserReputationList extends Table<Reputation> {
     targetUsername!: string;
 
     @property()
-    targetEmail!: string;
+    targetEmail!: string | undefined;
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<Reputation>> {
+        let identifiers = [this.targetUsername];
+        if (this.targetEmail !== undefined) {
+            identifiers.push(this.targetEmail);
+        }
         return new PoliciesApi(DEFAULT_CONFIG).policiesReputationScoresList({
-            identifierIn: `${this.targetUsername},${this.targetEmail}`,
+            identifierIn: identifiers,
             ordering: this.order,
             page: page,
             pageSize: (await uiConfig()).pagination.perPage,
