@@ -170,7 +170,7 @@ export class LibraryPage extends AKElement {
                 ?isadmin=${this.isAdmin}
             ></ak-library-application-empty-list>`;
         }
-        return this.filteredApps.find(appHasLaunchUrl) // prettier-ignore
+        return this.filteredApps.some(appHasLaunchUrl) // prettier-ignore
             ? this.renderApps()
             : this.renderNoAppsFound();
     }
