@@ -22,7 +22,7 @@ export class UserReputationList extends Table<Reputation> {
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<Reputation>> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesReputationScoresList({
-            identifier__in: `${this.targetUsername},${this.targetEmail}`,
+            identifierIn: `${this.targetUsername},${this.targetEmail}`,
             ordering: this.order,
             page: page,
             pageSize: (await uiConfig()).pagination.perPage,
