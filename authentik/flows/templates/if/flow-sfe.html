@@ -16,6 +16,7 @@
         <link rel="stylesheet" type="text/css" href="{% static 'dist/sfe/bootstrap.min.css' %}">
         <script src="{% static 'dist/sfe/jquery.min.js' %}"></script>
         <meta name="sentry-trace" content="{{ sentry_trace }}" />
+        {% include "base/header_js.html" %}
         <style>
           html,
           body {
@@ -29,6 +30,9 @@
 
           .form-signin .form-floating:focus-within {
             z-index: 2;
+          }
+          .brand-icon {
+            max-height: 72px;
           }
         </style>
     </head>
