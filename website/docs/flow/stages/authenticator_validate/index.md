@@ -1,5 +1,5 @@
 ---
-title: Authenticator Validation Stage
+title: Authenticator validation stage
 ---
 
 This stage validates an already configured Authenticator Device. This device has to be configured using any of the other authenticator stages:
