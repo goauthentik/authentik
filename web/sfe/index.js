@@ -1,3 +1,5 @@
+/* eslint-env jquery */
+
 class SimpleFlowExecutor {
     challenge;
     flowSlug;
@@ -87,6 +89,13 @@ class IdentificationStage extends Stage {
             <form id="ident-form">
                 <img class="mb-4 brand-icon" src="${window.authentik.brand.branding_logo}" alt="">
                 <h1 class="h3 mb-3 fw-normal text-center">${this.executor.challenge.flow_info.title}</h1>
+                ${
+                    this.executor.challenge.application_pre
+                        ? `<p>
+                              Login to continue to ${this.executor.challenge.application_pre}.
+                          </p>`
+                        : ""
+                }
                 <div class="form-label-group my-3 has-validation">
                     <input type="text" autofocus class="form-control" name="uid_field" placeholder="Email / Username">
                 </div>
