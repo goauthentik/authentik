@@ -58,6 +58,9 @@ class SimpleFlowExecutor {
             case "ak-stage-autosubmit":
                 new AutosubmitStage(this).render();
                 return;
+            case "ak-stage-authenticator-validate":
+                new AuthenticatorValidateStage(this).render();
+                return;
             default:
                 this.container.innerText = "Unsupported stage: " + this.challenge.component;
                 return;
@@ -117,7 +120,7 @@ class PasswordStage extends Stage {
                 <img class="mb-4 brand-icon" src="${window.authentik.brand.branding_logo}" alt="">
                 <h1 class="h3 mb-3 fw-normal text-center">${this.executor.challenge.flow_info.title}</h1>
                 <div class="form-label-group my-3 has-validation">
-                    <input type="password" autofocus class="form-control ${this.error("password").length > 0 ? "is-invalid" : ""}" id="floatingPassword" name="password" placeholder="Password">
+                    <input type="password" autofocus class="form-control ${this.error("password").length > 0 ? "is-invalid" : ""}" name="password" placeholder="Password">
                     ${this.error("password").map((error) => {
                         return `<div class="invalid-feedback">
                                 ${error.string}
@@ -161,6 +164,31 @@ class AutosubmitStage extends Stage {
                 </div>
             </form>`);
         $("#autosubmit-form").submit();
+    }
+}
+
+class AuthenticatorValidateStage extends Stage {
+    render() {
+        this.html(`
+            <form id="totp-form">
+                <img class="mb-4 brand-icon" src="${window.authentik.brand.branding_logo}" alt="">
+                <h1 class="h3 mb-3 fw-normal text-center">${this.executor.challenge.flow_info.title}</h1>
+                <div class="form-label-group my-3 has-validation">
+                    <input type="text" autofocus class="form-control ${this.error("code").length > 0 ? "is-invalid" : ""}" name="code" placeholder="Please enter your code" autocomplete="one-time-code">
+                    ${this.error("code").map((error) => {
+                        return `<div class="invalid-feedback">
+                                ${error.string}
+                            </div>`;
+                    })}
+                </div>
+                <button class="btn btn-primary w-100 py-2" type="submit">Continue</button>
+            </form>`);
+        $("#totp-form input").focus();
+        $("#totp-form").on("submit", (ev) => {
+            ev.preventDefault();
+            const data = new FormData(ev.target);
+            this.executor.submit(data);
+        });
     }
 }
 
