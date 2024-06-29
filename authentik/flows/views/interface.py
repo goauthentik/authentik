@@ -22,7 +22,12 @@ class FlowInterfaceView(InterfaceView):
         ua = Parse(self.request.META.get("HTTP_USER_AGENT", ""))
         if ua["user_agent"]["family"] == "IE":
             return True
-        if ua["user_agent"]["family"] == "Edge" and int(ua["user_agent"]["major"]) <= 18:  # noqa: PLR2004
+        # Only use SFE for Edge 18 and older, after Edge 18 MS switched to chromium which supports
+        # the default flow executor
+        if (
+            ua["user_agent"]["family"] == "Edge"
+            and int(ua["user_agent"]["major"]) <= 18  # noqa: PLR2004
+        ):  # noqa: PLR2004
             return True
         return False
 
