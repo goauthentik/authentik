@@ -30,8 +30,12 @@ WORKDIR /work/web
 
 RUN --mount=type=bind,target=/work/web/package.json,src=./web/package.json \
     --mount=type=bind,target=/work/web/package-lock.json,src=./web/package-lock.json \
+    --mount=type=bind,target=/work/web/sfe/package.json,src=./web/sfe/package.json \
+    --mount=type=bind,target=/work/web/sfe/package-lock.json,src=.//sfeweb/package-lock.json \
     --mount=type=bind,target=/work/web/scripts,src=./web/scripts \
     --mount=type=cache,id=npm-web,sharing=shared,target=/root/.npm \
+    npm ci --include=dev && \
+    cd sfe && \
     npm ci --include=dev
 
 COPY ./package.json /work
