@@ -102,9 +102,21 @@ class IdentificationStage extends Stage {
                 <div class="form-label-group my-3 has-validation">
                     <input type="text" autofocus class="form-control" name="uid_field" placeholder="Email / Username">
                 </div>
+                ${
+                    this.executor.challenge.password_fields
+                        ? `<div class="form-label-group my-3 has-validation">
+                                <input type="password" class="form-control ${this.error("password").length > 0 ? "is-invalid" : ""}" name="password" placeholder="Password">
+                                ${this.error("password").map((error) => {
+                                    return `<div class="invalid-feedback">
+                                            ${error.string}
+                                        </div>`;
+                                })}
+                        </div>`
+                        : ""
+                }
                 <button class="btn btn-primary w-100 py-2" type="submit">${this.executor.challenge.primary_action}</button>
             </form>`);
-        $("#ident-form input").focus();
+        $("#ident-form input[name=uid_field]").focus();
         $("#ident-form").on("submit", (ev) => {
             ev.preventDefault();
             const data = new FormData(ev.target);
