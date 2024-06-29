@@ -53,6 +53,9 @@ class SimpleFlowExecutor {
             case "xak-flow-redirect":
                 new RedirectStage(this).render();
                 return;
+            case "ak-stage-autosubmit":
+                new AutosubmitStage(this).render();
+                return;
             default:
                 this.container.innerText = "Unsupported stage: " + this.challenge.component;
                 return;
@@ -126,6 +129,29 @@ class PasswordStage extends Stage {
 class RedirectStage extends Stage {
     render() {
         window.location.assign(this.executor.challenge.to);
+    }
+}
+
+class AutosubmitStage extends Stage {
+    render() {
+        this.html(`
+            <form id="autosubmit-form" action="${this.executor.challenge.url}" method="POST">
+                <img class="mb-4 brand-icon" src="${window.authentik.brand.branding_logo}" alt="">
+                <h1 class="h3 mb-3 fw-normal text-center">${this.executor.challenge.flow_info.title}</h1>
+                ${Object.entries(this.executor.challenge.attrs).map(([key, value]) => {
+                    return `<input
+                            type="hidden"
+                            name="${key}"
+                            value="${value}"
+                        />`;
+                })}
+                <div class="d-flex justify-content-center">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+            </form>`);
+        $("#autosubmit-form").submit();
     }
 }
 
