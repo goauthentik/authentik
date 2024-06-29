@@ -8,15 +8,18 @@ class SimpleFlowExecutor {
         this.container = container;
     }
 
+    get apiURL() {
+        return `/api/v3/flows/executor/${this.flowSlug}/?query=${encodeURIComponent(window.location.search.substring(1))}`;
+    }
+
     start() {
         $.ajax({
             type: "GET",
-            url: "/api/v3/flows/executor/" + this.flowSlug + "/",
+            url: this.apiURL,
             success: (data) => {
                 this.challenge = data;
                 this.renderChallenge();
             },
-            dataType: "json",
         });
     }
 
@@ -28,7 +31,7 @@ class SimpleFlowExecutor {
         data.forEach((value, key) => (object[key] = value));
         $.ajax({
             type: "POST",
-            url: "/api/v3/flows/executor/" + this.flowSlug + "/",
+            url: this.apiURL,
             data: JSON.stringify(object),
             success: (data) => {
                 this.challenge = data;
