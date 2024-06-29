@@ -1,0 +1,40 @@
+{% load static %}
+{% load i18n %}
+{% load authentik_core %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <title>{% block title %}{% trans title|default:brand.branding_title %}{% endblock %}</title>
+        <link rel="icon" href="{{ brand.branding_favicon }}">
+        <link rel="shortcut icon" href="{{ brand.branding_favicon }}">
+        {% block head_before %}
+        {% endblock %}
+        <link rel="stylesheet" type="text/css" href="{% static 'dist/sfe/bootstrap.min.css' %}">
+        <script src="{% static 'dist/sfe/jquery.min.js' %}"></script>
+        <meta name="sentry-trace" content="{{ sentry_trace }}" />
+        <style>
+          html,
+          body {
+            height: 100%;
+          }
+
+          .form-signin {
+            max-width: 330px;
+            padding: 1rem;
+          }
+
+          .form-signin .form-floating:focus-within {
+            z-index: 2;
+          }
+        </style>
+    </head>
+    <body class="d-flex align-items-center py-4 bg-body-tertiary">
+      <main class="form-signin w-100 m-auto" id="flow-sfe-container">
+      </main>
+      <script src="{% static 'dist/sfe/index.js' %}"></script>
+    </body>
+</html>

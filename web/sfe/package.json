@@ -1,0 +1,19 @@
+{
+    "name": "@goauthentik/web-sfe",
+    "version": "0.0.0",
+    "private": true,
+    "license": "MIT",
+    "dependencies": {
+        "bootstrap": "^5.3.3",
+        "jquery": "^3.7.1"
+    },
+    "scripts": {
+        "build": "swc index.js --out-dir ../dist/sfe && cp ./node_modules/jquery/dist/jquery.min.js ../dist/sfe && cp ./node_modules/bootstrap/dist/css/bootstrap.min.css ../dist/sfe",
+        "watch": "swc index.js --out-dir ../dist/sfe --watch"
+    },
+    "devDependencies": {
+        "@swc/cli": "^0.3.14",
+        "@swc/core": "^1.6.5",
+        "@types/jquery": "^3.5.30"
+    }
+}
