@@ -20,7 +20,9 @@ class FlowInterfaceView(InterfaceView):
     def compat_needs_sfe(self) -> bool:
         """Check if we need to use the simplified flow executor for compatibility"""
         ua = Parse(self.request.META.get("HTTP_USER_AGENT", ""))
-        if ua["user_agent"]["family"] in ["Edge", "IE"]:
+        if ua["user_agent"]["family"] == "IE":
+            return True
+        if ua["user_agent"]["family"] == "Edge" and int(ua["user_agent"]["major"]) <= 18:  # noqa: PLR2004
             return True
         return False
 
