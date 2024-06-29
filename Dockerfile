@@ -39,7 +39,9 @@ COPY ./web /work/web/
 COPY ./website /work/website/
 COPY ./gen-ts-api /work/web/node_modules/@goauthentik/api
 
-RUN npm run build
+RUN npm run build && \
+    cd sfe && \
+    npm run build
 
 # Stage 3: Build go proxy
 FROM --platform=${BUILDPLATFORM} mcr.microsoft.com/oss/go/microsoft/golang:1.22-fips-bookworm AS go-builder
