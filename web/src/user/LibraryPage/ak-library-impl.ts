@@ -13,6 +13,7 @@ import styles from "./LibraryPageImpl.css";
 
 import type { Application } from "@goauthentik/api";
 
+import { appHasLaunchUrl } from "./LibraryPageImpl.utils";
 import "./ak-library-application-empty-list.js";
 import "./ak-library-application-list.js";
 import "./ak-library-application-search-empty.js";
@@ -136,7 +137,10 @@ export class LibraryPage extends AKElement {
         const selected = this.selectedApp?.slug;
         const layout = this.uiConfig.layout as string;
         const background = this.uiConfig.background;
-        const groupedApps = groupBy(this.filteredApps, (app) => app.group || "");
+        const groupedApps = groupBy(
+            this.filteredApps.filter(appHasLaunchUrl),
+            (app) => app.group || "",
+        );
 
         return html`<ak-library-application-list
             layout="${layout}"
@@ -152,6 +156,10 @@ export class LibraryPage extends AKElement {
         ></ak-library-application-search>`;
     }
 
+    renderNoAppsFound() {
+        return html`<ak-library-application-search-empty></ak-library-application-search-empty>`;
+    }
+
     renderSearchEmpty() {
         return nothing;
     }
@@ -162,10 +170,9 @@ export class LibraryPage extends AKElement {
                 ?isadmin=${this.isAdmin}
             ></ak-library-application-empty-list>`;
         }
-        if (this.filteredApps.length === 0) {
-            return html`<ak-library-application-search-empty></ak-library-application-search-empty>`;
-        }
-        return this.renderApps();
+        return this.filteredApps.some(appHasLaunchUrl) // prettier-ignore
+            ? this.renderApps()
+            : this.renderNoAppsFound();
     }
 
     render() {
