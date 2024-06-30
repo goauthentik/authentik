@@ -1,11 +1,27 @@
-/* eslint-env jquery */
+import { fromByteArray } from "base64-js";
+import $ from "jquery";
+
+interface GlobalAuthentik {
+    brand: {
+        branding_logo: string;
+    };
+}
+
+function ak(): GlobalAuthentik {
+    return (
+        window as unknown as {
+            authentik: GlobalAuthentik;
+        }
+    ).authentik;
+}
 
 class SimpleFlowExecutor {
-    challenge;
-    flowSlug;
-    container;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    challenge: any;
+    flowSlug: string;
+    container: HTMLDivElement;
 
-    constructor(container) {
+    constructor(container: HTMLDivElement) {
         this.flowSlug = window.location.pathname.split("/")[3];
         this.container = container;
     }
@@ -25,19 +41,23 @@ class SimpleFlowExecutor {
         });
     }
 
-    submit(data) {
+    submit(data: { [key: string]: unknown } | FormData) {
         $("button[type=submit]").addClass("disabled")
             .html(`<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
                 <span role="status">Loading...</span>`);
-        let object = data;
+        let finalData: { [key: string]: unknown } = {};
         if (data instanceof FormData) {
-            object = {};
-            data.forEach((value, key) => (object[key] = value));
+            finalData = {};
+            data.forEach((value, key) => {
+                finalData[key] = value;
+            });
+        } else {
+            finalData = data;
         }
         $.ajax({
             type: "POST",
             url: this.apiURL,
-            data: JSON.stringify(object),
+            data: JSON.stringify(finalData),
             success: (data) => {
                 this.challenge = data;
                 this.renderChallenge();
@@ -72,18 +92,16 @@ class SimpleFlowExecutor {
 }
 
 class Stage {
-    constructor(executor) {
-        this.executor = executor;
-    }
+    constructor(public executor: SimpleFlowExecutor) {}
 
-    error(fieldName) {
+    error(fieldName: string): { string: string; code: string }[] {
         if (!this.executor.challenge.response_errors) {
             return [];
         }
         return this.executor.challenge.response_errors[fieldName] || [];
     }
 
-    renderInputError(fieldName) {
+    renderInputError(fieldName: string) {
         return `${this.error(fieldName)
             .map((error) => {
                 return `<div class="invalid-feedback">
@@ -93,7 +111,7 @@ class Stage {
             .join("")}`;
     }
 
-    html(html) {
+    html(html: string) {
         this.executor.container.innerHTML = html;
     }
 
@@ -106,7 +124,7 @@ class IdentificationStage extends Stage {
     render() {
         this.html(`
             <form id="ident-form">
-                <img class="mb-4 brand-icon" src="${window.authentik.brand.branding_logo}" alt="">
+                <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="">
                 <h1 class="h3 mb-3 fw-normal text-center">${this.executor.challenge.flow_info.title}</h1>
                 ${
                     this.executor.challenge.application_pre
@@ -128,10 +146,10 @@ class IdentificationStage extends Stage {
                 }
                 <button class="btn btn-primary w-100 py-2" type="submit">${this.executor.challenge.primary_action}</button>
             </form>`);
-        $("#ident-form input[name=uid_field]").focus();
+        $("#ident-form input[name=uid_field]").trigger("focus");
         $("#ident-form").on("submit", (ev) => {
             ev.preventDefault();
-            const data = new FormData(ev.target);
+            const data = new FormData(ev.target as HTMLFormElement);
             this.executor.submit(data);
         });
     }
@@ -141,7 +159,7 @@ class PasswordStage extends Stage {
     render() {
         this.html(`
             <form id="password-form">
-                <img class="mb-4 brand-icon" src="${window.authentik.brand.branding_logo}" alt="">
+                <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="">
                 <h1 class="h3 mb-3 fw-normal text-center">${this.executor.challenge.flow_info.title}</h1>
                 <div class="form-label-group my-3 has-validation">
                     <input type="password" autofocus class="form-control ${this.error("password").length > 0 ? "is-invalid" : ""}" name="password" placeholder="Password">
@@ -149,10 +167,10 @@ class PasswordStage extends Stage {
                 </div>
                 <button class="btn btn-primary w-100 py-2" type="submit">Continue</button>
             </form>`);
-        $("#password-form input").focus();
+        $("#password-form input").trigger("focus");
         $("#password-form").on("submit", (ev) => {
             ev.preventDefault();
-            const data = new FormData(ev.target);
+            const data = new FormData(ev.target as HTMLFormElement);
             this.executor.submit(data);
         });
     }
@@ -168,7 +186,7 @@ class AutosubmitStage extends Stage {
     render() {
         this.html(`
             <form id="autosubmit-form" action="${this.executor.challenge.url}" method="POST">
-                <img class="mb-4 brand-icon" src="${window.authentik.brand.branding_logo}" alt="">
+                <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="">
                 <h1 class="h3 mb-3 fw-normal text-center">${this.executor.challenge.flow_info.title}</h1>
                 ${Object.entries(this.executor.challenge.attrs).map(([key, value]) => {
                     return `<input
@@ -187,22 +205,43 @@ class AutosubmitStage extends Stage {
     }
 }
 
+export interface Assertion {
+    id: string;
+    rawId: string;
+    type: string;
+    registrationClientExtensions: string;
+    response: {
+        clientDataJSON: string;
+        attestationObject: string;
+    };
+}
+
+export interface AuthAssertion {
+    id: string;
+    rawId: string;
+    type: string;
+    assertionClientExtensions: string;
+    response: {
+        clientDataJSON: string;
+        authenticatorData: string;
+        signature: string;
+        userHandle: string | null;
+    };
+}
+
 class AuthenticatorValidateStage extends Stage {
-    deviceChallenge;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    deviceChallenge: any;
 
-    b64enc(buf) {
-        return base64js
-            .fromByteArray(buf)
-            .replace(/\+/g, "-")
-            .replace(/\//g, "_")
-            .replace(/=/g, "");
+    b64enc(buf: Uint8Array): string {
+        return fromByteArray(buf).replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
     }
 
-    b64RawEnc(buf) {
-        return base64js.fromByteArray(buf).replace(/\+/g, "-").replace(/\//g, "_");
+    b64RawEnc(buf: Uint8Array): string {
+        return fromByteArray(buf).replace(/\+/g, "-").replace(/\//g, "_");
     }
 
-    u8arr(input) {
+    u8arr(input: string): Uint8Array {
         return Uint8Array.from(atob(input.replace(/_/g, "/").replace(/-/g, "+")), (c) =>
             c.charCodeAt(0),
         );
@@ -222,7 +261,10 @@ class AuthenticatorValidateStage extends Stage {
      * Transforms items in the credentialCreateOptions generated on the server
      * into byte arrays expected by the navigator.credentials.create() call
      */
-    transformCredentialCreateOptions(credentialCreateOptions, userId) {
+    transformCredentialCreateOptions(
+        credentialCreateOptions: PublicKeyCredentialCreationOptions,
+        userId: string,
+    ): PublicKeyCredentialCreationOptions {
         const user = credentialCreateOptions.user;
         // Because json can't contain raw bytes, the server base64-encodes the User ID
         // So to get the base64 encoded byte array, we first need to convert it to a regular
@@ -244,8 +286,10 @@ class AuthenticatorValidateStage extends Stage {
      * for posting to the server.
      * @param {PublicKeyCredential} newAssertion
      */
-    transformNewAssertionForServer(newAssertion) {
-        const attObj = new Uint8Array(newAssertion.response.attestationObject);
+    transformNewAssertionForServer(newAssertion: PublicKeyCredential): Assertion {
+        const attObj = new Uint8Array(
+            (newAssertion.response as AuthenticatorAttestationResponse).attestationObject,
+        );
         const clientDataJSON = new Uint8Array(newAssertion.response.clientDataJSON);
         const rawId = new Uint8Array(newAssertion.rawId);
 
@@ -262,7 +306,9 @@ class AuthenticatorValidateStage extends Stage {
         };
     }
 
-    transformCredentialRequestOptions(credentialRequestOptions) {
+    transformCredentialRequestOptions(
+        credentialRequestOptions: PublicKeyCredentialRequestOptions,
+    ): PublicKeyCredentialRequestOptions {
         const challenge = this.u8arr(credentialRequestOptions.challenge.toString());
 
         const allowCredentials = (credentialRequestOptions.allowCredentials || []).map(
@@ -284,8 +330,8 @@ class AuthenticatorValidateStage extends Stage {
      * Encodes the binary data in the assertion into strings for posting to the server.
      * @param {PublicKeyCredential} newAssertion
      */
-    transformAssertionForServer(newAssertion) {
-        const response = newAssertion.response;
+    transformAssertionForServer(newAssertion: PublicKeyCredential): AuthAssertion {
+        const response = newAssertion.response as AuthenticatorAssertionResponse;
         const authData = new Uint8Array(response.authenticatorData);
         const clientDataJSON = new Uint8Array(response.clientDataJSON);
         const rawId = new Uint8Array(newAssertion.rawId);
@@ -326,11 +372,11 @@ class AuthenticatorValidateStage extends Stage {
 
     renderChallengePicker() {
         this.html(`<form id="picker-form">
-                <img class="mb-4 brand-icon" src="${window.authentik.brand.branding_logo}" alt="">
+                <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="">
                 <h1 class="h3 mb-3 fw-normal text-center">${this.executor.challenge.flow_info.title}</h1>
                 <p>Select an authentication method.</p>
                 ${this.executor.challenge.device_challenges
-                    .map((challenge) => {
+                    .map((challenge: { device_class: string; device_uid: string }) => {
                         let label = undefined;
                         switch (challenge.device_class) {
                             case "static":
@@ -354,21 +400,23 @@ class AuthenticatorValidateStage extends Stage {
                     })
                     .join("")}
             </form>`);
-        this.executor.challenge.device_challenges.forEach((challenge) => {
-            $(`#picker-form button#${challenge.device_class}-${challenge.device_uid}`).on(
-                "click",
-                () => {
-                    this.deviceChallenge = challenge;
-                    this.render();
-                },
-            );
-        });
+        this.executor.challenge.device_challenges.forEach(
+            (challenge: { device_class: string; device_uid: string }) => {
+                $(`#picker-form button#${challenge.device_class}-${challenge.device_uid}`).on(
+                    "click",
+                    () => {
+                        this.deviceChallenge = challenge;
+                        this.render();
+                    },
+                );
+            },
+        );
     }
 
     renderCodeInput() {
         this.html(`
             <form id="totp-form">
-                <img class="mb-4 brand-icon" src="${window.authentik.brand.branding_logo}" alt="">
+                <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="">
                 <h1 class="h3 mb-3 fw-normal text-center">${this.executor.challenge.flow_info.title}</h1>
                 <div class="form-label-group my-3 has-validation">
                     <input type="text" autofocus class="form-control ${this.error("code").length > 0 ? "is-invalid" : ""}" name="code" placeholder="Please enter your code" autocomplete="one-time-code">
@@ -376,18 +424,18 @@ class AuthenticatorValidateStage extends Stage {
                 </div>
                 <button class="btn btn-primary w-100 py-2" type="submit">Continue</button>
             </form>`);
-        $("#totp-form input").focus();
+        $("#totp-form input").trigger("focus");
         $("#totp-form").on("submit", (ev) => {
             ev.preventDefault();
-            const data = new FormData(ev.target);
+            const data = new FormData(ev.target as HTMLFormElement);
             this.executor.submit(data);
         });
     }
 
-    async renderWebauthn() {
+    renderWebauthn() {
         this.html(`
             <form id="totp-form">
-                <img class="mb-4 brand-icon" src="${window.authentik.brand.branding_logo}" alt="">
+                <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="">
                 <h1 class="h3 mb-3 fw-normal text-center">${this.executor.challenge.flow_info.title}</h1>
                 <div class="d-flex justify-content-center">
                     <div class="spinner-border" role="status">
@@ -397,32 +445,36 @@ class AuthenticatorValidateStage extends Stage {
             </form>
             `);
         this.checkWebAuthnSupport();
-        let assertion;
-        try {
-            assertion = await navigator.credentials.get({
+        navigator.credentials
+            .get({
                 publicKey: this.transformCredentialRequestOptions(this.deviceChallenge.challenge),
-            });
-            if (!assertion) {
-                throw new Error("Assertions is empty");
-            }
-        } catch (err) {
-            throw new Error(`Error when creating credential: ${err}`);
-        }
+            })
+            .then((assertion) => {
+                if (!assertion) {
+                    throw new Error("No assertion");
+                }
+                try {
+                    // we now have an authentication assertion! encode the byte arrays contained
+                    // in the assertion data as strings for posting to the server
+                    const transformedAssertionForServer = this.transformAssertionForServer(
+                        assertion as PublicKeyCredential,
+                    );
 
-        // we now have an authentication assertion! encode the byte arrays contained
-        // in the assertion data as strings for posting to the server
-        const transformedAssertionForServer = this.transformAssertionForServer(assertion);
-
-        // post the assertion to the server for verification.
-        try {
-            this.executor.submit({
-                webauthn: transformedAssertionForServer,
+                    // post the assertion to the server for verification.
+                    this.executor.submit({
+                        webauthn: transformedAssertionForServer,
+                    });
+                } catch (err) {
+                    throw new Error(`Error when validating assertion on server: ${err}`);
+                }
+            })
+            .catch((error) => {
+                console.warn(error);
+                this.deviceChallenge = undefined;
+                this.render();
             });
-        } catch (err) {
-            throw new Error(`Error when validating assertion on server: ${err}`);
-        }
     }
 }
 
-const sfe = new SimpleFlowExecutor($("#flow-sfe-container")[0]);
+const sfe = new SimpleFlowExecutor($("#flow-sfe-container")[0] as HTMLDivElement);
 sfe.start();
