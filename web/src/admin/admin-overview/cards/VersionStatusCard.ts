@@ -56,6 +56,6 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
             text = this.value.buildHash?.substring(0, 7);
             link = `https://github.com/goauthentik/authentik/commit/${this.value.buildHash}`;
         }
-        return html`<a href=${link} target="_blank">${text}</a>`;
+        return html`<a rel="noopener noreferrer" href=${link} target="_blank">${text}</a>`;
     }
 }

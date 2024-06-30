@@ -210,9 +210,11 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     )}
                 </p>
                 <p class="pf-c-form__helper-text">
-                    See
-                    <a target="_blank" href="${docLink("/docs/outposts?utm_source=authentik")}"
-                        >documentation</a
+                    <a
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href="${docLink("/docs/outposts?utm_source=authentik")}"
+                        >${msg("See documentation")}</a
                     >.
                 </p>
             </ak-form-element-horizontal>
@@ -245,6 +247,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                             ${msg("See more here:")}&nbsp;
                             <a
                                 target="_blank"
+                                rel="noopener noreferrer"
                                 href="${docLink(
                                     "/docs/outposts?utm_source=authentik#configuration",
                                 )}"
