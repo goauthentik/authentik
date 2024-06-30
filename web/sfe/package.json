@@ -9,12 +9,17 @@
         "jquery": "^3.7.1"
     },
     "scripts": {
-        "build": "swc index.js --out-dir ../dist/sfe && cp ./node_modules/jquery/dist/jquery.min.js ../dist/sfe && cp ./node_modules/bootstrap/dist/css/bootstrap.min.css ../dist/sfe && cp ./node_modules/base64-js/base64js.min.js ../dist/sfe/base64js.min.js",
-        "watch": "swc index.js --out-dir ../dist/sfe --watch"
+        "build": "rollup -c rollup.config.js --bundleConfigAsCjs",
+        "watch": "rollup -w -c rollup.config.js --bundleConfigAsCjs"
     },
     "devDependencies": {
+        "@rollup/plugin-commonjs": "^26.0.1",
+        "@rollup/plugin-node-resolve": "^15.2.3",
+        "@rollup/plugin-swc": "^0.3.1",
         "@swc/cli": "^0.3.14",
-        "@swc/core": "^1.6.5",
-        "@types/jquery": "^3.5.30"
+        "@swc/core": "^1.6.6",
+        "@types/jquery": "^3.5.30",
+        "rollup": "^4.18.0",
+        "rollup-plugin-copy": "^3.5.0"
     }
 }
