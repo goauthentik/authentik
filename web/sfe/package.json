@@ -4,11 +4,12 @@
     "private": true,
     "license": "MIT",
     "dependencies": {
+        "base64-js": "^1.5.1",
         "bootstrap": "^4.6.1",
         "jquery": "^3.7.1"
     },
     "scripts": {
-        "build": "swc index.js --out-dir ../dist/sfe && cp ./node_modules/jquery/dist/jquery.min.js ../dist/sfe && cp ./node_modules/bootstrap/dist/css/bootstrap.min.css ../dist/sfe",
+        "build": "swc index.js --out-dir ../dist/sfe && cp ./node_modules/jquery/dist/jquery.min.js ../dist/sfe && cp ./node_modules/bootstrap/dist/css/bootstrap.min.css ../dist/sfe && cp ./node_modules/base64-js/base64js.min.js ../dist/sfe/base64js.min.js",
         "watch": "swc index.js --out-dir ../dist/sfe --watch"
     },
     "devDependencies": {

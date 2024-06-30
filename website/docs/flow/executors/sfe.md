@@ -16,7 +16,3 @@ The following stages are supported:
 -   [**Identification stage**](../stages/identification/)
 -   [**Password stage**](../stages/password/)
 -   [**Authenticator Validation Stage**](../stages/authenticator_validate/)
-
-    :::warning
-    The Authenticator validation stage within this flow executor only supports code-based flows due to missing browser support for WebAuthn.
-    :::
