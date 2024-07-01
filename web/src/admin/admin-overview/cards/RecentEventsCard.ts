@@ -28,7 +28,10 @@ export class RecentEventsCard extends Table<Event> {
     pageSize = 10;
 
     async apiEndpoint(): Promise<PaginatedResponse<Event>> {
-        return new EventsApi(DEFAULT_CONFIG).eventsEventsList(await this.defaultEndpointConfig());
+        return new EventsApi(DEFAULT_CONFIG).eventsEventsList({
+            ...(await this.defaultEndpointConfig()),
+            pageSize: this.pageSize,
+        });
     }
 
     static get styles(): CSSResult[] {
