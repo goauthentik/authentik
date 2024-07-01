@@ -512,6 +512,8 @@ export class FlowExecutor extends Interface implements StageHost {
                                                 <li>
                                                     <a
                                                         href="https://goauthentik.io?utm_source=authentik&amp;utm_medium=flow"
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
                                                         >${msg("Powered by authentik")}</a
                                                     >
                                                 </li>
