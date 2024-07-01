@@ -21,10 +21,9 @@ export class WebsocketClient {
 
     connect(): void {
         if (navigator.webdriver) return;
-        const wsUrl = `${window.location.protocol.replace(
-            "http",
-            "ws",
-        )}//${window.location.host}/ws/client/`;
+        const wsUrl = `${window.location.protocol.replace("http", "ws")}//${
+            window.location.host
+        }/ws/client/`;
         this.messageSocket = new WebSocket(wsUrl);
         this.messageSocket.addEventListener("open", () => {
             console.debug(`authentik/ws: connected to ${wsUrl}`);
