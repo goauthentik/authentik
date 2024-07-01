@@ -2,7 +2,6 @@ import { EventGeo, EventUser } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
 import { actionToLabel } from "@goauthentik/common/labels";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-event-info";
 import "@goauthentik/elements/Tabs";
@@ -46,10 +45,8 @@ export class ObjectChangelog extends Table<Event> {
             return Promise.reject();
         }
         return new EventsApi(DEFAULT_CONFIG).eventsEventsList({
+            ...(await this.defaultEndpointConfig()),
             action: "model_",
-            page: page,
-            ordering: this.order,
-            pageSize: (await uiConfig()).pagination.perPage,
             contextModelApp: appName,
             contextModelName: modelName,
             contextModelPk: this.targetModelPk.toString(),

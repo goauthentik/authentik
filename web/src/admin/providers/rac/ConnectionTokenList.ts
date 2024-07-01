@@ -1,5 +1,4 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
@@ -39,10 +38,7 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
 
     async apiEndpoint(): Promise<PaginatedResponse<ConnectionToken>> {
         return new RacApi(DEFAULT_CONFIG).racConnectionTokensList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
+            ...(await this.defaultEndpointConfig()),
             provider: this.provider?.pk,
             sessionUser: this.userId,
         });

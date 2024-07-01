@@ -22,12 +22,10 @@ export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPerm
     checkbox = true;
     clearOnRefresh = true;
 
-    apiEndpoint(): Promise<PaginatedResponse<ExtraRoleObjectPermission>> {
+    async apiEndpoint(): Promise<PaginatedResponse<ExtraRoleObjectPermission>> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsRolesList({
+            ...(await this.defaultEndpointConfig()),
             uuid: this.roleUuid || "",
-            page: page,
-            ordering: this.order,
-            search: this.search,
         });
     }
 

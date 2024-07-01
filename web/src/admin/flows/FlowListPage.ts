@@ -42,9 +42,7 @@ export class FlowListPage extends TablePage<Flow> {
     order = "slug";
 
     async apiEndpoint(): Promise<PaginatedResponse<Flow>> {
-        return new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
-            await this.defaultEndpointConfig(),
-        );
+        return new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(await this.defaultEndpointConfig());
     }
 
     groupBy(items: Flow[]): [string, Flow[]][] {

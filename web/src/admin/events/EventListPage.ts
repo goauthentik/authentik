@@ -45,9 +45,7 @@ export class EventListPage extends TablePage<Event> {
     }
 
     async apiEndpoint(): Promise<PaginatedResponse<Event>> {
-        return new EventsApi(DEFAULT_CONFIG).eventsEventsList(
-            await this.defaultEndpointConfig(),
-        );
+        return new EventsApi(DEFAULT_CONFIG).eventsEventsList(await this.defaultEndpointConfig());
     }
 
     columns(): TableColumn[] {

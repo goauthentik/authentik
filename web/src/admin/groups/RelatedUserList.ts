@@ -5,7 +5,6 @@ import "@goauthentik/admin/users/UserPasswordForm";
 import "@goauthentik/admin/users/UserResetEmailForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { MessageLevel } from "@goauthentik/common/messages";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
 import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-status-label";
@@ -137,10 +136,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
 
     async apiEndpoint(): Promise<PaginatedResponse<User>> {
         const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
+            ...(await this.defaultEndpointConfig()),
             groupsByPk: this.targetGroup ? [this.targetGroup.pk] : [],
             type: this.hideServiceAccounts
                 ? [CoreUsersListTypeEnum.External, CoreUsersListTypeEnum.Internal]

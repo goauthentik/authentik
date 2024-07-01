@@ -1,5 +1,4 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/buttons/SpinnerButton";
@@ -29,10 +28,7 @@ export class MemberSelectTable extends TableModal<User> {
 
     async apiEndpoint(): Promise<PaginatedResponse<User>> {
         return new CoreApi(DEFAULT_CONFIG).coreUsersList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
+            ...(await this.defaultEndpointConfig()),
             includeGroups: false,
         });
     }

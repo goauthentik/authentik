@@ -1,5 +1,4 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
@@ -19,10 +18,8 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
 
     async apiEndpoint(): Promise<PaginatedResponse<AuthenticatedSession>> {
         return new CoreApi(DEFAULT_CONFIG).coreAuthenticatedSessionsList({
+            ...(await this.defaultEndpointConfig()),
             userUsername: this.targetUser,
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
         });
     }
 

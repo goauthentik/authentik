@@ -44,9 +44,7 @@ export class SourceListPage extends TablePage<Source> {
     order = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<Source>> {
-        return new SourcesApi(DEFAULT_CONFIG).sourcesAllList(
-            await this.defaultEndpointConfig(),
-        );
+        return new SourcesApi(DEFAULT_CONFIG).sourcesAllList(await this.defaultEndpointConfig());
     }
 
     columns(): TableColumn[] {

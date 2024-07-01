@@ -1,7 +1,6 @@
 import "@goauthentik/admin/policies/BoundPoliciesList";
 import "@goauthentik/admin/providers/rac/EndpointForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
@@ -45,10 +44,7 @@ export class EndpointListPage extends Table<Endpoint> {
 
     async apiEndpoint(): Promise<PaginatedResponse<Endpoint>> {
         return new RacApi(DEFAULT_CONFIG).racEndpointsList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
+            ...(await this.defaultEndpointConfig()),
             provider: this.provider?.pk,
             superuserFullList: true,
         });

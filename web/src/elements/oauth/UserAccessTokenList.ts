@@ -1,5 +1,4 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/chips/Chip";
@@ -29,15 +28,13 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
 
     async apiEndpoint(): Promise<PaginatedResponse<TokenModel>> {
         return new Oauth2Api(DEFAULT_CONFIG).oauth2AccessTokensList({
+            ...(await this.defaultEndpointConfig()),
             user: this.userId,
-            ordering: "expires",
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
         });
     }
 
     checkbox = true;
-    order = "-expires";
+    order = "expires";
 
     columns(): TableColumn[] {
         return [

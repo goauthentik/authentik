@@ -33,7 +33,7 @@ export class UserAssignedObjectPermissionTable extends Table<UserAssignedObjectP
 
     async apiEndpoint(): Promise<PaginatedResponse<UserAssignedObjectPermission>> {
         const perms = await new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByUsersList({
-            page: page,
+            ...(await this.defaultEndpointConfig()),
             // TODO: better default
             model: this.model || RbacPermissionsAssignedByUsersListModelEnum.CoreUser,
             objectPk: this.objectPk?.toString(),

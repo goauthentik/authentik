@@ -209,7 +209,7 @@ export abstract class Table<T> extends AKElement implements TableLike {
             ordering: this.order,
             page: this.page,
             pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
+            search: this.searchEnabled() ? this.search || "" : undefined,
         };
     }
 
@@ -225,7 +225,7 @@ export abstract class Table<T> extends AKElement implements TableLike {
         }
         this.isLoading = true;
         try {
-            this.data = await this.apiEndpoint(this.page);
+            this.data = await this.apiEndpoint();
             this.error = undefined;
             this.page = this.data.pagination.current;
             const newExpanded: T[] = [];

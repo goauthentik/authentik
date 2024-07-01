@@ -31,9 +31,8 @@ export class RACLaunchEndpointModal extends TableModal<Endpoint> {
 
     async apiEndpoint(): Promise<PaginatedResponse<Endpoint>> {
         const endpoints = await new RacApi(DEFAULT_CONFIG).racEndpointsList({
+            ...(await this.defaultEndpointConfig()),
             provider: this.app?.provider || 0,
-            page: page,
-            search: this.search,
         });
         if (this.open && endpoints.pagination.count === 1) {
             this.clickHandler(endpoints.results[0]);

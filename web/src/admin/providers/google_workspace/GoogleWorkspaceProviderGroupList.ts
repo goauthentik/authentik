@@ -1,5 +1,4 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
 
@@ -42,10 +41,7 @@ export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProvi
 
     async apiEndpoint(): Promise<PaginatedResponse<GoogleWorkspaceProviderGroup>> {
         return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceGroupsList({
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            ordering: this.order,
-            search: this.search || "",
+            ...(await this.defaultEndpointConfig()),
             providerId: this.providerId,
         });
     }

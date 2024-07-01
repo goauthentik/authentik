@@ -1,7 +1,6 @@
 import "@goauthentik/admin/applications/ApplicationForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { PFSize } from "@goauthentik/common/enums.js";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/components/ak-app-icon";
 import MDApplication from "@goauthentik/docs/applications/index.md";
 import "@goauthentik/elements/Markdown";
@@ -65,10 +64,7 @@ export class ApplicationListPage extends TablePage<Application> {
 
     async apiEndpoint(): Promise<PaginatedResponse<Application>> {
         return new CoreApi(DEFAULT_CONFIG).coreApplicationsList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
+            ...(await this.defaultEndpointConfig()),
             superuserFullList: true,
         });
     }

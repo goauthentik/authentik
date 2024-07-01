@@ -1,5 +1,4 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
@@ -46,10 +45,7 @@ export class ReputationListPage extends TablePage<Reputation> {
 
     async apiEndpoint(): Promise<PaginatedResponse<Reputation>> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesReputationScoresList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
+            ...(await this.defaultEndpointConfig()),
         });
     }
 

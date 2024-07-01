@@ -1,6 +1,5 @@
 import "@goauthentik/admin/enterprise/EnterpriseLicenseForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import { getRelativeTime } from "@goauthentik/common/utils";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/Spinner";
@@ -88,12 +87,9 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         this.installID = (
             await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseGetInstallIdRetrieve()
         ).installId;
-        return new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
-        });
+        return new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseList(
+            await this.defaultEndpointConfig(),
+        );
     }
 
     columns(): TableColumn[] {

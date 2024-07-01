@@ -32,9 +32,7 @@ export class PermissionSelectModal extends TableModal<Permission> {
     }
 
     async apiEndpoint(): Promise<PaginatedResponse<Permission>> {
-        return new RbacApi(DEFAULT_CONFIG).rbacPermissionsList(
-            await this.defaultEndpointConfig(),
-        );
+        return new RbacApi(DEFAULT_CONFIG).rbacPermissionsList(await this.defaultEndpointConfig());
     }
 
     groupBy(items: Permission[]): [string, Permission[]][] {

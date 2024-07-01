@@ -1,5 +1,4 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
 
@@ -39,10 +38,7 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
 
     async apiEndpoint(): Promise<PaginatedResponse<MicrosoftEntraProviderGroup>> {
         return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraGroupsList({
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            ordering: this.order,
-            search: this.search || "",
+            ...(await this.defaultEndpointConfig()),
             providerId: this.providerId,
         });
     }
