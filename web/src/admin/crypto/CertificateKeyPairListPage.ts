@@ -52,9 +52,9 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
         return super.styles.concat(PFDescriptionList);
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<CertificateKeyPair>> {
+    async apiEndpoint(): Promise<PaginatedResponse<CertificateKeyPair>> {
         return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList(
-            await this.defaultEndpointConfig(page),
+            await this.defaultEndpointConfig(),
         );
     }
 

@@ -41,8 +41,8 @@ export class RoleListPage extends TablePage<Role> {
         return [...super.styles, PFBanner];
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Role>> {
-        return new RbacApi(DEFAULT_CONFIG).rbacRolesList(await this.defaultEndpointConfig(page));
+    async apiEndpoint(): Promise<PaginatedResponse<Role>> {
+        return new RbacApi(DEFAULT_CONFIG).rbacRolesList(await this.defaultEndpointConfig());
     }
 
     columns(): TableColumn[] {

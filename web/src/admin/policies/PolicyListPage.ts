@@ -48,9 +48,9 @@ export class PolicyListPage extends TablePage<Policy> {
     @property()
     order = "name";
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Policy>> {
+    async apiEndpoint(): Promise<PaginatedResponse<Policy>> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesAllList(
-            await this.defaultEndpointConfig(page),
+            await this.defaultEndpointConfig(),
         );
     }
 

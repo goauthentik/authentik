@@ -34,7 +34,7 @@ export class ObjectChangelog extends Table<Event> {
     @property()
     targetModelName = "";
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Event>> {
+    async apiEndpoint(): Promise<PaginatedResponse<Event>> {
         let modelName = this.targetModelName;
         let appName = this.targetModelApp;
         if (this.targetModelName.indexOf(".") !== -1) {

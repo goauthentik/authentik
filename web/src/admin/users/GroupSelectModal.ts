@@ -32,7 +32,7 @@ export class GroupSelectModal extends TableModal<Group> {
         return super.styles.concat(PFBanner);
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Group>> {
+    async apiEndpoint(): Promise<PaginatedResponse<Group>> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsList({
             ordering: this.order,
             page: page,

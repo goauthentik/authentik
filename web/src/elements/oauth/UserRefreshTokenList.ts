@@ -27,7 +27,7 @@ export class UserOAuthRefreshTokenList extends Table<TokenModel> {
         return super.styles.concat(PFFlex);
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<TokenModel>> {
+    async apiEndpoint(): Promise<PaginatedResponse<TokenModel>> {
         return new Oauth2Api(DEFAULT_CONFIG).oauth2RefreshTokensList({
             user: this.userId,
             ordering: "expires",

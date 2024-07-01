@@ -37,7 +37,7 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
         return super.styles.concat(PFDescriptionList);
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<ConnectionToken>> {
+    async apiEndpoint(): Promise<PaginatedResponse<ConnectionToken>> {
         return new RacApi(DEFAULT_CONFIG).racConnectionTokensList({
             ordering: this.order,
             page: page,

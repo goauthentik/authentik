@@ -18,7 +18,7 @@ export class SCIMSourceGroupList extends Table<SCIMSourceGroup> {
         return true;
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<SCIMSourceGroup>> {
+    async apiEndpoint(): Promise<PaginatedResponse<SCIMSourceGroup>> {
         return new SourcesApi(DEFAULT_CONFIG).sourcesScimGroupsList({
             page: page,
             pageSize: (await uiConfig()).pagination.perPage,

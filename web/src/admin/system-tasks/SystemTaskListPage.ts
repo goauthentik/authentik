@@ -43,9 +43,9 @@ export class SystemTaskListPage extends TablePage<SystemTask> {
         return super.styles.concat(PFDescriptionList);
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<SystemTask>> {
+    async apiEndpoint(): Promise<PaginatedResponse<SystemTask>> {
         return new EventsApi(DEFAULT_CONFIG).eventsSystemTasksList(
-            await this.defaultEndpointConfig(page),
+            await this.defaultEndpointConfig(),
         );
     }
 

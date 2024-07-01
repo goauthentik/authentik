@@ -18,7 +18,7 @@ export class UserConsentList extends Table<UserConsent> {
     @property({ type: Number })
     userId?: number;
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<UserConsent>> {
+    async apiEndpoint(): Promise<PaginatedResponse<UserConsent>> {
         return new CoreApi(DEFAULT_CONFIG).coreUserConsentList({
             user: this.userId,
             ordering: this.order,

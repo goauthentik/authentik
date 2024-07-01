@@ -18,7 +18,7 @@ export class UserAssignedObjectPermissionsTable extends Table<ExtraUserObjectPer
     checkbox = true;
     clearOnRefresh = true;
 
-    apiEndpoint(page: number): Promise<PaginatedResponse<ExtraUserObjectPermission>> {
+    apiEndpoint(): Promise<PaginatedResponse<ExtraUserObjectPermission>> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsUsersList({
             userId: this.userId || 0,
             page: page,

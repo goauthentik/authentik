@@ -43,9 +43,9 @@ export class SourceListPage extends TablePage<Source> {
     @property()
     order = "name";
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Source>> {
+    async apiEndpoint(): Promise<PaginatedResponse<Source>> {
         return new SourcesApi(DEFAULT_CONFIG).sourcesAllList(
-            await this.defaultEndpointConfig(page),
+            await this.defaultEndpointConfig(),
         );
     }
 

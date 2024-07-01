@@ -40,9 +40,9 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
     checkbox = true;
     clearOnRefresh = true;
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<ServiceConnection>> {
+    async apiEndpoint(): Promise<PaginatedResponse<ServiceConnection>> {
         const connections = await new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsAllList(
-            await this.defaultEndpointConfig(page),
+            await this.defaultEndpointConfig(),
         );
         Promise.all(
             connections.results.map((connection) => {

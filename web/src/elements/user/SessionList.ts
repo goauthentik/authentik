@@ -17,7 +17,7 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
     @property()
     targetUser!: string;
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<AuthenticatedSession>> {
+    async apiEndpoint(): Promise<PaginatedResponse<AuthenticatedSession>> {
         return new CoreApi(DEFAULT_CONFIG).coreAuthenticatedSessionsList({
             userUsername: this.targetUser,
             ordering: this.order,

@@ -28,7 +28,7 @@ export class ProviderSelectModal extends TableModal<Provider> {
 
     order = "name";
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Provider>> {
+    async apiEndpoint(): Promise<PaginatedResponse<Provider>> {
         return new ProvidersApi(DEFAULT_CONFIG).providersAllList({
             ordering: this.order,
             page: page,

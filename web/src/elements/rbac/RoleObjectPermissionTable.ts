@@ -31,7 +31,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
     checkbox = true;
     clearOnRefresh = true;
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<RoleAssignedObjectPermission>> {
+    async apiEndpoint(): Promise<PaginatedResponse<RoleAssignedObjectPermission>> {
         const perms = await new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByRolesList({
             page: page,
             // TODO: better default

@@ -62,7 +62,7 @@ export class InvitationListPage extends TablePage<Invitation> {
     @state()
     multipleEnrollmentFlows = false;
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Invitation>> {
+    async apiEndpoint(): Promise<PaginatedResponse<Invitation>> {
         try {
             // Check if any invitation stages exist
             const stages = await new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesList({

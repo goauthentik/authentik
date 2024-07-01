@@ -27,7 +27,7 @@ export class MemberSelectTable extends TableModal<User> {
 
     order = "username";
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<User>> {
+    async apiEndpoint(): Promise<PaginatedResponse<User>> {
         return new CoreApi(DEFAULT_CONFIG).coreUsersList({
             ordering: this.order,
             page: page,

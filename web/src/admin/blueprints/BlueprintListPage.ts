@@ -67,9 +67,9 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
         return super.styles.concat(PFDescriptionList);
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<BlueprintInstance>> {
+    async apiEndpoint(): Promise<PaginatedResponse<BlueprintInstance>> {
         return new ManagedApi(DEFAULT_CONFIG).managedBlueprintsList(
-            await this.defaultEndpointConfig(page),
+            await this.defaultEndpointConfig(),
         );
     }
 

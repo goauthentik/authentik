@@ -33,7 +33,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
 
     order = "order";
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<PolicyBinding>> {
+    async apiEndpoint(): Promise<PaginatedResponse<PolicyBinding>> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsList({
             target: this.target || "",
             ordering: this.order,

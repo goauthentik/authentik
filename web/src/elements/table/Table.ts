@@ -96,7 +96,7 @@ export interface PaginatedResponse<T> {
 }
 
 export abstract class Table<T> extends AKElement implements TableLike {
-    abstract apiEndpoint(page: number): Promise<PaginatedResponse<T>>;
+    abstract apiEndpoint(): Promise<PaginatedResponse<T>>;
     abstract columns(): TableColumn[];
     abstract row(item: T): TemplateResult[];
 
@@ -204,10 +204,10 @@ export abstract class Table<T> extends AKElement implements TableLike {
         }
     }
 
-    async defaultEndpointConfig(page: number) {
+    async defaultEndpointConfig() {
         return {
             ordering: this.order,
-            page: page,
+            page: this.page,
             pageSize: (await uiConfig()).pagination.perPage,
             search: this.search || "",
         };

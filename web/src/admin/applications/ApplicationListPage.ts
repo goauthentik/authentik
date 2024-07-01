@@ -63,7 +63,7 @@ export class ApplicationListPage extends TablePage<Application> {
     @property()
     order = "name";
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Application>> {
+    async apiEndpoint(): Promise<PaginatedResponse<Application>> {
         return new CoreApi(DEFAULT_CONFIG).coreApplicationsList({
             ordering: this.order,
             page: page,

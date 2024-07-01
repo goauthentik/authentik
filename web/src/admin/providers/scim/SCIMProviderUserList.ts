@@ -38,7 +38,7 @@ export class SCIMProviderUserList extends Table<SCIMProviderUser> {
         </ak-forms-delete-bulk>`;
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<SCIMProviderUser>> {
+    async apiEndpoint(): Promise<PaginatedResponse<SCIMProviderUser>> {
         return new ProvidersApi(DEFAULT_CONFIG).providersScimUsersList({
             page: page,
             pageSize: (await uiConfig()).pagination.perPage,

@@ -43,7 +43,7 @@ export class EndpointListPage extends Table<Endpoint> {
         return super.styles.concat(PFDescriptionList);
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Endpoint>> {
+    async apiEndpoint(): Promise<PaginatedResponse<Endpoint>> {
         return new RacApi(DEFAULT_CONFIG).racEndpointsList({
             ordering: this.order,
             page: page,

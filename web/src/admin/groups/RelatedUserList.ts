@@ -135,7 +135,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         return super.styles.concat(PFDescriptionList, PFAlert, PFBanner);
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<User>> {
+    async apiEndpoint(): Promise<PaginatedResponse<User>> {
         const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList({
             ordering: this.order,
             page: page,

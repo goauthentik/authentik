@@ -40,7 +40,7 @@ export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProvi
         </ak-forms-delete-bulk>`;
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<GoogleWorkspaceProviderGroup>> {
+    async apiEndpoint(): Promise<PaginatedResponse<GoogleWorkspaceProviderGroup>> {
         return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceGroupsList({
             page: page,
             pageSize: (await uiConfig()).pagination.perPage,

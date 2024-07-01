@@ -31,9 +31,9 @@ export class PermissionSelectModal extends TableModal<Permission> {
         return super.styles.concat(PFBanner);
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Permission>> {
+    async apiEndpoint(): Promise<PaginatedResponse<Permission>> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsList(
-            await this.defaultEndpointConfig(page),
+            await this.defaultEndpointConfig(),
         );
     }
 

@@ -98,7 +98,7 @@ export class RelatedGroupList extends Table<Group> {
     @property({ attribute: false })
     targetUser?: User;
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Group>> {
+    async apiEndpoint(): Promise<PaginatedResponse<Group>> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsList({
             ordering: this.order,
             page: page,

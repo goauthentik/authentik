@@ -44,7 +44,7 @@ export class ReputationListPage extends TablePage<Reputation> {
     checkbox = true;
     clearOnRefresh = true;
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Reputation>> {
+    async apiEndpoint(): Promise<PaginatedResponse<Reputation>> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesReputationScoresList({
             ordering: this.order,
             page: page,

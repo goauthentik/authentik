@@ -60,8 +60,8 @@ export class StageListPage extends TablePage<Stage> {
     @property()
     order = "name";
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Stage>> {
-        return new StagesApi(DEFAULT_CONFIG).stagesAllList(await this.defaultEndpointConfig(page));
+    async apiEndpoint(): Promise<PaginatedResponse<Stage>> {
+        return new StagesApi(DEFAULT_CONFIG).stagesAllList(await this.defaultEndpointConfig());
     }
 
     columns(): TableColumn[] {

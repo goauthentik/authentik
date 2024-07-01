@@ -38,8 +38,8 @@ export class BrandListPage extends TablePage<Brand> {
     @property()
     order = "domain";
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Brand>> {
-        return new CoreApi(DEFAULT_CONFIG).coreBrandsList(await this.defaultEndpointConfig(page));
+    async apiEndpoint(): Promise<PaginatedResponse<Brand>> {
+        return new CoreApi(DEFAULT_CONFIG).coreBrandsList(await this.defaultEndpointConfig());
     }
 
     columns(): TableColumn[] {

@@ -35,7 +35,7 @@ export class UserTokenList extends Table<Token> {
     @property()
     order = "expires";
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Token>> {
+    async apiEndpoint(): Promise<PaginatedResponse<Token>> {
         return new CoreApi(DEFAULT_CONFIG).coreTokensList({
             ordering: this.order,
             page: page,

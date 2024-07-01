@@ -51,7 +51,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
     @state()
     hideManaged = getURLParam<boolean>("hideManaged", true);
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<PropertyMapping>> {
+    async apiEndpoint(): Promise<PaginatedResponse<PropertyMapping>> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllList({
             ordering: this.order,
             page: page,

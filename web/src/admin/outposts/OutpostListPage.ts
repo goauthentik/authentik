@@ -66,9 +66,9 @@ export class OutpostListPage extends TablePage<Outpost> {
         return true;
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Outpost>> {
+    async apiEndpoint(): Promise<PaginatedResponse<Outpost>> {
         const outposts = await new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesList(
-            await this.defaultEndpointConfig(page),
+            await this.defaultEndpointConfig(),
         );
         Promise.all(
             outposts.results.map((outpost) => {

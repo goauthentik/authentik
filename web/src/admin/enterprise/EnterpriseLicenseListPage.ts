@@ -82,7 +82,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         );
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<License>> {
+    async apiEndpoint(): Promise<PaginatedResponse<License>> {
         this.forecast = await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseForecastRetrieve();
         this.summary = await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseSummaryRetrieve();
         this.installID = (

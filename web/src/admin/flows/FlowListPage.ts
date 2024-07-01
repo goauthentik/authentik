@@ -41,9 +41,9 @@ export class FlowListPage extends TablePage<Flow> {
     @property()
     order = "slug";
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Flow>> {
+    async apiEndpoint(): Promise<PaginatedResponse<Flow>> {
         return new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
-            await this.defaultEndpointConfig(page),
+            await this.defaultEndpointConfig(),
         );
     }
 

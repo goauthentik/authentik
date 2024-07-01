@@ -27,7 +27,7 @@ export class UserEvents extends Table<Event> {
     @property()
     targetUser!: string;
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Event>> {
+    async apiEndpoint(): Promise<PaginatedResponse<Event>> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsList({
             page: page,
             ordering: this.order,

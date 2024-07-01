@@ -44,9 +44,9 @@ export class EventListPage extends TablePage<Event> {
         `);
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Event>> {
+    async apiEndpoint(): Promise<PaginatedResponse<Event>> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsList(
-            await this.defaultEndpointConfig(page),
+            await this.defaultEndpointConfig(),
         );
     }
 

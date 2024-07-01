@@ -21,7 +21,7 @@ export class UserApplicationTable extends Table<Application> {
         return super.styles.concat(applicationListStyle);
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Application>> {
+    async apiEndpoint(): Promise<PaginatedResponse<Application>> {
         return new CoreApi(DEFAULT_CONFIG).coreApplicationsList({
             forUser: this.user?.pk,
             page: page,

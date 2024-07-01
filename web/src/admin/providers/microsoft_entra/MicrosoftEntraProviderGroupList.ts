@@ -37,7 +37,7 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
         </ak-forms-delete-bulk>`;
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<MicrosoftEntraProviderGroup>> {
+    async apiEndpoint(): Promise<PaginatedResponse<MicrosoftEntraProviderGroup>> {
         return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraGroupsList({
             page: page,
             pageSize: (await uiConfig()).pagination.perPage,
