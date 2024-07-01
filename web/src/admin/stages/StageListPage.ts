@@ -62,12 +62,7 @@ export class StageListPage extends TablePage<Stage> {
     order = "name";
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<Stage>> {
-        return new StagesApi(DEFAULT_CONFIG).stagesAllList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
-        });
+        return new StagesApi(DEFAULT_CONFIG).stagesAllList(await this.defaultEndpointConfig(page));
     }
 
     columns(): TableColumn[] {

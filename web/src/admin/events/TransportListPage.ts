@@ -44,12 +44,9 @@ export class TransportListPage extends TablePage<NotificationTransport> {
     order = "name";
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<NotificationTransport>> {
-        return new EventsApi(DEFAULT_CONFIG).eventsTransportsList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
-        });
+        return new EventsApi(DEFAULT_CONFIG).eventsTransportsList(
+            await this.defaultEndpointConfig(page),
+        );
     }
 
     columns(): TableColumn[] {

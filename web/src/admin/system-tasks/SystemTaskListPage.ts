@@ -45,12 +45,9 @@ export class SystemTaskListPage extends TablePage<SystemTask> {
     }
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<SystemTask>> {
-        return new EventsApi(DEFAULT_CONFIG).eventsSystemTasksList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
-        });
+        return new EventsApi(DEFAULT_CONFIG).eventsSystemTasksList(
+            await this.defaultEndpointConfig(page),
+        );
     }
 
     columns(): TableColumn[] {

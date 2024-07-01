@@ -43,12 +43,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<ServiceConnection>> {
         const connections = await new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsAllList(
-            {
-                ordering: this.order,
-                page: page,
-                pageSize: (await uiConfig()).pagination.perPage,
-                search: this.search || "",
-            },
+            await this.defaultEndpointConfig(page),
         );
         Promise.all(
             connections.results.map((connection) => {

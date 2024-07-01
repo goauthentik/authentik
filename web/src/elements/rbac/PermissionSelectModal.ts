@@ -33,12 +33,9 @@ export class PermissionSelectModal extends TableModal<Permission> {
     }
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<Permission>> {
-        return new RbacApi(DEFAULT_CONFIG).rbacPermissionsList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
-        });
+        return new RbacApi(DEFAULT_CONFIG).rbacPermissionsList(
+            await this.defaultEndpointConfig(page),
+        );
     }
 
     groupBy(items: Permission[]): [string, Permission[]][] {

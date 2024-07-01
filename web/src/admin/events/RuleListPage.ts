@@ -48,12 +48,9 @@ export class RuleListPage extends TablePage<NotificationRule> {
     order = "name";
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<NotificationRule>> {
-        return new EventsApi(DEFAULT_CONFIG).eventsRulesList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
-        });
+        return new EventsApi(DEFAULT_CONFIG).eventsRulesList(
+            await this.defaultEndpointConfig(page),
+        );
     }
 
     columns(): TableColumn[] {

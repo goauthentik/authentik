@@ -39,12 +39,9 @@ export class PromptListPage extends TablePage<Prompt> {
     order = "name";
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<Prompt>> {
-        return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
-        });
+        return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsList(
+            await this.defaultEndpointConfig(page),
+        );
     }
 
     columns(): TableColumn[] {

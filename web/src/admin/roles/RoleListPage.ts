@@ -43,12 +43,7 @@ export class RoleListPage extends TablePage<Role> {
     }
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<Role>> {
-        return new RbacApi(DEFAULT_CONFIG).rbacRolesList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
-        });
+        return new RbacApi(DEFAULT_CONFIG).rbacRolesList(await this.defaultEndpointConfig(page));
     }
 
     columns(): TableColumn[] {

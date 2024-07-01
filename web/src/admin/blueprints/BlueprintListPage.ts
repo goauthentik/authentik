@@ -69,12 +69,9 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
     }
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<BlueprintInstance>> {
-        return new ManagedApi(DEFAULT_CONFIG).managedBlueprintsList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
-        });
+        return new ManagedApi(DEFAULT_CONFIG).managedBlueprintsList(
+            await this.defaultEndpointConfig(page),
+        );
     }
 
     columns(): TableColumn[] {

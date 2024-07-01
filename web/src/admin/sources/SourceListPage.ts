@@ -45,12 +45,9 @@ export class SourceListPage extends TablePage<Source> {
     order = "name";
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<Source>> {
-        return new SourcesApi(DEFAULT_CONFIG).sourcesAllList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
-        });
+        return new SourcesApi(DEFAULT_CONFIG).sourcesAllList(
+            await this.defaultEndpointConfig(page),
+        );
     }
 
     columns(): TableColumn[] {

@@ -46,12 +46,9 @@ export class EventListPage extends TablePage<Event> {
     }
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<Event>> {
-        return new EventsApi(DEFAULT_CONFIG).eventsEventsList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
-        });
+        return new EventsApi(DEFAULT_CONFIG).eventsEventsList(
+            await this.defaultEndpointConfig(page),
+        );
     }
 
     columns(): TableColumn[] {

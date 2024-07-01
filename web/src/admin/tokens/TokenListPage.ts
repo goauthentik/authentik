@@ -49,12 +49,7 @@ export class TokenListPage extends TablePage<Token> {
     order = "expires";
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<Token>> {
-        return new CoreApi(DEFAULT_CONFIG).coreTokensList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
-        });
+        return new CoreApi(DEFAULT_CONFIG).coreTokensList(await this.defaultEndpointConfig(page));
     }
 
     columns(): TableColumn[] {

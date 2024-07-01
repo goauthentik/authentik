@@ -1,5 +1,6 @@
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { APIErrorTypes, parseAPIError } from "@goauthentik/common/errors";
+import { uiConfig } from "@goauthentik/common/ui/config";
 import { groupBy } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
@@ -201,6 +202,15 @@ export abstract class Table<T> extends AKElement implements TableLike {
         if (this.searchEnabled()) {
             this.search = getURLParam("search", "");
         }
+    }
+
+    async defaultEndpointConfig(page: number) {
+        return {
+            ordering: this.order,
+            page: page,
+            pageSize: (await uiConfig()).pagination.perPage,
+            search: this.search || "",
+        };
     }
 
     public groupBy(items: T[]): [string, T[]][] {

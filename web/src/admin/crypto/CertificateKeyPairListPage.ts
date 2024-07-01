@@ -54,12 +54,9 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
     }
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<CertificateKeyPair>> {
-        return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
-        });
+        return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList(
+            await this.defaultEndpointConfig(page),
+        );
     }
 
     columns(): TableColumn[] {
