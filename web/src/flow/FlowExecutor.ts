@@ -515,16 +515,6 @@ export class FlowExecutor extends Interface implements StageHost {
                                                         >${msg("Powered by authentik")}</a
                                                     >
                                                 </li>
-                                                ${this.flowInfo?.background?.startsWith("/static")
-                                                    ? html`
-                                                          <li>
-                                                              <a
-                                                                  href="https://unsplash.com/@benjaminpunzalan"
-                                                                  >${msg("Background image")}</a
-                                                              >
-                                                          </li>
-                                                      `
-                                                    : html``}
                                             </ul>
                                         </footer>
                                     </div>
