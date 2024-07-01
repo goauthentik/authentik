@@ -8386,6 +8386,9 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 <trans-unit id="s11ec812e25ceef8a">
   <source>No messages found</source>
 </trans-unit>
+<trans-unit id="s23446284b56ca0cc">
+  <source>Reputation score(s)</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
