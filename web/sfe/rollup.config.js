@@ -9,6 +9,7 @@ export default {
         dir: "../dist/sfe",
         format: "cjs",
     },
+    context: "window",
     plugins: [
         copy({
             targets: [
