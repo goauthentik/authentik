@@ -294,9 +294,9 @@ export class SAMLProviderViewPage extends AKElement {
                             </div>
                             <div class="pf-c-description-list__group">
                                 <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${msg(
-                                        "ACS URL",
-                                    )}</span>
+                                            <span class="pf-c-description-list__text">${msg(
+                                                "ACS URL",
+                                            )}</span>
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
@@ -306,9 +306,9 @@ export class SAMLProviderViewPage extends AKElement {
                             </div>
                             <div class="pf-c-description-list__group">
                                 <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${msg(
-                                        "Audience",
-                                    )}</span>
+                                        <span class="pf-c-description-list__text">${msg(
+                                            "Audience",
+                                        )}</span>
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
@@ -318,9 +318,9 @@ export class SAMLProviderViewPage extends AKElement {
                             </div>
                             <div class="pf-c-description-list__group">
                                 <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${msg(
-                                        "Issuer",
-                                    )}</span>
+                                        <span class="pf-c-description-list__text">${msg(
+                                            "Issuer",
+                                        )}</span>
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
@@ -512,7 +512,7 @@ export class SAMLProviderViewPage extends AKElement {
                 <div class="pf-c-card__body">
                     ${renderDescriptionList([
                         [
-                            "Preview for user",
+                            msg("Preview for user"),
                             html`
                                 <ak-search-select
                                     .fetchObjects=${async (query?: string): Promise<User[]> => {

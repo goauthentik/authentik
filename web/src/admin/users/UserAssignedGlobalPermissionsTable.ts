@@ -38,8 +38,8 @@ export class UserAssignedGlobalPermissionsTable extends Table<Permission> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn("Model", "model"),
-            new TableColumn("Permission", ""),
+            new TableColumn(msg("Model"), "model"),
+            new TableColumn(msg("Permission"), ""),
             new TableColumn(""),
         ];
     }

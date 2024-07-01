@@ -39,9 +39,9 @@ export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPerm
 
     columns(): TableColumn[] {
         return [
-            new TableColumn("Model", "model"),
-            new TableColumn("Permission", ""),
-            new TableColumn("Object", ""),
+            new TableColumn(msg("Model"), "model"),
+            new TableColumn(msg("Permission"), ""),
+            new TableColumn(msg("Object"), ""),
             new TableColumn(""),
         ];
     }
