@@ -8820,6 +8820,9 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Reputation score(s)</source>
   <target>信誉分数</target>
 </trans-unit>
+<trans-unit id="s23446284b56ca0cc">
+  <source>Reputation score(s)</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
