@@ -21,7 +21,6 @@ import "@goauthentik/admin/stages/user_login/UserLoginStageForm";
 import "@goauthentik/admin/stages/user_logout/UserLogoutStageForm";
 import "@goauthentik/admin/stages/user_write/UserWriteStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import "@goauthentik/elements/forms/ProxyForm";
