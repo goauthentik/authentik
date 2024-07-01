@@ -1,4 +1,3 @@
-import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/elements/PageHeader";
 import { updateURLParams } from "@goauthentik/elements/router/RouteMatch";
 import { Table } from "@goauthentik/elements/table/Table";
@@ -50,15 +49,6 @@ export abstract class TablePage<T> extends Table<T> {
                       <div slot="primary">${this.renderObjectCreate()}</div>
                   </ak-empty-state>`}
         `);
-    }
-
-    async defaultEndpointConfig(page: number) {
-        return {
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
-        };
     }
 
     renderEmptyClearSearch(): TemplateResult {
