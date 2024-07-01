@@ -1,6 +1,19 @@
 import { fromByteArray } from "base64-js";
 import $ from "jquery";
 
+import {
+    type AuthenticatorValidationChallenge,
+    type AutosubmitChallenge,
+    type ChallengeTypes,
+    ChallengeTypesFromJSON,
+    type ContextualFlowInfo,
+    type DeviceChallenge,
+    type ErrorDetail,
+    type IdentificationChallenge,
+    type PasswordChallenge,
+    type RedirectChallenge,
+} from "@goauthentik/api";
+
 interface GlobalAuthentik {
     brand: {
         branding_logo: string;
@@ -16,8 +29,7 @@ function ak(): GlobalAuthentik {
 }
 
 class SimpleFlowExecutor {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    challenge: any;
+    challenge: ChallengeTypes;
     flowSlug: string;
     container: HTMLDivElement;
 
@@ -35,7 +47,7 @@ class SimpleFlowExecutor {
             type: "GET",
             url: this.apiURL,
             success: (data) => {
-                this.challenge = data;
+                this.challenge = ChallengeTypesFromJSON(data);
                 this.renderChallenge();
             },
         });
@@ -59,7 +71,7 @@ class SimpleFlowExecutor {
             url: this.apiURL,
             data: JSON.stringify(finalData),
             success: (data) => {
-                this.challenge = data;
+                this.challenge = ChallengeTypesFromJSON(data);
                 this.renderChallenge();
             },
             contentType: "application/json",
@@ -70,19 +82,19 @@ class SimpleFlowExecutor {
     renderChallenge() {
         switch (this.challenge.component) {
             case "ak-stage-identification":
-                new IdentificationStage(this).render();
+                new IdentificationStage(this, this.challenge).render();
                 return;
             case "ak-stage-password":
-                new PasswordStage(this).render();
+                new PasswordStage(this, this.challenge).render();
                 return;
             case "xak-flow-redirect":
-                new RedirectStage(this).render();
+                new RedirectStage(this, this.challenge).render();
                 return;
             case "ak-stage-autosubmit":
-                new AutosubmitStage(this).render();
+                new AutosubmitStage(this, this.challenge).render();
                 return;
             case "ak-stage-authenticator-validate":
-                new AuthenticatorValidateStage(this).render();
+                new AuthenticatorValidateStage(this, this.challenge).render();
                 return;
             default:
                 this.container.innerText = "Unsupported stage: " + this.challenge.component;
@@ -91,22 +103,42 @@ class SimpleFlowExecutor {
     }
 }
 
-class Stage {
-    constructor(public executor: SimpleFlowExecutor) {}
+export interface FlowInfoChallenge {
+    flowInfo?: ContextualFlowInfo;
+    responseErrors?: {
+        [key: string]: Array<ErrorDetail>;
+    };
+}
 
-    error(fieldName: string): { string: string; code: string }[] {
-        if (!this.executor.challenge.response_errors) {
+class Stage<T extends FlowInfoChallenge> {
+    constructor(
+        public executor: SimpleFlowExecutor,
+        public challenge: T,
+    ) {}
+
+    error(fieldName: string) {
+        if (!this.challenge.responseErrors) {
             return [];
         }
-        return this.executor.challenge.response_errors[fieldName] || [];
+        return this.challenge.responseErrors[fieldName] || [];
     }
 
     renderInputError(fieldName: string) {
         return `${this.error(fieldName)
             .map((error) => {
                 return `<div class="invalid-feedback">
-                                ${error.string}
-                            </div>`;
+                    ${error.string}
+                </div>`;
+            })
+            .join("")}`;
+    }
+
+    renderNonFieldErrors() {
+        return `${this.error("non_field_errors")
+            .map((error) => {
+                return `<div class="alert alert-danger" role="alert">
+                    ${error.string}
+                </div>`;
             })
             .join("")}`;
     }
@@ -120,16 +152,16 @@ class Stage {
     }
 }
 
-class IdentificationStage extends Stage {
+class IdentificationStage extends Stage<IdentificationChallenge> {
     render() {
         this.html(`
             <form id="ident-form">
                 <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="">
-                <h1 class="h3 mb-3 fw-normal text-center">${this.executor.challenge.flow_info.title}</h1>
+                <h1 class="h3 mb-3 fw-normal text-center">${this.challenge.flowInfo?.title}</h1>
                 ${
-                    this.executor.challenge.application_pre
+                    this.challenge.applicationPre
                         ? `<p>
-                              Login to continue to ${this.executor.challenge.application_pre}.
+                              Login to continue to ${this.challenge.applicationPre}.
                           </p>`
                         : ""
                 }
@@ -137,14 +169,15 @@ class IdentificationStage extends Stage {
                     <input type="text" autofocus class="form-control" name="uid_field" placeholder="Email / Username">
                 </div>
                 ${
-                    this.executor.challenge.password_fields
+                    this.challenge.passwordFields
                         ? `<div class="form-label-group my-3 has-validation">
                                 <input type="password" class="form-control ${this.error("password").length > 0 ? "is-invalid" : ""}" name="password" placeholder="Password">
                                 ${this.renderInputError("password")}
                         </div>`
                         : ""
                 }
-                <button class="btn btn-primary w-100 py-2" type="submit">${this.executor.challenge.primary_action}</button>
+                ${this.renderNonFieldErrors()}
+                <button class="btn btn-primary w-100 py-2" type="submit">${this.challenge.primaryAction}</button>
             </form>`);
         $("#ident-form input[name=uid_field]").trigger("focus");
         $("#ident-form").on("submit", (ev) => {
@@ -155,12 +188,12 @@ class IdentificationStage extends Stage {
     }
 }
 
-class PasswordStage extends Stage {
+class PasswordStage extends Stage<PasswordChallenge> {
     render() {
         this.html(`
             <form id="password-form">
                 <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="">
-                <h1 class="h3 mb-3 fw-normal text-center">${this.executor.challenge.flow_info.title}</h1>
+                <h1 class="h3 mb-3 fw-normal text-center">${this.challenge.flowInfo.title}</h1>
                 <div class="form-label-group my-3 has-validation">
                     <input type="password" autofocus class="form-control ${this.error("password").length > 0 ? "is-invalid" : ""}" name="password" placeholder="Password">
                     ${this.renderInputError("password")}
@@ -176,19 +209,19 @@ class PasswordStage extends Stage {
     }
 }
 
-class RedirectStage extends Stage {
+class RedirectStage extends Stage<RedirectChallenge> {
     render() {
-        window.location.assign(this.executor.challenge.to);
+        window.location.assign(this.challenge.to);
     }
 }
 
-class AutosubmitStage extends Stage {
+class AutosubmitStage extends Stage<AutosubmitChallenge> {
     render() {
         this.html(`
-            <form id="autosubmit-form" action="${this.executor.challenge.url}" method="POST">
+            <form id="autosubmit-form" action="${this.challenge.url}" method="POST">
                 <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="">
-                <h1 class="h3 mb-3 fw-normal text-center">${this.executor.challenge.flow_info.title}</h1>
-                ${Object.entries(this.executor.challenge.attrs).map(([key, value]) => {
+                <h1 class="h3 mb-3 fw-normal text-center">${this.challenge.flowInfo.title}</h1>
+                ${Object.entries(this.challenge.attrs).map(([key, value]) => {
                     return `<input
                             type="hidden"
                             name="${key}"
@@ -229,9 +262,8 @@ export interface AuthAssertion {
     };
 }
 
-class AuthenticatorValidateStage extends Stage {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    deviceChallenge: any;
+class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge> {
+    deviceChallenge: DeviceChallenge;
 
     b64enc(buf: Uint8Array): string {
         return fromByteArray(buf).replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
@@ -357,7 +389,7 @@ class AuthenticatorValidateStage extends Stage {
         if (!this.deviceChallenge) {
             return this.renderChallengePicker();
         }
-        switch (this.deviceChallenge.device_class) {
+        switch (this.deviceChallenge.deviceClass) {
             case "static":
             case "totp":
                 this.renderCodeInput();
@@ -373,12 +405,12 @@ class AuthenticatorValidateStage extends Stage {
     renderChallengePicker() {
         this.html(`<form id="picker-form">
                 <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="">
-                <h1 class="h3 mb-3 fw-normal text-center">${this.executor.challenge.flow_info.title}</h1>
+                <h1 class="h3 mb-3 fw-normal text-center">${this.challenge.flowInfo.title}</h1>
                 <p>Select an authentication method.</p>
-                ${this.executor.challenge.device_challenges
-                    .map((challenge: { device_class: string; device_uid: string }) => {
+                ${this.challenge.deviceChallenges
+                    .map((challenge) => {
                         let label = undefined;
-                        switch (challenge.device_class) {
+                        switch (challenge.deviceClass) {
                             case "static":
                                 label = "Recovery keys";
                                 break;
@@ -393,31 +425,29 @@ class AuthenticatorValidateStage extends Stage {
                             return "";
                         }
                         return `<div class="form-label-group my-3 has-validation">
-                            <button id="${challenge.device_class}-${challenge.device_uid}" class="btn btn-secondary w-100 py-2" type="button">
+                            <button id="${challenge.deviceClass}-${challenge.deviceUid}" class="btn btn-secondary w-100 py-2" type="button">
                                 ${label}
                             </button>
                         </div>`;
                     })
                     .join("")}
             </form>`);
-        this.executor.challenge.device_challenges.forEach(
-            (challenge: { device_class: string; device_uid: string }) => {
-                $(`#picker-form button#${challenge.device_class}-${challenge.device_uid}`).on(
-                    "click",
-                    () => {
-                        this.deviceChallenge = challenge;
-                        this.render();
-                    },
-                );
-            },
-        );
+        this.challenge.deviceChallenges.forEach((challenge) => {
+            $(`#picker-form button#${challenge.deviceClass}-${challenge.deviceUid}`).on(
+                "click",
+                () => {
+                    this.deviceChallenge = challenge;
+                    this.render();
+                },
+            );
+        });
     }
 
     renderCodeInput() {
         this.html(`
             <form id="totp-form">
                 <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="">
-                <h1 class="h3 mb-3 fw-normal text-center">${this.executor.challenge.flow_info.title}</h1>
+                <h1 class="h3 mb-3 fw-normal text-center">${this.challenge.flowInfo.title}</h1>
                 <div class="form-label-group my-3 has-validation">
                     <input type="text" autofocus class="form-control ${this.error("code").length > 0 ? "is-invalid" : ""}" name="code" placeholder="Please enter your code" autocomplete="one-time-code">
                     ${this.renderInputError("code")}
@@ -436,7 +466,7 @@ class AuthenticatorValidateStage extends Stage {
         this.html(`
             <form id="totp-form">
                 <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="">
-                <h1 class="h3 mb-3 fw-normal text-center">${this.executor.challenge.flow_info.title}</h1>
+                <h1 class="h3 mb-3 fw-normal text-center">${this.challenge.flowInfo.title}</h1>
                 <div class="d-flex justify-content-center">
                     <div class="spinner-border" role="status">
                         <span class="sr-only">Loading...</span>
@@ -447,7 +477,9 @@ class AuthenticatorValidateStage extends Stage {
         this.checkWebAuthnSupport();
         navigator.credentials
             .get({
-                publicKey: this.transformCredentialRequestOptions(this.deviceChallenge.challenge),
+                publicKey: this.transformCredentialRequestOptions(
+                    this.deviceChallenge?.challenge as PublicKeyCredentialRequestOptions,
+                ),
             })
             .then((assertion) => {
                 if (!assertion) {
