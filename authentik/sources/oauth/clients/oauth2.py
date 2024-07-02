@@ -83,6 +83,12 @@ class OAuth2Client(BaseOAuthClient):
             response = self.do_request(
                 "post", access_token_url, data=args, headers=self._default_headers, **request_kwargs
             )
+            if response.status_code == 400:
+                LOGGER.error(
+                    "Error fetching access token",
+                    response=response.text,
+                    status=response.status_code,
+                )
             response.raise_for_status()
         except RequestException as exc:
             LOGGER.warning(
