@@ -22,8 +22,6 @@ import {
     StagesApi,
 } from "@goauthentik/api";
 
-0;
-
 @customElement("ak-stage-password-form")
 export class PasswordStageForm extends BaseStageForm<PasswordStage> {
     loadInstance(pk: string): Promise<PasswordStage> {
