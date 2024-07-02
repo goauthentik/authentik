@@ -30,7 +30,10 @@ def sync_ldap_source_on_save(sender, instance: LDAPSource, **_):
     # - the user forgets to set them or
     # - the source is newly created, this is the first save event
     #   and the mappings are created with an m2m event
-    if not instance.property_mappings.exists() or not instance.property_mappings_group.exists():
+    if (
+        not instance.user_property_mappings.exists()
+        or not instance.group_property_mappings.exists()
+    ):
         return
     ldap_sync_single.delay(instance.pk)
     ldap_connectivity_check.delay(instance.pk)

@@ -55,13 +55,13 @@ class TestSourceLDAPSamba(SeleniumTestCase):
             additional_user_dn="ou=users",
             additional_group_dn="ou=groups",
         )
-        source.property_mappings.set(
+        source.user_property_mappings.set(
             LDAPPropertyMapping.objects.filter(
                 Q(managed__startswith="goauthentik.io/sources/ldap/default-")
                 | Q(managed__startswith="goauthentik.io/sources/ldap/ms-")
             )
         )
-        source.property_mappings_group.set(
+        source.group_property_mappings.set(
             LDAPPropertyMapping.objects.filter(name="goauthentik.io/sources/ldap/default-name")
         )
         UserLDAPSynchronizer(source).sync_full()
@@ -86,13 +86,13 @@ class TestSourceLDAPSamba(SeleniumTestCase):
             additional_user_dn="ou=users",
             additional_group_dn="ou=groups",
         )
-        source.property_mappings.set(
+        source.user_property_mappings.set(
             LDAPPropertyMapping.objects.filter(
                 Q(managed__startswith="goauthentik.io/sources/ldap/default-")
                 | Q(managed__startswith="goauthentik.io/sources/ldap/ms-")
             )
         )
-        source.property_mappings_group.set(
+        source.group_property_mappings.set(
             LDAPPropertyMapping.objects.filter(managed="goauthentik.io/sources/ldap/default-name")
         )
         GroupLDAPSynchronizer(source).sync_full()
@@ -130,13 +130,13 @@ class TestSourceLDAPSamba(SeleniumTestCase):
             additional_group_dn="ou=groups",
             password_login_update_internal_password=True,
         )
-        source.property_mappings.set(
+        source.user_property_mappings.set(
             LDAPPropertyMapping.objects.filter(
                 Q(managed__startswith="goauthentik.io/sources/ldap/default-")
                 | Q(managed__startswith="goauthentik.io/sources/ldap/ms-")
             )
         )
-        source.property_mappings_group.set(
+        source.group_property_mappings.set(
             LDAPPropertyMapping.objects.filter(name="goauthentik.io/sources/ldap/default-name")
         )
         UserLDAPSynchronizer(source).sync_full()

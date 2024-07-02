@@ -81,8 +81,6 @@ class LDAPSourceSerializer(SourceSerializer):
             "sync_users_password",
             "sync_groups",
             "sync_parent_group",
-            "property_mappings",
-            "property_mappings_group",
             "connectivity",
         ]
         extra_kwargs = {"bind_password": {"write_only": True}}
@@ -116,8 +114,8 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
         "sync_users_password",
         "sync_groups",
         "sync_parent_group",
-        "property_mappings",
-        "property_mappings_group",
+        "user_property_mappings",
+        "group_property_mappings",
     ]
     search_fields = ["name", "slug"]
     ordering = ["name"]
@@ -184,9 +182,7 @@ class LDAPPropertyMappingSerializer(PropertyMappingSerializer):
 
     class Meta:
         model = LDAPPropertyMapping
-        fields = PropertyMappingSerializer.Meta.fields + [
-            "object_field",
-        ]
+        fields = PropertyMappingSerializer.Meta.fields
 
 
 class LDAPPropertyMappingFilter(FilterSet):

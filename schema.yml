@@ -13494,10 +13494,6 @@ paths:
         name: name
         schema:
           type: string
-      - in: query
-        name: object_field
-        schema:
-          type: string
       - name: ordering
         required: false
         in: query
@@ -22081,6 +22077,15 @@ paths:
         schema:
           type: string
       - in: query
+        name: group_property_mappings
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
+      - in: query
         name: name
         schema:
           type: string
@@ -22115,24 +22120,6 @@ paths:
         schema:
           type: string
           format: uuid
-      - in: query
-        name: property_mappings
-        schema:
-          type: array
-          items:
-            type: string
-            format: uuid
-        explode: true
-        style: form
-      - in: query
-        name: property_mappings_group
-        schema:
-          type: array
-          items:
-            type: string
-            format: uuid
-        explode: true
-        style: form
       - name: search
         required: false
         in: query
@@ -22176,6 +22163,15 @@ paths:
         name: user_object_filter
         schema:
           type: string
+      - in: query
+        name: user_property_mappings
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
       tags:
       - sources
       security:
@@ -37653,14 +37649,11 @@ components:
           type: string
           description: Return internal model name
           readOnly: true
-        object_field:
-          type: string
       required:
       - component
       - expression
       - meta_model_name
       - name
-      - object_field
       - pk
       - verbose_name
       - verbose_name_plural
@@ -37683,13 +37676,9 @@ components:
         expression:
           type: string
           minLength: 1
-        object_field:
-          type: string
-          minLength: 1
       required:
       - expression
       - name
-      - object_field
     LDAPProvider:
       type: object
       description: LDAPProvider Serializer
@@ -37902,6 +37891,16 @@ components:
           format: uuid
           nullable: true
           description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
         component:
           type: string
           description: Get object component so that we know how to edit the object
@@ -38000,17 +37999,6 @@ components:
           type: string
           format: uuid
           nullable: true
-        property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        property_mappings_group:
-          type: array
-          items:
-            type: string
-            format: uuid
-          description: Property mappings used for group creation/updating.
         connectivity:
           type: object
           additionalProperties:
@@ -38059,6 +38047,16 @@ components:
           format: uuid
           nullable: true
           description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -38139,17 +38137,6 @@ components:
           type: string
           format: uuid
           nullable: true
-        property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        property_mappings_group:
-          type: array
-          items:
-            type: string
-            format: uuid
-          description: Property mappings used for group creation/updating.
       required:
       - base_dn
       - name
@@ -39242,6 +39229,16 @@ components:
           format: uuid
           nullable: true
           description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
         component:
           type: string
           description: Get object component so that we know how to edit the object
@@ -39360,6 +39357,16 @@ components:
           format: uuid
           nullable: true
           description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -42265,9 +42272,6 @@ components:
         expression:
           type: string
           minLength: 1
-        object_field:
-          type: string
-          minLength: 1
     PatchedLDAPProviderRequest:
       type: object
       description: LDAPProvider Serializer
@@ -42358,6 +42362,16 @@ components:
           format: uuid
           nullable: true
           description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -42438,17 +42452,6 @@ components:
           type: string
           format: uuid
           nullable: true
-        property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        property_mappings_group:
-          type: array
-          items:
-            type: string
-            format: uuid
-          description: Property mappings used for group creation/updating.
     PatchedLicenseRequest:
       type: object
       description: License Serializer
@@ -42681,6 +42684,16 @@ components:
           format: uuid
           nullable: true
           description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -42912,6 +42925,16 @@ components:
           format: uuid
           nullable: true
           description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -43375,6 +43398,16 @@ components:
           format: uuid
           nullable: true
           description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -43962,6 +43995,16 @@ components:
           format: uuid
           nullable: true
           description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
         component:
           type: string
           description: Get object component so that we know how to edit the object
@@ -44089,6 +44132,16 @@ components:
           format: uuid
           nullable: true
           description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -46035,6 +46088,16 @@ components:
           format: uuid
           nullable: true
           description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
         component:
           type: string
           description: Get object component so that we know how to edit the object
@@ -46163,6 +46226,16 @@ components:
           format: uuid
           nullable: true
           description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -47013,6 +47086,16 @@ components:
           format: uuid
           nullable: true
           description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
         component:
           type: string
           description: Get object component so that we know how to edit the object
@@ -47090,6 +47173,16 @@ components:
           format: uuid
           nullable: true
           description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:

@@ -35,7 +35,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
         this.propertyMappings = await new PropertymappingsApi(
             DEFAULT_CONFIG,
         ).propertymappingsLdapList({
-            ordering: "managed,object_field",
+            ordering: "managed",
         });
     }
 
@@ -275,12 +275,12 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("User Property Mappings")}
-                        name="propertyMappings"
+                        name="userPropertyMappings"
                     >
                         <select class="pf-c-form-control" multiple>
                             ${this.propertyMappings?.results.map((mapping) => {
                                 let selected = false;
-                                if (!this.instance?.propertyMappings) {
+                                if (!this.instance?.userPropertyMappings) {
                                     selected =
                                         mapping.managed?.startsWith(
                                             "goauthentik.io/sources/ldap/default",
@@ -290,7 +290,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                                         ) ||
                                         false;
                                 } else {
-                                    selected = Array.from(this.instance?.propertyMappings).some(
+                                    selected = Array.from(this.instance?.userPropertyMappings).some(
                                         (su) => {
                                             return su == mapping.pk;
                                         },
@@ -313,18 +313,18 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Group Property Mappings")}
-                        name="propertyMappingsGroup"
+                        name="groupPropertyMappings"
                     >
                         <select class="pf-c-form-control" multiple>
                             ${this.propertyMappings?.results.map((mapping) => {
                                 let selected = false;
-                                if (!this.instance?.propertyMappingsGroup) {
+                                if (!this.instance?.groupPropertyMappings) {
                                     selected =
                                         mapping.managed ===
                                         "goauthentik.io/sources/ldap/default-name";
                                 } else {
                                     selected = Array.from(
-                                        this.instance?.propertyMappingsGroup,
+                                        this.instance?.groupPropertyMappings,
                                     ).some((su) => {
                                         return su == mapping.pk;
                                     });
