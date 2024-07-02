@@ -6798,11 +6798,6 @@ Bindings to groups/users are checked against the user of the event.</source>
         <target>由 authentik 技術支援</target>
 
       </trans-unit>
-      <trans-unit id="sdf34a5599d66f85c">
-        <source>Background image</source>
-        <target>背景圖片</target>
-
-      </trans-unit>
       <trans-unit id="s7fa4e5e409d43573">
         <source>Error creating credential: <x id="0" equiv-text="${err}"/></source>
         <target>建立憑證時發生錯誤： <x id="0" equiv-text="${err}"/></target>
@@ -8505,6 +8500,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s23446284b56ca0cc">
   <source>Reputation score(s)</source>
+</trans-unit>
+<trans-unit id="s7a64ac07061f85b2">
+  <source>See documentation</source>
 </trans-unit>
     </body>
   </file>
