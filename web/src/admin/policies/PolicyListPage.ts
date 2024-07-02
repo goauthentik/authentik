@@ -7,7 +7,6 @@ import "@goauthentik/admin/policies/expression/ExpressionPolicyForm";
 import "@goauthentik/admin/policies/password/PasswordPolicyForm";
 import "@goauthentik/admin/policies/reputation/ReputationPolicyForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/forms/ConfirmationForm";
 import "@goauthentik/elements/forms/DeleteBulkForm";
@@ -49,13 +48,8 @@ export class PolicyListPage extends TablePage<Policy> {
     @property()
     order = "name";
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Policy>> {
-        return new PoliciesApi(DEFAULT_CONFIG).policiesAllList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
-        });
+    async apiEndpoint(): Promise<PaginatedResponse<Policy>> {
+        return new PoliciesApi(DEFAULT_CONFIG).policiesAllList(await this.defaultEndpointConfig());
     }
 
     columns(): TableColumn[] {

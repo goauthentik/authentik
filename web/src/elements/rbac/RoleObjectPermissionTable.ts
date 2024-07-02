@@ -31,9 +31,9 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
     checkbox = true;
     clearOnRefresh = true;
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<RoleAssignedObjectPermission>> {
+    async apiEndpoint(): Promise<PaginatedResponse<RoleAssignedObjectPermission>> {
         const perms = await new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByRolesList({
-            page: page,
+            ...(await this.defaultEndpointConfig()),
             // TODO: better default
             model: this.model || RbacPermissionsAssignedByRolesListModelEnum.CoreUser,
             objectPk: this.objectPk?.toString(),
@@ -52,7 +52,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
     }
 
     columns(): TableColumn[] {
-        const baseColumns = [new TableColumn("User", "user")];
+        const baseColumns = [new TableColumn(msg("User"), "user")];
         // We don't check pagination since models shouldn't need to have that many permissions?
         this.modelPermissions?.results.forEach((perm) => {
             baseColumns.push(new TableColumn(perm.name, perm.codename));

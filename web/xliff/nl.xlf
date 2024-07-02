@@ -6806,11 +6806,6 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
         <target>Ondersteund door authentik</target>
 
       </trans-unit>
-      <trans-unit id="sdf34a5599d66f85c">
-        <source>Background image</source>
-        <target>Achtergrondafbeelding</target>
-
-      </trans-unit>
       <trans-unit id="s7fa4e5e409d43573">
         <source>Error creating credential: <x id="0" equiv-text="${err}"/></source>
         <target>Fout bij aanmaken van referentie: <x id="0" equiv-text="${err}"/></target>
@@ -8388,6 +8383,9 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 </trans-unit>
 <trans-unit id="s23446284b56ca0cc">
   <source>Reputation score(s)</source>
+</trans-unit>
+<trans-unit id="s7a64ac07061f85b2">
+  <source>See documentation</source>
 </trans-unit>
     </body>
   </file>

@@ -219,7 +219,7 @@ export class LDAPProviderViewPage extends AKElement {
                                     class="pf-c-form-control"
                                     readonly
                                     type="text"
-                                    value="Your authentik password"
+                                    value=${msg("Your authentik password")}
                                 />
                             </div>
                             <div class="pf-c-form__group">

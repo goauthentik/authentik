@@ -1,7 +1,6 @@
 import "@goauthentik/admin/tokens/TokenForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { intentToLabel } from "@goauthentik/common/labels";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/buttons/Dropdown";
@@ -48,13 +47,8 @@ export class TokenListPage extends TablePage<Token> {
     @property()
     order = "expires";
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Token>> {
-        return new CoreApi(DEFAULT_CONFIG).coreTokensList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
-        });
+    async apiEndpoint(): Promise<PaginatedResponse<Token>> {
+        return new CoreApi(DEFAULT_CONFIG).coreTokensList(await this.defaultEndpointConfig());
     }
 
     columns(): TableColumn[] {
