@@ -2,7 +2,6 @@ import "@goauthentik/admin/rbac/ObjectPermissionModal";
 import "@goauthentik/admin/stages/invitation/InvitationForm";
 import "@goauthentik/admin/stages/invitation/InvitationListLink";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
@@ -62,7 +61,7 @@ export class InvitationListPage extends TablePage<Invitation> {
     @state()
     multipleEnrollmentFlows = false;
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Invitation>> {
+    async apiEndpoint(): Promise<PaginatedResponse<Invitation>> {
         try {
             // Check if any invitation stages exist
             const stages = await new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesList({
@@ -82,10 +81,7 @@ export class InvitationListPage extends TablePage<Invitation> {
             // assuming we can't fetch stages, ignore the error
         }
         return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
+            ...(await this.defaultEndpointConfig()),
         });
     }
 

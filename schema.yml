@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2024.4.2
+  version: 2024.6.0
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -13080,6 +13080,15 @@ paths:
         name: identifier
         schema:
           type: string
+      - in: query
+        name: identifier_in
+        schema:
+          type: array
+          items:
+            type: string
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
       - in: query
         name: ip
         schema:

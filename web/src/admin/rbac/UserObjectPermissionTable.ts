@@ -31,9 +31,9 @@ export class UserAssignedObjectPermissionTable extends Table<UserAssignedObjectP
     checkbox = true;
     clearOnRefresh = true;
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<UserAssignedObjectPermission>> {
+    async apiEndpoint(): Promise<PaginatedResponse<UserAssignedObjectPermission>> {
         const perms = await new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByUsersList({
-            page: page,
+            ...(await this.defaultEndpointConfig()),
             // TODO: better default
             model: this.model || RbacPermissionsAssignedByUsersListModelEnum.CoreUser,
             objectPk: this.objectPk?.toString(),
@@ -52,7 +52,7 @@ export class UserAssignedObjectPermissionTable extends Table<UserAssignedObjectP
     }
 
     columns(): TableColumn[] {
-        const baseColumns = [new TableColumn("User", "user")];
+        const baseColumns = [new TableColumn(msg("User"), "user")];
         // We don't check pagination since models shouldn't need to have that many permissions?
         this.modelPermissions?.results.forEach((perm) => {
             baseColumns.push(new TableColumn(perm.name, perm.codename));

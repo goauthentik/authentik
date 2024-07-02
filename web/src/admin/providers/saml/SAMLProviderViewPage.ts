@@ -512,7 +512,7 @@ export class SAMLProviderViewPage extends AKElement {
                 <div class="pf-c-card__body">
                     ${renderDescriptionList([
                         [
-                            "Preview for user",
+                            msg("Preview for user"),
                             html`
                                 <ak-search-select
                                     .fetchObjects=${async (query?: string): Promise<User[]> => {

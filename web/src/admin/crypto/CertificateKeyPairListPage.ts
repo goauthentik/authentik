@@ -2,7 +2,6 @@ import "@goauthentik/admin/crypto/CertificateGenerateForm";
 import "@goauthentik/admin/crypto/CertificateKeyPairForm";
 import "@goauthentik/admin/rbac/ObjectPermissionModal";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/components/ak-status-label";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/buttons/SpinnerButton";
@@ -53,13 +52,10 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
         return super.styles.concat(PFDescriptionList);
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<CertificateKeyPair>> {
-        return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
-        });
+    async apiEndpoint(): Promise<PaginatedResponse<CertificateKeyPair>> {
+        return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList(
+            await this.defaultEndpointConfig(),
+        );
     }
 
     columns(): TableColumn[] {
