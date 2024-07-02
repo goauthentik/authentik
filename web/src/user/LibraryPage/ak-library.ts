@@ -9,8 +9,8 @@ import { customElement, state } from "lit/decorators.js";
 
 import { Application, CoreApi } from "@goauthentik/api";
 
-import "./LibraryPageImpl";
-import type { PageUIConfig } from "./types";
+import "./ak-library-impl.js";
+import type { PageUIConfig } from "./types.js";
 
 /**
  * List of Applications available
@@ -35,6 +35,10 @@ export class LibraryPage extends AKElement {
     @state()
     isAdmin = false;
 
+    /**
+     * The list of applications. This is the *complete* list; the constructor fetches as many pages
+     * as the server announces when page one is accessed, and then concatenates them all together.
+     */
     @state()
     apps: Application[] = [];
 
