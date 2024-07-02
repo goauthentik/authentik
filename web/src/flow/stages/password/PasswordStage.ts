@@ -7,11 +7,13 @@ import { PasswordManagerPrefill } from "@goauthentik/flow/stages/identification/
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
+import { query } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -21,20 +23,32 @@ import { PasswordChallenge, PasswordChallengeResponseRequest } from "@goauthenti
 @customElement("ak-stage-password")
 export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChallengeResponseRequest> {
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle];
+        return [PFBase, PFLogin, PFInputGroup, PFForm, PFFormControl, PFButton, PFTitle];
     }
 
     input?: HTMLInputElement;
 
     timer?: number;
 
+    @query("#ak-stage-password-input")
+    password!: HTMLInputElement;
+
     hasError(field: string): boolean {
         const errors = (this.challenge?.responseErrors || {})[field];
         return (errors || []).length > 0;
     }
 
+    togglePasswordVisibility(ev: PointerEvent) {
+        ev.stopPropagation();
+        ev.preventDefault();
+        // State is saved in the DOM, and read from the DOM. Directly affects the DOM,
+        // so no `.requestUpdate()` required. Effect is immediately visible.
+        this.password.type = this.password.type === "password" ? "text" : "password";
+    }
+
     renderInput(): HTMLInputElement {
         this.input = document.createElement("input");
+        this.input.id = "ak-stage-password-input";
         this.input.type = "password";
         this.input.name = "password";
         this.input.placeholder = msg("Please enter your password");
@@ -78,6 +92,8 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
     }
 
     render(): TemplateResult {
+        const passwordHidden = this.password?.type === "password";
+
         if (!this.challenge) {
             return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
             </ak-empty-state>`;
@@ -115,7 +131,21 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                         class="pf-c-form__group"
                         .errors=${(this.challenge?.responseErrors || {})["password"]}
                     >
-                        ${this.renderInput()}
+                        <div class="pf-c-input-group">
+                            ${this.renderInput()}
+                            <button
+                                class="pf-c-button pf-m-control"
+                                type="button"
+                                aria-label=${passwordHidden
+                                    ? msg("Show password")
+                                    : msg("Hide Password")}
+                                @click=${(ev: PointerEvent) => this.togglePasswordVisibility(ev)}
+                            >
+                                ${passwordHidden
+                                    ? html`<i class="fas fa-eye" aria-hidden="true"></i>`
+                                    : html`<i class="fas fa-eye-slash" aria-hidden="true"></i>`}
+                            </button>
+                        </div>
                     </ak-form-element>
 
                     ${this.challenge.recoveryUrl

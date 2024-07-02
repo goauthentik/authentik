@@ -6,12 +6,14 @@ import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, css, html, nothing } from "lit";
+import { query } from "lit/decorators.js";
 import { customElement } from "lit/decorators.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -44,23 +46,36 @@ export class IdentificationStage extends BaseStage<
 > {
     form?: HTMLFormElement;
 
+    @query("#ak-stage-identification-password")
+    password!: HTMLInputElement;
+
     static get styles(): CSSResult[] {
-        return [PFBase, PFAlert, PFLogin, PFForm, PFFormControl, PFTitle, PFButton].concat(css`
-            /* login page's icons */
-            .pf-c-login__main-footer-links-item button {
-                background-color: transparent;
-                border: 0;
-                display: flex;
-                align-items: stretch;
-            }
-            .pf-c-login__main-footer-links-item img {
-                fill: var(--pf-c-login__main-footer-links-item-link-svg--Fill);
-                width: 100px;
-                max-width: var(--pf-c-login__main-footer-links-item-link-svg--Width);
-                height: 100%;
-                max-height: var(--pf-c-login__main-footer-links-item-link-svg--Height);
-            }
-        `);
+        return [
+            PFBase,
+            PFAlert,
+            PFInputGroup,
+            PFLogin,
+            PFForm,
+            PFFormControl,
+            PFTitle,
+            PFButton,
+            css`
+                /* login page's icons */
+                .pf-c-login__main-footer-links-item button {
+                    background-color: transparent;
+                    border: 0;
+                    display: flex;
+                    align-items: stretch;
+                }
+                .pf-c-login__main-footer-links-item img {
+                    fill: var(--pf-c-login__main-footer-links-item-link-svg--Fill);
+                    width: 100px;
+                    max-width: var(--pf-c-login__main-footer-links-item-link-svg--Width);
+                    height: 100%;
+                    max-height: var(--pf-c-login__main-footer-links-item-link-svg--Height);
+                }
+            `,
+        ];
     }
 
     updated(changedProperties: PropertyValues<this>) {
@@ -68,6 +83,14 @@ export class IdentificationStage extends BaseStage<
             this.autoRedirect();
             this.createHelperForm();
         }
+    }
+
+    togglePasswordVisibility(ev: PointerEvent) {
+        ev.stopPropagation();
+        ev.preventDefault();
+        // State is saved in the DOM, and read from the DOM. Directly affects the DOM,
+        // so no `.requestUpdate()` required. Effect is immediately visible.
+        this.password.type = this.password.type === "password" ? "text" : "password";
     }
 
     autoRedirect(): void {
@@ -208,6 +231,8 @@ export class IdentificationStage extends BaseStage<
     }
 
     renderInput(): TemplateResult {
+        const passwordHidden = this.password?.type === "password";
+
         let type: "text" | "email" = "text";
         if (!this.challenge?.userFields || this.challenge.userFields.length === 0) {
             return html`<p>${msg("Select one of the options below to continue.")}</p>`;
@@ -256,15 +281,30 @@ export class IdentificationStage extends BaseStage<
                           class="pf-c-form__group"
                           .errors=${(this.challenge.responseErrors || {})["password"]}
                       >
-                          <input
-                              type="password"
-                              name="password"
-                              placeholder="${msg("Password")}"
-                              autocomplete="current-password"
-                              class="pf-c-form-control"
-                              required
-                              value=${PasswordManagerPrefill.password || ""}
-                          />
+                          <div class="pf-c-input-group">
+                              <input
+                                  id="ak-stage-identification-password"
+                                  type="password"
+                                  name="password"
+                                  placeholder="${msg("Password")}"
+                                  autocomplete="current-password"
+                                  class="pf-c-form-control"
+                                  required
+                                  value=${PasswordManagerPrefill.password || ""}
+                              />
+                              <button
+                                  class="pf-c-button pf-m-control"
+                                  type="button"
+                                  aria-label=${passwordHidden
+                                      ? msg("Show password")
+                                      : msg("Hide Password")}
+                                  @click=${(ev: PointerEvent) => this.togglePasswordVisibility(ev)}
+                              >
+                                  ${passwordHidden
+                                      ? html`<i class="fas fa-eye" aria-hidden="true"></i>`
+                                      : html`<i class="fas fa-eye-slash" aria-hidden="true"></i>`}
+                              </button>
+                          </div>
                       </ak-form-element>
                   `
                 : nothing}
