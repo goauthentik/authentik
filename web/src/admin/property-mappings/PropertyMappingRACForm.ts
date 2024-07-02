@@ -160,6 +160,7 @@ export class PropertyMappingLDAPForm extends ModelForm<RACPropertyMapping, strin
                             ${msg("Expression using Python.")}
                             <a
                                 target="_blank"
+                                rel="noopener noreferrer"
                                 href="${docLink(
                                     "/docs/property-mappings/expression?utm_source=authentik",
                                 )}"
