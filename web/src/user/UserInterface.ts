@@ -4,6 +4,8 @@ import {
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
     EVENT_WS_MESSAGE,
 } from "@goauthentik/common/constants";
+import { WithOAuth } from "@goauthentik/common/oauth/interface";
+import { userSettings } from "@goauthentik/common/oauth/settings";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { UIConfig, UserDisplay } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
@@ -206,10 +208,7 @@ class UserInterfacePresentation extends AKElement {
                             <!-- -->
                             ${this.renderSettings()}
                             <div class="pf-c-page__header-tools-item">
-                                <a
-                                    href="/flows/-/default/invalidation/"
-                                    class="pf-c-button pf-m-plain"
-                                >
+                                <a href="#/oauth-signou" class="pf-c-button pf-m-plain">
                                     <pf-tooltip position="top" content=${msg("Sign out")}>
                                         <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
                                     </pf-tooltip>
@@ -384,7 +383,7 @@ class UserInterfacePresentation extends AKElement {
 //
 //
 @customElement("ak-interface-user")
-export class UserInterface extends EnterpriseAwareInterface {
+export class UserInterface extends WithOAuth(EnterpriseAwareInterface, userSettings) {
     @property({ type: Boolean })
     notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
 
