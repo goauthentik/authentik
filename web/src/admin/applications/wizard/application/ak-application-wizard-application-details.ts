@@ -67,7 +67,7 @@ export class ApplicationWizardApplicationDetails extends BasePanel {
                 .value=${this.wizard.app?.policyEngineMode}
                 .errorMessages=${this.wizard.errors.app?.policyEngineMode ?? []}
             ></ak-radio-input>
-            <ak-form-group aria-label="UI Settings">
+            <ak-form-group aria-label=${msg("UI Settings")}>
                 <span slot="header"> ${msg("UI Settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-text-input

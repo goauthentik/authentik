@@ -26,10 +26,12 @@ import { OutpostsApi, ServiceConnection, ServiceConnectionState } from "@goauthe
 @customElement("ak-outpost-service-connection-list")
 export class OutpostServiceConnectionListPage extends TablePage<ServiceConnection> {
     pageTitle(): string {
-        return "Outpost integrations";
+        return msg("Outpost integrations");
     }
     pageDescription(): string | undefined {
-        return "Outpost integrations define how authentik connects to external platforms to manage and deploy Outposts.";
+        return msg(
+            "Outpost integrations define how authentik connects to external platforms to manage and deploy Outposts.",
+        );
     }
     pageIcon(): string {
         return "pf-icon pf-icon-integration";

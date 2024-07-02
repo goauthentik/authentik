@@ -75,7 +75,10 @@ def on_login_failed(
     **kwargs,
 ):
     """Failed Login, authentik custom event"""
-    Event.new(EventAction.LOGIN_FAILED, **credentials, stage=stage, **kwargs).from_http(request)
+    user = User.objects.filter(username=credentials.get("username")).first()
+    Event.new(EventAction.LOGIN_FAILED, **credentials, stage=stage, **kwargs).from_http(
+        request, user
+    )
 
 
 @receiver(invitation_used)

@@ -43,7 +43,7 @@ export class RACLaunchEndpointModal extends TableModal<Endpoint> {
     }
 
     columns(): TableColumn[] {
-        return [new TableColumn("Name")];
+        return [new TableColumn(msg("Name"))];
     }
 
     row(item: Endpoint): TemplateResult[] {

@@ -22,15 +22,19 @@ RUN npm run build-bundled
 # Stage 2: Build webui
 FROM --platform=${BUILDPLATFORM} docker.io/node:22 as web-builder
 
+ARG GIT_BUILD_HASH
+ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
 ENV NODE_ENV=production
 
 WORKDIR /work/web
 
 RUN --mount=type=bind,target=/work/web/package.json,src=./web/package.json \
     --mount=type=bind,target=/work/web/package-lock.json,src=./web/package-lock.json \
+    --mount=type=bind,target=/work/web/scripts,src=./web/scripts \
     --mount=type=cache,id=npm-web,sharing=shared,target=/root/.npm \
     npm ci --include=dev
 
+COPY ./package.json /work
 COPY ./web /work/web/
 COPY ./website /work/website/
 COPY ./gen-ts-api /work/web/node_modules/@goauthentik/api
