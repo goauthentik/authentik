@@ -377,6 +377,13 @@ Configure Celery worker concurrency for authentik worker (see https://docs.celer
 
 Defaults to 2.
 
+### `AUTHENTIK_DJANGO_PRIMARY_HASHER`
+
+Configure Django to use the given hasher as primary. It is used if LDAP passwords are encrypted and persisted in the Authentik database (see [Password Login](https://goauthentik.io/docs/sources/ldap/#password-login))
+
+Defaults to the default django hash hierarchy (currently django.contrib.auth.hashers.PBKDF2PasswordHasher as primary).
+
+
 ## System settings
 
 :::info
