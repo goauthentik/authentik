@@ -6,7 +6,7 @@ title: Mobilizon
 
 ## What is Mobilizon
 
-> Gather, organize and mobilize yourselves with a convivial, ethical, and emancipating tool. https://joinmobilizon.org
+> Mobilizon is an open-source platform designed for organizing events and mobilizing communities in a privacy-respecting and decentralized manner, offering features for event scheduling, RSVP management, and community engagement.
 >
 > -- https://joinmobilizon.org/
 

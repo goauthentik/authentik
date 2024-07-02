@@ -10,6 +10,7 @@ title: Jellyfin
 >
 > -- https://jellyfin.org
 
+note to self: 3?
 :::note
 Jellyfin does not have any native external authentication support as of the writing of this page.
 :::

@@ -6,11 +6,7 @@ title: Red Hat Ansible Automation Platform / AWX
 
 ## What is Tower
 
-From
-
-> Red Hat Ansible Automation Platform (RHAAP) (formerly ‘AWX’) is a web-based solution that makes Ansible even more easy to use for IT teams of all kinds. It’s designed to be the hub for all of your automation tasks.
->
-> Tower allows you to control access to who can access what, even allowing sharing of SSH credentials without someone being able to transfer those credentials. Inventory can be graphically managed or synced with a wide variety of cloud sources. It logs all of your jobs, integrates well with LDAP, and has an amazing browsable REST API. Command line tools are available for easy integration with Jenkins as well. Provisioning callbacks provide great support for autoscaling topologies.
+> AWX Tower is an open-source automation toolset that simplifies IT management by orchestrating tasks, streamlining workflows, and automating repetitive processes across hybrid cloud environments.
 >
 > -- https://docs.ansible.com/ansible/latest/reference_appendices/tower.html
 
@@ -52,8 +48,7 @@ Provide metadata in the `SAML Service Provider Organization Info` field:
 }
 ```
 
-Provide metadata in the `SAML Service Provider Technical Contact` and `SAML Service Provider Technical Contact` fields:
-
+Provide metadata in the **SAML Service Provider Technical Contact** and **SAML Service Provider Technical Contact** fields:
 ```json
 {
     "givenName": "Admin Name",
@@ -61,8 +56,7 @@ Provide metadata in the `SAML Service Provider Technical Contact` and `SAML Serv
 }
 ```
 
-In the `SAML Enabled Identity Providers` paste the following configuration:
-
+Paste the following configuration into the SAML Enabled Identity Providers:
 ```json
 {
     "authentik": {
@@ -77,4 +71,4 @@ In the `SAML Enabled Identity Providers` paste the following configuration:
 }
 ```
 
-`x509cert` is the certificate configured in authentik. Remove the `--BEGIN CERTIFICATE--` and `--END CERTIFICATE--` headers, then enter the cert as one non-breaking string.
+`x509cert` is the certificate configured in authentik. Remove the `--BEGIN CERTIFICATE--` and `--END CERTIFICATE--` headers, and then enter the certificate as a single continuous string.

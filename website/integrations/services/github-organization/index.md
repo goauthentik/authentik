@@ -6,7 +6,7 @@ title: GitHub Organization
 
 ## What is GitHub Organizations
 
-> Organizations are shared accounts where businesses and open-source projects can collaborate across many projects at once, with sophisticated security and administrative features.
+> GitHub organizations are collective spaces on GitHub where teams and individuals collaborate on projects, manage access permissions, and organize repositories under a unified identity.
 >
 > -- https://docs.github.com/en/organizations/collaborating-with-groups-in-organizations/about-organizations
 
@@ -46,6 +46,6 @@ Once these fields are populated, you can use the `Test SAML configuration` butto
 
 Scroll down to hit the `Save` button below.
 
-![Screenshot showing populated GitHub organization SAML settings](ghorg_saml_settings.png)
+![Screenshot showing populated GitHub organization SAML settings](./ghorg-01.png)
 
 This enables SAML as an authentication _option_. If you want to _require_ SAML for your organization, visit your SSO url at `https://github.com/orgs/foo/sso` and sign in. Once signed in, you can navigate back to the `Authentication security` page and check `Require SAML SSO authentication for all members of the foo organization.`

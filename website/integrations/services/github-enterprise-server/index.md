@@ -6,7 +6,7 @@ title: GitHub Enterprise Server
 
 ## What is GitHub Enterprise Server
 
-> GitHub Enterprise Server is a self-hosted platform for software development within your enterprise. Your team can use GitHub Enterprise Server to build and ship software using Git version control, powerful APIs, productivity and collaboration tools, and integrations. Developers familiar with GitHub.com can onboard and contribute seamlessly using familiar features and workflows.
+> GitHub Enterprise Server is a self-hosted version of GitHub designed for enterprise-scale software development, offering on-premises deployment options for organizations requiring greater control over their development environment. 
 >
 > -- https://docs.github.com/en/enterprise-server@3.5/admin/overview/about-github-enterprise-server
 
@@ -41,6 +41,6 @@ On this page:
 -   For `Validation certificate`, upload the signing certificate you downloaded after creating the provider.
 -   Press Save settings on the left-hand side and wait for the changes to apply.
 
-![Screenshot showing populated GitHub Enterprise Server SAML settings](ghes_saml_settings.png)
+![Screenshot showing populated GitHub Enterprise Server SAML settings](./ghes-01.png)
 
 Once the appliance has saved the settings and reloaded the services, you should be able to navigate to your instance URL at `https://github.company` and sign in with SAML.

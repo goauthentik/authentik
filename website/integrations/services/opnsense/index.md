@@ -6,13 +6,9 @@ title: OPNsense
 
 ## What is OPNsense
 
-> OPNsense is a free and Open-Source FreeBSD-based firewall and routing software. It is licensed under an Open Source Initiative approved license.
+> OPNsense is a free and Open-Source FreeBSD-based firewall and routing software.
 >
 > -- https://opnsense.org/
-
-:::note
-This is based on authentik 2024.2.2 and OPNsense 24.1.3_1-amd64 installed using https://docs.opnsense.org/manual/install.html. Instructions may differ between versions.
-:::
 
 ## Preparation
 
@@ -84,13 +80,13 @@ Change the following fields
 -   Authentication containers: OU=users,DC=ldap,DC=goauthentik,DC=io;OU=groups,DC=ldap,DC=goauthentik,DC=io
 -   Extended Query: &(objectClass=user)
 
-![](./opnsense1.png)
+![](./opnsense-01.png)
 
 ### Step 6
 
 In OPNsense, go to _System/Settings/Administration_ and under _Authentication_ at the bottom of that page, add `authentik` to the Server list
 
-![](./opnsense2.png)
+![](./opnsense-02.png)
 
 ### Step 7
 

@@ -6,8 +6,7 @@ title: Sentry
 
 ## What is Sentry
 
-> Sentry provides self-hosted and cloud-based error monitoring that helps all software teams discover, triage, and prioritize errors in real-time.
-> One million developers at over fifty thousand companies already ship better software faster with Sentry. Won’t you join them?
+> Sentry is an open-source error tracking platform that helps developers monitor and fix crashes in real-time.
 >
 > -- https://sentry.io
 
@@ -36,7 +35,7 @@ Under _Advanced protocol settings_, set the following:
 
 Navigate to Settings -> Auth, and click on Configure next to SAML2
 
-![](./auth.png)
+![](./sentry-01.png)
 
 In authentik, get the Metadata URL by right-clicking `Download Metadata` and selecting Copy Link Address, and paste that URL into Sentry.
 

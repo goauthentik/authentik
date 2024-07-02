@@ -6,7 +6,7 @@ title: Snipe-IT
 
 ## What is Snipe-IT
 
-> A free open source IT asset/license management system.
+> Snipe-IT is an open-source asset management software designed to help organizations track and manage their IT assets.
 >
 > -- https://snipeitapp.com
 
@@ -15,6 +15,7 @@ This setup assumes you will be using HTTPS as Snipe-It dynamically generates the
 :::
 
 :::caution
+node to self: mabye not a caution or mabye switch to paragraph
 In case something goes wrong with the configuration, you can use the URL `http://inventory.company/login?nosaml` to log in using the
 built-in authentication.
 :::

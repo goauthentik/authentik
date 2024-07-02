@@ -6,7 +6,7 @@ title: SonarQube
 
 ## What is SonarQube
 
-> Self-managed static analysis tool for continuous codebase inspection
+> SonarQube is an open-source platform for continuous code quality inspection.
 >
 > -- https://www.sonarsource.com/products/sonarqube/
 

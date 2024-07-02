@@ -6,9 +6,9 @@ title: Bookstack
 
 ## What is Bookstack
 
-> BookStack is a free and open-source wiki software aimed for a simple, self-hosted, and easy-to-use platform. Based on Laravel, a PHP framework, BookStack is released under the MIT License. It uses the ideas of books to organise pages and store information. BookStack is multilingual and available in over thirty languages. For the simplicity, BookStack is considered as suitable for smaller businesses or freelancers.
+> BookStack is a self-hosted and open-source platform for organizing and documenting information, providing a user-friendly interface for creating and managing documentation, wikis, and knowledge bases within teams and organizations.
 >
-> -- https://en.wikipedia.org/wiki/BookStack
+> -- https://www.bookstackapp.com
 
 :::note
 This is based on authentik 2021.7.2 and BookStack V21.05.3. Instructions may differ between versions.
@@ -39,7 +39,7 @@ In authentik, under _Providers_, create a _SAML Provider_ with these settings:
 -   Signing Certificate: Choose your certificate or the default authentik Self-signed Certificate
     All other options as default.
 
-![](./authentik_saml_bookstack.png)
+![](./bookstack-01.png)
 
 ### Step 2
 
@@ -58,13 +58,13 @@ Obtain your Metadata URL from authentik.
 2. Click the Metadata Tab
 3. Click Copy download URL (This URL is the `METADATAURL` required in Step 4)
 
-![](./metadataurl.png)
+![](./bookstack-02.png)
 
 ### Step 4
 
 Edit the `.env` file inside of the `www` folder of Bookstack.
 
-Modify the following Example SAML config and paste incorporate into your `.env` file
+Modify the following example SAML config and incorporate it into your `.env` file
 
 ```bash
 # Set authentication method to be saml2

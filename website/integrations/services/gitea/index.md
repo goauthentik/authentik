@@ -6,7 +6,7 @@ title: Gitea
 
 ## What is Gitea
 
-> Gitea is a community managed lightweight code hosting solution written in Go. It is published under the MIT license.
+> Gitea is a community managed lightweight code hosting solution.
 >
 > -- https://gitea.io/
 
@@ -64,7 +64,7 @@ Change the following fields
 -   OpenID Connect Auto Discovery URL: https://authentik.company/application/o/gitea-slug/.well-known/openid-configuration
 -   Additional Scopes: `email profile`
 
-![](./gitea1.png)
+![](./gitea-01.png)
 
 `Add Authentication Source` and you should be done. Your Gitea login page should now have a `Sign in With` followed by the authentik logo which you can click on to sign-in to Gitea with Authentik creds.
 

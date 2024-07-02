@@ -6,13 +6,9 @@ title: Portainer
 
 ## What is Portainer
 
-> Portainer is a powerful, GUI-based Container-as-a-Service solution that helps organizations manage and deploy cloud-native applications easily and securely.
+> Portainer is an open-source management tool for Docker and Kubernetes, offering a user-friendly interface to deploy, manage, and monitor containerized applications.
 >
-> -- https://www.portainer.io/
-
-:::note
-This is based on authentik 2021.7.3 and Portainer 2.6.x-CE. Portainer 2.6 supports OAuth without additional licenses, 1.x Series requires a paid license for OAuth.
-:::
+> -- https://www.portainer.io
 
 ## Preparation
 
@@ -54,7 +50,7 @@ In Portainer, under _Settings_, _Authentication_, Select _OAuth_ and _Custom_
 Portainer by default shows commas between each item in the Scopes field. Do **NOT** use commas. Use a _space_
 :::
 
-![](./port1.png)
+![](./portainer-01.png)
 
 ### Step 3 - authentik
 

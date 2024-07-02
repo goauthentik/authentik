@@ -10,10 +10,6 @@ title: Ubuntu Landscape
 >
 > -- https://en.wikipedia.org/wiki/Landscape_(software)
 
-:::caution
-This requires authentik 0.10.3 or newer.
-:::
-
 ## Preparation
 
 The following placeholders will be used:

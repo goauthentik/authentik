@@ -6,7 +6,7 @@ title: phpIPAM
 
 ## What is phpIPAM
 
-> phpipam is an open-source web IP address management application (IPAM). Its goal is to provide light, modern and useful IP address management. It is php-based application with MySQL database backend, using jQuery libraries, ajax and HTML5/CSS3 features.
+> phpIPAM is an open-source web IP address management application.
 >
 > -- https://phpipam.net/
 
@@ -140,7 +140,7 @@ In order to support automatic user provisioning (JIT) with phpIPAM, additional S
         return "*:1"
     ```
 
-![](./phpipam-property-mappings.png)
+![](./phpipam-01.png)
 
 ### Step 3 - Provider creation
 
@@ -158,8 +158,8 @@ In order to support automatic user provisioning (JIT) with phpIPAM, additional S
         -   Property Mappings: Select All Available
         -   NameID Property Mapping: authentik default SAML Mapping: Username
 
-![](./phpipam-saml-provider-protocol-settings.png)
-![](./phpipam-saml-advanced-provider-protocol-settings.png)
+![](./phpipam-02.png)
+![](./phpipam-03.png)
 
 ### Step 4 - Application creation
 
@@ -178,7 +178,7 @@ Select ipam-saml application
     -   Add `guest-permission-group`
 
 Leave all other settings as default
-![](./ipam-saml-application-bindings.png)
+![](./phpipam-04.png)
 
 ## phpIPAM Configuration
 
@@ -202,11 +202,11 @@ Select Create New -> SAML2 Authentication
 -   Sign Authn requests: Off
 
 Leave everything else as default. Save changes
-![](./phpipam-auth-method-config.png)
+![](./phpipam-05.png)
 
 ### Test login
 
-![](./ipam-saml2-login-location.png)
+![](./phpipam-06.png)
 Browse to `phpipam.company`, select the SAML2 login hyperlink (or access directly from the authentik application menu)
 From here, you should be able to login as each of the test-users and see the affects the saml attributes has with the permissions set. These can be fine tuned as needed by following the phpipam documentation, but should be enough to get a basic permissive installation working with authentik as the SAML provider.
-![](./phpipam-automatic-user-creation-permissions.png)
+![](./phpipam-07.png)

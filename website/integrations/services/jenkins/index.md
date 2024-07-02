@@ -6,7 +6,7 @@ title: Jenkins
 
 ## What is Jenkins
 
-> The leading open source automation server, Jenkins provides hundreds of plugins to support building, deploying and automating any project.
+> Jenkins is an open-source automation server primarily used for continuous integration and continuous delivery tasks in software development projects.
 >
 > -- https://www.jenkins.io/
 

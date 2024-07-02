@@ -6,7 +6,7 @@ title: Proxmox VE
 
 ## What is Proxmox VE
 
-> Proxmox Virtual Environment is an open source server virtualization management solution based on QEMU/KVM and LXC. You can manage virtual machines, containers, highly available clusters, storage and networks with an integrated, easy-to-use web interface or via CLI. Proxmox VE code is licensed under the GNU Affero General Public License, version 3. The project is developed and maintained by Proxmox Server Solutions GmbH.
+> Proxmox VE is an open-source virtualization platform that combines virtualization, containerization, and software-defined storage in a single solution, offering a powerful and flexible infrastructure for running and managing virtual machines, containers, and virtualized environments.
 >
 > -- https://pve.proxmox.com/wiki/Main_Page
 
@@ -39,7 +39,7 @@ Set the Launch URL to `https://proxmox.company:8006`.
 
 Proxmox VE allows configuration of authentication sources using the web interface (under Datacenter -> Permissions -> Realms).
 
-![](proxmox-source.png)
+![](./proxmox-01.png)
 
 Another way is to use the CLI. SSH into any Proxmox cluster node, and issue the following command:
 
@@ -53,4 +53,4 @@ the user to be able to perform actions immediately after first login.
 
 There is no way to directly trigger an OpenID Connect login in Proxmox, but if you set the source as 'default', it will be automatically selected on the Proxmox login screen.
 
-![](proxmox-login.png)
+![](./proxmox-02.png)

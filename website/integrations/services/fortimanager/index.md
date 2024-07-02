@@ -6,9 +6,7 @@ title: FortiManager
 
 ## What is FortiManager
 
-> FortiManager supports network operations use cases for centralized management, best practices compliance, and workflow automation to provide better protection against breaches.
->
-> FortiManager is a paid enterprise product.
+> FortiManager is a centralized management platform developed by Fortinet, designed to streamline the administration and monitoring of Fortinet security devices across distributed networks.
 >
 > -- https://www.fortinet.com/products/management/fortimanager
 

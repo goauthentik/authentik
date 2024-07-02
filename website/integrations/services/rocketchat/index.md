@@ -6,13 +6,9 @@ title: Rocket.chat
 
 ## What is Rocket.chat
 
-> Rocket.Chat is an open-source fully customizable communications platform developed in JavaScript for organizations with high standards of data protection. It is licensed under the MIT License with some other licenses mixed in. See [Rocket.chat GitHub](https://github.com/RocketChat/Rocket.Chat/blob/develop/LICENSE) for licensing information.
+> Rocket.Chat is an open-source team collaboration platform, offering chat, video conferencing, and file-sharing capabilities.
 >
-> -- https://github.com/RocketChat/Rocket.Chat
-
-:::note
-This is based on authentik 2022.3.1 and Rocket.chat 4.5.1 using the [Docker-Compose install](https://docs.rocket.chat/quick-start/installing-and-updating/rapid-deployment-methods/docker-and-docker-compose/docker-containers). Instructions may differ between versions.
-:::
+> -- https://www.rocket.chat/
 
 ## Preparation
 
@@ -40,7 +36,7 @@ Only settings that have been modified from default have been listed.
 https://rocket.company/_oauth/authentik
 ```
 
-![](./rocketchat1.png)
+![](./rocketchat-01.png)
 
 ### Step 2
 
@@ -58,7 +54,7 @@ https://rocket.company/_oauth/authentik
 
 ```
 
-![](./rocketchat2.png)
+![](./rocketchat-02.png)
 
 ### Step 3
 
@@ -78,7 +74,7 @@ In Rocket.chat, follow the procedure below:
 
 4. Give your new oauth the name of _Authentik_, then click _Send_
 
-![](./rocketchat6.png)
+![](./rocketchat-03.png)
 
 5. Scroll down to the new OAuth application, expand the dropdown, and enter the following settings:
 
@@ -107,13 +103,13 @@ In Rocket.chat, follow the procedure below:
     - Merge users: Turn the radio button to the _on_ position
     - Show Button on Login Page: Turn the radio button to the _on_ position
 
-    ![](./rocketchat7.png)
+    ![](./rocketchat-04.png)
 
-    ![](./rocketchat8.png)
+    ![](./rocketchat-05.png)
 
-    ![](./rocketchat9.png)
+    ![](./rocketchat-06.png)
 
-    ![](./rocketchat10.png)
+    ![](./rocketchat-07.png)
 
 6. Click _Save changes_ in the top right corner of the screen
 

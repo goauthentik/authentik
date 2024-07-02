@@ -8,7 +8,7 @@ title: HedgeDoc
 
 > HedgeDoc lets you create real-time collaborative markdown notes.
 >
-> -- https://github.com/hedgedoc/hedgedoc
+> -- https://hedgedoc.org
 
 ## Preparation
 

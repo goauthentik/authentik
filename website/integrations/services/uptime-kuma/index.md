@@ -8,7 +8,7 @@ title: Uptime Kuma
 
 > Uptime Kuma is an easy-to-use self-hosted monitoring tool.
 >
-> -- https://github.com/louislam/uptime-kuma
+> -- https://uptime.kuma.pet
 
 Uptime Kuma currently supports only a single user and no native SSO solution. To still use authentik, you can work with the Proxy Outpost and a Proxy Provider.
 

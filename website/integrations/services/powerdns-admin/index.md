@@ -6,7 +6,7 @@ title: PowerDNS-Admin
 
 ## What is PowerDNS-Admin
 
-> A PowerDNS web interface with advanced features.
+> PowerDNS-Admin is an open-source web-based administration tool for PowerDNS (an open-source DNS server).
 >
 > -- https://github.com/ngoduykhanh/PowerDNS-Admin
 

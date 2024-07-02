@@ -6,9 +6,9 @@ title: organizr
 
 ## What is organizr
 
-> Organizr allows you to setup "Tabs" that will be loaded all in one webpage.
+> Organizr is a self-hosted web application that serves as a customizable homepage and dashboard for managing and accessing various web services, applications, and utilities in a unified interface.
 >
-> -- https://github.com/causefx/Organizr
+> -- https://docs.organizr.app
 
 This integration leverages authentik's LDAP for the identity provider to achieve an SSO experience. See [ldap provider generic setup](../../../docs/providers/ldap/generic_setup) for setting up the LDAP provider.
 
@@ -30,17 +30,17 @@ _Optionally_, create a new group like `organizr users` to scope access to the or
 ## authentik Configuration
 
 1. Create a new Proxy Provider for `https://organizr.company`
-   ![](./organizr1.png)
+   ![](./organizr-01.png)
    _Optionally_, add the regular expression to allow api calls in the advanced protocol settings.
-   ![](./organizr2.png)
+   ![](./organizr-02.png)
 2. Create a new Application for the `https://organizr.company` Provider.
-   ![](./organizr3.png)
+   ![](./organizr-03.png)
    :::tip
    _Optionally_, bind the group to control access to the organizr to the application.
-   ![](./organizr4.png)
+   ![](./organizr-04.png)
    :::
 
-![](./organizr5.png)
+![](./organizr-05.png)
 ::: 3. Add the Application to the authentik Embedded Outpost.
 
 ## organizr Configuration
@@ -55,7 +55,7 @@ Auth Proxy Header Name: `X-authentik-username`
 Auth Proxy Whitelist: _your network subnet in CIDR notation IE_ `10.0.0.0/8`
 Auth Proxy Header Name for Email: `X-authentik-email`
 Logout URL: `/outpost.goauthentik.io/sign_out`
-![](./organizr6.png)
+![](./organizr-06.png)
 
 2. Setup Authentication in organizr _system settings_ -> _main_ -> _Authentication_
 
@@ -68,7 +68,7 @@ Account Suffix: `,ou=users,dc=ldap,dc=goauthentik,dc=io`
 Bind Username: `cn=ldapservice,ou=users,dc=ldap,dc=goauthentik,dc=io`
 Bind Password: `<LDAP bind account password>`
 LDAP Backend Type: `OpenLDAP`
-![](./organizr7.png)
+![](./organizr-07.png)
 
 :::info
 Access for authentik users is managed locally within organizr under _User Management_. By default, new users are assigned the `User` group.

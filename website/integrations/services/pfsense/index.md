@@ -6,13 +6,9 @@ title: pfSense
 
 ## What is pfSense
 
-> The pfSense project is a free network firewall distribution, based on the FreeBSD operating system with a custom kernel and including third party free software packages for additional functionality.
+> pfSense is an open-source firewall and router software distribution based on FreeBSD, providing features such as firewalling, routing, VPN, and traffic shaping.
 >
 > -- https://www.pfsense.org/
-
-:::note
-This is based on authentik 2022.3.31 and pfSense 2.6.0-amd64
-:::
 
 ## Preparation
 
@@ -109,7 +105,7 @@ All other field can be left blank.
 
 In pfsense, export the public **and** the private key of the certificate by going under _System/Cert. Manager_ and then to the _Certificate_ tab.
 
-![](./pfsense-certificate-export.png)
+![](./pfsense-01.png)
 
 In authentik, import the public **and** the private key by going under _System/Certificates_ and then click on `create`.
 

@@ -4,6 +4,7 @@ title: GitLab
 
 <span class="badge badge--primary">Support level: authentik</span>
 
+# gitlab description will be fixed by one of my previous prs
 ## What is GitLab
 
 > GitLab is a complete DevOps platform with features for version control, CI/CD, issue tracking, and collaboration, facilitating efficient software development and deployment workflows.

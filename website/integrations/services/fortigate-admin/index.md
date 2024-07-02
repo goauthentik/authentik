@@ -6,10 +6,9 @@ title: FortiGate Admin Login
 
 ## What is FortiGate
 
-> FortiGate is a firewall from FortiNet. It is a NGFW with layer7 inspection and able to become a part of a FortiNet security fabric.
-> -- https://www.fortinet.com/products/next-generation-firewall
+> The FortiGate firewall, created by Fortinet, is a network security appliance that provides essential features for protecting networks from cyber threats.
 >
-> This guide explains how to setup a FortiGate to use authentik as SAML provider for Admin Login. It does not cover how to setup SSLVPN logins, that is a different configuration.
+> -- https://www.fortinet.com/products/next-generation-firewall
 
 ## Preparation
 
