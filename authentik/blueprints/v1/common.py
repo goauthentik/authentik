@@ -1,9 +1,10 @@
 """transfer common classes"""
 
+import types
 from collections import OrderedDict
 from collections.abc import Iterable, Mapping
-from copy import copy
-from dataclasses import asdict, dataclass, field, is_dataclass
+from copy import copy, deepcopy
+from dataclasses import asdict, dataclass, field, fields, is_dataclass
 from enum import Enum
 from functools import reduce
 from operator import ixor
@@ -532,6 +533,65 @@ class Value(EnumeratedItem):
             raise EntryInvalidError.from_entry(f"Empty/invalid context: {context}", entry) from exc
 
 
+_ATOMIC_TYPES = frozenset(
+    {
+        # Common JSON Serializable types
+        types.NoneType,
+        bool,
+        int,
+        float,
+        str,
+        # Other common types
+        complex,
+        bytes,
+        # Other types that are also unaffected by deepcopy
+        types.EllipsisType,
+        types.NotImplementedType,
+        types.CodeType,
+        types.BuiltinFunctionType,
+        types.FunctionType,
+        type,
+        range,
+        property,
+    }
+)
+
+
+def clean_asdict(obj, dict_factory):
+    """
+    Matches 'asdict' but uses 'list' to construct lists to
+    avoid instances of ReturnList breaking 'asdict'
+    """
+    if type(obj) in _ATOMIC_TYPES:
+        return obj
+    elif is_dataclass(obj):
+        if dict_factory is dict:
+            return {f.name: clean_asdict(getattr(obj, f.name), dict) for f in fields(obj)}
+        else:
+            result = []
+            for f in fields(obj):
+                value = clean_asdict(getattr(obj, f.name), dict_factory)
+                result.append((f.name, value))
+            return dict_factory(result)
+    elif isinstance(obj, tuple) and hasattr(obj, "_fields"):
+        return type(obj)(*[clean_asdict(v, dict_factory) for v in obj])
+    elif isinstance(obj, list):
+        return list(clean_asdict(v, dict_factory) for v in obj)
+    elif isinstance(obj, tuple):
+        return type(obj)(clean_asdict(v, dict_factory) for v in obj)
+    elif isinstance(obj, dict):
+        if hasattr(type(obj), "default_factory"):
+            result = type(obj)(obj.default_factory)
+            for k, v in obj.items():
+                result[clean_asdict(k, dict_factory)] = clean_asdict(v, dict_factory)
+            return result
+        return type(obj)(
+            (clean_asdict(k, dict_factory), clean_asdict(v, dict_factory)) for k, v in obj.items()
+        )
+    else:
+        return deepcopy(obj)
+
+
 class BlueprintDumper(SafeDumper):
     """Dump dataclasses to yaml"""
 
@@ -563,7 +623,7 @@ class BlueprintDumper(SafeDumper):
                     final_dict.pop("id")
                 return final_dict
 
-            data = asdict(data, dict_factory=factory)
+            data = clean_asdict(data, dict_factory=factory)
         return super().represent(data)
 
 
