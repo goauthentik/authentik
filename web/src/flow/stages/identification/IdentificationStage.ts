@@ -5,9 +5,8 @@ import "@goauthentik/elements/forms/FormElement";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, css, html, nothing } from "lit";
-import { query } from "lit/decorators.js";
-import { customElement } from "lit/decorators.js";
+import { CSSResult, PropertyValues, TemplateResult, css, html, nothing, render } from "lit";
+import { customElement, query } from "lit/decorators.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -46,8 +45,11 @@ export class IdentificationStage extends BaseStage<
 > {
     form?: HTMLFormElement;
 
-    @query("#ak-stage-identification-password")
-    password!: HTMLInputElement;
+    @query("ak-stage-identification-password")
+    passwordField!: HTMLInputElement;
+
+    @query("ak-stage-identification-toggle-password-visibility")
+    visibilityToggle!: HTMLButtonElement;
 
     static get styles(): CSSResult[] {
         return [
@@ -85,12 +87,33 @@ export class IdentificationStage extends BaseStage<
         }
     }
 
+    // See `ak-stage-password` for comments and documentation.
     togglePasswordVisibility(ev: PointerEvent) {
         ev.stopPropagation();
         ev.preventDefault();
-        // State is saved in the DOM, and read from the DOM. Directly affects the DOM,
-        // so no `.requestUpdate()` required. Effect is immediately visible.
-        this.password.type = this.password.type === "password" ? "text" : "password";
+        if (!this.passwordField) {
+            return;
+        }
+        this.passwordField.type = this.passwordField.type === "password" ? "text" : "password";
+        this.renderPasswordVisibilityFeatures();
+    }
+
+    renderPasswordVisibilityFeatures() {
+        if (!this.visibilityToggle) {
+            return;
+        }
+        const show = this.passwordField.type === "password";
+        this.visibilityToggle?.setAttribute(
+            "aria-label",
+            show ? msg("Show password") : msg("Hide password"),
+        );
+        this.visibilityToggle?.querySelector("i")?.remove();
+        render(
+            show
+                ? html`<i class="fas fa-eye" aria-hidden="true"></i>`
+                : html`<i class="fas fa-eye-slash" aria-hidden="true"></i>`,
+            this.visibilityToggle,
+        );
     }
 
     autoRedirect(): void {
@@ -231,8 +254,6 @@ export class IdentificationStage extends BaseStage<
     }
 
     renderInput(): TemplateResult {
-        const passwordHidden = this.password?.type === "password";
-
         let type: "text" | "email" = "text";
         if (!this.challenge?.userFields || this.challenge.userFields.length === 0) {
             return html`<p>${msg("Select one of the options below to continue.")}</p>`;
@@ -295,14 +316,11 @@ export class IdentificationStage extends BaseStage<
                               <button
                                   class="pf-c-button pf-m-control"
                                   type="button"
-                                  aria-label=${passwordHidden
-                                      ? msg("Show password")
-                                      : msg("Hide Password")}
+                                  id="ak-stage-identification-toggle-password-visibility"
+                                  aria-label=${msg("Show password")}
                                   @click=${(ev: PointerEvent) => this.togglePasswordVisibility(ev)}
                               >
-                                  ${passwordHidden
-                                      ? html`<i class="fas fa-eye" aria-hidden="true"></i>`
-                                      : html`<i class="fas fa-eye-slash" aria-hidden="true"></i>`}
+                                  <i class="fas fa-eye" aria-hidden="true"></i>
                               </button>
                           </div>
                       </ak-form-element>

@@ -5,9 +5,8 @@ import { BaseStage } from "@goauthentik/flow/stages/base";
 import { PasswordManagerPrefill } from "@goauthentik/flow/stages/identification/IdentificationStage";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
-import { query } from "lit/decorators.js";
+import { CSSResult, TemplateResult, html, render } from "lit";
+import { customElement, query } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -30,20 +29,49 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
 
     timer?: number;
 
-    @query("#ak-stage-password-input")
-    password!: HTMLInputElement;
-
     hasError(field: string): boolean {
         const errors = (this.challenge?.responseErrors || {})[field];
         return (errors || []).length > 0;
     }
 
+    @query("#ak-stage-password-input")
+    passwordField!: HTMLInputElement;
+
+    @query("ak-stage-password-toggle-visibility")
+    visibilityToggle!: HTMLButtonElement;
+
+    // State is saved in the DOM, and read from the DOM. Directly affects the DOM,
+    // so no `.requestUpdate()` required. Effect is immediately visible.
     togglePasswordVisibility(ev: PointerEvent) {
         ev.stopPropagation();
         ev.preventDefault();
-        // State is saved in the DOM, and read from the DOM. Directly affects the DOM,
-        // so no `.requestUpdate()` required. Effect is immediately visible.
-        this.password.type = this.password.type === "password" ? "text" : "password";
+        if (!this.passwordField) {
+            return;
+        }
+        this.passwordField.type = this.passwordField.type === "password" ? "text" : "password";
+        this.renderPasswordVisibilityFeatures();
+    }
+
+    // In the unlikely event that we want to make "show password" the _default_ behavior, this
+    // effect handler is broken out into its own method. The current behavior in the main
+    // `.render()` method assumes the field is of type "password." To have this effect, er, take
+    // effect, call it in an `.updated()` method.
+    renderPasswordVisibilityFeatures() {
+        if (!this.visibilityToggle) {
+            return;
+        }
+        const show = this.passwordField.type === "password";
+        this.visibilityToggle?.setAttribute(
+            "aria-label",
+            show ? msg("Show password") : msg("Hide password"),
+        );
+        this.visibilityToggle?.querySelector("i")?.remove();
+        render(
+            show
+                ? html`<i class="fas fa-eye" aria-hidden="true"></i>`
+                : html`<i class="fas fa-eye-slash" aria-hidden="true"></i>`,
+            this.visibilityToggle,
+        );
     }
 
     renderInput(): HTMLInputElement {
@@ -92,8 +120,6 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
     }
 
     render(): TemplateResult {
-        const passwordHidden = this.password?.type === "password";
-
         if (!this.challenge) {
             return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
             </ak-empty-state>`;
@@ -136,14 +162,11 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                             <button
                                 class="pf-c-button pf-m-control"
                                 type="button"
-                                aria-label=${passwordHidden
-                                    ? msg("Show password")
-                                    : msg("Hide Password")}
+                                id="ak-stage-password-toggle-visibility"
+                                aria-label=${msg("Show password")}
                                 @click=${(ev: PointerEvent) => this.togglePasswordVisibility(ev)}
                             >
-                                ${passwordHidden
-                                    ? html`<i class="fas fa-eye" aria-hidden="true"></i>`
-                                    : html`<i class="fas fa-eye-slash" aria-hidden="true"></i>`}
+                                <i class="fas fa-eye" aria-hidden="true"></i>
                             </button>
                         </div>
                     </ak-form-element>
