@@ -3,7 +3,6 @@ import "@goauthentik/admin/outposts/ServiceConnectionDockerForm";
 import "@goauthentik/admin/outposts/ServiceConnectionKubernetesForm";
 import "@goauthentik/admin/outposts/ServiceConnectionWizard";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/components/ak-status-label";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/buttons/SpinnerButton";
@@ -43,14 +42,9 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
     checkbox = true;
     clearOnRefresh = true;
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<ServiceConnection>> {
+    async apiEndpoint(): Promise<PaginatedResponse<ServiceConnection>> {
         const connections = await new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsAllList(
-            {
-                ordering: this.order,
-                page: page,
-                pageSize: (await uiConfig()).pagination.perPage,
-                search: this.search || "",
-            },
+            await this.defaultEndpointConfig(),
         );
         Promise.all(
             connections.results.map((connection) => {

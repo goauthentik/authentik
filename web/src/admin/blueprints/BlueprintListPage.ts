@@ -1,7 +1,6 @@
 import "@goauthentik/admin/blueprints/BlueprintForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/buttons/ActionButton";
@@ -68,13 +67,10 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
         return super.styles.concat(PFDescriptionList);
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<BlueprintInstance>> {
-        return new ManagedApi(DEFAULT_CONFIG).managedBlueprintsList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
-        });
+    async apiEndpoint(): Promise<PaginatedResponse<BlueprintInstance>> {
+        return new ManagedApi(DEFAULT_CONFIG).managedBlueprintsList(
+            await this.defaultEndpointConfig(),
+        );
     }
 
     columns(): TableColumn[] {

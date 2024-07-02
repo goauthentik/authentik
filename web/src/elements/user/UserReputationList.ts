@@ -1,5 +1,4 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
@@ -20,16 +19,14 @@ export class UserReputationList extends Table<Reputation> {
     @property()
     targetEmail!: string | undefined;
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Reputation>> {
+    async apiEndpoint(): Promise<PaginatedResponse<Reputation>> {
         const identifiers = [this.targetUsername];
         if (this.targetEmail !== undefined) {
             identifiers.push(this.targetEmail);
         }
         return new PoliciesApi(DEFAULT_CONFIG).policiesReputationScoresList({
+            ...(await this.defaultEndpointConfig()),
             identifierIn: identifiers,
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
         });
     }
 

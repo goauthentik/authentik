@@ -18,12 +18,10 @@ export class UserAssignedObjectPermissionsTable extends Table<ExtraUserObjectPer
     checkbox = true;
     clearOnRefresh = true;
 
-    apiEndpoint(page: number): Promise<PaginatedResponse<ExtraUserObjectPermission>> {
+    async apiEndpoint(): Promise<PaginatedResponse<ExtraUserObjectPermission>> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsUsersList({
+            ...(await this.defaultEndpointConfig()),
             userId: this.userId || 0,
-            page: page,
-            ordering: this.order,
-            search: this.search,
         });
     }
 

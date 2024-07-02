@@ -25,12 +25,10 @@ export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
 
     order = "content_type__app_label,content_type__model";
 
-    apiEndpoint(page: number): Promise<PaginatedResponse<Permission>> {
+    async apiEndpoint(): Promise<PaginatedResponse<Permission>> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsList({
+            ...(await this.defaultEndpointConfig()),
             role: this.roleUuid,
-            page: page,
-            ordering: this.order,
-            search: this.search,
         });
     }
 
