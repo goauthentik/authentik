@@ -253,6 +253,7 @@ const docsSidebar = {
                     label: "Executors",
                     items: [
                         "flow/executors/if-flow",
+                        "flow/executors/sfe",
                         "flow/executors/user-settings",
                         "flow/executors/headless",
                     ],
