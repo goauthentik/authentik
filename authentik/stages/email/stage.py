@@ -118,6 +118,7 @@ class EmailStageView(ChallengeStageView):
                     "url": self.get_full_url(**{QS_KEY_TOKEN: token.key}),
                     "user": pending_user,
                     "expires": token.expires,
+                    "token": token.key,
                 },
             )
             send_mails(current_stage, message)
