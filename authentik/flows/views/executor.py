@@ -56,7 +56,7 @@ from authentik.flows.planner import (
     FlowPlan,
     FlowPlanner,
 )
-from authentik.flows.stage import AccessDeniedChallengeView, StageView
+from authentik.flows.stage import AccessDeniedStage, StageView
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.errors import exception_to_string
 from authentik.lib.utils.reflection import all_subclasses, class_to_path
@@ -445,7 +445,7 @@ class FlowExecutorView(APIView):
             )
             return self.restart_flow(keep_context)
         self.cancel()
-        challenge_view = AccessDeniedChallengeView(self, error_message)
+        challenge_view = AccessDeniedStage(self, error_message)
         challenge_view.request = self.request
         return to_stage_response(self.request, challenge_view.get(self.request))
 

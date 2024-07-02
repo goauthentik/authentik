@@ -21,7 +21,6 @@ from authentik.core.api.users import UserViewSet
 from authentik.core.views import apps
 from authentik.core.views.debug import AccessDeniedView
 from authentik.core.views.interface import FlowInterfaceView, InterfaceView
-from authentik.core.views.session import EndSessionView
 from authentik.root.asgi_middleware import SessionMiddleware
 from authentik.root.messages.consumer import MessageConsumer
 from authentik.root.middleware import ChannelsLoggingMiddleware
@@ -55,11 +54,6 @@ urlpatterns = [
         "if/flow/<slug:flow_slug>/",
         ensure_csrf_cookie(FlowInterfaceView.as_view()),
         name="if-flow",
-    ),
-    path(
-        "if/session-end/<slug:application_slug>/",
-        ensure_csrf_cookie(EndSessionView.as_view()),
-        name="if-session-end",
     ),
     # Fallback for WS
     path("ws/outpost/<uuid:pk>/", InterfaceView.as_view(template_name="if/admin.html")),
