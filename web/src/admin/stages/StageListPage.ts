@@ -1,3 +1,4 @@
+import "@goauthentik/admin/rbac/ObjectPermissionModal";
 import "@goauthentik/admin/stages/StageWizard";
 import "@goauthentik/admin/stages/authenticator_duo/AuthenticatorDuoStageForm";
 import "@goauthentik/admin/stages/authenticator_duo/DuoDeviceImportForm";
@@ -24,7 +25,6 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import "@goauthentik/elements/forms/ProxyForm";
-import "@goauthentik/elements/rbac/ObjectPermissionModal";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";

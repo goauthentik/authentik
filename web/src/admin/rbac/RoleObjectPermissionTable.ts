@@ -1,7 +1,7 @@
+import "@goauthentik/admin/rbac/RoleObjectPermissionForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
-import "@goauthentik/elements/rbac/RoleObjectPermissionForm";
 import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
