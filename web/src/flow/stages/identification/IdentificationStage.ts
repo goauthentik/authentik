@@ -59,8 +59,8 @@ export class IdentificationStage extends BaseStage<
             PFFormControl,
             PFTitle,
             PFButton,
+            /* login page's icons */
             css`
-                /* login page's icons */
                 .pf-c-login__main-footer-links-item button {
                     background-color: transparent;
                     border: 0;
