@@ -5,13 +5,14 @@ import "@goauthentik/elements/forms/FormElement";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, css, html, nothing } from "lit";
-import { customElement } from "lit/decorators.js";
+import { CSSResult, PropertyValues, TemplateResult, css, html, nothing, render } from "lit";
+import { customElement, query } from "lit/decorators.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -44,23 +45,39 @@ export class IdentificationStage extends BaseStage<
 > {
     form?: HTMLFormElement;
 
+    @query("ak-stage-identification-password")
+    passwordField!: HTMLInputElement;
+
+    @query("ak-stage-identification-toggle-password-visibility")
+    visibilityToggle!: HTMLButtonElement;
+
     static get styles(): CSSResult[] {
-        return [PFBase, PFAlert, PFLogin, PFForm, PFFormControl, PFTitle, PFButton].concat(css`
+        return [
+            PFBase,
+            PFAlert,
+            PFInputGroup,
+            PFLogin,
+            PFForm,
+            PFFormControl,
+            PFTitle,
+            PFButton,
             /* login page's icons */
-            .pf-c-login__main-footer-links-item button {
-                background-color: transparent;
-                border: 0;
-                display: flex;
-                align-items: stretch;
-            }
-            .pf-c-login__main-footer-links-item img {
-                fill: var(--pf-c-login__main-footer-links-item-link-svg--Fill);
-                width: 100px;
-                max-width: var(--pf-c-login__main-footer-links-item-link-svg--Width);
-                height: 100%;
-                max-height: var(--pf-c-login__main-footer-links-item-link-svg--Height);
-            }
-        `);
+            css`
+                .pf-c-login__main-footer-links-item button {
+                    background-color: transparent;
+                    border: 0;
+                    display: flex;
+                    align-items: stretch;
+                }
+                .pf-c-login__main-footer-links-item img {
+                    fill: var(--pf-c-login__main-footer-links-item-link-svg--Fill);
+                    width: 100px;
+                    max-width: var(--pf-c-login__main-footer-links-item-link-svg--Width);
+                    height: 100%;
+                    max-height: var(--pf-c-login__main-footer-links-item-link-svg--Height);
+                }
+            `,
+        ];
     }
 
     updated(changedProperties: PropertyValues<this>) {
@@ -68,6 +85,35 @@ export class IdentificationStage extends BaseStage<
             this.autoRedirect();
             this.createHelperForm();
         }
+    }
+
+    // See `ak-stage-password` for comments and documentation.
+    togglePasswordVisibility(ev: PointerEvent) {
+        ev.stopPropagation();
+        ev.preventDefault();
+        if (!this.passwordField) {
+            return;
+        }
+        this.passwordField.type = this.passwordField.type === "password" ? "text" : "password";
+        this.renderPasswordVisibilityFeatures();
+    }
+
+    renderPasswordVisibilityFeatures() {
+        if (!this.visibilityToggle) {
+            return;
+        }
+        const show = this.passwordField.type === "password";
+        this.visibilityToggle?.setAttribute(
+            "aria-label",
+            show ? msg("Show password") : msg("Hide password"),
+        );
+        this.visibilityToggle?.querySelector("i")?.remove();
+        render(
+            show
+                ? html`<i class="fas fa-eye" aria-hidden="true"></i>`
+                : html`<i class="fas fa-eye-slash" aria-hidden="true"></i>`,
+            this.visibilityToggle,
+        );
     }
 
     autoRedirect(): void {
@@ -256,15 +302,27 @@ export class IdentificationStage extends BaseStage<
                           class="pf-c-form__group"
                           .errors=${(this.challenge.responseErrors || {})["password"]}
                       >
-                          <input
-                              type="password"
-                              name="password"
-                              placeholder="${msg("Password")}"
-                              autocomplete="current-password"
-                              class="pf-c-form-control"
-                              required
-                              value=${PasswordManagerPrefill.password || ""}
-                          />
+                          <div class="pf-c-input-group">
+                              <input
+                                  id="ak-stage-identification-password"
+                                  type="password"
+                                  name="password"
+                                  placeholder="${msg("Password")}"
+                                  autocomplete="current-password"
+                                  class="pf-c-form-control"
+                                  required
+                                  value=${PasswordManagerPrefill.password || ""}
+                              />
+                              <button
+                                  class="pf-c-button pf-m-control"
+                                  type="button"
+                                  id="ak-stage-identification-toggle-password-visibility"
+                                  aria-label=${msg("Show password")}
+                                  @click=${(ev: PointerEvent) => this.togglePasswordVisibility(ev)}
+                              >
+                                  <i class="fas fa-eye" aria-hidden="true"></i>
+                              </button>
+                          </div>
                       </ak-form-element>
                   `
                 : nothing}

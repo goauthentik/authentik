@@ -5,13 +5,14 @@ import { BaseStage } from "@goauthentik/flow/stages/base";
 import { PasswordManagerPrefill } from "@goauthentik/flow/stages/identification/IdentificationStage";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { CSSResult, TemplateResult, html, render } from "lit";
+import { customElement, query } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -21,7 +22,7 @@ import { PasswordChallenge, PasswordChallengeResponseRequest } from "@goauthenti
 @customElement("ak-stage-password")
 export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChallengeResponseRequest> {
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle];
+        return [PFBase, PFLogin, PFInputGroup, PFForm, PFFormControl, PFButton, PFTitle];
     }
 
     input?: HTMLInputElement;
@@ -33,8 +34,49 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
         return (errors || []).length > 0;
     }
 
+    @query("#ak-stage-password-input")
+    passwordField!: HTMLInputElement;
+
+    @query("ak-stage-password-toggle-visibility")
+    visibilityToggle!: HTMLButtonElement;
+
+    // State is saved in the DOM, and read from the DOM. Directly affects the DOM,
+    // so no `.requestUpdate()` required. Effect is immediately visible.
+    togglePasswordVisibility(ev: PointerEvent) {
+        ev.stopPropagation();
+        ev.preventDefault();
+        if (!this.passwordField) {
+            return;
+        }
+        this.passwordField.type = this.passwordField.type === "password" ? "text" : "password";
+        this.renderPasswordVisibilityFeatures();
+    }
+
+    // In the unlikely event that we want to make "show password" the _default_ behavior, this
+    // effect handler is broken out into its own method. The current behavior in the main
+    // `.render()` method assumes the field is of type "password." To have this effect, er, take
+    // effect, call it in an `.updated()` method.
+    renderPasswordVisibilityFeatures() {
+        if (!this.visibilityToggle) {
+            return;
+        }
+        const show = this.passwordField.type === "password";
+        this.visibilityToggle?.setAttribute(
+            "aria-label",
+            show ? msg("Show password") : msg("Hide password"),
+        );
+        this.visibilityToggle?.querySelector("i")?.remove();
+        render(
+            show
+                ? html`<i class="fas fa-eye" aria-hidden="true"></i>`
+                : html`<i class="fas fa-eye-slash" aria-hidden="true"></i>`,
+            this.visibilityToggle,
+        );
+    }
+
     renderInput(): HTMLInputElement {
         this.input = document.createElement("input");
+        this.input.id = "ak-stage-password-input";
         this.input.type = "password";
         this.input.name = "password";
         this.input.placeholder = msg("Please enter your password");
@@ -115,7 +157,18 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                         class="pf-c-form__group"
                         .errors=${(this.challenge?.responseErrors || {})["password"]}
                     >
-                        ${this.renderInput()}
+                        <div class="pf-c-input-group">
+                            ${this.renderInput()}
+                            <button
+                                class="pf-c-button pf-m-control"
+                                type="button"
+                                id="ak-stage-password-toggle-visibility"
+                                aria-label=${msg("Show password")}
+                                @click=${(ev: PointerEvent) => this.togglePasswordVisibility(ev)}
+                            >
+                                <i class="fas fa-eye" aria-hidden="true"></i>
+                            </button>
+                        </div>
                     </ak-form-element>
 
                     ${this.challenge.recoveryUrl
