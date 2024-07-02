@@ -42,29 +42,7 @@ const eslintConfig = {
     },
 };
 
-const porcelainV1 = /^(..)\s+(.*$)/;
-const gitStatus = execFileSync("git", ["status", "--porcelain", "."], { encoding: "utf8" });
-
-const statuses = gitStatus.split("\n").reduce((acc, line) => {
-    const match = porcelainV1.exec(line.replace("\n"));
-    if (!match) {
-        return acc;
-    }
-    const [status, path] = Array.from(match).slice(1, 3);
-    return [...acc, [status, path.split("\x00")[0]]];
-}, []);
-
-const isModified = /^(M|\?|\s)(M|\?|\s)/;
-const modified = (s) => isModified.test(s);
-
-const isCheckable = /\.(ts|js|mjs)$/;
-const checkable = (s) => isCheckable.test(s);
-
-const updated = statuses.reduce(
-    (acc, [status, filename]) =>
-        modified(status) && checkable(filename) ? [...acc, path.join(projectRoot, filename)] : acc,
-    [],
-);
+const updated = ["./src/", "./build.mjs", "./scripts/*.mjs"];
 
 const eslint = new ESLint(eslintConfig);
 const results = await eslint.lintFiles(updated);

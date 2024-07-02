@@ -231,14 +231,11 @@ ${prompt.initialValue}</textarea
 
     shouldRenderInWrapper(prompt: StagePrompt): boolean {
         // Special types that aren't rendered in a wrapper
-        if (
+        return !(
             prompt.type === PromptTypeEnum.Static ||
             prompt.type === PromptTypeEnum.Hidden ||
             prompt.type === PromptTypeEnum.Separator
-        ) {
-            return false;
-        }
-        return true;
+        );
     }
 
     renderField(prompt: StagePrompt): TemplateResult {

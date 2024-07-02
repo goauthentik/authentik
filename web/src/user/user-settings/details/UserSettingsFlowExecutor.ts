@@ -71,10 +71,7 @@ export class UserSettingsFlowExecutor
             })
             .then((data) => {
                 this.challenge = data;
-                if (this.challenge.responseErrors) {
-                    return false;
-                }
-                return true;
+                return !this.challenge.responseErrors;
             })
             .catch((e: Error | ResponseError) => {
                 this.errorMessage(e);
@@ -169,21 +166,20 @@ export class UserSettingsFlowExecutor
             case ChallengeChoices.Shell:
                 return html`${unsafeHTML((this.challenge as ShellChallenge).body)}`;
             case ChallengeChoices.Native:
-                switch (this.challenge.component) {
-                    case "ak-stage-prompt":
-                        return html`<ak-user-stage-prompt
-                            .host=${this as StageHost}
-                            .challenge=${this.challenge}
-                        ></ak-user-stage-prompt>`;
-                    default:
-                        console.debug(
-                            `authentik/user/flows: unsupported stage type ${this.challenge.component}`,
-                        );
-                        return html`
-                            <a href="/if/flow/${this.flowSlug}/" class="pf-c-button pf-m-primary">
-                                ${msg("Open settings")}
-                            </a>
-                        `;
+                if (this.challenge.component === "ak-stage-prompt") {
+                    return html`<ak-user-stage-prompt
+                        .host=${this as StageHost}
+                        .challenge=${this.challenge}
+                    ></ak-user-stage-prompt>`;
+                } else {
+                    console.debug(
+                        `authentik/user/flows: unsupported stage type ${this.challenge.component}`,
+                    );
+                    return html`
+                        <a href="/if/flow/${this.flowSlug}/" class="pf-c-button pf-m-primary">
+                            ${msg("Open settings")}
+                        </a>
+                    `;
                 }
             default:
                 console.debug(`authentik/user/flows: unexpected data type ${this.challenge.type}`);
