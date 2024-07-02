@@ -23,4 +23,4 @@ entries:
   identifiers:
     name: scribe-hub-redirect
   model: authentik_policies_expression.expressionpolicy
-  state: present
+  state: absent
