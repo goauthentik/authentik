@@ -63,8 +63,6 @@ remote_debug: false
 
 log_level: info
 
-session_storage: cache
-
 error_reporting:
   enabled: false
   sentry_dsn: https://151ba72610234c4c97c5bcff4e1cffd8@authentik.error-reporting.a7k.io/4504163677503489

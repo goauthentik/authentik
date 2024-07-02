@@ -5,8 +5,6 @@ from json import loads
 from typing import Any
 
 from django.contrib.auth import update_session_auth_hash
-from django.contrib.sessions.backends.cache import KEY_PREFIX
-from django.core.cache import cache
 from django.db.models.functions import ExtractHour
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
@@ -732,9 +730,6 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         response = super().partial_update(request, *args, **kwargs)
         instance: User = self.get_object()
         if not instance.is_active:
-            sessions = AuthenticatedSession.objects.filter(user=instance)
-            session_ids = sessions.values_list("session_key", flat=True)
-            cache.delete_many(f"{KEY_PREFIX}{session}" for session in session_ids)
-            sessions.delete()
+            AuthenticatedSession.objects.filter(user=instance).delete()
             LOGGER.debug("Deleted user's sessions", user=instance.username)
         return response

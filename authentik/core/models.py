@@ -9,6 +9,7 @@ from deepmerge import always_merger
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UserManager as DjangoUserManager
+from django.contrib.sessions.base_session import BaseSessionManager
 from django.db import models
 from django.db.models import Q, QuerySet, options
 from django.http import HttpRequest
@@ -658,8 +659,8 @@ class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
 class ExpiringModel(models.Model):
     """Base Model which can expire, and is automatically cleaned up."""
 
-    expires = models.DateTimeField(default=None, null=True)
-    expiring = models.BooleanField(default=True)
+    expires = models.DateTimeField(default=None, null=True, db_index=True)
+    expiring = models.BooleanField(default=True, db_index=True)
 
     class Meta:
         abstract = True
@@ -797,6 +798,10 @@ class PropertyMapping(SerializerModel, ManagedModel):
         verbose_name_plural = _("Property Mappings")
 
 
+class AuthenticatedSessionManager(BaseSessionManager):
+    use_in_migrations = True
+
+
 class AuthenticatedSession(ExpiringModel):
     """Additional session class for authenticated users. Augments the standard django session
     to achieve the following:
@@ -808,12 +813,15 @@ class AuthenticatedSession(ExpiringModel):
 
     uuid = models.UUIDField(default=uuid4, primary_key=True)
 
-    session_key = models.CharField(max_length=40)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    session_key = models.CharField(_("session key"), max_length=40, unique=True, db_index=True)
+    session_data = models.TextField(_("session data"))
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 
-    last_ip = models.TextField()
+    last_ip = models.TextField(blank=True)
     last_user_agent = models.TextField(blank=True)
     last_used = models.DateTimeField(auto_now=True)
+
+    objects = AuthenticatedSessionManager()
 
     class Meta:
         verbose_name = _("Authenticated Session")
@@ -822,6 +830,12 @@ class AuthenticatedSession(ExpiringModel):
     def __str__(self) -> str:
         return f"Authenticated Session {self.session_key[:10]}"
 
+    @classmethod
+    def get_session_store_class(cls):
+        from authentik.core.sessions import SessionStore
+
+        return SessionStore
+
     @staticmethod
     def from_request(request: HttpRequest, user: User) -> Optional["AuthenticatedSession"]:
         """Create a new session from a http request"""
@@ -829,10 +843,9 @@ class AuthenticatedSession(ExpiringModel):
 
         if not hasattr(request, "session") or not request.session.session_key:
             return None
-        return AuthenticatedSession(
-            session_key=request.session.session_key,
+        AuthenticatedSession.objects.filter(session_key=request.session.session_key).update(
             user=user,
             last_ip=ClientIPMiddleware.get_client_ip(request),
             last_user_agent=request.META.get("HTTP_USER_AGENT", ""),
-            expires=request.session.get_expiry_date(),
         )
+        return AuthenticatedSession.objects.filter(session_key=request.session.session_key).first()
