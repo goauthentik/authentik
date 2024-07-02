@@ -122,6 +122,7 @@ ldap3 = "*"
 lxml = "*"
 msgraph-sdk = "*"
 opencontainers = { extras = ["reggie"], version = "*" }
+orjson = "*"
 packaging = "*"
 paramiko = "*"
 psycopg = { extras = ["c"], version = "*" }
