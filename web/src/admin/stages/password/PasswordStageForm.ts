@@ -175,9 +175,7 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                         name="allowShowPassword"
                         label="Allow Show Password"
                         ?checked=${this.instance?.allowShowPassword ?? false}
-                        help=${msg(
-                            "Enable to provide a 'show password' option within the password input field.",
-                        )}
+                        help=${msg("Provide users with a 'show password' button.")}
                     ></ak-switch-input>
                 </div>
             </ak-form-group>`;
