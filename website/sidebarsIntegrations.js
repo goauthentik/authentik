@@ -99,6 +99,7 @@ module.exports = {
                         "services/sssd/index",
                         "services/truecommand/index",
                         "services/veeam-enterprise-manager/index",
+                        "services/wazuh/index",
                         "services/zammad/index",
                     ],
                 },
