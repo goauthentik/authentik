@@ -30,7 +30,7 @@ export class EnterpriseLicenseForm extends ModelForm<License, string> {
 
     async load(): Promise<void> {
         this.installID = (
-            await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseGetInstallIdRetrieve()
+            await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseInstallIdRetrieve()
         ).installId;
     }
 

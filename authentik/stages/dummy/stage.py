@@ -3,7 +3,12 @@
 from django.http.response import HttpResponse
 from rest_framework.fields import CharField
 
-from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
+from authentik.flows.challenge import (
+    Challenge,
+    ChallengeResponse,
+    ChallengeTypes,
+    DiscriminatorField,
+)
 from authentik.flows.stage import ChallengeStageView
 from authentik.lib.sentry import SentryIgnoredException
 
@@ -11,14 +16,14 @@ from authentik.lib.sentry import SentryIgnoredException
 class DummyChallenge(Challenge):
     """Dummy challenge"""
 
-    component = CharField(default="ak-stage-dummy")
+    component = DiscriminatorField("ak-stage-dummy")
     name = CharField()
 
 
 class DummyChallengeResponse(ChallengeResponse):
     """Dummy challenge response"""
 
-    component = CharField(default="ak-stage-dummy")
+    component = DiscriminatorField("ak-stage-dummy")
 
 
 class DummyStageView(ChallengeStageView):

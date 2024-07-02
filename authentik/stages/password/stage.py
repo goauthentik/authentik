@@ -19,7 +19,8 @@ from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
     ChallengeTypes,
-    WithUserInfoChallenge,
+    DiscriminatorField,
+    WithUserInfoMixin,
 )
 from authentik.flows.exceptions import StageInvalidException
 from authentik.flows.models import Flow, FlowDesignation, Stage
@@ -70,18 +71,18 @@ def authenticate(
     )
 
 
-class PasswordChallenge(WithUserInfoChallenge):
+class PasswordChallenge(WithUserInfoMixin, Challenge):
     """Password challenge UI fields"""
 
     recovery_url = CharField(required=False)
 
-    component = CharField(default="ak-stage-password")
+    component = DiscriminatorField("ak-stage-password")
 
 
 class PasswordChallengeResponse(ChallengeResponse):
     """Password challenge response"""
 
-    component = CharField(default="ak-stage-password")
+    component = DiscriminatorField("ak-stage-password")
 
     password = CharField(trim_whitespace=False)
 

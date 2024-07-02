@@ -9,7 +9,8 @@ from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
     ChallengeTypes,
-    WithUserInfoChallenge,
+    DiscriminatorField,
+    WithUserInfoMixin,
 )
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import InvalidStageError
@@ -18,19 +19,19 @@ from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, Duo
 SESSION_KEY_DUO_ENROLL = "authentik/stages/authenticator_duo/enroll"
 
 
-class AuthenticatorDuoChallenge(WithUserInfoChallenge):
+class AuthenticatorDuoChallenge(WithUserInfoMixin, Challenge):
     """Duo Challenge"""
 
     activation_barcode = CharField()
     activation_code = CharField()
     stage_uuid = CharField()
-    component = CharField(default="ak-stage-authenticator-duo")
+    component = DiscriminatorField("ak-stage-authenticator-duo")
 
 
 class AuthenticatorDuoChallengeResponse(ChallengeResponse):
     """Pseudo class for duo response"""
 
-    component = CharField(default="ak-stage-authenticator-duo")
+    component = DiscriminatorField("ak-stage-authenticator-duo")
 
 
 class AuthenticatorDuoStageView(ChallengeStageView):

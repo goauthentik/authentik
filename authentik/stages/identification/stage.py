@@ -21,6 +21,7 @@ from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
     ChallengeTypes,
+    DiscriminatorField,
     RedirectChallenge,
 )
 from authentik.flows.models import FlowDesignation
@@ -75,7 +76,7 @@ class IdentificationChallenge(Challenge):
     sources = LoginSourceSerializer(many=True, required=False)
     show_source_labels = BooleanField()
 
-    component = CharField(default="ak-stage-identification")
+    component = DiscriminatorField("ak-stage-identification")
 
 
 class IdentificationChallengeResponse(ChallengeResponse):
@@ -83,7 +84,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
 
     uid_field = CharField()
     password = CharField(required=False, allow_blank=True, allow_null=True)
-    component = CharField(default="ak-stage-identification")
+    component = DiscriminatorField("ak-stage-identification")
 
     pre_user: User | None = None
 

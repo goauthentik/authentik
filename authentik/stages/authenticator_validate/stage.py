@@ -13,7 +13,13 @@ from rest_framework.serializers import ValidationError
 from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction
-from authentik.flows.challenge import ChallengeResponse, ChallengeTypes, WithUserInfoChallenge
+from authentik.flows.challenge import (
+    Challenge,
+    ChallengeResponse,
+    ChallengeTypes,
+    DiscriminatorField,
+    WithUserInfoMixin,
+)
 from authentik.flows.exceptions import FlowSkipStageException, StageInvalidException
 from authentik.flows.models import FlowDesignation, NotConfiguredAction, Stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
@@ -52,11 +58,11 @@ class SelectableStageSerializer(PassiveSerializer):
     meta_model_name = CharField()
 
 
-class AuthenticatorValidationChallenge(WithUserInfoChallenge):
+class AuthenticatorValidationChallenge(WithUserInfoMixin, Challenge):
     """Authenticator challenge"""
 
     device_challenges = ListField(child=DeviceChallenge())
-    component = CharField(default="ak-stage-authenticator-validate")
+    component = DiscriminatorField("ak-stage-authenticator-validate")
     configuration_stages = ListField(child=SelectableStageSerializer())
 
 
@@ -71,7 +77,7 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
     code = CharField(required=False)
     webauthn = JSONDictField(required=False)
     duo = IntegerField(required=False)
-    component = CharField(default="ak-stage-authenticator-validate")
+    component = DiscriminatorField("ak-stage-authenticator-validate")
 
     def _challenge_allowed(self, classes: list):
         device_challenges: list[dict] = self.stage.executor.plan.context.get(

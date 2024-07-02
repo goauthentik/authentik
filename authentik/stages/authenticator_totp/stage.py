@@ -12,7 +12,8 @@ from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
     ChallengeTypes,
-    WithUserInfoChallenge,
+    DiscriminatorField,
+    WithUserInfoMixin,
 )
 from authentik.flows.stage import ChallengeStageView
 from authentik.stages.authenticator_totp.models import AuthenticatorTOTPStage, TOTPDevice
@@ -21,11 +22,11 @@ from authentik.stages.authenticator_totp.settings import OTP_TOTP_ISSUER
 SESSION_TOTP_DEVICE = "totp_device"
 
 
-class AuthenticatorTOTPChallenge(WithUserInfoChallenge):
+class AuthenticatorTOTPChallenge(WithUserInfoMixin, Challenge):
     """TOTP Setup challenge"""
 
     config_url = CharField()
-    component = CharField(default="ak-stage-authenticator-totp")
+    component = DiscriminatorField("ak-stage-authenticator-totp")
 
 
 class AuthenticatorTOTPChallengeResponse(ChallengeResponse):
@@ -34,7 +35,7 @@ class AuthenticatorTOTPChallengeResponse(ChallengeResponse):
     device: TOTPDevice
 
     code = IntegerField()
-    component = CharField(default="ak-stage-authenticator-totp")
+    component = DiscriminatorField("ak-stage-authenticator-totp")
 
     def validate_code(self, code: int) -> int:
         """Validate totp code"""

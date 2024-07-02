@@ -6,11 +6,17 @@ from django.contrib import messages
 from django.contrib.auth import login
 from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext as _
-from rest_framework.fields import BooleanField, CharField
+from rest_framework.fields import BooleanField
 
 from authentik.core.models import AuthenticatedSession, User
 from authentik.events.middleware import audit_ignore
-from authentik.flows.challenge import ChallengeResponse, ChallengeTypes, WithUserInfoChallenge
+from authentik.flows.challenge import (
+    Challenge,
+    ChallengeResponse,
+    ChallengeTypes,
+    DiscriminatorField,
+    WithUserInfoMixin,
+)
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, PLAN_CONTEXT_SOURCE
 from authentik.flows.stage import ChallengeStageView
 from authentik.lib.utils.time import timedelta_from_string
@@ -25,16 +31,16 @@ from authentik.stages.user_login.middleware import (
 from authentik.stages.user_login.models import UserLoginStage
 
 
-class UserLoginChallenge(WithUserInfoChallenge):
+class UserLoginChallenge(WithUserInfoMixin, Challenge):
     """Empty challenge"""
 
-    component = CharField(default="ak-stage-user-login")
+    component = DiscriminatorField("ak-stage-user-login")
 
 
 class UserLoginChallengeResponse(ChallengeResponse):
     """User login challenge"""
 
-    component = CharField(default="ak-stage-user-login")
+    component = DiscriminatorField("ak-stage-user-login")
 
     remember_me = BooleanField(required=True)
 

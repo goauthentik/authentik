@@ -3,7 +3,13 @@
 from django.http import HttpRequest, HttpResponse
 from rest_framework.fields import CharField, ListField
 
-from authentik.flows.challenge import ChallengeResponse, ChallengeTypes, WithUserInfoChallenge
+from authentik.flows.challenge import (
+    Challenge,
+    ChallengeResponse,
+    ChallengeTypes,
+    DiscriminatorField,
+    WithUserInfoMixin,
+)
 from authentik.flows.stage import ChallengeStageView
 from authentik.lib.generators import generate_id
 from authentik.stages.authenticator_static.models import (
@@ -16,17 +22,17 @@ SESSION_STATIC_DEVICE = "static_device"
 SESSION_STATIC_TOKENS = "static_device_tokens"
 
 
-class AuthenticatorStaticChallenge(WithUserInfoChallenge):
+class AuthenticatorStaticChallenge(WithUserInfoMixin, Challenge):
     """Static authenticator challenge"""
 
     codes = ListField(child=CharField())
-    component = CharField(default="ak-stage-authenticator-static")
+    component = DiscriminatorField("ak-stage-authenticator-static")
 
 
 class AuthenticatorStaticChallengeResponse(ChallengeResponse):
     """Pseudo class for static response"""
 
-    component = CharField(default="ak-stage-authenticator-static")
+    component = DiscriminatorField("ak-stage-authenticator-static")
 
 
 class AuthenticatorStaticStageView(ChallengeStageView):
