@@ -3,6 +3,11 @@
 # Allowed levels: trace, debug, info, warning, error
 # Applies to: non-embedded
 log_level: debug
+# Interval at which the outpost will refresh the providers
+# from authentik. For caching outposts (such as LDAP), the
+# cache will also be invalidated at that interval.
+# (Format: hours=1;minutes=2;seconds=3).
+refresh_interval: minutes=5
 ########################################
 # The settings below are only relevant when using a managed outpost
 ########################################
