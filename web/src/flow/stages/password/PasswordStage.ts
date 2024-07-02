@@ -5,7 +5,7 @@ import { BaseStage } from "@goauthentik/flow/stages/base";
 import { PasswordManagerPrefill } from "@goauthentik/flow/stages/identification/IdentificationStage";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html, render } from "lit";
+import { CSSResult, TemplateResult, html, nothing, render } from "lit";
 import { customElement, query } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -159,15 +159,18 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                     >
                         <div class="pf-c-input-group">
                             ${this.renderInput()}
-                            <button
-                                class="pf-c-button pf-m-control"
-                                type="button"
-                                id="ak-stage-password-toggle-visibility"
-                                aria-label=${msg("Show password")}
-                                @click=${(ev: PointerEvent) => this.togglePasswordVisibility(ev)}
-                            >
-                                <i class="fas fa-eye" aria-hidden="true"></i>
-                            </button>
+                            ${this.challenge.allowShowPassword
+                                ? html` <button
+                                      class="pf-c-button pf-m-control"
+                                      type="button"
+                                      id="ak-stage-password-toggle-visibility"
+                                      aria-label=${msg("Show password")}
+                                      @click=${(ev: PointerEvent) =>
+                                          this.togglePasswordVisibility(ev)}
+                                  >
+                                      <i class="fas fa-eye" aria-hidden="true"></i>
+                                  </button>`
+                                : nothing}
                         </div>
                     </ak-form-element>
 

@@ -2,6 +2,7 @@ import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
+import "@goauthentik/components/ak-switch-input.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -20,6 +21,8 @@ import {
     PasswordStage,
     StagesApi,
 } from "@goauthentik/api";
+
+0;
 
 @customElement("ak-stage-password-form")
 export class PasswordStageForm extends BaseStageForm<PasswordStage> {
@@ -168,6 +171,14 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                             )}
                         </p>
                     </ak-form-element-horizontal>
+                    <ak-switch-input
+                        name="allowShowPassword"
+                        label="Allow Show Password"
+                        ?checked=${this.instance?.allowShowPassword ?? false}
+                        help=${msg(
+                            "Enable to provide a 'show password' option within the password input field.",
+                        )}
+                    ></ak-switch-input>
                 </div>
             </ak-form-group>`;
     }

@@ -313,15 +313,18 @@ export class IdentificationStage extends BaseStage<
                                   required
                                   value=${PasswordManagerPrefill.password || ""}
                               />
-                              <button
-                                  class="pf-c-button pf-m-control"
-                                  type="button"
-                                  id="ak-stage-identification-toggle-password-visibility"
-                                  aria-label=${msg("Show password")}
-                                  @click=${(ev: PointerEvent) => this.togglePasswordVisibility(ev)}
-                              >
-                                  <i class="fas fa-eye" aria-hidden="true"></i>
-                              </button>
+                              ${this.challenge.allowShowPassword
+                                  ? html` <button
+                                        class="pf-c-button pf-m-control"
+                                        type="button"
+                                        id="ak-stage-identification-toggle-password-visibility"
+                                        aria-label=${msg("Show password")}
+                                        @click=${(ev: PointerEvent) =>
+                                            this.togglePasswordVisibility(ev)}
+                                    >
+                                        <i class="fas fa-eye" aria-hidden="true"></i>
+                                    </button>`
+                                  : nothing}
                           </div>
                       </ak-form-element>
                   `

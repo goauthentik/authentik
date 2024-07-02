@@ -9,7 +9,7 @@ from django.http import HttpRequest, HttpResponse
 from django.urls import reverse
 from django.utils.translation import gettext as _
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField
+from rest_framework.fields import BooleanField, CharField
 from sentry_sdk.hub import Hub
 from structlog.stdlib import get_logger
 
@@ -77,6 +77,8 @@ class PasswordChallenge(WithUserInfoChallenge):
 
     component = CharField(default="ak-stage-password")
 
+    allow_show_password = BooleanField(default=False)
+
 
 class PasswordChallengeResponse(ChallengeResponse):
     """Password challenge response"""
@@ -138,6 +140,7 @@ class PasswordStageView(ChallengeStageView):
         challenge = PasswordChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
+                "allow_show_password": self.executor.current_stage.allow_show_password,
             }
         )
         recovery_flow = Flow.objects.filter(designation=FlowDesignation.RECOVERY)
