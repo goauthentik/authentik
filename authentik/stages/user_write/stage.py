@@ -118,6 +118,11 @@ class UserWriteStageView(StageView):
                 UserWriteStageView.write_attribute(user, key, value)
             # User has this key already
             elif hasattr(user, key):
+                attr = getattr(type(user), key)
+                if isinstance(attr, property):
+                    if not attr.fset:
+                        self.logger.info("discarding key", key=key)
+                        continue
                 setattr(user, key, value)
             # If none of the cases above matched, we have an attribute that the user doesn't have,
             # has no setter for, is not a nested attributes value and as such is invalid
