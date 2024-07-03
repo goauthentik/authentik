@@ -1,5 +1,6 @@
 """test SAML Source"""
 
+from pathlib import Path
 from time import sleep
 from typing import Any
 
@@ -88,8 +89,20 @@ class TestSourceSAML(SeleniumTestCase):
                 interval=5 * 1_000 * 1_000_000,
                 start_period=1 * 1_000 * 1_000_000,
             ),
+            "volumes": {
+                str(
+                    (Path(__file__).parent / Path("test-saml-idp/saml20-sp-remote.php")).absolute()
+                ): {
+                    "bind": "/var/www/simplesamlphp/metadata/saml20-sp-remote.php",
+                    "mode": "ro",
+                }
+            },
             "environment": {
                 "SIMPLESAMLPHP_SP_ENTITY_ID": "entity-id",
+                "SIMPLESAMLPHP_SP_NAME_ID_FORMAT": (
+                    "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
+                ),
+                "SIMPLESAMLPHP_SP_NAME_ID_ATTRIBUTE": "email",
                 "SIMPLESAMLPHP_SP_ASSERTION_CONSUMER_SERVICE": (
                     self.url("authentik_sources_saml:acs", source_slug=self.slug)
                 ),
