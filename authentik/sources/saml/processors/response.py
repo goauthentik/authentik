@@ -3,6 +3,7 @@
 from base64 import b64decode
 from time import mktime
 from typing import TYPE_CHECKING, Any
+from xml.etree.ElementTree import tostring
 
 import xmlsec
 from defusedxml.lxml import fromstring
@@ -240,7 +241,7 @@ class ResponseProcessor:
             name_id.text,
             delete_none_values(self.get_attributes()),
         )
-        flow_manager.policy_context["saml_response"] = self._root
+        flow_manager.policy_context["saml_response"] = tostring(self._root)
         return flow_manager
 
 
