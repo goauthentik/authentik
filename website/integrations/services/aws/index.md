@@ -117,11 +117,11 @@ Now go back to your authentik instance.
 -   Navigate to the Application that you created for AWS and click **Edit**.
 -   Under **UI Settings** make sure the **Start URL** matches the **AWS access portal sign-in URL**.
 
-::: info
+:::::info
 
 -   Ensure users already exist in AWS for authentication through authentik. AWS will throw an error if the user is unrecognized.
 -   In case you're stuck, you can see the SSO logs in Amazon CloudTrail -> Event History. Look for `ExtenalIdPDirectoryLogin`.
-    :::
+:::::
 
 ## Optional: Automated provisioning with SCIM
 
