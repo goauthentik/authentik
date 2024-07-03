@@ -2,11 +2,12 @@ import { renderSourceIcon } from "@goauthentik/admin/sources/utils";
 import "@goauthentik/elements/Divider";
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/forms/FormElement";
+import "@goauthentik/flow/components/ak-flow-password-input.js";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, css, html, nothing, render } from "lit";
-import { customElement, query } from "lit/decorators.js";
+import { CSSResult, PropertyValues, TemplateResult, css, html, nothing } from "lit";
+import { customElement } from "lit/decorators.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -45,12 +46,6 @@ export class IdentificationStage extends BaseStage<
 > {
     form?: HTMLFormElement;
 
-    @query("ak-stage-identification-password")
-    passwordField!: HTMLInputElement;
-
-    @query("ak-stage-identification-toggle-password-visibility")
-    visibilityToggle!: HTMLButtonElement;
-
     static get styles(): CSSResult[] {
         return [
             PFBase,
@@ -85,35 +80,6 @@ export class IdentificationStage extends BaseStage<
             this.autoRedirect();
             this.createHelperForm();
         }
-    }
-
-    // See `ak-stage-password` for comments and documentation.
-    togglePasswordVisibility(ev: PointerEvent) {
-        ev.stopPropagation();
-        ev.preventDefault();
-        if (!this.passwordField) {
-            return;
-        }
-        this.passwordField.type = this.passwordField.type === "password" ? "text" : "password";
-        this.renderPasswordVisibilityFeatures();
-    }
-
-    renderPasswordVisibilityFeatures() {
-        if (!this.visibilityToggle) {
-            return;
-        }
-        const show = this.passwordField.type === "password";
-        this.visibilityToggle?.setAttribute(
-            "aria-label",
-            show ? msg("Show password") : msg("Hide password"),
-        );
-        this.visibilityToggle?.querySelector("i")?.remove();
-        render(
-            show
-                ? html`<i class="fas fa-eye" aria-hidden="true"></i>`
-                : html`<i class="fas fa-eye-slash" aria-hidden="true"></i>`,
-            this.visibilityToggle,
-        );
     }
 
     autoRedirect(): void {
@@ -296,37 +262,16 @@ export class IdentificationStage extends BaseStage<
             </ak-form-element>
             ${this.challenge.passwordFields
                 ? html`
-                      <ak-form-element
-                          label="${msg("Password")}"
-                          ?required="${true}"
+                      <ak-flow-input-password
+                          label=${msg("Password")}
+                          inputId="ak-stage-identification-password"
+                          required
+                          grab-focus
                           class="pf-c-form__group"
-                          .errors=${(this.challenge.responseErrors || {})["password"]}
-                      >
-                          <div class="pf-c-input-group">
-                              <input
-                                  id="ak-stage-identification-password"
-                                  type="password"
-                                  name="password"
-                                  placeholder="${msg("Password")}"
-                                  autocomplete="current-password"
-                                  class="pf-c-form-control"
-                                  required
-                                  value=${PasswordManagerPrefill.password || ""}
-                              />
-                              ${this.challenge.allowShowPassword
-                                  ? html` <button
-                                        class="pf-c-button pf-m-control"
-                                        type="button"
-                                        id="ak-stage-identification-toggle-password-visibility"
-                                        aria-label=${msg("Show password")}
-                                        @click=${(ev: PointerEvent) =>
-                                            this.togglePasswordVisibility(ev)}
-                                    >
-                                        <i class="fas fa-eye" aria-hidden="true"></i>
-                                    </button>`
-                                  : nothing}
-                          </div>
-                      </ak-form-element>
+                          .errors=${(this.challenge?.responseErrors || {})["password"]}
+                          ?allow-show-password=${this.challenge.allowShowPassword}
+                          prefill=${PasswordManagerPrefill["password"] ?? ""}
+                      ></ak-flow-input-password>
                   `
                 : nothing}
             ${"non_field_errors" in (this.challenge?.responseErrors || {})
