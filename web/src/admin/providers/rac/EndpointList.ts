@@ -1,10 +1,10 @@
 import "@goauthentik/admin/policies/BoundPoliciesList";
 import "@goauthentik/admin/providers/rac/EndpointForm";
+import "@goauthentik/admin/rbac/ObjectPermissionModal";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
-import "@goauthentik/elements/rbac/ObjectPermissionModal";
 import { PaginatedResponse, Table } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
