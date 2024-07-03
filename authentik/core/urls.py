@@ -54,6 +54,12 @@ urlpatterns = [
         name="if-user",
     ),
     path(
+        #SH-5454 - permanent patch - allow /if/user/ when accessed directly
+        "if/user/",
+        ensure_csrf_cookie(InterfaceView.as_view(template_name="if/user.html")),
+        name="if-user-direct",
+    ),
+    path(
         "if/flow/<slug:flow_slug>/",
         ensure_csrf_cookie(FlowInterfaceView.as_view()),
         name="if-flow",
