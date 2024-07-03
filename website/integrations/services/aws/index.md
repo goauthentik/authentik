@@ -121,7 +121,7 @@ Now go back to your authentik instance.
 
 -   Ensure users already exist in AWS for authentication through authentik. AWS will throw an error if the user is unrecognized.
 -   In case you're stuck, you can see the SSO logs in Amazon CloudTrail -> Event History. Look for `ExtenalIdPDirectoryLogin`.
-:::::
+    :::::
 
 ## Optional: Automated provisioning with SCIM
 
