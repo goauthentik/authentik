@@ -70,6 +70,7 @@ export class LibraryPage extends AKElement {
             ordering: "name",
             page,
             pageSize: 100,
+            onlyWithLaunchUrl: true,
         });
 
         const applicationListFetch = await coreApi().coreApplicationsList(applicationListParams(1));
