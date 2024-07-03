@@ -61,7 +61,13 @@ class IdentificationStage(Stage):
             "is entered."
         ),
     )
-
+    enable_remember_me = models.BooleanField(
+        default=False,
+        help_text=_(
+            "Show the user the 'Remember me on this device' toggle, allowing repeat "
+            "users to skip straight to entering their password."
+        ),
+    )
     enrollment_flow = models.ForeignKey(
         Flow,
         on_delete=models.SET_DEFAULT,

@@ -54,6 +54,7 @@ class TestFlowInspector(APITestCase):
                     "layout": "stacked",
                 },
                 "flow_designation": "authentication",
+                "enable_remember_me": False,
                 "type": ChallengeTypes.NATIVE.value,
                 "password_fields": False,
                 "primary_action": "Log in",
