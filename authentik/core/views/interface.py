@@ -67,4 +67,5 @@ class BrandDefaultRedirectView(InterfaceView):
                 )
             response = AccessDeniedResponse(self.request)
             response.error_message = _("Interface can only be accessed by internal users.")
+            return response
         return super().dispatch(request, *args, **kwargs)
