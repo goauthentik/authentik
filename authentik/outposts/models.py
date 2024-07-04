@@ -424,6 +424,10 @@ class Outpost(SerializerModel, ManagedModel):
         verbose_name = _("Outpost")
         verbose_name_plural = _("Outposts")
 
+        permissions = [
+            ("refresh_outpost", _("Trigger an outpost refresh")),
+        ]
+
 
 @dataclass
 class OutpostState:
