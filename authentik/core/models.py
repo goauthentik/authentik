@@ -493,8 +493,8 @@ class Application(SerializerModel, PolicyBindingModel):
         url = None
         if self.meta_launch_url:
             url = self.meta_launch_url
-        elif self.provider:
-            url = self.provider.launch_url
+        elif provider := self.get_provider():
+            url = provider.launch_url
         if user and url:
             if isinstance(user, SimpleLazyObject):
                 user._setup()
