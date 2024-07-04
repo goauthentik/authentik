@@ -90,7 +90,7 @@ export class LibraryApplication extends AKElement {
         if (!this.application) {
             return html``;
         }
-        if (this.application?.launchUrl === "goauthentik.io://providers/rac/launch") {
+        if (this.application?.providerObj.component === "ak-provider-rac-form") {
             return html`<ak-library-rac-endpoint-launch .app=${this.application}>
                 <a slot="trigger"> ${this.application.name} </a>
             </ak-library-rac-endpoint-launch>`;
