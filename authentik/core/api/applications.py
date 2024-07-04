@@ -56,7 +56,7 @@ class ApplicationSerializer(ModelSerializer):
     """Application Serializer"""
 
     launch_url = SerializerMethodField()
-    provider_obj = ProviderSerializer(source="get_provider", read_only=True, many=False)
+    provider_obj = ProviderSerializer(source="get_provider", many=False, read_only=True)
     backchannel_providers_obj = ProviderSerializer(
         source="backchannel_providers", required=False, read_only=True, many=True
     )
@@ -152,7 +152,9 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
                 applications.append(application)
         return applications
 
-    def _filter_applications_with_launch_url(self, pagined_apps: Iterator[Application]) -> list[Application]:
+    def _filter_applications_with_launch_url(
+        self, pagined_apps: Iterator[Application]
+    ) -> list[Application]:
         applications = []
         for app in pagined_apps:
             if app.get_launch_url():
@@ -233,7 +235,9 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         if superuser_full_list and request.user.is_superuser:
             return super().list(request)
 
-        only_with_launch_url = str(request.query_params.get("only_with_launch_url", "false")).lower()
+        only_with_launch_url = str(
+            request.query_params.get("only_with_launch_url", "false")
+        ).lower()
 
         queryset = self._filter_queryset_for_list(self.get_queryset())
         paginator: Pagination = self.paginator

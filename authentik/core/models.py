@@ -1,7 +1,6 @@
 """authentik core models"""
 
 from datetime import datetime
-from functools import lru_cache
 from hashlib import sha256
 from typing import Any, Optional, Self
 from uuid import uuid4
