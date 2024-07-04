@@ -1,7 +1,6 @@
 """authentik core models"""
 
 from datetime import datetime
-from functools import lru_cache
 from hashlib import sha256
 from typing import Any, Optional, Self
 from uuid import uuid4
@@ -12,6 +11,7 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.db import models
 from django.db.models import Q, QuerySet, options
+from django.db.models.constants import LOOKUP_SEP
 from django.http import HttpRequest
 from django.utils.functional import SimpleLazyObject, cached_property
 from django.utils.timezone import now
@@ -429,6 +429,16 @@ class BackchannelProvider(Provider):
         abstract = True
 
 
+class ApplicationQuerySet(QuerySet):
+    def with_provider(self) -> "QuerySet[Application]":
+        qs = self.select_related("provider")
+        for subclass in Provider.objects.get_queryset()._get_subclasses_recurse(Provider):
+            if LOOKUP_SEP in subclass:
+                continue
+            qs = qs.select_related(f"provider__{subclass}")
+        return qs
+
+
 class Application(SerializerModel, PolicyBindingModel):
     """Every Application which uses authentik for authentication/identification/authorization
     needs an Application record. Other authentication types can subclass this Model to
@@ -460,6 +470,8 @@ class Application(SerializerModel, PolicyBindingModel):
     meta_description = models.TextField(default="", blank=True)
     meta_publisher = models.TextField(default="", blank=True)
 
+    objects = ApplicationQuerySet.as_manager()
+
     @property
     def serializer(self) -> Serializer:
         from authentik.core.api.applications import ApplicationSerializer
@@ -476,17 +488,13 @@ class Application(SerializerModel, PolicyBindingModel):
             return self.meta_icon.name
         return self.meta_icon.url
 
-    # maxsize is set as 2 since that is called once to check
-    # if we should return applications with a launch URL
-    # and a second time to actually get the launch_url
-    @lru_cache(maxsize=2)
     def get_launch_url(self, user: Optional["User"] = None) -> str | None:
         """Get launch URL if set, otherwise attempt to get launch URL based on provider."""
         url = None
         if self.meta_launch_url:
             url = self.meta_launch_url
-        elif provider := self.get_provider():
-            url = provider.launch_url
+        elif self.provider:
+            url = self.provider.launch_url
         if user and url:
             if isinstance(user, SimpleLazyObject):
                 user._setup()
@@ -500,16 +508,19 @@ class Application(SerializerModel, PolicyBindingModel):
         return url
 
     def get_provider(self) -> Provider | None:
-        """Get casted provider instance"""
+        """Get casted provider instance. Needs Application queryset with_provider"""
         if not self.provider:
             return None
-        # if the Application class has been cache, self.provider is set
-        # but doing a direct query lookup will fail.
-        # In that case, just return None
-        try:
-            return Provider.objects.get_subclass(pk=self.provider.pk)
-        except Provider.DoesNotExist:
-            return None
+
+        for subclass in Provider.objects.get_queryset()._get_subclasses_recurse(Provider):
+            # We don't care about recursion, skip nested models
+            if LOOKUP_SEP in subclass:
+                continue
+            try:
+                return getattr(self.provider, subclass)
+            except AttributeError:
+                pass
+        return None
 
     def __str__(self):
         return str(self.name)

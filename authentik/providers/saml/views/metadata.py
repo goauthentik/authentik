@@ -1,7 +1,7 @@
 """metadata redirect"""
 
 from django.http import Http404, HttpRequest, HttpResponse
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.views import View
 
@@ -12,7 +12,9 @@ class MetadataDownload(View):
     """Redirect to metadata download"""
 
     def dispatch(self, request: HttpRequest, application_slug: str) -> HttpResponse:
-        app: Application = get_object_or_404(Application, slug=application_slug)
+        app = Application.objects.filter(slug=application_slug).with_provider().first()
+        if not app:
+            raise Http404
         provider = app.get_provider()
         if not provider:
             raise Http404
