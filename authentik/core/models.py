@@ -489,10 +489,6 @@ class Application(SerializerModel, PolicyBindingModel):
             return self.meta_icon.name
         return self.meta_icon.url
 
-    # maxsize is set as 2 since that is called once to check
-    # if we should return applications with a launch URL
-    # and a second time to actually get the launch_url
-    @lru_cache(maxsize=2)
     def get_launch_url(self, user: Optional["User"] = None) -> str | None:
         """Get launch URL if set, otherwise attempt to get launch URL based on provider."""
         url = None
