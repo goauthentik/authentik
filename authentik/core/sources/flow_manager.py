@@ -309,7 +309,7 @@ class SourceFlowManager:
         # When request isn't authenticated we jump straight to auth
         if not self.request.user.is_authenticated:
             return self.handle_auth(connection)
-        # Connection has already been saved
+        connection.save()
         Event.new(
             EventAction.SOURCE_LINKED,
             message="Linked Source",
