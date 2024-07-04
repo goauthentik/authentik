@@ -217,4 +217,4 @@ class OutpostViewSet(UsedByMixin, ModelViewSet):
         """Force an outpost to refresh its configuration. Will also clear its cache."""
         outpost: Outpost = self.get_object()
         outpost_send_update(outpost)
-        return Response({}, status=200)
+        return Response(status=204)
