@@ -503,10 +503,13 @@ export class FlowExecutor extends Interface implements StageHost {
                                         <footer class="pf-c-login__footer">
                                             <ul class="pf-c-list pf-m-inline">
                                                 ${this.brand?.uiFooterLinks?.map((link) => {
+                                                    if (link.href) {
+                                                        return html`<li>
+                                                            <a href="${link.href}">${link.name}</a>
+                                                        </li>`;
+                                                    }
                                                     return html`<li>
-                                                        <a href="${link.href || ""}"
-                                                            >${link.name}</a
-                                                        >
+                                                        <span>${link.name}</span>
                                                     </li>`;
                                                 })}
                                                 <li>
