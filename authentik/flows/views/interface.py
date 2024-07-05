@@ -29,6 +29,10 @@ class FlowInterfaceView(InterfaceView):
             and int(ua["user_agent"]["major"]) <= 18  # noqa: PLR2004
         ):  # noqa: PLR2004
             return True
+        # https://github.com/AzureAD/microsoft-authentication-library-for-objc
+        # Used by Microsoft Teams/Office on macOS, and also uses a very outdated browser engine
+        if "PKeyAuth" in ua["string"]:
+            return True
         return False
 
     def get_template_names(self) -> list[str]:
