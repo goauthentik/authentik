@@ -3,6 +3,7 @@ import "@goauthentik/elements/Divider";
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/forms/FormElement";
 import { BaseStage } from "@goauthentik/flow/stages/base";
+import { AkRememberMeController } from "@goauthentik/flow/stages/identification/RememberMeController.js";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, css, html, nothing } from "lit";
@@ -44,23 +45,40 @@ export class IdentificationStage extends BaseStage<
 > {
     form?: HTMLFormElement;
 
+    rememberMe: AkRememberMeController;
+
     static get styles(): CSSResult[] {
-        return [PFBase, PFAlert, PFLogin, PFForm, PFFormControl, PFTitle, PFButton].concat(css`
-            /* login page's icons */
-            .pf-c-login__main-footer-links-item button {
-                background-color: transparent;
-                border: 0;
-                display: flex;
-                align-items: stretch;
-            }
-            .pf-c-login__main-footer-links-item img {
-                fill: var(--pf-c-login__main-footer-links-item-link-svg--Fill);
-                width: 100px;
-                max-width: var(--pf-c-login__main-footer-links-item-link-svg--Width);
-                height: 100%;
-                max-height: var(--pf-c-login__main-footer-links-item-link-svg--Height);
-            }
-        `);
+        return [
+            PFBase,
+            PFAlert,
+            PFLogin,
+            PFForm,
+            PFFormControl,
+            PFTitle,
+            PFButton,
+            AkRememberMeController.styles,
+            css`
+                /* login page's icons */
+                .pf-c-login__main-footer-links-item button {
+                    background-color: transparent;
+                    border: 0;
+                    display: flex;
+                    align-items: stretch;
+                }
+                .pf-c-login__main-footer-links-item img {
+                    fill: var(--pf-c-login__main-footer-links-item-link-svg--Fill);
+                    width: 100px;
+                    max-width: var(--pf-c-login__main-footer-links-item-link-svg--Width);
+                    height: 100%;
+                    max-height: var(--pf-c-login__main-footer-links-item-link-svg--Height);
+                }
+            `,
+        ];
+    }
+
+    constructor() {
+        super();
+        this.rememberMe = new AkRememberMeController(this);
     }
 
     updated(changedProperties: PropertyValues<this>) {
@@ -245,8 +263,10 @@ export class IdentificationStage extends BaseStage<
                     autofocus=""
                     autocomplete="username"
                     class="pf-c-form-control"
+                    value=${this.rememberMe?.username ?? ""}
                     required
                 />
+                ${this.rememberMe.render()}
             </ak-form-element>
             ${this.challenge.passwordFields
                 ? html`
