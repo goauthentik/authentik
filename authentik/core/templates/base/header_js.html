@@ -10,7 +10,7 @@
         versionSubdomain: "{{ version_subdomain }}",
         build: "{{ build }}",
     };
-    window.addEventListener("DOMContentLoaded", () => {
+    window.addEventListener("DOMContentLoaded", function () {
         {% for message in messages %}
         window.dispatchEvent(
             new CustomEvent("ak-message", {
