@@ -17,7 +17,6 @@ from rest_framework.fields import CharField, ReadOnlyField, SerializerMethodFiel
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
@@ -26,6 +25,7 @@ from authentik.api.pagination import Pagination
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
+from authentik.core.api.utils import ModelSerializer
 from authentik.core.models import Application, User
 from authentik.events.logs import LogEventSerializer, capture_logs
 from authentik.events.models import EventAction
@@ -103,7 +103,7 @@ class ApplicationSerializer(ModelSerializer):
 class ApplicationViewSet(UsedByMixin, ModelViewSet):
     """Application Viewset"""
 
-    queryset = Application.objects.all().prefetch_related("provider")
+    queryset = Application.objects.all().prefetch_related("provider").prefetch_related("policies")
     serializer_class = ApplicationSerializer
     search_fields = [
         "name",

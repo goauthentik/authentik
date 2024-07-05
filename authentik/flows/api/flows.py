@@ -7,18 +7,22 @@ from django.utils.translation import gettext as _
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
-from rest_framework.fields import BooleanField, CharField, ReadOnlyField
+from rest_framework.fields import BooleanField, CharField, ReadOnlyField, SerializerMethodField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
 from authentik.blueprints.v1.exporter import FlowExporter
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT, Importer
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import CacheSerializer, LinkSerializer, PassiveSerializer
+from authentik.core.api.utils import (
+    CacheSerializer,
+    LinkSerializer,
+    ModelSerializer,
+    PassiveSerializer,
+)
 from authentik.events.logs import LogEventSerializer
 from authentik.flows.api.flows_diagram import FlowDiagram, FlowDiagramSerializer
 from authentik.flows.exceptions import FlowNonApplicableException

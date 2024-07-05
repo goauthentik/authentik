@@ -12,6 +12,6 @@
             "@goauthentik/polyfill/*": ["./src/polyfill/*"],
             "@goauthentik/standalone/*": ["./src/standalone/*"],
             "@goauthentik/user/*": ["./src/user/*"]
-        },
+        }
     }
 }

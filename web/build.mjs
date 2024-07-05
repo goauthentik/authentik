@@ -1,3 +1,4 @@
+import { execFileSync } from "child_process";
 import * as chokidar from "chokidar";
 import esbuild from "esbuild";
 import fs from "fs";
@@ -9,11 +10,24 @@ import { fileURLToPath } from "url";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
+let authentikProjectRoot = __dirname + "../";
+try {
+    // Use the package.json file in the root folder, as it has the current version information.
+    authentikProjectRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
+        encoding: "utf8",
+    }).replace("\n", "");
+} catch (exc) {
+    // We probably don't have a .git folder, which could happen in container builds
+}
+const rootPackage = JSON.parse(fs.readFileSync(path.join(authentikProjectRoot, "./package.json")));
+
 // eslint-disable-next-line no-undef
 const isProdBuild = process.env.NODE_ENV === "production";
 
 // eslint-disable-next-line no-undef
 const apiBasePath = process.env.AK_API_BASE_PATH || "";
+
+const envGitHashKey = "GIT_BUILD_HASH";
 
 const definitions = {
     "process.env.NODE_ENV": JSON.stringify(isProdBuild ? "production" : "development"),
@@ -80,8 +94,17 @@ const baseArgs = {
     format: "esm",
 };
 
+function getVersion() {
+    let version = rootPackage.version;
+    if (process.env[envGitHashKey]) {
+        version = `${version}.${process.env[envGitHashKey]}`;
+    }
+    return version;
+}
+
 async function buildOneSource(source, dest) {
     const DIST = path.join(__dirname, "./dist", dest);
+    // eslint-disable-next-line no-console
     console.log(`[${new Date(Date.now()).toISOString()}] Starting build for target ${source}`);
 
     try {
@@ -89,13 +112,13 @@ async function buildOneSource(source, dest) {
         await esbuild.build({
             ...baseArgs,
             entryPoints: [`./src/${source}`],
+            entryNames: `[dir]/[name]-${getVersion()}`,
             outdir: DIST,
         });
         const end = Date.now();
+        // eslint-disable-next-line no-console
         console.log(
-            `[${new Date(end).toISOString()}] Finished build for target ${source} in ${
-                Date.now() - start
-            }ms`,
+            `[${new Date(end).toISOString()}] Finished build for target ${source} in ${Date.now() - start}ms`,
         );
     } catch (exc) {
         console.error(`[${new Date(Date.now()).toISOString()}] Failed to build ${source}: ${exc}`);
@@ -112,12 +135,14 @@ function debouncedBuild() {
         clearTimeout(timeoutId);
     }
     timeoutId = setTimeout(() => {
+        // eslint-disable-next-line no-console
         console.clear();
         buildAuthentik(interfaces);
     }, 250);
 }
 
 if (process.argv.length > 2 && (process.argv[2] === "-h" || process.argv[2] === "--help")) {
+    // eslint-disable-next-line no-console
     console.log(`Build the authentikUI
 
 options:
@@ -129,6 +154,7 @@ options:
 }
 
 if (process.argv.length > 2 && (process.argv[2] === "-w" || process.argv[2] === "--watch")) {
+    // eslint-disable-next-line no-console
     console.log("Watching ./src for changes");
     chokidar.watch("./src").on("all", (event, path) => {
         if (!["add", "change", "unlink"].includes(event)) {

@@ -193,6 +193,7 @@ const docsSidebar = {
                         "sources/apple/index",
                         "sources/azure-ad/index",
                         "sources/discord/index",
+                        "sources/facebook/index",
                         "sources/github/index",
                         "sources/google/index",
                         "sources/mailcow/index",
@@ -252,6 +253,7 @@ const docsSidebar = {
                     label: "Executors",
                     items: [
                         "flow/executors/if-flow",
+                        "flow/executors/sfe",
                         "flow/executors/user-settings",
                         "flow/executors/headless",
                     ],
@@ -408,16 +410,17 @@ const docsSidebar = {
                 type: "generated-index",
                 title: "Releases",
                 slug: "releases",
-                description: "Release notes for recent authentik versions",
+                description: "Release Notes for recent authentik versions",
             },
             items: [
+                "releases/2024/v2024.6",
                 "releases/2024/v2024.4",
                 "releases/2024/v2024.2",
-                "releases/2023/v2023.10",
                 {
                     type: "category",
                     label: "Previous versions",
                     items: [
+                        "releases/2023/v2023.10",
                         "releases/2023/v2023.8",
                         "releases/2023/v2023.6",
                         "releases/2023/v2023.5",
@@ -482,7 +485,10 @@ const docsSidebar = {
                 {
                     type: "category",
                     label: "PostgreSQL",
-                    items: ["troubleshooting/postgres/upgrade_kubernetes"],
+                    items: [
+                        "troubleshooting/postgres/upgrade_kubernetes",
+                        "troubleshooting/postgres/upgrade_docker",
+                    ],
                 },
                 "troubleshooting/access",
                 "troubleshooting/login",
@@ -505,6 +511,8 @@ const docsSidebar = {
             items: [
                 "security/security-hardening",
                 "security/policy",
+                "security/CVE-2024-38371",
+                "security/CVE-2024-37905",
                 "security/CVE-2024-23647",
                 "security/CVE-2024-21637",
                 "security/CVE-2023-48228",

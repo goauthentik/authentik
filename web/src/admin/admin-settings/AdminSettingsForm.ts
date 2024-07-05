@@ -64,52 +64,59 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 .bighelp=${html`
                     <p class="pf-c-form__helper-text">
                         ${msg(
-                            "Configure how authentik should show avatars for users. The following values can be set:"
+                            "Configure how authentik should show avatars for users. The following values can be set:",
                         )}
                     </p>
                     <ul class="pf-c-list">
                         <li class="pf-c-form__helper-text">
                             <code>none</code>:
-                            ${msg("Disables per-user avatars and just shows a 1x1 pixel transparent picture")}
+                            ${msg(
+                                "Disables per-user avatars and just shows a 1x1 pixel transparent picture",
+                            )}
                         </li>
                         <li class="pf-c-form__helper-text">
-                            <code>gravatar</code>: ${msg("Uses gravatar with the user's email address")}
+                            <code>gravatar</code>:
+                            ${msg("Uses gravatar with the user's email address")}
                         </li>
                         <li class="pf-c-form__helper-text">
-                            <code>initials</code>: ${msg("Generated avatars based on the user's name")}
+                            <code>initials</code>:
+                            ${msg("Generated avatars based on the user's name")}
                         </li>
                         <li class="pf-c-form__helper-text">
                             ${msg(
-                                "Any URL: If you want to use images hosted on another server, you can set any URL. Additionally, these placeholders can be used:"
+                                "Any URL: If you want to use images hosted on another server, you can set any URL. Additionally, these placeholders can be used:",
                             )}
                             <ul class="pf-c-list">
                                 <li class="pf-c-form__helper-text">
                                     <code>%(username)s</code>: ${msg("The user's username")}
                                 </li>
                                 <li class="pf-c-form__helper-text">
-                                    <code>%(mail_hash)s</code>: ${msg("The email address, md5 hashed")}
+                                    <code>%(mail_hash)s</code>:
+                                    ${msg("The email address, md5 hashed")}
                                 </li>
                                 <li class="pf-c-form__helper-text">
-                                    <code>%(upn)s</code>: ${msg("The user's UPN, if set (otherwise an empty string)")}
+                                    <code>%(upn)s</code>:
+                                    ${msg("The user's UPN, if set (otherwise an empty string)")}
                                 </li>
                             </ul>
                         </li>
                         <li class="pf-c-form__helper-text">
                             ${msg(
-                                html`An attribute path like <code>attributes.something.avatar</code>, which can be used
-                                    in combination with the file field to allow users to upload custom avatars for
-                                    themselves.`
+                                html`An attribute path like
+                                    <code>attributes.something.avatar</code>, which can be used in
+                                    combination with the file field to allow users to upload custom
+                                    avatars for themselves.`,
                             )}
                         </li>
                     </ul>
                     <p class="pf-c-form__helper-text">
                         ${msg(
-                            "Multiple values can be set, comma-separated, and authentik will fallback to the next mode when no avatar could be found."
+                            "Multiple values can be set, comma-separated, and authentik will fallback to the next mode when no avatar could be found.",
                         )}
                         ${msg(
-                            html`For example, setting this to <code>gravatar,initials</code> will attempt to get an
-                                avatar from Gravatar, and if the user has not configured on there, it will fallback to a
-                                generated avatar.`
+                            html`For example, setting this to <code>gravatar,initials</code> will
+                                attempt to get an avatar from Gravatar, and if the user has not
+                                configured on there, it will fallback to a generated avatar.`,
                         )}
                     </p>
                 `}
@@ -146,10 +153,14 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                         ${msg("Duration after which events will be deleted from the database.")}
                     </p>
                     <p class="pf-c-form__helper-text">
-                        ${msg('When using an external logging solution for archiving, this can be set to "minutes=5".')}
+                        ${msg(
+                            'When using an external logging solution for archiving, this can be set to "minutes=5".',
+                        )}
                     </p>
                     <p class="pf-c-form__helper-text">
-                        ${msg("This setting only affects new Events, as the expiration is saved per-event.")}
+                        ${msg(
+                            "This setting only affects new Events, as the expiration is saved per-event.",
+                        )}
                     </p>
                     <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
             >
@@ -161,7 +172,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 ></ak-codemirror>
                 <p class="pf-c-form__helper-text">
                     ${msg(
-                        "This option configures the footer links on the flow executor pages. It must be a valid YAML or JSON list and can be used as follows:"
+                        "This option configures the footer links on the flow executor pages. It must be a valid YAML or JSON list and can be used as follows:",
                     )}
                     <code>[{"name": "Link Name","href":"https://goauthentik.io"}]</code>
                 </p>
@@ -170,7 +181,9 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 name="gdprCompliance"
                 label=${msg("GDPR compliance")}
                 ?checked="${this._settings?.gdprCompliance}"
-                help=${msg("When enabled, all the events caused by a user will be deleted upon the user's deletion.")}
+                help=${msg(
+                    "When enabled, all the events caused by a user will be deleted upon the user's deletion.",
+                )}
             >
             </ak-switch-input>
             <ak-switch-input
@@ -180,7 +193,10 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 help=${msg("Globally enable/disable impersonation.")}
             >
             </ak-switch-input>
-            <ak-form-element-horizontal label=${msg("User directory fields")} name="userDirectoryFields">
+            <ak-form-element-horizontal
+                label=${msg("User directory fields")}
+                name="userDirectoryFields"
+            >
                 <ak-codemirror
                     mode=${CodeMirrorMode.YAML}
                     .value="${first(this._settings?.userDirectoryFields, [
@@ -193,19 +209,22 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 ></ak-codemirror>
                 <p class="pf-c-form__helper-text">
                     ${msg(
-                        "This option configures what user fields are shown in the user directory. It must be a valid JSON list and can be used as follows, with all possible values included:"
+                        "This option configures what user fields are shown in the user directory. It must be a valid JSON list and can be used as follows, with all possible values included:",
                     )}
                     <code>["name", "username", "email", "avatars", "groups"]</code>
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("User directory attributes")} name="userDirectoryAttributes">
+            <ak-form-element-horizontal
+                label=${msg("User directory attributes")}
+                name="userDirectoryAttributes"
+            >
                 <ak-codemirror
                     mode=${CodeMirrorMode.YAML}
                     .value="${first(this._settings?.userDirectoryAttributes, [])}"
                 ></ak-codemirror>
                 <p class="pf-c-form__helper-text">
                     ${msg(
-                        "This option configures what user attributes are shown in the user directory. It must be a valid JSON list and can be used as follows:"
+                        "This option configures what user attributes are shown in the user directory. It must be a valid JSON list and can be used as follows:",
                     )}
                     <code>[{"attribute": "phone_number", "display_name": "Phone"}]</code>
                 </p>
@@ -215,7 +234,9 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 label=${msg("Default token duration")}
                 required
                 value="${ifDefined(this._settings?.defaultTokenDuration)}"
-                .bighelp=${html`<p class="pf-c-form__helper-text">${msg("Default duration for generated tokens")}</p>
+                .bighelp=${html`<p class="pf-c-form__helper-text">
+                        ${msg("Default duration for generated tokens")}
+                    </p>
                     <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
             >
             </ak-text-input>

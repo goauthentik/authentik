@@ -159,8 +159,11 @@ class UserInterfacePresentation extends AKElement {
             .otherwise(() => this.me.user.username);
     }
 
-    get canAccessUserDirector() {
-        return this.me.user.isSuperuser || this.me.user.systemPermissions.includes("can_view_user_directory");
+    get canAccessUserDirectory() {
+        return (
+            this.me.user.isSuperuser ||
+            this.me.user.systemPermissions.includes("can_view_user_directory")
+        );
     }
 
     get canAccessAdmin() {
@@ -212,7 +215,10 @@ class UserInterfacePresentation extends AKElement {
                             <!-- -->
                             ${this.renderSettings()}
                             <div class="pf-c-page__header-tools-item">
-                                <a href="/flows/-/default/invalidation/" class="pf-c-button pf-m-plain">
+                                <a
+                                    href="/flows/-/default/invalidation/"
+                                    class="pf-c-button pf-m-plain"
+                                >
                                     <pf-tooltip position="top" content=${msg("Sign out")}>
                                         <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
                                     </pf-tooltip>
@@ -222,11 +228,17 @@ class UserInterfacePresentation extends AKElement {
                         </div>
                         ${this.renderImpersonation()}
                         <div class="pf-c-page__header-tools-group">
-                            <div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-md">
+                            <div
+                                class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-md"
+                            >
                                 ${this.userDisplayName}
                             </div>
                         </div>
-                        <img class="pf-c-avatar" src=${this.me.user.avatar} alt="${msg("Avatar image")}" />
+                        <img
+                            class="pf-c-avatar"
+                            src=${this.me.user.avatar}
+                            alt="${msg("Avatar image")}"
+                        />
                     </div>
                 </header>
                 <div class="pf-c-page__drawer">
@@ -252,13 +264,16 @@ class UserInterfacePresentation extends AKElement {
                                 </div>
                             </div>
                             <ak-notification-drawer
-                                class="pf-c-drawer__panel pf-m-width-33 ${this.notificationDrawerOpen
+                                class="pf-c-drawer__panel pf-m-width-33 ${this
+                                    .notificationDrawerOpen
                                     ? ""
                                     : "display-none"}"
                                 ?hidden=${!this.notificationDrawerOpen}
                             ></ak-notification-drawer>
                             <ak-api-drawer
-                                class="pf-c-drawer__panel pf-m-width-33 ${this.apiDrawerOpen ? "" : "display-none"}"
+                                class="pf-c-drawer__panel pf-m-width-33 ${this.apiDrawerOpen
+                                    ? ""
+                                    : "display-none"}"
                                 ?hidden=${!this.apiDrawerOpen}
                             ></ak-api-drawer>
                         </div>
@@ -275,7 +290,9 @@ class UserInterfacePresentation extends AKElement {
 
         const onClick = (ev: Event) => {
             ev.stopPropagation();
-            this.dispatchEvent(new Event(EVENT_API_DRAWER_TOGGLE, { bubbles: true, composed: true }));
+            this.dispatchEvent(
+                new Event(EVENT_API_DRAWER_TOGGLE, { bubbles: true, composed: true }),
+            );
         };
 
         return html`<div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg">
@@ -294,7 +311,9 @@ class UserInterfacePresentation extends AKElement {
 
         const onClick = (ev: Event) => {
             ev.stopPropagation();
-            this.dispatchEvent(new Event(EVENT_NOTIFICATION_DRAWER_TOGGLE, { bubbles: true, composed: true }));
+            this.dispatchEvent(
+                new Event(EVENT_NOTIFICATION_DRAWER_TOGGLE, { bubbles: true, composed: true }),
+            );
         };
 
         return html`<div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg">
@@ -304,7 +323,11 @@ class UserInterfacePresentation extends AKElement {
                 aria-label="${msg("Unread notifications")}"
                 @click=${onClick}
             >
-                <span class="pf-c-notification-badge ${this.notificationsCount > 0 ? "pf-m-unread" : ""}">
+                <span
+                    class="pf-c-notification-badge ${this.notificationsCount > 0
+                        ? "pf-m-unread"
+                        : ""}"
+                >
                     <pf-tooltip position="top" content=${msg("Open Notification drawer")}>
                         <i class="fas fa-bell" aria-hidden="true"></i>
                     </pf-tooltip>

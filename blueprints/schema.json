@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://goauthentik.io/blueprints/schema.json",
     "type": "object",
-    "title": "authentik 2024.4.2 Blueprint schema",
+    "title": "authentik 2024.6.0 Blueprint schema",
     "required": [
         "version",
         "entries"
@@ -6164,6 +6164,19 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Api url"
+                },
+                "score_min_threshold": {
+                    "type": "number",
+                    "title": "Score min threshold"
+                },
+                "score_max_threshold": {
+                    "type": "number",
+                    "title": "Score max threshold"
+                },
+                "error_on_invalid_score": {
+                    "type": "boolean",
+                    "title": "Error on invalid score",
+                    "description": "When enabled and the received captcha score is outside of the given threshold, the stage will show an error message. When not enabled, the flow will continue, but the data from the captcha will be available in the context for policy decisions"
                 }
             },
             "required": []

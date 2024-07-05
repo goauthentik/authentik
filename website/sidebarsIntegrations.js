@@ -40,6 +40,7 @@ module.exports = {
                         "services/rocketchat/index",
                         "services/roundcube/index",
                         "services/sharepoint-se/index",
+                        "services/slack/index",
                         "services/vikunja/index",
                         "services/wekan/index",
                         "services/wiki-js/index",
@@ -80,6 +81,7 @@ module.exports = {
                         "services/apache-guacamole/index",
                         "services/argocd/index",
                         "services/awx-tower/index",
+                        "services/cloudflare-access/index",
                         "services/globalprotect/index",
                         "services/harbor/index",
                         "services/hashicorp-vault/index",
@@ -132,6 +134,7 @@ module.exports = {
                     type: "category",
                     label: "Monitoring",
                     items: [
+                        "services/gatus/index",
                         "services/glitchtip/index",
                         "services/grafana/index",
                         "services/sentry/index",

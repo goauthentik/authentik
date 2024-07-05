@@ -157,6 +157,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                                   ${msg("See more about OCI support here:")}&nbsp;
                                   <a
                                       target="_blank"
+                                      rel="noopener noreferrer"
                                       href="${docLink(
                                           "/developer-docs/blueprints/?utm_source=authentik#storage---oci",
                                       )}"

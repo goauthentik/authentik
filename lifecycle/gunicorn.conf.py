@@ -7,7 +7,6 @@ from pathlib import Path
 from tempfile import gettempdir
 from typing import TYPE_CHECKING
 
-from cryptography.exceptions import InternalError
 from cryptography.hazmat.backends.openssl.backend import backend
 from defusedxml import defuse_stdlib
 from prometheus_client.values import MultiProcessValue
@@ -30,10 +29,8 @@ if TYPE_CHECKING:
 
 defuse_stdlib()
 
-try:
+if CONFIG.get_bool("compliance.fips.enabled", False):
     backend._enable_fips()
-except InternalError:
-    pass
 
 wait_for_db()
 
