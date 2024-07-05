@@ -31,7 +31,7 @@ function ak(): GlobalAuthentik {
 }
 
 class SimpleFlowExecutor {
-    challenge: ChallengeTypes;
+    challenge?: ChallengeTypes;
     flowSlug: string;
     container: HTMLDivElement;
 
@@ -82,7 +82,7 @@ class SimpleFlowExecutor {
     }
 
     renderChallenge() {
-        switch (this.challenge.component) {
+        switch (this.challenge?.component) {
             case "ak-stage-identification":
                 new IdentificationStage(this, this.challenge).render();
                 return;
@@ -99,7 +99,7 @@ class SimpleFlowExecutor {
                 new AuthenticatorValidateStage(this, this.challenge).render();
                 return;
             default:
-                this.container.innerText = "Unsupported stage: " + this.challenge.component;
+                this.container.innerText = "Unsupported stage: " + this.challenge?.component;
                 return;
         }
     }
@@ -159,7 +159,7 @@ class IdentificationStage extends Stage<IdentificationChallenge> {
         this.html(`
             <form id="ident-form">
                 <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="">
-                <h1 class="h3 mb-3 fw-normal text-center">${this.challenge.flowInfo?.title}</h1>
+                <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
                 ${
                     this.challenge.applicationPre
                         ? `<p>
@@ -195,7 +195,7 @@ class PasswordStage extends Stage<PasswordChallenge> {
         this.html(`
             <form id="password-form">
                 <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="">
-                <h1 class="h3 mb-3 fw-normal text-center">${this.challenge.flowInfo.title}</h1>
+                <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
                 <div class="form-label-group my-3 has-validation">
                     <input type="password" autofocus class="form-control ${this.error("password").length > 0 ? "is-invalid" : ""}" name="password" placeholder="Password">
                     ${this.renderInputError("password")}
@@ -222,7 +222,7 @@ class AutosubmitStage extends Stage<AutosubmitChallenge> {
         this.html(`
             <form id="autosubmit-form" action="${this.challenge.url}" method="POST">
                 <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="">
-                <h1 class="h3 mb-3 fw-normal text-center">${this.challenge.flowInfo.title}</h1>
+                <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
                 ${Object.entries(this.challenge.attrs).map(([key, value]) => {
                     return `<input
                             type="hidden"
@@ -265,7 +265,7 @@ export interface AuthAssertion {
 }
 
 class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge> {
-    deviceChallenge: DeviceChallenge;
+    deviceChallenge?: DeviceChallenge;
 
     b64enc(buf: Uint8Array): string {
         return fromByteArray(buf).replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
@@ -281,14 +281,16 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
         );
     }
 
-    checkWebAuthnSupport() {
+    checkWebAuthnSupport(): boolean {
         if ("credentials" in navigator) {
-            return;
+            return true;
         }
         if (window.location.protocol === "http:" && window.location.hostname !== "localhost") {
-            throw new Error("WebAuthn requires this page to be accessed via HTTPS.");
+            console.warn("WebAuthn requires this page to be accessed via HTTPS.");
+            return false;
         }
-        throw new Error("WebAuthn not supported by browser.");
+        console.warn("WebAuthn not supported by browser.");
+        return false;
     }
 
     /**
@@ -405,11 +407,25 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
     }
 
     renderChallengePicker() {
+        const challenges = this.challenge.deviceChallenges.filter((challenge) => {
+            if (challenge.deviceClass === "webauthn") {
+                if (!this.checkWebAuthnSupport()) {
+                    return undefined;
+                }
+            }
+            return challenge;
+        });
         this.html(`<form id="picker-form">
                 <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="">
-                <h1 class="h3 mb-3 fw-normal text-center">${this.challenge.flowInfo.title}</h1>
-                <p>Select an authentication method.</p>
-                ${this.challenge.deviceChallenges
+                <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
+                ${
+                    challenges.length > 0
+                        ? "<p>Select an authentication method.</p>"
+                        : `
+                    <p>No compatible authentication method available</p>
+                    `
+                }
+                ${challenges
                     .map((challenge) => {
                         let label = undefined;
                         switch (challenge.deviceClass) {
@@ -449,7 +465,7 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
         this.html(`
             <form id="totp-form">
                 <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="">
-                <h1 class="h3 mb-3 fw-normal text-center">${this.challenge.flowInfo.title}</h1>
+                <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
                 <div class="form-label-group my-3 has-validation">
                     <input type="text" autofocus class="form-control ${this.error("code").length > 0 ? "is-invalid" : ""}" name="code" placeholder="Please enter your code" autocomplete="one-time-code">
                     ${this.renderInputError("code")}
@@ -468,7 +484,7 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
         this.html(`
             <form id="totp-form">
                 <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="">
-                <h1 class="h3 mb-3 fw-normal text-center">${this.challenge.flowInfo.title}</h1>
+                <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
                 <div class="d-flex justify-content-center">
                     <div class="spinner-border" role="status">
                         <span class="sr-only">Loading...</span>
@@ -476,7 +492,6 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
                 </div>
             </form>
             `);
-        this.checkWebAuthnSupport();
         navigator.credentials
             .get({
                 publicKey: this.transformCredentialRequestOptions(
