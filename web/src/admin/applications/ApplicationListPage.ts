@@ -1,4 +1,5 @@
 import "@goauthentik/admin/applications/ApplicationForm";
+import "@goauthentik/admin/applications/wizard/ak-application-wizard";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { PFSize } from "@goauthentik/common/enums.js";
 import "@goauthentik/components/ak-app-icon";
@@ -20,8 +21,6 @@ import { customElement, property } from "lit/decorators.js";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
 import { Application, CoreApi } from "@goauthentik/api";
-
-import "./ApplicationWizardHint";
 
 export const applicationListStyle = css`
     /* Fix alignment issues with images in tables */
@@ -82,10 +81,6 @@ export class ApplicationListPage extends TablePage<Application> {
             new TableColumn(msg("Provider Type")),
             new TableColumn(msg("Actions")),
         ];
-    }
-
-    renderSectionBefore(): TemplateResult {
-        return html`<ak-application-wizard-hint></ak-application-wizard-hint>`;
     }
 
     renderSidebarAfter(): TemplateResult {
@@ -156,11 +151,15 @@ export class ApplicationListPage extends TablePage<Application> {
     }
 
     renderObjectCreate(): TemplateResult {
-        return html`<ak-forms-modal .open=${getURLParam("createForm", false)}>
-            <span slot="submit"> ${msg("Create")} </span>
-            <span slot="header"> ${msg("Create Application")} </span>
-            <ak-application-form slot="form"> </ak-application-form>
-            <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
-        </ak-forms-modal>`;
+        return html`<ak-application-wizard
+                .open=${getURLParam("createForm", false)}
+                .showButton=${false}
+            ></ak-application-wizard>
+            <ak-forms-modal .open=${getURLParam("createFormLegacy", false)}>
+                <span slot="submit"> ${msg("Create")} </span>
+                <span slot="header"> ${msg("Create Application")} </span>
+                <ak-application-form slot="form"> </ak-application-form>
+                <button slot="trigger" class="pf-c-button pf-m-secondary">${msg("Create")}</button>
+            </ak-forms-modal>`;
     }
 }
