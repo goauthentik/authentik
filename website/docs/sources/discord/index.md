@@ -202,6 +202,11 @@ guild_member_info = requests.get(
   },
 ).json()
 
+# Ensure we are not being ratelimited
+if guild_member_info.get("message") == "You are being rate limited.":
+  ak_message(f"Discord is throttling this connection. Retry in {int(guild_member_info['retry_after'])}s")
+  return False
+
 # Ensure user is a member of the guild
 if "code" in guild_member_info:
     if guild_member_info["code"] == 10004:
@@ -260,6 +265,11 @@ guild_member_info = requests.get(
     "Authorization": f"Bearer {access_token}"
   },
 ).json()
+
+# Ensure we are not being ratelimited
+if guild_member_info.get("message") == "You are being rate limited.":
+  ak_message(f"Discord is throttling this connection. Retry in {int(guild_member_info['retry_after'])}s")
+  return False
 
 # Ensure user is a member of the guild
 if "code" in guild_member_info:
