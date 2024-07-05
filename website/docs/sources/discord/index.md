@@ -56,10 +56,10 @@ For more details on how-to have the new source display on the Login Page see [he
 ### Checking for membership of a Discord Guild
 
 :::info
-Ensure that the Discord OAuth source in 'Federation & Social login' has the additional `guilds` scope added under 'Protocol settings'.
+Ensure that the Discord OAuth source in **Federation & Social login** has the additional `guilds guilds.members.read` scopes added under **Protocol settings**.
 :::
 
-Create a new 'Expression Policy' with the content below, adjusting the variables where required:
+Create a new **Expression Policy** with the content below, adjusting the variables where required:
 
 ```python
 # To get the guild ID number for the parameters, open Discord, go to Settings > Advanced and enable developer mode.
@@ -98,10 +98,10 @@ Now bind this policy to the chosen enrollment and authentication flows for the D
 ### Checking for membership of a Discord Guild role
 
 :::info
-Ensure that the Discord OAuth source in 'Federation & Social login' has the additional `guilds guilds.members.read` scopes added under 'Protocol settings'.
+Ensure that the Discord OAuth source in **Federation & Social login** has the additional `guilds guilds.members.read` scopes added under **Protocol settings**.
 :::
 
-Create a new 'Expression Policy' with the content below, adjusting the variables where required:
+Create a new **Expression Policy** with the content below, adjusting the variables where required:
 
 ```python
 # To get the role and guild ID numbers for the parameters, open Discord, go to Settings > Advanced and
@@ -158,20 +158,20 @@ Now bind this policy to the chosen enrollment and authentication flows for the D
 ### Syncing Discord roles to authentik groups
 
 :::info
-Ensure that the Discord OAuth source in 'Federation & Social login' has the additional `guilds.members.read` scopes added under 'Protocol settings'.
+Ensure that the Discord OAuth source in **Federation & Social login** has the additional `guilds.members.read` scopes added under **Protocol settings**.
 :::
 
 :::info
-Any authentik role that you want to sync with a Discord role needs to have the attribute `discord_role_id` with a value of the Discord role's ID set.  
-The settings can be found at `Authentik > Admin Interface > Directory > Groups > YOUR_GROUP > Attributes`  
-Blueprint attribute: ``discord_role_id: "<ROLE ID>"``
+Any authentik role that you want to sync with a Discord role needs to have the **attribute** `discord_role_id` with a value of the Discord role's ID set.  
+This setting can be found under `Authentik > Admin Interface > Directory > Groups > YOUR_GROUP > Attributes`  
+Example: ``discord_role_id: "<ROLE ID>"``
 :::
 
 The following two policies allow you to synchronize roles in a Discord guild with roles in authentik.  
 Whenever a user enrolls or signs in to authentik via a Discord source, these policies will check the user's Discord roles and apply the user's authentik roles accordingly.  
 All roles with the attribute ``discord_role_id`` defined will be added or removed depending on whether the user is a member of the defined Discord role.
 
-Create a new 'Expression Policy' with the content below, adjusting the variables where required.
+Create a new **Expression Policy** with the content below, adjusting the variables where required.
 
 #### Sync on enrollment
 
@@ -302,14 +302,14 @@ Now bind this policy to the chosen authentication flows for the Discord OAuth so
 ### Store OAuth info in attribute and create avatar attribute from Discord avatar
 
 :::info
-Ensure that the Discord OAuth source in 'Federation & Social login' has the additional `guilds.members.read` scopes added under 'Protocol settings'.
+Ensure that the Discord OAuth source in **Federation & Social login** has the additional `guilds.members.read` scopes added under **Protocol settings**.
 :::
 
 :::info
 In order to use the created attribute in authentik you will have to set authentik configuration arguments found at: https://docs.goauthentik.io/docs/core/settings#avatars
 :::
 
-Create a new 'Expression Policy' with the content below, adjusting the variables where required:
+Create a new **Expression Policy** with the content below, adjusting the variables where required:
 
 ```python
 import base64
