@@ -77,8 +77,6 @@ You can assign the value of a mapping to any user attribute, or save it as a cus
 
 If the default source mapping is not enough, you can set your own custom LDAP property mapping.
 
-For example, the setting `ldap-displayName-mapping:name` means that the LDAP source field `displayName` will be mapped to the `name` field in authentik.
-
 Here are the steps:
 
 1. In authentik, open the Admin interface, and then navigate to **Customization -> Property Mappings**.
