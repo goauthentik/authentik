@@ -44,7 +44,6 @@ class TestFlowsEnroll(SeleniumTestCase):
         wait.until(
             ec.presence_of_element_located((By.CSS_SELECTOR, "ak-interface-user-presentation"))
         )
-        self.driver.get(self.if_user_url("/settings"))
 
         user = User.objects.get(username="foo")
         self.assertEqual(user.username, "foo")
@@ -99,7 +98,6 @@ class TestFlowsEnroll(SeleniumTestCase):
         wait.until(
             ec.presence_of_element_located((By.CSS_SELECTOR, "ak-interface-user-presentation"))
         )
-        self.driver.get(self.if_user_url("/settings"))
 
         self.assert_user(User.objects.get(username="foo"))
 

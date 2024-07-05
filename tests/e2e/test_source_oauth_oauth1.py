@@ -136,7 +136,6 @@ class TestSourceOAuth1(SeleniumTestCase):
         # Wait until we've loaded the user info page
         sleep(2)
         # Wait until we've logged in
-        self.wait_for_url(self.if_user_url("/library"))
-        self.driver.get(self.if_user_url("/settings"))
+        self.wait_for_url(self.if_user_url())
 
         self.assert_user(User(username="example-user", name="test name", email="foo@example.com"))

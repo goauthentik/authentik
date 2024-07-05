@@ -104,7 +104,6 @@ class TestFlowsRecovery(SeleniumTestCase):
         wait.until(
             ec.presence_of_element_located((By.CSS_SELECTOR, "ak-interface-user-presentation"))
         )
-        self.driver.get(self.if_user_url("/settings"))
 
         self.assert_user(user)
         user.refresh_from_db()
