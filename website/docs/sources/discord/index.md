@@ -186,7 +186,7 @@ guild_id = "<YOUR GUILD ID>"
 ##############
 
 # Ensure flow is only run during OAuth logins via Discord
-if context['source'].provider_type != "discord":
+if context["source"].provider_type != "discord":
   return True
 
 # Get the user-source connection object from the context, and get the access token
@@ -198,16 +198,16 @@ access_token = connection.access_token
 guild_member_info = requests.get(
   GUILD_API_URL.format(guild_id=guild_id),
   headers={
-    "Authorization": "Bearer " + access_token
+    "Authorization": f"Bearer {access_token}",
   },
 ).json()
 
 # Ensure user is a member of the guild
 if "code" in guild_member_info:
-    if guild_member_info['code'] == 10004:
+    if guild_member_info["code"] == 10004:
         ak_message("User is not a member of the guild")
     else:
-        ak_create_event("discord_error", source=context['source'], code=guild_member_info['code'])
+        ak_create_event("discord_error", source=context["source"], code=guild_member_info["code"])
         ak_message("Discord API error, try again later.")
     return False
 
@@ -215,7 +215,7 @@ if "code" in guild_member_info:
 discord_groups = Group.objects.filter(attributes__discord_role_id__isnull=False)
 
 # Filter matching roles based on guild_member_info['roles']
-matching_roles = discord_groups.filter(attributes__discord_role_id__in=guild_member_info['roles'])
+matching_roles = discord_groups.filter(attributes__discord_role_id__in=guild_member_info["roles"])
 
 # Set matchin_roles in flow context
 request.context["flow_plan"].context["groups"] = matching_roles
@@ -223,7 +223,7 @@ request.context["flow_plan"].context["groups"] = matching_roles
 # Create event with roles added
 ak_create_event(
     "discord_role_sync",
-    discord_roles_added=', '.join(str(group) for group in matching_roles),
+    discord_roles_added=", ".join(str(group) for group in matching_roles),
 )
 
 return True
@@ -257,16 +257,16 @@ access_token = connection.access_token
 guild_member_info = requests.get(
   GUILD_API_URL.format(guild_id=guild_id),
   headers={
-    "Authorization": "Bearer " + access_token
+    "Authorization": f"Bearer {access_token}"
   },
 ).json()
 
 # Ensure user is a member of the guild
 if "code" in guild_member_info:
-    if guild_member_info['code'] == 10004:
+    if guild_member_info["code"] == 10004:
         ak_message("User is not a member of the guild")
     else:
-        ak_create_event("discord_error", source=context['source'], code=guild_member_info['code'])
+        ak_create_event("discord_error", source=context["source"], code=guild_member_info["code"])
         ak_message("Discord API error, try again later.")
     return False
 
@@ -274,10 +274,10 @@ if "code" in guild_member_info:
 discord_groups = Group.objects.filter(attributes__discord_role_id__isnull=False)
 
 # Get all user groups except discord_groups
-user_groups = request.user.ak_groups.exclude(pk__in=discord_groups.values_list('pk', flat=True))
+user_groups = request.user.ak_groups.exclude(pk__in=discord_groups.values_list("pk", flat=True))
 
 # Filter matching roles based on guild_member_info['roles']
-matching_roles = discord_groups.filter(attributes__discord_role_id__in=guild_member_info['roles'])
+matching_roles = discord_groups.filter(attributes__discord_role_id__in=guild_member_info["roles"])
 
 # Combine user_groups and matching_roles
 combined_groups = user_groups.union(matching_roles)
@@ -289,8 +289,8 @@ request.user.save()
 # Create event with roles changed
 ak_create_event(
     "discord_role_sync",
-    discord_roles_before=', '.join(str(group) for group in request.user.ak_groups.filter(pk__in=discord_groups.values_list('pk', flat=True))),
-    discord_roles_after=', '.join(str(group) for group in matching_roles),
+    discord_roles_before=", ".join(str(group) for group in request.user.ak_groups.filter(pk__in=discord_groups.values_list("pk", flat=True))),
+    discord_roles_after=", ".join(str(group) for group in matching_roles),
 )
 
 return True
