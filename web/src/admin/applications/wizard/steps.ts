@@ -42,7 +42,7 @@ class ProviderMethodStep implements ApplicationStepType {
     valid = false;
 
     get buttons() {
-        return [BackStep, this.valid ? NextStep : DisabledNextStep, CancelWizard];
+        return [this.valid ? NextStep : DisabledNextStep, BackStep, CancelWizard];
     }
 
     render() {
@@ -58,7 +58,7 @@ class ProviderStepDetails implements ApplicationStepType {
     disabled = true;
     valid = false;
     get buttons() {
-        return [BackStep, this.valid ? SubmitStep : DisabledNextStep, CancelWizard];
+        return [this.valid ? SubmitStep : DisabledNextStep, BackStep, CancelWizard];
     }
 
     render() {
