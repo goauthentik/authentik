@@ -294,7 +294,6 @@ combined_groups = user_groups.union(matching_roles)
 
 # Update user's groups
 request.user.ak_groups.set(combined_groups)
-request.user.save()
 
 # Create event with roles changed
 ak_create_event(
