@@ -2682,10 +2682,6 @@ paths:
         name: name
         schema:
           type: string
-      - in: query
-        name: only_with_launch_url
-        schema:
-          type: boolean
       - name: ordering
         required: false
         in: query
@@ -36638,6 +36634,7 @@ components:
         href:
           type: string
           readOnly: true
+          nullable: true
         name:
           type: string
           readOnly: true
@@ -39501,6 +39498,9 @@ components:
           allOf:
           - $ref: '#/components/schemas/ServiceConnection'
           readOnly: true
+        refresh_interval_s:
+          type: integer
+          readOnly: true
         token_identifier:
           type: string
           description: Get Token identifier
@@ -39522,6 +39522,7 @@ components:
       - pk
       - providers
       - providers_obj
+      - refresh_interval_s
       - service_connection_obj
       - token_identifier
       - type
