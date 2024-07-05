@@ -6,12 +6,14 @@ from django.contrib.auth import update_session_auth_hash
 from django.db import transaction
 from django.db.utils import IntegrityError, InternalError
 from django.http import HttpRequest, HttpResponse
+from django.utils.functional import SimpleLazyObject
 from django.utils.translation import gettext as _
 from rest_framework.exceptions import ValidationError
 
 from authentik.core.middleware import SESSION_KEY_IMPERSONATE_USER
 from authentik.core.models import USER_ATTRIBUTE_SOURCES, User, UserSourceConnection, UserTypes
 from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION
+from authentik.events.utils import sanitize_item
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import FlowExecutorView
@@ -47,7 +49,7 @@ class UserWriteStageView(StageView):
         # this is just a sanity check to ensure that is removed
         if parts[0] == "attributes":
             parts = parts[1:]
-        set_path_in_dict(user.attributes, ".".join(parts), value)
+        set_path_in_dict(user.attributes, ".".join(parts), sanitize_item(value))
 
     def ensure_user(self) -> tuple[User | None, bool]:
         """Ensure a user exists"""
@@ -117,6 +119,14 @@ class UserWriteStageView(StageView):
                 UserWriteStageView.write_attribute(user, key, value)
             # User has this key already
             elif hasattr(user, key):
+                if isinstance(user, SimpleLazyObject):
+                    user._setup()
+                    user = user._wrapped
+                attr = getattr(type(user), key)
+                if isinstance(attr, property):
+                    if not attr.fset:
+                        self.logger.info("discarding key", key=key)
+                        continue
                 setattr(user, key, value)
             # If none of the cases above matched, we have an attribute that the user doesn't have,
             # has no setter for, is not a nested attributes value and as such is invalid

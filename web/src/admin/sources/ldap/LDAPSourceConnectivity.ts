@@ -1,4 +1,4 @@
-import { AKElement } from "@goauthentik/app/elements/Base";
+import { AKElement } from "@goauthentik/elements/Base";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";

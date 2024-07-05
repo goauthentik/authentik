@@ -91,7 +91,7 @@ export class RouterOutlet extends AKElement {
         let matchedRoute: RouteMatch | null = null;
         this.routes.some((route) => {
             const match = route.url.exec(activeUrl);
-            if (match != null) {
+            if (match !== null) {
                 matchedRoute = new RouteMatch(route);
                 matchedRoute.arguments = match.groups || {};
                 matchedRoute.fullUrl = activeUrl;

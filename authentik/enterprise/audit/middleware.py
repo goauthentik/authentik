@@ -2,16 +2,16 @@
 
 from copy import deepcopy
 from functools import partial
+from typing import Any
 
 from django.apps.registry import apps
 from django.core.files import File
 from django.db import connection
-from django.db.models import Model
+from django.db.models import ManyToManyRel, Model
 from django.db.models.expressions import BaseExpression, Combinable
 from django.db.models.signals import post_init
 from django.http import HttpRequest
 
-from authentik.core.models import User
 from authentik.events.middleware import AuditMiddleware, should_log_model
 from authentik.events.utils import cleanse_dict, sanitize_item
 
@@ -28,13 +28,10 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
         super().connect(request)
         if not self.enabled:
             return
-        user = getattr(request, "user", self.anonymous_user)
-        if not user.is_authenticated:
-            user = self.anonymous_user
         if not hasattr(request, "request_id"):
             return
         post_init.connect(
-            partial(self.post_init_handler, user=user, request=request),
+            partial(self.post_init_handler, request=request),
             dispatch_uid=request.request_id,
             weak=False,
         )
@@ -48,7 +45,7 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
         post_init.disconnect(dispatch_uid=request.request_id)
 
     def serialize_simple(self, model: Model) -> dict:
-        """Serialize a model in a very simple way. No ForeginKeys or other relationships are
+        """Serialize a model in a very simple way. No ForeignKeys or other relationships are
         resolved"""
         data = {}
         deferred_fields = model.get_deferred_fields()
@@ -74,9 +71,12 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
         for key, value in before.items():
             if after.get(key) != value:
                 diff[key] = {"previous_value": value, "new_value": after.get(key)}
+        for key, value in after.items():
+            if key not in before and key not in diff and before.get(key) != value:
+                diff[key] = {"previous_value": before.get(key), "new_value": value}
         return sanitize_item(diff)
 
-    def post_init_handler(self, user: User, request: HttpRequest, sender, instance: Model, **_):
+    def post_init_handler(self, request: HttpRequest, sender, instance: Model, **_):
         """post_init django model handler"""
         if not should_log_model(instance):
             return
@@ -90,7 +90,6 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
 
     def post_save_handler(
         self,
-        user: User,
         request: HttpRequest,
         sender,
         instance: Model,
@@ -103,15 +102,37 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
         thread_kwargs = {}
         if hasattr(instance, "_previous_state") or created:
             prev_state = getattr(instance, "_previous_state", {})
+            if created:
+                prev_state = {}
             # Get current state
             new_state = self.serialize_simple(instance)
             diff = self.diff(prev_state, new_state)
             thread_kwargs["diff"] = diff
-            if not created:
-                ignored_field_sets = getattr(instance._meta, "authentik_signals_ignored_fields", [])
-                for field_set in ignored_field_sets:
-                    if set(diff.keys()) == set(field_set):
-                        return None
-        return super().post_save_handler(
-            user, request, sender, instance, created, thread_kwargs, **_
-        )
+        return super().post_save_handler(request, sender, instance, created, thread_kwargs, **_)
+
+    def m2m_changed_handler(  # noqa: PLR0913
+        self,
+        request: HttpRequest,
+        sender,
+        instance: Model,
+        action: str,
+        pk_set: set[Any],
+        thread_kwargs: dict | None = None,
+        **_,
+    ):
+        thread_kwargs = {}
+        m2m_field = None
+        # For the audit log we don't care about `pre_` or `post_` so we trim that part off
+        _, _, action_direction = action.partition("_")
+        # resolve the "through" model to an actual field
+        for field in instance._meta.get_fields():
+            if not isinstance(field, ManyToManyRel):
+                continue
+            if field.through == sender:
+                m2m_field = field
+        if m2m_field:
+            # If we're clearing we just set the "flag" to True
+            if action_direction == "clear":
+                pk_set = True
+            thread_kwargs["diff"] = {m2m_field.related_name: {action_direction: pk_set}}
+        return super().m2m_changed_handler(request, sender, instance, action, thread_kwargs)

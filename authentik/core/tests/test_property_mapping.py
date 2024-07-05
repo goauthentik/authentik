@@ -3,7 +3,10 @@
 from django.test import RequestFactory, TestCase
 from guardian.shortcuts import get_anonymous_user
 
-from authentik.core.exceptions import PropertyMappingExpressionException
+from authentik.core.expression.exceptions import (
+    PropertyMappingExpressionException,
+    SkipObjectException,
+)
 from authentik.core.models import PropertyMapping
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.events.models import Event, EventAction
@@ -42,6 +45,17 @@ class TestPropertyMappings(TestCase):
         self.assertTrue(events.exists())
         self.assertEqual(len(events), 1)
 
+    def test_expression_skip(self):
+        """Test expression error"""
+        expr = "raise SkipObject"
+        mapping = PropertyMapping.objects.create(name=generate_id(), expression=expr)
+        with self.assertRaises(SkipObjectException):
+            mapping.evaluate(None, None)
+        events = Event.objects.filter(
+            action=EventAction.PROPERTY_MAPPING_EXCEPTION, context__expression=expr
+        )
+        self.assertFalse(events.exists())
+
     def test_expression_error_extended(self):
         """Test expression error (with user and http request"""
         expr = "return aaa"
@@ -66,14 +80,11 @@ class TestPropertyMappings(TestCase):
             expression="return request.http_request.path",
         )
         http_request = self.factory.get("/")
-        tmpl = (
-            """
-        res = ak_call_policy('%s')
+        tmpl = f"""
+        res = ak_call_policy('{expr.name}')
         result = [request.http_request.path, res.raw_result]
         return result
         """
-            % expr.name
-        )
         evaluator = PropertyMapping(expression=tmpl, name=generate_id())
         res = evaluator.evaluate(self.user, http_request)
         self.assertEqual(res, ["/", "/"])

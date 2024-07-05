@@ -1,7 +1,7 @@
-import { DEFAULT_CONFIG } from "@goauthentik/app/common/api/config";
-import { groupBy } from "@goauthentik/app/common/utils";
-import { PaginatedResponse, Table, TableColumn } from "@goauthentik/app/elements/table/Table";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { groupBy } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/DeleteBulkForm";
+import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
@@ -22,12 +22,10 @@ export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPerm
     checkbox = true;
     clearOnRefresh = true;
 
-    apiEndpoint(page: number): Promise<PaginatedResponse<ExtraRoleObjectPermission>> {
+    async apiEndpoint(): Promise<PaginatedResponse<ExtraRoleObjectPermission>> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsRolesList({
+            ...(await this.defaultEndpointConfig()),
             uuid: this.roleUuid || "",
-            page: page,
-            ordering: this.order,
-            search: this.search,
         });
     }
 
@@ -39,9 +37,9 @@ export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPerm
 
     columns(): TableColumn[] {
         return [
-            new TableColumn("Model", "model"),
-            new TableColumn("Permission", ""),
-            new TableColumn("Object", ""),
+            new TableColumn(msg("Model"), "model"),
+            new TableColumn(msg("Permission"), ""),
+            new TableColumn(msg("Object"), ""),
             new TableColumn(""),
         ];
     }
@@ -90,7 +88,7 @@ export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPerm
                   >
                       <pre>${item.objectPk}</pre>
                   </pf-tooltip>`}`,
-            html`✓`,
+            html`<i class="fas fa-check pf-m-success"></i>`,
         ];
     }
 }

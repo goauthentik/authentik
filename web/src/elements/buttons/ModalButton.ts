@@ -1,6 +1,11 @@
+import { PFSize } from "@goauthentik/common/enums.js";
 import { AKElement } from "@goauthentik/elements/Base";
-import { PFSize } from "@goauthentik/elements/Spinner";
+import {
+    ModalHideEvent,
+    ModalShowEvent,
+} from "@goauthentik/elements/controllers/ModalOrchestrationController.js";
 
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -65,22 +70,9 @@ export class ModalButton extends AKElement {
         ];
     }
 
-    firstUpdated(): void {
-        if (this.handlerBound) return;
-        window.addEventListener("keyup", this.keyUpHandler);
-        this.handlerBound = true;
-    }
-
-    keyUpHandler = (e: KeyboardEvent): void => {
-        if (e.code === "Escape") {
-            this.resetForms();
-            this.open = false;
-        }
-    };
-
-    disconnectedCallback(): void {
-        super.disconnectedCallback();
-        window.removeEventListener("keyup", this.keyUpHandler);
+    closeModal() {
+        this.resetForms();
+        this.open = false;
     }
 
     resetForms(): void {
@@ -93,6 +85,7 @@ export class ModalButton extends AKElement {
 
     onClick(): void {
         this.open = true;
+        this.dispatchEvent(new ModalShowEvent(this));
         this.querySelectorAll("*").forEach((child) => {
             if ("requestUpdate" in child) {
                 (child as AKElement).requestUpdate();
@@ -119,12 +112,11 @@ export class ModalButton extends AKElement {
                 >
                     <button
                         @click=${() => {
-                            this.resetForms();
-                            this.open = false;
+                            this.dispatchEvent(new ModalHideEvent(this));
                         }}
                         class="pf-c-button pf-m-plain"
                         type="button"
-                        aria-label="Close dialog"
+                        aria-label=${msg("Close dialog")}
                     >
                         <i class="fas fa-times" aria-hidden="true"></i>
                     </button>

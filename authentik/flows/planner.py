@@ -59,11 +59,11 @@ class FlowPlan:
     markers: list[StageMarker] = field(default_factory=list)
 
     def append_stage(self, stage: Stage, marker: StageMarker | None = None):
-        """Append `stage` to all stages, optionally with stage marker"""
+        """Append `stage` to the end of the plan, optionally with stage marker"""
         return self.append(FlowStageBinding(stage=stage), marker)
 
     def append(self, binding: FlowStageBinding, marker: StageMarker | None = None):
-        """Append `stage` to all stages, optionally with stage marker"""
+        """Append `stage` to the end of the plan, optionally with stage marker"""
         self.bindings.append(binding)
         self.markers.append(marker or StageMarker())
 
@@ -203,7 +203,8 @@ class FlowPlanner:
                 "f(plan): building plan",
             )
             plan = self._build_plan(user, request, default_context)
-            cache.set(cache_key(self.flow, user), plan, CACHE_TIMEOUT)
+            if self.use_cache:
+                cache.set(cache_key(self.flow, user), plan, CACHE_TIMEOUT)
             if not plan.bindings and not self.allow_empty_flows:
                 raise EmptyFlowException()
             return plan

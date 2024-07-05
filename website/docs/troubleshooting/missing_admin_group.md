@@ -6,12 +6,12 @@ If all of the Admin groups have been deleted, or misconfigured during sync, you 
 
 Run the following command, where _username_ is the user you want to add to the newly created group:
 
-```
+```shell
 docker compose run --rm server create_admin_group username
 ```
 
 or, for Kubernetes, run
 
-```
+```shell
 kubectl exec -it deployment/authentik-worker -c authentik -- ak create_admin_group username
 ```

@@ -14,7 +14,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -35,28 +35,10 @@ export class PageHeader extends WithBrandConfig(AKElement) {
     hasNotifications = false;
 
     @property()
-    set header(value: string) {
-        const currentIf = currentInterface();
-        let title = this.brand?.brandingTitle || TITLE_DEFAULT;
-        if (currentIf === "admin") {
-            title = `${msg("Admin")} - ${title}`;
-        }
-        if (value !== "") {
-            title = `${value} - ${title}`;
-        }
-        document.title = title;
-        this._header = value;
-    }
-
-    get header(): string {
-        return this._header;
-    }
+    header = "";
 
     @property()
     description?: string;
-
-    @state()
-    _header = "";
 
     static get styles(): CSSResult[] {
         return [
@@ -123,6 +105,25 @@ export class PageHeader extends WithBrandConfig(AKElement) {
                     this.hasNotifications = r.pagination.count > 0;
                 });
         });
+    }
+
+    setTitle(header?: string) {
+        const currentIf = currentInterface();
+        let title = this.brand?.brandingTitle || TITLE_DEFAULT;
+        if (currentIf === "admin") {
+            title = `${msg("Admin")} - ${title}`;
+        }
+        // Prepend the header to the title
+        if (header !== undefined && header !== "") {
+            title = `${header} - ${title}`;
+        }
+        document.title = title;
+    }
+
+    willUpdate() {
+        // Always update title, even if there's no header value set,
+        // as in that case we still need to return to the generic title
+        this.setTitle(this.header);
     }
 
     renderIcon(): TemplateResult {

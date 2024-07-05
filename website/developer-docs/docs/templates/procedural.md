@@ -9,7 +9,7 @@ title: "Procedural topic"
 wget https://raw.githubusercontent.com/goauthentik/authentik/main/website/developer-docs/docs/templates/procedural.tmpl.md
 ```
 
-Edit your markdown file as you work, reading this page for the descriptions of each section. You can build out a "stub file" with just headers, then gradually add content to each section. Use screenshots sparingly, only for complex UIs where it is difficult to describe a UI element with words. Refer to our [General Guidelines](../writing-documentation#general-guidelines) for writing tips and authentik-specific rules.
+Edit your markdown file as you work, reading this page for the descriptions of each section. You can build out a "stub file" with just headers, then gradually add content to each section. Use screenshots sparingly, only for complex UIs where it is difficult to describe a UI element with words. Refer to our [General Guidelines](../writing-documentation#writing-guidelines) for writing tips and authentik-specific rules.
 :::
 
 For a procedural topic, use a title that focuses on the task you are writing about. For example, "Add a new Group" or "Edit user profiles". For procedural docs, there should be a verb in the title, and usually the noun (the component or object you are working on). For the title (and all headings) use the infinitive form of the verb (i.e. "add") not the gerund form (i.e. "adding").

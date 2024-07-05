@@ -5,10 +5,12 @@ import socket
 from collections.abc import Iterable
 from ipaddress import ip_address, ip_network
 from textwrap import indent
+from types import CodeType
 from typing import Any
 
 from cachetools import TLRUCache, cached
 from django.core.exceptions import FieldError
+from django.utils.text import slugify
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.serializers import ValidationError
 from sentry_sdk.hub import Hub
@@ -17,6 +19,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.models import User
 from authentik.events.models import Event
+from authentik.lib.expression.exceptions import ControlFlowException
 from authentik.lib.utils.http import get_http_session
 from authentik.policies.models import Policy, PolicyBinding
 from authentik.policies.process import PolicyProcess
@@ -56,6 +59,7 @@ class BaseEvaluator:
             "requests": get_http_session(),
             "resolve_dns": BaseEvaluator.expr_resolve_dns,
             "reverse_dns": BaseEvaluator.expr_reverse_dns,
+            "slugify": slugify,
         }
         self._context = {}
 
@@ -182,7 +186,7 @@ class BaseEvaluator:
         full_expression += f"\nresult = handler({handler_signature})"
         return full_expression
 
-    def compile(self, expression: str) -> Any:
+    def compile(self, expression: str) -> CodeType:
         """Parse expression. Raises SyntaxError or ValueError if the syntax is incorrect."""
         param_keys = self._context.keys()
         return compile(self.wrap_expression(expression, param_keys), self._filename, "exec")
@@ -213,7 +217,8 @@ class BaseEvaluator:
                 # so the user only sees information relevant to them
                 # and none of our surrounding error handling
                 exc.__traceback__ = exc.__traceback__.tb_next
-                self.handle_error(exc, expression_source)
+                if not isinstance(exc, ControlFlowException):
+                    self.handle_error(exc, expression_source)
                 raise exc
             return result
 

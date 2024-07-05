@@ -23,7 +23,7 @@ export class PropertyMappingScopeForm extends BasePropertyMappingForm<ScopeMappi
     async send(data: ScopeMapping): Promise<ScopeMapping> {
         if (this.instance) {
             return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsScopeUpdate({
-                pmUuid: this.instance.pk || "",
+                pmUuid: this.instance.pk,
                 scopeMappingRequest: data,
             });
         } else {
@@ -83,6 +83,7 @@ export class PropertyMappingScopeForm extends BasePropertyMappingForm<ScopeMappi
                     ${msg("Expression using Python.")}
                     <a
                         target="_blank"
+                        rel="noopener noreferrer"
                         href="${docLink("/docs/property-mappings/expression?utm_source=authentik")}"
                     >
                         ${msg("See documentation for a list of all variables.")}

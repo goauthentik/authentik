@@ -23,7 +23,7 @@ export class PropertyMappingSCIMForm extends BasePropertyMappingForm<SCIMMapping
     async send(data: SCIMMapping): Promise<SCIMMapping> {
         if (this.instance) {
             return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsScimUpdate({
-                pmUuid: this.instance.pk || "",
+                pmUuid: this.instance.pk,
                 sCIMMappingRequest: data,
             });
         } else {
@@ -56,6 +56,7 @@ export class PropertyMappingSCIMForm extends BasePropertyMappingForm<SCIMMapping
                     ${msg("Expression using Python.")}
                     <a
                         target="_blank"
+                        rel="noopener noreferrer"
                         href="${docLink("/docs/property-mappings/expression?utm_source=authentik")}"
                     >
                         ${msg("See documentation for a list of all variables.")}

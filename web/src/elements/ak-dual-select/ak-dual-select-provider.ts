@@ -53,9 +53,10 @@ export class AkDualSelectProvider extends CustomListenerElement(AKElement) {
 
     private isLoading = false;
 
-    private pagination?: Pagination;
+    private doneFirstUpdate = false;
+    private internalSelected: DualSelectPair[] = [];
 
-    selectedMap: WeakMap<DataProvider, DualSelectPair[]> = new WeakMap();
+    private pagination?: Pagination;
 
     constructor() {
         super();
@@ -71,16 +72,20 @@ export class AkDualSelectProvider extends CustomListenerElement(AKElement) {
     }
 
     willUpdate(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("selected") && !this.doneFirstUpdate) {
+            this.doneFirstUpdate = true;
+            this.internalSelected = this.selected;
+        }
+
         if (changedProperties.has("searchDelay")) {
-            this.doSearch = debounce(this.doSearch.bind(this), this.searchDelay);
+            this.doSearch = debounce(
+                AkDualSelectProvider.prototype.doSearch.bind(this),
+                this.searchDelay,
+            );
         }
 
         if (changedProperties.has("provider")) {
             this.pagination = undefined;
-            if (changedProperties.get("provider")) {
-                this.selectedMap.set(changedProperties.get("provider"), this.selected);
-                this.selected = this.selectedMap.get(this.provider) ?? [];
-            }
             this.fetch();
         }
     }
@@ -108,7 +113,8 @@ export class AkDualSelectProvider extends CustomListenerElement(AKElement) {
         if (!(event instanceof CustomEvent)) {
             throw new Error(`Expecting a CustomEvent for change, received ${event} instead`);
         }
-        this.selected = event.detail.value;
+        this.internalSelected = event.detail.value;
+        this.selected = this.internalSelected;
     }
 
     onSearch(event: Event) {
@@ -127,12 +133,16 @@ export class AkDualSelectProvider extends CustomListenerElement(AKElement) {
         return this.dualSelector.value!.selected.map(([k, _]) => k);
     }
 
+    json() {
+        return this.value;
+    }
+
     render() {
         return html`<ak-dual-select
             ${ref(this.dualSelector)}
             .options=${this.options}
             .pages=${this.pagination}
-            .selected=${this.selected}
+            .selected=${this.internalSelected}
             available-label=${this.availableLabel}
             selected-label=${this.selectedLabel}
         ></ak-dual-select>`;

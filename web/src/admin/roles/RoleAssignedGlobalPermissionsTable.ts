@@ -1,8 +1,8 @@
 import "@goauthentik/admin/roles/RolePermissionForm";
-import { DEFAULT_CONFIG } from "@goauthentik/app/common/api/config";
-import { groupBy } from "@goauthentik/app/common/utils";
-import { PaginatedResponse, Table, TableColumn } from "@goauthentik/app/elements/table/Table";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { groupBy } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/ModalForm";
+import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -25,12 +25,10 @@ export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
 
     order = "content_type__app_label,content_type__model";
 
-    apiEndpoint(page: number): Promise<PaginatedResponse<Permission>> {
+    async apiEndpoint(): Promise<PaginatedResponse<Permission>> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsList({
+            ...(await this.defaultEndpointConfig()),
             role: this.roleUuid,
-            page: page,
-            ordering: this.order,
-            search: this.search,
         });
     }
 
@@ -42,8 +40,8 @@ export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn("Model", "model"),
-            new TableColumn("Permission", ""),
+            new TableColumn(msg("Model"), "model"),
+            new TableColumn(msg("Permission"), ""),
             new TableColumn(""),
         ];
     }
@@ -85,6 +83,10 @@ export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
     }
 
     row(item: Permission): TemplateResult[] {
-        return [html`${item.modelVerbose}`, html`${item.name}`, html`✓`];
+        return [
+            html`${item.modelVerbose}`,
+            html`${item.name}`,
+            html`<i class="fas fa-check pf-m-success"></i>`,
+        ];
     }
 }

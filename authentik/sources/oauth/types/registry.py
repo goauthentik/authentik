@@ -47,7 +47,7 @@ class SourceType:
     def login_challenge(self, source: OAuthSource, request: HttpRequest) -> Challenge:
         """Allow types to return custom challenges"""
         return RedirectChallenge(
-            instance={
+            data={
                 "type": ChallengeTypes.REDIRECT.value,
                 "to": reverse(
                     "authentik_sources_oauth:oauth-client-login",

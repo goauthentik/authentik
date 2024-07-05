@@ -25,10 +25,10 @@ For bigger setups, there is a Helm Chart [here](https://github.com/goauthentik/h
 
 ## Screenshots
 
-| Light                                                  | Dark                                                  |
-| ------------------------------------------------------ | ----------------------------------------------------- |
-| ![](https://goauthentik.io/img/screen_apps_light.jpg)  | ![](https://goauthentik.io/img/screen_apps_dark.jpg)  |
-| ![](https://goauthentik.io/img/screen_admin_light.jpg) | ![](https://goauthentik.io/img/screen_admin_dark.jpg) |
+| Light                                                       | Dark                                                       |
+| ----------------------------------------------------------- | ---------------------------------------------------------- |
+| ![](https://docs.goauthentik.io/img/screen_apps_light.jpg)  | ![](https://docs.goauthentik.io/img/screen_apps_dark.jpg)  |
+| ![](https://docs.goauthentik.io/img/screen_admin_light.jpg) | ![](https://docs.goauthentik.io/img/screen_admin_dark.jpg) |
 
 ## Development
 

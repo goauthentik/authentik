@@ -16,25 +16,25 @@ runs:
         sudo apt-get update
         sudo apt-get install --no-install-recommends -y libpq-dev openssl libxmlsec1-dev pkg-config gettext
     - name: Setup python and restore poetry
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version-file: "pyproject.toml"
         cache: "poetry"
     - name: Setup node
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version-file: web/package.json
         cache: "npm"
         cache-dependency-path: web/package-lock.json
     - name: Setup go
-      uses: actions/setup-go@v4
+      uses: actions/setup-go@v5
       with:
         go-version-file: "go.mod"
     - name: Setup dependencies
       shell: bash
       run: |
         export PSQL_TAG=${{ inputs.postgresql_version }}
-        docker-compose -f .github/actions/setup/docker-compose.yml up -d
+        docker compose -f .github/actions/setup/docker-compose.yml up -d
         poetry install
         cd web && npm ci
     - name: Generate config

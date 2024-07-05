@@ -1,6 +1,8 @@
 """Events middleware"""
 
 from collections.abc import Callable
+from contextlib import contextmanager
+from contextvars import ContextVar
 from functools import partial
 from threading import Thread
 from typing import Any
@@ -31,6 +33,9 @@ IGNORED_MODELS = tuple(
     )
 )
 
+_CTX_OVERWRITE_USER = ContextVar[User | None]("authentik_events_log_overwrite_user", default=None)
+_CTX_IGNORE = ContextVar[bool]("authentik_events_log_ignore", default=False)
+
 
 def should_log_model(model: Model) -> bool:
     """Return true if operation on `model` should be logged"""
@@ -42,6 +47,28 @@ def should_log_m2m(model: Model) -> bool:
     if model.__class__ in [User, Group]:
         return True
     return False
+
+
+@contextmanager
+def audit_overwrite_user(user: User):
+    """Overwrite user being logged for model AuditMiddleware. Commonly used
+    for example in flows where a pending user is given, but the request is not authenticated yet"""
+    _CTX_OVERWRITE_USER.set(user)
+    try:
+        yield
+    finally:
+        _CTX_OVERWRITE_USER.set(None)
+
+
+@contextmanager
+def audit_ignore():
+    """Ignore model operations in the block. Useful for objects which need to be modified
+    but are not excluded (e.g. WebAuthn devices)"""
+    _CTX_IGNORE.set(True)
+    try:
+        yield
+    finally:
+        _CTX_IGNORE.set(False)
 
 
 class EventNewThread(Thread):
@@ -83,26 +110,32 @@ class AuditMiddleware:
 
         self.anonymous_user = get_anonymous_user()
 
-    def connect(self, request: HttpRequest):
-        """Connect signal for automatic logging"""
-        self._ensure_fallback_user()
+    def get_user(self, request: HttpRequest) -> User:
+        user = _CTX_OVERWRITE_USER.get()
+        if user:
+            return user
         user = getattr(request, "user", self.anonymous_user)
         if not user.is_authenticated:
-            user = self.anonymous_user
+            self._ensure_fallback_user()
+            return self.anonymous_user
+        return user
+
+    def connect(self, request: HttpRequest):
+        """Connect signal for automatic logging"""
         if not hasattr(request, "request_id"):
             return
         post_save.connect(
-            partial(self.post_save_handler, user=user, request=request),
+            partial(self.post_save_handler, request=request),
             dispatch_uid=request.request_id,
             weak=False,
         )
         pre_delete.connect(
-            partial(self.pre_delete_handler, user=user, request=request),
+            partial(self.pre_delete_handler, request=request),
             dispatch_uid=request.request_id,
             weak=False,
         )
         m2m_changed.connect(
-            partial(self.m2m_changed_handler, user=user, request=request),
+            partial(self.m2m_changed_handler, request=request),
             dispatch_uid=request.request_id,
             weak=False,
         )
@@ -147,7 +180,6 @@ class AuditMiddleware:
 
     def post_save_handler(
         self,
-        user: User,
         request: HttpRequest,
         sender,
         instance: Model,
@@ -158,16 +190,22 @@ class AuditMiddleware:
         """Signal handler for all object's post_save"""
         if not should_log_model(instance):
             return
+        if _CTX_IGNORE.get():
+            return
+        user = self.get_user(request)
 
         action = EventAction.MODEL_CREATED if created else EventAction.MODEL_UPDATED
         thread = EventNewThread(action, request, user=user, model=model_to_dict(instance))
         thread.kwargs.update(thread_kwargs or {})
         thread.run()
 
-    def pre_delete_handler(self, user: User, request: HttpRequest, sender, instance: Model, **_):
+    def pre_delete_handler(self, request: HttpRequest, sender, instance: Model, **_):
         """Signal handler for all object's pre_delete"""
         if not should_log_model(instance):  # pragma: no cover
             return
+        if _CTX_IGNORE.get():
+            return
+        user = self.get_user(request)
 
         EventNewThread(
             EventAction.MODEL_DELETED,
@@ -177,17 +215,27 @@ class AuditMiddleware:
         ).run()
 
     def m2m_changed_handler(
-        self, user: User, request: HttpRequest, sender, instance: Model, action: str, **_
+        self,
+        request: HttpRequest,
+        sender,
+        instance: Model,
+        action: str,
+        thread_kwargs: dict | None = None,
+        **_,
     ):
         """Signal handler for all object's m2m_changed"""
         if action not in ["pre_add", "pre_remove", "post_clear"]:
             return
         if not should_log_m2m(instance):
             return
+        if _CTX_IGNORE.get():
+            return
+        user = self.get_user(request)
 
         EventNewThread(
             EventAction.MODEL_UPDATED,
             request,
             user=user,
             model=model_to_dict(instance),
+            **thread_kwargs,
         ).run()

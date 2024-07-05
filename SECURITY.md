@@ -18,10 +18,10 @@ Even if the issue is not a CVE, we still greatly appreciate your help in hardeni
 
 (.x being the latest patch release for each version)
 
-| Version | Supported |
-| --- | --- |
-| 2023.6.x | ✅ |
-| 2023.8.x | ✅ |
+| Version  | Supported |
+| -------- | --------- |
+| 2024.4.x | ✅        |
+| 2024.6.x | ✅        |
 
 ## Reporting a Vulnerability
 
@@ -31,12 +31,12 @@ To report a vulnerability, send an email to [security@goauthentik.io](mailto:se
 
 authentik reserves the right to reclassify CVSS as necessary. To determine severity, we will use the CVSS calculator from NVD (https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator). The calculated CVSS score will then be translated into one of the following categories:
 
-| Score | Severity |
-| --- | --- |
-| 0.0 | None |
-| 0.1 – 3.9 | Low |
-| 4.0 – 6.9 | Medium |
-| 7.0 – 8.9 | High |
+| Score      | Severity |
+| ---------- | -------- |
+| 0.0        | None     |
+| 0.1 – 3.9  | Low      |
+| 4.0 – 6.9  | Medium   |
+| 7.0 – 8.9  | High     |
 | 9.0 – 10.0 | Critical |
 
 ## Disclosure process

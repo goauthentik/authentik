@@ -1,5 +1,5 @@
-import { truncate } from "@goauthentik/app/common/utils";
 import { EventWithContext } from "@goauthentik/common/events";
+import { truncate } from "@goauthentik/common/utils";
 import { KeyUnknown } from "@goauthentik/elements/forms/Form";
 
 import { msg, str } from "@lit/localize";

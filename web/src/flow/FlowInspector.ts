@@ -15,7 +15,7 @@ import PFProgressStepper from "@patternfly/patternfly/components/ProgressStepper
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { FlowInspection, FlowsApi, Stage } from "@goauthentik/api";
+import { FlowInspection, FlowsApi, ResponseError, Stage } from "@goauthentik/api";
 
 @customElement("ak-flow-inspector")
 export class FlowInspector extends AKElement {
@@ -25,7 +25,7 @@ export class FlowInspector extends AKElement {
     state?: FlowInspection;
 
     @property({ attribute: false })
-    error?: Response;
+    error?: ResponseError;
 
     static get styles(): CSSResult[] {
         return [
@@ -37,6 +37,10 @@ export class FlowInspector extends AKElement {
             PFDescriptionList,
             PFProgressStepper,
             css`
+                .pf-c-drawer__body {
+                    min-height: 100vh;
+                    max-height: 100vh;
+                }
                 code.break {
                     word-break: break-all;
                 }
@@ -44,9 +48,6 @@ export class FlowInspector extends AKElement {
                     word-break: break-all;
                     overflow-x: hidden;
                     white-space: break-spaces;
-                }
-                .pf-c-notification-drawer__body {
-                    overflow-x: hidden;
                 }
             `,
         ];
@@ -69,6 +70,7 @@ export class FlowInspector extends AKElement {
                 flowSlug: this.flowSlug,
             })
             .then((state) => {
+                this.error = undefined;
                 this.state = state;
             })
             .catch((exc) => {
@@ -99,7 +101,7 @@ export class FlowInspector extends AKElement {
                     <div class="pf-l-stack pf-m-gutter">
                         <div class="pf-l-stack__item">
                             <div class="pf-c-card">
-                                <div class="pf-c-card__body">${this.error?.statusText}</div>
+                                <div class="pf-c-card__body">${this.error?.message}</div>
                             </div>
                         </div>
                     </div>
@@ -113,6 +115,7 @@ export class FlowInspector extends AKElement {
             return this.renderAccessDenied();
         }
         if (!this.state) {
+            this.advanceHandler();
             return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
             </ak-empty-state>`;
         }

@@ -6,9 +6,8 @@ title: User settings
 Requires authentik 2022.3
 :::
 
-The user interface (`/if/user/`) embeds a downsized flow executor to allow the user to configure their profile using custom stages and prompts.
+The user interface (/if/user/) uses a specialized flow executor to allow individual users to customize their profile. A user's profile consists of key/value fields, so this executor only supports Prompt or User Write stages. If the configured flow contains another stage, a button will be shown to open the default executor.
 
-This executor only supports [**prompt**](../stages/prompt/) stages. If the configured flow contains another stage, a button will be shown to open the default executor.
-Because the stages in a flow can change during it execution, this executor will redirect the user to the default interface _if_ a non-supported stage is returned.
+Because the stages in a flow can change during its execution, be awre that configuring this executor to use any stage type other than Prompt or User Write will automatically trigger a redirect to the standard executor.
 
-To configure which flow is used for this, configure it in the brand settings.
+An admin can customize which fields can be changed by the user by updating the default-user-settings-flow, or copying it to create a new flow with a Prompt Stage and a User Write Stage. Different variants of your flow can be applied to different [Brands](../../core/brands.md) on the same authentik instance.

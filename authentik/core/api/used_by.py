@@ -39,12 +39,12 @@ def get_delete_action(manager: Manager) -> str:
     """Get the delete action from the Foreign key, falls back to cascade"""
     if hasattr(manager, "field"):
         if manager.field.remote_field.on_delete.__name__ == SET_NULL.__name__:
-            return DeleteAction.SET_NULL.name
+            return DeleteAction.SET_NULL.value
         if manager.field.remote_field.on_delete.__name__ == SET_DEFAULT.__name__:
-            return DeleteAction.SET_DEFAULT.name
+            return DeleteAction.SET_DEFAULT.value
     if hasattr(manager, "source_field"):
-        return DeleteAction.CASCADE_MANY.name
-    return DeleteAction.CASCADE.name
+        return DeleteAction.CASCADE_MANY.value
+    return DeleteAction.CASCADE.value
 
 
 class UsedByMixin:

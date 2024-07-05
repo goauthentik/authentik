@@ -9,19 +9,24 @@ from pydanticscim.service_provider import (
 )
 from pydanticscim.user import User as BaseUser
 
+SCIM_USER_SCHEMA = "urn:ietf:params:scim:schemas:core:2.0:User"
+SCIM_GROUP_SCHEMA = "urn:ietf:params:scim:schemas:core:2.0:Group"
+
 
 class User(BaseUser):
     """Modified User schema with added externalId field"""
 
-    schemas: tuple[str] = ("urn:ietf:params:scim:schemas:core:2.0:User",)
+    schemas: list[str] = [SCIM_USER_SCHEMA]
     externalId: str | None = None
+    meta: dict | None = None
 
 
 class Group(BaseGroup):
     """Modified Group schema with added externalId field"""
 
-    schemas: tuple[str] = ("urn:ietf:params:scim:schemas:core:2.0:Group",)
+    schemas: list[str] = [SCIM_GROUP_SCHEMA]
     externalId: str | None = None
+    meta: dict | None = None
 
 
 class ServiceProviderConfiguration(BaseServiceProviderConfiguration):

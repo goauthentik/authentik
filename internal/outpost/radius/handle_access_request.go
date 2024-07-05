@@ -21,10 +21,7 @@ func (rs *RadiusServer) Handle_AccessRequest(w radius.ResponseWriter, r *RadiusR
 	fe.Params.Add("goauthentik.io/outpost/radius", "true")
 
 	fe.Answers[flow.StageIdentification] = username
-	fe.Answers[flow.StagePassword] = rfc2865.UserPassword_GetString(r.Packet)
-	if r.pi.MFASupport {
-		fe.CheckPasswordInlineMFA()
-	}
+	fe.SetSecrets(rfc2865.UserPassword_GetString(r.Packet), r.pi.MFASupport)
 
 	passed, err := fe.Execute()
 	if err != nil {

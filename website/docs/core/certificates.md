@@ -8,7 +8,7 @@ Certificates in authentik are used for the following use cases:
 -   Signing JSON Web Tokens for OAuth and OIDC
 -   Connecting to remote docker hosts using the Docker integration
 -   Verifying LDAP Servers' certificates
--   Encrypting outposts's endpoints
+-   Encrypting outposts' endpoints
 
 ## Default certificate
 
@@ -16,15 +16,15 @@ Every authentik install generates a self-signed certificate on the first start. 
 
 This certificate is generated to be used as a default for all OAuth2/OIDC providers, as these don't require the certificate to be configured on both sides (the signature of a JWT is validated using the [JWKS](https://auth0.com/docs/security/tokens/json-web-tokens/json-web-key-sets) URL).
 
-This certificate can also be used for SAML Providers/Sources, just keep in mind that the certificate is only valid for a year. Some SAML applications require the certificate to be valid, so they might need to be rotated regularly.
+This certificate can also be used for SAML Providers/Sources, but keep in mind that the certificate is only valid for a year. Some SAML applications require the certificate to be valid, so they might need to be rotated regularly.
 
-For SAML use-cases, you can generate a Certificate that's valid for longer than 1 year, on your own risk.
+For SAML use-cases, you can generate a Certificate that's valid for longer than 1 year, at your own risk.
 
 ## External certificates
 
 To use externally managed certificates, for example generated with certbot or HashiCorp Vault, you can use the discovery feature.
 
-The docker-compose installation maps a `certs` directory to `/certs`, you can simply use this as an output directory for certbot.
+The Docker Compose installation maps a `certs` directory to `/certs`. You can simply use this as an output directory for certbot.
 
 For Kubernetes, you can map custom secrets/volumes under `/certs`.
 
@@ -32,17 +32,17 @@ You can also bind mount single files into the folder, as long as they fall under
 
 -   Files in the root directory will be imported based on their filename.
 
-    `/foo.pem` Will be imported as the keypair `foo`. Based on its content its either imported as certificate or private key.
+    `/foo.pem` Will be imported as the keypair `foo`. Based on its content, the file is either imported as a certificate or a private key:
 
-    Files containing `PRIVATE KEY` it will imported as private key.
+    -   Files containing `PRIVATE KEY` will imported as private keys.
 
-    Otherwise it will be imported as certificate.
+    -   Otherwise the file will be imported as a certificate.
 
--   If the file is called `fullchain.pem` or `privkey.pem` (the output naming of certbot), they will get the name of the parent folder.
+-   If the file is called `fullchain.pem` or `privkey.pem` (the output naming of certbot), it will get the name of the parent folder.
 -   Files can be in any arbitrary file structure, and can have any extension.
 -   If the path contains `archive`, the files will be ignored (to better support certbot setups).
 
-```
+```shell
 certs/
 ├── baz
 │   └── bar.baz
@@ -55,7 +55,7 @@ certs/
 └── foo.pem
 ```
 
-Files are checked every 5 minutes, and will trigger an Outpost refresh if the files differ.
+Files are checked every 5 minutes and will trigger an Outpost refresh if a file has changed.
 
 #### Manual imports
 
@@ -67,7 +67,7 @@ ak import_certificate --certificate /certs/mycert.pem --private-key /certs/somet
 # ak import_certificate --certificate /certs/othercert.pem --name test2
 ```
 
-This will import the certificate into authentik under the given name. This command is idempotent, meaning you can run it via a cron-job and authentik will only update the certificate when it changes.
+This will import the certificate into authentik under the given name. This command is safe to run as a cron job; authentik will only re-import the certificate if it changes.
 
 ## Web certificates
 
@@ -75,11 +75,9 @@ Starting with authentik 2021.12.4, you can configure the certificate authentik u
 
 #### Let's Encrypt
 
-To use let's encrypt certificates with this setup, using certbot, you can use this compose override (create or edit a file called `docker-compose.override.yml` in the same folder as the authentik docker-compose file)
+To use Let's Encrypt certificates with this setup, using certbot, you can use this compose override (create or edit a file called `docker-compose.override.yml` in the same folder as the authentik docker-compose file)
 
 ```yaml
-version: "3.2"
-
 services:
     certbot:
         image: certbot/dns-route53:v1.22.0
@@ -98,7 +96,7 @@ services:
             - --dns-route53
 ```
 
-Afterwards, run `docker compose up -d`, which will start certbot and generate your certificate. Within a few minutes, you'll see the certificate in your authentik interface. (If the certificate does not appear, restart the worker container. This is caused by incompatible permissions set by certbot).
+Afterward, run `docker compose up -d`, which will start certbot and generate your certificate. Within a few minutes, you'll see the certificate in your authentik interface. (If the certificate does not appear, restart the worker container. This is caused by incompatible permissions set by certbot).
 
 Navigate to _System -> Brands_, edit any brand and select the certificate of your choice.
 

@@ -1,4 +1,4 @@
-import { first } from "@goauthentik/app/common/utils";
+import { first } from "@goauthentik/common/utils";
 
 import { TemplateResult, html, nothing } from "lit";
 import { classMap } from "lit/directives/class-map.js";
