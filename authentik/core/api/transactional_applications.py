@@ -1,6 +1,7 @@
 """transactional application and provider creation"""
 
 from django.apps import apps
+from django.db.models import Model
 from drf_spectacular.utils import PolymorphicProxySerializer, extend_schema, extend_schema_field
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import BooleanField, CharField, ChoiceField, DictField, ListField
@@ -22,6 +23,7 @@ from authentik.core.api.applications import ApplicationSerializer
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import Provider
 from authentik.lib.utils.reflection import all_subclasses
+from authentik.policies.api.bindings import PolicyBindingSerializer
 
 
 def get_provider_serializer_mapping():
@@ -45,12 +47,21 @@ class TransactionProviderField(DictField):
     """Dictionary field which can hold provider creation data"""
 
 
+class TransactionPolicyBindingSerializer(PolicyBindingSerializer):
+    """PolicyBindingSerializer which does not require target as target is set implicitly"""
+
+    class Meta(PolicyBindingSerializer.Meta):
+        fields = [x for x in PolicyBindingSerializer.Meta.fields if x != "target"]
+
+
 class TransactionApplicationSerializer(PassiveSerializer):
     """Serializer for creating a provider and an application in one transaction"""
 
     app = ApplicationSerializer()
     provider_model = ChoiceField(choices=list(get_provider_serializer_mapping().keys()))
     provider = TransactionProviderField()
+
+    policy_bindings = TransactionPolicyBindingSerializer(many=True, required=False)
 
     _provider_model: type[Provider] = None
 
@@ -96,6 +107,19 @@ class TransactionApplicationSerializer(PassiveSerializer):
                 id="app",
             )
         )
+        for binding in attrs.get("policy_bindings", []):
+            binding["target"] = KeyOf(None, ScalarNode(tag="", value="app"))
+            for key, value in binding.items():
+                if not isinstance(value, Model):
+                    continue
+                binding[key] = value.pk
+            blueprint.entries.append(
+                BlueprintEntry(
+                    model="authentik_policies.policybinding",
+                    state=BlueprintEntryDesiredState.MUST_CREATED,
+                    identifiers=binding,
+                )
+            )
         importer = Importer(blueprint, {})
         try:
             valid, _ = importer.validate(raise_validation_errors=True)

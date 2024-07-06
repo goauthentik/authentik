@@ -54680,6 +54680,10 @@ components:
           $ref: '#/components/schemas/ProviderModelEnum'
         provider:
           $ref: '#/components/schemas/modelRequest'
+        policy_bindings:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionPolicyBindingRequest'
       required:
       - app
       - provider
@@ -54697,6 +54701,41 @@ components:
       required:
       - applied
       - logs
+    TransactionPolicyBindingRequest:
+      type: object
+      description: PolicyBindingSerializer which does not require target as target
+        is set implicitly
+      properties:
+        policy:
+          type: string
+          format: uuid
+          nullable: true
+        group:
+          type: string
+          format: uuid
+          nullable: true
+        user:
+          type: integer
+          nullable: true
+        negate:
+          type: boolean
+          description: Negates the outcome of the policy. Messages are unaffected.
+        enabled:
+          type: boolean
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        timeout:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Timeout after which Policy execution is terminated.
+        failure_result:
+          type: boolean
+          description: Result if the Policy execution fails.
+      required:
+      - order
     TypeCreate:
       type: object
       description: Types of an object that can be created

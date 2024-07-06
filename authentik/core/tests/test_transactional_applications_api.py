@@ -3,9 +3,10 @@
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
-from authentik.core.models import Application
+from authentik.core.models import Application, Group
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.lib.generators import generate_id
+from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.models import OAuth2Provider
 
 
@@ -40,6 +41,38 @@ class TestTransactionalApplicationsAPI(APITestCase):
         app = Application.objects.filter(slug=uid).first()
         self.assertIsNotNone(app)
         self.assertEqual(app.provider.pk, provider.pk)
+
+    def test_create_transactional_bindings(self):
+        """Test transactional Application + provider creation"""
+        self.client.force_login(self.user)
+        uid = generate_id()
+        group = Group.objects.create(name=generate_id())
+        authorization_flow = create_test_flow()
+        response = self.client.put(
+            reverse("authentik_api:core-transactional-application"),
+            data={
+                "app": {
+                    "name": uid,
+                    "slug": uid,
+                },
+                "provider_model": "authentik_providers_oauth2.oauth2provider",
+                "provider": {
+                    "name": uid,
+                    "authorization_flow": str(authorization_flow.pk),
+                },
+                "policy_bindings": [{"group": group.pk, "order": 0}],
+            },
+        )
+        self.assertJSONEqual(response.content.decode(), {"applied": True, "logs": []})
+        provider = OAuth2Provider.objects.filter(name=uid).first()
+        self.assertIsNotNone(provider)
+        app = Application.objects.filter(slug=uid).first()
+        self.assertIsNotNone(app)
+        self.assertEqual(app.provider.pk, provider.pk)
+        binding = PolicyBinding.objects.filter(target=app).first()
+        self.assertIsNotNone(binding)
+        self.assertEqual(binding.target, app)
+        self.assertEqual(binding.group, group)
 
     def test_create_transactional_invalid(self):
         """Test transactional Application + provider creation"""
