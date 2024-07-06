@@ -2,10 +2,11 @@
 
 from django.apps import apps
 from django.db.models import Model
+from django.utils.translation import gettext as _
 from drf_spectacular.utils import PolymorphicProxySerializer, extend_schema, extend_schema_field
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.fields import BooleanField, CharField, ChoiceField, DictField, ListField
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -144,8 +145,7 @@ class TransactionApplicationResponseSerializer(PassiveSerializer):
 class TransactionalApplicationView(APIView):
     """Create provider and application and attach them in a single transaction"""
 
-    # TODO: Migrate to a more specific permission
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAuthenticated]
 
     @extend_schema(
         request=TransactionApplicationSerializer(),
@@ -157,8 +157,21 @@ class TransactionalApplicationView(APIView):
         """Convert data into a blueprint, validate it and apply it"""
         data = TransactionApplicationSerializer(data=request.data)
         data.is_valid(raise_exception=True)
-
-        importer = Importer(data.validated_data, {})
+        blueprint: Blueprint = data.validated_data
+        for entry in blueprint.entries:
+            full_model = entry.get_model(blueprint)
+            app, __, model = full_model.partition(".")
+            if not request.user.has_perm(f"{app}.add_{model}"):
+                raise PermissionDenied(
+                    _(
+                        "User lacks permission to create {model}".format_map(
+                            {
+                                "model": full_model,
+                            }
+                        )
+                    )
+                )
+        importer = Importer(blueprint, {})
         applied = importer.apply()
         response = {"applied": False, "logs": []}
         response["applied"] = applied
