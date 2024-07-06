@@ -508,6 +508,25 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                         >
                         </ak-radio>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal name="requestEncryptedAssertions">
+                        <label class="pf-c-switch">
+                            <input
+                                class="pf-c-switch__input"
+                                type="checkbox"
+                                ?checked=${first(this.instance?.requestEncryptedAssertions, true)}
+                            />
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label"
+                                >${msg(
+                                    "Request Encrypted assertions from Identity provider.",
+                                )}</span
+                            >
+                        </label>
+                    </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
             <ak-form-group ?expanded=${true}>

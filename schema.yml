@@ -46361,6 +46361,12 @@ components:
           description: 'Time offset when temporary users should be deleted. This only
             applies if your IDP uses the NameID Format ''transient'', and the user
             doesn''t log out manually. (Format: hours=1;minutes=2;seconds=3).'
+        request_encrypted_assertions:
+          type: boolean
+          description: When enabled, the SAML IdP will encrypt the assertion element
+            using the public key of the SP signing keypair. The SAMLResponse will
+            contain an EncryptedAssertion element, which will be decrypted by the
+            private key of the service provider.
     PatchedSCIMMappingRequest:
       type: object
       description: SCIMMapping Serializer
@@ -49178,6 +49184,12 @@ components:
           description: 'Time offset when temporary users should be deleted. This only
             applies if your IDP uses the NameID Format ''transient'', and the user
             doesn''t log out manually. (Format: hours=1;minutes=2;seconds=3).'
+        request_encrypted_assertions:
+          type: boolean
+          description: When enabled, the SAML IdP will encrypt the assertion element
+            using the public key of the SP signing keypair. The SAMLResponse will
+            contain an EncryptedAssertion element, which will be decrypted by the
+            private key of the service provider.
       required:
       - component
       - icon
@@ -49363,6 +49375,12 @@ components:
           description: 'Time offset when temporary users should be deleted. This only
             applies if your IDP uses the NameID Format ''transient'', and the user
             doesn''t log out manually. (Format: hours=1;minutes=2;seconds=3).'
+        request_encrypted_assertions:
+          type: boolean
+          description: When enabled, the SAML IdP will encrypt the assertion element
+            using the public key of the SP signing keypair. The SAMLResponse will
+            contain an EncryptedAssertion element, which will be decrypted by the
+            private key of the service provider.
       required:
       - name
       - pre_authentication_flow
