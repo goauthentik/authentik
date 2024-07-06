@@ -86,7 +86,6 @@ class ResponseProcessor:
 
     def _decrypt_response(self):
         """Decrypt SAMLResponse EncryptedAssertion Element"""
-
         manager = xmlsec.KeysManager()
         key = xmlsec.Key.from_memory(
             self._source.signing_kp.key_data,
@@ -96,9 +95,7 @@ class ResponseProcessor:
         manager.add_key(key)
         encryption_context = xmlsec.EncryptionContext(manager)
 
-        encrypted_assertion = self._root.find(
-            ".//{urn:oasis:names:tc:SAML:2.0:assertion}EncryptedAssertion"
-        )
+        encrypted_assertion = self._root.find(f".//{{{NS_SAML_ASSERTION}}}EncryptedAssertion")
         encrypted_data = xmlsec.tree.find_child(
             encrypted_assertion, "EncryptedData", xmlsec.constants.EncNs
         )
