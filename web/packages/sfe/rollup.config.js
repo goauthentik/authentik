@@ -6,7 +6,7 @@ import copy from "rollup-plugin-copy";
 export default {
     input: "index.ts",
     output: {
-        dir: "../dist/sfe",
+        dir: "../../dist/sfe",
         format: "cjs",
     },
     context: "window",

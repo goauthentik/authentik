@@ -5,13 +5,13 @@
     "license": "MIT",
     "scripts": {
         "extract-locales": "lit-localize extract",
-        "build-locales": "node scripts/build-locales.mjs",
+        "build-locales": "wireit",
         "build-locales:build": "lit-localize build",
         "build-locales:repair": "prettier --write ./src/locale-codes.ts",
         "esbuild:build": "node build.mjs",
         "esbuild:build-proxy": "node build.mjs --proxy",
         "esbuild:watch": "node build.mjs --watch",
-        "build": "run-s build-locales esbuild:build",
+        "build": "wireit",
         "build-proxy": "run-s build-locales esbuild:build-proxy",
         "watch": "run-s build-locales esbuild:watch",
         "lint": "cross-env NODE_OPTIONS='--max_old_space_size=65536' eslint . --max-warnings 0 --fix",
@@ -70,6 +70,7 @@
         "style-mod": "^4.1.2",
         "ts-pattern": "^5.2.0",
         "webcomponent-qr-code": "^1.2.0",
+        "wireit": "^0.14.4",
         "yaml": "^2.4.5"
     },
     "devDependencies": {
@@ -147,5 +148,21 @@
     },
     "engines": {
         "node": ">=20"
-    }
+    },
+    "wireit": {
+        "build": {
+            "command": "node build.mjs",
+            "dependencies": [
+                "build-locales",
+                "./packages/sfe:build"
+            ]
+        },
+        "build-locales": {
+            "command": "node scripts/build-locales.mjs"
+        }
+    },
+    "workspaces": [
+        ".",
+        "./packages/*"
+    ]
 }
