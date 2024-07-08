@@ -89,6 +89,6 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
             return ServiceProviderConfiguration.model_validate(
                 self._request("GET", "/ServiceProviderConfig")
             )
-        except (ValidationError, SCIMRequestException) as exc:
+        except (ValidationError, SCIMRequestException, NotFoundSyncException) as exc:
             self.logger.warning("failed to get ServiceProviderConfig", exc=exc)
             return default_config

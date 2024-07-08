@@ -1,11 +1,11 @@
+import "@goauthentik/admin/rbac/RoleObjectPermissionTable";
+import "@goauthentik/admin/rbac/UserObjectPermissionTable";
 import "@goauthentik/admin/roles/RoleAssignedGlobalPermissionsTable";
 import "@goauthentik/admin/roles/RoleAssignedObjectPermissionTable";
 import "@goauthentik/admin/users/UserAssignedGlobalPermissionsTable";
 import "@goauthentik/admin/users/UserAssignedObjectPermissionsTable";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/rbac/RoleObjectPermissionTable";
-import "@goauthentik/elements/rbac/UserObjectPermissionTable";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";

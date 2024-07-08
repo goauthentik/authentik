@@ -2,7 +2,7 @@ import "@goauthentik/components/oauth/callback";
 import { userSettings } from "@goauthentik/components/oauth/settings";
 import "@goauthentik/components/oauth/signout";
 import { Route } from "@goauthentik/elements/router/Route";
-import "@goauthentik/user/LibraryPage/LibraryPage";
+import "@goauthentik/user/LibraryPage/ak-library.js";
 
 import { html } from "lit";
 
