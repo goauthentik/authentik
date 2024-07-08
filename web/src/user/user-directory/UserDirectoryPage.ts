@@ -41,7 +41,7 @@ export class UserDirectoryPage extends TablePage<UserDirectory> {
     }
 
     pageIcon(): string {
-        return "fa fa-user";
+        return "pf-icon pf-icon-project";
     }
 
     @property()
