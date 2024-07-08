@@ -1,11 +1,11 @@
 """root settings for authentik"""
 
 import importlib
-import orjson
 from collections import OrderedDict
 from hashlib import sha512
 from pathlib import Path
 
+import orjson
 from celery.schedules import crontab
 from django.conf import ImproperlyConfigured
 from sentry_sdk import set_tag
@@ -178,9 +178,6 @@ REST_FRAMEWORK = {
         "django_filters.rest_framework.DjangoFilterBackend",
         "rest_framework.filters.OrderingFilter",
         "rest_framework.filters.SearchFilter",
-    ],
-    "DEFAULT_PARSER_CLASSES": [
-        "rest_framework.parsers.JSONParser",
     ],
     "DEFAULT_PERMISSION_CLASSES": ("authentik.rbac.permissions.ObjectPermissions",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
