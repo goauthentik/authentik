@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2024.4.2
+  version: 2024.6.0
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -13080,6 +13080,15 @@ paths:
         name: identifier
         schema:
           type: string
+      - in: query
+        name: identifier_in
+        schema:
+          type: array
+          items:
+            type: string
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
       - in: query
         name: ip
         schema:
@@ -36625,6 +36634,7 @@ components:
         href:
           type: string
           readOnly: true
+          nullable: true
         name:
           type: string
           readOnly: true
@@ -39488,6 +39498,9 @@ components:
           allOf:
           - $ref: '#/components/schemas/ServiceConnection'
           readOnly: true
+        refresh_interval_s:
+          type: integer
+          readOnly: true
         token_identifier:
           type: string
           description: Get Token identifier
@@ -39509,6 +39522,7 @@ components:
       - pk
       - providers
       - providers_obj
+      - refresh_interval_s
       - service_connection_obj
       - token_identifier
       - type
