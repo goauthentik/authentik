@@ -5,7 +5,7 @@ import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
@@ -53,7 +53,7 @@ export class UserDirectoryPage extends TablePage<UserDirectory> {
     @state()
     userFieldAttributes?: object[] = [];
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [
             ...super.styles,
             PFDescriptionList,
@@ -77,9 +77,8 @@ export class UserDirectoryPage extends TablePage<UserDirectory> {
         );
     }
 
-    columns(): TableColumn[] {
-        if (this.fields === undefined) return [];
-        return this.fields
+    columns() {
+        return (this.fields ?? [])
             .filter((item) => item in knownFields)
             .map((item) =>
                 item === "avatar"
@@ -88,10 +87,9 @@ export class UserDirectoryPage extends TablePage<UserDirectory> {
             );
     }
 
-    row(item: UserDirectory): TemplateResult[] {
-        if (this.fields === undefined) return [];
-        return this.fields
-            .filter((field: string) => knownFields.hasOwnProperty(field))
+    row(item: UserDirectory) {
+        return (this.fields ?? [])
+            .filter((field: string) => Object.hasOwn(knownFields, field))
             .map((field: string) =>
                 field !== "avatar"
                     ? html`${item.userFields[field]}`
@@ -103,26 +101,31 @@ export class UserDirectoryPage extends TablePage<UserDirectory> {
             );
     }
 
-    renderExpanded(item: UserDirectory): TemplateResult {
-        const groupDescription = this.fields?.includes("groups")
-            ? [
-                  [msg("Groups")],
-                  item.userFields["groups"].map(
-                      (group: string) => html`
-                          <div class="pf-c-description-list__text">${group}</div>
-                      `,
-                  ),
-              ]
-            : [];
+    renderExpanded(item: UserDirectory) {
+        const groupDescription =
+            this.fields?.includes("groups") && (item.userFields["groups"] ?? []).length > 0
+                ? [
+                      [msg("Groups")],
+                      item.userFields["groups"].map(
+                          (group: string) => html`
+                              <div class="pf-c-description-list__text">${group}</div>
+                          `,
+                      ),
+                  ]
+                : [];
 
         const userDescriptions = ((this.userFieldAttributes ?? []) as UserFieldAttributes[])
             .filter(({ attribute }) => attribute !== null)
             .map(({ display_name, attribute }) => [display_name, item.attributes[attribute]]);
 
-        return html`<td role="cell" colspan="3">
-            <div class="pf-c-table__expandable-row-content">
-                ${renderDescriptionList([...groupDescription, ...userDescriptions])}
-            </div>
-        </td>`;
+        const toShow = [...groupDescription, ...userDescriptions];
+
+        return toShow.length > 1
+            ? html`<td role="cell" colspan="3">
+                  <div class="pf-c-table__expandable-row-content">
+                      ${renderDescriptionList(toShow)}
+                  </div>
+              </td>`
+            : html``;
     }
 }
