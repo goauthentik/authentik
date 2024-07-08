@@ -1,6 +1,7 @@
 """root settings for authentik"""
 
 import importlib
+import orjson
 from collections import OrderedDict
 from hashlib import sha512
 from pathlib import Path
@@ -187,7 +188,14 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
     ),
     "DEFAULT_RENDERER_CLASSES": [
-        "authentik.api.renderers.JSONRenderer",
+        "drf_orjson_renderer.renderers.ORJSONRenderer",
+    ],
+    "ORJSON_RENDERER_OPTIONS": [
+        orjson.OPT_NON_STR_KEYS,
+        orjson.OPT_UTC_Z,
+    ],
+    "DEFAULT_PARSER_CLASSES": [
+        "drf_orjson_renderer.parsers.ORJSONParser",
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
