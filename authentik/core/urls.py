@@ -17,7 +17,7 @@ from authentik.core.api.sources import SourceViewSet, UserSourceConnectionViewSe
 from authentik.core.api.tokens import TokenViewSet
 from authentik.core.api.transactional_applications import TransactionalApplicationView
 from authentik.core.api.users import UserViewSet
-from authentik.core.views import apps
+from authentik.core.views.apps import RedirectToAppLaunch
 from authentik.core.views.debug import AccessDeniedView
 from authentik.core.views.interface import (
     BrandDefaultRedirectView,
@@ -39,7 +39,7 @@ urlpatterns = [
     path(
         # We have to use this format since everything else uses application/o or application/saml
         "application/launch/<slug:application_slug>/",
-        apps.RedirectToAppLaunch.as_view(),
+        RedirectToAppLaunch.as_view(),
         name="application-launch",
     ),
     # Interfaces

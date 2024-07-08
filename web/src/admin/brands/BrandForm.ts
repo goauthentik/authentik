@@ -179,6 +179,11 @@ export class BrandForm extends ModelForm<Brand, string> {
                             }}
                         >
                         </ak-search-select>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "When configured, external users will automatically be redirected to this application when not attempting to access a different application",
+                            )}
+                        </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

@@ -20,3 +20,7 @@ This means that if you want to select a default flow based on policy, you can le
 ## Branding
 
 The brand configuration controls the branding title (shown in website document title and several other places), the sidebar/header logo that appears in the upper left of the product interface, and the favicon on a browser tab.
+
+## External user settings
+
+The **Default application** configuration can be used to redirect external users to an application when they successfully authenticate without being sent from a specific application.
