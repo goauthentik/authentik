@@ -5,7 +5,7 @@ import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
@@ -54,7 +54,18 @@ export class UserDirectoryPage extends TablePage<UserDirectory> {
     userFieldAttributes?: object[] = [];
 
     static get styles(): CSSResult[] {
-        return [...super.styles, PFDescriptionList, PFCard, PFAlert, PFAvatar];
+        return [
+            ...super.styles,
+            PFDescriptionList,
+            PFCard,
+            PFAlert,
+            PFAvatar,
+            css`
+                ak-page-header::part(sidebar-trigger) {
+                    display: none;
+                }
+            `,
+        ];
     }
 
     async apiEndpoint(): Promise<PaginatedResponse<UserDirectory>> {
