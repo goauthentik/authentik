@@ -1,4 +1,5 @@
 """User directory API Views"""
+
 from typing import Any
 
 from drf_spectacular.utils import extend_schema, inline_serializer

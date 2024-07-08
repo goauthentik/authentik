@@ -95,7 +95,8 @@ class Tenant(TenantMixin, SerializerModel):
         blank=True,
     )
     user_directory_attributes = models.JSONField(
-        help_text=_("Attributes to show in the user directory."), default=list, blank=True)
+        help_text=_("Attributes to show in the user directory."), default=list, blank=True
+    )
     default_token_duration = models.TextField(
         help_text=_("Default token duration"),
         default=DEFAULT_TOKEN_DURATION,
