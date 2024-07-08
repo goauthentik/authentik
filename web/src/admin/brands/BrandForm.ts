@@ -152,6 +152,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                         name="defaultApplication"
                     >
                         <ak-search-select
+                            blankable
                             .fetchObjects=${async (query?: string): Promise<Application[]> => {
                                 const args: CoreApplicationsListRequest = {
                                     ordering: "name",
@@ -225,11 +226,6 @@ export class BrandForm extends ModelForm<Brand, string> {
                             flowType=${FlowsInstancesListDesignationEnum.Recovery}
                             .currentFlow=${this.instance?.flowRecovery}
                         ></ak-flow-search>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "Recovery flow. If left empty, the first applicable flow sorted by the slug is used.",
-                            )}
-                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Unenrollment flow")}
