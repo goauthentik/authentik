@@ -3,9 +3,8 @@ import "@goauthentik/admin/policies/PolicyBindingForm";
 import "@goauthentik/admin/policies/PolicyWizard";
 import "@goauthentik/admin/users/UserForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
+import { PFSize } from "@goauthentik/common/enums.js";
 import "@goauthentik/components/ak-status-label";
-import { PFSize } from "@goauthentik/elements/Spinner";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
@@ -31,12 +30,12 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
     checkbox = true;
     clearOnRefresh = true;
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<PolicyBinding>> {
+    order = "order";
+
+    async apiEndpoint(): Promise<PaginatedResponse<PolicyBinding>> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsList({
+            ...(await this.defaultEndpointConfig()),
             target: this.target || "",
-            ordering: "order",
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
         });
     }
 

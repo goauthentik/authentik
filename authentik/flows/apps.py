@@ -31,10 +31,9 @@ class AuthentikFlowsConfig(ManagedAppConfig):
     verbose_name = "authentik Flows"
     default = True
 
-    @ManagedAppConfig.reconcile_global
-    def load_stages(self):
-        """Ensure all stages are loaded"""
+    def import_related(self):
         from authentik.flows.models import Stage
 
         for stage in all_subclasses(Stage):
             _ = stage().view
+        return super().import_related()

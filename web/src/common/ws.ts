@@ -1,5 +1,5 @@
-import { globalAK } from "@goauthentik/app/common/global";
 import { EVENT_MESSAGE, EVENT_WS_MESSAGE } from "@goauthentik/common/constants";
+import { globalAK } from "@goauthentik/common/global";
 import { MessageLevel } from "@goauthentik/common/messages";
 
 import { msg } from "@lit/localize";

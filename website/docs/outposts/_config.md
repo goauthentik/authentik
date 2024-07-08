@@ -3,6 +3,11 @@
 # Allowed levels: trace, debug, info, warning, error
 # Applies to: non-embedded
 log_level: debug
+# Interval at which the outpost will refresh the providers
+# from authentik. For caching outposts (such as LDAP), the
+# cache will also be invalidated at that interval.
+# (Format: hours=1;minutes=2;seconds=3).
+refresh_interval: minutes=5
 ########################################
 # The settings below are only relevant when using a managed outpost
 ########################################
@@ -43,7 +48,7 @@ kubernetes_replicas: 1
 kubernetes_namespace: authentik
 # Any additional annotations to add to the ingress object, for example cert-manager
 kubernetes_ingress_annotations: {}
-# Name of the secret that is used for TLS connections
+# Name of the secret that is used for TLS connections, leave empty to disable TLS
 kubernetes_ingress_secret_name: authentik-outpost-tls
 # Service kind created, can be set to LoadBalancer for LDAP outposts for example
 kubernetes_service_type: ClusterIP

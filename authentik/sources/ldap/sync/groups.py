@@ -6,13 +6,24 @@ from django.core.exceptions import FieldError
 from django.db.utils import IntegrityError
 from ldap3 import ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES, SUBTREE
 
+from authentik.core.expression.exceptions import SkipObjectException
 from authentik.core.models import Group
 from authentik.events.models import Event, EventAction
+from authentik.lib.sync.mapper import PropertyMappingManager
+from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
 from authentik.sources.ldap.sync.base import LDAP_UNIQUENESS, BaseLDAPSynchronizer, flatten
 
 
 class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
     """Sync LDAP Users and groups into authentik"""
+
+    def __init__(self, source: LDAPSource):
+        super().__init__(source)
+        self.mapper = PropertyMappingManager(
+            self._source.property_mappings_group.all().order_by("name").select_subclasses(),
+            LDAPPropertyMapping,
+            ["ldap", "dn", "source"],
+        )
 
     @staticmethod
     def name() -> str:
@@ -65,6 +76,8 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
                     defaults,
                 )
                 self._logger.debug("Created group with attributes", **defaults)
+            except SkipObjectException:
+                continue
             except (IntegrityError, FieldError, TypeError, AttributeError) as exc:
                 Event.new(
                     EventAction.CONFIGURATION_ERROR,

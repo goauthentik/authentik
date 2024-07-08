@@ -1,9 +1,9 @@
 import "@goauthentik/admin/users/UserPermissionForm";
-import { DEFAULT_CONFIG } from "@goauthentik/app/common/api/config";
-import { groupBy } from "@goauthentik/app/common/utils";
-import { PaginatedResponse, Table, TableColumn } from "@goauthentik/app/elements/table/Table";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { groupBy } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
+import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
@@ -21,12 +21,10 @@ export class UserAssignedGlobalPermissionsTable extends Table<Permission> {
     checkbox = true;
     clearOnRefresh = true;
 
-    apiEndpoint(page: number): Promise<PaginatedResponse<Permission>> {
+    async apiEndpoint(): Promise<PaginatedResponse<Permission>> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsList({
+            ...(await this.defaultEndpointConfig()),
             user: this.userId || 0,
-            page: page,
-            ordering: this.order,
-            search: this.search,
         });
     }
 
@@ -38,8 +36,8 @@ export class UserAssignedGlobalPermissionsTable extends Table<Permission> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn("Model", "model"),
-            new TableColumn("Permission", ""),
+            new TableColumn(msg("Model"), "model"),
+            new TableColumn(msg("Permission"), ""),
             new TableColumn(""),
         ];
     }
@@ -84,6 +82,10 @@ export class UserAssignedGlobalPermissionsTable extends Table<Permission> {
     }
 
     row(item: Permission): TemplateResult[] {
-        return [html`${item.modelVerbose}`, html`${item.name}`, html`✓`];
+        return [
+            html`${item.modelVerbose}`,
+            html`${item.name}`,
+            html`<i class="fas fa-check pf-m-success"></i>`,
+        ];
     }
 }

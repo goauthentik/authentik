@@ -194,7 +194,6 @@ export class ApplicationWizardProviderSamlConfiguration extends BaseProviderPane
                         <ak-multi-select
                             label=${msg("Property Mappings")}
                             name="propertyMappings"
-                            required
                             .options=${propertyPairs}
                             .values=${pmValues}
                             .richhelp=${html` <p class="pf-c-form__helper-text">

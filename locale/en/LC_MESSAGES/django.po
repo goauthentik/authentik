@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-19 23:33+0000\n"
+"POT-Creation-Date: 2024-06-16 00:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -88,11 +88,9 @@ msgid "Brands"
 msgstr ""
 
 #: authentik/core/api/providers.py
-msgid "SAML Provider from Metadata"
-msgstr ""
-
-#: authentik/core/api/providers.py
-msgid "Create a SAML Provider by importing its Metadata."
+msgid ""
+"When not set all providers are returned. When set to true, only backchannel "
+"providers are returned. When set to false, backchannel providers are excluded"
 msgstr ""
 
 #: authentik/core/api/users.py
@@ -117,6 +115,14 @@ msgstr ""
 
 #: authentik/core/models.py
 msgid "Groups"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Add user to group"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Remove user from group"
 msgstr ""
 
 #: authentik/core/models.py
@@ -355,6 +361,14 @@ msgstr ""
 msgid "Subject-alt name"
 msgstr ""
 
+#: authentik/crypto/builder.py
+msgid "rsa"
+msgstr ""
+
+#: authentik/crypto/builder.py
+msgid "ecdsa"
+msgstr ""
+
 #: authentik/crypto/models.py
 msgid "PEM-encoded Certificate data"
 msgstr ""
@@ -399,6 +413,72 @@ msgstr ""
 
 #: authentik/enterprise/policy.py
 msgid "Feature only accessible for internal users."
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider User"
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Users"
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Group"
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Groups"
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/models.py
+#: authentik/enterprise/providers/microsoft_entra/models.py
+#: authentik/providers/scim/models.py authentik/sources/ldap/models.py
+msgid "Property mappings used for group creation/updating."
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider"
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Providers"
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Mapping"
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Mappings"
+msgstr ""
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider User"
+msgstr ""
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Group"
+msgstr ""
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Groups"
+msgstr ""
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider"
+msgstr ""
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Providers"
+msgstr ""
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Mapping"
+msgstr ""
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Mappings"
 msgstr ""
 
 #: authentik/enterprise/providers/rac/models.py
@@ -450,6 +530,20 @@ msgstr ""
 
 #: authentik/enterprise/providers/rac/views.py
 msgid "(You are already connected in another tab/window)"
+msgstr ""
+
+#: authentik/enterprise/stages/source/models.py
+msgid ""
+"Amount of time a user can take to return from the source to continue the "
+"flow (Format: hours=-1;minutes=-2;seconds=-3)"
+msgstr ""
+
+#: authentik/enterprise/stages/source/models.py
+msgid "Source Stage"
+msgstr ""
+
+#: authentik/enterprise/stages/source/models.py
+msgid "Source Stages"
 msgstr ""
 
 #: authentik/events/api/tasks.py
@@ -724,6 +818,29 @@ msgstr ""
 
 #: authentik/flows/models.py
 msgid "Flow Tokens"
+msgstr ""
+
+#: authentik/flows/views/executor.py
+msgid "Invalid next URL"
+msgstr ""
+
+#: authentik/lib/sync/outgoing/tasks.py
+msgid "Starting full provider sync"
+msgstr ""
+
+#: authentik/lib/sync/outgoing/tasks.py
+#, python-format
+msgid "Syncing page %(page)d of users"
+msgstr ""
+
+#: authentik/lib/sync/outgoing/tasks.py
+#, python-format
+msgid "Syncing page %(page)d of groups"
+msgstr ""
+
+#: authentik/lib/sync/outgoing/tasks.py
+#, python-brace-format
+msgid "Stopping sync due to error: {error}"
 msgstr ""
 
 #: authentik/lib/utils/time.py
@@ -1337,10 +1454,6 @@ msgstr ""
 msgid "GitHub Compatibility: Access your Groups"
 msgstr ""
 
-#: authentik/providers/oauth2/views/userinfo.py
-msgid "authentik API Access on behalf of your user"
-msgstr ""
-
 #: authentik/providers/proxy/api.py
 msgid "User and password attributes must be set when basic auth is enabled."
 msgstr ""
@@ -1524,6 +1637,22 @@ msgid "RSA-SHA512"
 msgstr ""
 
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "ECDSA-SHA1"
+msgstr ""
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "ECDSA-SHA256"
+msgstr ""
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "ECDSA-SHA384"
+msgstr ""
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "ECDSA-SHA512"
+msgstr ""
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "DSA-SHA1"
 msgstr ""
 
@@ -1565,16 +1694,20 @@ msgstr ""
 msgid "SAML Property Mappings"
 msgstr ""
 
+#: authentik/providers/saml/models.py
+msgid "SAML Provider from Metadata"
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid "SAML Providers from Metadata"
+msgstr ""
+
 #: authentik/providers/scim/models.py
 msgid "Base URL to SCIM requests, usually ends in /v2"
 msgstr ""
 
 #: authentik/providers/scim/models.py
 msgid "Authentication token"
-msgstr ""
-
-#: authentik/providers/scim/models.py authentik/sources/ldap/models.py
-msgid "Property mappings used for group creation/updating."
 msgstr ""
 
 #: authentik/providers/scim/models.py
@@ -1591,35 +1724,6 @@ msgstr ""
 
 #: authentik/providers/scim/models.py
 msgid "SCIM Mappings"
-msgstr ""
-
-#: authentik/providers/scim/tasks.py
-msgid "Starting full SCIM sync"
-msgstr ""
-
-#: authentik/providers/scim/tasks.py
-#, python-format
-msgid "Syncing page %(page)d of users"
-msgstr ""
-
-#: authentik/providers/scim/tasks.py
-#, python-format
-msgid "Syncing page %(page)d of groups"
-msgstr ""
-
-#: authentik/providers/scim/tasks.py
-#, python-brace-format
-msgid "Failed to sync user {user_name} due to remote error: {error}"
-msgstr ""
-
-#: authentik/providers/scim/tasks.py
-#, python-brace-format
-msgid "Stopping sync due to error: {error}"
-msgstr ""
-
-#: authentik/providers/scim/tasks.py
-#, python-brace-format
-msgid "Failed to sync group {group_name} due to remote error: {error}"
 msgstr ""
 
 #: authentik/rbac/models.py
@@ -1640,14 +1744,6 @@ msgstr ""
 
 #: authentik/rbac/models.py
 msgid "Can view system info"
-msgstr ""
-
-#: authentik/rbac/models.py
-msgid "Can view system tasks"
-msgstr ""
-
-#: authentik/rbac/models.py
-msgid "Can run system tasks"
 msgstr ""
 
 #: authentik/rbac/models.py
@@ -1738,6 +1834,10 @@ msgid "Field which contains a unique Identifier."
 msgstr ""
 
 #: authentik/sources/ldap/models.py
+msgid "Update internal authentik password when login succeeds with LDAP"
+msgstr ""
+
+#: authentik/sources/ldap/models.py
 msgid ""
 "When a user changes their password, sync it back to LDAP. This can only be "
 "enabled on a single LDAP source."
@@ -1818,6 +1918,14 @@ msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "GitHub OAuth Sources"
+msgstr ""
+
+#: authentik/sources/oauth/models.py
+msgid "GitLab OAuth Source"
+msgstr ""
+
+#: authentik/sources/oauth/models.py
+msgid "GitLab OAuth Sources"
 msgstr ""
 
 #: authentik/sources/oauth/models.py
@@ -2045,6 +2153,14 @@ msgstr ""
 msgid "User SAML Source Connections"
 msgstr ""
 
+#: authentik/sources/scim/models.py
+msgid "SCIM Source"
+msgstr ""
+
+#: authentik/sources/scim/models.py
+msgid "SCIM Sources"
+msgstr ""
+
 #: authentik/stages/authenticator_duo/models.py
 msgid "Duo Authenticator Setup Stage"
 msgstr ""
@@ -2151,7 +2267,15 @@ msgid "TOTP Devices"
 msgstr ""
 
 #: authentik/stages/authenticator_validate/challenge.py
-msgid "Invalid Token"
+msgid ""
+"Invalid Token. Please ensure the time on your device is accurate and try "
+"again."
+msgstr ""
+
+#: authentik/stages/authenticator_validate/challenge.py
+#: authentik/stages/authenticator_webauthn/stage.py
+#, python-brace-format
+msgid "Invalid device type. Contact your {brand} administrator for help."
 msgstr ""
 
 #: authentik/stages/authenticator_validate/models.py
@@ -2203,6 +2327,10 @@ msgstr ""
 msgid "Authenticator Validation Stages"
 msgstr ""
 
+#: authentik/stages/authenticator_validate/stage.py
+msgid "No (allowed) MFA authenticator configured."
+msgstr ""
+
 #: authentik/stages/authenticator_webauthn/models.py
 msgid "WebAuthn Authenticator Setup Stage"
 msgstr ""
@@ -2219,6 +2347,14 @@ msgstr ""
 msgid "WebAuthn Devices"
 msgstr ""
 
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "WebAuthn Device type"
+msgstr ""
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "WebAuthn Device types"
+msgstr ""
+
 #: authentik/stages/captcha/models.py
 msgid "Public key, acquired your captcha Provider."
 msgstr ""
@@ -2228,11 +2364,36 @@ msgid "Private key, acquired your captcha Provider."
 msgstr ""
 
 #: authentik/stages/captcha/models.py
+msgid ""
+"When enabled and the received captcha score is outside of the given "
+"threshold, the stage will show an error message. When not enabled, the flow "
+"will continue, but the data from the captcha will be available in the "
+"context for policy decisions"
+msgstr ""
+
+#: authentik/stages/captcha/models.py
 msgid "Captcha Stage"
 msgstr ""
 
 #: authentik/stages/captcha/models.py
 msgid "Captcha Stages"
+msgstr ""
+
+#: authentik/stages/captcha/stage.py
+msgid "Unknown error"
+msgstr ""
+
+#: authentik/stages/captcha/stage.py
+#, python-brace-format
+msgid "Failed to validate token: {error}"
+msgstr ""
+
+#: authentik/stages/captcha/stage.py
+msgid "Invalid captcha response"
+msgstr ""
+
+#: authentik/stages/captcha/stage.py
+msgid "Failed to validate token"
 msgstr ""
 
 #: authentik/stages/consent/models.py
@@ -2799,6 +2960,14 @@ msgstr ""
 
 #: authentik/tenants/models.py
 msgid "Globally enable/disable impersonation."
+msgstr ""
+
+#: authentik/tenants/models.py
+msgid "Default token duration"
+msgstr ""
+
+#: authentik/tenants/models.py
+msgid "Default token length"
 msgstr ""
 
 #: authentik/tenants/models.py

@@ -96,17 +96,14 @@ func (g *GoUnicorn) healthcheck() {
 	g.log.Debug("starting healthcheck")
 	// Default healthcheck is every 1 second on startup
 	// once we've been healthy once, increase to 30 seconds
-	for range time.Tick(time.Second) {
+	for range time.NewTicker(time.Second).C {
 		if g.Healthcheck() {
 			g.alive = true
-			g.log.Info("backend is alive, backing off with healthchecks")
+			g.log.Debug("backend is alive, backing off with healthchecks")
 			g.HealthyCallback()
 			break
 		}
 		g.log.Debug("backend not alive yet")
-	}
-	for range time.Tick(30 * time.Second) {
-		g.Healthcheck()
 	}
 }
 

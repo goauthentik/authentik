@@ -1,7 +1,7 @@
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
-import { first } from "@goauthentik/app/common/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -54,7 +54,7 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
     async send(data: RACProvider): Promise<RACProvider> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersRacUpdate({
-                id: this.instance.pk || 0,
+                id: this.instance.pk,
                 rACProviderRequest: data,
             });
         } else {
@@ -135,7 +135,6 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Property mappings")}
-                        ?required=${true}
                         name="propertyMappings"
                     >
                         <select class="pf-c-form-control" multiple>

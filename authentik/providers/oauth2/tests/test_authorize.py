@@ -36,8 +36,21 @@ class TestAuthorize(OAuthTestCase):
 
     def test_invalid_grant_type(self):
         """Test with invalid grant type"""
+        OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test",
+            authorization_flow=create_test_flow(),
+            redirect_uris="http://local.invalid/Foo",
+        )
         with self.assertRaises(AuthorizeError):
-            request = self.factory.get("/", data={"response_type": "invalid"})
+            request = self.factory.get(
+                "/",
+                data={
+                    "response_type": "invalid",
+                    "client_id": "test",
+                    "redirect_uri": "http://local.invalid/Foo",
+                },
+            )
             OAuthAuthorizationParams.from_request(request)
 
     def test_invalid_client_id(self):
@@ -344,7 +357,12 @@ class TestAuthorize(OAuthTestCase):
                 ]
             )
         )
-        Application.objects.create(name="app", slug="app", provider=provider)
+        provider.property_mappings.add(
+            ScopeMapping.objects.create(
+                name=generate_id(), scope_name="test", expression="""return {"sub": "foo"}"""
+            )
+        )
+        Application.objects.create(name=generate_id(), slug=generate_id(), provider=provider)
         state = generate_id()
         user = create_test_admin_user()
         self.client.force_login(user)
@@ -365,7 +383,7 @@ class TestAuthorize(OAuthTestCase):
                     "response_type": "id_token",
                     "client_id": "test",
                     "state": state,
-                    "scope": "openid",
+                    "scope": "openid test",
                     "redirect_uri": "http://localhost",
                     "nonce": generate_id(),
                 },
@@ -390,6 +408,7 @@ class TestAuthorize(OAuthTestCase):
             )
             jwt = self.validate_jwt(token, provider)
             self.assertEqual(jwt["amr"], ["pwd"])
+            self.assertEqual(jwt["sub"], "foo")
             self.assertAlmostEqual(
                 jwt["exp"] - now().timestamp(),
                 expires,

@@ -61,6 +61,7 @@ class OutpostConfig:
 
     log_level: str = CONFIG.get("log_level")
     object_naming_template: str = field(default="ak-outpost-%(name)s")
+    refresh_interval: str = "minutes=5"
 
     container_image: str | None = field(default=None)
 
@@ -131,7 +132,7 @@ class OutpostServiceConnection(models.Model):
         verbose_name = _("Outpost Service-Connection")
         verbose_name_plural = _("Outpost Service-Connections")
 
-    def __str__(self) -> __version__:
+    def __str__(self) -> str:
         return f"Outpost service connection {self.name}"
 
     @property
@@ -434,6 +435,10 @@ class OutpostState:
     version: str | None = field(default=None)
     version_should: Version = field(default=OUR_VERSION)
     build_hash: str = field(default="")
+    golang_version: str = field(default="")
+    openssl_enabled: bool = field(default=False)
+    openssl_version: str = field(default="")
+    fips_enabled: bool = field(default=False)
     hostname: str = field(default="")
     args: dict = field(default_factory=dict)
 

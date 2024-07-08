@@ -3,14 +3,16 @@
 import os
 from importlib import import_module
 from pathlib import Path
+from tempfile import gettempdir
 
 from django.conf import settings
-from kubernetes.config.incluster_config import SERVICE_HOST_ENV_NAME
 
 from authentik.lib.config import CONFIG
 
+SERVICE_HOST_ENV_NAME = "KUBERNETES_SERVICE_HOST"
 
-def all_subclasses(cls, sort=True):
+
+def all_subclasses[T](cls: T, sort=True) -> list[T] | set[T]:
     """Recursively return all subclassess of cls"""
     classes = set(cls.__subclasses__()).union(
         [s for c in cls.__subclasses__() for s in all_subclasses(c, sort=sort)]
@@ -55,7 +57,7 @@ def get_env() -> str:
         return "dev"
     if SERVICE_HOST_ENV_NAME in os.environ:
         return "kubernetes"
-    if Path("/tmp/authentik-mode").exists():  # nosec
+    if (Path(gettempdir()) / "authentik-mode").exists():
         return "compose"
     if "AK_APPLIANCE" in os.environ:
         return os.environ["AK_APPLIANCE"]

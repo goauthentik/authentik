@@ -1,17 +1,17 @@
 """root settings for authentik"""
 
 import importlib
-import os
 from collections import OrderedDict
 from hashlib import sha512
 from pathlib import Path
-from urllib.parse import quote_plus
 
+import orjson
 from celery.schedules import crontab
+from django.conf import ImproperlyConfigured
 from sentry_sdk import set_tag
 
-from authentik import ENV_GIT_HASH_KEY, __version__
-from authentik.lib.config import CONFIG
+from authentik import __version__
+from authentik.lib.config import CONFIG, redis_url
 from authentik.lib.logging import get_logger_config, structlog_configure
 from authentik.lib.sentry import sentry_init
 from authentik.lib.utils.reflection import get_env
@@ -62,6 +62,8 @@ SHARED_APPS = [
     "django_filters",
     "drf_spectacular",
     "django_prometheus",
+    "pgactivity",
+    "pglock",
     "channels",
 ]
 TENANT_APPS = [
@@ -92,6 +94,7 @@ TENANT_APPS = [
     "authentik.sources.oauth",
     "authentik.sources.plex",
     "authentik.sources.saml",
+    "authentik.sources.scim",
     "authentik.stages.authenticator",
     "authentik.stages.authenticator_duo",
     "authentik.stages.authenticator_sms",
@@ -156,8 +159,13 @@ SPECTACULAR_SETTINGS = {
         "LDAPAPIAccessMode": "authentik.providers.ldap.models.APIAccessMode",
         "UserVerificationEnum": "authentik.stages.authenticator_webauthn.models.UserVerification",
         "UserTypeEnum": "authentik.core.models.UserTypes",
+        "OutgoingSyncDeleteAction": "authentik.lib.sync.outgoing.models.OutgoingSyncDeleteAction",
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
+    "ENUM_GENERATE_CHOICE_DESCRIPTION": False,
+    "PREPROCESSING_HOOKS": [
+        "authentik.api.schema.preprocess_schema_exclude_non_api",
+    ],
     "POSTPROCESSING_HOOKS": [
         "authentik.api.schema.postprocess_schema_responses",
         "drf_spectacular.hooks.postprocess_schema_enums",
@@ -173,16 +181,20 @@ REST_FRAMEWORK = {
         "rest_framework.filters.OrderingFilter",
         "rest_framework.filters.SearchFilter",
     ],
-    "DEFAULT_PARSER_CLASSES": [
-        "rest_framework.parsers.JSONParser",
-    ],
     "DEFAULT_PERMISSION_CLASSES": ("authentik.rbac.permissions.ObjectPermissions",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "authentik.api.authentication.TokenAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ),
     "DEFAULT_RENDERER_CLASSES": [
-        "rest_framework.renderers.JSONRenderer",
+        "drf_orjson_renderer.renderers.ORJSONRenderer",
+    ],
+    "ORJSON_RENDERER_OPTIONS": [
+        orjson.OPT_NON_STR_KEYS,
+        orjson.OPT_UTC_Z,
+    ],
+    "DEFAULT_PARSER_CLASSES": [
+        "drf_orjson_renderer.parsers.ORJSONParser",
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
@@ -192,23 +204,15 @@ REST_FRAMEWORK = {
     },
 }
 
-_redis_protocol_prefix = "redis://"
-_redis_celery_tls_requirements = ""
-if CONFIG.get_bool("redis.tls", False):
-    _redis_protocol_prefix = "rediss://"
-    _redis_celery_tls_requirements = f"?ssl_cert_reqs={CONFIG.get('redis.tls_reqs')}"
-_redis_url = (
-    f"{_redis_protocol_prefix}:"
-    f"{quote_plus(CONFIG.get('redis.password'))}@{quote_plus(CONFIG.get('redis.host'))}:"
-    f"{CONFIG.get_int('redis.port')}"
-)
 
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": CONFIG.get("cache.url") or f"{_redis_url}/{CONFIG.get('redis.db')}",
+        "LOCATION": CONFIG.get("cache.url") or redis_url(CONFIG.get("redis.db")),
         "TIMEOUT": CONFIG.get_int("cache.timeout", 300),
-        "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
         "KEY_PREFIX": "authentik_cache",
         "KEY_FUNCTION": "django_tenants.cache.make_key",
         "REVERSE_KEY_FUNCTION": "django_tenants.cache.reverse_key",
@@ -217,7 +221,15 @@ CACHES = {
 DJANGO_REDIS_SCAN_ITERSIZE = 1000
 DJANGO_REDIS_IGNORE_EXCEPTIONS = True
 DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = True
-SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+match CONFIG.get("session_storage", "cache"):
+    case "cache":
+        SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+    case "db":
+        SESSION_ENGINE = "django.contrib.sessions.backends.db"
+    case _:
+        raise ImproperlyConfigured(
+            "Invalid session_storage setting, allowed values are db and cache"
+        )
 SESSION_SERIALIZER = "authentik.root.sessions.pickle.PickleSerializer"
 SESSION_CACHE_ALIAS = "default"
 # Configured via custom SessionMiddleware
@@ -271,7 +283,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.pubsub.RedisPubSubChannelLayer",
         "CONFIG": {
-            "hosts": [CONFIG.get("channel.url", f"{_redis_url}/{CONFIG.get('redis.db')}")],
+            "hosts": [CONFIG.get("channel.url") or redis_url(CONFIG.get("redis.db"))],
             "prefix": "authentik_channels_",
         },
     },
@@ -289,7 +301,7 @@ DATABASES = {
         "NAME": CONFIG.get("postgresql.name"),
         "USER": CONFIG.get("postgresql.user"),
         "PASSWORD": CONFIG.get("postgresql.password"),
-        "PORT": CONFIG.get_int("postgresql.port"),
+        "PORT": CONFIG.get("postgresql.port"),
         "SSLMODE": CONFIG.get("postgresql.sslmode"),
         "SSLROOTCERT": CONFIG.get("postgresql.sslrootcert"),
         "SSLCERT": CONFIG.get("postgresql.sslcert"),
@@ -309,7 +321,23 @@ if CONFIG.get_bool("postgresql.use_pgbouncer", False):
     # https://docs.djangoproject.com/en/4.0/ref/databases/#persistent-connections
     DATABASES["default"]["CONN_MAX_AGE"] = None  # persistent
 
-DATABASE_ROUTERS = ("django_tenants.routers.TenantSyncRouter",)
+for replica in CONFIG.get_keys("postgresql.read_replicas"):
+    _database = DATABASES["default"].copy()
+    for setting in DATABASES["default"].keys():
+        default = object()
+        if setting in ("TEST",):
+            continue
+        override = CONFIG.get(
+            f"postgresql.read_replicas.{replica}.{setting.lower()}", default=default
+        )
+        if override is not default:
+            _database[setting] = override
+    DATABASES[f"replica_{replica}"] = _database
+
+DATABASE_ROUTERS = (
+    "authentik.tenants.db.FailoverRouter",
+    "django_tenants.routers.TenantSyncRouter",
+)
 
 # Email
 # These values should never actually be used, emails are only sent from email stages, which
@@ -371,11 +399,15 @@ CELERY = {
     "beat_scheduler": "authentik.tenants.scheduler:TenantAwarePersistentScheduler",
     "task_create_missing_queues": True,
     "task_default_queue": "authentik",
-    "broker_url": CONFIG.get("broker.url")
-    or f"{_redis_url}/{CONFIG.get('redis.db')}{_redis_celery_tls_requirements}",
-    "broker_transport_options": CONFIG.get_dict_from_b64_json("broker.transport_options"),
-    "result_backend": CONFIG.get("result_backend.url")
-    or f"{_redis_url}/{CONFIG.get('redis.db')}{_redis_celery_tls_requirements}",
+    "broker_url": CONFIG.get("broker.url") or redis_url(CONFIG.get("redis.db")),
+    "result_backend": CONFIG.get("result_backend.url") or redis_url(CONFIG.get("redis.db")),
+    "broker_transport_options": CONFIG.get_dict_from_b64_json(
+        "broker.transport_options", {"retry_policy": {"timeout": 5.0}}
+    ),
+    "result_backend_transport_options": CONFIG.get_dict_from_b64_json(
+        "result_backend.transport_options", {"retry_policy": {"timeout": 5.0}}
+    ),
+    "redis_retry_on_timeout": True,
 }
 
 # Sentry integration
@@ -485,7 +517,6 @@ def _update_settings(app_path: str):
 
 if DEBUG:
     CELERY["task_always_eager"] = True
-    os.environ[ENV_GIT_HASH_KEY] = "dev"
     REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"].append(
         "rest_framework.renderers.BrowsableAPIRenderer"
     )

@@ -1,4 +1,4 @@
-import { globalAK } from "@goauthentik/app/common/global";
+import { globalAK } from "@goauthentik/common/global";
 import { me } from "@goauthentik/common/users";
 import { AKElement } from "@goauthentik/elements/Base";
 

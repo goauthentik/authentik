@@ -13,10 +13,10 @@ from rest_framework.fields import BooleanField, ReadOnlyField
 from rest_framework.mixins import ListModelMixin
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet
 
 from authentik.core.api.groups import GroupMemberSerializer
+from authentik.core.api.utils import ModelSerializer
 from authentik.core.models import User, UserTypes
 from authentik.policies.event_matcher.models import model_choices
 from authentik.rbac.api.rbac import PermissionAssignSerializer

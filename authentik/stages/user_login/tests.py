@@ -133,13 +133,14 @@ class TestUserLoginStage(FlowTestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             data={"remember_me": True},
         )
+        _now = now().timestamp()
         self.assertEqual(response.status_code, 200)
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
         self.assertNotEqual(list(self.client.session.keys()), [])
         session_key = self.client.session.session_key
         session = AuthenticatedSession.objects.filter(session_key=session_key).first()
         self.assertAlmostEqual(
-            session.expires.timestamp() - now().timestamp(),
+            session.expires.timestamp() - _now,
             timedelta_from_string(self.stage.session_duration).total_seconds()
             + timedelta_from_string(self.stage.remember_me_offset).total_seconds(),
             delta=1,

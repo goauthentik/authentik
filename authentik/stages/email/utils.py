@@ -5,6 +5,7 @@ from functools import lru_cache
 from pathlib import Path
 
 from django.core.mail import EmailMultiAlternatives
+from django.core.mail.message import sanitize_address
 from django.template.exceptions import TemplateDoesNotExist
 from django.template.loader import render_to_string
 from django.utils import translation
@@ -25,8 +26,16 @@ def logo_data() -> MIMEImage:
 class TemplateEmailMessage(EmailMultiAlternatives):
     """Wrapper around EmailMultiAlternatives with integrated template rendering"""
 
-    def __init__(self, template_name=None, template_context=None, language="", **kwargs):
-        super().__init__(**kwargs)
+    def __init__(
+        self, to: list[tuple[str]], template_name=None, template_context=None, language="", **kwargs
+    ):
+        sanitized_to = []
+        # Ensure that all recipients are valid
+        for recipient_name, recipient_email in to:
+            sanitized_to.append(sanitize_address((recipient_name, recipient_email), "utf-8"))
+        super().__init__(to=sanitized_to, **kwargs)
+        if not template_name:
+            return
         with translation.override(language):
             html_content = render_to_string(template_name, template_context)
             try:

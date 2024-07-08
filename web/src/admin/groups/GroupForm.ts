@@ -3,6 +3,8 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider";
+import { DataProvision, DualSelectPair } from "@goauthentik/elements/ak-dual-select/types";
 import "@goauthentik/elements/chips/Chip";
 import "@goauthentik/elements/chips/ChipGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -12,22 +14,17 @@ import YAML from "yaml";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import {
-    CoreApi,
-    CoreGroupsListRequest,
-    Group,
-    PaginatedRoleList,
-    RbacApi,
-} from "@goauthentik/api";
+import { CoreApi, CoreGroupsListRequest, Group, RbacApi, Role } from "@goauthentik/api";
+
+export function rbacRolePair(item: Role): DualSelectPair {
+    return [item.pk, html`<div class="selection-main">${item.name}</div>`, item.name];
+}
 
 @customElement("ak-group-form")
 export class GroupForm extends ModelForm<Group, string> {
-    @state()
-    roles?: PaginatedRoleList;
-
     static get styles(): CSSResult[] {
         return super.styles.concat(css`
             .pf-c-button.pf-m-control {
@@ -42,6 +39,7 @@ export class GroupForm extends ModelForm<Group, string> {
     loadInstance(pk: string): Promise<Group> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsRetrieve({
             groupUuid: pk,
+            includeUsers: false,
         });
     }
 
@@ -49,12 +47,6 @@ export class GroupForm extends ModelForm<Group, string> {
         return this.instance
             ? msg("Successfully updated group.")
             : msg("Successfully created group.");
-    }
-
-    async load(): Promise<void> {
-        this.roles = await new RbacApi(DEFAULT_CONFIG).rbacRolesList({
-            ordering: "name",
-        });
     }
 
     async send(data: Group): Promise<Group> {
@@ -127,23 +119,28 @@ export class GroupForm extends ModelForm<Group, string> {
                 </ak-search-select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Roles")} name="roles">
-                <select class="pf-c-form-control" multiple>
-                    ${this.roles?.results.map((role) => {
-                        const selected = Array.from(this.instance?.roles || []).some((sp) => {
-                            return sp == role.pk;
-                        });
-                        return html`<option value=${role.pk} ?selected=${selected}>
-                            ${role.name}
-                        </option>`;
-                    })}
-                </select>
+                <ak-dual-select-provider
+                    .provider=${(page: number, search?: string): Promise<DataProvision> => {
+                        return new RbacApi(DEFAULT_CONFIG)
+                            .rbacRolesList({
+                                page: page,
+                                search: search,
+                            })
+                            .then((results) => {
+                                return {
+                                    pagination: results.pagination,
+                                    options: results.results.map(rbacRolePair),
+                                };
+                            });
+                    }}
+                    .selected=${(this.instance?.rolesObj ?? []).map(rbacRolePair)}
+                    available-label="${msg("Available Roles")}"
+                    selected-label="${msg("Selected Roles")}"
+                ></ak-dual-select-provider>
                 <p class="pf-c-form__helper-text">
                     ${msg(
                         "Select roles to grant this groups' users' permissions from the selected roles.",
                     )}
-                </p>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Hold control/command to select multiple items.")}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal

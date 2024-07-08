@@ -23,7 +23,7 @@ export class PropertyMappingSAMLForm extends BasePropertyMappingForm<SAMLPropert
     async send(data: SAMLPropertyMapping): Promise<SAMLPropertyMapping> {
         if (this.instance) {
             return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSamlUpdate({
-                pmUuid: this.instance.pk || "",
+                pmUuid: this.instance.pk,
                 sAMLPropertyMappingRequest: data,
             });
         } else {
@@ -83,6 +83,7 @@ export class PropertyMappingSAMLForm extends BasePropertyMappingForm<SAMLPropert
                     ${msg("Expression using Python.")}
                     <a
                         target="_blank"
+                        rel="noopener noreferrer"
                         href="${docLink("/docs/property-mappings/expression?utm_source=authentik")}"
                     >
                         ${msg("See documentation for a list of all variables.")}

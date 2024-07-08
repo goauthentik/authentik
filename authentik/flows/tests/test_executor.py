@@ -1,6 +1,7 @@
 """flow views tests"""
 
 from unittest.mock import MagicMock, PropertyMock, patch
+from urllib.parse import urlencode
 
 from django.http import HttpRequest, HttpResponse
 from django.test.client import RequestFactory
@@ -18,7 +19,12 @@ from authentik.flows.models import (
 from authentik.flows.planner import FlowPlan, FlowPlanner
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, StageView
 from authentik.flows.tests import FlowTestCase
-from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_PLAN, FlowExecutorView
+from authentik.flows.views.executor import (
+    NEXT_ARG_NAME,
+    QS_QUERY,
+    SESSION_KEY_PLAN,
+    FlowExecutorView,
+)
 from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
@@ -121,16 +127,73 @@ class TestFlowExecutor(FlowTestCase):
         TO_STAGE_RESPONSE_MOCK,
     )
     def test_invalid_flow_redirect(self):
-        """Tests that an invalid flow still redirects"""
+        """Test invalid flow with valid redirect destination"""
         flow = create_test_flow(
             FlowDesignation.AUTHENTICATION,
         )
 
         dest = "/unique-string"
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
-        response = self.client.get(url + f"?{NEXT_ARG_NAME}={dest}")
+        response = self.client.get(url + f"?{QS_QUERY}={urlencode({NEXT_ARG_NAME: dest})}")
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse("authentik_core:root-redirect"))
+        self.assertEqual(response.url, "/unique-string")
+
+    @patch(
+        "authentik.flows.views.executor.to_stage_response",
+        TO_STAGE_RESPONSE_MOCK,
+    )
+    def test_invalid_flow_invalid_redirect(self):
+        """Test invalid flow redirect with an invalid URL"""
+        flow = create_test_flow(
+            FlowDesignation.AUTHENTICATION,
+        )
+
+        dest = "http://something.example.com/unique-string"
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
+
+        response = self.client.get(url + f"?{QS_QUERY}={urlencode({NEXT_ARG_NAME: dest})}")
+        self.assertEqual(response.status_code, 200)
+        self.assertStageResponse(
+            response,
+            flow,
+            component="ak-stage-access-denied",
+            error_message="Invalid next URL",
+        )
+
+    @patch(
+        "authentik.flows.views.executor.to_stage_response",
+        TO_STAGE_RESPONSE_MOCK,
+    )
+    def test_valid_flow_redirect(self):
+        """Test valid flow with valid redirect destination"""
+        flow = create_test_flow()
+
+        dest = "/unique-string"
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
+
+        response = self.client.get(url + f"?{QS_QUERY}={urlencode({NEXT_ARG_NAME: dest})}")
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/unique-string")
+
+    @patch(
+        "authentik.flows.views.executor.to_stage_response",
+        TO_STAGE_RESPONSE_MOCK,
+    )
+    def test_valid_flow_invalid_redirect(self):
+        """Test valid flow redirect with an invalid URL"""
+        flow = create_test_flow()
+
+        dest = "http://something.example.com/unique-string"
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
+
+        response = self.client.get(url + f"?{QS_QUERY}={urlencode({NEXT_ARG_NAME: dest})}")
+        self.assertEqual(response.status_code, 200)
+        self.assertStageResponse(
+            response,
+            flow,
+            component="ak-stage-access-denied",
+            error_message="Invalid next URL",
+        )
 
     @patch(
         "authentik.flows.views.executor.to_stage_response",

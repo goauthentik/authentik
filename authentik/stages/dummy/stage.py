@@ -12,6 +12,7 @@ class DummyChallenge(Challenge):
     """Dummy challenge"""
 
     component = CharField(default="ak-stage-dummy")
+    name = CharField()
 
 
 class DummyChallengeResponse(ChallengeResponse):
@@ -35,5 +36,6 @@ class DummyStageView(ChallengeStageView):
             data={
                 "type": ChallengeTypes.NATIVE.value,
                 "title": self.executor.current_stage.name,
+                "name": self.executor.current_stage.name,
             }
         )

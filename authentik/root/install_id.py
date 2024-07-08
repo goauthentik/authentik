@@ -7,6 +7,8 @@ from psycopg import connect
 
 from authentik.lib.config import CONFIG
 
+QUERY = """SELECT id FROM public.authentik_install_id ORDER BY id LIMIT 1;"""
+
 
 @lru_cache
 def get_install_id() -> str:
@@ -18,7 +20,7 @@ def get_install_id() -> str:
     if settings.TEST:
         return str(uuid4())
     with connection.cursor() as cursor:
-        cursor.execute("SELECT id FROM public.authentik_install_id LIMIT 1;")
+        cursor.execute(QUERY)
         return cursor.fetchone()[0]
 
 
@@ -38,5 +40,5 @@ def get_install_id_raw():
         sslkey=CONFIG.get("postgresql.sslkey"),
     )
     cursor = conn.cursor()
-    cursor.execute("SELECT id FROM public.authentik_install_id LIMIT 1;")
+    cursor.execute(QUERY)
     return cursor.fetchone()[0]

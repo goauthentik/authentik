@@ -7,8 +7,6 @@ on:
       - main
       - next
       - version-*
-    paths-ignore:
-      - website/**
   pull_request:
     branches:
       - main
@@ -52,7 +50,6 @@ jobs:
       fail-fast: false
       matrix:
         psql:
-          - 12-alpine
           - 15-alpine
           - 16-alpine
     steps:
@@ -106,7 +103,6 @@ jobs:
       fail-fast: false
       matrix:
         psql:
-          - 12-alpine
           - 15-alpine
           - 16-alpine
     steps:
@@ -132,7 +128,7 @@ jobs:
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: Create k8s Kind Cluster
-        uses: helm/kind-action@v1.9.0
+        uses: helm/kind-action@v1.10.0
       - name: run integration
         run: |
           poetry run coverage run manage.py test tests/integration
@@ -162,6 +158,8 @@ jobs:
             glob: tests/e2e/test_provider_ldap* tests/e2e/test_source_ldap*
           - name: radius
             glob: tests/e2e/test_provider_radius*
+          - name: scim
+            glob: tests/e2e/test_source_scim*
           - name: flows
             glob: tests/e2e/test_flows*
     steps:
@@ -170,7 +168,7 @@ jobs:
         uses: ./.github/actions/setup
       - name: Setup e2e env (chrome, etc)
         run: |
-          docker-compose -f tests/e2e/docker-compose.yml up -d
+          docker compose -f tests/e2e/docker-compose.yml up -d
       - id: cache-web
         uses: actions/cache@v4
         with:
@@ -216,22 +214,24 @@ jobs:
       # Needed to upload contianer images to ghcr.io
       packages: write
     timeout-minutes: 120
-    if: "github.repository == 'goauthentik/authentik'"
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3.0.0
+        uses: docker/setup-qemu-action@v3.1.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: prepare variables
         uses: ./.github/actions/docker-push-variables
         id: ev
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         with:
           image-name: ghcr.io/goauthentik/dev-server
           image-arch: ${{ matrix.arch }}
       - name: Login to Container Registry
+        if: ${{ steps.ev.outputs.shouldBuild == 'true' }}
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -240,18 +240,18 @@ jobs:
       - name: generate ts client
         run: make gen-client-ts
       - name: Build Docker Image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           secrets: |
             GEOIPUPDATE_ACCOUNT_ID=${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}
             GEOIPUPDATE_LICENSE_KEY=${{ secrets.GEOIPUPDATE_LICENSE_KEY }}
           tags: ${{ steps.ev.outputs.imageTags }}
-          push: true
+          push: ${{ steps.ev.outputs.shouldBuild == 'true' }}
           build-args: |
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=registry,ref=ghcr.io/goauthentik/dev-server:buildcache
+          cache-to: type=registry,ref=ghcr.io/goauthentik/dev-server:buildcache,mode=max
           platforms: linux/${{ matrix.arch }}
   pr-comment:
     needs:
@@ -269,6 +269,8 @@ jobs:
       - name: prepare variables
         uses: ./.github/actions/docker-push-variables
         id: ev
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         with:
           image-name: ghcr.io/goauthentik/dev-server
       - name: Comment on PR

@@ -10,12 +10,17 @@ const CodePasswordSeparator = ";"
 
 var alphaNum = regexp.MustCompile(`^[a-zA-Z0-9]*$`)
 
-// CheckPasswordInlineMFA For protocols that only support username/password, check if the password
-// contains the TOTP code
-func (fe *FlowExecutor) CheckPasswordInlineMFA() {
-	password := fe.Answers[StagePassword]
-	// We already have an authenticator answer
-	if fe.Answers[StageAuthenticatorValidate] != "" {
+// Sets the secret answers for the flow executor for protocols that only support username/password
+// according to used options
+func (fe *FlowExecutor) SetSecrets(password string, mfaCodeBased bool) {
+	if fe.Answers[StageAuthenticatorValidate] != "" || fe.Answers[StagePassword] != "" {
+		return
+	}
+	fe.Answers[StagePassword] = password
+	if !mfaCodeBased {
+		// If code-based MFA is disabled StageAuthenticatorValidate answer is set to password.
+		// This allows flows with a mfa stage only.
+		fe.Answers[StageAuthenticatorValidate] = password
 		return
 	}
 	// password doesn't contain the separator

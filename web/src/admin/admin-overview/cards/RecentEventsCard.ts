@@ -1,8 +1,8 @@
 import { EventGeo, EventUser } from "@goauthentik/admin/events/utils";
-import { getRelativeTime } from "@goauthentik/app/common/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
 import { actionToLabel } from "@goauthentik/common/labels";
+import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-event-info";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/Dropdown";
@@ -27,12 +27,10 @@ export class RecentEventsCard extends Table<Event> {
     @property({ type: Number })
     pageSize = 10;
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Event>> {
+    async apiEndpoint(): Promise<PaginatedResponse<Event>> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsList({
-            ordering: this.order,
-            page: page,
+            ...(await this.defaultEndpointConfig()),
             pageSize: this.pageSize,
-            search: this.search || "",
         });
     }
 

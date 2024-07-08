@@ -23,7 +23,7 @@ export class PropertyMappingLDAPForm extends BasePropertyMappingForm<LDAPPropert
     async send(data: LDAPPropertyMapping): Promise<LDAPPropertyMapping> {
         if (this.instance) {
             return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsLdapUpdate({
-                pmUuid: this.instance.pk || "",
+                pmUuid: this.instance.pk,
                 lDAPPropertyMappingRequest: data,
             });
         } else {
@@ -71,6 +71,7 @@ export class PropertyMappingLDAPForm extends BasePropertyMappingForm<LDAPPropert
                     ${msg("Expression using Python.")}
                     <a
                         target="_blank"
+                        rel="noopener noreferrer"
                         href="${docLink("/docs/property-mappings/expression?utm_source=authentik")}"
                     >
                         ${msg("See documentation for a list of all variables.")}

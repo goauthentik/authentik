@@ -1,9 +1,8 @@
 import "@goauthentik/admin/applications/ApplicationForm";
-import { PFSize } from "@goauthentik/app/elements/Spinner";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
+import { PFSize } from "@goauthentik/common/enums.js";
 import "@goauthentik/components/ak-app-icon";
-import MDApplication from "@goauthentik/docs/core/applications.md";
+import MDApplication from "@goauthentik/docs/applications/index.md";
 import "@goauthentik/elements/Markdown";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
@@ -63,12 +62,9 @@ export class ApplicationListPage extends TablePage<Application> {
     @property()
     order = "name";
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Application>> {
+    async apiEndpoint(): Promise<PaginatedResponse<Application>> {
         return new CoreApi(DEFAULT_CONFIG).coreApplicationsList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
+            ...(await this.defaultEndpointConfig()),
             superuserFullList: true,
         });
     }
@@ -93,12 +89,10 @@ export class ApplicationListPage extends TablePage<Application> {
     }
 
     renderSidebarAfter(): TemplateResult {
-        // Rendering the wizard with .open here, as if we set the attribute in
-        // renderObjectCreate() it'll open two wizards, since that function gets called twice
         return html`<div class="pf-c-sidebar__panel pf-m-width-25">
             <div class="pf-c-card">
                 <div class="pf-c-card__body">
-                    <ak-markdown .md=${MDApplication}></ak-markdown>
+                    <ak-markdown .md=${MDApplication} meta="applications/index.md"></ak-markdown>
                 </div>
             </div>
         </div>`;

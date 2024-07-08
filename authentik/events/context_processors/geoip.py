@@ -45,7 +45,7 @@ class GeoIPContextProcessor(MMDBContextProcessor):
 
     def enrich_context(self, request: HttpRequest) -> dict:
         # Different key `geoip` vs `geo` for legacy reasons
-        return {"geoip": self.city(ClientIPMiddleware.get_client_ip(request))}
+        return {"geoip": self.city_dict(ClientIPMiddleware.get_client_ip(request))}
 
     def city(self, ip_address: str) -> City | None:
         """Wrapper for Reader.city"""

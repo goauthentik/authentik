@@ -1,9 +1,8 @@
-import { EventGeo, EventUser } from "@goauthentik/app/admin/events/utils";
-import { actionToLabel } from "@goauthentik/app/common/labels";
-import { getRelativeTime } from "@goauthentik/app/common/utils";
+import { EventGeo, EventUser } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
-import { uiConfig } from "@goauthentik/common/ui/config";
+import { actionToLabel } from "@goauthentik/common/labels";
+import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-event-info";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/Dropdown";
@@ -13,7 +12,7 @@ import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
+import { PropertyValues, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { Event, EventsApi } from "@goauthentik/api";
@@ -31,34 +30,23 @@ export class ObjectChangelog extends Table<Event> {
     @property()
     targetModelApp?: string;
 
-    private _targetModelName = "";
-
     @property()
-    set targetModelName(value: string) {
-        this._targetModelName = value;
-        this.fetch();
-    }
+    targetModelName = "";
 
-    get targetModelName(): string {
-        return this._targetModelName;
-    }
-
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Event>> {
-        let modelName = this._targetModelName;
+    async apiEndpoint(): Promise<PaginatedResponse<Event>> {
+        let modelName = this.targetModelName;
         let appName = this.targetModelApp;
-        if (this._targetModelName.indexOf(".") !== -1) {
-            const parts = this._targetModelName.split(".", 1);
+        if (this.targetModelName.indexOf(".") !== -1) {
+            const parts = this.targetModelName.split(".", 1);
             appName = parts[0];
             modelName = parts[1];
         }
-        if (this._targetModelName === "") {
+        if (this.targetModelName === "") {
             return Promise.reject();
         }
         return new EventsApi(DEFAULT_CONFIG).eventsEventsList({
+            ...(await this.defaultEndpointConfig()),
             action: "model_",
-            page: page,
-            ordering: this.order,
-            pageSize: (await uiConfig()).pagination.perPage,
             contextModelApp: appName,
             contextModelName: modelName,
             contextModelPk: this.targetModelPk.toString(),
@@ -72,6 +60,12 @@ export class ObjectChangelog extends Table<Event> {
             new TableColumn(msg("Creation Date"), "created"),
             new TableColumn(msg("Client IP"), "client_ip"),
         ];
+    }
+
+    willUpdate(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("targetModelName") && this.targetModelName) {
+            this.fetch();
+        }
     }
 
     row(item: EventWithContext): TemplateResult[] {

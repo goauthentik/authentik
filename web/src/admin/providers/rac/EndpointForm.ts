@@ -1,5 +1,5 @@
-import { first } from "@goauthentik/app/common/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/FormGroup";
@@ -123,11 +123,7 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Property mappings")}
-                ?required=${true}
-                name="propertyMappings"
-            >
+            <ak-form-element-horizontal label=${msg("Property mappings")} name="propertyMappings">
                 <select class="pf-c-form-control" multiple>
                     ${this.propertyMappings?.results.map((mapping) => {
                         let selected = false;

@@ -1,6 +1,6 @@
-import { globalAK } from "@goauthentik/app/common/global";
 import { RequestInfo } from "@goauthentik/common/api/middleware";
 import { EVENT_API_DRAWER_TOGGLE, EVENT_REQUEST_POST } from "@goauthentik/common/constants";
+import { globalAK } from "@goauthentik/common/global";
 import { AKElement } from "@goauthentik/elements/Base";
 
 import { msg } from "@lit/localize";
@@ -104,7 +104,7 @@ export class APIDrawer extends AKElement {
                                 }}
                                 class="pf-c-button pf-m-plain"
                                 type="button"
-                                aria-label="Close"
+                                aria-label=${msg("Close")}
                             >
                                 <i class="fas fa-times" aria-hidden="true"></i>
                             </button>

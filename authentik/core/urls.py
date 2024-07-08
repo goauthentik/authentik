@@ -12,7 +12,7 @@ from authentik.core.api.applications import ApplicationViewSet
 from authentik.core.api.authenticated_sessions import AuthenticatedSessionViewSet
 from authentik.core.api.devices import AdminDeviceViewSet, DeviceViewSet
 from authentik.core.api.groups import GroupViewSet
-from authentik.core.api.propertymappings import PropertyMappingViewSet
+from authentik.core.api.property_mappings import PropertyMappingViewSet
 from authentik.core.api.providers import ProviderViewSet
 from authentik.core.api.sources import SourceViewSet, UserSourceConnectionViewSet
 from authentik.core.api.tokens import TokenViewSet
@@ -20,8 +20,9 @@ from authentik.core.api.transactional_applications import TransactionalApplicati
 from authentik.core.api.users import UserViewSet
 from authentik.core.views import apps
 from authentik.core.views.debug import AccessDeniedView
-from authentik.core.views.interface import FlowInterfaceView, InterfaceView
+from authentik.core.views.interface import InterfaceView
 from authentik.core.views.session import EndSessionView
+from authentik.flows.views.interface import FlowInterfaceView
 from authentik.root.asgi_middleware import SessionMiddleware
 from authentik.root.messages.consumer import MessageConsumer
 from authentik.root.middleware import ChannelsLoggingMiddleware
@@ -53,6 +54,8 @@ urlpatterns = [
     ),
     path(
         "if/flow/<slug:flow_slug>/",
+        # FIXME: move this url to the flows app...also will cause all
+        # of the reverse calls to be adjusted
         ensure_csrf_cookie(FlowInterfaceView.as_view()),
         name="if-flow",
     ),

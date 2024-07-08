@@ -11,11 +11,10 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
 
-from authentik.core.exceptions import PropertyMappingExpressionException
+from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import PermissionDict
 from authentik.providers.oauth2.constants import (
-    SCOPE_AUTHENTIK_API,
     SCOPE_GITHUB_ORG_READ,
     SCOPE_GITHUB_USER,
     SCOPE_GITHUB_USER_EMAIL,
@@ -57,7 +56,6 @@ class UserInfoView(View):
             SCOPE_GITHUB_USER_READ: _("GitHub Compatibility: Access your User Information"),
             SCOPE_GITHUB_USER_EMAIL: _("GitHub Compatibility: Access you Email addresses"),
             SCOPE_GITHUB_ORG_READ: _("GitHub Compatibility: Access your Groups"),
-            SCOPE_AUTHENTIK_API: _("authentik API Access on behalf of your user"),
         }
         for scope in scopes:
             if scope in special_scope_map:
@@ -101,8 +99,8 @@ class UserInfoView(View):
                     value=value,
                 )
                 continue
-            LOGGER.debug("updated scope", scope=scope)
             always_merger.merge(final_claims, value)
+            LOGGER.debug("updated scope", scope=scope)
         return final_claims
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
@@ -121,8 +119,9 @@ class UserInfoView(View):
         """Handle GET Requests for UserInfo"""
         if not self.token:
             return HttpResponseBadRequest()
-        claims = self.get_claims(self.token.provider, self.token)
-        claims["sub"] = self.token.id_token.sub
+        claims = {}
+        claims.setdefault("sub", self.token.id_token.sub)
+        claims.update(self.get_claims(self.token.provider, self.token))
         if self.token.id_token.nonce:
             claims["nonce"] = self.token.id_token.nonce
         response = TokenResponse(claims)

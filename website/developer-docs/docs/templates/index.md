@@ -2,7 +2,7 @@
 title: "Templates"
 ---
 
-In technical documentation, there are document "types" (similar to how there are data types).
+In technical documentation, there are document "types" (similar to how there are data types). We have templates for the different types, to make it super-easy for whomever wants to contribute some documentation!
 
 The most common types are:
 
@@ -14,4 +14,10 @@ The most common types are:
 
 -   [**Reference**](./reference.md): this is typically tables or lists of reference information, such as configuration values, or functions, or most commmonly APIs.
 
-We have templates for the different types, to make it super-easy for whomever wants to contribute some documentation!
+### Add a new integration
+
+To add documentation for a new integration (with support level Community or Vendor), please use the integration templates [`service.md`](https://github.com/goauthentik/authentik/blob/main/website/integrations/template/service.md) from our GitHub repo. You can download the template using the following command:
+
+```shell
+wget https://raw.githubusercontent.com/goauthentik/authentik/main/website/integrations/template/service.md
+```

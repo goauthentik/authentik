@@ -119,36 +119,10 @@ class OAuthAuthorizationParams:
         redirect_uri = query_dict.get("redirect_uri", "")
 
         response_type = query_dict.get("response_type", "")
-        grant_type = None
-        # Determine which flow to use.
-        if response_type in [ResponseTypes.CODE]:
-            grant_type = GrantTypes.AUTHORIZATION_CODE
-        elif response_type in [
-            ResponseTypes.ID_TOKEN,
-            ResponseTypes.ID_TOKEN_TOKEN,
-        ]:
-            grant_type = GrantTypes.IMPLICIT
-        elif response_type in [
-            ResponseTypes.CODE_TOKEN,
-            ResponseTypes.CODE_ID_TOKEN,
-            ResponseTypes.CODE_ID_TOKEN_TOKEN,
-        ]:
-            grant_type = GrantTypes.HYBRID
-
-        # Grant type validation.
-        if not grant_type:
-            LOGGER.warning("Invalid response type", type=response_type)
-            raise AuthorizeError(redirect_uri, "unsupported_response_type", "", state)
 
         # Validate and check the response_mode against the predefined dict
         # Set to Query or Fragment if not defined in request
         response_mode = query_dict.get("response_mode", False)
-
-        if response_mode not in ResponseMode.values:
-            response_mode = ResponseMode.QUERY
-
-            if grant_type in [GrantTypes.IMPLICIT, GrantTypes.HYBRID]:
-                response_mode = ResponseMode.FRAGMENT
 
         max_age = query_dict.get("max_age")
         return OAuthAuthorizationParams(
@@ -156,7 +130,7 @@ class OAuthAuthorizationParams:
             redirect_uri=redirect_uri,
             response_type=response_type,
             response_mode=response_mode,
-            grant_type=grant_type,
+            grant_type="",
             scope=set(query_dict.get("scope", "").split()),
             state=state,
             nonce=query_dict.get("nonce"),
@@ -176,6 +150,7 @@ class OAuthAuthorizationParams:
             LOGGER.warning("Invalid client identifier", client_id=self.client_id)
             raise ClientIdError(client_id=self.client_id)
         self.check_redirect_uri()
+        self.check_grant()
         self.check_scope(github_compat)
         self.check_nonce()
         self.check_code_challenge()
@@ -183,6 +158,34 @@ class OAuthAuthorizationParams:
             raise AuthorizeError(
                 self.redirect_uri, "request_not_supported", self.grant_type, self.state
             )
+
+    def check_grant(self):
+        """Check grant"""
+        # Determine which flow to use.
+        if self.response_type in [ResponseTypes.CODE]:
+            self.grant_type = GrantTypes.AUTHORIZATION_CODE
+        elif self.response_type in [
+            ResponseTypes.ID_TOKEN,
+            ResponseTypes.ID_TOKEN_TOKEN,
+        ]:
+            self.grant_type = GrantTypes.IMPLICIT
+        elif self.response_type in [
+            ResponseTypes.CODE_TOKEN,
+            ResponseTypes.CODE_ID_TOKEN,
+            ResponseTypes.CODE_ID_TOKEN_TOKEN,
+        ]:
+            self.grant_type = GrantTypes.HYBRID
+
+        # Grant type validation.
+        if not self.grant_type:
+            LOGGER.warning("Invalid response type", type=self.response_type)
+            raise AuthorizeError(self.redirect_uri, "unsupported_response_type", "", self.state)
+
+        if self.response_mode not in ResponseMode.values:
+            self.response_mode = ResponseMode.QUERY
+
+            if self.grant_type in [GrantTypes.IMPLICIT, GrantTypes.HYBRID]:
+                self.response_mode = ResponseMode.FRAGMENT
 
     def check_redirect_uri(self):
         """Redirect URI validation."""
@@ -255,9 +258,9 @@ class OAuthAuthorizationParams:
         if SCOPE_OFFLINE_ACCESS in self.scope:
             # https://openid.net/specs/openid-connect-core-1_0.html#OfflineAccess
             if PROMPT_CONSENT not in self.prompt:
-                raise AuthorizeError(
-                    self.redirect_uri, "consent_required", self.grant_type, self.state
-                )
+                # Instead of ignoring the `offline_access` scope when `prompt`
+                # isn't set to `consent`, we set override it ourselves
+                self.prompt.add(PROMPT_CONSENT)
             if self.response_type not in [
                 ResponseTypes.CODE,
                 ResponseTypes.CODE_TOKEN,
