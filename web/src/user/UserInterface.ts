@@ -4,6 +4,7 @@ import {
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
     EVENT_WS_MESSAGE,
 } from "@goauthentik/common/constants";
+import { WithOAuth } from "@goauthentik/common/oauth/interface";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { UIConfig, UserDisplay } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
@@ -282,7 +283,7 @@ class UserInterfacePresentation extends AKElement {
         const onClick = (ev: Event) => {
             ev.stopPropagation();
             this.dispatchEvent(
-                new Event(EVENT_API_DRAWER_TOGGLE, { bubbles: true, composed: true })
+                new Event(EVENT_API_DRAWER_TOGGLE, { bubbles: true, composed: true }),
             );
         };
 
@@ -303,7 +304,7 @@ class UserInterfacePresentation extends AKElement {
         const onClick = (ev: Event) => {
             ev.stopPropagation();
             this.dispatchEvent(
-                new Event(EVENT_NOTIFICATION_DRAWER_TOGGLE, { bubbles: true, composed: true })
+                new Event(EVENT_NOTIFICATION_DRAWER_TOGGLE, { bubbles: true, composed: true }),
             );
         };
 
@@ -384,7 +385,7 @@ class UserInterfacePresentation extends AKElement {
 //
 //
 @customElement("ak-interface-user")
-export class UserInterface extends EnterpriseAwareInterface {
+export class UserInterface extends WithOAuth(EnterpriseAwareInterface, userSettings) {
     @property({ type: Boolean })
     notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
 

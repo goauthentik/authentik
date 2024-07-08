@@ -4,6 +4,7 @@ import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
 } from "@goauthentik/common/constants";
+import { WithOAuth } from "@goauthentik/common/oauth/interface";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { me } from "@goauthentik/common/users";
 import { WebsocketClient } from "@goauthentik/common/ws";
@@ -35,7 +36,7 @@ import { AdminApi, SessionUser, UiThemeEnum, Version } from "@goauthentik/api";
 import "./AdminSidebar";
 
 @customElement("ak-interface-admin")
-export class AdminInterface extends EnterpriseAwareInterface {
+export class AdminInterface extends WithOAuth(EnterpriseAwareInterface, adminSettings) {
     @property({ type: Boolean })
     notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
 

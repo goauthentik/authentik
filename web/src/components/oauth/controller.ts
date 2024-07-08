@@ -11,7 +11,7 @@ export class OAuthLoginController implements ReactiveController {
 
     constructor(
         private host: ReactiveInterfaceHost,
-        private settings: UserManagerSettings
+        private settings: UserManagerSettings,
     ) {
         this.host.addController(this);
     }

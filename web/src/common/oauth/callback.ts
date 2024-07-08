@@ -1,5 +1,5 @@
+import { state } from "@goauthentik/common/oauth/constants";
 import { refreshMe } from "@goauthentik/common/users";
-import { state } from "@goauthentik/components/oauth/constants";
 import { User, UserManager, UserManagerSettings } from "oidc-client-ts";
 
 import { LitElement } from "lit";

@@ -44,7 +44,7 @@ export function brandSetLocale(brand: CurrentBrand) {
             composed: true,
             bubbles: true,
             detail: { locale: brand.defaultLocale },
-        })
+        }),
     );
 }
 
