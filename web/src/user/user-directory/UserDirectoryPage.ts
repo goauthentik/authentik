@@ -15,7 +15,7 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 
 import { CoreApi, UserDirectory } from "@goauthentik/api";
 
-const knownFields = {
+const knownFields: Record<string, string> = {
     avatar: "",
     username: msg("Username"),
     name: msg("Name"),
@@ -88,7 +88,7 @@ export class UserDirectoryPage extends TablePage<UserDirectory> {
             );
     }
 
-    row(item): TemplateResult[] {
+    row(item: UserDirectory): TemplateResult[] {
         if (this.fields === undefined) return [];
         return this.fields
             .filter((field: string) => knownFields.hasOwnProperty(field))
