@@ -15,7 +15,7 @@ def assign_sources(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 
     sources = Source.objects.using(db_alias).all()
     for stage in IdentificationStage.objects.using(db_alias).all():
-        stage.sources.set(sources)
+        stage.sources.using(db_alias).set(sources)
         stage.save()
 
 
