@@ -52,10 +52,14 @@ server {
 
     # all requests to /outpost.goauthentik.io must be accessible without authentication
     location /outpost.goauthentik.io {
-        proxy_pass              http://outpost.company:9000;
-        # ensure the host of this vserver matches your external URL you've configured
-        # in authentik
+        # When using the embedded outpost, use:
+        proxy_pass              http://authentik.company:9000/outpost.goauthentik.io;
+        # For manual outpost deployments:
+        # proxy_pass              http://outpost.company:9000;
+
+        # Note: ensure the Host header matches your external authentik URL:
         proxy_set_header        Host $host;
+
         proxy_set_header        X-Original-URL $scheme://$http_host$request_uri;
         add_header              Set-Cookie $auth_cookie;
         auth_request_set        $auth_cookie $upstream_http_set_cookie;
