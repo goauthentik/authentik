@@ -23,6 +23,7 @@ from authentik.core.models import (
 from authentik.core.sources.flow_manager import SourceFlowManager
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.sources.saml.exceptions import (
+    InvalidEncryption,
     InvalidSignature,
     MismatchedRequestID,
     MissingSAMLResponse,
@@ -96,10 +97,15 @@ class ResponseProcessor:
         encryption_context = xmlsec.EncryptionContext(manager)
 
         encrypted_assertion = self._root.find(f".//{{{NS_SAML_ASSERTION}}}EncryptedAssertion")
+        if not encrypted_assertion:
+            raise InvalidEncryption()
         encrypted_data = xmlsec.tree.find_child(
             encrypted_assertion, "EncryptedData", xmlsec.constants.EncNs
         )
-        decrypted_assertion = encryption_context.decrypt(encrypted_data)
+        try:
+            decrypted_assertion = encryption_context.decrypt(encrypted_data)
+        except (xmlsec.InternalError, xmlsec.VerificationError) as exc:
+            raise InvalidEncryption() from exc
 
         index_of = self._root.index(encrypted_assertion)
         self._root.remove(encrypted_assertion)
@@ -130,7 +136,7 @@ class ResponseProcessor:
             ctx.verify(signature_node)
         except (xmlsec.InternalError, xmlsec.VerificationError) as exc:
             raise InvalidSignature from exc
-        LOGGER.debug("Successfully verified signautre")
+        LOGGER.debug("Successfully verified signature")
 
     def _verify_request_id(self):
         if self._source.allow_idp_initiated:
