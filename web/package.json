@@ -222,7 +222,10 @@
             "command": "lit-localize extract"
         },
         "format": {
-            "command": "prettier --write ."
+            "command": "prettier --write .",
+            "dependencies": [
+                "lint:packagefile"
+            ]
         },
         "format:packages": {
             "dependencies": [
@@ -251,6 +254,9 @@
             "dependencies": [
                 "./packages/sfe:lint:lockfile"
             ]
+        },
+        "lint:packagefile": {
+            "command": "syncpack format -i '    '"
         },
         "lint:precommit": {
             "command": "${NODE_RUNNER} scripts/eslint-precommit.mjs",
