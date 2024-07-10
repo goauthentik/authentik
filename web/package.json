@@ -15,6 +15,7 @@
         "format": "wireit",
         "lint": "wireit",
         "lint:lockfile": "wireit",
+        "lit-analyse": "wireit",
         "postinstall": "bash scripts/patch-spotlight.sh",
         "precommit": "wireit",
         "prettier-check": "wireit",
@@ -261,6 +262,9 @@
         },
         "lint:spelling": {
             "command": "node scripts/check-spelling.mjs"
+        },
+        "lit-analyse": {
+            "command": "lit-analyzer src"
         },
         "precommit": {
             "command": "prettier --write .",
