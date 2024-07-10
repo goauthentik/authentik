@@ -41,6 +41,8 @@ In the Customer portal you can remove members and invite new members to the orga
 
 ## License management
 
+Note that a license is associated with a specific Organization in the customer portal and a specific authentik instance (with a unique Install ID), and not with individual users. A single license is purchased for a specified number of users. Additional users can be added to a license, or additional licenses purchased for the same instance, if more users need to be added later.
+
 ### Buy a license
 
 :::info
@@ -105,12 +107,12 @@ The following events occur when a license expeires and is not renewed within two
 
 License usage is calculated based on total user counts and log-in data data that authentik regularly captures. This data is checked against all valid licenses, and the sum total of all users.
 
--   The **_default user_** count is calculated based on actual users assigned to the organization.
+-   The **_internal user_** count is calculated based on actual users assigned to the organization.
 
 -   The **_external user_** count is calculated based on how many external users were active (i.e. logged in) since the start of the current month.
 
 :::info
-An **internal** user is typically a team member, such as company employees, who gets access to the full Enterprise feature set. An **external** user might be an external consultant or a B2C customer who logged onto your website to shop. These users don't get access to enterprise features.
+An **internal** user is typically a team member, such as company employees, who has access to the full Enterprise feature set. An **external** user might be an external consultant, a volunteer in a charitable site, or a B2C customer who logged onto your website to shop. These users don't get access to Enterprise features.
 :::
 
 ### Upgrade the number of users in a license
