@@ -14,6 +14,7 @@
         "watch": "run-s build-locales esbuild:watch",
         "format": "wireit",
         "lint": "wireit",
+        "lint:lockfile": "wireit",
         "postinstall": "bash scripts/patch-spotlight.sh",
         "precommit": "wireit",
         "prettier-check": "wireit",
