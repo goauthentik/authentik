@@ -180,10 +180,7 @@ REST_FRAMEWORK = {
         "rest_framework.filters.SearchFilter",
     ],
     "DEFAULT_PERMISSION_CLASSES": ("authentik.rbac.permissions.ObjectPermissions",),
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "authentik.api.authentication.TokenAuthentication",
-        "rest_framework.authentication.SessionAuthentication",
-    ),
+    "DEFAULT_AUTHENTICATION_CLASSES": ("authentik.api.authentication.TokenAuthentication",),
     "DEFAULT_RENDERER_CLASSES": [
         "drf_orjson_renderer.renderers.ORJSONRenderer",
     ],

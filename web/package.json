@@ -65,6 +65,7 @@
         "lit": "^3.1.4",
         "md-front-matter": "^1.0.4",
         "mermaid": "^10.9.1",
+        "oidc-client-ts": "^2.4.0",
         "rapidoc": "^9.3.4",
         "showdown": "^2.1.0",
         "style-mod": "^4.1.2",

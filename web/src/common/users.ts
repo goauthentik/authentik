@@ -1,7 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_LOCALE_REQUEST } from "@goauthentik/common/constants";
 
-import { CoreApi, ResponseError, SessionUser } from "@goauthentik/api";
+import { CoreApi, SessionUser } from "@goauthentik/api";
 
 let globalMePromise: Promise<SessionUser> | undefined;
 
@@ -33,7 +33,7 @@ export function me(): Promise<SessionUser> {
                 }
                 return user;
             })
-            .catch((ex: ResponseError) => {
+            .catch(() => {
                 const defaultUser: SessionUser = {
                     user: {
                         pk: -1,
@@ -48,14 +48,6 @@ export function me(): Promise<SessionUser> {
                         systemPermissions: [],
                     },
                 };
-                if (ex.response?.status === 401 || ex.response?.status === 403) {
-                    const relativeUrl = window.location
-                        .toString()
-                        .substring(window.location.origin.length);
-                    window.location.assign(
-                        `/flows/-/default/authentication/?next=${encodeURIComponent(relativeUrl)}`,
-                    );
-                }
                 return defaultUser;
             });
     }

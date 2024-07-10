@@ -4,14 +4,18 @@ import {
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
     EVENT_WS_MESSAGE,
 } from "@goauthentik/common/constants";
+import { WithOAuth } from "@goauthentik/common/oauth/interface";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { UIConfig, UserDisplay } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
 import { WebsocketClient } from "@goauthentik/common/ws";
+import { OAuthLoginController } from "@goauthentik/components/oauth/controller.js";
+import { userSettings } from "@goauthentik/components/oauth/settings";
 import { AKElement } from "@goauthentik/elements/Base";
 import { EnterpriseAwareInterface } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/ak-locale-context";
 import "@goauthentik/elements/buttons/ActionButton";
+import { bound } from "@goauthentik/elements/decorators/bound.js";
 import "@goauthentik/elements/enterprise/EnterpriseStatusBanner";
 import "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/elements/notifications/APIDrawer";
@@ -206,10 +210,7 @@ class UserInterfacePresentation extends AKElement {
                             <!-- -->
                             ${this.renderSettings()}
                             <div class="pf-c-page__header-tools-item">
-                                <a
-                                    href="/flows/-/default/invalidation/"
-                                    class="pf-c-button pf-m-plain"
-                                >
+                                <a href="#/oauth-signout" class="pf-c-button pf-m-plain">
                                     <pf-tooltip position="top" content=${msg("Sign out")}>
                                         <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
                                     </pf-tooltip>
@@ -384,7 +385,7 @@ class UserInterfacePresentation extends AKElement {
 //
 //
 @customElement("ak-interface-user")
-export class UserInterface extends EnterpriseAwareInterface {
+export class UserInterface extends WithOAuth(EnterpriseAwareInterface, userSettings) {
     @property({ type: Boolean })
     notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
 
@@ -399,14 +400,14 @@ export class UserInterface extends EnterpriseAwareInterface {
     @state()
     me?: SessionUser;
 
+    oauthController: OAuthLoginController;
+
     constructor() {
         super();
         this.ws = new WebsocketClient();
         this.fetchConfigurationDetails();
         configureSentry(true);
-        this.toggleNotificationDrawer = this.toggleNotificationDrawer.bind(this);
-        this.toggleApiDrawer = this.toggleApiDrawer.bind(this);
-        this.fetchConfigurationDetails = this.fetchConfigurationDetails.bind(this);
+        this.oauthController = new OAuthLoginController(this, userSettings);
     }
 
     connectedCallback() {
@@ -423,6 +424,7 @@ export class UserInterface extends EnterpriseAwareInterface {
         super.disconnectedCallback();
     }
 
+    @bound
     toggleNotificationDrawer() {
         this.notificationDrawerOpen = !this.notificationDrawerOpen;
         updateURLParams({
@@ -430,6 +432,7 @@ export class UserInterface extends EnterpriseAwareInterface {
         });
     }
 
+    @bound
     toggleApiDrawer() {
         this.apiDrawerOpen = !this.apiDrawerOpen;
         updateURLParams({
@@ -437,6 +440,7 @@ export class UserInterface extends EnterpriseAwareInterface {
         });
     }
 
+    @bound
     fetchConfigurationDetails() {
         me().then((me: SessionUser) => {
             this.me = me;

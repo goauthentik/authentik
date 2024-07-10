@@ -5,6 +5,7 @@ import {
 } from "@goauthentik/common/api/middleware";
 import { EVENT_LOCALE_REQUEST, VERSION } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
+import { TokenMiddleware } from "@goauthentik/common/oauth-middleware.js";
 
 import { Config, Configuration, CoreApi, CurrentBrand, RootApi } from "@goauthentik/api";
 
@@ -73,6 +74,7 @@ export const DEFAULT_CONFIG = new Configuration({
         "sentry-trace": getMetaContent("sentry-trace"),
     },
     middleware: [
+        new TokenMiddleware(),
         new CSRFMiddleware(),
         new EventMiddleware(),
         new LoggingMiddleware(globalAK().brand),

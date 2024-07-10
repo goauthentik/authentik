@@ -1,4 +1,7 @@
 import "@goauthentik/admin/admin-overview/AdminOverviewPage";
+import "@goauthentik/components/oauth/callback";
+import { adminSettings } from "@goauthentik/components/oauth/settings";
+import "@goauthentik/components/oauth/signout";
 import { ID_REGEX, Route, SLUG_REGEX, UUID_REGEX } from "@goauthentik/elements/router/Route";
 
 import { html } from "lit";
@@ -8,6 +11,15 @@ export const ROUTES: Route[] = [
     new Route(new RegExp("^/$")).redirect("/administration/overview"),
     new Route(new RegExp("^#.*")).redirect("/administration/overview"),
     new Route(new RegExp("^/library$")).redirect("/if/user/", true),
+    new Route(new RegExp("^/oauth-callback/(?<rest>.*)$"), async (args) => {
+        return html`<ak-oauth-callback
+            .settings=${adminSettings}
+            params=${args.rest}
+        ></ak-oauth-callback>`;
+    }),
+    new Route(new RegExp("^/oauth-signout$"), async () => {
+        return html`<ak-oauth-signout .settings=${adminSettings}></ak-oauth-signout>`;
+    }),
     // statically imported since this is the default route
     new Route(new RegExp("^/administration/overview$"), async () => {
         return html`<ak-admin-overview></ak-admin-overview>`;
