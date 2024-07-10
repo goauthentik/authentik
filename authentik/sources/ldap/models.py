@@ -104,6 +104,10 @@ class LDAPSource(Source):
     )
 
     sync_users = models.BooleanField(default=True)
+    sync_just_in_time = models.BooleanField(
+        default=True,
+        help_text=_("Sync users into Authentik JIT if they don't yet exist in the database"),
+    )
     sync_users_password = models.BooleanField(
         default=True,
         help_text=_(

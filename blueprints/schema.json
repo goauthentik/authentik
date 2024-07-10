@@ -4590,6 +4590,11 @@
                     "type": "boolean",
                     "title": "Sync users"
                 },
+                "sync_just_in_time": {
+                    "type": "boolean",
+                    "title": "Sync just in time",
+                    "description": "Sync users into Authentik JIT if they don't yet exist in the database"
+                },
                 "sync_users_password": {
                     "type": "boolean",
                     "title": "Sync users password",

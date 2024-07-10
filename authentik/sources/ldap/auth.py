@@ -32,8 +32,20 @@ class LDAPBackend(InbuiltBackend):
         Returns True on success, otherwise False"""
         users = User.objects.filter(**filters)
         if not users.exists():
-            return None
-        user: User = users.first()
+            LOGGER.debug("User doesn't exist", filters=filters)
+            try:
+                username = filters.get("username", "")
+                attributes = filters.get("attributes", {})
+                user: User = User.objects.create(
+                    username=username,
+                    name=username,
+                    password=password,
+                    attributes=attributes,
+                )
+            except Exception:
+                return None
+        else:
+            user: User = users.first()
         if LDAP_DISTINGUISHED_NAME not in user.attributes:
             LOGGER.debug("User doesn't have DN set, assuming not LDAP imported.", user=user)
             return None
@@ -45,6 +57,10 @@ class LDAPBackend(InbuiltBackend):
                 # Password given successfully binds to LDAP, so we save it in our Database
                 LOGGER.debug("Updating user's password in DB", user=user)
                 user.set_password(password, signal=False)
+                user.save()
+            elif source.sync_just_in_time:
+                # Password given successfully binds to LDAP, so we save it in our Database
+                LOGGER.debug("Saving user just in time to DB", user=user)
                 user.save()
             return user
         # Password doesn't match

@@ -8,7 +8,7 @@ from django.test import TestCase
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import User
 from authentik.lib.generators import generate_key
-from authentik.sources.ldap.auth import LDAPBackend
+from authentik.sources.ldap.auth import LDAP_DISTINGUISHED_NAME, LDAPBackend
 from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
 from authentik.sources.ldap.tests.mock_ad import mock_ad_connection
@@ -22,7 +22,7 @@ class LDAPSyncTests(TestCase):
 
     @apply_blueprint("system/sources-ldap.yaml")
     def setUp(self):
-        self.source = LDAPSource.objects.create(
+        self.source: LDAPSource = LDAPSource.objects.create(
             name="ldap",
             slug="ldap",
             base_dn="dc=goauthentik,dc=io",
@@ -53,6 +53,43 @@ class LDAPSyncTests(TestCase):
                 backend.authenticate(None, username="user0_sn", password=LDAP_PASSWORD),
                 user,
             )
+            connection.assert_called_with(
+                connection_kwargs={
+                    "user": "cn=user0,ou=foo,ou=users,dc=goauthentik,dc=io",
+                    "password": LDAP_PASSWORD,
+                }
+            )
+            bind_mock.assert_not_called()
+
+    def test_auth_direct_user_ad_save(self):
+        """Test direct auth"""
+        self.source.property_mappings.set(
+            LDAPPropertyMapping.objects.filter(
+                Q(managed__startswith="goauthentik.io/sources/ldap/default-")
+                | Q(managed__startswith="goauthentik.io/sources/ldap/ms-")
+            )
+        )
+        self.source.sync_just_in_time = True
+        self.source.save()
+
+        raw_conn = mock_ad_connection(LDAP_PASSWORD)
+        bind_mock = Mock(wraps=raw_conn.bind)
+        raw_conn.bind = bind_mock
+        connection = MagicMock(return_value=raw_conn)
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            # user_sync = UserLDAPSynchronizer(self.source)
+            backend = LDAPBackend()
+            self.assertFalse(User.objects.filter(username="user0_sn").exists())
+
+            backend.authenticate(
+                None,
+                username="user0_sn",
+                password=LDAP_PASSWORD,
+                attributes={
+                    LDAP_DISTINGUISHED_NAME: "cn=user0,ou=foo,ou=users,dc=goauthentik,dc=io"
+                },
+            ),
+            self.assertTrue(User.objects.filter(username="user0_sn").exists())
             connection.assert_called_with(
                 connection_kwargs={
                     "user": "cn=user0,ou=foo,ou=users,dc=goauthentik,dc=io",
