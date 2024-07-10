@@ -226,7 +226,7 @@
                 "./packages/sfe:prettier"
             ]
         },
-        "lint:code": {
+        "lint": {
             "command": "eslint . --max-warnings 0 --fix",
             "env": {
                 "NODE_OPTIONS": "--max_old_space_size=65536"
