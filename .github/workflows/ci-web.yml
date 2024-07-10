@@ -28,8 +28,6 @@ jobs:
         include:
           - command: tsc
             project: web
-            extra_setup: |
-              cd sfe/ && npm ci
           - command: lit-analyse
             project: web
             extra_setup: |
