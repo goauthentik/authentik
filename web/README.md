@@ -107,3 +107,8 @@ settings in JSON files, which do not support comments.
     -   `compilerOptions.plugins.ts-lit-plugin.rules.no-incompatible-type-binding: "warn"`: lit-analyzer
         does not support generics well when parsing a subtype of `HTMLElement`. As a result, this threw
         too many errors to be supportable.
+
+### License
+
+This code is licensed under the [MIT License](https://www.tldrlegal.com/license/mit-license).
+[A copy of the license](./LICENSE.txt) is included with this package.

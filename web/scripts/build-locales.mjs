@@ -3,9 +3,16 @@ import fs from "fs";
 import path from "path";
 import process from "process";
 
+/**
+ * Determines if all the Xliff translation source files are present and if the Typescript source
+ * files generated from those sources are up-to-date. If they are not, it runs the locale building
+ * script, intercepting the long spew of "this string is not translated" and replacing it with a
+ * summary of how many strings are missing with respect to the source locale.
+ */
+
 const localizeRules = JSON.parse(fs.readFileSync("./lit-localize.json", "utf-8"));
 
-function compareXlfAndSrc(loc) {
+function translationFileIsUpToDateWithXlf(loc) {
     const xlf = path.join("./xliff", `${loc}.xlf`);
     const src = path.join("./src/locales", `${loc}.ts`);
 
@@ -27,17 +34,14 @@ function compareXlfAndSrc(loc) {
         return false;
     }
 
-    // if the xlf is newer (greater) than src, it's out of date.
-    if (xlfStat.mtimeMs > srcStat.mtimeMs) {
-        return false;
-    }
-    return true;
+    // if the xliff file is older (has a lower build time) than the generated translation file, the
+    // translation file is up-to-date
+    return xlfStat.mtimeMs <= srcStat.mtimeMs;
 }
 
 // For all the expected files, find out if any aren't up-to-date.
-
 const upToDate = localizeRules.targetLocales.reduce(
-    (acc, loc) => acc && compareXlfAndSrc(loc),
+    (acc, loc) => acc && translationFileIsUpToDateWithXlf(loc),
     true,
 );
 
@@ -61,7 +65,9 @@ if (!upToDate) {
         .map((locale) => `Locale '${locale}' has ${counts.get(locale)} missing translations`)
         .join("\n");
 
+    // eslint-disable-next-line no-console
     console.log(`Translation tables rebuilt.\n${report}\n`);
 }
 
+// eslint-disable-next-line no-console
 console.log("Locale ./src is up-to-date");

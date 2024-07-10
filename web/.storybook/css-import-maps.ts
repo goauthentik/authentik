@@ -40,7 +40,6 @@ const rawCssImportMaps = [
     'import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";',
     'import PFGlobal from "@patternfly/patternfly/patternfly-base.css";',
     'import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";',
-    'import PFHint from "@patternfly/patternfly/components/Hint/hint.css";',
     'import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";',
     'import PFLabel from "@patternfly/patternfly/components/Label/label.css";',
     'import PFList from "@patternfly/patternfly/components/List/list.css";',
@@ -58,6 +57,7 @@ const rawCssImportMaps = [
     'import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";',
     'import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";',
     'import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";',
+    'import PFSplit from "@patternfly/patternfly/layouts/Split/split.css";',
     'import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";',
     'import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";',
     'import PFTable from "@patternfly/patternfly/components/Table/table.css";',
@@ -71,8 +71,10 @@ const rawCssImportMaps = [
     'import styles from "./LibraryPageImpl.css";',
 ];
 
-const cssImportMaps = rawCssImportMaps.reduce((acc, line) => (
-{...acc, [line]: line.replace(/\.css/, ".css?inline")}), {});
+const cssImportMaps = rawCssImportMaps.reduce(
+    (acc, line) => ({ ...acc, [line]: line.replace(/\.css/, ".css?inline") }),
+    {},
+);
 
 export { cssImportMaps };
 export default cssImportMaps;

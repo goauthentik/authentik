@@ -4,34 +4,28 @@
     "private": true,
     "license": "MIT",
     "scripts": {
-        "extract-locales": "lit-localize extract",
+        "extract-locales": "wireit",
         "build-locales": "wireit",
-        "build-locales:build": "lit-localize build",
-        "build-locales:repair": "prettier --write ./src/locale-codes.ts",
-        "esbuild:build": "node build.mjs",
-        "esbuild:build-proxy": "node build.mjs --proxy",
+        "build-locales:build": "wireit",
         "esbuild:watch": "node build.mjs --watch",
         "build": "wireit",
-        "build-proxy": "run-s build-locales esbuild:build-proxy",
+        "build-proxy": "wireit",
+        "build:sfe": "wireit",
         "watch": "run-s build-locales esbuild:watch",
-        "lint": "cross-env NODE_OPTIONS='--max_old_space_size=65536' eslint . --max-warnings 0 --fix",
-        "lint:lockfile": "lockfile-lint --path package.json --type npm --allowed-hosts npm --validate-https",
-        "lint:precommit": "bun scripts/eslint-precommit.mjs",
-        "lint:spelling": "node scripts/check-spelling.mjs",
-        "lit-analyse": "lit-analyzer src",
+        "format": "wireit",
+        "lint": "wireit",
         "postinstall": "bash scripts/patch-spotlight.sh",
-        "precommit": "npm-run-all --parallel tsc lit-analyse lint:spelling lint:lockfile --sequential lint:precommit prettier",
-        "prequick": "run-s tsc:execute lit-analyse lint:precommit lint:spelling",
-        "prettier-check": "prettier --check .",
-        "prettier": "prettier --write .",
-        "pseudolocalize": "node scripts/pseudolocalize.mjs",
-        "tsc:execute": "tsc --noEmit -p .",
-        "tsc": "run-s build-locales tsc:execute",
+        "precommit": "wireit",
+        "prettier-check": "wireit",
+        "prettier": "wireit",
+        "pseudolocalize": "wireit",
+        "tsc": "wireit",
         "storybook": "storybook dev -p 6006",
-        "storybook:build": "cross-env NODE_OPTIONS='--max_old_space_size=8192' storybook build",
-        "storybook:build-import-map": "node scripts/build-storybook-import-maps.mjs",
-        "test": "npx wdio run ./wdio.conf.ts --logLevel=warn --autoCompileOpts.tsNodeOpts.project=tsconfig.test.json",
-        "test-view": "npx wdio run ./wdio.conf.ts --autoCompileOpts.tsNodeOpts.project=tsconfig.test.json",
+        "storybook:build": "wireit",
+        "storybook:build-import-map": "wireit",
+        "test": "wireit",
+        "test-headless": "wireit",
+        "test-view": "wireit",
         "test-watch": "npx wdio run ./wdio.conf.ts --autoCompileOpts.tsNodeOpts.project=tsconfig.test.json --watch"
     },
     "dependencies": {
@@ -70,7 +64,6 @@
         "style-mod": "^4.1.2",
         "ts-pattern": "^5.2.0",
         "webcomponent-qr-code": "^1.2.0",
-        "wireit": "^0.14.4",
         "yaml": "^2.4.5"
     },
     "devDependencies": {
@@ -136,6 +129,7 @@
         "turnstile-types": "^1.2.1",
         "typescript": "^5.5.3",
         "vite-tsconfig-paths": "^4.3.2",
+        "wireit": "^0.14.4",
         "wdio-wait-for": "^3.0.11"
     },
     "optionalDependencies": {
@@ -151,14 +145,170 @@
     },
     "wireit": {
         "build": {
-            "command": "node build.mjs",
+            "#comment": [
+                "`npm run build` and `npm run watch` are the most common ",
+                "commands you should be using when working on the front-end ",
+                "The files and output spec here you to use `npm run build --watch` ",
+                "instead of `npm run watch`. The former is more comprehensive, but ",
+                "the latter is faster."
+            ],
+            "command": "${NODE_RUNNER} build.mjs",
+            "files": [
+                "src/**/*.{css,jpg,png,ts,js,json}",
+                "!src/**/*.stories.ts",
+                "!src/**/*.tests.ts",
+                "!src/locales/*.ts",
+                "!src/locale-codes.ts",
+                "icons/**/*"
+            ],
+            "output": [
+                "./dist/admin/**",
+                "./dist/user/**",
+                "./dist/flow/**",
+                "./dist/standalone/api-browser/**",
+                "./dist/standalone/loading/**",
+                "./dist/enterprise/**",
+                "./dist/poly-*.js",
+                "./dist/poly-*.js.map",
+                "./dist/custom.css",
+                "./dist/theme-dark.css",
+                "./dist/patternfly.min.css"
+            ],
             "dependencies": [
                 "build-locales",
                 "./packages/sfe:build"
+            ],
+            "env": {
+                "NODE_RUNNER": {
+                    "external": true,
+                    "default": "node"
+                }
+            }
+        },
+        "build:sfe": {
+            "dependencies": [
+                "./packages/sfe:build"
+            ],
+            "files": [
+                "./packages/sfe/**/*.ts"
             ]
         },
+        "build-proxy": {
+            "command": "node build.mjs --proxy",
+            "dependencies": [
+                "build-locales"
+            ]
+        },
+        "build-locales:build": {
+            "command": "lit-localize build"
+        },
+        "build-locales:repair": {
+            "command": "prettier --write ./src/locale-codes.ts"
+        },
         "build-locales": {
-            "command": "node scripts/build-locales.mjs"
+            "command": "node scripts/build-locales.mjs",
+            "files": [
+                "./xliff/*.xlf"
+            ],
+            "output": [
+                "./src/locales/*.ts",
+                "./src/locale-codes.ts"
+            ]
+        },
+        "extract-locales": {
+            "command": "lit-localize extract"
+        },
+        "format": {
+            "command": "prettier --write ."
+        },
+        "format:packages": {
+            "dependencies": [
+                "./packages/sfe:prettier"
+            ]
+        },
+        "lint:code": {
+            "command": "eslint . --max-warnings 0 --fix",
+            "env": {
+                "NODE_OPTIONS": "--max_old_space_size=65536"
+            }
+        },
+        "lint:components": {
+            "command": "lit-analyzer src"
+        },
+        "lint:types": {
+            "command": "tsc --noEmit -p .",
+            "dependencies": [
+                "build-locales"
+            ]
+        },
+        "lint:lockfile": {
+            "command": "lockfile-lint --path package.json --type npm --allowed-hosts npm --validate-https"
+        },
+        "lint:lockfiles": {
+            "dependencies": [
+                "./packages/sfe:lint:lockfile"
+            ]
+        },
+        "lint:precommit": {
+            "command": "${NODE_RUNNER} scripts/eslint-precommit.mjs",
+            "env": {
+                "NODE_RUNNER": {
+                    "external": true,
+                    "default": "node"
+                }
+            }
+        },
+        "lint:spelling": {
+            "command": "node scripts/check-spelling.mjs"
+        },
+        "precommit": {
+            "command": "prettier --write .",
+            "dependencies": [
+                "lint:types",
+                "lint:components",
+                "lint:spelling",
+                "lint:lockfile",
+                "lint:lockfiles",
+                "lint:precommit",
+                "format:packages"
+            ]
+        },
+        "prettier": {
+            "dependencies": [
+                "format"
+            ]
+        },
+        "prettier-check": {
+            "command": "prettier --check ."
+        },
+        "pseudolocalize": {
+            "command": "node scripts/pseudolocalize.mjs"
+        },
+        "storybook:build": {
+            "command": "storybook build",
+            "env": {
+                "NODE_OPTIONS": "--max_old_space_size=8192"
+            }
+        },
+        "storybook:build-import-map": {
+            "command": "node scripts/build-storybook-import-maps.mjs"
+        },
+        "test": {
+            "command": "wdio run ./wdio.conf.ts --logLevel=warn --autoCompileOpts.tsNodeOpts.project=tsconfig.test.json"
+        },
+        "test-headless": {
+            "command": "wdio run ./wdio.conf.ts --logLevel=warn --autoCompileOpts.tsNodeOpts.project=tsconfig.test.json",
+            "env": {
+                "CI": "true"
+            }
+        },
+        "test-view": {
+            "command": "wdio run ./wdio.conf.ts --autoCompileOpts.tsNodeOpts.project=tsconfig.test.json"
+        },
+        "tsc": {
+            "dependencies": [
+                "lint:types"
+            ]
         }
     },
     "workspaces": [
