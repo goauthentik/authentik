@@ -33,7 +33,7 @@ authentik:
   bootstrap_password: test
 ```
 
-To store it in a secret, use:
+To store the password and token in a secret, use:
 ```
 envFrom:
  - secretRef:
