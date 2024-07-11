@@ -37,6 +37,6 @@ To store it in a secret, use:
 ```
 envFrom:
  - secretRef:
-     name: some-secret
+     name: _some-secret_
 ```
 where some-secret would contain the environment variables as in the documentation.
