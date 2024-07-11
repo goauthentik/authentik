@@ -35,7 +35,7 @@ authentik:
 
 To store it in a secret, use:
 ```
-envFrom
+envFrom:
  - secretRef:
      name: some-secret
 ```
