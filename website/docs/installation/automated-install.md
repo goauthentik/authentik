@@ -39,4 +39,4 @@ envFrom:
  - secretRef:
      name: _some-secret_
 ```
-where some-secret would contain the environment variables as in the documentation.
+where _some-secret_ contains the environment variables as in the documentation above.
