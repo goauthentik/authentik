@@ -137,6 +137,7 @@ module.exports = {
                         "services/gatus/index",
                         "services/glitchtip/index",
                         "services/grafana/index",
+                        "services/observium/index",
                         "services/sentry/index",
                         "services/ubuntu-landscape/index",
                         "services/uptime-kuma/index",
