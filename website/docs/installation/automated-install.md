@@ -26,7 +26,7 @@ Set the email address for the default `akadmin` user.
 
 ## Kubernetes
 
-Set the `akadmin`user password and token:
+In the Helm values, set the `akadmin`user password and token:
 
 ```text
 authentik:
