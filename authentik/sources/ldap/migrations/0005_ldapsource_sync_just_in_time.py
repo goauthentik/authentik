@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
             model_name="ldapsource",
             name="sync_just_in_time",
             field=models.BooleanField(
-                default=True,
+                default=False,
                 help_text=("Sync users into Authentik JIT if they don't yet exist in the database"),
             ),
         )

@@ -31,6 +31,16 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
     def name() -> str:
         return "users"
 
+    def search_users(self, dn: str) -> list[dict]:
+        self._connection.search(
+            # search_base=f"cn={username},{self.base_dn_users}",
+            search_base=dn,
+            search_filter=self._source.user_object_filter,
+            search_scope=SUBTREE,
+            attributes=[ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES],
+        )
+        return self._connection.response
+
     def get_objects(self, **kwargs) -> Generator:
         if not self._source.sync_users:
             self.message("User syncing is disabled for this Source")
@@ -45,7 +55,7 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
 
     def sync(self, page_data: list) -> int:
         """Iterate over all LDAP Users and create authentik_core.User instances"""
-        if not self._source.sync_users:
+        if not self._source.sync_users and not self._source.sync_just_in_time:
             self.message("User syncing is disabled for this Source")
             return -1
         user_count = 0

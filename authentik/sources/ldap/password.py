@@ -12,8 +12,7 @@ from ldap3.core.exceptions import (
 from structlog.stdlib import get_logger
 
 from authentik.core.models import User
-from authentik.sources.ldap.auth import LDAP_DISTINGUISHED_NAME
-from authentik.sources.ldap.models import LDAPSource
+from authentik.sources.ldap.models import LDAP_DISTINGUISHED_NAME, LDAPSource
 
 LOGGER = get_logger()
 

@@ -128,7 +128,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.syncJustInTime, true)}
+                        ?checked=${first(this.instance?.syncJustInTime, false)}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
