@@ -2816,13 +2816,13 @@ dev = ["bumpver", "isort", "mypy", "pylint", "pytest", "yapf"]
 
 [[package]]
 name = "msgraph-sdk"
-version = "1.4.0"
+version = "1.5.2"
 description = "The Microsoft Graph Python SDK"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "msgraph_sdk-1.4.0-py3-none-any.whl", hash = "sha256:24f99082475ea129c3d45e44269bd64a7c6bfef8dda4f8ea692bbc9e47b71b78"},
-    {file = "msgraph_sdk-1.4.0.tar.gz", hash = "sha256:715907272c240e579d7669a690504488e25ae15fec904e2918c49ca328dc4a14"},
+    {file = "msgraph_sdk-1.5.2-py3-none-any.whl", hash = "sha256:e3ee67dbbb5b2233aae291996cb846c0d32017f085a23476ab98198aa513a0dd"},
+    {file = "msgraph_sdk-1.5.2.tar.gz", hash = "sha256:62f2b1e7f8e9438a5a30b1e1761b8c4cbc4dc026a54088c381861aab6f266f92"},
 ]
 
 [package.dependencies]
@@ -2834,7 +2834,7 @@ microsoft-kiota-serialization-form = ">=0.1.0"
 microsoft-kiota-serialization-json = ">=1.0.0,<2.0.0"
 microsoft-kiota-serialization-multipart = ">=0.1.0"
 microsoft-kiota-serialization-text = ">=1.0.0,<2.0.0"
-msgraph-core = ">=1.0.0"
+msgraph_core = ">=1.0.0"
 
 [package.extras]
 dev = ["bumpver", "isort", "mypy", "pylint", "pytest", "yapf"]
@@ -4228,13 +4228,13 @@ websocket-client = ">=1.8.0"
 
 [[package]]
 name = "sentry-sdk"
-version = "2.8.0"
+version = "2.9.0"
 description = "Python client for Sentry (https://sentry.io)"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "sentry_sdk-2.8.0-py2.py3-none-any.whl", hash = "sha256:6051562d2cfa8087bb8b4b8b79dc44690f8a054762a29c07e22588b1f619bfb5"},
-    {file = "sentry_sdk-2.8.0.tar.gz", hash = "sha256:aa4314f877d9cd9add5a0c9ba18e3f27f99f7de835ce36bd150e48a41c7c646f"},
+    {file = "sentry_sdk-2.9.0-py2.py3-none-any.whl", hash = "sha256:0bea5fa8b564cc0d09f2e6f55893e8f70286048b0ffb3a341d5b695d1af0e6ee"},
+    {file = "sentry_sdk-2.9.0.tar.gz", hash = "sha256:4c85bad74df9767976afb3eeddc33e0e153300e887d637775a753a35ef99bee6"},
 ]
 
 [package.dependencies]
