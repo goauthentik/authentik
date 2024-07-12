@@ -1,10 +1,34 @@
+import Collapse from "@site/src/components/Collapse";
+
 # File structure
 
 Blueprints are YAML files, which can use some additional tags to ease blueprint creation.
 
 ## Schema
 
-The blueprint schema is available under `https://goauthentik.io/blueprints/schema.json`. It is also possible to target a specific version's blueprint schema by using `https://version-2023-4.goauthentik.io/blueprints/schema.json`.
+The blueprint schema is available under
+[`https://goauthentik.io/blueprints/schema.json`](https://goauthentik.io/blueprints/schema.json). It
+is also possible to target a specific version's blueprint schema by using
+[`https://version-2023-4.goauthentik.io/blueprints/schema.json`](https://version-2023-4.goauthentik.io/blueprints/schema.json).
+
+<Collapse title="Available Older Blueprint Schemas">
+- [Version 2022-8](https://version-2022-8.goauthentik.io/blueprints/schema.json)
+- [Version 2022-9](https://version-2022-9.goauthentik.io/blueprints/schema.json)
+- [Version 2022-10](https://version-2022-10.goauthentik.io/blueprints/schema.json)
+- [Version 2022-11](https://version-2022-11.goauthentik.io/blueprints/schema.json)
+- [Version 2022-12](https://version-2022-12.goauthentik.io/blueprints/schema.json)
+- [Version 2023-1](https://version-2023-1.goauthentik.io/blueprints/schema.json)
+- [Version 2023-2](https://version-2023-2.goauthentik.io/blueprints/schema.json)
+- [Version 2023-3](https://version-2023-3.goauthentik.io/blueprints/schema.json)
+- [Version 2023-4](https://version-2023-4.goauthentik.io/blueprints/schema.json)
+- [Version 2023-5](https://version-2023-5.goauthentik.io/blueprints/schema.json)
+- [Version 2023-6](https://version-2023-6.goauthentik.io/blueprints/schema.json)
+- [Version 2023-8](https://version-2023-8.goauthentik.io/blueprints/schema.json)
+- [Version 2023-10](https://version-2023-10.goauthentik.io/blueprints/schema.json)
+- [Version 2024-2](https://version-2024-2.goauthentik.io/blueprints/schema.json)
+- [Version 2024-4](https://version-2024-4.goauthentik.io/blueprints/schema.json)
+- [Version 2024-6](https://version-2024-6.goauthentik.io/blueprints/schema.json)
+</Collapse>
 
 To use the schema with Visual Studio code and the YAML extension, add this comment at the top of your blueprint files:
 
