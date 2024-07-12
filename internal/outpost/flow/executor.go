@@ -111,8 +111,7 @@ func (fe *FlowExecutor) ApiClient() *api.APIClient {
 }
 
 type challengeInt interface {
-	GetComponent() string
-	GetType() api.ChallengeChoices
+	GetComponent() StageComponent
 	GetResponseErrors() map[string][]api.ErrorDetail
 }
 
@@ -182,12 +181,11 @@ func (fe *FlowExecutor) getInitialChallenge() (*api.ChallengeTypes, error) {
 		return nil, errors.New("response instance was null")
 	}
 	ch := i.(challengeInt)
-	fe.log.WithField("component", ch.GetComponent()).WithField("type", ch.GetType()).Debug("Got challenge")
-	gcsp.SetTag("authentik.flow.challenge", string(ch.GetType()))
-	gcsp.SetTag("authentik.flow.component", ch.GetComponent())
+	fe.log.WithField("component", ch.GetComponent()).Debug("Got challenge")
+	gcsp.SetTag("authentik.flow.component", string(ch.GetComponent()))
 	gcsp.Finish()
 	FlowTimingGet.With(prometheus.Labels{
-		"stage": ch.GetComponent(),
+		"stage": string(ch.GetComponent()),
 		"flow":  fe.flowSlug,
 	}).Observe(float64(gcsp.EndTime.Sub(gcsp.StartTime)) / float64(time.Second))
 	return challenge, nil
@@ -212,13 +210,12 @@ func (fe *FlowExecutor) solveFlowChallenge(challenge *api.ChallengeTypes, depth 
 		}
 	}
 
-	switch ch.GetType() {
-	case api.CHALLENGECHOICES_REDIRECT:
+	switch ch.GetComponent() {
+	case StageAccessDenied:
+		return false, nil
+	case StageRedirect:
 		return true, nil
-	case api.CHALLENGECHOICES_NATIVE:
-		if ch.GetComponent() == string(StageAccessDenied) {
-			return false, nil
-		}
+	default:
 		solver, ok := fe.solvers[StageComponent(ch.GetComponent())]
 		if !ok {
 			return false, fmt.Errorf("unsupported challenge type %s", ch.GetComponent())
@@ -239,12 +236,11 @@ func (fe *FlowExecutor) solveFlowChallenge(challenge *api.ChallengeTypes, depth 
 		return false, errors.New("response instance was null")
 	}
 	ch = i.(challengeInt)
-	fe.log.WithField("component", ch.GetComponent()).WithField("type", ch.GetType()).Debug("Got response")
-	scsp.SetTag("authentik.flow.challenge", string(ch.GetType()))
-	scsp.SetTag("authentik.flow.component", ch.GetComponent())
+	fe.log.WithField("component", ch.GetComponent()).Debug("Got response")
+	scsp.SetTag("authentik.flow.component", string(ch.GetComponent()))
 	scsp.Finish()
 	FlowTimingPost.With(prometheus.Labels{
-		"stage": ch.GetComponent(),
+		"stage": string(ch.GetComponent()),
 		"flow":  fe.flowSlug,
 	}).Observe(float64(scsp.EndTime.Sub(scsp.StartTime)) / float64(time.Second))
 
