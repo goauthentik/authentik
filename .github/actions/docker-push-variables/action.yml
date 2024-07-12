@@ -29,9 +29,15 @@ outputs:
   imageTags:
     description: "Docker image tags"
     value: ${{ steps.ev.outputs.imageTags }}
+  imageNames:
+    description: "Docker image names"
+    value: ${{ steps.ev.outputs.imageNames }}
   imageMainTag:
     description: "Docker image main tag"
     value: ${{ steps.ev.outputs.imageMainTag }}
+  imageMainName:
+    description: "Docker image main name"
+    value: ${{ steps.ev.outputs.imageMainName }}
 
 runs:
   using: "composite"

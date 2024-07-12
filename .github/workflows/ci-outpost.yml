@@ -71,6 +71,9 @@ jobs:
     permissions:
       # Needed to upload contianer images to ghcr.io
       packages: write
+      # Needed for attestation
+      id-token: write
+      attestations: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -96,6 +99,7 @@ jobs:
       - name: Generate API
         run: make gen-client-go
       - name: Build Docker Image
+        id: push
         uses: docker/build-push-action@v6
         with:
           tags: ${{ steps.ev.outputs.imageTags }}
@@ -107,6 +111,12 @@ jobs:
           context: .
           cache-from: type=registry,ref=ghcr.io/goauthentik/dev-${{ matrix.type }}:buildcache
           cache-to: type=registry,ref=ghcr.io/goauthentik/dev-${{ matrix.type }}:buildcache,mode=max
+      - uses: actions/attest-build-provenance@v1
+        id: attest
+        with:
+          subject-name: ${{ steps.ev.outputs.imageNames }}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: ${{ steps.ev.outputs.shouldBuild == 'true' }}
   build-binary:
     timeout-minutes: 120
     needs:
