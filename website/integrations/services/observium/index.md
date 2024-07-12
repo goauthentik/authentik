@@ -21,98 +21,90 @@ The following placeholders will be used:
 -   `observium.company` is the FQDN of the Observium install.
 -   `authentik.company` is the FQDN of the authentik install.
 
-## Step 1: Create authentik Provider
+This guide assumes you already have a working Observium instance. It is recommended to install it with the install script, following the [instructions](https://docs.observium.org/install_debian/) on Observium's website.
 
-In authentik, under **Providers**, create an **OAuth2/OpenID Provider** with these settings:
+Apache2 comes bundled with Observium, but there is also a third party module, [mod_auth_openidc](https://github.com/OpenIDC/mod_auth_openidc), which is needed for this configuration to work.
+Download the latest [release](https://github.com/OpenIDC/mod_auth_openidc/releases) of the project suitable to your machine.
 
--   Name: Observium
--   Client ID: Copy this for later
--   Client Secret: Copy this for later
--   Redirect URIs/Origins: `https://observium.company/secure/redirect_uri` (This can be any location on the domain that doesn't point to actual content)
--   Signing Key: Select any available signing key
+This guide uses `libapache2-mod-auth-openidc_2.4.15.7-1.bookworm_amd64.deb` as an example.
 
-## Step 2: Create authentik Application
-
-In authentik, under **Applications**, create an Application with these settings:
-
--   Name: Observium
--   Slug: observium
--   Provider: Select `Observium`
-
-## Step 3: Set up Observium
-
-While Observium doesn't support authentication using OIDC natively, it uses Apache2 which has a [3rd party add-on for OIDC authentication](https://github.com/OpenIDC/mod_auth_openidc/).
-
-### Installing mod_auth_openidc
-
-1. Download the latest [release](https://github.com/OpenIDC/mod_auth_openidc/releases) of the project suitable to your machine. This guide will use `libapache2-mod-auth-openidc_2.4.15.7-1.bookworm_amd64.deb` as an example.
-2. Install the package.
+Install the package:
 
 ```bash
 apt install ./libapache2-mod-auth-openidc_2.4.15.7-1.bookworm_amd64.deb
 ```
 
-The installer should automatically enable the Apache2 mod, it is not necessary to do it manually.
+## authentik configuration
 
-### Configuring Apache2
+1. In authentik, under **Providers**, create an **OAuth2/OpenID Provider** with these settings:
 
-Edit the file `/etc/apache2/sites-available/000-default.conf` and add the following lines:
+    - Name: Observium
+    - Client ID: Copy this for later
+    - Client Secret: Copy this for later
+    - Redirect URIs/Origins: `https://observium.company/secure/redirect_uri` (This can be any location on the domain that doesn't point to actual content)
+    - Signing Key: Select any available signing key
 
-```apacheconf
-<VirtualHost *:80>
-    ...
+2. In authentik, under **Applications**, create an Application with these settings:
 
-    OIDCProviderMetadataURL https://authentik.company/application/o/observium/.well-known/openid-configuration
-    OIDCClientID <Client ID>
-    OIDCClientSecret <Client Secret>
-    OIDCRedirectURI https://observium.company/secure/redirect_uri
-    OIDCCryptoPassphrase <Random string for security>
-    OIDCCookieDomain observium.company
-    OIDCXForwardedHeaders X-Forwarded-Host X-Forwarded-Proto
-    OIDCPathScope "openid email profile"
-    OIDCRemoteUserClaim preferred_username ^(.*)$ $1@authentik
+    - Name: Observium
+    - Slug: observium
+    - Provider: Select `Observium`
 
-    <Location />
-     AuthType openid-connect
-     Require valid-user
-    </Location>
+## Observium configuration
 
-    ...
-</VirtualHost>
-```
+1. Edit the file `/etc/apache2/sites-available/000-default.conf` and add the following lines:
 
-Meaning of variables:
+    ```apacheconf
+    <VirtualHost *:80>
+        ...
 
--   `OIDCRedirectURI` is the same URI that is set for the authentik Provider.
--   The `OIDCCryptoPassphrase` directive should be set to a random string, for more information, see [the official documentation](https://github.com/OpenIDC/mod_auth_openidc/blob/9c0909af71eb52283f4d3797e55d1efef64966f2/auth_openidc.conf#L15).
--   `OIDCXForwardedHeaders` is necessary if your instance is behind a reverse proxy. If omitted, the module does not accept information from these headers.
--   `OIDCRemoteUserClaim` tells the module how to construct a username based on your claims. The first argument selects the claim, while the second and third are RegEx search and replace expressions. [More info](https://github.com/OpenIDC/mod_auth_openidc/blob/9c0909af71eb52283f4d3797e55d1efef64966f2/auth_openidc.conf#L794)
+        OIDCProviderMetadataURL https://authentik.company/application/o/observium/.well-known/openid-configuration
+        OIDCClientID <Client ID>
+        OIDCClientSecret <Client Secret>
+        OIDCRedirectURI https://observium.company/secure/redirect_uri
+        OIDCCryptoPassphrase <Random string for security>
+        OIDCCookieDomain observium.company
+        OIDCXForwardedHeaders X-Forwarded-Host X-Forwarded-Proto
+        OIDCPathScope "openid email profile"
+        OIDCRemoteUserClaim preferred_username ^(.*)$ $1@authentik
 
-### Configuring Observium
+        <Location />
+        AuthType openid-connect
+        Require valid-user
+        </Location>
 
-Edit `config.php`. By default it should be at `/opt/observium/config.php`.
+        ...
+    </VirtualHost>
+    ```
 
-Edit the following line:
+    Meaning of variables:
 
-```php
-$config['auth_mechanism'] = "remote";
-```
+    - `OIDCRedirectURI` is the same URI that is set for the authentik Provider.
+    - The `OIDCCryptoPassphrase` directive should be set to a random string, for more information, see [the official documentation](https://github.com/OpenIDC/mod_auth_openidc/blob/9c0909af71eb52283f4d3797e55d1efef64966f2/auth_openidc.conf#L15).
+    - `OIDCXForwardedHeaders` is necessary if your instance is behind a reverse proxy. If omitted, the module does not accept information from these headers.
+    - `OIDCRemoteUserClaim` tells the module how to construct a username based on your claims. The first argument selects the claim, while the second and third are RegEx search and replace expressions. [More info](https://github.com/OpenIDC/mod_auth_openidc/blob/9c0909af71eb52283f4d3797e55d1efef64966f2/auth_openidc.conf#L794)
 
-Add the following lines:
+2. Edit the Observium configuration. By default, it should be located at `/opt/observium/config.php`.
 
-```php
-$config['auth_remote_userlevel'] = 10;
-$config['auth_remote_logout_url'] = "https://authentik.company/application/o/observium/end-session/";
-```
+    Edit the following line:
 
-With this method, you are only able to assign one permission level to all users. Because Observium only allows one kind of authentication mechanism to be selected, it is recommended to set `auth_remote_userlevel` to 10. You can read about all of the user levels [here](https://docs.observium.org/user_levels/).
+    ```php
+    $config['auth_mechanism'] = "remote";
+    ```
 
-### Final step
+    Add the following lines:
 
-Restart the Apache2 service:
+    ```php
+    $config['auth_remote_userlevel'] = 10;
+    $config['auth_remote_logout_url'] = "https://authentik.company/application/o/observium/end-session/";
+    ```
 
-```bash
-service apache2 restart
-```
+    With this method, you can only assign one permission level to all users. Since Observium permits only a single authentication mechanism to be selected, it is recommended to set `auth_remote_userlevel` to 10. You can read about all of the user levels [here](https://docs.observium.org/user_levels/).
 
-Now you should be able to log in to your Observium instance using authentik.
+3. Restart the Apache2 service:
+
+    ```bash
+    service apache2 restart
+    ```
+
+    Now you should be able to log in to your Observium instance using authentik.
