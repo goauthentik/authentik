@@ -21,7 +21,7 @@ The following placeholders will be used:
 -   `observium.company` is the FQDN of the Observium install.
 -   `authentik.company` is the FQDN of the authentik install.
 
-This guide assumes you already have a working Observium instance. It is recommended to install it with the install script, following the [instructions](https://docs.observium.org/install_debian/) on Observium's website.
+This guide assumes you already have a working Observium instance. It is recommended to install it with the install script, following the [instructions](https://docs.observium.org/) on Observium's website.
 
 Apache2 comes bundled with Observium, but there is also a third party module, [mod_auth_openidc](https://github.com/OpenIDC/mod_auth_openidc), which is needed for this configuration to work.
 Download the latest [release](https://github.com/OpenIDC/mod_auth_openidc/releases) of the project suitable for your machine.
