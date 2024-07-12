@@ -10,6 +10,7 @@ from django.core.cache import cache
 from django.core.exceptions import SuspiciousOperation
 from django.http import HttpRequest
 from django.utils.timezone import now
+from lxml import etree  # nosec
 from structlog.stdlib import get_logger
 
 from authentik.core.models import (
@@ -240,7 +241,7 @@ class ResponseProcessor:
             name_id.text,
             delete_none_values(self.get_attributes()),
         )
-        flow_manager.policy_context["saml_response"] = self._root
+        flow_manager.policy_context["saml_response"] = etree.tostring(self._root)
         return flow_manager
 
 

@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2024.6.0
+  version: 2024.6.1
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -36634,6 +36634,7 @@ components:
         href:
           type: string
           readOnly: true
+          nullable: true
         name:
           type: string
           readOnly: true
@@ -39497,6 +39498,9 @@ components:
           allOf:
           - $ref: '#/components/schemas/ServiceConnection'
           readOnly: true
+        refresh_interval_s:
+          type: integer
+          readOnly: true
         token_identifier:
           type: string
           description: Get Token identifier
@@ -39518,6 +39522,7 @@ components:
       - pk
       - providers
       - providers_obj
+      - refresh_interval_s
       - service_connection_obj
       - token_identifier
       - type
