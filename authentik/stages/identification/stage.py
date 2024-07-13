@@ -20,7 +20,6 @@ from authentik.events.utils import sanitize_item
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
-    ChallengeTypes,
     RedirectChallenge,
 )
 from authentik.flows.models import FlowDesignation
@@ -194,7 +193,6 @@ class IdentificationStageView(ChallengeStageView):
         current_stage: IdentificationStage = self.executor.current_stage
         challenge = IdentificationChallenge(
             data={
-                "type": ChallengeTypes.NATIVE.value,
                 "component": "ak-stage-identification",
                 "primary_action": self.get_primary_action(),
                 "user_fields": current_stage.user_fields,

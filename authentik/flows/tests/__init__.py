@@ -8,7 +8,6 @@ from django.urls.base import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.models import User
-from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.models import Flow
 
 
@@ -26,7 +25,6 @@ class FlowTestCase(APITestCase):
         self.assertEqual(response.status_code, 200)
         raw_response = loads(response.content.decode())
         self.assertIsNotNone(raw_response["component"])
-        self.assertIsNotNone(raw_response["type"])
         if flow:
             self.assertIn("flow_info", raw_response)
             self.assertEqual(raw_response["flow_info"]["background"], flow.background_url)
@@ -46,6 +44,4 @@ class FlowTestCase(APITestCase):
 
     def assertStageRedirects(self, response: HttpResponse, to: str) -> dict[str, Any]:
         """Wrapper around assertStageResponse that checks for a redirect"""
-        return self.assertStageResponse(
-            response, component="xak-flow-redirect", to=to, type=ChallengeTypes.REDIRECT.value
-        )
+        return self.assertStageResponse(response, component="xak-flow-redirect", to=to)
