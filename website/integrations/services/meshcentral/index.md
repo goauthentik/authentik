@@ -49,3 +49,5 @@ Edit the `config.json` for your MeshCentral deployment, and add the following co
 Restart the MeshCentral server instance and browse to `https://meshcentral.company`, and you should be greeted with a new button to allow signing in with OIDC:
 
 ![MeshCentral sign-in page with OIDC enabled](meshcentral.png)
+
+>Should you need to enable any advanced OIDC configurations, please see [Using the OpenID Connect Strategy on MeshCentral](https://ylianst.github.io/MeshCentral/meshcentral/openidConnectStrategy/).
