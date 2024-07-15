@@ -2,7 +2,7 @@
 title: Automated install
 ---
 
-To install authentik automatically (skipping the Out-of-box experience), you can use the following environment variables:
+To install authentik automatically (skipping the Out-of-box experience), you can use the following environment variables on the worker container:
 
 ### `AUTHENTIK_BOOTSTRAP_PASSWORD`
 
@@ -23,3 +23,23 @@ Requires authentik 2023.3
 :::
 
 Set the email address for the default `akadmin` user.
+
+## Kubernetes
+
+In the Helm values, set the `akadmin`user password and token:
+
+```text
+authentik:
+  bootstrap_token: test
+  bootstrap_password: test
+```
+
+To store the password and token in a secret, use:
+
+```text
+envFrom:
+ - secretRef:
+     name: _some-secret_
+```
+
+where _some-secret_ contains the environment variables as in the documentation above.

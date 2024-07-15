@@ -214,7 +214,14 @@ export class AdminOverviewPage extends AdminOverviewBase {
 
             return html`<li>
                 ${ex(
-                    () => html`<a href="${url}" class="pf-u-mb-xl" target="_blank">${content}</a>`,
+                    () =>
+                        html`<a
+                            href="${url}"
+                            class="pf-u-mb-xl"
+                            rel="noopener noreferrer"
+                            target="_blank"
+                            >${content}</a
+                        >`,
                     () => html`<a href="${url}" class="pf-u-mb-xl" )>${content}</a>`,
                 )}
             </li>`;
