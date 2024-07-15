@@ -9749,6 +9749,44 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /outposts/radius/{id}/check_access/:
+    post:
+      operationId: outposts_radius_check_access_create
+      description: Check access to a single application by slug
+      parameters:
+      - in: query
+        name: app_slug
+        schema:
+          type: string
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Radius Provider.
+        required: true
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RadiusCheckAccess'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /outposts/service_connections/all/:
     get:
       operationId: outposts_service_connections_all_list
@@ -45227,6 +45265,17 @@ components:
       required:
       - authorization_flow
       - name
+    RadiusCheckAccess:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        attributes:
+          type: string
+        access:
+          $ref: '#/components/schemas/PolicyTestResult'
+      required:
+      - access
+      - attributes
     RadiusOutpostConfig:
       type: object
       description: RadiusProvider Serializer

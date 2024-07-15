@@ -1,12 +1,21 @@
 """RadiusProvider API Views"""
-
+from django.shortcuts import get_object_or_404
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter, extend_schema
+from rest_framework.decorators import action
 from rest_framework.fields import CharField, ListField
 from rest_framework.mixins import ListModelMixin
+from rest_framework.request import Request
+from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import ModelSerializer
+from authentik.core.api.utils import ModelSerializer, PassiveSerializer
+from authentik.core.models import Application
+from authentik.policies.api.exec import PolicyTestResultSerializer
+from authentik.policies.engine import PolicyEngine
+from authentik.policies.types import PolicyResult
 from authentik.providers.radius.models import RadiusProvider
 
 
@@ -70,3 +79,31 @@ class RadiusOutpostConfigViewSet(ListModelMixin, GenericViewSet):
     ordering = ["name"]
     search_fields = ["name"]
     filterset_fields = ["name"]
+
+    class RadiusCheckAccessSerializer(PassiveSerializer):
+        attributes = CharField()
+        access = PolicyTestResultSerializer()
+
+    @extend_schema(
+        request=None,
+        parameters=[OpenApiParameter("app_slug", OpenApiTypes.STR)],
+        responses={
+            200: RadiusCheckAccessSerializer(),
+        },
+    )
+    @action(detail=True, methods=["POST"])
+    def check_access(self, request: Request, *args, **kwargs) -> Response:
+        """Check access to a single application by slug"""
+        application = get_object_or_404(Application, slug=request.query_params["app_slug"])
+        engine = PolicyEngine(application, request.user, request)
+        engine.use_cache = False
+        engine.build()
+        result = engine.result
+        access_response = PolicyTestResultSerializer(PolicyResult(result.passing))
+        response = self.RadiusCheckAccessSerializer(
+            instance={
+                "attributes": "foo",
+                "access": access_response,
+            }
+        )
+        return Response(response.data)
