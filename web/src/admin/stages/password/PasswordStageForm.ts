@@ -1,7 +1,6 @@
 import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-switch-input.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -10,7 +9,6 @@ import "@goauthentik/elements/forms/SearchSelect";
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
     BackendsEnum,
@@ -73,10 +71,10 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
         return html` <span>
                 ${msg("Validate the user's password against the selected backend(s).")}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
-                    value="${ifDefined(this.instance?.name || "")}"
+                    value="${this.instance?.name || ""}"
                     class="pf-c-form-control"
                     required
                 />
@@ -159,7 +157,7 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                     >
                         <input
                             type="number"
-                            value="${first(this.instance?.failedAttemptsBeforeCancel, 5)}"
+                            value="${this.instance?.failedAttemptsBeforeCancel ?? 5}"
                             class="pf-c-form-control"
                             required
                         />
