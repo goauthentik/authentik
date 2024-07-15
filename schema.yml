@@ -9637,40 +9637,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /outposts/ldap/{id}/:
-    get:
-      operationId: outposts_ldap_retrieve
-      description: LDAPProvider Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this LDAP Provider.
-        required: true
-      tags:
-      - outposts
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LDAPOutpostConfig'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
   /outposts/proxy/:
     get:
       operationId: outposts_proxy_list
@@ -9727,40 +9693,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /outposts/proxy/{id}/:
-    get:
-      operationId: outposts_proxy_retrieve
-      description: ProxyProvider Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Proxy Provider.
-        required: true
-      tags:
-      - outposts
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProxyOutpostConfig'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
   /outposts/radius/:
     get:
       operationId: outposts_radius_list
@@ -9804,40 +9736,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PaginatedRadiusOutpostConfigList'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /outposts/radius/{id}/:
-    get:
-      operationId: outposts_radius_retrieve
-      description: RadiusProvider Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Radius Provider.
-        required: true
-      tags:
-      - outposts
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RadiusOutpostConfig'
           description: ''
         '400':
           content:

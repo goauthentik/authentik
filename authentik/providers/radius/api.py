@@ -1,7 +1,8 @@
 """RadiusProvider API Views"""
 
 from rest_framework.fields import CharField, ListField
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
+from rest_framework.mixins import ListModelMixin
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
@@ -61,7 +62,7 @@ class RadiusOutpostConfigSerializer(ModelSerializer):
         ]
 
 
-class RadiusOutpostConfigViewSet(ReadOnlyModelViewSet):
+class RadiusOutpostConfigViewSet(ListModelMixin, GenericViewSet):
     """RadiusProvider Viewset"""
 
     queryset = RadiusProvider.objects.filter(application__isnull=False)
