@@ -2269,11 +2269,11 @@ msgstr "Powiązanie przekierowania"
 
 #: authentik/sources/saml/models.py
 msgid "POST Binding"
-msgstr "POST binding"
+msgstr "Wiązanie POST"
 
 #: authentik/sources/saml/models.py
 msgid "POST Binding with auto-confirmation"
-msgstr "POST Binding z automatycznym potwierdzeniem"
+msgstr "Wiązanie POST z automatycznym potwierdzeniem"
 
 #: authentik/sources/saml/models.py
 msgid "Flow used before authentication."
@@ -3270,7 +3270,7 @@ msgstr "Domyślny czas trwania tokena"
 
 #: authentik/tenants/models.py
 msgid "Default token length"
-msgstr "Domyślny długość tokena"
+msgstr "Domyślna długość tokena"
 
 #: authentik/tenants/models.py
 msgid "Tenant"

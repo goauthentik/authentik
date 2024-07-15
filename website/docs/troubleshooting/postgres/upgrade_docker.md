@@ -6,6 +6,8 @@ title: Upgrade PostgreSQL on Docker Compose
 
 Dump your existing database with `docker compose exec postgresql pg_dump -U authentik -d authentik -cC > upgrade_backup_12.sql`.
 
+Before continuing, ensure the SQL dump file (`upgrade_backup_12.sql`) includes all your database content.
+
 ### Stop your authentik stack
 
 Stop all services with `docker compose down`.
@@ -36,7 +38,7 @@ Add `network_mode: none` to prevent connections being established to the databas
 
 Pull new images and re-create the PostgreSQL container: `docker compose pull && docker compose up --force-recreate -d postgresql`
 
-Apply your backup to the new database: `cat upgrade_backup_12.sql | docker compose exec postgresql psql -U authentik`
+Apply your backup to the new database: `cat upgrade_backup_12.sql | docker compose exec -T postgresql psql -U authentik`
 
 Remove the network configuration setting `network_mode: none` that you added to the Compose file in the previous step.
 

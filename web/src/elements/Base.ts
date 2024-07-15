@@ -77,7 +77,8 @@ export class AKElement extends LitElement {
     }
 
     async getTheme(): Promise<UiThemeEnum> {
-        return rootInterface()?.getTheme() || UiThemeEnum.Automatic;
+        // return rootInterface()?.getTheme() || UiThemeEnum.Automatic;
+        return rootInterface()?.getTheme() || UiThemeEnum.Light;
     }
 
     fixElementStyles() {
@@ -90,12 +91,9 @@ export class AKElement extends LitElement {
     async _initTheme(root: DocumentOrShadowRoot): Promise<void> {
         // Early activate theme based on media query to prevent light flash
         // when dark is preferred
-        this._activateTheme(
-            root,
-            window.matchMedia(QUERY_MEDIA_COLOR_LIGHT).matches
-                ? UiThemeEnum.Light
-                : UiThemeEnum.Dark,
-        );
+        // const pref = window.matchMedia(QUERY_MEDIA_COLOR_LIGHT).matches ? UiThemeEnum.Light : UiThemeEnum.Dark;
+        // this._activateTheme(root, pref);
+        this._activateTheme(root, UiThemeEnum.Light);
         this._applyTheme(root, await this.getTheme());
     }
 

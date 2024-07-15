@@ -9,8 +9,9 @@ entries:
     model: authentik_providers_google_workspace.googleworkspaceprovidermapping
     attrs:
       name: "authentik default Google Workspace Mapping: User"
-      # https://developers.google.com/admin-sdk/directory/reference/rest/v1/users#User
       expression: |
+        # Field reference:
+        # https://developers.google.com/admin-sdk/directory/reference/rest/v1/users#User
         # Google require givenName and familyName to be set
         givenName, familyName = request.user.name, " "
         formatted = request.user.name + " "
@@ -20,23 +21,26 @@ entries:
         if " " in request.user.name:
             givenName, _, familyName = request.user.name.partition(" ")
             formatted = request.user.name
-        return {
+        user = {
             "name": {
                 "fullName": formatted,
                 "familyName": familyName.strip(),
                 "givenName": givenName.strip(),
                 "displayName": formatted,
             },
-            "password": request.user.password,
             "suspended": not request.user.is_active,
         }
+        if not connection:
+            user["password"] = request.user.password
+        return user
   - identifiers:
       managed: goauthentik.io/providers/google_workspace/group
     model: authentik_providers_google_workspace.googleworkspaceprovidermapping
     attrs:
       name: "authentik default Google Workspace Mapping: Group"
-      # https://developers.google.com/admin-sdk/directory/reference/rest/v1/groups#Group
       expression: |
+        # Field reference:
+        # https://developers.google.com/admin-sdk/directory/reference/rest/v1/groups#Group
         return {
             "name": group.name,
         }

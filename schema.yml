@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2024.4.2
+  version: 2024.6.1
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -13080,6 +13080,15 @@ paths:
         name: identifier
         schema:
           type: string
+      - in: query
+        name: identifier_in
+        schema:
+          type: array
+          items:
+            type: string
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
       - in: query
         name: ip
         schema:
@@ -32831,8 +32840,6 @@ components:
       type: object
       description: Challenge when a flow's active stage calls `stage_invalid()`.
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -32853,7 +32860,6 @@ components:
       required:
       - pending_user
       - pending_user_avatar
-      - type
     AlgEnum:
       enum:
       - rsa
@@ -32942,8 +32948,6 @@ components:
       description: Special challenge for apple-native authentication flow, which happens
         on the client.
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -32968,7 +32972,6 @@ components:
       - redirect_uri
       - scope
       - state
-      - type
     Application:
       type: object
       description: Application Serializer
@@ -33239,8 +33242,6 @@ components:
       type: object
       description: Duo Challenge
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -33268,7 +33269,6 @@ components:
       - pending_user
       - pending_user_avatar
       - stage_uuid
-      - type
     AuthenticatorDuoChallengeResponseRequest:
       type: object
       description: Pseudo class for duo response
@@ -33401,8 +33401,6 @@ components:
       type: object
       description: SMS Setup challenge
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -33424,7 +33422,6 @@ components:
       required:
       - pending_user
       - pending_user_avatar
-      - type
     AuthenticatorSMSChallengeResponseRequest:
       type: object
       description: SMS Challenge response, device is set by get_response_instance
@@ -33567,8 +33564,6 @@ components:
       type: object
       description: Static authenticator challenge
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -33592,7 +33587,6 @@ components:
       - codes
       - pending_user
       - pending_user_avatar
-      - type
     AuthenticatorStaticChallengeResponseRequest:
       type: object
       description: Pseudo class for static response
@@ -33691,8 +33685,6 @@ components:
       type: object
       description: TOTP Setup challenge
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -33714,7 +33706,6 @@ components:
       - config_url
       - pending_user
       - pending_user_avatar
-      - type
     AuthenticatorTOTPChallengeResponseRequest:
       type: object
       description: TOTP Challenge response, device is set by get_response_instance
@@ -33921,8 +33912,6 @@ components:
       type: object
       description: Authenticator challenge
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -33951,7 +33940,6 @@ components:
       - device_challenges
       - pending_user
       - pending_user_avatar
-      - type
     AuthenticatorValidationChallengeResponseRequest:
       type: object
       description: Challenge used for Code-based and WebAuthn authenticators
@@ -33977,8 +33965,6 @@ components:
       type: object
       description: WebAuthn Challenge
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -34001,7 +33987,6 @@ components:
       - pending_user
       - pending_user_avatar
       - registration
-      - type
     AuthenticatorWebAuthnChallengeResponseRequest:
       type: object
       description: WebAuthn Challenge response
@@ -34129,8 +34114,6 @@ components:
       type: object
       description: Autosubmit challenge used to send and navigate a POST request
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -34152,7 +34135,6 @@ components:
           type: string
       required:
       - attrs
-      - type
       - url
     BackendsEnum:
       enum:
@@ -34382,8 +34364,6 @@ components:
       type: object
       description: Site public key
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -34408,7 +34388,6 @@ components:
       - pending_user
       - pending_user_avatar
       - site_key
-      - type
     CaptchaChallengeResponseRequest:
       type: object
       description: Validate captcha token
@@ -34639,12 +34618,6 @@ components:
       required:
       - certificate_data
       - name
-    ChallengeChoices:
-      enum:
-      - native
-      - shell
-      - redirect
-      type: string
     ChallengeTypes:
       oneOf:
       - $ref: '#/components/schemas/AccessDeniedChallenge'
@@ -34777,8 +34750,6 @@ components:
       type: object
       description: Challenge info for consent screens
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -34812,7 +34783,6 @@ components:
       - pending_user_avatar
       - permissions
       - token
-      - type
     ConsentChallengeResponseRequest:
       type: object
       description: Consent challenge response, any valid response request is valid
@@ -35261,8 +35231,6 @@ components:
       type: object
       description: Dummy challenge
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -35278,7 +35246,6 @@ components:
           type: string
       required:
       - name
-      - type
     DummyChallengeResponseRequest:
       type: object
       description: Dummy challenge response
@@ -35461,8 +35428,6 @@ components:
       type: object
       description: Email challenge
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -35474,8 +35439,6 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
-      required:
-      - type
     EmailChallengeResponseRequest:
       type: object
       description: |-
@@ -36301,9 +36264,6 @@ components:
         Challenge class when an unhandled error occurs during a stage. Normal users
         are shown an error message, superusers are shown a full stacktrace.
       properties:
-        type:
-          type: string
-          default: native
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -36621,6 +36581,7 @@ components:
         href:
           type: string
           readOnly: true
+          nullable: true
         name:
           type: string
           readOnly: true
@@ -37084,8 +37045,6 @@ components:
       type: object
       description: Identification challenges with all UI elements
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -37127,7 +37086,6 @@ components:
       - password_fields
       - primary_action
       - show_source_labels
-      - type
       - user_fields
     IdentificationChallengeResponseRequest:
       type: object
@@ -39137,8 +39095,6 @@ components:
       type: object
       description: OAuth Device code challenge
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -39150,8 +39106,6 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
-      required:
-      - type
     OAuthDeviceCodeChallengeResponseRequest:
       type: object
       description: Response that includes the user-entered device code
@@ -39168,8 +39122,6 @@ components:
       type: object
       description: Final challenge after user enters their code
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -39181,8 +39133,6 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
-      required:
-      - type
     OAuthDeviceCodeFinishChallengeResponseRequest:
       type: object
       description: Response that device has been authenticated and tab can be closed
@@ -39495,6 +39445,9 @@ components:
           allOf:
           - $ref: '#/components/schemas/ServiceConnection'
           readOnly: true
+        refresh_interval_s:
+          type: integer
+          readOnly: true
         token_identifier:
           type: string
           description: Get Token identifier
@@ -39516,6 +39469,7 @@ components:
       - pk
       - providers
       - providers_obj
+      - refresh_interval_s
       - service_connection_obj
       - token_identifier
       - type
@@ -39554,6 +39508,8 @@ components:
           readOnly: true
         fips_enabled:
           type: boolean
+          nullable: true
+          description: Get FIPS enabled
           readOnly: true
         version_should:
           type: string
@@ -40987,8 +40943,6 @@ components:
       type: object
       description: Password challenge UI fields
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -41009,7 +40963,6 @@ components:
       required:
       - pending_user
       - pending_user_avatar
-      - type
     PasswordChallengeResponseRequest:
       type: object
       description: Password challenge response
@@ -43926,8 +43879,6 @@ components:
       type: object
       description: Challenge shown to the user in identification stage
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -43946,7 +43897,6 @@ components:
       required:
       - client_id
       - slug
-      - type
     PlexAuthenticationChallengeResponseRequest:
       type: object
       description: Pseudo class for plex response
@@ -44415,8 +44365,6 @@ components:
       type: object
       description: Initial challenge being sent, define fields
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -44434,7 +44382,6 @@ components:
             $ref: '#/components/schemas/StagePrompt'
       required:
       - fields
-      - type
     PromptChallengeResponseRequest:
       type: object
       description: |-
@@ -45496,8 +45443,6 @@ components:
       type: object
       description: Challenge type to redirect the client
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -45513,7 +45458,6 @@ components:
           type: string
       required:
       - to
-      - type
     Reputation:
       type: object
       description: Reputation Serializer
@@ -47016,8 +46960,6 @@ components:
       type: object
       description: challenge type to render HTML as-is
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -47033,7 +46975,6 @@ components:
           type: string
       required:
       - body
-      - type
     SignatureAlgorithmEnum:
       enum:
       - http://www.w3.org/2000/09/xmldsig#rsa-sha1
@@ -47497,15 +47438,16 @@ components:
               type: string
             openssl_version:
               type: string
-            openssl_fips_mode:
+            openssl_fips_enabled:
               type: boolean
+              nullable: true
             authentik_version:
               type: string
           required:
           - architecture
           - authentik_version
           - environment
-          - openssl_fips_mode
+          - openssl_fips_enabled
           - openssl_version
           - platform
           - python_version
@@ -48173,8 +48115,6 @@ components:
       type: object
       description: Empty challenge
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -48193,7 +48133,6 @@ components:
       required:
       - pending_user
       - pending_user_avatar
-      - type
     UserLoginChallengeResponseRequest:
       type: object
       description: User login challenge
