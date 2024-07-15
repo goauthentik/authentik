@@ -97,3 +97,9 @@ export class LocaleContext extends LocaleContextBase {
 }
 
 export default LocaleContext;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-locale-context": LocaleContext;
+    }
+}

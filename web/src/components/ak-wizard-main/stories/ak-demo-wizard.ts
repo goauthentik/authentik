@@ -45,3 +45,9 @@ export class ApplicationWizard extends AkWizard<WizardStateUpdate, WizardStep> {
         this.frame.value!.open = false;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-demo-wizard": ApplicationWizard;
+    }
+}

@@ -114,3 +114,9 @@ export class UserObjectPermissionForm extends ModelForm<UserAssignData, number> 
         </form>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-rbac-user-object-permission-form": UserObjectPermissionForm;
+    }
+}

@@ -111,3 +111,9 @@ export class BrandListPage extends TablePage<Brand> {
         `;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-brand-list": BrandListPage;
+    }
+}

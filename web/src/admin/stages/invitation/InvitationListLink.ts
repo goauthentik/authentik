@@ -107,3 +107,9 @@ export class InvitationListLink extends AKElement {
         </dl>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-invitation-list-link": InvitationListLink;
+    }
+}

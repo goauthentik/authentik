@@ -114,3 +114,9 @@ export class ConsentStageForm extends BaseStageForm<ConsentStage> {
             </ak-form-group>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-consent-form": ConsentStageForm;
+    }
+}

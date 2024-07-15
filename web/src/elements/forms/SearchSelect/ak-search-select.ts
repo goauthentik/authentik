@@ -404,3 +404,9 @@ export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
 }
 
 export default SearchSelect;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-search-select": SearchSelect<unknown>;
+    }
+}

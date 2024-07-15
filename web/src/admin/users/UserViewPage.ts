@@ -468,3 +468,9 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
         </ak-tabs>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-view": UserViewPage;
+    }
+}

@@ -92,3 +92,9 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
         return html`${this.statusSummary}`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-admin-status-system": SystemStatusCard;
+    }
+}

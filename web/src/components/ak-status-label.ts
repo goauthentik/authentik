@@ -114,3 +114,9 @@ export class AkStatusLabel extends AKElement {
 }
 
 export default AkStatusLabel;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-status-label": AkStatusLabel;
+    }
+}

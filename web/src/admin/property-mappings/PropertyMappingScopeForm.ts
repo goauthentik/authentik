@@ -92,3 +92,9 @@ export class PropertyMappingScopeForm extends BasePropertyMappingForm<ScopeMappi
             </ak-form-element-horizontal>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-property-mapping-scope-form": PropertyMappingScopeForm;
+    }
+}

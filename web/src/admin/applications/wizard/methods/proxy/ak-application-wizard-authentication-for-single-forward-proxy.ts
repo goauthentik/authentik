@@ -40,3 +40,9 @@ export class AkForwardSingleProxyApplicationWizardPage extends AkTypeProxyApplic
 }
 
 export default AkForwardSingleProxyApplicationWizardPage;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-wizard-authentication-for-single-forward-proxy": AkForwardSingleProxyApplicationWizardPage;
+    }
+}

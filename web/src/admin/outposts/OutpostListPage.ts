@@ -218,3 +218,9 @@ export class OutpostListPage extends TablePage<Outpost> {
         `;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-outpost-list": OutpostListPage;
+    }
+}

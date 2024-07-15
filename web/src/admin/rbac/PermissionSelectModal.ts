@@ -87,3 +87,9 @@ export class PermissionSelectModal extends TableModal<Permission> {
             </footer>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-rbac-permission-select-table": PermissionSelectModal;
+    }
+}

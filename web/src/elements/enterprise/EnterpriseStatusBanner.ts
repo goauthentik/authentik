@@ -41,3 +41,9 @@ export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
         return html``;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-enterprise-status": EnterpriseStatusBanner;
+    }
+}
