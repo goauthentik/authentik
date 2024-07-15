@@ -6,30 +6,30 @@ This repository contains the source code for the authentik Docs Migration Script
 
 ## How to Run
 
-- use branch
-- run the script
-- ?
-- test
-- ?
+-   use branch
+-   run the script
+-   ?
+-   test
+-   ?
 
 ### Prerequisites
 
-- ?
-- git
+-   ?
+-   git
 
 ## What does it do, and how does it work?
 
 The script does the following:
-- migrates all doc files and images from their old file path structure into their new structure
-    - creates new directories (name read from the `migratefile.txt` TO column.)
-    - files moved into new directories
-    - internal links within each file are rewritten to use new location
-    - tbd
 
+-   migrates all doc files and images from their old file path structure into their new structure
+    -   creates new directories (name read from the `migratefile.txt` TO column.)
+    -   files moved into new directories
+    -   internal links within each file are rewritten to use new location
+    -   tbd
 
 ### Setup
 
-- tbd
+-   tbd
 
 ### Run the Script
 
@@ -37,7 +37,7 @@ The script does the following:
 
 ### Commands:
 
-- `docsmg move`
+-   `docsmg move`
 
     Examples:
 
@@ -47,11 +47,11 @@ The script does the following:
 
     `docsmg move testing/testing2 newtesting/newtesting2/puthere >> migratefile`
 
-- `docsmg migrate`
+-   `docsmg migrate`
 
     This will read the the `migratefile.txt`, creates the dirs (gets the names from the `migratefile.txt` file), and then migrates the files.
 
-- `docsmg unmigrate`
+-   `docsmg unmigrate`
 
     This command will undo the most recent move.
 
@@ -68,8 +68,8 @@ Use `-q` flag with `docsmg migrate` to not show the successful lines but will sh
 ### Steps:
 
 1. tbw
-    * sub-tbw
-    * sub-tbq
+    - sub-tbw
+    - sub-tbq
 2. tbw
 3. tbw
 4. tbw
