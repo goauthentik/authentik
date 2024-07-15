@@ -2,7 +2,7 @@
 
 TARGET="./node_modules/@spotlightjs/overlay/dist/index-"[0-9a-f]*.js
 
-if [[ $(grep -L "QX2" "$TARGET" > /dev/null 2&>1) ]]; then
+if [[ $(grep -L "QX2" "$TARGET" > /dev/null 2> /dev/null) ]]; then
     patch --forward -V none --no-backup-if-mismatch -p0 $TARGET <<EOF
 
 TARGET=$(find "./node_modules/@spotlightjs/overlay/dist/" -name "index-[0-9a-f]*.js");

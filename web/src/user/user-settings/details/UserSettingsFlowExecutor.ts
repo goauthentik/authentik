@@ -70,10 +70,7 @@ export class UserSettingsFlowExecutor
             })
             .then((data) => {
                 this.challenge = data;
-                if (this.challenge.responseErrors) {
-                    return false;
-                }
-                return true;
+                return !this.challenge.responseErrors;
             })
             .catch((e: Error | ResponseError) => {
                 this.errorMessage(e);

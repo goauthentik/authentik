@@ -352,10 +352,13 @@ export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
         const onFocus = (ev: FocusEvent) => {
             this.open = true;
             this.renderMenu();
-            if (this.blankable && this.renderedValue === this.emptyOption) {
-                if (ev.target && ev.target instanceof HTMLInputElement) {
-                    ev.target.value = "";
-                }
+            if (
+                this.blankable &&
+                this.renderedValue === this.emptyOption &&
+                ev.target &&
+                ev.target instanceof HTMLInputElement
+            ) {
+                ev.target.value = "";
             }
         };
 
