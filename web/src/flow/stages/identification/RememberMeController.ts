@@ -38,6 +38,7 @@ export class AkRememberMeController implements ReactiveController {
                 localStorage?.removeItem("authentik-remember-me-user");
             }
             localStorage?.setItem("authentik-remember-me-session", this.localSession);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (_e: any) {
             this.username = undefined;
         }
