@@ -19,6 +19,20 @@ const config: StorybookConfig = {
         "@jeysal/storybook-addon-css-user-preferences",
         "storybook-addon-mock",
     ],
+    staticDirs: [
+        {
+            from: "../node_modules/@patternfly/patternfly/patternfly-base.css",
+            to: "@patternfly/patternfly/patternfly-base.css",
+        },
+        {
+            from: "../src/common/styles/authentik.css",
+            to: "@goauthentik/common/styles/authentik.css",
+        },
+        {
+            from: "../src/common/styles/theme-dark.css",
+            to: "@goauthentik/common/styles/theme-dark.css",
+        },
+    ],
     framework: {
         name: "@storybook/web-components-vite",
         options: {},
