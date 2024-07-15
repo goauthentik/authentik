@@ -3,6 +3,7 @@
 from django.test import TestCase
 
 from authentik.core.models import Group, PropertyMapping, Source, User
+from authentik.core.sources.mapper import SourceMapper
 from authentik.lib.generators import generate_id
 
 
@@ -29,8 +30,9 @@ class TestSourcePropertyMappings(TestCase):
 
     def test_base_properties(self):
         source = ProxySource.objects.create(name=generate_id(), slug=generate_id(), enabled=True)
+        mapper = SourceMapper(source)
 
-        user_base_properties = source.get_base_properties(User, username="test1")
+        user_base_properties = mapper.get_base_properties(User, username="test1")
         self.assertEqual(
             user_base_properties,
             {
@@ -40,11 +42,12 @@ class TestSourcePropertyMappings(TestCase):
             },
         )
 
-        group_base_properties = source.get_base_properties(Group)
+        group_base_properties = mapper.get_base_properties(Group)
         self.assertEqual(group_base_properties, {"name": None})
 
     def test_build_properties(self):
         source = ProxySource.objects.create(name=generate_id(), slug=generate_id(), enabled=True)
+        mapper = SourceMapper(source)
 
         source.user_property_mappings.add(
             PropertyMapping.objects.create(
@@ -55,7 +58,7 @@ class TestSourcePropertyMappings(TestCase):
             )
         )
 
-        properties = source.build_object_properties(
+        properties = mapper.build_object_properties(
             object_type=User, user=None, request=None, username="test1", data={"username": "test2"}
         )
 

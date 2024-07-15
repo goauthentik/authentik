@@ -6,9 +6,14 @@ from django.core.exceptions import FieldError
 from django.db.utils import IntegrityError
 from ldap3 import ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES, SUBTREE
 
-from authentik.core.expression.exceptions import SkipObjectException
+from authentik.core.expression.exceptions import (
+    PropertyMappingExpressionException,
+    SkipObjectException,
+)
 from authentik.core.models import User
+from authentik.core.sources.mapper import SourceMapper
 from authentik.events.models import Event, EventAction
+from authentik.lib.sync.outgoing.exceptions import StopSync
 from authentik.sources.ldap.models import LDAP_UNIQUENESS, LDAPSource, flatten
 from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
 from authentik.sources.ldap.sync.vendor.freeipa import FreeIPA
@@ -20,7 +25,8 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
 
     def __init__(self, source: LDAPSource):
         super().__init__(source)
-        self.mapper = self._source.get_mapper(User, ["ldap", "dn"])
+        self.mapper = SourceMapper(source)
+        self.manager = self.mapper.get_manager(User, ["ldap", "dn"])
 
     @staticmethod
     def name() -> str:
@@ -60,9 +66,9 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
             try:
                 defaults = {
                     k: flatten(v)
-                    for k, v in self._source.build_object_properties(
+                    for k, v in self.mapper.build_object_properties(
                         object_type=User,
-                        mapper=self.mapper,
+                        manager=self.manager,
                         user=None,
                         request=None,
                         dn=user_dn,
@@ -75,6 +81,8 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                 ak_user, created = self.update_or_create_attributes(
                     User, {f"attributes__{LDAP_UNIQUENESS}": uniq}, defaults
                 )
+            except PropertyMappingExpressionException as exc:
+                raise StopSync(exc, None, exc.mapping) from exc
             except SkipObjectException:
                 continue
             except (IntegrityError, FieldError, TypeError, AttributeError) as exc:
