@@ -179,3 +179,9 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
             </ak-form-group>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-password-form": PasswordStageForm;
+    }
+}

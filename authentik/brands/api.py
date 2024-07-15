@@ -24,7 +24,7 @@ from authentik.tenants.utils import get_current_tenant
 class FooterLinkSerializer(PassiveSerializer):
     """Links returned in Config API"""
 
-    href = CharField(read_only=True)
+    href = CharField(read_only=True, allow_null=True)
     name = CharField(read_only=True)
 
 

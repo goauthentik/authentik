@@ -140,3 +140,9 @@ export class PromptStageForm extends BaseStageForm<PromptStage> {
             </ak-form-group>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-prompt-form": PromptStageForm;
+    }
+}

@@ -90,3 +90,9 @@ export class TokenCopyButton extends BaseTaskButton {
 }
 
 export default TokenCopyButton;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-token-copy-button": TokenCopyButton;
+    }
+}

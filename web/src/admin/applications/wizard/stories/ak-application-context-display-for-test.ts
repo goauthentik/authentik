@@ -16,3 +16,9 @@ export class ApplicationContextDisplayForTest extends LitElement {
         return html`<div><pre>${JSON.stringify(this.wizard, null, 2)}</pre></div>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-context-display-for-test": ApplicationContextDisplayForTest;
+    }
+}

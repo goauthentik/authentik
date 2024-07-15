@@ -92,3 +92,9 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
             </footer>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-password": PasswordStage;
+    }
+}

@@ -54,3 +54,9 @@ export class AkReverseProxyApplicationWizardPage extends AkTypeProxyApplicationW
 }
 
 export default AkReverseProxyApplicationWizardPage;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-wizard-authentication-for-reverse-proxy": AkReverseProxyApplicationWizardPage;
+    }
+}

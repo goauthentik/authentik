@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "authentik"
-version = "2024.6.0"
+version = "2024.6.1"
 description = ""
 authors = ["authentik Team <hello@goauthentik.io>"]
 
@@ -32,7 +32,7 @@ select = [
     "PL",
 ]
 ignore = [
-    "DJ001" # Avoid using `null=True` on string-based fields,
+    "DJ001", # Avoid using `null=True` on string-based fields,
 ]
 [tool.ruff.lint.pylint]
 max-args = 7
@@ -103,10 +103,11 @@ django-prometheus = "*"
 django-redis = "*"
 django-storages = { extras = ["s3"], version = "*" }
 # See https://github.com/django-tenants/django-tenants/pull/997
-django-tenants = { git = "https://github.com/rissson/django-tenants.git", branch="authentik-fixes" }
+django-tenants = { git = "https://github.com/rissson/django-tenants.git", branch = "authentik-fixes" }
 djangorestframework = "3.14.0"
 djangorestframework-guardian = "*"
 docker = "*"
+drf-orjson-renderer = "*"
 drf-spectacular = "*"
 dumb-init = "*"
 duo-client = "*"

@@ -332,3 +332,9 @@ export class IdentificationStage extends BaseStage<
             </footer>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-identification": IdentificationStage;
+    }
+}

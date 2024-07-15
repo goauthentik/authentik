@@ -86,3 +86,9 @@ export class MemberSelectTable extends TableModal<User> {
             </footer>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-group-member-select-table": MemberSelectTable;
+    }
+}

@@ -18,7 +18,6 @@ from authentik.core.signals import login_failed
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
-    ChallengeTypes,
     WithUserInfoChallenge,
 )
 from authentik.flows.exceptions import StageInvalidException
@@ -139,7 +138,6 @@ class PasswordStageView(ChallengeStageView):
     def get_challenge(self) -> Challenge:
         challenge = PasswordChallenge(
             data={
-                "type": ChallengeTypes.NATIVE.value,
                 "allow_show_password": self.executor.current_stage.allow_show_password,
             }
         )

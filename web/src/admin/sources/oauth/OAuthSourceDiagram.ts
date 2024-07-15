@@ -29,3 +29,9 @@ export class OAuthSourceDiagram extends Diagram {
         this.diagram = graph.join("\n");
     };
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-source-oauth-diagram": OAuthSourceDiagram;
+    }
+}

@@ -212,7 +212,7 @@ class SourceFlowManager:
 
     def _prepare_flow(
         self,
-        flow: Flow,
+        flow: Flow | None,
         connection: UserSourceConnection,
         stages: list[StageView] | None = None,
         **kwargs,
@@ -309,7 +309,9 @@ class SourceFlowManager:
         # When request isn't authenticated we jump straight to auth
         if not self.request.user.is_authenticated:
             return self.handle_auth(connection)
-        # Connection has already been saved
+        if SESSION_KEY_OVERRIDE_FLOW_TOKEN in self.request.session:
+            return self._prepare_flow(None, connection)
+        connection.save()
         Event.new(
             EventAction.SOURCE_LINKED,
             message="Linked Source",

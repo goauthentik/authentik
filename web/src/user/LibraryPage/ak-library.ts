@@ -70,7 +70,6 @@ export class LibraryPage extends AKElement {
             ordering: "name",
             page,
             pageSize: 100,
-            onlyWithLaunchUrl: true,
         });
 
         const applicationListFetch = await coreApi().coreApplicationsList(applicationListParams(1));
@@ -115,5 +114,11 @@ export class LibraryPage extends AKElement {
 
     render() {
         return this.ready ? this.running() : this.loading();
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-library": LibraryPage;
     }
 }

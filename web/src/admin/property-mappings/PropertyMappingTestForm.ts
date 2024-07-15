@@ -8,7 +8,7 @@ import "@goauthentik/elements/forms/SearchSelect";
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
+import { TemplateResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -66,14 +66,11 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
         </ak-form-element-horizontal>`;
     }
 
-    renderExampleButtons(): TemplateResult {
-        const header = html`<p>${msg("Example context data")}</p>`;
-        switch (this.mapping?.metaModelName) {
-            case "authentik_sources_ldap.ldappropertymapping":
-                return html`${header}${this.renderExampleLDAP()}`;
-            default:
-                return html``;
-        }
+    renderExampleButtons() {
+        return this.mapping?.metaModelName === "authentik_sources_ldap.ldappropertymapping"
+            ? html`<p>${msg("Example context data")}</p>
+                  ${this.renderExampleLDAP()}`
+            : nothing;
     }
 
     renderExampleLDAP(): TemplateResult {
@@ -186,5 +183,11 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
                 <p class="pf-c-form__helper-text">${this.renderExampleButtons()}</p>
             </ak-form-element-horizontal>
             ${this.result ? this.renderResult() : html``}`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-property-mapping-test-form": PolicyTestForm;
     }
 }
