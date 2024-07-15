@@ -420,3 +420,9 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
         </div>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-list": UserListPage;
+    }
+}

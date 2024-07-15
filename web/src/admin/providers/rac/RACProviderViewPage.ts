@@ -194,3 +194,9 @@ export class RACProviderViewPage extends AKElement {
             </div>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-rac-view": RACProviderViewPage;
+    }
+}

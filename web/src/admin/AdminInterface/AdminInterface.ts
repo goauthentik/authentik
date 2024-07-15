@@ -158,3 +158,9 @@ export class AdminInterface extends EnterpriseAwareInterface {
         ></ak-locale-context>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-interface-admin": AdminInterface;
+    }
+}

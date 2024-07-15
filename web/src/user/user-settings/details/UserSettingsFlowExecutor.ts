@@ -201,3 +201,9 @@ export class UserSettingsFlowExecutor
         </div>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-settings-flow-executor": UserSettingsFlowExecutor;
+    }
+}

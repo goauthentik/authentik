@@ -217,3 +217,9 @@ export class ApplicationWizardCommitApplication extends BasePanel {
 }
 
 export default ApplicationWizardCommitApplication;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-wizard-commit-application": ApplicationWizardCommitApplication;
+    }
+}

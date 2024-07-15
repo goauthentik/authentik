@@ -121,3 +121,9 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
         `;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-authenticator-duo-device-import-form": DuoDeviceImportForm;
+    }
+}

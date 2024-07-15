@@ -367,3 +367,9 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
             </ak-form-group>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-oauth2-form": OAuth2ProviderFormPage;
+    }
+}

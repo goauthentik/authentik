@@ -20,6 +20,7 @@
         "lint:precommit": "bun scripts/eslint-precommit.mjs",
         "lint:spelling": "node scripts/check-spelling.mjs",
         "lit-analyse": "lit-analyzer src",
+        "lit-analyse:strict": "lit-analyzer src --strict",
         "postinstall": "bash scripts/patch-spotlight.sh",
         "precommit": "npm-run-all --parallel tsc lit-analyse lint:spelling lint:lockfile --sequential lint:precommit prettier",
         "prequick": "run-s tsc:execute lit-analyse lint:precommit lint:spelling",

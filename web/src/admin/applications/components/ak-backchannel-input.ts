@@ -81,3 +81,9 @@ export class AkBackchannelProvidersInput extends AKElement {
         `;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-backchannel-providers-input": AkBackchannelProvidersInput;
+    }
+}

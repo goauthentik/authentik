@@ -53,3 +53,9 @@ export class AkSwitchInput extends AKElement {
 }
 
 export default AkSwitchInput;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-switch-input": AkSwitchInput;
+    }
+}

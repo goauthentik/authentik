@@ -153,3 +153,9 @@ export class StageListPage extends TablePage<Stage> {
         return html`<ak-stage-wizard></ak-stage-wizard> `;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-list": StageListPage;
+    }
+}

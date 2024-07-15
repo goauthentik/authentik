@@ -84,3 +84,9 @@ export class SCIMSourceForm extends BaseSourceForm<SCIMSource> {
         </form>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-source-scim-form": SCIMSourceForm;
+    }
+}
