@@ -5,7 +5,9 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import BaseSerializer
 
+from authentik.policies.exceptions import PolicyException
 from authentik.policies.geoip.countries import COUNTRIES
+from authentik.policies.geoip.exceptions import GeoIPNotFoundException
 from authentik.policies.models import Policy
 from authentik.policies.types import PolicyRequest, PolicyResult
 
@@ -41,8 +43,20 @@ class GeoIPPolicy(Policy):
     def passes(self, request: PolicyRequest) -> PolicyResult:
         """TODO"""
 
-        asn = request.context["asn"]["asn"]
-        country = request.context["geoip"]["country"]
+        # This is not a single get chain because `request.context` can contain `{ "asn": None }`.
+        asn_data = request.context.get("asn")
+        geoip_data = request.context.get("geoip")
+        asn = asn_data.get("asn") if asn_data else None
+        country = geoip_data.get("country") if geoip_data else None
+
+        if not asn:
+            raise PolicyException(
+                GeoIPNotFoundException("GeoIP: client IP not found in ASN database.")
+            )
+        if not country:
+            raise PolicyException(
+                GeoIPNotFoundException("GeoIP: client IP address not found in City database.")
+            )
 
         if self.asn_mode == GeoIPPolicyMode.ALLOW and asn not in self.asn_list:
             message = _("Client IP is not part of an allowed autonomous system.")
