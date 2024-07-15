@@ -177,7 +177,10 @@ export class UserSettingsFlowExecutor
                     `authentik/user/flows: unsupported stage type ${this.challenge.component}`,
                 );
                 return html`
-                    <a href="${globalAK().api.base}if/flow/${this.flowSlug}/" class="pf-c-button pf-m-primary">
+                    <a
+                        href="${globalAK().api.base}if/flow/${this.flowSlug}/"
+                        class="pf-c-button pf-m-primary"
+                    >
                         ${msg("Open settings")}
                     </a>
                 `;

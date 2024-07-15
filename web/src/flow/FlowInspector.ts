@@ -19,7 +19,8 @@ import { FlowInspection, FlowsApi, ResponseError, Stage } from "@goauthentik/api
 
 @customElement("ak-flow-inspector")
 export class FlowInspector extends AKElement {
-    flowSlug: string;
+    @property()
+    flowSlug?: string;
 
     @property({ attribute: false })
     state?: FlowInspection;
@@ -55,7 +56,6 @@ export class FlowInspector extends AKElement {
 
     constructor() {
         super();
-        this.flowSlug = window.location.pathname.split("/")[3];
         window.addEventListener(EVENT_FLOW_ADVANCE, this.advanceHandler as EventListener);
     }
 
@@ -67,7 +67,7 @@ export class FlowInspector extends AKElement {
     advanceHandler = (): void => {
         new FlowsApi(DEFAULT_CONFIG)
             .flowsInspectorGet({
-                flowSlug: this.flowSlug,
+                flowSlug: this.flowSlug || "",
             })
             .then((state) => {
                 this.error = undefined;
