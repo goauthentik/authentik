@@ -161,9 +161,8 @@ export class InputPassword extends AKElement {
                 ${this.renderInput()}
                 ${this.allowShowPassword
                     ? html` <button
-                          class="pf-c-button pf-m-control"
+                          class="pf-c-button pf-m-control ak-stage-password-toggle-visibility"
                           type="button"
-                          class="ak-stage-password-toggle-visibility"
                           aria-label=${msg("Show password")}
                           @click=${(ev: PointerEvent) => this.togglePasswordVisibility(ev)}
                       >
