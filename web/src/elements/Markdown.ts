@@ -78,7 +78,7 @@ export class Markdown extends AKElement {
             const pathName = path.replace(".md", "");
             const link = `docs/${baseName}${pathName}`;
             const url = new URL(link, baseUrl).toString();
-            return `href="${url}" _target="blank"`;
+            return `href="${url}" _target="blank" rel="noopener noreferrer"`;
         });
     }
 

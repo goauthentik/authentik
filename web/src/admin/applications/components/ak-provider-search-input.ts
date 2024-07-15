@@ -15,7 +15,6 @@ const doGroupBy = (items: Provider[]) => groupBy(items, (item) => item.verboseNa
 async function fetch(query?: string) {
     const args: ProvidersAllListRequest = {
         ordering: "name",
-        backchannel: false,
     };
     if (query !== undefined) {
         args.search = query;

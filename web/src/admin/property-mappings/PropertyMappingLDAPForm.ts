@@ -71,6 +71,7 @@ export class PropertyMappingLDAPForm extends BasePropertyMappingForm<LDAPPropert
                     ${msg("Expression using Python.")}
                     <a
                         target="_blank"
+                        rel="noopener noreferrer"
                         href="${docLink("/docs/property-mappings/expression?utm_source=authentik")}"
                     >
                         ${msg("See documentation for a list of all variables.")}

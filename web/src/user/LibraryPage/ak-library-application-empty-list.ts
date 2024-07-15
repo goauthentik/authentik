@@ -54,7 +54,7 @@ export class LibraryPageApplicationEmptyList extends AKElement {
                 >
             </div>
             <div class="pf-c-empty-state__body">
-                <a href="${docLink("/docs/applications")}" target="_blank"
+                <a rel="noopener noreferrer" href="${docLink("/docs/applications")}" target="_blank"
                     >${msg("Refer to documentation")}</a
                 >
             </div>

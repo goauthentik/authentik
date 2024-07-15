@@ -4,7 +4,7 @@ import { html } from "lit";
 
 import "@patternfly/patternfly/components/Login/login.css";
 
-import { CaptchaChallenge, ChallengeChoices, UiThemeEnum } from "@goauthentik/api";
+import { CaptchaChallenge, UiThemeEnum } from "@goauthentik/api";
 
 import "../../../stories/flow-interface";
 import "./CaptchaStage";
@@ -39,7 +39,6 @@ export const ChallengeGoogleReCaptcha: StoryObj = {
     args: {
         theme: "automatic",
         challenge: {
-            type: ChallengeChoices.Native,
             pendingUser: "foo",
             pendingUserAvatar: "https://picsum.photos/64",
             jsUrl: "https://www.google.com/recaptcha/api.js",
@@ -70,7 +69,6 @@ export const ChallengeHCaptcha: StoryObj = {
     args: {
         theme: "automatic",
         challenge: {
-            type: ChallengeChoices.Native,
             pendingUser: "foo",
             pendingUserAvatar: "https://picsum.photos/64",
             jsUrl: "https://js.hcaptcha.com/1/api.js",
@@ -101,7 +99,6 @@ export const ChallengeTurnstile: StoryObj = {
     args: {
         theme: "automatic",
         challenge: {
-            type: ChallengeChoices.Native,
             pendingUser: "foo",
             pendingUserAvatar: "https://picsum.photos/64",
             jsUrl: "https://challenges.cloudflare.com/turnstile/v0/api.js",

@@ -2,7 +2,6 @@ import "@goauthentik/admin/flows/StageBindingForm";
 import "@goauthentik/admin/policies/BoundPoliciesList";
 import "@goauthentik/admin/stages/StageWizard";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
@@ -28,12 +27,10 @@ export class BoundStagesList extends Table<FlowStageBinding> {
     @property()
     target?: string;
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<FlowStageBinding>> {
+    async apiEndpoint(): Promise<PaginatedResponse<FlowStageBinding>> {
         return new FlowsApi(DEFAULT_CONFIG).flowsBindingsList({
+            ...(await this.defaultEndpointConfig()),
             target: this.target || "",
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
         });
     }
 

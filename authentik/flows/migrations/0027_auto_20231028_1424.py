@@ -21,7 +21,9 @@ def set_oobe_flow_authentication(apps: Apps, schema_editor: BaseDatabaseSchemaEd
         pass
 
     if users.exists():
-        Flow.objects.filter(slug="initial-setup").update(authentication="require_superuser")
+        Flow.objects.using(db_alias).filter(slug="initial-setup").update(
+            authentication="require_superuser"
+        )
 
 
 class Migration(migrations.Migration):

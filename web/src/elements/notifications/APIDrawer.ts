@@ -101,7 +101,7 @@ export class APIDrawer extends AKElement {
                                 }}
                                 class="pf-c-button pf-m-plain"
                                 type="button"
-                                aria-label="Close"
+                                aria-label=${msg("Close")}
                             >
                                 <i class="fas fa-times" aria-hidden="true"></i>
                             </button>

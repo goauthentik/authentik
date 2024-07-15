@@ -12,7 +12,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import type { Application } from "@goauthentik/api";
 
-import type { AppGroupEntry, AppGroupList } from "./types";
+import type { AppGroupEntry, AppGroupList } from "./types.js";
 
 type Pair = [string, string];
 
@@ -31,6 +31,13 @@ const LAYOUTS = new Map<string, [string, string]>([
     ],
 ]);
 
+/**
+ * @element ak-library-application-list
+ * @class LibraryPageApplicationList
+ *
+ * Renders the current library list of a User's Applications.
+ *
+ */
 @customElement("ak-library-application-list")
 export class LibraryPageApplicationList extends AKElement {
     static get styles() {

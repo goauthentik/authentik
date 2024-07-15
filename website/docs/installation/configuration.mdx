@@ -56,7 +56,7 @@ To check if your config has been applied correctly, you can run the following co
   <TabItem value="kubernetes" label="Kubernetes">
 
     ```
-    kubectl exec -it deployment/authentik-worker -c authentik -- ak dump_config
+    kubectl exec -it deployment/authentik-worker -c worker -- ak dump_config
     ```
 
   </TabItem>
@@ -234,6 +234,10 @@ Disable the inbuilt update-checker. Defaults to `false`.
 -   `AUTHENTIK_ERROR_REPORTING__SEND_PII`
 
     Whether or not to send personal data, like usernames. Defaults to `false`.
+
+-   `AUTHENTIK_ERROR_REPORTING__EXTRA_ARGS`
+
+    Base64-encoded sentry_init arguments. See [Sentry's documentation](https://docs.sentry.io/platforms/python/configuration/options/) for available options.
 
 ### `AUTHENTIK_EMAIL`
 

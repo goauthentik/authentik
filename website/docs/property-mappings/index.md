@@ -23,6 +23,8 @@ LDAP Property Mappings are used when you define a LDAP Source. These mappings de
 
 These are configured with most common LDAP setups.
 
+You can also configure [custom LDAP property mappings](../sources/ldap/index.md#custom-ldap-property-mapping).
+
 ## Scope Mapping
 
 Scope Mappings are used by the OAuth2 Provider to map information from authentik to OAuth2/OpenID Claims. Values returned by a Scope Mapping are added as custom claims to Access and ID tokens.
