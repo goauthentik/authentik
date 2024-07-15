@@ -6,6 +6,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.db import transaction
 from django.db.utils import IntegrityError, InternalError
 from django.http import HttpRequest, HttpResponse
+from django.utils.functional import SimpleLazyObject
 from django.utils.translation import gettext as _
 from rest_framework.exceptions import ValidationError
 
@@ -118,6 +119,14 @@ class UserWriteStageView(StageView):
                 UserWriteStageView.write_attribute(user, key, value)
             # User has this key already
             elif hasattr(user, key):
+                if isinstance(user, SimpleLazyObject):
+                    user._setup()
+                    user = user._wrapped
+                attr = getattr(type(user), key)
+                if isinstance(attr, property):
+                    if not attr.fset:
+                        self.logger.info("discarding key", key=key)
+                        continue
                 setattr(user, key, value)
             # If none of the cases above matched, we have an attribute that the user doesn't have,
             # has no setter for, is not a nested attributes value and as such is invalid

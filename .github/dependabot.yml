@@ -21,7 +21,10 @@ updates:
     labels:
       - dependencies
   - package-ecosystem: npm
-    directory: "/web"
+    directories:
+      - "/web"
+      - "/tests/wdio"
+      - "/web/sfe"
     schedule:
       interval: daily
       time: "04:00"
@@ -30,7 +33,6 @@ updates:
     open-pull-requests-limit: 10
     commit-message:
       prefix: "web:"
-    # TODO: deduplicate these groups
     groups:
       sentry:
         patterns:
@@ -56,38 +58,6 @@ updates:
         patterns:
           - "@rollup/*"
           - "rollup-*"
-  - package-ecosystem: npm
-    directory: "/tests/wdio"
-    schedule:
-      interval: daily
-      time: "04:00"
-    labels:
-      - dependencies
-    open-pull-requests-limit: 10
-    commit-message:
-      prefix: "web:"
-    # TODO: deduplicate these groups
-    groups:
-      sentry:
-        patterns:
-          - "@sentry/*"
-          - "@spotlightjs/*"
-      babel:
-        patterns:
-          - "@babel/*"
-          - "babel-*"
-      eslint:
-        patterns:
-          - "@typescript-eslint/*"
-          - "eslint"
-          - "eslint-*"
-      storybook:
-        patterns:
-          - "@storybook/*"
-          - "*storybook*"
-      esbuild:
-        patterns:
-          - "@esbuild/*"
       wdio:
         patterns:
           - "@wdio/*"

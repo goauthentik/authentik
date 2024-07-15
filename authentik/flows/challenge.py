@@ -32,14 +32,6 @@ class FlowLayout(models.TextChoices):
     SIDEBAR_RIGHT = "sidebar_right"
 
 
-class ChallengeTypes(Enum):
-    """Currently defined challenge types"""
-
-    NATIVE = "native"
-    SHELL = "shell"
-    REDIRECT = "redirect"
-
-
 class ErrorDetailSerializer(PassiveSerializer):
     """Serializer for rest_framework's error messages"""
 
@@ -60,9 +52,6 @@ class Challenge(PassiveSerializer):
     """Challenge that gets sent to the client based on which stage
     is currently active"""
 
-    type = ChoiceField(
-        choices=[(x.value, x.name) for x in ChallengeTypes],
-    )
     flow_info = ContextualFlowInfo(required=False)
     component = CharField(default="")
 
@@ -96,7 +85,6 @@ class FlowErrorChallenge(Challenge):
     """Challenge class when an unhandled error occurs during a stage. Normal users
     are shown an error message, superusers are shown a full stacktrace."""
 
-    type = CharField(default=ChallengeTypes.NATIVE.value)
     component = CharField(default="ak-stage-flow-error")
 
     request_id = CharField()

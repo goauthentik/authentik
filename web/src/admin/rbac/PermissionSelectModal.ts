@@ -1,5 +1,4 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import { groupBy } from "@goauthentik/common/utils";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
@@ -32,13 +31,8 @@ export class PermissionSelectModal extends TableModal<Permission> {
         return super.styles.concat(PFBanner);
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Permission>> {
-        return new RbacApi(DEFAULT_CONFIG).rbacPermissionsList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
-        });
+    async apiEndpoint(): Promise<PaginatedResponse<Permission>> {
+        return new RbacApi(DEFAULT_CONFIG).rbacPermissionsList(await this.defaultEndpointConfig());
     }
 
     groupBy(items: Permission[]): [string, Permission[]][] {

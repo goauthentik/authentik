@@ -9,9 +9,9 @@ from structlog.stdlib import get_logger
 
 from authentik.core.expression.exceptions import (
     PropertyMappingExpressionException,
-    SkipObjectException,
 )
 from authentik.events.models import Event, EventAction
+from authentik.lib.expression.exceptions import ControlFlowException
 from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.lib.sync.outgoing.exceptions import NotFoundSyncException, StopSync
 from authentik.lib.utils.errors import exception_to_string
@@ -92,7 +92,7 @@ class BaseOutgoingSyncClient[
             eval_kwargs.setdefault("user", None)
             for value in self.mapper.iter_eval(**eval_kwargs):
                 always_merger.merge(raw_final_object, value)
-        except SkipObjectException as exc:
+        except ControlFlowException as exc:
             raise exc from exc
         except PropertyMappingExpressionException as exc:
             # Value error can be raised when assigning invalid data to an attribute
@@ -114,3 +114,8 @@ class BaseOutgoingSyncClient[
         pre-link any users/groups in the remote system with the respective
         object in authentik based on a common identifier"""
         raise NotImplementedError()
+
+    def update_single_attribute(self, connection: TConnection):
+        """Update connection attributes on a connection object, when the connection
+        is manually created"""
+        raise NotImplementedError
