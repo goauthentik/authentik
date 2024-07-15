@@ -3687,33 +3687,17 @@
                     "title": "Execution logging",
                     "description": "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged."
                 },
-                "asn_mode": {
-                    "type": "string",
-                    "enum": [
-                        "allow",
-                        "block"
-                    ],
-                    "title": "Asn mode"
-                },
-                "asn_list": {
+                "asns": {
                     "type": "array",
                     "items": {
                         "type": "integer",
                         "minimum": -2147483648,
                         "maximum": 2147483647,
-                        "title": "Asn list"
+                        "title": "Asns"
                     },
-                    "title": "Asn list"
+                    "title": "Asns"
                 },
-                "country_mode": {
-                    "type": "string",
-                    "enum": [
-                        "allow",
-                        "block"
-                    ],
-                    "title": "Country mode"
-                },
-                "country_list": {
+                "countries": {
                     "type": "array",
                     "items": {
                         "type": "string",
@@ -3968,9 +3952,9 @@
                             "ZM",
                             "ZW"
                         ],
-                        "title": "Country list"
+                        "title": "Countries"
                     },
-                    "title": "Country list"
+                    "title": "Countries"
                 }
             },
             "required": []

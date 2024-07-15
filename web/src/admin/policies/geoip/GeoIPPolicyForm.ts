@@ -21,24 +21,16 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
     }
 
     async send(data: GeoIPPolicy): Promise<GeoIPPolicy> {
-        if (data.asnMode?.toString() === "") {
-            data.asnMode = "block";
-        }
-
-        if (data.asnList?.toString() === "") {
-            data.asnList = [];
+        if (data.asns?.toString() === "") {
+            data.asns = [];
         } else {
-            data.asnList = data.asnList.split(",").map(Number);
+            data.asns = data.asns.split(",").map(Number);
         }
 
-        if (data.countryMode?.toString() === "") {
-            data.countryMode = "block";
-        }
-
-        if (data.countryList?.toString() === "") {
-            data.countryList = [];
+        if (data.countries?.toString() === "") {
+            data.countries = [];
         } else {
-            data.countryList = data.countryList.split(",");
+            data.countries = data.countries.split(",");
         }
 
         if (this.instance) {
@@ -56,7 +48,7 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
     renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
-                    "Ensure the user satisfies requirements of geography or network topology, based on IP address.",
+                    "Ensure the user satisfies requirements of geography or network topology, based on IP address. If any of the configured values match, the policy passes.",
                 )}
             </span>
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
@@ -90,35 +82,10 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${msg("Policy-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal label=${msg("ASN Mode")} name="asnMode">
-                        <ak-search-select
-                            .fetchObjects=${async () => {
-                                return [
-                                    { name: "allow", label: "Allow" },
-                                    { name: "block", label: "Block" },
-                                ];
-                            }}
-                            .renderElement=${(item: TypeCreate): string => {
-                                return item.label;
-                            }}
-                            .value=${(item: TypeCreate | undefined): string | undefined => {
-                                return item.name;
-                            }}
-                            .selected=${(item: TypeCreate): boolean => {
-                                return this.instance?.asnMode === item.name;
-                            }}
-                        >
-                        </ak-search-select>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "Block or only allow connections from IPs from the provided autonomous systems.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${msg("ASN List")} name="asnList">
+                    <ak-form-element-horizontal label=${msg("ASNs")} name="asns">
                         <input
                             type="text"
-                            value="${ifDefined(this.instance?.asnList || "")}"
+                            value="${ifDefined(this.instance?.asns || "")}"
                             class="pf-c-form-control"
                         />
                         <p class="pf-c-form__helper-text">
@@ -127,35 +94,10 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${msg("Country Mode")} name="countryMode">
-                        <ak-search-select
-                            .fetchObjects=${async () => {
-                                return [
-                                    { name: "allow", label: "Allow" },
-                                    { name: "block", label: "Block" },
-                                ];
-                            }}
-                            .renderElement=${(item: App): string => {
-                                return item.label;
-                            }}
-                            .value=${(item: App | undefined): string | undefined => {
-                                return item.name;
-                            }}
-                            .selected=${(item: App): boolean => {
-                                return this.instance?.countryMode === item.name;
-                            }}
-                        >
-                        </ak-search-select>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "Block or only allow connections from IPs from the provided countries.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${msg("Country List")} name="countryList">
+                    <ak-form-element-horizontal label=${msg("Countries")} name="countries">
                         <input
                             type="text"
-                            value="${ifDefined(this.instance?.countryList || "")}"
+                            value="${ifDefined(this.instance?.countries || "")}"
                             class="pf-c-form-control"
                         />
                         <p class="pf-c-form__helper-text">

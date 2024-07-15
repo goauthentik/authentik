@@ -35228,7 +35228,7 @@ components:
       required:
       - x_cord
       - y_cord
-    CountryListEnum:
+    CountriesEnum:
       enum:
       - AF
       - AX
@@ -37210,35 +37210,24 @@ components:
           type: integer
           description: Return objects policy is bound to
           readOnly: true
-        asn_mode:
-          $ref: '#/components/schemas/GeoIPPolicyMode'
-        asn_list:
+        asns:
           type: array
           items:
             type: integer
             maximum: 2147483647
             minimum: -2147483648
-        country_mode:
-          $ref: '#/components/schemas/GeoIPPolicyMode'
-        country_list:
+        countries:
           type: array
           items:
-            $ref: '#/components/schemas/CountryListEnum'
+            $ref: '#/components/schemas/CountriesEnum'
       required:
-      - asn_mode
       - bound_to
       - component
-      - country_mode
       - meta_model_name
       - name
       - pk
       - verbose_name
       - verbose_name_plural
-    GeoIPPolicyMode:
-      enum:
-      - allow
-      - block
-      type: string
     GeoIPPolicyRequest:
       type: object
       description: GeoIP Policy Serializer
@@ -37250,23 +37239,17 @@ components:
           type: boolean
           description: When this option is enabled, all executions of this policy
             will be logged. By default, only execution errors are logged.
-        asn_mode:
-          $ref: '#/components/schemas/GeoIPPolicyMode'
-        asn_list:
+        asns:
           type: array
           items:
             type: integer
             maximum: 2147483647
             minimum: -2147483648
-        country_mode:
-          $ref: '#/components/schemas/GeoIPPolicyMode'
-        country_list:
+        countries:
           type: array
           items:
-            $ref: '#/components/schemas/CountryListEnum'
+            $ref: '#/components/schemas/CountriesEnum'
       required:
-      - asn_mode
-      - country_mode
       - name
     GeoipBindingEnum:
       enum:
@@ -42688,20 +42671,16 @@ components:
           type: boolean
           description: When this option is enabled, all executions of this policy
             will be logged. By default, only execution errors are logged.
-        asn_mode:
-          $ref: '#/components/schemas/GeoIPPolicyMode'
-        asn_list:
+        asns:
           type: array
           items:
             type: integer
             maximum: 2147483647
             minimum: -2147483648
-        country_mode:
-          $ref: '#/components/schemas/GeoIPPolicyMode'
-        country_list:
+        countries:
           type: array
           items:
-            $ref: '#/components/schemas/CountryListEnum'
+            $ref: '#/components/schemas/CountriesEnum'
     PatchedGoogleWorkspaceProviderMappingRequest:
       type: object
       description: GoogleWorkspaceProviderMapping Serializer

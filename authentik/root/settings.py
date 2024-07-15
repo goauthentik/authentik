@@ -153,7 +153,6 @@ SPECTACULAR_SETTINGS = {
         "FlowDesignationEnum": "authentik.flows.models.FlowDesignation",
         "FlowLayoutEnum": "authentik.flows.models.FlowLayout",
         "PolicyEngineMode": "authentik.policies.models.PolicyEngineMode",
-        "GeoIPPolicyMode": "authentik.policies.geoip.models.GeoIPPolicyMode",
         "ProxyMode": "authentik.providers.proxy.models.ProxyMode",
         "PromptTypeEnum": "authentik.stages.prompt.models.FieldTypes",
         "LDAPAPIAccessMode": "authentik.providers.ldap.models.APIAccessMode",

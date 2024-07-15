@@ -13,10 +13,8 @@ class GeoIPPolicySerializer(PolicySerializer):
     class Meta:
         model = GeoIPPolicy
         fields = PolicySerializer.Meta.fields + [
-            "asn_mode",
-            "asn_list",
-            "country_mode",
-            "country_list",
+            "asns",
+            "countries",
         ]
 
 
