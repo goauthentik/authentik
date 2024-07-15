@@ -1,4 +1,5 @@
 """RadiusProvider API Views"""
+
 from django.shortcuts import get_object_or_404
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
@@ -94,6 +95,7 @@ class RadiusOutpostConfigViewSet(ListModelMixin, GenericViewSet):
     @action(detail=True, methods=["POST"])
     def check_access(self, request: Request, *args, **kwargs) -> Response:
         """Check access to a single application by slug"""
+        provider: RadiusProvider = self.get_object()
         application = get_object_or_404(Application, slug=request.query_params["app_slug"])
         engine = PolicyEngine(application, request.user, request)
         engine.use_cache = False
@@ -102,7 +104,7 @@ class RadiusOutpostConfigViewSet(ListModelMixin, GenericViewSet):
         access_response = PolicyTestResultSerializer(PolicyResult(result.passing))
         response = self.RadiusCheckAccessSerializer(
             instance={
-                "attributes": "foo",
+                "attributes": provider.get_attributes(request),
                 "access": access_response,
             }
         )
