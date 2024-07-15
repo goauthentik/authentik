@@ -26,6 +26,7 @@ from authentik.blueprints.models import ManagedModel
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.lib.avatars import get_avatar
+from authentik.lib.expression.exceptions import ControlFlowException
 from authentik.lib.generators import generate_id
 from authentik.lib.models import (
     CreatedUpdatedModel,
@@ -783,6 +784,8 @@ class PropertyMapping(SerializerModel, ManagedModel):
         evaluator = PropertyMappingEvaluator(self, user, request, **kwargs)
         try:
             return evaluator.evaluate(self.expression)
+        except ControlFlowException as exc:
+            raise exc
         except Exception as exc:
             raise PropertyMappingExpressionException(self, exc) from exc
 
