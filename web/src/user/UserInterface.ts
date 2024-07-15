@@ -472,3 +472,10 @@ export class UserInterface extends EnterpriseAwareInterface {
         ></ak-interface-user-presentation>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-interface-user-presentation": UserInterfacePresentation;
+        "ak-interface-user": UserInterface;
+    }
+}

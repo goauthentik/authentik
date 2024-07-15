@@ -48,3 +48,9 @@ export class LDAPSourceConnectivity extends AKElement {
         </ul>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-source-ldap-connectivity": LDAPSourceConnectivity;
+    }
+}

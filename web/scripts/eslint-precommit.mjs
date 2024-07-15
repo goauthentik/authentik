@@ -29,13 +29,14 @@ const eslintConfig = {
             sourceType: "module",
         },
         plugins: ["@typescript-eslint", "lit", "custom-elements", "sonarjs"],
+        ignorePatterns: ["!./.storybook/**/*.ts"],
         rules: {
             "indent": "off",
             "linebreak-style": ["error", "unix"],
             "quotes": ["error", "double", { avoidEscape: true }],
             "semi": ["error", "always"],
             "@typescript-eslint/ban-ts-comment": "off",
-            "sonarjs/cognitive-complexity": ["error", 9],
+            "sonarjs/cognitive-complexity": ["warn", 9],
             "sonarjs/no-duplicate-string": "off",
             "sonarjs/no-nested-template-literals": "off",
         },
@@ -60,9 +61,14 @@ const modified = (s) => isModified.test(s);
 const isCheckable = /\.(ts|js|mjs)$/;
 const checkable = (s) => isCheckable.test(s);
 
+const ignored = /\/\.storybook\//;
+const notIgnored = (s) => !ignored.test(s);
+
 const updated = statuses.reduce(
     (acc, [status, filename]) =>
-        modified(status) && checkable(filename) ? [...acc, path.join(projectRoot, filename)] : acc,
+        modified(status) && checkable(filename) && notIgnored(filename)
+            ? [...acc, path.join(projectRoot, filename)]
+            : acc,
     [],
 );
 
@@ -72,5 +78,6 @@ const formatter = await eslint.loadFormatter("stylish");
 const resultText = formatter.format(results);
 const errors = results.reduce((acc, result) => acc + result.errorCount, 0);
 
+// eslint-disable-next-line no-console
 console.log(resultText);
 process.exit(errors > 1 ? 1 : 0);

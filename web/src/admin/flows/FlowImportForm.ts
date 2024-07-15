@@ -76,3 +76,9 @@ export class FlowImportForm extends Form<Flow> {
             ${this.result ? this.renderResult() : html``}`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-flow-import-form": FlowImportForm;
+    }
+}

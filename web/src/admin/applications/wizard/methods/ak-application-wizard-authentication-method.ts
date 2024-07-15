@@ -26,3 +26,9 @@ export class ApplicationWizardApplicationDetails extends BasePanel {
 }
 
 export default ApplicationWizardApplicationDetails;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-wizard-authentication-method": ApplicationWizardApplicationDetails;
+    }
+}

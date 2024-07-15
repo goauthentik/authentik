@@ -226,3 +226,9 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
             </ak-form-element-horizontal>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-binding-form": StageBindingForm;
+    }
+}

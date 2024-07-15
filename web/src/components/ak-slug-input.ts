@@ -126,3 +126,9 @@ export class AkSlugInput extends HorizontalLightComponent {
 }
 
 export default AkSlugInput;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-slug-input": AkSlugInput;
+    }
+}

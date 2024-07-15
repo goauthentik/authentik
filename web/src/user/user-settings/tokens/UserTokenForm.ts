@@ -79,3 +79,9 @@ export class UserTokenForm extends ModelForm<Token, string> {
                 : html``}`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-token-form": UserTokenForm;
+    }
+}
