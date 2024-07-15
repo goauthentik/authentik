@@ -4,7 +4,7 @@ import { html } from "lit";
 
 import "@patternfly/patternfly/components/Login/login.css";
 
-import { AuthenticatorTOTPChallenge, ChallengeChoices, UiThemeEnum } from "@goauthentik/api";
+import { AuthenticatorTOTPChallenge, UiThemeEnum } from "@goauthentik/api";
 
 import "../../../stories/flow-interface";
 import "./AuthenticatorTOTPStage";
@@ -41,7 +41,6 @@ export const Challenge: StoryObj = {
     args: {
         theme: "automatic",
         challenge: {
-            type: ChallengeChoices.Native,
             pendingUser: "foo",
             pendingUserAvatar: "https://picsum.photos/64",
             configUrl: "",

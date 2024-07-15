@@ -18,7 +18,6 @@ from authentik.core.signals import login_failed
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
-    ChallengeTypes,
     WithUserInfoChallenge,
 )
 from authentik.flows.exceptions import StageInvalidException
@@ -135,11 +134,7 @@ class PasswordStageView(ChallengeStageView):
     response_class = PasswordChallengeResponse
 
     def get_challenge(self) -> Challenge:
-        challenge = PasswordChallenge(
-            data={
-                "type": ChallengeTypes.NATIVE.value,
-            }
-        )
+        challenge = PasswordChallenge(data={})
         recovery_flow = Flow.objects.filter(designation=FlowDesignation.RECOVERY)
         if recovery_flow.exists():
             recover_url = reverse(
