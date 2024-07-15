@@ -54,9 +54,10 @@ runs:
             authentik:
                 outposts:
                     container_image_base: ghcr.io/goauthentik/dev-%(type)s:gh-%(build_hash)s
-            image:
-                repository: ghcr.io/goauthentik/dev-server
-                tag: ${{ inputs.tag }}
+            global:
+                image:
+                    repository: ghcr.io/goauthentik/dev-server
+                    tag: ${{ inputs.tag }}
             ```
 
             For arm64, use these values:
@@ -65,9 +66,10 @@ runs:
             authentik:
                 outposts:
                     container_image_base: ghcr.io/goauthentik/dev-%(type)s:gh-%(build_hash)s
-            image:
-                repository: ghcr.io/goauthentik/dev-server
-                tag: ${{ inputs.tag }}-arm64
+            global:
+                image:
+                    repository: ghcr.io/goauthentik/dev-server
+                    tag: ${{ inputs.tag }}-arm64
             ```
 
             Afterwards, run the upgrade commands from the latest release notes.

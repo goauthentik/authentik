@@ -1,7 +1,7 @@
+import "@goauthentik/admin/rbac/ObjectPermissionsPage";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/forms/ModalForm";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import "@goauthentik/elements/rbac/ObjectPermissionsPage";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";

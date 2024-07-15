@@ -13,7 +13,7 @@ from rest_framework.serializers import ValidationError
 from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction
-from authentik.flows.challenge import ChallengeResponse, ChallengeTypes, WithUserInfoChallenge
+from authentik.flows.challenge import ChallengeResponse, WithUserInfoChallenge
 from authentik.flows.exceptions import FlowSkipStageException, StageInvalidException
 from authentik.flows.models import FlowDesignation, NotConfiguredAction, Stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
@@ -325,7 +325,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
             serializer = SelectableStageSerializer(
                 data={
                     "pk": stage.pk,
-                    "name": stage.friendly_name or stage.name,
+                    "name": getattr(stage, "friendly_name", stage.name),
                     "verbose_name": str(stage._meta.verbose_name)
                     .replace("Setup Stage", "")
                     .strip(),
@@ -337,7 +337,6 @@ class AuthenticatorValidateStageView(ChallengeStageView):
         return AuthenticatorValidationChallenge(
             data={
                 "component": "ak-stage-authenticator-validate",
-                "type": ChallengeTypes.NATIVE.value,
                 "device_challenges": challenges,
                 "configuration_stages": stage_challenges,
             }

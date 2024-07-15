@@ -48,7 +48,7 @@ PAPERLESS_SOCIALACCOUNT_PROVIDERS: >
             "provider_id": "authentik",
             "name": "Authentik",
             "client_id": "< Client ID >",
-            "secret": "< Client Secret >,
+            "secret": "< Client Secret >",
             "settings": {
               "server_url": "https://authentik.company/application/o/paperless/.well-known/openid-configuration"
             }

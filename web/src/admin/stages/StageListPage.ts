@@ -1,3 +1,4 @@
+import "@goauthentik/admin/rbac/ObjectPermissionModal";
 import "@goauthentik/admin/stages/StageWizard";
 import "@goauthentik/admin/stages/authenticator_duo/AuthenticatorDuoStageForm";
 import "@goauthentik/admin/stages/authenticator_duo/DuoDeviceImportForm";
@@ -21,11 +22,9 @@ import "@goauthentik/admin/stages/user_login/UserLoginStageForm";
 import "@goauthentik/admin/stages/user_logout/UserLogoutStageForm";
 import "@goauthentik/admin/stages/user_write/UserWriteStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import "@goauthentik/elements/forms/ProxyForm";
-import "@goauthentik/elements/rbac/ObjectPermissionModal";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
@@ -61,13 +60,8 @@ export class StageListPage extends TablePage<Stage> {
     @property()
     order = "name";
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Stage>> {
-        return new StagesApi(DEFAULT_CONFIG).stagesAllList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
-        });
+    async apiEndpoint(): Promise<PaginatedResponse<Stage>> {
+        return new StagesApi(DEFAULT_CONFIG).stagesAllList(await this.defaultEndpointConfig());
     }
 
     columns(): TableColumn[] {

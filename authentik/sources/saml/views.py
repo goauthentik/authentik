@@ -21,7 +21,6 @@ from authentik.flows.challenge import (
     AutosubmitChallenge,
     Challenge,
     ChallengeResponse,
-    ChallengeTypes,
 )
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import in_memory_stage
@@ -52,7 +51,6 @@ class AutosubmitStageView(ChallengeStageView):
     def get_challenge(self, *args, **kwargs) -> Challenge:
         return AutosubmitChallenge(
             data={
-                "type": ChallengeTypes.NATIVE.value,
                 "component": "ak-stage-autosubmit",
                 "title": self.executor.plan.context.get(PLAN_CONTEXT_TITLE, ""),
                 "url": self.executor.plan.context.get(PLAN_CONTEXT_URL, ""),
