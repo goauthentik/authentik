@@ -49,7 +49,7 @@ The script does the following:
 
 -   `docsmg migrate`
 
-    This will read the the `migratefile.txt`, creates the dirs (gets the names from the `migratefile.txt` file), and then migrates the files.
+    This will read the `migratefile.txt`, creates the dirs (gets the names from the `migratefile.txt` file), and then migrate the files.
 
 -   `docsmg unmigrate`
 
