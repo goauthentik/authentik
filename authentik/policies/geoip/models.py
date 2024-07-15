@@ -23,8 +23,10 @@ class GeoIPPolicy(Policy):
 
     asn_mode = models.TextField(choices=GeoIPPolicyMode.choices)
     country_mode = models.TextField(choices=GeoIPPolicyMode.choices)
-    asn_list = ArrayField(models.IntegerField())
-    country_list = ArrayField(models.CharField(choices=COUNTRIES, max_length=2))
+    asn_list = ArrayField(models.IntegerField(), blank=True, default=list)
+    country_list = ArrayField(
+        models.CharField(choices=COUNTRIES, max_length=2), blank=True, default=list
+    )
 
     @property
     def serializer(self) -> type[BaseSerializer]:

@@ -37225,11 +37225,9 @@ components:
           items:
             $ref: '#/components/schemas/CountryListEnum'
       required:
-      - asn_list
       - asn_mode
       - bound_to
       - component
-      - country_list
       - country_mode
       - meta_model_name
       - name
@@ -37267,9 +37265,7 @@ components:
           items:
             $ref: '#/components/schemas/CountryListEnum'
       required:
-      - asn_list
       - asn_mode
-      - country_list
       - country_mode
       - name
     GeoipBindingEnum:
