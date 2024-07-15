@@ -6,13 +6,12 @@ from django.utils.translation import gettext_lazy as _
 from django_filters.filters import BooleanFilter
 from django_filters.filterset import FilterSet
 from rest_framework import mixins
-from rest_framework.fields import ReadOnlyField
-from rest_framework.serializers import ModelSerializer, SerializerMethodField
+from rest_framework.fields import ReadOnlyField, SerializerMethodField
 from rest_framework.viewsets import GenericViewSet
 
 from authentik.core.api.object_types import TypesMixin
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import MetaNameSerializer
+from authentik.core.api.utils import MetaNameSerializer, ModelSerializer
 from authentik.core.models import Provider
 
 

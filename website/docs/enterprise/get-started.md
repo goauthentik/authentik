@@ -19,6 +19,10 @@ To open the Customer portal and buy a license, go to the Admin interface and in 
 
 The license key provides direct access to the Customer portal, where you define your organization and its members, manage billing, and access our Support center.
 
+:::info
+A license is associated with a specific Organization in the customer portal and a specific authentik instance (with a unique Install ID), and not with individual users. A single license is purchased for a specified number of users. Additional users can be added to a license, or additional licenses purchased for the same instance, if more users need to be added later.
+:::
+
 ## Visit the Support center
 
 Enterprise authentik provides dedicated support, with a Support center where you can open a request and view the progress and communications for your current requests.
