@@ -516,3 +516,9 @@ export class FlowExecutor extends Interface implements StageHost {
         </ak-locale-context>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-flow-executor": FlowExecutor;
+    }
+}

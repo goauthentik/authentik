@@ -65,3 +65,9 @@ export class PropertyMappingSCIMForm extends BasePropertyMappingForm<SCIMMapping
             </ak-form-element-horizontal>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-property-mapping-scim-form": PropertyMappingSCIMForm;
+    }
+}

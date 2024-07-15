@@ -75,3 +75,9 @@ export class UserConsentList extends Table<UserConsent> {
         ];
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-consent-list": UserConsentList;
+    }
+}

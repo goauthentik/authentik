@@ -139,3 +139,9 @@ export class RoleViewPage extends AKElement {
         </ak-tabs>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-role-view": RoleViewPage;
+    }
+}

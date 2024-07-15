@@ -88,3 +88,9 @@ export class PasswordStage extends BaseStage<
             </footer>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-user-login": PasswordStage;
+    }
+}

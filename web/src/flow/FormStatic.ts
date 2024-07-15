@@ -61,3 +61,9 @@ export class FormStatic extends AKElement {
         `;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-form-static": FormStatic;
+    }
+}

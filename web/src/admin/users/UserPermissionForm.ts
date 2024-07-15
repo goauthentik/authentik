@@ -85,3 +85,9 @@ export class UserPermissionForm extends ModelForm<UserPermissionAssign, number> 
         </form>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-permission-form": UserPermissionForm;
+    }
+}

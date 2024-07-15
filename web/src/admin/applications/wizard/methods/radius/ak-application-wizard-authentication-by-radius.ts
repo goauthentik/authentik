@@ -80,3 +80,9 @@ export class ApplicationWizardAuthenticationByRadius extends WithBrandConfig(Bas
 }
 
 export default ApplicationWizardAuthenticationByRadius;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-wizard-authentication-by-radius": ApplicationWizardAuthenticationByRadius;
+    }
+}

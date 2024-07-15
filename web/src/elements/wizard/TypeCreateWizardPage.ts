@@ -144,3 +144,9 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
         }
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-wizard-page-type-create": TypeCreateWizardPage;
+    }
+}

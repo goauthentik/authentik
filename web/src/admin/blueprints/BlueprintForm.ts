@@ -195,3 +195,9 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
             </ak-form-group>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-blueprint-form": BlueprintForm;
+    }
+}

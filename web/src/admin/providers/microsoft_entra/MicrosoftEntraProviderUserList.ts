@@ -68,3 +68,9 @@ export class MicrosoftEntraProviderUserList extends Table<MicrosoftEntraProvider
         </td>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-microsoft-entra-users-list": MicrosoftEntraProviderUserList;
+    }
+}

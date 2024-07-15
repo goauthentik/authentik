@@ -148,3 +148,9 @@ export class AkMultiSelect extends AkControlElement {
 }
 
 export default AkMultiSelect;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-multi-select": AkMultiSelect;
+    }
+}
