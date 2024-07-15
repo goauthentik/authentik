@@ -390,7 +390,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                             .url=${MDProviderOAuth2}
                             .replacers=${[
                                 (input: string) => {
-                                    if (!this.provider) {
+                                    if (!this.provider || !this.provider.assignedApplicationSlug) {
                                         return input;
                                     }
                                     return input.replaceAll(

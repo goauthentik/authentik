@@ -190,20 +190,21 @@ export class ApplicationViewPage extends AKElement {
                                           <dd class="pf-c-description-list__description">
                                               <div class="pf-c-description-list__text">
                                                   <ul class="pf-c-list">
-                                                      ${this.application.backchannelProvidersObj.map(
-                                                          (provider) => {
-                                                              return html`
-                                                                  <li>
-                                                                      <a
-                                                                          href="#/core/providers/${provider.pk}"
-                                                                      >
-                                                                          ${provider.name}
-                                                                          (${provider.verboseName})
-                                                                      </a>
-                                                                  </li>
-                                                              `;
-                                                          },
-                                                      )}
+                                                      ${(
+                                                          this.application
+                                                              .backchannelProvidersObj || []
+                                                      ).map((provider) => {
+                                                          return html`
+                                                              <li>
+                                                                  <a
+                                                                      href="#/core/providers/${provider.pk}"
+                                                                  >
+                                                                      ${provider.name}
+                                                                      (${provider.verboseName})
+                                                                  </a>
+                                                              </li>
+                                                          `;
+                                                      })}
                                                   </ul>
                                               </div>
                                           </dd>
