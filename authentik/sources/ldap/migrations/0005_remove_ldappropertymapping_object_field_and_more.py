@@ -22,17 +22,12 @@ def migrate_ldap_property_mappings_object_field(apps, schema_editor):
 def get_field():
     {textwrap.indent(mapping.expression, prefix='    ')}
 
+from authentik.lib.utils.dict import set_path_in_dict
+
 field = "{mapping.object_field}"
 result = {{"attributes": {{}}}}
 if field.startswith("attributes."):
-    # Adapted from authentik/lib/config.py::set_path_in_dict
-    root = result
-    path_parts = field.split(".")
-    for comp in path_parts[:-1]
-        if comp not in root:
-            root[comp] = {{}}
-        root = root.get(comp, {{}})
-    root[path_parts[-1]] = get_field()
+    set_path_in_dict(result, field, get_field(), sep=".")
 else:
     result[field] = get_field()
 return result
