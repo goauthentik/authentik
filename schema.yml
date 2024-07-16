@@ -9750,8 +9750,8 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
   /outposts/radius/{id}/check_access/:
-    post:
-      operationId: outposts_radius_check_access_create
+    get:
+      operationId: outposts_radius_check_access_retrieve
       description: Check access to a single application by slug
       parameters:
       - in: query

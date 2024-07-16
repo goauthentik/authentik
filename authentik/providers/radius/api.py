@@ -92,16 +92,16 @@ class RadiusOutpostConfigViewSet(ListModelMixin, GenericViewSet):
             200: RadiusCheckAccessSerializer(),
         },
     )
-    @action(detail=True, methods=["POST"])
-    def check_access(self, request: Request, *args, **kwargs) -> Response:
+    @action(detail=True)
+    def check_access(self, request: Request, pk) -> Response:
         """Check access to a single application by slug"""
-        provider: RadiusProvider = self.get_object()
+        provider = get_object_or_404(RadiusProvider, pk=pk)
         application = get_object_or_404(Application, slug=request.query_params["app_slug"])
         engine = PolicyEngine(application, request.user, request)
         engine.use_cache = False
         engine.build()
         result = engine.result
-        access_response = PolicyTestResultSerializer(PolicyResult(result.passing))
+        access_response = PolicyResult(result.passing)
         response = self.RadiusCheckAccessSerializer(
             instance={
                 "attributes": provider.get_attributes(request),
