@@ -45,10 +45,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         if (this.promptUser) {
             return;
         }
-        console.debug(
-            "authentik/stages/redirect: redirecting to url from server",
-            this.challenge.to,
-        );
+        console.debug("authentik/stages/redirect: redirecting to url from server", this.challenge.to);
         window.location.assign(this.challenge.to);
         this.startedRedirect = true;
     }
@@ -60,10 +57,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         // As this wouldn't really be a redirect, show a message that the page can be closed
         // and try to close it ourselves
         if (!url.protocol.startsWith("http")) {
-            return html`<ak-empty-state
-                icon="fas fa-check"
-                header=${msg("You may close this page now.")}
-            >
+            return html`<ak-empty-state icon="fas fa-check" header=${msg("You may close this page now.")}>
             </ak-empty-state>`;
         }
         return html`<ak-empty-state ?loading=${true} header=${msg("Loading")}> </ak-empty-state>`;
@@ -79,7 +73,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
             <div class="pf-c-login__main-body">
                 <form class="pf-c-form">
                     <div class="pf-c-form__group">
-                        <p>${msg("You're about to be redirected to the following URL.")}</p>
+                        <p>${msg("You will now be redirected to the following URL.")}</p>
                         <code>${this.getURL()}</code>
                     </div>
                     <div class="pf-c-form__group pf-m-action">
