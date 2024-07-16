@@ -45,6 +45,7 @@ class TestFlowInspector(APITestCase):
         self.assertJSONEqual(
             res.content,
             {
+                "allow_show_password": False,
                 "component": "ak-stage-identification",
                 "flow_info": {
                     "background": flow.background_url,
