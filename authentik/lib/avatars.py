@@ -75,6 +75,7 @@ def avatar_mode_gravatar(user: "User", mode: str) -> str | None:
         res.raise_for_status()
     except (Timeout, ConnectionError, HTTPError):
         cache.set(CACHE_KEY_GRAVATAR_AVAILABLE, False, timeout=GRAVATAR_STATUS_TTL_SECONDS)
+        return None
     except RequestException:
         return gravatar_url
     cache.set(full_key, gravatar_url)
