@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://goauthentik.io/blueprints/schema.json",
     "type": "object",
-    "title": "authentik 2024.6.0 Blueprint schema",
+    "title": "authentik 2024.6.1 Blueprint schema",
     "required": [
         "version",
         "entries"
@@ -6905,7 +6905,7 @@
                 "password_stage": {
                     "type": "integer",
                     "title": "Password stage",
-                    "description": "When set, shows a password field, instead of showing the password field as seaprate step."
+                    "description": "When set, shows a password field, instead of showing the password field as separate step."
                 },
                 "case_insensitive_matching": {
                     "type": "boolean",
@@ -7207,6 +7207,11 @@
                     "maximum": 2147483647,
                     "title": "Failed attempts before cancel",
                     "description": "How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage."
+                },
+                "allow_show_password": {
+                    "type": "boolean",
+                    "title": "Allow show password",
+                    "description": "When enabled, provides a 'show password' button with the password input field."
                 }
             },
             "required": []

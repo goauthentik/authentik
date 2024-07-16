@@ -20,3 +20,9 @@ export class AkTextInput extends HorizontalLightComponent {
 }
 
 export default AkTextInput;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-text-input": AkTextInput;
+    }
+}

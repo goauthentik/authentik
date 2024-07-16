@@ -13,9 +13,9 @@ def assign_sources(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     IdentificationStage = apps.get_model("authentik_stages_identification", "identificationstage")
     Source = apps.get_model("authentik_core", "source")
 
-    sources = Source.objects.all()
-    for stage in IdentificationStage.objects.all().using(db_alias):
-        stage.sources.set(sources)
+    sources = Source.objects.using(db_alias).all()
+    for stage in IdentificationStage.objects.using(db_alias).all():
+        stage.sources.using(db_alias).set(sources)
         stage.save()
 
 

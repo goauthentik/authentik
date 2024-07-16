@@ -60,3 +60,9 @@ export class EmptyState extends AKElement {
         </div>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-empty-state": EmptyState;
+    }
+}

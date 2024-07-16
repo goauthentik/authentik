@@ -101,3 +101,9 @@ export class EventListPage extends TablePage<Event> {
             <td></td>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-event-list": EventListPage;
+    }
+}

@@ -39,3 +39,9 @@ export class Divider extends AKElement {
         return html`<div class="separator"><slot></slot></div>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-divider": Divider;
+    }
+}

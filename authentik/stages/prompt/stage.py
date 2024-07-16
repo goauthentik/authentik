@@ -21,7 +21,7 @@ from rest_framework.serializers import ValidationError
 
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import User
-from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
+from authentik.flows.challenge import Challenge, ChallengeResponse
 from authentik.flows.planner import FlowPlan
 from authentik.flows.stage import ChallengeStageView
 from authentik.policies.engine import PolicyEngine
@@ -227,7 +227,6 @@ class PromptStageView(ChallengeStageView):
         serializers = self.get_prompt_challenge_fields(fields, context_prompt)
         challenge = PromptChallenge(
             data={
-                "type": ChallengeTypes.NATIVE.value,
                 "fields": serializers,
             },
         )

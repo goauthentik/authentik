@@ -118,3 +118,9 @@ export class RouterOutlet extends AKElement {
         return this.current?.render();
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-router-outlet": RouterOutlet;
+    }
+}

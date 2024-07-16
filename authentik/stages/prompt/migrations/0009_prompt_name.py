@@ -12,7 +12,7 @@ def set_generated_name(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 
     for prompt in Prompt.objects.using(db_alias).all():
         name = prompt.field_key
-        stage = prompt.promptstage_set.order_by("name").first()
+        stage = prompt.promptstage_set.using(db_alias).order_by("name").first()
         if stage:
             name += "_" + stage.name
         else:

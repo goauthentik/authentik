@@ -50,3 +50,9 @@ export class RoleForm extends ModelForm<Role, string> {
         </ak-form-element-horizontal>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-role-form": RoleForm;
+    }
+}
