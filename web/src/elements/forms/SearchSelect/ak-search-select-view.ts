@@ -167,7 +167,7 @@ export class SearchSelectView extends AKElement {
     onSelect(event: SearchSelectSelectMenuEvent) {
         this.open = false;
         this.value = event.value;
-        this.displayValue = this.value ? this.optionsMap.get(this.value) ?? this.value ?? "" : "";
+        this.displayValue = this.value ? (this.optionsMap.get(this.value) ?? this.value ?? "") : "";
         this.dispatchEvent(new SearchSelectSelectEvent(this.value));
     }
 
@@ -191,7 +191,7 @@ export class SearchSelectView extends AKElement {
     @bound
     onInput(_event: InputEvent) {
         this.value = this.inputRef?.value?.value ?? "";
-        this.displayValue = this.value ? this.optionsMap.get(this.value) ?? this.value ?? "" : "";
+        this.displayValue = this.value ? (this.optionsMap.get(this.value) ?? this.value ?? "") : "";
         this.dispatchEvent(new SearchSelectInputEvent(this.value));
     }
 
@@ -219,7 +219,7 @@ export class SearchSelectView extends AKElement {
         }
         if (changed.has("value")) {
             this.displayValue = this.value
-                ? this.optionsMap.get(this.value) ?? this.value ?? ""
+                ? (this.optionsMap.get(this.value) ?? this.value ?? "")
                 : "";
         }
     }
