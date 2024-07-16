@@ -1,5 +1,5 @@
 ---
-title: "MeshCentral"
+title: MeshCentral
 ---
 
 <span class="badge badge--secondary">Support level: Community</span>
