@@ -8,7 +8,7 @@ title: "MeshCentral"
 
 > MeshCentral is an open source, multi-platform, self-hosted, feature packed web site for remote device management.
 >
-> -- [MeshCentral](https://meshcentral.com)
+> -- https://meshcentral.com
 
 ## Preparation
 
