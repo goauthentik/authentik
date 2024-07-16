@@ -1,4 +1,4 @@
-import { AKElement } from "@goauthentik/elements/Base";
+import { AkControlElement } from "@goauthentik/elements/AkControlElement.js";
 import { debounce } from "@goauthentik/elements/utils/debounce";
 import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
 
@@ -26,9 +26,8 @@ import type { DataProvider, DualSelectPair } from "./types";
  */
 
 @customElement("ak-dual-select-provider")
-export class AkDualSelectProvider extends CustomListenerElement(AKElement) {
-    /**
-     * A function that takes a page and returns the DualSelectPair[] collection with which to update
+export class AkDualSelectProvider extends CustomListenerElement(AkControlElement) {
+    /** A function that takes a page and returns the DualSelectPair[] collection with which to update
      * the "Available" pane.
      *
      * @attr
@@ -84,8 +83,6 @@ export class AkDualSelectProvider extends CustomListenerElement(AKElement) {
     constructor() {
         super();
         setTimeout(() => this.fetch(1), 0);
-        // Notify AkForElementHorizontal how to handle this thing.
-        this.dataset.akControl = "true";
         this.onNav = this.onNav.bind(this);
         this.onChange = this.onChange.bind(this);
         this.onSearch = this.onSearch.bind(this);
