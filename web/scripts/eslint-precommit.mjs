@@ -43,34 +43,53 @@ const eslintConfig = {
     },
 };
 
-const porcelainV1 = /^(..)\s+(.*$)/;
-const gitStatus = execFileSync("git", ["status", "--porcelain", "."], { encoding: "utf8" });
+function findChangedFiles() {
+    const porcelainV1 = /^(..)\s+(.*$)/;
+    const gitStatus = execFileSync("git", ["status", "--porcelain", "."], { encoding: "utf8" });
 
-const statuses = gitStatus.split("\n").reduce((acc, line) => {
-    const match = porcelainV1.exec(line.replace("\n"));
-    if (!match) {
-        return acc;
-    }
-    const [status, path] = Array.from(match).slice(1, 3);
-    return [...acc, [status, path.split("\x00")[0]]];
-}, []);
+    const statuses = gitStatus.split("\n").reduce((acc, line) => {
+        const match = porcelainV1.exec(line.replace("\n"));
+        if (!match) {
+            return acc;
+        }
+        const [status, path] = Array.from(match).slice(1, 3);
+        return [...acc, [status, path.split("\x00")[0]]];
+    }, []);
 
-const isModified = /^(M|\?|\s)(M|\?|\s)/;
-const modified = (s) => isModified.test(s);
+    const isModified = /^(M|\?|\s)(M|\?|\s)/;
+    const modified = (s) => isModified.test(s);
 
-const isCheckable = /\.(ts|js|mjs)$/;
-const checkable = (s) => isCheckable.test(s);
+    const isCheckable = /\.(ts|js|mjs)$/;
+    const checkable = (s) => isCheckable.test(s);
 
-const ignored = /\/\.storybook\//;
-const notIgnored = (s) => !ignored.test(s);
+    const ignored = /\/\.storybook\//;
+    const notIgnored = (s) => !ignored.test(s);
 
-const updated = statuses.reduce(
-    (acc, [status, filename]) =>
-        modified(status) && checkable(filename) && notIgnored(filename)
-            ? [...acc, path.join(projectRoot, filename)]
-            : acc,
-    [],
-);
+    return statuses.reduce(
+        (acc, [status, filename]) =>
+            modified(status) && checkable(filename) && notIgnored(filename)
+                ? [...acc, path.join(projectRoot, filename)]
+                : acc,
+        []
+    );
+}
+
+if (process.argv.length > 2 && (process.argv[2] === "-h" || process.argv[2] === "--help")) {
+    // eslint-disable-next-line no-console
+    console.log(`Run eslint with extra-hard checks
+
+options:
+  -c, --changed: (default) check only the files that have changed
+  -n, --nightmare: check all the files in the repository
+  -h, --help: This help message
+`);
+    process.exit(0);
+}
+
+const updated =
+    process.argv.length > 2 && (process.argv[2] === "-n" || process.argv[2] === "--nightmare")
+        ? ["./src/", "./build.mjs", "./scripts/*.mjs"]
+        : findChangedFiles();
 
 const eslint = new ESLint(eslintConfig);
 const results = await eslint.lintFiles(updated);
