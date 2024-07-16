@@ -70,7 +70,7 @@ function findChangedFiles() {
             modified(status) && checkable(filename) && notIgnored(filename)
                 ? [...acc, path.join(projectRoot, filename)]
                 : acc,
-        []
+        [],
     );
 }
 

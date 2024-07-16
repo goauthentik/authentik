@@ -120,7 +120,7 @@
         "eslint-config-google": "^0.14.0",
         "eslint-plugin-custom-elements": "0.0.8",
         "eslint-plugin-lit": "^1.11.0",
-        "eslint-plugin-sonarjs": "^1.0.3",
+        "eslint-plugin-sonarjs": "0.25.1",
         "eslint-plugin-storybook": "^0.8.0",
         "github-slugger": "^2.0.0",
         "glob": "^11.0.0",
