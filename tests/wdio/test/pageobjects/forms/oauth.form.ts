@@ -3,11 +3,7 @@ import { $ } from "@wdio/globals";
 
 export class OauthForm extends Page {
     async setAuthorizationFlow(selector: string) {
-        await this.searchSelect(
-            '>>>ak-flow-search[name="authorizationFlow"] input[type="text"]',
-            "authorizationFlow",
-            `button*=${selector}`,
-        );
+        await this.searchSelect('[name="authorizationFlow"]', "authorizationFlow", `div*=${selector}`);
     }
 
     get providerName() {

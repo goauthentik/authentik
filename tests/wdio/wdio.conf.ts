@@ -76,7 +76,7 @@ export const config: Options.Testrunner = {
                                   "--disable-dev-shm-usage",
                               ]
                             : [];
-                    })(),
+                    })()
                 ),
             },
         },
@@ -212,7 +212,9 @@ export const config: Options.Testrunner = {
      * @param {Array.<String>} specs        List of spec file paths that are to be run
      * @param {object}         browser      instance of created browser/device session
      */
-    before: function (_capabilities, _specs) {},
+    before: function (_capabilities, _specs) {
+        browser.setWindowSize(1920, 1080);
+    },
     /**
      * Runs before a WebdriverIO command gets executed.
      * @param {string} commandName hook command name

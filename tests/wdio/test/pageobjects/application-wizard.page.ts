@@ -53,7 +53,7 @@ type Pair = [string, string];
 // Define a getter for each provider type in the radio button collection.
 
 const providerValues: Pair[] = [
-    ["oauth2provider", "oauth2Provider"],
+    ["oauth2Provider", "oauth2Provider"],
     ["ldapprovider", "ldapProvider"],
     ["proxyprovider-proxy", "proxyProviderProxy"],
     ["proxyprovider-forwardsingle", "proxyProviderForwardsingle"],
@@ -66,7 +66,7 @@ providerValues.forEach(([value, name]: Pair) => {
     Object.defineProperties(ApplicationWizardView.prototype, {
         [name]: {
             get: function () {
-                return this.providerList.$(`>>>input[value="${value}"]`);
+                return this.providerList.$(`>>>div[data-testid=wizard-provider-${value}]`);
             },
         },
     });

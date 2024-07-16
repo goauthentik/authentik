@@ -30,6 +30,7 @@ export type LocalTypeCreate = TypeCreate & {
     modelName: ProviderModelEnumType;
     converter: ModelConverter;
     note?: ProviderNote;
+    testId: string;
     renderer: ProviderRenderer;
 };
 
@@ -46,6 +47,7 @@ export const providerModelsList: LocalTypeCreate[] = [
             ...(provider as OAuth2ProviderRequest),
         }),
         component: "",
+        testId: "wizard-provider-oauth2Provider",
         iconUrl: "/static/authentik/sources/openidconnect.svg",
     },
     {
@@ -62,6 +64,7 @@ export const providerModelsList: LocalTypeCreate[] = [
             ...(provider as LDAPProviderRequest),
         }),
         component: "",
+        testId: "wizard-provider-ldapprovider",
         iconUrl: "/static/authentik/sources/ldap.png",
     },
     {
@@ -77,6 +80,7 @@ export const providerModelsList: LocalTypeCreate[] = [
             mode: ProxyMode.Proxy,
         }),
         component: "",
+        testId: "wizard-provider-proxyprovider-proxy",
         iconUrl: "/static/authentik/sources/proxy.svg",
     },
     {
@@ -92,6 +96,7 @@ export const providerModelsList: LocalTypeCreate[] = [
             mode: ProxyMode.ForwardSingle,
         }),
         component: "",
+        testId: "wizard-provider-proxyprovider-forwardsingle",
         iconUrl: "/static/authentik/sources/proxy.svg",
     },
     {
@@ -107,6 +112,7 @@ export const providerModelsList: LocalTypeCreate[] = [
             mode: ProxyMode.ForwardDomain,
         }),
         component: "",
+        testId: "wizard-provider-proxyprovider-forwarddomain",
         iconUrl: "/static/authentik/sources/proxy.svg",
     },
     {
@@ -123,6 +129,7 @@ export const providerModelsList: LocalTypeCreate[] = [
         note: () => html`<ak-license-notice></ak-license-notice>`,
         requiresEnterprise: true,
         component: "",
+        testId: "wizard-provider-racprovider",
         iconUrl: "/static/authentik/sources/rac.svg",
     },
     {
@@ -137,6 +144,7 @@ export const providerModelsList: LocalTypeCreate[] = [
             ...(provider as SAMLProviderRequest),
         }),
         component: "",
+        testId: "wizard-provider-samlprovider",
         iconUrl: "/static/authentik/sources/saml.png",
     },
     {
@@ -151,6 +159,7 @@ export const providerModelsList: LocalTypeCreate[] = [
             ...(provider as RadiusProviderRequest),
         }),
         component: "",
+        testId: "wizard-provider-radiusprovider",
         iconUrl: "/static/authentik/sources/radius.svg",
     },
     {
@@ -165,6 +174,7 @@ export const providerModelsList: LocalTypeCreate[] = [
             ...(provider as SCIMProviderRequest),
         }),
         component: "",
+        testId: "wizard-provider-scimprovider",
         iconUrl: "/static/authentik/sources/scim.png",
     },
 ];

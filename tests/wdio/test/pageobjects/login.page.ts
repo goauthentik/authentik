@@ -1,6 +1,7 @@
 import Page from "./page.js";
 import UserLibraryPage from "./user-library.page.js";
 import { $ } from "@wdio/globals";
+import { and, or, presenceOf, textToBePresentInElement } from "wdio-wait-for";
 
 /**
  * sub page containing specific selectors and methods for a specific page
@@ -48,6 +49,14 @@ class LoginPage extends Page {
         await this.pause();
         await this.password(password);
         await this.pause();
+
+        const redirect = await $(">>>a[type=submit]");
+        await browser.waitUntil(or(presenceOf(redirect), presenceOf(UserLibraryPage.pageHeader)));
+
+        if (await redirect.isExisting()) {
+            await redirect.click();
+        }
+
         await this.pause(">>>div.header h1");
         return UserLibraryPage;
     }

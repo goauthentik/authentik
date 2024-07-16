@@ -5,6 +5,7 @@ import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -19,10 +20,12 @@ export enum TypeCreateWizardPageLayouts {
     grid = "grid",
 }
 
+type TypeCreateWithTestId = TypeCreate & { testId?: string };
+
 @customElement("ak-wizard-page-type-create")
 export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
     @property({ attribute: false })
-    types: TypeCreate[] = [];
+    types: TypeCreateWithTestId[] = [];
 
     @property({ attribute: false })
     selectedType?: TypeCreate;
@@ -51,7 +54,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
 
     sidebarLabel = () => msg("Select type");
 
-    activeCallback: () => Promise<void> = async () => {
+    activeCallback = async () => {
         this.host.isValid = false;
         if (this.selectedType) {
             this.selectDispatch(this.selectedType);
@@ -78,6 +81,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
                         : "pf-m-selectable-raised"} ${this.selectedType == type
                         ? "pf-m-selected-raised"
                         : ""}"
+                    data-testid=${ifDefined(type.testId)}
                     tabindex=${idx}
                     @click=${() => {
                         if (requiresEnterprise) {

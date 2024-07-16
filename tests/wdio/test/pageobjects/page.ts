@@ -32,10 +32,16 @@ export default class Page {
      */
 
     async searchSelect(searchSelector: string, managedSelector: string, buttonSelector: string) {
-        const inputBind = await $(searchSelector);
+        const controlSelector = `>>>ak-search-select-view${searchSelector}`;
+        const control = await $(controlSelector);
+        control.scrollIntoView();
+        const inputBind = await control.$(">>>input[type=text]");
         await inputBind.click();
+
         const searchBlock = await $(`>>>div[data-managed-for="${managedSelector}"]`);
-        const target = searchBlock.$(buttonSelector);
+        const interior = searchBlock.$(">>>ul");
+        interior.scrollIntoView();
+        const target = interior.$(buttonSelector);
         return await target.click();
     }
 
