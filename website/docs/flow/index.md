@@ -2,15 +2,18 @@
 title: Overview
 ---
 
-Flows are a method of describing a sequence of stages. A stage represents a single verification or logic step. They are used to authenticate users, enroll them, and more.
+Flows are a major component in authentik. In conjunction with stages and policies, flows are at the heart of our system of building blocks, used to define and execute the workflows of authentication.
+
+A flow is a method of describing a sequence of stages. A stage represents a single verification or logic step. By defining and connecting a series of stages within a flow, and then attaching [policies](../policies/index.md) to stages as needed, you can build a highly flexible process for authenticating users, enrolling them, and more.
 
 For example, a standard login flow would consist of the following stages:
 
--   Identification, user identifies themselves via a username or email address
--   Password, the user's password is checked against the hash in the database
--   Log the user in
+-   Identification stage: user identifies themselves via a username or email address
+-   Password stage: the user's password is checked against the hash in the database
 
-Upon flow execution, a plan containing all stages is generated. This means that all attached policies are evaluated upon execution. This behaviour can be altered by enabling the **Evaluate when stage is run** option on the binding.
+When these stages are successfully completed, authentik logs in the user.
+
+Upon flow execution, a *flow plan* containing all stages is generated. This means that all attached policies are evaluated upon execution. This behaviour can be altered by enabling the **Evaluate when stage is run** option on the binding.
 
 The determine which flow should be used, authentik will first check which default authentication flow is configured in the active [**Brand**](../core/brands.md). If no default is configured there, the policies in all flows with the matching designation are checked, and the first flow with matching policies sorted by `slug` will be used.
 
@@ -20,6 +23,10 @@ Flows can have policies assigned to them. These policies determine if the curren
 
 Keep in mind that in certain circumstances, policies cannot match against users and groups as there is no authenticated user yet.
 
+## Flow Configurations
+
+Whne creating or editing a flow, be awre of these important configuration options.
+
 ### Denied action
 
 Configure what happens when access to a flow is denied by a policy. By default, authentik will redirect to a `?next` parameter if set, and otherwise show an error message.
@@ -28,17 +35,17 @@ Configure what happens when access to a flow is denied by a policy. By default, 
 -   `MESSAGE`: Always show error message.
 -   `CONTINUE`: Always redirect, either to `?next` if set, otherwise to the default interface.
 
-## Designation
+### Designation
 
 Flows are designated for a single purpose. This designation changes when a flow is used. The following designations are available:
 
-#### Authentication
+*   #### Authentication
 
 This is designates a flow to be used for authentication.
 
 The authentication flow should always contain a [**User Login**](stages/user_login/index.md) stage, which attaches the staged user to the current session.
 
-#### Invalidation
+*   #### Invalidation
 
 This designates a flow to be used to invalidate a session.
 
