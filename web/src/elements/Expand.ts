@@ -57,3 +57,9 @@ export class Expand extends AKElement {
         </div>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-expand": Expand;
+    }
+}

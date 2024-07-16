@@ -29990,6 +29990,10 @@ paths:
       description: PasswordStage Viewset
       parameters:
       - in: query
+        name: allow_show_password
+        schema:
+          type: boolean
+      - in: query
         name: configure_flow
         schema:
           type: string
@@ -37063,6 +37067,9 @@ components:
           nullable: true
         password_fields:
           type: boolean
+        allow_show_password:
+          type: boolean
+          default: false
         application_pre:
           type: string
         flow_designation:
@@ -37145,7 +37152,7 @@ components:
           format: uuid
           nullable: true
           description: When set, shows a password field, instead of showing the password
-            field as seaprate step.
+            field as separate step.
         case_insensitive_matching:
           type: boolean
           description: When enabled, user fields are matched regardless of their casing.
@@ -37213,7 +37220,7 @@ components:
           format: uuid
           nullable: true
           description: When set, shows a password field, instead of showing the password
-            field as seaprate step.
+            field as separate step.
         case_insensitive_matching:
           type: boolean
           description: When enabled, user fields are matched regardless of their casing.
@@ -40960,6 +40967,9 @@ components:
           type: string
         recovery_url:
           type: string
+        allow_show_password:
+          type: boolean
+          default: false
       required:
       - pending_user
       - pending_user_avatar
@@ -41242,6 +41252,10 @@ components:
           minimum: -2147483648
           description: How many attempts a user has before the flow is canceled. To
             lock the user out, use a reputation policy and a user_write stage.
+        allow_show_password:
+          type: boolean
+          description: When enabled, provides a 'show password' button with the password
+            input field.
       required:
       - backends
       - component
@@ -41278,6 +41292,10 @@ components:
           minimum: -2147483648
           description: How many attempts a user has before the flow is canceled. To
             lock the user out, use a reputation policy and a user_write stage.
+        allow_show_password:
+          type: boolean
+          description: When enabled, provides a 'show password' button with the password
+            input field.
       required:
       - backends
       - name
@@ -42099,7 +42117,7 @@ components:
           format: uuid
           nullable: true
           description: When set, shows a password field, instead of showing the password
-            field as seaprate step.
+            field as separate step.
         case_insensitive_matching:
           type: boolean
           description: When enabled, user fields are matched regardless of their casing.
@@ -42817,6 +42835,10 @@ components:
           minimum: -2147483648
           description: How many attempts a user has before the flow is canceled. To
             lock the user out, use a reputation policy and a user_write stage.
+        allow_show_password:
+          type: boolean
+          description: When enabled, provides a 'show password' button with the password
+            input field.
     PatchedPermissionAssignRequest:
       type: object
       description: Request to assign a new permission

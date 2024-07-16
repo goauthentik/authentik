@@ -23,3 +23,9 @@ export class FlowDiagram extends Diagram {
             });
     };
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-flow-diagram": FlowDiagram;
+    }
+}

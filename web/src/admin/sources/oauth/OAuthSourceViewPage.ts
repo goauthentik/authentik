@@ -255,3 +255,9 @@ export class OAuthSourceViewPage extends AKElement {
         </ak-tabs>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-source-oauth-view": OAuthSourceViewPage;
+    }
+}

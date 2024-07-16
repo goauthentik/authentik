@@ -51,3 +51,9 @@ export class EmailStage extends BaseStage<EmailChallenge, EmailChallengeResponse
             </footer>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-email": EmailStage;
+    }
+}

@@ -60,3 +60,9 @@ export class AccessDeniedStage extends BaseStage<
             </footer>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-access-denied": AccessDeniedStage;
+    }
+}

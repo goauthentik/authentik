@@ -74,3 +74,9 @@ export class TableSearch extends AKElement {
         </form>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-table-search": TableSearch;
+    }
+}

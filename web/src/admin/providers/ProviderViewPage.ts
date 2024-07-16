@@ -95,3 +95,9 @@ export class ProviderViewPage extends AKElement {
             ${this.renderProvider()}`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-view": ProviderViewPage;
+    }
+}

@@ -65,3 +65,9 @@ export class PropertyMappingLDAPForm extends BasePropertyMappingForm<LDAPPropert
             </ak-form-element-horizontal>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-property-mapping-ldap-form": PropertyMappingLDAPForm;
+    }
+}

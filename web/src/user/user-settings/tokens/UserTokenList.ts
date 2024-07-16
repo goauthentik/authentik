@@ -180,3 +180,9 @@ export class UserTokenList extends Table<Token> {
         ];
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-token-list": UserTokenList;
+    }
+}
