@@ -4,7 +4,7 @@ from base64 import b64encode
 from functools import cache as funccache
 from hashlib import md5, sha256
 from typing import TYPE_CHECKING
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlparse
 
 from django.core.cache import cache
 from django.http import HttpRequest, HttpResponseNotFound
@@ -181,11 +181,40 @@ def avatar_mode_generated(user: "User", mode: str) -> str | None:
 def avatar_mode_url(user: "User", mode: str) -> str | None:
     """Format url"""
     mail_hash = md5(user.email.lower().encode("utf-8"), usedforsecurity=False).hexdigest()  # nosec
-    return mode % {
+
+    formatted_url = mode % {
         "username": user.username,
         "mail_hash": mail_hash,
         "upn": user.attributes.get("upn", ""),
     }
+
+    hostname = urlparse(formatted_url).hostname
+    cache_key_hostname_available = "goauthentik.io/lib/avatars/" + hostname + "/available"
+
+    if not cache.get(cache_key_hostname_available, True):
+        return None
+
+    cache_key_full = "goauthentik.io/lib/avatars/" + hostname + "/avatars/" + mail_hash
+
+    if cache.has_key(cache_key_full):
+        cache.touch(cache_key_full)
+        return cache.get(cache_key_full)
+
+    try:
+        res = get_http_session().head(formatted_url, timeout=5, allow_redirects=True)
+
+        if res.status_code == HttpResponseNotFound.status_code:
+            cache.set(cache_key_full, None)
+            return None
+        res.raise_for_status()
+    except (Timeout, ConnectionError, HTTPError):
+        cache.set(cache_key_hostname_available, False, timeout=GRAVATAR_STATUS_TTL_SECONDS)
+        return None
+    except RequestException:
+        return formatted_url
+
+    cache.set(cache_key_full, formatted_url)
+    return formatted_url
 
 
 def get_avatar(user: "User", request: HttpRequest | None = None) -> str:
