@@ -3,7 +3,11 @@ import { $ } from "@wdio/globals";
 
 export class TransparentProxyForm extends Page {
     async setAuthorizationFlow(selector: string) {
-        await this.searchSelect('[name="authorizationFlow"]', "authorizationFlow", `div*=${selector}`);
+        await this.searchSelect(
+            '[name="authorizationFlow"]',
+            "authorizationFlow",
+            `div*=${selector}`,
+        );
     }
 
     get externalHost() {
