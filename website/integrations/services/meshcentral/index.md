@@ -14,7 +14,7 @@ title: MeshCentral
 
 The following placeholders will be used:
 
--   `meshcentral.company` is the FQDN of the Harbor install.
+-   `meshcentral.company` is the FQDN of the MeshCentral install.
 -   `authentik.company` is the FQDN of the authentik install.
 
 Create an OAuth2/OpenID provider with the following parameters:
