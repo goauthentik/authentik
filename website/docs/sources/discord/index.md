@@ -187,7 +187,7 @@ guild_id = "<YOUR GUILD ID>"
 
 # Ensure flow is only run during OAuth logins via Discord
 if context["source"].provider_type != "discord":
-  return True
+    return True
 
 # Get the user-source connection object from the context, and get the access token
 connection = context.get("goauthentik.io/sources/connection")
