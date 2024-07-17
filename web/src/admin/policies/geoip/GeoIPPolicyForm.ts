@@ -1,6 +1,5 @@
 import { BasePolicyForm } from "@goauthentik/admin/policies/BasePolicyForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/ak-dual-select";
 import { DataProvision } from "@goauthentik/elements/ak-dual-select/types";
 import "@goauthentik/elements/forms/FormGroup";
@@ -10,7 +9,6 @@ import "@goauthentik/elements/forms/SearchSelect";
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import { GeoIPPolicy, Iso3166Api, PoliciesApi } from "@goauthentik/api";
 
@@ -47,10 +45,10 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                     "Ensure the user satisfies requirements of geography or network topology, based on IP address. If any of the configured values match, the policy passes.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
-                    value="${ifDefined(this.instance?.name || "")}"
+                    value="${this.instance?.name ?? ""}"
                     class="pf-c-form-control"
                     required
                 />
@@ -60,7 +58,7 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.executionLogging, false)}
+                        ?checked=${this.instance?.executionLogging ?? false}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -81,7 +79,7 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                     <ak-form-element-horizontal label=${msg("ASNs")} name="asns">
                         <input
                             type="text"
-                            value="${ifDefined(this.instance?.asns || "")}"
+                            value="${this.instance?.asns ?? ""}"
                             class="pf-c-form-control"
                         />
                         <p class="pf-c-form__helper-text">
