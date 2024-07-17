@@ -205,8 +205,8 @@ guild_member_info = guild_member_request.json()
 
 # Ensure we are not being ratelimited
 if guild_member_request.status_code == 429:
-  ak_message(f"Discord is throttling this connection. Retry in {int(guild_member_info['retry_after'])}s")
-  return False
+    ak_message(f"Discord is throttling this connection. Retry in {int(guild_member_info['retry_after'])}s")
+    return False
 
 # Ensure user is a member of the guild
 if "code" in guild_member_info:
