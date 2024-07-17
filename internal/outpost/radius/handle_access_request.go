@@ -68,7 +68,11 @@ func (rs *RadiusServer) Handle_AccessRequest(w radius.ResponseWriter, r *RadiusR
 	}
 	res := r.Response(radius.CodeAccessAccept)
 	defer func() { _ = w.Write(res) }()
-	rawData, err := base64.StdEncoding.DecodeString(access.Attributes)
+	if !access.HasAttributes() {
+		r.Log().Debug("No attributes")
+		return
+	}
+	rawData, err := base64.StdEncoding.DecodeString(access.GetAttributes())
 	if err != nil {
 		r.Log().WithError(err).Warning("failed to decode attributes from core")
 		return
