@@ -73,9 +73,9 @@ Using this option, you can configure whether the the flow requires initial authe
     -   `MESSAGE`: Always show error message.
     -   `CONTINUE`: Always redirect, either to `?next` if set, otherwise to the default interface.
 
--   **Policy engine mode**: Configure the flow to suceed in *any* policy passes, or only if *all* policies pass.
+-   **Policy engine mode**: Configure the flow to succeed in _any_ policy passes, or only if _all_ policies pass.
 
-### Appearance setttings
+### Appearance settings
 
 -   **Layout**: select how the UI displays the flow when it is executed; with stacked elements, content left or right, and sidebar left or right.
 
