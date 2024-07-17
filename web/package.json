@@ -106,7 +106,7 @@
         "@types/guacamole-common-js": "1.5.2",
         "@types/showdown": "^2.0.6",
         "@typescript-eslint/eslint-plugin": "^7.16.1",
-        "@typescript-eslint/parser": "^7.14.0",
+        "@typescript-eslint/parser": "^7.16.1",
         "@wdio/browser-runner": "^8.39.1",
         "@wdio/cli": "^8.39.1",
         "@wdio/mocha-framework": "^8.36.1",
