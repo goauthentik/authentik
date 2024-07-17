@@ -196,10 +196,10 @@ if not connection:
 access_token = connection.access_token
 
 guild_member_request = requests.get(
-  GUILD_API_URL.format(guild_id=guild_id),
-  headers={
-    "Authorization": f"Bearer {access_token}",
-  },
+    GUILD_API_URL.format(guild_id=guild_id),
+    headers={
+        "Authorization": f"Bearer {access_token}",
+    },
 )
 guild_member_info = guild_member_request.json()
 
