@@ -1,8 +1,12 @@
 """RadiusProvider API Views"""
 
+from base64 import b64encode
+
 from django.shortcuts import get_object_or_404
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
+from pyrad.dictionary import Attribute, Dictionary
+from pyrad.packet import AuthPacket
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, ListField
 from rest_framework.mixins import ListModelMixin
@@ -13,11 +17,16 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
+from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.models import Application
+from authentik.events.models import Event, EventAction
+from authentik.lib.expression.exceptions import ControlFlowException
+from authentik.lib.sync.mapper import PropertyMappingManager
+from authentik.lib.utils.errors import exception_to_string
 from authentik.policies.api.exec import PolicyTestResultSerializer
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.types import PolicyResult
-from authentik.providers.radius.models import RadiusProvider
+from authentik.providers.radius.models import RadiusProvider, RadiusProviderPropertyMapping
 
 
 class RadiusProviderSerializer(ProviderSerializer):
@@ -82,8 +91,51 @@ class RadiusOutpostConfigViewSet(ListModelMixin, GenericViewSet):
     filterset_fields = ["name"]
 
     class RadiusCheckAccessSerializer(PassiveSerializer):
-        attributes = CharField()
+        attributes = CharField(required=False)
         access = PolicyTestResultSerializer()
+
+    def get_attributes(self, provider: RadiusProvider):
+        mapper = PropertyMappingManager(
+            self.provider.property_mappings_group.all().order_by("name").select_subclasses(),
+            RadiusProviderPropertyMapping,
+            ["packet"],
+        )
+        dict = Dictionary("authentik/providers/radius/dictionaries/dictionary")
+
+        packet = AuthPacket()
+        packet.secret = provider.shared_secret
+        packet.dict = dict
+
+        def define_attribute(
+            vendor_code: int,
+            vendor_name: str,
+            attribute_name: str,
+            attribute_code: int,
+            attribute_type: str,
+        ):
+            """Dynamically add attribute to Radius packet"""
+            # Ensure the vendor exists
+            if vendor_code not in dict.vendors.backward or vendor_name not in dict.vendors.forward:
+                dict.vendors.Add(vendor_name, vendor_code)
+            if attribute_name not in dict.attributes:
+                dict.attributes[f"{vendor_name}-{attribute_name}"] = Attribute(
+                    attribute_name, attribute_code, attribute_type, vendor=vendor_name
+                )
+
+        mapper.globals["define_attribute"] = define_attribute
+
+        try:
+            for _ in mapper.iter_eval(self.request.user, self.request, packet=packet):
+                pass
+        except (PropertyMappingExpressionException, ControlFlowException) as exc:
+            # Value error can be raised when assigning invalid data to an attribute
+            Event.new(
+                EventAction.CONFIGURATION_ERROR,
+                message=f"Failed to evaluate property-mapping {exception_to_string(exc)}",
+                mapping=exc.mapping,
+            ).save()
+            return None
+        return b64encode(packet.RequestPacket()).decode()
 
     @extend_schema(
         request=None,
@@ -102,9 +154,12 @@ class RadiusOutpostConfigViewSet(ListModelMixin, GenericViewSet):
         engine.build()
         result = engine.result
         access_response = PolicyResult(result.passing)
+        attributes = None
+        if result.passing:
+            attributes = self.get_attributes(provider)
         response = self.RadiusCheckAccessSerializer(
             instance={
-                "attributes": provider.get_attributes(request),
+                "attributes": attributes,
                 "access": access_response,
             }
         )

@@ -1,16 +1,11 @@
 """Radius Provider"""
 
-from base64 import b64encode
-
 from django.db import models
-from django.http import HttpRequest
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
-from pyrad.dictionary import Attribute, Dictionary
-from pyrad.packet import AuthPacket
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import Provider
+from authentik.core.models import PropertyMapping, Provider
 from authentik.lib.generators import generate_id
 from authentik.outposts.models import OutpostModel
 
@@ -58,33 +53,9 @@ class RadiusProvider(OutpostModel, Provider):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.providers.radius.api import RadiusProviderSerializer
+        from authentik.providers.radius.api.providers import RadiusProviderSerializer
 
         return RadiusProviderSerializer
-
-    def get_attributes(self, request: HttpRequest) -> str:
-        input = {
-            "vendor_code": 9,
-            "vendor_name": "Cisco",
-            "attribute_name": "AVPair",
-            "attribute_code": 1,
-            "attribute_type": "string",
-        }
-
-        dict = Dictionary("authentik/providers/radius/dictionaries/dictionary")
-        dict.vendors.Add(input["vendor_name"], input["vendor_code"])
-        dict.attributes["Cisco-AVPair"] = Attribute(
-            input["attribute_name"],
-            input["attribute_code"],
-            input["attribute_type"],
-            vendor=input["vendor_name"],
-        )
-
-        p = AuthPacket()
-        p.secret = self.shared_secret
-        p.dict = dict
-        p["Cisco-AVPair"] = "shell:priv-level=15"
-        return b64encode(p.RequestPacket()).decode()
 
     def __str__(self):
         return f"Radius Provider {self.name}"
@@ -92,3 +63,25 @@ class RadiusProvider(OutpostModel, Provider):
     class Meta:
         verbose_name = _("Radius Provider")
         verbose_name_plural = _("Radius Providers")
+
+
+class RadiusProviderPropertyMapping(PropertyMapping):
+
+    @property
+    def component(self) -> str:
+        return "ak-property-mapping-radius-form"
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.providers.radius.api.property_mappings import (
+            RadiusProviderPropertyMappingSerializer,
+        )
+
+        return RadiusProviderPropertyMappingSerializer
+
+    def __str__(self):
+        return f"Radius Property Mapping {self.name}"
+
+    class Meta:
+        verbose_name = _("Radius Property Mapping")
+        verbose_name_plural = _("Radius Property Mappings")
