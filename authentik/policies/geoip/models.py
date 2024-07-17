@@ -5,10 +5,10 @@ from itertools import chain
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils.translation import gettext as _
+from django_countries.fields import CountryField
 from rest_framework.serializers import BaseSerializer
 
 from authentik.policies.exceptions import PolicyException
-from authentik.policies.geoip.countries import COUNTRIES
 from authentik.policies.geoip.exceptions import GeoIPNotFoundException
 from authentik.policies.models import Policy
 from authentik.policies.types import PolicyRequest, PolicyResult
@@ -19,9 +19,7 @@ class GeoIPPolicy(Policy):
     address."""
 
     asns = ArrayField(models.IntegerField(), blank=True, default=list)
-    countries = ArrayField(
-        models.CharField(choices=COUNTRIES, max_length=2), blank=True, default=list
-    )
+    countries = CountryField(multiple=True, blank=True)
 
     @property
     def serializer(self) -> type[BaseSerializer]:

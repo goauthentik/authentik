@@ -1,6 +1,8 @@
 import { BasePolicyForm } from "@goauthentik/admin/policies/BasePolicyForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
+import "@goauthentik/elements/ak-dual-select";
+import { DataProvision } from "@goauthentik/elements/ak-dual-select/types";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -10,7 +12,7 @@ import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { App, GeoIPPolicy, PoliciesApi, TypeCreate } from "@goauthentik/api";
+import { GeoIPPolicy, Iso3166Api, PoliciesApi } from "@goauthentik/api";
 
 @customElement("ak-policy-geoip-form")
 export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
@@ -24,13 +26,7 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
         if (data.asns?.toString() === "") {
             data.asns = [];
         } else {
-            data.asns = data.asns.split(",").map(Number);
-        }
-
-        if (data.countries?.toString() === "") {
-            data.countries = [];
-        } else {
-            data.countries = data.countries.split(",");
+            data.asns = (data.asns as unknown as string).split(",").map(Number);
         }
 
         if (this.instance) {
@@ -95,16 +91,35 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Countries")} name="countries">
-                        <input
-                            type="text"
-                            value="${ifDefined(this.instance?.countries || "")}"
-                            class="pf-c-form-control"
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "List of ISO-3166-1 alpha-2 country codes. Comma separated. E.g. NO,DK,SE",
-                            )}
-                        </p>
+                        <ak-dual-select-provider
+                            .provider=${(page: number, search?: string): Promise<DataProvision> => {
+                                return new Iso3166Api(DEFAULT_CONFIG)
+                                    .iso3166List()
+                                    .then((results) => {
+                                        if (!search) return results;
+                                        return results.filter((result) =>
+                                            result.name
+                                                .toLowerCase()
+                                                .includes(search.toLowerCase()),
+                                        );
+                                    })
+                                    .then((results) => {
+                                        return {
+                                            options: results.map((country) => [
+                                                country.code,
+                                                country.name,
+                                            ]),
+                                        };
+                                    });
+                            }}
+                            .selected=${(this.instance?.countries ?? []).map((country) => [
+                                country.code,
+                                country.name,
+                            ])}
+                            available-label="${msg("Available Countries")}"
+                            selected-label="${msg("Selected Countries")}"
+                        >
+                        </ak-dual-select-provider>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>`;

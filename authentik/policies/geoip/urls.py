@@ -1,5 +1,11 @@
 """API URLs"""
 
-from authentik.policies.geoip.api import GeoIPPolicyViewSet
+from django.urls import path
 
-api_urlpatterns = [("policies/geoip", GeoIPPolicyViewSet)]
+from authentik.policies.geoip.api import GeoIPPolicyViewSet
+from authentik.policies.geoip.views import ISO3166View
+
+api_urlpatterns = [
+    ("policies/geoip", GeoIPPolicyViewSet),
+    path("iso-3166/", ISO3166View.as_view(), name="iso-3166-view"),
+]

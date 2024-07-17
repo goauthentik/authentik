@@ -60,6 +60,7 @@ SHARED_APPS = [
     "django_filters",
     "drf_spectacular",
     "django_prometheus",
+    "django_countries",
     "pgactivity",
     "pglock",
     "channels",
