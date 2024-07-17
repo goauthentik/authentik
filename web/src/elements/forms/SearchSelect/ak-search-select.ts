@@ -223,7 +223,7 @@ export class SearchSelect<T> extends CustomEmitterElement(AkControlElement) {
 
         return html`<ak-search-select-view
             .options=${options}
-            .value=${value}
+            value=${ifDefined(value)}
             ?blankable=${this.blankable}
             name=${ifDefined(this.name)}
             placeholder=${this.placeholder}

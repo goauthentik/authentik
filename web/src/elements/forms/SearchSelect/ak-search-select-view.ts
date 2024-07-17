@@ -125,6 +125,11 @@ export class SearchSelectView extends AKElement {
      */
     optionsMap: Map<string, string> = new Map();
 
+    /**
+     * Controls when focus should be re-acquired
+     */
+    focusGuard: boolean = false;
+
     static get styles() {
         return [PFBase, PFForm, PFFormControl, PFSelect];
     }
@@ -168,19 +173,31 @@ export class SearchSelectView extends AKElement {
         this.open = false;
         this.value = event.value;
         this.displayValue = this.value ? (this.optionsMap.get(this.value) ?? this.value ?? "") : "";
+        this.inputRef.value?.focus();
+        this.focusGuard = true;
         this.dispatchEvent(new SearchSelectSelectEvent(this.value));
     }
 
     @bound
     onClose(event: SearchSelectCloseEvent) {
         event.stopPropagation();
-        this.inputRef.value?.focus();
-        this.open = false;
+        // "Gets focus" comes after "loses focus," so the check for focus must be scheduled after
+        // the event thunk terminates.
+        window.setTimeout(() => {
+            this.open = this.inputRef.value?.matches(":focus") ?? false;
+            if (this.open) {
+                this.inputRef.value?.focus();
+                return;
+            }
+        }, 0);
     }
 
     @bound
     onFocus(event: FocusEvent) {
-        this.onOpenEvent(event);
+        if (!this.focusGuard) {
+            this.onOpenEvent(event);
+        }
+        this.focusGuard = false;
     }
 
     @bound
@@ -207,7 +224,7 @@ export class SearchSelectView extends AKElement {
     onFocusOut(event: FocusEvent) {
         event.stopPropagation();
         window.setTimeout(() => {
-            if (!this.menuRef.value?.hasFocus()) {
+            if (!this.menuRef.value?.hasFocus() && !this.inputRef.value?.matches(":focus")) {
                 this.open = false;
             }
         }, 0);
@@ -219,7 +236,7 @@ export class SearchSelectView extends AKElement {
         }
         if (changed.has("value")) {
             this.displayValue = this.value
-                ? (this.optionsMap.get(this.value) ?? this.value ?? "")
+                ? (this.optionsMap.get(this.value ?? "") ?? this.value ?? "")
                 : "";
         }
     }
@@ -245,7 +262,7 @@ export class SearchSelectView extends AKElement {
                             @focus=${this.onFocus}
                             @click=${this.onClick}
                             @keydown=${this.onKeydown}
-                            @focusout=${this.onFocusOut}
+                            @blur=${this.onFocusOut}
                             value=${this.displayValue}
                         />
                     </div>

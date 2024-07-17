@@ -79,7 +79,7 @@ export class AkKeyboardController implements ReactiveController {
     }
 
     hostVisible() {
-        this.items[this.index].focus();
+        this.items[this.index]?.focus();
     }
 
     get current() {
