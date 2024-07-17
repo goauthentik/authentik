@@ -231,14 +231,11 @@ ${prompt.initialValue}</textarea
 
     shouldRenderInWrapper(prompt: StagePrompt): boolean {
         // Special types that aren't rendered in a wrapper
-        if (
+        return !(
             prompt.type === PromptTypeEnum.Static ||
             prompt.type === PromptTypeEnum.Hidden ||
             prompt.type === PromptTypeEnum.Separator
-        ) {
-            return false;
-        }
-        return true;
+        );
     }
 
     renderField(prompt: StagePrompt): TemplateResult {
@@ -310,5 +307,11 @@ ${prompt.initialValue}</textarea
             <footer class="pf-c-login__main-footer">
                 <ul class="pf-c-login__main-footer-links"></ul>
             </footer>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-prompt": PromptStage;
     }
 }

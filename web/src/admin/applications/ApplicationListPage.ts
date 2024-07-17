@@ -164,3 +164,9 @@ export class ApplicationListPage extends TablePage<Application> {
         </ak-forms-modal>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-list": ApplicationListPage;
+    }
+}

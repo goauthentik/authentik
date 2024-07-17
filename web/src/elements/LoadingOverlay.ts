@@ -38,3 +38,9 @@ export class LoadingOverlay extends AKElement {
         </ak-empty-state>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-loading-overlay": LoadingOverlay;
+    }
+}

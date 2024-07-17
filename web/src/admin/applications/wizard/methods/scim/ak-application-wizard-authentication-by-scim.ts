@@ -152,3 +152,9 @@ export class ApplicationWizardAuthenticationBySCIM extends BaseProviderPanel {
 }
 
 export default ApplicationWizardAuthenticationBySCIM;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-wizard-authentication-by-scim": ApplicationWizardAuthenticationBySCIM;
+    }
+}

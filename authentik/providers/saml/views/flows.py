@@ -16,7 +16,6 @@ from authentik.flows.challenge import (
     AutoSubmitChallengeResponse,
     Challenge,
     ChallengeResponse,
-    ChallengeTypes,
 )
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
 from authentik.flows.stage import ChallengeStageView
@@ -81,7 +80,6 @@ class SAMLFlowFinalView(ChallengeStageView):
             return super().get(
                 self.request,
                 **{
-                    "type": ChallengeTypes.NATIVE.value,
                     "component": "ak-stage-autosubmit",
                     "title": self.executor.plan.context.get(
                         PLAN_CONTEXT_TITLE,

@@ -103,3 +103,9 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
         ];
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-oauth-access-token-list": UserOAuthAccessTokenList;
+    }
+}

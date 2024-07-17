@@ -207,3 +207,9 @@ export class AkWizardFrame extends CustomEmitterElement(ModalButton) {
 }
 
 export default AkWizardFrame;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-wizard-frame": AkWizardFrame;
+    }
+}

@@ -10,7 +10,7 @@ from structlog.stdlib import get_logger
 
 from authentik.brands.models import Brand
 from authentik.core.models import Application
-from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
+from authentik.flows.challenge import Challenge, ChallengeResponse
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_SSO, FlowPlanner
@@ -141,7 +141,6 @@ class OAuthDeviceCodeStage(ChallengeStageView):
     def get_challenge(self, *args, **kwargs) -> Challenge:
         return OAuthDeviceCodeChallenge(
             data={
-                "type": ChallengeTypes.NATIVE.value,
                 "component": "ak-provider-oauth2-device-code",
             }
         )

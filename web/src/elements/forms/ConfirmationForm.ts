@@ -86,3 +86,9 @@ export class ConfirmationForm extends ModalButton {
             </footer>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-forms-confirm": ConfirmationForm;
+    }
+}

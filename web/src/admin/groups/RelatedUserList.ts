@@ -479,3 +479,10 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
             </div>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-related-list": RelatedUserList;
+        "ak-user-related-add": RelatedUserAdd;
+    }
+}

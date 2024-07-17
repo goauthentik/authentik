@@ -104,3 +104,9 @@ export class UserOAuthRefreshTokenList extends Table<TokenModel> {
         ];
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-oauth-refresh-token-list": UserOAuthRefreshTokenList;
+    }
+}

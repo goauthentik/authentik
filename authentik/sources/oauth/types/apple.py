@@ -9,7 +9,7 @@ from jwt import decode, encode
 from rest_framework.fields import CharField
 from structlog.stdlib import get_logger
 
-from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
+from authentik.flows.challenge import Challenge, ChallengeResponse
 from authentik.sources.oauth.clients.oauth2 import OAuth2Client
 from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.registry import SourceType, registry
@@ -130,6 +130,5 @@ class AppleType(SourceType):
                 "scope": "name email",
                 "redirect_uri": args["redirect_uri"],
                 "state": args["state"],
-                "type": ChallengeTypes.NATIVE.value,
             }
         )

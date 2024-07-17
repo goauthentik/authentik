@@ -187,3 +187,9 @@ export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
             </ak-form-group>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-user-login-form": UserLoginStageForm;
+    }
+}

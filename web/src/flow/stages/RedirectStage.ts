@@ -101,3 +101,9 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
             </footer> `;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-redirect": RedirectStage;
+    }
+}
