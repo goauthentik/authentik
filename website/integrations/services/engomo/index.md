@@ -34,13 +34,9 @@ Provider:
 
 -   Name: `SP-engomo`
 -   Client type: `Public`    
--   Redirect URIs/Origins (RegEx) #1: `https://engomo.company/auth` (for composer)
--   Redirect URIs/Origins (RegEx) #2: `com.engomo.engomo://callback/` (for app)
+-   Redirect URIs/Origins (RegEx): `https://engomo.company/auth` and `com.engomo.engomo://callback/`
 -   Signing Key: `ak.cert`
--   Scopes: `authentik default OAuth Mapping: OpenID 'email'`
--   Scopes: `authentik default OAuth Mapping: OpenID 'offline_access'`
--   Scopes: `authentik default OAuth Mapping: OpenID 'openid'`
--   Scopes: `engomo.mapping`
+-   Scopes: `authentik default OAuth Mapping: OpenID 'email'` and `authentik default OAuth Mapping: OpenID 'offline_access'` and `authentik default OAuth Mapping: OpenID 'openid'` and `engomo.mapping`
 -   Note the Client ID and Client Secret.
 
 > [!IMPORTANT]
