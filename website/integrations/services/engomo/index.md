@@ -63,7 +63,7 @@ Navigate to `https://engomo.company/composer` and log in with your admin credent
 -   Add a new authentication method by clicking on the plus icon on the right.
 -   Name: `authentik`
 -   Type: `OpenID Connect`
--   Click on Create.
+-   Click **Create**.
 -   Set the `Issuer` to the authentik FQDN `https://authentik.company/application/o/engomo`.
 -   Set the `Client ID` to the Client ID from the SP-engomo provider inside authentik.
 -   Set the `Client Secret` to the Client Secret from the SP-engomo provider inside authentik.
