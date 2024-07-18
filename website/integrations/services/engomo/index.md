@@ -4,7 +4,7 @@ title: Engomo Composer + App Login
 
 <span class="badge badge--secondary">Support level: Community</span>
 
-## What is Engomo
+## What is engomo
 
 > Engomo is an enterprise application to create apps for smartphones/tablets based on Android, iOS or iPadOS.
 > -- https://engomo.com/
