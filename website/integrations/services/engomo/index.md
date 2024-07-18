@@ -20,7 +20,7 @@ The following placeholders will be used:
 -   `engomo.mapping` is the name of the Scope Mapping.
 -   `ak.cert` = The authentik self-signed certificate you use for the service provider.
 
-## Custom Property Mapping
+## authentik configuration
 
 Create a new Scope Mapping under the Customization settings (Property Mapping).
 
