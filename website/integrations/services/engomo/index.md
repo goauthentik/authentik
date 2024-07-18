@@ -1,5 +1,5 @@
 ---
-title: Engomo Composer + App Login
+title: engomo
 ---
 
 <span class="badge badge--secondary">Support level: Community</span>
