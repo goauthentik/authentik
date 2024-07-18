@@ -54,7 +54,7 @@ Application:
 -   Slug: `engomo`
 -   Launch URL: `https://engomo.company/`
 
-## Engomo Configuration
+## engomo configuration
 
 Navigate to `https://engomo.company/composer` and login with your admin credentials.
 
