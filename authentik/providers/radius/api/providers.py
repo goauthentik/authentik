@@ -96,7 +96,7 @@ class RadiusOutpostConfigViewSet(ListModelMixin, GenericViewSet):
 
     def get_attributes(self, provider: RadiusProvider):
         mapper = PropertyMappingManager(
-            self.provider.property_mappings_group.all().order_by("name").select_subclasses(),
+            provider.property_mappings_group.all().order_by("name").select_subclasses(),
             RadiusProviderPropertyMapping,
             ["packet"],
         )
