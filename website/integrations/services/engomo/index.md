@@ -9,7 +9,7 @@ title: Engomo Composer + App Login
 > engomo is an low-code app development platform to create enterprise apps for smartphones and tablets based on Android, iOS, or iPadOS.
 > -- https://engomo.com/
 >
-> This guide explains how to setup a Engomo to use authentik as OAUTH provider for the application login on the smartphone/tablet and login to the admin WebGUI (composer).
+> This guide explains how to set up engomo to use authentik as the OAUTH provider for the application login on the smartphone/tablet and login to the admin WebGUI (composer).
 
 ## Preparation
 
