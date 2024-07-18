@@ -28,7 +28,7 @@ In authentik, create a new scope mapping. To do so, log in to the Admin interfac
 -   `profile` is the value for the Scope name.
 -   `return {"preferred_username": request.user.email,}` is the value for the Expression.
 
-Create an application and OAuth2/OpenID Provider in authentik. Create a OAuth2/OpenID Provider with the following parameters:
+Create an application and OAuth2/OpenID provider in authentik. Use the following parameters for the OAuth2/OpenID provider::
 
 Provider:
 
