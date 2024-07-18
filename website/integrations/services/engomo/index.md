@@ -66,7 +66,7 @@ Navigate to `https://engomo.company/composer` and log in with your admin credent
 -   Click **Create**.
 -   Set the `Issuer` to the authentik FQDN `https://authentik.company/application/o/engomo`.
 -   Set the `Client ID` to the Client ID from the SP-engomo provider that you created in authentik.
--   Set the `Client Secret` to the Client Secret from the SP-engomo provider inside authentik.
+-   Set the `Client Secret` to the Client Secret from the SP-engomo provider that you created in authentik.
 
 Leave the rest as default.
 
