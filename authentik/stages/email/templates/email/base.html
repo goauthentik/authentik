@@ -2,8 +2,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtm=l">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width" />
 
     <style type="text/css">
       body {
@@ -45,7 +45,7 @@
         border-top: 1px solid rgba(196, 196, 196, 0.2);
       }
 
-      .properties-table tr:first-child>td {
+      .properties-table tr:first-child > td {
         padding-top: 24px;
       }
 
@@ -53,7 +53,7 @@
         border-bottom: 1px solid rgba(196, 196, 196, 0.2);
       }
 
-      .properties-table tr:last-child>td {
+      .properties-table tr:last-child > td {
         padding-bottom: 24px;
       }
 
@@ -69,7 +69,7 @@
       }
       .btn-primary {
         text-decoration: none;
-        color: #FFF;
+        color: #fff;
         background-color: #348eda;
         border: solid #348eda;
         width: 100%;
@@ -89,29 +89,49 @@
   <body>
     <div class="wrapper">
       <center>
-        <div style="-ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; table-layout: fixed; width: 100%; max-width: 448px; padding: 60px 20px; font-size: 14px;">
+        <div
+          style="
+            -ms-text-size-adjust: 100%;
+            -webkit-text-size-adjust: 100%;
+            table-layout: fixed;
+            width: 100%;
+            max-width: 448px;
+            padding: 60px 20px;
+            font-size: 14px;
+          "
+        >
           <table border="0" align="center" width="100%">
             <tr>
-              <td style="padding: 20px;border: 1px solid #c1c1c1;">
-                <table width="100%" style="background-color: #FFFFFF; border-spacing: 0; margin-top: 15px;">
+              <td style="padding: 20px; border: 1px solid #c1c1c1">
+                <table
+                  width="100%"
+                  style="
+                    background-color: #ffffff;
+                    border-spacing: 0;
+                    margin-top: 15px;
+                  "
+                >
                   <tr height="80">
-                    <td align="center" style="padding: 20px 0;">
-                      <img src="{% block logo_url %}cid:logo.png{% endblock %}" border="0=" alt="authentik logo" class="flexibleImage logo">
+                    <td align="center" style="padding: 20px 0">
+                      <img
+                        src="{% block logo_url %}cid:logo.png{% endblock %}"
+                        border="0="
+                        alt="authentik logo"
+                        class="flexibleImage logo"
+                      />
                     </td>
                   </tr>
-                  {% block content %}
-                  {% endblock %}
+                  {% block content %} {% endblock %}
                 </table>
               </td>
             </tr>
             <tr>
               <td>
-                <table border="0" style="margin-top: 10px;" width="100%">
+                <table border="0" style="margin-top: 10px" width="100%">
                   <tr>
-                    <td style="background: #FAFBFB;">
-                      <table style="width: 100%;">
-                        {% block sub_content %}
-                        {% endblock %}
+                    <td style="background: #fafbfb">
+                      <table style="width: 100%">
+                        {% block sub_content %} {% endblock %}
                       </table>
                     </td>
                   </tr>
@@ -120,7 +140,13 @@
             </tr>
             <tr>
               <td align="center">
-                Powered by <a rel="noopener noreferrer" target="_blank" href="https://goauthentik.io?utm_source=authentik&utm_medium=email">authentik</a>.
+                Powered by
+                <a
+                  rel="noopener noreferrer"
+                  target="_blank"
+                  href="https://goauthentik.io?utm_source=authentik&utm_medium=email"
+                  >authentik</a
+                >.
               </td>
             </tr>
           </table>

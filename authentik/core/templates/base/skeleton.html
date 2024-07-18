@@ -1,30 +1,37 @@
-{% load static %}
-{% load i18n %}
-{% load authentik_core %}
+{% load static %} {% load i18n %} {% load authentik_core %}
 
-<!DOCTYPE html>
+<!doctype html>
 
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-        <title>{% block title %}{% trans title|default:brand.branding_title %}{% endblock %}</title>
-        <link rel="icon" href="{{ brand.branding_favicon }}">
-        <link rel="shortcut icon" href="{{ brand.branding_favicon }}">
-        {% block head_before %}
-        {% endblock %}
-        <link rel="stylesheet" type="text/css" href="{% static 'dist/authentik.css' %}">
-        <link rel="stylesheet" type="text/css" href="{% static 'dist/custom.css' %}" data-inject>
-        {% versioned_script "dist/poly-%v.js" %}
-        {% versioned_script "dist/standalone/loading/index-%v.js" %}
-        {% block head %}
-        {% endblock %}
-        <meta name="sentry-trace" content="{{ sentry_trace }}" />
-    </head>
-    <body>
-        {% block body %}
-        {% endblock %}
-        {% block scripts %}
-        {% endblock %}
-    </body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <title>
+      {% block title %}{% trans title|default:brand.branding_title %}{% endblock
+      %}
+    </title>
+    <link rel="icon" href="{{ brand.branding_favicon }}" />
+    <link rel="shortcut icon" href="{{ brand.branding_favicon }}" />
+    {% block head_before %} {% endblock %}
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'dist/authentik.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'dist/custom.css' %}"
+      data-inject
+    />
+    {% versioned_script "dist/poly-%v.js" %} {% versioned_script
+    "dist/standalone/loading/index-%v.js" %} {% block head %} {% endblock %}
+    <meta name="sentry-trace" content="{{ sentry_trace }}" />
+  </head>
+  <body>
+    {% block body %} {% endblock %} {% block scripts %} {% endblock %}
+  </body>
 </html>
