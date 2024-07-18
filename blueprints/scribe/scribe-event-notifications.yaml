@@ -55,7 +55,7 @@ entries:
       \    user_sources = user.attributes.get(\"goauthentik.io/user/sources\", None) if user is not None else None\n\
       \    if not user_sources:\n\
       \        return None\n\
-      \    applicable_sources = [\"okta-test-saml\"]\n\
+      \    applicable_sources = [\"okta-test-saml\", \"okta-marsh-saml\"]\n\
       \    intersection = set(user_sources) & set(applicable_sources)\n\
       \    return next(iter(intersection)) if intersection else None\n\n\
       action = notification.event.action\n\
