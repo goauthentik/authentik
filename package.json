@@ -1,8 +1,5 @@
 {
     "name": "@goauthentik/authentik",
     "version": "2024.6.1",
-    "private": true,
-    "devDependencies": {
-        "prettier": "3.3.3"
-    }
+    "private": true
 }

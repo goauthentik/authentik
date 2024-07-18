@@ -1,17 +1,20 @@
-{% extends "email/base.html" %} {% load i18n %} {% block content %}
+{% extends "email/base.html" %}
+
+{% load i18n %}
+
+{% block content %}
 <tr>
   <td align="center">
-    <h1>{{ title }}</h1>
+    <h1>
+      {{ title }}
+    </h1>
   </td>
 </tr>
 <tr>
   <td align="center">
     <table border="0">
       <tr>
-        <td
-          align="center"
-          style="max-width: 300px; padding: 20px 0; color: #212124"
-        >
+        <td align="center" style="max-width: 300px; padding: 20px 0; color: #212124;">
           {{ body }}
         </td>
       </tr>
@@ -34,11 +37,16 @@
     </table>
   </td>
 </tr>
-{% endblock %} {% block sub_content %} {% if source %}
+{% endblock %}
+
+{% block sub_content %}
+{% if source %}
 <tr>
-  <td style="padding: 20px; font-size: 12px; color: #212124" align="center">
-    {% blocktranslate with name=source.from %} This email was sent from the
-    notification transport <code>{{ name }}</code>. {% endblocktranslate %}
+  <td style="padding: 20px; font-size: 12px; color: #212124;" align="center">
+    {% blocktranslate with name=source.from %}
+    This email was sent from the notification transport <code>{{ name }}</code>.
+    {% endblocktranslate %}
   </td>
 </tr>
-{% endif %} {% endblock %}
+{% endif %}
+{% endblock %}

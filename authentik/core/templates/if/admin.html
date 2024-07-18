@@ -1,18 +1,17 @@
-{% extends "base/skeleton.html" %} {% load authentik_core %} {% block head %} {%
-versioned_script "dist/admin/AdminInterface-%v.js" %}
-<meta
-  name="theme-color"
-  content="#18191a"
-  media="(prefers-color-scheme: dark)"
-/>
-<meta
-  name="theme-color"
-  content="#ffffff"
-  media="(prefers-color-scheme: light)"
-/>
-{% include "base/header_js.html" %} {% endblock %} {% block body %}
+{% extends "base/skeleton.html" %}
+
+{% load authentik_core %}
+
+{% block head %}
+{% versioned_script "dist/admin/AdminInterface-%v.js" %}
+<meta name="theme-color" content="#18191a" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+{% include "base/header_js.html" %}
+{% endblock %}
+
+{% block body %}
 <ak-message-container></ak-message-container>
 <ak-interface-admin>
-  <ak-loading></ak-loading>
+    <ak-loading></ak-loading>
 </ak-interface-admin>
 {% endblock %}
