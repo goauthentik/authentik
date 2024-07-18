@@ -215,9 +215,6 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                             available-label=${msg("Available User Property Mappings")}
                             selected-label=${msg("Selected User Property Mappings")}
                         ></ak-dual-select-dynamic-selected>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Hold control/command to select multiple items.")}
-                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("NameID Property Mapping")}
