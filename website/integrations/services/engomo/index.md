@@ -60,7 +60,7 @@ Navigate to `https://engomo.company/composer` and login with your admin credenti
 
 -   Select `Server`.
 -   Select `Authentication`.
--   Add a new authentcation method by clicking on the plus icon on the right.
+-   Add a new authentication method by clicking on the plus icon on the right.
 -   Name: `authentik`
 -   Type: `OpenID Connect`
 -   Click on Create.
