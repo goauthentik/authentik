@@ -2,6 +2,7 @@ import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm"
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
+import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -11,18 +12,23 @@ import { TemplateResult, html } from "lit";
 import { ifDefined } from "lit-html/directives/if-defined.js";
 import { customElement } from "lit/decorators.js";
 
-import { FlowsInstancesListDesignationEnum, PropertymappingsApi, ProvidersApi, RadiusProvider, RadiusProviderPropertyMapping } from "@goauthentik/api";
-import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types";
+import {
+    FlowsInstancesListDesignationEnum,
+    PropertymappingsApi,
+    ProvidersApi,
+    RadiusProvider,
+    RadiusProviderPropertyMapping,
+} from "@goauthentik/api";
 
 export async function radiusPropertyMappingsProvider(page = 1, search = "") {
-    const propertyMappings = await new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsRadiusList(
-        {
-            ordering: "name",
-            pageSize: 20,
-            search: search.trim(),
-            page,
-        },
-    );
+    const propertyMappings = await new PropertymappingsApi(
+        DEFAULT_CONFIG,
+    ).propertymappingsRadiusList({
+        ordering: "name",
+        pageSize: 20,
+        search: search.trim(),
+        page,
+    });
     return {
         pagination: propertyMappings.pagination,
         options: propertyMappings.results.map((m) => [m.pk, m.name, m.name, m]),
