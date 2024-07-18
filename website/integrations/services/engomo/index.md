@@ -70,7 +70,7 @@ Navigate to `https://engomo.company/composer` and log in with your admin credent
 
 Leave the rest as default.
 
-## Engomo User Creation
+## engomo user creation
 
 Engomo doesn't create users automatically on signing in. So you have to do it manually right now.
 Navigate to `https://engomo.company/composer` and login with your admin credentials.
