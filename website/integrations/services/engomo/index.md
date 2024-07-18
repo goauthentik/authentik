@@ -75,3 +75,15 @@ Navigate to `https://engomo.company/composer` and log in with your admin credent
 - Click the plus button next in the Users section.
 - Select `authentik` as the Authenticator in the dropdown.
 - Create your user by typing in the email as the Username used in authentik.
+
+At this point you are done.
+
+## testing the login
+
+- Open a browser of your choice and open the URL `https://engomo.company`.
+- Enter the created user's email adress and hit the small arrow icon to log in.
+- You should be redirected to authentik with all its login flows you have created by yourself.
+- If you are redirected back to the `https://engomo.company/composer` URL you did everything correct.
+
+> [!IMPORTANT]
+> You will only have access to the app or composer page if you granted the permission to the newly created user of course.
