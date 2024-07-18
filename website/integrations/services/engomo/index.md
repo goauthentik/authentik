@@ -56,7 +56,7 @@ Application:
 
 ## engomo configuration
 
-Navigate to `https://engomo.company/composer` and login with your admin credentials.
+Navigate to `https://engomo.company/composer` and log in with your admin credentials.
 
 -   Select `Server`.
 -   Select `Authentication`.
