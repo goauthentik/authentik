@@ -62,7 +62,7 @@ class GeoIPPolicy(Policy):
 
         if not asn:
             raise PolicyException(
-                GeoIPNotFoundException("GeoIP: client IP not found in ASN database.")
+                GeoIPNotFoundException(_("GeoIP: client IP not found in ASN database."))
             )
 
         if asn not in self.asns:
@@ -78,7 +78,7 @@ class GeoIPPolicy(Policy):
 
         if not country:
             raise PolicyException(
-                GeoIPNotFoundException("GeoIP: client IP address not found in City database.")
+                GeoIPNotFoundException(_("GeoIP: client IP address not found in City database."))
             )
 
         if country not in self.countries:

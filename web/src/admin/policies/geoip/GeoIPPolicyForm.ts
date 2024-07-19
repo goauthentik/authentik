@@ -84,7 +84,7 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                         />
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "List of autonomous system numbers. Comma separated. E.g. 13335,15169,20940",
+                                "List of autonomous system numbers. Comma separated. E.g. 13335, 15169, 20940",
                             )}
                         </p>
                     </ak-form-element-horizontal>
