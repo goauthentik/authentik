@@ -42,6 +42,9 @@ export const Challenge: StoryObj = {
             pendingUser: "foo",
             pendingUserAvatar: "https://picsum.photos/64",
             errorMessage: "This is an error message",
+            flowInfo: {
+                title: "lorem ipsum foo bar baz",
+            },
         } as AccessDeniedChallenge,
     },
     argTypes: {
