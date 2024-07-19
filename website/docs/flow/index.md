@@ -2,9 +2,11 @@
 title: Overview
 ---
 
-Flows are a major component in authentik. In conjunction with stages and policies, flows are at the heart of our system of building blocks, used to define and execute the workflows of authentication.
+Flows are a major component in authentik. In conjunction with stages and [policies](../policies/index.md), flows are at the heart of our system of building blocks, used to define and execute the workflows of authentication.
 
-A flow is a method of describing a sequence of stages. A stage represents a single verification or logic step. By defining and connecting a series of stages within a flow, and then attaching [policies](../policies/index.md) to stages as needed, you can build a highly flexible process for authenticating users, enrolling them, and more.
+There are over a dozen default, out-of-the box flows availble in authentik. You can also [create](#create-a-flow) your own custom flow, using the Admin interface.
+
+A flow is a method of describing a sequence of stages. A stage represents a single verification or logic step. By connecting a series of stages within a flow (and optionally attaching policies as needed) you can build a highly flexible process for authenticating users, enrolling them, and more.
 
 For example, a standard login flow would consist of the following stages:
 
@@ -15,7 +17,18 @@ When these stages are successfully completed, authentik logs in the user.
 
 Upon flow execution, a _flow plan_ containing all stages is generated. This means that all attached policies are evaluated upon execution. This behaviour can be altered by enabling the **Evaluate when stage is run** option on the binding.
 
-The determine which flow should be used, authentik will first check which default authentication flow is configured in the active [**Brand**](../core/brands.md). If no default is configured there, the policies in all flows with the matching designation are checked, and the first flow with matching policies sorted by `slug` will be used.
+To determine which flow should be used, authentik will first check which default authentication flow is configured in the active [**Brand**](../core/brands.md). If no default is configured there, the policies in all flows with the matching designation are checked, and the first flow with matching policies sorted by `slug` will be used.
+
+## Create a flow
+
+To create a flow, follow these steps:
+
+1. Log in as an admin to authentik, and go to the Admin interface.
+2. In the Admin interface, navigate to **Flows and Stages -> Flows**.
+3. Click **Create**, and select the types of policy.
+4. Define the flow using the [configuration settings](#flow-configuration-options), and then click **Finish**.
+
+After creating the flow, you can bind [policies](../policies/index.md) and stages to it to further customize the user's log in and authentication process.
 
 ## Permissions
 
@@ -33,7 +46,7 @@ Starting with authentik 2022.8, flows will be exported as YAML, but JSON-based f
 
 ## Flow configuration options
 
-When creating or editing a flow, you can set the following configuration options.
+When creating or editing a flow in the Admin interface, you can set the following configuration options.
 
 ### Designation
 

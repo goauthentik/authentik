@@ -2,20 +2,26 @@
 title: Policies
 ---
 
-## Event-matcher policy
+Policies provide customization and flexibility when defining your users' login and authentication experience.
+
+## Create a policy
+
+To create a policy, follow these steps:
+
+1. Log in as an admin to authentik, and go to the Admin interface.
+2. In the Admin interface, navigate to **Customization -> Policies**.
+3. Click **Create**, and select the types of policy.
+4. Define the policy and click **Finish**.
+
+After creating the policy, you can bind it to either a [flow](../flow/index.md) or to a stage.
+
+### Event-matcher policy
 
 This policy is used by the events subsystem. You can use this policy to match events by multiple different criteria, to choose when you get notified.
 
 ## Expression Policy
 
 See [Expression Policy](expression.mdx).
-
-## Have I Been Pwned Policy
-
-:::info
-This policy is deprecated since authentik 2022.11.0, as this can be done with the password policy now.
-:::
-This policy checks the hashed password against the [Have I Been Pwned](https://haveibeenpwned.com/) API. This only sends the first 5 characters of the hashed password. The remaining comparison is done within authentik.
 
 ## Password-Expiry Policy
 
@@ -44,3 +50,10 @@ authentik keeps track of failed login attempts by source IP and attempted userna
 This policy can be used, for example, to prompt clients with a low score to pass a captcha before they can continue.
 
 To make sure this policy is executed correctly, set _Evaluate when stage is run_ when using it with a flow.
+
+## Have I Been Pwned Policy
+
+:::info
+This policy is deprecated since authentik 2022.11.0, as this can be done with the password policy now.
+:::
+This policy checks the hashed password against the [Have I Been Pwned](https://haveibeenpwned.com/) API. This only sends the first 5 characters of the hashed password. The remaining comparison is done within authentik.
