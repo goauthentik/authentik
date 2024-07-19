@@ -97,9 +97,6 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                         <p class="pf-c-form__helper-text">
                             ${msg("Selection of backends to test the password against.")}
                         </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Hold control/command to select multiple items.")}
-                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Configuration flow")}
