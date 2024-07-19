@@ -44,6 +44,9 @@ class GeoIPPolicy(Policy):
         if self.countries:
             results.append(self.passes_country(request))
 
+        if not results:
+            return PolicyResult(True)
+
         passing = any(r.passing for r in results)
         messages = chain(*[r.messages for r in results])
 
