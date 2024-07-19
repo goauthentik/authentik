@@ -81,7 +81,7 @@ At this point you are done.
 ## testing the login
 
 - Open a browser of your choice and open the URL `https://engomo.company`.
-- Enter the created user's email adress and hit the small arrow icon to log in.
+- Enter the created user's email address and click the small arrow icon to log in.
 - You should be redirected to authentik with all its login flows you have created by yourself.
 - If you are redirected back to the `https://engomo.company/composer` URL you did everything correct.
 
