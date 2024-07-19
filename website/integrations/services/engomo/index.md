@@ -78,7 +78,7 @@ Navigate to `https://engomo.company/composer` and log in with your admin credent
 
 At this point you are done.
 
-## testing the login
+## Test the login
 
 - Open a browser of your choice and open the URL `https://engomo.company`.
 - Enter the created user's email address and click the small arrow icon to log in.
