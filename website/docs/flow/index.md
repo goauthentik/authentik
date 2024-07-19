@@ -4,7 +4,7 @@ title: Overview
 
 Flows are a major component in authentik. In conjunction with stages and [policies](../policies/index.md), flows are at the heart of our system of building blocks, used to define and execute the workflows of authentication.
 
-There are over a dozen default, out-of-the box flows availble in authentik. You can also [create](#create-a-flow) your own custom flow, using the Admin interface.
+There are over a dozen default, out-of-the box flows available in authentik. You can also [create](#create-a-flow) your own custom flow, using the Admin interface.
 
 A flow is a method of describing a sequence of stages. A stage represents a single verification or logic step. By connecting a series of stages within a flow (and optionally attaching policies as needed) you can build a highly flexible process for authenticating users, enrolling them, and more.
 
