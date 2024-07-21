@@ -6,7 +6,7 @@ title: MeshCentral
 
 ## What is MeshCentral
 
-> MeshCentral is an open source, multi-platform, self-hosted, feature packed web site for remote device management.
+> MeshCentral is a free, open source, web-based platform for remote device management. 
 >
 > -- https://meshcentral.com
 
