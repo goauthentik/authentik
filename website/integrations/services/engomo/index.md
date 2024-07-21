@@ -82,8 +82,8 @@ At this point you are done.
 
 - Open a browser of your choice and open the URL `https://engomo.company`.
 - Enter the created user's email address and click the small arrow icon to log in.
-- You should be redirected to authentik with all its login flows you have created by yourself.
+- You should be redirected to authentik (with the login flows you created) and then authentik should redirect you back to `https://engomo.company/composer` URL.
 - If you are redirected back to the `https://engomo.company/composer` URL you did everything correct.
 
 > [!IMPORTANT]
-> You will only have access to the app or composer page if you granted the permission to the newly created user of course.
+> The created user will only have access to the app or composer page if you granted the permission to the user of course.
