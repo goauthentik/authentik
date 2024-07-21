@@ -17,7 +17,7 @@ from authentik.core.models import (
     User,
     UserTypes,
 )
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import SerializerModel, internal_model
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction, OutgoingSyncProvider
 
@@ -31,6 +31,7 @@ def default_scopes() -> list[str]:
     ]
 
 
+@internal_model
 class GoogleWorkspaceProviderUser(SerializerModel):
     """Mapping of a user and provider to a Google user ID"""
 
@@ -57,6 +58,7 @@ class GoogleWorkspaceProviderUser(SerializerModel):
         return f"Google Workspace Provider User {self.user_id} to {self.provider_id}"
 
 
+@internal_model
 class GoogleWorkspaceProviderGroup(SerializerModel):
     """Mapping of a group and provider to a Google group ID"""
 

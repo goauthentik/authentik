@@ -8,15 +8,11 @@ from dacite.config import Config
 from dacite.core import from_dict
 from dacite.exceptions import DaciteError
 from deepmerge import always_merger
-from django.contrib.auth.models import Permission
-from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import FieldError
 from django.db.models import Model
 from django.db.models.query_utils import Q
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
-from guardian.models import UserObjectPermission
-from guardian.shortcuts import assign_perm
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import BaseSerializer, Serializer
 from structlog.stdlib import BoundLogger, get_logger
@@ -31,111 +27,15 @@ from authentik.blueprints.v1.common import (
     EntryInvalidError,
 )
 from authentik.blueprints.v1.meta.registry import BaseMetaModel, registry
-from authentik.core.models import (
-    AuthenticatedSession,
-    GroupSourceConnection,
-    PropertyMapping,
-    Provider,
-    Session,
-    Source,
-    User,
-    UserSourceConnection,
-)
 from authentik.enterprise.license import LicenseKey
-from authentik.enterprise.models import LicenseUsage
-from authentik.enterprise.providers.google_workspace.models import (
-    GoogleWorkspaceProviderGroup,
-    GoogleWorkspaceProviderUser,
-)
-from authentik.enterprise.providers.microsoft_entra.models import (
-    MicrosoftEntraProviderGroup,
-    MicrosoftEntraProviderUser,
-)
-from authentik.enterprise.providers.ssf.models import StreamEvent
-from authentik.enterprise.stages.authenticator_endpoint_gdtc.models import (
-    EndpointDevice,
-    EndpointDeviceConnection,
-)
 from authentik.events.logs import LogEvent, capture_logs
-from authentik.events.models import SystemTask
 from authentik.events.utils import cleanse_dict
-from authentik.flows.models import FlowToken, Stage
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import SerializerModel, excluded_models
 from authentik.lib.sentry import SentryIgnoredException
-from authentik.lib.utils.reflection import get_apps
-from authentik.outposts.models import OutpostServiceConnection
-from authentik.policies.models import Policy, PolicyBindingModel
-from authentik.policies.reputation.models import Reputation
-from authentik.providers.oauth2.models import (
-    AccessToken,
-    AuthorizationCode,
-    DeviceToken,
-    RefreshToken,
-)
-from authentik.providers.rac.models import ConnectionToken
-from authentik.providers.scim.models import SCIMProviderGroup, SCIMProviderUser
-from authentik.rbac.models import Role
-from authentik.sources.scim.models import SCIMSourceGroup, SCIMSourceUser
-from authentik.stages.authenticator_webauthn.models import WebAuthnDeviceType
-from authentik.tenants.models import Tenant
 
 # Context set when the serializer is created in a blueprint context
 # Update website/docs/customize/blueprints/v1/models.md when used
 SERIALIZER_CONTEXT_BLUEPRINT = "blueprint_entry"
-
-
-def excluded_models() -> list[type[Model]]:
-    """Return a list of all excluded models that shouldn't be exposed via API
-    or other means (internal only, base classes, non-used objects, etc)"""
-
-    from django.contrib.auth.models import Group as DjangoGroup
-    from django.contrib.auth.models import User as DjangoUser
-
-    return (
-        # Django only classes
-        DjangoUser,
-        DjangoGroup,
-        ContentType,
-        Permission,
-        UserObjectPermission,
-        # Base classes
-        Provider,
-        Source,
-        PropertyMapping,
-        UserSourceConnection,
-        GroupSourceConnection,
-        Stage,
-        OutpostServiceConnection,
-        Policy,
-        PolicyBindingModel,
-        # Classes that have other dependencies
-        Session,
-        AuthenticatedSession,
-        # Classes which are only internally managed
-        # FIXME: these shouldn't need to be explicitly listed, but rather based off of a mixin
-        FlowToken,
-        LicenseUsage,
-        SCIMProviderGroup,
-        SCIMProviderUser,
-        Tenant,
-        SystemTask,
-        ConnectionToken,
-        AuthorizationCode,
-        AccessToken,
-        RefreshToken,
-        Reputation,
-        WebAuthnDeviceType,
-        SCIMSourceUser,
-        SCIMSourceGroup,
-        GoogleWorkspaceProviderUser,
-        GoogleWorkspaceProviderGroup,
-        MicrosoftEntraProviderUser,
-        MicrosoftEntraProviderGroup,
-        EndpointDevice,
-        EndpointDeviceConnection,
-        DeviceToken,
-        StreamEvent,
-    )
 
 
 def is_model_allowed(model: type[Model]) -> bool:
@@ -158,16 +58,6 @@ def transaction_rollback():
         pass
 
 
-def rbac_models() -> dict:
-    models = {}
-    for app in get_apps():
-        for model in app.get_models():
-            if not is_model_allowed(model):
-                continue
-            models[model._meta.model_name] = app.label
-    return models
-
-
 class Importer:
     """Import Blueprint from raw dict or YAML/JSON"""
 
@@ -186,10 +76,7 @@ class Importer:
 
     def default_context(self):
         """Default context"""
-        return {
-            "goauthentik.io/enterprise/licensed": LicenseKey.get_total().status().is_valid,
-            "goauthentik.io/rbac/models": rbac_models(),
-        }
+        return {"goauthentik.io/enterprise/licensed": LicenseKey.get_total().is_valid()}
 
     @staticmethod
     def from_string(yaml_input: str, context: dict | None = None) -> "Importer":
@@ -256,10 +143,7 @@ class Importer:
             return None
 
         model_app_label, model_name = entry.get_model(self._import).split(".")
-        try:
-            model: type[SerializerModel] = registry.get_model(model_app_label, model_name)
-        except LookupError as exc:
-            raise EntryInvalidError.from_entry(exc, entry) from exc
+        model: type[SerializerModel] = registry.get_model(model_app_label, model_name)
         # Don't use isinstance since we don't want to check for inheritance
         if not is_model_allowed(model):
             raise EntryInvalidError.from_entry(f"Model {model} not allowed", entry)
@@ -339,7 +223,10 @@ class Importer:
         try:
             full_data = self.__update_pks_for_attrs(entry.get_attrs(self._import))
         except ValueError as exc:
-            raise EntryInvalidError.from_entry(exc, entry) from exc
+            raise EntryInvalidError.from_entry(
+                exc,
+                entry,
+            ) from exc
         always_merger.merge(full_data, updated_identifiers)
         serializer_kwargs["data"] = full_data
 
@@ -359,15 +246,6 @@ class Importer:
                 serializer=serializer,
             ) from exc
         return serializer
-
-    def _apply_permissions(self, instance: Model, entry: BlueprintEntry):
-        """Apply object-level permissions for an entry"""
-        for perm in entry.get_permissions(self._import):
-            if perm.user is not None:
-                assign_perm(perm.permission, User.objects.get(pk=perm.user), instance)
-            if perm.role is not None:
-                role = Role.objects.get(pk=perm.role)
-                role.assign_permission(perm.permission, obj=instance)
 
     def apply(self) -> bool:
         """Apply (create/update) models yaml, in database transaction"""
@@ -433,7 +311,6 @@ class Importer:
                 if "pk" in entry.identifiers:
                     self.__pk_map[entry.identifiers["pk"]] = instance.pk
                 entry._state = BlueprintEntryState(instance)
-                self._apply_permissions(instance, entry)
             elif state == BlueprintEntryDesiredState.ABSENT:
                 instance: Model | None = serializer.instance
                 if instance.pk:

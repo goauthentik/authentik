@@ -12,6 +12,7 @@ from authentik.lib.models import (
     InheritanceAutoManager,
     InheritanceForeignKey,
     SerializerModel,
+    internal_model,
 )
 from authentik.policies.exceptions import PolicyException
 from authentik.policies.types import PolicyRequest, PolicyResult
@@ -24,6 +25,7 @@ class PolicyEngineMode(models.TextChoices):
     MODE_ANY = "any", _("any, any policy must pass")  # type: "PolicyEngineMode"
 
 
+@internal_model
 class PolicyBindingModel(models.Model):
     """Base Model for objects that have policies applied to them."""
 
@@ -170,6 +172,7 @@ class PolicyBinding(SerializerModel):
         ]
 
 
+@internal_model
 class Policy(SerializerModel, CreatedUpdatedModel):
     """Policies which specify if a user is authorized to use an Application. Can be overridden by
     other types to add other fields, more logic, etc."""

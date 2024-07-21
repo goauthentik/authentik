@@ -36,6 +36,7 @@ from authentik.lib.models import (
     CreatedUpdatedModel,
     DomainlessFormattedURLValidator,
     SerializerModel,
+    internal_model,
 )
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel
@@ -408,6 +409,7 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
         return get_avatar(self)
 
 
+@internal_model
 class Provider(SerializerModel):
     """Application-independent Provider instance. For example SAML2 Remote, OAuth2 Application"""
 
@@ -692,6 +694,7 @@ class SourceGroupMatchingModes(models.TextChoices):
     )
 
 
+@internal_model
 class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     """Base Authentication source, i.e. an OAuth Provider, SAML Remote or LDAP Server"""
 
@@ -835,6 +838,7 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         ]
 
 
+@internal_model
 class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
     """Connection between User and Source."""
 
@@ -860,6 +864,7 @@ class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
         )
 
 
+@internal_model
 class GroupSourceConnection(SerializerModel, CreatedUpdatedModel):
     """Connection between Group and Source."""
 
@@ -989,6 +994,7 @@ class Token(SerializerModel, ManagedModel, ExpiringModel):
         ).save()
 
 
+@internal_model
 class PropertyMapping(SerializerModel, ManagedModel):
     """User-defined key -> x mapping which can be used by providers to expose extra data."""
 
@@ -1028,6 +1034,7 @@ class PropertyMapping(SerializerModel, ManagedModel):
         verbose_name_plural = _("Property Mappings")
 
 
+@internal_model
 class Session(ExpiringModel, AbstractBaseSession):
     """User session with extra fields for fast access"""
 
@@ -1074,6 +1081,7 @@ class Session(ExpiringModel, AbstractBaseSession):
         raise NotImplementedError
 
 
+@internal_model
 class AuthenticatedSession(SerializerModel):
     session = models.OneToOneField(Session, on_delete=models.CASCADE, primary_key=True)
     # We use the session as primary key, but we need the API to be able to reference

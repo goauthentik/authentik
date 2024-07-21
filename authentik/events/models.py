@@ -41,7 +41,11 @@ from authentik.events.utils import (
     sanitize_dict,
     sanitize_item,
 )
-from authentik.lib.models import DomainlessURLValidator, SerializerModel
+from authentik.lib.models import (
+    DomainlessURLValidator,
+    SerializerModel,
+    internal_model,
+)
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.time import timedelta_from_string
@@ -665,6 +669,7 @@ class TaskStatus(models.TextChoices):
     ERROR = "error"
 
 
+@internal_model
 class SystemTask(SerializerModel, ExpiringModel):
     """Info about a system task running in the background along with details to restart the task"""
 

@@ -33,7 +33,11 @@ from authentik.core.models import (
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
-from authentik.lib.models import InheritanceForeignKey, SerializerModel
+from authentik.lib.models import (
+    InheritanceForeignKey,
+    SerializerModel,
+    internal_model,
+)
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.errors import exception_to_string
 from authentik.outposts.controllers.k8s.utils import get_namespace
@@ -115,6 +119,7 @@ class OutpostServiceConnectionState:
     healthy: bool
 
 
+@internal_model
 class OutpostServiceConnection(models.Model):
     """Connection details for an Outpost Controller, like Docker or Kubernetes"""
 

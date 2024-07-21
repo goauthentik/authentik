@@ -10,11 +10,12 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import BackchannelProvider, Group, PropertyMapping, User, UserTypes
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import SerializerModel, internal_model
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 
 
+@internal_model
 class SCIMProviderUser(SerializerModel):
     """Mapping of a user and provider to a SCIM user ID"""
 
@@ -37,6 +38,7 @@ class SCIMProviderUser(SerializerModel):
         return f"SCIM Provider User {self.user_id} to {self.provider_id}"
 
 
+@internal_model
 class SCIMProviderGroup(SerializerModel):
     """Mapping of a group and provider to a SCIM user ID"""
 

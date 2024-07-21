@@ -15,7 +15,7 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.blueprints.apps import ManagedAppConfig
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import SerializerModel, internal_model
 from authentik.lib.utils.time import timedelta_string_validator
 
 LOGGER = get_logger()
@@ -39,6 +39,7 @@ def _validate_schema_name(name):
         )
 
 
+@internal_model
 class Tenant(TenantMixin, SerializerModel):
     """Tenant"""
 
