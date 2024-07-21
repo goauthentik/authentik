@@ -47,6 +47,7 @@ Edit the `config.json` for your MeshCentral deployment, and add the following co
             },
         (...)
 ```
+> For Docker deployments, this file should be located in the host directory you mapped to `/opt/meshcentral/meshcentral-data` in the container.
 
 > Remember to follow JSON formatting rules.
 
