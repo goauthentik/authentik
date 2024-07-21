@@ -46,7 +46,7 @@ Leave the rest as default values. The durations can be changed as needed.
 
 Application:
 
--   Name: `Engomo`
+-   Name: `engomo`
 -   Slug: `engomo`
 -   Launch URL: `https://engomo.company/`
 
