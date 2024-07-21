@@ -24,7 +24,7 @@ The following placeholders will be used:
 
 In authentik, create a new scope mapping. To do so, log in and navigate to the Admin interface, then go to **Customization --> Property Mapping** and click **Create**.
 
--   `engomo.mapping` is the value for the Name.
+-   `engomo.mapping` is the value of the Mapping's name.
 -   `profile` is the value for the Scope name.
 -   `return {"preferred_username": request.user.email,}` is the value for the Expression.
 
