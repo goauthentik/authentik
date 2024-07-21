@@ -48,7 +48,7 @@ Edit the `config.json` for your MeshCentral deployment, and add the following co
         (...)
 ```
 
-> Remember to follow JSON formatting rules
+> Remember to follow JSON formatting rules.
 
 Restart the MeshCentral server instance and browse to `https://meshcentral.company`, and you should be greeted with a new button to allow signing in with OIDC:
 
