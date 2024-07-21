@@ -123,3 +123,9 @@ export class AkApplicationWizardHint extends AKElement implements ShowHintContro
 }
 
 export default AkApplicationWizardHint;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-wizard-hint": AkApplicationWizardHint;
+    }
+}

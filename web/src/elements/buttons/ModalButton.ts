@@ -131,3 +131,9 @@ export class ModalButton extends AKElement {
             ${this.open ? this.renderModal() : nothing}`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-modal-button": ModalButton;
+    }
+}

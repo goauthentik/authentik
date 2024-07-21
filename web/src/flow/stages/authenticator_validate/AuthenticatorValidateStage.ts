@@ -270,3 +270,9 @@ export class AuthenticatorValidateStage
                       </footer>`}`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-authenticator-validate": AuthenticatorValidateStage;
+    }
+}

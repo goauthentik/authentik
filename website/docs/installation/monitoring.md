@@ -6,7 +6,7 @@ authentik can be easily monitored in multiple ways.
 
 ## Server monitoring
 
-Configure your monitoring software to send requests to `/-/health/live/`, which will return a `HTTP 204` response as long as authentik is running. You can also send HTTP requests to `/-/health/ready/`, which will return `HTTP 204` if both PostgreSQL and Redis connections can be/have been established correctly.
+Configure your monitoring software to send requests to `/-/health/live/`, which will return a `HTTP 200` response as long as authentik is running. You can also send HTTP requests to `/-/health/ready/`, which will return `HTTP 200` if both PostgreSQL and Redis connections can be/have been established correctly.
 
 ## Worker monitoring
 

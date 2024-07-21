@@ -148,7 +148,6 @@ SPECTACULAR_SETTINGS = {
     },
     "ENUM_NAME_OVERRIDES": {
         "EventActions": "authentik.events.models.EventAction",
-        "ChallengeChoices": "authentik.flows.challenge.ChallengeTypes",
         "FlowDesignationEnum": "authentik.flows.models.FlowDesignation",
         "FlowLayoutEnum": "authentik.flows.models.FlowLayout",
         "PolicyEngineMode": "authentik.policies.models.PolicyEngineMode",

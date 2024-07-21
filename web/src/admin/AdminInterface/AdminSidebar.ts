@@ -151,7 +151,7 @@ export class AkAdminSidebar extends WithCapabilitiesConfig(AKElement) {
         const renderOneSidebarItem: SidebarRenderer = ([path, label, attributes, children]) => {
             const properties = Array.isArray(attributes)
                 ? { ".activeWhen": attributes }
-                : attributes ?? {};
+                : (attributes ?? {});
             if (path) {
                 properties["path"] = path;
             }
@@ -210,5 +210,11 @@ export class AkAdminSidebar extends WithCapabilitiesConfig(AKElement) {
                   </ak-sidebar-item>
               `
             : nothing;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-admin-sidebar": AkAdminSidebar;
     }
 }

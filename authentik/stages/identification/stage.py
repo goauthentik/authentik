@@ -20,7 +20,6 @@ from authentik.events.utils import sanitize_item
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
-    ChallengeTypes,
     RedirectChallenge,
 )
 from authentik.flows.models import FlowDesignation
@@ -65,6 +64,7 @@ class IdentificationChallenge(Challenge):
 
     user_fields = ListField(child=CharField(), allow_empty=True, allow_null=True)
     password_fields = BooleanField()
+    allow_show_password = BooleanField(default=False)
     application_pre = CharField(required=False)
     flow_designation = ChoiceField(FlowDesignation.choices)
 
@@ -194,11 +194,12 @@ class IdentificationStageView(ChallengeStageView):
         current_stage: IdentificationStage = self.executor.current_stage
         challenge = IdentificationChallenge(
             data={
-                "type": ChallengeTypes.NATIVE.value,
                 "component": "ak-stage-identification",
                 "primary_action": self.get_primary_action(),
                 "user_fields": current_stage.user_fields,
                 "password_fields": bool(current_stage.password_stage),
+                "allow_show_password": bool(current_stage.password_stage)
+                and current_stage.password_stage.allow_show_password,
                 "show_source_labels": current_stage.show_source_labels,
                 "flow_designation": self.executor.flow.designation,
             }

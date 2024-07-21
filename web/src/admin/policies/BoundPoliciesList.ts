@@ -172,6 +172,11 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
             html`<ak-empty-state header=${msg("No Policies bound.")} icon="pf-icon-module">
                 <div slot="body">${msg("No policies are currently bound to this object.")}</div>
                 <div slot="primary">
+                    <ak-policy-wizard
+                        createText=${msg("Create and bind Policy")}
+                        ?showBindingPage=${true}
+                        bindingTarget=${ifDefined(this.target)}
+                    ></ak-policy-wizard>
                     <ak-forms-modal size=${PFSize.Medium}>
                         <span slot="submit"> ${msg("Create")} </span>
                         <span slot="header"> ${msg("Create Binding")} </span>
@@ -182,7 +187,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                         >
                         </ak-policy-binding-form>
                         <button slot="trigger" class="pf-c-button pf-m-primary">
-                            ${msg("Create Binding")}
+                            ${msg("Bind existing policy/group/user")}
                         </button>
                     </ak-forms-modal>
                 </div>
@@ -206,8 +211,14 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                 >
                 </ak-policy-binding-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">
-                    ${msg("Bind existing policy")}
+                    ${msg("Bind existing policy/group/user")}
                 </button>
             </ak-forms-modal> `;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-bound-policies-list": BoundPoliciesList;
     }
 }
