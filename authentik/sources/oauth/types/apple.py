@@ -107,7 +107,7 @@ class AppleType(SourceType):
 
     authorization_code_auth_method = AuthorizationCodeAuthMethod.POST_BODY
 
-    def login_challenge(self, source: OAuthSource, request: HttpRequest) -> Challenge:
+    def login_challenge(self, source: OAuthSource, request: HttpRequest) -> AppleLoginChallenge:
         """Pre-general all the things required for the JS SDK"""
         apple_client = AppleOAuthClient(
             source,
