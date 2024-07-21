@@ -42,7 +42,7 @@ Provider:
 > [!IMPORTANT]
 > Redirect URIs => write the values line by line.
 
-Leave the rest as default values. You can of course adjust durations.
+Leave the rest as default values. The durations can be changed as needed.
 
 Application:
 
