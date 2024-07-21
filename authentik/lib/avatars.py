@@ -190,12 +190,12 @@ def avatar_mode_url(user: "User", mode: str) -> str | None:
     }
 
     hostname = urlparse(formatted_url).hostname
-    cache_key_hostname_available = "goauthentik.io/lib/avatars/" + hostname + "/available"
+    cache_key_hostname_available = f"goauthentik.io/lib/avatars/{hostname}/available"
 
     if not cache.get(cache_key_hostname_available, True):
         return None
 
-    cache_key_full = "goauthentik.io/lib/avatars/" + hostname + "/avatars/" + mail_hash
+    cache_key_full = "goauthentik.io/lib/avatars/{hostname}/avatars/{mail_hash}"
 
     if cache.has_key(cache_key_full):
         cache.touch(cache_key_full)
