@@ -7,6 +7,7 @@ from sys import version as python_version
 from typing import TypedDict
 
 from cryptography.hazmat.backends.openssl.backend import backend
+from django.apps import apps
 from django.conf import settings
 from django.utils.timezone import now
 from django.views.debug import SafeExceptionReporterFilter
@@ -21,8 +22,6 @@ from authentik.core.api.utils import PassiveSerializer
 from authentik.enterprise.license import LicenseKey
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.reflection import get_env
-from authentik.outposts.apps import MANAGED_OUTPOST
-from authentik.outposts.models import Outpost
 from authentik.rbac.permissions import HasPermission
 
 
@@ -103,6 +102,12 @@ class SystemInfoSerializer(PassiveSerializer):
 
     def get_embedded_outpost_host(self, request: Request) -> str:
         """Get the FQDN configured on the embedded outpost"""
+        if not apps.is_installed("authentik.outposts"):
+            return ""
+
+        from authentik.outposts.apps import MANAGED_OUTPOST
+        from authentik.outposts.models import Outpost
+
         outposts = Outpost.objects.filter(managed=MANAGED_OUTPOST)
         if not outposts.exists():  # pragma: no cover
             return ""
