@@ -6,7 +6,7 @@ title: MeshCentral
 
 ## What is MeshCentral
 
-> MeshCentral is a free, open source, web-based platform for remote device management. 
+> MeshCentral is a free, open source, web-based platform for remote device management.
 >
 > -- https://meshcentral.com
 
@@ -26,7 +26,7 @@ Create an OAuth2/OpenID provider with the following parameters:
 -   Scopes: OpenID, Email and Profile
 -   Signing Key: Select any available key
 
-Note the Client ID and Client Secret values. 
+Note the Client ID and Client Secret values.
 
 Next, create an application, using the provider you've created above.
 
@@ -54,4 +54,4 @@ Restart the MeshCentral server instance and browse to `https://meshcentral.compa
 
 ![MeshCentral sign-in page with OIDC enabled](meshcentral.png)
 
->Should you need to enable any advanced OIDC configurations, please see [Using the OpenID Connect Strategy on MeshCentral](https://ylianst.github.io/MeshCentral/meshcentral/openidConnectStrategy/).
+> Should you need to enable any advanced OIDC configurations, please see [Using the OpenID Connect Strategy on MeshCentral](https://ylianst.github.io/MeshCentral/meshcentral/openidConnectStrategy/).
