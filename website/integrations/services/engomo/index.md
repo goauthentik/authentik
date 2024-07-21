@@ -18,7 +18,7 @@ The following placeholders will be used:
 -   `engomo.company` is the FQDN of the engomo install.
 -   `authentik.company` is the FQDN of the authentik install.
 -   `engomo.mapping` is the name of the Scope Mapping.
--   `ak.cert` = The authentik self-signed certificate you use for the service provider.
+-   `ak.cert` is the self-signed certificate that will be used for the service provider.
 
 ## authentik configuration
 
