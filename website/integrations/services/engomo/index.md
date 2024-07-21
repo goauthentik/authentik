@@ -22,7 +22,7 @@ The following placeholders will be used:
 
 ## authentik configuration
 
-In authentik, create a new scope mapping. To do so, log in to the Admin interface, and navigate to **Customization-->Property Mapping** and then click **Create**.
+In authentik, create a new scope mapping. To do so, log in and navigate to the Admin interface, then go to **Customization --> Property Mapping** and click **Create**.
 
 -   `engomo.mapping` is the value for the Name.
 -   `profile` is the value for the Scope name.
