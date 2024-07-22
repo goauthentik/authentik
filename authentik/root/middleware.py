@@ -274,9 +274,13 @@ class ChannelsLoggingMiddleware:
         self.log(scope)
         try:
             return await self.inner(scope, receive, send)
+        except DenyConnection:
+            return await send({"type": "websocket.close"})
         except Exception as exc:
+            if settings.DEBUG:
+                raise exc
             LOGGER.warning("Exception in ASGI application", exc=exc)
-            raise DenyConnection() from None
+            return await send({"type": "websocket.close"})
 
     def log(self, scope: dict, **kwargs):
         """Log request"""

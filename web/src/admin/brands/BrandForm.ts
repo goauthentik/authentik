@@ -296,3 +296,9 @@ export class BrandForm extends ModelForm<Brand, string> {
             </ak-form-group>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-brand-form": BrandForm;
+    }
+}

@@ -131,3 +131,9 @@ Bindings to groups/users are checked against the user of the event.`,
         </td>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-event-rule-list": RuleListPage;
+    }
+}

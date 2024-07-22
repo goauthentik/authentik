@@ -322,3 +322,9 @@ export class ApplicationViewPage extends AKElement {
         </ak-tabs>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-view": ApplicationViewPage;
+    }
+}

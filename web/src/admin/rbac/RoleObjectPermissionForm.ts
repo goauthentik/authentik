@@ -105,3 +105,9 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
         </form>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-rbac-role-object-permission-form": RoleObjectPermissionForm;
+    }
+}

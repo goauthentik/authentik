@@ -137,3 +137,9 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
             </footer>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-consent": ConsentStage;
+    }
+}

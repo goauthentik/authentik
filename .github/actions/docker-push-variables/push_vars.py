@@ -50,8 +50,9 @@ else:
             f"{name}:gh-{safe_branch_name}-{int(time())}-{sha[:7]}{suffix}",  # Use by FluxCD
         ]
 
-image_main_tag = image_tags[0]
+image_main_tag = image_tags[0].split(":")[-1]
 image_tags_rendered = ",".join(image_tags)
+image_names_rendered = ",".join(set(name.split(":")[0] for name in image_tags))
 
 with open(os.environ["GITHUB_OUTPUT"], "a+", encoding="utf-8") as _output:
     print(f"shouldBuild={should_build}", file=_output)
@@ -59,4 +60,6 @@ with open(os.environ["GITHUB_OUTPUT"], "a+", encoding="utf-8") as _output:
     print(f"version={version}", file=_output)
     print(f"prerelease={prerelease}", file=_output)
     print(f"imageTags={image_tags_rendered}", file=_output)
+    print(f"imageNames={image_names_rendered}", file=_output)
     print(f"imageMainTag={image_main_tag}", file=_output)
+    print(f"imageMainName={image_tags[0]}", file=_output)

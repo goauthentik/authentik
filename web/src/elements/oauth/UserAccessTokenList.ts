@@ -63,15 +63,15 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Refresh Tokens(s)")}
+            objectLabel=${msg("Access Tokens(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: ExpiringBaseGrantModel) => {
-                return new Oauth2Api(DEFAULT_CONFIG).oauth2RefreshTokensUsedByList({
+                return new Oauth2Api(DEFAULT_CONFIG).oauth2AccessTokensUsedByList({
                     id: item.pk,
                 });
             }}
             .delete=${(item: ExpiringBaseGrantModel) => {
-                return new Oauth2Api(DEFAULT_CONFIG).oauth2RefreshTokensDestroy({
+                return new Oauth2Api(DEFAULT_CONFIG).oauth2AccessTokensDestroy({
                     id: item.pk,
                 });
             }}
@@ -101,5 +101,11 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
                 })}
             </ak-chip-group>`,
         ];
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-oauth-access-token-list": UserOAuthAccessTokenList;
     }
 }

@@ -128,3 +128,9 @@ export class UserAssignedObjectPermissionTable extends Table<UserAssignedObjectP
         return baseRow;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-rbac-user-object-permission-table": UserAssignedObjectPermissionTable;
+    }
+}

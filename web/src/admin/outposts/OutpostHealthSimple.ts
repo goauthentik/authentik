@@ -64,3 +64,9 @@ export class OutpostHealthSimpleElement extends AKElement {
         >`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-outpost-health-simple": OutpostHealthSimpleElement;
+    }
+}

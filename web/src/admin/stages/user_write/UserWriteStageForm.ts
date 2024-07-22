@@ -196,3 +196,9 @@ export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
             </ak-form-group>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-user-write-form": UserWriteStageForm;
+    }
+}
