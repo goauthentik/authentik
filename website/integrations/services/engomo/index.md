@@ -36,8 +36,7 @@ Provider:
 -   Client type: `Public`    
 -   Redirect URIs/Origins (RegEx): `https://engomo.company/auth` and `com.engomo.engomo://callback/`
 -   Signing Key: `ak.cert`
--   Scopes: `authentik default OAuth Mapping: OpenID 'email'` and `authentik default OAuth Mapping: OpenID 'offline_access'` and `authentik default OAuth Mapping: OpenID 'openid'` and `engomo.mapping`
--   Note the Client ID and Client Secret.
+-   Scopes: `authentik default OAuth Mapping: OpenID 'email', 'offline_access', OpenID 'openid'` and `engomo.mapping`
 
 > [!IMPORTANT]
 > Redirect URIs => write the values line by line.
