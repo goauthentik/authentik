@@ -6,12 +6,16 @@ from django.core.exceptions import FieldError
 from django.db.utils import IntegrityError
 from ldap3 import ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES, SUBTREE
 
-from authentik.core.expression.exceptions import SkipObjectException
+from authentik.core.expression.exceptions import (
+    PropertyMappingExpressionException,
+    SkipObjectException,
+)
 from authentik.core.models import User
+from authentik.core.sources.mapper import SourceMapper
 from authentik.events.models import Event, EventAction
-from authentik.lib.sync.mapper import PropertyMappingManager
-from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
-from authentik.sources.ldap.sync.base import LDAP_UNIQUENESS, BaseLDAPSynchronizer, flatten
+from authentik.lib.sync.outgoing.exceptions import StopSync
+from authentik.sources.ldap.models import LDAP_UNIQUENESS, LDAPSource, flatten
+from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
 from authentik.sources.ldap.sync.vendor.freeipa import FreeIPA
 from authentik.sources.ldap.sync.vendor.ms_ad import MicrosoftActiveDirectory
 
@@ -21,11 +25,8 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
 
     def __init__(self, source: LDAPSource):
         super().__init__(source)
-        self.mapper = PropertyMappingManager(
-            self._source.property_mappings.all().order_by("name").select_subclasses(),
-            LDAPPropertyMapping,
-            ["ldap", "dn", "source"],
-        )
+        self.mapper = SourceMapper(source)
+        self.manager = self.mapper.get_manager(User, ["ldap", "dn"])
 
     @staticmethod
     def name() -> str:
@@ -63,13 +64,25 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                 continue
             uniq = flatten(attributes[self._source.object_uniqueness_field])
             try:
-                defaults = self.build_user_properties(user_dn, **attributes)
+                defaults = {
+                    k: flatten(v)
+                    for k, v in self.mapper.build_object_properties(
+                        object_type=User,
+                        manager=self.manager,
+                        user=None,
+                        request=None,
+                        dn=user_dn,
+                        ldap=attributes,
+                    ).items()
+                }
                 self._logger.debug("Writing user with attributes", **defaults)
                 if "username" not in defaults:
                     raise IntegrityError("Username was not set by propertymappings")
                 ak_user, created = self.update_or_create_attributes(
                     User, {f"attributes__{LDAP_UNIQUENESS}": uniq}, defaults
                 )
+            except PropertyMappingExpressionException as exc:
+                raise StopSync(exc, None, exc.mapping) from exc
             except SkipObjectException:
                 continue
             except (IntegrityError, FieldError, TypeError, AttributeError) as exc:

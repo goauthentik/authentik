@@ -4479,6 +4479,22 @@
                     "title": "Enrollment flow",
                     "description": "Flow to use when enrolling new users."
                 },
+                "user_property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "User property mappings"
+                },
+                "group_property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Group property mappings"
+                },
                 "policy_engine_mode": {
                     "type": "string",
                     "enum": [
@@ -4603,24 +4619,6 @@
                     "type": "string",
                     "format": "uuid",
                     "title": "Sync parent group"
-                },
-                "property_mappings": {
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "title": "Property mappings"
-                },
-                "property_mappings_group": {
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "format": "uuid",
-                        "description": "Property mappings used for group creation/updating."
-                    },
-                    "title": "Property mappings group",
-                    "description": "Property mappings used for group creation/updating."
                 }
             },
             "required": []
@@ -4646,11 +4644,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Expression"
-                },
-                "object_field": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Object field"
                 }
             },
             "required": []
@@ -4687,6 +4680,22 @@
                     "format": "uuid",
                     "title": "Enrollment flow",
                     "description": "Flow to use when enrolling new users."
+                },
+                "user_property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "User property mappings"
+                },
+                "group_property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Group property mappings"
                 },
                 "policy_engine_mode": {
                     "type": "string",
@@ -4865,6 +4874,22 @@
                     "title": "Enrollment flow",
                     "description": "Flow to use when enrolling new users."
                 },
+                "user_property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "User property mappings"
+                },
+                "group_property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Group property mappings"
+                },
                 "policy_engine_mode": {
                     "type": "string",
                     "enum": [
@@ -4978,6 +5003,22 @@
                     "format": "uuid",
                     "title": "Enrollment flow",
                     "description": "Flow to use when enrolling new users."
+                },
+                "user_property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "User property mappings"
+                },
+                "group_property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Group property mappings"
                 },
                 "policy_engine_mode": {
                     "type": "string",

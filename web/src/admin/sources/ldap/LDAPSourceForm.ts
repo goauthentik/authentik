@@ -28,7 +28,7 @@ import {
 async function propertyMappingsProvider(page = 1, search = "") {
     const propertyMappings = await new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsLdapList(
         {
-            ordering: "managed,object_field",
+            ordering: "managed",
             pageSize: 20,
             search: search.trim(),
             page,
@@ -291,12 +291,12 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("User Property Mappings")}
-                        name="propertyMappings"
+                        name="userPropertyMappings"
                     >
                         <ak-dual-select-dynamic-selected
                             .provider=${propertyMappingsProvider}
                             .selector=${makePropertyMappingsSelector(
-                                this.instance?.propertyMappings,
+                                this.instance?.userPropertyMappings,
                             )}
                             available-label="${msg("Available User Property Mappings")}"
                             selected-label="${msg("Selected User Property Mappings")}"
@@ -307,12 +307,12 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Group Property Mappings")}
-                        name="propertyMappingsGroup"
+                        name="groupPropertyMappings"
                     >
                         <ak-dual-select-dynamic-selected
                             .provider=${propertyMappingsProvider}
                             .selector=${makePropertyMappingsSelector(
-                                this.instance?.propertyMappingsGroup,
+                                this.instance?.groupPropertyMappings,
                             )}
                             available-label="${msg("Available Group Property Mappings")}"
                             selected-label="${msg("Selected Group Property Mappings")}"

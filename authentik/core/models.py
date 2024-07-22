@@ -543,7 +543,12 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     user_path_template = models.TextField(default="goauthentik.io/sources/%(slug)s")
 
     enabled = models.BooleanField(default=True)
-    property_mappings = models.ManyToManyField("PropertyMapping", default=None, blank=True)
+    user_property_mappings = models.ManyToManyField(
+        "PropertyMapping", default=None, blank=True, related_name="source_userpropertymappings_set"
+    )
+    group_property_mappings = models.ManyToManyField(
+        "PropertyMapping", default=None, blank=True, related_name="source_grouppropertymappings_set"
+    )
     icon = models.FileField(
         upload_to="source-icons/",
         default=None,
@@ -607,6 +612,11 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         """Return component used to edit this object"""
         raise NotImplementedError
 
+    @property
+    def property_mapping_type(self) -> "type[PropertyMapping]":
+        """Return property mapping type used by this object"""
+        raise NotImplementedError
+
     def ui_login_button(self, request: HttpRequest) -> UILoginButton | None:
         """If source uses a http-based flow, return UI Information about the login
         button. If source doesn't use http-based flow, return None."""
@@ -616,6 +626,14 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         """Entrypoint to integrate with User settings. Can either return None if no
         user settings are available, or UserSettingSerializer."""
         return None
+
+    def get_base_user_properties(self, **kwargs) -> dict[str, Any | dict[str, Any]]:
+        """Get base properties for a user to build final properties upon."""
+        raise NotImplementedError
+
+    def get_base_group_properties(self, **kwargs) -> dict[str, Any | dict[str, Any]]:
+        """Get base properties for a group to build final properties upon."""
+        raise NotImplementedError
 
     def __str__(self):
         return str(self.name)

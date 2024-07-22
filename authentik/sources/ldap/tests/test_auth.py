@@ -32,7 +32,7 @@ class LDAPSyncTests(TestCase):
 
     def test_auth_direct_user_ad(self):
         """Test direct auth"""
-        self.source.property_mappings.set(
+        self.source.user_property_mappings.set(
             LDAPPropertyMapping.objects.filter(
                 Q(managed__startswith="goauthentik.io/sources/ldap/default-")
                 | Q(managed__startswith="goauthentik.io/sources/ldap/ms-")
@@ -63,7 +63,7 @@ class LDAPSyncTests(TestCase):
 
     def test_auth_synced_user_ad(self):
         """Test Cached auth"""
-        self.source.property_mappings.set(
+        self.source.user_property_mappings.set(
             LDAPPropertyMapping.objects.filter(
                 Q(managed__startswith="goauthentik.io/sources/ldap/default-")
                 | Q(managed__startswith="goauthentik.io/sources/ldap/ms-")
@@ -89,7 +89,7 @@ class LDAPSyncTests(TestCase):
     def test_auth_synced_user_openldap(self):
         """Test Cached auth"""
         self.source.object_uniqueness_field = "uid"
-        self.source.property_mappings.set(
+        self.source.user_property_mappings.set(
             LDAPPropertyMapping.objects.filter(
                 Q(name__startswith="authentik default LDAP Mapping")
                 | Q(name__startswith="authentik default OpenLDAP Mapping")
