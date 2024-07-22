@@ -9,7 +9,8 @@ from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import User
 from authentik.lib.generators import generate_key
 from authentik.sources.ldap.auth import LDAPBackend
-from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
+from authentik.sources.ldap.models import LDAP_DISTINGUISHED_NAME, LDAPPropertyMapping, LDAPSource
+from authentik.sources.ldap.sync.base import LDAP_UNIQUENESS
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
 from authentik.sources.ldap.tests.mock_ad import mock_ad_connection
 from authentik.sources.ldap.tests.mock_slapd import mock_slapd_connection
@@ -22,7 +23,7 @@ class LDAPSyncTests(TestCase):
 
     @apply_blueprint("system/sources-ldap.yaml")
     def setUp(self):
-        self.source = LDAPSource.objects.create(
+        self.source: LDAPSource = LDAPSource.objects.create(
             name="ldap",
             slug="ldap",
             base_dn="dc=goauthentik,dc=io",
@@ -60,6 +61,40 @@ class LDAPSyncTests(TestCase):
                 }
             )
             bind_mock.assert_not_called()
+
+    def test_auth_direct_user_ad_save(self):
+        """Test direct auth"""
+        self.source.property_mappings.set(
+            LDAPPropertyMapping.objects.filter(
+                Q(managed__startswith="goauthentik.io/sources/ldap/default")
+                | Q(managed__startswith="goauthentik.io/sources/ldap/ms")
+            )
+        )
+        self.source.sync_just_in_time = True
+        self.source.save()
+
+        raw_conn = mock_ad_connection(LDAP_PASSWORD)
+        bind_mock = Mock(wraps=raw_conn.bind)
+        raw_conn.bind = bind_mock
+        connection = MagicMock(return_value=raw_conn)
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            backend = LDAPBackend()
+            original_user: User = User.objects.create(
+                username="user0_sn",
+                attributes={
+                    LDAP_DISTINGUISHED_NAME: "cn=user0,ou=foo,ou=users,dc=goauthentik,dc=io",
+                    LDAP_UNIQUENESS: "S-117-6648368-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0"
+                    "-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0"
+                    "-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0"
+                    "-0-0-0-0-0-0-0-0-0-0-0-0-0",
+                },
+            )
+
+            created_user: User = backend.authenticate(
+                None, username="user0_sn", password=LDAP_PASSWORD
+            )
+            bind_mock.assert_not_called()
+            self.assertEqual(original_user.username, created_user.username)
 
     def test_auth_synced_user_ad(self):
         """Test Cached auth"""

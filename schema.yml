@@ -22160,6 +22160,10 @@ paths:
         schema:
           type: boolean
       - in: query
+        name: sync_just_in_time
+        schema:
+          type: boolean
+      - in: query
         name: sync_parent_group
         schema:
           type: string
@@ -37946,6 +37950,10 @@ components:
             LDAP
         sync_users:
           type: boolean
+        sync_just_in_time:
+          type: boolean
+          description: Sync users into Authentik JIT if they don't yet exist in the
+            database
         sync_users_password:
           type: boolean
           description: When a user changes their password, sync it back to LDAP. This
@@ -38085,6 +38093,10 @@ components:
             LDAP
         sync_users:
           type: boolean
+        sync_just_in_time:
+          type: boolean
+          description: Sync users into Authentik JIT if they don't yet exist in the
+            database
         sync_users_password:
           type: boolean
           description: When a user changes their password, sync it back to LDAP. This
@@ -42388,6 +42400,10 @@ components:
             LDAP
         sync_users:
           type: boolean
+        sync_just_in_time:
+          type: boolean
+          description: Sync users into Authentik JIT if they don't yet exist in the
+            database
         sync_users_password:
           type: boolean
           description: When a user changes their password, sync it back to LDAP. This

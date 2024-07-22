@@ -6,10 +6,10 @@ from structlog.stdlib import get_logger
 
 from authentik.core.auth import InbuiltBackend
 from authentik.core.models import User
-from authentik.sources.ldap.models import LDAPSource
+from authentik.sources.ldap.models import LDAP_DISTINGUISHED_NAME, LDAPSource
+from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
 
 LOGGER = get_logger()
-LDAP_DISTINGUISHED_NAME = "distinguishedName"
 
 
 class LDAPBackend(InbuiltBackend):
@@ -19,7 +19,7 @@ class LDAPBackend(InbuiltBackend):
         """Try to authenticate a user via ldap"""
         if "password" not in kwargs:
             return None
-        for source in LDAPSource.objects.filter(enabled=True):
+        for source in LDAPSource.objects.filter(enabled=True).order_by("slug"):
             LOGGER.debug("LDAP Auth attempt", source=source)
             user = self.auth_user(source, **kwargs)
             if user:
@@ -32,6 +32,7 @@ class LDAPBackend(InbuiltBackend):
         Returns True on success, otherwise False"""
         users = User.objects.filter(**filters)
         if not users.exists():
+            LOGGER.debug("User doesn't exist", filters=filters)
             return None
         user: User = users.first()
         if LDAP_DISTINGUISHED_NAME not in user.attributes:
@@ -41,11 +42,23 @@ class LDAPBackend(InbuiltBackend):
         # or has a password, but couldn't be authenticated by ModelBackend.
         # This means we check with a bind to see if the LDAP password has changed
         if self.auth_user_by_bind(source, user, password):
+            LOGGER.debug("Found bind successfully")
             if source.password_login_update_internal_password:
                 # Password given successfully binds to LDAP, so we save it in our Database
                 LOGGER.debug("Updating user's password in DB", user=user)
                 user.set_password(password, signal=False)
                 user.save()
+
+            if source.sync_just_in_time:
+                # Password given successfully binds to LDAP, so we sync in JIT
+                LOGGER.debug("Saving user just in time to DB", user=user)
+                sync = UserLDAPSynchronizer(source)
+                users = sync.search_users(user.attributes.get(LDAP_DISTINGUISHED_NAME))
+                if len(users) > 0:
+                    LOGGER.debug("Found user and saving them to DB", user=user)
+                    sync.sync(users)
+                else:
+                    LOGGER.debug("didn't find user", user=user)
             return user
         # Password doesn't match
         LOGGER.debug("Failed to bind, password invalid")
@@ -55,7 +68,6 @@ class LDAPBackend(InbuiltBackend):
         """Attempt authentication by binding to the LDAP server as `user`. This
         method should be avoided as its slow to do the bind."""
         # Try to bind as new user
-        LOGGER.debug("Attempting to bind as user", user=user)
         try:
             # source.connection also attempts to bind
             source.connection(

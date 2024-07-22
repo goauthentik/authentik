@@ -139,6 +139,26 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     <span class="pf-c-switch__label">${msg("Sync users")}</span>
                 </label>
             </ak-form-element-horizontal>
+            <ak-form-element-horizontal name="syncJustInTime">
+                <label class="pf-c-switch">
+                    <input
+                        class="pf-c-switch__input"
+                        type="checkbox"
+                        ?checked=${first(this.instance?.syncJustInTime, false)}
+                    />
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label">${msg("Sync Just In Time")}</span>
+                </label>
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "Enable this option to automatically sync users Just In Time into Authentik as they login/authenticate.",
+                    )}
+                </p>
+            </ak-form-element-horizontal>
             <ak-form-element-horizontal name="syncUsersPassword">
                 <label class="pf-c-switch">
                     <input

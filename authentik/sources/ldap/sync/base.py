@@ -18,8 +18,7 @@ from authentik.lib.merge import MERGE_LIST_UNIQUE
 from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.lib.sync.outgoing.exceptions import StopSync
 from authentik.lib.utils.errors import exception_to_string
-from authentik.sources.ldap.auth import LDAP_DISTINGUISHED_NAME
-from authentik.sources.ldap.models import LDAPSource
+from authentik.sources.ldap.models import LDAP_DISTINGUISHED_NAME, LDAPSource
 
 LDAP_UNIQUENESS = "ldap_uniq"
 
