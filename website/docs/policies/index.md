@@ -6,26 +6,26 @@ title: Policies
 
 This policy is used by the events subsystem. You can use this policy to match events by multiple different criteria, to choose when you get notified.
 
-## Expression Policy
+## Expression policy
 
-See [Expression Policy](expression.mdx).
+See [Expression policy](expression.mdx).
 
-## GeoIP Policy
+## GeoIP policy
 
-Use this policy for simple GeoIP lookups, such as country or ASN matching. (For a more advanced GeoIP lookup, use an [Expression Policy](expression.mdx).)
+Use this policy for simple GeoIP lookups, such as country or ASN matching. (For a more advanced GeoIP lookup, use an [Expression policy](expression.mdx).)
 
-## Have I Been Pwned Policy
+## Have I Been Pwned policy
 
 :::info
 This policy is deprecated since authentik 2022.11.0, as this can be done with the password policy now.
 :::
 This policy checks the hashed password against the [Have I Been Pwned](https://haveibeenpwned.com/) API. This only sends the first 5 characters of the hashed password. The remaining comparison is done within authentik.
 
-## Password-Expiry Policy
+## Password-Expiry policy
 
 This policy can enforce regular password rotation by expiring set passwords after a finite amount of time. This forces users to set a new password.
 
-## Password Policy
+## Password policy
 
 This policy allows you to specify password rules, such as length and required characters.
 The following rules can be set:
@@ -41,7 +41,7 @@ Starting with authentik 2022.11.0, the following checks can also be done with th
 -   Check the password hash against the database of [Have I Been Pwned](https://haveibeenpwned.com/). Only the first 5 characters of the hashed password are transmitted, the rest is compared in authentik
 -   Check the password against the password complexity checker [zxcvbn](https://github.com/dropbox/zxcvbn), which detects weak password on various metrics.
 
-## Reputation Policy
+## Reputation policy
 
 authentik keeps track of failed login attempts by source IP and attempted username. These values are saved as scores. Each failed login decreases the score for the client IP as well as the targeted username by 1 (one).
 
