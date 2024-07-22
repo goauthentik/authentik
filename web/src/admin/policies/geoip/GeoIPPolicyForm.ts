@@ -10,7 +10,7 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import { GeoIPPolicy, Iso3166Api, PoliciesApi } from "@goauthentik/api";
+import { GeoIPPolicy, PoliciesApi } from "@goauthentik/api";
 
 @customElement("ak-policy-geoip-form")
 export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
@@ -91,8 +91,8 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                     <ak-form-element-horizontal label=${msg("Countries")} name="countries">
                         <ak-dual-select-provider
                             .provider=${(page: number, search?: string): Promise<DataProvision> => {
-                                return new Iso3166Api(DEFAULT_CONFIG)
-                                    .iso3166List()
+                                return new PoliciesApi(DEFAULT_CONFIG)
+                                    .policiesGeoipIso3166List()
                                     .then((results) => {
                                         if (!search) return results;
                                         return results.filter((result) =>

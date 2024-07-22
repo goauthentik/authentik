@@ -8354,36 +8354,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /iso-3166/:
-    get:
-      operationId: iso_3166_list
-      description: Get all countries in ISO-3166-1
-      tags:
-      - iso-3166
-      security:
-      - authentik: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/DetailedCountryList'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
   /managed/blueprints/:
     get:
       operationId: managed_blueprints_list
@@ -12421,6 +12391,36 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /policies/geoip_iso3166/:
+    get:
+      operationId: policies_geoip_iso3166_list
+      description: Get all countries in ISO-3166-1
+      tags:
+      - policies
+      security:
+      - authentik: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DetailedCountryList'
           description: ''
         '400':
           content:
