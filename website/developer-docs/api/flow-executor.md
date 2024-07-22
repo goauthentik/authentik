@@ -1,18 +1,18 @@
 ---
-title: Flow executor
+title: Flow executor (backend)
 ---
 
-A big focus of authentik is the flows system, which allows you to combine and build complex conditional processes using stages and policies. Normally, these flows are executed in the browser using the authentik inbuilt flow executor (/if/flows).
+A big focus of authentik is the flows system, which allows you to combine and build complex conditional processes using stages and policies. Normally, these flows are automatically executed in the browser using authentik's [standard browser-based flow executor (/if/flows)](/docs/flow/executors/if-flow).
 
-However, any flow can be executed via an API from anywhere, in fact that is what the Web flow executor does. This means, you can, with a few requests, execute flows from anywhere, and integrate authentik even better.
+However, any flow can be executed via an API from anywhere, in fact that is what every flow executor does. With a few requests you can execute flows from anywhere, and integrate authentik even better.
 
 :::info
-Because the flow executor stores its state in the HTTP Session, so you need to ensure cookies between flow executor requests are persisted.
+Because the flow executor stores its state in the HTTP Session, so you need to ensure that cookies between flow executor requests are persisted.
 :::
 
 The main endpoint for flow execution is `/api/v3/flows/executor/:slug`.
 
-This endpoint accepts a query parameter called `query`, in which the flow executor sends the full Query-string.
+This endpoint accepts a query parameter called `query`, in which the flow executor sends the full query-string.
 
 To initiate a new flow, execute a GET request.
 

@@ -9,7 +9,7 @@ title: "Conceptual topic"
 wget https://raw.githubusercontent.com/goauthentik/authentik/main/website/developer-docs/docs/templates/conceptual.tmpl.md
 ```
 
-Edit your markdown file as you work, reading this page for the descriptions of each section. You can build out a "stub file" with just headers, then gradually add content to each section. Use screenshots sparingly, only for complex UIs where it is difficult to describe a UI element with words. Refer to our [General Guidelines](../writing-documentation#general-guidelines) for writing tips and authentik-specific rules.
+Edit your markdown file as you work, reading this page for the descriptions of each section. You can build out a "stub file" with just headers, then gradually add content to each section. Use screenshots sparingly, only for complex UIs where it is difficult to describe a UI element with words. Refer to our [General Guidelines](../writing-documentation#writing-guidelines) for writing tips and authentik-specific rules.
 :::
 
 Use a title that focuses on the feature, component, or technology you are writing about... for example, "About authentik polices" or "Understanding outposts". For conceptual docs, the verb in the title should indicate a concept, such as "About" or "Overview" or "Understanding", followed by the noun (the component or object you are writing about).

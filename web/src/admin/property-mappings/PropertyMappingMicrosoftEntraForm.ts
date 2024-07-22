@@ -62,11 +62,18 @@ export class PropertyMappingMicrosoftEntraForm extends BasePropertyMappingForm<M
                     ${msg("Expression using Python.")}
                     <a
                         target="_blank"
+                        rel="noopener noreferrer"
                         href="${docLink("/docs/property-mappings/expression?utm_source=authentik")}"
                     >
                         ${msg("See documentation for a list of all variables.")}
                     </a>
                 </p>
             </ak-form-element-horizontal>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-property-mapping-microsoft-entra-form": PropertyMappingMicrosoftEntraForm;
     }
 }

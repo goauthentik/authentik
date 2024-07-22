@@ -12,7 +12,7 @@ from rest_framework.serializers import Serializer
 from authentik.core.models import PropertyMapping, Source, UserSourceConnection
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.crypto.models import CertificateKeyPair
-from authentik.flows.challenge import ChallengeTypes, RedirectChallenge
+from authentik.flows.challenge import RedirectChallenge
 from authentik.flows.models import Flow
 from authentik.lib.expression.evaluator import BaseEvaluator
 from authentik.lib.utils.time import timedelta_string_validator
@@ -235,7 +235,6 @@ class SAMLSource(Source):
         return UILoginButton(
             challenge=RedirectChallenge(
                 data={
-                    "type": ChallengeTypes.REDIRECT.value,
                     "to": reverse(
                         "authentik_sources_saml:login",
                         kwargs={"source_slug": self.slug},

@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-03 00:08+0000\n"
+"POT-Creation-Date: 2024-06-05 00:07+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Marc Schmitt, 2024\n"
 "Language-Team: French (https://app.transifex.com/authentik/teams/119923/fr/)\n"
@@ -106,12 +106,14 @@ msgid "Brands"
 msgstr "Marques"
 
 #: authentik/core/api/providers.py
-msgid "SAML Provider from Metadata"
-msgstr "Fournisseur SAML depuis métadonnées"
-
-#: authentik/core/api/providers.py
-msgid "Create a SAML Provider by importing its Metadata."
-msgstr "Créer un fournisseur SAML en important ses métadonnées."
+msgid ""
+"When not set all providers are returned. When set to true, only backchannel "
+"providers are returned. When set to false, backchannel providers are "
+"excluded"
+msgstr ""
+"Si non défini, tous les fournisseurs sont retournés. Si vrai, seul les "
+"fournisseurs backchannels sont retournés. Si faux, les fournisseurs "
+"backchannels sont exclus"
 
 #: authentik/core/api/users.py
 msgid "No leading or trailing slashes allowed."
@@ -465,6 +467,74 @@ msgstr "Entreprise est requis pour accéder à cette fonctionnalité."
 #: authentik/enterprise/policy.py
 msgid "Feature only accessible for internal users."
 msgstr "Fonctionnalité accessible aux utilisateurs internes uniquement."
+
+#: authentik/enterprise/providers/google_workspace/models.py
+#: authentik/enterprise/providers/microsoft_entra/models.py
+#: authentik/providers/scim/models.py authentik/sources/ldap/models.py
+msgid "Property mappings used for group creation/updating."
+msgstr ""
+"Mappages de propriétés utilisés lors de la création et de la mise à jour des"
+" groupes."
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider"
+msgstr "Fournisseur Google Workspace"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Providers"
+msgstr "Fournisseurs Google Workspace"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Mapping"
+msgstr "Mappage de propriété Google Workspace"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Mappings"
+msgstr "Mappages de propriété Google Workspace"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider User"
+msgstr "Utilisateur du fournisseur Google Workspace"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Users"
+msgstr "Utilisateurs du fournisseur Google Workspace"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Group"
+msgstr "Groupe du fournisseur Google Workspace"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Groups"
+msgstr "Groupes du fournisseur Google Workspace"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider"
+msgstr "Fournisseur Microsoft Entra"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Providers"
+msgstr "Fournisseurs Microsoft Entra"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Mapping"
+msgstr "Mappage de propriété Microsoft Entra"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Mappings"
+msgstr "Mappages de propriété Microsoft Entra"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider User"
+msgstr "Utilisateur du fournisseur Microsoft Entra"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Group"
+msgstr "Groupe du fournisseur Microsoft Entra"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Groups"
+msgstr "Groupes du fournisseur Microsoft Entra"
 
 #: authentik/enterprise/providers/rac/models.py
 #: authentik/stages/user_login/models.py
@@ -837,6 +907,25 @@ msgstr "Jetons du flux"
 #: authentik/flows/views/executor.py
 msgid "Invalid next URL"
 msgstr "URL suivante invalide"
+
+#: authentik/lib/sync/outgoing/tasks.py
+msgid "Starting full provider sync"
+msgstr "Démarrage d'une synchronisation complète du fournisseur"
+
+#: authentik/lib/sync/outgoing/tasks.py
+#, python-format
+msgid "Syncing page %(page)d of users"
+msgstr "Synchronisation de la page %(page)d d'utilisateurs"
+
+#: authentik/lib/sync/outgoing/tasks.py
+#, python-format
+msgid "Syncing page %(page)d of groups"
+msgstr "Synchronisation de la page %(page)d de groupes"
+
+#: authentik/lib/sync/outgoing/tasks.py
+#, python-brace-format
+msgid "Stopping sync due to error: {error}"
+msgstr "Arrêt de la synchronisation due à l'erreur : {error}"
 
 #: authentik/lib/utils/time.py
 #, python-format
@@ -1526,10 +1615,6 @@ msgstr "Compatibilité GitHub : accès aux adresses email"
 msgid "GitHub Compatibility: Access your Groups"
 msgstr "Compatibilité GitHub : accès aux groupes"
 
-#: authentik/providers/oauth2/views/userinfo.py
-msgid "authentik API Access on behalf of your user"
-msgstr "Accès à l'API authentik au nom des utilisateurs"
-
 #: authentik/providers/proxy/api.py
 msgid "User and password attributes must be set when basic auth is enabled."
 msgstr ""
@@ -1811,6 +1896,14 @@ msgstr "Mappages de propriétés SAML"
 msgid "SAML Property Mappings"
 msgstr "Mappages de propriétés SAML"
 
+#: authentik/providers/saml/models.py
+msgid "SAML Provider from Metadata"
+msgstr "Fournisseur SAML depuis métadonnées"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Providers from Metadata"
+msgstr "Fournisseurs SAML depuis métadonnées"
+
 #: authentik/providers/scim/models.py
 msgid "Base URL to SCIM requests, usually ends in /v2"
 msgstr "URL de base pour les requêtes SCIM, se terminant généralement par /v2"
@@ -1818,12 +1911,6 @@ msgstr "URL de base pour les requêtes SCIM, se terminant généralement par /v2
 #: authentik/providers/scim/models.py
 msgid "Authentication token"
 msgstr "Jeton d'authentification"
-
-#: authentik/providers/scim/models.py authentik/sources/ldap/models.py
-msgid "Property mappings used for group creation/updating."
-msgstr ""
-"Mappages de propriétés utilisés lors de la création et de la mise à jour des"
-" groupes."
 
 #: authentik/providers/scim/models.py
 msgid "SCIM Provider"
@@ -1840,39 +1927,6 @@ msgstr "Mappage SCIM"
 #: authentik/providers/scim/models.py
 msgid "SCIM Mappings"
 msgstr "Mappages SCIM"
-
-#: authentik/providers/scim/tasks.py
-msgid "Starting full SCIM sync"
-msgstr "Démarrage d'une synchronisation SCIM complète"
-
-#: authentik/providers/scim/tasks.py
-#, python-format
-msgid "Syncing page %(page)d of users"
-msgstr "Synchronisation de la page %(page)d d'utilisateurs"
-
-#: authentik/providers/scim/tasks.py
-#, python-format
-msgid "Syncing page %(page)d of groups"
-msgstr "Synchronisation de la page %(page)d de groupes"
-
-#: authentik/providers/scim/tasks.py
-#, python-brace-format
-msgid "Failed to sync user {user_name} due to remote error: {error}"
-msgstr ""
-"Échec de synchronisation de l'utilisateur {user_name} dû à une erreur "
-"distante : {error}"
-
-#: authentik/providers/scim/tasks.py
-#, python-brace-format
-msgid "Stopping sync due to error: {error}"
-msgstr "Arrêt de la synchronisation due à l'erreur : {error}"
-
-#: authentik/providers/scim/tasks.py
-#, python-brace-format
-msgid "Failed to sync group {group_name} due to remote error: {error}"
-msgstr ""
-"Échec de synchronisation du groupe {group_name} dû à une erreur distante : "
-"{error}"
 
 #: authentik/rbac/models.py
 msgid "Role"
@@ -1893,14 +1947,6 @@ msgstr "Permissions système"
 #: authentik/rbac/models.py
 msgid "Can view system info"
 msgstr "Peut voir les informations du système"
-
-#: authentik/rbac/models.py
-msgid "Can view system tasks"
-msgstr "Peut voir les tâches du système"
-
-#: authentik/rbac/models.py
-msgid "Can run system tasks"
-msgstr "Peut lancer des tâches système"
 
 #: authentik/rbac/models.py
 msgid "Can access admin interface"
@@ -2563,12 +2609,41 @@ msgid "Private key, acquired your captcha Provider."
 msgstr "Clé privée, acquise auprès de votre fournisseur captcha."
 
 #: authentik/stages/captcha/models.py
+msgid ""
+"When enabled and the received captcha score is outside of the given "
+"threshold, the stage will show an error message. When not enabled, the flow "
+"will continue, but the data from the captcha will be available in the "
+"context for policy decisions"
+msgstr ""
+"Si activé et le score captcha reçu est hors de la limite donnée, l'étape "
+"affichera un message d'erreur. Si désactivé, le flux continuera, mais la "
+"donnée du captcha sera disponible dans le contexte pour décision dans une "
+"politique."
+
+#: authentik/stages/captcha/models.py
 msgid "Captcha Stage"
 msgstr "Étape de Captcha"
 
 #: authentik/stages/captcha/models.py
 msgid "Captcha Stages"
 msgstr "Étapes de Captcha"
+
+#: authentik/stages/captcha/stage.py
+msgid "Unknown error"
+msgstr "Erreur inconnue"
+
+#: authentik/stages/captcha/stage.py
+#, python-brace-format
+msgid "Failed to validate token: {error}"
+msgstr "Échec de validation du jeton : {error}"
+
+#: authentik/stages/captcha/stage.py
+msgid "Invalid captcha response"
+msgstr "Réponse captcha invalide"
+
+#: authentik/stages/captcha/stage.py
+msgid "Failed to validate token"
+msgstr "Échec de validation du jeton"
 
 #: authentik/stages/consent/models.py
 msgid ""

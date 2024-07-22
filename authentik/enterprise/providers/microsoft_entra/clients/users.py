@@ -1,3 +1,4 @@
+from deepmerge import always_merger
 from django.db import transaction
 from msgraph.generated.models.user import User as MSUser
 from msgraph.generated.users.users_request_builder import UsersRequestBuilder
@@ -65,6 +66,26 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
             microsoft_user.delete()
         return response
 
+    def get_select_fields(self) -> list[str]:
+        """All fields that should be selected when we fetch user data."""
+        # TODO: Make this customizable in the future
+        return [
+            # Default fields
+            "businessPhones",
+            "displayName",
+            "givenName",
+            "jobTitle",
+            "mail",
+            "mobilePhone",
+            "officeLocation",
+            "preferredLanguage",
+            "surname",
+            "userPrincipalName",
+            "id",
+            # Required for logging into M365 using authentik
+            "onPremisesImmutableId",
+        ]
+
     def create(self, user: User):
         """Create user from scratch and create a connection object"""
         microsoft_user = self.to_schema(user, None)
@@ -74,12 +95,12 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
                 response = self._request(self.client.users.post(microsoft_user))
             except ObjectExistsSyncException:
                 # user already exists in microsoft entra, so we can connect them manually
-                query_params = UsersRequestBuilder.UsersRequestBuilderGetQueryParameters()(
-                    filter=f"mail eq '{microsoft_user.mail}'",
-                )
                 request_configuration = (
                     UsersRequestBuilder.UsersRequestBuilderGetRequestConfiguration(
-                        query_parameters=query_params,
+                        query_parameters=UsersRequestBuilder.UsersRequestBuilderGetQueryParameters(
+                            filter=f"mail eq '{microsoft_user.mail}'",
+                            select=self.get_select_fields(),
+                        ),
                     )
                 )
                 user_data = self._request(self.client.users.get(request_configuration))
@@ -98,7 +119,6 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
             except TransientSyncException as exc:
                 raise exc
             else:
-                print(self.entity_as_dict(response))
                 return MicrosoftEntraProviderUser.objects.create(
                     provider=self.provider,
                     user=user,
@@ -113,12 +133,18 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
         response = self._request(
             self.client.users.by_user_id(connection.microsoft_id).patch(microsoft_user)
         )
-        connection.attributes = self.entity_as_dict(response)
-        connection.save()
+        if response:
+            always_merger.merge(connection.attributes, self.entity_as_dict(response))
+            connection.save()
 
     def discover(self):
         """Iterate through all users and connect them with authentik users if possible"""
-        users = self._request(self.client.users.get())
+        request_configuration = UsersRequestBuilder.UsersRequestBuilderGetRequestConfiguration(
+            query_parameters=UsersRequestBuilder.UsersRequestBuilderGetQueryParameters(
+                select=self.get_select_fields(),
+            ),
+        )
+        users = self._request(self.client.users.get(request_configuration))
         next_link = True
         while next_link:
             for user in users.value:
@@ -139,3 +165,14 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
             microsoft_id=user.id,
             attributes=self.entity_as_dict(user),
         )
+
+    def update_single_attribute(self, connection: MicrosoftEntraProviderUser):
+        request_configuration = UsersRequestBuilder.UsersRequestBuilderGetRequestConfiguration(
+            query_parameters=UsersRequestBuilder.UsersRequestBuilderGetQueryParameters(
+                select=self.get_select_fields(),
+            ),
+        )
+        data = self._request(
+            self.client.users.by_user_id(connection.microsoft_id).get(request_configuration)
+        )
+        connection.attributes = self.entity_as_dict(data)

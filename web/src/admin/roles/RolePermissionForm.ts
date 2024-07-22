@@ -1,3 +1,4 @@
+import "@goauthentik/admin/rbac/PermissionSelectModal";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/components/ak-toggle-group";
 import "@goauthentik/elements/chips/Chip";
@@ -6,7 +7,6 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
-import "@goauthentik/elements/rbac/PermissionSelectModal";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -36,7 +36,7 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
         return msg("Successfully assigned permission.");
     }
 
-    async send(data: RolePermissionAssign): Promise<unknown> {
+    async send(data: RolePermissionAssign) {
         await new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByRolesAssignCreate({
             uuid: this.roleUuid || "",
             permissionAssignRequest: {
@@ -44,7 +44,6 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
             },
         });
         this.permissionsToAdd = [];
-        return;
     }
 
     renderForm(): TemplateResult {
@@ -84,5 +83,11 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
                 </div>
             </ak-form-element-horizontal>
         </form>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-role-permission-form": RolePermissionForm;
     }
 }

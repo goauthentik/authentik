@@ -6,9 +6,14 @@ from django.core.exceptions import FieldError
 from django.db.utils import IntegrityError
 from ldap3 import ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES, SUBTREE
 
-from authentik.core.expression.exceptions import SkipObjectException
+from authentik.core.expression.exceptions import (
+    PropertyMappingExpressionException,
+    SkipObjectException,
+)
 from authentik.core.models import Group
+from authentik.core.sources.mapper import SourceMapper
 from authentik.events.models import Event, EventAction
+from authentik.lib.sync.outgoing.exceptions import StopSync
 from authentik.sources.ldap.models import LDAP_UNIQUENESS, LDAPSource, flatten
 from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
 
@@ -18,7 +23,8 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
 
     def __init__(self, source: LDAPSource):
         super().__init__(source)
-        self.mapper = self._source.get_mapper(Group, ["ldap", "dn"])
+        self.mapper = SourceMapper(source)
+        self.manager = self.mapper.get_manager(Group, ["ldap", "dn"])
 
     @staticmethod
     def name() -> str:
@@ -58,9 +64,9 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
             try:
                 defaults = {
                     k: flatten(v)
-                    for k, v in self._source.build_object_properties(
+                    for k, v in self.mapper.build_object_properties(
                         object_type=Group,
-                        mapper=self.mapper,
+                        manager=self.manager,
                         user=None,
                         request=None,
                         dn=group_dn,
@@ -82,6 +88,8 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
                 self._logger.debug("Created group with attributes", **defaults)
             except SkipObjectException:
                 continue
+            except PropertyMappingExpressionException as exc:
+                raise StopSync(exc, None, exc.mapping) from exc
             except (IntegrityError, FieldError, TypeError, AttributeError) as exc:
                 Event.new(
                     EventAction.CONFIGURATION_ERROR,

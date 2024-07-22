@@ -51,6 +51,8 @@ The setting can be used as follows:
 [{ "name": "Link Name", "href": "https://goauthentik.io" }]
 ```
 
+Starting with authentik 2024.6.1, the `href` attribute is optional, and this option can be used to add additional text to the flow executor pages.
+
 ### GDPR compliance
 
 When enabled, all the events caused by a user will be deleted upon the user's deletion. Defaults to `true`.

@@ -1,5 +1,4 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/elements/chips/Chip";
 import "@goauthentik/elements/chips/ChipGroup";
@@ -18,12 +17,10 @@ export class UserConsentList extends Table<UserConsent> {
     @property({ type: Number })
     userId?: number;
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<UserConsent>> {
+    async apiEndpoint(): Promise<PaginatedResponse<UserConsent>> {
         return new CoreApi(DEFAULT_CONFIG).coreUserConsentList({
+            ...(await this.defaultEndpointConfig()),
             user: this.userId,
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
         });
     }
 
@@ -76,5 +73,11 @@ export class UserConsentList extends Table<UserConsent> {
                   </ak-chip-group>`
                 : html`-`}`,
         ];
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-consent-list": UserConsentList;
     }
 }

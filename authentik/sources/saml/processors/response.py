@@ -10,6 +10,7 @@ from django.core.cache import cache
 from django.core.exceptions import SuspiciousOperation
 from django.http import HttpRequest
 from django.utils.timezone import now
+from lxml import etree  # nosec
 from structlog.stdlib import get_logger
 
 from authentik.core.models import (
@@ -228,7 +229,7 @@ class ResponseProcessor:
             },
             groups_info=[],
             policy_context={
-                "saml_response": self._root,
+                "saml_response": etree.tostring(self._root),
             },
         )
 

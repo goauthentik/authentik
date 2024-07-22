@@ -50,8 +50,8 @@ Run the following commands to generate a password and secret key and write them 
 
 {/* prettier-ignore */}
 ```shell
-echo "PG_PASS=$(openssl rand 36 | base64)" >> .env
-echo "AUTHENTIK_SECRET_KEY=$(openssl rand 60 | base64)" >> .env
+echo "PG_PASS=$(openssl rand -base64 36 | tr -d '\n')" >> .env
+echo "AUTHENTIK_SECRET_KEY=$(openssl rand -base64 60 | tr -d '\n')" >> .env
 ```
 
 :::info

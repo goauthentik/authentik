@@ -76,6 +76,7 @@ module.exports = {
                 id: "docs/writing-documentation",
             },
             items: [
+                "docs/style-guide",
                 {
                     type: "category",
                     label: "Templates",
@@ -87,6 +88,7 @@ module.exports = {
                         "docs/templates/procedural",
                         "docs/templates/conceptual",
                         "docs/templates/reference",
+                        "docs/templates/combo",
                     ],
                 },
             ],

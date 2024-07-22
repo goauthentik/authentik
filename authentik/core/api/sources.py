@@ -11,7 +11,6 @@ from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet
 from structlog.stdlib import get_logger
 
@@ -19,7 +18,7 @@ from authentik.api.authorization import OwnerFilter, OwnerSuperuserPermissions
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.object_types import TypesMixin
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import MetaNameSerializer
+from authentik.core.api.utils import MetaNameSerializer, ModelSerializer
 from authentik.core.models import Source, UserSourceConnection
 from authentik.core.types import UserSettingSerializer
 from authentik.lib.utils.file import (

@@ -3,11 +3,14 @@ import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
 import {
     clientTypeOptions,
-    defaultScopes,
     issuerModeOptions,
     redirectUriHelp,
     subjectModeOptions,
 } from "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
+import {
+    makeOAuth2PropertyMappingsSelector,
+    oauth2PropertyMappingsProvider,
+} from "@goauthentik/admin/providers/oauth2/Oauth2PropertyMappings.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-number-input";
@@ -15,6 +18,7 @@ import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
@@ -23,17 +27,8 @@ import { customElement, state } from "@lit/reactive-element/decorators.js";
 import { html, nothing } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import {
-    ClientTypeEnum,
-    FlowsInstancesListDesignationEnum,
-    PropertymappingsApi,
-    SourcesApi,
-} from "@goauthentik/api";
-import {
-    type OAuth2Provider,
-    type PaginatedOAuthSourceList,
-    type PaginatedScopeMappingList,
-} from "@goauthentik/api";
+import { ClientTypeEnum, FlowsInstancesListDesignationEnum, SourcesApi } from "@goauthentik/api";
+import { type OAuth2Provider, type PaginatedOAuthSourceList } from "@goauthentik/api";
 
 import BaseProviderPanel from "../BaseProviderPanel";
 
@@ -43,21 +38,10 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
     showClientSecret = true;
 
     @state()
-    propertyMappings?: PaginatedScopeMappingList;
-
-    @state()
     oauthSources?: PaginatedOAuthSourceList;
 
     constructor() {
         super();
-        new PropertymappingsApi(DEFAULT_CONFIG)
-            .propertymappingsScopeList({
-                ordering: "scope_name",
-            })
-            .then((propertyMappings: PaginatedScopeMappingList) => {
-                this.propertyMappings = propertyMappings;
-            });
-
         new SourcesApi(DEFAULT_CONFIG)
             .sourcesOauthList({
                 ordering: "name",
@@ -222,35 +206,18 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                             name="propertyMappings"
                             .errorMessages=${errors?.propertyMappings ?? []}
                         >
-                            <select class="pf-c-form-control" multiple>
-                                ${this.propertyMappings?.results.map((scope) => {
-                                    let selected = false;
-                                    if (!provider?.propertyMappings) {
-                                        selected = scope.managed
-                                            ? defaultScopes.includes(scope.managed)
-                                            : false;
-                                    } else {
-                                        selected = Array.from(provider?.propertyMappings).some(
-                                            (su) => {
-                                                return su == scope.pk;
-                                            },
-                                        );
-                                    }
-                                    return html`<option
-                                        value=${ifDefined(scope.pk)}
-                                        ?selected=${selected}
-                                    >
-                                        ${scope.name}
-                                    </option>`;
-                                })}
-                            </select>
+                            <ak-dual-select-dynamic-selected
+                                .provider=${oauth2PropertyMappingsProvider}
+                                .selector=${makeOAuth2PropertyMappingsSelector(
+                                    provider?.propertyMappings,
+                                )}
+                                available-label=${msg("Available Scopes")}
+                                selected-label=${msg("Selected Scopes")}
+                            ></ak-dual-select-dynamic-selected>
                             <p class="pf-c-form__helper-text">
                                 ${msg(
                                     "Select which scopes can be used by the client. The client still has to specify the scope to access the data.",
                                 )}
-                            </p>
-                            <p class="pf-c-form__helper-text">
-                                ${msg("Hold control/command to select multiple items.")}
                             </p>
                         </ak-form-element-horizontal>
 
@@ -321,3 +288,9 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
 }
 
 export default ApplicationWizardAuthenticationByOauth;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-wizard-authentication-by-oauth": ApplicationWizardAuthenticationByOauth;
+    }
+}

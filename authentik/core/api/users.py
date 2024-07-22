@@ -40,7 +40,6 @@ from rest_framework.serializers import (
     BooleanField,
     DateTimeField,
     ListSerializer,
-    ModelSerializer,
     PrimaryKeyRelatedField,
     ValidationError,
 )
@@ -52,7 +51,12 @@ from authentik.admin.api.metrics import CoordinateSerializer
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.brands.models import Brand
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import JSONDictField, LinkSerializer, PassiveSerializer
+from authentik.core.api.utils import (
+    JSONDictField,
+    LinkSerializer,
+    ModelSerializer,
+    PassiveSerializer,
+)
 from authentik.core.middleware import (
     SESSION_KEY_IMPERSONATE_ORIGINAL_USER,
     SESSION_KEY_IMPERSONATE_USER,

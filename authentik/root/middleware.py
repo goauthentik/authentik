@@ -5,6 +5,7 @@ from hashlib import sha512
 from time import perf_counter, time
 from typing import Any
 
+from channels.exceptions import DenyConnection
 from django.conf import settings
 from django.contrib.sessions.backends.base import UpdateError
 from django.contrib.sessions.exceptions import SessionInterrupted
@@ -271,7 +272,15 @@ class ChannelsLoggingMiddleware:
 
     async def __call__(self, scope, receive, send):
         self.log(scope)
-        return await self.inner(scope, receive, send)
+        try:
+            return await self.inner(scope, receive, send)
+        except DenyConnection:
+            return await send({"type": "websocket.close"})
+        except Exception as exc:
+            if settings.DEBUG:
+                raise exc
+            LOGGER.warning("Exception in ASGI application", exc=exc)
+            return await send({"type": "websocket.close"})
 
     def log(self, scope: dict, **kwargs):
         """Log request"""

@@ -5,6 +5,7 @@ from celery.exceptions import Retry
 from celery.result import allow_join_result
 from django.core.paginator import Paginator
 from django.db.models import Model, QuerySet
+from django.db.models.query import Q
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from structlog.stdlib import BoundLogger, get_logger
@@ -14,6 +15,7 @@ from authentik.core.models import Group, User
 from authentik.events.logs import LogEvent
 from authentik.events.models import TaskStatus
 from authentik.events.system_tasks import SystemTask
+from authentik.events.utils import sanitize_item
 from authentik.lib.sync.outgoing import PAGE_SIZE, PAGE_TIMEOUT
 from authentik.lib.sync.outgoing.base import Direction
 from authentik.lib.sync.outgoing.exceptions import (
@@ -36,7 +38,9 @@ class SyncTasks:
         self._provider_model = provider_model
 
     def sync_all(self, single_sync: Callable[[int], None]):
-        for provider in self._provider_model.objects.filter(backchannel_application__isnull=False):
+        for provider in self._provider_model.objects.filter(
+            Q(backchannel_application__isnull=False) | Q(application__isnull=False)
+        ):
             self.trigger_single_task(provider, single_sync)
 
     def trigger_single_task(self, provider: OutgoingSyncProvider, sync_task: Callable[[int], None]):
@@ -61,7 +65,8 @@ class SyncTasks:
             provider_pk=provider_pk,
         )
         provider = self._provider_model.objects.filter(
-            pk=provider_pk, backchannel_application__isnull=False
+            Q(backchannel_application__isnull=False) | Q(application__isnull=False),
+            pk=provider_pk,
         ).first()
         if not provider:
             return
@@ -145,8 +150,8 @@ class SyncTasks:
                                 )
                             ),
                             log_level="warning",
-                            logger="",
-                            attributes={"arguments": exc.args[1:]},
+                            logger=f"{provider._meta.verbose_name}@{object_type}",
+                            attributes={"arguments": exc.args[1:], "obj": sanitize_item(obj)},
                         )
                     )
                 )
@@ -168,7 +173,8 @@ class SyncTasks:
                                 )
                             ),
                             log_level="warning",
-                            logger="",
+                            logger=f"{provider._meta.verbose_name}@{object_type}",
+                            attributes={"obj": sanitize_item(obj)},
                         )
                     )
                 )
@@ -185,7 +191,8 @@ class SyncTasks:
                                 )
                             ),
                             log_level="warning",
-                            logger="",
+                            logger=f"{provider._meta.verbose_name}@{object_type}",
+                            attributes={"obj": sanitize_item(obj)},
                         )
                     )
                 )
@@ -201,7 +208,9 @@ class SyncTasks:
         if not instance:
             return
         operation = Direction(raw_op)
-        for provider in self._provider_model.objects.filter(backchannel_application__isnull=False):
+        for provider in self._provider_model.objects.filter(
+            Q(backchannel_application__isnull=False) | Q(application__isnull=False)
+        ):
             client = provider.client_for_model(instance.__class__)
             # Check if the object is allowed within the provider's restrictions
             queryset = provider.get_object_qs(instance.__class__)
@@ -230,7 +239,9 @@ class SyncTasks:
         group = Group.objects.filter(pk=group_pk).first()
         if not group:
             return
-        for provider in self._provider_model.objects.filter(backchannel_application__isnull=False):
+        for provider in self._provider_model.objects.filter(
+            Q(backchannel_application__isnull=False) | Q(application__isnull=False)
+        ):
             # Check if the object is allowed within the provider's restrictions
             queryset: QuerySet = provider.get_object_qs(Group)
             # The queryset we get from the provider must include the instance we've got given

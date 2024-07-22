@@ -16,8 +16,8 @@ The most common types are:
 
 ### Add a new integration
 
-To add documentation for a new integration (with support level Community or Vendor), please use the integration templates [`service.md`](https://github.com/goauthentik/authentik/blob/main/website/integrations/_template/service.md) from our GitHub repo. You can download the template using the following command:
+To add documentation for a new integration (with support level Community or Vendor), please use the integration templates [`service.md`](https://github.com/goauthentik/authentik/blob/main/website/integrations/template/service.md) from our GitHub repo. You can download the template using the following command:
 
 ```shell
-wget https://raw.githubusercontent.com/goauthentik/authentik/main/website/integrations/_template/service.md
+wget https://raw.githubusercontent.com/goauthentik/authentik/main/website/integrations/template/service.md
 ```

@@ -9,7 +9,7 @@ from django.templatetags.static import static
 from django.urls.base import reverse
 from structlog.stdlib import get_logger
 
-from authentik.flows.challenge import Challenge, ChallengeTypes, RedirectChallenge
+from authentik.flows.challenge import Challenge, RedirectChallenge
 from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
@@ -49,7 +49,6 @@ class SourceType:
         """Allow types to return custom challenges"""
         return RedirectChallenge(
             data={
-                "type": ChallengeTypes.REDIRECT.value,
                 "to": reverse(
                     "authentik_sources_oauth:oauth-client-login",
                     kwargs={"source_slug": source.slug},

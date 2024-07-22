@@ -1,11 +1,11 @@
 """RadiusProvider API Views"""
 
 from rest_framework.fields import CharField, ListField
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
+from authentik.core.api.utils import ModelSerializer
 from authentik.providers.radius.models import RadiusProvider
 
 

@@ -26,6 +26,7 @@ from authentik.blueprints.models import ManagedModel
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.lib.avatars import get_avatar
+from authentik.lib.expression.exceptions import ControlFlowException
 from authentik.lib.generators import generate_id
 from authentik.lib.merge import MERGE_LIST_UNIQUE
 from authentik.lib.models import (
@@ -656,25 +657,6 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         user settings are available, or UserSettingSerializer."""
         return None
 
-    def get_mapper(
-            self,
-            object_type: type[User | Group],
-            context_keys: list[str]
-        ) -> "PropertyMappingManager":
-        """Get property mapping manager for this source."""
-        from authentik.lib.sync.mapper import PropertyMappingManager
-
-        qs = PropertyMapping.objects.none()
-        if object_type == User:
-            qs = self.user_property_mappings.all().select_subclasses()
-        elif object_type == Group:
-            qs = self.group_property_mappings.all().select_subclasses()
-        return PropertyMappingManager(
-            qs,
-            self.property_mapping_type,
-            ["source", "properties"] + context_keys,
-        )
-
     def get_base_user_properties(self, **kwargs) -> dict[str, Any | dict[str, Any]]:
         """Get base properties for a user to build final properties upon."""
         raise NotImplementedError
@@ -682,75 +664,6 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     def get_base_group_properties(self, **kwargs) -> dict[str, Any | dict[str, Any]]:
         """Get base properties for a group to build final properties upon."""
         raise NotImplementedError
-
-    def get_base_properties(
-        self, object_type: type[User | Group], **kwargs
-    ) -> dict[str, Any | dict[str, Any]]:
-        """Get base properties for a user or a group to build final properties upon."""
-        if object_type == User:
-            properties = self.get_base_user_properties(**kwargs)
-            properties.setdefault("path", self.get_user_path())
-            return properties
-        if object_type == Group:
-            return self.get_base_group_properties(**kwargs)
-        return {}
-
-    def build_object_properties(
-        self,
-        object_type: type[User | Group],
-        mapper: "PropertyMappingManager | None" = None,
-        user: User | None = None,
-        request: HttpRequest | None = None,
-        **kwargs,
-    ) -> dict[str, Any | dict[str, Any]]:
-        """Build a user or group properties from the source configured property mappings."""
-        from authentik.events.models import Event, EventAction
-
-        properties = self.get_base_properties(object_type, **kwargs)
-        if "attributes" not in properties:
-            properties["attributes"] = {}
-
-        if not mapper:
-            mapper = self.get_mapper(object_type, list(kwargs.keys()))
-        evaluations = mapper.iter_eval(
-            user=user,
-            request=request,
-            return_mapping=True,
-            source=self,
-            properties=properties,
-            **kwargs,
-        )
-        while True:
-            try:
-                value, mapping = next(evaluations)
-            except StopIteration:
-                break
-            except PropertyMappingExpressionException as exc:
-                Event.new(
-                    EventAction.CONFIGURATION_ERROR,
-                    message=f"Failed to evaluate property mapping: '{exc.mapping.name}'",
-                    source=self,
-                    mapping=exc.mapping,
-                ).save()
-                LOGGER.warning(
-                    "Mapping failed to evaluate",
-                    exc=exc,
-                    source=self,
-                    mapping=exc.mapping,
-                )
-                continue
-
-            if not value or not isinstance(value, dict):
-                LOGGER.debug(
-                    "Mapping evaluated to None or is not a dict. Skipping",
-                    source=self,
-                    mapping=mapping,
-                )
-                continue
-
-            MERGE_LIST_UNIQUE.merge(properties, value)
-
-        return delete_none_values(properties)
 
     def __str__(self):
         return str(self.name)
@@ -919,6 +832,8 @@ class PropertyMapping(SerializerModel, ManagedModel):
         evaluator = PropertyMappingEvaluator(self, user, request, **kwargs)
         try:
             return evaluator.evaluate(self.expression)
+        except ControlFlowException as exc:
+            raise exc
         except Exception as exc:
             raise PropertyMappingExpressionException(self, exc) from exc
 

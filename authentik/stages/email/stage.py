@@ -15,7 +15,7 @@ from rest_framework.fields import CharField
 from rest_framework.serializers import ValidationError
 
 from authentik.events.models import Event, EventAction
-from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
+from authentik.flows.challenge import Challenge, ChallengeResponse
 from authentik.flows.exceptions import StageInvalidException
 from authentik.flows.models import FlowDesignation, FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_IS_RESTORED, PLAN_CONTEXT_PENDING_USER
@@ -160,7 +160,6 @@ class EmailStageView(ChallengeStageView):
     def get_challenge(self) -> Challenge:
         challenge = EmailChallenge(
             data={
-                "type": ChallengeTypes.NATIVE.value,
                 "title": _("Email sent."),
             }
         )

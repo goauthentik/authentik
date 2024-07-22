@@ -29,6 +29,10 @@ In authentik, create an _OAuth2/OpenID Provider_ (under _Applications/Providers_
 Only settings that have been modified from default have been listed.
 :::
 
+**General Settings**
+
+-   Redirect URIs: `https://gitea.company/user/oauth2/authentik/callback`
+
 **Protocol Settings**
 
 -   Name: Gitea
@@ -168,7 +172,7 @@ gitea:
           provider: "openidConnect"
           key: "CLIENT_ID_FROM_AUTHENTIK" #Step 1
           secret: "CLIENT_SECRET_FROM_AUTHENTIK" #Step 1
-          autoDiscoveryUrl: "https://authentik.company/application/o/gitea-slug/.well-known/openid-configuration"
+          autoDiscoverUrl: "https://authentik.company/application/o/gitea-slug/.well-known/openid-configuration"
           iconUrl: "https://goauthentik.io/img/icon.png"
           scopes: "email profile"
 ```
@@ -198,7 +202,7 @@ gitea:
         - name: "authentik"
           provider: "openidConnect"
           existingSecret: gitea-authentik-secret
-          autoDiscoveryUrl: "https://authentik.company/application/o/gitea-slug/.well-known/openid-configuration"
+          autoDiscoverUrl: "https://authentik.company/application/o/gitea-slug/.well-known/openid-configuration"
           iconUrl: "https://goauthentik.io/img/icon.png"
           scopes: "email profile"
 ```

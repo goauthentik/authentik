@@ -19,6 +19,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.models import User
 from authentik.events.models import Event
+from authentik.lib.expression.exceptions import ControlFlowException
 from authentik.lib.utils.http import get_http_session
 from authentik.policies.models import Policy, PolicyBinding
 from authentik.policies.process import PolicyProcess
@@ -216,7 +217,8 @@ class BaseEvaluator:
                 # so the user only sees information relevant to them
                 # and none of our surrounding error handling
                 exc.__traceback__ = exc.__traceback__.tb_next
-                self.handle_error(exc, expression_source)
+                if not isinstance(exc, ControlFlowException):
+                    self.handle_error(exc, expression_source)
                 raise exc
             return result
 

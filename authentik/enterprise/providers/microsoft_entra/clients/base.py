@@ -23,6 +23,7 @@ from msgraph.graph_service_client import GraphServiceClient
 from msgraph_core import GraphClientFactory
 
 from authentik.enterprise.providers.microsoft_entra.models import MicrosoftEntraProvider
+from authentik.events.utils import sanitize_item
 from authentik.lib.sync.outgoing import HTTP_CONFLICT
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.exceptions import (
@@ -106,4 +107,4 @@ class MicrosoftEntraSyncClient[TModel: Model, TConnection: Model, TSchema: dict]
         we can't JSON serialize"""
         raw_data = asdict(entity)
         raw_data.pop("backing_store", None)
-        return raw_data
+        return sanitize_item(raw_data)

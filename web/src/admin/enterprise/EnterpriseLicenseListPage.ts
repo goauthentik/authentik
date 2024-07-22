@@ -1,6 +1,6 @@
 import "@goauthentik/admin/enterprise/EnterpriseLicenseForm";
+import "@goauthentik/admin/rbac/ObjectPermissionModal";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import { getRelativeTime } from "@goauthentik/common/utils";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/Spinner";
@@ -8,7 +8,6 @@ import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/cards/AggregateCard";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
-import "@goauthentik/elements/rbac/ObjectPermissionModal";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
@@ -82,18 +81,15 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         );
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<License>> {
+    async apiEndpoint(): Promise<PaginatedResponse<License>> {
         this.forecast = await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseForecastRetrieve();
         this.summary = await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseSummaryRetrieve();
         this.installID = (
             await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseGetInstallIdRetrieve()
         ).installId;
-        return new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
-        });
+        return new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseList(
+            await this.defaultEndpointConfig(),
+        );
     }
 
     columns(): TableColumn[] {
@@ -279,5 +275,11 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Install")}</button>
             </ak-forms-modal>
         `;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-enterprise-license-list": EnterpriseLicenseListPage;
     }
 }

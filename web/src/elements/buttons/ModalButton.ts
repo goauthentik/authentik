@@ -5,6 +5,7 @@ import {
     ModalShowEvent,
 } from "@goauthentik/elements/controllers/ModalOrchestrationController.js";
 
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -115,7 +116,7 @@ export class ModalButton extends AKElement {
                         }}
                         class="pf-c-button pf-m-plain"
                         type="button"
-                        aria-label="Close dialog"
+                        aria-label=${msg("Close dialog")}
                     >
                         <i class="fas fa-times" aria-hidden="true"></i>
                     </button>
@@ -128,5 +129,11 @@ export class ModalButton extends AKElement {
     render(): TemplateResult {
         return html` <slot name="trigger" @click=${() => this.onClick()}></slot>
             ${this.open ? this.renderModal() : nothing}`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-modal-button": ModalButton;
     }
 }

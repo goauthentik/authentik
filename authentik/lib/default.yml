@@ -50,7 +50,6 @@ cache:
   timeout: 300
   timeout_flows: 300
   timeout_policies: 300
-  timeout_reputation: 300
 
 # channel:
 #   url: ""
@@ -116,6 +115,9 @@ events:
   context_processors:
     geoip: "/geoip/GeoLite2-City.mmdb"
     asn: "/geoip/GeoLite2-ASN.mmdb"
+compliance:
+  fips:
+    enabled: false
 
 cert_discovery_dir: /certs
 

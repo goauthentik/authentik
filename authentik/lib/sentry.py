@@ -59,8 +59,9 @@ def sentry_init(**sentry_init_kwargs):
         "_experiments": {
             "profiles_sample_rate": float(CONFIG.get("error_reporting.sample_rate", 0.1)),
         },
+        **sentry_init_kwargs,
+        **CONFIG.get_dict_from_b64_json("error_reporting.extra_args", {}),
     }
-    kwargs.update(**sentry_init_kwargs)
 
     sentry_sdk_init(
         dsn=CONFIG.get("error_reporting.sentry_dsn"),

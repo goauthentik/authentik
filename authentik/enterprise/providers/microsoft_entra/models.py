@@ -22,6 +22,58 @@ from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction, OutgoingSyncProvider
 
 
+class MicrosoftEntraProviderUser(SerializerModel):
+    """Mapping of a user and provider to a Microsoft user ID"""
+
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
+    microsoft_id = models.TextField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    provider = models.ForeignKey("MicrosoftEntraProvider", on_delete=models.CASCADE)
+    attributes = models.JSONField(default=dict)
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.enterprise.providers.microsoft_entra.api.users import (
+            MicrosoftEntraProviderUserSerializer,
+        )
+
+        return MicrosoftEntraProviderUserSerializer
+
+    class Meta:
+        verbose_name = _("Microsoft Entra Provider User")
+        verbose_name_plural = _("Microsoft Entra Provider User")
+        unique_together = (("microsoft_id", "user", "provider"),)
+
+    def __str__(self) -> str:
+        return f"Microsoft Entra Provider User {self.user_id} to {self.provider_id}"
+
+
+class MicrosoftEntraProviderGroup(SerializerModel):
+    """Mapping of a group and provider to a Microsoft group ID"""
+
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
+    microsoft_id = models.TextField()
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    provider = models.ForeignKey("MicrosoftEntraProvider", on_delete=models.CASCADE)
+    attributes = models.JSONField(default=dict)
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.enterprise.providers.microsoft_entra.api.groups import (
+            MicrosoftEntraProviderGroupSerializer,
+        )
+
+        return MicrosoftEntraProviderGroupSerializer
+
+    class Meta:
+        verbose_name = _("Microsoft Entra Provider Group")
+        verbose_name_plural = _("Microsoft Entra Provider Groups")
+        unique_together = (("microsoft_id", "group", "provider"),)
+
+    def __str__(self) -> str:
+        return f"Microsoft Entra Provider Group {self.group_id} to {self.provider_id}"
+
+
 class MicrosoftEntraProvider(OutgoingSyncProvider, BackchannelProvider):
     """Sync users from authentik into Microsoft Entra."""
 
@@ -48,15 +100,16 @@ class MicrosoftEntraProvider(OutgoingSyncProvider, BackchannelProvider):
     )
 
     def client_for_model(
-        self, model: type[User | Group]
+        self,
+        model: type[User | Group | MicrosoftEntraProviderUser | MicrosoftEntraProviderGroup],
     ) -> BaseOutgoingSyncClient[User | Group, Any, Any, Self]:
-        if issubclass(model, User):
+        if issubclass(model, User | MicrosoftEntraProviderUser):
             from authentik.enterprise.providers.microsoft_entra.clients.users import (
                 MicrosoftEntraUserClient,
             )
 
             return MicrosoftEntraUserClient(self)
-        if issubclass(model, Group):
+        if issubclass(model, Group | MicrosoftEntraProviderGroup):
             from authentik.enterprise.providers.microsoft_entra.clients.groups import (
                 MicrosoftEntraGroupClient,
             )
@@ -133,55 +186,3 @@ class MicrosoftEntraProviderMapping(PropertyMapping):
     class Meta:
         verbose_name = _("Microsoft Entra Provider Mapping")
         verbose_name_plural = _("Microsoft Entra Provider Mappings")
-
-
-class MicrosoftEntraProviderUser(SerializerModel):
-    """Mapping of a user and provider to a Microsoft user ID"""
-
-    id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
-    microsoft_id = models.TextField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    provider = models.ForeignKey(MicrosoftEntraProvider, on_delete=models.CASCADE)
-    attributes = models.JSONField(default=dict)
-
-    @property
-    def serializer(self) -> type[Serializer]:
-        from authentik.enterprise.providers.microsoft_entra.api.users import (
-            MicrosoftEntraProviderUserSerializer,
-        )
-
-        return MicrosoftEntraProviderUserSerializer
-
-    class Meta:
-        verbose_name = _("Microsoft Entra Provider User")
-        verbose_name_plural = _("Microsoft Entra Provider User")
-        unique_together = (("microsoft_id", "user", "provider"),)
-
-    def __str__(self) -> str:
-        return f"Microsoft Entra Provider User {self.user_id} to {self.provider_id}"
-
-
-class MicrosoftEntraProviderGroup(SerializerModel):
-    """Mapping of a group and provider to a Microsoft group ID"""
-
-    id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
-    microsoft_id = models.TextField()
-    group = models.ForeignKey(Group, on_delete=models.CASCADE)
-    provider = models.ForeignKey(MicrosoftEntraProvider, on_delete=models.CASCADE)
-    attributes = models.JSONField(default=dict)
-
-    @property
-    def serializer(self) -> type[Serializer]:
-        from authentik.enterprise.providers.microsoft_entra.api.groups import (
-            MicrosoftEntraProviderGroupSerializer,
-        )
-
-        return MicrosoftEntraProviderGroupSerializer
-
-    class Meta:
-        verbose_name = _("Microsoft Entra Provider Group")
-        verbose_name_plural = _("Microsoft Entra Provider Groups")
-        unique_together = (("microsoft_id", "group", "provider"),)
-
-    def __str__(self) -> str:
-        return f"Microsoft Entra Provider Group {self.group_id} to {self.provider_id}"

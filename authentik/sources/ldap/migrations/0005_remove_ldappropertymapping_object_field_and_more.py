@@ -6,10 +6,9 @@ from django.db import migrations
 
 
 def migrate_ldap_property_mappings_object_field(apps, schema_editor):
-    if schema_editor.connection.alias != "default":
-        return
+    db_alias = schema_editor.connection.alias
     LDAPPropertyMapping = apps.get_model("authentik_sources_ldap", "LDAPPropertyMapping")
-    for mapping in LDAPPropertyMapping.objects.all():
+    for mapping in LDAPPropertyMapping.objects.using(db_alias).all():
         mapping.expression = f"""
 # This property mapping has been automatically changed to
 # match the new semantics of source property mappings.
@@ -23,17 +22,12 @@ def migrate_ldap_property_mappings_object_field(apps, schema_editor):
 def get_field():
     {textwrap.indent(mapping.expression, prefix='    ')}
 
+from authentik.lib.utils.dict import set_path_in_dict
+
 field = "{mapping.object_field}"
 result = {{"attributes": {{}}}}
 if field.startswith("attributes."):
-    # Adapted from authentik/lib/config.py::set_path_in_dict
-    root = result
-    path_parts = field.split(".")
-    for comp in path_parts[:-1]
-        if comp not in root:
-            root[comp] = {{}}
-        root = root.get(comp, {{}})
-    root[path_parts[-1]] = get_field()
+    set_path_in_dict(result, field, get_field(), sep=".")
 else:
     result[field] = get_field()
 return result
@@ -42,12 +36,11 @@ return result
 
 
 def migrate_ldap_property_mappings_to_new_fields(apps, schema_editor):
-    if schema_editor.connection.alias != "default":
-        return
+    db_alias = schema_editor.connection.alias
     LDAPSource = apps.get_model("authentik_sources_ldap", "LDAPSource")
-    for source in LDAPSource.objects.all():
-        source.user_property_mappings.set(source.property_mappings)
-        source.group_property_mappings.set(source.property_mappings_group)
+    for source in LDAPSource.objects.using(db_alias).all():
+        source.user_property_mappings.using(db_alias).set(source.property_mappings)
+        source.group_property_mappings.using(db_alias).set(source.property_mappings_group)
 
 
 class Migration(migrations.Migration):

@@ -13,10 +13,9 @@ from rest_framework.fields import (
     ReadOnlyField,
     SerializerMethodField,
 )
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
-from authentik.core.api.utils import PassiveSerializer
+from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import User
 from authentik.lib.validators import RequiredTogetherValidator
 from authentik.policies.event_matcher.models import model_choices
