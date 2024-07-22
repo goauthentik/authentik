@@ -43,21 +43,6 @@ export class PropertyMappingLDAPForm extends BasePropertyMappingForm<LDAPPropert
                 />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${msg("Object field")}
-                ?required=${true}
-                name="objectField"
-            >
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.objectField)}"
-                    class="pf-c-form-control"
-                    required
-                />
-                <p class="pf-c-form__helper-text">
-                    ${msg("Field of the user object this value is written to.")}
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal
                 label=${msg("Expression")}
                 ?required=${true}
                 name="expression"

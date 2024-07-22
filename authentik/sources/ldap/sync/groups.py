@@ -6,12 +6,16 @@ from django.core.exceptions import FieldError
 from django.db.utils import IntegrityError
 from ldap3 import ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES, SUBTREE
 
-from authentik.core.expression.exceptions import SkipObjectException
+from authentik.core.expression.exceptions import (
+    PropertyMappingExpressionException,
+    SkipObjectException,
+)
 from authentik.core.models import Group
+from authentik.core.sources.mapper import SourceMapper
 from authentik.events.models import Event, EventAction
-from authentik.lib.sync.mapper import PropertyMappingManager
-from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
-from authentik.sources.ldap.sync.base import LDAP_UNIQUENESS, BaseLDAPSynchronizer, flatten
+from authentik.lib.sync.outgoing.exceptions import StopSync
+from authentik.sources.ldap.models import LDAP_UNIQUENESS, LDAPSource, flatten
+from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
 
 
 class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
@@ -19,11 +23,8 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
 
     def __init__(self, source: LDAPSource):
         super().__init__(source)
-        self.mapper = PropertyMappingManager(
-            self._source.property_mappings_group.all().order_by("name").select_subclasses(),
-            LDAPPropertyMapping,
-            ["ldap", "dn", "source"],
-        )
+        self.mapper = SourceMapper(source)
+        self.manager = self.mapper.get_manager(Group, ["ldap", "dn"])
 
     @staticmethod
     def name() -> str:
@@ -61,8 +62,17 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
                 continue
             uniq = flatten(attributes[self._source.object_uniqueness_field])
             try:
-                defaults = self.build_group_properties(group_dn, **attributes)
-                defaults["parent"] = self._source.sync_parent_group
+                defaults = {
+                    k: flatten(v)
+                    for k, v in self.mapper.build_object_properties(
+                        object_type=Group,
+                        manager=self.manager,
+                        user=None,
+                        request=None,
+                        dn=group_dn,
+                        ldap=attributes,
+                    ).items()
+                }
                 if "name" not in defaults:
                     raise IntegrityError("Name was not set by propertymappings")
                 # Special check for `users` field, as this is an M2M relation, and cannot be sync'd
@@ -78,6 +88,8 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
                 self._logger.debug("Created group with attributes", **defaults)
             except SkipObjectException:
                 continue
+            except PropertyMappingExpressionException as exc:
+                raise StopSync(exc, None, exc.mapping) from exc
             except (IntegrityError, FieldError, TypeError, AttributeError) as exc:
                 Event.new(
                     EventAction.CONFIGURATION_ERROR,

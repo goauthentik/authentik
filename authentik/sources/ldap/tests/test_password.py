@@ -25,7 +25,7 @@ class LDAPPasswordTests(TestCase):
             additional_user_dn="ou=users",
             additional_group_dn="ou=groups",
         )
-        self.source.property_mappings.set(LDAPPropertyMapping.objects.all())
+        self.source.user_property_mappings.set(LDAPPropertyMapping.objects.all())
         self.source.save()
 
     @patch("authentik.sources.ldap.models.LDAPSource.connection", LDAP_CONNECTION_PATCH)
