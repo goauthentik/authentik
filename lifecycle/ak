@@ -2,7 +2,7 @@
 MODE_FILE="${TMPDIR}/authentik-mode"
 
 function log {
-    printf '{"event": "%s", "level": "info", "logger": "bootstrap"}\n' "$@" > /dev/stderr
+    printf '{"event": "%s", "level": "info", "logger": "bootstrap"}\n' "$@" >/dev/stderr
 }
 
 function wait_for_db {
@@ -45,7 +45,7 @@ function run_authentik {
 }
 
 function set_mode {
-    echo $1 > $MODE_FILE
+    echo $1 >$MODE_FILE
     trap cleanup EXIT
 }
 
@@ -54,6 +54,7 @@ function cleanup {
 }
 
 function prepare_debug {
+    apt-get install -y --no-install-recommends krb5-kdc krb5-user krb5-admin-server
     VIRTUAL_ENV=/ak-root/venv poetry install --no-ansi --no-interaction
     touch /unittest.xml
     chown authentik:authentik /unittest.xml
