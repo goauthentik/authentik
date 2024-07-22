@@ -12,6 +12,8 @@ import { customElement } from "lit/decorators.js";
 
 import { GeoIPPolicy, PoliciesApi } from "@goauthentik/api";
 
+import { countryCache } from './CountryCache'
+
 @customElement("ak-policy-geoip-form")
 export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
     loadInstance(pk: string): Promise<GeoIPPolicy> {
@@ -91,8 +93,8 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                     <ak-form-element-horizontal label=${msg("Countries")} name="countries">
                         <ak-dual-select-provider
                             .provider=${(page: number, search?: string): Promise<DataProvision> => {
-                                return new PoliciesApi(DEFAULT_CONFIG)
-                                    .policiesGeoipIso3166List()
+                                return countryCache
+                                    .getCountries()
                                     .then((results) => {
                                         if (!search) return results;
                                         return results.filter((result) =>
