@@ -3,10 +3,7 @@
 from django.test import TestCase
 
 from authentik.core.models import Group, PropertyMapping, Source, User
-<<<<<<< HEAD
-=======
 from authentik.core.sources.mapper import SourceMapper
->>>>>>> main
 from authentik.lib.generators import generate_id
 
 
