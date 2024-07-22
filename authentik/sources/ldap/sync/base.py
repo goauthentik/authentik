@@ -122,24 +122,3 @@ class BaseLDAPSynchronizer:
             except KeyError:
                 cookie = None
             yield self._connection.response
-
-    def update_or_create_attributes(
-        self,
-        obj: type[Model],
-        query: dict[str, Any],
-        data: dict[str, Any],
-    ) -> tuple[Model, bool]:
-        """Same as django's update_or_create but correctly update attributes by merging dicts"""
-        instance = obj.objects.filter(**query).first()
-        if not instance:
-            return (obj.objects.create(**data), True)
-        for key, value in data.items():
-            if key == "attributes":
-                continue
-            setattr(instance, key, value)
-        final_attributes = {}
-        MERGE_LIST_UNIQUE.merge(final_attributes, instance.attributes)
-        MERGE_LIST_UNIQUE.merge(final_attributes, data.get("attributes", {}))
-        instance.attributes = final_attributes
-        instance.save()
-        return (instance, False)
