@@ -41,7 +41,7 @@ class TestFlowsStageSetup(SeleniumTestCase):
             )
         )
         self.login()
-        self.wait_for_url(self.if_user_url())
+        self.wait_for_url(self.if_user_url("/library"))
 
         self.driver.get(
             self.url(
@@ -61,7 +61,7 @@ class TestFlowsStageSetup(SeleniumTestCase):
             Keys.ENTER
         )
 
-        self.wait_for_url(self.if_user_url())
+        self.wait_for_url(self.if_user_url("/library"))
         # Because self.user is cached, we need to get the user manually here
         user = User.objects.get(username=self.user.username)
         self.assertTrue(user.check_password(new_password))

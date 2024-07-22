@@ -21,5 +21,5 @@ class TestFlowsLogin(SeleniumTestCase):
             )
         )
         self.login()
-        self.wait_for_url(self.if_user_url())
+        self.wait_for_url(self.if_user_url("/library"))
         self.assert_user(self.user)

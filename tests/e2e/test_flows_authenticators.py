@@ -47,7 +47,7 @@ class TestFlowsAuthenticator(SeleniumTestCase):
         code_stage = self.get_shadow_root("ak-stage-authenticator-validate-code", validation_stage)
         code_stage.find_element(By.CSS_SELECTOR, "input[name=code]").send_keys(totp.token())
         code_stage.find_element(By.CSS_SELECTOR, "input[name=code]").send_keys(Keys.ENTER)
-        self.wait_for_url(self.if_user_url())
+        self.wait_for_url(self.if_user_url("/library"))
         self.assert_user(self.user)
 
     @retry()
@@ -63,7 +63,7 @@ class TestFlowsAuthenticator(SeleniumTestCase):
         self.driver.get(self.url("authentik_core:if-flow", flow_slug=flow.slug))
         self.login()
 
-        self.wait_for_url(self.if_user_url())
+        self.wait_for_url(self.if_user_url("/library"))
         self.assert_user(self.user)
 
         self.driver.get(
@@ -109,7 +109,7 @@ class TestFlowsAuthenticator(SeleniumTestCase):
         self.driver.get(self.url("authentik_core:if-flow", flow_slug=flow.slug))
         self.login()
 
-        self.wait_for_url(self.if_user_url())
+        self.wait_for_url(self.if_user_url("/library"))
         self.assert_user(self.user)
 
         self.driver.get(
