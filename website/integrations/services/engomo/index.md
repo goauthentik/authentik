@@ -67,7 +67,7 @@ Leave the rest as default.
 
 ## engomo user creation
 
-engomo doesn't create users automatically on signing in. So you have to do it manually right now.
+engomo doesn't create users automatically when signing in. So you have to do it manually right now.
 Navigate to `https://engomo.company/composer` and log in with your admin credentials.
 
 - Select `Users & Devices`.
