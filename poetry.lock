@@ -4192,13 +4192,13 @@ crt = ["botocore[crt] (>=1.33.2,<2.0a.0)"]
 
 [[package]]
 name = "scim2-filter-parser"
-version = "0.6.0"
+version = "0.7.0"
 description = "A customizable parser/transpiler for SCIM2.0 filters."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "scim2_filter_parser-0.6.0-py3-none-any.whl", hash = "sha256:a8769b302b491b767f44c7ced3ecfa43feab08dae3d3dbb4823aac91e04c7abf"},
-    {file = "scim2_filter_parser-0.6.0.tar.gz", hash = "sha256:e4a7831cb9f70c5552f291e66c0e3cafad154bb686be899e68e24652d2503544"},
+    {file = "scim2_filter_parser-0.7.0-py3-none-any.whl", hash = "sha256:a74f90a2d52a77e0f1bc4d77e84b79f88749469f6f7192d64a4f92e4fe50ab69"},
+    {file = "scim2_filter_parser-0.7.0.tar.gz", hash = "sha256:1e11dbe2e186fc1be6d93732b467a3bbaa9deff272dfeb3a0540394cfab7030c"},
 ]
 
 [package.dependencies]
