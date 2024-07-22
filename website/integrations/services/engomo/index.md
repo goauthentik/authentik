@@ -30,7 +30,7 @@ In authentik, create a new scope mapping. To do so, log in and navigate to the A
 
 Create an application and an OAuth2/OpenID provider in authentik. Use the following parameters for the OAuth2/OpenID provider:
 
-Provider:
+**Provider:**
 
 -   Name: `SP-engomo`
 -   Client type: `Public`    
@@ -43,7 +43,7 @@ Provider:
 
 Leave the rest as default values. The durations can be changed as needed.
 
-Application:
+**Application:**
 
 -   Name: `engomo`
 -   Slug: `engomo`
