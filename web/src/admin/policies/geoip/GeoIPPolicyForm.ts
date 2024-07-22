@@ -1,7 +1,7 @@
 import { BasePolicyForm } from "@goauthentik/admin/policies/BasePolicyForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/ak-dual-select";
-import { DataProvision } from "@goauthentik/elements/ak-dual-select/types";
+import { DataProvision, DualSelectPair } from "@goauthentik/elements/ak-dual-select/types";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -10,9 +10,19 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import { GeoIPPolicy, PoliciesApi } from "@goauthentik/api";
+import { DetailedCountry, GeoIPPolicy, PoliciesApi } from "@goauthentik/api";
 
-import { countryCache } from './CountryCache'
+import { countryCache } from "./CountryCache";
+
+function countryToPair(country: DetailedCountry): DualSelectPair {
+    return [country.code, country.name];
+}
+
+async function codesToCountries(countryCodes: string[]): Promise<DetailedCountry[]> {
+    const countries = await countryCache.getCountries();
+
+    return countries.filter((country) => countryCodes.includes(country.code));
+}
 
 @customElement("ak-policy-geoip-form")
 export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
@@ -28,6 +38,8 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
         } else {
             data.asns = (data.asns as unknown as string).split(",").map(Number);
         }
+
+        data.countries = await codesToCountries(data.countries as unknown as string[]);
 
         if (this.instance) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesGeoipUpdate({
@@ -105,17 +117,11 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                                     })
                                     .then((results) => {
                                         return {
-                                            options: results.map((country) => [
-                                                country.code,
-                                                country.name,
-                                            ]),
+                                            options: results.map(countryToPair),
                                         };
                                     });
                             }}
-                            .selected=${(this.instance?.countries ?? []).map((country) => [
-                                country.code,
-                                country.name,
-                            ])}
+                            .selected=${(this.instance?.countries ?? []).map(countryToPair)}
                             available-label="${msg("Available Countries")}"
                             selected-label="${msg("Selected Countries")}"
                         >
