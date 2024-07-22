@@ -10,6 +10,10 @@ This policy is used by the events subsystem. You can use this policy to match ev
 
 See [Expression Policy](expression.mdx).
 
+## GeoIP Policy
+
+Use this policy for simple GeoIP lookups, such as country or ASN matching. (For a more advanced GeoIP lookup, use an [Expression Policy](expression.mdx).)
+
 ## Have I Been Pwned Policy
 
 :::info
