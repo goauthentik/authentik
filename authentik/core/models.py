@@ -579,6 +579,11 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     group_property_mappings = models.ManyToManyField(
         "PropertyMapping", default=None, blank=True, related_name="source_grouppropertymappings_set"
     )
+    groups_list_property_mappings = models.ForeignKey("PropertyMapping",
+                                                      blank=True,
+        null=True,
+        default=None,
+        on_delete=models.SET_NULL)
     icon = models.FileField(
         upload_to="source-icons/",
         default=None,

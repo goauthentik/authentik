@@ -13532,7 +13532,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedLDAPPropertyMappingList'
+                $ref: '#/components/schemas/PaginatedLDAPSourcePropertyMappingList'
           description: ''
         '400':
           content:
@@ -13555,7 +13555,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LDAPPropertyMappingRequest'
+              $ref: '#/components/schemas/LDAPSourcePropertyMappingRequest'
         required: true
       security:
       - authentik: []
@@ -13564,7 +13564,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LDAPPropertyMapping'
+                $ref: '#/components/schemas/LDAPSourcePropertyMapping'
           description: ''
         '400':
           content:
@@ -13599,7 +13599,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LDAPPropertyMapping'
+                $ref: '#/components/schemas/LDAPSourcePropertyMapping'
           description: ''
         '400':
           content:
@@ -13630,7 +13630,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LDAPPropertyMappingRequest'
+              $ref: '#/components/schemas/LDAPSourcePropertyMappingRequest'
         required: true
       security:
       - authentik: []
@@ -13639,7 +13639,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LDAPPropertyMapping'
+                $ref: '#/components/schemas/LDAPSourcePropertyMapping'
           description: ''
         '400':
           content:
@@ -13670,7 +13670,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedLDAPPropertyMappingRequest'
+              $ref: '#/components/schemas/PatchedLDAPSourcePropertyMappingRequest'
       security:
       - authentik: []
       responses:
@@ -13678,7 +13678,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LDAPPropertyMapping'
+                $ref: '#/components/schemas/LDAPSourcePropertyMapping'
           description: ''
         '400':
           content:
@@ -21661,8 +21661,8 @@ paths:
           - authentik_providers_scim.scimmapping
           - authentik_providers_scim.scimprovider
           - authentik_rbac.role
-          - authentik_sources_ldap.ldappropertymapping
           - authentik_sources_ldap.ldapsource
+          - authentik_sources_ldap.ldapsourcepropertymapping
           - authentik_sources_oauth.oauthsource
           - authentik_sources_oauth.oauthsourcepropertymapping
           - authentik_sources_oauth.useroauthsourceconnection
@@ -21883,8 +21883,8 @@ paths:
           - authentik_providers_scim.scimmapping
           - authentik_providers_scim.scimprovider
           - authentik_rbac.role
-          - authentik_sources_ldap.ldappropertymapping
           - authentik_sources_ldap.ldapsource
+          - authentik_sources_ldap.ldapsourcepropertymapping
           - authentik_sources_oauth.oauthsource
           - authentik_sources_oauth.oauthsourcepropertymapping
           - authentik_sources_oauth.useroauthsourceconnection
@@ -23370,10 +23370,6 @@ paths:
         schema:
           type: string
           format: uuid
-      - in: query
-        name: groups_claim
-        schema:
-          type: string
       - in: query
         name: has_jwks
         schema:
@@ -38446,73 +38442,6 @@ components:
       - bind_flow_slug
       - name
       - pk
-    LDAPPropertyMapping:
-      type: object
-      description: LDAP PropertyMapping Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Pm uuid
-        managed:
-          type: string
-          nullable: true
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created
-            and updated automatically. This flag only indicates that an object can
-            be overwritten by migrations. You can still modify the objects via the
-            API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-        expression:
-          type: string
-        component:
-          type: string
-          description: Get object's component so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-      required:
-      - component
-      - expression
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    LDAPPropertyMappingRequest:
-      type: object
-      description: LDAP PropertyMapping Serializer
-      properties:
-        managed:
-          type: string
-          nullable: true
-          minLength: 1
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created
-            and updated automatically. This flag only indicates that an object can
-            be overwritten by migrations. You can still modify the objects via the
-            API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-          minLength: 1
-        expression:
-          type: string
-          minLength: 1
-      required:
-      - expression
-      - name
     LDAPProvider:
       type: object
       description: LDAPProvider Serializer
@@ -38855,6 +38784,73 @@ components:
       - slug
       - verbose_name
       - verbose_name_plural
+    LDAPSourcePropertyMapping:
+      type: object
+      description: LDAP PropertyMapping Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pm uuid
+        managed:
+          type: string
+          nullable: true
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+        expression:
+          type: string
+        component:
+          type: string
+          description: Get object's component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+      required:
+      - component
+      - expression
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    LDAPSourcePropertyMappingRequest:
+      type: object
+      description: LDAP PropertyMapping Serializer
+      properties:
+        managed:
+          type: string
+          nullable: true
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+      required:
+      - expression
+      - name
     LDAPSourceRequest:
       type: object
       description: LDAP Source Serializer
@@ -39458,7 +39454,7 @@ components:
       - authentik_providers_scim.scimmapping
       - authentik_rbac.role
       - authentik_sources_ldap.ldapsource
-      - authentik_sources_ldap.ldappropertymapping
+      - authentik_sources_ldap.ldapsourcepropertymapping
       - authentik_sources_oauth.oauthsource
       - authentik_sources_oauth.oauthsourcepropertymapping
       - authentik_sources_oauth.useroauthsourceconnection
@@ -40137,12 +40133,6 @@ components:
           readOnly: true
         additional_scopes:
           type: string
-        groups_claim:
-          type: string
-          nullable: true
-          description: Sync groups and group membership from the source. Only use
-            this option with sources that you control, as otherwise unwanted users
-            might get added to groups with superuser permissions.
         type:
           allOf:
           - $ref: '#/components/schemas/SourceType'
@@ -40311,13 +40301,6 @@ components:
           minLength: 1
         additional_scopes:
           type: string
-        groups_claim:
-          type: string
-          nullable: true
-          minLength: 1
-          description: Sync groups and group membership from the source. Only use
-            this option with sources that you control, as otherwise unwanted users
-            might get added to groups with superuser permissions.
         oidc_well_known_url:
           type: string
         oidc_jwks_url:
@@ -41030,18 +41013,6 @@ components:
       required:
       - pagination
       - results
-    PaginatedLDAPPropertyMappingList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/LDAPPropertyMapping'
-      required:
-      - pagination
-      - results
     PaginatedLDAPProviderList:
       type: object
       properties:
@@ -41063,6 +41034,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/LDAPSource'
+      required:
+      - pagination
+      - results
+    PaginatedLDAPSourcePropertyMappingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/LDAPSourcePropertyMapping'
       required:
       - pagination
       - results
@@ -43215,25 +43198,6 @@ components:
         verify_ssl:
           type: boolean
           description: Verify SSL Certificates of the Kubernetes API endpoint
-    PatchedLDAPPropertyMappingRequest:
-      type: object
-      description: LDAP PropertyMapping Serializer
-      properties:
-        managed:
-          type: string
-          nullable: true
-          minLength: 1
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created
-            and updated automatically. This flag only indicates that an object can
-            be overwritten by migrations. You can still modify the objects via the
-            API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-          minLength: 1
-        expression:
-          type: string
-          minLength: 1
     PatchedLDAPProviderRequest:
       type: object
       description: LDAPProvider Serializer
@@ -43298,6 +43262,25 @@ components:
             should only be enabled if all users that will bind to this provider have
             a TOTP device configured, as otherwise a password may incorrectly be rejected
             if it contains a semicolon.
+    PatchedLDAPSourcePropertyMappingRequest:
+      type: object
+      description: LDAP PropertyMapping Serializer
+      properties:
+        managed:
+          type: string
+          nullable: true
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
     PatchedLDAPSourceRequest:
       type: object
       description: LDAP Source Serializer
@@ -43717,13 +43700,6 @@ components:
           minLength: 1
         additional_scopes:
           type: string
-        groups_claim:
-          type: string
-          nullable: true
-          minLength: 1
-          description: Sync groups and group membership from the source. Only use
-            this option with sources that you control, as otherwise unwanted users
-            might get added to groups with superuser permissions.
         oidc_well_known_url:
           type: string
         oidc_jwks_url:

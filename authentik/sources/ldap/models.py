@@ -135,9 +135,9 @@ class LDAPSource(Source):
 
     @property
     def property_mapping_type(self) -> "type[PropertyMapping]":
-        from authentik.sources.ldap.models import LDAPPropertyMapping
+        from authentik.sources.ldap.models import LDAPSourcePropertyMapping
 
-        return LDAPPropertyMapping
+        return LDAPSourcePropertyMapping
 
     def update_properties_with_uniqueness_field(self, properties, dn, ldap, **kwargs):
         properties.setdefault("attributes", {})[LDAP_DISTINGUISHED_NAME] = dn
@@ -285,7 +285,7 @@ class LDAPSource(Source):
         verbose_name_plural = _("LDAP Sources")
 
 
-class LDAPPropertyMapping(PropertyMapping):
+class LDAPSourcePropertyMapping(PropertyMapping):
     """Map LDAP Property to User or Group object attribute"""
 
     @property
@@ -294,9 +294,9 @@ class LDAPPropertyMapping(PropertyMapping):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.sources.ldap.api import LDAPPropertyMappingSerializer
+        from authentik.sources.ldap.api import LDAPSourcePropertyMappingSerializer
 
-        return LDAPPropertyMappingSerializer
+        return LDAPSourcePropertyMappingSerializer
 
     def __str__(self):
         return str(self.name)
