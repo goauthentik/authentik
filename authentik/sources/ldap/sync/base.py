@@ -1,16 +1,13 @@
 """Sync LDAP Users and groups into authentik"""
 
 from collections.abc import Generator
-from typing import Any
 
 from django.conf import settings
-from django.db.models.base import Model
 from ldap3 import DEREF_ALWAYS, SUBTREE, Connection
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.sources.mapper import SourceMapper
 from authentik.lib.config import CONFIG
-from authentik.lib.merge import MERGE_LIST_UNIQUE
 from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.sources.ldap.models import LDAPSource
 

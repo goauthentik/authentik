@@ -36,12 +36,11 @@ from authentik.lib.models import (
 )
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel
-from authentik.policies.utils import delete_none_values
 from authentik.tenants.models import DEFAULT_TOKEN_DURATION, DEFAULT_TOKEN_LENGTH
 from authentik.tenants.utils import get_current_tenant, get_unique_identifier
 
 if TYPE_CHECKING:
-    from authentik.lib.sync.mapper import PropertyMappingManager
+    pass
 
 LOGGER = get_logger()
 USER_ATTRIBUTE_DEBUG = "goauthentik.io/user/debug"
@@ -579,11 +578,9 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     group_property_mappings = models.ManyToManyField(
         "PropertyMapping", default=None, blank=True, related_name="source_grouppropertymappings_set"
     )
-    groups_list_property_mappings = models.ForeignKey("PropertyMapping",
-                                                      blank=True,
-        null=True,
-        default=None,
-        on_delete=models.SET_NULL)
+    groups_list_property_mapping = models.ForeignKey(
+        "PropertyMapping", blank=True, null=True, default=None, on_delete=models.SET_NULL
+    )
     icon = models.FileField(
         upload_to="source-icons/",
         default=None,

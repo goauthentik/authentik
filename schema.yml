@@ -21623,6 +21623,7 @@ paths:
           - authentik_brands.brand
           - authentik_core.application
           - authentik_core.group
+          - authentik_core.groupsourceconnection
           - authentik_core.token
           - authentik_core.user
           - authentik_crypto.certificatekeypair
@@ -21845,6 +21846,7 @@ paths:
           - authentik_brands.brand
           - authentik_core.application
           - authentik_core.group
+          - authentik_core.groupsourceconnection
           - authentik_core.token
           - authentik_core.user
           - authentik_crypto.certificatekeypair
@@ -39497,6 +39499,7 @@ components:
       - authentik_core.group
       - authentik_core.user
       - authentik_core.application
+      - authentik_core.groupsourceconnection
       - authentik_core.token
       - authentik_enterprise.license
       - authentik_providers_google_workspace.googleworkspaceprovider
@@ -40102,6 +40105,10 @@ components:
           type: string
           nullable: true
           readOnly: true
+        groups_list_property_mapping:
+          type: string
+          format: uuid
+          nullable: true
         provider_type:
           $ref: '#/components/schemas/ProviderTypeEnum'
         request_token_url:
@@ -40269,6 +40276,10 @@ components:
         user_path_template:
           type: string
           minLength: 1
+        groups_list_property_mapping:
+          type: string
+          format: uuid
+          nullable: true
         provider_type:
           $ref: '#/components/schemas/ProviderTypeEnum'
         request_token_url:
@@ -43668,6 +43679,10 @@ components:
         user_path_template:
           type: string
           minLength: 1
+        groups_list_property_mapping:
+          type: string
+          format: uuid
+          nullable: true
         provider_type:
           $ref: '#/components/schemas/ProviderTypeEnum'
         request_token_url:
@@ -44424,6 +44439,10 @@ components:
         user_path_template:
           type: string
           minLength: 1
+        groups_list_property_mapping:
+          type: string
+          format: uuid
+          nullable: true
         pre_authentication_flow:
           type: string
           format: uuid
@@ -47199,6 +47218,10 @@ components:
         icon:
           type: string
           readOnly: true
+        groups_list_property_mapping:
+          type: string
+          format: uuid
+          nullable: true
         pre_authentication_flow:
           type: string
           format: uuid
@@ -47377,6 +47400,10 @@ components:
         user_path_template:
           type: string
           minLength: 1
+        groups_list_property_mapping:
+          type: string
+          format: uuid
+          nullable: true
         pre_authentication_flow:
           type: string
           format: uuid
