@@ -3,6 +3,7 @@
 import re
 from hashlib import sha1
 
+from django.contrib.auth.hashers import identify_hasher
 from django.db import models
 from django.utils.translation import gettext as _
 from rest_framework.serializers import BaseSerializer
@@ -191,6 +192,8 @@ class UniquePasswordPolicy(Policy):
         return "ak-policy-password-form"
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
+        from authentik.core.models import UserPasswordHistory
+
         password = request.context.get(PLAN_CONTEXT_PROMPT, {}).get(
             self.password_field, request.context.get(self.password_field)
         )
@@ -203,9 +206,35 @@ class UniquePasswordPolicy(Policy):
             return PolicyResult(False, _("Password not set in context"))
         password = str(password)
 
-        ## TODO: implement unique password lookup
+        # Query audit table for the last n passwords
+        password_history = UserPasswordHistory.objects.filter(user=request.user)
 
-        return PolicyResult(False)
+        # If no passwords are found: Policy resolves with “allow”
+        if len(password_history) == 0:
+            return PolicyResult(True)
+
+        # For each password returned from audit table:
+        for history in password_history:
+            old_password = history.change.get("old_password")
+            if not old_password:
+                # TODO: how do we handle missing password?
+                continue
+
+            if self._passwords_match(new_password=password, old_password=old_password):
+                # Return on first match. Authentik does not consider timing attacks
+                # on old passwords to be a useful attack surface.
+                return PolicyResult(False)
+
+        return PolicyResult(True)
+
+    def _passwords_match(self, *, new_password: str, old_password: str) -> bool:
+        try:
+            hasher = identify_hasher(old_password)
+        except ValueError:
+            # TODO: Define behavior if hasher cannot be identified or is unsupported
+            return False
+
+        return hasher.verify(new_password, old_password)
 
     class Meta(Policy.PolicyMeta):
         verbose_name = _("Password Uniqueness Policy")
