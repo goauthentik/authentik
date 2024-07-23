@@ -34285,6 +34285,12 @@ components:
           type: string
           format: uuid
           nullable: true
+        default_application:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, external users will be redirected to this application
+            after authenticating.
         web_certificate:
           type: string
           format: uuid
@@ -34338,6 +34344,12 @@ components:
           type: string
           format: uuid
           nullable: true
+        default_application:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, external users will be redirected to this application
+            after authenticating.
         web_certificate:
           type: string
           format: uuid
@@ -41601,6 +41613,12 @@ components:
           type: string
           format: uuid
           nullable: true
+        default_application:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, external users will be redirected to this application
+            after authenticating.
         web_certificate:
           type: string
           format: uuid
