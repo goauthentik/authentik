@@ -121,7 +121,7 @@ def blueprints_find() -> list[BlueprintFile]:
     """Find blueprints and return valid ones"""
     blueprints = []
     root = Path(CONFIG.get("blueprints_dir"))
-    for path in root.rglob("**/*.yaml"):
+    for path in sorted(root.rglob("**/*.yaml")):
         rel_path = path.relative_to(root)
         # Check if any part in the path starts with a dot and assume a hidden file
         if any(part for part in path.parts if part.startswith(".")):
