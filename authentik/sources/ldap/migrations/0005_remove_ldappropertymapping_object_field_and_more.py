@@ -39,8 +39,8 @@ def migrate_ldap_property_mappings_to_new_fields(apps, schema_editor):
     db_alias = schema_editor.connection.alias
     LDAPSource = apps.get_model("authentik_sources_ldap", "LDAPSource")
     for source in LDAPSource.objects.using(db_alias).all():
-        source.user_property_mappings.using(db_alias).set(source.property_mappings)
-        source.group_property_mappings.using(db_alias).set(source.property_mappings_group)
+        source.user_property_mappings.set(source.property_mappings.using(db_alias).all())
+        source.group_property_mappings.set(source.property_mappings_group.using(db_alias).all())
 
 
 class Migration(migrations.Migration):
