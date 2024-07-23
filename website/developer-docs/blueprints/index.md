@@ -30,7 +30,7 @@ The authentik container by default looks for blueprints in `/blueprints`. Undern
 -   `/blueprints/example`: Example blueprints for common configurations and flows
 -   `/blueprints/system`: System blueprints for authentik managed Property mappings, etc
 
-Any additional `.yaml` file in `/blueprints` will be discovered and automatically instantiated, depending on their labels.
+Any additional `.yaml` file in `/blueprints` will be discovered and automatically instantiated, depending on their labels. Blueprints are loaded and instantiated in alphabetical order of the full filesystem path.
 
 To disable existing blueprints, an empty file can be mounted over the existing blueprint.
 
