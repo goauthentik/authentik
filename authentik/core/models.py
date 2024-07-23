@@ -567,19 +567,29 @@ class SourceUserMatchingModes(models.TextChoices):
     """Different modes a source can handle new/returning users"""
 
     IDENTIFIER = "identifier", _("Use the source-specific identifier")
-    EMAIL_LINK = "email_link", _(
-        "Link to a user with identical email address. Can have security implications "
-        "when a source doesn't validate email addresses."
+    EMAIL_LINK = (
+        "email_link",
+        _(
+            "Link to a user with identical email address. Can have security implications "
+            "when a source doesn't validate email addresses."
+        ),
     )
-    EMAIL_DENY = "email_deny", _(
-        "Use the user's email address, but deny enrollment when the email address already exists."
+    EMAIL_DENY = (
+        "email_deny",
+        _(
+            "Use the user's email address, but deny enrollment when the email address already exists."
+        ),
     )
-    USERNAME_LINK = "username_link", _(
-        "Link to a user with identical username. Can have security implications "
-        "when a username is used with another source."
+    USERNAME_LINK = (
+        "username_link",
+        _(
+            "Link to a user with identical username. Can have security implications "
+            "when a username is used with another source."
+        ),
     )
-    USERNAME_DENY = "username_deny", _(
-        "Use the user's username, but deny enrollment when the username already exists."
+    USERNAME_DENY = (
+        "username_deny",
+        _("Use the user's username, but deny enrollment when the username already exists."),
     )
 
 
@@ -950,3 +960,15 @@ class AuthenticatedSession(ExpiringModel):
             last_user_agent=request.META.get("HTTP_USER_AGENT", ""),
             expires=request.session.get_expiry_date(),
         )
+
+
+class UserPasswordHistory(models.Model):
+    user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="old_passwords")
+    change = models.JSONField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = _("User Password History")
+
+    def __str__(self) -> str:
+        return f"Historical User Password (changed: {self.created_at:%Y/%m/%d %X})"
