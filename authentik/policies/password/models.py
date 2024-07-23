@@ -161,3 +161,42 @@ class PasswordPolicy(Policy):
     class Meta(Policy.PolicyMeta):
         verbose_name = _("Password Policy")
         verbose_name_plural = _("Password Policies")
+
+
+class UniquePasswordPolicy(Policy):
+    """Policy ensuring a user's password is not identical to a previously used password.
+    The number of passwords stored by the system (and checked by the policy) is configurable.
+    """
+
+    password_field = models.TextField(
+        default="password",
+        help_text=_("Field key to check, field keys defined in Prompt stages are available."),
+    )
+
+    # Limit on the number of previous passwords the policy evaluates
+    # Also controls number of old passwords the system stores.
+    num_historical_passwords = models.PositiveIntegerField(
+        default=0,
+        help_text=_("Number of passwords to check against."),
+    )
+
+    def passes(self, request: PolicyRequest) -> PolicyResult:
+        password = request.context.get(PLAN_CONTEXT_PROMPT, {}).get(
+            self.password_field, request.context.get(self.password_field)
+        )
+        if not password:
+            LOGGER.warning(
+                "Password field not set in Password Uniqueness Policy Request",
+                field=self.password_field,
+                fields=request.context.keys(),
+            )
+            return PolicyResult(False, _("Password not set in context"))
+        password = str(password)
+
+        ## TODO: implement unique password lookup
+
+        return PolicyResult(False)
+
+    class Meta(Policy.PolicyMeta):
+        verbose_name = _("Password Uniqueness Policy")
+        verbose_name_plural = _("Password Uniqueness Policies")
