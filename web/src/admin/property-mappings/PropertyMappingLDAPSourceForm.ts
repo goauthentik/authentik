@@ -15,7 +15,7 @@ import { LDAPSourcePropertyMapping, PropertymappingsApi } from "@goauthentik/api
 @customElement("ak-property-mapping-ldap-source-form")
 export class PropertyMappingLDAPSourceForm extends BasePropertyMappingForm<LDAPSourcePropertyMapping> {
     loadInstance(pk: string): Promise<LDAPSourcePropertyMapping> {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsLdapsourceRetrieve({
+        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceLdapRetrieve({
             pmUuid: pk,
         });
     }
