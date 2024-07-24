@@ -377,6 +377,22 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                                     value: SignatureAlgorithmEnum._200104XmldsigMorersaSha512,
                                 },
                                 {
+                                    label: "ECDSA-SHA1",
+                                    value: SignatureAlgorithmEnum._200104XmldsigMoreecdsaSha1,
+                                },
+                                {
+                                    label: "ECDSA-SHA256",
+                                    value: SignatureAlgorithmEnum._200104XmldsigMoreecdsaSha256,
+                                },
+                                {
+                                    label: "ECDSA-SHA384",
+                                    value: SignatureAlgorithmEnum._200104XmldsigMoreecdsaSha384,
+                                },
+                                {
+                                    label: "ECDSA-SHA512",
+                                    value: SignatureAlgorithmEnum._200104XmldsigMoreecdsaSha512,
+                                },
+                                {
                                     label: "DSA-SHA1",
                                     value: SignatureAlgorithmEnum._200009XmldsigdsaSha1,
                                 },
