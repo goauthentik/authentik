@@ -8,24 +8,31 @@ import (
 	"goauthentik.io/api/v3"
 )
 
-type PaginatorRequest[Tobj any, Treq any, Tres any] interface {
+// Generic interface that mimics a generated request by the API client
+// Requires mainly `Treq` which will be the actual request type, and
+// `Tres` which is the response type
+type PaginatorRequest[Treq any, Tres any] interface {
 	Page(page int32) Treq
 	PageSize(size int32) Treq
 	Execute() (Tres, *http.Response, error)
 }
 
+// Generic interface that mimics a generated response by the API client
 type PaginatorResponse[Tobj any] interface {
 	GetResults() []Tobj
 	GetPagination() api.Pagination
 }
 
+// Paginator options for page size
 type PaginatorOptions struct {
 	PageSize int
 	Logger   *log.Entry
 }
 
+// Automatically fetch all objects from an API endpoint using the pagination
+// data received from the server.
 func Paginator[Tobj any, Treq any, Tres PaginatorResponse[Tobj]](
-	req PaginatorRequest[Tobj, Treq, Tres],
+	req PaginatorRequest[Treq, Tres],
 	opts PaginatorOptions,
 ) ([]Tobj, error) {
 	fetchOffset := func(page int32) (Tres, error) {
