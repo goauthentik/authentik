@@ -206,10 +206,12 @@ class GroupSourceConnectionSerializer(SourceSerializer):
             "pk",
             "group",
             "source",
+            "identifier",
             "created",
         ]
         extra_kwargs = {
             "group": {"read_only": True},
+            "identifier": {"read_only": True},
             "created": {"read_only": True},
         }
 
@@ -227,6 +229,7 @@ class GroupSourceConnectionViewSet(
     queryset = GroupSourceConnection.objects.all()
     serializer_class = GroupSourceConnectionSerializer
     permission_classes = [OwnerSuperuserPermissions]
-    filterset_fields = ["group"]
+    filterset_fields = ["group", "source__slug"]
+    search_fields = ["source__slug"]
     filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
-    ordering = ["pk"]
+    ordering = ["source__slug"]

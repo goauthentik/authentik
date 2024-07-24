@@ -13,6 +13,7 @@ from django.utils.translation import gettext as _
 from structlog.stdlib import get_logger
 
 from authentik.core.models import Group, Source, SourceUserMatchingModes, User, UserSourceConnection
+from authentik.core.sources.mapper import SourceMapper
 from authentik.core.sources.stage import (
     PLAN_CONTEXT_SOURCES_CONNECTION,
     PostSourceStage,
@@ -73,44 +74,43 @@ class SourceFlowManager:
     or deny the request."""
 
     source: Source
+    mapper: SourceMapper
     request: HttpRequest
 
     identifier: str
 
     connection_type: type[UserSourceConnection] = UserSourceConnection
 
-    enroll_info: dict[str, Any]
-    groups_info: list[str | dict[str, Any]]
+    user_info: dict[str, Any]
     policy_context: dict[str, Any]
-    enroll_properties: dict[str, Any | dict[str, Any]]
-    groups_properties: list[dict[str, Any | dict[str, Any]]]
+    user_properties: dict[str, Any | dict[str, Any]]
+    groups_properties: dict[str, dict[str, Any | dict[str, Any]]]
 
     def __init__(
         self,
         source: Source,
         request: HttpRequest,
         identifier: str,
-        enroll_info: dict[str, Any],
-        groups_info: list[str | dict[Any, Any]],
+        user_info: dict[str, Any],
         policy_context: dict[str, Any],
     ) -> None:
         self.source = source
+        self.mapper = SourceMapper(self.source)
         self.request = request
         self.identifier = identifier
-        self.enroll_info = enroll_info
-        self.groups_info = groups_info
+        self.user_info = user_info
         self._logger = get_logger().bind(source=source, identifier=identifier)
         self.policy_context = policy_context
 
-        self.enroll_properties = self.source.build_object_properties(
-            object_type=User, request=request, user=None, **self.enroll_info
+        self.user_properties = self.mapper.build_object_properties(
+            object_type=User, request=request, user=None, **self.user_info
         )
-        self.groups_properties = [
-            self.source.build_object_properties(
-                object_type=Group, request=request, user=None, info=group_info
+        self.groups_properties = {
+            group_id: self.mapper.build_object_properties(
+                object_type=Group, request=request, user=None, group_id=group_id, **self.user_info
             )
-            for group_info in self.groups_info
-        ]
+            for group_id in self.user_properties.get("groups", [])
+        }
 
     def get_action(self, **kwargs) -> tuple[Action, UserSourceConnection | None]:  # noqa: PLR0911
         """decide which action should be taken"""
@@ -139,18 +139,18 @@ class SourceFlowManager:
             SourceUserMatchingModes.EMAIL_LINK,
             SourceUserMatchingModes.EMAIL_DENY,
         ]:
-            if not self.enroll_properties.get("email", None):
+            if not self.user_properties.get("email", None):
                 self._logger.warning("Refusing to use none email", source=self.source)
                 return Action.DENY, None
-            query = Q(email__exact=self.enroll_properties.get("email", None))
+            query = Q(email__exact=self.user_properties.get("email", None))
         if self.source.user_matching_mode in [
             SourceUserMatchingModes.USERNAME_LINK,
             SourceUserMatchingModes.USERNAME_DENY,
         ]:
-            if not self.enroll_properties.get("username", None):
+            if not self.user_properties.get("username", None):
                 self._logger.warning("Refusing to use none username", source=self.source)
                 return Action.DENY, None
-            query = Q(username__exact=self.enroll_properties.get("username", None))
+            query = Q(username__exact=self.user_properties.get("username", None))
         self._logger.debug("trying to link with existing user", query=query)
         matching_users = User.objects.filter(query)
         # No matching users, always enroll
@@ -380,7 +380,7 @@ class SourceFlowManager:
                 )
             ],
             **{
-                PLAN_CONTEXT_PROMPT: delete_none_values(self.enroll_properties),
+                PLAN_CONTEXT_PROMPT: delete_none_values(self.user_properties),
                 PLAN_CONTEXT_USER_PATH: self.source.get_user_path(),
             },
         )
@@ -392,9 +392,10 @@ class UserUpdateStage(StageView):
     def handle_groups(self):
         """Sync users' groups from source data"""
         user: User = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
-        groups_properties: list[dict[str, Any | dict[str, Any]]] = self.executor.plan.context[
+        groups_properties: dict[str, dict[str, Any | dict[str, Any]]] = self.executor.plan.context[
             PLAN_CONTEXT_GROUPS
         ]
+        # TODO: fix this
         group_names = []
         for group_properties in groups_properties:
             if "name" not in group_properties:

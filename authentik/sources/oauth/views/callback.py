@@ -61,16 +61,11 @@ class OAuthCallback(OAuthClientMixin, View):
             source=self.source,
             request=self.request,
             identifier=identifier,
-            enroll_info={
+            user_info={
                 "info": raw_info,
                 "client": client,
                 "token": self.token,
             },
-            groups_info=(
-                self.source.source_type.get_groups_info(source=self.source, info=raw_info)
-                if self.source.groups_claim
-                else []
-            ),
             policy_context={
                 "oauth_userinfo": raw_info,
             },

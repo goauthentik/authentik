@@ -9,7 +9,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
 from authentik.core.api.object_types import CreatableType, NonCreatableType
-from authentik.core.models import PropertyMapping, Source, UserSourceConnection
+from authentik.core.models import GroupSourceConnection, PropertyMapping, Source, UserSourceConnection
 from authentik.core.types import UILoginButton, UserSettingSerializer
 
 if TYPE_CHECKING:
@@ -299,3 +299,19 @@ class UserOAuthSourceConnection(UserSourceConnection):
     class Meta:
         verbose_name = _("User OAuth Source Connection")
         verbose_name_plural = _("User OAuth Source Connections")
+
+
+class GroupOAuthSourceConnection(GroupSourceConnection):
+    """Group-source connection"""
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.sources.oauth.api.source_connection import (
+            GroupOAuthSourceConnectionSerializer,
+        )
+
+        return GroupOAuthSourceConnectionSerializer
+
+    class Meta:
+        verbose_name = _("Group OAuth Source Connection")
+        verbose_name_plural = _("Group OAuth Source Connections")

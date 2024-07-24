@@ -116,7 +116,6 @@ class OAuthSourceSerializer(SourceSerializer):
     class Meta:
         model = OAuthSource
         fields = SourceSerializer.Meta.fields + [
-            "groups_list_property_mapping",
             "provider_type",
             "request_token_url",
             "authorization_url",

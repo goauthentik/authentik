@@ -21623,7 +21623,6 @@ paths:
           - authentik_brands.brand
           - authentik_core.application
           - authentik_core.group
-          - authentik_core.groupsourceconnection
           - authentik_core.token
           - authentik_core.user
           - authentik_crypto.certificatekeypair
@@ -21664,12 +21663,14 @@ paths:
           - authentik_rbac.role
           - authentik_sources_ldap.ldapsource
           - authentik_sources_ldap.ldapsourcepropertymapping
+          - authentik_sources_oauth.groupoauthsourceconnection
           - authentik_sources_oauth.oauthsource
           - authentik_sources_oauth.oauthsourcepropertymapping
           - authentik_sources_oauth.useroauthsourceconnection
           - authentik_sources_plex.plexsource
           - authentik_sources_plex.plexsourceconnection
           - authentik_sources_plex.plexsourcepropertymapping
+          - authentik_sources_saml.groupsamlsourceconnection
           - authentik_sources_saml.samlsource
           - authentik_sources_saml.samlsourcepropertymapping
           - authentik_sources_saml.usersamlsourceconnection
@@ -21846,7 +21847,6 @@ paths:
           - authentik_brands.brand
           - authentik_core.application
           - authentik_core.group
-          - authentik_core.groupsourceconnection
           - authentik_core.token
           - authentik_core.user
           - authentik_crypto.certificatekeypair
@@ -21887,12 +21887,14 @@ paths:
           - authentik_rbac.role
           - authentik_sources_ldap.ldapsource
           - authentik_sources_ldap.ldapsourcepropertymapping
+          - authentik_sources_oauth.groupoauthsourceconnection
           - authentik_sources_oauth.oauthsource
           - authentik_sources_oauth.oauthsourcepropertymapping
           - authentik_sources_oauth.useroauthsourceconnection
           - authentik_sources_plex.plexsource
           - authentik_sources_plex.plexsourceconnection
           - authentik_sources_plex.plexsourcepropertymapping
+          - authentik_sources_saml.groupsamlsourceconnection
           - authentik_sources_saml.samlsource
           - authentik_sources_saml.samlsourcepropertymapping
           - authentik_sources_saml.usersamlsourceconnection
@@ -22891,6 +22893,458 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/UserSetting'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /sources/group_connections/oauth/:
+    get:
+      operationId: sources_group_connections_oauth_list
+      description: Group-source connection Viewset
+      parameters:
+      - in: query
+        name: group
+        schema:
+          type: string
+          format: uuid
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: source__slug
+        schema:
+          type: string
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedGroupOAuthSourceConnectionList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /sources/group_connections/oauth/{id}/:
+    get:
+      operationId: sources_group_connections_oauth_retrieve
+      description: Group-source connection Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Group OAuth Source Connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupOAuthSourceConnection'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: sources_group_connections_oauth_update
+      description: Group-source connection Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Group OAuth Source Connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupOAuthSourceConnection'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: sources_group_connections_oauth_partial_update
+      description: Group-source connection Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Group OAuth Source Connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupOAuthSourceConnection'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: sources_group_connections_oauth_destroy
+      description: Group-source connection Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Group OAuth Source Connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /sources/group_connections/oauth/{id}/used_by/:
+    get:
+      operationId: sources_group_connections_oauth_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Group OAuth Source Connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /sources/group_connections/saml/:
+    get:
+      operationId: sources_group_connections_saml_list
+      description: Group-source connection Viewset
+      parameters:
+      - in: query
+        name: group
+        schema:
+          type: string
+          format: uuid
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: source__slug
+        schema:
+          type: string
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedGroupSAMLSourceConnectionList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /sources/group_connections/saml/{id}/:
+    get:
+      operationId: sources_group_connections_saml_retrieve
+      description: Group-source connection Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Group SAML Source Connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupSAMLSourceConnection'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: sources_group_connections_saml_update
+      description: Group-source connection Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Group SAML Source Connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupSAMLSourceConnection'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: sources_group_connections_saml_partial_update
+      description: Group-source connection Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Group SAML Source Connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupSAMLSourceConnection'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: sources_group_connections_saml_destroy
+      description: Group-source connection Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Group SAML Source Connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /sources/group_connections/saml/{id}/used_by/:
+    get:
+      operationId: sources_group_connections_saml_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Group SAML Source Connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
           description: ''
         '400':
           content:
@@ -37893,6 +38347,35 @@ components:
       required:
       - name
       - username
+    GroupOAuthSourceConnection:
+      type: object
+      description: OAuth Group-Source connection Serializer
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        group:
+          type: string
+          format: uuid
+          readOnly: true
+        source:
+          allOf:
+          - $ref: '#/components/schemas/Source'
+          readOnly: true
+        identifier:
+          type: string
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created
+      - group
+      - identifier
+      - pk
+      - source
     GroupRequest:
       type: object
       description: Group Serializer
@@ -37921,6 +38404,35 @@ components:
             format: uuid
       required:
       - name
+    GroupSAMLSourceConnection:
+      type: object
+      description: OAuth Group-Source connection Serializer
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        group:
+          type: string
+          format: uuid
+          readOnly: true
+        source:
+          allOf:
+          - $ref: '#/components/schemas/Source'
+          readOnly: true
+        identifier:
+          type: string
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created
+      - group
+      - identifier
+      - pk
+      - source
     IdentificationChallenge:
       type: object
       description: Identification challenges with all UI elements
@@ -39460,12 +39972,14 @@ components:
       - authentik_sources_oauth.oauthsource
       - authentik_sources_oauth.oauthsourcepropertymapping
       - authentik_sources_oauth.useroauthsourceconnection
+      - authentik_sources_oauth.groupoauthsourceconnection
       - authentik_sources_plex.plexsource
       - authentik_sources_plex.plexsourcepropertymapping
       - authentik_sources_plex.plexsourceconnection
       - authentik_sources_saml.samlsource
       - authentik_sources_saml.samlsourcepropertymapping
       - authentik_sources_saml.usersamlsourceconnection
+      - authentik_sources_saml.groupsamlsourceconnection
       - authentik_sources_scim.scimsource
       - authentik_stages_authenticator_duo.authenticatorduostage
       - authentik_stages_authenticator_duo.duodevice
@@ -39499,7 +40013,6 @@ components:
       - authentik_core.group
       - authentik_core.user
       - authentik_core.application
-      - authentik_core.groupsourceconnection
       - authentik_core.token
       - authentik_enterprise.license
       - authentik_providers_google_workspace.googleworkspaceprovider
@@ -40105,10 +40618,6 @@ components:
           type: string
           nullable: true
           readOnly: true
-        groups_list_property_mapping:
-          type: string
-          format: uuid
-          nullable: true
         provider_type:
           $ref: '#/components/schemas/ProviderTypeEnum'
         request_token_url:
@@ -40276,10 +40785,6 @@ components:
         user_path_template:
           type: string
           minLength: 1
-        groups_list_property_mapping:
-          type: string
-          format: uuid
-          nullable: true
         provider_type:
           $ref: '#/components/schemas/ProviderTypeEnum'
         request_token_url:
@@ -40961,6 +41466,30 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Group'
+      required:
+      - pagination
+      - results
+    PaginatedGroupOAuthSourceConnectionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupOAuthSourceConnection'
+      required:
+      - pagination
+      - results
+    PaginatedGroupSAMLSourceConnectionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupSAMLSourceConnection'
       required:
       - pagination
       - results
@@ -43679,10 +44208,6 @@ components:
         user_path_template:
           type: string
           minLength: 1
-        groups_list_property_mapping:
-          type: string
-          format: uuid
-          nullable: true
         provider_type:
           $ref: '#/components/schemas/ProviderTypeEnum'
         request_token_url:
@@ -44439,10 +44964,6 @@ components:
         user_path_template:
           type: string
           minLength: 1
-        groups_list_property_mapping:
-          type: string
-          format: uuid
-          nullable: true
         pre_authentication_flow:
           type: string
           format: uuid
@@ -47218,10 +47739,6 @@ components:
         icon:
           type: string
           readOnly: true
-        groups_list_property_mapping:
-          type: string
-          format: uuid
-          nullable: true
         pre_authentication_flow:
           type: string
           format: uuid
@@ -47400,10 +47917,6 @@ components:
         user_path_template:
           type: string
           minLength: 1
-        groups_list_property_mapping:
-          type: string
-          format: uuid
-          nullable: true
         pre_authentication_flow:
           type: string
           format: uuid

@@ -563,6 +563,19 @@ class SourceUserMatchingModes(models.TextChoices):
     )
 
 
+class SourceGroupMatchingModes(models.TextChoices):
+    """Different modes a source can handle new/returning groups"""
+
+    IDENTIFIER = "identifier", _("Use the source-specific identifier")
+    NAME_LINK = "name_link", _(
+        "Link to a group with identical name. Can have security implications "
+        "when a group name is used with another source."
+    )
+    NAME_DENY = "name_deny", _(
+        "Use the group name, but deny enrollment when the name already exists."
+    )
+
+
 class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     """Base Authentication source, i.e. an OAuth Provider, SAML Remote or LDAP Server"""
 
@@ -577,9 +590,6 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     )
     group_property_mappings = models.ManyToManyField(
         "PropertyMapping", default=None, blank=True, related_name="source_grouppropertymappings_set"
-    )
-    groups_list_property_mapping = models.ForeignKey(
-        "PropertyMapping", blank=True, null=True, default=None, on_delete=models.SET_NULL
     )
     icon = models.FileField(
         upload_to="source-icons/",
@@ -613,6 +623,14 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         help_text=_(
             "How the source determines if an existing user should be authenticated or "
             "a new user enrolled."
+        ),
+    )
+    group_matching_mode = models.TextField(
+        choices=SourceGroupMatchingModes.choices,
+        default=SourceGroupMatchingModes.IDENTIFIER,
+        help_text=_(
+            "How the source determines if an existing group should be used or "
+            "a new group created."
         ),
     )
 
@@ -710,6 +728,7 @@ class GroupSourceConnection(SerializerModel, CreatedUpdatedModel):
 
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     source = models.ForeignKey(Source, on_delete=models.CASCADE)
+    identifier = models.TextField()
 
     objects = InheritanceManager()
 

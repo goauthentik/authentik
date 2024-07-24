@@ -9,7 +9,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import PropertyMapping, Source, UserSourceConnection
+from authentik.core.models import GroupSourceConnection, PropertyMapping, Source, UserSourceConnection
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.challenge import RedirectChallenge
@@ -298,3 +298,19 @@ class UserSAMLSourceConnection(UserSourceConnection):
     class Meta:
         verbose_name = _("User SAML Source Connection")
         verbose_name_plural = _("User SAML Source Connections")
+
+
+class GroupSAMLSourceConnection(GroupSourceConnection):
+    """Group-source connection"""
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.sources.saml.api.source_connection import (
+            GroupSAMLSourceConnectionSerializer,
+        )
+
+        return GroupSAMLSourceConnectionSerializer
+
+    class Meta:
+        verbose_name = _("Group SAML Source Connection")
+        verbose_name_plural = _("Group SAML Source Connections")
