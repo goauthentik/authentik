@@ -9,7 +9,12 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
 from authentik.core.api.object_types import CreatableType, NonCreatableType
-from authentik.core.models import GroupSourceConnection, PropertyMapping, Source, UserSourceConnection
+from authentik.core.models import (
+    GroupSourceConnection,
+    PropertyMapping,
+    Source,
+    UserSourceConnection,
+)
 from authentik.core.types import UILoginButton, UserSettingSerializer
 
 if TYPE_CHECKING:

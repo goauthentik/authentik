@@ -4,7 +4,10 @@ from django.urls import path
 
 from authentik.sources.oauth.api.property_mappings import OAuthSourcePropertyMappingViewSet
 from authentik.sources.oauth.api.source import OAuthSourceViewSet
-from authentik.sources.oauth.api.source_connection import UserOAuthSourceConnectionViewSet, GroupOAuthSourceConnectionViewSet
+from authentik.sources.oauth.api.source_connection import (
+    GroupOAuthSourceConnectionViewSet,
+    UserOAuthSourceConnectionViewSet,
+)
 from authentik.sources.oauth.types.registry import RequestKind
 from authentik.sources.oauth.views.dispatcher import DispatcherView
 

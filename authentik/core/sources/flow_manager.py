@@ -395,7 +395,7 @@ class UserUpdateStage(StageView):
         groups_properties: dict[str, dict[str, Any | dict[str, Any]]] = self.executor.plan.context[
             PLAN_CONTEXT_GROUPS
         ]
-        # TODO: fix this
+        # TODO: fix this
         group_names = []
         for group_properties in groups_properties:
             if "name" not in group_properties:

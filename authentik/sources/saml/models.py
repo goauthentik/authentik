@@ -9,7 +9,12 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import GroupSourceConnection, PropertyMapping, Source, UserSourceConnection
+from authentik.core.models import (
+    GroupSourceConnection,
+    PropertyMapping,
+    Source,
+    UserSourceConnection,
+)
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.challenge import RedirectChallenge
