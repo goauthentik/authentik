@@ -5,7 +5,7 @@ from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.api.authorization import OwnerFilter, OwnerSuperuserPermissions
-from authentik.core.api.sources import GroupSourceConnectionSerializer, GroupSourceConnectionViewSet, UserSourceConnectionSerializer
+from authentik.core.api.sources import GroupSourceConnectionSerializer, GroupSourceConnectionViewSet, UserSourceConnectionSerializer, UserSourceConnectionViewSet
 from authentik.core.api.used_by import UsedByMixin
 from authentik.sources.saml.models import GroupSAMLSourceConnection, UserSAMLSourceConnection
 
@@ -13,21 +13,16 @@ from authentik.sources.saml.models import GroupSAMLSourceConnection, UserSAMLSou
 class UserSAMLSourceConnectionSerializer(UserSourceConnectionSerializer):
     """SAML Source Serializer"""
 
-    class Meta:
+    class Meta(UserSourceConnectionSerializer.Meta):
         model = UserSAMLSourceConnection
-        fields = ["pk", "user", "source", "identifier"]
+        fields = UserSourceConnectionSerializer.Meta.fields + ["identifier"]
 
 
-class UserSAMLSourceConnectionViewSet(UsedByMixin, ModelViewSet):
+class UserSAMLSourceConnectionViewSet(UserSourceConnectionViewSet, ModelViewSet):
     """Source Viewset"""
 
     queryset = UserSAMLSourceConnection.objects.all()
     serializer_class = UserSAMLSourceConnectionSerializer
-    filterset_fields = ["source__slug"]
-    search_fields = ["source__slug"]
-    permission_classes = [OwnerSuperuserPermissions]
-    filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
-    ordering = ["source__slug"]
 
 
 class GroupSAMLSourceConnectionSerializer(GroupSourceConnectionSerializer):

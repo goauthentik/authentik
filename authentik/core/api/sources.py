@@ -190,9 +190,10 @@ class UserSourceConnectionViewSet(
     queryset = UserSourceConnection.objects.all()
     serializer_class = UserSourceConnectionSerializer
     permission_classes = [OwnerSuperuserPermissions]
-    filterset_fields = ["user"]
+    filterset_fields = ["user", "source__slug"]
+    search_fields = ["source__slug"]
     filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
-    ordering = ["pk"]
+    ordering = ["source__slug", "pk"]
 
 
 class GroupSourceConnectionSerializer(SourceSerializer):
@@ -232,4 +233,4 @@ class GroupSourceConnectionViewSet(
     filterset_fields = ["group", "source__slug"]
     search_fields = ["source__slug"]
     filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
-    ordering = ["source__slug"]
+    ordering = ["source__slug", "pk"]
