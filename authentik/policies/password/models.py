@@ -180,6 +180,16 @@ class UniquePasswordPolicy(Policy):
         help_text=_("Number of passwords to check against."),
     )
 
+    @property
+    def serializer(self) -> type[BaseSerializer]:
+        from authentik.policies.password.api import UniquePasswordPolicySerializer
+
+        return UniquePasswordPolicySerializer
+
+    @property
+    def component(self) -> str:
+        return "ak-policy-password-form"
+
     def passes(self, request: PolicyRequest) -> PolicyResult:
         password = request.context.get(PLAN_CONTEXT_PROMPT, {}).get(
             self.password_field, request.context.get(self.password_field)
