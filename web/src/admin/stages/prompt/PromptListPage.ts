@@ -1,6 +1,7 @@
 import "@goauthentik/admin/rbac/ObjectPermissionModal";
 import "@goauthentik/admin/stages/prompt/PromptForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { PFSize } from "@goauthentik/common/enums";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
@@ -85,7 +86,7 @@ export class PromptListPage extends TablePage<Prompt> {
             html`${item.promptstageSet?.map((stage) => {
                 return html`<li>${stage.name}</li>`;
             })}`,
-            html`<ak-forms-modal>
+            html`<ak-forms-modal size=${PFSize.XLarge}>
                     <span slot="submit"> ${msg("Update")} </span>
                     <span slot="header"> ${msg("Update Prompt")} </span>
                     <ak-prompt-form slot="form" .instancePk=${item.pk}> </ak-prompt-form>
@@ -105,7 +106,7 @@ export class PromptListPage extends TablePage<Prompt> {
 
     renderObjectCreate(): TemplateResult {
         return html`
-            <ak-forms-modal>
+            <ak-forms-modal size=${PFSize.XLarge}>
                 <span slot="submit"> ${msg("Create")} </span>
                 <span slot="header"> ${msg("Create Prompt")} </span>
                 <ak-prompt-form slot="form"> </ak-prompt-form>
