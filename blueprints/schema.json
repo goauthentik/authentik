@@ -4816,10 +4816,6 @@
         "model_authentik_sources_oauth.useroauthsourceconnection": {
             "type": "object",
             "properties": {
-                "user": {
-                    "type": "integer",
-                    "title": "User"
-                },
                 "identifier": {
                     "type": "string",
                     "maxLength": 255,
@@ -5154,10 +5150,6 @@
         "model_authentik_sources_saml.usersamlsourceconnection": {
             "type": "object",
             "properties": {
-                "user": {
-                    "type": "integer",
-                    "title": "User"
-                },
                 "identifier": {
                     "type": "string",
                     "minLength": 1,
