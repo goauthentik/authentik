@@ -238,6 +238,8 @@ class Event(SerializerModel, ExpiringModel):
                 "args": cleanse_dict(QueryDict(request.META.get("QUERY_STRING", ""))),
                 "user_agent": request.META.get("HTTP_USER_AGENT", ""),
             }
+            if hasattr(request, "request_id"):
+                self.context["http_request"]["request_id"] = request.request_id
             # Special case for events created during flow execution
             # since they keep the http query within a wrapped query
             if QS_QUERY in self.context["http_request"]["args"]:
