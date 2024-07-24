@@ -266,7 +266,6 @@ export class IdentificationStage extends BaseStage<
                           label=${msg("Password")}
                           inputId="ak-stage-identification-password"
                           required
-                          grab-focus
                           class="pf-c-form__group"
                           .errors=${(this.challenge?.responseErrors || {})["password"]}
                           ?allow-show-password=${this.challenge.allowShowPassword}

@@ -108,7 +108,7 @@ class PromptViewSet(UsedByMixin, ModelViewSet):
             return Response(
                 {
                     "non_field_errors": [
-                        exception_to_string(exc),
+                        exception_to_string(exc.exc),
                     ]
                 },
                 status=400,
