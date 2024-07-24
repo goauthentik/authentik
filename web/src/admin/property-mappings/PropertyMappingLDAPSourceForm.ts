@@ -22,12 +22,12 @@ export class PropertyMappingLDAPSourceForm extends BasePropertyMappingForm<LDAPS
 
     async send(data: LDAPSourcePropertyMapping): Promise<LDAPSourcePropertyMapping> {
         if (this.instance) {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsLdapsourceUpdate({
+            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceLdapUpdate({
                 pmUuid: this.instance.pk,
                 lDAPSourcePropertyMappingRequest: data,
             });
         } else {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsLdapsourceCreate({
+            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceLdapCreate({
                 lDAPSourcePropertyMappingRequest: data,
             });
         }

@@ -28,7 +28,7 @@ import {
 async function propertyMappingsProvider(page = 1, search = "") {
     const propertyMappings = await new PropertymappingsApi(
         DEFAULT_CONFIG,
-    ).propertymappingsLdapsourceList({
+    ).propertymappingsSourceLdapList({
         ordering: "managed",
         pageSize: 20,
         search: search.trim(),
