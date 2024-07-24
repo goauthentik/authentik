@@ -91,7 +91,7 @@
         "@jeysal/storybook-addon-css-user-preferences": "^0.2.0",
         "@lit/localize-tools": "^0.7.2",
         "@rollup/plugin-replace": "^5.0.7",
-        "@spotlightjs/spotlight": "^2.0.0",
+        "@spotlightjs/spotlight": "^2.1.1",
         "@storybook/addon-essentials": "^8.2.5",
         "@storybook/addon-links": "^8.2.5",
         "@storybook/api": "^7.6.17",
@@ -139,7 +139,7 @@
         "ts-node": "^10.9.2",
         "tslib": "^2.6.3",
         "turnstile-types": "^1.2.1",
-        "typescript": "^5.5.3",
+        "typescript": "^5.5.4",
         "vite-tsconfig-paths": "^4.3.2",
         "wdio-wait-for": "^3.0.11"
     },
