@@ -13,7 +13,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { LDAPSourcePropertyMapping, PropertymappingsApi } from "@goauthentik/api";
 
 @customElement("ak-property-mapping-ldap-form")
-export class PropertyMappingLDAPForm extends BasePropertyMappingForm<LDAPSourcePropertyMapping> {
+export class PropertyMappingLDAPSourceForm extends BasePropertyMappingForm<LDAPSourcePropertyMapping> {
     loadInstance(pk: string): Promise<LDAPSourcePropertyMapping> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsLdapsourceRetrieve({
             pmUuid: pk,
