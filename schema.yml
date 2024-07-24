@@ -26315,6 +26315,10 @@ paths:
         name: source__slug
         schema:
           type: string
+      - in: query
+        name: user
+        schema:
+          type: integer
       tags:
       - sources
       security:
@@ -44444,6 +44448,7 @@ components:
           minLength: 1
         plex_token:
           type: string
+          writeOnly: true
           minLength: 1
     PatchedPlexSourcePropertyMappingRequest:
       type: object
@@ -45660,14 +45665,16 @@ components:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         identifier:
           type: string
-        plex_token:
-          type: string
       required:
+      - created
       - identifier
       - pk
-      - plex_token
       - source
       - user
     PlexSourceConnectionRequest:
@@ -45679,6 +45686,7 @@ components:
           minLength: 1
         plex_token:
           type: string
+          writeOnly: true
           minLength: 1
       required:
       - identifier
