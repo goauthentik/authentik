@@ -1,5 +1,5 @@
 ---
-title: Work with policies
+title: Working with policies
 ---
 
 authentik provides several [standard policy types](../index.md#standard-policies), which can be configured for your specific needs.
@@ -44,4 +44,3 @@ These bindings control which stages are applied to a flow.
 5. Click the arrow (**>**) beside the name of the stage to which you want to biond a policy.
    The details page for that stage displays.
 6. Here, you can decide if you want to create a new policy and bind it to the stage (**Create and bind Policy**), or if you want to select an existing policy and bind it to the stage (**Bind existing stage**).
-

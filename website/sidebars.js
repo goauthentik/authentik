@@ -264,10 +264,8 @@ const docsSidebar = {
             type: "category",
             label: "Stages",
             link: {
-                type: "generated-index",
-                title: "Stages",
-                slug: "flow/stages",
-                description: "Overview of all available stages",
+                type: "doc",
+                id: "flow/stages/index",
             },
             items: [
                 "flow/stages/authenticator_duo/index",

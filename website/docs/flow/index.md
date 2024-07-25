@@ -4,7 +4,7 @@ title: Flows
 
 Flows are a major component in authentik. In conjunction with stages and [policies](../policies/index.md), flows are at the heart of our system of building blocks, used to define and execute the workflows of authentication.
 
-There are over a dozen default, out-of-the box flows available in authentik. You can also [create](#create-a-flow) your own custom flow, using the Admin interface.
+There are over a dozen default, out-of-the box flows available in authentik. Users can decide if they already have everything they need with the default flows or if they want to [create](#create-a-flow) their own custom flow, using the Admin interface.
 
 A flow is a method of describing a sequence of stages. A stage represents a single verification or logic step. By connecting a series of stages within a flow (and optionally attaching policies as needed) you can build a highly flexible process for authenticating users, enrolling them, and more.
 
@@ -15,11 +15,13 @@ For example, a standard login flow would consist of the following stages:
 
 When these stages are successfully completed, authentik logs in the user.
 
+![](./simple_stages.png)
+
 Upon flow execution, a _flow plan_ containing all stages is generated. This means that all attached policies are evaluated upon execution. This behaviour can be altered by enabling the **Evaluate when stage is run** option on the binding.
 
 To determine which flow should be used, authentik will first check which default authentication flow is configured in the active [**Brand**](../core/brands.md). If no default is configured there, the policies in all flows with the matching designation are checked, and the first flow with matching policies sorted by `slug` will be used.
 
-## Create a flow
+## Create a custom flow
 
 To create a flow, follow these steps:
 
@@ -27,7 +29,7 @@ To create a flow, follow these steps:
 2. In the Admin interface, navigate to **Flows and Stages -> Flows**.
 3. Click **Create**, define the flow using the [configuration settings](#flow-configuration-options), and then click **Finish**.
 
-After creating the flow, you can [bind policies](../policies/working_with_policies/work_with_policies.md) and stages to to the flow to further customize the user's log in and authentication process.
+After creating the flow, you can [bind policies](../policies/working_with_policies/working_with_policies.md) and stages to to the flow to further customize the user's log in and authentication process.
 
 ## Permissions
 
