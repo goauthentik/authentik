@@ -300,16 +300,15 @@ const docsSidebar = {
             items: [
                 {
                     type: "category",
-                    label: "Working with policies",
+                    label: "Work with policies",
                     link: {
-                        type: "generated-index",
+                        type: "doc",
                         title: "Working with policies",
-                        slug: "policies/working_with_policies",
-                        description: "Overview of policies configuration",
+                        slug: "policies/work_with_policies",
                     },
                     items: [
-                        "policies/working_with_policies/whitelist_email",
-                        "policies/working_with_policies/unique_email",
+                        "policies/work_with_policies/whitelist_email",
+                        "policies/work_with_policies/unique_email",
                     ],
                 },
                 "policies/expression",

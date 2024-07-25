@@ -4,34 +4,9 @@ title: Policies
 
 Policies provide customization and flexibility when defining your users' login and authentication experience.
 
-## Create a policy
+In effect, policies determine whether or not a specific stage is applied to a flow, or whether certain users can even access the flow.
 
-To create a policy, follow these steps:
-
-1. Log in as an admin to authentik, and go to the Admin interface.
-2. In the Admin interface, navigate to **Customization -> Policies**.
-3. Click **Create**, and select the type of policy.
-4. Define the policy and click **Finish**.
-
-## Bind a policy to a flow or stage
-
-After creating the policy, you can bind it to either a [flow](../flow/index.md) or to a stage.
-
-### Bind a policy to a flow
-
-1. Log in as an admin to authentik, and open the Admin interface.
-2. In the Admin interface, navigate to **Flows and Stages -> Flows**.
-3. In the list of flows, click on the name of the flow to which you want to bind a policy.
-4. Click on the **Policy/Group/User Bindings** tab at the top of the page.
-5. Here, you can decide if you want to create a new policy and bind it to the flow (**Create and bind Policy**), or if you want to select an existing policy and bind it to the flow (**Bind existing policy/group/user**).
-
-### Bind a policy to a stage
-
-1. Log in as an admin to authentik, and open the Admin interface.
-2. In the Admin interface, navigate to **Flows and Stages -> Flows**.
-3. In the list of flows, click on the name of the flow to which you want to bind a policy.
-4. Click on the **Stage Bindings** tab at the top of the page.
-5. Here, you can decide if you want to create a new policy and bind it to the stage (**Create and bind Policy**), or if you want to select an existing policy and bind it to the stage (**Bind existing stage**).
+For example, you can create a policy that, for certain users, skips over a stage that prompts for MFA input. Or, you can define a policy that allows users to access a login flow only if the policy criteria are met.
 
 ## Standard polices
 
