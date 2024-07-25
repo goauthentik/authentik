@@ -235,7 +235,7 @@ class SAMLSource(Source):
 
     @property
     def icon_url(self) -> str:
-        icon = super(self).icon_url
+        icon = super().icon_url
         if not icon:
             return static("authentik/sources/saml.png")
         return icon
