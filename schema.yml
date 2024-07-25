@@ -9637,40 +9637,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /outposts/ldap/{id}/:
-    get:
-      operationId: outposts_ldap_retrieve
-      description: LDAPProvider Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this LDAP Provider.
-        required: true
-      tags:
-      - outposts
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LDAPOutpostConfig'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
   /outposts/proxy/:
     get:
       operationId: outposts_proxy_list
@@ -9714,40 +9680,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PaginatedProxyOutpostConfigList'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /outposts/proxy/{id}/:
-    get:
-      operationId: outposts_proxy_retrieve
-      description: ProxyProvider Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Proxy Provider.
-        required: true
-      tags:
-      - outposts
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProxyOutpostConfig'
           description: ''
         '400':
           content:
@@ -9817,11 +9749,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /outposts/radius/{id}/:
+  /outposts/radius/{id}/check_access/:
     get:
-      operationId: outposts_radius_retrieve
-      description: RadiusProvider Viewset
+      operationId: outposts_radius_check_access_retrieve
+      description: Check access to a single application by slug
       parameters:
+      - in: query
+        name: app_slug
+        schema:
+          type: string
       - in: path
         name: id
         schema:
@@ -9837,7 +9773,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RadiusOutpostConfig'
+                $ref: '#/components/schemas/RadiusCheckAccess'
           description: ''
         '400':
           content:
@@ -14565,6 +14501,292 @@ paths:
           type: string
           format: uuid
         description: A UUID string identifying this RAC Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /propertymappings/radius/:
+    get:
+      operationId: propertymappings_radius_list
+      description: RadiusProviderPropertyMapping Viewset
+      parameters:
+      - in: query
+        name: expression
+        schema:
+          type: string
+      - in: query
+        name: managed
+        schema:
+          type: array
+          items:
+            type: string
+        explode: true
+        style: form
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRadiusProviderPropertyMappingList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: propertymappings_radius_create
+      description: RadiusProviderPropertyMapping Viewset
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RadiusProviderPropertyMappingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RadiusProviderPropertyMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /propertymappings/radius/{pm_uuid}/:
+    get:
+      operationId: propertymappings_radius_retrieve
+      description: RadiusProviderPropertyMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Radius Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RadiusProviderPropertyMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: propertymappings_radius_update
+      description: RadiusProviderPropertyMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Radius Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RadiusProviderPropertyMappingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RadiusProviderPropertyMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: propertymappings_radius_partial_update
+      description: RadiusProviderPropertyMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Radius Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRadiusProviderPropertyMappingRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RadiusProviderPropertyMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: propertymappings_radius_destroy
+      description: RadiusProviderPropertyMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Radius Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /propertymappings/radius/{pm_uuid}/used_by/:
+    get:
+      operationId: propertymappings_radius_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Radius Property Mapping.
         required: true
       tags:
       - propertymappings
@@ -20798,6 +21020,7 @@ paths:
           - authentik_providers_rac.racpropertymapping
           - authentik_providers_rac.racprovider
           - authentik_providers_radius.radiusprovider
+          - authentik_providers_radius.radiusproviderpropertymapping
           - authentik_providers_saml.samlpropertymapping
           - authentik_providers_saml.samlprovider
           - authentik_providers_scim.scimmapping
@@ -21017,6 +21240,7 @@ paths:
           - authentik_providers_rac.racpropertymapping
           - authentik_providers_rac.racprovider
           - authentik_providers_radius.radiusprovider
+          - authentik_providers_radius.radiusproviderpropertymapping
           - authentik_providers_saml.samlpropertymapping
           - authentik_providers_saml.samlprovider
           - authentik_providers_scim.scimmapping
@@ -38602,6 +38826,7 @@ components:
       - authentik_providers_oauth2.oauth2provider
       - authentik_providers_proxy.proxyprovider
       - authentik_providers_radius.radiusprovider
+      - authentik_providers_radius.radiusproviderpropertymapping
       - authentik_providers_saml.samlprovider
       - authentik_providers_saml.samlpropertymapping
       - authentik_providers_scim.scimprovider
@@ -40490,6 +40715,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RadiusProvider'
+      required:
+      - pagination
+      - results
+    PaginatedRadiusProviderPropertyMappingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RadiusProviderPropertyMapping'
       required:
       - pagination
       - results
@@ -43196,6 +43433,25 @@ components:
         delete_token_on_disconnect:
           type: boolean
           description: When set to true, connection tokens will be deleted upon disconnect.
+    PatchedRadiusProviderPropertyMappingRequest:
+      type: object
+      description: RadiusProviderPropertyMapping Serializer
+      properties:
+        managed:
+          type: string
+          nullable: true
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
     PatchedRadiusProviderRequest:
       type: object
       description: RadiusProvider Serializer
@@ -45329,6 +45585,16 @@ components:
       required:
       - authorization_flow
       - name
+    RadiusCheckAccess:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        attributes:
+          type: string
+        access:
+          $ref: '#/components/schemas/PolicyTestResult'
+      required:
+      - access
     RadiusOutpostConfig:
       type: object
       description: RadiusProvider Serializer
@@ -45453,6 +45719,73 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
+    RadiusProviderPropertyMapping:
+      type: object
+      description: RadiusProviderPropertyMapping Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pm uuid
+        managed:
+          type: string
+          nullable: true
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+        expression:
+          type: string
+        component:
+          type: string
+          description: Get object's component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+      required:
+      - component
+      - expression
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    RadiusProviderPropertyMappingRequest:
+      type: object
+      description: RadiusProviderPropertyMapping Serializer
+      properties:
+        managed:
+          type: string
+          nullable: true
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+      required:
+      - expression
+      - name
     RadiusProviderRequest:
       type: object
       description: RadiusProvider Serializer
