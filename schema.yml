@@ -24473,6 +24473,10 @@ paths:
         schema:
           type: string
       - in: query
+        name: source__slug
+        schema:
+          type: string
+      - in: query
         name: user
         schema:
           type: integer
@@ -24697,6 +24701,10 @@ paths:
         name: source__slug
         schema:
           type: string
+      - in: query
+        name: user
+        schema:
+          type: integer
       tags:
       - sources
       security:
@@ -24961,6 +24969,10 @@ paths:
         name: source__slug
         schema:
           type: string
+      - in: query
+        name: user
+        schema:
+          type: integer
       tags:
       - sources
       security:
@@ -25225,6 +25237,10 @@ paths:
         name: source__slug
         schema:
           type: string
+      - in: query
+        name: user
+        schema:
+          type: integer
       tags:
       - sources
       security:
@@ -42880,6 +42896,7 @@ components:
           minLength: 1
         plex_token:
           type: string
+          writeOnly: true
           minLength: 1
     PatchedPlexSourceRequest:
       type: object
@@ -43773,8 +43790,6 @@ components:
       type: object
       description: OAuth Source Serializer
       properties:
-        user:
-          type: integer
         identifier:
           type: string
           minLength: 1
@@ -43825,8 +43840,6 @@ components:
       type: object
       description: SAML Source Serializer
       properties:
-        user:
-          type: integer
         identifier:
           type: string
           minLength: 1
@@ -44062,14 +44075,16 @@ components:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         identifier:
           type: string
-        plex_token:
-          type: string
       required:
+      - created
       - identifier
       - pk
-      - plex_token
       - source
       - user
     PlexSourceConnectionRequest:
@@ -44081,6 +44096,7 @@ components:
           minLength: 1
         plex_token:
           type: string
+          writeOnly: true
           minLength: 1
       required:
       - identifier
@@ -48372,14 +48388,20 @@ components:
           title: ID
         user:
           type: integer
+          readOnly: true
         source:
           allOf:
           - $ref: '#/components/schemas/Source'
+          readOnly: true
+        created:
+          type: string
+          format: date-time
           readOnly: true
         identifier:
           type: string
           maxLength: 255
       required:
+      - created
       - identifier
       - pk
       - source
@@ -48388,8 +48410,6 @@ components:
       type: object
       description: OAuth Source Serializer
       properties:
-        user:
-          type: integer
         identifier:
           type: string
           minLength: 1
@@ -48400,7 +48420,6 @@ components:
           nullable: true
       required:
       - identifier
-      - user
     UserObjectPermission:
       type: object
       description: User-bound object level permission
@@ -48501,13 +48520,19 @@ components:
           title: ID
         user:
           type: integer
+          readOnly: true
         source:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         identifier:
           type: string
       required:
+      - created
       - identifier
       - pk
       - source
@@ -48516,14 +48541,11 @@ components:
       type: object
       description: SAML Source Serializer
       properties:
-        user:
-          type: integer
         identifier:
           type: string
           minLength: 1
       required:
       - identifier
-      - user
     UserSelf:
       type: object
       description: User Serializer for information a user can retrieve about themselves
