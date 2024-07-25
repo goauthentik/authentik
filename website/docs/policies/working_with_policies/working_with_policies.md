@@ -19,6 +19,10 @@ To create a new policy, follow these steps:
 
 After creating the policy, you can bind it to either a [flow](../flow/index.md) or to a stage.
 
+:::info
+Bindings are instantiated objects themselves, and conceptually can be considered as the "connector" between the policy and the stage or flow. This is why you might read about "binding a binding", because technically, a binding is "spliced" into another binding, in order to intercept and enforce the criteria defined in the policy.
+:::
+
 ### Bind a policy to a flow
 
 These bindings control which users can access a flow.
@@ -40,3 +44,4 @@ These bindings control which stages are applied to a flow.
 5. Click the arrow (**>**) beside the name of the stage to which you want to biond a policy.
    The details page for that stage displays.
 6. Here, you can decide if you want to create a new policy and bind it to the stage (**Create and bind Policy**), or if you want to select an existing policy and bind it to the stage (**Bind existing stage**).
+

@@ -25,10 +25,9 @@ To create a flow, follow these steps:
 
 1. Log in as an admin to authentik, and go to the Admin interface.
 2. In the Admin interface, navigate to **Flows and Stages -> Flows**.
-3. Click **Create**, and select the types of policy.
-4. Define the flow using the [configuration settings](#flow-configuration-options), and then click **Finish**.
+3. Click **Create**, define the flow using the [configuration settings](#flow-configuration-options), and then click **Finish**.
 
-After creating the flow, you can bind [policies](../policies/index.md) and stages to it to further customize the user's log in and authentication process.
+After creating the flow, you can [bind policies](../policies/working_with_policies/work_with_policies.md) and stages to to the flow to further customize the user's log in and authentication process.
 
 ## Permissions
 

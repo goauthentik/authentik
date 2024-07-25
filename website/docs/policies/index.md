@@ -6,9 +6,11 @@ Policies provide customization and flexibility when defining your users' login a
 
 In effect, policies determine whether or not a specific stage is applied to a flow, or whether certain users can even access the flow.
 
-For example, you can create a policy that, for certain users, skips over a stage that prompts for MFA input. Or, you can define a policy that allows users to access a login flow only if the policy criteria are met.
+For example, you can create a policy that, for certain users, skips over a stage that prompts for MFA input. Or, you can define a policy that allows users to access a login flow only if the policy criteria are met. See below for other policies, including the reputation policy and an events-driven policy to manage notifications.
 
-## Standard polices
+For instructions about creating and binding policies to flows and stages, refer to ["Working with policies](../policies/working_with_policies/work_with_policies.md)".
+
+## Standard policies
 
 The following policies are our standard, out-of-the box policies.
 
@@ -44,7 +46,7 @@ Starting with authentik 2022.11.0, the following checks can also be done with th
 
 authentik keeps track of failed login attempts by source IP and attempted username. These values are saved as scores. Each failed login decreases the score for the client IP as well as the targeted username by 1 (one).
 
-This policy can be used, for example, to prompt clients with a low score to pass a captcha before they can continue.
+This policy can be used, for example, to prompt clients with a low score to pass a CAPTCHA test before they can continue.
 
 To make sure this policy is executed correctly, set _Evaluate when stage is run_ when using it with a flow.
 

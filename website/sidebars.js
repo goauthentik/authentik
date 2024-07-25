@@ -304,7 +304,7 @@ const docsSidebar = {
                     link: {
                         type: "doc",
                         id: "policies/working_with_policies/working_with_policies",
-                },
+                    },
                     items: [
                         "policies/working_with_policies/whitelist_email",
                         "policies/working_with_policies/unique_email",
