@@ -2,15 +2,25 @@
 
 from django.db.models import QuerySet
 from django.db.models.query import Q
+from django.shortcuts import get_object_or_404
 from django_filters.filters import BooleanFilter
 from django_filters.filterset import FilterSet
-from rest_framework.fields import CharField, ListField, SerializerMethodField
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter, extend_schema
+from rest_framework.decorators import action
+from rest_framework.fields import BooleanField, CharField, ListField, SerializerMethodField
 from rest_framework.mixins import ListModelMixin
+from rest_framework.request import Request
+from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import ModelSerializer
+from authentik.core.api.utils import ModelSerializer, PassiveSerializer
+from authentik.core.models import Application
+from authentik.policies.api.exec import PolicyTestResultSerializer
+from authentik.policies.engine import PolicyEngine
+from authentik.policies.types import PolicyResult
 from authentik.providers.ldap.models import LDAPProvider
 
 
@@ -23,7 +33,6 @@ class LDAPProviderSerializer(ProviderSerializer):
         model = LDAPProvider
         fields = ProviderSerializer.Meta.fields + [
             "base_dn",
-            "search_group",
             "certificate",
             "tls_server_name",
             "uid_start_number",
@@ -55,8 +64,6 @@ class LDAPProviderFilter(FilterSet):
             "name": ["iexact"],
             "authorization_flow__slug": ["iexact"],
             "base_dn": ["iexact"],
-            "search_group__group_uuid": ["iexact"],
-            "search_group__name": ["iexact"],
             "certificate__kp_uuid": ["iexact"],
             "certificate__name": ["iexact"],
             "tls_server_name": ["iexact"],
@@ -95,7 +102,6 @@ class LDAPOutpostConfigSerializer(ModelSerializer):
             "base_dn",
             "bind_flow_slug",
             "application_slug",
-            "search_group",
             "certificate",
             "tls_server_name",
             "uid_start_number",
@@ -116,3 +122,32 @@ class LDAPOutpostConfigViewSet(ListModelMixin, GenericViewSet):
     ordering = ["name"]
     search_fields = ["name"]
     filterset_fields = ["name"]
+
+    class LDAPCheckAccessSerializer(PassiveSerializer):
+        has_search_permission = BooleanField(required=False)
+        access = PolicyTestResultSerializer()
+
+    @extend_schema(
+        request=None,
+        parameters=[OpenApiParameter("app_slug", OpenApiTypes.STR)],
+        responses={
+            200: LDAPCheckAccessSerializer(),
+        },
+    )
+    @action(detail=True)
+    def check_access(self, request: Request, pk) -> Response:
+        """Check access to a single application by slug"""
+        provider = get_object_or_404(LDAPProvider, pk=pk)
+        application = get_object_or_404(Application, slug=request.query_params["app_slug"])
+        engine = PolicyEngine(application, request.user, request)
+        engine.use_cache = False
+        engine.build()
+        result = engine.result
+        access_response = PolicyResult(result.passing)
+        response = self.LDAPCheckAccessSerializer(
+            instance={
+                "has_search_permission": request.user.has_perm("search_full_directory", provider),
+                "access": access_response,
+            }
+        )
+        return Response(response.data)

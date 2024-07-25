@@ -5131,12 +5131,6 @@
                     "title": "Base dn",
                     "description": "DN under which objects are accessible."
                 },
-                "search_group": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Search group",
-                    "description": "Users in this group can do search queries. If not set, every user can execute search queries."
-                },
                 "certificate": {
                     "type": "string",
                     "format": "uuid",
