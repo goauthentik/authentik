@@ -1,6 +1,7 @@
 """Authenticator devices helpers"""
 
 from typing import TYPE_CHECKING
+
 from django.db import transaction
 
 if TYPE_CHECKING:
