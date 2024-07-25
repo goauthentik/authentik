@@ -58,7 +58,7 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 		return ldap.LDAPResultInvalidCredentials, nil
 	}
 
-	access, _, err := db.si.GetAPIClient().OutpostsApi.OutpostsLdapCheckAccessRetrieve(
+	access, _, err := db.si.GetAPIClient().OutpostsApi.OutpostsLdapAccessCheck(
 		req.Context(), db.si.GetProviderID(),
 	).AppSlug(db.si.GetAppSlug()).Execute()
 	if !access.Access.Passing {

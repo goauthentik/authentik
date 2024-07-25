@@ -154,8 +154,9 @@ class RadiusOutpostConfigViewSet(ListModelMixin, GenericViewSet):
         responses={
             200: RadiusCheckAccessSerializer(),
         },
+        operation_id="outposts_radius_access_check",
     )
-    @action(detail=True)
+    @action(detail=True, methods=["post"])
     def check_access(self, request: Request, pk) -> Response:
         """Check access to a single application by slug"""
         provider = get_object_or_404(RadiusProvider, pk=pk)
