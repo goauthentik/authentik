@@ -1,5 +1,6 @@
 import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { deviceTypeName } from "@goauthentik/common/labels";
+import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/TokenCopyButton";
@@ -48,6 +49,8 @@ export class MFADevicesPage extends Table<Device> {
         return [
             msg("Name"),
             msg("Type"),
+            msg("Created at"),
+            msg("Last used at"),
             ""
         ].map((th) => new TableColumn(th, ""));
     }
@@ -122,6 +125,10 @@ export class MFADevicesPage extends Table<Device> {
         return [
             html`${item.name}`,
             html`${deviceTypeName(item)}`,
+            html`<div>${getRelativeTime(item.created)}</div>
+                <small>${item.created.toLocaleString()}</small>`,
+            html`<div>${getRelativeTime(item.lastUsed)}</div>
+                <small>${item.lastUsed.toLocaleString()}</small>`,
             html`
                 <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
