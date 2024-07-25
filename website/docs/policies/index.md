@@ -34,6 +34,7 @@ After creating the policy, you can bind it to either a [flow](../flow/index.md) 
 5. Here, you can decide if you want to create a new policy and bind it to the stage (**Create and bind Policy**), or if you want to select an existing policy and bind it to the stage (**Bind existing stage**).
 
 ## Standard polices
+
 The following policies are our standard, out-of-the box policies.
 
 ### Event-matcher policy
