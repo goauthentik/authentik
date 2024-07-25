@@ -3,6 +3,6 @@
 from authentik.sources.ldap.api import LDAPSourcePropertyMappingViewSet, LDAPSourceViewSet
 
 api_urlpatterns = [
-    ("propertymappings/ldap", LDAPSourcePropertyMappingViewSet),
+    ("propertymappings/source/ldap", LDAPSourcePropertyMappingViewSet),
     ("sources/ldap", LDAPSourceViewSet),
 ]

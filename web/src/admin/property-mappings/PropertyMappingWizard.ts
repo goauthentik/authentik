@@ -1,4 +1,3 @@
-import "@goauthentik/admin/common/ak-license-notice";
 import "@goauthentik/admin/property-mappings/PropertyMappingLDAPSourceForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingNotification";
 import "@goauthentik/admin/property-mappings/PropertyMappingOAuthSourceForm";

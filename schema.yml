@@ -13473,292 +13473,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /propertymappings/ldap/:
-    get:
-      operationId: propertymappings_ldap_list
-      description: LDAP PropertyMapping Viewset
-      parameters:
-      - in: query
-        name: expression
-        schema:
-          type: string
-      - in: query
-        name: managed
-        schema:
-          type: array
-          items:
-            type: string
-        explode: true
-        style: form
-      - in: query
-        name: name
-        schema:
-          type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - in: query
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
-      tags:
-      - propertymappings
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedLDAPSourcePropertyMappingList'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    post:
-      operationId: propertymappings_ldap_create
-      description: LDAP PropertyMapping Viewset
-      tags:
-      - propertymappings
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LDAPSourcePropertyMappingRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LDAPSourcePropertyMapping'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /propertymappings/ldap/{pm_uuid}/:
-    get:
-      operationId: propertymappings_ldap_retrieve
-      description: LDAP PropertyMapping Viewset
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this LDAP Property Mapping.
-        required: true
-      tags:
-      - propertymappings
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LDAPSourcePropertyMapping'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    put:
-      operationId: propertymappings_ldap_update
-      description: LDAP PropertyMapping Viewset
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this LDAP Property Mapping.
-        required: true
-      tags:
-      - propertymappings
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LDAPSourcePropertyMappingRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LDAPSourcePropertyMapping'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    patch:
-      operationId: propertymappings_ldap_partial_update
-      description: LDAP PropertyMapping Viewset
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this LDAP Property Mapping.
-        required: true
-      tags:
-      - propertymappings
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedLDAPSourcePropertyMappingRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LDAPSourcePropertyMapping'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    delete:
-      operationId: propertymappings_ldap_destroy
-      description: LDAP PropertyMapping Viewset
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this LDAP Property Mapping.
-        required: true
-      tags:
-      - propertymappings
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: No response body
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /propertymappings/ldap/{pm_uuid}/used_by/:
-    get:
-      operationId: propertymappings_ldap_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this LDAP Property Mapping.
-        required: true
-      tags:
-      - propertymappings
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
   /propertymappings/notification/:
     get:
       operationId: propertymappings_notification_list
@@ -16570,6 +16284,292 @@ paths:
           type: string
           format: uuid
         description: A UUID string identifying this Scope Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /propertymappings/source/ldap/:
+    get:
+      operationId: propertymappings_source_ldap_list
+      description: LDAP PropertyMapping Viewset
+      parameters:
+      - in: query
+        name: expression
+        schema:
+          type: string
+      - in: query
+        name: managed
+        schema:
+          type: array
+          items:
+            type: string
+        explode: true
+        style: form
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedLDAPSourcePropertyMappingList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: propertymappings_source_ldap_create
+      description: LDAP PropertyMapping Viewset
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LDAPSourcePropertyMappingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LDAPSourcePropertyMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /propertymappings/source/ldap/{pm_uuid}/:
+    get:
+      operationId: propertymappings_source_ldap_retrieve
+      description: LDAP PropertyMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this LDAP Source Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LDAPSourcePropertyMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: propertymappings_source_ldap_update
+      description: LDAP PropertyMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this LDAP Source Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LDAPSourcePropertyMappingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LDAPSourcePropertyMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: propertymappings_source_ldap_partial_update
+      description: LDAP PropertyMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this LDAP Source Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedLDAPSourcePropertyMappingRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LDAPSourcePropertyMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: propertymappings_source_ldap_destroy
+      description: LDAP PropertyMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this LDAP Source Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /propertymappings/source/ldap/{pm_uuid}/used_by/:
+    get:
+      operationId: propertymappings_source_ldap_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this LDAP Source Property Mapping.
         required: true
       tags:
       - propertymappings

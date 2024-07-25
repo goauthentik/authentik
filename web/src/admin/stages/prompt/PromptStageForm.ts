@@ -1,6 +1,7 @@
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import "@goauthentik/admin/stages/prompt/PromptForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { PFSize } from "@goauthentik/common/enums";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/ModalForm";
@@ -94,7 +95,7 @@ export class PromptStageForm extends BaseStageForm<PromptStage> {
                             ${msg("Hold control/command to select multiple items.")}
                         </p>
                         ${this.instance
-                            ? html`<ak-forms-modal>
+                            ? html`<ak-forms-modal size=${PFSize.XLarge}>
                                   <span slot="submit"> ${msg("Create")} </span>
                                   <span slot="header"> ${msg("Create Prompt")} </span>
                                   <ak-prompt-form slot="form"> </ak-prompt-form>

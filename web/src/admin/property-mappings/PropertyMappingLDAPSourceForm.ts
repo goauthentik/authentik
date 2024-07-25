@@ -13,21 +13,21 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { LDAPSourcePropertyMapping, PropertymappingsApi } from "@goauthentik/api";
 
 @customElement("ak-property-mapping-ldap-source-form")
-export class PropertyMappingLDAPForm extends BasePropertyMappingForm<LDAPSourcePropertyMapping> {
+export class PropertyMappingLDAPSourceForm extends BasePropertyMappingForm<LDAPSourcePropertyMapping> {
     loadInstance(pk: string): Promise<LDAPSourcePropertyMapping> {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsLdapSourceRetrieve({
+        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceLdapRetrieve({
             pmUuid: pk,
         });
     }
 
     async send(data: LDAPSourcePropertyMapping): Promise<LDAPSourcePropertyMapping> {
         if (this.instance) {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsLdapSourceUpdate({
+            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceLdapUpdate({
                 pmUuid: this.instance.pk,
                 lDAPSourcePropertyMappingRequest: data,
             });
         } else {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsLdapSourceCreate({
+            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceLdapCreate({
                 lDAPSourcePropertyMappingRequest: data,
             });
         }
@@ -68,6 +68,6 @@ export class PropertyMappingLDAPForm extends BasePropertyMappingForm<LDAPSourceP
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-property-mapping-ldap-form": PropertyMappingLDAPForm;
+        "ak-property-mapping-ldap-source-form": PropertyMappingLDAPSourceForm;
     }
 }

@@ -32,7 +32,7 @@ entries:
       name: "authentik default LDAP Mapping: Name"
       expression: |
         return {
-            "name": ldap.get('name'),
+            "name": ldap.get("name"),
         }
   - identifiers:
       managed: goauthentik.io/sources/ldap/default-mail
@@ -41,7 +41,7 @@ entries:
       name: "authentik default LDAP Mapping: mail"
       expression: |
         return {
-            "email": ldap.get('mail'),
+            "email": ldap.get("mail"),
         }
   # ActiveDirectory-specific mappings
   - identifiers:
@@ -51,7 +51,7 @@ entries:
       name: "authentik default Active Directory Mapping: sAMAccountName"
       expression: |
         return {
-            "username": ldap.get('sAMAccountName'),
+            "username": ldap.get("sAMAccountName"),
         }
   - identifiers:
       managed: goauthentik.io/sources/ldap/ms-userprincipalname
@@ -62,7 +62,7 @@ entries:
       expression: |
         return {
             "attributes": {
-                "upn": list_flatten(ldap.get('userPrincipalName')),
+                "upn": list_flatten(ldap.get("userPrincipalName")),
             },
         }
   - identifiers:
@@ -73,7 +73,7 @@ entries:
       expression: |
         return {
             "attributes": {
-                "givenName": list_flatten(ldap.get('givenName')),
+                "givenName": list_flatten(ldap.get("givenName")),
             },
         }
   - identifiers:
@@ -84,7 +84,7 @@ entries:
       expression: |
         return {
             "attributes": {
-                "sn": list_flatten(ldap.get('sn')),
+                "sn": list_flatten(ldap.get("sn")),
             },
         }
   # OpenLDAP specific mappings
@@ -95,7 +95,7 @@ entries:
       name: "authentik default OpenLDAP Mapping: uid"
       expression: |
         return {
-            "username": ldap.get('uid'),
+            "username": ldap.get("uid"),
         }
   - identifiers:
       managed: goauthentik.io/sources/ldap/openldap-cn
@@ -104,5 +104,5 @@ entries:
       name: "authentik default OpenLDAP Mapping: cn"
       expression: |
         return {
-            "name": ldap.get('cn'),
+            "name": ldap.get("cn"),
         }

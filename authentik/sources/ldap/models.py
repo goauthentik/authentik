@@ -290,7 +290,7 @@ class LDAPSourcePropertyMapping(PropertyMapping):
 
     @property
     def component(self) -> str:
-        return "ak-property-mapping-ldap-form"
+        return "ak-property-mapping-ldap-source-form"
 
     @property
     def serializer(self) -> type[Serializer]:
@@ -302,5 +302,5 @@ class LDAPSourcePropertyMapping(PropertyMapping):
         return str(self.name)
 
     class Meta:
-        verbose_name = _("LDAP Property Mapping")
-        verbose_name_plural = _("LDAP Property Mappings")
+        verbose_name = _("LDAP Source Property Mapping")
+        verbose_name_plural = _("LDAP Source Property Mappings")
