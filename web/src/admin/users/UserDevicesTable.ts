@@ -1,5 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { deviceTypeName } from "@goauthentik/common/labels";
+import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
@@ -44,7 +45,10 @@ export class UserDeviceTable extends Table<Device> {
         return [
             msg("Name"),
             msg("Type"),
-            msg("Confirmed")
+            msg("Confirmed"),
+            msg("Created at"),
+            msg("Last updated at"),
+            msg("Last used at"),
         ].map((th) => new TableColumn(th, ""));
     }
 
@@ -98,6 +102,12 @@ export class UserDeviceTable extends Table<Device> {
             html`${item.name}`,
             html`${deviceTypeName(item)}`,
             html`${item.confirmed ? msg("Yes") : msg("No")}`,
+            html`<div>${getRelativeTime(item.created)}</div>
+                <small>${item.created.toLocaleString()}</small>`,
+            html`<div>${getRelativeTime(item.lastUpdated)}</div>
+                <small>${item.lastUpdated.toLocaleString()}</small>`,
+            html`<div>${getRelativeTime(item.lastUsed)}</div>
+                <small>${item.lastUsed.toLocaleString()}</small>`,
         ];
     }
 }

@@ -2,7 +2,7 @@
 
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
-from rest_framework.fields import BooleanField, CharField, IntegerField, SerializerMethodField
+from rest_framework.fields import BooleanField, CharField, DateTimeField, IntegerField, SerializerMethodField
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -20,6 +20,9 @@ class DeviceSerializer(MetaNameSerializer):
     name = CharField()
     type = SerializerMethodField()
     confirmed = BooleanField()
+    created = DateTimeField(read_only=True)
+    last_updated = DateTimeField(read_only=True)
+    last_used = DateTimeField(read_only=True)
 
     def get_type(self, instance: Device) -> str:
         """Get type of device"""
