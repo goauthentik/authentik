@@ -18,22 +18,22 @@ import {
     CoreApi,
     CoreGroupsListRequest,
     Group,
-    LDAPPropertyMapping,
     LDAPSource,
+    LDAPSourcePropertyMapping,
     LDAPSourceRequest,
     PropertymappingsApi,
     SourcesApi,
 } from "@goauthentik/api";
 
 async function propertyMappingsProvider(page = 1, search = "") {
-    const propertyMappings = await new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsLdapList(
-        {
-            ordering: "managed",
-            pageSize: 20,
-            search: search.trim(),
-            page,
-        },
-    );
+    const propertyMappings = await new PropertymappingsApi(
+        DEFAULT_CONFIG,
+    ).propertymappingsSourceLdapList({
+        ordering: "managed",
+        pageSize: 20,
+        search: search.trim(),
+        page,
+    });
     return {
         pagination: propertyMappings.pagination,
         options: propertyMappings.results.map((m) => [m.pk, m.name, m.name, m]),
@@ -44,7 +44,7 @@ function makePropertyMappingsSelector(instanceMappings?: string[]) {
     const localMappings = instanceMappings ? new Set(instanceMappings) : undefined;
     return localMappings
         ? ([pk, _]: DualSelectPair) => localMappings.has(pk)
-        : ([_0, _1, _2, mapping]: DualSelectPair<LDAPPropertyMapping>) =>
+        : ([_0, _1, _2, mapping]: DualSelectPair<LDAPSourcePropertyMapping>) =>
               mapping?.managed?.startsWith("goauthentik.io/sources/ldap/default") ||
               mapping?.managed?.startsWith("goauthentik.io/sources/ldap/ms");
 }

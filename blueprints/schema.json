@@ -974,7 +974,7 @@
                         ],
                         "properties": {
                             "model": {
-                                "const": "authentik_sources_ldap.ldappropertymapping"
+                                "const": "authentik_sources_ldap.ldapsourcepropertymapping"
                             },
                             "id": {
                                 "type": "string"
@@ -996,10 +996,10 @@
                                 }
                             },
                             "attrs": {
-                                "$ref": "#/$defs/model_authentik_sources_ldap.ldappropertymapping"
+                                "$ref": "#/$defs/model_authentik_sources_ldap.ldapsourcepropertymapping"
                             },
                             "identifiers": {
-                                "$ref": "#/$defs/model_authentik_sources_ldap.ldappropertymapping"
+                                "$ref": "#/$defs/model_authentik_sources_ldap.ldapsourcepropertymapping"
                             }
                         }
                     },
@@ -3526,7 +3526,7 @@
                         "authentik_providers_scim.scimmapping",
                         "authentik_rbac.role",
                         "authentik_sources_ldap.ldapsource",
-                        "authentik_sources_ldap.ldappropertymapping",
+                        "authentik_sources_ldap.ldapsourcepropertymapping",
                         "authentik_sources_oauth.oauthsource",
                         "authentik_sources_oauth.useroauthsourceconnection",
                         "authentik_sources_plex.plexsource",
@@ -4623,7 +4623,7 @@
             },
             "required": []
         },
-        "model_authentik_sources_ldap.ldappropertymapping": {
+        "model_authentik_sources_ldap.ldapsourcepropertymapping": {
             "type": "object",
             "properties": {
                 "managed": {

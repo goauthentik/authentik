@@ -21,7 +21,7 @@ from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.sync.outgoing.api import SyncStatusSerializer
-from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
+from authentik.sources.ldap.models import LDAPSource, LDAPSourcePropertyMapping
 from authentik.sources.ldap.tasks import CACHE_KEY_STATUS, SYNC_CLASSES
 
 
@@ -177,29 +177,29 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
         return Response(data=all_objects)
 
 
-class LDAPPropertyMappingSerializer(PropertyMappingSerializer):
+class LDAPSourcePropertyMappingSerializer(PropertyMappingSerializer):
     """LDAP PropertyMapping Serializer"""
 
     class Meta:
-        model = LDAPPropertyMapping
+        model = LDAPSourcePropertyMapping
         fields = PropertyMappingSerializer.Meta.fields
 
 
-class LDAPPropertyMappingFilter(FilterSet):
-    """Filter for LDAPPropertyMapping"""
+class LDAPSourcePropertyMappingFilter(FilterSet):
+    """Filter for LDAPSourcePropertyMapping"""
 
     managed = extend_schema_field(OpenApiTypes.STR)(AllValuesMultipleFilter(field_name="managed"))
 
     class Meta:
-        model = LDAPPropertyMapping
+        model = LDAPSourcePropertyMapping
         fields = "__all__"
 
 
-class LDAPPropertyMappingViewSet(UsedByMixin, ModelViewSet):
+class LDAPSourcePropertyMappingViewSet(UsedByMixin, ModelViewSet):
     """LDAP PropertyMapping Viewset"""
 
-    queryset = LDAPPropertyMapping.objects.all()
-    serializer_class = LDAPPropertyMappingSerializer
-    filterset_class = LDAPPropertyMappingFilter
+    queryset = LDAPSourcePropertyMapping.objects.all()
+    serializer_class = LDAPSourcePropertyMappingSerializer
+    filterset_class = LDAPSourcePropertyMappingFilter
     search_fields = ["name"]
     ordering = ["name"]
