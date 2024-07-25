@@ -223,11 +223,10 @@ class ResponseProcessor:
             source=self._source,
             request=self._http_request,
             identifier=name_id.text,
-            enroll_info={
+            user_info={
                 "root": self._root,
                 "name_id": name_id.text,
             },
-            groups_info=[],
             policy_context={
                 "saml_response": etree.tostring(self._root),
             },

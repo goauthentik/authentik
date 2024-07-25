@@ -212,6 +212,10 @@ class SAMLSource(Source):
         for key, value in attributes.items():
             attributes[key] = BaseEvaluator.expr_flatten(value)
         attributes["username"] = name_id.text
+
+        # TODO: populate this
+        attributes["groups"] = []
+
         return attributes
 
     def get_base_group_properties(self, **kwargs):

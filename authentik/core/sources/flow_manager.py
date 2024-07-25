@@ -105,12 +105,14 @@ class SourceFlowManager:
         self.user_properties = self.mapper.build_object_properties(
             object_type=User, request=request, user=None, **self.user_info
         )
-        self.groups_properties = {
-            group_id: self.mapper.build_object_properties(
-                object_type=Group, request=request, user=None, group_id=group_id, **self.user_info
-            )
-            for group_id in self.user_properties.get("groups", [])
-        }
+        self.groups_properties = {}
+        if self.user_properties.get("groups"):
+            self.groups_properties = {
+                group_id: self.mapper.build_object_properties(
+                    object_type=Group, request=request, user=None, group_id=group_id, **self.user_info
+                )
+                for group_id in self.user_properties["groups"]
+            }
 
     def get_action(self, **kwargs) -> tuple[Action, UserSourceConnection | None]:  # noqa: PLR0911
         """decide which action should be taken"""
