@@ -6,7 +6,7 @@ Writing documentation for authentik is a great way for both new and experienced 
 
 Adhering to the following guidelines will help us get your PRs merged much easier and faster, with fewer edits needed.
 
--   Ideally, when you are making contributions to the documentation, you should fork and clone our repo, then [build it locally](#set-up-your-local-build), so that you can test the docs and run the required linting and spell checkers before pushing your PR.
+-   Ideally, when you are making contributions to the documentation, you should fork and clone our repo, then [build it locally](#set-up-your-local-build), so that you can test the docs and run the required linting and spell checkers before pushing your PR. While you can do much of the writing and editing within the GitHub UI, you cannot run the required linters from the GitHub UI.
 
 -   Please refer to our [Style Guide](./style-guide.mdx) for authentik documentation. Here you will learn important guidelines about not capitalizing authentik, how we format our titles and headers, and much more.
 
@@ -42,7 +42,7 @@ The site is built using npm, below are some useful make commands:
 
 -   **Live editing**: `make website-watch`
 
-    For real time viewing of changes, as you make them.
+    For real-time viewing of changes, as you make them.
 
 :::info
 Be sure to run a formatting command before committing changes.

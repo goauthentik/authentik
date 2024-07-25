@@ -10,24 +10,45 @@ To create a policy, follow these steps:
 
 1. Log in as an admin to authentik, and go to the Admin interface.
 2. In the Admin interface, navigate to **Customization -> Policies**.
-3. Click **Create**, and select the types of policy.
+3. Click **Create**, and select the type of policy.
 4. Define the policy and click **Finish**.
 
+## Bind a policy to a flow or stage
+
 After creating the policy, you can bind it to either a [flow](../flow/index.md) or to a stage.
+
+### Bind a policy to a flow
+
+1. Log in as an admin to authentik, and open the Admin interface.
+2. In the Admin interface, navigate to **Flows and Stages -> Flows**.
+3. In the list of flows, click on the name of the flow to which you want to bind a policy.
+4. Click on the **Policy/Group/User Bindings** tab at the top of the page.
+5. Here, you can decide if you want to create a new policy and bind it to the flow (**Create and bind Policy**), or if you want to select an existing policy and bind it to the flow (**Bind existing policy/group/user**).
+
+### Bind a policy to a stage
+
+1. Log in as an admin to authentik, and open the Admin interface.
+2. In the Admin interface, navigate to **Flows and Stages -> Flows**.
+3. In the list of flows, click on the name of the flow to which you want to bind a policy.
+4. Click on the **Stage Bindings** tab at the top of the page.
+5. Here, you can decide if you want to create a new policy and bind it to the stage (**Create and bind Policy**), or if you want to select an existing policy and bind it to the stage (**Bind existing stage**).
+
+## Standard polices
+The following policies are our standard, out-of-the box policies.
 
 ### Event-matcher policy
 
 This policy is used by the events subsystem. You can use this policy to match events by multiple different criteria, to choose when you get notified.
 
-## Expression Policy
+### Expression Policy
 
 See [Expression Policy](expression.mdx).
 
-## Password-Expiry Policy
+### Password-Expiry Policy
 
 This policy can enforce regular password rotation by expiring set passwords after a finite amount of time. This forces users to set a new password.
 
-## Password Policy
+### Password Policy
 
 This policy allows you to specify password rules, such as length and required characters.
 The following rules can be set:
@@ -43,7 +64,7 @@ Starting with authentik 2022.11.0, the following checks can also be done with th
 -   Check the password hash against the database of [Have I Been Pwned](https://haveibeenpwned.com/). Only the first 5 characters of the hashed password are transmitted, the rest is compared in authentik
 -   Check the password against the password complexity checker [zxcvbn](https://github.com/dropbox/zxcvbn), which detects weak password on various metrics.
 
-## Reputation Policy
+### Reputation Policy
 
 authentik keeps track of failed login attempts by source IP and attempted username. These values are saved as scores. Each failed login decreases the score for the client IP as well as the targeted username by 1 (one).
 
@@ -51,9 +72,10 @@ This policy can be used, for example, to prompt clients with a low score to pass
 
 To make sure this policy is executed correctly, set _Evaluate when stage is run_ when using it with a flow.
 
-## Have I Been Pwned Policy
+### Have I Been Pwned Policy
 
 :::info
 This policy is deprecated since authentik 2022.11.0, as this can be done with the password policy now.
 :::
+
 This policy checks the hashed password against the [Have I Been Pwned](https://haveibeenpwned.com/) API. This only sends the first 5 characters of the hashed password. The remaining comparison is done within authentik.

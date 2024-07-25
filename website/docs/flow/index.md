@@ -1,5 +1,5 @@
 ---
-title: Overview
+title: Flows
 ---
 
 Flows are a major component in authentik. In conjunction with stages and [policies](../policies/index.md), flows are at the heart of our system of building blocks, used to define and execute the workflows of authentication.

@@ -10,7 +10,9 @@ If you find any documentation that doesn't match these guidelines, feel free to 
 
 ## General style guidelines
 
--   Try to order the documentation sections in the order that makes it easiest for the user to follow. That is, order the sections in the same order as the actual workflow used to accomplish the task. Use headings (sub-titles) to break up long documents, and make it easier to find a specific section.
+-   Try to order the documentation sections in the order that makes it easiest for the user to follow. That is, order the sections in the same order as the actual workflow used to accomplish the task.
+
+-   Use headings (sub-titles) to break up long documents, and make it easier to find a specific section.
 
 -   Add cross-reference links to related content whenever possible.
 
@@ -38,7 +40,7 @@ If you find any documentation that doesn't match these guidelines, feel free to 
 
 -   Our documentation uses American English ("z" not "s").
 
--   Use the present tense and active voice in almst all cases:
+-   Use the present tense and active voice in almost all cases:
 
     -   DON'T: "The Applications page will be loaded."
 
@@ -79,6 +81,10 @@ Formatting in documentation is important; it improves comprehension and readabil
     Examples:
     -   Configure your provider
     -   Configure the Google Workspace provider
+
+-   Make sure the title/header is descriptive, and tells the reader what that section is about. Try to avoid titles or headers like "Overview". Instead say "About authentik policies".
+
+-   Use the imperative verb form (not the gerund form) for procedural topics. For example, use "Configure your instance" instead of "Configuring".
 
 ### Examples
 
@@ -121,3 +127,17 @@ Write your warning here.
 ```
 
 ```
+
+## Word choices
+
+-   **May** versus **might** versus **can**
+    Typically, the word "may" is not used in technical writing, because it implies permission (rather than ability) to do something. Instead use the word "can". Be sparing with your use of "might"; this word implies unpredictability, not our favorite thing with software.
+
+    -   DON'T: "You may use an Expression policy to enforce MFA adherence."
+
+    -   DO: "You can use an Expression policy to enforce MFA adherence."
+
+-   **Login**, **log in**, and **log in to**
+    As a descriptive term, use one word: "login". (The login panel.)
+    As a verb, use "log in", with two words. (This stage prompts the user to log in.)
+    As a verb with the proposition "to", use "log in to". (Log in to the application.)
