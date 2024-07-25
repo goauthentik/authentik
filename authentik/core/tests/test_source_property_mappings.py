@@ -42,7 +42,7 @@ class TestSourcePropertyMappings(TestCase):
             },
         )
 
-        group_base_properties = source.get_base_properties(Group)
+        group_base_properties = mapper.get_base_properties(Group)
         self.assertEqual(group_base_properties, {"name": None})
 
     def test_build_properties(self):
