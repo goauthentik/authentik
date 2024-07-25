@@ -17,7 +17,6 @@ on:
           - ci
           - test
           - staging
-          - production
         type: choice
       with-sbom:
         type: boolean

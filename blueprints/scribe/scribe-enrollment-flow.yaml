@@ -17,12 +17,6 @@ entries:
       required: true
     model: authentik_blueprints.metaapplyblueprint
     state: present
-  - attrs:
-      identifiers:
-        name: Scribe - Redirect Policy
-      required: true
-    model: authentik_blueprints.metaapplyblueprint
-    state: present
 #flow
   - identifiers:
       slug: scribe-enrollment-flow
@@ -34,6 +28,7 @@ entries:
       designation: enrollment
       layout: sidebar_right
       authentication: require_unauthenticated
+      denied_action: continue
     state: present
 # prompts
   - identifiers:
@@ -216,23 +211,4 @@ entries:
       stage: !KeyOf default-enrollment-user-login
       order: 100
     model: authentik_flows.flowstagebinding
-    state: present
-  - identifiers:
-      order: 200
-      stage: !KeyOf default-enrollment-user-login
-      target: !KeyOf scribe-enrollment-flow
-    id: dummy-login-for-redirection
-    conditions:
-      - !If [!Context scribe_hub_redirect_uri]
-    model: authentik_flows.flowstagebinding
-  - attrs:
-      enabled: true
-      timeout: 30
-    conditions:
-      - !If [!Context scribe_hub_redirect_uri]
-    identifiers:
-      order: 0
-      policy: !Find [authentik_policies_expression.expressionpolicy, [name, scribe-hub-redirect]]
-      target: !KeyOf dummy-login-for-redirection
-    model: authentik_policies.policybinding
     state: present

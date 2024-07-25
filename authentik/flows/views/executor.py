@@ -127,7 +127,10 @@ class FlowExecutorView(APIView):
             FlowDeniedAction.CONTINUE,
             FlowDeniedAction.MESSAGE_CONTINUE,
         ]:
-            next_url = self.request.GET.get(NEXT_ARG_NAME)
+            # SH-5431 - fix reference to next param
+            # bug report https://github.com/goauthentik/authentik/issues/10333
+            get_params = QueryDict(self.request.GET.get(QS_QUERY, ""))
+            next_url = get_params.dict().get(NEXT_ARG_NAME)
             if next_url and not is_url_absolute(next_url):
                 self._logger.debug("f(exec): Redirecting to next on fail")
                 return to_stage_response(self.request, redirect(next_url))

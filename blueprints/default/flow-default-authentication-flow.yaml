@@ -46,18 +46,14 @@ entries:
     identifiers:
       name: Scribe - Sources - Github
     required: true
-- attrs:
-    identifiers:
-      name: Scribe - Redirect Policy
-    required: true
-  model: authentik_blueprints.metaapplyblueprint
 #flow
 - attrs:
     designation: authentication
     name:  Welcome to Scribe!
     title:  Welcome to Scribe!
-    authentication: none
+    authentication: require_unauthenticated
     layout: sidebar_right
+    denied_action: continue
   identifiers:
     slug: default-authentication-flow
   model: authentik_flows.flow
@@ -160,25 +156,6 @@ entries:
     order: 10
     target: !KeyOf default-authentication-flow-password-binding
     policy: !KeyOf default-authentication-flow-password-optional
-- identifiers:
-    order: 200
-    stage: !KeyOf default-authentication-login
-    target: !KeyOf flow
-  id: dummy-login-for-redirection
-  conditions:
-    - !If [!Context scribe_hub_redirect_uri]
-  model: authentik_flows.flowstagebinding
-- attrs:
-    enabled: true
-    order: 0
-    timeout: 30
-  conditions:
-    - !If [!Context scribe_hub_redirect_uri]
-  identifiers:
-    policy: !Find [authentik_policies_expression.expressionpolicy, [name, scribe-hub-redirect]]
-    target: !KeyOf dummy-login-for-redirection
-  model: authentik_policies.policybinding
-  state: present
 - identifiers:
     name: default-authentication-flow-conditional-captcha
   id: default-authentication-flow-conditional-captcha
