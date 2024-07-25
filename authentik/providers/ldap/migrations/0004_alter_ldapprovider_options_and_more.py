@@ -8,13 +8,17 @@ from django.db import migrations
 
 def migrate_search_group(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     from guardian.shortcuts import assign_perm
+    from authentik.core.models import User
 
     LDAPProvider = apps.get_model("authentik_providers_ldap", "ldapprovider")
 
     db_alias = schema_editor.connection.alias
     for provider in LDAPProvider.objects.using(db_alias).all():
-        for user in provider.search_group.using(db_alias).all():
-            assign_perm("search_full_directory", user, provider)
+        for user_pk in (
+            provider.search_group.users.using(db_alias).all().values_list("pk", flat=True)
+        ):
+            # We need the correct user model instance to assign the permission
+            assign_perm("search_full_directory", User.objects.get(pk=user_pk), provider)
 
 
 class Migration(migrations.Migration):
