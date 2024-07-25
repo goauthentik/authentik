@@ -109,7 +109,11 @@ class SourceFlowManager:
         if self.user_properties.get("groups"):
             self.groups_properties = {
                 group_id: self.mapper.build_object_properties(
-                    object_type=Group, request=request, user=None, group_id=group_id, **self.user_info
+                    object_type=Group,
+                    request=request,
+                    user=None,
+                    group_id=group_id,
+                    **self.user_info,
                 )
                 for group_id in self.user_properties["groups"]
             }

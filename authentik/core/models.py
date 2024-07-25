@@ -189,6 +189,24 @@ class Group(SerializerModel, AttributesMixin):
 
     objects = GroupQuerySet.as_manager()
 
+    class Meta:
+        unique_together = (
+            (
+                "name",
+                "parent",
+            ),
+        )
+        indexes = [models.Index(fields=["name"])]
+        verbose_name = _("Group")
+        verbose_name_plural = _("Groups")
+        permissions = [
+            ("add_user_to_group", _("Add user to group")),
+            ("remove_user_from_group", _("Remove user from group")),
+        ]
+
+    def __str__(self):
+        return f"Group {self.name}"
+
     @property
     def serializer(self) -> Serializer:
         from authentik.core.api.groups import GroupSerializer
@@ -212,24 +230,6 @@ class Group(SerializerModel, AttributesMixin):
         if not isinstance(self, QuerySet):
             qs = Group.objects.filter(group_uuid=self.group_uuid)
         return qs.with_children_recursive()
-
-    def __str__(self):
-        return f"Group {self.name}"
-
-    class Meta:
-        unique_together = (
-            (
-                "name",
-                "parent",
-            ),
-        )
-        indexes = [models.Index(fields=["name"])]
-        verbose_name = _("Group")
-        verbose_name_plural = _("Groups")
-        permissions = [
-            ("add_user_to_group", _("Add user to group")),
-            ("remove_user_from_group", _("Remove user from group")),
-        ]
 
 
 class UserQuerySet(models.QuerySet):
@@ -269,6 +269,28 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
     password_change_date = models.DateTimeField(auto_now_add=True)
 
     objects = UserManager()
+
+    class Meta:
+        verbose_name = _("User")
+        verbose_name_plural = _("Users")
+        permissions = [
+            ("reset_user_password", _("Reset Password")),
+            ("impersonate", _("Can impersonate other users")),
+            ("assign_user_permissions", _("Can assign permissions to users")),
+            ("unassign_user_permissions", _("Can unassign permissions from users")),
+            ("preview_user", _("Can preview user data sent to providers")),
+            ("view_user_applications", _("View applications the user has access to")),
+        ]
+        indexes = [
+            models.Index(fields=["last_login"]),
+            models.Index(fields=["password_change_date"]),
+            models.Index(fields=["uuid"]),
+            models.Index(fields=["path"]),
+            models.Index(fields=["type"]),
+        ]
+
+    def __str__(self):
+        return f"User {self.username}"
 
     @staticmethod
     def default_path() -> str:
@@ -350,25 +372,6 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
     def avatar(self) -> str:
         """Get avatar, depending on authentik.avatar setting"""
         return get_avatar(self)
-
-    class Meta:
-        verbose_name = _("User")
-        verbose_name_plural = _("Users")
-        permissions = [
-            ("reset_user_password", _("Reset Password")),
-            ("impersonate", _("Can impersonate other users")),
-            ("assign_user_permissions", _("Can assign permissions to users")),
-            ("unassign_user_permissions", _("Can unassign permissions from users")),
-            ("preview_user", _("Can preview user data sent to providers")),
-            ("view_user_applications", _("View applications the user has access to")),
-        ]
-        indexes = [
-            models.Index(fields=["last_login"]),
-            models.Index(fields=["password_change_date"]),
-            models.Index(fields=["uuid"]),
-            models.Index(fields=["path"]),
-            models.Index(fields=["type"]),
-        ]
 
 
 class Provider(SerializerModel):
