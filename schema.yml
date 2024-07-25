@@ -9642,7 +9642,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
   /outposts/ldap/{id}/check_access/:
-    post:
+    get:
       operationId: outposts_ldap_access_check
       description: Check access to a single application by slug
       parameters:
@@ -9792,7 +9792,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
   /outposts/radius/{id}/check_access/:
-    post:
+    get:
       operationId: outposts_radius_access_check
       description: Check access to a single application by slug
       parameters:

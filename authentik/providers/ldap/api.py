@@ -135,7 +135,7 @@ class LDAPOutpostConfigViewSet(ListModelMixin, GenericViewSet):
         },
         operation_id="outposts_ldap_access_check",
     )
-    @action(detail=True, methods=["post"])
+    @action(detail=True)
     def check_access(self, request: Request, pk) -> Response:
         """Check access to a single application by slug"""
         provider = get_object_or_404(LDAPProvider, pk=pk)
