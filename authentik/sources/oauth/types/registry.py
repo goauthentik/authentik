@@ -60,7 +60,7 @@ class SourceType:
         self, source: OAuthSource, info: dict[str, Any], **kwargs
     ) -> dict[str, Any | dict[str, Any]]:
         """Get base user properties for enrollment/update"""
-        raise NotImplementedError
+        return info
 
     def get_base_group_properties(
         self, source: OAuthSource, group_id: str, **kwargs

@@ -83,10 +83,10 @@ class OAuthSource(NonCreatableType, Source):
         return OAuthSourcePropertyMapping
 
     def get_base_user_properties(self, **kwargs):
-        return self.source_type.get_base_user_properties(source=self, **kwargs)
+        return self.source_type().get_base_user_properties(source=self, **kwargs)
 
     def get_base_group_properties(self, **kwargs):
-        return self.source_type.get_base_group_properties(source=self, **kwargs)
+        return self.source_type().get_base_group_properties(source=self, **kwargs)
 
     @property
     def icon_url(self) -> str | None:
