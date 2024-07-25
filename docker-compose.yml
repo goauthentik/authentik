@@ -41,6 +41,11 @@ services:
       AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
+      AUTHENTIK_FOOTER_LINKS: '[
+      { "name": "Back to Scribe Security page","href": "https://goauthentik.io" },
+      { "name": "Terms of Use","href": "https://scribesecurity.com/wp-content/uploads/2022/05/terms_of_use.pdf" },
+      { "name": "Privacy Policy","href": "https://scribesecurity.com/wp-content/uploads/2022/05/privacy_policy.pdf" },
+  ]'
     volumes:
       - ./media:/media
       - ./custom-templates:/templates
