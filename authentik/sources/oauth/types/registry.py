@@ -63,16 +63,12 @@ class SourceType:
         raise NotImplementedError
 
     def get_base_group_properties(
-        self, source: OAuthSource, info: str | dict[str, Any], **kwargs
+        self, source: OAuthSource, group_id: str, **kwargs
     ) -> dict[str, Any | dict[str, Any]]:
         """Get base group properties for creation/update"""
-        raise NotImplementedError
-
-    def get_groups_info(
-        self, source: OAuthSource, info: dict[str, Any], **kwargs
-    ) -> list[str | dict[str, Any]]:
-        """Get groups info from source info"""
-        return []
+        return {
+            "name": group_id,
+        }
 
 
 class SourceTypeRegistry:

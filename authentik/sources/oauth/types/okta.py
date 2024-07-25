@@ -43,14 +43,5 @@ class OktaType(SourceType):
             "username": info.get("nickname"),
             "email": info.get("email"),
             "name": info.get("name"),
+            "groups": info.get("groups", []),
         }
-
-    def get_base_group_properties(self, info: str, **kwargs) -> dict[str, Any]:
-        return {
-            "name": info,
-        }
-
-    def get_groups_info(
-        self, source: OAuthSource, info: dict[str, Any], **kwargs
-    ) -> list[str | dict[str, Any]]:
-        return info.get(source.groups_claim, [])
