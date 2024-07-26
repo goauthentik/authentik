@@ -45,7 +45,7 @@ To create or edit a source in authentik, open the Admin interface and navigate t
 
 #### LDAP Attribute mapping
 
--   **User Property mappings** and **Group Property Mappings**: Define which LDAP properties map to which authentik properties. The default set of property mappings is generated for Active Directory. See also [LDAP Property Mappings](../../../docs/property-mappings/#ldap-property-mapping).
+-   **User Property mappings** and **Group Property Mappings**: Define which LDAP properties map to which authentik properties. The default set of property mappings is generated for Active Directory. See also [Property Mappings](#property-mappings).
 
 #### Additional Settings
 
