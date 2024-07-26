@@ -35,6 +35,8 @@ Create an application (under Resources/Applications) with these settings:
     Provider: Paperless
 
 ## Paperless Configuration
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
 
 <Tabs
   defaultValue="docker"
