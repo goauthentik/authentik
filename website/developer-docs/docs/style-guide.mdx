@@ -4,7 +4,7 @@ title: Style Guide
 
 The Style Guide provides guidelines to ensure that the authentik documentation is easy to read and uses similar phrasing, formatting, and tone.
 
-We appreciate contributions to our documentation; everything from fixing a typo to adding additional content to writing a completely new topic. To make the review and merging of your contributions faster and easier, please follow the guidelines[writing documentation](./writing-documentation.md) guidelines.
+We appreciate contributions to our documentation; everything from fixing a typo to adding additional content to writing a completely new topic. To make the review and merging of your contributions faster and easier, please follow the [writing documentation](./writing-documentation.md) guidelines.
 
 If you find any documentation that doesn't match these guidelines, feel free to either open an [Issue](https://github.com/goauthentik/authentik/issues) or a [PR](https://github.com/goauthentik/authentik/pulls) so they can be fixed.
 
@@ -60,10 +60,13 @@ Formatting in documentation is important; it improves comprehension and readabil
 
 -   When referring to UI elements or components in the authentik UI, such as field names, labels, etc., use **bold** text.
 
+-   When referring to internal components in authentik, like the policy engine, or blueprints, do not use any special formatting. Link to the relavent documentation when possible.
+
 -   Use `code` format when referring to:
 
     -   commands
     -   file paths
+    -   file names
     -   directory names
     -   code snippets (single line or a block of code)
 
@@ -85,7 +88,7 @@ Formatting in documentation is important; it improves comprehension and readabil
 
 -   Make sure the title/header is descriptive, and tells the reader what that section is about. Try to avoid titles or headers like "Overview". Instead say "About authentik policies".
 
--   Use the imperative verb form (not the gerund form) for procedural topics. For example, use "Configure your instance" instead of "Configuring".
+-   Use the imperative verb form (not the gerund form) for procedural topics. For example, use "Configure your instance" instead of "Configuring your instance".
 
 ### Examples
 
@@ -132,11 +135,13 @@ Write your warning here.
 ## Word choices
 
 -   **May** versus **might** versus **can**
-    Typically, the word "may" is not used in technical writing, because it implies permission (rather than ability) to do something. Instead use the word "can". Be sparing with your use of "might"; this word implies unpredictability, not our favorite thing with software.
+    Typically, the word "may" is not used in technical writing, because it implies permission (rather than ability) to do something. Instead use the word "can". Use "might" when the scenario could be different in certain environments. Be sparing with your use of "might"; this word implies unpredictability, not our favorite thing with software.
 
     -   DON'T: "You may use an Expression policy to enforce MFA adherence."
 
     -   DO: "You can use an Expression policy to enforce MFA adherence."
+
+    -   Do: "Values might differ depending on the source of the property mappings.""
 
 -   **Login**, **log in**, and **log in to**
     As a descriptive term, use one word: "login". (The login panel.)

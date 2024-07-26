@@ -10,14 +10,14 @@ A flow is a method of describing a sequence of stages. A stage represents a sing
 
 For example, a standard login flow would consist of the following stages:
 
--   Identification stage: user identifies themselves via a username or email address
--   Password stage: the user's password is checked against the hash in the database
+-   **Identification stage**: user identifies themselves via a username or email address
+-   **Password stage**: the user's password is checked against the hash in the database
 
 When these stages are successfully completed, authentik logs in the user.
 
 ![](./simple_stages.png)
 
-Upon flow execution, a _flow plan_ containing all stages is generated. This means that all attached policies are evaluated upon execution. This behaviour can be altered by enabling the **Evaluate when stage is run** option on the binding.
+Upon flow execution, a _flow plan_ containing all stages is generated. This means that all attached policies are evaluated upon execution. This behaviour can be altered by enabling the **Evaluate when stage is run** option on the binding. For more information about flow plans, read our [flow context documentation](../flow/context/index.md).
 
 To determine which flow should be used, authentik will first check which default authentication flow is configured in the active [**Brand**](../core/brands.md). If no default is configured there, the policies in all flows with the matching designation are checked, and the first flow with matching policies sorted by `slug` will be used.
 
@@ -29,7 +29,7 @@ To create a flow, follow these steps:
 2. In the Admin interface, navigate to **Flows and Stages -> Flows**.
 3. Click **Create**, define the flow using the [configuration settings](#flow-configuration-options), and then click **Finish**.
 
-After creating the flow, you can [bind policies](../policies/working_with_policies/working_with_policies.md) and stages to to the flow to further customize the user's log in and authentication process.
+After creating the flow, you can then [bind specific stages](../flow/stages/index.md#bind-a-stage-to-a-flow) to the flow and [bind policies](../policies/working_with_policies/working_with_policies.md) to the flow to further customize the user's log in and authentication process.
 
 ## Permissions
 
@@ -39,7 +39,7 @@ Keep in mind that in certain circumstances, policies cannot match against users 
 
 ## Import & Export
 
-Flows can be imported and exported to share with other people, the community and for troubleshooting. Flows can be imported to apply new functionality and apply existing workflows.
+Flows can be imported and exported to share with other people, the community, and for troubleshooting. Flows can be imported to apply new functionality and apply existing workflows.
 
 Download our [Example flows](./examples/flows.md) and then import them into your authentik instance.
 
