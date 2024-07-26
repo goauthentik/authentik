@@ -1307,6 +1307,43 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_sources_scim.scimsourcepropertymapping"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_sources_scim.scimsourcepropertymapping"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_sources_scim.scimsourcepropertymapping"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_stages_authenticator_duo.authenticatorduostage"
                             },
                             "id": {
@@ -3572,6 +3609,7 @@
                         "authentik_sources_saml.samlsource",
                         "authentik_sources_saml.usersamlsourceconnection",
                         "authentik_sources_scim.scimsource",
+                        "authentik_sources_scim.scimsourcepropertymapping",
                         "authentik_stages_authenticator_duo.authenticatorduostage",
                         "authentik_stages_authenticator_duo.duodevice",
                         "authentik_stages_authenticator_sms.authenticatorsmsstage",
@@ -5247,17 +5285,21 @@
                     "type": "boolean",
                     "title": "Enabled"
                 },
-                "user_matching_mode": {
-                    "type": "string",
-                    "enum": [
-                        "identifier",
-                        "email_link",
-                        "email_deny",
-                        "username_link",
-                        "username_deny"
-                    ],
-                    "title": "User matching mode",
-                    "description": "How the source determines if an existing user should be authenticated or a new user enrolled."
+                "user_property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "User property mappings"
+                },
+                "group_property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Group property mappings"
                 },
                 "user_path_template": {
                     "type": "string",
@@ -5268,6 +5310,31 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Icon"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_sources_scim.scimsourcepropertymapping": {
+            "type": "object",
+            "properties": {
+                "managed": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "minLength": 1,
+                    "title": "Managed by authentik",
+                    "description": "Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update."
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "expression": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Expression"
                 }
             },
             "required": []
