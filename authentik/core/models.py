@@ -293,7 +293,7 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
         ]
 
     def __str__(self):
-        return f"User {self.username}"
+        return self.username
 
     @staticmethod
     def default_path() -> str:
