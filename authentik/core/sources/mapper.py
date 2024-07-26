@@ -27,6 +27,7 @@ class SourceMapper:
             qs = self.source.user_property_mappings.all().select_subclasses()
         elif object_type == Group:
             qs = self.source.group_property_mappings.all().select_subclasses()
+        qs = qs.order_by("name")
         return PropertyMappingManager(
             qs,
             self.source.property_mapping_type,
