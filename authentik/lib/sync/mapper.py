@@ -34,7 +34,7 @@ class PropertyMappingManager:
         # we need a list of all parameter names that will be used during evaluation
         context_keys: list[str],
     ) -> None:
-        self.query_set = qs
+        self.query_set = qs.order_by("name")
         self.mapping_subclass = mapping_subclass
         self.context_keys = context_keys
         self.globals = {}
