@@ -1,5 +1,3 @@
-#!/bin/bash
-
 _completions () {
 	if [[ -z "${MIGRATE_PATH}" ]];
 	then MIGRATE_PATH="./";
@@ -20,4 +18,4 @@ _completions () {
 	done
 }
 
-complete -o nospace -o filenames -F _completions m.bash
+complete -o nospace -o filenames -F _completions map
