@@ -36,32 +36,49 @@ Create an application (under Resources/Applications) with these settings:
 
 ## Paperless Configuration
 
-Add the following environment variables to your Paperless-ngx setup. If you are using Docker Compose, then add the following to your docker-compose.yml file:
+<Tabs
+  defaultValue="docker"
+  values={[
+    {label: 'Docker', value: 'docker'},
+    {label: 'Standalone', value: 'standalone'},
+  ]}>
+  <TabItem value="docker">
+If you have Paperless-ngx setup in docker, add the following environment variables for authentik
 
 ```yaml
-PAPERLESS_APPS: allauth.socialaccount.providers.openid_connect
-PAPERLESS_SOCIALACCOUNT_PROVIDERS: >
-    {
-      "openid_connect": {
-        "APPS": [
-          {
-            "provider_id": "authentik",
-            "name": "Authentik",
-            "client_id": "< Client ID >",
-            "secret": "< Client Secret >",
-            "settings": {
-              "server_url": "https://authentik.company/application/o/paperless/.well-known/openid-configuration"
-            }
+environment:
+    PAPERLESS_APPS: allauth.socialaccount.providers.openid_connect
+    PAPERLESS_SOCIALACCOUNT_PROVIDERS: >
+        {
+          "openid_connect": {
+            "APPS": [
+              {
+                "provider_id": "authentik",
+                "name": "Authentik",
+                "client_id": "<Client ID>",
+                "secret": "<Client Secret>",
+                "settings": {
+                  "server_url": "https://authentik.company/application/o/paperless/.well-known/openid-configuration"
+                }
+              }
+            ],
+            "OAUTH_PKCE_ENABLED": "True"
           }
-        ],
-        "OAUTH_PKCE_ENABLED": "True"
-      }
-    }
+        }
 ```
-
 Now restart your container:
 `docker compose down && docker compose up -d`
+  </TabItem>
+  <TabItem value="standalone">
 
+edit your `paperless.conf` and add the following:
+```ini
+PAPERLESS_APPS=allauth.socialaccount.providers.openid_connect
+PAPERLESS_SOCIALACCOUNT_PROVIDERS={"openid_connect":{"OAUTH_PKCE_ENABLED":true,"APPS":[{"provider_id":"authentik","name":"Authentik","client_id":"<Client ID>","secret":<Client Secret>","settings":{"server_url":"https://authentik.company/application/o/paperless/.well-known/openid-configuration"}}]}}
+```
+Now restart Paperless-ngx
+  </TabItem>
+</Tabs>
 ## Finished
 
 Now you can access Paperless-ngx by logging in with authentik.
