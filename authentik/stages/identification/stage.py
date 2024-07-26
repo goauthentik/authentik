@@ -12,7 +12,7 @@ from django.utils.translation import gettext as _
 from drf_spectacular.utils import PolymorphicProxySerializer, extend_schema_field
 from rest_framework.fields import BooleanField, CharField, ChoiceField, DictField, ListField
 from rest_framework.serializers import ValidationError
-from sentry_sdk.hub import Hub
+from sentry_sdk import start_span
 
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import Application, Source, User
@@ -94,7 +94,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
 
         pre_user = self.stage.get_user(uid_field)
         if not pre_user:
-            with Hub.current.start_span(
+            with start_span(
                 op="authentik.stages.identification.validate_invalid_wait",
                 description="Sleep random time on invalid user identifier",
             ):
@@ -136,7 +136,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
         if not password:
             self.stage.logger.warning("Password not set for ident+auth attempt")
         try:
-            with Hub.current.start_span(
+            with start_span(
                 op="authentik.stages.identification.authenticate",
                 description="User authenticate call (combo stage)",
             ):
