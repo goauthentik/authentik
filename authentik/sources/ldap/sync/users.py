@@ -78,8 +78,8 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                 self._logger.debug("Writing user with attributes", **defaults)
                 if "username" not in defaults:
                     raise IntegrityError("Username was not set by propertymappings")
-                ak_user, created = self.update_or_create_attributes(
-                    User, {f"attributes__{LDAP_UNIQUENESS}": uniq}, defaults
+                ak_user, created = User.update_or_create_attributes(
+                    {f"attributes__{LDAP_UNIQUENESS}": uniq}, defaults
                 )
             except PropertyMappingExpressionException as exc:
                 raise StopSync(exc, None, exc.mapping) from exc
