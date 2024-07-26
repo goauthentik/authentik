@@ -36,11 +36,13 @@
 #	directive to the end of the file if you want to see the old names
 #	in the logfiles too.
 #
-#$INCLUDE dictionary.compat	# compability issues
+#$INCLUDE dictionary.compat	# compatibility issues
 #$INCLUDE dictionary.acc
 #$INCLUDE dictionary.ascend
 #$INCLUDE dictionary.bay
-#$INCLUDE dictionary.cisco
+#$INCLUDE dictionary.aruba
+$INCLUDE dictionary.cisco
+$INCLUDE dictionary.microsoft
 #$INCLUDE dictionary.livingston
 #$INCLUDE dictionary.microsoft
 #$INCLUDE dictionary.quintum

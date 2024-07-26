@@ -112,23 +112,27 @@ class AttributesMixin(models.Model):
     class Meta:
         abstract = True
 
+    def update_attributes(self, properties: dict[str, Any]):
+        """Update fields and attributes, but correctly by merging dicts"""
+        for key, value in properties.items():
+            if key == "attributes":
+                continue
+            setattr(self, key, value)
+        final_attributes = {}
+        MERGE_LIST_UNIQUE.merge(final_attributes, self.attributes)
+        MERGE_LIST_UNIQUE.merge(final_attributes, properties.get("attributes", {}))
+        self.attributes = final_attributes
+        self.save()
+
     @classmethod
     def update_or_create_attributes(
-        cls, query: dict[str, Any], data: dict[str, Any]
+        cls, query: dict[str, Any], properties: dict[str, Any]
     ) -> tuple[models.Model, bool]:
         """Same as django's update_or_create but correctly updates attributes by merging dicts"""
         instance = cls.objects.filter(**query).first()
         if not instance:
-            return cls.objects.create(**data), True
-        for key, value in data.items():
-            if key == "attributes":
-                continue
-            setattr(instance, key, value)
-        final_attributes = {}
-        MERGE_LIST_UNIQUE.merge(final_attributes, instance.attributes)
-        MERGE_LIST_UNIQUE.merge(final_attributes, data.get("attributes", {}))
-        instance.attributes = final_attributes
-        instance.save()
+            return cls.objects.create(**properties), True
+        instance.update_attributes(properties)
         return instance, False
 
 
@@ -290,7 +294,7 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
         ]
 
     def __str__(self):
-        return f"User {self.username}"
+        return self.username
 
     @staticmethod
     def default_path() -> str:
