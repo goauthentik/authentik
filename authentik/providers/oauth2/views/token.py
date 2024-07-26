@@ -17,7 +17,7 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from guardian.shortcuts import get_anonymous_user
 from jwt import PyJWK, PyJWT, PyJWTError, decode
-from sentry_sdk.hub import Hub
+from sentry_sdk import start_span
 from structlog.stdlib import get_logger
 
 from authentik.core.middleware import CTX_AUTH_VIA
@@ -118,7 +118,7 @@ class TokenParams:
         )
 
     def __check_policy_access(self, app: Application, request: HttpRequest, **kwargs):
-        with Hub.current.start_span(
+        with start_span(
             op="authentik.providers.oauth2.token.policy",
         ):
             user = self.user if self.user else get_anonymous_user()
@@ -151,22 +151,22 @@ class TokenParams:
                 raise TokenError("invalid_client")
 
         if self.grant_type == GRANT_TYPE_AUTHORIZATION_CODE:
-            with Hub.current.start_span(
+            with start_span(
                 op="authentik.providers.oauth2.post.parse.code",
             ):
                 self.__post_init_code(raw_code, request)
         elif self.grant_type == GRANT_TYPE_REFRESH_TOKEN:
-            with Hub.current.start_span(
+            with start_span(
                 op="authentik.providers.oauth2.post.parse.refresh",
             ):
                 self.__post_init_refresh(raw_token, request)
         elif self.grant_type in [GRANT_TYPE_CLIENT_CREDENTIALS, GRANT_TYPE_PASSWORD]:
-            with Hub.current.start_span(
+            with start_span(
                 op="authentik.providers.oauth2.post.parse.client_credentials",
             ):
                 self.__post_init_client_credentials(request)
         elif self.grant_type == GRANT_TYPE_DEVICE_CODE:
-            with Hub.current.start_span(
+            with start_span(
                 op="authentik.providers.oauth2.post.parse.device_code",
             ):
                 self.__post_init_device_code(request)
@@ -508,7 +508,7 @@ class TokenView(View):
     def post(self, request: HttpRequest) -> HttpResponse:
         """Generate tokens for clients"""
         try:
-            with Hub.current.start_span(
+            with start_span(
                 op="authentik.providers.oauth2.post.parse",
             ):
                 client_id, client_secret = extract_client_auth(request)
@@ -519,7 +519,7 @@ class TokenView(View):
                 CTX_AUTH_VIA.set("oauth_client_secret")
                 self.params = TokenParams.parse(request, self.provider, client_id, client_secret)
 
-            with Hub.current.start_span(
+            with start_span(
                 op="authentik.providers.oauth2.post.response",
             ):
                 if self.params.grant_type == GRANT_TYPE_AUTHORIZATION_CODE:
