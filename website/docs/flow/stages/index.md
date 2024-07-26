@@ -19,7 +19,7 @@ To create a stage, follow these steps:
 3. Click **Create**, define the flow using the configuration settings, and then click **Finish**.
 
 After creating the stage, you can then:
-    -   bind the stage to a flow
+    -   [bind the stage to a flow](#bind-a-stage-to-a-flow)
     -   [bind a policy to the stage](../../policies/working_with_policies/work_with_policies.md) (the policy determines whther or not the stage will be implemented in the flow)
 
 ## Bind a stage to a flow
@@ -28,7 +28,9 @@ To bind a stage to a flow, follow these steps:
 
 1. Log in as an admin to authentik, and go to the Admin interface.
 2. In the Admin interface, navigate to **Flows and Stages -> Flows**.
-3. Click
+3. In the list of flows, click the name of the flow to which you want to bind one or more stages.
+4. On the Flow page, click the **Stage Bindings** tab at the top.
+5.
 
 
 
