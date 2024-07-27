@@ -12,8 +12,13 @@ from authentik.core.models import (
     Token,
     TokenIntents,
     User,
+    UserPasswordHistory,
 )
-from authentik.core.tasks import clean_expired_models, clean_temporary_users
+from authentik.core.tasks import (
+    clean_expired_models,
+    clean_temporary_users,
+    purge_password_history_table,
+)
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.lib.generators import generate_id
 
@@ -49,3 +54,14 @@ class TestTasks(APITestCase):
         )
         clean_temporary_users.delay().get()
         self.assertFalse(User.objects.filter(username=username))
+
+    def test_purge_password_history_table(self):
+        """Tests the task empties the core.models.UserPasswordHistory table"""
+        UserPasswordHistory.objects.bulk_create(
+            [
+                UserPasswordHistory(user=self.user, change={"old_password": "hunter1"}),
+                UserPasswordHistory(user=self.user, change={"old_password": "hunter2"}),
+            ]
+        )
+        purge_password_history_table.delay().get()
+        self.assertFalse(UserPasswordHistory.objects.all())

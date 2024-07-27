@@ -2,12 +2,13 @@
 
 from django.core.cache import cache
 from django.db import connection
-from django.db.models.signals import post_save
+from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 from structlog.stdlib import get_logger
 
 from authentik.core.api.applications import user_app_cache_key
 from authentik.core.models import Group, User
+from authentik.core.tasks import purge_password_history_table
 from authentik.policies.apps import GAUGE_POLICIES_CACHED
 from authentik.policies.models import Policy, PolicyBinding, PolicyBindingModel
 from authentik.policies.types import CACHE_PREFIX
@@ -42,3 +43,22 @@ def invalidate_policy_cache(sender, instance, **_):
     # Also delete user application cache
     keys = cache.keys(user_app_cache_key("*")) or []
     cache.delete_many(keys)
+
+
+@receiver(post_delete, sender=PolicyBinding)
+def purge_password_history(sender, instance, **_):
+    from authentik.policies.password.models import UniquePasswordPolicy
+
+    if not isinstance(instance.policy, UniquePasswordPolicy):
+        return
+
+    unique_password_policies = UniquePasswordPolicy.objects.all()
+
+    policy_binding_qs = PolicyBinding.objects.filter(policy__in=unique_password_policies).filter(
+        enabled=True
+    )
+
+    if policy_binding_qs.exists():
+        # No-op; At least one UniquePasswordPolicy binding still exists
+        return
+    purge_password_history_table.delay()
