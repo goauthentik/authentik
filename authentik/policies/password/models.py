@@ -223,7 +223,7 @@ class UniquePasswordPolicy(Policy):
             if self._passwords_match(new_password=password, old_password=old_password):
                 # Return on first match. Authentik does not consider timing attacks
                 # on old passwords to be a useful attack surface.
-                return PolicyResult(False)
+                return PolicyResult(False, _("Password is not unique."))
 
         return PolicyResult(True)
 
