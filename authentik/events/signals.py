@@ -10,6 +10,7 @@ from django.http import HttpRequest
 from authentik.core.middleware import SESSION_KEY_IMPERSONATE_USER
 from authentik.core.models import User, UserPasswordHistory
 from authentik.core.signals import login_failed, password_changed
+from authentik.core.tasks import trim_user_password_history
 from authentik.events.apps import SYSTEM_TASK_STATUS
 from authentik.events.models import Event, EventAction, SystemTask
 from authentik.events.tasks import event_notification_handler, gdpr_cleanup
@@ -67,13 +68,13 @@ def on_user_write(sender, request: HttpRequest, user: User, data: dict[str, Any]
     data["created"] = kwargs.get("created", False)
     Event.new(EventAction.USER_WRITE, **data).from_http(request, user=user)
 
+    """Preserve the user's old password if UniquePasswordPolicy is enabled anywhere"""
     user_changed_own_password = (
         any("password" in x for x in data.keys())
         and request.user.pk == user.pk
         and SESSION_KEY_IMPERSONATE_USER not in request.session
     )
     if user_changed_own_password:
-        # Only save the password if a bound policy requires it
         unique_password_policies = UniquePasswordPolicy.objects.all()
 
         unique_pwd_policy_binding = PolicyBinding.objects.filter(
@@ -85,6 +86,7 @@ def on_user_write(sender, request: HttpRequest, user: User, data: dict[str, Any]
             we are not atomically guaranteed to save password history.
             """
             UserPasswordHistory.objects.create(user=user, change={"old_password": user.password})
+            trim_user_password_history.delay(user.pk)
 
 
 @receiver(login_failed)
