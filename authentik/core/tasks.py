@@ -15,6 +15,7 @@ from authentik.core.models import (
     AuthenticatedSession,
     ExpiringModel,
     User,
+    UserPasswordHistory,
 )
 from authentik.events.system_tasks import SystemTask, TaskStatus, prefill_task
 from authentik.lib.config import CONFIG
@@ -91,4 +92,21 @@ def clean_temporary_users(self: SystemTask):
             user.delete()
             deleted_users += 1
     messages.append(f"Successfully deleted {deleted_users} users.")
+    self.set_status(TaskStatus.SUCCESSFUL, *messages)
+
+
+@CELERY_APP.task(bind=True, base=SystemTask)
+@prefill_task
+def purge_password_history_table(self: SystemTask):
+    """Remove all entries from the core.models.UserPasswordHistory table"""
+    messages = []
+    try:
+        # n.b. a performance optimization to execute TRUNCATE
+        # instead of all().delete() would eliminate any FK checks.
+        UserPasswordHistory.objects.all().delete()
+    except Exception as err:
+        LOGGER.debug("Failed to purge core.models.UserPasswordHistory table.")
+        self.set_error(err)
+        return
+    messages.append("Successfully purged core.models.UserPasswordHistory")
     self.set_status(TaskStatus.SUCCESSFUL, *messages)
