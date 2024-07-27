@@ -5,6 +5,7 @@ import "@goauthentik/admin/policies/expiry/ExpiryPolicyForm";
 import "@goauthentik/admin/policies/expression/ExpressionPolicyForm";
 import "@goauthentik/admin/policies/geoip/GeoIPPolicyForm";
 import "@goauthentik/admin/policies/password/PasswordPolicyForm";
+import "@goauthentik/admin/policies/password/UniquePasswordPolicyForm";
 import "@goauthentik/admin/policies/reputation/ReputationPolicyForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKElement } from "@goauthentik/elements/Base";
