@@ -33,7 +33,7 @@ Create an application and an OAuth2/OpenID provider in authentik. Use the follow
 **Provider:**
 
 -   Name: `SP-engomo`
--   Client type: `Public`    
+-   Client type: `Public`
 -   Redirect URIs/Origins (RegEx): `https://engomo.company/auth` and `com.engomo.engomo://callback/`
 -   Signing Key: `ak.cert`
 -   Scopes: `authentik default OAuth Mapping: OpenID 'email', 'offline_access', OpenID 'openid'` and `engomo.mapping`
@@ -70,19 +70,19 @@ Leave the rest as default.
 engomo doesn't create users automatically when signing in. So you have to do it manually right now.
 Navigate to `https://engomo.company/composer` and log in with your admin credentials.
 
-- Select `Users & Devices`.
-- Click the plus button next in the Users section.
-- Select `authentik` as the Authenticator in the dropdown.
-- Create your user by typing in the email as the Username used in authentik.
+-   Select `Users & Devices`.
+-   Click the plus button next in the Users section.
+-   Select `authentik` as the Authenticator in the dropdown.
+-   Create your user by typing in the email as the Username used in authentik.
 
 At this point you are done.
 
 ## Test the login
 
-- Open a browser of your choice and open the URL `https://engomo.company`.
-- Enter the created user's email address and click the small arrow icon to log in.
-- You should be redirected to authentik (with the login flows you created) and then authentik should redirect you back to `https://engomo.company/composer` URL.
-- If you are redirected back to the `https://engomo.company/composer` URL you did everything correct.
+-   Open a browser of your choice and open the URL `https://engomo.company`.
+-   Enter the created user's email address and click the small arrow icon to log in.
+-   You should be redirected to authentik (with the login flows you created) and then authentik should redirect you back to `https://engomo.company/composer` URL.
+-   If you are redirected back to the `https://engomo.company/composer` URL you did everything correct.
 
 > [!IMPORTANT]
 > The created user will only have access to the app or composer page if you granted the permission to the user of course.
