@@ -4,9 +4,16 @@ from unittest.mock import patch
 
 from django.urls import reverse
 
-from authentik.core.models import USER_ATTRIBUTE_SOURCES, Group, Source, User, UserSourceConnection
+from authentik.core.models import (
+    USER_ATTRIBUTE_SOURCES,
+    Group,
+    Source,
+    User,
+    UserPasswordHistory,
+    UserSourceConnection,
+)
 from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_user
 from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowStageBinding
@@ -15,6 +22,8 @@ from authentik.flows.tests import FlowTestCase
 from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_key
+from authentik.policies.models import PolicyBinding, PolicyBindingModel
+from authentik.policies.password.models import UniquePasswordPolicy
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 from authentik.stages.user_write.models import UserCreationMode, UserWriteStage
 from authentik.stages.user_write.stage import PLAN_CONTEXT_GROUPS, UserWriteStageView
@@ -120,6 +129,10 @@ class TestUserWriteStage(FlowTestCase):
         self.assertEqual(user_qs.first().attributes["some"]["custom-attribute"], "test")
         self.assertEqual(user_qs.first().attributes["foo"], "bar")
         self.assertNotIn("some_ignored_attribute", user_qs.first().attributes)
+
+        # Assert password not recorded if UniquePasswordPolicy not active
+        user_password_history_qs = UserPasswordHistory.objects.filter(user=user_qs.first())
+        self.assertFalse(user_password_history_qs.exists())
 
     def test_user_update_source(self):
         """Test update of existing user with a source"""
@@ -317,4 +330,42 @@ class TestUserWriteStage(FlowTestCase):
                     ]
                 },
             },
+        )
+
+    def test_record_password_history_if_policy_binding_requires(self):
+        """Test user's new password is recorded when ANY enabled UniquePasswordPolicy exists"""
+        unique_password_policy = UniquePasswordPolicy.objects.create(num_historical_passwords=5)
+        pbm = PolicyBindingModel.objects.create()
+        PolicyBinding.objects.create(
+            target=pbm, policy=unique_password_policy, order=0, enabled=True
+        )
+
+        test_user = create_test_user()
+        # We're changing our own password
+        self.client.force_login(test_user)
+
+        new_password = generate_key()
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = test_user
+        plan.context[PLAN_CONTEXT_PROMPT] = {
+            "username": test_user.username,
+            "password": new_password,
+        }
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+
+        self.assertEqual(response.status_code, 200)
+        user_qs = User.objects.filter(username=plan.context[PLAN_CONTEXT_PROMPT]["username"])
+        self.assertTrue(user_qs.exists())
+
+        user_password_history_qs = UserPasswordHistory.objects.filter(user=test_user)
+        self.assertTrue(user_password_history_qs.exists())
+        self.assertEqual(len(user_password_history_qs), 1, "expected 1 recorded password")
+        self.assertEqual(
+            user_password_history_qs.first().change.get("old_password"), user_qs.first().password
         )

@@ -7,7 +7,8 @@ from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from django.http import HttpRequest
 
-from authentik.core.models import User
+from authentik.core.middleware import SESSION_KEY_IMPERSONATE_USER
+from authentik.core.models import User, UserPasswordHistory
 from authentik.core.signals import login_failed, password_changed
 from authentik.events.apps import SYSTEM_TASK_STATUS
 from authentik.events.models import Event, EventAction, SystemTask
@@ -15,6 +16,8 @@ from authentik.events.tasks import event_notification_handler, gdpr_cleanup
 from authentik.flows.models import Stage
 from authentik.flows.planner import PLAN_CONTEXT_SOURCE, FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.policies.models import PolicyBinding
+from authentik.policies.password.models import UniquePasswordPolicy
 from authentik.root.monitoring import monitoring_set
 from authentik.stages.invitation.models import Invitation
 from authentik.stages.invitation.signals import invitation_used
@@ -63,6 +66,25 @@ def on_user_write(sender, request: HttpRequest, user: User, data: dict[str, Any]
     """Log User write"""
     data["created"] = kwargs.get("created", False)
     Event.new(EventAction.USER_WRITE, **data).from_http(request, user=user)
+
+    user_changed_own_password = (
+        any("password" in x for x in data.keys())
+        and request.user.pk == user.pk
+        and SESSION_KEY_IMPERSONATE_USER not in request.session
+    )
+    if user_changed_own_password:
+        # Only save the password if a bound policy requires it
+        unique_password_policies = UniquePasswordPolicy.objects.all()
+
+        unique_pwd_policy_binding = PolicyBinding.objects.filter(
+            policy__in=unique_password_policies
+        ).filter(enabled=True)
+
+        if unique_pwd_policy_binding.exists():
+            """NOTE: Because we run this in a signal after saving the user, 
+            we are not atomically guaranteed to save password history.
+            """
+            UserPasswordHistory.objects.create(user=user, change={"old_password": user.password})
 
 
 @receiver(login_failed)
