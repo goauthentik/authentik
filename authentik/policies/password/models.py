@@ -189,7 +189,7 @@ class UniquePasswordPolicy(Policy):
 
     @property
     def component(self) -> str:
-        return "ak-policy-password-form"
+        return "ak-policy-password-uniqueness-form"
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
         from authentik.core.models import UserPasswordHistory
