@@ -1,3 +1,5 @@
+#!/bin/bash
+
 _completions () {
 	if [[ -z "${MIGRATE_PATH}" ]];
 	then MIGRATE_PATH="./";
