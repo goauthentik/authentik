@@ -255,7 +255,7 @@ jobs:
           build-args: |
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
           cache-from: type=registry,ref=ghcr.io/goauthentik/dev-server:buildcache
-          cache-to: type=registry,ref=ghcr.io/goauthentik/dev-server:buildcache,mode=max
+          cache-to: ${{ steps.ev.outputs.shouldBuild == 'true' && 'type=registry,ref=ghcr.io/goauthentik/dev-server:buildcache,mode=max' || '' }}
           platforms: linux/${{ matrix.arch }}
       - uses: actions/attest-build-provenance@v1
         id: attest

@@ -110,7 +110,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           context: .
           cache-from: type=registry,ref=ghcr.io/goauthentik/dev-${{ matrix.type }}:buildcache
-          cache-to: type=registry,ref=ghcr.io/goauthentik/dev-${{ matrix.type }}:buildcache,mode=max
+          cache-to: ${{ steps.ev.outputs.shouldBuild == 'true' && 'type=registry,ref=ghcr.io/goauthentik/dev-${{ matrix.type }}:buildcache,mode=max' || '' }}
       - uses: actions/attest-build-provenance@v1
         id: attest
         with:
