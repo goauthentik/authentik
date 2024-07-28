@@ -259,10 +259,11 @@ jobs:
           platforms: linux/${{ matrix.arch }}
       - uses: actions/attest-build-provenance@v1
         id: attest
+        if: ${{ steps.ev.outputs.shouldBuild == 'true' }}
         with:
           subject-name: ${{ steps.ev.outputs.imageNames }}
           subject-digest: ${{ steps.push.outputs.digest }}
-          push-to-registry: ${{ steps.ev.outputs.shouldBuild == 'true' }}
+          push-to-registry: true
   pr-comment:
     needs:
       - build
