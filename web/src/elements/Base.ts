@@ -16,6 +16,7 @@ type AkInterface = HTMLElement & {
     brand?: CurrentBrand;
     uiConfig?: UIConfig;
     config?: Config;
+    get activeTheme(): UiThemeEnum | undefined;
 };
 
 export const rootInterface = <T extends AkInterface>(): T | undefined =>
@@ -41,7 +42,7 @@ function fetchCustomCSS(): Promise<string[]> {
     return css;
 }
 
-const QUERY_MEDIA_COLOR_LIGHT = "(prefers-color-scheme: light)";
+export const QUERY_MEDIA_COLOR_LIGHT = "(prefers-color-scheme: light)";
 
 // Ensure themes are converted to a static instance of CSS Stylesheet, otherwise the
 // when changing themes we might not remove the correct css stylesheet instance.

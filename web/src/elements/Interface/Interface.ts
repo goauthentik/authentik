@@ -1,3 +1,4 @@
+import { currentInterface } from "@goauthentik/common/sentry";
 import { UIConfig, uiConfig } from "@goauthentik/common/ui/config";
 import { ModalOrchestrationController } from "@goauthentik/elements/controllers/ModalOrchestrationController.js";
 import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet";
@@ -51,6 +52,7 @@ export class Interface extends AKElement implements AkInterface {
     }
 
     _activateTheme(root: DocumentOrShadowRoot, theme: UiThemeEnum): void {
+        console.debug(`authentik/interface[${currentInterface()}]: Enabling theme ${theme}`);
         super._activateTheme(root, theme);
         super._activateTheme(document as unknown as DocumentOrShadowRoot, theme);
     }
