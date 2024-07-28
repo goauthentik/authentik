@@ -43,6 +43,10 @@ function fetchCustomCSS(): Promise<string[]> {
 
 const QUERY_MEDIA_COLOR_LIGHT = "(prefers-color-scheme: light)";
 
+// Ensure themes are converted to a static instance of CSS Stylesheet, otherwise the
+// when changing themes we might not remove the correct css stylesheet instance.
+const _darkTheme = ensureCSSStyleSheet(ThemeDark);
+
 @localized()
 export class AKElement extends LitElement {
     _mediaMatcher?: MediaQueryList;
@@ -141,7 +145,7 @@ export class AKElement extends LitElement {
 
     static themeToStylesheet(theme?: UiThemeEnum): CSSStyleSheet | undefined {
         if (theme === UiThemeEnum.Dark) {
-            return ThemeDark;
+            return _darkTheme;
         }
         return undefined;
     }
