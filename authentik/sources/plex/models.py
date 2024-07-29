@@ -8,7 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.fields import CharField
 from rest_framework.serializers import BaseSerializer, Serializer
 
-from authentik.core.models import PropertyMapping, Source, UserSourceConnection
+from authentik.core.models import Source, UserSourceConnection
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.flows.challenge import Challenge, ChallengeResponse
 from authentik.lib.generators import generate_id
@@ -61,17 +61,6 @@ class PlexSource(Source):
         return PlexSourceSerializer
 
     @property
-    def property_mapping_type(self) -> type[PropertyMapping]:
-        return PlexSourcePropertyMapping
-
-    def get_base_user_properties(self, user_info, **kwargs):
-        # Already done before, just return the data
-        return user_info
-
-    def get_base_group_properties(self, **kwargs):
-        return {}
-
-    @property
     def icon_url(self) -> str:
         icon = super().icon_url
         if not icon:
@@ -104,24 +93,6 @@ class PlexSource(Source):
     class Meta:
         verbose_name = _("Plex Source")
         verbose_name_plural = _("Plex Sources")
-
-
-class PlexSourcePropertyMapping(PropertyMapping):
-    """Map Plex properties to User or Group object attributes"""
-
-    @property
-    def component(self) -> str:
-        return "ak-property-mapping-plex-source-form"
-
-    @property
-    def serializer(self) -> type[Serializer]:
-        from authentik.sources.plex.api.property_mappings import PlexSourcePropertyMappingSerializer
-
-        return PlexSourcePropertyMappingSerializer
-
-    class Meta:
-        verbose_name = _("Plex Source Property Mapping")
-        verbose_name_plural = _("Plex Source Property Mappings")
 
 
 class PlexSourceConnection(UserSourceConnection):
