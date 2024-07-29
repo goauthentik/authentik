@@ -65,7 +65,7 @@ To create or edit a source in authentik, open the Admin interface and navigate t
 
 -   **Object uniqueness field**: This field contains a unique identifier.
 
-## Property mappings
+## LDAP source property mappings
 
 See the [overview](../property-mappings/index.md) for information on how property mappings work.
 
