@@ -161,12 +161,11 @@ class ResponseProcessor:
         return SAMLSourceFlowManager(
             source=self._source,
             request=self._http_request,
-            identifier=name_id.text,
-            enroll_info={
+            identifier=str(name_id.text),
+            user_info={
                 "root": self._root,
                 "name_id": name_id,
             },
-            groups_info=[],
             policy_context={},
         )
 
@@ -222,7 +221,7 @@ class ResponseProcessor:
         return SAMLSourceFlowManager(
             source=self._source,
             request=self._http_request,
-            identifier=name_id.text,
+            identifier=str(name_id.text),
             user_info={
                 "root": self._root,
                 "name_id": name_id.text,
