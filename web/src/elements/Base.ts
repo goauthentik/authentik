@@ -128,6 +128,7 @@ export class AKElement extends LitElement {
                             : UiThemeEnum.Dark;
                     this._activateTheme(root, theme);
                 };
+                this._mediaMatcherHandler(undefined);
                 this._mediaMatcher.addEventListener("change", this._mediaMatcherHandler);
             }
             return;
