@@ -30,6 +30,7 @@ class KerberosSourceSerializer(SourceSerializer):
     class Meta:
         model = KerberosSource
         fields = SourceSerializer.Meta.fields + [
+            "group_matching_mode",
             "realm",
             "krb5_conf",
             "sync_users",

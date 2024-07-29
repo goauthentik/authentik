@@ -11,7 +11,7 @@ urlpatterns = [
 ]
 
 api_urlpatterns = [
-    ("propertymappings/kerberos", KerberosPropertyMappingViewSet),
+    ("propertymappings/source/kerberos", KerberosPropertyMappingViewSet),
     ("sources/user_connections/kerberos", UserKerberosSourceConnectionViewSet),
     ("sources/kerberos", KerberosSourceViewSet),
 ]
