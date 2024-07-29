@@ -20,9 +20,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
     FlowsInstancesListDesignationEnum,
-    PaginatedPlexSourcePropertyMappingList,
     PlexSource,
-    PropertymappingsApi,
     SourcesApi,
     UserMatchingModeEnum,
 } from "@goauthentik/api";
@@ -38,16 +36,6 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
         this.clearIcon = false;
         return source;
     }
-
-    async load(): Promise<void> {
-        this.propertyMappings = await new PropertymappingsApi(
-            DEFAULT_CONFIG,
-        ).propertymappingsPlexSourceList({
-            ordering: "managed",
-        });
-    }
-
-    propertyMappings?: PaginatedPlexSourcePropertyMappingList;
 
     @state()
     clearIcon = false;
@@ -330,41 +318,6 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
                         />
                     </ak-form-element-horizontal>
                     ${this.renderSettings()}
-                </div>
-            </ak-form-group>
-            <ak-form-group ?expanded=${true}>
-                <span slot="header"> ${msg("Plex Attributes mapping")} </span>
-                <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("User Property Mappings")}
-                        ?required=${true}
-                        name="userPropertyMappings"
-                    >
-                        <select class="pf-c-form-control" multiple>
-                            ${this.propertyMappings?.results.map((mapping) => {
-                                let selected = false;
-                                if (this.instance?.userPropertyMappings) {
-                                    selected = Array.from(this.instance?.userPropertyMappings).some(
-                                        (su) => {
-                                            return su == mapping.pk;
-                                        },
-                                    );
-                                }
-                                return html`<option
-                                    value=${ifDefined(mapping.pk)}
-                                    ?selected=${selected}
-                                >
-                                    ${mapping.name}
-                                </option>`;
-                            })}
-                        </select>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Property mappings used for user creation.")}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Hold control/command to select multiple items.")}
-                        </p>
-                    </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
             <ak-form-group>
