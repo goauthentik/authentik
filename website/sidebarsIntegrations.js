@@ -118,6 +118,7 @@ module.exports = {
                     type: "category",
                     label: "Miscellaneous",
                     items: [
+                        "services/engomo/index",
                         "services/freshrss/index",
                         "services/gravitee/index",
                         "services/home-assistant/index",

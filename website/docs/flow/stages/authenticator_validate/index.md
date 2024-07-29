@@ -43,9 +43,9 @@ Firefox has some known issues regarding FIDO (see https://bugzilla.mozilla.org/s
 
 Passwordless authentication currently only supports WebAuthn devices, like security keys and biometrics. For an alternate passwordless setup, see [Password stage](../password/index.md#passwordless-login), which supports other types.
 
-To configure passwordless authentication, create a new Flow with the delegation set to _Authentication_.
+To configure passwordless authentication, create a new Flow with the designation set to _Authentication_.
 
-As first stage, add an _Authentication validation_ stage, with the WebAuthn device class allowed.
+As first stage, add an _Authenticator validation_ stage, with the WebAuthn device class allowed.
 After this stage you can bind any additional verification stages.
 As final stage, bind a _User login_ stage.
 

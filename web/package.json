@@ -46,7 +46,7 @@
         "@floating-ui/dom": "^1.6.8",
         "@formatjs/intl-listformat": "^7.5.7",
         "@fortawesome/fontawesome-free": "^6.6.0",
-        "@goauthentik/api": "^2024.6.1-1721927330",
+        "@goauthentik/api": "^2024.6.1-1722014086",
         "@lit/context": "^1.1.2",
         "@lit/localize": "^0.12.1",
         "@lit/reactive-element": "^2.0.4",
@@ -82,7 +82,7 @@
         "@babel/plugin-transform-private-methods": "^7.24.7",
         "@babel/plugin-transform-private-property-in-object": "^7.24.7",
         "@babel/plugin-transform-runtime": "^7.24.7",
-        "@babel/preset-env": "^7.24.8",
+        "@babel/preset-env": "^7.25.0",
         "@babel/preset-typescript": "^7.24.7",
         "@changesets/cli": "^2.27.5",
         "@custom-elements-manifest/analyzer": "^0.10.2",
@@ -147,9 +147,9 @@
         "@esbuild/darwin-arm64": "^0.23.0",
         "@esbuild/linux-amd64": "^0.18.11",
         "@esbuild/linux-arm64": "^0.23.0",
-        "@rollup/rollup-darwin-arm64": "4.19.0",
-        "@rollup/rollup-linux-arm64-gnu": "4.19.0",
-        "@rollup/rollup-linux-x64-gnu": "4.19.0"
+        "@rollup/rollup-darwin-arm64": "4.19.1",
+        "@rollup/rollup-linux-arm64-gnu": "4.19.1",
+        "@rollup/rollup-linux-x64-gnu": "4.19.1"
     },
     "engines": {
         "node": ">=20"
