@@ -27,8 +27,6 @@ pub fn migrate(quiet: bool, migratefile: PathBuf, migrate_path: PathBuf) {
         }
     };
 
-    println!("len: {}", files.len());
-
     replace_links(migrate_path.clone(), files.clone());
     let successful_moves = move_files(quiet, migrate_path.clone(), files);
     add_redirects(successful_moves.clone(), migrate_path.clone());
