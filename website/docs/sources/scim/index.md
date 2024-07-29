@@ -28,12 +28,12 @@ Endpoint to list, create, update and delete groups.
 
 There is also the `/v2/ServiceProviderConfig` and `/v2/ResourceTypes`, which is used by SCIM-enabled applications to find out which features authentik supports.
 
-## Property Mappings
+## SCIM source property mappings
 
 See the [overview](../property-mappings/index.md) for information on how property mappings work.
 
 ### Expression data
 
-The following variables are available to SCIM Source Property Mappings:
+The following variables are available to SCIM source property mappings:
 
--   `data`: A Python dictionary containing data from the SCIM Source.
+-   `data`: A Python dictionary containing data from the SCIM source.

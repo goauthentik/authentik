@@ -32,15 +32,15 @@ To simplify Machine-to-machine authentication, you can create an OAuth Source as
 
 Afterwards, this source can be selected in one or multiple OAuth2 providers, and any JWT issued by any of the configured sources' JWKS will be able to authenticate. To learn more about this, see [JWT-authentication](/docs/providers/oauth2/client_credentials#jwt-authentication).
 
-## Property Mappings
+## Property mappings
 
 See the [overview](../property-mappings/index.md) for information on how property mappings work.
 
 ### Expression data
 
-The following variables are available to OAuth Source Property Mappings:
+The following variables are available to OAuth source property mappings:
 
--   `info`: A Python dictionary containing OAuth claims. For example (values may differ depending on the Source):
+-   `info`: A Python dictionary containing OAuth claims. For example (values might differ depending on the source):
     ```python
     {
         "iss": "https://source.company",

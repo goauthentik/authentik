@@ -11,6 +11,9 @@ This page is an overview of how property mappings work. For information about sp
 -   [SAML](../saml/#property-mappings)
 -   [SCIM](../scim/#property-mappings)
 
+
+## Create a custom source property mapping
+
 If the default source mappings are not enough, or if you need to get additional data from the source, you can create your own custom source property mappings.
 
 Here are the steps:
@@ -35,7 +38,7 @@ return {
 
 You can see that the expression returns a Python dictionary. The dictionary keys must match [User properties](../../user-group-role/user/user_ref.md#object-properties) or [Group properties](../../user-group-role/groups/group_ref.md#object-properties). Note that for users, `ak_groups` and `group_attributes` cannot be set.
 
-See each source documentation for a reference of the available data. See [the expressions documentation](./expressions.md) for available data and functions.
+See each source documentation for a reference of the available data. See the authentik [expressions documentation](./expressions.md) for available data and functions.
 
 Note that the [`list_flatten`](./expressions.md#list_flattenvalue-listany--any---optionalany) method is applied for all top-level properties, but not for attributes:
 
@@ -50,12 +53,12 @@ return {
 
 ### Object construction process
 
-A User or Group object is constructed as follows:
+A user or group object is constructed as follows:
 
-1.  The Source provides initial properties based on commonly used data.
-2.  Each property mapping associated with the Source is ran and results are merged into the previous properties.
+1.  The source provides initial properties based on commonly used data.
+2.  Each property mapping associated with the source is run and results are merged into the previous properties.
     -   If a property mapping throws an error, the process is aborted. If that happens inside a synchronization process, the object is skipped. If it happens during an enrollment or authentication flow, the flow is cancelled.
-3.  If the `username` field is not set for User objects, or the `name` field is not set for Group objects, the process is aborted.
+3.  If the `username` field is not set for user objects, or the `name` field is not set for group objects, the process is aborted.
 4.  The object is created or updated. The `attributes` property is merged with existing data if the object already exists.
 
 ### Group synchronization
@@ -70,4 +73,4 @@ return {
 }
 ```
 
-The `groups` attribute is a special attribute that must contain group identifiers. By default, those identifiers are also used as the group namedefault, those identifiers are also used as the Group name. Each of those identifiers is then given to Group Property Mappings as the `group_id` variable, if extra processing needs to happen.
+The `groups` attribute is a special attribute that must contain group identifiers. By default, those identifiers are also used as the group name by default, those identifiers are also used as the group name. Each of those identifiers is then given to group property mappings as the `group_id` variable, if extra processing needs to happen.

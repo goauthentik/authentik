@@ -45,7 +45,7 @@ To create or edit a source in authentik, open the Admin interface and navigate t
 
 #### LDAP Attribute mapping
 
--   **User Property mappings** and **Group Property Mappings**: Define which LDAP properties map to which authentik properties. The default set of property mappings is generated for Active Directory. See also [Property Mappings](#property-mappings).
+-   **User Property mappings** and **Group Property Mappings**: Define which LDAP properties map to which authentik properties. The default set of property mappings is generated for Active Directory. See also our documentation on [property mappings](#property-mappings).
 
 #### Additional Settings
 
@@ -65,7 +65,7 @@ To create or edit a source in authentik, open the Admin interface and navigate t
 
 -   **Object uniqueness field**: This field contains a unique identifier.
 
-## Property Mappings
+## Property mappings
 
 See the [overview](../property-mappings/index.md) for information on how property mappings work.
 
@@ -82,9 +82,9 @@ return {
 }
 ```
 
-### Built-in Property Mappings
+### Built-in property mappings
 
-LDAP Property Mappings are used when you define a LDAP Source. These mappings define which LDAP property maps to which authentik property. By default, the following mappings are created:
+LDAP property mappings are used when you define a LDAP source. These mappings define which LDAP property maps to which authentik property. By default, the following mappings are created:
 
 -   authentik default Active Directory Mapping: givenName
 -   authentik default Active Directory Mapping: sAMAccountName
@@ -99,7 +99,7 @@ These are configured with most common LDAP setups.
 
 ### Expression data
 
-The following variables are available to LDAP Source Property Mappings:
+The following variables are available to LDAP source property mappings:
 
 -   `ldap`: A Python dictionary containing data from LDAP.
 -   `dn`: The object DN.
