@@ -51,11 +51,6 @@ export class AutosubmitStage extends BaseStage<
                         />`;
                     })}
                     <ak-empty-state ?loading="${true}"> </ak-empty-state>
-                    <div class="pf-c-form__group pf-m-action">
-                        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                            ${msg("Continue")}
-                        </button>
-                    </div>
                 </form>
             </div>
             <footer class="pf-c-login__main-footer">
