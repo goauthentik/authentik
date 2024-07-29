@@ -229,6 +229,8 @@ class SyncTasks:
                     client.delete(instance)
             except TransientSyncException as exc:
                 raise Retry() from exc
+            except SkipObjectException:
+                continue
             except StopSync as exc:
                 self.logger.warning(exc, provider_pk=provider.pk)
 
@@ -259,5 +261,7 @@ class SyncTasks:
                 client.update_group(group, operation, pk_set)
             except TransientSyncException as exc:
                 raise Retry() from exc
+            except SkipObjectException:
+                continue
             except StopSync as exc:
                 self.logger.warning(exc, provider_pk=provider.pk)

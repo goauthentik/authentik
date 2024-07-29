@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build web
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:22.4 as web-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:22 as web-builder
 
 ENV NODE_ENV=production
 WORKDIR /static

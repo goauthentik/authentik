@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build website
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:22.4 as website-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:22 as website-builder
 
 ENV NODE_ENV=production
 
@@ -20,7 +20,7 @@ COPY ./SECURITY.md /work/
 RUN npm run build-bundled
 
 # Stage 2: Build webui
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:22.4 as web-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:22 as web-builder
 
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH

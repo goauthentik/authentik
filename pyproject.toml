@@ -130,6 +130,7 @@ psycopg = { extras = ["c"], version = "*" }
 pydantic = "*"
 pydantic-scim = "*"
 pyjwt = "*"
+pyrad = "*"
 python = "~3.12"
 # Fork of python-kadmin with compilation fixes as it's unmaintained
 python-kadmin = { git = "https://github.com/authentik-community/python-kadmin.git", tag = "v0.2.0" }
@@ -166,7 +167,6 @@ freezegun = "*"
 importlib-metadata = "*"
 k5test = "*"
 pdoc = "*"
-pyrad = "*"
 pytest = "*"
 pytest-django = "*"
 pytest-github-actions-annotate-failures = "*"

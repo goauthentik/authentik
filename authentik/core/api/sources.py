@@ -190,6 +190,7 @@ class UserSourceConnectionViewSet(
     queryset = UserSourceConnection.objects.all()
     serializer_class = UserSourceConnectionSerializer
     permission_classes = [OwnerSuperuserPermissions]
-    filterset_fields = ["user"]
+    filterset_fields = ["user", "source__slug"]
+    search_fields = ["source__slug"]
     filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
-    ordering = ["pk"]
+    ordering = ["source__slug", "pk"]
