@@ -63,7 +63,9 @@ export class PropertyMappingGoogleWorkspaceForm extends BasePropertyMappingForm<
                     <a
                         target="_blank"
                         rel="noopener noreferrer"
-                        href="${docLink("/docs/property-mappings/expression?utm_source=authentik")}"
+                        href="${docLink(
+                            "/docs/providers/property-mappings/expression?utm_source=authentik",
+                        )}"
                     >
                         ${msg("See documentation for a list of all variables.")}
                     </a>
