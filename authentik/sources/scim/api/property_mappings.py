@@ -14,6 +14,7 @@ class SCIMSourcePropertyMappingSerializer(PropertyMappingSerializer):
         model = SCIMSourcePropertyMapping
         fields = PropertyMappingSerializer.Meta.fields
 
+
 class SCIMSourcePropertyMappingFilter(PropertyMappingFilterSet):
     """Filter for SCIMSourcePropertyMapping"""
 
