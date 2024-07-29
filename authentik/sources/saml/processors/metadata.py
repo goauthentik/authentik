@@ -47,7 +47,7 @@ class MetadataProcessor:
         return None
 
     def get_encryption_key_descriptor(self) -> Optional[Element]:  # noqa: UP007
-        """Get Encryption KeyDescriptor, if enabled for the source is requested"""
+        """Get Encryption KeyDescriptor, if enabled for the source"""
         if self.source.encryption_kp:
             key_descriptor = Element(f"{{{NS_SAML_METADATA}}}KeyDescriptor")
             key_descriptor.attrib["use"] = "encryption"
