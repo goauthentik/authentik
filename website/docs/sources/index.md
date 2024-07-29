@@ -7,7 +7,7 @@ Sources allow you to connect authentik to an external user directory. Sources ca
 
 ### Find your source
 
-Sources are in three general categories:
+Sources are in the following general categories:
 
 -   **Protocols** ([LDAP](./ldap/index.md), [OAuth](./oauth/index.md), [SAML](./saml/index.md), and [SCIM](./scim/index.md))
 -   [**Property mappings**](./property-mappings/index.md) or how to import data from a source
