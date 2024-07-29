@@ -5,7 +5,7 @@ from typing import Any
 
 from django.core.cache import cache
 from django.http import HttpRequest
-from sentry_sdk.hub import Hub
+from sentry_sdk import start_span
 from sentry_sdk.tracing import Span
 from structlog.stdlib import BoundLogger, get_logger
 
@@ -151,9 +151,7 @@ class FlowPlanner:
     def plan(self, request: HttpRequest, default_context: dict[str, Any] | None = None) -> FlowPlan:
         """Check each of the flows' policies, check policies for each stage with PolicyBinding
         and return ordered list"""
-        with Hub.current.start_span(
-            op="authentik.flow.planner.plan", description=self.flow.slug
-        ) as span:
+        with start_span(op="authentik.flow.planner.plan", description=self.flow.slug) as span:
             span: Span
             span.set_data("flow", self.flow)
             span.set_data("request", request)
@@ -218,7 +216,7 @@ class FlowPlanner:
         """Build flow plan by checking each stage in their respective
         order and checking the applied policies"""
         with (
-            Hub.current.start_span(
+            start_span(
                 op="authentik.flow.planner.build_plan",
                 description=self.flow.slug,
             ) as span,

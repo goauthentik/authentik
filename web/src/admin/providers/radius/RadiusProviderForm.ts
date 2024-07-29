@@ -2,6 +2,7 @@ import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm"
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
+import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -11,7 +12,35 @@ import { TemplateResult, html } from "lit";
 import { ifDefined } from "lit-html/directives/if-defined.js";
 import { customElement } from "lit/decorators.js";
 
-import { FlowsInstancesListDesignationEnum, ProvidersApi, RadiusProvider } from "@goauthentik/api";
+import {
+    FlowsInstancesListDesignationEnum,
+    PropertymappingsApi,
+    ProvidersApi,
+    RadiusProvider,
+    RadiusProviderPropertyMapping,
+} from "@goauthentik/api";
+
+export async function radiusPropertyMappingsProvider(page = 1, search = "") {
+    const propertyMappings = await new PropertymappingsApi(
+        DEFAULT_CONFIG,
+    ).propertymappingsRadiusList({
+        ordering: "name",
+        pageSize: 20,
+        search: search.trim(),
+        page,
+    });
+    return {
+        pagination: propertyMappings.pagination,
+        options: propertyMappings.results.map((m) => [m.pk, m.name, m.name, m]),
+    };
+}
+
+export function makeRadiusPropertyMappingsSelector(instanceMappings?: string[]) {
+    const localMappings = instanceMappings ? new Set(instanceMappings) : undefined;
+    return localMappings
+        ? ([pk, _]: DualSelectPair) => localMappings.has(pk)
+        : ([_0, _1, _2, _]: DualSelectPair<RadiusProviderPropertyMapping>) => [];
+}
 
 @customElement("ak-provider-radius-form")
 export class RadiusProviderFormPage extends WithBrandConfig(BaseProviderForm<RadiusProvider>) {
@@ -116,6 +145,22 @@ export class RadiusProviderFormPage extends WithBrandConfig(BaseProviderForm<Rad
                             ${msg(`List of CIDRs (comma-seperated) that clients can connect from. A more specific
                             CIDR will match before a looser one. Clients connecting from a non-specified CIDR
                             will be dropped.`)}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Property mappings")}
+                        name="propertyMappings"
+                    >
+                        <ak-dual-select-dynamic-selected
+                            .provider=${radiusPropertyMappingsProvider}
+                            .selector=${makeRadiusPropertyMappingsSelector(
+                                this.instance?.propertyMappings,
+                            )}
+                            available-label=${msg("Available Property Mappings")}
+                            selected-label=${msg("Selected Property Mappings")}
+                        ></ak-dual-select-dynamic-selected>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Hold control/command to select multiple items.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>

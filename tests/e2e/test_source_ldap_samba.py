@@ -9,7 +9,7 @@ from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Group, User
 from authentik.lib.generators import generate_id, generate_key
 from authentik.sources.ldap.auth import LDAPBackend
-from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
+from authentik.sources.ldap.models import LDAPSource, LDAPSourcePropertyMapping
 from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
 from authentik.sources.ldap.sync.membership import MembershipLDAPSynchronizer
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
@@ -55,14 +55,16 @@ class TestSourceLDAPSamba(SeleniumTestCase):
             additional_user_dn="ou=users",
             additional_group_dn="ou=groups",
         )
-        source.property_mappings.set(
-            LDAPPropertyMapping.objects.filter(
+        source.user_property_mappings.set(
+            LDAPSourcePropertyMapping.objects.filter(
                 Q(managed__startswith="goauthentik.io/sources/ldap/default-")
                 | Q(managed__startswith="goauthentik.io/sources/ldap/ms-")
             )
         )
-        source.property_mappings_group.set(
-            LDAPPropertyMapping.objects.filter(name="goauthentik.io/sources/ldap/default-name")
+        source.group_property_mappings.set(
+            LDAPSourcePropertyMapping.objects.filter(
+                name="goauthentik.io/sources/ldap/default-name"
+            )
         )
         UserLDAPSynchronizer(source).sync_full()
         self.assertTrue(User.objects.filter(username="bob").exists())
@@ -86,14 +88,16 @@ class TestSourceLDAPSamba(SeleniumTestCase):
             additional_user_dn="ou=users",
             additional_group_dn="ou=groups",
         )
-        source.property_mappings.set(
-            LDAPPropertyMapping.objects.filter(
+        source.user_property_mappings.set(
+            LDAPSourcePropertyMapping.objects.filter(
                 Q(managed__startswith="goauthentik.io/sources/ldap/default-")
                 | Q(managed__startswith="goauthentik.io/sources/ldap/ms-")
             )
         )
-        source.property_mappings_group.set(
-            LDAPPropertyMapping.objects.filter(managed="goauthentik.io/sources/ldap/default-name")
+        source.group_property_mappings.set(
+            LDAPSourcePropertyMapping.objects.filter(
+                managed="goauthentik.io/sources/ldap/default-name"
+            )
         )
         GroupLDAPSynchronizer(source).sync_full()
         UserLDAPSynchronizer(source).sync_full()
@@ -130,14 +134,16 @@ class TestSourceLDAPSamba(SeleniumTestCase):
             additional_group_dn="ou=groups",
             password_login_update_internal_password=True,
         )
-        source.property_mappings.set(
-            LDAPPropertyMapping.objects.filter(
+        source.user_property_mappings.set(
+            LDAPSourcePropertyMapping.objects.filter(
                 Q(managed__startswith="goauthentik.io/sources/ldap/default-")
                 | Q(managed__startswith="goauthentik.io/sources/ldap/ms-")
             )
         )
-        source.property_mappings_group.set(
-            LDAPPropertyMapping.objects.filter(name="goauthentik.io/sources/ldap/default-name")
+        source.group_property_mappings.set(
+            LDAPSourcePropertyMapping.objects.filter(
+                name="goauthentik.io/sources/ldap/default-name"
+            )
         )
         UserLDAPSynchronizer(source).sync_full()
         username = "bob"

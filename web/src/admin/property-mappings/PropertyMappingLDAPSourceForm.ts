@@ -10,25 +10,25 @@ import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { LDAPPropertyMapping, PropertymappingsApi } from "@goauthentik/api";
+import { LDAPSourcePropertyMapping, PropertymappingsApi } from "@goauthentik/api";
 
-@customElement("ak-property-mapping-ldap-form")
-export class PropertyMappingLDAPForm extends BasePropertyMappingForm<LDAPPropertyMapping> {
-    loadInstance(pk: string): Promise<LDAPPropertyMapping> {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsLdapRetrieve({
+@customElement("ak-property-mapping-ldap-source-form")
+export class PropertyMappingLDAPSourceForm extends BasePropertyMappingForm<LDAPSourcePropertyMapping> {
+    loadInstance(pk: string): Promise<LDAPSourcePropertyMapping> {
+        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceLdapRetrieve({
             pmUuid: pk,
         });
     }
 
-    async send(data: LDAPPropertyMapping): Promise<LDAPPropertyMapping> {
+    async send(data: LDAPSourcePropertyMapping): Promise<LDAPSourcePropertyMapping> {
         if (this.instance) {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsLdapUpdate({
+            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceLdapUpdate({
                 pmUuid: this.instance.pk,
-                lDAPPropertyMappingRequest: data,
+                lDAPSourcePropertyMappingRequest: data,
             });
         } else {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsLdapCreate({
-                lDAPPropertyMappingRequest: data,
+            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceLdapCreate({
+                lDAPSourcePropertyMappingRequest: data,
             });
         }
     }
@@ -41,21 +41,6 @@ export class PropertyMappingLDAPForm extends BasePropertyMappingForm<LDAPPropert
                     class="pf-c-form-control"
                     required
                 />
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Object field")}
-                ?required=${true}
-                name="objectField"
-            >
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.objectField)}"
-                    class="pf-c-form-control"
-                    required
-                />
-                <p class="pf-c-form__helper-text">
-                    ${msg("Field of the user object this value is written to.")}
-                </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Expression")}
@@ -83,6 +68,6 @@ export class PropertyMappingLDAPForm extends BasePropertyMappingForm<LDAPPropert
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-property-mapping-ldap-form": PropertyMappingLDAPForm;
+        "ak-property-mapping-ldap-source-form": PropertyMappingLDAPSourceForm;
     }
 }

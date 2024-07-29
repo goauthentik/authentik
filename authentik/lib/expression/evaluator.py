@@ -13,7 +13,7 @@ from django.core.exceptions import FieldError
 from django.utils.text import slugify
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.serializers import ValidationError
-from sentry_sdk.hub import Hub
+from sentry_sdk import start_span
 from sentry_sdk.tracing import Span
 from structlog.stdlib import get_logger
 
@@ -195,7 +195,7 @@ class BaseEvaluator:
         """Parse and evaluate expression. If the syntax is incorrect, a SyntaxError is raised.
         If any exception is raised during execution, it is raised.
         The result is returned without any type-checking."""
-        with Hub.current.start_span(op="authentik.lib.evaluator.evaluate") as span:
+        with start_span(op="authentik.lib.evaluator.evaluate") as span:
             span: Span
             span.description = self._filename
             span.set_data("expression", expression_source)
