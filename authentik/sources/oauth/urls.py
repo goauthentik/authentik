@@ -25,7 +25,7 @@ urlpatterns = [
 ]
 
 api_urlpatterns = [
-    ("propertymappings/oauth_source", OAuthSourcePropertyMappingViewSet),
+    ("propertymappings/source/oauth", OAuthSourcePropertyMappingViewSet),
     ("sources/user_connections/oauth", UserOAuthSourceConnectionViewSet),
     ("sources/group_connections/oauth", GroupOAuthSourceConnectionViewSet),
     ("sources/oauth", OAuthSourceViewSet),

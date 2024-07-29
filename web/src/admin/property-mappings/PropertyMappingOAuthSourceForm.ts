@@ -13,21 +13,21 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { OAuthSourcePropertyMapping, PropertymappingsApi } from "@goauthentik/api";
 
 @customElement("ak-property-mapping-oauth-source-form")
-export class PropertyMappingOAuthForm extends BasePropertyMappingForm<OAuthSourcePropertyMapping> {
+export class PropertyMappingOAuthSourceForm extends BasePropertyMappingForm<OAuthSourcePropertyMapping> {
     loadInstance(pk: string): Promise<OAuthSourcePropertyMapping> {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsOauthSourceRetrieve({
+        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceOauthRetrieve({
             pmUuid: pk,
         });
     }
 
     async send(data: OAuthSourcePropertyMapping): Promise<OAuthSourcePropertyMapping> {
         if (this.instance) {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsOauthSourceUpdate({
-                pmUuid: this.instance.pk || "",
+            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceOauthUpdate({
+                pmUuid: this.instance.pk,
                 oAuthSourcePropertyMappingRequest: data,
             });
         } else {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsOauthSourceCreate({
+            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceOauthCreate({
                 oAuthSourcePropertyMappingRequest: data,
             });
         }
@@ -56,11 +56,20 @@ export class PropertyMappingOAuthForm extends BasePropertyMappingForm<OAuthSourc
                     ${msg("Expression using Python.")}
                     <a
                         target="_blank"
-                        href="${docLink("/docs/property-mappings/expression?utm_source=authentik")}"
+                        rel="noopener noreferrer"
+                        href="${docLink(
+                            "/docs/sources/property-mappings/expression?utm_source=authentik",
+                        )}"
                     >
                         ${msg("See documentation for a list of all variables.")}
                     </a>
                 </p>
             </ak-form-element-horizontal>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-property-mapping-oauth-source-form": PropertyMappingOAuthSourceForm;
     }
 }

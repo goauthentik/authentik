@@ -13,21 +13,21 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { PropertymappingsApi, SAMLSourcePropertyMapping } from "@goauthentik/api";
 
 @customElement("ak-property-mapping-saml-source-form")
-export class PropertyMappingSAMLForm extends BasePropertyMappingForm<SAMLSourcePropertyMapping> {
+export class PropertyMappingSAMLSourceForm extends BasePropertyMappingForm<SAMLSourcePropertyMapping> {
     loadInstance(pk: string): Promise<SAMLSourcePropertyMapping> {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSamlSourceRetrieve({
+        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceSamlRetrieve({
             pmUuid: pk,
         });
     }
 
     async send(data: SAMLSourcePropertyMapping): Promise<SAMLSourcePropertyMapping> {
         if (this.instance) {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSamlSourceUpdate({
-                pmUuid: this.instance.pk || "",
+            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceSamlUpdate({
+                pmUuid: this.instance.pk,
                 sAMLSourcePropertyMappingRequest: data,
             });
         } else {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSamlSourceCreate({
+            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceSamlCreate({
                 sAMLSourcePropertyMappingRequest: data,
             });
         }
@@ -56,11 +56,20 @@ export class PropertyMappingSAMLForm extends BasePropertyMappingForm<SAMLSourceP
                     ${msg("Expression using Python.")}
                     <a
                         target="_blank"
-                        href="${docLink("/docs/property-mappings/expression?utm_source=authentik")}"
+                        rel="noopener noreferrer"
+                        href="${docLink(
+                            "/docs/sources/property-mappings/expression?utm_source=authentik",
+                        )}"
                     >
                         ${msg("See documentation for a list of all variables.")}
                     </a>
                 </p>
             </ak-form-element-horizontal>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-property-mapping-saml-source-form": PropertyMappingSAMLSourceForm;
     }
 }

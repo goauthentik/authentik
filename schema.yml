@@ -13690,578 +13690,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /propertymappings/oauth_source/:
-    get:
-      operationId: propertymappings_oauth_source_list
-      description: OAuthSourcePropertyMapping Viewset
-      parameters:
-      - in: query
-        name: expression
-        schema:
-          type: string
-      - in: query
-        name: managed
-        schema:
-          type: array
-          items:
-            type: string
-        explode: true
-        style: form
-      - in: query
-        name: name
-        schema:
-          type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - in: query
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
-      tags:
-      - propertymappings
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedOAuthSourcePropertyMappingList'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    post:
-      operationId: propertymappings_oauth_source_create
-      description: OAuthSourcePropertyMapping Viewset
-      tags:
-      - propertymappings
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/OAuthSourcePropertyMappingRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OAuthSourcePropertyMapping'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /propertymappings/oauth_source/{pm_uuid}/:
-    get:
-      operationId: propertymappings_oauth_source_retrieve
-      description: OAuthSourcePropertyMapping Viewset
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this OAuth Source Property Mapping.
-        required: true
-      tags:
-      - propertymappings
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OAuthSourcePropertyMapping'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    put:
-      operationId: propertymappings_oauth_source_update
-      description: OAuthSourcePropertyMapping Viewset
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this OAuth Source Property Mapping.
-        required: true
-      tags:
-      - propertymappings
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/OAuthSourcePropertyMappingRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OAuthSourcePropertyMapping'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    patch:
-      operationId: propertymappings_oauth_source_partial_update
-      description: OAuthSourcePropertyMapping Viewset
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this OAuth Source Property Mapping.
-        required: true
-      tags:
-      - propertymappings
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedOAuthSourcePropertyMappingRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OAuthSourcePropertyMapping'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    delete:
-      operationId: propertymappings_oauth_source_destroy
-      description: OAuthSourcePropertyMapping Viewset
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this OAuth Source Property Mapping.
-        required: true
-      tags:
-      - propertymappings
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: No response body
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /propertymappings/oauth_source/{pm_uuid}/used_by/:
-    get:
-      operationId: propertymappings_oauth_source_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this OAuth Source Property Mapping.
-        required: true
-      tags:
-      - propertymappings
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /propertymappings/plex_source/:
-    get:
-      operationId: propertymappings_plex_source_list
-      description: PlexSourcePropertyMapping Viewset
-      parameters:
-      - in: query
-        name: expression
-        schema:
-          type: string
-      - in: query
-        name: managed
-        schema:
-          type: array
-          items:
-            type: string
-        explode: true
-        style: form
-      - in: query
-        name: name
-        schema:
-          type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - in: query
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
-      tags:
-      - propertymappings
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedPlexSourcePropertyMappingList'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    post:
-      operationId: propertymappings_plex_source_create
-      description: PlexSourcePropertyMapping Viewset
-      tags:
-      - propertymappings
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PlexSourcePropertyMappingRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PlexSourcePropertyMapping'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /propertymappings/plex_source/{pm_uuid}/:
-    get:
-      operationId: propertymappings_plex_source_retrieve
-      description: PlexSourcePropertyMapping Viewset
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Plex Source Property Mapping.
-        required: true
-      tags:
-      - propertymappings
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PlexSourcePropertyMapping'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    put:
-      operationId: propertymappings_plex_source_update
-      description: PlexSourcePropertyMapping Viewset
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Plex Source Property Mapping.
-        required: true
-      tags:
-      - propertymappings
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PlexSourcePropertyMappingRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PlexSourcePropertyMapping'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    patch:
-      operationId: propertymappings_plex_source_partial_update
-      description: PlexSourcePropertyMapping Viewset
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Plex Source Property Mapping.
-        required: true
-      tags:
-      - propertymappings
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedPlexSourcePropertyMappingRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PlexSourcePropertyMapping'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    delete:
-      operationId: propertymappings_plex_source_destroy
-      description: PlexSourcePropertyMapping Viewset
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Plex Source Property Mapping.
-        required: true
-      tags:
-      - propertymappings
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: No response body
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /propertymappings/plex_source/{pm_uuid}/used_by/:
-    get:
-      operationId: propertymappings_plex_source_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Plex Source Property Mapping.
-        required: true
-      tags:
-      - propertymappings
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
   /propertymappings/provider/google_workspace/:
     get:
       operationId: propertymappings_provider_google_workspace_list
@@ -15673,292 +15101,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /propertymappings/saml_source/:
-    get:
-      operationId: propertymappings_saml_source_list
-      description: SAMLSourcePropertyMapping Viewset
-      parameters:
-      - in: query
-        name: expression
-        schema:
-          type: string
-      - in: query
-        name: managed
-        schema:
-          type: array
-          items:
-            type: string
-        explode: true
-        style: form
-      - in: query
-        name: name
-        schema:
-          type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - in: query
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
-      tags:
-      - propertymappings
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedSAMLSourcePropertyMappingList'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    post:
-      operationId: propertymappings_saml_source_create
-      description: SAMLSourcePropertyMapping Viewset
-      tags:
-      - propertymappings
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SAMLSourcePropertyMappingRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SAMLSourcePropertyMapping'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /propertymappings/saml_source/{pm_uuid}/:
-    get:
-      operationId: propertymappings_saml_source_retrieve
-      description: SAMLSourcePropertyMapping Viewset
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this SAML Source Property Mapping.
-        required: true
-      tags:
-      - propertymappings
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SAMLSourcePropertyMapping'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    put:
-      operationId: propertymappings_saml_source_update
-      description: SAMLSourcePropertyMapping Viewset
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this SAML Source Property Mapping.
-        required: true
-      tags:
-      - propertymappings
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SAMLSourcePropertyMappingRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SAMLSourcePropertyMapping'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    patch:
-      operationId: propertymappings_saml_source_partial_update
-      description: SAMLSourcePropertyMapping Viewset
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this SAML Source Property Mapping.
-        required: true
-      tags:
-      - propertymappings
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedSAMLSourcePropertyMappingRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SAMLSourcePropertyMapping'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    delete:
-      operationId: propertymappings_saml_source_destroy
-      description: SAMLSourcePropertyMapping Viewset
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this SAML Source Property Mapping.
-        required: true
-      tags:
-      - propertymappings
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: No response body
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /propertymappings/saml_source/{pm_uuid}/used_by/:
-    get:
-      operationId: propertymappings_saml_source_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this SAML Source Property Mapping.
-        required: true
-      tags:
-      - propertymappings
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
   /propertymappings/scim/:
     get:
       operationId: propertymappings_scim_list
@@ -16780,6 +15922,568 @@ paths:
           type: string
           format: uuid
         description: A UUID string identifying this LDAP Source Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /propertymappings/source/oauth/:
+    get:
+      operationId: propertymappings_source_oauth_list
+      description: OAuthSourcePropertyMapping Viewset
+      parameters:
+      - in: query
+        name: managed
+        schema:
+          type: array
+          items:
+            type: string
+        explode: true
+        style: form
+      - in: query
+        name: managed__isnull
+        schema:
+          type: boolean
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedOAuthSourcePropertyMappingList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: propertymappings_source_oauth_create
+      description: OAuthSourcePropertyMapping Viewset
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OAuthSourcePropertyMappingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthSourcePropertyMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /propertymappings/source/oauth/{pm_uuid}/:
+    get:
+      operationId: propertymappings_source_oauth_retrieve
+      description: OAuthSourcePropertyMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this OAuth Source Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthSourcePropertyMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: propertymappings_source_oauth_update
+      description: OAuthSourcePropertyMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this OAuth Source Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OAuthSourcePropertyMappingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthSourcePropertyMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: propertymappings_source_oauth_partial_update
+      description: OAuthSourcePropertyMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this OAuth Source Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedOAuthSourcePropertyMappingRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthSourcePropertyMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: propertymappings_source_oauth_destroy
+      description: OAuthSourcePropertyMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this OAuth Source Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /propertymappings/source/oauth/{pm_uuid}/used_by/:
+    get:
+      operationId: propertymappings_source_oauth_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this OAuth Source Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /propertymappings/source/saml/:
+    get:
+      operationId: propertymappings_source_saml_list
+      description: SAMLSourcePropertyMapping Viewset
+      parameters:
+      - in: query
+        name: managed
+        schema:
+          type: array
+          items:
+            type: string
+        explode: true
+        style: form
+      - in: query
+        name: managed__isnull
+        schema:
+          type: boolean
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSAMLSourcePropertyMappingList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: propertymappings_source_saml_create
+      description: SAMLSourcePropertyMapping Viewset
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SAMLSourcePropertyMappingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SAMLSourcePropertyMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /propertymappings/source/saml/{pm_uuid}/:
+    get:
+      operationId: propertymappings_source_saml_retrieve
+      description: SAMLSourcePropertyMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this SAML Source Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SAMLSourcePropertyMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: propertymappings_source_saml_update
+      description: SAMLSourcePropertyMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this SAML Source Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SAMLSourcePropertyMappingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SAMLSourcePropertyMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: propertymappings_source_saml_partial_update
+      description: SAMLSourcePropertyMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this SAML Source Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSAMLSourcePropertyMappingRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SAMLSourcePropertyMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: propertymappings_source_saml_destroy
+      description: SAMLSourcePropertyMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this SAML Source Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /propertymappings/source/saml/{pm_uuid}/used_by/:
+    get:
+      operationId: propertymappings_source_saml_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this SAML Source Property Mapping.
         required: true
       tags:
       - propertymappings
@@ -21880,7 +21584,6 @@ paths:
           - authentik_sources_oauth.useroauthsourceconnection
           - authentik_sources_plex.plexsource
           - authentik_sources_plex.plexsourceconnection
-          - authentik_sources_plex.plexsourcepropertymapping
           - authentik_sources_saml.groupsamlsourceconnection
           - authentik_sources_saml.samlsource
           - authentik_sources_saml.samlsourcepropertymapping
@@ -22105,7 +21808,6 @@ paths:
           - authentik_sources_oauth.useroauthsourceconnection
           - authentik_sources_plex.plexsource
           - authentik_sources_plex.plexsourceconnection
-          - authentik_sources_plex.plexsourcepropertymapping
           - authentik_sources_saml.groupsamlsourceconnection
           - authentik_sources_saml.samlsource
           - authentik_sources_saml.samlsourcepropertymapping
@@ -24064,6 +23766,17 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: group_matching_mode
+        schema:
+          type: string
+          enum:
+          - identifier
+          - name_deny
+          - name_link
+        description: |+
+          How the source determines if an existing group should be used or a new group created.
+
       - in: query
         name: has_jwks
         schema:
@@ -38524,6 +38237,12 @@ components:
       - pk
       - roles_obj
       - users_obj
+    GroupMatchingModeEnum:
+      enum:
+      - identifier
+      - name_link
+      - name_deny
+      type: string
     GroupMember:
       type: object
       description: Stripped down user serializer to show relevant users for groups
@@ -40229,7 +39948,6 @@ components:
       - authentik_sources_oauth.useroauthsourceconnection
       - authentik_sources_oauth.groupoauthsourceconnection
       - authentik_sources_plex.plexsource
-      - authentik_sources_plex.plexsourcepropertymapping
       - authentik_sources_plex.plexsourceconnection
       - authentik_sources_saml.samlsource
       - authentik_sources_saml.samlsourcepropertymapping
@@ -40873,6 +40591,11 @@ components:
           type: string
           nullable: true
           readOnly: true
+        group_matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/GroupMatchingModeEnum'
+          description: How the source determines if an existing group should be used
+            or a new group created.
         provider_type:
           $ref: '#/components/schemas/ProviderTypeEnum'
         request_token_url:
@@ -41040,6 +40763,11 @@ components:
         user_path_template:
           type: string
           minLength: 1
+        group_matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/GroupMatchingModeEnum'
+          description: How the source determines if an existing group should be used
+            or a new group created.
         provider_type:
           $ref: '#/components/schemas/ProviderTypeEnum'
         request_token_url:
@@ -42069,18 +41797,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PlexSource'
-      required:
-      - pagination
-      - results
-    PaginatedPlexSourcePropertyMappingList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/PlexSourcePropertyMapping'
       required:
       - pagination
       - results
@@ -44475,6 +44191,11 @@ components:
         user_path_template:
           type: string
           minLength: 1
+        group_matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/GroupMatchingModeEnum'
+          description: How the source determines if an existing group should be used
+            or a new group created.
         provider_type:
           $ref: '#/components/schemas/ProviderTypeEnum'
         request_token_url:
@@ -44674,25 +44395,6 @@ components:
         plex_token:
           type: string
           writeOnly: true
-          minLength: 1
-    PatchedPlexSourcePropertyMappingRequest:
-      type: object
-      description: PlexSourcePropertyMapping Serializer
-      properties:
-        managed:
-          type: string
-          nullable: true
-          minLength: 1
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created
-            and updated automatically. This flag only indicates that an object can
-            be overwritten by migrations. You can still modify the objects via the
-            API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-          minLength: 1
-        expression:
-          type: string
           minLength: 1
     PatchedPlexSourceRequest:
       type: object
@@ -45251,6 +44953,11 @@ components:
         user_path_template:
           type: string
           minLength: 1
+        group_matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/GroupMatchingModeEnum'
+          description: How the source determines if an existing group should be used
+            or a new group created.
         pre_authentication_flow:
           type: string
           format: uuid
@@ -45935,73 +45642,6 @@ components:
       required:
       - identifier
       - plex_token
-    PlexSourcePropertyMapping:
-      type: object
-      description: PlexSourcePropertyMapping Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Pm uuid
-        managed:
-          type: string
-          nullable: true
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created
-            and updated automatically. This flag only indicates that an object can
-            be overwritten by migrations. You can still modify the objects via the
-            API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-        expression:
-          type: string
-        component:
-          type: string
-          description: Get object's component so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-      required:
-      - component
-      - expression
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    PlexSourcePropertyMappingRequest:
-      type: object
-      description: PlexSourcePropertyMapping Serializer
-      properties:
-        managed:
-          type: string
-          nullable: true
-          minLength: 1
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created
-            and updated automatically. This flag only indicates that an object can
-            be overwritten by migrations. You can still modify the objects via the
-            API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-          minLength: 1
-        expression:
-          type: string
-          minLength: 1
-      required:
-      - expression
-      - name
     PlexSourceRequest:
       type: object
       description: Plex Source Serializer
@@ -48102,6 +47742,11 @@ components:
         icon:
           type: string
           readOnly: true
+        group_matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/GroupMatchingModeEnum'
+          description: How the source determines if an existing group should be used
+            or a new group created.
         pre_authentication_flow:
           type: string
           format: uuid
@@ -48280,6 +47925,11 @@ components:
         user_path_template:
           type: string
           minLength: 1
+        group_matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/GroupMatchingModeEnum'
+          description: How the source determines if an existing group should be used
+            or a new group created.
         pre_authentication_flow:
           type: string
           format: uuid

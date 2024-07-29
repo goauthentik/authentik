@@ -1233,43 +1233,6 @@
                         ],
                         "properties": {
                             "model": {
-                                "const": "authentik_sources_plex.plexsourcepropertymapping"
-                            },
-                            "id": {
-                                "type": "string"
-                            },
-                            "state": {
-                                "type": "string",
-                                "enum": [
-                                    "absent",
-                                    "present",
-                                    "created",
-                                    "must_created"
-                                ],
-                                "default": "present"
-                            },
-                            "conditions": {
-                                "type": "array",
-                                "items": {
-                                    "type": "boolean"
-                                }
-                            },
-                            "attrs": {
-                                "$ref": "#/$defs/model_authentik_sources_plex.plexsourcepropertymapping"
-                            },
-                            "identifiers": {
-                                "$ref": "#/$defs/model_authentik_sources_plex.plexsourcepropertymapping"
-                            }
-                        }
-                    },
-                    {
-                        "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
-                        "properties": {
-                            "model": {
                                 "const": "authentik_sources_plex.plexsourceconnection"
                             },
                             "id": {
@@ -3755,7 +3718,6 @@
                         "authentik_sources_oauth.useroauthsourceconnection",
                         "authentik_sources_oauth.groupoauthsourceconnection",
                         "authentik_sources_plex.plexsource",
-                        "authentik_sources_plex.plexsourcepropertymapping",
                         "authentik_sources_plex.plexsourceconnection",
                         "authentik_sources_saml.samlsource",
                         "authentik_sources_saml.samlsourcepropertymapping",
@@ -4980,6 +4942,16 @@
                     "minLength": 1,
                     "title": "Icon"
                 },
+                "group_matching_mode": {
+                    "type": "string",
+                    "enum": [
+                        "identifier",
+                        "name_link",
+                        "name_deny"
+                    ],
+                    "title": "Group matching mode",
+                    "description": "How the source determines if an existing group should be used or a new group created."
+                },
                 "provider_type": {
                     "type": "string",
                     "enum": [
@@ -5235,31 +5207,6 @@
             },
             "required": []
         },
-        "model_authentik_sources_plex.plexsourcepropertymapping": {
-            "type": "object",
-            "properties": {
-                "managed": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "minLength": 1,
-                    "title": "Managed by authentik",
-                    "description": "Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update."
-                },
-                "name": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Name"
-                },
-                "expression": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Expression"
-                }
-            },
-            "required": []
-        },
         "model_authentik_sources_plex.plexsourceconnection": {
             "type": "object",
             "properties": {
@@ -5359,6 +5306,16 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Icon"
+                },
+                "group_matching_mode": {
+                    "type": "string",
+                    "enum": [
+                        "identifier",
+                        "name_link",
+                        "name_deny"
+                    ],
+                    "title": "Group matching mode",
+                    "description": "How the source determines if an existing group should be used or a new group created."
                 },
                 "pre_authentication_flow": {
                     "type": "string",
