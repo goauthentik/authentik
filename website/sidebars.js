@@ -333,7 +333,6 @@ const docsSidebar = {
                 "policies/expression",
             ],
         },
-        "property-mappings/index",
         {
             type: "category",
             label: "Events",
