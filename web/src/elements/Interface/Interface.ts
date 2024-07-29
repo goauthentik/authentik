@@ -53,8 +53,8 @@ export class Interface extends AKElement implements AkInterface {
 
     _activateTheme(root: DocumentOrShadowRoot, theme: UiThemeEnum): void {
         console.debug(`authentik/interface[${currentInterface()}]: Enabling theme ${theme}`);
-        super._activateTheme(root, theme);
         super._activateTheme(document as unknown as DocumentOrShadowRoot, theme);
+        super._activateTheme(root, theme);
     }
 
     async getTheme(): Promise<UiThemeEnum> {
