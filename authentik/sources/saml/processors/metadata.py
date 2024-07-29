@@ -47,15 +47,15 @@ class MetadataProcessor:
         return None
 
     def get_encryption_key_descriptor(self) -> Optional[Element]:  # noqa: UP007
-        """Get Encryption KeyDescriptor, if encrypted assertion is requested"""
-        if self.source.request_encrypted_assertions:
+        """Get Encryption KeyDescriptor, if enabled for the source is requested"""
+        if self.source.encryption_kp:
             key_descriptor = Element(f"{{{NS_SAML_METADATA}}}KeyDescriptor")
             key_descriptor.attrib["use"] = "encryption"
             key_info = SubElement(key_descriptor, f"{{{NS_SIGNATURE}}}KeyInfo")
             x509_data = SubElement(key_info, f"{{{NS_SIGNATURE}}}X509Data")
             x509_certificate = SubElement(x509_data, f"{{{NS_SIGNATURE}}}X509Certificate")
             x509_certificate.text = strip_pem_header(
-                self.source.signing_kp.certificate_data.replace("\r", "")
+                self.source.encryption_kp.certificate_data.replace("\r", "")
             ).replace("\n", "")
             return key_descriptor
         return None

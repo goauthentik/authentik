@@ -77,7 +77,7 @@ class ResponseProcessor:
         self._root_xml = b64decode(raw_response.encode())
         self._root = fromstring(self._root_xml)
 
-        if self._source.request_encrypted_assertions:
+        if self._source.encryption_kp:
             self._decrypt_response()
 
         if self._source.verification_kp:
@@ -89,7 +89,7 @@ class ResponseProcessor:
         """Decrypt SAMLResponse EncryptedAssertion Element"""
         manager = xmlsec.KeysManager()
         key = xmlsec.Key.from_memory(
-            self._source.signing_kp.key_data,
+            self._source.encryption_kp.key_data,
             xmlsec.constants.KeyDataFormatPem,
         )
 
