@@ -218,8 +218,10 @@ class SAMLSource(Source):
 
         return attributes
 
-    def get_base_group_properties(self, **kwargs):
-        return {}
+    def get_base_group_properties(self, group_id: str, **kwargs):
+        return {
+            "name": group_id,
+        }
 
     def get_issuer(self, request: HttpRequest) -> str:
         """Get Source's Issuer, falling back to our Metadata URL if none is set"""
