@@ -45,7 +45,7 @@ import TabItem from "@theme/TabItem";
     {label: 'Standalone', value: 'standalone'},
   ]}>
   <TabItem value="docker">
-If you have Paperless-ngx setup in docker, add the following environment variables for authentik
+If you have Paperless-ngx setup in Docker, add the following environment variables to your Paperless-ngx compose file:
 
 ```yaml
 environment:
@@ -73,12 +73,18 @@ Now restart your container:
   </TabItem>
   <TabItem value="standalone">
 
-edit your `paperless.conf` and add the following:
+You need to update your `paperless.conf` configuration file. Paperless will search for this configuration file in the following locations and use the first one it finds:
+- The environment variable `PAPERLESS_CONFIGURATION_PATH`
+- `/path/to/paperless/paperless.conf`
+- `/etc/paperless.conf`
+- `/usr/local/etc/paperless.conf`
+
+Edit your `paperless.conf` and add the following:
 ```ini
 PAPERLESS_APPS=allauth.socialaccount.providers.openid_connect
 PAPERLESS_SOCIALACCOUNT_PROVIDERS={"openid_connect":{"OAUTH_PKCE_ENABLED":true,"APPS":[{"provider_id":"authentik","name":"Authentik","client_id":"<Client ID>","secret":<Client Secret>","settings":{"server_url":"https://authentik.company/application/o/paperless/.well-known/openid-configuration"}}]}}
 ```
-Now restart Paperless-ngx
+Now restart your Paperless services using `sudo systemctl restart paperless-*`
   </TabItem>
 </Tabs>
 ## Finished
