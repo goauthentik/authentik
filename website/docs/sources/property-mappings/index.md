@@ -1,5 +1,5 @@
 ---
-title: Property mappings
+title: Source property mappings
 ---
 
 Source property mappings allow you to modify or gather extra information from sources.
