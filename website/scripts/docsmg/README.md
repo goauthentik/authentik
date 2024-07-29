@@ -4,6 +4,7 @@
 
 1. Verify that you have the latest version of rust installed
     - Install [rust](rustup.rs) or update rust to the latest version with `rustup update`
+    - If installing rust from scratch, you may need to run `. $HOME/.cargo/env`
 2. Install the cli tool with `cargo install --git https://github.com/goauthentik/authentik --bin docsmg`
 
 ## Steps to use
