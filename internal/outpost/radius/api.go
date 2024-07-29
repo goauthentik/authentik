@@ -46,6 +46,7 @@ func (rs *RadiusServer) Refresh() error {
 			MFASupport:     provider.GetMfaSupport(),
 			appSlug:        provider.ApplicationSlug,
 			flowSlug:       provider.AuthFlowSlug,
+			providerId:     provider.Pk,
 			s:              rs,
 			log:            logger,
 		}

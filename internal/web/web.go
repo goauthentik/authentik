@@ -89,7 +89,7 @@ func NewWebServer() *WebServer {
 		}
 		req.Header.Set("User-Agent", "goauthentik.io/router/healthcheck")
 		res, err := ws.upstreamHttpClient().Do(req)
-		if err == nil && res.StatusCode == 204 {
+		if err == nil && res.StatusCode >= 200 && res.StatusCode < 300 {
 			return true
 		}
 		return false

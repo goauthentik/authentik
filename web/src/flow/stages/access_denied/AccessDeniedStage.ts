@@ -10,6 +10,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { AccessDeniedChallenge, FlowChallengeResponseRequest } from "@goauthentik/api";
@@ -20,7 +21,7 @@ export class AccessDeniedStage extends BaseStage<
     FlowChallengeResponseRequest
 > {
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl];
+        return [PFBase, PFLogin, PFForm, PFTitle, PFFormControl];
     }
 
     render(): TemplateResult {
