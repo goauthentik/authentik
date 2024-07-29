@@ -67,6 +67,14 @@ class TestResponseProcessor(TestCase):
         parser.parse()
         sfm = parser.prepare_flow_manager()
         self.assertEqual(
-            sfm.enroll_info,
-            {"email": "foo@bar.baz", "name": "foo", "sn": "bar", "username": "jens@goauthentik.io"},
+            sfm.user_properties,
+            {
+                "email": "foo@bar.baz",
+                "name": "foo",
+                "sn": "bar",
+                "username": "jens@goauthentik.io",
+                "attributes": {},
+                "groups": [],
+                "path": self.source.get_user_path(),
+            },
         )

@@ -224,7 +224,7 @@ class ResponseProcessor:
             identifier=str(name_id.text),
             user_info={
                 "root": self._root,
-                "name_id": name_id.text,
+                "name_id": name_id,
             },
             policy_context={
                 "saml_response": etree.tostring(self._root),
