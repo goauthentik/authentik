@@ -20,3 +20,7 @@ This means that if you want to select a default flow based on policy, you can le
 ## Branding
 
 The brand configuration controls the branding title (shown in website document title and several other places), and the sidebar/header logo that appears in the upper left of the product interface.
+
+:::info
+Starting with authentik 2024.6.2, the placeholder `%(theme)s` can be used in the logo configuration option, which will be replaced with the active theme.
+:::

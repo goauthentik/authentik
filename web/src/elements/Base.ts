@@ -1,4 +1,5 @@
 import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
+import { globalAK } from "@goauthentik/common/global";
 import { UIConfig } from "@goauthentik/common/ui/config";
 import { adaptCSS } from "@goauthentik/common/utils";
 import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet";
@@ -16,6 +17,7 @@ type AkInterface = HTMLElement & {
     brand?: CurrentBrand;
     uiConfig?: UIConfig;
     config?: Config;
+    get activeTheme(): UiThemeEnum | undefined;
 };
 
 export const rootInterface = <T extends AkInterface>(): T | undefined =>
@@ -41,7 +43,11 @@ function fetchCustomCSS(): Promise<string[]> {
     return css;
 }
 
-const QUERY_MEDIA_COLOR_LIGHT = "(prefers-color-scheme: light)";
+export const QUERY_MEDIA_COLOR_LIGHT = "(prefers-color-scheme: light)";
+
+// Ensure themes are converted to a static instance of CSS Stylesheet, otherwise the
+// when changing themes we might not remove the correct css stylesheet instance.
+const _darkTheme = ensureCSSStyleSheet(ThemeDark);
 
 @localized()
 export class AKElement extends LitElement {
@@ -90,12 +96,7 @@ export class AKElement extends LitElement {
     async _initTheme(root: DocumentOrShadowRoot): Promise<void> {
         // Early activate theme based on media query to prevent light flash
         // when dark is preferred
-        this._activateTheme(
-            root,
-            window.matchMedia(QUERY_MEDIA_COLOR_LIGHT).matches
-                ? UiThemeEnum.Light
-                : UiThemeEnum.Dark,
-        );
+        this._applyTheme(root, globalAK().brand.uiTheme);
         this._applyTheme(root, await this.getTheme());
     }
 
@@ -127,6 +128,7 @@ export class AKElement extends LitElement {
                             : UiThemeEnum.Dark;
                     this._activateTheme(root, theme);
                 };
+                this._mediaMatcherHandler(undefined);
                 this._mediaMatcher.addEventListener("change", this._mediaMatcherHandler);
             }
             return;
@@ -141,7 +143,7 @@ export class AKElement extends LitElement {
 
     static themeToStylesheet(theme?: UiThemeEnum): CSSStyleSheet | undefined {
         if (theme === UiThemeEnum.Dark) {
-            return ThemeDark;
+            return _darkTheme;
         }
         return undefined;
     }
