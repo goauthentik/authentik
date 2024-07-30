@@ -69,7 +69,7 @@ class ExtraRoleObjectPermissionSerializer(RoleObjectPermissionSerializer):
 class RolePermissionFilter(FilterSet):
     """Role permission filter"""
 
-    uuid = UUIDFilter("group__role__uuid", required=True)
+    uuid = UUIDFilter("group__role__uuid")
 
 
 class RolePermissionViewSet(

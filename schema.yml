@@ -21734,7 +21734,6 @@ paths:
         schema:
           type: string
           format: uuid
-        required: true
       tags:
       - rbac
       security:
@@ -21931,7 +21930,6 @@ paths:
         name: user_id
         schema:
           type: integer
-        required: true
       tags:
       - rbac
       security:

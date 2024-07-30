@@ -4,7 +4,7 @@ from django.db.models import Q, QuerySet
 from django.db.transaction import atomic
 from django_filters.filters import CharFilter, ChoiceFilter
 from django_filters.filterset import FilterSet
-from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from guardian.models import GroupObjectPermission
 from guardian.shortcuts import assign_perm, remove_perm
 from rest_framework.decorators import action
