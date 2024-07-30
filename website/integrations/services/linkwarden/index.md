@@ -33,8 +33,9 @@ Then, restart your Docker containers and you should be able to login with authen
 
 ## authentik configuration
 
-Insert authentik configuration
+1. Navigate to the **Admin Interface**, and create a new **OAuth2 / OpenID Provider** under the **Providers** category.
+2. Take note of the **Client ID** and **Client Secret**.
+3. Add the following redirect URL under **Redirect URIs/Origins (RegEx)**: `https://linkwarden.company/api/v1/auth/callback/authentik`.
+4. Click **Finish**, then create a new application.
 
-1. Write first step here...
-
-2. Continue with steps....
+Linkwarden should now be configured to use authentik as a SSO provider.
