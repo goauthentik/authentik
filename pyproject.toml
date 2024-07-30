@@ -85,10 +85,8 @@ filterwarnings = [
 [tool.poetry.dependencies]
 argon2-cffi = "*"
 celery = "*"
-channels = { version = "*", extras = ["daphne"] }
+channels = "*"
 channels-redis = "*"
-codespell = "*"
-colorama = "*"
 cryptography = "*"
 dacite = "*"
 deepmerge = "*"
@@ -141,7 +139,6 @@ structlog = "*"
 swagger-spec-validator = "*"
 tenant-schemas-celery = "*"
 twilio = "*"
-twisted = "*"
 ua-parser = "*"
 # Pinned because of botocore https://github.com/orgs/python-poetry/discussions/7937
 urllib3 = { extras = ["secure"], version = "<3" }
@@ -156,6 +153,8 @@ zxcvbn = "*"
 bandit = "*"
 black = "*"
 bump2version = "*"
+channels = { version = "*", extras = ["daphne"] }
+codespell = "*"
 colorama = "*"
 coverage = { extras = ["toml"], version = "*" }
 debugpy = "*"
