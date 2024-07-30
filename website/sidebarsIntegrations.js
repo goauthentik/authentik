@@ -63,7 +63,7 @@ module.exports = {
                     label: "Dashboards",
                     items: [
                         "services/organizr/index",
-                        "services/linkwarden/index"
+                        "services/linkwarden/index",
                     ],
                 },
                 {
