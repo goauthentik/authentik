@@ -29,7 +29,7 @@ AUTHENTIK_CLIENT_ID=<Your Client ID>
 AUTHENTIK_CLIENT_SECRET=<Your Client Secret>
 ```
 
-Then, restart your Docker containers and you should be able to login with authentik.
+After making these changes, restart your Docker containers to apply the new configuration.
 
 ## authentik configuration
 
