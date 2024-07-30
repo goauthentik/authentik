@@ -6,7 +6,7 @@ title: Linkwarden
 
 ## What is Linkwarden
 
-> Linkwarden is an open-source collaborative bookmark manager to collect, organize and preserve webpages.
+> Linkwarden is an open-source collaborative bookmark manager used to collect, organize, and preserve webpages.
 >
 > -- https://linkwarden.app/
 
