@@ -17,7 +17,7 @@ The following placeholders will be used:
 -   `linkwarden.company` is the FQDN of the Service install.
 -   `authentik.company` is the FQDN of the authentik install.
 
-## Service configuration
+## Linkwarden configuration
 
 To configure Linkwarden to use authentik, add the following values to your `.env` file:
 
