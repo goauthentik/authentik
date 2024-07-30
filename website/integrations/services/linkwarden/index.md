@@ -34,7 +34,7 @@ After making these changes, restart your Docker containers to apply the new conf
 ## authentik configuration
 
 1. Access the **Admin Interface** in on your authentik install.
-2. Create a new **OAuth2 / OpenID Provider** under the Providers category.
+2. Create a new **OAuth2 / OpenID Provider**.
 3. Note the generated **Client ID** and **Client Secret**.
 4. In the provider settings, add this redirect URL under **Redirect URIs/Origins (RegEx)**: `https://linkwarden.company/api/v1/auth/callback/authentik`
 5. Click **Finish** to save the provider configuration.
