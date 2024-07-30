@@ -6,6 +6,8 @@ Since blueprints have a pretty strict mapping of each entry mapping to an instan
 
 This meta model can be used to apply another blueprint instance within a blueprint instance. This allows for dependency management and ensuring related objects are created.
 
+See [examples](https://github.com/search?q=repo%3Agoauthentik%2Fauthentik+path%3A%2F%5Eblueprints%5C%2F%2F+metaapplyblueprint&type=code) in the default blueprints for more information.
+
 #### Attributes
 
 -   `identifiers`: Key-value attributes used to match the blueprint instance
