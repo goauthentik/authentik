@@ -56,6 +56,7 @@ export class OutpostStatusChart extends AKChart<SummarizedSyncStatus[]> {
             }),
         );
         this.centerText = outposts.pagination.count.toString();
+        outpostStats.sort((a, b) => a.label.localeCompare(b.label));
         return outpostStats;
     }
 
