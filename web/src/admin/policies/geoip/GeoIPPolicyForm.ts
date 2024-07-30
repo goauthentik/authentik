@@ -18,12 +18,6 @@ function countryToPair(country: DetailedCountry): DualSelectPair {
     return [country.code, country.name];
 }
 
-async function codesToCountries(countryCodes: string[]): Promise<DetailedCountry[]> {
-    const countries = await countryCache.getCountries();
-
-    return countries.filter((country) => countryCodes.includes(country.code));
-}
-
 @customElement("ak-policy-geoip-form")
 export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
     loadInstance(pk: string): Promise<GeoIPPolicy> {
@@ -38,8 +32,6 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
         } else {
             data.asns = (data.asns as unknown as string).split(",").map(Number);
         }
-
-        data.countries = await codesToCountries(data.countries as unknown as string[]);
 
         if (this.instance) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesGeoipUpdate({
@@ -121,7 +113,7 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                                         };
                                     });
                             }}
-                            .selected=${(this.instance?.countries ?? []).map(countryToPair)}
+                            .selected=${(this.instance?.countriesObj ?? []).map(countryToPair)}
                             available-label="${msg("Available Countries")}"
                             selected-label="${msg("Selected Countries")}"
                         >

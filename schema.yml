@@ -12356,7 +12356,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/DetailedCountryList'
+                  $ref: '#/components/schemas/DetailedCountry'
           description: ''
         '400':
           content:
@@ -35220,7 +35220,246 @@ components:
       - confidential
       - public
       type: string
-    CodeEnum:
+    Config:
+      type: object
+      description: Serialize authentik Config into DRF Object
+      properties:
+        error_reporting:
+          $ref: '#/components/schemas/ErrorReportingConfig'
+        capabilities:
+          type: array
+          items:
+            $ref: '#/components/schemas/CapabilitiesEnum'
+        cache_timeout:
+          type: integer
+        cache_timeout_flows:
+          type: integer
+        cache_timeout_policies:
+          type: integer
+        cache_timeout_reputation:
+          type: integer
+      required:
+      - cache_timeout
+      - cache_timeout_flows
+      - cache_timeout_policies
+      - cache_timeout_reputation
+      - capabilities
+      - error_reporting
+    ConnectionToken:
+      type: object
+      description: ConnectionToken Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          title: Connection token uuid
+        provider:
+          type: integer
+        provider_obj:
+          allOf:
+          - $ref: '#/components/schemas/RACProvider'
+          readOnly: true
+        endpoint:
+          type: string
+          format: uuid
+        endpoint_obj:
+          allOf:
+          - $ref: '#/components/schemas/Endpoint'
+          readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/GroupMember'
+          readOnly: true
+      required:
+      - endpoint
+      - endpoint_obj
+      - provider
+      - provider_obj
+      - user
+    ConnectionTokenRequest:
+      type: object
+      description: ConnectionToken Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          title: Connection token uuid
+        provider:
+          type: integer
+        endpoint:
+          type: string
+          format: uuid
+      required:
+      - endpoint
+      - provider
+    ConsentChallenge:
+      type: object
+      description: Challenge info for consent screens
+      properties:
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
+        component:
+          type: string
+          default: ak-stage-consent
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        pending_user:
+          type: string
+        pending_user_avatar:
+          type: string
+        header_text:
+          type: string
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConsentPermission'
+        additional_permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConsentPermission'
+        token:
+          type: string
+      required:
+      - additional_permissions
+      - pending_user
+      - pending_user_avatar
+      - permissions
+      - token
+    ConsentChallengeResponseRequest:
+      type: object
+      description: Consent challenge response, any valid response request is valid
+      properties:
+        component:
+          type: string
+          minLength: 1
+          default: ak-stage-consent
+        token:
+          type: string
+          minLength: 1
+      required:
+      - token
+    ConsentPermission:
+      type: object
+      description: Permission used for consent
+      properties:
+        name:
+          type: string
+        id:
+          type: string
+      required:
+      - id
+      - name
+    ConsentStage:
+      type: object
+      description: ConsentStage Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Stage uuid
+        name:
+          type: string
+        component:
+          type: string
+          description: Get object type so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSet'
+        mode:
+          $ref: '#/components/schemas/ConsentStageModeEnum'
+        consent_expire_in:
+          type: string
+          title: Consent expires in
+          description: 'Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).'
+      required:
+      - component
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    ConsentStageModeEnum:
+      enum:
+      - always_require
+      - permanent
+      - expiring
+      type: string
+    ConsentStageRequest:
+      type: object
+      description: ConsentStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSetRequest'
+        mode:
+          $ref: '#/components/schemas/ConsentStageModeEnum'
+        consent_expire_in:
+          type: string
+          minLength: 1
+          title: Consent expires in
+          description: 'Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).'
+      required:
+      - name
+    ContextualFlowInfo:
+      type: object
+      description: Contextual flow information for a challenge
+      properties:
+        title:
+          type: string
+        background:
+          type: string
+        cancel_url:
+          type: string
+        layout:
+          $ref: '#/components/schemas/ContextualFlowInfoLayoutEnum'
+      required:
+      - cancel_url
+      - layout
+    ContextualFlowInfoLayoutEnum:
+      enum:
+      - stacked
+      - content_left
+      - content_right
+      - sidebar_left
+      - sidebar_right
+      type: string
+    Coordinate:
+      type: object
+      description: Coordinates for diagrams
+      properties:
+        x_cord:
+          type: integer
+          readOnly: true
+        y_cord:
+          type: integer
+          readOnly: true
+      required:
+      - x_cord
+      - y_cord
+    CountryCodeEnum:
       enum:
       - AF
       - AX
@@ -35472,245 +35711,6 @@ components:
       - ZM
       - ZW
       type: string
-    Config:
-      type: object
-      description: Serialize authentik Config into DRF Object
-      properties:
-        error_reporting:
-          $ref: '#/components/schemas/ErrorReportingConfig'
-        capabilities:
-          type: array
-          items:
-            $ref: '#/components/schemas/CapabilitiesEnum'
-        cache_timeout:
-          type: integer
-        cache_timeout_flows:
-          type: integer
-        cache_timeout_policies:
-          type: integer
-        cache_timeout_reputation:
-          type: integer
-      required:
-      - cache_timeout
-      - cache_timeout_flows
-      - cache_timeout_policies
-      - cache_timeout_reputation
-      - capabilities
-      - error_reporting
-    ConnectionToken:
-      type: object
-      description: ConnectionToken Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          title: Connection token uuid
-        provider:
-          type: integer
-        provider_obj:
-          allOf:
-          - $ref: '#/components/schemas/RACProvider'
-          readOnly: true
-        endpoint:
-          type: string
-          format: uuid
-        endpoint_obj:
-          allOf:
-          - $ref: '#/components/schemas/Endpoint'
-          readOnly: true
-        user:
-          allOf:
-          - $ref: '#/components/schemas/GroupMember'
-          readOnly: true
-      required:
-      - endpoint
-      - endpoint_obj
-      - provider
-      - provider_obj
-      - user
-    ConnectionTokenRequest:
-      type: object
-      description: ConnectionToken Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          title: Connection token uuid
-        provider:
-          type: integer
-        endpoint:
-          type: string
-          format: uuid
-      required:
-      - endpoint
-      - provider
-    ConsentChallenge:
-      type: object
-      description: Challenge info for consent screens
-      properties:
-        flow_info:
-          $ref: '#/components/schemas/ContextualFlowInfo'
-        component:
-          type: string
-          default: ak-stage-consent
-        response_errors:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              $ref: '#/components/schemas/ErrorDetail'
-        pending_user:
-          type: string
-        pending_user_avatar:
-          type: string
-        header_text:
-          type: string
-        permissions:
-          type: array
-          items:
-            $ref: '#/components/schemas/ConsentPermission'
-        additional_permissions:
-          type: array
-          items:
-            $ref: '#/components/schemas/ConsentPermission'
-        token:
-          type: string
-      required:
-      - additional_permissions
-      - pending_user
-      - pending_user_avatar
-      - permissions
-      - token
-    ConsentChallengeResponseRequest:
-      type: object
-      description: Consent challenge response, any valid response request is valid
-      properties:
-        component:
-          type: string
-          minLength: 1
-          default: ak-stage-consent
-        token:
-          type: string
-          minLength: 1
-      required:
-      - token
-    ConsentPermission:
-      type: object
-      description: Permission used for consent
-      properties:
-        name:
-          type: string
-        id:
-          type: string
-      required:
-      - id
-      - name
-    ConsentStage:
-      type: object
-      description: ConsentStage Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Stage uuid
-        name:
-          type: string
-        component:
-          type: string
-          description: Get object type so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSet'
-        mode:
-          $ref: '#/components/schemas/ConsentStageModeEnum'
-        consent_expire_in:
-          type: string
-          title: Consent expires in
-          description: 'Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).'
-      required:
-      - component
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    ConsentStageModeEnum:
-      enum:
-      - always_require
-      - permanent
-      - expiring
-      type: string
-    ConsentStageRequest:
-      type: object
-      description: ConsentStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
-        mode:
-          $ref: '#/components/schemas/ConsentStageModeEnum'
-        consent_expire_in:
-          type: string
-          minLength: 1
-          title: Consent expires in
-          description: 'Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).'
-      required:
-      - name
-    ContextualFlowInfo:
-      type: object
-      description: Contextual flow information for a challenge
-      properties:
-        title:
-          type: string
-        background:
-          type: string
-        cancel_url:
-          type: string
-        layout:
-          $ref: '#/components/schemas/ContextualFlowInfoLayoutEnum'
-      required:
-      - cancel_url
-      - layout
-    ContextualFlowInfoLayoutEnum:
-      enum:
-      - stacked
-      - content_left
-      - content_right
-      - sidebar_left
-      - sidebar_right
-      type: string
-    Coordinate:
-      type: object
-      description: Coordinates for diagrams
-      properties:
-        x_cord:
-          type: integer
-          readOnly: true
-        y_cord:
-          type: integer
-          readOnly: true
-      required:
-      - x_cord
-      - y_cord
     CurrentBrand:
       type: object
       description: Partial brand information for styling
@@ -35821,27 +35821,27 @@ components:
       type: object
       properties:
         code:
-          $ref: '#/components/schemas/CodeEnum'
+          $ref: '#/components/schemas/CountryCodeEnum'
         name:
           type: string
       required:
       - code
       - name
-    DetailedCountryList:
+    DetailedCountryField:
       type: object
       properties:
         code:
-          $ref: '#/components/schemas/CodeEnum'
+          $ref: '#/components/schemas/CountryCodeEnum'
         name:
           type: string
       required:
       - code
       - name
-    DetailedCountryRequest:
+    DetailedCountryFieldRequest:
       type: object
       properties:
         code:
-          $ref: '#/components/schemas/CodeEnum'
+          $ref: '#/components/schemas/CountryCodeEnum'
         name:
           type: string
           minLength: 1
@@ -37471,11 +37471,18 @@ components:
         countries:
           type: array
           items:
-            $ref: '#/components/schemas/DetailedCountry'
+            $ref: '#/components/schemas/CountryCodeEnum'
+          maxItems: 249
+        countries_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/DetailedCountryField'
+          readOnly: true
       required:
       - bound_to
       - component
       - countries
+      - countries_obj
       - meta_model_name
       - name
       - pk
@@ -37501,7 +37508,8 @@ components:
         countries:
           type: array
           items:
-            $ref: '#/components/schemas/DetailedCountryRequest'
+            $ref: '#/components/schemas/CountryCodeEnum'
+          maxItems: 249
       required:
       - countries
       - name
@@ -42964,7 +42972,8 @@ components:
         countries:
           type: array
           items:
-            $ref: '#/components/schemas/DetailedCountryRequest'
+            $ref: '#/components/schemas/CountryCodeEnum'
+          maxItems: 249
     PatchedGoogleWorkspaceProviderMappingRequest:
       type: object
       description: GoogleWorkspaceProviderMapping Serializer

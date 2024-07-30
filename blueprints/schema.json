@@ -3740,6 +3740,7 @@
                     "items": {
                         "type": "string",
                         "enum": [
+                            "",
                             "AF",
                             "AX",
                             "AL",
@@ -3991,6 +3992,7 @@
                             "ZW"
                         ]
                     },
+                    "maxItems": 249,
                     "title": "Countries"
                 }
             },
