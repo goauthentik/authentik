@@ -19,11 +19,17 @@ The following placeholders will be used:
 
 ## Service configuration
 
-Insert Service configuration
+To configure Linkwarden to use authentik, add the following values to your `.env` file:
 
-1. Write first step here...
+```
+NEXT_PUBLIC_AUTHENTIK_ENABLED=true
+AUTHENTIK_CUSTOM_NAME=authentik # Optionally set a custom provider name. Will be displayed on the login page
+AUTHENTIK_ISSUER=https://authentik.company/application/o/linkwarden
+AUTHENTIK_CLIENT_ID=<Your Client ID>
+AUTHENTIK_CLIENT_SECRET=<Your Client Secret>
+```
 
-2. Continue with steps....
+Then, restart your Docker containers and you should be able to login with authentik.
 
 ## authentik configuration
 
