@@ -9,7 +9,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import type { Config, CurrentBrand, LicenseSummary } from "@goauthentik/api";
 import { UiThemeEnum } from "@goauthentik/api";
 
-import { AKElement } from "../Base";
+import { AKElement, rootInterface } from "../Base";
 import { BrandContextController } from "./BrandContextController";
 import { ConfigContextController } from "./ConfigContextController";
 import { EnterpriseContextController } from "./EnterpriseContextController";
@@ -51,8 +51,14 @@ export class Interface extends AKElement implements AkInterface {
     }
 
     _activateTheme(root: DocumentOrShadowRoot, theme: UiThemeEnum): void {
-        super._activateTheme(root, theme);
+        if (theme === this._activeTheme) {
+            return;
+        }
+        console.debug(
+            `authentik/interface[${rootInterface()?.tagName.toLowerCase()}]: Enabling theme ${theme}`,
+        );
         super._activateTheme(document as unknown as DocumentOrShadowRoot, theme);
+        super._activateTheme(root, theme);
     }
 
     async getTheme(): Promise<UiThemeEnum> {

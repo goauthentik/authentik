@@ -8,6 +8,7 @@ import "@goauthentik/admin/property-mappings/PropertyMappingRadiusForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingSAMLForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingSAMLSourceForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingSCIMForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingSCIMSourceForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingScopeForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingTestForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingWizard";
