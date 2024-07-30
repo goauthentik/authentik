@@ -14,7 +14,7 @@ title: Linkwarden
 
 The following placeholders will be used:
 
--   `linkwarden.company` is the FQDN of the Service install.
+-   `linkwarden.company` is the FQDN of the Linkwarden install.
 -   `authentik.company` is the FQDN of the authentik install.
 
 ## Linkwarden configuration
