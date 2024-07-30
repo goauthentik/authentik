@@ -5,7 +5,6 @@ import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { Ref, createRef, ref } from "lit/directives/ref.js";
 
-import { KeyboardControllerCloseEvent } from "./SearchKeyboardControllerEvents.js";
 import "./ak-search-select-menu.js";
 import { type SearchSelectMenu } from "./ak-search-select-menu.js";
 import type { SearchOptions } from "./types.js";
@@ -33,7 +32,8 @@ export class SearchSelectMenuPosition extends LitElement {
     host!: HTMLElement;
 
     /**
-     * The host element which will be our reference point for rendering.
+     * The host element which will be our reference point for rendering.  Is not necessarily
+     * the element that receives the events.
      *
      * @prop
      */
@@ -142,16 +142,8 @@ export class SearchSelectMenuPosition extends LitElement {
         }
     }
 
-    hasFocus() {
-        return (
-            this.menuRef.value &&
-            (this.menuRef.value === document.activeElement ||
-                this.menuRef.value.renderRoot.contains(document.activeElement))
-        );
-    }
-
-    onFocusOut() {
-        this.dispatchEvent(new KeyboardControllerCloseEvent());
+    get hasFocus() {
+        return this.menuRef.value?.hasFocusedElement ?? false;
     }
 
     render() {
@@ -165,12 +157,11 @@ export class SearchSelectMenuPosition extends LitElement {
                 value=${ifDefined(this.value)}
                 .host=${this.host}
                 .emptyOption=${this.emptyOption}
-                @focusout=${this.onFocusOut}
                 ?open=${this.open}
                 ?hidden=${!this.open}
                 ${ref(this.menuRef)}
             ></ak-search-select-menu>`,
-            this.dropdownContainer,
+            this.dropdownContainer
         );
         // This is a dummy object that just has to exist to be the communications channel between
         // the tethered object and its anchor.

@@ -1,20 +1,22 @@
 export class KeyboardControllerSelectEvent extends Event {
+    static readonly eventName = "ak-keyboard-controller-select";
     value: string | undefined;
     constructor(value: string | undefined) {
-        super("ak-keyboard-controller-select", { composed: true, bubbles: true });
+        super(KeyboardControllerSelectEvent.eventName, { composed: true, bubbles: true });
         this.value = value;
     }
 }
 
-export class KeyboardControllerCloseEvent extends Event {
+export class KeyboardControllerEscapeEvent extends Event {
+    static readonly eventName = "ak-keyboard-controller-escape";
     constructor() {
-        super("ak-keyboard-controller-close", { composed: true, bubbles: true });
+        super("ak-keyboard-controller-escape", { composed: true, bubbles: true });
     }
 }
 
 declare global {
     interface GlobalEventHandlersEventMap {
-        "ak-keyboard-controller-select": KeyboardControllerSelectEvent;
-        "ak-keyboard-controller-close": KeyboardControllerCloseEvent;
+        [KeyboardControllerSelectEvent.eventName]: KeyboardControllerSelectEvent;
+        [KeyboardControllerEscapeEvent.eventName]: KeyboardControllerEscapeEvent;
     }
 }

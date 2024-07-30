@@ -15,10 +15,10 @@ import PFSelect from "@patternfly/patternfly/components/Select/select.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
-    SearchSelectCloseEvent,
     SearchSelectInputEvent,
-    SearchSelectSelectEvent,
-    SearchSelectSelectMenuEvent,
+    SearchSelectMenuLostFocusEvent,
+    SearchSelectRequestCloseEvent,
+    SearchSelectSelectItemEvent,
 } from "./SearchSelectEvents.js";
 import type { SearchOptions, SearchTuple } from "./types.js";
 
@@ -40,6 +40,13 @@ import type { SearchOptions, SearchTuple } from "./types.js";
  * the object that key references when extracting the value for use.
  *
  */
+
+enum InputState {
+    idle = 0,
+    closed = 1,
+    open = 2,
+    justclosed = 3,
+}
 
 @customElement("ak-search-select-view")
 export class SearchSelectView extends AKElement {
@@ -78,14 +85,6 @@ export class SearchSelectView extends AKElement {
     name?: string;
 
     /**
-     * Whether or not the portal is open
-     *
-     * @attr
-     */
-    @property({ type: Boolean, reflect: true })
-    open = false;
-
-    /**
      * The textual placeholder for the search's <input> object, if currently empty. Used as the
      * native <input> object's `placeholder` field.
      *
@@ -105,7 +104,8 @@ export class SearchSelectView extends AKElement {
 
     // Handle the behavior of the drop-down when the :host scrolls off the page.
     scrollHandler?: () => void;
-    observer: IntersectionObserver;
+
+    // observer: IntersectionObserver;
 
     @state()
     displayValue = "";
@@ -128,7 +128,8 @@ export class SearchSelectView extends AKElement {
     /**
      * Controls when focus should be re-acquired
      */
-    focusGuard: boolean = false;
+    @state()
+    inputState: InputState = InputState.idle;
 
     static get styles() {
         return [PFBase, PFForm, PFFormControl, PFSelect];
@@ -136,96 +137,105 @@ export class SearchSelectView extends AKElement {
 
     constructor() {
         super();
-        this.observer = new IntersectionObserver(() => {
-            this.open = false;
-        });
-        this.observer.observe(this);
-
         /* These can't be attached with the `@` syntax because they're not passed through to the
          * menu; the positioner is in the way, and it deliberately renders objects *outside* of the
          * path from `document` to this object. That's why we pass the positioner (and its target)
          * the `this` (host) object; so they can send messages to this object despite being outside
          * the event's bubble path.
          */
-        this.addEventListener("ak-search-select-select-menu", this.onSelect);
-        this.addEventListener("ak-search-select-close", this.onClose);
+        this.addEventListener(SearchSelectMenuLostFocusEvent.eventName, this.onMenuLostFocus);
+        this.addEventListener(SearchSelectRequestCloseEvent.eventName, this.onMenuRequestClose);
+        this.addEventListener(SearchSelectSelectItemEvent.eventName, this.onSelectItemEvent);
     }
 
     disconnectedCallback(): void {
-        this.observer.disconnect();
         super.disconnectedCallback();
     }
 
-    onOpenEvent(event: Event) {
-        this.open = true;
+    // TODO: Reconcile value <-> display value, Reconcile option changes to value <-> displayValue
+
+    // If the user has changed the content of the input box, they are manipulating the *Label*, not
+    // the value. We'll have to retroactively decide the value and publish it to any listeners.
+    settleValue() {
+        // TODO
+    }
+
+    checkBlankableValue(ev: Event) {
         if (
             this.blankable &&
+            ev.target &&
             this.value === this.emptyOption &&
-            event.target &&
-            event.target instanceof HTMLInputElement
+            ev.target instanceof HTMLInputElement
         ) {
-            event.target.value = "";
+            ev.target.value = "";
         }
     }
 
     @bound
-    onSelect(event: SearchSelectSelectMenuEvent) {
-        this.open = false;
-        this.value = event.value;
-        this.displayValue = this.value ? (this.optionsMap.get(this.value) ?? this.value ?? "") : "";
-        this.inputRef.value?.focus();
-        this.focusGuard = true;
-        this.dispatchEvent(new SearchSelectSelectEvent(this.value));
-    }
-
-    @bound
-    onClose(event: SearchSelectCloseEvent) {
-        event.stopPropagation();
-        // "Gets focus" comes after "loses focus," so the check for focus must be scheduled after
-        // the event thunk terminates.
+    onMenuLostFocus(ev: SearchSelectMenuLostFocusEvent) {
+        console.log("Menu lost focus.");
+        ev.stopImmediatePropagation();
+        // If neither the input or the menu has the focus after the previous event phase is settled,
+        // then the menu must be closed.
         window.setTimeout(() => {
-            this.open = this.inputRef.value?.matches(":focus") ?? false;
-            if (this.open) {
-                this.inputRef.value?.focus();
+            if (this.inputRef.value?.matches(":focus")) {
+                console.log("Input Had Focus.");
                 return;
+            }
+            if (!this.menuRef.value?.hasFocus) {
+                this.inputState = InputState.idle;
+                this.settleValue();
             }
         }, 0);
     }
 
     @bound
-    onFocus(event: FocusEvent) {
-        if (!this.focusGuard) {
-            this.onOpenEvent(event);
-        }
-        this.focusGuard = false;
+    onMenuRequestClose(ev: SearchSelectRequestCloseEvent) {
+        // Simple enough: the user hit `Escape` while the menu had the focus.
+        ev.stopImmediatePropagation();
     }
 
     @bound
-    onClick(event: Event) {
-        this.onOpenEvent(event);
-    }
-
-    @bound
-    onInput(_event: InputEvent) {
-        this.value = this.inputRef?.value?.value ?? "";
+    onSelectItemEvent(ev: SearchSelectSelectItemEvent) {
+        ev.stopImmediatePropagation();
+        this.value = ev.value;
         this.displayValue = this.value ? (this.optionsMap.get(this.value) ?? this.value ?? "") : "";
         this.dispatchEvent(new SearchSelectInputEvent(this.value));
+    }
+
+    @bound
+    onInput(_ev: InputEvent) {
+        // We don't stop this propagation. If parent elements want to handle it, they can.
+        // Any change may trigger a request that changes the option set upstream.  That
+        // requires a re-show of the menu.
+        this.dispatchEvent(new SearchSelectInputEvent(this.inputRef?.value?.value ?? ""));
+        this.settleValue();
+    }
+
+    @bound
+    onClick(ev: Event) {
+        console.log("Input clicked.");
+        this.inputState =
+            this.inputState === InputState.justclosed ? InputState.closed : InputState.open;
+        this.checkBlankableValue(ev);
     }
 
     @bound
     onKeydown(event: KeyboardEvent) {
         if (event.key === "Escape") {
             event.stopPropagation();
-            this.open = false;
         }
     }
 
     @bound
     onFocusOut(event: FocusEvent) {
+        console.log("Input lost focus.");
         event.stopPropagation();
+        // If neither the input or the menu has the focus after the previous event phase is settled,
+        // then the menu must be closed.
         window.setTimeout(() => {
-            if (!this.menuRef.value?.hasFocus() && !this.inputRef.value?.matches(":focus")) {
-                this.open = false;
+            if (!this.menuRef.value?.hasFocus && !this.inputRef.value?.matches(":focus")) {
+                this.inputState = InputState.idle;
             }
         }, 0);
     }
@@ -259,10 +269,8 @@ export class SearchSelectView extends AKElement {
                             placeholder=${this.placeholder}
                             spellcheck="false"
                             @input=${this.onInput}
-                            @focus=${this.onFocus}
                             @click=${this.onClick}
                             @keydown=${this.onKeydown}
-                            @blur=${this.onFocusOut}
                             value=${this.displayValue}
                         />
                     </div>
@@ -276,7 +284,7 @@ export class SearchSelectView extends AKElement {
                 .anchor=${this.inputRef.value}
                 .emptyOption=${(this.blankable && this.emptyOption) || undefined}
                 ${ref(this.menuRef)}
-                ?open=${this.open}
+                ?open=${this.inputState === InputState.open}
             ></ak-search-select-menu-position> `;
     }
 }

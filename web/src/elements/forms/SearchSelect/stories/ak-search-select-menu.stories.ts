@@ -4,7 +4,11 @@ import { slug } from "github-slugger";
 
 import { TemplateResult, html } from "lit";
 
-import { SearchSelectSelectMenuEvent } from "../SearchSelectEvents.js";
+import {
+    SearchSelectMenuLostFocusEvent,
+    SearchSelectRequestCloseEvent,
+    SearchSelectSelectItemEvent,
+} from "../SearchSelectEvents.js";
 import "../ak-search-select-menu.js";
 import { SearchSelectMenu } from "../ak-search-select-menu.js";
 import { groupedSampleData, sampleData } from "./sampleData.js";
@@ -30,12 +34,19 @@ const metadata: Meta<SearchSelectMenu> = {
 export default metadata;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const onClick = (event: SearchSelectSelectMenuEvent) => {
+const onClick = (
+    event: SearchSelectMenuLostFocusEvent | SearchSelectRequestCloseEvent | SearchSelectSelectItemEvent
+) => {
     const target = document.querySelector("#action-button-message-pad");
     target!.innerHTML = "";
-    target!.append(
-        new DOMParser().parseFromString(`<li>${event.value}</li>`, "text/xml").firstChild!,
-    );
+    const msg =
+        event instanceof SearchSelectMenuLostFocusEvent
+            ? "Menu lost focus"
+            : event instanceof SearchSelectRequestCloseEvent
+              ? "Menu requested to be closed"
+              : event.value;
+
+    target!.append(new DOMParser().parseFromString(`<li>${msg}</li>`, "text/xml").firstChild!);
 };
 
 const container = (testItem: TemplateResult) => {
@@ -43,15 +54,14 @@ const container = (testItem: TemplateResult) => {
         const menu = document.getElementById("ak-search-select-menu");
         const container = document.getElementById("the-main-event");
         if (menu && container) {
-            container.addEventListener("ak-search-select-select-menu", onClick);
+            container.addEventListener(SearchSelectMenuLostFocusEvent.eventName, onClick);
+            container.addEventListener(SearchSelectRequestCloseEvent.eventName, onClick);
+            container.addEventListener(SearchSelectSelectItemEvent.eventName, onClick);
             (menu as SearchSelectMenu).host = container;
         }
     }, 250);
 
-    return html` <div
-        style="background: #fff; padding: 2em; position: relative"
-        id="the-main-event"
-    >
+    return html` <div style="background: #fff; padding: 2em; position: relative" id="the-main-event">
         <style>
             li {
                 display: block;
@@ -86,7 +96,7 @@ export const Default: Story = {
                 id="ak-search-select-menu"
                 style="top: 1em; left: 1em"
                 .options=${goodForYouPairs}
-            ></ak-search-select-menu>`,
+            ></ak-search-select-menu>`
         ),
 };
 
@@ -103,7 +113,7 @@ export const Scrolling: Story = {
                 style="top: 1em; left: 1em"
                 .options=${longGoodForYouPairs}
                 .host=${document}
-            ></ak-search-select-menu>`,
+            ></ak-search-select-menu>`
         ),
 };
 
@@ -115,6 +125,6 @@ export const Grouped: Story = {
                 style="top: 1em; left: 1em"
                 .options=${groupedSampleData}
                 .host=${document}
-            ></ak-search-select-menu>`,
+            ></ak-search-select-menu>`
         ),
 };

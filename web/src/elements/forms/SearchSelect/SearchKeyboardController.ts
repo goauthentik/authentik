@@ -3,13 +3,11 @@ import { match } from "ts-pattern";
 
 import { LitElement, ReactiveController, ReactiveControllerHost } from "lit";
 
-import {
-    KeyboardControllerCloseEvent,
-    KeyboardControllerSelectEvent,
-} from "./SearchKeyboardControllerEvents.js";
+import { KeyboardControllerEscapeEvent, KeyboardControllerSelectEvent } from "./SearchKeyboardControllerEvents.js";
 
-type ReactiveElementHost = Partial<ReactiveControllerHost> & LitElement & { value?: string };
 type ValuedHtmlElement = HTMLElement & { value: string };
+type ReactiveElementHost = Partial<ReactiveControllerHost> &
+    LitElement & { value?: string; items: ValuedHtmlElement[] };
 
 /**
  * @class AkKeyboardController
@@ -34,11 +32,7 @@ export class AkKeyboardController implements ReactiveController {
 
     private index: number = 0;
 
-    private selector: string;
-
     private highlighter: string;
-
-    private items: ValuedHtmlElement[] = [];
 
     /**
      * @arg selector: The class identifier (it *must* be a class identifier) of the DOM objects
@@ -51,20 +45,15 @@ export class AkKeyboardController implements ReactiveController {
      * on the object.  Note that the object will always receive focus.
      *
      */
-    constructor(
-        host: ReactiveElementHost,
-        selector = ".ak-select-item",
-        highlighter = ".ak-highlight-item",
-    ) {
+    constructor(host: ReactiveElementHost, highlighter = ".ak-highlight-item") {
         this.host = host;
+        console.log(this.host);
         host.addController(this);
-        this.selector = selector[0] === "." ? selector : `.${selector}`;
         this.highlighter = highlighter.replace(/^\./, "");
     }
 
     hostUpdated() {
-        this.items = Array.from(this.host.renderRoot.querySelectorAll(this.selector));
-        const current = this.items.findIndex((item) => item.value === this.host.value);
+        const current = this.host.items.findIndex((item) => item.value === this.host.value);
         if (current >= 0) {
             this.index = current;
         }
@@ -79,11 +68,11 @@ export class AkKeyboardController implements ReactiveController {
     }
 
     hostVisible() {
-        this.items[this.index]?.focus();
+        this.host.items[this.index]?.focus();
     }
 
     get current() {
-        return this.items[this.index];
+        return this.host.items[this.index];
     }
 
     get value() {
@@ -91,7 +80,7 @@ export class AkKeyboardController implements ReactiveController {
     }
 
     set value(v: string) {
-        const index = this.items.findIndex((i) => i.value === v);
+        const index = this.host.items.findIndex((i) => i.value === v);
         if (index !== undefined) {
             this.index = index;
             this.performUpdate();
@@ -99,14 +88,13 @@ export class AkKeyboardController implements ReactiveController {
     }
 
     private performUpdate() {
-        const items = this.items;
-        items.forEach((item) => {
+        this.host.items.forEach((item) => {
             item.classList.remove(this.highlighter);
-            item.tabIndex = -1;
+            item.tabIndex = 0;
         });
-        items[this.index].classList.add(this.highlighter);
-        items[this.index].tabIndex = 0;
-        items[this.index].focus();
+        this.host.items[this.index].classList.add(this.highlighter);
+        this.host.items[this.index].tabIndex = 1;
+        this.host.items[this.index].focus();
     }
 
     @bound
@@ -114,7 +102,7 @@ export class AkKeyboardController implements ReactiveController {
         const key = event.key;
         match({ key })
             .with({ key: "ArrowDown" }, () => {
-                this.index = Math.min(this.index + 1, this.items.length - 1);
+                this.index = Math.min(this.index + 1, this.host.items.length - 1);
                 this.performUpdate();
             })
             .with({ key: "ArrowUp" }, () => {
@@ -126,7 +114,7 @@ export class AkKeyboardController implements ReactiveController {
                 this.performUpdate();
             })
             .with({ key: "End" }, () => {
-                this.index = this.items.length - 1;
+                this.index = this.host.items.length - 1;
                 this.performUpdate();
             })
             .with({ key: " " }, () => {
@@ -136,7 +124,7 @@ export class AkKeyboardController implements ReactiveController {
                 this.host.dispatchEvent(new KeyboardControllerSelectEvent(this.value));
             })
             .with({ key: "Escape" }, () => {
-                this.host.dispatchEvent(new KeyboardControllerCloseEvent());
+                this.host.dispatchEvent(new KeyboardControllerEscapeEvent());
             });
     }
 }

@@ -1,42 +1,30 @@
 /**
- * class SearchSelectSelectEvent
- *
- * Intended meaning: the user selected an item from the entire dialogue, either by clicking on it
- * with the mouse, or selecting it with the keyboard controls and pressing Enter or Space.
- */
-export class SearchSelectSelectEvent extends Event {
-    value: string | undefined;
-    constructor(value: string | undefined) {
-        super("ak-search-select-select", { composed: true, bubbles: true });
-        this.value = value;
-    }
-}
-
-/**
- * class SearchSelectSelectMenuEvent
+ * class SearchSelectSelectItemEvent
  *
  * Intended meaning: the user selected an item from the menu, either by clicking on it with the
  * mouse, or selecting it with the keyboard controls and pressing Enter or Space. This is
  * intercepted an interpreted internally, usually resulting in a throw of SearchSelectSelectEvent.
  * They have to be distinct to avoid an infinite event loop.
  */
-export class SearchSelectSelectMenuEvent extends Event {
+export class SearchSelectSelectItemEvent extends Event {
+    static readonly eventName = "ak-search-select-select-item";
     value: string | undefined;
     constructor(value: string | undefined) {
-        super("ak-search-select-select-menu", { composed: true, bubbles: true });
+        super(SearchSelectSelectItemEvent.eventName, { composed: true, bubbles: true });
         this.value = value;
     }
 }
 
 /**
- * class SearchSelectCloseEvent
+ * class SearchSelectRequestCloseEvent
  *
- * Intended meaning: the user requested that the menu dropdown close. Usually triggered by pressing
+ * Intended meaning: the user requested to leave the menu dropdown. Usually triggered by pressing
  * the Escape key.
  */
-export class SearchSelectCloseEvent extends Event {
+export class SearchSelectRequestCloseEvent extends Event {
+    static readonly eventName = "ak-search-select-close";
     constructor() {
-        super("ak-search-select-close", { composed: true, bubbles: true });
+        super(SearchSelectRequestCloseEvent.eventName, { composed: true, bubbles: true });
     }
 }
 
@@ -46,18 +34,45 @@ export class SearchSelectCloseEvent extends Event {
  * Intended meaning: the user made a change to the content of the `<input>` field
  */
 export class SearchSelectInputEvent extends Event {
+    static readonly eventName = "ak-search-select-input";
     value: string | undefined;
     constructor(value: string | undefined) {
-        super("ak-search-select-input", { composed: true, bubbles: true });
+        super(SearchSelectInputEvent.eventName, { composed: true, bubbles: true });
+        this.value = value;
+    }
+}
+
+/**
+ * class SearchSelectMenuLostFocus
+ */
+export class SearchSelectMenuLostFocusEvent extends Event {
+    static readonly eventName = "ak-search-select-menu-lost-focus";
+    constructor() {
+        super(SearchSelectMenuLostFocusEvent.eventName, { composed: true, bubbles: true });
+    }
+}
+
+/**
+ * class SearchSelectChangeEvent
+ *
+ * Intended meaning: the actual value of the SearchSelect has changed.  This event communicates
+ * this upward to consumers.
+ */
+export class SearchSelectChangeEvent extends Event {
+    static readonly eventName = "ak-search-select-change";
+    value: string | undefined;
+    constructor(value: string | undefined) {
+        super(SearchSelectInputEvent.eventName, { composed: true, bubbles: true });
         this.value = value;
     }
 }
 
 declare global {
     interface GlobalEventHandlersEventMap {
-        "ak-search-select-select-menu": SearchSelectSelectMenuEvent;
-        "ak-search-select-select": SearchSelectSelectEvent;
-        "ak-search-select-input": SearchSelectInputEvent;
-        "ak-search-select-close": SearchSelectCloseEvent;
+        [SearchSelectMenuLostFocusEvent.eventName]: SearchSelectMenuLostFocusEvent;
+        [SearchSelectSelectItemEvent.eventName]: SearchSelectSelectItemEvent;
+        [SearchSelectInputEvent.eventName]: SearchSelectInputEvent;
+        [SearchSelectChangeEvent.eventName]: SearchSelectChangeEvent;
+        [SearchSelectRequestCloseEvent.eventName]: SearchSelectRequestCloseEvent;
     }
 }
