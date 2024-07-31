@@ -6,7 +6,7 @@ The tool will:
 -   generate the mapping file with the current structure
 -   read the completed (manual process to define target structure) and create the directories and move the files.
 -   modify the internal, cross-reference links to point to new location
--   write to the `netlify.toml` file to add redirects for all migrated files.
+-   write to the `netlify.toml` file to add redirect entries for all migrated files.
 
 ## Steps to install
 
