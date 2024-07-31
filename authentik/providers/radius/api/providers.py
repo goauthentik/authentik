@@ -117,8 +117,9 @@ class RadiusOutpostConfigViewSet(ListModelMixin, GenericViewSet):
             # Ensure the vendor exists
             if vendor_code not in dict.vendors.backward or vendor_name not in dict.vendors.forward:
                 dict.vendors.Add(vendor_name, vendor_code)
-            if attribute_name not in dict.attributes:
-                dict.attributes[f"{vendor_name}-{attribute_name}"] = Attribute(
+            full_attribute_name = f"{vendor_name}-{attribute_name}"
+            if full_attribute_name not in dict.attributes:
+                dict.attributes[full_attribute_name] = Attribute(
                     attribute_name, attribute_code, attribute_type, vendor=vendor_name
                 )
 
