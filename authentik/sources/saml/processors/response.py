@@ -28,7 +28,11 @@ from authentik.sources.saml.exceptions import (
     MissingSAMLResponse,
     UnsupportedNameIDFormat,
 )
-from authentik.sources.saml.models import SAMLSource, UserSAMLSourceConnection
+from authentik.sources.saml.models import (
+    GroupSAMLSourceConnection,
+    SAMLSource,
+    UserSAMLSourceConnection,
+)
 from authentik.sources.saml.processors.constants import (
     NS_MAP,
     NS_SAML_ASSERTION,
@@ -235,4 +239,5 @@ class ResponseProcessor:
 class SAMLSourceFlowManager(SourceFlowManager):
     """Source flow manager for SAML Sources"""
 
-    connection_type = UserSAMLSourceConnection
+    user_connection_type = UserSAMLSourceConnection
+    group_connection_type = GroupSAMLSourceConnection

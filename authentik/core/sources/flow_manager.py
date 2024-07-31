@@ -4,7 +4,7 @@ from enum import Enum
 from typing import Any
 
 from django.contrib import messages
-from django.db import IntegrityError
+from django.db import IntegrityError, transaction
 from django.db.models.query_utils import Q
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect
@@ -12,7 +12,15 @@ from django.urls import reverse
 from django.utils.translation import gettext as _
 from structlog.stdlib import get_logger
 
-from authentik.core.models import Group, Source, SourceUserMatchingModes, User, UserSourceConnection
+from authentik.core.models import (
+    Group,
+    GroupSourceConnection,
+    Source,
+    SourceGroupMatchingModes,
+    SourceUserMatchingModes,
+    User,
+    UserSourceConnection,
+)
 from authentik.core.sources.mapper import SourceMapper
 from authentik.core.sources.stage import (
     PLAN_CONTEXT_SOURCES_CONNECTION,
@@ -79,7 +87,8 @@ class SourceFlowManager:
 
     identifier: str
 
-    connection_type: type[UserSourceConnection] = UserSourceConnection
+    user_connection_type: type[UserSourceConnection] = UserSourceConnection
+    group_connection_type: type[GroupSourceConnection] = GroupSourceConnection
 
     user_info: dict[str, Any]
     policy_context: dict[str, Any]
@@ -120,23 +129,23 @@ class SourceFlowManager:
 
     def get_action(self, **kwargs) -> tuple[Action, UserSourceConnection | None]:  # noqa: PLR0911
         """decide which action should be taken"""
-        new_connection = self.connection_type(source=self.source, identifier=self.identifier)
+        new_connection = self.user_connection_type(source=self.source, identifier=self.identifier)
         # When request is authenticated, always link
         if self.request.user.is_authenticated:
             new_connection.user = self.request.user
-            new_connection = self.update_connection(new_connection, **kwargs)
+            new_connection = self.update_user_connection(new_connection, **kwargs)
             return Action.LINK, new_connection
 
-        existing_connections = self.connection_type.objects.filter(
+        existing_connections = self.user_connection_type.objects.filter(
             source=self.source, identifier=self.identifier
         )
         if existing_connections.exists():
             connection = existing_connections.first()
-            return Action.AUTH, self.update_connection(connection, **kwargs)
+            return Action.AUTH, self.update_user_connection(connection, **kwargs)
         # No connection exists, but we match on identifier, so enroll
         if self.source.user_matching_mode == SourceUserMatchingModes.IDENTIFIER:
             # We don't save the connection here cause it doesn't have a user assigned yet
-            return Action.ENROLL, self.update_connection(new_connection, **kwargs)
+            return Action.ENROLL, self.update_user_connection(new_connection, **kwargs)
 
         # Check for existing users with matching attributes
         query = Q()
@@ -162,7 +171,7 @@ class SourceFlowManager:
         # No matching users, always enroll
         if not matching_users.exists():
             self._logger.debug("no matching users found, enrolling")
-            return Action.ENROLL, self.update_connection(new_connection, **kwargs)
+            return Action.ENROLL, self.update_user_connection(new_connection, **kwargs)
 
         user = matching_users.first()
         if self.source.user_matching_mode in [
@@ -170,7 +179,7 @@ class SourceFlowManager:
             SourceUserMatchingModes.USERNAME_LINK,
         ]:
             new_connection.user = user
-            new_connection = self.update_connection(new_connection, **kwargs)
+            new_connection = self.update_user_connection(new_connection, **kwargs)
             return Action.LINK, new_connection
         if self.source.user_matching_mode in [
             SourceUserMatchingModes.EMAIL_DENY,
@@ -181,10 +190,10 @@ class SourceFlowManager:
         # Should never get here as default enroll case is returned above.
         return Action.DENY, None  # pragma: no cover
 
-    def update_connection(
+    def update_user_connection(
         self, connection: UserSourceConnection, **kwargs
     ) -> UserSourceConnection:  # pragma: no cover
-        """Optionally make changes to the connection after it is looked up/created."""
+        """Optionally make changes to the user connection after it is looked up/created."""
         return connection
 
     def get_flow(self, **kwargs) -> HttpResponse:
@@ -299,7 +308,9 @@ class SourceFlowManager:
         plan = planner.plan(self.request, flow_context)
         for stage in self.get_stages_to_append(flow):
             plan.append_stage(stage)
-        plan.append_stage(in_memory_stage(UserUpdateStage))
+        plan.append_stage(
+            in_memory_stage(GroupUpdateStage, group_connection_type=self.group_connection_type)
+        )
         if stages:
             for stage in stages:
                 plan.append_stage(stage)
@@ -392,27 +403,101 @@ class SourceFlowManager:
         )
 
 
-class UserUpdateStage(StageView):
+class GroupUpdateStage(StageView):
     """Dynamically injected stage which updates the user after enrollment/authentication."""
 
-    def handle_groups(self):
-        """Sync users' groups from source data"""
-        user: User = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
-        groups_properties: dict[str, dict[str, Any | dict[str, Any]]] = self.executor.plan.context[
-            PLAN_CONTEXT_GROUPS
-        ]
-        # TODO: fix this
-        group_names = []
-        for group_properties in groups_properties:
-            if "name" not in group_properties:
-                continue
-            Group.update_or_create_attributes({"name": group_properties["name"]}, group_properties)
-            group_names.append(group_properties["name"])
-        user.ak_groups.set(Group.objects.filter(name__in=group_names))
+    def get_action(
+        self, group_id: str, group_properties: dict[str, Any | dict[str, Any]]
+    ) -> tuple[Action, GroupSourceConnection | None]:
+        """decide which action should be taken"""
+        new_connection = self.group_connection_type(source=self.source, identifier=group_id)
+
+        existing_connections = self.group_connection_type.objects.filter(
+            source=self.source, identifier=group_id
+        )
+        if existing_connections.exists():
+            return Action.LINK, existing_connections.first()
+        # No connection exists, but we match on identifier, so enroll
+        if self.source.group_matching_mode == SourceGroupMatchingModes.IDENTIFIER:
+            # We don't save the connection here cause it doesn't have a user assigned yet
+            return Action.ENROLL, new_connection
+
+        # Check for existing groups with matching attributes
+        query = Q()
+        if self.source.group_matching_mode in [
+            SourceGroupMatchingModes.NAME_LINK,
+            SourceGroupMatchingModes.NAME_DENY,
+        ]:
+            if not group_properties.get("name", None):
+                self._logger.warning(
+                    "Refusing to use none group name", source=self.source, group_id=group_id
+                )
+                return Action.DENY, None
+            query = Q(name__exact=group_properties.get("name"))
+        self._logger.debug("trying to link with existing group", query=query, group_id=group_id)
+        matching_groups = Group.objects.filter(query)
+        # No matching groups, always enroll
+        if not matching_groups.exists():
+            self._logger.debug("no matching groups found, enrolling", group_id=group_id)
+            return Action.ENROLL, new_connection
+
+        group = matching_groups.first()
+        if self.source.group_matching_mode in [
+            SourceGroupMatchingModes.NAME_LINK,
+        ]:
+            new_connection.group = group
+            return Action.LINK, new_connection
+        if self.source.group_matching_mode in [
+            SourceGroupMatchingModes.NAME_DENY,
+        ]:
+            self._logger.info("denying source because group exists", group=group, group_id=group_id)
+            return Action.DENY, None
+        # Should never get here as default enroll case is returned above.
+        return Action.DENY, None  # pragma: no cover
+
+    def handle_group(
+        self, group_id: str, group_properties: dict[str, Any | dict[str, Any]]
+    ) -> Group | None:
+        action, connection = self.get_action(group_id, group_properties)
+        if action == Action.ENROLL:
+            group = Group.objects.create(**group_properties)
+            connection.group = group
+            connection.save()
+            return group
+        elif action == Action.LINK:
+            group = connection.group
+            group.update_attributes(**group_properties)
+            connection.save()
+            return group
+
+        return None
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        """Stage used after the user has been enrolled"""
-        self.handle_groups()
+        """Stage used after the user has been enrolled to sync their groups from source data"""
+        self.source: Source = self.executor.plan.context[PLAN_CONTEXT_SOURCE]
+        self.user: User = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
+        self.group_connection_type: GroupSourceConnection = (
+            self.executor.current_stage.group_connection_type
+        )
+        self._logger = get_logger().bind(source=self.source, user=self.user)
+
+        raw_groups: dict[str, dict[str, Any | dict[str, Any]]] = self.executor.plan.context[
+            PLAN_CONTEXT_GROUPS
+        ]
+        groups: list[Group] = []
+
+        for group_id, group_properties in raw_groups.items():
+            group = self.handle_group(group_id, group_properties)
+            if not group:
+                return self.executor.stage_invalid("Failed to update groups. Please try again later.")
+            groups.append(group)
+
+        with transaction.atomic():
+            self.user.ak_groups.remove(
+                *self.user.ak_groups.filter(groupsourceconnection__source=self.source)
+            )
+            self.user.ak_groups.add(*groups)
+
         return self.executor.stage_ok()
 
     def post(self, request: HttpRequest) -> HttpResponse:

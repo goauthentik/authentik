@@ -113,9 +113,11 @@ class PlexAuth:
 class PlexSourceFlowManager(SourceFlowManager):
     """Flow manager for plex sources"""
 
-    connection_type = PlexSourceConnection
+    user_connection_type = PlexSourceConnection
 
-    def update_connection(self, connection: PlexSourceConnection, **kwargs) -> PlexSourceConnection:
+    def update_user_connection(
+        self, connection: PlexSourceConnection, **kwargs
+    ) -> PlexSourceConnection:
         """Set the access_token on the connection"""
         connection.plex_token = kwargs.get("plex_token")
         return connection

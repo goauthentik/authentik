@@ -13,7 +13,11 @@ from structlog.stdlib import get_logger
 
 from authentik.core.sources.flow_manager import SourceFlowManager
 from authentik.events.models import Event, EventAction
-from authentik.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
+from authentik.sources.oauth.models import (
+    GroupOAuthSourceConnection,
+    OAuthSource,
+    UserOAuthSourceConnection,
+)
 from authentik.sources.oauth.views.base import OAuthClientMixin
 
 LOGGER = get_logger()
@@ -108,9 +112,10 @@ class OAuthCallback(OAuthClientMixin, View):
 class OAuthSourceFlowManager(SourceFlowManager):
     """Flow manager for oauth sources"""
 
-    connection_type = UserOAuthSourceConnection
+    user_connection_type = UserOAuthSourceConnection
+    group_connection_type = GroupOAuthSourceConnection
 
-    def update_connection(
+    def update_user_connection(
         self,
         connection: UserOAuthSourceConnection,
         access_token: str | None = None,
