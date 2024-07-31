@@ -488,7 +488,9 @@ class GroupUpdateStage(StageView):
         for group_id, group_properties in raw_groups.items():
             group = self.handle_group(group_id, group_properties)
             if not group:
-                return self.executor.stage_invalid("Failed to update groups. Please try again later.")
+                return self.executor.stage_invalid(
+                    "Failed to update groups. Please try again later."
+                )
             groups.append(group)
 
         with transaction.atomic():
