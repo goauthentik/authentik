@@ -110,13 +110,14 @@ jobs:
           platforms: linux/amd64,linux/arm64
           context: .
           cache-from: type=registry,ref=ghcr.io/goauthentik/dev-${{ matrix.type }}:buildcache
-          cache-to: type=registry,ref=ghcr.io/goauthentik/dev-${{ matrix.type }}:buildcache,mode=max
+          cache-to: ${{ steps.ev.outputs.shouldBuild == 'true' && format('type=registry,ref=ghcr.io/goauthentik/dev-{0}:buildcache,mode=max', matrix.type) || '' }}
       - uses: actions/attest-build-provenance@v1
         id: attest
+        if: ${{ steps.ev.outputs.shouldBuild == 'true' }}
         with:
           subject-name: ${{ steps.ev.outputs.imageNames }}
           subject-digest: ${{ steps.push.outputs.digest }}
-          push-to-registry: ${{ steps.ev.outputs.shouldBuild == 'true' }}
+          push-to-registry: true
   build-binary:
     timeout-minutes: 120
     needs:
