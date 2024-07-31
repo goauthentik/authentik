@@ -58,7 +58,7 @@ def purge_password_history(sender, instance, **_):
         enabled=True
     )
 
-    if policy_binding_qs.exists():
-        # No-op; At least one UniquePasswordPolicy binding still exists
+    if policy_binding_qs.count() > 1:
+        # No-op; A UniquePasswordPolicy binding other than the one being deleted still exists
         return
     purge_password_history_table.delay()
