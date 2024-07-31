@@ -54,6 +54,7 @@ from authentik.events.utils import cleanse_dict
 from authentik.flows.models import FlowToken, Stage
 from authentik.lib.models import SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.utils.reflection import get_apps
 from authentik.outposts.models import OutpostServiceConnection
 from authentik.policies.models import Policy, PolicyBindingModel
 from authentik.policies.reputation.models import Reputation
@@ -136,6 +137,16 @@ def transaction_rollback():
         pass
 
 
+def rbac_models() -> dict:
+    models = {}
+    for app in get_apps():
+        for model in app.get_models():
+            if not is_model_allowed(model):
+                continue
+            models[model._meta.model_name] = app.label
+    return models
+
+
 class Importer:
     """Import Blueprint from raw dict or YAML/JSON"""
 
@@ -154,7 +165,10 @@ class Importer:
 
     def default_context(self):
         """Default context"""
-        return {"goauthentik.io/enterprise/licensed": LicenseKey.get_total().is_valid()}
+        return {
+            "goauthentik.io/enterprise/licensed": LicenseKey.get_total().is_valid(),
+            "goauthentik.io/rbac/models": rbac_models(),
+        }
 
     @staticmethod
     def from_string(yaml_input: str, context: dict | None = None) -> "Importer":
