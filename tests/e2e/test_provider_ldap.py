@@ -5,7 +5,6 @@ from time import sleep
 
 from docker.client import DockerClient, from_env
 from docker.models.containers import Container
-from guardian.shortcuts import get_anonymous_user
 from ldap3 import ALL, ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES, SUBTREE, Connection, Server
 from ldap3.core.exceptions import LDAPInvalidCredentialsResult
 
@@ -180,15 +179,13 @@ class TestProviderLDAP(SeleniumTestCase):
         )
         with self.assertRaises(LDAPInvalidCredentialsResult):
             _connection.bind()
-        anon = get_anonymous_user()
         self.assertTrue(
             Event.objects.filter(
                 action=EventAction.LOGIN_FAILED,
                 user={
-                    "pk": anon.pk,
-                    "email": anon.email,
-                    "username": anon.username,
-                    "is_anonymous": True,
+                    "pk": self.user.pk,
+                    "email": self.user.email,
+                    "username": self.user.username,
                 },
             ).exists(),
         )
