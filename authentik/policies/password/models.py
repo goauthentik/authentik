@@ -210,7 +210,7 @@ class UniquePasswordPolicy(Policy):
         password_history = UserPasswordHistory.objects.filter(user=request.user)
 
         # If no passwords are found: Policy resolves with “allow”
-        if len(password_history) == 0:
+        if not password_history:
             return PolicyResult(True)
 
         # For each password returned from audit table:
@@ -231,6 +231,9 @@ class UniquePasswordPolicy(Policy):
         try:
             hasher = identify_hasher(old_password)
         except ValueError:
+            LOGGER.warning(
+                "Could not load hash algorithm for old password.",
+            )
             # TODO: Define behavior if hasher cannot be identified or is unsupported
             return False
 
