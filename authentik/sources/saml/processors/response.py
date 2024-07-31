@@ -216,7 +216,9 @@ class ResponseProcessor:
                 attributes[key].append(value.text)
         # Flatten all lists in the dict
         for key, value in attributes.items():
-            attributes[key] = BaseEvaluator.expr_flatten(value)
+            #SH-5796 permanent patch - allow lists in user attributes
+            if not (key.startswith("attributes.") and len(value) > 1):
+                attributes[key] = BaseEvaluator.expr_flatten(value)
         attributes["username"] = self._get_name_id().text
         return attributes
 

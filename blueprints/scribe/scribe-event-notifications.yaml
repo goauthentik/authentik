@@ -58,6 +58,22 @@ entries:
       \    applicable_sources = [\"okta-test-saml\", \"okta-marsh-saml\"]\n\
       \    intersection = set(user_sources) & set(applicable_sources)\n\
       \    return next(iter(intersection)) if intersection else None\n\n\
+      def scribe_teams(user):\n\
+      \    scribe_teams = user.attributes.get(\"scribe-teams\", None) if user is not None else None\n\
+      \    if not scribe_teams:\n\
+      \        return None\n\
+      \    if isinstance(scribe_teams, list):\n\
+      \        return ','.join(map(str, scribe_teams))\n\
+      \    else:\n\
+      \        return scribe_teams\n\n\
+      def scribe_team_list(user):\n\
+      \    scribe_teams = user.attributes.get(\"scribe-teams\", None) if user is not None else None\n\
+      \    if not scribe_teams:\n\
+      \        return None\n\
+      \    if isinstance(scribe_teams, list):\n\
+      \        return scribe_teams\n\
+      \    else:\n\
+      \        return str(scribe_teams).split(',')\n\n\
       action = notification.event.action\n\
       username = notification.event.user.get(\"username\", None) if action != \"login_failed\" else notification.event.context.get(\"username\", None)\n\
       email = notification.event.user.get(\"email\", None) if action != \"login_failed\" else notification.event.context.get(\"username\", None)\n\
@@ -74,7 +90,8 @@ entries:
       \    \"args\": notification.event.context.get(\"http_request\", {}).get(\"args\", None),\n\
       \    \"authentik_internal_id\": user.pk if user is not None else None,\n\
       \    \"customer_source\": customer_source(user),\n\
-      \    \"scribe_teams\": user.attributes.get(\"scribe-teams\", None) if user is not None else None,\n\
+      \    \"scribe_teams\": scribe_teams(user),\n\
+      \    \"scribe_team_list\": scribe_team_list(user),\n\
       }", !Context sh_service_account_group_name]
     name: scribe-hub-notification-mapping
   conditions: []
