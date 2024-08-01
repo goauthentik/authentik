@@ -83,9 +83,6 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
 
     async send(data: OAuthSource): Promise<OAuthSource> {
         data.providerType = (this.providerType?.name || "") as ProviderTypeEnum;
-        if (data.groupsClaim === "") {
-            data.groupsClaim = null;
-        }
         let source: OAuthSource;
         if (this.instance) {
             source = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthPartialUpdate({
@@ -243,21 +240,6 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                               <p class="pf-c-form__helper-text">
                                   ${msg(
                                       "JSON Web Key URL. Keys from the URL will be used to validate JWTs from this source.",
-                                  )}
-                              </p>
-                          </ak-form-element-horizontal>
-                          <ak-form-element-horizontal
-                              label=${msg("OIDC Groups claim")}
-                              name="groupsClaim"
-                          >
-                              <input
-                                  type="text"
-                                  value="${first(this.instance?.groupsClaim, "")}"
-                                  class="pf-c-form-control"
-                              />
-                              <p class="pf-c-form__helper-text">
-                                  ${msg(
-                                      "Sync groups and group membership from the source. Only use this option with sources that you control, as otherwise unwanted users might get added to groups with superuser permissions.",
                                   )}
                               </p>
                           </ak-form-element-horizontal>
