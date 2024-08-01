@@ -48,6 +48,8 @@ from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 from authentik.stages.user_write.stage import PLAN_CONTEXT_USER_PATH
 
+LOGGER = get_logger()
+
 SESSION_KEY_OVERRIDE_FLOW_TOKEN = "authentik/flows/source_override_flow_token"  # nosec
 PLAN_CONTEXT_SOURCE_GROUPS = "source_groups"
 
@@ -429,16 +431,16 @@ class GroupUpdateStage(StageView):
             SourceGroupMatchingModes.NAME_DENY,
         ]:
             if not group_properties.get("name", None):
-                self._logger.warning(
+                LOGGER.warning(
                     "Refusing to use none group name", source=self.source, group_id=group_id
                 )
                 return Action.DENY, None
             query = Q(name__exact=group_properties.get("name"))
-        self._logger.debug("trying to link with existing group", query=query, group_id=group_id)
+        LOGGER.debug("trying to link with existing group", source=self.source, query=query, group_id=group_id)
         matching_groups = Group.objects.filter(query)
         # No matching groups, always enroll
         if not matching_groups.exists():
-            self._logger.debug("no matching groups found, enrolling", group_id=group_id)
+            LOGGER.debug("no matching groups found, enrolling", source=self.source, group_id=group_id)
             return Action.ENROLL, new_connection
 
         group = matching_groups.first()
@@ -450,7 +452,7 @@ class GroupUpdateStage(StageView):
         if self.source.group_matching_mode in [
             SourceGroupMatchingModes.NAME_DENY,
         ]:
-            self._logger.info("denying source because group exists", group=group, group_id=group_id)
+            LOGGER.info("denying source because group exists", source=self.source, group=group, group_id=group_id)
             return Action.DENY, None
         # Should never get here as default enroll case is returned above.
         return Action.DENY, None  # pragma: no cover
@@ -466,20 +468,18 @@ class GroupUpdateStage(StageView):
             return group
         elif action == Action.LINK:
             group = connection.group
-            group.update_attributes(**group_properties)
+            group.update_attributes(group_properties)
             connection.save()
             return group
 
         return None
 
-    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        """Stage used after the user has been enrolled to sync their groups from source data"""
+    def handle_groups(self) -> bool:
         self.source: Source = self.executor.plan.context[PLAN_CONTEXT_SOURCE]
         self.user: User = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
         self.group_connection_type: GroupSourceConnection = (
             self.executor.current_stage.group_connection_type
         )
-        self._logger = get_logger().bind(source=self.source, user=self.user)
 
         raw_groups: dict[str, dict[str, Any | dict[str, Any]]] = self.executor.plan.context[
             PLAN_CONTEXT_SOURCE_GROUPS
@@ -489,9 +489,7 @@ class GroupUpdateStage(StageView):
         for group_id, group_properties in raw_groups.items():
             group = self.handle_group(group_id, group_properties)
             if not group:
-                return self.executor.stage_invalid(
-                    "Failed to update groups. Please try again later."
-                )
+                return False
             groups.append(group)
 
         with transaction.atomic():
@@ -500,7 +498,16 @@ class GroupUpdateStage(StageView):
             )
             self.user.ak_groups.add(*groups)
 
-        return self.executor.stage_ok()
+        return True
+
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Stage used after the user has been enrolled to sync their groups from source data"""
+        if self.handle_groups():
+            return self.executor.stage_ok()
+        else:
+            return self.executor.stage_invalid(
+                "Failed to update groups. Please try again later."
+            )
 
     def post(self, request: HttpRequest) -> HttpResponse:
         """Wrapper for post requests"""
