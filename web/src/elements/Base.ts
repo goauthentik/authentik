@@ -126,7 +126,7 @@ export class AKElement extends LitElement {
                         ev?.matches || this._mediaMatcher?.matches
                             ? UiThemeEnum.Light
                             : UiThemeEnum.Dark;
-                    this._activateTheme(root, theme);
+                    this._activateTheme(theme, root);
                 };
                 this._mediaMatcherHandler(undefined);
                 this._mediaMatcher.addEventListener("change", this._mediaMatcherHandler);
@@ -138,7 +138,7 @@ export class AKElement extends LitElement {
             this._mediaMatcher.removeEventListener("change", this._mediaMatcherHandler);
             this._mediaMatcher = undefined;
         }
-        this._activateTheme(root, theme);
+        this._activateTheme(theme, root);
     }
 
     static themeToStylesheet(theme?: UiThemeEnum): CSSStyleSheet | undefined {
@@ -148,7 +148,11 @@ export class AKElement extends LitElement {
         return undefined;
     }
 
-    _activateTheme(root: DocumentOrShadowRoot, theme: UiThemeEnum) {
+    /**
+     * Directly activate a given theme, accepts multiple document/ShadowDOMs to apply the stylesheet
+     * to. The stylesheets are applied to each DOM in order. Does nothing if the given theme is already active.
+     */
+    _activateTheme(theme: UiThemeEnum, ...roots: DocumentOrShadowRoot[]) {
         if (theme === this._activeTheme) {
             return;
         }
@@ -163,12 +167,19 @@ export class AKElement extends LitElement {
         this.setAttribute("theme", theme);
         const stylesheet = AKElement.themeToStylesheet(theme);
         const oldStylesheet = AKElement.themeToStylesheet(this._activeTheme);
-        if (stylesheet) {
-            root.adoptedStyleSheets = [...root.adoptedStyleSheets, ensureCSSStyleSheet(stylesheet)];
-        }
-        if (oldStylesheet) {
-            root.adoptedStyleSheets = root.adoptedStyleSheets.filter((v) => v !== oldStylesheet);
-        }
+        roots.forEach((root) => {
+            if (stylesheet) {
+                root.adoptedStyleSheets = [
+                    ...root.adoptedStyleSheets,
+                    ensureCSSStyleSheet(stylesheet),
+                ];
+            }
+            if (oldStylesheet) {
+                root.adoptedStyleSheets = root.adoptedStyleSheets.filter(
+                    (v) => v !== oldStylesheet,
+                );
+            }
+        });
         this._activeTheme = theme;
         this.requestUpdate();
     }
