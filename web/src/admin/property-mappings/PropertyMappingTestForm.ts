@@ -21,6 +21,7 @@ import {
     PropertyMappingTestRequest,
     PropertyMappingTestResult,
     PropertymappingsApi,
+    RbacPermissionsAssignedByUsersListModelEnum,
     User,
 } from "@goauthentik/api";
 
@@ -67,7 +68,8 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
     }
 
     renderExampleButtons() {
-        return this.mapping?.metaModelName === "authentik_sources_ldap.ldappropertymapping"
+        return this.mapping?.metaModelName ===
+            RbacPermissionsAssignedByUsersListModelEnum.SourcesLdapLdapsourcepropertymapping
             ? html`<p>${msg("Example context data")}</p>
                   ${this.renderExampleLDAP()}`
             : nothing;

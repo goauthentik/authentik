@@ -707,6 +707,11 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
                     "name",
                 ]
             ),
+            models.Index(
+                fields=[
+                    "enabled",
+                ]
+            ),
         ]
 
 

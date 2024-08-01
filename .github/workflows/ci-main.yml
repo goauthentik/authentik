@@ -285,6 +285,7 @@ jobs:
         with:
           image-name: ghcr.io/goauthentik/dev-server
       - name: Comment on PR
+        if: ${{ steps.ev.outputs.shouldBuild == 'true' }}
         uses: ./.github/actions/comment-pr-instructions
         with:
           tag: ${{ steps.ev.outputs.imageMainTag }}
