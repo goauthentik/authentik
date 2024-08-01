@@ -46,9 +46,10 @@ from authentik.policies.utils import delete_none_values
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
-from authentik.stages.user_write.stage import PLAN_CONTEXT_GROUPS, PLAN_CONTEXT_USER_PATH
+from authentik.stages.user_write.stage import PLAN_CONTEXT_USER_PATH
 
 SESSION_KEY_OVERRIDE_FLOW_TOKEN = "authentik/flows/source_override_flow_token"  # nosec
+PLAN_CONTEXT_SOURCE_GROUPS = "source_groups"
 
 
 class Action(Enum):
@@ -263,7 +264,7 @@ class SourceFlowManager:
                 PLAN_CONTEXT_SSO: True,
                 PLAN_CONTEXT_SOURCE: self.source,
                 PLAN_CONTEXT_SOURCES_CONNECTION: connection,
-                PLAN_CONTEXT_GROUPS: self.groups_properties,
+                PLAN_CONTEXT_SOURCE_GROUPS: self.groups_properties,
             }
         )
         flow_context.update(self.policy_context)
@@ -481,7 +482,7 @@ class GroupUpdateStage(StageView):
         self._logger = get_logger().bind(source=self.source, user=self.user)
 
         raw_groups: dict[str, dict[str, Any | dict[str, Any]]] = self.executor.plan.context[
-            PLAN_CONTEXT_GROUPS
+            PLAN_CONTEXT_SOURCE_GROUPS
         ]
         groups: list[Group] = []
 
