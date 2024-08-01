@@ -1,7 +1,7 @@
 """transfer common classes"""
 
 from collections import OrderedDict
-from collections.abc import Iterable, Mapping
+from collections.abc import Generator, Iterable, Mapping
 from copy import copy
 from dataclasses import asdict, dataclass, field, is_dataclass
 from enum import Enum
@@ -59,6 +59,15 @@ class BlueprintEntryDesiredState(Enum):
 
 
 @dataclass
+class BlueprintEntryPermission:
+    """Describe object-level permissions"""
+
+    permission: Union[str, "YAMLTag"]
+    user: Union[int, "YAMLTag", None] = field(default=None)
+    role: Union[str, "YAMLTag", None] = field(default=None)
+
+
+@dataclass
 class BlueprintEntry:
     """Single entry of a blueprint"""
 
@@ -69,6 +78,7 @@ class BlueprintEntry:
     conditions: list[Any] = field(default_factory=list)
     identifiers: dict[str, Any] = field(default_factory=dict)
     attrs: dict[str, Any] | None = field(default_factory=dict)
+    permissions: list[BlueprintEntryPermission] = field(default_factory=list)
 
     id: str | None = None
 
@@ -149,6 +159,17 @@ class BlueprintEntry:
     def get_model(self, blueprint: "Blueprint") -> str:
         """Get the blueprint model, with yaml tags resolved if present"""
         return str(self.tag_resolver(self.model, blueprint))
+
+    def get_permissions(
+        self, blueprint: "Blueprint"
+    ) -> Generator[BlueprintEntryPermission, None, None]:
+        """Get permissions of this entry, with all yaml tags resolved"""
+        for perm in self.permissions:
+            yield BlueprintEntryPermission(
+                permission=self.tag_resolver(perm.permission, blueprint),
+                user=self.tag_resolver(perm.user, blueprint),
+                role=self.tag_resolver(perm.role, blueprint),
+            )
 
     def check_all_conditions_match(self, blueprint: "Blueprint") -> bool:
         """Check all conditions of this entry match (evaluate to True)"""

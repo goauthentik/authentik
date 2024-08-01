@@ -16,6 +16,7 @@ from django.db.models.query_utils import Q
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
 from guardian.models import UserObjectPermission
+from guardian.shortcuts import assign_perm
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import BaseSerializer, Serializer
 from structlog.stdlib import BoundLogger, get_logger
@@ -35,6 +36,7 @@ from authentik.core.models import (
     PropertyMapping,
     Provider,
     Source,
+    User,
     UserSourceConnection,
 )
 from authentik.enterprise.license import LicenseKey
@@ -60,6 +62,7 @@ from authentik.policies.models import Policy, PolicyBindingModel
 from authentik.policies.reputation.models import Reputation
 from authentik.providers.oauth2.models import AccessToken, AuthorizationCode, RefreshToken
 from authentik.providers.scim.models import SCIMProviderGroup, SCIMProviderUser
+from authentik.rbac.models import Role
 from authentik.sources.scim.models import SCIMSourceGroup, SCIMSourceUser
 from authentik.stages.authenticator_webauthn.models import WebAuthnDeviceType
 from authentik.tenants.models import Tenant
@@ -334,6 +337,15 @@ class Importer:
             ) from exc
         return serializer
 
+    def _apply_permissions(self, instance: Model, entry: BlueprintEntry):
+        """Apply object-level permissions for an entry"""
+        for perm in entry.get_permissions(self._import):
+            if perm.user is not None:
+                assign_perm(perm.permission, User.objects.get(pk=perm.user), instance)
+            if perm.role is not None:
+                role = Role.objects.get(pk=perm.role)
+                role.assign_permission(perm.permission, instance)
+
     def apply(self) -> bool:
         """Apply (create/update) models yaml, in database transaction"""
         try:
@@ -398,6 +410,7 @@ class Importer:
                 if "pk" in entry.identifiers:
                     self.__pk_map[entry.identifiers["pk"]] = instance.pk
                 entry._state = BlueprintEntryState(instance)
+                self._apply_permissions(instance, entry)
             elif state == BlueprintEntryDesiredState.ABSENT:
                 instance: Model | None = serializer.instance
                 if instance.pk:
