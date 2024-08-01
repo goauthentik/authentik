@@ -1,7 +1,8 @@
-import "@goauthentik/admin/property-mappings/PropertyMappingLDAPForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingLDAPSourceForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingNotification";
 import "@goauthentik/admin/property-mappings/PropertyMappingRACForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingSAMLForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingSCIMSourceForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingScopeForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingTestForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
@@ -73,5 +74,11 @@ export class PropertyMappingWizard extends AKElement {
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-wizard>
         `;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-property-mapping-wizard": PropertyMappingWizard;
     }
 }

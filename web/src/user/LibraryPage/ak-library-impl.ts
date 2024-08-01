@@ -165,7 +165,7 @@ export class LibraryPage extends AKElement {
     }
 
     renderState() {
-        if (this.apps.length === 0) {
+        if (!this.apps.some(appHasLaunchUrl)) {
             return html`<ak-library-application-empty-list
                 ?isadmin=${this.isAdmin}
             ></ak-library-application-empty-list>`;

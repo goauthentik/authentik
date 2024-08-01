@@ -117,3 +117,9 @@ export class LibraryPage extends AKElement {
         return this.ready ? this.running() : this.loading();
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-library": LibraryPage;
+    }
+}

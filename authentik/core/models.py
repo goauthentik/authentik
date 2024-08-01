@@ -29,6 +29,7 @@ from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.lib.avatars import get_avatar
 from authentik.lib.expression.exceptions import ControlFlowException
 from authentik.lib.generators import generate_id
+from authentik.lib.merge import MERGE_LIST_UNIQUE
 from authentik.lib.models import (
     CreatedUpdatedModel,
     DomainlessFormattedURLValidator,
@@ -101,6 +102,38 @@ class UserTypes(models.TextChoices):
     INTERNAL_SERVICE_ACCOUNT = "internal_service_account"
 
 
+class AttributesMixin(models.Model):
+    """Adds an attributes property to a model"""
+
+    attributes = models.JSONField(default=dict, blank=True)
+
+    class Meta:
+        abstract = True
+
+    def update_attributes(self, properties: dict[str, Any]):
+        """Update fields and attributes, but correctly by merging dicts"""
+        for key, value in properties.items():
+            if key == "attributes":
+                continue
+            setattr(self, key, value)
+        final_attributes = {}
+        MERGE_LIST_UNIQUE.merge(final_attributes, self.attributes)
+        MERGE_LIST_UNIQUE.merge(final_attributes, properties.get("attributes", {}))
+        self.attributes = final_attributes
+        self.save()
+
+    @classmethod
+    def update_or_create_attributes(
+        cls, query: dict[str, Any], properties: dict[str, Any]
+    ) -> tuple[models.Model, bool]:
+        """Same as django's update_or_create but correctly updates attributes by merging dicts"""
+        instance = cls.objects.filter(**query).first()
+        if not instance:
+            return cls.objects.create(**properties), True
+        instance.update_attributes(properties)
+        return instance, False
+
+
 class GroupQuerySet(CTEQuerySet):
     def with_children_recursive(self):
         """Recursively get all groups that have the current queryset as parents
@@ -135,7 +168,7 @@ class GroupQuerySet(CTEQuerySet):
         return cte.join(Group, group_uuid=cte.col.group_uuid).with_cte(cte)
 
 
-class Group(SerializerModel):
+class Group(SerializerModel, AttributesMixin):
     """Group model which supports a basic hierarchy and has attributes"""
 
     group_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
@@ -155,9 +188,26 @@ class Group(SerializerModel):
         on_delete=models.SET_NULL,
         related_name="children",
     )
-    attributes = models.JSONField(default=dict, blank=True)
 
     objects = GroupQuerySet.as_manager()
+
+    class Meta:
+        unique_together = (
+            (
+                "name",
+                "parent",
+            ),
+        )
+        indexes = [models.Index(fields=["name"])]
+        verbose_name = _("Group")
+        verbose_name_plural = _("Groups")
+        permissions = [
+            ("add_user_to_group", _("Add user to group")),
+            ("remove_user_from_group", _("Remove user from group")),
+        ]
+
+    def __str__(self):
+        return f"Group {self.name}"
 
     @property
     def serializer(self) -> Serializer:
@@ -182,24 +232,6 @@ class Group(SerializerModel):
         if not isinstance(self, QuerySet):
             qs = Group.objects.filter(group_uuid=self.group_uuid)
         return qs.with_children_recursive()
-
-    def __str__(self):
-        return f"Group {self.name}"
-
-    class Meta:
-        unique_together = (
-            (
-                "name",
-                "parent",
-            ),
-        )
-        indexes = [models.Index(fields=["name"])]
-        verbose_name = _("Group")
-        verbose_name_plural = _("Groups")
-        permissions = [
-            ("add_user_to_group", _("Add user to group")),
-            ("remove_user_from_group", _("Remove user from group")),
-        ]
 
 
 class UserQuerySet(models.QuerySet):
@@ -226,7 +258,7 @@ class UserManager(DjangoUserManager):
         return self.get_queryset().exclude_anonymous()
 
 
-class User(SerializerModel, GuardianUserMixin, AbstractUser):
+class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
     """authentik User model, based on django's contrib auth user model."""
 
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
@@ -238,9 +270,29 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
     ak_groups = models.ManyToManyField("Group", related_name="users")
     password_change_date = models.DateTimeField(auto_now_add=True)
 
-    attributes = models.JSONField(default=dict, blank=True)
-
     objects = UserManager()
+
+    class Meta:
+        verbose_name = _("User")
+        verbose_name_plural = _("Users")
+        permissions = [
+            ("reset_user_password", _("Reset Password")),
+            ("impersonate", _("Can impersonate other users")),
+            ("assign_user_permissions", _("Can assign permissions to users")),
+            ("unassign_user_permissions", _("Can unassign permissions from users")),
+            ("preview_user", _("Can preview user data sent to providers")),
+            ("view_user_applications", _("View applications the user has access to")),
+        ]
+        indexes = [
+            models.Index(fields=["last_login"]),
+            models.Index(fields=["password_change_date"]),
+            models.Index(fields=["uuid"]),
+            models.Index(fields=["path"]),
+            models.Index(fields=["type"]),
+        ]
+
+    def __str__(self):
+        return self.username
 
     @staticmethod
     def default_path() -> str:
@@ -322,25 +374,6 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
     def avatar(self) -> str:
         """Get avatar, depending on authentik.avatar setting"""
         return get_avatar(self)
-
-    class Meta:
-        verbose_name = _("User")
-        verbose_name_plural = _("Users")
-        permissions = [
-            ("reset_user_password", _("Reset Password")),
-            ("impersonate", _("Can impersonate other users")),
-            ("assign_user_permissions", _("Can assign permissions to users")),
-            ("unassign_user_permissions", _("Can unassign permissions from users")),
-            ("preview_user", _("Can preview user data sent to providers")),
-            ("view_user_applications", _("View applications the user has access to")),
-        ]
-        indexes = [
-            models.Index(fields=["last_login"]),
-            models.Index(fields=["password_change_date"]),
-            models.Index(fields=["uuid"]),
-            models.Index(fields=["path"]),
-            models.Index(fields=["type"]),
-        ]
 
 
 class Provider(SerializerModel):
@@ -559,7 +592,12 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     user_path_template = models.TextField(default="goauthentik.io/sources/%(slug)s")
 
     enabled = models.BooleanField(default=True)
-    property_mappings = models.ManyToManyField("PropertyMapping", default=None, blank=True)
+    user_property_mappings = models.ManyToManyField(
+        "PropertyMapping", default=None, blank=True, related_name="source_userpropertymappings_set"
+    )
+    group_property_mappings = models.ManyToManyField(
+        "PropertyMapping", default=None, blank=True, related_name="source_grouppropertymappings_set"
+    )
     icon = models.FileField(
         upload_to="source-icons/",
         default=None,
@@ -623,6 +661,11 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         """Return component used to edit this object"""
         raise NotImplementedError
 
+    @property
+    def property_mapping_type(self) -> "type[PropertyMapping]":
+        """Return property mapping type used by this object"""
+        raise NotImplementedError
+
     def ui_login_button(self, request: HttpRequest) -> UILoginButton | None:
         """If source uses a http-based flow, return UI Information about the login
         button. If source doesn't use http-based flow, return None."""
@@ -632,6 +675,14 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         """Entrypoint to integrate with User settings. Can either return None if no
         user settings are available, or UserSettingSerializer."""
         return None
+
+    def get_base_user_properties(self, **kwargs) -> dict[str, Any | dict[str, Any]]:
+        """Get base properties for a user to build final properties upon."""
+        raise NotImplementedError
+
+    def get_base_group_properties(self, **kwargs) -> dict[str, Any | dict[str, Any]]:
+        """Get base properties for a group to build final properties upon."""
+        raise NotImplementedError
 
     def __str__(self):
         return str(self.name)

@@ -53,3 +53,9 @@ export class ActionButton extends BaseTaskButton {
 }
 
 export default ActionButton;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-action-button": ActionButton;
+    }
+}

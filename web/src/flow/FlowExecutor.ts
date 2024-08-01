@@ -11,6 +11,7 @@ import { WebsocketClient } from "@goauthentik/common/ws";
 import { Interface } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/LoadingOverlay";
 import "@goauthentik/elements/ak-locale-context";
+import { themeImage } from "@goauthentik/elements/utils/images";
 import "@goauthentik/flow/sources/apple/AppleLoginInit";
 import "@goauthentik/flow/sources/plex/PlexLoginInit";
 import "@goauthentik/flow/stages/FlowErrorStage";
@@ -33,7 +34,6 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
     CapabilitiesEnum,
-    ChallengeChoices,
     ChallengeTypes,
     ContextualFlowInfo,
     FetchError,
@@ -254,7 +254,6 @@ export class FlowExecutor extends Interface implements StageHost {
             body = error.message;
         }
         const challenge: FlowErrorChallenge = {
-            type: ChallengeChoices.Native,
             component: "ak-stage-flow-error",
             error: body,
             requestId: "",
@@ -280,7 +279,11 @@ export class FlowExecutor extends Interface implements StageHost {
         }
     }
 
-    async renderChallengeNativeElement(): Promise<TemplateResult> {
+    async renderChallenge(): Promise<TemplateResult> {
+        if (!this.challenge) {
+            return html`<ak-empty-state ?loading=${true} header=${msg("Loading")}>
+            </ak-empty-state>`;
+        }
         switch (this.challenge?.component) {
             case "ak-stage-access-denied":
                 await import("@goauthentik/flow/stages/access_denied/AccessDeniedStage");
@@ -411,38 +414,26 @@ export class FlowExecutor extends Interface implements StageHost {
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-flow-error>`;
-            default:
-                return html`Invalid native challenge element`;
-        }
-    }
-
-    async renderChallenge(): Promise<TemplateResult> {
-        if (!this.challenge) {
-            return html`<ak-empty-state ?loading=${true} header=${msg("Loading")}>
-            </ak-empty-state>`;
-        }
-        switch (this.challenge.type) {
-            case ChallengeChoices.Redirect:
+            case "xak-flow-redirect":
                 return html`<ak-stage-redirect
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                     ?promptUser=${this.inspectorOpen}
                 >
                 </ak-stage-redirect>`;
-            case ChallengeChoices.Shell:
+            case "xak-flow-shell":
                 return html`${unsafeHTML((this.challenge as ShellChallenge).body)}`;
-            case ChallengeChoices.Native:
-                return await this.renderChallengeNativeElement();
             default:
-                console.debug(`authentik/flows: unexpected data type ${this.challenge.type}`);
-                return html``;
+                return html`Invalid native challenge element`;
         }
     }
 
     renderChallengeWrapper(): TemplateResult {
         const logo = html`<div class="pf-c-login__main-header pf-c-brand ak-brand">
             <img
-                src="${first(this.brand?.brandingLogo, globalAK()?.brand.brandingLogo, "")}"
+                src="${themeImage(
+                    first(this.brand?.brandingLogo, globalAK()?.brand.brandingLogo, ""),
+                )}"
                 alt="authentik Logo"
             />
         </div>`;
@@ -503,19 +494,17 @@ export class FlowExecutor extends Interface implements StageHost {
                                         <footer class="pf-c-login__footer">
                                             <ul class="pf-c-list pf-m-inline">
                                                 ${this.brand?.uiFooterLinks?.map((link) => {
+                                                    if (link.href) {
+                                                        return html`<li>
+                                                            <a href="${link.href}">${link.name}</a>
+                                                        </li>`;
+                                                    }
                                                     return html`<li>
-                                                        <a href="${link.href || ""}"
-                                                            >${link.name}</a
-                                                        >
+                                                        <span>${link.name}</span>
                                                     </li>`;
                                                 })}
                                                 <li>
-                                                    <a
-                                                        href="https://goauthentik.io?utm_source=authentik&amp;utm_medium=flow"
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        >${msg("Powered by authentik")}</a
-                                                    >
+                                                    <span>${msg("Powered by authentik")}</span>
                                                 </li>
                                             </ul>
                                         </footer>
@@ -528,5 +517,11 @@ export class FlowExecutor extends Interface implements StageHost {
                 </div>
             </div>
         </ak-locale-context>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-flow-executor": FlowExecutor;
     }
 }

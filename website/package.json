@@ -4,8 +4,8 @@
     "private": true,
     "license": "MIT",
     "scripts": {
-        "build": "cp ../docker-compose.yml static/docker-compose.yml && cp ../schema.yml static/schema.yaml && docusaurus gen-api-docs all && docusaurus build",
-        "build-bundled": "cp ../schema.yml static/schema.yaml && docusaurus gen-api-docs all && docusaurus build",
+        "build": "cp ../docker-compose.yml static/docker-compose.yml && cp ../schema.yml static/schema.yaml && docusaurus gen-api-docs all && cross-env NODE_OPTIONS='--max_old_space_size=65536' docusaurus build",
+        "build-bundled": "cp ../schema.yml static/schema.yaml && docusaurus gen-api-docs all && cross-env NODE_OPTIONS='--max_old_space_size=65536' docusaurus build",
         "deploy": "docusaurus deploy",
         "docusaurus": "docusaurus",
         "lint:lockfile": "lockfile-lint --path package.json --type npm --allowed-hosts npm --validate-https",
@@ -28,7 +28,7 @@
         "disqus-react": "^1.1.5",
         "docusaurus-plugin-openapi-docs": "^3.0.0-beta.10",
         "docusaurus-theme-openapi-docs": "^3.0.1",
-        "postcss": "^8.4.39",
+        "postcss": "^8.4.40",
         "prism-react-renderer": "^2.3.1",
         "react": "^18.3.1",
         "react-before-after-slider-component": "^1.1.8",
@@ -55,9 +55,10 @@
         "@docusaurus/tsconfig": "^3.4.0",
         "@docusaurus/types": "^3.3.2",
         "@types/react": "^18.3.3",
+        "cross-env": "^7.0.3",
         "lockfile-lint": "^4.14.0",
-        "prettier": "3.3.2",
-        "typescript": "~5.5.3"
+        "prettier": "3.3.3",
+        "typescript": "~5.5.4"
     },
     "engines": {
         "node": ">=20"

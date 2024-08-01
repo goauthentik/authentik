@@ -20,6 +20,7 @@ from authentik.core.api.utils import JSONDictField, ModelSerializer, PassiveSeri
 from authentik.core.models import Provider
 from authentik.enterprise.license import LicenseKey
 from authentik.enterprise.providers.rac.models import RACProvider
+from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.outposts.api.service_connections import ServiceConnectionSerializer
 from authentik.outposts.apps import MANAGED_OUTPOST, MANAGED_OUTPOST_NAME
 from authentik.outposts.models import (
@@ -49,6 +50,10 @@ class OutpostSerializer(ModelSerializer):
     service_connection_obj = ServiceConnectionSerializer(
         source="service_connection", read_only=True
     )
+    refresh_interval_s = SerializerMethodField()
+
+    def get_refresh_interval_s(self, obj: Outpost) -> int:
+        return int(timedelta_from_string(obj.config.refresh_interval).total_seconds())
 
     def validate_name(self, name: str) -> str:
         """Validate name (especially for embedded outpost)"""
@@ -84,7 +89,8 @@ class OutpostSerializer(ModelSerializer):
     def validate_config(self, config) -> dict:
         """Check that the config has all required fields"""
         try:
-            from_dict(OutpostConfig, config)
+            parsed = from_dict(OutpostConfig, config)
+            timedelta_string_validator(parsed.refresh_interval)
         except DaciteError as exc:
             raise ValidationError(f"Failed to validate config: {str(exc)}") from exc
         return config
@@ -99,6 +105,7 @@ class OutpostSerializer(ModelSerializer):
             "providers_obj",
             "service_connection",
             "service_connection_obj",
+            "refresh_interval_s",
             "token_identifier",
             "config",
             "managed",

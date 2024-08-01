@@ -1,5 +1,6 @@
 """test OAuth Source"""
 
+from json import loads
 from pathlib import Path
 from time import sleep
 from typing import Any
@@ -154,8 +155,7 @@ class TestSourceOAuth2(SeleniumTestCase):
         prompt_stage.find_element(By.CSS_SELECTOR, "input[name=username]").send_keys(Keys.ENTER)
 
         # Wait until we've logged in
-        self.wait_for_url(self.if_user_url("/library"))
-        self.driver.get(self.if_user_url("/settings"))
+        self.wait_for_url(self.if_user_url())
 
         self.assert_user(User(username="foo", name="admin", email="admin@example.com"))
 
@@ -190,7 +190,44 @@ class TestSourceOAuth2(SeleniumTestCase):
         self.driver.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
 
         # Wait until we've logged in
-        self.wait_for_url(self.if_user_url("/library"))
-        self.driver.get(self.if_user_url("/settings"))
+        self.wait_for_url(self.if_user_url())
 
         self.assert_user(User(username="foo", name="admin", email="admin@example.com"))
+
+    @retry()
+    @apply_blueprint(
+        "default/flow-default-authentication-flow.yaml",
+        "default/flow-default-invalidation-flow.yaml",
+    )
+    @apply_blueprint(
+        "default/flow-default-source-authentication.yaml",
+        "default/flow-default-source-enrollment.yaml",
+        "default/flow-default-source-pre-authentication.yaml",
+    )
+    def test_oauth_link(self):
+        """test OAuth Source link OIDC"""
+        self.create_objects()
+        self.driver.get(self.live_server_url)
+        self.login()
+
+        self.driver.get(
+            self.url("authentik_sources_oauth:oauth-client-login", source_slug=self.slug)
+        )
+
+        # Now we should be at the IDP, wait for the login field
+        self.wait.until(ec.presence_of_element_located((By.ID, "login")))
+        self.driver.find_element(By.ID, "login").send_keys("admin@example.com")
+        self.driver.find_element(By.ID, "password").send_keys("password")
+        self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
+
+        # Wait until we're logged in
+        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "button[type=submit]")))
+        self.driver.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
+
+        self.driver.get(self.url("authentik_api:usersourceconnection-list") + "?format=json")
+        body_json = loads(self.driver.find_element(By.CSS_SELECTOR, "pre").text)
+        results = body_json["results"]
+        self.assertEqual(len(results), 1)
+        connection = results[0]
+        self.assertEqual(connection["source"]["slug"], self.slug)
+        self.assertEqual(connection["user"], self.user.pk)

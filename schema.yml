@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2024.6.0
+  version: 2024.6.2
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -9641,40 +9641,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /outposts/ldap/{id}/:
-    get:
-      operationId: outposts_ldap_retrieve
-      description: LDAPProvider Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this LDAP Provider.
-        required: true
-      tags:
-      - outposts
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LDAPOutpostConfig'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
   /outposts/proxy/:
     get:
       operationId: outposts_proxy_list
@@ -9718,40 +9684,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PaginatedProxyOutpostConfigList'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /outposts/proxy/{id}/:
-    get:
-      operationId: outposts_proxy_retrieve
-      description: ProxyProvider Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Proxy Provider.
-        required: true
-      tags:
-      - outposts
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProxyOutpostConfig'
           description: ''
         '400':
           content:
@@ -9821,11 +9753,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /outposts/radius/{id}/:
+  /outposts/radius/{id}/check_access/:
     get:
-      operationId: outposts_radius_retrieve
-      description: RadiusProvider Viewset
+      operationId: outposts_radius_check_access_retrieve
+      description: Check access to a single application by slug
       parameters:
+      - in: query
+        name: app_slug
+        schema:
+          type: string
       - in: path
         name: id
         schema:
@@ -9841,7 +9777,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RadiusOutpostConfig'
+                $ref: '#/components/schemas/RadiusCheckAccess'
           description: ''
         '400':
           content:
@@ -13256,9 +13192,21 @@ paths:
       description: PropertyMapping Viewset
       parameters:
       - in: query
+        name: managed
+        schema:
+          type: array
+          items:
+            type: string
+        explode: true
+        style: form
+      - in: query
         name: managed__isnull
         schema:
           type: boolean
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -13464,296 +13412,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/TypeCreate'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /propertymappings/ldap/:
-    get:
-      operationId: propertymappings_ldap_list
-      description: LDAP PropertyMapping Viewset
-      parameters:
-      - in: query
-        name: expression
-        schema:
-          type: string
-      - in: query
-        name: managed
-        schema:
-          type: array
-          items:
-            type: string
-        explode: true
-        style: form
-      - in: query
-        name: name
-        schema:
-          type: string
-      - in: query
-        name: object_field
-        schema:
-          type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - in: query
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
-      tags:
-      - propertymappings
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedLDAPPropertyMappingList'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    post:
-      operationId: propertymappings_ldap_create
-      description: LDAP PropertyMapping Viewset
-      tags:
-      - propertymappings
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LDAPPropertyMappingRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LDAPPropertyMapping'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /propertymappings/ldap/{pm_uuid}/:
-    get:
-      operationId: propertymappings_ldap_retrieve
-      description: LDAP PropertyMapping Viewset
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this LDAP Property Mapping.
-        required: true
-      tags:
-      - propertymappings
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LDAPPropertyMapping'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    put:
-      operationId: propertymappings_ldap_update
-      description: LDAP PropertyMapping Viewset
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this LDAP Property Mapping.
-        required: true
-      tags:
-      - propertymappings
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LDAPPropertyMappingRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LDAPPropertyMapping'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    patch:
-      operationId: propertymappings_ldap_partial_update
-      description: LDAP PropertyMapping Viewset
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this LDAP Property Mapping.
-        required: true
-      tags:
-      - propertymappings
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedLDAPPropertyMappingRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LDAPPropertyMapping'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    delete:
-      operationId: propertymappings_ldap_destroy
-      description: LDAP PropertyMapping Viewset
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this LDAP Property Mapping.
-        required: true
-      tags:
-      - propertymappings
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: No response body
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /propertymappings/ldap/{pm_uuid}/used_by/:
-    get:
-      operationId: propertymappings_ldap_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this LDAP Property Mapping.
-        required: true
-      tags:
-      - propertymappings
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
           description: ''
         '400':
           content:
@@ -14885,19 +14543,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /propertymappings/saml/:
+  /propertymappings/radius/:
     get:
-      operationId: propertymappings_saml_list
-      description: SAMLPropertyMapping Viewset
+      operationId: propertymappings_radius_list
+      description: RadiusProviderPropertyMapping Viewset
       parameters:
-      - in: query
-        name: expression
-        schema:
-          type: string
-      - in: query
-        name: friendly_name
-        schema:
-          type: string
       - in: query
         name: managed
         schema:
@@ -14906,6 +14556,10 @@ paths:
             type: string
         explode: true
         style: form
+      - in: query
+        name: managed__isnull
+        schema:
+          type: boolean
       - in: query
         name: name
         schema:
@@ -14928,15 +14582,287 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
-      - in: query
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRadiusProviderPropertyMappingList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: propertymappings_radius_create
+      description: RadiusProviderPropertyMapping Viewset
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RadiusProviderPropertyMappingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RadiusProviderPropertyMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /propertymappings/radius/{pm_uuid}/:
+    get:
+      operationId: propertymappings_radius_retrieve
+      description: RadiusProviderPropertyMapping Viewset
+      parameters:
+      - in: path
         name: pm_uuid
         schema:
           type: string
           format: uuid
-      - in: query
-        name: saml_name
+        description: A UUID string identifying this Radius Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RadiusProviderPropertyMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: propertymappings_radius_update
+      description: RadiusProviderPropertyMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
         schema:
           type: string
+          format: uuid
+        description: A UUID string identifying this Radius Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RadiusProviderPropertyMappingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RadiusProviderPropertyMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: propertymappings_radius_partial_update
+      description: RadiusProviderPropertyMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Radius Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRadiusProviderPropertyMappingRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RadiusProviderPropertyMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: propertymappings_radius_destroy
+      description: RadiusProviderPropertyMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Radius Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /propertymappings/radius/{pm_uuid}/used_by/:
+    get:
+      operationId: propertymappings_radius_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Radius Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /propertymappings/saml/:
+    get:
+      operationId: propertymappings_saml_list
+      description: SAMLPropertyMapping Viewset
+      parameters:
+      - in: query
+        name: managed
+        schema:
+          type: array
+          items:
+            type: string
+        explode: true
+        style: form
+      - in: query
+        name: managed__isnull
+        schema:
+          type: boolean
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
       - name: search
         required: false
         in: query
@@ -15185,10 +15111,6 @@ paths:
       description: SCIMMapping Viewset
       parameters:
       - in: query
-        name: expression
-        schema:
-          type: string
-      - in: query
         name: managed
         schema:
           type: array
@@ -15196,6 +15118,10 @@ paths:
             type: string
         explode: true
         style: form
+      - in: query
+        name: managed__isnull
+        schema:
+          type: boolean
       - in: query
         name: name
         schema:
@@ -15218,11 +15144,6 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
-      - in: query
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
       - name: search
         required: false
         in: query
@@ -15479,6 +15400,10 @@ paths:
         explode: true
         style: form
       - in: query
+        name: managed__isnull
+        schema:
+          type: boolean
+      - in: query
         name: name
         schema:
           type: string
@@ -15720,6 +15645,573 @@ paths:
           type: string
           format: uuid
         description: A UUID string identifying this Scope Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /propertymappings/source/ldap/:
+    get:
+      operationId: propertymappings_source_ldap_list
+      description: LDAP PropertyMapping Viewset
+      parameters:
+      - in: query
+        name: managed
+        schema:
+          type: array
+          items:
+            type: string
+        explode: true
+        style: form
+      - in: query
+        name: managed__isnull
+        schema:
+          type: boolean
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedLDAPSourcePropertyMappingList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: propertymappings_source_ldap_create
+      description: LDAP PropertyMapping Viewset
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LDAPSourcePropertyMappingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LDAPSourcePropertyMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /propertymappings/source/ldap/{pm_uuid}/:
+    get:
+      operationId: propertymappings_source_ldap_retrieve
+      description: LDAP PropertyMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this LDAP Source Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LDAPSourcePropertyMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: propertymappings_source_ldap_update
+      description: LDAP PropertyMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this LDAP Source Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LDAPSourcePropertyMappingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LDAPSourcePropertyMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: propertymappings_source_ldap_partial_update
+      description: LDAP PropertyMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this LDAP Source Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedLDAPSourcePropertyMappingRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LDAPSourcePropertyMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: propertymappings_source_ldap_destroy
+      description: LDAP PropertyMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this LDAP Source Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /propertymappings/source/ldap/{pm_uuid}/used_by/:
+    get:
+      operationId: propertymappings_source_ldap_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this LDAP Source Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /propertymappings/source/scim/:
+    get:
+      operationId: propertymappings_source_scim_list
+      description: SCIMSourcePropertyMapping Viewset
+      parameters:
+      - in: query
+        name: expression
+        schema:
+          type: string
+      - in: query
+        name: managed
+        schema:
+          type: array
+          items:
+            type: string
+        explode: true
+        style: form
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSCIMSourcePropertyMappingList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: propertymappings_source_scim_create
+      description: SCIMSourcePropertyMapping Viewset
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SCIMSourcePropertyMappingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SCIMSourcePropertyMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /propertymappings/source/scim/{pm_uuid}/:
+    get:
+      operationId: propertymappings_source_scim_retrieve
+      description: SCIMSourcePropertyMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this SCIM Source Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SCIMSourcePropertyMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: propertymappings_source_scim_update
+      description: SCIMSourcePropertyMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this SCIM Source Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SCIMSourcePropertyMappingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SCIMSourcePropertyMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: propertymappings_source_scim_partial_update
+      description: SCIMSourcePropertyMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this SCIM Source Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSCIMSourcePropertyMappingRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SCIMSourcePropertyMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: propertymappings_source_scim_destroy
+      description: SCIMSourcePropertyMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this SCIM Source Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /propertymappings/source/scim/{pm_uuid}/used_by/:
+    get:
+      operationId: propertymappings_source_scim_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this SCIM Source Property Mapping.
         required: true
       tags:
       - propertymappings
@@ -20806,13 +21298,14 @@ paths:
           - authentik_providers_rac.racpropertymapping
           - authentik_providers_rac.racprovider
           - authentik_providers_radius.radiusprovider
+          - authentik_providers_radius.radiusproviderpropertymapping
           - authentik_providers_saml.samlpropertymapping
           - authentik_providers_saml.samlprovider
           - authentik_providers_scim.scimmapping
           - authentik_providers_scim.scimprovider
           - authentik_rbac.role
-          - authentik_sources_ldap.ldappropertymapping
           - authentik_sources_ldap.ldapsource
+          - authentik_sources_ldap.ldapsourcepropertymapping
           - authentik_sources_oauth.oauthsource
           - authentik_sources_oauth.useroauthsourceconnection
           - authentik_sources_plex.plexsource
@@ -20820,6 +21313,7 @@ paths:
           - authentik_sources_saml.samlsource
           - authentik_sources_saml.usersamlsourceconnection
           - authentik_sources_scim.scimsource
+          - authentik_sources_scim.scimsourcepropertymapping
           - authentik_stages_authenticator_duo.authenticatorduostage
           - authentik_stages_authenticator_duo.duodevice
           - authentik_stages_authenticator_sms.authenticatorsmsstage
@@ -21025,13 +21519,14 @@ paths:
           - authentik_providers_rac.racpropertymapping
           - authentik_providers_rac.racprovider
           - authentik_providers_radius.radiusprovider
+          - authentik_providers_radius.radiusproviderpropertymapping
           - authentik_providers_saml.samlpropertymapping
           - authentik_providers_saml.samlprovider
           - authentik_providers_scim.scimmapping
           - authentik_providers_scim.scimprovider
           - authentik_rbac.role
-          - authentik_sources_ldap.ldappropertymapping
           - authentik_sources_ldap.ldapsource
+          - authentik_sources_ldap.ldapsourcepropertymapping
           - authentik_sources_oauth.oauthsource
           - authentik_sources_oauth.useroauthsourceconnection
           - authentik_sources_plex.plexsource
@@ -21039,6 +21534,7 @@ paths:
           - authentik_sources_saml.samlsource
           - authentik_sources_saml.usersamlsourceconnection
           - authentik_sources_scim.scimsource
+          - authentik_sources_scim.scimsourcepropertymapping
           - authentik_stages_authenticator_duo.authenticatorduostage
           - authentik_stages_authenticator_duo.duodevice
           - authentik_stages_authenticator_sms.authenticatorsmsstage
@@ -22085,6 +22581,15 @@ paths:
         schema:
           type: string
       - in: query
+        name: group_property_mappings
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
+      - in: query
         name: name
         schema:
           type: string
@@ -22119,24 +22624,6 @@ paths:
         schema:
           type: string
           format: uuid
-      - in: query
-        name: property_mappings
-        schema:
-          type: array
-          items:
-            type: string
-            format: uuid
-        explode: true
-        style: form
-      - in: query
-        name: property_mappings_group
-        schema:
-          type: array
-          items:
-            type: string
-            format: uuid
-        explode: true
-        style: form
       - name: search
         required: false
         in: query
@@ -22180,6 +22667,15 @@ paths:
         name: user_object_filter
         schema:
           type: string
+      - in: query
+        name: user_property_mappings
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
       tags:
       - sources
       security:
@@ -24481,6 +24977,10 @@ paths:
         schema:
           type: string
       - in: query
+        name: source__slug
+        schema:
+          type: string
+      - in: query
         name: user
         schema:
           type: integer
@@ -24705,6 +25205,10 @@ paths:
         name: source__slug
         schema:
           type: string
+      - in: query
+        name: user
+        schema:
+          type: integer
       tags:
       - sources
       security:
@@ -24969,6 +25473,10 @@ paths:
         name: source__slug
         schema:
           type: string
+      - in: query
+        name: user
+        schema:
+          type: integer
       tags:
       - sources
       security:
@@ -25233,6 +25741,10 @@ paths:
         name: source__slug
         schema:
           type: string
+      - in: query
+        name: user
+        schema:
+          type: integer
       tags:
       - sources
       security:
@@ -29998,6 +30510,10 @@ paths:
       description: PasswordStage Viewset
       parameters:
       - in: query
+        name: allow_show_password
+        schema:
+          type: boolean
+      - in: query
         name: configure_flow
         schema:
           type: string
@@ -32848,8 +33364,6 @@ components:
       type: object
       description: Challenge when a flow's active stage calls `stage_invalid()`.
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -32870,7 +33384,6 @@ components:
       required:
       - pending_user
       - pending_user_avatar
-      - type
     AlgEnum:
       enum:
       - rsa
@@ -32959,8 +33472,6 @@ components:
       description: Special challenge for apple-native authentication flow, which happens
         on the client.
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -32985,7 +33496,6 @@ components:
       - redirect_uri
       - scope
       - state
-      - type
     Application:
       type: object
       description: Application Serializer
@@ -33256,8 +33766,6 @@ components:
       type: object
       description: Duo Challenge
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -33285,7 +33793,6 @@ components:
       - pending_user
       - pending_user_avatar
       - stage_uuid
-      - type
     AuthenticatorDuoChallengeResponseRequest:
       type: object
       description: Pseudo class for duo response
@@ -33418,8 +33925,6 @@ components:
       type: object
       description: SMS Setup challenge
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -33441,7 +33946,6 @@ components:
       required:
       - pending_user
       - pending_user_avatar
-      - type
     AuthenticatorSMSChallengeResponseRequest:
       type: object
       description: SMS Challenge response, device is set by get_response_instance
@@ -33584,8 +34088,6 @@ components:
       type: object
       description: Static authenticator challenge
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -33609,7 +34111,6 @@ components:
       - codes
       - pending_user
       - pending_user_avatar
-      - type
     AuthenticatorStaticChallengeResponseRequest:
       type: object
       description: Pseudo class for static response
@@ -33708,8 +34209,6 @@ components:
       type: object
       description: TOTP Setup challenge
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -33731,7 +34230,6 @@ components:
       - config_url
       - pending_user
       - pending_user_avatar
-      - type
     AuthenticatorTOTPChallengeResponseRequest:
       type: object
       description: TOTP Challenge response, device is set by get_response_instance
@@ -33938,8 +34436,6 @@ components:
       type: object
       description: Authenticator challenge
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -33968,7 +34464,6 @@ components:
       - device_challenges
       - pending_user
       - pending_user_avatar
-      - type
     AuthenticatorValidationChallengeResponseRequest:
       type: object
       description: Challenge used for Code-based and WebAuthn authenticators
@@ -33994,8 +34489,6 @@ components:
       type: object
       description: WebAuthn Challenge
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -34018,7 +34511,6 @@ components:
       - pending_user
       - pending_user_avatar
       - registration
-      - type
     AuthenticatorWebAuthnChallengeResponseRequest:
       type: object
       description: WebAuthn Challenge response
@@ -34146,8 +34638,6 @@ components:
       type: object
       description: Autosubmit challenge used to send and navigate a POST request
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -34169,7 +34659,6 @@ components:
           type: string
       required:
       - attrs
-      - type
       - url
     BackendsEnum:
       enum:
@@ -34316,6 +34805,12 @@ components:
           type: string
           format: uuid
           nullable: true
+        default_application:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, external users will be redirected to this application
+            after authenticating.
         web_certificate:
           type: string
           format: uuid
@@ -34369,6 +34864,12 @@ components:
           type: string
           format: uuid
           nullable: true
+        default_application:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, external users will be redirected to this application
+            after authenticating.
         web_certificate:
           type: string
           format: uuid
@@ -34399,8 +34900,6 @@ components:
       type: object
       description: Site public key
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -34425,7 +34924,6 @@ components:
       - pending_user
       - pending_user_avatar
       - site_key
-      - type
     CaptchaChallengeResponseRequest:
       type: object
       description: Validate captcha token
@@ -34656,12 +35154,6 @@ components:
       required:
       - certificate_data
       - name
-    ChallengeChoices:
-      enum:
-      - native
-      - shell
-      - redirect
-      type: string
     ChallengeTypes:
       oneOf:
       - $ref: '#/components/schemas/AccessDeniedChallenge'
@@ -34794,8 +35286,6 @@ components:
       type: object
       description: Challenge info for consent screens
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -34829,7 +35319,6 @@ components:
       - pending_user_avatar
       - permissions
       - token
-      - type
     ConsentChallengeResponseRequest:
       type: object
       description: Consent challenge response, any valid response request is valid
@@ -35278,8 +35767,6 @@ components:
       type: object
       description: Dummy challenge
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -35295,7 +35782,6 @@ components:
           type: string
       required:
       - name
-      - type
     DummyChallengeResponseRequest:
       type: object
       description: Dummy challenge response
@@ -35478,8 +35964,6 @@ components:
       type: object
       description: Email challenge
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -35491,8 +35975,6 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
-      required:
-      - type
     EmailChallengeResponseRequest:
       type: object
       description: |-
@@ -36318,9 +36800,6 @@ components:
         Challenge class when an unhandled error occurs during a stage. Normal users
         are shown an error message, superusers are shown a full stacktrace.
       properties:
-        type:
-          type: string
-          default: native
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -36638,6 +37117,7 @@ components:
         href:
           type: string
           readOnly: true
+          nullable: true
         name:
           type: string
           readOnly: true
@@ -37101,8 +37581,6 @@ components:
       type: object
       description: Identification challenges with all UI elements
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -37121,6 +37599,9 @@ components:
           nullable: true
         password_fields:
           type: boolean
+        allow_show_password:
+          type: boolean
+          default: false
         application_pre:
           type: string
         flow_designation:
@@ -37144,7 +37625,6 @@ components:
       - password_fields
       - primary_action
       - show_source_labels
-      - type
       - user_fields
     IdentificationChallengeResponseRequest:
       type: object
@@ -37204,7 +37684,7 @@ components:
           format: uuid
           nullable: true
           description: When set, shows a password field, instead of showing the password
-            field as seaprate step.
+            field as separate step.
         case_insensitive_matching:
           type: boolean
           description: When enabled, user fields are matched regardless of their casing.
@@ -37272,7 +37752,7 @@ components:
           format: uuid
           nullable: true
           description: When set, shows a password field, instead of showing the password
-            field as seaprate step.
+            field as separate step.
         case_insensitive_matching:
           type: boolean
           description: When enabled, user fields are matched regardless of their casing.
@@ -37620,80 +38100,6 @@ components:
       - bind_flow_slug
       - name
       - pk
-    LDAPPropertyMapping:
-      type: object
-      description: LDAP PropertyMapping Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Pm uuid
-        managed:
-          type: string
-          nullable: true
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created
-            and updated automatically. This flag only indicates that an object can
-            be overwritten by migrations. You can still modify the objects via the
-            API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-        expression:
-          type: string
-        component:
-          type: string
-          description: Get object's component so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        object_field:
-          type: string
-      required:
-      - component
-      - expression
-      - meta_model_name
-      - name
-      - object_field
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    LDAPPropertyMappingRequest:
-      type: object
-      description: LDAP PropertyMapping Serializer
-      properties:
-        managed:
-          type: string
-          nullable: true
-          minLength: 1
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created
-            and updated automatically. This flag only indicates that an object can
-            be overwritten by migrations. You can still modify the objects via the
-            API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-          minLength: 1
-        expression:
-          type: string
-          minLength: 1
-        object_field:
-          type: string
-          minLength: 1
-      required:
-      - expression
-      - name
-      - object_field
     LDAPProvider:
       type: object
       description: LDAPProvider Serializer
@@ -37906,6 +38312,16 @@ components:
           format: uuid
           nullable: true
           description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
         component:
           type: string
           description: Get object component so that we know how to edit the object
@@ -38004,17 +38420,6 @@ components:
           type: string
           format: uuid
           nullable: true
-        property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        property_mappings_group:
-          type: array
-          items:
-            type: string
-            format: uuid
-          description: Property mappings used for group creation/updating.
         connectivity:
           type: object
           additionalProperties:
@@ -38037,6 +38442,73 @@ components:
       - slug
       - verbose_name
       - verbose_name_plural
+    LDAPSourcePropertyMapping:
+      type: object
+      description: LDAP PropertyMapping Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pm uuid
+        managed:
+          type: string
+          nullable: true
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+        expression:
+          type: string
+        component:
+          type: string
+          description: Get object's component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+      required:
+      - component
+      - expression
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    LDAPSourcePropertyMappingRequest:
+      type: object
+      description: LDAP PropertyMapping Serializer
+      properties:
+        managed:
+          type: string
+          nullable: true
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+      required:
+      - expression
+      - name
     LDAPSourceRequest:
       type: object
       description: LDAP Source Serializer
@@ -38063,6 +38535,16 @@ components:
           format: uuid
           nullable: true
           description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -38143,17 +38625,6 @@ components:
           type: string
           format: uuid
           nullable: true
-        property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        property_mappings_group:
-          type: array
-          items:
-            type: string
-            format: uuid
-          description: Property mappings used for group creation/updating.
       required:
       - base_dn
       - name
@@ -38635,13 +39106,14 @@ components:
       - authentik_providers_oauth2.oauth2provider
       - authentik_providers_proxy.proxyprovider
       - authentik_providers_radius.radiusprovider
+      - authentik_providers_radius.radiusproviderpropertymapping
       - authentik_providers_saml.samlprovider
       - authentik_providers_saml.samlpropertymapping
       - authentik_providers_scim.scimprovider
       - authentik_providers_scim.scimmapping
       - authentik_rbac.role
       - authentik_sources_ldap.ldapsource
-      - authentik_sources_ldap.ldappropertymapping
+      - authentik_sources_ldap.ldapsourcepropertymapping
       - authentik_sources_oauth.oauthsource
       - authentik_sources_oauth.useroauthsourceconnection
       - authentik_sources_plex.plexsource
@@ -38649,6 +39121,7 @@ components:
       - authentik_sources_saml.samlsource
       - authentik_sources_saml.usersamlsourceconnection
       - authentik_sources_scim.scimsource
+      - authentik_sources_scim.scimsourcepropertymapping
       - authentik_stages_authenticator_duo.authenticatorduostage
       - authentik_stages_authenticator_duo.duodevice
       - authentik_stages_authenticator_sms.authenticatorsmsstage
@@ -39163,8 +39636,6 @@ components:
       type: object
       description: OAuth Device code challenge
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -39176,8 +39647,6 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
-      required:
-      - type
     OAuthDeviceCodeChallengeResponseRequest:
       type: object
       description: Response that includes the user-entered device code
@@ -39194,8 +39663,6 @@ components:
       type: object
       description: Final challenge after user enters their code
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -39207,8 +39674,6 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
-      required:
-      - type
     OAuthDeviceCodeFinishChallengeResponseRequest:
       type: object
       description: Response that device has been authenticated and tab can be closed
@@ -39246,6 +39711,16 @@ components:
           format: uuid
           nullable: true
           description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
         component:
           type: string
           description: Get object component so that we know how to edit the object
@@ -39364,6 +39839,16 @@ components:
           format: uuid
           nullable: true
           description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -39501,6 +39986,9 @@ components:
           allOf:
           - $ref: '#/components/schemas/ServiceConnection'
           readOnly: true
+        refresh_interval_s:
+          type: integer
+          readOnly: true
         token_identifier:
           type: string
           description: Get Token identifier
@@ -39522,6 +40010,7 @@ components:
       - pk
       - providers
       - providers_obj
+      - refresh_interval_s
       - service_connection_obj
       - token_identifier
       - type
@@ -40114,18 +40603,6 @@ components:
       required:
       - pagination
       - results
-    PaginatedLDAPPropertyMappingList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/LDAPPropertyMapping'
-      required:
-      - pagination
-      - results
     PaginatedLDAPProviderList:
       type: object
       properties:
@@ -40147,6 +40624,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/LDAPSource'
+      required:
+      - pagination
+      - results
+    PaginatedLDAPSourcePropertyMappingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/LDAPSourcePropertyMapping'
       required:
       - pagination
       - results
@@ -40510,6 +40999,18 @@ components:
       required:
       - pagination
       - results
+    PaginatedRadiusProviderPropertyMappingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RadiusProviderPropertyMapping'
+      required:
+      - pagination
+      - results
     PaginatedReputationList:
       type: object
       properties:
@@ -40663,6 +41164,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SCIMSource'
+      required:
+      - pagination
+      - results
+    PaginatedSCIMSourcePropertyMappingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SCIMSourcePropertyMapping'
       required:
       - pagination
       - results
@@ -40995,8 +41508,6 @@ components:
       type: object
       description: Password challenge UI fields
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -41014,10 +41525,12 @@ components:
           type: string
         recovery_url:
           type: string
+        allow_show_password:
+          type: boolean
+          default: false
       required:
       - pending_user
       - pending_user_avatar
-      - type
     PasswordChallengeResponseRequest:
       type: object
       description: Password challenge response
@@ -41297,6 +41810,10 @@ components:
           minimum: -2147483648
           description: How many attempts a user has before the flow is canceled. To
             lock the user out, use a reputation policy and a user_write stage.
+        allow_show_password:
+          type: boolean
+          description: When enabled, provides a 'show password' button with the password
+            input field.
       required:
       - backends
       - component
@@ -41333,6 +41850,10 @@ components:
           minimum: -2147483648
           description: How many attempts a user has before the flow is canceled. To
             lock the user out, use a reputation policy and a user_write stage.
+        allow_show_password:
+          type: boolean
+          description: When enabled, provides a 'show password' button with the password
+            input field.
       required:
       - backends
       - name
@@ -41638,6 +42159,12 @@ components:
           type: string
           format: uuid
           nullable: true
+        default_application:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, external users will be redirected to this application
+            after authenticating.
         web_certificate:
           type: string
           format: uuid
@@ -42154,7 +42681,7 @@ components:
           format: uuid
           nullable: true
           description: When set, shows a password field, instead of showing the password
-            field as seaprate step.
+            field as separate step.
         case_insensitive_matching:
           type: boolean
           description: When enabled, user fields are matched regardless of their casing.
@@ -42250,28 +42777,6 @@ components:
         verify_ssl:
           type: boolean
           description: Verify SSL Certificates of the Kubernetes API endpoint
-    PatchedLDAPPropertyMappingRequest:
-      type: object
-      description: LDAP PropertyMapping Serializer
-      properties:
-        managed:
-          type: string
-          nullable: true
-          minLength: 1
-          title: Managed by authentik
-          description: Objects that are managed by authentik. These objects are created
-            and updated automatically. This flag only indicates that an object can
-            be overwritten by migrations. You can still modify the objects via the
-            API, but expect changes to be overwritten in a later update.
-        name:
-          type: string
-          minLength: 1
-        expression:
-          type: string
-          minLength: 1
-        object_field:
-          type: string
-          minLength: 1
     PatchedLDAPProviderRequest:
       type: object
       description: LDAPProvider Serializer
@@ -42336,6 +42841,25 @@ components:
             should only be enabled if all users that will bind to this provider have
             a TOTP device configured, as otherwise a password may incorrectly be rejected
             if it contains a semicolon.
+    PatchedLDAPSourcePropertyMappingRequest:
+      type: object
+      description: LDAP PropertyMapping Serializer
+      properties:
+        managed:
+          type: string
+          nullable: true
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
     PatchedLDAPSourceRequest:
       type: object
       description: LDAP Source Serializer
@@ -42362,6 +42886,16 @@ components:
           format: uuid
           nullable: true
           description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -42442,17 +42976,6 @@ components:
           type: string
           format: uuid
           nullable: true
-        property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        property_mappings_group:
-          type: array
-          items:
-            type: string
-            format: uuid
-          description: Property mappings used for group creation/updating.
     PatchedLicenseRequest:
       type: object
       description: License Serializer
@@ -42685,6 +43208,16 @@ components:
           format: uuid
           nullable: true
           description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -42866,6 +43399,10 @@ components:
           minimum: -2147483648
           description: How many attempts a user has before the flow is canceled. To
             lock the user out, use a reputation policy and a user_write stage.
+        allow_show_password:
+          type: boolean
+          description: When enabled, provides a 'show password' button with the password
+            input field.
     PatchedPermissionAssignRequest:
       type: object
       description: Request to assign a new permission
@@ -42889,6 +43426,7 @@ components:
           minLength: 1
         plex_token:
           type: string
+          writeOnly: true
           minLength: 1
     PatchedPlexSourceRequest:
       type: object
@@ -42916,6 +43454,16 @@ components:
           format: uuid
           nullable: true
           description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -43178,6 +43726,25 @@ components:
         delete_token_on_disconnect:
           type: boolean
           description: When set to true, connection tokens will be deleted upon disconnect.
+    PatchedRadiusProviderPropertyMappingRequest:
+      type: object
+      description: RadiusProviderPropertyMapping Serializer
+      properties:
+        managed:
+          type: string
+          nullable: true
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
     PatchedRadiusProviderRequest:
       type: object
       description: RadiusProvider Serializer
@@ -43379,6 +43946,16 @@ components:
           format: uuid
           nullable: true
           description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -43509,6 +44086,25 @@ components:
           type: string
           format: uuid
         attributes: {}
+    PatchedSCIMSourcePropertyMappingRequest:
+      type: object
+      description: SCIMSourcePropertyMapping Serializer
+      properties:
+        managed:
+          type: string
+          nullable: true
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
     PatchedSCIMSourceRequest:
       type: object
       description: SCIMSource Serializer
@@ -43525,11 +44121,16 @@ components:
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
-        user_matching_mode:
-          allOf:
-          - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: How the source determines if an existing user should be authenticated
-            or a new user enrolled.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
         user_path_template:
           type: string
           minLength: 1
@@ -43762,8 +44363,6 @@ components:
       type: object
       description: OAuth Source Serializer
       properties:
-        user:
-          type: integer
         identifier:
           type: string
           minLength: 1
@@ -43814,8 +44413,6 @@ components:
       type: object
       description: SAML Source Serializer
       properties:
-        user:
-          type: integer
         identifier:
           type: string
           minLength: 1
@@ -43908,8 +44505,6 @@ components:
       type: object
       description: Challenge shown to the user in identification stage
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -43928,7 +44523,6 @@ components:
       required:
       - client_id
       - slug
-      - type
     PlexAuthenticationChallengeResponseRequest:
       type: object
       description: Pseudo class for plex response
@@ -43966,6 +44560,16 @@ components:
           format: uuid
           nullable: true
           description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
         component:
           type: string
           description: Get object component so that we know how to edit the object
@@ -44044,14 +44648,16 @@ components:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         identifier:
           type: string
-        plex_token:
-          type: string
       required:
+      - created
       - identifier
       - pk
-      - plex_token
       - source
       - user
     PlexSourceConnectionRequest:
@@ -44063,6 +44669,7 @@ components:
           minLength: 1
         plex_token:
           type: string
+          writeOnly: true
           minLength: 1
       required:
       - identifier
@@ -44093,6 +44700,16 @@ components:
           format: uuid
           nullable: true
           description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -44377,8 +44994,6 @@ components:
       type: object
       description: Initial challenge being sent, define fields
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -44396,7 +45011,6 @@ components:
             $ref: '#/components/schemas/StagePrompt'
       required:
       - fields
-      - type
     PromptChallengeResponseRequest:
       type: object
       description: |-
@@ -45288,6 +45902,16 @@ components:
       required:
       - authorization_flow
       - name
+    RadiusCheckAccess:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        attributes:
+          type: string
+        access:
+          $ref: '#/components/schemas/PolicyTestResult'
+      required:
+      - access
     RadiusOutpostConfig:
       type: object
       description: RadiusProvider Serializer
@@ -45412,6 +46036,73 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
+    RadiusProviderPropertyMapping:
+      type: object
+      description: RadiusProviderPropertyMapping Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pm uuid
+        managed:
+          type: string
+          nullable: true
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+        expression:
+          type: string
+        component:
+          type: string
+          description: Get object's component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+      required:
+      - component
+      - expression
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    RadiusProviderPropertyMappingRequest:
+      type: object
+      description: RadiusProviderPropertyMapping Serializer
+      properties:
+        managed:
+          type: string
+          nullable: true
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+      required:
+      - expression
+      - name
     RadiusProviderRequest:
       type: object
       description: RadiusProvider Serializer
@@ -45458,8 +46149,6 @@ components:
       type: object
       description: Challenge type to redirect the client
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -45475,7 +46164,6 @@ components:
           type: string
       required:
       - to
-      - type
     Reputation:
       type: object
       description: Reputation Serializer
@@ -46039,6 +46727,16 @@ components:
           format: uuid
           nullable: true
           description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
         component:
           type: string
           description: Get object component so that we know how to edit the object
@@ -46167,6 +46865,16 @@ components:
           format: uuid
           nullable: true
           description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -46507,6 +47215,16 @@ components:
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
         component:
           type: string
           description: Get object component so that we know how to edit the object
@@ -46523,11 +47241,6 @@ components:
           type: string
           description: Return internal model name
           readOnly: true
-        user_matching_mode:
-          allOf:
-          - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: How the source determines if an existing user should be authenticated
-            or a new user enrolled.
         managed:
           type: string
           nullable: true
@@ -46598,6 +47311,73 @@ components:
       - group
       - id
       - source
+    SCIMSourcePropertyMapping:
+      type: object
+      description: SCIMSourcePropertyMapping Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pm uuid
+        managed:
+          type: string
+          nullable: true
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+        expression:
+          type: string
+        component:
+          type: string
+          description: Get object's component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+      required:
+      - component
+      - expression
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    SCIMSourcePropertyMappingRequest:
+      type: object
+      description: SCIMSourcePropertyMapping Serializer
+      properties:
+        managed:
+          type: string
+          nullable: true
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+      required:
+      - expression
+      - name
     SCIMSourceRequest:
       type: object
       description: SCIMSource Serializer
@@ -46614,11 +47394,16 @@ components:
           pattern: ^[-a-zA-Z0-9_]+$
         enabled:
           type: boolean
-        user_matching_mode:
-          allOf:
-          - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: How the source determines if an existing user should be authenticated
-            or a new user enrolled.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
         user_path_template:
           type: string
           minLength: 1
@@ -46958,8 +47743,6 @@ components:
       type: object
       description: challenge type to render HTML as-is
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -46975,7 +47758,6 @@ components:
           type: string
       required:
       - body
-      - type
     SignatureAlgorithmEnum:
       enum:
       - http://www.w3.org/2000/09/xmldsig#rsa-sha1
@@ -47017,6 +47799,16 @@ components:
           format: uuid
           nullable: true
           description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
         component:
           type: string
           description: Get object component so that we know how to edit the object
@@ -47094,6 +47886,16 @@ components:
           format: uuid
           nullable: true
           description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
@@ -48096,8 +48898,6 @@ components:
       type: object
       description: Empty challenge
       properties:
-        type:
-          $ref: '#/components/schemas/ChallengeChoices'
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
         component:
@@ -48116,7 +48916,6 @@ components:
       required:
       - pending_user
       - pending_user_avatar
-      - type
     UserLoginChallengeResponseRequest:
       type: object
       description: User login challenge
@@ -48316,14 +49115,20 @@ components:
           title: ID
         user:
           type: integer
+          readOnly: true
         source:
           allOf:
           - $ref: '#/components/schemas/Source'
+          readOnly: true
+        created:
+          type: string
+          format: date-time
           readOnly: true
         identifier:
           type: string
           maxLength: 255
       required:
+      - created
       - identifier
       - pk
       - source
@@ -48332,8 +49137,6 @@ components:
       type: object
       description: OAuth Source Serializer
       properties:
-        user:
-          type: integer
         identifier:
           type: string
           minLength: 1
@@ -48344,7 +49147,6 @@ components:
           nullable: true
       required:
       - identifier
-      - user
     UserObjectPermission:
       type: object
       description: User-bound object level permission
@@ -48445,13 +49247,19 @@ components:
           title: ID
         user:
           type: integer
+          readOnly: true
         source:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         identifier:
           type: string
       required:
+      - created
       - identifier
       - pk
       - source
@@ -48460,14 +49268,11 @@ components:
       type: object
       description: SAML Source Serializer
       properties:
-        user:
-          type: integer
         identifier:
           type: string
           minLength: 1
       required:
       - identifier
-      - user
     UserSelf:
       type: object
       description: User Serializer for information a user can retrieve about themselves
