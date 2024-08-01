@@ -49,7 +49,8 @@ AUTHENTICATION_BACKENDS = [
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 # Application definition
-SHARED_APPS = [
+SHARED_APPS = ["daphne"] if DEBUG else []
+SHARED_APPS += [
     "django_tenants",
     "authentik.tenants",
     "django.contrib.messages",
@@ -63,6 +64,7 @@ SHARED_APPS = [
     "pglock",
     "channels",
 ]
+
 TENANT_APPS = [
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -516,7 +518,6 @@ if DEBUG:
     REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"].append(
         "rest_framework.renderers.BrowsableAPIRenderer"
     )
-    SHARED_APPS.append("daphne")
 
 TENANT_APPS.append("authentik.core")
 
