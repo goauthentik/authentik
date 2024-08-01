@@ -2,6 +2,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { bound } from "@goauthentik/elements/decorators/bound.js";
 import "@goauthentik/elements/forms/SearchSelect/ak-search-select-menu-position.js";
 import type { SearchSelectMenuPosition } from "@goauthentik/elements/forms/SearchSelect/ak-search-select-menu-position.js";
+import { randomId } from "@goauthentik/elements/utils/randomId.js";
 
 import { msg } from "@lit/localize";
 import { PropertyValues, html } from "lit";
@@ -42,10 +43,10 @@ import type { SearchOptions, SearchTuple } from "./types.js";
  */
 
 enum InputState {
-    idle = 0,
-    closed = 1,
-    open = 2,
-    justclosed = 3,
+    idle = 0, // Closed and nothing has focus
+    closed = 1, // The input has focus, the dropdown is closed
+    open = 2, // The dropdown is open, focus is context-dependent
+    justclosed = 3, // Transitional state.
 }
 
 @customElement("ak-search-select-view")
@@ -139,13 +140,20 @@ export class SearchSelectView extends AKElement {
         super();
         /* These can't be attached with the `@` syntax because they're not passed through to the
          * menu; the positioner is in the way, and it deliberately renders objects *outside* of the
-         * path from `document` to this object. That's why we pass the positioner (and its target)
-         * the `this` (host) object; so they can send messages to this object despite being outside
-         * the event's bubble path.
+         * event path from `document` to this object. That's why we pass the positioner (and its
+         * target) the `this` (host) object; so they can send messages to this object despite being
+         * outside the event's bubble path.
          */
         this.addEventListener(SearchSelectMenuLostFocusEvent.eventName, this.onMenuLostFocus);
         this.addEventListener(SearchSelectRequestCloseEvent.eventName, this.onMenuRequestClose);
         this.addEventListener(SearchSelectSelectItemEvent.eventName, this.onSelectItemEvent);
+    }
+
+    connectedCallback() {
+        super.connectedCallback();
+        console.log("Was this ever called?");
+        this.setAttribute("data-ouia-component-type", "ak-search-select-view");
+        this.setAttribute("data-ouia-component-id", this.getAttribute("id") || randomId());
     }
 
     disconnectedCallback(): void {
@@ -214,9 +222,10 @@ export class SearchSelectView extends AKElement {
 
     @bound
     onClick(ev: Event) {
-        console.log("Input clicked.");
         this.inputState =
-            this.inputState === InputState.justclosed ? InputState.closed : InputState.open;
+            this.inputState === InputState.justclosed || this.options.length == 0
+                ? InputState.closed
+                : InputState.open;
         this.checkBlankableValue(ev);
     }
 
@@ -241,6 +250,7 @@ export class SearchSelectView extends AKElement {
     }
 
     willUpdate(changed: PropertyValues<this>) {
+        this.removeAttribute("data-ouia-component-safe");
         if (changed.has("options")) {
             this.optionsMap = optionsToOptionsMap(this.options);
         }
@@ -255,6 +265,7 @@ export class SearchSelectView extends AKElement {
         if (!(this.inputRef?.value && this.inputRef?.value?.value === this.displayValue)) {
             this.inputRef.value && (this.inputRef.value.value = this.displayValue);
         }
+        this.setAttribute("data-ouia-component-safe", true);
     }
 
     render() {
@@ -270,6 +281,7 @@ export class SearchSelectView extends AKElement {
                             spellcheck="false"
                             @input=${this.onInput}
                             @click=${this.onClick}
+                            @focus=${this.onClick}
                             @keydown=${this.onKeydown}
                             value=${this.displayValue}
                         />

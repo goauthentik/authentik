@@ -3,7 +3,10 @@ import { match } from "ts-pattern";
 
 import { LitElement, ReactiveController, ReactiveControllerHost } from "lit";
 
-import { KeyboardControllerEscapeEvent, KeyboardControllerSelectEvent } from "./SearchKeyboardControllerEvents.js";
+import {
+    KeyboardControllerEscapeEvent,
+    KeyboardControllerSelectEvent,
+} from "./SearchKeyboardControllerEvents.js";
 
 type ValuedHtmlElement = HTMLElement & { value: string };
 type ReactiveElementHost = Partial<ReactiveControllerHost> &
@@ -47,11 +50,12 @@ export class AkKeyboardController implements ReactiveController {
      */
     constructor(host: ReactiveElementHost, highlighter = ".ak-highlight-item") {
         this.host = host;
-        console.log(this.host);
         host.addController(this);
         this.highlighter = highlighter.replace(/^\./, "");
     }
 
+    // TODO: This is only run when the data changes. What about visibility/reuse? Should we check
+    // this more than just on update?
     hostUpdated() {
         const current = this.host.items.findIndex((item) => item.value === this.host.value);
         if (current >= 0) {
@@ -90,11 +94,19 @@ export class AkKeyboardController implements ReactiveController {
     private performUpdate() {
         this.host.items.forEach((item) => {
             item.classList.remove(this.highlighter);
+            item.removeAttribute("aria-selected");
             item.tabIndex = 0;
         });
-        this.host.items[this.index].classList.add(this.highlighter);
-        this.host.items[this.index].tabIndex = 1;
-        this.host.items[this.index].focus();
+
+        const item = this.host.items[this.index];
+        if (!item) {
+            return;
+        }
+
+        item.classList.add(this.highlighter);
+        item.tabIndex = 1;
+        item.setAttribute("aria-selected", true);
+        item.focus();
     }
 
     @bound

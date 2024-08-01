@@ -10,7 +10,10 @@ import PFSelect from "@patternfly/patternfly/components/Select/select.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { AkKeyboardController } from "./SearchKeyboardController.js";
-import { KeyboardControllerEscapeEvent, KeyboardControllerSelectEvent } from "./SearchKeyboardControllerEvents.js";
+import {
+    KeyboardControllerEscapeEvent,
+    KeyboardControllerSelectEvent,
+} from "./SearchKeyboardControllerEvents.js";
 import {
     SearchSelectMenuLostFocusEvent,
     SearchSelectRequestCloseEvent,
@@ -112,32 +115,43 @@ export class SearchSelectMenu extends AKElement {
 
     // Handles the "easy mode" of just passing an array of tuples.
     fixedOptions(): GroupedOptions {
-        return Array.isArray(this.options) ? { grouped: false, options: this.options } : this.options;
+        return Array.isArray(this.options)
+            ? { grouped: false, options: this.options }
+            : this.options;
     }
 
     get items(): ValuedHtmlElement[] {
         return Array.from(this.renderRoot.querySelectorAll(".ak-select-item"));
     }
 
-    @bound
-    onClick(event: Event, value: string) {
+    sendSelectEvent(event: Event, value: string | undefined) {
         event.stopPropagation();
-        this.host.dispatchEvent(new SearchSelectSelectItemEvent(value));
         this.value = value;
+        this.host.dispatchEvent(new SearchSelectSelectItemEvent(value));
+    }
+
+    connectedCallback() {
+        super.connectedCallback();
+        this.setAttribute("data-ouia-component-type", "ak-search-select-menu");
+        this.setAttribute(
+            "data-ouia-component-id",
+            `menu-${this.host.getAttribute("data-ouia-component-id")}`,
+        );
     }
 
     @bound
-    onEmptyClick(event: Event) {
-        event.stopPropagation();
-        this.host.dispatchEvent(new SearchSelectSelectItemEvent(undefined));
-        this.value = undefined;
+    onClick(event: Event, value: string) {
+        this.sendSelectEvent(event, value);
     }
 
     @bound
     onKeySelect(event: KeyboardControllerSelectEvent) {
-        event.stopPropagation();
-        this.value = event.value;
-        this.host.dispatchEvent(new SearchSelectSelectItemEvent(this.value));
+        this.sendSelectEvent(event, event.value);
+    }
+
+    @bound
+    onEmptyClick(event: Event) {
+        this.sendSelectEvent(event, undefined);
     }
 
     @bound
@@ -168,7 +182,12 @@ export class SearchSelectMenu extends AKElement {
 
     renderEmptyMenuItem() {
         return html`<li>
-            <button class="pf-c-dropdown__menu-item" role="option" tabindex="0" @click=${this.onEmptyClick}>
+            <button
+                class="pf-c-dropdown__menu-item"
+                role="option"
+                tabindex="0"
+                @click=${this.onEmptyClick}
+            >
                 ${this.emptyOption}
             </button>
         </li>`;
@@ -177,10 +196,9 @@ export class SearchSelectMenu extends AKElement {
     renderMenuItems(options: SearchTuple[]) {
         return options.map(
             ([value, label, desc]: SearchTuple) => html`
-                <li value=${value}>
+                <li role="option" value=${value}>
                     <button
                         class="pf-c-dropdown__menu-item pf-m-description ak-select-item"
-                        role="option"
                         value=${value}
                         tabindex="0"
                         @click=${(ev: Event) => {
@@ -188,10 +206,12 @@ export class SearchSelectMenu extends AKElement {
                         }}
                     >
                         <div class="pf-c-dropdown__menu-item-main">${label}</div>
-                        ${desc ? html`<div class="pf-c-dropdown__menu-item-description">${desc}</div>` : nothing}
+                        ${desc
+                            ? html`<div class="pf-c-dropdown__menu-item-description">${desc}</div>`
+                            : nothing}
                     </button>
                 </li>
-            `
+            `,
         );
     }
 
@@ -204,16 +224,22 @@ export class SearchSelectMenu extends AKElement {
                         ${this.renderMenuItems(options)}
                     </ul>
                 </section>
-            `
+            `,
         );
     }
 
     render() {
         const options = this.fixedOptions();
-        return html`<div class="pf-c-dropdown pf-m-expanded" tabindex="1" @focusout=${this.onLostFocus}>
+        return html`<div
+            class="pf-c-dropdown pf-m-expanded"
+            tabindex="1"
+            @focusout=${this.onLostFocus}
+        >
             <ul class="pf-c-dropdown__menu pf-m-static" role="listbox" tabindex="0">
                 ${this.emptyOption !== undefined ? this.renderEmptyMenuItem() : nothing}
-                ${options.grouped ? this.renderMenuGroups(options.options) : this.renderMenuItems(options.options)}
+                ${options.grouped
+                    ? this.renderMenuGroups(options.options)
+                    : this.renderMenuItems(options.options)}
             </ul>
         </div> `;
     }

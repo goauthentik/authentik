@@ -16,8 +16,6 @@ import type { SearchOptions } from "./types.js";
  * DOTADIW: it tracks the top-of-DOM object into which we render our menu, guaranteeing that it
  * appears above everything else, and operates the positioning control for it.
  *
- * - @fires ak-search-select-close - Fired (by the keyboard controller) when the tethered end loses
- *   focus. Clients can do with this information as they wish.
  */
 
 @customElement("ak-search-select-menu-position")
@@ -161,7 +159,7 @@ export class SearchSelectMenuPosition extends LitElement {
                 ?hidden=${!this.open}
                 ${ref(this.menuRef)}
             ></ak-search-select-menu>`,
-            this.dropdownContainer
+            this.dropdownContainer,
         );
         // This is a dummy object that just has to exist to be the communications channel between
         // the tethered object and its anchor.
