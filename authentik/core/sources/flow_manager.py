@@ -436,11 +436,15 @@ class GroupUpdateStage(StageView):
                 )
                 return Action.DENY, None
             query = Q(name__exact=group_properties.get("name"))
-        LOGGER.debug("trying to link with existing group", source=self.source, query=query, group_id=group_id)
+        LOGGER.debug(
+            "trying to link with existing group", source=self.source, query=query, group_id=group_id
+        )
         matching_groups = Group.objects.filter(query)
         # No matching groups, always enroll
         if not matching_groups.exists():
-            LOGGER.debug("no matching groups found, enrolling", source=self.source, group_id=group_id)
+            LOGGER.debug(
+                "no matching groups found, enrolling", source=self.source, group_id=group_id
+            )
             return Action.ENROLL, new_connection
 
         group = matching_groups.first()
@@ -452,7 +456,12 @@ class GroupUpdateStage(StageView):
         if self.source.group_matching_mode in [
             SourceGroupMatchingModes.NAME_DENY,
         ]:
-            LOGGER.info("denying source because group exists", source=self.source, group=group, group_id=group_id)
+            LOGGER.info(
+                "denying source because group exists",
+                source=self.source,
+                group=group,
+                group_id=group_id,
+            )
             return Action.DENY, None
         # Should never get here as default enroll case is returned above.
         return Action.DENY, None  # pragma: no cover
@@ -505,9 +514,7 @@ class GroupUpdateStage(StageView):
         if self.handle_groups():
             return self.executor.stage_ok()
         else:
-            return self.executor.stage_invalid(
-                "Failed to update groups. Please try again later."
-            )
+            return self.executor.stage_invalid("Failed to update groups. Please try again later.")
 
     def post(self, request: HttpRequest) -> HttpResponse:
         """Wrapper for post requests"""
