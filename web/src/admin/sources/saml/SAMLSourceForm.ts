@@ -30,7 +30,6 @@ import {
     FlowsInstancesListDesignationEnum,
     GroupMatchingModeEnum,
     NameIdPolicyEnum,
-    PaginatedSAMLSourcePropertyMappingList,
     PropertymappingsApi,
     SAMLSource,
     SAMLSourcePropertyMapping,

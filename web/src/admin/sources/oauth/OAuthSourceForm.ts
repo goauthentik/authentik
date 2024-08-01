@@ -30,7 +30,6 @@ import {
     OAuthSource,
     OAuthSourcePropertyMapping,
     OAuthSourceRequest,
-    PaginatedOAuthSourcePropertyMappingList,
     PropertymappingsApi,
     ProviderTypeEnum,
     SourceType,
