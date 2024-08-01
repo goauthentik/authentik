@@ -57,6 +57,7 @@ A user or group object is constructed as follows:
 1.  The source provides initial properties based on commonly used data.
 2.  Each property mapping associated with the source is run and results are merged into the previous properties.
     -   If a property mapping throws an error, the process is aborted. If that happens inside a synchronization process, the object is skipped. If it happens during an enrollment or authentication flow, the flow is cancelled.
+    -   If a property mapping sets one attribute to `None`, that attribute is then discarded.
 3.  If the `username` field is not set for user objects, or the `name` field is not set for group objects, the process is aborted.
 4.  The object is created or updated. The `attributes` property is merged with existing data if the object already exists.
 
