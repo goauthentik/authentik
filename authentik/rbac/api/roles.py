@@ -20,7 +20,7 @@ class RoleSerializer(ModelSerializer):
         super().__init__(*args, **kwargs)
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
             self.fields["permissions"] = ListField(
-                child=ChoiceField(choices=get_permission_choices())
+                required=False, child=ChoiceField(choices=get_permission_choices())
             )
 
     def create(self, validated_data: dict) -> Role:

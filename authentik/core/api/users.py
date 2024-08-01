@@ -150,7 +150,7 @@ class UserSerializer(ModelSerializer):
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
             self.fields["password"] = CharField(required=False, allow_null=True)
             self.fields["permissions"] = ListField(
-                child=ChoiceField(choices=get_permission_choices())
+                required=False, child=ChoiceField(choices=get_permission_choices())
             )
 
     def create(self, validated_data: dict) -> User:
