@@ -37,7 +37,6 @@ class TestPropertyMappings(TestCase):
     def test_user_base_properties(self):
         """Test user base properties"""
         properties = self.source.get_base_user_properties(info=INFO)
-        print(properties)
         self.assertEqual(
             properties,
             {

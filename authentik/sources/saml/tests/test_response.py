@@ -74,7 +74,6 @@ class TestResponseProcessor(TestCase):
                 "sn": "bar",
                 "username": "jens@goauthentik.io",
                 "attributes": {},
-                "groups": [],
                 "path": self.source.get_user_path(),
             },
         )
