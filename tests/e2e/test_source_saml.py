@@ -177,6 +177,7 @@ class TestSourceSAML(SeleniumTestCase):
             .exclude(pk=self.user.pk)
             .first()
         )
+        self.assertTrue(User.objects.get(username="user1").ak_groups.filter(name="group1").exists())
 
     @retry()
     @apply_blueprint(
@@ -259,6 +260,7 @@ class TestSourceSAML(SeleniumTestCase):
             .exclude(pk=self.user.pk)
             .first()
         )
+        self.assertTrue(User.objects.get(username="user1").ak_groups.filter(name="group1").exists())
 
     @retry()
     @apply_blueprint(
@@ -328,6 +330,7 @@ class TestSourceSAML(SeleniumTestCase):
             .exclude(pk=self.user.pk)
             .first()
         )
+        self.assertTrue(User.objects.get(username="user1").ak_groups.filter(name="group1").exists())
 
     @retry()
     @apply_blueprint(
@@ -432,3 +435,4 @@ class TestSourceSAML(SeleniumTestCase):
             .exclude(pk=self.user.pk)
             .first()
         )
+        self.assertTrue(User.objects.get(username="user1").ak_groups.filter(name="group1").exists())
