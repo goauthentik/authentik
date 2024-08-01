@@ -6,7 +6,7 @@ title: What's Up Docker
 
 ## What is What's Up Docker
 
-> WUD is an easy-to-use tool that alerts you whenever a new version of your Docker containers is released.
+> What's Up Docker (WUD) is an easy-to-use tool that alerts you whenever a new version of your Docker containers is released.
 >
 > -- https://fmartinou.github.io/whats-up-docker/
 
