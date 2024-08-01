@@ -208,13 +208,15 @@ class SAMLSource(Source):
             attributes.setdefault(key, [])
             for value in attribute.iterchildren():
                 attributes[key].append(value.text)
+        if "http://schemas.xmlsoap.org/claims/Group" in attributes:
+            attributes["groups"] = attributes["http://schemas.xmlsoap.org/claims/Group"]
+            del attributes["http://schemas.xmlsoap.org/claims/Group"]
         # Flatten all lists in the dict
         for key, value in attributes.items():
+            if key == "groups":
+                continue
             attributes[key] = BaseEvaluator.expr_flatten(value)
         attributes["username"] = name_id.text
-
-        # TODO: populate this
-        attributes["groups"] = []
 
         return attributes
 

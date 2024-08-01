@@ -30,6 +30,12 @@
                 <saml2:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema"
                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:anyType">foo@bar.baz</saml2:AttributeValue>
             </saml2:Attribute>
+            <saml2:Attribute Name="http://schemas.xmlsoap.org/claims/Group">
+                <saml2:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:anyType">group 1</saml2:AttributeValue>
+                <saml2:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:anyType">group 2</saml2:AttributeValue>
+            </saml2:Attribute>
         </saml2:AttributeStatement>
         <saml2:AuthnStatement AuthnInstant="2022-10-14T12:16:21.000Z" SessionIndex="_346001c5708ffd118c40edbc0c72fc60">
             <saml2:AuthnContext>
