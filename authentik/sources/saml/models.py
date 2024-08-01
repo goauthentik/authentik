@@ -32,6 +32,7 @@ from authentik.sources.saml.processors.constants import (
     RSA_SHA256,
     RSA_SHA384,
     RSA_SHA512,
+    SAML_ATTRIBUTES_GROUP,
     SAML_BINDING_POST,
     SAML_BINDING_REDIRECT,
     SAML_NAME_ID_FORMAT_EMAIL,
@@ -208,9 +209,9 @@ class SAMLSource(Source):
             attributes.setdefault(key, [])
             for value in attribute.iterchildren():
                 attributes[key].append(value.text)
-        if "http://schemas.xmlsoap.org/claims/Group" in attributes:
-            attributes["groups"] = attributes["http://schemas.xmlsoap.org/claims/Group"]
-            del attributes["http://schemas.xmlsoap.org/claims/Group"]
+        if SAML_ATTRIBUTES_GROUP in attributes:
+            attributes["groups"] = attributes[SAML_ATTRIBUTES_GROUP]
+            del attributes[SAML_ATTRIBUTES_GROUP]
         # Flatten all lists in the dict
         for key, value in attributes.items():
             if key == "groups":
