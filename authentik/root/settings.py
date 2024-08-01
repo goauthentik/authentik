@@ -516,7 +516,7 @@ if DEBUG:
     REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"].append(
         "rest_framework.renderers.BrowsableAPIRenderer"
     )
-    SHARED_APPS.append("daphne")
+    SHARED_APPS.insert(SHARED_APPS.index("django.contrib.staticfiles"),"daphne")
 
 TENANT_APPS.append("authentik.core")
 
