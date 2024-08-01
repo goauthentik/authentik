@@ -170,14 +170,15 @@ class TestSourceSAML(SeleniumTestCase):
         # Wait until we're logged in
         self.wait_for_url(self.if_user_url())
 
-        self.assert_user(
+        user = (
             User.objects.exclude(username="akadmin")
             .exclude(username__startswith="ak-outpost")
             .exclude_anonymous()
             .exclude(pk=self.user.pk)
             .first()
         )
-        self.assertTrue(User.objects.get(username="user1").ak_groups.filter(name="group1").exists())
+        self.assert_user(user)
+        self.assertTrue(user.ak_groups.filter(name="group1").exists())
 
     @retry()
     @apply_blueprint(
@@ -253,14 +254,15 @@ class TestSourceSAML(SeleniumTestCase):
         # Wait until we're logged in
         self.wait_for_url(self.if_user_url())
 
-        self.assert_user(
+        user = (
             User.objects.exclude(username="akadmin")
             .exclude(username__startswith="ak-outpost")
             .exclude_anonymous()
             .exclude(pk=self.user.pk)
             .first()
         )
-        self.assertTrue(User.objects.get(username="user1").ak_groups.filter(name="group1").exists())
+        self.assert_user(user)
+        self.assertTrue(user.ak_groups.filter(name="group1").exists())
 
     @retry()
     @apply_blueprint(
@@ -323,14 +325,15 @@ class TestSourceSAML(SeleniumTestCase):
         # Wait until we're logged in
         self.wait_for_url(self.if_user_url())
 
-        self.assert_user(
+        user = (
             User.objects.exclude(username="akadmin")
             .exclude(username__startswith="ak-outpost")
             .exclude_anonymous()
             .exclude(pk=self.user.pk)
             .first()
         )
-        self.assertTrue(User.objects.get(username="user1").ak_groups.filter(name="group1").exists())
+        self.assert_user(user)
+        self.assertTrue(user.ak_groups.filter(name="group1").exists())
 
     @retry()
     @apply_blueprint(
@@ -428,11 +431,12 @@ class TestSourceSAML(SeleniumTestCase):
         self.wait_for_url(self.if_user_url())
 
         # sleep(999999)
-        self.assert_user(
+        user = (
             User.objects.exclude(username="akadmin")
             .exclude(username__startswith="ak-outpost")
             .exclude_anonymous()
             .exclude(pk=self.user.pk)
             .first()
         )
-        self.assertTrue(User.objects.get(username="user1").ak_groups.filter(name="group1").exists())
+        self.assert_user(user)
+        self.assertTrue(user.ak_groups.filter(name="group1").exists())
