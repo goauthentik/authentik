@@ -1,3 +1,7 @@
+import {
+    digestAlgorithmOptions,
+    signatureAlgorithmOptions,
+} from "@goauthentik/admin/applications/wizard/methods/saml/SamlProviderOptions";
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
@@ -16,14 +20,12 @@ import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
-    DigestAlgorithmEnum,
     FlowsInstancesListDesignationEnum,
     PropertymappingsApi,
     PropertymappingsSamlListRequest,
     ProvidersApi,
     SAMLPropertyMapping,
     SAMLProvider,
-    SignatureAlgorithmEnum,
     SpBindingEnum,
 } from "@goauthentik/api";
 
@@ -329,25 +331,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                         name="digestAlgorithm"
                     >
                         <ak-radio
-                            .options=${[
-                                {
-                                    label: "SHA1",
-                                    value: DigestAlgorithmEnum._200009Xmldsigsha1,
-                                },
-                                {
-                                    label: "SHA256",
-                                    value: DigestAlgorithmEnum._200104Xmlencsha256,
-                                    default: true,
-                                },
-                                {
-                                    label: "SHA384",
-                                    value: DigestAlgorithmEnum._200104XmldsigMoresha384,
-                                },
-                                {
-                                    label: "SHA512",
-                                    value: DigestAlgorithmEnum._200104Xmlencsha512,
-                                },
-                            ]}
+                            .options=${digestAlgorithmOptions}
                             .value=${this.instance?.digestAlgorithm}
                         >
                         </ak-radio>
@@ -358,29 +342,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                         name="signatureAlgorithm"
                     >
                         <ak-radio
-                            .options=${[
-                                {
-                                    label: "RSA-SHA1",
-                                    value: SignatureAlgorithmEnum._200009XmldsigrsaSha1,
-                                },
-                                {
-                                    label: "RSA-SHA256",
-                                    value: SignatureAlgorithmEnum._200104XmldsigMorersaSha256,
-                                    default: true,
-                                },
-                                {
-                                    label: "RSA-SHA384",
-                                    value: SignatureAlgorithmEnum._200104XmldsigMorersaSha384,
-                                },
-                                {
-                                    label: "RSA-SHA512",
-                                    value: SignatureAlgorithmEnum._200104XmldsigMorersaSha512,
-                                },
-                                {
-                                    label: "DSA-SHA1",
-                                    value: SignatureAlgorithmEnum._200009XmldsigdsaSha1,
-                                },
-                            ]}
+                            .options=${signatureAlgorithmOptions}
                             .value=${this.instance?.signatureAlgorithm}
                         >
                         </ak-radio>

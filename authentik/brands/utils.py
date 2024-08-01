@@ -5,7 +5,7 @@ from typing import Any
 from django.db.models import F, Q
 from django.db.models import Value as V
 from django.http.request import HttpRequest
-from sentry_sdk.hub import Hub
+from sentry_sdk import get_current_span
 
 from authentik import get_full_version
 from authentik.brands.models import Brand
@@ -33,7 +33,7 @@ def context_processor(request: HttpRequest) -> dict[str, Any]:
     brand = getattr(request, "brand", DEFAULT_BRAND)
     tenant = getattr(request, "tenant", Tenant())
     trace = ""
-    span = Hub.current.scope.span
+    span = get_current_span()
     if span:
         trace = span.to_traceparent()
     return {

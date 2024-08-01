@@ -10,25 +10,25 @@ import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { LDAPPropertyMapping, PropertymappingsApi } from "@goauthentik/api";
+import { PropertymappingsApi, SCIMSourcePropertyMapping } from "@goauthentik/api";
 
-@customElement("ak-property-mapping-ldap-form")
-export class PropertyMappingLDAPForm extends BasePropertyMappingForm<LDAPPropertyMapping> {
-    loadInstance(pk: string): Promise<LDAPPropertyMapping> {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsLdapRetrieve({
+@customElement("ak-property-mapping-scim-source-form")
+export class PropertyMappingSCIMSourceForm extends BasePropertyMappingForm<SCIMSourcePropertyMapping> {
+    loadInstance(pk: string): Promise<SCIMSourcePropertyMapping> {
+        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceScimRetrieve({
             pmUuid: pk,
         });
     }
 
-    async send(data: LDAPPropertyMapping): Promise<LDAPPropertyMapping> {
+    async send(data: SCIMSourcePropertyMapping): Promise<SCIMSourcePropertyMapping> {
         if (this.instance) {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsLdapUpdate({
+            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceScimUpdate({
                 pmUuid: this.instance.pk,
-                lDAPPropertyMappingRequest: data,
+                sCIMSourcePropertyMappingRequest: data,
             });
         } else {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsLdapCreate({
-                lDAPPropertyMappingRequest: data,
+            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceScimCreate({
+                sCIMSourcePropertyMappingRequest: data,
             });
         }
     }
@@ -57,7 +57,9 @@ export class PropertyMappingLDAPForm extends BasePropertyMappingForm<LDAPPropert
                     <a
                         target="_blank"
                         rel="noopener noreferrer"
-                        href="${docLink("/docs/property-mappings/expression?utm_source=authentik")}"
+                        href="${docLink(
+                            "/docs/sources/property-mappings/expression?utm_source=authentik",
+                        )}"
                     >
                         ${msg("See documentation for a list of all variables.")}
                     </a>
@@ -68,6 +70,6 @@ export class PropertyMappingLDAPForm extends BasePropertyMappingForm<LDAPPropert
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-property-mapping-ldap-form": PropertyMappingLDAPForm;
+        "ak-property-mapping-scim-source-form": PropertyMappingSCIMSourceForm;
     }
 }

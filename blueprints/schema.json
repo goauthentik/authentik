@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://goauthentik.io/blueprints/schema.json",
     "type": "object",
-    "title": "authentik 2024.6.1 Blueprint schema",
+    "title": "authentik 2024.6.2 Blueprint schema",
     "required": [
         "version",
         "entries"
@@ -752,6 +752,43 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_providers_radius.radiusproviderpropertymapping"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_providers_radius.radiusproviderpropertymapping"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_providers_radius.radiusproviderpropertymapping"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_providers_saml.samlprovider"
                             },
                             "id": {
@@ -974,7 +1011,7 @@
                         ],
                         "properties": {
                             "model": {
-                                "const": "authentik_sources_ldap.ldappropertymapping"
+                                "const": "authentik_sources_ldap.ldapsourcepropertymapping"
                             },
                             "id": {
                                 "type": "string"
@@ -996,10 +1033,10 @@
                                 }
                             },
                             "attrs": {
-                                "$ref": "#/$defs/model_authentik_sources_ldap.ldappropertymapping"
+                                "$ref": "#/$defs/model_authentik_sources_ldap.ldapsourcepropertymapping"
                             },
                             "identifiers": {
-                                "$ref": "#/$defs/model_authentik_sources_ldap.ldappropertymapping"
+                                "$ref": "#/$defs/model_authentik_sources_ldap.ldapsourcepropertymapping"
                             }
                         }
                     },
@@ -1259,6 +1296,43 @@
                             },
                             "identifiers": {
                                 "$ref": "#/$defs/model_authentik_sources_scim.scimsource"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
+                                "const": "authentik_sources_scim.scimsourcepropertymapping"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_sources_scim.scimsourcepropertymapping"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_sources_scim.scimsourcepropertymapping"
                             }
                         }
                     },
@@ -3520,13 +3594,14 @@
                         "authentik_providers_oauth2.oauth2provider",
                         "authentik_providers_proxy.proxyprovider",
                         "authentik_providers_radius.radiusprovider",
+                        "authentik_providers_radius.radiusproviderpropertymapping",
                         "authentik_providers_saml.samlprovider",
                         "authentik_providers_saml.samlpropertymapping",
                         "authentik_providers_scim.scimprovider",
                         "authentik_providers_scim.scimmapping",
                         "authentik_rbac.role",
                         "authentik_sources_ldap.ldapsource",
-                        "authentik_sources_ldap.ldappropertymapping",
+                        "authentik_sources_ldap.ldapsourcepropertymapping",
                         "authentik_sources_oauth.oauthsource",
                         "authentik_sources_oauth.useroauthsourceconnection",
                         "authentik_sources_plex.plexsource",
@@ -3534,6 +3609,7 @@
                         "authentik_sources_saml.samlsource",
                         "authentik_sources_saml.usersamlsourceconnection",
                         "authentik_sources_scim.scimsource",
+                        "authentik_sources_scim.scimsourcepropertymapping",
                         "authentik_stages_authenticator_duo.authenticatorduostage",
                         "authentik_stages_authenticator_duo.duodevice",
                         "authentik_stages_authenticator_sms.authenticatorsmsstage",
@@ -4199,6 +4275,31 @@
             },
             "required": []
         },
+        "model_authentik_providers_radius.radiusproviderpropertymapping": {
+            "type": "object",
+            "properties": {
+                "managed": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "minLength": 1,
+                    "title": "Managed by authentik",
+                    "description": "Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update."
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "expression": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Expression"
+                }
+            },
+            "required": []
+        },
         "model_authentik_providers_saml.samlprovider": {
             "type": "object",
             "properties": {
@@ -4623,7 +4724,7 @@
             },
             "required": []
         },
-        "model_authentik_sources_ldap.ldappropertymapping": {
+        "model_authentik_sources_ldap.ldapsourcepropertymapping": {
             "type": "object",
             "properties": {
                 "managed": {
@@ -4816,10 +4917,6 @@
         "model_authentik_sources_oauth.useroauthsourceconnection": {
             "type": "object",
             "properties": {
-                "user": {
-                    "type": "integer",
-                    "title": "User"
-                },
                 "identifier": {
                     "type": "string",
                     "maxLength": 255,
@@ -5154,10 +5251,6 @@
         "model_authentik_sources_saml.usersamlsourceconnection": {
             "type": "object",
             "properties": {
-                "user": {
-                    "type": "integer",
-                    "title": "User"
-                },
                 "identifier": {
                     "type": "string",
                     "minLength": 1,
@@ -5192,17 +5285,21 @@
                     "type": "boolean",
                     "title": "Enabled"
                 },
-                "user_matching_mode": {
-                    "type": "string",
-                    "enum": [
-                        "identifier",
-                        "email_link",
-                        "email_deny",
-                        "username_link",
-                        "username_deny"
-                    ],
-                    "title": "User matching mode",
-                    "description": "How the source determines if an existing user should be authenticated or a new user enrolled."
+                "user_property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "User property mappings"
+                },
+                "group_property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Group property mappings"
                 },
                 "user_path_template": {
                     "type": "string",
@@ -5213,6 +5310,31 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Icon"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_sources_scim.scimsourcepropertymapping": {
+            "type": "object",
+            "properties": {
+                "managed": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "minLength": 1,
+                    "title": "Managed by authentik",
+                    "description": "Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update."
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "expression": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Expression"
                 }
             },
             "required": []
@@ -8045,6 +8167,11 @@
                     "type": "string",
                     "format": "uuid",
                     "title": "Flow device code"
+                },
+                "default_application": {
+                    "type": "integer",
+                    "title": "Default application",
+                    "description": "When set, external users will be redirected to this application after authenticating."
                 },
                 "web_certificate": {
                     "type": "string",
