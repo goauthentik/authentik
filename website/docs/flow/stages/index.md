@@ -8,7 +8,32 @@ A stage represents a single verification or logic step within a flow. You can bi
 
 In the following diagram of the `default-authentication-flow`, you see multiple stages, or steps, in the authentication process for a user. Policies are bound to some stages; this provides for dynamic application of a specific stage _if_ the policy criteria is met.
 
-![](./flow_diagram3.png)
+```mermaid
+graph TD
+flow_pre[["Pre-flow policies"]]
+flow_pre --Binding 10--> flow_policy_0{{"Policy (Event Matcher Policy)
+default-match-update"}}
+flow_policy_0 --Policy denied--> done[["End of the flow"]]
+flow_policy_0 --> flow_start[["Flow
+Welcome to authentik!"]]
+stage_0_policy_0 --Policy passed--> stage_0(["Stage (Identification Stage)
+default-authentication-identification"])
+stage_1_policy_0 --Policy passed--> stage_1(["Stage (Password Stage)
+default-authentication-password"])
+--> stage_2(["Stage (Authenticator Validation Stage)
+default-authentication-mfa-validation"])
+--> stage_3(["Stage (User Login Stage)
+default-authentication-login"])
+flow_start --> stage_0_policy_0{{"Policy (Event Matcher Policy)
+default-match-configuration-error"}}
+stage_0 --> stage_1_policy_0{{"Policy (Expression Policy)
+default-authentication-flow-password-stage"}}
+stage_0_policy_0 --Policy denied--> stage_1(["Stage (Password Stage)
+default-authentication-password"])
+stage_1_policy_0 --Policy denied--> stage_2(["Stage (Authenticator Validation Stage)
+default-authentication-mfa-validation"])
+stage_3 --> done[["End of the flow"]]
+```
 
 ## Create a Stage
 
