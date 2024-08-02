@@ -33,7 +33,6 @@ After creating the flow, you can then [bind specific stages](../flow/stages/inde
 
 To determine which flow should be used, authentik will first check which default authentication flow is configured in the active [**Brand**](../core/brands.md). If no default is configured there, the policies in all flows with the matching designation are checked, and the first flow with matching policies sorted by `slug` will be used.
 
-
 ## Permissions
 
 Flows can have policies assigned to them. These policies determine if the current user is allowed to see and use this flow.
