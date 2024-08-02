@@ -1,0 +1,45 @@
+---
+Title: Upgrade authentik
+---
+
+Upgrading to the latest version of authentik, whether a new major release or a patch, involves running a few commands to pull down the latest packages and then restart the servers and databases.
+
+:::warning
+The version of the authetnik instance and any outposts must be the same. . It is recommended to always upgrade any outposts you have at the same time you upgrade your authentik instance.
+:::
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+<Tabs
+  defaultValue="docker-compose"
+  values={[
+    {label: 'Docker Compose', value: 'docker-compose'},
+    {label: 'Kubernetes', value: 'kubernetes'},
+  ]}
+  groupId="platform">
+  <TabItem value="docker-compose">
+In your terminal, navigate to your installation directory and run the following commands:
+
+```shell
+docker compose pull
+docker compose up -d
+```
+
+The Beta image is amd64 only. For arm64 platforms, append `-arm64` to the tag name (no spaces).
+
+  </TabItem>
+
+  <TabItem value="kubernetes">
+In your terminal, navigate to your installation directory and run the following commands:
+
+```helm repo update
+helm upgrade authentik authentik/authentik -f values.yaml
+```
+
+The Beta image is amd64 only. For arm64 platforms, append `-arm64` to the tag name (no spaces).
+
+  </TabItem>
+</Tabs>
+
+
