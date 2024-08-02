@@ -20,7 +20,7 @@ from authentik.core.models import (
 from authentik.events.system_tasks import SystemTask, TaskStatus, prefill_task
 from authentik.lib.config import CONFIG
 from authentik.policies.models import PolicyBinding
-from authentik.policies.password.models import UniquePasswordPolicy
+from authentik.policies.unique_password.models import UniquePasswordPolicy
 from authentik.root.celery import CELERY_APP
 
 LOGGER = get_logger()
