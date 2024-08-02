@@ -23,7 +23,7 @@ from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_key
 from authentik.policies.models import PolicyBinding, PolicyBindingModel
-from authentik.policies.password.models import UniquePasswordPolicy
+from authentik.policies.unique_password.models import UniquePasswordPolicy
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 from authentik.stages.user_write.models import UserCreationMode, UserWriteStage
 from authentik.stages.user_write.stage import PLAN_CONTEXT_GROUPS, UserWriteStageView

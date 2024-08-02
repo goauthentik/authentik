@@ -18,7 +18,7 @@ from authentik.flows.models import Stage
 from authentik.flows.planner import PLAN_CONTEXT_SOURCE, FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.policies.models import PolicyBinding
-from authentik.policies.password.models import UniquePasswordPolicy
+from authentik.policies.unique_password.models import UniquePasswordPolicy
 from authentik.root.monitoring import monitoring_set
 from authentik.stages.invitation.models import Invitation
 from authentik.stages.invitation.signals import invitation_used

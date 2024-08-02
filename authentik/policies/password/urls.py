@@ -1,8 +1,7 @@
 """API URLs"""
 
-from authentik.policies.password.api import PasswordPolicyViewSet, UniquePasswordPolicyViewSet
+from authentik.policies.password.api import PasswordPolicyViewSet
 
 api_urlpatterns = [
     ("policies/password", PasswordPolicyViewSet),
-    ("policies/unique-password", UniquePasswordPolicyViewSet),
 ]

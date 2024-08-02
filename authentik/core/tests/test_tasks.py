@@ -25,7 +25,7 @@ from authentik.core.tasks import (
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.lib.generators import generate_id
 from authentik.policies.models import PolicyBinding, PolicyBindingModel
-from authentik.policies.password.models import UniquePasswordPolicy
+from authentik.policies.unique_password.models import UniquePasswordPolicy
 
 
 class TestTasks(APITestCase):
@@ -74,6 +74,7 @@ class TestTasks(APITestCase):
 
 class TestTrimPasswordHistory(TestCase):
     """Test password history cleanup task"""
+
     def setUp(self):
         self.user = create_test_user("test-user")
         self.pbm = PolicyBindingModel.objects.create()

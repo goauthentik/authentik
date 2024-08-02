@@ -47,7 +47,7 @@ def invalidate_policy_cache(sender, instance, **_):
 
 @receiver(post_delete, sender=PolicyBinding)
 def purge_password_history(sender, instance, **_):
-    from authentik.policies.password.models import UniquePasswordPolicy
+    from authentik.policies.unique_password.models import UniquePasswordPolicy
 
     if not isinstance(instance.policy, UniquePasswordPolicy):
         return
