@@ -14826,6 +14826,10 @@ paths:
       description: SAMLPropertyMapping Viewset
       parameters:
       - in: query
+        name: friendly_name
+        schema:
+          type: string
+      - in: query
         name: managed
         schema:
           type: array
@@ -14859,6 +14863,10 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: saml_name
+        schema:
+          type: string
       - name: search
         required: false
         in: query
@@ -15954,10 +15962,6 @@ paths:
       description: SCIMSourcePropertyMapping Viewset
       parameters:
       - in: query
-        name: expression
-        schema:
-          type: string
-      - in: query
         name: managed
         schema:
           type: array
@@ -15965,6 +15969,10 @@ paths:
             type: string
         explode: true
         style: form
+      - in: query
+        name: managed__isnull
+        schema:
+          type: boolean
       - in: query
         name: name
         schema:
@@ -15987,11 +15995,6 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
-      - in: query
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
       - name: search
         required: false
         in: query
@@ -21393,7 +21396,7 @@ paths:
           description: ''
   /rbac/permissions/assigned_by_roles/{uuid}/assign/:
     post:
-      operationId: rbac_permissions_assigned_by_roles_assign_create
+      operationId: rbac_permissions_assigned_by_roles_assign
       description: |-
         Assign permission(s) to role. When `object_pk` is set, the permissions
         are only assigned to the specific object, otherwise they are assigned globally.
@@ -21416,8 +21419,14 @@ paths:
       security:
       - authentik: []
       responses:
-        '204':
-          description: Successfully assigned
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PermissionAssignResult'
+          description: ''
         '400':
           content:
             application/json:
@@ -21614,7 +21623,7 @@ paths:
           description: ''
   /rbac/permissions/assigned_by_users/{id}/assign/:
     post:
-      operationId: rbac_permissions_assigned_by_users_assign_create
+      operationId: rbac_permissions_assigned_by_users_assign
       description: Assign permission(s) to user
       parameters:
       - in: path
@@ -21634,8 +21643,14 @@ paths:
       security:
       - authentik: []
       responses:
-        '204':
-          description: Successfully assigned
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PermissionAssignResult'
+          description: ''
         '400':
           content:
             application/json:
@@ -21719,7 +21734,6 @@ paths:
         schema:
           type: string
           format: uuid
-        required: true
       tags:
       - rbac
       security:
@@ -21731,6 +21745,146 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedExtraRoleObjectPermissionList'
           description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /rbac/permissions/roles/{id}/:
+    get:
+      operationId: rbac_permissions_roles_retrieve
+      description: Get a role's assigned object permissions
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this group object permission.
+        required: true
+      tags:
+      - rbac
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExtraRoleObjectPermission'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: rbac_permissions_roles_update
+      description: Get a role's assigned object permissions
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this group object permission.
+        required: true
+      tags:
+      - rbac
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExtraRoleObjectPermissionRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExtraRoleObjectPermission'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: rbac_permissions_roles_partial_update
+      description: Get a role's assigned object permissions
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this group object permission.
+        required: true
+      tags:
+      - rbac
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedExtraRoleObjectPermissionRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExtraRoleObjectPermission'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: rbac_permissions_roles_destroy
+      description: Get a role's assigned object permissions
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this group object permission.
+        required: true
+      tags:
+      - rbac
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
         '400':
           content:
             application/json:
@@ -21776,7 +21930,6 @@ paths:
         name: user_id
         schema:
           type: integer
-        required: true
       tags:
       - rbac
       security:
@@ -21788,6 +21941,146 @@ paths:
               schema:
                 $ref: '#/components/schemas/PaginatedExtraUserObjectPermissionList'
           description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /rbac/permissions/users/{id}/:
+    get:
+      operationId: rbac_permissions_users_retrieve
+      description: Get a users's assigned object permissions
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user object permission.
+        required: true
+      tags:
+      - rbac
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExtraUserObjectPermission'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: rbac_permissions_users_update
+      description: Get a users's assigned object permissions
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user object permission.
+        required: true
+      tags:
+      - rbac
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExtraUserObjectPermissionRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExtraUserObjectPermission'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: rbac_permissions_users_partial_update
+      description: Get a users's assigned object permissions
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user object permission.
+        required: true
+      tags:
+      - rbac
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedExtraUserObjectPermissionRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExtraUserObjectPermission'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: rbac_permissions_users_destroy
+      description: Get a users's assigned object permissions
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user object permission.
+        required: true
+      tags:
+      - rbac
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
         '400':
           content:
             application/json:
@@ -36544,8 +36837,6 @@ components:
           readOnly: true
         object_pk:
           type: string
-          title: Object ID
-          readOnly: true
         name:
           type: string
           readOnly: true
@@ -36575,6 +36866,15 @@ components:
       - name
       - object_description
       - object_pk
+    ExtraRoleObjectPermissionRequest:
+      type: object
+      description: User permission with additional object-related data
+      properties:
+        object_pk:
+          type: string
+          minLength: 1
+      required:
+      - object_pk
     ExtraUserObjectPermission:
       type: object
       description: User permission with additional object-related data
@@ -36594,8 +36894,6 @@ components:
           readOnly: true
         object_pk:
           type: string
-          title: Object ID
-          readOnly: true
         name:
           type: string
           readOnly: true
@@ -36624,6 +36922,15 @@ components:
       - model_verbose
       - name
       - object_description
+      - object_pk
+    ExtraUserObjectPermissionRequest:
+      type: object
+      description: User permission with additional object-related data
+      properties:
+        object_pk:
+          type: string
+          minLength: 1
+      required:
       - object_pk
     FilePathRequest:
       type: object
@@ -42500,6 +42807,20 @@ components:
         expression:
           type: string
           minLength: 1
+    PatchedExtraRoleObjectPermissionRequest:
+      type: object
+      description: User permission with additional object-related data
+      properties:
+        object_pk:
+          type: string
+          minLength: 1
+    PatchedExtraUserObjectPermissionRequest:
+      type: object
+      description: User permission with additional object-related data
+      properties:
+        object_pk:
+          type: string
+          minLength: 1
     PatchedFlowRequest:
       type: object
       description: Flow Serializer
@@ -44497,6 +44818,14 @@ components:
           minLength: 1
       required:
       - permissions
+    PermissionAssignResult:
+      type: object
+      description: Result from assigning permissions to a user/role
+      properties:
+        id:
+          type: string
+      required:
+      - id
     PlexAuthenticationChallenge:
       type: object
       description: Challenge shown to the user in identification stage
@@ -46317,8 +46646,6 @@ components:
           readOnly: true
         object_pk:
           type: string
-          title: Object ID
-          readOnly: true
         name:
           type: string
           readOnly: true
@@ -49162,8 +49489,6 @@ components:
           readOnly: true
         object_pk:
           type: string
-          title: Object ID
-          readOnly: true
         name:
           type: string
           readOnly: true

@@ -37,7 +37,7 @@ export class UserPermissionForm extends ModelForm<UserPermissionAssign, number> 
     }
 
     async send(data: UserPermissionAssign) {
-        await new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByUsersAssignCreate({
+        await new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByUsersAssign({
             id: this.userId || 0,
             permissionAssignRequest: {
                 permissions: data.permissions,
