@@ -344,7 +344,7 @@ class Importer:
                 assign_perm(perm.permission, User.objects.get(pk=perm.user), instance)
             if perm.role is not None:
                 role = Role.objects.get(pk=perm.role)
-                role.assign_permission(perm.permission, instance)
+                role.assign_permission(perm.permission, obj=instance)
 
     def apply(self) -> bool:
         """Apply (create/update) models yaml, in database transaction"""

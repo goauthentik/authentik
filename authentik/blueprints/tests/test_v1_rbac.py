@@ -51,5 +51,7 @@ class TestBlueprintsV1RBAC(TransactionTestCase):
         self.assertTrue(importer.apply())
         flow = Flow.objects.filter(slug=uid).first()
         user = User.objects.filter(username=uid).first()
+        role = Role.objects.filter(name=uid).first()
         self.assertIsNotNone(flow)
         self.assertEqual(get_perms(user, flow), ["view_flow"])
+        self.assertEqual(get_perms(role.group, flow), ["view_flow"])

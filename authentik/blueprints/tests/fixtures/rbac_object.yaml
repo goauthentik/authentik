@@ -6,6 +6,10 @@ entries:
       username: "%(id)s"
     attrs:
       name: "%(id)s"
+  - model: authentik_rbac.role
+    id: role
+    identifiers:
+      name: "%(id)s"
   - model: authentik_flows.flow
     identifiers:
       slug: "%(id)s"
@@ -16,3 +20,5 @@ entries:
     permissions:
       - permission: view_flow
         user: !KeyOf user
+      - permission: view_flow
+        role: !KeyOf role
