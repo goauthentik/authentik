@@ -2,9 +2,11 @@
 title: Working with policies
 ---
 
+For an overview of policies, refer to our documentation on [Policies](../index.md).
+
 authentik provides several [standard policy types](../index.md#standard-policies), which can be configured for your specific needs.
 
-For an overview, refer to our documentation on [Policies](../index.md).
+We also document how to use a policy to [whitelist email domains](../working_with_policies/whitelist_email.md) and to [ensure unique email addresses](../working_with_policies/unique_email.md).
 
 ## Create a policy
 
@@ -20,7 +22,7 @@ To create a new policy, follow these steps:
 After creating the policy, you can bind it to either a [flow](../../flow/index.md) or to a [stage](../../flow/stages/index.md).
 
 :::info
-Bindings are instantiated objects themselves, and conceptually can be considered as the "connector" between the policy and the stage or flow. This is why you might read about "binding a binding", because technically, a binding is "spliced" into another binding, in order to intercept and enforce the criteria defined in the policy. You can edit bindings on the **Stage Bindings** tab for a flow.
+Bindings are instantiated objects themselves, and conceptually can be considered as the "connector" between the policy and the stage or flow. This is why you might read about "binding a binding", because technically, a binding is "spliced" into another binding, in order to intercept and enforce the criteria defined in the policy. You can edit bindings on a flow's **Stage Bindings** tab.
 :::
 
 ### Bind a policy to a flow
