@@ -87,7 +87,7 @@
         "@changesets/cli": "^2.27.5",
         "@custom-elements-manifest/analyzer": "^0.10.2",
         "@genesiscommunitysuccess/custom-elements-lsp": "^5.0.3",
-        "@hcaptcha/types": "^1.0.3",
+        "@hcaptcha/types": "^1.0.4",
         "@jeysal/storybook-addon-css-user-preferences": "^0.2.0",
         "@lit/localize-tools": "^0.7.2",
         "@rollup/plugin-replace": "^5.0.7",
