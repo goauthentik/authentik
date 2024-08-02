@@ -1,11 +1,12 @@
 """Event notification tasks"""
 
+from django.db import Error as DjangoDBError
 from django.db.models.query_utils import Q
 from guardian.shortcuts import get_anonymous_user
 from structlog.stdlib import get_logger
 
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
-from authentik.core.models import User
+from authentik.core.models import User, UserPasswordHistory
 from authentik.events.models import (
     Event,
     Notification,
@@ -17,6 +18,7 @@ from authentik.events.models import (
 from authentik.events.system_tasks import SystemTask, prefill_task
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.models import PolicyBinding, PolicyEngineMode
+from authentik.policies.password.models import UniquePasswordPolicy
 from authentik.root.celery import CELERY_APP
 
 LOGGER = get_logger()

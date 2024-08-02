@@ -493,6 +493,43 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_policies_password.uniquepasswordpolicy"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_policies_password.uniquepasswordpolicy"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_policies_password.uniquepasswordpolicy"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_policies_reputation.reputationpolicy"
                             },
                             "id": {
@@ -3587,6 +3624,7 @@
                         "authentik_policies_expiry.passwordexpirypolicy",
                         "authentik_policies_expression.expressionpolicy",
                         "authentik_policies_password.passwordpolicy",
+                        "authentik_policies_password.uniquepasswordpolicy",
                         "authentik_policies_reputation.reputationpolicy",
                         "authentik_policies.policybinding",
                         "authentik_providers_ldap.ldapprovider",
@@ -3794,6 +3832,35 @@
                     "maximum": 2147483647,
                     "title": "Zxcvbn score threshold",
                     "description": "If the zxcvbn score is equal or less than this value, the policy will fail."
+                }
+            },
+            "required": []
+        },
+        "model_authentik_policies_password.uniquepasswordpolicy": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "execution_logging": {
+                    "type": "boolean",
+                    "title": "Execution logging",
+                    "description": "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged."
+                },
+                "password_field": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Password field",
+                    "description": "Field key to check, field keys defined in Prompt stages are available."
+                },
+                "num_historical_passwords": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "title": "Num historical passwords",
+                    "description": "Number of passwords to check against."
                 }
             },
             "required": []
