@@ -16253,10 +16253,6 @@ paths:
       description: SCIMSourcePropertyMapping Viewset
       parameters:
       - in: query
-        name: expression
-        schema:
-          type: string
-      - in: query
         name: managed
         schema:
           type: array
@@ -16264,6 +16260,10 @@ paths:
             type: string
         explode: true
         style: form
+      - in: query
+        name: managed__isnull
+        schema:
+          type: boolean
       - in: query
         name: name
         schema:
@@ -16286,11 +16286,6 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
-      - in: query
-        name: pm_uuid
-        schema:
-          type: string
-          format: uuid
       - name: search
         required: false
         in: query

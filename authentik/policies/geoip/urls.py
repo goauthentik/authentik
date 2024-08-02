@@ -2,8 +2,7 @@
 
 from django.urls import path
 
-from authentik.policies.geoip.api import GeoIPPolicyViewSet
-from authentik.policies.geoip.views import ISO3166View
+from authentik.policies.geoip.api import GeoIPPolicyViewSet, ISO3166View
 
 api_urlpatterns = [
     ("policies/geoip", GeoIPPolicyViewSet),
