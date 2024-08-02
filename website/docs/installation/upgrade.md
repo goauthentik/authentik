@@ -12,13 +12,13 @@ import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
 <Tabs
-  defaultValue="docker-compose"
-  values={[
-    {label: 'Docker Compose', value: 'docker-compose'},
-    {label: 'Kubernetes', value: 'kubernetes'},
-  ]}
-  groupId="platform">
-  <TabItem value="docker-compose">
+defaultValue="docker-compose"
+values={[
+{label: 'Docker Compose', value: 'docker-compose'},
+{label: 'Kubernetes', value: 'kubernetes'},
+]}
+groupId="platform">
+<TabItem value="docker-compose">
 In your terminal, navigate to your installation directory and run the following commands:
 
 ```shell
@@ -41,5 +41,3 @@ The Beta image is amd64 only. For arm64 platforms, append `-arm64` to the tag na
 
   </TabItem>
 </Tabs>
-
-

@@ -21,6 +21,7 @@ const docsSidebar = {
             items: [
                 "installation/docker-compose",
                 "installation/kubernetes",
+                "installation/upgrade",
                 "installation/beta",
                 "installation/configuration",
                 "installation/reverse-proxy",
