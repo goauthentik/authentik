@@ -1,4 +1,4 @@
-export function isVisibleInScrollRegion(el, container) {
+export function isVisibleInScrollRegion(el: HTMLElement, container: HTMLElement) {
     const elTop = el.offsetTop;
     const elBottom = elTop + el.clientHeight;
     const containerTop = container.scrollTop;

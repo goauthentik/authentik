@@ -1,14 +1,16 @@
 import { AKElement } from "@goauthentik/elements/Base.js";
 import { bound } from "@goauthentik/elements/decorators/bound.js";
+import { randomId } from "@goauthentik/elements/utils/randomId.js";
 import { match } from "ts-pattern";
 
-import { PropertyValues, css, html, nothing } from "lit";
+import { PropertyValueMap, css, html, nothing } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
 
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFSelect from "@patternfly/patternfly/components/Select/select.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+import type { GroupedOptions, SelectGroup, SelectOption } from "./types.js";
 import { isVisibleInScrollRegion } from "./utils.js";
 
 /**
@@ -50,7 +52,7 @@ export class ListSelect extends AKElement {
      * @prop
      */
     @property({ type: Array, reflect: false })
-    options: AkSelectOption[] = [];
+    options: SelectOption[] = [];
 
     /**
      * The current value of the menu.
@@ -79,7 +81,9 @@ export class ListSelect extends AKElement {
     @query("#ak-list-select-list")
     ul!: HTMLUListElement;
 
-    eventTarget: HTMLElement;
+    get json(): string {
+        return this.value ?? "";
+    }
 
     public constructor() {
         super();
@@ -98,10 +102,12 @@ export class ListSelect extends AKElement {
     onBlur() {
         // Allow the event to propagate.
         this.removeEventListener("keydown", this.onKeydown);
+        this.indexOfFocusedItem = -1;
     }
 
     @bound
-    onClick(value: string) {
+    onClick(value: string | undefined) {
+        // let the click through, but include the change event.
         this.value = value;
         this.setIndexOfFocusedItemFromValue();
         this.dispatchEvent(new Event("change", { bubbles: true, composed: true })); // prettier-ignore
@@ -113,40 +119,33 @@ export class ListSelect extends AKElement {
         const lastItem = this.displayedElements.length - 1;
         const current = this.indexOfFocusedItem;
 
-        const updateItem = (pos: number) => {
+        const updateIndex = (pos: number) => {
+            event.preventDefault();
             this.indexOfFocusedItem = pos;
             this.highlightFocusedItem();
         };
 
         const setValueAndDispatch = () => {
-            this.value = this.currentElement.getAttribute("value");
+            event.preventDefault();
+            this.value = this.currentElement?.getAttribute("value") ?? undefined;
             this.dispatchEvent(new Event("change", { bubbles: true, composed: true })); // prettier-ignore
         };
 
-        const pageKey = (direction: number) => {
+        const pageBy = (direction: number) => {
             const visibleElementCount =
                 this.displayedElements.filter((element) => isVisibleInScrollRegion(element, this.ul)).length - 1; // prettier-ignore
-
             return visibleElementCount * direction + current;
         };
 
-        let preventDefault = true;
         match({ key })
-            .with({ key: "ArrowDown" }, () => updateItem(Math.min(current + 1, lastItem)))
-            .with({ key: "ArrowUp" }, () => updateItem(Math.max(current - 1, 0)))
-            .with({ key: "PageDown" }, () => updateItem(Math.min(pageKey(1), lastItem)))
-            .with({ key: "PageUp" }, () => updateItem(Math.max(pageKey(-1), 0)))
-            .with({ key: "Home" }, () => updateItem(0))
-            .with({ key: "End" }, () => updateItem(lastItem))
+            .with({ key: "ArrowDown" }, () => updateIndex(Math.min(current + 1, lastItem)))
+            .with({ key: "ArrowUp" }, () => updateIndex(Math.max(current - 1, 0)))
+            .with({ key: "PageDown" }, () => updateIndex(Math.min(pageBy(1), lastItem)))
+            .with({ key: "PageUp" }, () => updateIndex(Math.max(pageBy(-1), 0)))
+            .with({ key: "Home" }, () => updateIndex(0))
+            .with({ key: "End" }, () => updateIndex(lastItem))
             .with({ key: " " }, () => setValueAndDispatch())
-            .with({ key: "Enter" }, () => setValueAndDispatch())
-            .otherwise(() => {
-                preventDefault = false;
-            });
-
-        if (preventDefault) {
-            event.preventDefault();
-        }
+            .with({ key: "Enter" }, () => setValueAndDispatch());
     }
 
     private get displayedElements(): HTMLElement[] {
@@ -154,9 +153,10 @@ export class ListSelect extends AKElement {
     }
 
     private get currentElement(): HTMLElement | undefined {
-        return this.indexOfFocusedItem === -1
+        const curIndex = this.indexOfFocusedItem;
+        return curIndex < 0 || curIndex > this.displayedElements.length - 1
             ? undefined
-            : this.displayedElements[this.indexOfFocusedItem];
+            : this.displayedElements[curIndex];
     }
 
     // Handles the "easy mode" of just passing an array of tuples.
@@ -183,14 +183,15 @@ export class ListSelect extends AKElement {
             return;
         }
         currentElement.classList.add("ak-highlight-item");
-        currentElement.setAttribute("aria-selected", true);
+        // This is currently a radio emulation; "selected" is true here.
+        // If this were a checkbox emulation (i.e. multi), "checked" would be appropriate.
+        currentElement.setAttribute("aria-selected", "true");
         currentElement.focus();
         currentElement.scrollIntoView({ block: "center", behavior: "smooth" });
     }
 
     public override connectedCallback() {
         super.connectedCallback();
-        this.eventTarget = this.host ?? this;
         this.setAttribute("data-ouia-component-type", "ak-menu-select");
         this.setAttribute("data-ouia-component-id", this.getAttribute("id") || randomId());
         this.setIndexOfFocusedItemFromValue();
@@ -202,40 +203,59 @@ export class ListSelect extends AKElement {
         super.performUpdate();
     }
 
-    public override updated(...args) {
-        super.updated && super.updated(...args);
-        this.setAttribute("data-ouia-component-safe", true);
+    public override updated(changed: PropertyValueMap<this>) {
+        super.updated && super.updated(changed);
+        this.setAttribute("data-ouia-component-safe", "true");
     }
 
-    private renderMenuItems(options: SearchTuple[]) {
+    renderEmptyMenuItem() {
+        return html`<li role="option" class="ak-select-item" part="ak-list-select-option">
+            <button
+                class="pf-c-dropdown__menu-item"
+                role="option"
+                tabindex="0"
+                @click=${() => this.onClick(undefined)}
+                part="ak-list-select-button"
+            >
+                ${this.emptyOption}
+            </button>
+        </li>`;
+    }
+
+    private renderMenuItems(options: SelectOption[]) {
         return options.map(
-            ([value, label, desc]: SearchTuple) => html`
-                <li role="option" value=${value}  class="ak-select-item" part="ak-list-select-option">
+            ([value, label, desc]: SelectOption) => html`
+                <li
+                    role="option"
+                    value=${value}
+                    class="ak-select-item"
+                    part="ak-list-select-option"
+                >
                     <button
-                        class="pf-c-dropdown__menu-item pf-m-description
-                        value=${value}
+                        class="pf-c-dropdown__menu-item pf-m-description"
+                        value="${value}"
                         tabindex="0"
                         @click=${() => this.onClick(value)}
                         part="ak-list-select-button"
                     >
-                        <div class="pf-c-dropdown__menu-item-main" part="ak-list-select-label">${label}</div>
-                        ${
-                            desc
-                                ? html`<div
-                                      class="pf-c-dropdown__menu-item-description"
-                                      part="ak-list-select-desc"
-                                  >
-                                      ${desc}
-                                  </div>`
-                                : nothing
-                        }
+                        <div class="pf-c-dropdown__menu-item-main" part="ak-list-select-label">
+                            ${label}
+                        </div>
+                        ${desc
+                            ? html`<div
+                                  class="pf-c-dropdown__menu-item-description"
+                                  part="ak-list-select-desc"
+                              >
+                                  ${desc}
+                              </div>`
+                            : nothing}
                     </button>
                 </li>
             `,
         );
     }
 
-    private renderMenuGroups(options: SearchGroup[]) {
+    private renderMenuGroups(options: SelectGroup[]) {
         return options.map(
             ({ name, options }) => html`
                 <section class="pf-c-dropdown__group" part="ak-list-select-group">

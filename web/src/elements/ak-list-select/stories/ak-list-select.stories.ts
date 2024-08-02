@@ -14,7 +14,7 @@ const longGoodForYouPairs = {
     options: sampleData.map(({ produce }) => [slug(produce), produce]),
 };
 
-const metadata: Meta<SearchSelectMenu> = {
+const metadata: Meta<ListSelect> = {
     title: "Elements / List Select",
     component: "ak-list-select",
     parameters: {
@@ -34,6 +34,8 @@ const metadata: Meta<SearchSelectMenu> = {
 
 export default metadata;
 
+type Story = StoryObj;
+
 const sendMessage = (message: string) =>
     document.dispatchEvent(
         new CustomEvent(EVENT_MESSAGE, { bubbles: true, composed: true, detail: { message } }),
@@ -42,10 +44,13 @@ const sendMessage = (message: string) =>
 const container = (testItem: TemplateResult) => {
     window.setTimeout(() => {
         const menu = document.getElementById("ak-list-select");
+        if (!menu) {
+            throw new Error("Test was not initialized correctly.");
+        }
         menu.addEventListener("focusin", () => sendMessage("Element received focus"));
         menu.addEventListener("blur", () => sendMessage("Element lost focus"));
-        menu.addEventListener("change", () =>
-            sendMessage(`Value changed to: ${event.target.value}`),
+        menu.addEventListener("change", (event: Event) =>
+            sendMessage(`Value changed to: ${(event.target as HTMLInputElement)?.value}`),
         );
     }, 250);
 
