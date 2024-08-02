@@ -147,6 +147,18 @@ class AutoSubmitChallengeResponse(ChallengeResponse):
     component = CharField(default="ak-stage-autosubmit")
 
 
+class FrameChallenge(Challenge):
+    """Challenge type to render a frame"""
+
+    url = CharField()
+    component = CharField(default="xak-flow-frame")
+
+
+class FrameChallengeResponse(ChallengeResponse):
+
+    component = CharField(default="xak-flow-frame")
+
+
 class DataclassEncoder(DjangoJSONEncoder):
     """Convert any dataclass to json"""
 
