@@ -26,8 +26,6 @@ docker compose pull
 docker compose up -d
 ```
 
-The Beta image is amd64 only. For arm64 platforms, append `-arm64` to the tag name (no spaces).
-
   </TabItem>
 
   <TabItem value="kubernetes">
@@ -38,7 +36,48 @@ helm repo update
 helm upgrade authentik authentik/authentik -f values.yaml
 ```
 
-The Beta image is amd64 only. For arm64 platforms, append `-arm64` to the tag name (no spaces).
+  </TabItem>
+</Tabs>
+
+## Verify your upgrade
+
+You can view the current version of your authentik instance by logging in to the Admin interface, and then navigating to **Dashboards -> Overview**.
+
+![](./version1.png)
+
+## Tips and troubleshooting your upgrade
+
+<Tabs
+defaultValue="docker-compose"
+values={[
+{label: 'Docker Compose', value: 'docker-compose'},
+{label: 'Kubernetes', value: 'kubernetes'},
+]}
+groupId="platform">
+<TabItem value="docker-compose">
+If you run the upgrade commands but your version on the Dashboard doesn’t change,you might need to make sure the old `authinstall database`` is removed before upgrading.
+
+Run `docker compose down -v`.
+
+  </TabItem>
+
+  <TabItem value="kubernetes">
+If you run the upgrade commands but your version on the Dashboard doesn’t change, follow these steps:
+
+1.  Run `helm repo add authentik https://charts.goauthentik.io`
+2.  Then run `kubectl rollout restart deployment` to force the system to pick up the latest version.
+3.  Finally, run the upgrade commands again:
+
+        `helm repo update
+
+    helm upgrade --install authentik authentik/authentik -f values.yaml`
 
   </TabItem>
 </Tabs>
+
+TODOs:
+
+- Add link to Release Notes (and from Release Notes to here)
+
+-`  Do we need to mention this? "For arm64 platforms, append `-arm64` to the tag name (no spaces)."
+-   What other tips and info do they need?
