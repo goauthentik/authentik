@@ -21,6 +21,7 @@ import "@goauthentik/elements/router/RouterOutlet";
 import "@goauthentik/elements/sidebar/Sidebar";
 import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
 import "@goauthentik/elements/sidebar/SidebarItem";
+import { themeImage } from "@goauthentik/elements/utils/images";
 import { ROUTES } from "@goauthentik/user/Routes";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { match } from "ts-pattern";
@@ -193,7 +194,7 @@ class UserInterfacePresentation extends AKElement {
                         <a href="#/" class="pf-c-page__header-brand-link">
                             <img
                                 class="pf-c-brand"
-                                src="${this.brand.brandingLogo}"
+                                src="${themeImage(this.brand.brandingLogo)}"
                                 alt="${this.brand.brandingTitle}"
                             />
                         </a>

@@ -5,7 +5,7 @@ from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import Provider
+from authentik.core.models import PropertyMapping, Provider
 from authentik.lib.generators import generate_id
 from authentik.outposts.models import OutpostModel
 
@@ -53,7 +53,7 @@ class RadiusProvider(OutpostModel, Provider):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.providers.radius.api import RadiusProviderSerializer
+        from authentik.providers.radius.api.providers import RadiusProviderSerializer
 
         return RadiusProviderSerializer
 
@@ -63,3 +63,25 @@ class RadiusProvider(OutpostModel, Provider):
     class Meta:
         verbose_name = _("Radius Provider")
         verbose_name_plural = _("Radius Providers")
+
+
+class RadiusProviderPropertyMapping(PropertyMapping):
+
+    @property
+    def component(self) -> str:
+        return "ak-property-mapping-radius-form"
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.providers.radius.api.property_mappings import (
+            RadiusProviderPropertyMappingSerializer,
+        )
+
+        return RadiusProviderPropertyMappingSerializer
+
+    def __str__(self):
+        return f"Radius Property Mapping {self.name}"
+
+    class Meta:
+        verbose_name = _("Radius Property Mapping")
+        verbose_name_plural = _("Radius Property Mappings")

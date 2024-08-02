@@ -31,6 +31,9 @@ To create a flow, follow these steps:
 
 After creating the flow, you can then [bind specific stages](../flow/stages/index.md#bind-a-stage-to-a-flow) to the flow and [bind policies](../policies/working_with_policies/working_with_policies.md) to the flow to further customize the user's log in and authentication process.
 
+To determine which flow should be used, authentik will first check which default authentication flow is configured in the active [**Brand**](../core/brands.md). If no default is configured there, the policies in all flows with the matching designation are checked, and the first flow with matching policies sorted by `slug` will be used.
+
+
 ## Permissions
 
 Flows can have policies assigned to them. These policies determine if the current user is allowed to see and use this flow.

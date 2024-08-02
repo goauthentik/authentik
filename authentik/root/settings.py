@@ -52,7 +52,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 SHARED_APPS = [
     "django_tenants",
     "authentik.tenants",
-    "daphne",
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.humanize",
@@ -517,6 +516,7 @@ if DEBUG:
     REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"].append(
         "rest_framework.renderers.BrowsableAPIRenderer"
     )
+    SHARED_APPS.insert(SHARED_APPS.index("django.contrib.staticfiles"), "daphne")
 
 TENANT_APPS.append("authentik.core")
 

@@ -61,7 +61,10 @@ module.exports = {
                 {
                     type: "category",
                     label: "Dashboards",
-                    items: ["services/organizr/index"],
+                    items: [
+                        "services/organizr/index",
+                        "services/linkwarden/index",
+                    ],
                 },
                 {
                     type: "category",
@@ -118,6 +121,7 @@ module.exports = {
                     type: "category",
                     label: "Miscellaneous",
                     items: [
+                        "services/engomo/index",
                         "services/freshrss/index",
                         "services/gravitee/index",
                         "services/home-assistant/index",

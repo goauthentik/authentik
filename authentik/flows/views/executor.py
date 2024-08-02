@@ -18,9 +18,8 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, PolymorphicProxySerializer, extend_schema
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
-from sentry_sdk import capture_exception
+from sentry_sdk import capture_exception, start_span
 from sentry_sdk.api import set_tag
-from sentry_sdk.hub import Hub
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.brands.models import Brand
@@ -154,9 +153,7 @@ class FlowExecutorView(APIView):
         return plan
 
     def dispatch(self, request: HttpRequest, flow_slug: str) -> HttpResponse:
-        with Hub.current.start_span(
-            op="authentik.flow.executor.dispatch", description=self.flow.slug
-        ) as span:
+        with start_span(op="authentik.flow.executor.dispatch", description=self.flow.slug) as span:
             span.set_data("authentik Flow", self.flow.slug)
             get_params = QueryDict(request.GET.get(QS_QUERY, ""))
             if QS_KEY_TOKEN in get_params:
@@ -274,7 +271,7 @@ class FlowExecutorView(APIView):
         )
         try:
             with (
-                Hub.current.start_span(
+                start_span(
                     op="authentik.flow.executor.stage",
                     description=class_path,
                 ) as span,
@@ -325,7 +322,7 @@ class FlowExecutorView(APIView):
         )
         try:
             with (
-                Hub.current.start_span(
+                start_span(
                     op="authentik.flow.executor.stage",
                     description=class_path,
                 ) as span,
