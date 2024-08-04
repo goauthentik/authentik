@@ -14,6 +14,22 @@ LOGGER = get_logger()
 def purge_password_history_table(self: SystemTask):
     """Remove all entries from the core.models.UserPasswordHistory table"""
     messages = []
+    
+    unique_password_policies = UniquePasswordPolicy.objects.all()
+
+    policy_binding_qs = PolicyBinding.objects.filter(policy__in=unique_password_policies).filter(
+        enabled=True
+    )
+
+    if policy_binding_qs.count() > 1:
+        # No-op; A UniquePasswordPolicy binding other than the one being deleted still exists
+        self.set_status(
+            TaskStatus.SUCCESSFUL, 
+            """Did not purge UserPasswordHistory table. 
+            Bindings for Unique Password Policy still exist.""")
+        return
+    
+
     try:
         # n.b. a performance optimization to execute TRUNCATE
         # instead of all().delete() would eliminate any FK checks.
@@ -22,8 +38,8 @@ def purge_password_history_table(self: SystemTask):
         LOGGER.debug("Failed to purge core.models.UserPasswordHistory table.")
         self.set_error(err)
         return
-    messages.append("Successfully purged core.models.UserPasswordHistory")
-    self.set_status(TaskStatus.SUCCESSFUL, *messages)
+    messages.append()
+    self.set_status(TaskStatus.SUCCESSFUL, "Successfully purged core.models.UserPasswordHistory")
 
 
 @CELERY_APP.task()
@@ -59,7 +75,7 @@ def trim_user_password_history(user_pk: int):
         .order_by("-created_at")[:num_rows_to_preserve]
         .values_list("id", flat=True)
     )
-    num_deleted, _ = UserPasswordHistory.objects.exclude(pk__in=list(preservable_row_ids)).delete()
+    ).delete()
     LOGGER.debug(
         "Deleted stale password history records for user", user_id=user_pk, records=num_deleted
     )

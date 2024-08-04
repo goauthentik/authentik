@@ -22,16 +22,6 @@ def purge_password_history(sender, instance, **_):
 
     if not isinstance(instance.policy, UniquePasswordPolicy):
         return
-
-    unique_password_policies = UniquePasswordPolicy.objects.all()
-
-    policy_binding_qs = PolicyBinding.objects.filter(policy__in=unique_password_policies).filter(
-        enabled=True
-    )
-
-    if policy_binding_qs.count() > 1:
-        # No-op; A UniquePasswordPolicy binding other than the one being deleted still exists
-        return
     purge_password_history_table.delay()
 
 
