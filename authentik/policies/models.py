@@ -48,6 +48,13 @@ class PolicyBindingModel(models.Model):
         return f"PolicyBindingModel {self.pbm_uuid}"
 
 
+class BoundPolicyQuerySet(models.QuerySet):
+    """QuerySet for filtering enabled bindings for a Policy type"""
+
+    def for_policy(self, policy: "Policy"):
+        return self.filter(policy__in=policy._default_manager.all()).filter(enabled=True)
+
+
 class PolicyBinding(SerializerModel):
     """Relationship between a Policy and a PolicyBindingModel."""
 
@@ -141,6 +148,9 @@ class PolicyBinding(SerializerModel):
         except PolicyBinding.target.RelatedObjectDoesNotExist:
             return f"Binding - #{self.order} to {suffix}"
         return ""
+
+    objects = models.Manager()
+    in_use = BoundPolicyQuerySet.as_manager()
 
     class Meta:
         verbose_name = _("Policy Binding")
