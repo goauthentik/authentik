@@ -12,7 +12,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { PoliciesApi, UniquePasswordPolicy } from "@goauthentik/api";
 
 @customElement("ak-policy-password-uniqueness-form")
-export class PasswordPolicyUniquenessForm extends BasePolicyForm<UniquePasswordPolicy> {
+export class UniquePasswordPolicyForm extends BasePolicyForm<UniquePasswordPolicy> {
     async loadInstance(pk: string): Promise<UniquePasswordPolicy> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesUniquePasswordRetrieve({
             policyUuid: pk,
@@ -98,6 +98,6 @@ export class PasswordPolicyUniquenessForm extends BasePolicyForm<UniquePasswordP
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-policy-password-uniqueness-form": PasswordPolicyUniquenessForm;
+        "ak-policy-password-uniqueness-form": UniquePasswordPolicyForm;
     }
 }
