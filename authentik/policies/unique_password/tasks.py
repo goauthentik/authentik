@@ -13,22 +13,16 @@ LOGGER = get_logger()
 @prefill_task
 def purge_password_history_table(self: SystemTask):
     """Remove all entries from the core.models.UserPasswordHistory table"""
-    messages = []
-    
-    unique_password_policies = UniquePasswordPolicy.objects.all()
+    unique_pwd_policy_bindings = PolicyBinding.in_use.for_policy(UniquePasswordPolicy)
 
-    policy_binding_qs = PolicyBinding.objects.filter(policy__in=unique_password_policies).filter(
-        enabled=True
-    )
-
-    if policy_binding_qs.count() > 1:
+    if unique_pwd_policy_bindings.count() > 1:
         # No-op; A UniquePasswordPolicy binding other than the one being deleted still exists
         self.set_status(
-            TaskStatus.SUCCESSFUL, 
+            TaskStatus.SUCCESSFUL,
             """Did not purge UserPasswordHistory table. 
-            Bindings for Unique Password Policy still exist.""")
+            Bindings for Unique Password Policy still exist.""",
+        )
         return
-    
 
     try:
         # n.b. a performance optimization to execute TRUNCATE
@@ -38,7 +32,6 @@ def purge_password_history_table(self: SystemTask):
         LOGGER.debug("Failed to purge core.models.UserPasswordHistory table.")
         self.set_error(err)
         return
-    messages.append()
     self.set_status(TaskStatus.SUCCESSFUL, "Successfully purged core.models.UserPasswordHistory")
 
 
@@ -50,12 +43,9 @@ def trim_user_password_history(user_pk: int):
     The `n` is defined by the largest configured value for all bound
     UniquePasswordPolicy policies.
     """
-    unique_password_policies = UniquePasswordPolicy.objects.all()
 
     # All enable policy bindings for UniquePasswordPolicy
-    enabled_bindings = PolicyBinding.objects.filter(policy__in=unique_password_policies).filter(
-        enabled=True
-    )
+    enabled_bindings = PolicyBinding.in_use.for_policy(UniquePasswordPolicy).all()
 
     if not enabled_bindings.exists():
         return
@@ -67,15 +57,13 @@ def trim_user_password_history(user_pk: int):
                 num_rows_to_preserve, binding.policy.num_historical_passwords
             )
 
-    # simplify into 1 query?
-    # https://forum.djangoproject.com/t/is-there-any-way-to-avoid-using-exclude/4961/4
-    # https://stackoverflow.com/questions/74452394/how-to-delete-everything-but-the-latest-object-in-each-group-in-django
     preservable_row_ids = (
         UserPasswordHistory.objects.filter(user__pk=user_pk)
         .order_by("-created_at")[:num_rows_to_preserve]
         .values_list("id", flat=True)
     )
-    ).delete()
+    num_deleted, _ = UserPasswordHistory.objects.exclude(pk__in=list(preservable_row_ids)).delete()
+
     LOGGER.debug(
         "Deleted stale password history records for user", user_id=user_pk, records=num_deleted
     )

@@ -37,13 +37,11 @@ def on_user_write(sender, request: HttpRequest, user: User, data: dict[str, Any]
         and SESSION_KEY_IMPERSONATE_USER not in request.session
     )
     if user_changed_own_password:
-        unique_password_policies = UniquePasswordPolicy.objects.all()
+        unique_pwd_policy_binding_in_use = PolicyBinding.in_use.for_policy(
+            UniquePasswordPolicy
+        ).exists()
 
-        unique_pwd_policy_binding = PolicyBinding.objects.filter(
-            policy__in=unique_password_policies
-        ).filter(enabled=True)
-
-        if unique_pwd_policy_binding.exists():
+        if unique_pwd_policy_binding_in_use:
             """NOTE: Because we run this in a signal after saving the user, 
             we are not atomically guaranteed to save password history.
             """
