@@ -1526,20 +1526,6 @@ dnspython = ">=2.0.0"
 idna = ">=2.0.0"
 
 [[package]]
-name = "facebook-sdk"
-version = "3.1.0"
-description = "This client library is designed to support the Facebook Graph API and the official Facebook JavaScript SDK, which is the canonical way to implement Facebook authentication."
-optional = false
-python-versions = "*"
-files = [
-    {file = "facebook-sdk-3.1.0.tar.gz", hash = "sha256:cabcd2e69ea3d9f042919c99b353df7aa1e2be86d040121f6e9f5e63c1cf0f8d"},
-    {file = "facebook_sdk-3.1.0-py2.py3-none-any.whl", hash = "sha256:2e987b3e0f466a6f4ee77b935eb023dba1384134f004a2af21f1cfff7fe0806e"},
-]
-
-[package.dependencies]
-requests = "*"
-
-[[package]]
 name = "fido2"
 version = "1.1.3"
 description = "FIDO2/WebAuthn library for implementing clients and servers."
@@ -2979,9 +2965,14 @@ version = "0.0.14"
 description = "Python module for oci specifications"
 optional = false
 python-versions = "*"
-files = [
-    {file = "opencontainers-0.0.14.tar.gz", hash = "sha256:fde3b8099b56b5c956415df8933e2227e1914e805a277b844f2f9e52341738f2"},
-]
+files = []
+develop = false
+
+[package.source]
+type = "git"
+url = "https://github.com/BeryJu/oci-python"
+reference = "3c5e4dbeaea744fd52515c3daba0e28741cb2091"
+resolved_reference = "3c5e4dbeaea744fd52515c3daba0e28741cb2091"
 
 [[package]]
 name = "opentelemetry-api"
@@ -5452,4 +5443,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.12"
-content-hash = "ee92e7bc797266450be0b5f0ffec79d2a69161e1e48024474e00c14e3120a63a"
+content-hash = "30af27c31cb3421ee1ca2563233dfe880a59af07a7ef8cafebf813259c7c5994"
