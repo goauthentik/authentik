@@ -2,6 +2,7 @@
 
 from uuid import uuid4
 
+from django.contrib.auth.models import Permission
 from django.db import models
 from django.db.transaction import atomic
 from django.utils.translation import gettext_lazy as _
@@ -9,6 +10,26 @@ from guardian.shortcuts import assign_perm
 from rest_framework.serializers import BaseSerializer
 
 from authentik.lib.models import SerializerModel
+
+
+def get_permissions():
+    return (
+        Permission.objects.all()
+        .select_related("content_type")
+        .filter(
+            content_type__app_label__startswith="authentik",
+        )
+    )
+
+
+def get_permission_choices() -> list[tuple[str, str]]:
+    return [
+        (
+            f"{x.content_type.app_label}.{x.codename}",
+            f"{x.content_type.app_label}.{x.codename}",
+        )
+        for x in get_permissions()
+    ]
 
 
 class Role(SerializerModel):

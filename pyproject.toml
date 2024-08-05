@@ -110,7 +110,6 @@ drf-orjson-renderer = "*"
 drf-spectacular = "*"
 dumb-init = "*"
 duo-client = "*"
-facebook-sdk = "*"
 fido2 = "*"
 flower = "*"
 geoip2 = "*"
@@ -121,7 +120,7 @@ kubernetes = "*"
 ldap3 = "*"
 lxml = "*"
 msgraph-sdk = "*"
-opencontainers = { extras = ["reggie"], version = "*" }
+opencontainers = { git = "https://github.com/vsoch/oci-python", rev = "20d69d9cc50a0fef31605b46f06da0c94f1ec3cf", extras = ["reggie"] }
 packaging = "*"
 paramiko = "*"
 psycopg = { extras = ["c"], version = "*" }
