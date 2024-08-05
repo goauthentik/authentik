@@ -273,9 +273,7 @@ export class IdentificationStage extends BaseStage<
                       ></ak-flow-input-password>
                   `
                 : nothing}
-            ${"non_field_errors" in (this.challenge?.responseErrors || {})
-                ? this.renderNonFieldErrors(this.challenge?.responseErrors?.non_field_errors || [])
-                : nothing}
+            ${this.renderNonFieldErrors()}
             <div class="pf-c-form__group pf-m-action">
                 <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
                     ${this.challenge.primaryAction}
