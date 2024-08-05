@@ -1,11 +1,14 @@
 import { AKElement } from "@goauthentik/elements/Base";
+import "@goauthentik/elements/ak-list-select/ak-list-select.js";
+import { ListSelect } from "@goauthentik/elements/ak-list-select/ak-list-select.js";
 import { bound } from "@goauthentik/elements/decorators/bound.js";
-import "@goauthentik/elements/forms/SearchSelect/ak-search-select-menu-position.js";
-import type { SearchSelectMenuPosition } from "@goauthentik/elements/forms/SearchSelect/ak-search-select-menu-position.js";
+import "@goauthentik/elements/forms/SearchSelect/ak-portal.js";
+import type { Portal } from "@goauthentik/elements/forms/SearchSelect/ak-portal.js";
+import type { GroupedOptions, SelectOption, SelectOptions } from "@goauthentik/elements/types.js";
 import { randomId } from "@goauthentik/elements/utils/randomId.js";
 
 import { msg } from "@lit/localize";
-import { PropertyValues, html } from "lit";
+import { PropertyValues, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { Ref, createRef, ref } from "lit/directives/ref.js";
@@ -15,13 +18,7 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFSelect from "@patternfly/patternfly/components/Select/select.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import {
-    SearchSelectInputEvent,
-    SearchSelectMenuLostFocusEvent,
-    SearchSelectRequestCloseEvent,
-    SearchSelectSelectItemEvent,
-} from "./SearchSelectEvents.js";
-import type { SearchOptions, SearchTuple } from "./types.js";
+import { findFlatOptions, findOptionsSubset, groupOptions, optionsToFlat } from "./utils.js";
 
 /**
  * @class SearchSelectView
@@ -42,13 +39,6 @@ import type { SearchOptions, SearchTuple } from "./types.js";
  *
  */
 
-enum InputState {
-    idle = 0, // Closed and nothing has focus
-    closed = 1, // The input has focus, the dropdown is closed
-    open = 2, // The dropdown is open, focus is context-dependent
-    justclosed = 3, // Transitional state.
-}
-
 @customElement("ak-search-select-view")
 export class SearchSelectView extends AKElement {
     /**
@@ -58,15 +48,32 @@ export class SearchSelectView extends AKElement {
      * @prop
      */
     @property({ type: Array, attribute: false })
-    options: SearchOptions = [];
+    set options(options: SelectOptions) {
+        this._options = groupOptions(options);
+        this.flatOptions = optionsToFlat(this._options);
+    }
+
+    get options() {
+        return this._options;
+    }
+
+    _options!: GroupedOptions;
 
     /**
      * The current value.  Must be one of the keys in the options group above.
      *
      * @prop
      */
-    @property()
+    @property({ type: String, reflect: true })
     value?: string;
+
+    /**
+     * Whether or not the dropdown is open
+     *
+     * @attr
+     */
+    @property({ type: Boolean, reflect: true })
+    open = false;
 
     /**
      * If set to true, this object MAY return undefined in no value is passed in and none is set
@@ -82,7 +89,7 @@ export class SearchSelectView extends AKElement {
      *
      * @attr
      */
-    @property()
+    @property({ type: String })
     name?: string;
 
     /**
@@ -91,8 +98,18 @@ export class SearchSelectView extends AKElement {
      *
      * @attr
      */
-    @property()
+    @property({ type: String })
     placeholder: string = msg("Select an object.");
+
+    /**
+     * If true, the component only sends an input message up to a parent component. If false, the
+     * list of options sent downstream will be filtered by the contents of the `<input>` field
+     * locally.
+     *
+     *@attr
+     */
+    @property({ type: Boolean })
+    managed = false;
 
     /**
      * A textual string representing "The user has affirmed they want to leave the selection blank."
@@ -110,6 +127,17 @@ export class SearchSelectView extends AKElement {
 
     @state()
     displayValue = "";
+
+    // Tracks when the inputRef is populated, so we can safely reschedule the
+    // render of the dropdown with respect to it.
+    @state()
+    inputRefIsAvailable = false;
+
+    /**
+     * Permanent identity with the portal so focus events can be checked.
+     */
+    menuRef: Ref<ListSelect> = createRef();
+
     /**
      * Permanent identify for the input object, so the floating portal can find where to anchor
      * itself.
@@ -117,47 +145,18 @@ export class SearchSelectView extends AKElement {
     inputRef: Ref<HTMLInputElement> = createRef();
 
     /**
-     * Permanent identity with the portal so focus events can be checked.
-     */
-    menuRef: Ref<SearchSelectMenuPosition> = createRef();
-
-    /**
      *  Maps a value from the portal to labels to be put into the <input> field>
      */
-    optionsMap: Map<string, string> = new Map();
-
-    /**
-     * Controls when focus should be re-acquired
-     */
-    @state()
-    inputState: InputState = InputState.idle;
+    flatOptions: [string, SelectOption][] = [];
 
     static get styles() {
         return [PFBase, PFForm, PFFormControl, PFSelect];
     }
 
-    constructor() {
-        super();
-        /* These can't be attached with the `@` syntax because they're not passed through to the
-         * menu; the positioner is in the way, and it deliberately renders objects *outside* of the
-         * event path from `document` to this object. That's why we pass the positioner (and its
-         * target) the `this` (host) object; so they can send messages to this object despite being
-         * outside the event's bubble path.
-         */
-        this.addEventListener(SearchSelectMenuLostFocusEvent.eventName, this.onMenuLostFocus);
-        this.addEventListener(SearchSelectRequestCloseEvent.eventName, this.onMenuRequestClose);
-        this.addEventListener(SearchSelectSelectItemEvent.eventName, this.onSelectItemEvent);
-    }
-
     connectedCallback() {
         super.connectedCallback();
-        console.log("Was this ever called?");
         this.setAttribute("data-ouia-component-type", "ak-search-select-view");
         this.setAttribute("data-ouia-component-id", this.getAttribute("id") || randomId());
-    }
-
-    disconnectedCallback(): void {
-        super.disconnectedCallback();
     }
 
     // TODO: Reconcile value <-> display value, Reconcile option changes to value <-> displayValue
@@ -168,107 +167,128 @@ export class SearchSelectView extends AKElement {
         // TODO
     }
 
-    checkBlankableValue(ev: Event) {
-        if (
-            this.blankable &&
-            ev.target &&
-            this.value === this.emptyOption &&
-            ev.target instanceof HTMLInputElement
-        ) {
-            ev.target.value = "";
-        }
-    }
-
     @bound
-    onMenuLostFocus(ev: SearchSelectMenuLostFocusEvent) {
-        console.log("Menu lost focus.");
-        ev.stopImmediatePropagation();
-        // If neither the input or the menu has the focus after the previous event phase is settled,
-        // then the menu must be closed.
-        window.setTimeout(() => {
-            if (this.inputRef.value?.matches(":focus")) {
-                console.log("Input Had Focus.");
-                return;
-            }
-            if (!this.menuRef.value?.hasFocus) {
-                this.inputState = InputState.idle;
-                this.settleValue();
-            }
-        }, 0);
-    }
-
-    @bound
-    onMenuRequestClose(ev: SearchSelectRequestCloseEvent) {
-        // Simple enough: the user hit `Escape` while the menu had the focus.
-        ev.stopImmediatePropagation();
-    }
-
-    @bound
-    onSelectItemEvent(ev: SearchSelectSelectItemEvent) {
-        ev.stopImmediatePropagation();
-        this.value = ev.value;
-        this.displayValue = this.value ? (this.optionsMap.get(this.value) ?? this.value ?? "") : "";
-        this.dispatchEvent(new SearchSelectInputEvent(this.value));
-    }
-
-    @bound
-    onInput(_ev: InputEvent) {
-        // We don't stop this propagation. If parent elements want to handle it, they can.
-        // Any change may trigger a request that changes the option set upstream.  That
-        // requires a re-show of the menu.
-        this.dispatchEvent(new SearchSelectInputEvent(this.inputRef?.value?.value ?? ""));
-        this.settleValue();
-    }
-
-    @bound
-    onClick(ev: Event) {
-        this.inputState =
-            this.inputState === InputState.justclosed || this.options.length == 0
-                ? InputState.closed
-                : InputState.open;
-        this.checkBlankableValue(ev);
+    onClick(_ev: Event) {
+        this.open = !this.open;
+        this.inputRef.value?.focus();
     }
 
     @bound
     onKeydown(event: KeyboardEvent) {
-        if (event.key === "Escape") {
+        if (event.code === "Escape") {
             event.stopPropagation();
+            this.open = false;
+        }
+        if (event.code === "ArrowDown" || event.code === "ArrowUp") {
+            this.open = true;
+        }
+        if (event.code === "Tab" && this.open) {
+            event.preventDefault();
+            this.menuRef.value?.currentElement?.focus();
         }
     }
 
     @bound
-    onFocusOut(event: FocusEvent) {
-        console.log("Input lost focus.");
-        event.stopPropagation();
-        // If neither the input or the menu has the focus after the previous event phase is settled,
-        // then the menu must be closed.
-        window.setTimeout(() => {
-            if (!this.menuRef.value?.hasFocus && !this.inputRef.value?.matches(":focus")) {
-                this.inputState = InputState.idle;
+    onListBlur(event: FocusEvent) {
+        // If we lost focus but the menu got it, don't do anything;
+        const relatedTarget = event.relatedTarget as HTMLElement | undefined;
+        if (
+            relatedTarget &&
+            (this.contains(relatedTarget) ||
+                this.renderRoot.contains(relatedTarget) ||
+                this.menuRef.value?.contains(relatedTarget) ||
+                this.menuRef.value?.renderRoot.contains(relatedTarget))
+        ) {
+            return;
+        }
+        this.open = false;
+        if (this.value === undefined) {
+            this.inputRef.value && (this.inputRef.value.value = "");
+        }
+    }
+
+    findValueForInput() {
+        const value = this.inputRef.value?.value;
+        if (value === undefined) {
+            return;
+        }
+        const matchesFound = findFlatOptions(this.flatOptions, value);
+        if (matchesFound.length > 0) {
+            const newValue = matchesFound[0][0];
+            if (newValue === value) {
+                return;
             }
-        }, 0);
+            this.value = newValue;
+            this.dispatchEvent(new Event("change", { bubbles: true, composed: true })); // prettier-ignore
+        } else {
+            this.value = "";
+        }
     }
 
-    willUpdate(changed: PropertyValues<this>) {
+    @bound
+    onInput(_ev: InputEvent) {
+        if (!this.managed) {
+            this.findValueForInput();
+            this.requestUpdate();
+        }
+        this.open = true;
+    }
+
+    @bound
+    onListKeydown(event: KeyboardEvent) {
+        if (event.key === "Escape") {
+            this.open = false;
+            this.inputRef.value?.focus();
+        }
+        if (event.key === "Tab" && event.shiftKey) {
+            event.preventDefault();
+            this.inputRef.value?.focus();
+        }
+    }
+
+    @bound
+    onListChange(event: InputEvent) {
+        if (!event.target) {
+            return;
+        }
+        const eventTarget = event.target as HTMLInputElement;
+        if (eventTarget.value) {
+            const newDisplayValue = this.findDisplayForValue(eventTarget.value);
+            if (newDisplayValue) {
+                this.value = eventTarget.value;
+                this.inputRef.value && (this.inputRef.value.value = newDisplayValue);
+                this.open = false;
+                this.dispatchEvent(new Event("change", { bubbles: true, composed: true })); // prettier-ignore
+            }
+        }
+    }
+
+    findDisplayForValue(value: string) {
+        const newDisplayValue = this.flatOptions.find((option) => option[0] === value);
+        return newDisplayValue ? newDisplayValue[1][1] : undefined;
+    }
+
+    public override performUpdate() {
         this.removeAttribute("data-ouia-component-safe");
-        if (changed.has("options")) {
-            this.optionsMap = optionsToOptionsMap(this.options);
-        }
-        if (changed.has("value")) {
-            this.displayValue = this.value
-                ? (this.optionsMap.get(this.value ?? "") ?? this.value ?? "")
-                : "";
+        super.performUpdate();
+    }
+
+    public override willUpdate(changed: PropertyValues<this>) {
+        if (changed.has("value") && this.value) {
+            const newDisplayValue = this.findDisplayForValue(this.value);
+            if (newDisplayValue) {
+                this.displayValue = newDisplayValue;
+            }
         }
     }
 
-    updated() {
-        if (!(this.inputRef?.value && this.inputRef?.value?.value === this.displayValue)) {
-            this.inputRef.value && (this.inputRef.value.value = this.displayValue);
-        }
-        this.setAttribute("data-ouia-component-safe", true);
+    get managedOptions() {
+        return this.managed
+            ? this._options
+            : findOptionsSubset(this._options, this.inputRef.value?.value ?? "");
     }
 
-    render() {
+    public override render() {
         return html`<div class="pf-c-select">
                 <div class="pf-c-select__toggle pf-m-typeahead">
                     <div class="pf-c-select__toggle-wrapper">
@@ -281,39 +301,42 @@ export class SearchSelectView extends AKElement {
                             spellcheck="false"
                             @input=${this.onInput}
                             @click=${this.onClick}
-                            @focus=${this.onClick}
                             @keydown=${this.onKeydown}
                             value=${this.displayValue}
                         />
                     </div>
                 </div>
             </div>
-            <ak-search-select-menu-position
-                name=${ifDefined(this.name)}
-                .options=${this.options}
-                value=${ifDefined(this.value)}
-                .host=${this}
-                .anchor=${this.inputRef.value}
-                .emptyOption=${(this.blankable && this.emptyOption) || undefined}
-                ${ref(this.menuRef)}
-                ?open=${this.inputState === InputState.open}
-            ></ak-search-select-menu-position> `;
+            ${this.inputRefIsAvailable
+                ? html`
+                      <ak-portal
+                          name=${ifDefined(this.name)}
+                          .anchor=${this.inputRef.value}
+                          ?open=${this.open}
+                      >
+                          <ak-list-select
+                              ${ref(this.menuRef)}
+                              .options=${this.managedOptions}
+                              value=${ifDefined(this.value)}
+                              @change=${this.onListChange}
+                              @blur=${this.onFocusOut}
+                              @keydown=${this.onListKeydown}
+                          ></ak-list-select>
+                      </ak-portal>
+                  `
+                : nothing}`;
     }
-}
 
-type Pair = [string, string];
-const justThePair = ([key, label]: SearchTuple): Pair => [key, label];
+    public override updated() {
+        this.setAttribute("data-ouia-component-safe", "true");
+    }
 
-function optionsToOptionsMap(options: SearchOptions): Map<string, string> {
-    const pairs: Pair[] = Array.isArray(options)
-        ? options.map(justThePair)
-        : options.grouped
-          ? options.options.reduce(
-                (acc: Pair[], { options }): Pair[] => [...acc, ...options.map(justThePair)],
-                [] as Pair[],
-            )
-          : options.options.map(justThePair);
-    return new Map(pairs);
+    public override firstUpdated() {
+        // Route around Lit's scheduling algorithm complaining about re-renders
+        window.setTimeout(() => {
+            this.inputRefIsAvailable = !!this.inputRef?.value;
+        }, 0);
+    }
 }
 
 declare global {

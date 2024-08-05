@@ -1,5 +1,11 @@
 import { AKElement } from "@goauthentik/elements/Base.js";
 import { bound } from "@goauthentik/elements/decorators/bound.js";
+import type {
+    GroupedOptions,
+    SelectGroup,
+    SelectOption,
+    SelectOptions,
+} from "@goauthentik/elements/types.js";
 import { randomId } from "@goauthentik/elements/utils/randomId.js";
 import { match } from "ts-pattern";
 
@@ -10,8 +16,7 @@ import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css"
 import PFSelect from "@patternfly/patternfly/components/Select/select.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import type { GroupedOptions, SelectGroup, SelectOption } from "./types.js";
-import { isVisibleInScrollRegion } from "./utils.js";
+import { groupOptions, isVisibleInScrollRegion } from "./utils.js";
 
 /**
  * Authentik menu element
@@ -51,8 +56,16 @@ export class ListSelect extends AKElement {
      *
      * @prop
      */
-    @property({ type: Array, reflect: false })
-    options: SelectOption[] = [];
+    @property({ type: Array, attribute: false })
+    set options(options: SelectOptions) {
+        this._options = groupOptions(options);
+    }
+
+    get options() {
+        return this._options;
+    }
+
+    _options!: GroupedOptions;
 
     /**
      * The current value of the menu.
@@ -76,7 +89,7 @@ export class ListSelect extends AKElement {
     // element that is being tracked for keyboard interaction. On a click, the index points to the
     // value element; on Keydown.Enter, the value becomes whatever the index points to.
     @state()
-    indexOfFocusedItem = -1;
+    indexOfFocusedItem = 0;
 
     @query("#ak-list-select-list")
     ul!: HTMLUListElement;
@@ -87,8 +100,56 @@ export class ListSelect extends AKElement {
 
     public constructor() {
         super();
-        this.addEventListener("focusin", this.onFocus);
+        this.addEventListener("focus", this.onFocus);
         this.addEventListener("blur", this.onBlur);
+    }
+
+    public override connectedCallback() {
+        super.connectedCallback();
+        this.setAttribute("data-ouia-component-type", "ak-menu-select");
+        this.setAttribute("data-ouia-component-id", this.getAttribute("id") || randomId());
+        this.setIndexOfFocusedItemFromValue();
+        this.highlightFocusedItem();
+    }
+
+    public get hasFocus() {
+        return this.renderRoot.contains(document.activeElement) || document.activeElement === this;
+    }
+
+    private get displayedElements(): HTMLElement[] {
+        return Array.from(this.renderRoot.querySelectorAll(".ak-select-item"));
+    }
+
+    public get currentElement(): HTMLElement | undefined {
+        const curIndex = this.indexOfFocusedItem;
+        return curIndex < 0 || curIndex > this.displayedElements.length - 1
+            ? undefined
+            : this.displayedElements[curIndex];
+    }
+
+    private setIndexOfFocusedItemFromValue() {
+        const index = this.displayedElements.findIndex((element) => {
+            return element.getAttribute("value") === this.value;
+        });
+        const elementCount = this.displayedElements.length;
+        return elementCount === 0 ? -1 : index === -1 ? 0 : index;
+    }
+
+    private highlightFocusedItem() {
+        this.displayedElements.forEach((item) => {
+            item.classList.remove("ak-highlight-item");
+            item.removeAttribute("aria-selected");
+            item.tabIndex = -1;
+        });
+        const currentElement = this.currentElement;
+        if (!currentElement) {
+            return;
+        }
+        currentElement.classList.add("ak-highlight-item");
+        // This is currently a radio emulation; "selected" is true here.
+        // If this were a checkbox emulation (i.e. multi), "checked" would be appropriate.
+        currentElement.setAttribute("aria-selected", "true");
+        currentElement.scrollIntoView({ block: "center", behavior: "smooth" });
     }
 
     @bound
@@ -102,7 +163,7 @@ export class ListSelect extends AKElement {
     onBlur() {
         // Allow the event to propagate.
         this.removeEventListener("keydown", this.onKeydown);
-        this.indexOfFocusedItem = -1;
+        this.indexOfFocusedItem = 0;
     }
 
     @bound
@@ -123,6 +184,7 @@ export class ListSelect extends AKElement {
             event.preventDefault();
             this.indexOfFocusedItem = pos;
             this.highlightFocusedItem();
+            this.currentElement?.focus();
         };
 
         const setValueAndDispatch = () => {
@@ -133,7 +195,9 @@ export class ListSelect extends AKElement {
 
         const pageBy = (direction: number) => {
             const visibleElementCount =
-                this.displayedElements.filter((element) => isVisibleInScrollRegion(element, this.ul)).length - 1; // prettier-ignore
+                this.displayedElements.filter((element) =>
+                    isVisibleInScrollRegion(element, this.ul),
+                ).length - 1;
             return visibleElementCount * direction + current;
         };
 
@@ -148,56 +212,6 @@ export class ListSelect extends AKElement {
             .with({ key: "Enter" }, () => setValueAndDispatch());
     }
 
-    private get displayedElements(): HTMLElement[] {
-        return Array.from(this.renderRoot.querySelectorAll(".ak-select-item"));
-    }
-
-    private get currentElement(): HTMLElement | undefined {
-        const curIndex = this.indexOfFocusedItem;
-        return curIndex < 0 || curIndex > this.displayedElements.length - 1
-            ? undefined
-            : this.displayedElements[curIndex];
-    }
-
-    // Handles the "easy mode" of just passing an array of tuples.
-    private get groupedOptions(): GroupedOptions {
-        return Array.isArray(this.options)
-            ? { grouped: false, options: this.options }
-            : this.options;
-    }
-
-    private setIndexOfFocusedItemFromValue() {
-        this.indexOfFocusedItem = this.displayedElements.findIndex((element) => {
-            return element.getAttribute("value") === this.value;
-        });
-    }
-
-    private highlightFocusedItem() {
-        this.displayedElements.forEach((item) => {
-            item.classList.remove("ak-highlight-item");
-            item.removeAttribute("aria-selected");
-            item.tabIndex = -1;
-        });
-        const currentElement = this.currentElement;
-        if (!currentElement) {
-            return;
-        }
-        currentElement.classList.add("ak-highlight-item");
-        // This is currently a radio emulation; "selected" is true here.
-        // If this were a checkbox emulation (i.e. multi), "checked" would be appropriate.
-        currentElement.setAttribute("aria-selected", "true");
-        currentElement.focus();
-        currentElement.scrollIntoView({ block: "center", behavior: "smooth" });
-    }
-
-    public override connectedCallback() {
-        super.connectedCallback();
-        this.setAttribute("data-ouia-component-type", "ak-menu-select");
-        this.setAttribute("data-ouia-component-id", this.getAttribute("id") || randomId());
-        this.setIndexOfFocusedItemFromValue();
-        this.highlightFocusedItem();
-    }
-
     public override performUpdate() {
         this.removeAttribute("data-ouia-component-safe");
         super.performUpdate();
@@ -208,7 +222,7 @@ export class ListSelect extends AKElement {
         this.setAttribute("data-ouia-component-safe", "true");
     }
 
-    renderEmptyMenuItem() {
+    private renderEmptyMenuItem() {
         return html`<li role="option" class="ak-select-item" part="ak-list-select-option">
             <button
                 class="pf-c-dropdown__menu-item"
@@ -271,7 +285,6 @@ export class ListSelect extends AKElement {
     }
 
     public override render() {
-        const options = this.groupedOptions;
         return html`<div
             class="pf-c-dropdown pf-m-expanded"
             tabindex="1"
@@ -285,9 +298,9 @@ export class ListSelect extends AKElement {
                 part="ak-list-select"
             >
                 ${this.emptyOption !== undefined ? this.renderEmptyMenuItem() : nothing}
-                ${options.grouped
-                    ? this.renderMenuGroups(options.options)
-                    : this.renderMenuItems(options.options)}
+                ${this._options.grouped
+                    ? this.renderMenuGroups(this._options.options)
+                    : this.renderMenuItems(this._options.options)}
             </ul>
         </div> `;
     }

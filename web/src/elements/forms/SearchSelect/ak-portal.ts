@@ -1,13 +1,7 @@
 import { autoUpdate, computePosition, flip, hide } from "@floating-ui/dom";
 
-import { LitElement, html, nothing, render } from "lit";
+import { LitElement, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
-import { Ref, createRef, ref } from "lit/directives/ref.js";
-
-import "./ak-search-select-menu.js";
-import { type SearchSelectMenu } from "./ak-search-select-menu.js";
-import type { SearchOptions } from "./types.js";
 
 /**
  * An intermediate class to handle the menu and its position.
@@ -18,17 +12,8 @@ import type { SearchOptions } from "./types.js";
  *
  */
 
-@customElement("ak-search-select-menu-position")
-export class SearchSelectMenuPosition extends LitElement {
-    /**
-     * The host to which all relevant events will be routed.  Useful for managing floating / tethered
-     * components.
-     *
-     * @prop
-     */
-    @property({ type: Object, attribute: false })
-    host!: HTMLElement;
-
+@customElement("ak-portal")
+export class Portal extends LitElement {
     /**
      * The host element which will be our reference point for rendering.  Is not necessarily
      * the element that receives the events.
@@ -39,31 +24,7 @@ export class SearchSelectMenuPosition extends LitElement {
     anchor!: HTMLElement;
 
     /**
-     * Passthrough of the options that we'll be rendering.
-     *
-     * @prop
-     */
-    @property({ type: Array, attribute: false })
-    options: SearchOptions = [];
-
-    /**
-     * Passthrough of the current value
-     *
-     * @prop
-     */
-    @property()
-    value?: string;
-
-    /**
-     * If undefined, there will be no empty option shown
-     *
-     * @attr
-     */
-    @property()
-    emptyOption?: string;
-
-    /**
-     * Whether or not the menu is visible
+     * Whether or not the content is visible
      *
      * @attr
      */
@@ -86,23 +47,25 @@ export class SearchSelectMenuPosition extends LitElement {
 
     connected = false;
 
-    /**
-     *Communicates forward with the menu to detect when the tether has lost focus
-     */
-    menuRef: Ref<SearchSelectMenu> = createRef();
+    content!: Element;
 
     connectedCallback() {
         super.connectedCallback();
         this.dropdownContainer = document.createElement("div");
-        this.dropdownContainer.dataset["managedBy"] = "ak-search-select";
+        this.dropdownContainer.dataset["managedBy"] = "ak-portal";
         if (this.name) {
             this.dropdownContainer.dataset["managedFor"] = this.name;
         }
         document.body.append(this.dropdownContainer);
-        if (!this.host) {
-            throw new Error("Tether entrance initialized incorrectly: missing host");
+        if (!this.anchor) {
+            throw new Error("Tether entrance initialized incorrectly: missing anchor");
         }
         this.connected = true;
+        if (this.firstElementChild) {
+            this.content = this.firstElementChild as Element;
+        } else {
+            throw new Error("No content to be portaled included in the tag");
+        }
     }
 
     disconnectedCallback(): void {
@@ -126,6 +89,7 @@ export class SearchSelectMenuPosition extends LitElement {
 
             Object.assign(this.dropdownContainer.style, {
                 "position": "fixed",
+                "display": "block",
                 "z-index": "9999",
                 "top": 0,
                 "left": 0,
@@ -135,32 +99,15 @@ export class SearchSelectMenuPosition extends LitElement {
     }
 
     updated() {
-        if (this.anchor && this.dropdownContainer && !this.hidden) {
+        (this.content as HTMLElement).style.display = "none";
+        if (this.anchor && this.dropdownContainer && this.open && !this.hidden) {
+            (this.content as HTMLElement).style.display = "";
             this.setPosition();
         }
     }
 
-    get hasFocus() {
-        return this.menuRef.value?.hasFocusedElement ?? false;
-    }
-
     render() {
-        // The 'hidden' attribute is a little weird and the current Typescript definition for
-        // it is incompatible with actual implementations, so we drill `open` all the way down,
-        // but we set the hidden attribute here, and on the actual menu use CSS and the
-        // the attribute's presence to hide/show as needed.
-        render(
-            html`<ak-search-select-menu
-                .options=${this.options}
-                value=${ifDefined(this.value)}
-                .host=${this.host}
-                .emptyOption=${this.emptyOption}
-                ?open=${this.open}
-                ?hidden=${!this.open}
-                ${ref(this.menuRef)}
-            ></ak-search-select-menu>`,
-            this.dropdownContainer,
-        );
+        this.dropdownContainer.appendChild(this.content);
         // This is a dummy object that just has to exist to be the communications channel between
         // the tethered object and its anchor.
         return nothing;
@@ -169,6 +116,6 @@ export class SearchSelectMenuPosition extends LitElement {
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-search-select-menu-position": SearchSelectMenuPosition;
+        "ak-portal": Portal;
     }
 }

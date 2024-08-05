@@ -242,4 +242,4 @@ describe("Search Select: Empty Options", () => {
 //    should not display checkmark
 //    should add the id of the autocomplete panel to the aria-owns of the modal
 //    should remove the aria-owns attribute of the modal when the autocomplete panel closes
-//    should readd the aria-owns attribute of the modal when the autocomplete panel opens again
+//    should re-add the aria-owns attribute of the modal when the autocomplete panel opens again
