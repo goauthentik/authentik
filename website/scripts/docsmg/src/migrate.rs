@@ -1,9 +1,10 @@
 use std::{
-    collections::HashMap, ffi::OsStr, fmt::format, fs::{read_to_string, write}, path::{Component, Path, PathBuf}
+    ffi::OsStr,
+    fs::{read_to_string, write},
+    path::PathBuf,
 };
 
 use colored::Colorize;
-use lazy_static::lazy_static;
 
 use crate::{migratefile::read_migrate_file, recurse_directory};
 
@@ -95,31 +96,38 @@ fn move_files(
 }
 
 fn replace_links(migrate_path: PathBuf, successful_moves: Vec<(PathBuf, PathBuf)>) {
-    lazy_static! {
-        static ref find_link: regex::Regex =
-            regex::Regex::new(r"\[(?<a>.*)\]\((?<b>.*)\)").unwrap();
-    }
     let files = recurse_directory(migrate_path.clone());
 
     for file in files {
-        let relative_file = file.strip_prefix(migrate_path.clone()).unwrap().to_path_buf();
+        let relative_file = file
+            .strip_prefix(migrate_path.clone())
+            .unwrap()
+            .to_path_buf();
         let mut contents = match read_to_string(file.clone()) {
             Ok(i) => i,
             Err(_) => continue,
         };
         let mut replace = vec![];
         for successful_move in &successful_moves {
-            if migrate_path.join(successful_move.0.clone()).canonicalize().unwrap() 
-                == file.clone().canonicalize().unwrap() {
+            if migrate_path
+                .join(successful_move.0.clone())
+                .canonicalize()
+                .unwrap()
+                == file.clone().canonicalize().unwrap()
+            {
                 continue;
             }
-            let new_successful_move_from = make_path_relative(successful_move.0.clone(), relative_file.clone());
-            let new_successful_move_to = make_path_relative(successful_move.1.clone(), relative_file.clone());
+            let new_successful_move_from =
+                make_path_relative(successful_move.0.clone(), relative_file.clone());
+            let new_successful_move_to =
+                make_path_relative(successful_move.1.clone(), relative_file.clone());
             replace.push((new_successful_move_from, new_successful_move_to));
         }
         for i in replace {
-            println!("{} : {} -> {}", file.display(), i.0.display(), i.1.display());
-            contents = contents.replace(&format!("({})", i.0.display()), &format!("({})", i.1.display()));
+            contents = contents.replace(
+                &format!("({})", i.0.display()),
+                &format!("({})", i.1.display()),
+            );
         }
         write(file, contents).unwrap();
     }
@@ -132,21 +140,16 @@ fn make_path_relative(path: PathBuf, relative_to: PathBuf) -> PathBuf {
     loop {
         if path_components.len() <= subdirs {
             break;
-        } else if path_components[subdirs]
-            != relative_to_components[subdirs]
-        {
+        } else if path_components[subdirs] != relative_to_components[subdirs] {
             break;
         }
         subdirs += 1;
     }
-    let new_path = &path_components[subdirs..]
-        .iter()
-        .collect::<PathBuf>();
-    let backouts =
-        (0..relative_to_components.len() - subdirs - 1)
-            .map(|_| PathBuf::from(".."))
-            .reduce(|acc, e| acc.join(e))
-            .unwrap_or(PathBuf::from(""));
+    let new_path = &path_components[subdirs..].iter().collect::<PathBuf>();
+    let backouts = (0..relative_to_components.len() - subdirs - 1)
+        .map(|_| PathBuf::from(".."))
+        .reduce(|acc, e| acc.join(e))
+        .unwrap_or(PathBuf::from(""));
     //println!("{}, {}", relative_to_components.len() - subdirs - 1, backouts.display());
     let new_path = backouts.join(new_path);
     let new_path = if new_path
@@ -162,12 +165,13 @@ fn make_path_relative(path: PathBuf, relative_to: PathBuf) -> PathBuf {
         new_path
     };
 
-    let new_path = if new_path.file_name() == Some(OsStr::new("index.md")) || new_path.file_name() == Some(OsStr::new("index.mdx")) {
+    let new_path = if new_path.file_name() == Some(OsStr::new("index.md"))
+        || new_path.file_name() == Some(OsStr::new("index.mdx"))
+    {
         new_path.parent().unwrap().to_path_buf()
     } else {
         new_path
     };
-        
 
     new_path
 }

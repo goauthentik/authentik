@@ -7,7 +7,7 @@ from time import time
 parser = configparser.ConfigParser()
 parser.read(".bumpversion.cfg")
 
-should_build = str(os.environ.get("DOCKER_USERNAME", None) is not None).lower()
+should_build = str(len(os.environ.get("DOCKER_USERNAME", "")) > 0).lower()
 
 branch_name = os.environ["GITHUB_REF"]
 if os.environ.get("GITHUB_HEAD_REF", "") != "":

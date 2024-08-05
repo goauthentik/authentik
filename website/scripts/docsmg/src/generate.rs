@@ -1,14 +1,14 @@
 use std::path::PathBuf;
 
-use crate::{migratefile::read_migrate_file, recurse_directory};
+use crate::{migratefile::read_migrate_file_left_side, recurse_directory};
 
 pub fn generate(migratefile: Option<PathBuf>, migrate_path: PathBuf) {
     // if there is a migrate file, read it and get the paths from the left side
     let paths: Vec<PathBuf> = match migratefile {
         Some(i) => {
-            let contents = read_migrate_file(i);
+            let contents = read_migrate_file_left_side(i);
             if let Ok(contents) = contents {
-                contents.iter().map(|x| x.0.clone()).collect()
+                contents
             } else {
                 vec![]
             }
@@ -20,12 +20,12 @@ pub fn generate(migratefile: Option<PathBuf>, migrate_path: PathBuf) {
     // get rid of paths already in the specified migrate file
     let paths: Vec<PathBuf> = recurse_directory(migrate_path.clone())
         .iter()
-        .filter(|x| !paths.contains(x))
         .filter_map(|x| x.strip_prefix(migrate_path.clone()).ok())
+        .filter(|x| !paths.contains(&x.to_path_buf()))
         .map(|x| x.to_path_buf())
         .collect();
 
     for path in paths {
-        println!("{} -> ", path.display());
+        println!("{} ->", path.display());
     }
 }
