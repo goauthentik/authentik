@@ -9,8 +9,8 @@ For information about a specific version, refer to our [Release Notes](../releas
 :::warning
 
 -   Be sure to make a backup of your databases before upgrading.
-
 -   The version of the authentik instance and any outposts must be the same. We recommended that you always upgrade any outposts at the same time you upgrade your authentik instance.
+
 :::
 
 import Tabs from "@theme/Tabs";
@@ -23,8 +23,6 @@ import TabItem from "@theme/TabItem";
     #### 1. Retrieve latest `docker-compose.yml` file
 
     -   Linux: `wget -O docker-compose.yml https://goauthentik.io/docker-compose.yml`
-
-        The `-O` flag retains the downloaded file's name, overwriting any existing local file with the same name.
 
     -   MacOS: `curl -O https://goauthentik.io/docker-compose.yml`
 
