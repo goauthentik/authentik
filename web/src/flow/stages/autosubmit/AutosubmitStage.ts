@@ -3,7 +3,7 @@ import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement, query } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -19,19 +19,20 @@ export class AutosubmitStage extends BaseStage<
     AutosubmitChallenge,
     AutoSubmitChallengeResponseRequest
 > {
+    @query("form")
+    private form?: HTMLFormElement;
+
     static get styles(): CSSResult[] {
         return [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle];
     }
 
     updated(): void {
-        this.shadowRoot?.querySelectorAll("form").forEach((form) => {
-            form.submit();
-        });
+        this.form?.submit();
     }
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
+            return html`<ak-empty-state loading> </ak-empty-state>`;
         }
         let title = this.challenge.flowInfo?.title;
         if (this.challenge.title && this.challenge.title !== "") {

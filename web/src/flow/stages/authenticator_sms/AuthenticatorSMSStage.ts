@@ -145,7 +145,7 @@ export class AuthenticatorSMSStage extends BaseStage<
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
+            return html`<ak-empty-state loading> </ak-empty-state>`;
         }
         if (this.challenge.phoneNumberRequired) {
             return this.renderPhoneNumber();

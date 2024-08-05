@@ -40,11 +40,11 @@ export class AppleLoginInit extends BaseStage<AppleLoginChallenge, AppleChalleng
             this.isModalShown = true;
         };
         document.head.append(appleAuth);
-        //Listen for authorization success
+        // Listen for authorization success
         document.addEventListener("AppleIDSignInOnSuccess", () => {
             //handle successful response
         });
-        //Listen for authorization failures
+        // Listen for authorization failures
         document.addEventListener("AppleIDSignInOnFailure", (error) => {
             console.warn(error);
             this.isModalShown = false;

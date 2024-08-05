@@ -33,7 +33,7 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
+            return html`<ak-empty-state loading> </ak-empty-state>`;
         }
         return html`<div class="pf-c-login__main-body">
             <form
