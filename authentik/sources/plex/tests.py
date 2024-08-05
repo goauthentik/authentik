@@ -45,7 +45,7 @@ class TestPlexSource(TestCase):
         ui_login_button = self.source.ui_login_button(None)
         self.assertTrue(ui_login_button.challenge.is_valid(raise_exception=True))
 
-    def test_get_user_info(self):
+    def test_get_base_user_properties(self):
         """Test get_user_info"""
         token = generate_key()
         api = PlexAuth(self.source, token)
@@ -54,7 +54,7 @@ class TestPlexSource(TestCase):
             self.assertEqual(
                 api.get_user_info(),
                 (
-                    {"username": "username", "email": "foo@bar.baz", "name": "title"},
+                    {"username": "username", "email": "foo@bar.baz", "name": "title", "id": 1234123419},
                     1234123419,
                 ),
             )
