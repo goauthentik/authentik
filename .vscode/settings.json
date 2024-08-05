@@ -23,15 +23,16 @@
     "todo-tree.tree.showCountsInTree": true,
     "todo-tree.tree.showBadges": true,
     "yaml.customTags": [
-        "!Find sequence",
-        "!KeyOf scalar",
-        "!Context scalar",
-        "!Context sequence",
-        "!Format sequence",
         "!Condition sequence",
-        "!Env sequence",
+        "!Context scalar",
+        "!Enumerate sequence",
         "!Env scalar",
-        "!If sequence"
+        "!Find sequence",
+        "!Format sequence",
+        "!If sequence",
+        "!Index scalar",
+        "!KeyOf scalar",
+        "!Value scalar"
     ],
     "typescript.preferences.importModuleSpecifier": "non-relative",
     "typescript.preferences.importModuleSpecifierEnding": "index",
