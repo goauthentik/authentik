@@ -34,6 +34,12 @@ class ConnectionTokenSerializer(EnterpriseRequiredMixin, ModelSerializer):
         ]
 
 
+class ConnectionTokenOwnerFilter(OwnerFilter):
+    """Owner filter for connection tokens (checks session's user)"""
+
+    owner_key = "session__user"
+
+
 class ConnectionTokenViewSet(
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
@@ -50,4 +56,9 @@ class ConnectionTokenViewSet(
     search_fields = ["endpoint__name", "provider__name"]
     ordering = ["endpoint__name", "provider__name"]
     permission_classes = [OwnerSuperuserPermissions]
-    filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
+    filter_backends = [
+        ConnectionTokenOwnerFilter,
+        DjangoFilterBackend,
+        OrderingFilter,
+        SearchFilter,
+    ]
