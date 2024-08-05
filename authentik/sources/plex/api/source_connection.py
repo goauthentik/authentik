@@ -2,8 +2,13 @@
 
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.core.api.sources import GroupSourceConnectionSerializer, GroupSourceConnectionViewSet, UserSourceConnectionSerializer, UserSourceConnectionViewSet
-from authentik.sources.plex.models import UserPlexSourceConnection, GroupPlexSourceConnection
+from authentik.core.api.sources import (
+    GroupSourceConnectionSerializer,
+    GroupSourceConnectionViewSet,
+    UserSourceConnectionSerializer,
+    UserSourceConnectionViewSet,
+)
+from authentik.sources.plex.models import GroupPlexSourceConnection, UserPlexSourceConnection
 
 
 class UserPlexSourceConnectionSerializer(UserSourceConnectionSerializer):
@@ -26,6 +31,7 @@ class UserPlexSourceConnectionViewSet(UserSourceConnectionViewSet, ModelViewSet)
 
     queryset = UserPlexSourceConnection.objects.all()
     serializer_class = UserPlexSourceConnectionSerializer
+
 
 class GroupPlexSourceConnectionSerializer(GroupSourceConnectionSerializer):
     """Plex Group-Source connection Serializer"""
