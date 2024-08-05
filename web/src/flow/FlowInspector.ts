@@ -4,7 +4,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Expand";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -268,7 +268,7 @@ ${JSON.stringify(this.getStage(this.state.currentPlan?.nextPlannedStage?.stageOb
                                                       </div>
                                                   </div>
                                               </li>`
-                                            : html``}
+                                            : nothing}
                                         ${this.state.currentPlan?.nextPlannedStage &&
                                         !this.state.isCompleted
                                             ? html`<li
@@ -296,7 +296,7 @@ ${JSON.stringify(this.getStage(this.state.currentPlan?.nextPlannedStage?.stageOb
                                                       </div>
                                                   </div>
                                               </li>`
-                                            : html``}
+                                            : nothing}
                                     </ol>
                                 </div>
                             </div>

@@ -3,7 +3,7 @@ import "@goauthentik/flow/FormStatic";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -56,13 +56,13 @@ export class FlowErrorStage extends BaseStage<FlowErrorChallenge, FlowChallengeR
                                 ? html`<div class="pf-c-form__group">
                                       <pre class="ak-exception">${this.challenge.traceback}</pre>
                                   </div>`
-                                : html``}
+                                : nothing}
                             ${this.challenge?.requestId
                                 ? html`<div class="pf-c-form__group">
                                       <p>${msg("Request ID")}</p>
                                       <code>${this.challenge.requestId}</code>
                                   </div>`
-                                : html``}
+                                : nothing}
                         </div>
                     </ak-empty-state>
                 </form>

@@ -445,9 +445,9 @@ export class FlowExecutor extends Interface implements StageHost {
         `;
     }
 
-    async renderInspector(): Promise<TemplateResult> {
+    async renderInspector() {
         if (!this.inspectorOpen) {
-            return html``;
+            return nothing;
         }
         await import("@goauthentik/flow/FlowInspector");
         return html`<ak-flow-inspector
