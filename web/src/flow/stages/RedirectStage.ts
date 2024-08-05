@@ -66,7 +66,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
             >
             </ak-empty-state>`;
         }
-        return html`<ak-empty-state ?loading=${true} header=${msg("Loading")}> </ak-empty-state>`;
+        return html`<ak-empty-state loadingheader=${msg("Loading")}> </ak-empty-state>`;
     }
 
     render(): TemplateResult {

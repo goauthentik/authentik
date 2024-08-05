@@ -81,7 +81,7 @@ ${prompt.initialValue}</textarea
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
-                    ?readonly=${true}
+                    readonly
                     value="${prompt.initialValue}"
                 />`;
             case PromptTypeEnum.TextAreaReadOnly:
@@ -280,8 +280,7 @@ ${prompt.initialValue}</textarea
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>

@@ -31,8 +31,7 @@ export class AutosubmitStage extends BaseStage<
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
         }
         let title = this.challenge.flowInfo?.title;
         if (this.challenge.title && this.challenge.title !== "") {
@@ -50,7 +49,7 @@ export class AutosubmitStage extends BaseStage<
                             value="${value as string}"
                         />`;
                     })}
-                    <ak-empty-state ?loading="${true}"> </ak-empty-state>
+                    <ak-empty-state loading> </ak-empty-state>
                 </form>
             </div>
             <footer class="pf-c-login__main-footer">

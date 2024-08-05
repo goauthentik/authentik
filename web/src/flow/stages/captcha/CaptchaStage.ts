@@ -157,16 +157,12 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         if (this.captchaInteractive) {
             return html`${this.captchaContainer}`;
         }
-        return html`<ak-empty-state
-            ?loading=${true}
-            header=${msg("Verifying...")}
-        ></ak-empty-state>`;
+        return html`<ak-empty-state loading header=${msg("Verifying...")}></ak-empty-state>`;
     }
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>

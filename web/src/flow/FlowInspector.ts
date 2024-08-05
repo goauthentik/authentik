@@ -116,8 +116,7 @@ export class FlowInspector extends AKElement {
         }
         if (!this.state) {
             this.advanceHandler();
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
         }
         return html`<div class="pf-c-drawer__body pf-m-no-padding">
             <div class="pf-c-notification-drawer">

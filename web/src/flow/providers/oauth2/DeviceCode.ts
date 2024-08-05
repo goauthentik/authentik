@@ -30,8 +30,7 @@ export class OAuth2DeviceCode extends BaseStage<
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
@@ -46,7 +45,7 @@ export class OAuth2DeviceCode extends BaseStage<
                     <p>${msg("Enter the code shown on your device.")}</p>
                     <ak-form-element
                         label="${msg("Code")}"
-                        ?required="${true}"
+                        required
                         class="pf-c-form__group"
                         .errors=${(this.challenge?.responseErrors || {})["code"]}
                     >

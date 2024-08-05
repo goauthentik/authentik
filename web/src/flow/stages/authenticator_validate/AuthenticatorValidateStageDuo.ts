@@ -47,8 +47,7 @@ export class AuthenticatorValidateStageWebDuo extends BaseDeviceStage<
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
         }
         const errors = this.challenge.responseErrors?.duo || [];
         const errorMessage = errors.map((err) => err.string);

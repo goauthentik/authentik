@@ -229,8 +229,7 @@ export class AuthenticatorValidateStage
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
         }
         // User only has a single device class, so we don't show a picker
         if (this.challenge?.deviceChallenges.length === 1) {

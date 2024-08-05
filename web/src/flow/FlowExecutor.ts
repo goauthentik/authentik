@@ -281,8 +281,7 @@ export class FlowExecutor extends Interface implements StageHost {
 
     async renderChallenge(): Promise<TemplateResult> {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading=${true} header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
         }
         switch (this.challenge?.component) {
             case "ak-stage-access-denied":
@@ -438,8 +437,7 @@ export class FlowExecutor extends Interface implements StageHost {
             />
         </div>`;
         if (!this.challenge) {
-            return html`${logo}<ak-empty-state ?loading=${true} header=${msg("Loading")}>
-                </ak-empty-state>`;
+            return html`${logo}<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
         }
         return html`
             ${this.loading ? html`<ak-loading-overlay></ak-loading-overlay>` : nothing} ${logo}

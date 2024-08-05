@@ -57,7 +57,7 @@ export class AppleLoginInit extends BaseStage<AppleLoginChallenge, AppleChalleng
             </header>
             <div class="pf-c-login__main-body">
                 <form class="pf-c-form">
-                    <ak-empty-state ?loading="${true}"> </ak-empty-state>
+                    <ak-empty-state loading></ak-empty-state>
                     ${!this.isModalShown
                         ? html`<button
                               class="pf-c-button pf-m-primary pf-m-block"
