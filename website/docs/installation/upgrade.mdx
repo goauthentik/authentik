@@ -7,15 +7,16 @@ Upgrading to the latest version of authentik, whether a new major release or a p
 For information about a specific version, refer to our [Release Notes](../releases/).
 
 :::warning
+
 -   Be sure to make a backup of your databases before upgrading.
 
 -   The version of the authentik instance and any outposts must be the same. We recommended that you always upgrade any outposts at the same time you upgrade your authentik instance.
-:::
+    :::
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
-<Tabs
+<Tabs groupId="platform">
 defaultValue="docker-compose"
 values={[
 {label: 'Docker Compose', value: 'docker-compose'},
@@ -61,7 +62,7 @@ You can view the current version of your authentik instance by logging in to the
 
 ## Troubleshooting your upgrade
 
-<Tabs
+<Tabs groupId="platform">
 defaultValue="docker-compose"
 values={[
 {label: 'Docker Compose', value: 'docker-compose'},
@@ -77,9 +78,9 @@ Be aware that this command purges the Docker volumes (which hold the instance's 
 
 Run `docker compose down -v`.
 
-  </TabItem>
+    </TabItem>
 
-  <TabItem value="kubernetes">
+<TabItem value="kubernetes">
 If you run the upgrade commands but your version on the Dashboard doesn’t change, follow these steps:
 
 1.  Run `helm repo add authentik https://charts.goauthentik.io`
