@@ -37,24 +37,19 @@ export class AutosubmitStage extends BaseStage<
         if (this.challenge.title && this.challenge.title !== "") {
             title = this.challenge.title;
         }
-        return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${title}</h1>
-            </header>
-            <div class="pf-c-login__main-body">
-                <form class="pf-c-form" action="${this.challenge.url}" method="POST">
-                    ${Object.entries(this.challenge.attrs).map(([key, value]) => {
-                        return html`<input
-                            type="hidden"
-                            name="${key as string}"
-                            value="${value as string}"
-                        />`;
-                    })}
-                    <ak-empty-state loading> </ak-empty-state>
-                </form>
-            </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links"></ul>
-            </footer>`;
+        if (!title) {
+            title = msg("Loading");
+        }
+        return html`<form class="pf-c-form" action="${this.challenge.url}" method="POST">
+            ${Object.entries(this.challenge.attrs).map(([key, value]) => {
+                return html`<input
+                    type="hidden"
+                    name="${key as string}"
+                    value="${value as string}"
+                />`;
+            })}
+            <ak-empty-state loading title=${title}> </ak-empty-state>
+        </form>`;
     }
 }
 
