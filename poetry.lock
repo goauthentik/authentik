@@ -2965,9 +2965,14 @@ version = "0.0.14"
 description = "Python module for oci specifications"
 optional = false
 python-versions = "*"
-files = [
-    {file = "opencontainers-0.0.14.tar.gz", hash = "sha256:fde3b8099b56b5c956415df8933e2227e1914e805a277b844f2f9e52341738f2"},
-]
+files = []
+develop = false
+
+[package.source]
+type = "git"
+url = "https://github.com/BeryJu/oci-python"
+reference = "3c5e4dbeaea744fd52515c3daba0e28741cb2091"
+resolved_reference = "3c5e4dbeaea744fd52515c3daba0e28741cb2091"
 
 [[package]]
 name = "opentelemetry-api"
@@ -5438,4 +5443,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.12"
-content-hash = "ee92e7bc797266450be0b5f0ffec79d2a69161e1e48024474e00c14e3120a63a"
+content-hash = "30af27c31cb3421ee1ca2563233dfe880a59af07a7ef8cafebf813259c7c5994"
