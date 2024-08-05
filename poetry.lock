@@ -2945,9 +2945,9 @@ develop = false
 
 [package.source]
 type = "git"
-url = "https://github.com/BeryJu/oci-python"
-reference = "3c5e4dbeaea744fd52515c3daba0e28741cb2091"
-resolved_reference = "3c5e4dbeaea744fd52515c3daba0e28741cb2091"
+url = "https://github.com/vsoch/oci-python"
+reference = "20d69d9cc50a0fef31605b46f06da0c94f1ec3cf"
+resolved_reference = "20d69d9cc50a0fef31605b46f06da0c94f1ec3cf"
 
 [[package]]
 name = "opentelemetry-api"
@@ -5341,4 +5341,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.12"
-content-hash = "eda655a724dfc1e879b2d4dba9914e379e1d724d091835f5567f8e07cb6c0aaa"
+content-hash = "055376879ff784080ab95c02eaa012fb1dad1213b1faa0dd1d61b0b812859b6d"
