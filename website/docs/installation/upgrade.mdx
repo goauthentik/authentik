@@ -7,6 +7,7 @@ Upgrading to the latest version of authentik, whether a new major release or a p
 For information about a specific version, refer to our [Release Notes](../releases/).
 
 :::warning
+
 -   Be sure to make a backup of your databases before upgrading.
 
 -   The version of the authentik instance and any outposts must be the same. We recommended that you always upgrade any outposts at the same time you upgrade your authentik instance.
@@ -27,7 +28,7 @@ import TabItem from "@theme/TabItem";
 
     -   MacOS: `curl -O https://goauthentik.io/docker-compose.yml`
 
-#### 2. Run upgrade commands
+    **2. Run upgrade commands**
 
     ```shell
     docker compose pull
@@ -58,12 +59,10 @@ You can view the current version of your authentik instance by logging in to the
   <TabItem value="docker-compose" label="Docker Compose" default>
     If you run the upgrade commands but your version on the Dashboard doesn’t change, you might need to make sure the old `authinstall database` is removed before upgrading.
 
-        Run `docker compose down -v`.
+    Run `docker compose down -v`.
 
 :::warning
-
-Be aware that this command purges the Docker volumes (which hold the instance's data).
-
+    Be aware that this command purges the Docker volumes (which hold the instance's data).
 :::
 
   </TabItem>
@@ -80,4 +79,3 @@ Be aware that this command purges the Docker volumes (which hold the instance's 
 
   </TabItem>
 </Tabs>
-

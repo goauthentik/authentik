@@ -15,7 +15,7 @@ To try out the release candidate, replace your Docker image tag with the latest 
 
 ## Upgrading
 
-This release does not introduce any new requirements. You can follow the upgrade instrucitons below; for more detailed information about upgrading authentik, refer to our [Upgrade documentation](../installation/upgrade.mdx).
+This release does not introduce any new requirements. You can follow the upgrade instructions below; for more detailed information about upgrading authentik, refer to our [Upgrade documentation](../installation/upgrade.mdx).
 
 ### Docker Compose
 
