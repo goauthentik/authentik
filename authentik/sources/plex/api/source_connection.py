@@ -2,15 +2,15 @@
 
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.core.api.sources import UserSourceConnectionSerializer, UserSourceConnectionViewSet
-from authentik.sources.plex.models import PlexSourceConnection
+from authentik.core.api.sources import GroupSourceConnectionSerializer, GroupSourceConnectionViewSet, UserSourceConnectionSerializer, UserSourceConnectionViewSet
+from authentik.sources.plex.models import UserPlexSourceConnection, GroupPlexSourceConnection
 
 
-class PlexSourceConnectionSerializer(UserSourceConnectionSerializer):
+class UserPlexSourceConnectionSerializer(UserSourceConnectionSerializer):
     """Plex Source connection Serializer"""
 
     class Meta(UserSourceConnectionSerializer.Meta):
-        model = PlexSourceConnection
+        model = UserPlexSourceConnection
         fields = UserSourceConnectionSerializer.Meta.fields + [
             "identifier",
             "plex_token",
@@ -21,8 +21,21 @@ class PlexSourceConnectionSerializer(UserSourceConnectionSerializer):
         }
 
 
-class PlexSourceConnectionViewSet(UserSourceConnectionViewSet, ModelViewSet):
+class UserPlexSourceConnectionViewSet(UserSourceConnectionViewSet, ModelViewSet):
     """Plex Source connection Serializer"""
 
-    queryset = PlexSourceConnection.objects.all()
-    serializer_class = PlexSourceConnectionSerializer
+    queryset = UserPlexSourceConnection.objects.all()
+    serializer_class = UserPlexSourceConnectionSerializer
+
+class GroupPlexSourceConnectionSerializer(GroupSourceConnectionSerializer):
+    """Plex Group-Source connection Serializer"""
+
+    class Meta(GroupSourceConnectionSerializer.Meta):
+        model = GroupPlexSourceConnection
+
+
+class GroupPlexSourceConnectionViewSet(GroupSourceConnectionViewSet, ModelViewSet):
+    """Group-source connection Viewset"""
+
+    queryset = GroupPlexSourceConnection.objects.all()
+    serializer_class = GroupPlexSourceConnectionSerializer
