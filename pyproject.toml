@@ -119,7 +119,7 @@ kubernetes = "*"
 ldap3 = "*"
 lxml = "*"
 msgraph-sdk = "*"
-opencontainers = { git = "https://github.com/BeryJu/oci-python", rev = "3c5e4dbeaea744fd52515c3daba0e28741cb2091", extras = ["reggie"] }
+opencontainers = { git = "https://github.com/vsoch/oci-python", rev = "20d69d9cc50a0fef31605b46f06da0c94f1ec3cf", extras = ["reggie"] }
 packaging = "*"
 paramiko = "*"
 psycopg = { extras = ["c"], version = "*" }
