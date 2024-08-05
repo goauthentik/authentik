@@ -1,7 +1,10 @@
 import "@goauthentik/admin/common/ak-flow-search/ak-source-flow-search";
 import { iconHelperText, placeholderHelperText } from "@goauthentik/admin/helperText";
 import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
-import { UserMatchingModeToLabel } from "@goauthentik/admin/sources/oauth/utils";
+import {
+    GroupMatchingModeToLabel,
+    UserMatchingModeToLabel,
+} from "@goauthentik/admin/sources/oauth/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { PlexAPIClient, PlexResource, popupCenterScreen } from "@goauthentik/common/helpers/plex";
 import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
@@ -9,6 +12,8 @@ import {
     CapabilitiesEnum,
     WithCapabilitiesConfig,
 } from "@goauthentik/elements/Interface/capabilitiesProvider";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
+import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -20,10 +25,35 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
     FlowsInstancesListDesignationEnum,
+    GroupMatchingModeEnum,
     PlexSource,
+    PlexSourcePropertyMapping,
+    PropertymappingsApi,
     SourcesApi,
     UserMatchingModeEnum,
 } from "@goauthentik/api";
+
+async function propertyMappingsProvider(page = 1, search = "") {
+    const propertyMappings = await new PropertymappingsApi(
+        DEFAULT_CONFIG,
+    ).propertymappingsSourcePlexList({
+        ordering: "managed",
+        pageSize: 20,
+        search: search.trim(),
+        page,
+    });
+    return {
+        pagination: propertyMappings.pagination,
+        options: propertyMappings.results.map((m) => [m.pk, m.name, m.name, m]),
+    };
+}
+
+function makePropertyMappingsSelector(instanceMappings?: string[]) {
+    const localMappings = instanceMappings ? new Set(instanceMappings) : undefined;
+    return localMappings
+        ? ([pk, _]: DualSelectPair) => localMappings.has(pk)
+        : ([_0, _1, _2, _]: DualSelectPair<PlexSourcePropertyMapping>) => false;
+}
 
 @customElement("ak-source-plex-form")
 export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSource>) {
@@ -245,6 +275,35 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
                     </option>
                 </select>
             </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${msg("Group matching mode")}
+                ?required=${true}
+                name="groupMatchingMode"
+            >
+                <select class="pf-c-form-control">
+                    <option
+                        value=${GroupMatchingModeEnum.Identifier}
+                        ?selected=${this.instance?.groupMatchingMode ===
+                        GroupMatchingModeEnum.Identifier}
+                    >
+                        ${UserMatchingModeToLabel(UserMatchingModeEnum.Identifier)}
+                    </option>
+                    <option
+                        value=${GroupMatchingModeEnum.NameLink}
+                        ?selected=${this.instance?.groupMatchingMode ===
+                        GroupMatchingModeEnum.NameLink}
+                    >
+                        ${GroupMatchingModeToLabel(GroupMatchingModeEnum.NameLink)}
+                    </option>
+                    <option
+                        value=${GroupMatchingModeEnum.NameDeny}
+                        ?selected=${this.instance?.groupMatchingMode ===
+                        GroupMatchingModeEnum.NameDeny}
+                    >
+                        ${GroupMatchingModeToLabel(GroupMatchingModeEnum.NameDeny)}
+                    </option>
+                </select>
+            </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("User path")} name="userPathTemplate">
                 <input
                     type="text"
@@ -351,6 +410,43 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
                         ></ak-source-flow-search>
                         <p class="pf-c-form__helper-text">
                             ${msg("Flow to use when enrolling new users.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+            <ak-form-group ?expanded=${true}>
+                <span slot="header"> ${msg("Plex Attribute mapping")} </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("User Property Mappings")}
+                        name="userPropertyMappings"
+                    >
+                        <ak-dual-select-dynamic-selected
+                            .provider=${propertyMappingsProvider}
+                            .selector=${makePropertyMappingsSelector(
+                                this.instance?.userPropertyMappings,
+                            )}
+                            available-label="${msg("Available User Property Mappings")}"
+                            selected-label="${msg("Selected User Property Mappings")}"
+                        ></ak-dual-select-dynamic-selected>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Property mappings for user creation.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Group Property Mappings")}
+                        name="groupPropertyMappings"
+                    >
+                        <ak-dual-select-dynamic-selected
+                            .provider=${propertyMappingsProvider}
+                            .selector=${makePropertyMappingsSelector(
+                                this.instance?.groupPropertyMappings,
+                            )}
+                            available-label="${msg("Available Group Property Mappings")}"
+                            selected-label="${msg("Selected Group Property Mappings")}"
+                        ></ak-dual-select-dynamic-selected>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Property mappings for group creation.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>
