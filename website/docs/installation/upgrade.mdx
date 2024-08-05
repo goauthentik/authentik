@@ -17,13 +17,7 @@ import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
 <Tabs groupId="platform">
-defaultValue="docker-compose"
-values={[
-{label: 'Docker Compose', value: 'docker-compose'},
-{label: 'Kubernetes', value: 'kubernetes'},
-]}
-groupId="platform">
-<TabItem value="docker-compose">
+  <TabItem value="docker-compose" label="Docker Compose" default>
 In your terminal, navigate to your installation directory and follow these steps:
 
 #### 1. Retrieve latest `docker-compose.yml` file
@@ -42,8 +36,7 @@ In your terminal, navigate to your installation directory and follow these steps
     ```
 
   </TabItem>
-
-  <TabItem value="kubernetes">
+  <TabItem value="kubernetes" label="Kubernetes">
 In your terminal, navigate to your installation directory and run the following commands:
 
 ```
