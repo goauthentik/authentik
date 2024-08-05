@@ -198,9 +198,9 @@ export class IdentificationStage extends BaseStage<
         </li>`;
     }
 
-    renderFooter(): TemplateResult {
+    renderFooter() {
         if (!this.challenge?.enrollUrl && !this.challenge?.recoveryUrl) {
-            return html``;
+            return nothing;
         }
         return html`<div class="pf-c-login__main-footer-band">
             ${this.challenge.enrollUrl

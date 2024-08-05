@@ -3,7 +3,7 @@ import "@goauthentik/flow/FormStatic";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -56,7 +56,7 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
                               ${this.renderPermissions(this.challenge.permissions)}
                           </ul>
                       `
-                    : html``}
+                    : nothing}
             </div>
         `;
     }
@@ -76,7 +76,7 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
                               ${this.renderPermissions(this.challenge.permissions)}
                           </ul>
                       `
-                    : html``}
+                    : nothing}
             </div>
             <div class="pf-c-form__group pf-u-mt-md">
                 ${this.challenge.additionalPermissions.length > 0
@@ -88,7 +88,7 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
                               ${this.renderPermissions(this.challenge.additionalPermissions)}
                           </ul>
                       `
-                    : html``}
+                    : nothing}
             </div>
         `;
     }

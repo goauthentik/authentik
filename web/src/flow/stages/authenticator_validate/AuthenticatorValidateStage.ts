@@ -6,7 +6,7 @@ import { BaseStage, StageHost, SubmitOptions } from "@goauthentik/flow/stages/ba
 import { PasswordManagerPrefill } from "@goauthentik/flow/stages/identification/IdentificationStage";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -112,7 +112,7 @@ export class AuthenticatorValidateStage
         `);
     }
 
-    renderDevicePickerSingle(deviceChallenge: DeviceChallenge): TemplateResult {
+    renderDevicePickerSingle(deviceChallenge: DeviceChallenge) {
         switch (deviceChallenge.deviceClass) {
             case DeviceClassesEnum.Duo:
                 return html`<i class="fas fa-mobile-alt"></i>
@@ -147,7 +147,7 @@ export class AuthenticatorValidateStage
             default:
                 break;
         }
-        return html``;
+        return nothing;
     }
 
     renderDevicePicker(): TemplateResult {
@@ -192,9 +192,9 @@ export class AuthenticatorValidateStage
         </ul>`;
     }
 
-    renderDeviceChallenge(): TemplateResult {
+    renderDeviceChallenge() {
         if (!this.selectedDeviceChallenge) {
-            return html``;
+            return nothing;
         }
         switch (this.selectedDeviceChallenge?.deviceClass) {
             case DeviceClassesEnum.Static:
@@ -224,7 +224,7 @@ export class AuthenticatorValidateStage
                 >
                 </ak-stage-authenticator-validate-duo>`;
         }
-        return html``;
+        return nothing;
     }
 
     render(): TemplateResult {

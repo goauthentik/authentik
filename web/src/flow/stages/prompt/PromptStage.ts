@@ -9,7 +9,7 @@ import "@goauthentik/elements/forms/FormElement";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
@@ -222,9 +222,9 @@ ${prompt.initialValue}</textarea
         }
     }
 
-    renderPromptHelpText(prompt: StagePrompt): TemplateResult {
+    renderPromptHelpText(prompt: StagePrompt) {
         if (prompt.subText === "") {
-            return html``;
+            return nothing;
         }
         return html`<p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>`;
     }
@@ -253,7 +253,7 @@ ${prompt.initialValue}</textarea
                 <label class="pf-c-check__label" for="${prompt.fieldKey}">${prompt.label}</label>
                 ${prompt.required
                     ? html`<p class="pf-c-form__helper-text">${msg("Required.")}</p>`
-                    : html``}
+                    : nothing}
                 <p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>
             </div>`;
         }

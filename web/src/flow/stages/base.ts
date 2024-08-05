@@ -2,7 +2,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { KeyUnknown } from "@goauthentik/elements/forms/Form";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html, nothing } from "lit";
+import { html, nothing } from "lit";
 import { property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -99,9 +99,9 @@ export class BaseStage<
         </div>`;
     }
 
-    renderUserInfo(): TemplateResult {
+    renderUserInfo() {
         if (!this.challenge.pendingUser || !this.challenge.pendingUserAvatar) {
-            return html``;
+            return nothing;
         }
         return html`
             <ak-form-static
