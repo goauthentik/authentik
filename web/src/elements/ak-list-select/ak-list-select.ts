@@ -19,11 +19,28 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import { groupOptions, isVisibleInScrollRegion } from "./utils.js";
 
 /**
- * Authentik menu element
+ * @class ListSelect
+ * @element ak-list-select
+ *
+ * authentik scrolling list select element
  *
  * Provides a menu of elements to be used for selection.
  *
+ * - @prop options (SelectOption[]): The options to display.
+ * - @attr value (string): the current value of the Component
+ * - @attr emptyOption (string): if defined, the component can be `undefined` and will
+ *   display this string at the top.
+ *
  * - @fires change: When the value of the element has changed
+ *
+ * - @part ak-list-select-wrapper: the `<div>` that contains the whole
+ * - @part ak-list-select: the `<ul>` that defines the list. This is the component
+ *   to target if you want to change the max height.
+ * - @part ak-list-select-option: The `<li>` items of the list
+ * - @part ak-list-select-button: The `<button>` element of an item.
+ * - @part ak-list-select-desc: The description element of the list
+ * - @part ak-list-select-group: A section of a grouped list.
+ * - @part ak-list-select-title: The title of a group
  */
 @customElement("ak-list-select")
 export class ListSelect extends AKElement {

@@ -4,12 +4,18 @@ import { LitElement, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 /**
- * An intermediate class to handle the menu and its position.
+ * @class Portal
+ * @element ak-portal
+ *
+ * An intermediate class to handle a menu and its position.
  *
  * It has no rendering of its own, and mostly is just a pass-through for options to the menu.
  * DOTADIW: it tracks the top-of-DOM object into which we render our menu, guaranteeing that it
  * appears above everything else, and operates the positioning control for it.
  *
+ * - @prop anchor (HTMLElement): The component which will be visually associated with the portaled popup.
+ * - @attr open (boolean): whether or not the component is visible
+ * - @attr name (string): (optional) used to managed the relationship the portal mediates.
  */
 
 @customElement("ak-portal")

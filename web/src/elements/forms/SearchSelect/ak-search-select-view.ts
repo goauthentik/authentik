@@ -26,8 +26,26 @@ import { findFlatOptions, findOptionsSubset, groupOptions, optionsToFlat } from 
  * Main component of ak-search-select, renders the <input> object and controls interaction with the
  * portaled menu list.
  *
- * @fires ak-search-select-input - When the user selects an item from the list. A derivative Event
- * with the `value` as its payload.
+ * - @prop options! (GroupedOptions): The options passed to the component
+ * - @attr value? (string): The current value. Reflected.
+ * - @attr open (boolean): if the menu dropdown is visible
+ * - @attr blankable (boolean): if true, the component is blankable and can return `undefined`
+ * - @attr managed (boolean): if true, the options and search are managed by a higher-level
+     component.
+ * - @attr caseSensitive (boolean): if `managed`, local searches will be case sensitive. False by
+     default.
+ * - @attr name? (string): The name of the component, for forms
+ * - @attr placeholder (string): What to show when the input is empty
+ * - @attr emptyOption (string): What to show in the menu to indicate "leave this undefined". Only
+ *   shown if `blankable`
+ *
+ * - @fires change - When a value from the list has been positively chosen, either as a consequence of
+ *   the user typing or when selecting from the list.
+ *
+ * - @part ak-search-select: The main Patternfly div
+ * - @part ak-search-select-toggle: The Patternfly inner div
+ * - @part ak-search-select-wrapper: Yet another Patternfly inner div
+ * - @part ak-search-select-toggle-typeahead: The `<input>` component itself
  *
  * Note that this is more on the HTML / Web Component side of the operational line: the keys which
  * represent the values we pass back to clients are always strings here. This component is strictly
@@ -181,6 +199,16 @@ export class SearchSelectView extends AKElement {
         this.inputRef.value?.focus();
     }
 
+    setFromMatchList(value: string | undefined) {
+        if (value === undefined) {
+            return;
+        }
+        const probableValue = this.flatOptions.find((option) => option[0] === this.value);
+        if (probableValue) {
+            this.inputRef.value && (this.inputRef.value.value = probableValue[1][1]);
+        }
+    }
+
     @bound
     onKeydown(event: KeyboardEvent) {
         if (event.code === "Escape") {
@@ -191,13 +219,8 @@ export class SearchSelectView extends AKElement {
             this.open = true;
         }
         if (event.code === "Tab" && this.open) {
-            if (this.value) {
-                const probableValue = this.flatOptions.find((option) => option[0] === this.value);
-                if (probableValue) {
-                    this.inputRef.value && (this.inputRef.value.value = probableValue[1][1]);
-                }
-            }
             event.preventDefault();
+            this.setFromMatchList(this.value);
             this.menuRef.value?.currentElement?.focus();
         }
     }
@@ -316,10 +339,11 @@ export class SearchSelectView extends AKElement {
         const emptyOption = this.blankable ? this.emptyOption : undefined;
         const open = this.open;
 
-        return html`<div class="pf-c-select">
-                <div class="pf-c-select__toggle pf-m-typeahead">
-                    <div class="pf-c-select__toggle-wrapper">
+        return html`<div class="pf-c-select" part="ak-search-select">
+                <div class="pf-c-select__toggle pf-m-typeahead" part="ak-search-select-toggle">
+                    <div class="pf-c-select__toggle-wrapper" part="ak-search-select-wrapper">
                         <input
+                            part="ak-search-select-toggle-typeahead"
                             autocomplete="off"
                             class="pf-c-form-control pf-c-select__toggle-typeahead"
                             type="text"

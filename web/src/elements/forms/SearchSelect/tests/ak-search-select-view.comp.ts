@@ -28,7 +28,7 @@ export class AkSearchSelectViewDriver {
             );
         }
         const id = await element.getAttribute("data-ouia-component-id");
-        const menu = await browser.$(`[data-ouia-component-id="menu-${id}"]`);
+        const menu = await $(`[data-ouia-component-id="menu-${id}"]`);
         return new AkSearchSelectViewDriver(element, menu);
     }
 

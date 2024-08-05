@@ -20,6 +20,44 @@ import { SearchSelectView } from "./ak-search-select-view.js";
 
 type Group<T> = [string, T[]];
 
+/**
+ * @class SearchSelect
+ * @element ak-search-select
+ *
+ * The API layer of  ak-search-select
+ *
+ * - @prop fetchObjects (Function): The function by which objects are retrieved by the API.
+ * - @prop renderElement (Function | string): Either a function that can retrieve the string
+ *   "label" of the element, or the name of the field from which the label can be retrieved.¹
+ * - @prop renderDescription (Function | string): Either a function that can retrieve the string
+ *   or TemplateResult "description" of the element, or the name of the field from which the
+ *   description can be retrieved.¹
+ * - @prop value (Function | string): Either a function that can retrieve the value (the current
+ *   API object's primary key) selected or the name of the field from which the value can be
+ *   retrieved.¹
+ * - @prop selected (Function): A function that retrieves the current "live" value from the
+     list of objects fetched by the function above.
+ * - @prop groupBy (Function): A function that can group the objects fetched from the API by
+     an internal criteria.
+ * - @attr blankable (boolean): if true, the component is blankable and can return `undefined`
+ * - @attr name (string): The name of the component, for forms
+ * - @attr query (string): The current search criteria for fetching objects
+ * - @attr placeholder (string): What to show when the input is empty
+ * - @attr emptyOption (string): What to show in the menu to indicate "leave this undefined". Only
+ *   shown if `blankable`
+ * - @attr selectedObject (Object<T>): The current object, or undefined, selected
+ *
+ * ¹ Due to a limitation in the parsing of properties-vs-attributes, these must be defined as
+ *   properties, not attributes.  As a consequence, they must be declared in property syntax.
+ *   Example:
+ *
+ *   `.renderElement=${"name"}`
+ *
+ * - @fires ak-change - When a value from the collection has been positively chosen, either as a
+ *   consequence of the user typing or when selecting from the list.
+ *
+ */
+
 @customElement("ak-search-select")
 export class SearchSelect<T> extends CustomEmitterElement(AkControlElement) {
     static get styles() {
@@ -163,7 +201,7 @@ export class SearchSelect<T> extends CustomEmitterElement(AkControlElement) {
 
         if (typeof this.renderDescription === "string") {
             const rdKey = this.renderDescription as keyof T;
-            this._renderDescription = (item: T) => item[rdKey] as string | TemplateResult;
+            this._renderDescription = (item: T) => html`${item[rdKey]}`;
         } else {
             // undefined propagates to here.
             this._renderDescription = this.renderDescription;
