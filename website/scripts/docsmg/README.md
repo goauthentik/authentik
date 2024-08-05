@@ -47,4 +47,3 @@ Because the structure is completely changed, you will need to modify/reconstruct
 ## Test the results
 
 To test the internal links, navigate up a level to `authentik` and then run `make website-watch`.
-
