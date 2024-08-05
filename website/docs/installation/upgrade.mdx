@@ -2,7 +2,7 @@
 title: Upgrade authentik
 ---
 
-Upgrading to the latest version of authentik, whether a new major release or a patch, involves running a few commands to pull down the latest packages and then restart the servers and databases.
+Upgrading to the latest version of authentik, whether a new major release or a patch, involves running a few commands to pull down the latest images and then restart the servers and databases.
 
 :::warning
 The version of the authentik instance and any outposts must be the same. We recommended that you always upgrade any outposts at the same time you upgrade your authentik instance.
@@ -21,10 +21,26 @@ groupId="platform">
 <TabItem value="docker-compose">
 In your terminal, navigate to your installation directory and run the following commands:
 
-```shell
-docker compose pull
-docker compose up -d
-```
+#### 1. Retrieve latest `docker-compose.yml` file
+
+-   Linux:
+
+            ```shell
+        wget https://goauthentik.io/docker-compose.yml
+        ```
+
+-   MacOS:
+
+            ```shell
+        curl -O https://goauthentik.io/docker-compose.yml
+        ```
+
+#### 2. Run upgrade commands
+
+    ```shell
+    docker compose pull
+    docker compose up -d
+    ```
 
   </TabItem>
 
