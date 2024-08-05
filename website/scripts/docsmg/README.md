@@ -29,20 +29,18 @@ Use this migration tool to:
 
 ### Migrate the docs
 
-1. After you have entered all the paths you want to move, migrate the files with `docsmg migrate`.
+1. After you have entered all the paths you want to move, migrate the files with the command `docsmg migrate`.
 
 :::info
-After you have run migate, you cannot rin it again or you will get a `panic` error... because the files have already been moved.
+After you have run `migrate`, you cannot run it again or you will get a `panic` error... because the files have already been moved.
 :::
 
-2. To revert the migration, use `docsmg unmigrate`; Note: DO NOT edit the migratefile in between steps 3 and 4.
+2. To revert the migration, use `docsmg unmigrate`. Note: DO NOT edit the `migratefile` file in befor running `unmigrate`.
 3. Continue modifying the `migratefile` file and then using the `docsmg migrate` command until you are satisfied with the result.
 
 ### Update the `sidebar.js file`
 
 Because the structure is completely changed, you will need to modify/reconstruct the navigation bar.
-
-1.
 
 ## Test the results
 
