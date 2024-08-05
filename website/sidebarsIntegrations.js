@@ -146,6 +146,7 @@ module.exports = {
                         "services/ubuntu-landscape/index",
                         "services/uptime-kuma/index",
                         "services/zabbix/index",
+                        "services/whats-up-docker/index",
                     ],
                 },
                 {
