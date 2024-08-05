@@ -1,14 +1,11 @@
-import type { Element } from "@wdio/globals";
 import { $, browser } from "@wdio/globals";
-
-import { SearchSelectView } from "../ak-search-select-view.js";
-import { isVisible } from "./is-visible.js";
 
 browser.addCommand(
     "focus",
     function () {
         browser.execute(function (domElement) {
             domElement.focus();
+            // @ts-ignore
         }, this);
     },
     true,
@@ -16,13 +13,13 @@ browser.addCommand(
 
 export class AkSearchSelectViewDriver {
     constructor(
-        private element: Element,
-        private menu: Element,
+        public element: WebdriverIO.Element,
+        public menu: WebdriverIO.Element,
     ) {
         /* no op */
     }
 
-    static async build(element: Element) {
+    static async build(element: WebdriverIO.Element) {
         const tagname = await element.getTagName();
         const comptype = await element.getAttribute("data-ouia-component-type");
         if (comptype !== "ak-search-select-view") {
@@ -31,20 +28,25 @@ export class AkSearchSelectViewDriver {
             );
         }
         const id = await element.getAttribute("data-ouia-component-id");
-        const menu = await $(`[data-ouia-component-id="menu-${id}"]`);
+        const menu = await browser.$(`[data-ouia-component-id="menu-${id}"]`);
         return new AkSearchSelectViewDriver(element, menu);
     }
 
-    inputState() {
-        return this.element.getProperty("inputState");
+    get open() {
+        return this.element.getProperty("open");
     }
 
-    input() {
-        return this.element.$(">>>input");
+    async input() {
+        return await this.element.$(">>>input");
     }
 
-    focusOnInput() {
-        $(this.input).focus();
+    async listElements() {
+        return await this.menu.$$(">>>li");
+    }
+
+    async focusOnInput() {
+        // @ts-ignore
+        await (await this.input()).focus();
     }
 
     async inputIsVisible() {

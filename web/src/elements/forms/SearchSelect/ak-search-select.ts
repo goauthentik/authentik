@@ -3,6 +3,7 @@ import { APIErrorTypes, parseAPIError } from "@goauthentik/common/errors";
 import { groupBy } from "@goauthentik/common/utils";
 import { AkControlElement } from "@goauthentik/elements/AkControlElement.js";
 import { PreventFormSubmit } from "@goauthentik/elements/forms/helpers";
+import type { GroupedOptions, SelectGroup, SelectOption } from "@goauthentik/elements/types.js";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
 import { msg } from "@lit/localize";
@@ -14,9 +15,8 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { ResponseError } from "@goauthentik/api";
 
-import { SearchSelectInputEvent, SearchSelectSelectEvent } from "./SearchSelectEvents.js";
 import "./ak-search-select-view.js";
-import type { GroupedOptions, SearchGroup, SearchTuple } from "./types.js";
+import { SearchSelectView } from "./ak-search-select-view.js";
 
 type Group<T> = [string, T[]];
 
@@ -34,17 +34,23 @@ export class SearchSelect<T> extends CustomEmitterElement(AkControlElement) {
     // A function passed to this object that extracts a string representation of items of the
     // collection under search.
     @property({ attribute: false })
-    renderElement!: (element: T) => string;
+    renderElement!: ((element: T) => string) | string;
+
+    _renderElement!: (element: T) => string;
 
     // A function passed to this object that extracts an HTML representation of additional
     // information for items of the collection under search.
     @property({ attribute: false })
-    renderDescription?: (element: T) => TemplateResult;
+    renderDescription?: ((element: T) => string | TemplateResult) | string;
+
+    _renderDescription?: (element: T) => string | TemplateResult;
 
     // A function which returns the currently selected object's primary key, used for serialization
     // into forms.
     @property({ attribute: false })
-    value!: (element: T | undefined) => unknown;
+    value!: ((element: T | undefined) => unknown) | string;
+
+    _value!: (element: T | undefined) => unknown;
 
     // A function passed to this object that determines an object in the collection under search
     // should be automatically selected. Only used when the search itself is responsible for
@@ -106,7 +112,7 @@ export class SearchSelect<T> extends CustomEmitterElement(AkControlElement) {
         if (!this.objects) {
             throw new PreventFormSubmit(msg("Loading options..."));
         }
-        return this.value(this.selectedObject) || "";
+        return this._value(this.selectedObject) || "";
     }
 
     json() {
@@ -140,6 +146,29 @@ export class SearchSelect<T> extends CustomEmitterElement(AkControlElement) {
 
     connectedCallback(): void {
         super.connectedCallback();
+        if (typeof this.renderElement === "string") {
+            const reKey = this.renderElement as keyof T;
+            this._renderElement = (item: T) => item[reKey] as string;
+        } else {
+            this._renderElement = this.renderElement;
+        }
+
+        if (typeof this.value === "string") {
+            const vKey = this.value as keyof T;
+            this._value = (item: T | undefined) =>
+                item ? (item[vKey] as string | undefined) : undefined;
+        } else {
+            this._value = this.value;
+        }
+
+        if (typeof this.renderDescription === "string") {
+            const rdKey = this.renderDescription as keyof T;
+            this._renderDescription = (item: T) => item[rdKey] as string | TemplateResult;
+        } else {
+            // undefined propagates to here.
+            this._renderDescription = this.renderDescription;
+        }
+
         this.updateData();
         this.addEventListener(EVENT_REFRESH, this.updateData);
     }
@@ -149,29 +178,29 @@ export class SearchSelect<T> extends CustomEmitterElement(AkControlElement) {
         this.removeEventListener(EVENT_REFRESH, this.updateData);
     }
 
-    onSearch(event: SearchSelectInputEvent) {
-        if (event.value === undefined) {
+    onSearch(event: InputEvent) {
+        const value = (event.target as SearchSelectView).rawValue;
+        if (value === undefined) {
             this.selectedObject = undefined;
             return;
         }
 
-        this.query = event.value;
+        this.query = value;
         this.updateData()?.then(() => {
             this.dispatchCustomEvent("ak-change", { value: this.selectedObject });
         });
     }
 
-    onSelect(event: SearchSelectSelectEvent) {
-        if (event.value === undefined) {
+    onSelect(event: InputEvent) {
+        const value = (event.target as SearchSelectView).value;
+        if (value === undefined) {
             this.selectedObject = undefined;
             this.dispatchCustomEvent("ak-change", { value: undefined });
             return;
         }
-        const selected = (this.objects ?? []).find((obj) => `${this.value(obj)}` === event.value);
+        const selected = (this.objects ?? []).find((obj) => `${this._value(obj)}` === value);
         if (!selected) {
-            console.warn(
-                `ak-search-select: No corresponding object found for value (${event.value}`,
-            );
+            console.warn(`ak-search-select: No corresponding object found for value (${value}`);
         }
         this.selectedObject = selected;
         this.dispatchCustomEvent("ak-change", { value: this.selectedObject });
@@ -179,14 +208,14 @@ export class SearchSelect<T> extends CustomEmitterElement(AkControlElement) {
 
     getGroupedItems(): GroupedOptions {
         const items = this.groupBy(this.objects || []);
-        const makeSearchTuples = (items: T[]): SearchTuple[] =>
+        const makeSearchTuples = (items: T[]): SelectOption[] =>
             items.map((item) => [
-                `${this.value(item)}`,
-                this.renderElement(item),
-                this.renderDescription ? this.renderDescription(item) : undefined,
+                `${this._value(item)}`,
+                this._renderElement(item),
+                this._renderDescription ? this._renderDescription(item) : undefined,
             ]);
 
-        const makeSearchGroups = (items: Group<T>[]): SearchGroup[] =>
+        const makeSearchGroups = (items: Group<T>[]): SelectGroup[] =>
             items.map((group) => ({
                 name: group[0],
                 options: makeSearchTuples(group[1]),
@@ -219,17 +248,18 @@ export class SearchSelect<T> extends CustomEmitterElement(AkControlElement) {
         }
 
         const options = this.getGroupedItems();
-        const value = this.selectedObject ? `${this.value(this.selectedObject) ?? ""}` : undefined;
+        const value = this.selectedObject ? `${this._value(this.selectedObject) ?? ""}` : undefined;
 
         return html`<ak-search-select-view
+            managed
             .options=${options}
             value=${ifDefined(value)}
             ?blankable=${this.blankable}
             name=${ifDefined(this.name)}
             placeholder=${this.placeholder}
             emptyOption=${ifDefined(this.blankable ? this.emptyOption : undefined)}
-            @ak-search-select-input=${this.onSearch}
-            @ak-search-select-select=${this.onSelect}
+            @input=${this.onSearch}
+            @change=${this.onSelect}
         ></ak-search-select-view> `;
     }
 }

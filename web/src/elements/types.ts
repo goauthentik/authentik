@@ -35,7 +35,7 @@ export type AbstractConstructor<T = object> = abstract new (...args: any[]) => T
 export type SelectOption<T = never> = [
     key: string,
     label: string,
-    desc: string | TemplateResult,
+    desc?: string | TemplateResult,
     localMapping?: T,
 ];
 

@@ -31,29 +31,37 @@ export function findFlatOptions(options: Pair[], value: string): Pair[] {
     return options.filter((option) => (option[1][1] ?? "").substring(0, fragLength) === value);
 }
 
-export function findOptionsSubset(options: GroupedOptions, value: string): GroupedOptions {
+export function findOptionsSubset(
+    options: GroupedOptions,
+    value: string,
+    caseSensitive = false,
+): GroupedOptions {
     const fragLength = value.length;
     if (value.trim() === "") {
         return options;
     }
 
-    const optFilter = (options: SelectOption[]) =>
-        options.filter((option) => (option[1] ?? "").substring(0, fragLength) === value);
-
-    if (options.grouped) {
-        return {
-            grouped: true,
-            options: options.options
-                .map(({ name, options }) => ({
-                    name,
-                    options: optFilter(options),
-                }))
-                .filter(({ options }) => options.length !== 0),
-        };
-    }
-
-    return {
-        grouped: false,
-        options: optFilter(options.options),
+    const compValue = caseSensitive ? value : value.toLowerCase();
+    const compOption = (option: SelectOption) => {
+        const compOption = (option[1] ?? "").substring(0, fragLength);
+        return caseSensitive ? compOption : compOption.toLowerCase();
     };
+
+    const optFilter = (options: SelectOption[]) =>
+        options.filter((option) => compOption(option) === compValue);
+
+    return options.grouped
+        ? {
+              grouped: true,
+              options: options.options
+                  .map(({ name, options }) => ({
+                      name,
+                      options: optFilter(options),
+                  }))
+                  .filter(({ options }) => options.length !== 0),
+          }
+        : {
+              grouped: false,
+              options: optFilter(options.options),
+          };
 }

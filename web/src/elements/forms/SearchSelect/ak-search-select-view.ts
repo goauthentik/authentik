@@ -3,7 +3,6 @@ import "@goauthentik/elements/ak-list-select/ak-list-select.js";
 import { ListSelect } from "@goauthentik/elements/ak-list-select/ak-list-select.js";
 import { bound } from "@goauthentik/elements/decorators/bound.js";
 import "@goauthentik/elements/forms/SearchSelect/ak-portal.js";
-import type { Portal } from "@goauthentik/elements/forms/SearchSelect/ak-portal.js";
 import type { GroupedOptions, SelectOption, SelectOptions } from "@goauthentik/elements/types.js";
 import { randomId } from "@goauthentik/elements/utils/randomId.js";
 
@@ -83,6 +82,15 @@ export class SearchSelectView extends AKElement {
      */
     @property({ type: Boolean })
     blankable = false;
+
+    /**
+     * If not managed, make the matcher case-sensitive during interaction.  If managed,
+     * the manager must handle this.
+     *
+     * @attr
+     */
+    @property({ type: Boolean, attribute: "case-sensitive" })
+    caseSensitive = false;
 
     /**
      * The name of the input, for forms
@@ -183,6 +191,12 @@ export class SearchSelectView extends AKElement {
             this.open = true;
         }
         if (event.code === "Tab" && this.open) {
+            if (this.value) {
+                const probableValue = this.flatOptions.find((option) => option[0] === this.value);
+                if (probableValue) {
+                    this.inputRef.value && (this.inputRef.value.value = probableValue[1][1]);
+                }
+            }
             event.preventDefault();
             this.menuRef.value?.currentElement?.focus();
         }
@@ -204,24 +218,31 @@ export class SearchSelectView extends AKElement {
         this.open = false;
         if (this.value === undefined) {
             this.inputRef.value && (this.inputRef.value.value = "");
+            this.setValue(undefined);
         }
+    }
+
+    setValue(newValue: string | undefined) {
+        this.value = newValue;
+        this.dispatchEvent(new Event("change", { bubbles: true, composed: true })); // prettier-ignore
     }
 
     findValueForInput() {
         const value = this.inputRef.value?.value;
-        if (value === undefined) {
+        if (value === undefined || value.trim() === "") {
+            this.setValue(undefined);
             return;
         }
+
         const matchesFound = findFlatOptions(this.flatOptions, value);
         if (matchesFound.length > 0) {
             const newValue = matchesFound[0][0];
             if (newValue === value) {
                 return;
             }
-            this.value = newValue;
-            this.dispatchEvent(new Event("change", { bubbles: true, composed: true })); // prettier-ignore
+            this.setValue(newValue);
         } else {
-            this.value = "";
+            this.setValue(undefined);
         }
     }
 
@@ -251,16 +272,15 @@ export class SearchSelectView extends AKElement {
         if (!event.target) {
             return;
         }
-        const eventTarget = event.target as HTMLInputElement;
-        if (eventTarget.value) {
-            const newDisplayValue = this.findDisplayForValue(eventTarget.value);
-            if (newDisplayValue) {
-                this.value = eventTarget.value;
-                this.inputRef.value && (this.inputRef.value.value = newDisplayValue);
-                this.open = false;
-                this.dispatchEvent(new Event("change", { bubbles: true, composed: true })); // prettier-ignore
-            }
+        const value = (event.target as HTMLInputElement).value;
+        if (value !== undefined) {
+            const newDisplayValue = this.findDisplayForValue(value);
+            this.inputRef.value && (this.inputRef.value.value = newDisplayValue ?? "");
+        } else {
+            this.inputRef.value && (this.inputRef.value.value = "");
         }
+        this.open = false;
+        this.setValue(value);
     }
 
     findDisplayForValue(value: string) {
@@ -282,13 +302,20 @@ export class SearchSelectView extends AKElement {
         }
     }
 
+    get rawValue() {
+        return this.inputRef.value?.value ?? "";
+    }
+
     get managedOptions() {
         return this.managed
             ? this._options
-            : findOptionsSubset(this._options, this.inputRef.value?.value ?? "");
+            : findOptionsSubset(this._options, this.rawValue, this.caseSensitive);
     }
 
     public override render() {
+        const emptyOption = this.blankable ? this.emptyOption : undefined;
+        const open = this.open;
+
         return html`<div class="pf-c-select">
                 <div class="pf-c-select__toggle pf-m-typeahead">
                     <div class="pf-c-select__toggle-wrapper">
@@ -301,6 +328,7 @@ export class SearchSelectView extends AKElement {
                             spellcheck="false"
                             @input=${this.onInput}
                             @click=${this.onClick}
+                            @blur=${this.onListBlur}
                             @keydown=${this.onKeydown}
                             value=${this.displayValue}
                         />
@@ -312,14 +340,16 @@ export class SearchSelectView extends AKElement {
                       <ak-portal
                           name=${ifDefined(this.name)}
                           .anchor=${this.inputRef.value}
-                          ?open=${this.open}
+                          ?open=${open}
                       >
                           <ak-list-select
+                              id="menu-${this.getAttribute("data-ouia-component-id")}"
                               ${ref(this.menuRef)}
                               .options=${this.managedOptions}
                               value=${ifDefined(this.value)}
                               @change=${this.onListChange}
-                              @blur=${this.onFocusOut}
+                              @blur=${this.onListBlur}
+                              emptyOption=${ifDefined(emptyOption)}
                               @keydown=${this.onListKeydown}
                           ></ak-list-select>
                       </ak-portal>
