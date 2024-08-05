@@ -11,6 +11,17 @@ browser.addCommand(
     true,
 );
 
+/**
+ * Search Select View Driver
+ *
+ * This class provides a collection of easy-to-use methods for interacting with and examining the
+ * results of an interaction with an `ak-search-select-view` via WebdriverIO.
+ *
+ * It's hoped that with the OUIA tags, we could automate testing further. The OUIA tag would
+ * instruct the test harness "use this driver to test this component," and we could test Forms and
+ * Tables with a small DSL of test language concepts
+ */
+
 export class AkSearchSelectViewDriver {
     constructor(
         public element: WebdriverIO.Element,
