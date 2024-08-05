@@ -2682,6 +2682,10 @@ paths:
         name: name
         schema:
           type: string
+      - in: query
+        name: only_with_launch_url
+        schema:
+          type: boolean
       - name: ordering
         required: false
         in: query
