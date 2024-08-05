@@ -4,8 +4,12 @@ title: Upgrade authentik
 
 Upgrading to the latest version of authentik, whether a new major release or a patch, involves running a few commands to pull down the latest images and then restart the servers and databases.
 
+For information about a specific version, refer to our [Release Notes](../releases/).
+
 :::warning
-The version of the authentik instance and any outposts must be the same. We recommended that you always upgrade any outposts at the same time you upgrade your authentik instance.
+-   Be sure to make a backup of your databases before upgrading.
+
+-   The version of the authentik instance and any outposts must be the same. We recommended that you always upgrade any outposts at the same time you upgrade your authentik instance.
 :::
 
 import Tabs from "@theme/Tabs";
@@ -19,21 +23,15 @@ values={[
 ]}
 groupId="platform">
 <TabItem value="docker-compose">
-In your terminal, navigate to your installation directory and run the following commands:
+In your terminal, navigate to your installation directory and follow these steps:
 
 #### 1. Retrieve latest `docker-compose.yml` file
 
--   Linux:
+-   Linux: `wget -O docker-compose.yml https://goauthentik.io/docker-compose.yml`
 
-            ```shell
-        wget https://goauthentik.io/docker-compose.yml
-        ```
+    The `-O` flag retains the downloaded file's name, overwriting any existing local file with the same name.
 
--   MacOS:
-
-            ```shell
-        curl -O https://goauthentik.io/docker-compose.yml
-        ```
+-   MacOS: `curl -O https://goauthentik.io/docker-compose.yml`
 
 #### 2. Run upgrade commands
 
@@ -61,7 +59,7 @@ You can view the current version of your authentik instance by logging in to the
 
 ![](./version1.png)
 
-## Tips and troubleshooting your upgrade
+## Troubleshooting your upgrade
 
 <Tabs
 defaultValue="docker-compose"
@@ -71,7 +69,11 @@ values={[
 ]}
 groupId="platform">
 <TabItem value="docker-compose">
-If you run the upgrade commands but your version on the Dashboard doesn’t change,you might need to make sure the old `authinstall database`` is removed before upgrading.
+If you run the upgrade commands but your version on the Dashboard doesn’t change, you might need to make sure the old `authinstall database` is removed before upgrading.
+
+:::warning
+Be aware that this command purges the Docker volumes (which hold the instance's data).
+:::
 
 Run `docker compose down -v`.
 
@@ -83,18 +85,10 @@ If you run the upgrade commands but your version on the Dashboard doesn’t chan
 1.  Run `helm repo add authentik https://charts.goauthentik.io`
 2.  Then run `kubectl rollout restart deployment` to force the system to pick up the latest version.
 3.  Finally, run the upgrade commands again:
-
-        `helm repo update
-
-    helm upgrade --install authentik authentik/authentik -f values.yaml`
+    ```
+    helm repo update
+    helm upgrade --install authentik authentik/authentik -f values.yaml
+    ```
 
   </TabItem>
 </Tabs>
-
-TODOs:
-
--   Add link to Release Notes (and from Release Notes to here)
-
--` Do we need to mention this? "For arm64 platforms, append`-arm64` to the tag name (no spaces)."
-
--   What other tips and info do they need?
