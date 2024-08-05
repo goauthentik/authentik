@@ -21,6 +21,20 @@ Upon flow execution, a _flow plan_ containing all stages is generated. This mean
 
 To determine which flow should be used, authentik will first check which default authentication flow is configured in the active [**Brand**](../core/brands.md). If no default is configured there, the policies in all flows with the matching designation are checked, and the first flow with matching policies sorted by `slug` will be used.
 
+## Permissions
+
+Flows can have [policies](../flow/stages/index.md) assigned to them. These policies determine if the current user is allowed to see and use this flow.
+
+Keep in mind that in certain circumstances, policies cannot match against users and groups as there is no authenticated user yet.
+
+## Import & Export
+
+Flows can be imported and exported to share with other people, the community, and for troubleshooting. Flows can be imported to apply new functionality and apply existing workflows.
+
+Download our [Example flows](./examples/flows.md) and then import them into your authentik instance.
+
+Starting with authentik 2022.8, flows will be exported as YAML, but JSON-based flows can still be imported.
+
 ## Create a custom flow
 
 To create a flow, follow these steps:
@@ -33,27 +47,19 @@ After creating the flow, you can then [bind specific stages](../flow/stages/inde
 
 To determine which flow should be used, authentik will first check which default authentication flow is configured in the active [**Brand**](../core/brands.md). If no default is configured there, the policies in all flows with the matching designation are checked, and the first flow with matching policies sorted by `slug` will be used.
 
-## Permissions
-
-Flows can have policies assigned to them. These policies determine if the current user is allowed to see and use this flow.
-
-Keep in mind that in certain circumstances, policies cannot match against users and groups as there is no authenticated user yet.
-
-## Import & Export
-
-Flows can be imported and exported to share with other people, the community, and for troubleshooting. Flows can be imported to apply new functionality and apply existing workflows.
-
-Download our [Example flows](./examples/flows.md) and then import them into your authentik instance.
-
-Starting with authentik 2022.8, flows will be exported as YAML, but JSON-based flows can still be imported.
-
 ## Flow configuration options
 
-When creating or editing a flow in the Admin interface, you can set the following configuration options.
+When creating or editing a flow in the UI of the Admin interface, you can set the following configuration options.
 
-### Designation
+![](./create-flow.png)
 
-Flows are designated for a single purpose. This designation changes when a flow is used. The following designations are available:
+**Name**: Enter a descriptive name. This is the name that will appear on the list of flows in the Admin interface.
+
+**Title**: This is the title that will appear on the flow as the end-user logs in and encounters the flow.
+
+**Slug**: The slug will be used, and appear, in the URL when the flow is in use.
+
+**Designation**: Flows are designated for a single purpose. This designation changes when a flow is used. The following designations are available:
 
 -   **Authentication**: this option designates a flow to be used for authentication. The authentication flow should always contain a [**User Login**](stages/user_login/index.md) stage, which attaches the staged user to the current session.
 
@@ -69,15 +75,11 @@ Flows are designated for a single purpose. This designation changes when a flow 
 
 -   **Stage configuration**: designates a flow for general setup. This designation doesn't have any constraints in what you can do. For example, by default this designation is used to configure Factors, like change a password and setup TOTP.
 
-### Authentication
+**Authentication**: Using this option, you can configure whether the the flow requires initial authentication or not, whether the user must be a superuser, or if the flow requires an outpost.
 
-Using this option, you can configure whether the the flow requires initial authentication or not, whether the user must be a superuser, or if the flow requires an outpost.
+**Behavior settings**:
 
-### Behavior settings
-
--   **Compatibility mode**: Toggle this option on to increase compatibility with password managers and mobile devices.
-
-    Password managers like [1Password](https://1password.com/), for example, don't need this setting to be enabled, when accessing the flow from a desktop browser. However accessing the flow from a mobile device might necessitate this setting to be enabled.
+-   **Compatibility mode**: Toggle this option on to increase compatibility with password managers and mobile devices. Password managers like [1Password](https://1password.com/), for example, don't need this setting to be enabled, when accessing the flow from a desktop browser. However accessing the flow from a mobile device might necessitate this setting to be enabled.
 
     The technical reasons for this settings' existence is due to the JavaScript libraries we're using for the default flow interface. These interfaces are implemented using [Lit](https://lit.dev/), which is a modern web development library. It uses a web standard called ["Shadow DOMs"](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_shadow_DOM), which makes encapsulating styles simpler. Due to differences in Browser APIs, many password managers are not compatible with this technology.
 
@@ -91,7 +93,7 @@ Using this option, you can configure whether the the flow requires initial authe
 
 -   **Policy engine mode**: Configure the flow to succeed in _any_ policy passes, or only if _all_ policies pass.
 
-### Appearance settings
+**Appearance Settings**:
 
 -   **Layout**: select how the UI displays the flow when it is executed; with stacked elements, content left or right, and sidebar left or right.
 
