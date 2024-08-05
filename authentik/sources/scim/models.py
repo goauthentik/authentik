@@ -1,7 +1,6 @@
 """SCIM Source"""
 
 from typing import Any
-from uuid import uuid4
 
 from django.db import models
 from django.templatetags.static import static
@@ -20,8 +19,6 @@ class SCIMSource(Source):
 
     @property
     def service_account_identifier(self) -> str:
-        if not self.pk:
-            self.pk = uuid4()
         return f"ak-source-scim-{self.pk}"
 
     @property
