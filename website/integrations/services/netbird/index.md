@@ -1,0 +1,66 @@
+---
+title: Netbird
+---
+
+<span class="badge badge--secondary">Support level: Community</span>
+
+## What is Netbird
+
+> NetBird is an Open-Source Zero Trust Networking platform that allows you to create secure private networks for your organization or home.
+>
+> -- https://netbird.io
+
+## Preparation
+
+The following placeholders will be used:
+
+-   `netbird.company` is the FQDN of the Netbird install.
+-   `authentik.company` is the FQDN of the authentik install.
+
+## authentik configuration
+
+### Provider & Application configuration
+
+1. Access the **Admin Interface** in on your authentik install.
+2. Create a new **OAuth2 / OpenID Provider**.
+3. Ensure the **Client Type** is set to `Public`.
+4. Note the generated **Client ID** and **Client Secret**.
+5. In the provider settings, add the following redirect URL under **Redirect URIs/Origins (RegEx)**: `https://netbird.company`, `https://netbird.company*`, and `http://localhost:53000`. Make sure each URI is on a different line.
+6. Under **Signing Key**, select any available keys.
+7. Under **Advanced Protocol Settings**, set the **Access Code Validity** to `minutes=10` and set the **Subject Mode** to `Based on the User's ID`.
+8. Click **Finish** to save the provider configuration.
+9. Create a new application associated with this provider.
+
+### Service account setup 
+
+1. Access once again the **Admin Interface** of your authentik install.
+2. Navigate to **Directory** -> **Users**, and click **Create a service account**.
+3. Set the username to `Netbird` and disable the **Create group** option.
+4. Take note of the generated password.
+
+### Adding the service account to the administrator group
+
+1. Under **Directory** -> **Groups**, select the `authentik Default Admins` group and switch to the **Users** tab near the top of the page.
+2. Click the **Add existing user** button and select your Netbird service account.
+
+## Netbird configuration
+
+To configure Netbird to use authentik, add the following values to your `setup.env` file:
+
+```
+NETBIRD_AUTH_OIDC_CONFIGURATION_ENDPOINT="https://authentik.company/application/o/netbird/.well-known/openid-configuration"
+NETBIRD_USE_AUTH0=false
+NETBIRD_AUTH_CLIENT_ID="<Your Client ID"
+NETBIRD_AUTH_SUPPORTED_SCOPES="openid profile email offline_access api"
+NETBIRD_AUTH_AUDIENCE="<Your Client Secret"
+NETBIRD_AUTH_DEVICE_AUTH_CLIENT_ID="<Your Client ID>"
+NETBIRD_AUTH_DEVICE_AUTH_AUDIENCE="<Your Client ID>"
+NETBIRD_MGMT_IDP="authentik"
+NETBIRD_IDP_MGMT_CLIENT_ID="<Your Client ID>"
+NETBIRD_IDP_MGMT_EXTRA_USERNAME="Netbird"
+NETBIRD_IDP_MGMT_EXTRA_PASSWORD="<Your Service Account password>"
+```
+
+After making these changes, restart your Docker containers to apply the new configuration.
+
+Once completed, Netbird should be successfully configured to use authentik as its Single Sign-On provider.
