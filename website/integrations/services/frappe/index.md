@@ -18,50 +18,47 @@ These instructions apply to all projects in the Frappe Family.
 
 The following placeholders will be used:
 
--   `frappe.company` is the FQDN of the Service install.
+-   `frappe.company` is the FQDN of the Frappe install.
 -   `authentik.company` is the FQDN of the authentik install.
 -   `provider` is the name for the social login provider in Frappe.
 
 ## authentik configuration
 
 1. Create a new OAuth2/OpenID Provider under **Applications** > **Providers** using the following settings:
+
     - **Name**: Frappe
-    - **Authentication flow**: default-authentication-flow
-    - **Authorization flow**: default-provider-authorization-explicit-consent
     - **Client type**: Confidential
-    - **Client ID**: Either create your own Client ID or use the auto-populated ID
-    - **Client Secret**: Either create your own Client Secret or use the auto-populated secret
-      :::note
-      Take note of the `Client ID` and `Client Secret` as they are required when configuring Immich.
-      :::
+    - **Client ID**: Use the auto-populated ID
+    - **Client Secret**: Use the auto-populated secret
     - **Redirect URIs/Origins (RegEx)**:
         - `https://frappe.company/api/method/frappe.integrations.oauth2_logins.custom/provider`
     - **Scopes**: `email`, `openid`, `profile`
     - **Subject mode**: `Based on the Users's username`
-      :::danger
-      This assumes you have made usernames immutable.
-      :::
     - **Include claims in id_token**: `True`
     - Leave everything else as default
 
-## Service configuration
+    Take note of **Client ID** and **Client Secret** as you will need them later.
 
-1. In Frappe main menu, navigate to Integrations, then to Social Login Key.
+2. Create a new Application under **Applications** > **Applications** and assign the created provider.
 
-Add a new Social login Key using `+ Add Social Login Key` on top right.
+## Frappe configuration
+
+1. From the Frappe main menu navigate to **Integrations**, then to **Social Login Key**.
+
+Add a new Social login Key using the black button on top right.
 ![](./frappe1.png)
 
 2.  Enter the following settings:
 
         In Client Credentials section:
         - Enable Social Login: Turn the checkmark to the _on_ position.
-        - Client ID: _CLIENT_ID_
-        - Client Secret: _CLIENT_SECRET_
+        - Client ID: _client-id-from-authentik_
+        - Client Secret: _client-secret-from-authentik_
 
         In Configuration section:
         - Sign ups: Allow
 
-    ![](./frappe2.png)
+![](./frappe2.png)
 
         In Identity Details section:
         - Base URL: `https://authentik.company/`
@@ -71,9 +68,9 @@ Add a new Social login Key using `+ Add Social Login Key` on top right.
         - Redirect URL: `/api/method/frappe.integrations.oauth2_logins.custom/provider/`
         - API Endpoint: `/application/o/userinfo/`
 
-    ![](./frappe3.png)
+![](./frappe3.png)
 
         In Client Information:
         - Auth URL Data: `{"response_type": "code", "scope": "email profile openid"}`
 
-    ![](./frappe4.png)
+![](./frappe4.png)
