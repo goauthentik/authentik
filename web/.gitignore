@@ -112,3 +112,5 @@ storybook-static/
 
 # Wireit's cache
 .wireit
+
+custom-elements.json

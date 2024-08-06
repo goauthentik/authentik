@@ -135,3 +135,9 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
         return html`<ak-service-connection-wizard></ak-service-connection-wizard> `;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-outpost-service-connection-list": OutpostServiceConnectionListPage;
+    }
+}

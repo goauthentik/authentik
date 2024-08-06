@@ -159,3 +159,9 @@ export class GroupForm extends ModelForm<Group, string> {
             </ak-form-element-horizontal>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-group-form": GroupForm;
+    }
+}

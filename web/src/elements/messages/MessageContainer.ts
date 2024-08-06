@@ -79,3 +79,9 @@ export class MessageContainer extends AKElement {
         </ul>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-message-container": MessageContainer;
+    }
+}

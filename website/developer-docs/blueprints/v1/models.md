@@ -2,7 +2,9 @@
 
 Some models behave differently and allow for access to different API fields when created via blueprint.
 
-### `authentik_core.token`
+## `authentik_core.token`
+
+### `key`
 
 :::info
 Requires authentik 2023.4
@@ -26,7 +28,9 @@ For example:
       intent: api
 ```
 
-### `authentik_core.user`
+## `authentik_core.user`
+
+### `password`
 
 :::info
 Requires authentik 2023.6
@@ -49,7 +53,29 @@ For example:
       password: this-should-be-a-long-value
 ```
 
-### `authentik_core.application`
+### `permissions`
+
+:::info
+Requires authentik 2024.8
+:::
+
+The `permissions` field can be used to set global permissions for a user. A full list of possible permissions is included in the JSON schema for blueprints.
+
+For example:
+
+```yaml
+# [...]
+- model: authentik_core.user
+  identifiers:
+      username: test-user
+  attrs:
+      permissions:
+          - authentik_blueprints.view_blueprintinstance
+```
+
+## `authentik_core.application`
+
+### `icon`
 
 :::info
 Requires authentik 2023.5
@@ -69,7 +95,9 @@ For example:
       icon: https://goauthentik.io/img/icon.png
 ```
 
-### `authentik_sources_oauth.oauthsource`, `authentik_sources_saml.samlsource`, `authentik_sources_plex.plexsource`
+## `authentik_sources_oauth.oauthsource`, `authentik_sources_saml.samlsource`, `authentik_sources_plex.plexsource`
+
+### `icon`
 
 :::info
 Requires authentik 2023.5
@@ -89,7 +117,9 @@ For example:
       icon: https://goauthentik.io/img/icon.png
 ```
 
-### `authentik_flows.flow`
+## `authentik_flows.flow`
+
+### `icon`
 
 :::info
 Requires authentik 2023.5
@@ -109,4 +139,26 @@ For example:
       title: My flow
       designation: authentication
       background: https://goauthentik.io/img/icon.png
+```
+
+## `authentik_rbac.role`
+
+### `permissions`
+
+:::info
+Requires authentik 2024.8
+:::
+
+The `permissions` field can be used to set global permissions for a role. A full list of possible permissions is included in the JSON schema for blueprints.
+
+For example:
+
+```yaml
+# [...]
+- model: authentik_rbac.role
+  identifiers:
+      name: test-role
+  attrs:
+      permissions:
+          - authentik_blueprints.view_blueprintinstance
 ```

@@ -8,7 +8,6 @@ from django.views import View
 from authentik.core.models import Application
 from authentik.flows.challenge import (
     ChallengeResponse,
-    ChallengeTypes,
     HttpChallengeResponse,
     RedirectChallenge,
 )
@@ -74,7 +73,6 @@ class RedirectToAppStage(ChallengeStageView):
             raise Http404
         return RedirectChallenge(
             instance={
-                "type": ChallengeTypes.REDIRECT.value,
                 "to": launch,
             }
         )

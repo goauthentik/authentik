@@ -127,3 +127,9 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
             ${this.result ? this.renderResult() : html``}`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-check-access-form": ApplicationCheckAccessForm;
+    }
+}

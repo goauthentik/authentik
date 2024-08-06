@@ -222,3 +222,9 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
             </div>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-microsoft-entra-view": MicrosoftEntraProviderViewPage;
+    }
+}

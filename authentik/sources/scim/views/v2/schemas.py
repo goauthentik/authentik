@@ -2,6 +2,7 @@
 
 from json import loads
 
+from django.conf import settings
 from django.http import Http404
 from django.urls import reverse
 from rest_framework.request import Request
@@ -9,7 +10,10 @@ from rest_framework.response import Response
 
 from authentik.sources.scim.views.v2.base import SCIMView
 
-with open("authentik/sources/scim/schemas/schema.json", encoding="utf-8") as SCHEMA_FILE:
+with open(
+    settings.BASE_DIR / "authentik" / "sources" / "scim" / "schemas" / "schema.json",
+    encoding="utf-8",
+) as SCHEMA_FILE:
     _raw_schemas = loads(SCHEMA_FILE.read())
 
 

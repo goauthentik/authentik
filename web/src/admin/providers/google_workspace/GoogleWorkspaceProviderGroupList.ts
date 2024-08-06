@@ -67,3 +67,9 @@ export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProvi
         </td>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-google-workspace-groups-list": GoogleWorkspaceProviderGroupList;
+    }
+}
