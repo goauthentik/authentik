@@ -13,14 +13,14 @@ title: Netbird
 ## Preparation
 
 The following placeholders will be used:
-- `netbird.company` is the FQDN of the Netbird installation.
-- `authentik.company` is the FQDN of the authentik installation.
+- `netbird.company` is the FQDN of the Netbird install.
+- `authentik.company` is the FQDN of the authentik install.
 
 ## authentik Configuration
 
 ### Provider & Application Configuration
 
-1. Access the **Admin Interface** on your authentik installation.
+1. Access the **Admin Interface** of your authentik installation.
 2. Create a new **OAuth2 / OpenID Provider**.
 3. Ensure the **Client Type** is set to `Public`.
 4. Note the generated **Client ID** and **Client Secret**.
@@ -36,7 +36,7 @@ The following placeholders will be used:
 
 ### Service Account Setup
 
-1. Access the **Admin Interface** of your authentik installation again.
+1. Access the **Admin Interface** of your authentik install once more.
 2. Navigate to **Directory** -> **Users**, and click **Create a service account**.
 3. Set the username to `Netbird` and disable the **Create group** option.
 4. Take note of the generated password.
