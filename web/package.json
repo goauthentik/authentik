@@ -89,7 +89,7 @@
         "@genesiscommunitysuccess/custom-elements-lsp": "^5.0.3",
         "@hcaptcha/types": "^1.0.4",
         "@jeysal/storybook-addon-css-user-preferences": "^0.2.0",
-        "@lit/localize-tools": "^0.7.2",
+        "@lit/localize-tools": "^0.8.0",
         "@rollup/plugin-replace": "^5.0.7",
         "@spotlightjs/spotlight": "^2.3.0",
         "@storybook/addon-essentials": "^8.2.7",
