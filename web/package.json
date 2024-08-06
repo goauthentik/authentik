@@ -65,7 +65,7 @@
         "country-flag-icons": "^1.5.13",
         "fuse.js": "^7.0.0",
         "guacamole-common-js": "^1.5.0",
-        "lit": "^3.1.4",
+        "lit": "^3.2.0",
         "md-front-matter": "^1.0.4",
         "mermaid": "^10.9.1",
         "rapidoc": "^9.3.4",
