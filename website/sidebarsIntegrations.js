@@ -122,6 +122,7 @@ module.exports = {
                     label: "Miscellaneous",
                     items: [
                         "services/engomo/index",
+                        "services/frappe/index",
                         "services/freshrss/index",
                         "services/gravitee/index",
                         "services/home-assistant/index",
