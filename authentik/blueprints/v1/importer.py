@@ -231,14 +231,17 @@ class Importer:
 
         return main_query | sub_query
 
-    def _validate_single(self, entry: BlueprintEntry) -> BaseSerializer | None:
+    def _validate_single(self, entry: BlueprintEntry) -> BaseSerializer | None:  # noqa: PLR0915
         """Validate a single entry"""
         if not entry.check_all_conditions_match(self._import):
             self.logger.debug("One or more conditions of this entry are not fulfilled, skipping")
             return None
 
         model_app_label, model_name = entry.get_model(self._import).split(".")
-        model: type[SerializerModel] = registry.get_model(model_app_label, model_name)
+        try:
+            model: type[SerializerModel] = registry.get_model(model_app_label, model_name)
+        except LookupError as exc:
+            raise EntryInvalidError.from_entry(exc, entry) from exc
         # Don't use isinstance since we don't want to check for inheritance
         if not is_model_allowed(model):
             raise EntryInvalidError.from_entry(f"Model {model} not allowed", entry)
@@ -313,10 +316,7 @@ class Importer:
         try:
             full_data = self.__update_pks_for_attrs(entry.get_attrs(self._import))
         except ValueError as exc:
-            raise EntryInvalidError.from_entry(
-                exc,
-                entry,
-            ) from exc
+            raise EntryInvalidError.from_entry(exc, entry) from exc
         always_merger.merge(full_data, updated_identifiers)
         serializer_kwargs["data"] = full_data
 

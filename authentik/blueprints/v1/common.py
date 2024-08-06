@@ -328,7 +328,10 @@ class Find(YAMLTag):
         else:
             model_name = self.model_name
 
-        model_class = apps.get_model(*model_name.split("."))
+        try:
+            model_class = apps.get_model(*model_name.split("."))
+        except LookupError as exc:
+            raise EntryInvalidError.from_entry(exc, entry) from exc
 
         query = Q()
         for cond in self.conditions:
