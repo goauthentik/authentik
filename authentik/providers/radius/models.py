@@ -66,6 +66,7 @@ class RadiusProvider(OutpostModel, Provider):
 
 
 class RadiusProviderPropertyMapping(PropertyMapping):
+    """Add additional attributes to Radius authentication responses."""
 
     @property
     def component(self) -> str:
