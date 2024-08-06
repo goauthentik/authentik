@@ -115,6 +115,7 @@ module.exports = {
                         "services/fortimanager/index",
                         "services/opnsense/index",
                         "services/pfsense/index",
+                        "services/netbird/index",
                     ],
                 },
                 {
