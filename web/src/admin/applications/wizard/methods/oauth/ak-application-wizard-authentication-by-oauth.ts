@@ -12,6 +12,7 @@ import {
     subjectModeOptions,
 } from "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
 import { oauth2SourcesProvider } from "@goauthentik/admin/providers/oauth2/OAuth2Sources.js";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-number-input";
 import "@goauthentik/components/ak-radio-input";
@@ -27,8 +28,8 @@ import { customElement, state } from "@lit/reactive-element/decorators.js";
 import { html, nothing } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { ClientTypeEnum, FlowsInstancesListDesignationEnum } from "@goauthentik/api";
-import { type OAuth2Provider } from "@goauthentik/api";
+import { ClientTypeEnum, FlowsInstancesListDesignationEnum, SourcesApi } from "@goauthentik/api";
+import { type OAuth2Provider, type PaginatedOAuthSourceList } from "@goauthentik/api";
 
 import BaseProviderPanel from "../BaseProviderPanel";
 
@@ -36,6 +37,21 @@ import BaseProviderPanel from "../BaseProviderPanel";
 export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
     @state()
     showClientSecret = true;
+
+    @state()
+    oauthSources?: PaginatedOAuthSourceList;
+
+    constructor() {
+        super();
+        new SourcesApi(DEFAULT_CONFIG)
+            .sourcesOauthList({
+                ordering: "name",
+                hasJwks: true,
+            })
+            .then((oauthSources: PaginatedOAuthSourceList) => {
+                this.oauthSources = oauthSources;
+            });
+    }
 
     render() {
         const provider = this.wizard.provider as OAuth2Provider | undefined;
@@ -266,3 +282,9 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
 }
 
 export default ApplicationWizardAuthenticationByOauth;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-wizard-authentication-by-oauth": ApplicationWizardAuthenticationByOauth;
+    }
+}

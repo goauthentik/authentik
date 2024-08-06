@@ -85,7 +85,7 @@ export class AkApplicationWizardHint extends AKElement implements ShowHintContro
                     </span>
                     <button
                         aria-disabled="false"
-                        aria-label="Restore Application Wizard Hint "
+                        aria-label=${msg("Restore Application Wizard Hint")}
                         class="pf-c-button pf-m-plain"
                         type="button"
                         data-ouia-safe="true"
@@ -123,3 +123,9 @@ export class AkApplicationWizardHint extends AKElement implements ShowHintContro
 }
 
 export default AkApplicationWizardHint;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-wizard-hint": AkApplicationWizardHint;
+    }
+}

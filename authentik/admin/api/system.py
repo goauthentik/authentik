@@ -16,6 +16,7 @@ from rest_framework.views import APIView
 
 from authentik import get_full_version
 from authentik.core.api.utils import PassiveSerializer
+from authentik.enterprise.license import LicenseKey
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.reflection import get_env
 from authentik.outposts.apps import MANAGED_OUTPOST
@@ -32,7 +33,7 @@ class RuntimeDict(TypedDict):
     platform: str
     uname: str
     openssl_version: str
-    openssl_fips_mode: bool
+    openssl_fips_enabled: bool | None
     authentik_version: str
 
 
@@ -71,7 +72,9 @@ class SystemInfoSerializer(PassiveSerializer):
             "architecture": platform.machine(),
             "authentik_version": get_full_version(),
             "environment": get_env(),
-            "openssl_fips_enabled": backend._fips_enabled,
+            "openssl_fips_enabled": (
+                backend._fips_enabled if LicenseKey.get_total().is_valid() else None
+            ),
             "openssl_version": OPENSSL_VERSION,
             "platform": platform.platform(),
             "python_version": python_version,

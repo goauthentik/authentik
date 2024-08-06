@@ -285,3 +285,9 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
             </ak-form-group>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-microsoft-entra-form": MicrosoftEntraProviderFormPage;
+    }
+}

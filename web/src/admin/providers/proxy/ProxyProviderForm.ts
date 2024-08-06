@@ -419,3 +419,9 @@ ${this.instance?.skipPathRegex}</textarea
             </ak-form-group>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-proxy-form": ProxyProviderFormPage;
+    }
+}

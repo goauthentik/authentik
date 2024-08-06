@@ -192,3 +192,9 @@ export class HorizontalFormElement extends AKElement {
         </div>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-form-element-horizontal": HorizontalFormElement;
+    }
+}

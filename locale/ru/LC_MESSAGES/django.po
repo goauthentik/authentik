@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-05 00:07+0000\n"
+"POT-Creation-Date: 2024-06-16 00:08+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Anton, 2024\n"
 "Language-Team: Russian (https://app.transifex.com/authentik/teams/119923/ru/)\n"
@@ -394,7 +394,7 @@ msgstr "Домой"
 
 #: authentik/core/templates/login/base_full.html
 msgid "Powered by authentik"
-msgstr "Поддерживается authentik"
+msgstr "Основано на authentik"
 
 #: authentik/core/views/apps.py authentik/providers/oauth2/views/authorize.py
 #: authentik/providers/oauth2/views/device_init.py
@@ -464,6 +464,22 @@ msgid "Feature only accessible for internal users."
 msgstr "Функция доступна только для внутренних пользователей."
 
 #: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider User"
+msgstr "Пользователь провайдера Google Workspace"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Users"
+msgstr "Пользователи провайдера Google Workspace"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Group"
+msgstr "Группа провайдера Google Workspace"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Groups"
+msgstr "Группы провайдера Google Workspace"
+
+#: authentik/enterprise/providers/google_workspace/models.py
 #: authentik/enterprise/providers/microsoft_entra/models.py
 #: authentik/providers/scim/models.py authentik/sources/ldap/models.py
 msgid "Property mappings used for group creation/updating."
@@ -485,21 +501,17 @@ msgstr "Сопоставление провайдера Google Workspace"
 msgid "Google Workspace Provider Mappings"
 msgstr "Сопоставления провайдера Google Workspace"
 
-#: authentik/enterprise/providers/google_workspace/models.py
-msgid "Google Workspace Provider User"
-msgstr "Пользователь провайдера Google Workspace"
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider User"
+msgstr "Пользователь провайдера Microsoft Entra"
 
-#: authentik/enterprise/providers/google_workspace/models.py
-msgid "Google Workspace Provider Users"
-msgstr "Пользователи провайдера Google Workspace"
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Group"
+msgstr "Группа провайдера Microsoft Entra"
 
-#: authentik/enterprise/providers/google_workspace/models.py
-msgid "Google Workspace Provider Group"
-msgstr "Группа провайдера Google Workspace"
-
-#: authentik/enterprise/providers/google_workspace/models.py
-msgid "Google Workspace Provider Groups"
-msgstr "Группы провайдера Google Workspace"
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Groups"
+msgstr "Группы провайдера Microsoft Entra"
 
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Provider"
@@ -516,18 +528,6 @@ msgstr "Сопоставление провайдера Microsoft Entra"
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Provider Mappings"
 msgstr "Сопоставления провайдера Microsoft Entra"
-
-#: authentik/enterprise/providers/microsoft_entra/models.py
-msgid "Microsoft Entra Provider User"
-msgstr "Пользователь провайдера Microsoft Entra"
-
-#: authentik/enterprise/providers/microsoft_entra/models.py
-msgid "Microsoft Entra Provider Group"
-msgstr "Группа провайдера Microsoft Entra"
-
-#: authentik/enterprise/providers/microsoft_entra/models.py
-msgid "Microsoft Entra Provider Groups"
-msgstr "Группы провайдера Microsoft Entra"
 
 #: authentik/enterprise/providers/rac/models.py
 #: authentik/stages/user_login/models.py

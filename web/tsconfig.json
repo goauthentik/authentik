@@ -2,16 +2,16 @@
     "extends": "./tsconfig.base.json",
     "compilerOptions": {
         "paths": {
-            "@goauthentik/admin/*": ["src/admin/*"],
-            "@goauthentik/common/*": ["src/common/*"],
-            "@goauthentik/components/*": ["src/components/*"],
+            "@goauthentik/admin/*": ["./src/admin/*"],
+            "@goauthentik/common/*": ["./src/common/*"],
+            "@goauthentik/components/*": ["./src/components/*"],
             "@goauthentik/docs/*": ["../website/docs/*"],
-            "@goauthentik/elements/*": ["src/elements/*"],
-            "@goauthentik/flow/*": ["src/flow/*"],
-            "@goauthentik/locales/*": ["src/locales/*"],
-            "@goauthentik/polyfill/*": ["src/polyfill/*"],
-            "@goauthentik/standalone/*": ["src/standalone/*"],
-            "@goauthentik/user/*": ["src/user/*"]
-        },
+            "@goauthentik/elements/*": ["./src/elements/*"],
+            "@goauthentik/flow/*": ["./src/flow/*"],
+            "@goauthentik/locales/*": ["./src/locales/*"],
+            "@goauthentik/polyfill/*": ["./src/polyfill/*"],
+            "@goauthentik/standalone/*": ["./src/standalone/*"],
+            "@goauthentik/user/*": ["./src/user/*"]
+        }
     }
 }

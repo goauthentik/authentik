@@ -24,7 +24,6 @@ import {
     FlowsInstancesListDesignationEnum,
     IssuerModeEnum,
     OAuth2Provider,
-    PaginatedOAuthSourceList,
     ProvidersApi,
     SubModeEnum,
 } from "@goauthentik/api";
@@ -128,8 +127,6 @@ export const redirectUriHelp = html`${redirectUriHelpMessages.map(
 
 @customElement("ak-provider-oauth2-form")
 export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
-    oauthSources?: PaginatedOAuthSourceList;
-
     @state()
     showClientSecret = true;
 
@@ -352,5 +349,11 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-oauth2-form": OAuth2ProviderFormPage;
     }
 }

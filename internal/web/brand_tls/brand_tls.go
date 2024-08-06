@@ -1,6 +1,7 @@
 package brand_tls
 
 import (
+	"context"
 	"crypto/tls"
 	"strings"
 	"time"
@@ -46,20 +47,25 @@ func (w *Watcher) Start() {
 
 func (w *Watcher) Check() {
 	w.log.Info("updating brand certificates")
-	brands, _, err := w.client.CoreApi.CoreBrandsListExecute(api.ApiCoreBrandsListRequest{})
+	brands, err := ak.Paginator(w.client.CoreApi.CoreBrandsList(context.Background()), ak.PaginatorOptions{
+		PageSize: 100,
+		Logger:   w.log,
+	})
 	if err != nil {
 		w.log.WithError(err).Warning("failed to get brands")
 		return
 	}
-	for _, t := range brands.Results {
-		if kp := t.WebCertificate.Get(); kp != nil {
-			err := w.cs.AddKeypair(*kp)
-			if err != nil {
-				w.log.WithError(err).Warning("failed to add certificate")
-			}
+	for _, b := range brands {
+		kp := b.WebCertificate.Get()
+		if kp == nil {
+			continue
+		}
+		err := w.cs.AddKeypair(*kp)
+		if err != nil {
+			w.log.WithError(err).Warning("failed to add certificate")
 		}
 	}
-	w.brands = brands.Results
+	w.brands = brands
 }
 
 func (w *Watcher) GetCertificate(ch *tls.ClientHelloInfo) (*tls.Certificate, error) {

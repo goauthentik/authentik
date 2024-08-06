@@ -148,3 +148,9 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
         `;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-rac-form": RACProviderFormPage;
+    }
+}

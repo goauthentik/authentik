@@ -1,12 +1,13 @@
 """MicrosoftEntraProviderGroup API Views"""
 
 from rest_framework import mixins
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet
 
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserGroupSerializer
+from authentik.core.api.utils import ModelSerializer
 from authentik.enterprise.providers.microsoft_entra.models import MicrosoftEntraProviderGroup
+from authentik.lib.sync.outgoing.api import OutgoingSyncConnectionCreateMixin
 
 
 class MicrosoftEntraProviderGroupSerializer(ModelSerializer):
@@ -30,6 +31,7 @@ class MicrosoftEntraProviderGroupSerializer(ModelSerializer):
 
 class MicrosoftEntraProviderGroupViewSet(
     mixins.CreateModelMixin,
+    OutgoingSyncConnectionCreateMixin,
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
     UsedByMixin,

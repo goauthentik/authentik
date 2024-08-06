@@ -4,6 +4,7 @@ import {
     makeProxyPropertyMappingsSelector,
     proxyPropertyMappingsProvider,
 } from "@goauthentik/admin/providers/proxy/ProxyProviderPropertyMappings.js";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
@@ -18,13 +19,35 @@ import { state } from "@lit/reactive-element/decorators.js";
 import { TemplateResult, html, nothing } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { FlowsInstancesListDesignationEnum, ProxyMode, ProxyProvider } from "@goauthentik/api";
+import {
+    FlowsInstancesListDesignationEnum,
+    PaginatedOAuthSourceList,
+    PaginatedScopeMappingList,
+    ProxyMode,
+    ProxyProvider,
+    SourcesApi,
+} from "@goauthentik/api";
 
 import BaseProviderPanel from "../BaseProviderPanel";
 
 type MaybeTemplateResult = TemplateResult | typeof nothing;
 
 export class AkTypeProxyApplicationWizardPage extends BaseProviderPanel {
+    constructor() {
+        super();
+        new SourcesApi(DEFAULT_CONFIG)
+            .sourcesOauthList({
+                ordering: "name",
+                hasJwks: true,
+            })
+            .then((oauthSources: PaginatedOAuthSourceList) => {
+                this.oauthSources = oauthSources;
+            });
+    }
+
+    propertyMappings?: PaginatedScopeMappingList;
+    oauthSources?: PaginatedOAuthSourceList;
+
     @state()
     showHttpBasic = true;
 

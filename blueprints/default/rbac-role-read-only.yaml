@@ -1,0 +1,28 @@
+metadata:
+  name: Default - RBAC - Read-only
+version: 1
+entries:
+  - model: authentik_rbac.role
+    identifiers:
+      name: authentik Read-only
+    id: role
+    attrs:
+      permissions: !Enumerate [
+          !Context goauthentik.io/rbac/models,
+          SEQ,
+          !Format [
+              "%s.view_%s",
+              !Value 0,
+              !Index 0,
+          ],
+      ]
+  - model: authentik_core.group
+    identifiers:
+      name: authentik Read-only
+    attrs:
+      roles:
+        - !KeyOf role
+      is_superuser: false
+      attributes:
+        notes: |
+          An group with an auto-generated role that allows read-only permissions on all objects.

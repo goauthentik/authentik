@@ -1,5 +1,4 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
 
@@ -40,12 +39,9 @@ export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProvi
         </ak-forms-delete-bulk>`;
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<GoogleWorkspaceProviderGroup>> {
+    async apiEndpoint(): Promise<PaginatedResponse<GoogleWorkspaceProviderGroup>> {
         return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceGroupsList({
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            ordering: this.order,
-            search: this.search || "",
+            ...(await this.defaultEndpointConfig()),
             providerId: this.providerId,
         });
     }
@@ -69,5 +65,11 @@ export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProvi
                 <pre>${JSON.stringify(item.attributes, null, 4)}</pre>
             </div>
         </td>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-google-workspace-groups-list": GoogleWorkspaceProviderGroupList;
     }
 }

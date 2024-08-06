@@ -149,3 +149,9 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
             </ak-form-element-horizontal>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-event-rule-form": RuleForm;
+    }
+}

@@ -85,6 +85,7 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
                         <p class="pf-c-form__helper-text">
                             ${msg("Expression using Python.")}
                             <a
+                                rel="noopener noreferrer"
                                 target="_blank"
                                 href="${docLink("/docs/policies/expression?utm_source=authentik")}"
                             >
@@ -94,5 +95,11 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-policy-expression-form": ExpressionPolicyForm;
     }
 }

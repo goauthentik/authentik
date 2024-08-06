@@ -71,7 +71,30 @@ LDAP property mappings can be used to convert the raw LDAP response into an auth
 
 By default, authentik ships with [pre-configured mappings](../../property-mappings/index.md#ldap-property-mapping) for the most common LDAP setups. These mappings can be found on the LDAP Source Configuration page in the Admin interface.
 
-You can assign the value of a mapping to any user attribute, or save it as a custom attribute by prefixing the object field with `attribute.` Keep in mind though, data types from the LDAP server will be carried over. This means that with some implementations, where fields are stored as array in LDAP, they will be saved as array in authentik. To prevent this, use the built-in `list_flatten` function.
+You can assign the value of a mapping to any user attribute. Keep in mind though, data types from the LDAP server will be carried over. This means that with some implementations, where fields are stored as array in LDAP, they will be saved as array in authentik. To prevent this, use the built-in `list_flatten` function. Here is an example mapping for the user's username and a custom attribute for a phone number:
+
+```python
+return {
+    "username": ldap.get("uid"), # list_flatten is automatically applied to top-level attributes
+    "attributes": {
+        "phone": list_flatten(ldap.get("phoneNumber")), # but not for attributes!
+    },
+}
+```
+
+### Custom LDAP Property Mapping
+
+If the default source mapping is not enough, you can set your own custom LDAP property mapping.
+
+Here are the steps:
+
+1. In authentik, open the Admin interface, and then navigate to **Customization -> Property Mappings**.
+2. Click **Create**, select **LDAP Property Mapping**, and then click **Next**.
+3. Type a unique and meaningful **Name**, such as `ldap-displayName-mapping:name`.
+4. In the**Object field** field, type the name of an existing authentik field, such as `name`. If you want to add more extended attributes, you can type `attributes.mobile` for example.
+5. In the **Expression** field enter Python expressions to retrieve the value from LDAP source. For example `return list_flatten(ldap.get("displayName"))`.
+
+`list_flatten(["input string array"])` will convert a string array to a single string. If you are not sure whether the LDAP field is an array or not, you can map the field to any `attributes.xxx` and then check the sync result in authentik UI.
 
 ## Password login
 
@@ -83,9 +106,9 @@ Sources created prior to the 2024.2 release have this setting turned on by defau
 
 Be aware of the following security considerations when turning on this functionality:
 
--   Updating the LDAP password does not invalid the password stored in authentik, however for LDAP Servers like FreeIPA and Active Directory, authentik will lock its internal password during the next LDAP sync. For other LDAP servers, the old passwords will still be valid indefinitely.
+-   Updating the LDAP password does not invalidate the password stored in authentik; however for LDAP Servers like FreeIPA and Active Directory, authentik will lock its internal password during the next LDAP sync. For other LDAP servers, the old passwords will still be valid indefinitely.
 -   Logging in via LDAP credentials overwrites the password stored in authentik if users have different passwords in LDAP and authentik.
--   Custom security measures used to secure the password in LDAP may differ from the ones used in authentik. Depending on threat model and security requirements this could lead to unknowingly being non-compliant.
+-   Custom security measures that are used to secure the password in LDAP may differ from the ones used in authentik. Depending on threat model and security requirements this could lead to unknowingly being non-compliant.
 
 ## Troubleshooting
 

@@ -434,3 +434,9 @@ export class OAuth2ProviderViewPage extends AKElement {
         </div>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-oauth2-view": OAuth2ProviderViewPage;
+    }
+}

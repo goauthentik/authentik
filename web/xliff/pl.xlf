@@ -6855,11 +6855,6 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
         <target>Napędzane przez authentik</target>
         
       </trans-unit>
-      <trans-unit id="sdf34a5599d66f85c">
-        <source>Background image</source>
-        <target>Obraz tła</target>
-        
-      </trans-unit>
       <trans-unit id="s7fa4e5e409d43573">
         <source>Error creating credential: <x id="0" equiv-text="${err}"/></source>
         <target>Błąd podczas tworzenia poświadczenia:
@@ -8793,6 +8788,63 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 <trans-unit id="s146769fb55f1ee50">
   <source>SCIM User(s)</source>
   <target>Użytkowni(k/cy) SCIM</target>
+</trans-unit>
+<trans-unit id="s35f47dbd321aaf15">
+  <source>FIPS compliance: passing</source>
+</trans-unit>
+<trans-unit id="sc94578030c702562">
+  <source>Unverified</source>
+</trans-unit>
+<trans-unit id="s16749cce7c4c1589">
+  <source>FIPS compliance: unverified</source>
+</trans-unit>
+<trans-unit id="s0b2ad58c3deaa8dd">
+  <source>FIPS Status</source>
+</trans-unit>
+<trans-unit id="s4facec1106c91cf9">
+  <source>Search returned no results.</source>
+</trans-unit>
+<trans-unit id="s11ec812e25ceef8a">
+  <source>No messages found</source>
+</trans-unit>
+<trans-unit id="s23446284b56ca0cc">
+  <source>Reputation score(s)</source>
+</trans-unit>
+<trans-unit id="s7a64ac07061f85b2">
+  <source>See documentation</source>
+</trans-unit>
+<trans-unit id="se166e95fe447ebcd">
+  <source>Close dialog</source>
+</trans-unit>
+<trans-unit id="s3dc14a4b8129f989">
+  <source>Pagination</source>
+</trans-unit>
+<trans-unit id="s6d46b842e227be57">
+  <source>Application Details</source>
+</trans-unit>
+<trans-unit id="s76415a60e548cafe">
+  <source>Provider Configuration</source>
+</trans-unit>
+<trans-unit id="sde59c64619570b57">
+  <source>Submit Application</source>
+</trans-unit>
+<trans-unit id="sf2da0e95c78f2cb7">
+  <source>Restore Application Wizard Hint</source>
+</trans-unit>
+<trans-unit id="s76dc6d0d1a7db8e2">
+  <source>Your authentik password</source>
+</trans-unit>
+<trans-unit id="se3a34af2a05c5c98">
+  <source>Internal Service account</source>
+</trans-unit>
+<trans-unit id="s681c086b8f7afcae">
+  <source>Global</source>
+</trans-unit>
+<trans-unit id="s1b85e6ac2978a2c0">
+  <source>Outpost integrations</source>
+</trans-unit>
+<trans-unit id="sec55a3a7f18615ec">
+  <source>Outpost integrations define how authentik connects to external platforms to manage and deploy Outposts.</source>
 </trans-unit>
     </body>
   </file>

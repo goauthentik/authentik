@@ -409,3 +409,9 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
             </ak-form-group>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-flow-form": FlowForm;
+    }
+}

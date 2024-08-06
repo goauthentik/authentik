@@ -4,7 +4,7 @@ import os
 import sys
 import warnings
 
-from cryptography.exceptions import InternalError
+from authentik.lib.config import CONFIG
 from cryptography.hazmat.backends.openssl.backend import backend
 from defusedxml import defuse_stdlib
 from django.utils.autoreload import DJANGO_AUTORELOAD_ENV
@@ -24,10 +24,8 @@ warnings.filterwarnings(
 
 defuse_stdlib()
 
-try:
+if CONFIG.get_bool("compliance.fips.enabled", False):
     backend._enable_fips()
-except InternalError:
-    pass
 
 
 if __name__ == "__main__":

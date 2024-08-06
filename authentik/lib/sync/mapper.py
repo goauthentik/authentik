@@ -4,8 +4,11 @@ from django.db.models import QuerySet
 from django.http import HttpRequest
 
 from authentik.core.expression.evaluator import PropertyMappingEvaluator
-from authentik.core.expression.exceptions import PropertyMappingExpressionException
+from authentik.core.expression.exceptions import (
+    PropertyMappingExpressionException,
+)
 from authentik.core.models import PropertyMapping, User
+from authentik.lib.expression.exceptions import ControlFlowException
 
 
 class PropertyMappingManager:
@@ -17,6 +20,10 @@ class PropertyMappingManager:
 
     _evaluators: list[PropertyMappingEvaluator]
 
+    globals: dict
+
+    __has_compiled: bool
+
     def __init__(
         self,
         qs: QuerySet[PropertyMapping],
@@ -27,10 +34,11 @@ class PropertyMappingManager:
         # we need a list of all parameter names that will be used during evaluation
         context_keys: list[str],
     ) -> None:
-        self.query_set = qs
+        self.query_set = qs.order_by("name")
         self.mapping_subclass = mapping_subclass
         self.context_keys = context_keys
-        self.compile()
+        self.globals = {}
+        self.__has_compiled = False
 
     def compile(self):
         self._evaluators = []
@@ -40,6 +48,7 @@ class PropertyMappingManager:
             evaluator = PropertyMappingEvaluator(
                 mapping, **{key: None for key in self.context_keys}
             )
+            evaluator._globals.update(self.globals)
             # Compile and cache expression
             evaluator.compile()
             self._evaluators.append(evaluator)
@@ -53,11 +62,14 @@ class PropertyMappingManager:
     ) -> Generator[tuple[dict, PropertyMapping], None]:
         """Iterate over all mappings that were pre-compiled and
         execute all of them with the given context"""
+        if not self.__has_compiled:
+            self.compile()
+            self.__has_compiled = True
         for mapping in self._evaluators:
             mapping.set_context(user, request, **kwargs)
             try:
                 value = mapping.evaluate(mapping.model.expression)
-            except PropertyMappingExpressionException as exc:
+            except (PropertyMappingExpressionException, ControlFlowException) as exc:
                 raise exc from exc
             except Exception as exc:
                 raise PropertyMappingExpressionException(exc, mapping.model) from exc

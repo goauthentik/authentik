@@ -47,8 +47,8 @@ test-go:
 	go test -timeout 0 -v -race -cover ./...
 
 test-docker:  ## Run all tests in a docker-compose
-	echo "PG_PASS=$(shell openssl rand 32 | base64)" >> .env
-	echo "AUTHENTIK_SECRET_KEY=$(shell openssl rand 32 | base64)" >> .env
+	echo "PG_PASS=$(shell openssl rand 32 | base64 -w 0)" >> .env
+	echo "AUTHENTIK_SECRET_KEY=$(shell openssl rand 32 | base64 -w 0)" >> .env
 	docker compose pull -q
 	docker compose up --no-start
 	docker compose start postgresql redis
@@ -60,9 +60,11 @@ test: ## Run the server tests and produce a coverage report (locally)
 	coverage html
 	coverage report
 
-lint-fix:  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
+lint-fix: lint-codespell  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
 	black $(PY_SOURCES)
 	ruff check --fix $(PY_SOURCES)
+
+lint-codespell:  ## Reports spelling errors.
 	codespell -w $(CODESPELL_ARGS)
 
 lint: ## Lint the python and golang sources
@@ -239,7 +241,7 @@ website: website-lint-fix website-build  ## Automatically fix formatting issues 
 website-install:
 	cd website && npm ci
 
-website-lint-fix:
+website-lint-fix: lint-codespell
 	cd website && npm run prettier
 
 website-build:

@@ -29,6 +29,7 @@ const eslintConfig = {
             sourceType: "module",
         },
         plugins: ["@typescript-eslint", "lit", "custom-elements", "sonarjs"],
+        ignorePatterns: ["!./.storybook/**/*.ts"],
         rules: {
             "indent": "off",
             "linebreak-style": ["error", "unix"],
@@ -60,9 +61,14 @@ const modified = (s) => isModified.test(s);
 const isCheckable = /\.(ts|js|mjs)$/;
 const checkable = (s) => isCheckable.test(s);
 
+const ignored = /\/\.storybook\//;
+const notIgnored = (s) => !ignored.test(s);
+
 const updated = statuses.reduce(
     (acc, [status, filename]) =>
-        modified(status) && checkable(filename) ? [...acc, path.join(projectRoot, filename)] : acc,
+        modified(status) && checkable(filename) && notIgnored(filename)
+            ? [...acc, path.join(projectRoot, filename)]
+            : acc,
     [],
 );
 

@@ -43,3 +43,9 @@ export class TimeDeltaHelp extends AKElement {
         </div>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-utils-time-delta-help": TimeDeltaHelp;
+    }
+}

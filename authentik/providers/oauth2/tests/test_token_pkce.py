@@ -8,7 +8,6 @@ from django.urls import reverse
 
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
-from authentik.flows.challenge import ChallengeTypes
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.constants import GRANT_TYPE_AUTHORIZATION_CODE
 from authentik.providers.oauth2.models import AuthorizationCode, OAuth2Provider
@@ -60,7 +59,6 @@ class TestTokenPKCE(OAuthTestCase):
             response.content.decode(),
             {
                 "component": "xak-flow-redirect",
-                "type": ChallengeTypes.REDIRECT.value,
                 "to": f"foo://localhost?code={code.code}&state={state}",
             },
         )
@@ -123,7 +121,6 @@ class TestTokenPKCE(OAuthTestCase):
             response.content.decode(),
             {
                 "component": "xak-flow-redirect",
-                "type": ChallengeTypes.REDIRECT.value,
                 "to": f"foo://localhost?code={code.code}&state={state}",
             },
         )
@@ -191,7 +188,6 @@ class TestTokenPKCE(OAuthTestCase):
             response.content.decode(),
             {
                 "component": "xak-flow-redirect",
-                "type": ChallengeTypes.REDIRECT.value,
                 "to": f"foo://localhost?code={code.code}&state={state}",
             },
         )
@@ -242,7 +238,6 @@ class TestTokenPKCE(OAuthTestCase):
             response.content.decode(),
             {
                 "component": "xak-flow-redirect",
-                "type": ChallengeTypes.REDIRECT.value,
                 "to": f"foo://localhost?code={code.code}&state={state}",
             },
         )

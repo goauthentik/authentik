@@ -13,12 +13,13 @@ from django.core.exceptions import FieldError
 from django.utils.text import slugify
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.serializers import ValidationError
-from sentry_sdk.hub import Hub
+from sentry_sdk import start_span
 from sentry_sdk.tracing import Span
 from structlog.stdlib import get_logger
 
 from authentik.core.models import User
 from authentik.events.models import Event
+from authentik.lib.expression.exceptions import ControlFlowException
 from authentik.lib.utils.http import get_http_session
 from authentik.policies.models import Policy, PolicyBinding
 from authentik.policies.process import PolicyProcess
@@ -194,7 +195,7 @@ class BaseEvaluator:
         """Parse and evaluate expression. If the syntax is incorrect, a SyntaxError is raised.
         If any exception is raised during execution, it is raised.
         The result is returned without any type-checking."""
-        with Hub.current.start_span(op="authentik.lib.evaluator.evaluate") as span:
+        with start_span(op="authentik.lib.evaluator.evaluate") as span:
             span: Span
             span.description = self._filename
             span.set_data("expression", expression_source)
@@ -216,7 +217,8 @@ class BaseEvaluator:
                 # so the user only sees information relevant to them
                 # and none of our surrounding error handling
                 exc.__traceback__ = exc.__traceback__.tb_next
-                self.handle_error(exc, expression_source)
+                if not isinstance(exc, ControlFlowException):
+                    self.handle_error(exc, expression_source)
                 raise exc
             return result
 

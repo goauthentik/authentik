@@ -24,13 +24,12 @@ from rest_framework.fields import (
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
 from authentik.api.authorization import SecretKeyFilter
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import PassiveSerializer
+from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.crypto.apps import MANAGED_KEY
 from authentik.crypto.builder import CertificateBuilder, PrivateKeyAlg
 from authentik.crypto.models import CertificateKeyPair

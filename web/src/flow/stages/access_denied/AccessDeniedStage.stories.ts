@@ -4,7 +4,7 @@ import { html } from "lit";
 
 import "@patternfly/patternfly/components/Login/login.css";
 
-import { AccessDeniedChallenge, ChallengeChoices, UiThemeEnum } from "@goauthentik/api";
+import { AccessDeniedChallenge, UiThemeEnum } from "@goauthentik/api";
 
 import "../../../stories/flow-interface";
 import "./AccessDeniedStage";
@@ -39,10 +39,12 @@ export const Challenge: StoryObj = {
     args: {
         theme: "automatic",
         challenge: {
-            type: ChallengeChoices.Native,
             pendingUser: "foo",
             pendingUserAvatar: "https://picsum.photos/64",
             errorMessage: "This is an error message",
+            flowInfo: {
+                title: "lorem ipsum foo bar baz",
+            },
         } as AccessDeniedChallenge,
     },
     argTypes: {

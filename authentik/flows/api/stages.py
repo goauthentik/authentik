@@ -4,15 +4,15 @@ from django.urls.base import reverse
 from drf_spectacular.utils import extend_schema
 from rest_framework import mixins
 from rest_framework.decorators import action
+from rest_framework.fields import SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework.viewsets import GenericViewSet
 from structlog.stdlib import get_logger
 
 from authentik.core.api.object_types import TypesMixin
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import MetaNameSerializer
+from authentik.core.api.utils import MetaNameSerializer, ModelSerializer
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.api.flows import FlowSetSerializer
 from authentik.flows.models import ConfigurableStage, Stage
