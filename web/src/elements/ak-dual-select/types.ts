@@ -12,7 +12,7 @@ export type BasePagination = Pick<
 >;
 
 export type DataProvision = {
-    pagination: Pagination;
+    pagination?: Pagination;
     options: DualSelectPair[];
 };
 
