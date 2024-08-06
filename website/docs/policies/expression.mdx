@@ -55,6 +55,10 @@ import Objects from "../expressions/_objects.md";
 
 -   `geoip`: GeoIP dictionary. The following fields are available:
 
+    :::info
+    For basic country matching, consider using a [GeoIP policy](index.md#geoip-policy).
+    :::
+
     -   `continent`: a two character continent code like `NA` (North America) or `OC` (Oceania).
     -   `country`: the two character [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1) alpha code for the country.
     -   `lat`: the approximate latitude of the location associated with the IP address.
@@ -62,10 +66,14 @@ import Objects from "../expressions/_objects.md";
     -   `city`: the name of the city. May be empty.
 
     ```python
-    return context["geoip"]["country"] == "US"
+    return context["geoip"]["continent"] == "EU"
     ```
 
 -   `asn`: ASN dictionary. The follow fields are available:
+
+    :::info
+    For basic ASN matching, consider using a [GeoIP policy](index.md#geoip-policy).
+    :::
 
     -   `asn`: the autonomous system number associated with the IP address.
     -   `as_org`: the organization associated with the registered autonomous system number for the IP address.
