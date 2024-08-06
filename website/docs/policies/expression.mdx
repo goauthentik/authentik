@@ -2,19 +2,32 @@
 title: Expression Policies
 ---
 
-The passing of the policy is determined by the return value of the code. Use
+Expression policies are perhaps the most flexible way to define specific implementations of flows and stages. With Expression polices, you can provide Python code to enforce custom checks and validation.
+
+The passing of the policy is determined by the return value of the code.
+
+To pass a policy, use:
 
 ```python
 return True
 ```
 
-to pass a policy and
+To fail a policy use:
 
 ```python
 return False
 ```
 
-to fail it.
+**Example**:
+Here's a simple policy that you could bind to a MFA validation stage if you want to specify that only certain users should be prompted for MFA validation:
+
+```
+if request.context["pending_user"].username == "marie":
+   return True
+return False
+```
+
+If the return is `True` that means Yes, use this stage (i.e. the user will get the MFA prompt). A return of `False` means remove this stage from the plan.
 
 ## Available Functions
 
