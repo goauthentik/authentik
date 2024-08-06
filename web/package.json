@@ -134,6 +134,7 @@
         "format": "wireit",
         "lint": "wireit",
         "lint:lockfile": "wireit",
+        "lint:package": "wireit",
         "lit-analyse": "wireit",
         "postinstall": "bash scripts/patch-spotlight.sh",
         "precommit": "wireit",
@@ -258,7 +259,7 @@
                 "./packages/sfe:lint:lockfile"
             ]
         },
-        "lint:packagefile": {
+        "lint:package": {
             "command": "syncpack format -i '    '"
         },
         "lint:precommit": {
@@ -310,7 +311,7 @@
         },
         "test": {
             "command": "wdio run ./wdio.conf.ts --logLevel=warn --autoCompileOpts.tsNodeOpts.project=tsconfig.test.json",
-                        "env": {
+            "env": {
                 "CI": "true"
             }
         },
