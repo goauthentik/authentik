@@ -10,9 +10,9 @@ A flow is a method of describing a sequence of stages. A stage represents a sing
 
 For example, a standard login flow would consist of the following stages:
 
--   **Login stage**: this stage attaches a currently pending user to the current session
 -   **Identification stage**: user identifies themselves via a username or email address
 -   **Password stage**: the user's password is checked against the hash in the database
+-   **Login stage**: this stage attaches a currently pending user to the current session
 
 When these stages are successfully completed, authentik logs in the user.
 
