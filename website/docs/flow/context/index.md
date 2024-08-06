@@ -72,16 +72,6 @@ Set when a flow execution is continued from a token. This happens for example wh
 
 ### Stage-specific keys
 
-#### Consent stage
-
-##### `consent_header` (string)
-
-The title of the consent prompt shown. Set automatically when the consent stage is used with a OAuth2, Proxy or SAML provider.
-
-##### `consent_permissions` (List of PermissionDict)
-
-An optional list of all permissions that will be given to the application by granting consent. Not supported with SAML. When used with an OAuth2 or Proxy provider, this will be set based on the configured scopes.
-
 #### Autosubmit stage
 
 The autosubmit stage is an internal stage type that is not configurable via the API/Web interface. It is used in certain situations, where a POST request is sent from the browser, such as with SAML POST bindings. This works by using an HTML form that is submitted automatically.
@@ -97,6 +87,28 @@ URL that the form will be submitted to.
 ##### `attrs` (dictionary)
 
 Key-value pairs of the data that is included in the form and will be submitted to `url`.
+
+#### Captcha stage
+
+:::info
+Requires authentik 2024.6
+:::
+
+##### `captcha` (dictionary)
+
+When `error_on_invalid_score` (TODO) is set to false on a captcha stage, after the execution of the captcha stage, this object will be set in the flow context.
+
+It contains two keys, `response` which is the raw response from the specified captcha verification URL, and `stage`, which is a reference to the captcha stage that executed the test.
+
+#### Consent stage
+
+##### `consent_header` (string)
+
+The title of the consent prompt shown. Set automatically when the consent stage is used with a OAuth2, Proxy or SAML provider.
+
+##### `consent_permissions` (List of PermissionDict)
+
+An optional list of all permissions that will be given to the application by granting consent. Not supported with SAML. When used with an OAuth2 or Proxy provider, this will be set based on the configured scopes.
 
 #### Deny stage
 

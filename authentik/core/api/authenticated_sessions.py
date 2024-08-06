@@ -8,12 +8,12 @@ from rest_framework import mixins
 from rest_framework.fields import SerializerMethodField
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.request import Request
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet
 from ua_parser import user_agent_parser
 
 from authentik.api.authorization import OwnerSuperuserPermissions
 from authentik.core.api.used_by import UsedByMixin
+from authentik.core.api.utils import ModelSerializer
 from authentik.core.models import AuthenticatedSession
 from authentik.events.context_processors.asn import ASN_CONTEXT_PROCESSOR, ASNDict
 from authentik.events.context_processors.geoip import GEOIP_CONTEXT_PROCESSOR, GeoIPDict

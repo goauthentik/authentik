@@ -1,7 +1,13 @@
+import {
+    digestAlgorithmOptions,
+    signatureAlgorithmOptions,
+} from "@goauthentik/admin/applications/wizard/methods/saml/SamlProviderOptions";
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
+import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
@@ -14,17 +20,37 @@ import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
-    DigestAlgorithmEnum,
     FlowsInstancesListDesignationEnum,
-    PaginatedSAMLPropertyMappingList,
     PropertymappingsApi,
     PropertymappingsSamlListRequest,
     ProvidersApi,
     SAMLPropertyMapping,
     SAMLProvider,
-    SignatureAlgorithmEnum,
     SpBindingEnum,
 } from "@goauthentik/api";
+
+export async function samlPropertyMappingsProvider(page = 1, search = "") {
+    const propertyMappings = await new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSamlList(
+        {
+            ordering: "saml_name",
+            pageSize: 20,
+            search: search.trim(),
+            page,
+        },
+    );
+    return {
+        pagination: propertyMappings.pagination,
+        options: propertyMappings.results.map((m) => [m.pk, m.name, m.name, m]),
+    };
+}
+
+export function makeSAMLPropertyMappingsSelector(instanceMappings?: string[]) {
+    const localMappings = instanceMappings ? new Set(instanceMappings) : undefined;
+    return localMappings
+        ? ([pk, _]: DualSelectPair) => localMappings.has(pk)
+        : ([_0, _1, _2, mapping]: DualSelectPair<SAMLPropertyMapping>) =>
+              mapping?.managed?.startsWith("goauthentik.io/providers/saml");
+}
 
 @customElement("ak-provider-saml-form")
 export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
@@ -33,16 +59,6 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
             id: pk,
         });
     }
-
-    async load(): Promise<void> {
-        this.propertyMappings = await new PropertymappingsApi(
-            DEFAULT_CONFIG,
-        ).propertymappingsSamlList({
-            ordering: "saml_name",
-        });
-    }
-
-    propertyMappings?: PaginatedSAMLPropertyMappingList;
 
     async send(data: SAMLProvider): Promise<SAMLProvider> {
         if (this.instance) {
@@ -193,32 +209,14 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                         label=${msg("Property mappings")}
                         name="propertyMappings"
                     >
-                        <select class="pf-c-form-control" multiple>
-                            ${this.propertyMappings?.results.map((mapping) => {
-                                let selected = false;
-                                if (!this.instance?.propertyMappings) {
-                                    selected =
-                                        mapping.managed?.startsWith(
-                                            "goauthentik.io/providers/saml",
-                                        ) || false;
-                                } else {
-                                    selected = Array.from(this.instance?.propertyMappings).some(
-                                        (su) => {
-                                            return su == mapping.pk;
-                                        },
-                                    );
-                                }
-                                return html`<option
-                                    value=${ifDefined(mapping.pk)}
-                                    ?selected=${selected}
-                                >
-                                    ${mapping.name}
-                                </option>`;
-                            })}
-                        </select>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Hold control/command to select multiple items.")}
-                        </p>
+                        <ak-dual-select-dynamic-selected
+                            .provider=${samlPropertyMappingsProvider}
+                            .selector=${makeSAMLPropertyMappingsSelector(
+                                this.instance?.propertyMappings,
+                            )}
+                            available-label=${msg("Available User Property Mappings")}
+                            selected-label=${msg("Selected User Property Mappings")}
+                        ></ak-dual-select-dynamic-selected>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("NameID Property Mapping")}
@@ -333,25 +331,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                         name="digestAlgorithm"
                     >
                         <ak-radio
-                            .options=${[
-                                {
-                                    label: "SHA1",
-                                    value: DigestAlgorithmEnum._200009Xmldsigsha1,
-                                },
-                                {
-                                    label: "SHA256",
-                                    value: DigestAlgorithmEnum._200104Xmlencsha256,
-                                    default: true,
-                                },
-                                {
-                                    label: "SHA384",
-                                    value: DigestAlgorithmEnum._200104XmldsigMoresha384,
-                                },
-                                {
-                                    label: "SHA512",
-                                    value: DigestAlgorithmEnum._200104Xmlencsha512,
-                                },
-                            ]}
+                            .options=${digestAlgorithmOptions}
                             .value=${this.instance?.digestAlgorithm}
                         >
                         </ak-radio>
@@ -362,34 +342,18 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                         name="signatureAlgorithm"
                     >
                         <ak-radio
-                            .options=${[
-                                {
-                                    label: "RSA-SHA1",
-                                    value: SignatureAlgorithmEnum._200009XmldsigrsaSha1,
-                                },
-                                {
-                                    label: "RSA-SHA256",
-                                    value: SignatureAlgorithmEnum._200104XmldsigMorersaSha256,
-                                    default: true,
-                                },
-                                {
-                                    label: "RSA-SHA384",
-                                    value: SignatureAlgorithmEnum._200104XmldsigMorersaSha384,
-                                },
-                                {
-                                    label: "RSA-SHA512",
-                                    value: SignatureAlgorithmEnum._200104XmldsigMorersaSha512,
-                                },
-                                {
-                                    label: "DSA-SHA1",
-                                    value: SignatureAlgorithmEnum._200009XmldsigdsaSha1,
-                                },
-                            ]}
+                            .options=${signatureAlgorithmOptions}
                             .value=${this.instance?.signatureAlgorithm}
                         >
                         </ak-radio>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-saml-form": SAMLProviderFormPage;
     }
 }

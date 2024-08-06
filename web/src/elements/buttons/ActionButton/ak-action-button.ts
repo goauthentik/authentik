@@ -63,3 +63,9 @@ declare global {
 }
 
 export default ActionButton;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-action-button": ActionButton;
+    }
+}

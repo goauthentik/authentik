@@ -194,6 +194,7 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                             .fetchObjects=${async (query?: string): Promise<Group[]> => {
                                 const args: CoreGroupsListRequest = {
                                     ordering: "name",
+                                    includeUsers: false,
                                 };
                                 if (query !== undefined) {
                                     args.search = query;
@@ -293,5 +294,11 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-google-workspace-form": GoogleWorkspaceProviderFormPage;
     }
 }

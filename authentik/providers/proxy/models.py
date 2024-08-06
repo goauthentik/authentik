@@ -6,6 +6,7 @@ from random import SystemRandom
 from urllib.parse import urljoin
 
 from django.db import models
+from django.templatetags.static import static
 from django.utils.translation import gettext as _
 from rest_framework.serializers import Serializer
 
@@ -114,6 +115,10 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
     @property
     def component(self) -> str:
         return "ak-provider-proxy-form"
+
+    @property
+    def icon_url(self) -> str | None:
+        return static("authentik/sources/proxy.svg")
 
     @property
     def serializer(self) -> type[Serializer]:

@@ -75,3 +75,9 @@ export class InvitationStageForm extends BaseStageForm<InvitationStage> {
             </ak-form-group>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-invitation-form": InvitationStageForm;
+    }
+}

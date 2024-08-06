@@ -1,24 +1,24 @@
 ---
-title: Wordpress
+title: WordPress
 ---
 
 <span class="badge badge--secondary">Support level: Community</span>
 
-## What is Wordpress
+## What is WordPress
 
 > WordPress is a free and open-source content management system written in PHP and paired with a MySQL or MariaDB database. Features include a plugin architecture and a template system, referred to within WordPress as Themes
 >
 > -- https://en.wikipedia.org/wiki/WordPress
 
 :::note
-There are many different plugins for Wordpress that allow you to setup SSO using different authentication methods. The plugin that is explained in this tutorial is "OpenID Connect Generic" version 3.8.5 by daggerhart. This plugin uses OpenID/OAUTH2 and is free without paywalls or subscriptions at the time of writing this. The plugin is available for free in the Wordpress Plugin gallery.
+There are many different plugins for WordPress that allow you to setup SSO using different authentication methods. The plugin that is explained in this tutorial is "OpenID Connect Generic" version 3.8.5 by daggerhart. This plugin uses OpenID/OAUTH2 and is free without paywalls or subscriptions at the time of writing this. The plugin is available for free in the WordPress Plugin gallery.
 :::
 
 ## Preparation
 
 The following placeholders will be used:
 
--   `wp.company` is the FQDN of Wordpress.
+-   `wp.company` is the FQDN of WordPress.
 -   `authentik.company` is the FQDN of authentik.
 
 ### Step 1 - authentik
@@ -31,18 +31,18 @@ Only settings that have been modified from default have been listed.
 
 **Protocol Settings**
 
--   Name: Wordpress
+-   Name: WordPress
 -   Client ID: Copy and Save this for Later
 -   Client Secret: Copy and Save this for later
 -   Redirect URIs/Origins: `https://wp.company/wp-admin/admin-ajax.php\?action=openid-connect-authorize`
 
-### Step 2 - Wordpress
+### Step 2 - WordPress
 
 :::note
 Assumption is being made that you have successfully downloaded and activated the required plugin "OpenID Connect Generic" by daggerhart
 :::
 
-In Wordpress, under _Settings_, Select _OpenID Connect Client_
+In WordPress, under _Settings_, Select _OpenID Connect Client_
 
 :::note
 Only settings that have been modified from default have been listed.
@@ -63,11 +63,11 @@ Review each setting and choose the ones that you require for your installation. 
 
 ### Step 3 - authentik
 
-In authentik, create an application which uses this provider and directly launches Wordpress' backend login-screen. Optionally apply access restrictions to the application using policy bindings.
+In authentik, create an application which uses this provider and directly launches WordPress' backend login-screen. Optionally apply access restrictions to the application using policy bindings.
 
--   Name: Wordpress
+-   Name: WordPress
 -   Slug: wordpress
--   Provider: wordpress
+-   Provider: WordPress
 -   Launch URL: https://wp.company/wp-login.php
 
 ## Notes

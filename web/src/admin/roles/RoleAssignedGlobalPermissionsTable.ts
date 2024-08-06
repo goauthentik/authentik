@@ -25,12 +25,10 @@ export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
 
     order = "content_type__app_label,content_type__model";
 
-    apiEndpoint(page: number): Promise<PaginatedResponse<Permission>> {
+    async apiEndpoint(): Promise<PaginatedResponse<Permission>> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsList({
+            ...(await this.defaultEndpointConfig()),
             role: this.roleUuid,
-            page: page,
-            ordering: this.order,
-            search: this.search,
         });
     }
 
@@ -42,8 +40,8 @@ export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn("Model", "model"),
-            new TableColumn("Permission", ""),
+            new TableColumn(msg("Model"), "model"),
+            new TableColumn(msg("Permission"), ""),
             new TableColumn(""),
         ];
     }
@@ -90,5 +88,11 @@ export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
             html`${item.name}`,
             html`<i class="fas fa-check pf-m-success"></i>`,
         ];
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-role-assigned-global-permissions-table": RoleAssignedGlobalPermissionsTable;
     }
 }

@@ -10,10 +10,6 @@ title: Skyhigh Security
 >
 > -- https://www.skyhighsecurity.com/en-us/about.html
 
-:::note
-We were among the first to recognize the cloud’s potential and knew that protecting data in this new hybrid world required an entirely new approach. We make managing your web and unifying your data policies easy to create and enforce, giving you a single console to provide visibility across all of your infrastructure.
-:::
-
 ## Multiple Integration Points
 
 Skyhigh has multiple points for SAML integration:

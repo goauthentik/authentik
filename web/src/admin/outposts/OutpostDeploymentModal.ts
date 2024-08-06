@@ -23,6 +23,7 @@ export class OutpostDeploymentModal extends ModalButton {
                     <a
                         target="_blank"
                         href="${docLink("/docs/outposts?utm_source=authentik#deploy")}"
+                        rel="noopener noreferrer"
                         >${msg("View deployment documentation")}</a
                     >
                 </p>
@@ -96,5 +97,11 @@ export class OutpostDeploymentModal extends ModalButton {
                     ${msg("Close")}
                 </button>
             </footer>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-outpost-deployment-modal": OutpostDeploymentModal;
     }
 }

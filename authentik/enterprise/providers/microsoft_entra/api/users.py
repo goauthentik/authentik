@@ -1,14 +1,16 @@
 """MicrosoftEntraProviderUser API Views"""
 
-from rest_framework.viewsets import ModelViewSet
+from rest_framework import mixins
+from rest_framework.viewsets import GenericViewSet
 
 from authentik.core.api.groups import GroupMemberSerializer
-from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
+from authentik.core.api.utils import ModelSerializer
 from authentik.enterprise.providers.microsoft_entra.models import MicrosoftEntraProviderUser
+from authentik.lib.sync.outgoing.api import OutgoingSyncConnectionCreateMixin
 
 
-class MicrosoftEntraProviderUserSerializer(SourceSerializer):
+class MicrosoftEntraProviderUserSerializer(ModelSerializer):
     """MicrosoftEntraProviderUser Serializer"""
 
     user_obj = GroupMemberSerializer(source="user", read_only=True)
@@ -18,12 +20,24 @@ class MicrosoftEntraProviderUserSerializer(SourceSerializer):
         model = MicrosoftEntraProviderUser
         fields = [
             "id",
+            "microsoft_id",
             "user",
             "user_obj",
+            "provider",
+            "attributes",
         ]
+        extra_kwargs = {"attributes": {"read_only": True}}
 
 
-class MicrosoftEntraProviderUserViewSet(UsedByMixin, ModelViewSet):
+class MicrosoftEntraProviderUserViewSet(
+    OutgoingSyncConnectionCreateMixin,
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.DestroyModelMixin,
+    UsedByMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
+):
     """MicrosoftEntraProviderUser Viewset"""
 
     queryset = MicrosoftEntraProviderUser.objects.all().select_related("user")

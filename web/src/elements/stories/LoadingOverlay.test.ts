@@ -1,7 +1,6 @@
 import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet.js";
 import { $, expect } from "@wdio/globals";
 
-import { msg } from "@lit/localize";
 import { TemplateResult, html, render as litRender } from "lit";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -20,9 +19,7 @@ const render = (body: TemplateResult) => {
 
 describe("ak-loading-overlay", () => {
     it("should render the default loader", async () => {
-        render(
-            html`<ak-loading-overlay></ak-loading-overlay>`,
-        );
+        render(html`<ak-loading-overlay></ak-loading-overlay>`);
 
         const empty = await $("ak-loading-overlay");
         await expect(empty).toExist();

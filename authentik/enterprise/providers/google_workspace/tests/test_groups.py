@@ -82,6 +82,27 @@ class GoogleWorkspaceGroupTests(TestCase):
             self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
             self.assertEqual(len(http.requests()), 2)
 
+    def test_group_not_created(self):
+        """Test without group property mappings, no group is created"""
+        self.provider.property_mappings_group.clear()
+        uid = generate_id()
+        http = MockHTTP()
+        http.add_response(
+            f"https://admin.googleapis.com/admin/directory/v1/customer/my_customer/domains?key={self.api_key}&alt=json",
+            domains_list_v1_mock,
+        )
+        with patch(
+            "authentik.enterprise.providers.google_workspace.models.GoogleWorkspaceProvider.google_credentials",
+            MagicMock(return_value={"developerKey": self.api_key, "http": http}),
+        ):
+            group = Group.objects.create(name=uid)
+            google_group = GoogleWorkspaceProviderGroup.objects.filter(
+                provider=self.provider, group=group
+            ).first()
+            self.assertIsNone(google_group)
+            self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
+            self.assertEqual(len(http.requests()), 1)
+
     def test_group_create_update(self):
         """Test group updating"""
         uid = generate_id()

@@ -12,7 +12,7 @@ from django.utils.translation import gettext as _
 from drf_spectacular.utils import PolymorphicProxySerializer, extend_schema_field
 from rest_framework.fields import BooleanField, CharField, ChoiceField, DictField, ListField
 from rest_framework.serializers import ValidationError
-from sentry_sdk.hub import Hub
+from sentry_sdk import start_span
 
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import Application, Source, User
@@ -20,7 +20,6 @@ from authentik.events.utils import sanitize_item
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
-    ChallengeTypes,
     RedirectChallenge,
 )
 from authentik.flows.models import FlowDesignation
@@ -65,6 +64,7 @@ class IdentificationChallenge(Challenge):
 
     user_fields = ListField(child=CharField(), allow_empty=True, allow_null=True)
     password_fields = BooleanField()
+    allow_show_password = BooleanField(default=False)
     application_pre = CharField(required=False)
     flow_designation = ChoiceField(FlowDesignation.choices)
 
@@ -94,7 +94,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
 
         pre_user = self.stage.get_user(uid_field)
         if not pre_user:
-            with Hub.current.start_span(
+            with start_span(
                 op="authentik.stages.identification.validate_invalid_wait",
                 description="Sleep random time on invalid user identifier",
             ):
@@ -136,7 +136,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
         if not password:
             self.stage.logger.warning("Password not set for ident+auth attempt")
         try:
-            with Hub.current.start_span(
+            with start_span(
                 op="authentik.stages.identification.authenticate",
                 description="User authenticate call (combo stage)",
             ):
@@ -194,11 +194,12 @@ class IdentificationStageView(ChallengeStageView):
         current_stage: IdentificationStage = self.executor.current_stage
         challenge = IdentificationChallenge(
             data={
-                "type": ChallengeTypes.NATIVE.value,
                 "component": "ak-stage-identification",
                 "primary_action": self.get_primary_action(),
                 "user_fields": current_stage.user_fields,
                 "password_fields": bool(current_stage.password_stage),
+                "allow_show_password": bool(current_stage.password_stage)
+                and current_stage.password_stage.allow_show_password,
                 "show_source_labels": current_stage.show_source_labels,
                 "flow_designation": self.executor.flow.designation,
             }

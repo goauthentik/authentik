@@ -36,7 +36,7 @@ const eslintConfig = {
             "quotes": ["error", "double", { avoidEscape: true }],
             "semi": ["error", "always"],
             "@typescript-eslint/ban-ts-comment": "off",
-            "sonarjs/cognitive-complexity": ["error", 9],
+            "sonarjs/cognitive-complexity": ["warn", 9],
             "sonarjs/no-duplicate-string": "off",
             "sonarjs/no-nested-template-literals": "off",
         },

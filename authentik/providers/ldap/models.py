@@ -3,6 +3,7 @@
 from collections.abc import Iterable
 
 from django.db import models
+from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
@@ -89,6 +90,10 @@ class LDAPProvider(OutpostModel, BackchannelProvider):
     @property
     def component(self) -> str:
         return "ak-provider-ldap-form"
+
+    @property
+    def icon_url(self) -> str | None:
+        return static("authentik/sources/ldap.png")
 
     @property
     def serializer(self) -> type[Serializer]:

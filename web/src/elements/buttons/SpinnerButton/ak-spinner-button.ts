@@ -38,3 +38,9 @@ declare global {
 }
 
 export default SpinnerButton;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-spinner-button": SpinnerButton;
+    }
+}

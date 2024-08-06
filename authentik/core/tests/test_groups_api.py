@@ -23,6 +23,17 @@ class TestGroupsAPI(APITestCase):
         response = self.client.get(reverse("authentik_api:group-list"), {"include_users": "true"})
         self.assertEqual(response.status_code, 200)
 
+    def test_retrieve_with_users(self):
+        """Test retrieve with users"""
+        admin = create_test_admin_user()
+        group = Group.objects.create(name=generate_id())
+        self.client.force_login(admin)
+        response = self.client.get(
+            reverse("authentik_api:group-detail", kwargs={"pk": group.pk}),
+            {"include_users": "true"},
+        )
+        self.assertEqual(response.status_code, 200)
+
     def test_add_user(self):
         """Test add_user"""
         group = Group.objects.create(name=generate_id())

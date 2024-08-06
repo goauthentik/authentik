@@ -43,6 +43,12 @@ class PasswordStage(ConfigurableStage, Stage):
             "To lock the user out, use a reputation policy and a user_write stage."
         ),
     )
+    allow_show_password = models.BooleanField(
+        default=False,
+        help_text=_(
+            "When enabled, provides a 'show password' button with the password input field."
+        ),
+    )
 
     @property
     def serializer(self) -> type[BaseSerializer]:

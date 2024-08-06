@@ -11,10 +11,12 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.db import models
 from django.db.models import Q, QuerySet, options
+from django.db.models.constants import LOOKUP_SEP
 from django.http import HttpRequest
 from django.utils.functional import SimpleLazyObject, cached_property
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
+from django_cte import CTEQuerySet, With
 from guardian.conf import settings
 from guardian.mixins import GuardianUserMixin
 from model_utils.managers import InheritanceManager
@@ -25,7 +27,9 @@ from authentik.blueprints.models import ManagedModel
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.lib.avatars import get_avatar
+from authentik.lib.expression.exceptions import ControlFlowException
 from authentik.lib.generators import generate_id
+from authentik.lib.merge import MERGE_LIST_UNIQUE
 from authentik.lib.models import (
     CreatedUpdatedModel,
     DomainlessFormattedURLValidator,
@@ -55,6 +59,8 @@ options.DEFAULT_NAMES = options.DEFAULT_NAMES + (
     # for example the proxy provider which is built on top of an oauth provider
     "authentik_used_by_shadows",
 )
+
+GROUP_RECURSION_LIMIT = 20
 
 
 def default_token_duration() -> datetime:
@@ -96,7 +102,73 @@ class UserTypes(models.TextChoices):
     INTERNAL_SERVICE_ACCOUNT = "internal_service_account"
 
 
-class Group(SerializerModel):
+class AttributesMixin(models.Model):
+    """Adds an attributes property to a model"""
+
+    attributes = models.JSONField(default=dict, blank=True)
+
+    class Meta:
+        abstract = True
+
+    def update_attributes(self, properties: dict[str, Any]):
+        """Update fields and attributes, but correctly by merging dicts"""
+        for key, value in properties.items():
+            if key == "attributes":
+                continue
+            setattr(self, key, value)
+        final_attributes = {}
+        MERGE_LIST_UNIQUE.merge(final_attributes, self.attributes)
+        MERGE_LIST_UNIQUE.merge(final_attributes, properties.get("attributes", {}))
+        self.attributes = final_attributes
+        self.save()
+
+    @classmethod
+    def update_or_create_attributes(
+        cls, query: dict[str, Any], properties: dict[str, Any]
+    ) -> tuple[models.Model, bool]:
+        """Same as django's update_or_create but correctly updates attributes by merging dicts"""
+        instance = cls.objects.filter(**query).first()
+        if not instance:
+            return cls.objects.create(**properties), True
+        instance.update_attributes(properties)
+        return instance, False
+
+
+class GroupQuerySet(CTEQuerySet):
+    def with_children_recursive(self):
+        """Recursively get all groups that have the current queryset as parents
+        or are indirectly related."""
+
+        def make_cte(cte):
+            """Build the query that ends up in WITH RECURSIVE"""
+            # Start from self, aka the current query
+            # Add a depth attribute to limit the recursion
+            return self.annotate(
+                relative_depth=models.Value(0, output_field=models.IntegerField())
+            ).union(
+                # Here is the recursive part of the query. cte refers to the previous iteration
+                # Only select groups for which the parent is part of the previous iteration
+                # and increase the depth
+                # Finally, limit the depth
+                cte.join(Group, group_uuid=cte.col.parent_id)
+                .annotate(
+                    relative_depth=models.ExpressionWrapper(
+                        cte.col.relative_depth
+                        + models.Value(1, output_field=models.IntegerField()),
+                        output_field=models.IntegerField(),
+                    )
+                )
+                .filter(relative_depth__lt=GROUP_RECURSION_LIMIT),
+                all=True,
+            )
+
+        # Build the recursive query, see above
+        cte = With.recursive(make_cte)
+        # Return the result, as a usable queryset for Group.
+        return cte.join(Group, group_uuid=cte.col.group_uuid).with_cte(cte)
+
+
+class Group(SerializerModel, AttributesMixin):
     """Group model which supports a basic hierarchy and has attributes"""
 
     group_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
@@ -116,7 +188,26 @@ class Group(SerializerModel):
         on_delete=models.SET_NULL,
         related_name="children",
     )
-    attributes = models.JSONField(default=dict, blank=True)
+
+    objects = GroupQuerySet.as_manager()
+
+    class Meta:
+        unique_together = (
+            (
+                "name",
+                "parent",
+            ),
+        )
+        indexes = [models.Index(fields=["name"])]
+        verbose_name = _("Group")
+        verbose_name_plural = _("Groups")
+        permissions = [
+            ("add_user_to_group", _("Add user to group")),
+            ("remove_user_from_group", _("Remove user from group")),
+        ]
+
+    def __str__(self):
+        return f"Group {self.name}"
 
     @property
     def serializer(self) -> Serializer:
@@ -136,54 +227,11 @@ class Group(SerializerModel):
         return user.all_groups().filter(group_uuid=self.group_uuid).exists()
 
     def children_recursive(self: Self | QuerySet["Group"]) -> QuerySet["Group"]:
-        """Recursively get all groups that have this as parent or are indirectly related"""
-        direct_groups = []
-        if isinstance(self, QuerySet):
-            direct_groups = list(x for x in self.all().values_list("pk", flat=True).iterator())
-        else:
-            direct_groups = [self.pk]
-        if len(direct_groups) < 1:
-            return Group.objects.none()
-        query = """
-        WITH RECURSIVE parents AS (
-            SELECT authentik_core_group.*, 0 AS relative_depth
-            FROM authentik_core_group
-            WHERE authentik_core_group.group_uuid = ANY(%s)
-
-            UNION ALL
-
-            SELECT authentik_core_group.*, parents.relative_depth + 1
-            FROM authentik_core_group, parents
-            WHERE (
-                authentik_core_group.group_uuid = parents.parent_id and
-                parents.relative_depth < 20
-            )
-        )
-        SELECT group_uuid
-        FROM parents
-        GROUP BY group_uuid, name
-        ORDER BY name;
-        """
-        group_pks = [group.pk for group in Group.objects.raw(query, [direct_groups]).iterator()]
-        return Group.objects.filter(pk__in=group_pks)
-
-    def __str__(self):
-        return f"Group {self.name}"
-
-    class Meta:
-        unique_together = (
-            (
-                "name",
-                "parent",
-            ),
-        )
-        indexes = [models.Index(fields=["name"])]
-        verbose_name = _("Group")
-        verbose_name_plural = _("Groups")
-        permissions = [
-            ("add_user_to_group", _("Add user to group")),
-            ("remove_user_from_group", _("Remove user from group")),
-        ]
+        """Compatibility layer for Group.objects.with_children_recursive()"""
+        qs = self
+        if not isinstance(self, QuerySet):
+            qs = Group.objects.filter(group_uuid=self.group_uuid)
+        return qs.with_children_recursive()
 
 
 class UserQuerySet(models.QuerySet):
@@ -210,7 +258,7 @@ class UserManager(DjangoUserManager):
         return self.get_queryset().exclude_anonymous()
 
 
-class User(SerializerModel, GuardianUserMixin, AbstractUser):
+class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
     """authentik User model, based on django's contrib auth user model."""
 
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
@@ -222,9 +270,29 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
     ak_groups = models.ManyToManyField("Group", related_name="users")
     password_change_date = models.DateTimeField(auto_now_add=True)
 
-    attributes = models.JSONField(default=dict, blank=True)
-
     objects = UserManager()
+
+    class Meta:
+        verbose_name = _("User")
+        verbose_name_plural = _("Users")
+        permissions = [
+            ("reset_user_password", _("Reset Password")),
+            ("impersonate", _("Can impersonate other users")),
+            ("assign_user_permissions", _("Can assign permissions to users")),
+            ("unassign_user_permissions", _("Can unassign permissions from users")),
+            ("preview_user", _("Can preview user data sent to providers")),
+            ("view_user_applications", _("View applications the user has access to")),
+        ]
+        indexes = [
+            models.Index(fields=["last_login"]),
+            models.Index(fields=["password_change_date"]),
+            models.Index(fields=["uuid"]),
+            models.Index(fields=["path"]),
+            models.Index(fields=["type"]),
+        ]
+
+    def __str__(self):
+        return self.username
 
     @staticmethod
     def default_path() -> str:
@@ -232,10 +300,8 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
         return User._meta.get_field("path").default
 
     def all_groups(self) -> QuerySet[Group]:
-        """Recursively get all groups this user is a member of.
-        At least one query is done to get the direct groups of the user, with groups
-        there are at most 3 queries done"""
-        return Group.children_recursive(self.ak_groups.all())
+        """Recursively get all groups this user is a member of."""
+        return self.ak_groups.all().with_children_recursive()
 
     def group_attributes(self, request: HttpRequest | None = None) -> dict[str, Any]:
         """Get a dictionary containing the attributes from all groups the user belongs to,
@@ -309,25 +375,6 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
         """Get avatar, depending on authentik.avatar setting"""
         return get_avatar(self)
 
-    class Meta:
-        verbose_name = _("User")
-        verbose_name_plural = _("Users")
-        permissions = [
-            ("reset_user_password", _("Reset Password")),
-            ("impersonate", _("Can impersonate other users")),
-            ("assign_user_permissions", _("Can assign permissions to users")),
-            ("unassign_user_permissions", _("Can unassign permissions from users")),
-            ("preview_user", _("Can preview user data sent to providers")),
-            ("view_user_applications", _("View applications the user has access to")),
-        ]
-        indexes = [
-            models.Index(fields=["last_login"]),
-            models.Index(fields=["password_change_date"]),
-            models.Index(fields=["uuid"]),
-            models.Index(fields=["path"]),
-            models.Index(fields=["type"]),
-        ]
-
 
 class Provider(SerializerModel):
     """Application-independent Provider instance. For example SAML2 Remote, OAuth2 Application"""
@@ -378,6 +425,10 @@ class Provider(SerializerModel):
         return None
 
     @property
+    def icon_url(self) -> str | None:
+        return None
+
+    @property
     def component(self) -> str:
         """Return component used to edit this object"""
         raise NotImplementedError
@@ -411,6 +462,16 @@ class BackchannelProvider(Provider):
         abstract = True
 
 
+class ApplicationQuerySet(QuerySet):
+    def with_provider(self) -> "QuerySet[Application]":
+        qs = self.select_related("provider")
+        for subclass in Provider.objects.get_queryset()._get_subclasses_recurse(Provider):
+            if LOOKUP_SEP in subclass:
+                continue
+            qs = qs.select_related(f"provider__{subclass}")
+        return qs
+
+
 class Application(SerializerModel, PolicyBindingModel):
     """Every Application which uses authentik for authentication/identification/authorization
     needs an Application record. Other authentication types can subclass this Model to
@@ -441,6 +502,8 @@ class Application(SerializerModel, PolicyBindingModel):
     )
     meta_description = models.TextField(default="", blank=True)
     meta_publisher = models.TextField(default="", blank=True)
+
+    objects = ApplicationQuerySet.as_manager()
 
     @property
     def serializer(self) -> Serializer:
@@ -478,16 +541,19 @@ class Application(SerializerModel, PolicyBindingModel):
         return url
 
     def get_provider(self) -> Provider | None:
-        """Get casted provider instance"""
+        """Get casted provider instance. Needs Application queryset with_provider"""
         if not self.provider:
             return None
-        # if the Application class has been cache, self.provider is set
-        # but doing a direct query lookup will fail.
-        # In that case, just return None
-        try:
-            return Provider.objects.get_subclass(pk=self.provider.pk)
-        except Provider.DoesNotExist:
-            return None
+
+        for subclass in Provider.objects.get_queryset()._get_subclasses_recurse(Provider):
+            # We don't care about recursion, skip nested models
+            if LOOKUP_SEP in subclass:
+                continue
+            try:
+                return getattr(self.provider, subclass)
+            except AttributeError:
+                pass
+        return None
 
     def __str__(self):
         return str(self.name)
@@ -526,7 +592,12 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     user_path_template = models.TextField(default="goauthentik.io/sources/%(slug)s")
 
     enabled = models.BooleanField(default=True)
-    property_mappings = models.ManyToManyField("PropertyMapping", default=None, blank=True)
+    user_property_mappings = models.ManyToManyField(
+        "PropertyMapping", default=None, blank=True, related_name="source_userpropertymappings_set"
+    )
+    group_property_mappings = models.ManyToManyField(
+        "PropertyMapping", default=None, blank=True, related_name="source_grouppropertymappings_set"
+    )
     icon = models.FileField(
         upload_to="source-icons/",
         default=None,
@@ -590,6 +661,11 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         """Return component used to edit this object"""
         raise NotImplementedError
 
+    @property
+    def property_mapping_type(self) -> "type[PropertyMapping]":
+        """Return property mapping type used by this object"""
+        raise NotImplementedError
+
     def ui_login_button(self, request: HttpRequest) -> UILoginButton | None:
         """If source uses a http-based flow, return UI Information about the login
         button. If source doesn't use http-based flow, return None."""
@@ -599,6 +675,14 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         """Entrypoint to integrate with User settings. Can either return None if no
         user settings are available, or UserSettingSerializer."""
         return None
+
+    def get_base_user_properties(self, **kwargs) -> dict[str, Any | dict[str, Any]]:
+        """Get base properties for a user to build final properties upon."""
+        raise NotImplementedError
+
+    def get_base_group_properties(self, **kwargs) -> dict[str, Any | dict[str, Any]]:
+        """Get base properties for a group to build final properties upon."""
+        raise NotImplementedError
 
     def __str__(self):
         return str(self.name)
@@ -613,6 +697,11 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
             models.Index(
                 fields=[
                     "name",
+                ]
+            ),
+            models.Index(
+                fields=[
+                    "enabled",
                 ]
             ),
         ]
@@ -767,8 +856,10 @@ class PropertyMapping(SerializerModel, ManagedModel):
         evaluator = PropertyMappingEvaluator(self, user, request, **kwargs)
         try:
             return evaluator.evaluate(self.expression)
+        except ControlFlowException as exc:
+            raise exc
         except Exception as exc:
-            raise PropertyMappingExpressionException(exc) from exc
+            raise PropertyMappingExpressionException(self, exc) from exc
 
     def __str__(self):
         return f"Property Mapping {self.name}"

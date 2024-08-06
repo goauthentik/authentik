@@ -1,5 +1,7 @@
 import "@goauthentik/admin/applications/ProviderSelectModal";
 import { AKElement } from "@goauthentik/elements/Base";
+import "@goauthentik/elements/chips/Chip";
+import "@goauthentik/elements/chips/ChipGroup";
 
 import { TemplateResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -77,5 +79,11 @@ export class AkBackchannelProvidersInput extends AKElement {
                 ${this.help ? html`<p class="pf-c-form__helper-text">${this.help}</p>` : nothing}
             </ak-form-element-horizontal>
         `;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-backchannel-providers-input": AkBackchannelProvidersInput;
     }
 }

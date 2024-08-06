@@ -1,5 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
+import "@goauthentik/elements/forms/DeleteBulkForm";
 import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
 
 import { msg } from "@lit/localize";
@@ -13,16 +13,32 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
     @property({ type: Number })
     providerId?: number;
 
+    expandable = true;
+
     searchEnabled(): boolean {
         return true;
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<MicrosoftEntraProviderGroup>> {
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${msg("Microsoft Entra Group(s)")}
+            .objects=${this.selectedElements}
+            .delete=${(item: MicrosoftEntraProviderGroup) => {
+                return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraGroupsDestroy({
+                    id: item.id,
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${msg("Delete")}
+            </button>
+        </ak-forms-delete-bulk>`;
+    }
+
+    async apiEndpoint(): Promise<PaginatedResponse<MicrosoftEntraProviderGroup>> {
         return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraGroupsList({
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            ordering: this.order,
-            search: this.search || "",
+            ...(await this.defaultEndpointConfig()),
             providerId: this.providerId,
         });
     }
@@ -38,5 +54,19 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
             </a>`,
             html`${item.id}`,
         ];
+    }
+
+    renderExpanded(item: MicrosoftEntraProviderGroup): TemplateResult {
+        return html`<td role="cell" colspan="4">
+            <div class="pf-c-table__expandable-row-content">
+                <pre>${JSON.stringify(item.attributes, null, 4)}</pre>
+            </div>
+        </td>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-microsoft-entra-groups-list": MicrosoftEntraProviderGroupList;
     }
 }

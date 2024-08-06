@@ -18,9 +18,12 @@ class SourceStageSerializer(EnterpriseRequiredMixin, StageSerializer):
         source = Source.objects.filter(pk=_source.pk).select_subclasses().first()
         if not source:
             raise ValidationError("Invalid source")
-        login_button = source.ui_login_button(self.context["request"])
-        if not login_button:
-            raise ValidationError("Invalid source selected, only web-based sources are supported.")
+        if "request" in self.context:
+            login_button = source.ui_login_button(self.context["request"])
+            if not login_button:
+                raise ValidationError(
+                    "Invalid source selected, only web-based sources are supported."
+                )
         return source
 
     class Meta:

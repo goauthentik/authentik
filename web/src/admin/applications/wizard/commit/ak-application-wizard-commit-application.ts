@@ -9,7 +9,7 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 
 import { msg } from "@lit/localize";
 import { customElement, state } from "@lit/reactive-element/decorators.js";
-import { TemplateResult, css, html, nothing } from "lit";
+import { PropertyValues, TemplateResult, css, html, nothing } from "lit";
 import { classMap } from "lit/directives/class-map.js";
 
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
@@ -94,8 +94,7 @@ export class ApplicationWizardCommitApplication extends BasePanel {
 
     response?: TransactionApplicationResponse;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    willUpdate(_changedProperties: Map<string, any>) {
+    willUpdate(_changedProperties: PropertyValues<this>) {
         if (this.commitState === idleState) {
             this.response = undefined;
             this.commitState = runningState;
@@ -104,11 +103,7 @@ export class ApplicationWizardCommitApplication extends BasePanel {
             );
             if (!providerModel) {
                 throw new Error(
-                    `Could not determine provider model from user request: ${JSON.stringify(
-                        this.wizard,
-                        null,
-                        2,
-                    )}`,
+                    `Could not determine provider model from user request: ${JSON.stringify(this.wizard, null, 2)}`,
                 );
             }
 
@@ -119,7 +114,6 @@ export class ApplicationWizardCommitApplication extends BasePanel {
             };
 
             this.send(request);
-            return;
         }
     }
 
@@ -218,3 +212,9 @@ export class ApplicationWizardCommitApplication extends BasePanel {
 }
 
 export default ApplicationWizardCommitApplication;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-wizard-commit-application": ApplicationWizardCommitApplication;
+    }
+}

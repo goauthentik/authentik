@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-13 00:08+0000\n"
+"POT-Creation-Date: 2024-06-05 00:07+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/authentik/teams/119923/zh_CN/)\n"
@@ -101,14 +101,6 @@ msgid ""
 "providers are returned. When set to false, backchannel providers are "
 "excluded"
 msgstr "如果未设置，则返回所有提供程序。如果启用，仅返回反向通道提供程序。如果禁用，则返回非反向通道提供程序"
-
-#: authentik/core/api/providers.py
-msgid "SAML Provider from Metadata"
-msgstr "来自元数据的 SAML 提供程序"
-
-#: authentik/core/api/providers.py
-msgid "Create a SAML Provider by importing its Metadata."
-msgstr "通过导入元数据来创建 SAML 提供程序。"
 
 #: authentik/core/api/users.py
 msgid "No leading or trailing slashes allowed."
@@ -1493,10 +1485,6 @@ msgstr "GitHub 兼容性：访问您的电子邮件地址"
 msgid "GitHub Compatibility: Access your Groups"
 msgstr "GitHub 兼容性：访问您的组"
 
-#: authentik/providers/oauth2/views/userinfo.py
-msgid "authentik API Access on behalf of your user"
-msgstr "代表您的用户访问 authentik API"
-
 #: authentik/providers/proxy/api.py
 msgid "User and password attributes must be set when basic auth is enabled."
 msgstr "启用 Basic Auth 时，必须设置用户和密码属性。"
@@ -1738,6 +1726,14 @@ msgstr "SAML 属性映射"
 msgid "SAML Property Mappings"
 msgstr "SAML 属性映射"
 
+#: authentik/providers/saml/models.py
+msgid "SAML Provider from Metadata"
+msgstr "来自元数据的 SAML 提供程序"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Providers from Metadata"
+msgstr "来自元数据的 SAML 提供程序"
+
 #: authentik/providers/scim/models.py
 msgid "Base URL to SCIM requests, usually ends in /v2"
 msgstr "SCIM 请求的基础 URL，通常以 /v2 结尾"
@@ -1781,14 +1777,6 @@ msgstr "系统权限"
 #: authentik/rbac/models.py
 msgid "Can view system info"
 msgstr "可以查看系统信息"
-
-#: authentik/rbac/models.py
-msgid "Can view system tasks"
-msgstr "可以查看系统任务"
-
-#: authentik/rbac/models.py
-msgid "Can run system tasks"
-msgstr "可以运行系统任务"
 
 #: authentik/rbac/models.py
 msgid "Can access admin interface"
@@ -2413,12 +2401,37 @@ msgid "Private key, acquired your captcha Provider."
 msgstr "私钥，从您的验证码提供商处取得。"
 
 #: authentik/stages/captcha/models.py
+msgid ""
+"When enabled and the received captcha score is outside of the given "
+"threshold, the stage will show an error message. When not enabled, the flow "
+"will continue, but the data from the captcha will be available in the "
+"context for policy decisions"
+msgstr "启用时，如果接收到的验证码分数超出给定的阈值，此阶段将显示错误信息。未启用时，流程会继续，但来自验证码的数据可在上下文中用于策略决定。"
+
+#: authentik/stages/captcha/models.py
 msgid "Captcha Stage"
 msgstr "验证码阶段"
 
 #: authentik/stages/captcha/models.py
 msgid "Captcha Stages"
 msgstr "验证码阶段"
+
+#: authentik/stages/captcha/stage.py
+msgid "Unknown error"
+msgstr "未知错误"
+
+#: authentik/stages/captcha/stage.py
+#, python-brace-format
+msgid "Failed to validate token: {error}"
+msgstr "验证令牌失败：{error}"
+
+#: authentik/stages/captcha/stage.py
+msgid "Invalid captcha response"
+msgstr "验证码响应无效"
+
+#: authentik/stages/captcha/stage.py
+msgid "Failed to validate token"
+msgstr "验证令牌失败"
 
 #: authentik/stages/consent/models.py
 msgid ""

@@ -16,6 +16,7 @@ const metadata: Meta<LoadingOverlay> = {
     },
     argTypes: {
         topMost: { control: "boolean" },
+        // @ts-ignore
         message: { control: "text" },
     },
 };

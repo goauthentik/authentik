@@ -9,8 +9,6 @@ You can also run the outpost in a separate docker-compose project, you just have
 ### Proxy outpost
 
 ```yaml
-version: "3.5"
-
 services:
     authentik_proxy:
         image: ghcr.io/goauthentik/proxy
@@ -33,8 +31,6 @@ services:
 ### LDAP outpost
 
 ```yaml
-version: "3.5"
-
 services:
     authentik_ldap:
         image: ghcr.io/goauthentik/ldap
@@ -54,8 +50,6 @@ services:
 ### RADIUS outpost
 
 ```yaml
-version: "3.5"
-
 services:
     radius_outpost:
         image: ghcr.io/goauthentik/radius

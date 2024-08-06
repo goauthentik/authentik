@@ -129,3 +129,9 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
         </div>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-authenticator-validate-webauthn": AuthenticatorValidateStageWebAuthn;
+    }
+}

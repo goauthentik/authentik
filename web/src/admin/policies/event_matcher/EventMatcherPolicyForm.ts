@@ -181,3 +181,9 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
             </ak-form-group>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-policy-event-matcher-form": EventMatcherPolicyForm;
+    }
+}

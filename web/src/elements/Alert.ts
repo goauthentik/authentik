@@ -40,6 +40,8 @@ export class Alert extends AKElement implements IAlert {
      */
     @property({ type: Boolean })
     inline = false;
+    @property({ type: Boolean })
+    plain = false;
 
     /**
      * Method of determining severity
