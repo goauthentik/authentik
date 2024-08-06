@@ -23,6 +23,7 @@ class SAMLPropertyMappingFilter(PropertyMappingFilterSet):
 
     class Meta(PropertyMappingFilterSet.Meta):
         model = SAMLPropertyMapping
+        fields = PropertyMappingFilterSet.Meta.fields + ["saml_name", "friendly_name"]
 
 
 class SAMLPropertyMappingViewSet(UsedByMixin, ModelViewSet):

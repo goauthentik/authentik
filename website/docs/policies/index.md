@@ -22,6 +22,10 @@ This policy is used by the events subsystem. You can use this policy to match ev
 
 See [Expression Policy](expression.mdx).
 
+### GeoIP policy
+
+Use this policy for simple GeoIP lookups, such as country or ASN matching. (For a more advanced GeoIP lookup, use an [Expression policy](expression.mdx).)
+
 ### Password-Expiry Policy
 
 This policy can enforce regular password rotation by expiring set passwords after a finite amount of time. This forces users to set a new password.
