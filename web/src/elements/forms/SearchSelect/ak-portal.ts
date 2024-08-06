@@ -1,4 +1,5 @@
 import { autoUpdate, computePosition, flip, hide } from "@floating-ui/dom";
+import { randomId } from "@goauthentik/elements/utils/randomId.js";
 
 import { LitElement, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -57,6 +58,8 @@ export class Portal extends LitElement {
 
     connectedCallback() {
         super.connectedCallback();
+        this.setAttribute("data-ouia-component-type", "ak-portal");
+        this.setAttribute("data-ouia-component-id", this.getAttribute("id") || randomId());
         this.dropdownContainer = document.createElement("div");
         this.dropdownContainer.dataset["managedBy"] = "ak-portal";
         if (this.name) {
@@ -104,12 +107,9 @@ export class Portal extends LitElement {
         });
     }
 
-    updated() {
-        (this.content as HTMLElement).style.display = "none";
-        if (this.anchor && this.dropdownContainer && this.open && !this.hidden) {
-            (this.content as HTMLElement).style.display = "";
-            this.setPosition();
-        }
+    public override performUpdate() {
+        this.removeAttribute("data-ouia-component-safe");
+        super.performUpdate();
     }
 
     render() {
@@ -117,6 +117,16 @@ export class Portal extends LitElement {
         // This is a dummy object that just has to exist to be the communications channel between
         // the tethered object and its anchor.
         return nothing;
+    }
+
+    updated() {
+        (this.content as HTMLElement).style.display = "none";
+        if (this.anchor && this.dropdownContainer && this.open && !this.hidden) {
+            (this.content as HTMLElement).style.display = "";
+            this.setPosition();
+        }
+        // Testing should always check if this component is open, even if it's set safe.
+        this.setAttribute("data-ouia-component-safe", "true");
     }
 }
 

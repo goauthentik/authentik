@@ -5,6 +5,7 @@ import { AkControlElement } from "@goauthentik/elements/AkControlElement.js";
 import { PreventFormSubmit } from "@goauthentik/elements/forms/helpers";
 import type { GroupedOptions, SelectGroup, SelectOption } from "@goauthentik/elements/types.js";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
+import { randomId } from "@goauthentik/elements/utils/randomId.js";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -146,18 +147,18 @@ export class SearchSelect<T> extends CustomEmitterElement(AkControlElement) {
         this.dataset.akControl = "true";
     }
 
-    toForm(): unknown {
+    public toForm(): unknown {
         if (!this.objects) {
             throw new PreventFormSubmit(msg("Loading options..."));
         }
         return this._value(this.selectedObject) || "";
     }
 
-    json() {
+    public json() {
         return this.toForm();
     }
 
-    updateData() {
+    public updateData() {
         if (this.isFetchingData) {
             return;
         }
@@ -182,8 +183,10 @@ export class SearchSelect<T> extends CustomEmitterElement(AkControlElement) {
             });
     }
 
-    connectedCallback(): void {
+    public override connectedCallback(): void {
         super.connectedCallback();
+        this.setAttribute("data-ouia-component-type", "ak-search-select");
+        this.setAttribute("data-ouia-component-id", this.getAttribute("id") || randomId());
         if (typeof this.renderElement === "string") {
             const reKey = this.renderElement as keyof T;
             this._renderElement = (item: T) => item[reKey] as string;
@@ -211,12 +214,12 @@ export class SearchSelect<T> extends CustomEmitterElement(AkControlElement) {
         this.addEventListener(EVENT_REFRESH, this.updateData);
     }
 
-    disconnectedCallback(): void {
+    public override disconnectedCallback(): void {
         super.disconnectedCallback();
         this.removeEventListener(EVENT_REFRESH, this.updateData);
     }
 
-    onSearch(event: InputEvent) {
+    private onSearch(event: InputEvent) {
         const value = (event.target as SearchSelectView).rawValue;
         if (value === undefined) {
             this.selectedObject = undefined;
@@ -229,7 +232,7 @@ export class SearchSelect<T> extends CustomEmitterElement(AkControlElement) {
         });
     }
 
-    onSelect(event: InputEvent) {
+    private onSelect(event: InputEvent) {
         const value = (event.target as SearchSelectView).value;
         if (value === undefined) {
             this.selectedObject = undefined;
@@ -244,7 +247,7 @@ export class SearchSelect<T> extends CustomEmitterElement(AkControlElement) {
         this.dispatchCustomEvent("ak-change", { value: this.selectedObject });
     }
 
-    getGroupedItems(): GroupedOptions {
+    private getGroupedItems(): GroupedOptions {
         const items = this.groupBy(this.objects || []);
         const makeSearchTuples = (items: T[]): SelectOption[] =>
             items.map((item) => [
@@ -276,7 +279,12 @@ export class SearchSelect<T> extends CustomEmitterElement(AkControlElement) {
         };
     }
 
-    render() {
+    public override performUpdate() {
+        this.removeAttribute("data-ouia-component-safe");
+        super.performUpdate();
+    }
+
+    public override render() {
         if (this.error) {
             return html`<em>${msg("Failed to fetch objects: ")} ${this.error.detail}</em>`;
         }
@@ -299,6 +307,14 @@ export class SearchSelect<T> extends CustomEmitterElement(AkControlElement) {
             @input=${this.onSearch}
             @change=${this.onSelect}
         ></ak-search-select-view> `;
+    }
+
+    public override updated() {
+        // It is not safe for automated tests to interact with this component while it is fetching
+        // data.
+        if (!this.isFetchingData) {
+            this.setAttribute("data-ouia-component-safe", "true");
+        }
     }
 }
 
