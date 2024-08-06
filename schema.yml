@@ -37948,7 +37948,7 @@ components:
           description: Evaluate policies during the Flow planning process.
         re_evaluate_policies:
           type: boolean
-          description: Evaluate policies when the Stage is present to the user.
+          description: Evaluate policies when the Stage is presented to the user.
         order:
           type: integer
           maximum: 2147483647
@@ -37984,7 +37984,7 @@ components:
           description: Evaluate policies during the Flow planning process.
         re_evaluate_policies:
           type: boolean
-          description: Evaluate policies when the Stage is present to the user.
+          description: Evaluate policies when the Stage is presented to the user.
         order:
           type: integer
           maximum: 2147483647
@@ -43564,7 +43564,7 @@ components:
           description: Evaluate policies during the Flow planning process.
         re_evaluate_policies:
           type: boolean
-          description: Evaluate policies when the Stage is present to the user.
+          description: Evaluate policies when the Stage is presented to the user.
         order:
           type: integer
           maximum: 2147483647

@@ -3493,7 +3493,7 @@ doesn't pass when either or both of the selected options are equal or above the 
         <source>Evaluate when stage is run</source>
       </trans-unit>
       <trans-unit id="sff3b708e23bb96b2">
-        <source>Evaluate policies before the Stage is present to the user.</source>
+        <source>Evaluate policies before the Stage is presented to the user.</source>
         <target>在阶段呈现给用户之前评估策略。</target>
       </trans-unit>
       <trans-unit id="s0dc46deb8f181baf">
