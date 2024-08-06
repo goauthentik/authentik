@@ -1,5 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
+import "@goauthentik/elements/forms/DeleteBulkForm";
 import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
 
 import { msg } from "@lit/localize";
@@ -17,12 +17,31 @@ export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProvid
         return true;
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<GoogleWorkspaceProviderUser>> {
+    expandable = true;
+
+    checkbox = true;
+    clearOnRefresh = true;
+
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${msg("Google Workspace User(s)")}
+            .objects=${this.selectedElements}
+            .delete=${(item: GoogleWorkspaceProviderUser) => {
+                return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceUsersDestroy({
+                    id: item.id,
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${msg("Delete")}
+            </button>
+        </ak-forms-delete-bulk>`;
+    }
+
+    async apiEndpoint(): Promise<PaginatedResponse<GoogleWorkspaceProviderUser>> {
         return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceUsersList({
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            ordering: this.order,
-            search: this.search || "",
+            ...(await this.defaultEndpointConfig()),
             providerId: this.providerId,
         });
     }
@@ -39,5 +58,19 @@ export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProvid
             </a>`,
             html`${item.id}`,
         ];
+    }
+
+    renderExpanded(item: GoogleWorkspaceProviderUser): TemplateResult {
+        return html`<td role="cell" colspan="4">
+            <div class="pf-c-table__expandable-row-content">
+                <pre>${JSON.stringify(item.attributes, null, 4)}</pre>
+            </div>
+        </td>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-google-workspace-users-list": GoogleWorkspaceProviderUserList;
     }
 }

@@ -7,6 +7,7 @@ from deepmerge import always_merger
 from django.db import models
 from django.db.models import QuerySet
 from django.http import HttpRequest
+from django.templatetags.static import static
 from django.utils.translation import gettext as _
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
@@ -62,6 +63,10 @@ class RACProvider(Provider):
         """URL to this provider and initiate authorization for the user.
         Can return None for providers that are not URL-based"""
         return "goauthentik.io://providers/rac/launch"
+
+    @property
+    def icon_url(self) -> str | None:
+        return static("authentik/sources/rac.svg")
 
     @property
     def component(self) -> str:

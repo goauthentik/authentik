@@ -5,6 +5,7 @@ from hashlib import sha512
 from time import perf_counter, time
 from typing import Any
 
+from channels.exceptions import DenyConnection
 from django.conf import settings
 from django.contrib.sessions.backends.base import UpdateError
 from django.contrib.sessions.exceptions import SessionInterrupted
@@ -16,7 +17,7 @@ from django.middleware.csrf import CsrfViewMiddleware as UpstreamCsrfViewMiddlew
 from django.utils.cache import patch_vary_headers
 from django.utils.http import http_date
 from jwt import PyJWTError, decode, encode
-from sentry_sdk.hub import Hub
+from sentry_sdk import Scope
 from structlog.stdlib import get_logger
 
 from authentik.core.models import Token, TokenIntents, User, UserTypes
@@ -220,11 +221,9 @@ class ClientIPMiddleware:
             )
             return None
         # Update sentry scope to include correct IP
-        user = Hub.current.scope._user
-        if not user:
-            user = {}
+        user = Scope.get_isolation_scope()._user or {}
         user["ip_address"] = delegated_ip
-        Hub.current.scope.set_user(user)
+        Scope.get_isolation_scope().set_user(user)
         # Set the outpost service account on the request
         setattr(request, self.request_attr_outpost_user, user)
         return delegated_ip
@@ -271,7 +270,15 @@ class ChannelsLoggingMiddleware:
 
     async def __call__(self, scope, receive, send):
         self.log(scope)
-        return await self.inner(scope, receive, send)
+        try:
+            return await self.inner(scope, receive, send)
+        except DenyConnection:
+            return await send({"type": "websocket.close"})
+        except Exception as exc:
+            if settings.DEBUG:
+                raise exc
+            LOGGER.warning("Exception in ASGI application", exc=exc)
+            return await send({"type": "websocket.close"})
 
     def log(self, scope: dict, **kwargs):
         """Log request"""

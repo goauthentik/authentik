@@ -56,7 +56,7 @@ To check if your config has been applied correctly, you can run the following co
   <TabItem value="kubernetes" label="Kubernetes">
 
     ```
-    kubectl exec -it deployment/authentik-worker -c authentik -- ak dump_config
+    kubectl exec -it deployment/authentik-worker -c worker -- ak dump_config
     ```
 
   </TabItem>
@@ -76,6 +76,28 @@ To check if your config has been applied correctly, you can run the following co
 -   `AUTHENTIK_POSTGRESQL__SSLROOTCERT`: CA root for server ssl verification
 -   `AUTHENTIK_POSTGRESQL__SSLCERT`: Path to x509 client certificate to authenticate to server
 -   `AUTHENTIK_POSTGRESQL__SSLKEY`: Path to private key of `SSLCERT` certificate
+
+All PostgreSQL settings, apart from `USE_PGBOUNCER` and `USE_PGPOOL`, support hot-reloading. Adding and removing read replicas doesn't support hot-reloading.
+
+### Read replicas
+
+You can configure additional read replica databases that are used only for read operations. To configure authentik to use replicas, add the settings below to your [configuration file](./configuration.mdx#set-your-environment-variables). If you have multiple replicas, add additional settings for each replica, replacing the default `0` with a unique value for each additional replica.
+
+If read replicas are configured, the main database is not used for reads. If you'd like the main database to be included for reads, add it as a read replica.
+
+The same PostgreSQL settings as described above are used for each read replica.
+
+-   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__HOST`
+-   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__NAME`
+-   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__USER`
+-   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__PORT`
+-   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__PASSWORD`
+-   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__SSLMODE`
+-   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__SSLROOTCERT`
+-   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__SSLCERT`
+-   `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__SSLKEY`
+
+Note that `USE_PGBOUNCER` and `USE_PGPOOL` are inherited from the main database configuration and are _not_ overridable on read replicas.
 
 ## Redis Settings
 
@@ -212,6 +234,10 @@ Disable the inbuilt update-checker. Defaults to `false`.
 -   `AUTHENTIK_ERROR_REPORTING__SEND_PII`
 
     Whether or not to send personal data, like usernames. Defaults to `false`.
+
+-   `AUTHENTIK_ERROR_REPORTING__EXTRA_ARGS`
+
+    Base64-encoded sentry_init arguments. See [Sentry's documentation](https://docs.sentry.io/platforms/python/configuration/options/) for available options.
 
 ### `AUTHENTIK_EMAIL`
 

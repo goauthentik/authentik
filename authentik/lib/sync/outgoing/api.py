@@ -8,7 +8,7 @@ from rest_framework.fields import BooleanField
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from authentik.core.api.utils import PassiveSerializer
+from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.events.api.tasks import SystemTaskSerializer
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 
@@ -47,8 +47,24 @@ class OutgoingSyncProviderStatusMixin:
                 uid=slugify(provider.name),
             )
         )
-        status = {
-            "tasks": tasks,
-            "is_running": provider.sync_lock.locked(),
-        }
+        with provider.sync_lock as lock_acquired:
+            status = {
+                "tasks": tasks,
+                # If we could not acquire the lock, it means a task is using it, and thus is running
+                "is_running": not lock_acquired,
+            }
         return Response(SyncStatusSerializer(status).data)
+
+
+class OutgoingSyncConnectionCreateMixin:
+    """Mixin for connection objects that fetches remote data upon creation"""
+
+    def perform_create(self, serializer: ModelSerializer):
+        super().perform_create(serializer)
+        try:
+            instance = serializer.instance
+            client = instance.provider.client_for_model(instance.__class__)
+            client.update_single_attribute(instance)
+            instance.save()
+        except NotImplementedError:
+            pass

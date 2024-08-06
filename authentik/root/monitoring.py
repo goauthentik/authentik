@@ -36,19 +36,19 @@ class MetricsView(View):
 
 
 class LiveView(View):
-    """View for liveness probe, always returns Http 204"""
+    """View for liveness probe, always returns Http 200"""
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
-        return HttpResponse(status=204)
+        return HttpResponse(status=200)
 
 
 class ReadyView(View):
-    """View for readiness probe, always returns Http 204, unless sql or redis is down"""
+    """View for readiness probe, always returns Http 200, unless sql or redis is down"""
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
         try:
-            db_conn = connections["default"]
-            _ = db_conn.cursor()
+            for db_conn in connections.all():
+                _ = db_conn.cursor()
         except OperationalError:  # pragma: no cover
             return HttpResponse(status=503)
         try:
@@ -56,4 +56,4 @@ class ReadyView(View):
             redis_conn.ping()
         except RedisError:  # pragma: no cover
             return HttpResponse(status=503)
-        return HttpResponse(status=204)
+        return HttpResponse(status=200)

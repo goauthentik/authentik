@@ -169,3 +169,9 @@ class TestConfig(TestCase):
         self.assertEqual(config.get("cache.timeout_flows"), "32m")
         self.assertEqual(config.get("cache.timeout_policies"), "3920ns")
         self.assertEqual(config.get("cache.timeout_reputation"), "298382us")
+
+    def test_get_keys(self):
+        """Test get_keys"""
+        config = ConfigLoader()
+        config.set("foo.bar", "baz")
+        self.assertEqual(list(config.get_keys("foo")), ["bar"])

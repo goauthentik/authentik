@@ -99,3 +99,9 @@ export class AuthenticatorStaticStage extends BaseStage<
             </footer>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-authenticator-static": AuthenticatorStaticStage;
+    }
+}

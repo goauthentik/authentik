@@ -179,6 +179,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                             .fetchObjects=${async (query?: string): Promise<Group[]> => {
                                 const args: CoreGroupsListRequest = {
                                     ordering: "name",
+                                    includeUsers: false,
                                 };
                                 if (query !== undefined) {
                                     args.search = query;
@@ -318,5 +319,11 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                     ${msg("Result used when policy execution fails.")}
                 </p>
             </ak-form-element-horizontal>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-policy-binding-form": PolicyBindingForm;
     }
 }

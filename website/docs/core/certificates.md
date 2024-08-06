@@ -78,8 +78,6 @@ Starting with authentik 2021.12.4, you can configure the certificate authentik u
 To use Let's Encrypt certificates with this setup, using certbot, you can use this compose override (create or edit a file called `docker-compose.override.yml` in the same folder as the authentik docker-compose file)
 
 ```yaml
-version: "3.2"
-
 services:
     certbot:
         image: certbot/dns-route53:v1.22.0

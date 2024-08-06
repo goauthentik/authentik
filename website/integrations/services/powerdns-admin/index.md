@@ -60,7 +60,6 @@ You must mount the certificate selected in authentik as a file in the Docker con
 ### docker-compose
 
 ```yaml
-version: "3.3"
 services:
     powerdns-admin:
         image: powerdnsadmin/pda-legacy:latest

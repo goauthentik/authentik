@@ -49,7 +49,7 @@ export class FlowErrorStage extends BaseStage<FlowErrorChallenge, FlowChallengeR
                     <ak-empty-state
                         icon="fa-times"
                         header=${this.challenge.error
-                            ? html`${this.challenge.error}`
+                            ? this.challenge.error
                             : msg("Something went wrong! Please try again later.")}
                     >
                         <div slot="body">
@@ -71,5 +71,11 @@ export class FlowErrorStage extends BaseStage<FlowErrorChallenge, FlowChallengeR
             <footer class="pf-c-login__main-footer">
                 <ul class="pf-c-login__main-footer-links"></ul>
             </footer>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-flow-error": FlowErrorStage;
     }
 }

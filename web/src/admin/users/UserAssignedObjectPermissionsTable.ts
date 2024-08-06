@@ -18,12 +18,10 @@ export class UserAssignedObjectPermissionsTable extends Table<ExtraUserObjectPer
     checkbox = true;
     clearOnRefresh = true;
 
-    apiEndpoint(page: number): Promise<PaginatedResponse<ExtraUserObjectPermission>> {
+    async apiEndpoint(): Promise<PaginatedResponse<ExtraUserObjectPermission>> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsUsersList({
+            ...(await this.defaultEndpointConfig()),
             userId: this.userId || 0,
-            page: page,
-            ordering: this.order,
-            search: this.search,
         });
     }
 
@@ -35,9 +33,9 @@ export class UserAssignedObjectPermissionsTable extends Table<ExtraUserObjectPer
 
     columns(): TableColumn[] {
         return [
-            new TableColumn("Model", "model"),
-            new TableColumn("Permission", ""),
-            new TableColumn("Object", ""),
+            new TableColumn(msg("Model"), "model"),
+            new TableColumn(msg("Permission"), ""),
+            new TableColumn(msg("Object"), ""),
             new TableColumn(""),
         ];
     }
@@ -88,5 +86,11 @@ export class UserAssignedObjectPermissionsTable extends Table<ExtraUserObjectPer
                   </pf-tooltip>`}`,
             html`<i class="fas fa-check pf-m-success"></i>`,
         ];
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-assigned-object-permissions-table": UserAssignedObjectPermissionsTable;
     }
 }

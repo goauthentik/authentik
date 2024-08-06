@@ -7,15 +7,15 @@ For VS Code, for example, add these entries to your `settings.json`:
 ```
 {
     "yaml.customTags": [
-        "!KeyOf scalar",
+        "!Condition sequence",
+        "!Context scalar",
+        "!Enumerate sequence",
         "!Env scalar",
         "!Find sequence",
-        "!Context scalar",
         "!Format sequence",
         "!If sequence",
-        "!Condition sequence",
-        "!Enumerate sequence",
         "!Index scalar",
+        "!KeyOf scalar",
         "!Value scalar"
     ]
 }

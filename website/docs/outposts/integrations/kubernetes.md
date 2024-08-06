@@ -37,7 +37,7 @@ The following outpost settings are used:
 
 ## Permissions
 
-The permissions required for this integration are documented in the helm chart, see [Cluster-level](https://github.com/goauthentik/helm/blob/main/charts/authentik-remote-cluster/templates/cluster-role-binding.yaml) and [Namespace-level](https://github.com/goauthentik/helm/blob/main/charts/authentik-remote-cluster/templates/role-binding.yaml).
+The permissions required for this integration are documented in the helm chart. See [Cluster-level](https://github.com/goauthentik/helm/blob/main/charts/authentik-remote-cluster/templates/clusterrolebinding.yaml) and [Namespace-level](https://github.com/goauthentik/helm/blob/main/charts/authentik-remote-cluster/templates/rolebinding.yaml).
 
 ## Remote clusters
 

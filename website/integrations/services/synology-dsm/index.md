@@ -46,6 +46,7 @@ To configure Synology DSM to utilize authentik as an OpenID Connect 1.0 Provider
 3. Configure the following values:
 
 -   Profile: OIDC
+-   Account type: Domain/LDAP/local
 -   Name: authentik
 -   Well Known URL: Copy this from the 'OpenID Configuration URL' in the authentik provider (URL ends with '/.well-known/openid-configuration')
 -   Application ID: The 'Client ID' from the authentik provider

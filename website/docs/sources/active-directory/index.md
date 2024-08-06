@@ -19,7 +19,7 @@ The following placeholders will be used:
 
     ![](./01_user_create.png)
 
-3. Give the User a password, generated using for example `pwgen 64 1` or `openssl rand 36 | base64`.
+3. Give the User a password, generated using for example `pwgen 64 1` or `openssl rand 36 | base64 -w 0`.
 
 4. Open the Delegation of Control Wizard by right-clicking the domain and selecting "All Tasks".
 

@@ -93,6 +93,38 @@ class MicrosoftEntraGroupTests(TestCase):
             self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
             group_create.assert_called_once()
 
+    def test_group_not_created(self):
+        """Test without group property mappings, no group is created"""
+        self.provider.property_mappings_group.clear()
+        uid = generate_id()
+        with (
+            patch(
+                "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
+                MagicMock(return_value={"credentials": self.creds}),
+            ),
+            patch(
+                "msgraph.generated.organization.organization_request_builder.OrganizationRequestBuilder.get",
+                AsyncMock(
+                    return_value=OrganizationCollectionResponse(
+                        value=[
+                            Organization(verified_domains=[VerifiedDomain(name="goauthentik.io")])
+                        ]
+                    )
+                ),
+            ),
+            patch(
+                "msgraph.generated.groups.groups_request_builder.GroupsRequestBuilder.post",
+                AsyncMock(return_value=MSGroup(id=generate_id())),
+            ) as group_create,
+        ):
+            group = Group.objects.create(name=uid)
+            microsoft_group = MicrosoftEntraProviderGroup.objects.filter(
+                provider=self.provider, group=group
+            ).first()
+            self.assertIsNone(microsoft_group)
+            self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
+            group_create.assert_not_called()
+
     def test_group_create_update(self):
         """Test group updating"""
         uid = generate_id()

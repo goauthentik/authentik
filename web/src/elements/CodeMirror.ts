@@ -198,3 +198,9 @@ export class CodeMirrorTextarea<T> extends AKElement {
         this.shadowRoot?.appendChild(this.editor.dom);
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-codemirror": CodeMirrorTextarea<unknown>;
+    }
+}

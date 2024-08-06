@@ -5,6 +5,7 @@ from json import loads
 from typing import Any
 
 from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.models import Permission
 from django.contrib.sessions.backends.cache import KEY_PREFIX
 from django.core.cache import cache
 from django.db.models.functions import ExtractHour
@@ -33,16 +34,21 @@ from drf_spectacular.utils import (
 )
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, IntegerField, ListField, SerializerMethodField
+from rest_framework.exceptions import ValidationError
+from rest_framework.fields import (
+    BooleanField,
+    CharField,
+    ChoiceField,
+    DateTimeField,
+    IntegerField,
+    ListField,
+    SerializerMethodField,
+)
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import (
-    BooleanField,
-    DateTimeField,
     ListSerializer,
-    ModelSerializer,
     PrimaryKeyRelatedField,
-    ValidationError,
 )
 from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
@@ -52,7 +58,12 @@ from authentik.admin.api.metrics import CoordinateSerializer
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.brands.models import Brand
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import JSONDictField, LinkSerializer, PassiveSerializer
+from authentik.core.api.utils import (
+    JSONDictField,
+    LinkSerializer,
+    ModelSerializer,
+    PassiveSerializer,
+)
 from authentik.core.middleware import (
     SESSION_KEY_IMPERSONATE_ORIGINAL_USER,
     SESSION_KEY_IMPERSONATE_USER,
@@ -74,6 +85,7 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.lib.avatars import get_avatar
 from authentik.rbac.decorators import permission_required
+from authentik.rbac.models import get_permission_choices
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
@@ -137,12 +149,19 @@ class UserSerializer(ModelSerializer):
         super().__init__(*args, **kwargs)
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
             self.fields["password"] = CharField(required=False, allow_null=True)
+            self.fields["permissions"] = ListField(
+                required=False, child=ChoiceField(choices=get_permission_choices())
+            )
 
     def create(self, validated_data: dict) -> User:
         """If this serializer is used in the blueprint context, we allow for
         directly setting a password. However should be done via the `set_password`
         method instead of directly setting it like rest_framework."""
         password = validated_data.pop("password", None)
+        permissions = Permission.objects.filter(
+            codename__in=[x.split(".")[1] for x in validated_data.pop("permissions", [])]
+        )
+        validated_data["user_permissions"] = permissions
         instance: User = super().create(validated_data)
         self._set_password(instance, password)
         return instance
@@ -151,6 +170,10 @@ class UserSerializer(ModelSerializer):
         """Same as `create` above, set the password directly if we're in a blueprint
         context"""
         password = validated_data.pop("password", None)
+        permissions = Permission.objects.filter(
+            codename__in=[x.split(".")[1] for x in validated_data.pop("permissions", [])]
+        )
+        validated_data["user_permissions"] = permissions
         instance = super().update(instance, validated_data)
         self._set_password(instance, password)
         return instance

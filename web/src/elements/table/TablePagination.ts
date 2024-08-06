@@ -52,7 +52,7 @@ export class TablePagination extends AKElement {
                         </span>
                     </div>
                 </div>
-                <nav class="pf-c-pagination__nav" aria-label="Pagination">
+                <nav class="pf-c-pagination__nav" aria-label=${msg("Pagination")}>
                     <div class="pf-c-pagination__nav-control pf-m-prev">
                         <button
                             class="pf-c-button pf-m-plain"
@@ -80,5 +80,11 @@ export class TablePagination extends AKElement {
                 </nav>
             </div>
         </div>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-table-pagination": TablePagination;
     }
 }

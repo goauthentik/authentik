@@ -13,7 +13,7 @@ from rest_framework.serializers import ValidationError
 from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction
-from authentik.flows.challenge import ChallengeResponse, ChallengeTypes, WithUserInfoChallenge
+from authentik.flows.challenge import ChallengeResponse, WithUserInfoChallenge
 from authentik.flows.exceptions import FlowSkipStageException, StageInvalidException
 from authentik.flows.models import FlowDesignation, NotConfiguredAction, Stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
@@ -325,7 +325,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
             serializer = SelectableStageSerializer(
                 data={
                     "pk": stage.pk,
-                    "name": stage.friendly_name or stage.name,
+                    "name": getattr(stage, "friendly_name", stage.name),
                     "verbose_name": str(stage._meta.verbose_name)
                     .replace("Setup Stage", "")
                     .strip(),
@@ -337,7 +337,6 @@ class AuthenticatorValidateStageView(ChallengeStageView):
         return AuthenticatorValidationChallenge(
             data={
                 "component": "ak-stage-authenticator-validate",
-                "type": ChallengeTypes.NATIVE.value,
                 "device_challenges": challenges,
                 "configuration_stages": stage_challenges,
             }
@@ -411,9 +410,14 @@ class AuthenticatorValidateStageView(ChallengeStageView):
             webauthn_device: WebAuthnDevice = response.device
             self.logger.debug("Set user from user-less flow", user=webauthn_device.user)
             self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = webauthn_device.user
+            # We already set a default method in the validator above
+            # so this needs to have higher priority
             self.executor.plan.context[PLAN_CONTEXT_METHOD] = "auth_webauthn_pwl"
-            self.executor.plan.context[PLAN_CONTEXT_METHOD_ARGS] = {
-                "device": webauthn_device,
-                "device_type": webauthn_device.device_type,
-            }
+            self.executor.plan.context.setdefault(PLAN_CONTEXT_METHOD_ARGS, {})
+            self.executor.plan.context[PLAN_CONTEXT_METHOD_ARGS].update(
+                {
+                    "device": webauthn_device,
+                    "device_type": webauthn_device.device_type,
+                }
+            )
         return self.set_valid_mfa_cookie(response.device)

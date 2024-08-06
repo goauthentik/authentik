@@ -241,7 +241,7 @@ class TestCrypto(APITestCase):
                     "model_name": "oauth2provider",
                     "pk": str(provider.pk),
                     "name": str(provider),
-                    "action": DeleteAction.SET_NULL.name,
+                    "action": DeleteAction.SET_NULL.value,
                 }
             ],
         )

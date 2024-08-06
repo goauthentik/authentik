@@ -1,7 +1,6 @@
 import { applicationListStyle } from "@goauthentik/admin/applications/ApplicationListPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { PFSize } from "@goauthentik/common/enums.js";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/components/ak-app-icon";
 import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
@@ -21,13 +20,10 @@ export class UserApplicationTable extends Table<Application> {
         return super.styles.concat(applicationListStyle);
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Application>> {
+    async apiEndpoint(): Promise<PaginatedResponse<Application>> {
         return new CoreApi(DEFAULT_CONFIG).coreApplicationsList({
+            ...(await this.defaultEndpointConfig()),
             forUser: this.user?.pk,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            ordering: this.order,
-            search: this.search || "",
         });
     }
 
@@ -75,5 +71,11 @@ export class UserApplicationTable extends Table<Application> {
                       </a>`
                     : html``}`,
         ];
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-application-table": UserApplicationTable;
     }
 }

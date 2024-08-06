@@ -4,9 +4,10 @@ from urllib.parse import urlencode
 
 from django.urls import reverse
 
-from authentik.core.models import Application
+from authentik.core.models import Application, Group
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
 from authentik.lib.generators import generate_id
+from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.models import DeviceToken, OAuth2Provider
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 from authentik.providers.oauth2.views.device_init import QS_KEY_CODE
@@ -77,3 +78,23 @@ class TesOAuth2DeviceInit(OAuthTestCase):
             + "?"
             + urlencode({QS_KEY_CODE: token.user_code}),
         )
+
+    def test_device_init_denied(self):
+        """Test device init"""
+        group = Group.objects.create(name="foo")
+        PolicyBinding.objects.create(
+            group=group,
+            target=self.application,
+            order=0,
+        )
+        token = DeviceToken.objects.create(
+            user_code="foo",
+            provider=self.provider,
+        )
+        res = self.client.get(
+            reverse("authentik_providers_oauth2_root:device-login")
+            + "?"
+            + urlencode({QS_KEY_CODE: token.user_code})
+        )
+        self.assertEqual(res.status_code, 200)
+        self.assertIn(b"Permission denied", res.content)

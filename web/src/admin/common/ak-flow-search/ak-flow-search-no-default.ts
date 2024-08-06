@@ -32,4 +32,10 @@ export class AkFlowSearchNoDefault<T extends Flow> extends FlowSearch<T> {
     }
 }
 
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-flow-search-no-default": AkFlowSearchNoDefault<Flow>;
+    }
+}
+
 export default AkFlowSearchNoDefault;

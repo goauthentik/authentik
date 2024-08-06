@@ -1,4 +1,7 @@
 import "@goauthentik/admin/providers/scim/SCIMProviderForm";
+import "@goauthentik/admin/providers/scim/SCIMProviderGroupList";
+import "@goauthentik/admin/providers/scim/SCIMProviderUserList";
+import "@goauthentik/admin/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/events/ObjectChangelog";
@@ -9,7 +12,6 @@ import "@goauthentik/elements/SyncStatusCard";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/rbac/ObjectPermissionsPage";
 
 import { msg } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
@@ -102,6 +104,28 @@ export class SCIMProviderViewPage extends AKElement {
                     </div>
                 </div>
             </section>
+            <section
+                slot="page-users"
+                data-tab-title="${msg("Provisioned Users")}"
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-l-grid pf-m-gutter">
+                    <ak-provider-scim-users-list
+                        providerId=${this.provider.pk}
+                    ></ak-provider-scim-users-list>
+                </div>
+            </section>
+            <section
+                slot="page-groups"
+                data-tab-title="${msg("Provisioned Groups")}"
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-l-grid pf-m-gutter">
+                    <ak-provider-scim-groups-list
+                        providerId=${this.provider.pk}
+                    ></ak-provider-scim-groups-list>
+                </div>
+            </section>
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
@@ -192,5 +216,11 @@ export class SCIMProviderViewPage extends AKElement {
                     </div>
                 </div>
             </div>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-scim-view": SCIMProviderViewPage;
     }
 }
