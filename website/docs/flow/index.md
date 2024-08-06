@@ -2,7 +2,7 @@
 title: Flows
 ---
 
-Flows are a major component in authentik. In conjunction with stages and [policies](../policies/index.md), flows are at the heart of our system of building blocks, used to define and execute the workflows of authentication.
+Flows are a major component in authentik. In conjunction with stages and [policies](../policies/index.md), flows are at the heart of our system of building blocks, used to define and execute the workflows of authentication, authorization, enrollment, and user settings.
 
 There are over a dozen default, out-of-the box flows available in authentik. Users can decide if they already have everything they need with the default flows or if they want to [create](#create-a-custom-flow) their own custom flow, using the Admin interface.
 
@@ -10,6 +10,7 @@ A flow is a method of describing a sequence of stages. A stage represents a sing
 
 For example, a standard login flow would consist of the following stages:
 
+-   **Login stage**: this stage attaches a currently pending user to the current session
 -   **Identification stage**: user identifies themselves via a username or email address
 -   **Password stage**: the user's password is checked against the hash in the database
 
@@ -17,7 +18,9 @@ When these stages are successfully completed, authentik logs in the user.
 
 ![](./simple_stages.png)
 
-Upon flow execution, a _flow plan_ containing all stages is generated. This means that all attached policies are evaluated upon execution. This behaviour can be altered by enabling the **Evaluate when stage is run** option on the binding. For more information about flow plans, read our [flow context documentation](../flow/context/index.md).
+By default, policies are evaluated dynamically, right before the stage (to which a policy is bound) is presented to the user. This flexibility allows the login process to continue, change, or stop, based on the success or failure of each policy.
+
+This default behaviour can be altered by enabling the **Evaluate when flow is planned** option on the stage binding. With this setting a _flow plan_ containing all stages is generated upon flow execution. This means that all attached policies are evaluated upon execution. For more information about flow plans, read our [flow context documentation](../flow/context/index.md).
 
 To determine which flow should be used, authentik will first check which default authentication flow is configured in the active [**Brand**](../core/brands.md). If no default is configured there, the policies in all flows with the matching designation are checked, and the first flow with matching policies sorted by `slug` will be used.
 
@@ -41,7 +44,7 @@ To create a flow, follow these steps:
 
 1. Log in as an admin to authentik, and go to the Admin interface.
 2. In the Admin interface, navigate to **Flows and Stages -> Flows**.
-3. Click **Create**, define the flow using the [configuration settings](#flow-configuration-options), and then click **Finish**.
+3. Click **Create**, define the flow using the [configuration settings](#flow-configuration-options) described below, and then click **Finish**.
 
 After creating the flow, you can then [bind specific stages](../flow/stages/index.md#bind-a-stage-to-a-flow) to the flow and [bind policies](../policies/working_with_policies/working_with_policies.md) to the flow to further customize the user's log in and authentication process.
 
