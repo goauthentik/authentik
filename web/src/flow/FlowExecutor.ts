@@ -436,13 +436,12 @@ export class FlowExecutor extends Interface implements StageHost {
                 alt="authentik Logo"
             />
         </div>`;
-        const fallback = html`${logo}<ak-empty-state loading> </ak-empty-state>`;
-        if (!this.challenge) {
-            return fallback;
-        }
+        const fallback = html`<ak-empty-state loading> </ak-empty-state>`;
         return html`
-            ${this.loading ? html`<ak-loading-overlay></ak-loading-overlay>` : nothing} ${logo}
-            ${until(this.renderChallenge(), fallback)}
+            ${this.loading && this.challenge
+                ? html`<ak-loading-overlay></ak-loading-overlay>`
+                : nothing}
+            ${logo} ${until(this.renderChallenge(), fallback)}
         `;
     }
 

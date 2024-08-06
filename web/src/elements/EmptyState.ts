@@ -22,7 +22,7 @@ export class EmptyState extends AKElement {
     fullHeight = false;
 
     @property()
-    header = "";
+    header?: string;
 
     static get styles(): CSSResult[] {
         return [
@@ -51,7 +51,7 @@ export class EmptyState extends AKElement {
                           aria-hidden="true"
                       ></i>`}
                 <h1 class="pf-c-title pf-m-lg">
-                    ${this.loading && this.header === "" ? msg("Loading") : this.header}
+                    ${this.loading && this.header === undefined ? msg("Loading") : this.header}
                 </h1>
                 <div class="pf-c-empty-state__body">
                     <slot name="body"></slot>
