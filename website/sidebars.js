@@ -264,10 +264,8 @@ const docsSidebar = {
             type: "category",
             label: "Stages",
             link: {
-                type: "generated-index",
-                title: "Stages",
-                slug: "flow/stages",
-                description: "Overview of all available stages",
+                type: "doc",
+                id: "flow/stages/index",
             },
             items: [
                 "flow/stages/authenticator_duo/index",
@@ -302,10 +300,8 @@ const docsSidebar = {
                     type: "category",
                     label: "Working with policies",
                     link: {
-                        type: "generated-index",
-                        title: "Working with policies",
-                        slug: "policies/working_with_policies",
-                        description: "Overview of policies configuration",
+                        type: "doc",
+                        id: "policies/working_with_policies/working_with_policies",
                     },
                     items: [
                         "policies/working_with_policies/whitelist_email",

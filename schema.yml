@@ -12075,6 +12075,305 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /policies/geoip/:
+    get:
+      operationId: policies_geoip_list
+      description: GeoIP Viewset
+      parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedGeoIPPolicyList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: policies_geoip_create
+      description: GeoIP Viewset
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GeoIPPolicyRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeoIPPolicy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /policies/geoip/{policy_uuid}/:
+    get:
+      operationId: policies_geoip_retrieve
+      description: GeoIP Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this GeoIP Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeoIPPolicy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: policies_geoip_update
+      description: GeoIP Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this GeoIP Policy.
+        required: true
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GeoIPPolicyRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeoIPPolicy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: policies_geoip_partial_update
+      description: GeoIP Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this GeoIP Policy.
+        required: true
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedGeoIPPolicyRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeoIPPolicy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: policies_geoip_destroy
+      description: GeoIP Viewset
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this GeoIP Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /policies/geoip/{policy_uuid}/used_by/:
+    get:
+      operationId: policies_geoip_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this GeoIP Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /policies/geoip_iso3166/:
+    get:
+      operationId: policies_geoip_iso3166_list
+      description: Get all countries in ISO-3166-1
+      tags:
+      - policies
+      security:
+      - authentik: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DetailedCountry'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /policies/password/:
     get:
       operationId: policies_password_list
@@ -21287,6 +21586,7 @@ paths:
           - authentik_policies_event_matcher.eventmatcherpolicy
           - authentik_policies_expiry.passwordexpirypolicy
           - authentik_policies_expression.expressionpolicy
+          - authentik_policies_geoip.geoippolicy
           - authentik_policies_password.passwordpolicy
           - authentik_policies_reputation.reputationpolicy
           - authentik_providers_google_workspace.googleworkspaceprovider
@@ -21514,6 +21814,7 @@ paths:
           - authentik_policies_event_matcher.eventmatcherpolicy
           - authentik_policies_expiry.passwordexpirypolicy
           - authentik_policies_expression.expressionpolicy
+          - authentik_policies_geoip.geoippolicy
           - authentik_policies_password.passwordpolicy
           - authentik_policies_reputation.reputationpolicy
           - authentik_providers_google_workspace.googleworkspaceprovider
@@ -33705,6 +34006,7 @@ components:
       - authentik.policies.event_matcher
       - authentik.policies.expiry
       - authentik.policies.expression
+      - authentik.policies.geoip
       - authentik.policies.password
       - authentik.policies.reputation
       - authentik.policies
@@ -35742,6 +36044,258 @@ components:
       required:
       - x_cord
       - y_cord
+    CountryCodeEnum:
+      enum:
+      - AF
+      - AX
+      - AL
+      - DZ
+      - AS
+      - AD
+      - AO
+      - AI
+      - AQ
+      - AG
+      - AR
+      - AM
+      - AW
+      - AU
+      - AT
+      - AZ
+      - BS
+      - BH
+      - BD
+      - BB
+      - BY
+      - BE
+      - BZ
+      - BJ
+      - BM
+      - BT
+      - BO
+      - BQ
+      - BA
+      - BW
+      - BV
+      - BR
+      - IO
+      - BN
+      - BG
+      - BF
+      - BI
+      - CV
+      - KH
+      - CM
+      - CA
+      - KY
+      - CF
+      - TD
+      - CL
+      - CN
+      - CX
+      - CC
+      - CO
+      - KM
+      - CG
+      - CD
+      - CK
+      - CR
+      - CI
+      - HR
+      - CU
+      - CW
+      - CY
+      - CZ
+      - DK
+      - DJ
+      - DM
+      - DO
+      - EC
+      - EG
+      - SV
+      - GQ
+      - ER
+      - EE
+      - SZ
+      - ET
+      - FK
+      - FO
+      - FJ
+      - FI
+      - FR
+      - GF
+      - PF
+      - TF
+      - GA
+      - GM
+      - GE
+      - DE
+      - GH
+      - GI
+      - GR
+      - GL
+      - GD
+      - GP
+      - GU
+      - GT
+      - GG
+      - GN
+      - GW
+      - GY
+      - HT
+      - HM
+      - VA
+      - HN
+      - HK
+      - HU
+      - IS
+      - IN
+      - ID
+      - IR
+      - IQ
+      - IE
+      - IM
+      - IL
+      - IT
+      - JM
+      - JP
+      - JE
+      - JO
+      - KZ
+      - KE
+      - KI
+      - KW
+      - KG
+      - LA
+      - LV
+      - LB
+      - LS
+      - LR
+      - LY
+      - LI
+      - LT
+      - LU
+      - MO
+      - MG
+      - MW
+      - MY
+      - MV
+      - ML
+      - MT
+      - MH
+      - MQ
+      - MR
+      - MU
+      - YT
+      - MX
+      - FM
+      - MD
+      - MC
+      - MN
+      - ME
+      - MS
+      - MA
+      - MZ
+      - MM
+      - NA
+      - NR
+      - NP
+      - NL
+      - NC
+      - NZ
+      - NI
+      - NE
+      - NG
+      - NU
+      - NF
+      - KP
+      - MK
+      - MP
+      - 'NO'
+      - OM
+      - PK
+      - PW
+      - PS
+      - PA
+      - PG
+      - PY
+      - PE
+      - PH
+      - PN
+      - PL
+      - PT
+      - PR
+      - QA
+      - RE
+      - RO
+      - RU
+      - RW
+      - BL
+      - SH
+      - KN
+      - LC
+      - MF
+      - PM
+      - VC
+      - WS
+      - SM
+      - ST
+      - SA
+      - SN
+      - RS
+      - SC
+      - SL
+      - SG
+      - SX
+      - SK
+      - SI
+      - SB
+      - SO
+      - ZA
+      - GS
+      - KR
+      - SS
+      - ES
+      - LK
+      - SD
+      - SR
+      - SJ
+      - SE
+      - CH
+      - SY
+      - TW
+      - TJ
+      - TZ
+      - TH
+      - TL
+      - TG
+      - TK
+      - TO
+      - TT
+      - TN
+      - TR
+      - TM
+      - TC
+      - TV
+      - UG
+      - UA
+      - AE
+      - GB
+      - UM
+      - US
+      - UY
+      - UZ
+      - VU
+      - VE
+      - VN
+      - VG
+      - VI
+      - WF
+      - EH
+      - YE
+      - ZM
+      - ZW
+      type: string
     CurrentBrand:
       type: object
       description: Partial brand information for styling
@@ -35847,6 +36401,37 @@ components:
         deny_message:
           type: string
       required:
+      - name
+    DetailedCountry:
+      type: object
+      properties:
+        code:
+          $ref: '#/components/schemas/CountryCodeEnum'
+        name:
+          type: string
+      required:
+      - code
+      - name
+    DetailedCountryField:
+      type: object
+      properties:
+        code:
+          $ref: '#/components/schemas/CountryCodeEnum'
+        name:
+          type: string
+      required:
+      - code
+      - name
+    DetailedCountryFieldRequest:
+      type: object
+      properties:
+        code:
+          $ref: '#/components/schemas/CountryCodeEnum'
+        name:
+          type: string
+          minLength: 1
+      required:
+      - code
       - name
     Device:
       type: object
@@ -37441,6 +38026,92 @@ components:
           type: string
       required:
       - detail
+    GeoIPPolicy:
+      type: object
+      description: GeoIP Policy Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Policy uuid
+        name:
+          type: string
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy
+            will be logged. By default, only execution errors are logged.
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        bound_to:
+          type: integer
+          description: Return objects policy is bound to
+          readOnly: true
+        asns:
+          type: array
+          items:
+            type: integer
+            maximum: 2147483647
+            minimum: -2147483648
+        countries:
+          type: array
+          items:
+            $ref: '#/components/schemas/CountryCodeEnum'
+          maxItems: 249
+        countries_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/DetailedCountryField'
+          readOnly: true
+      required:
+      - bound_to
+      - component
+      - countries
+      - countries_obj
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    GeoIPPolicyRequest:
+      type: object
+      description: GeoIP Policy Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy
+            will be logged. By default, only execution errors are logged.
+        asns:
+          type: array
+          items:
+            type: integer
+            maximum: 2147483647
+            minimum: -2147483648
+        countries:
+          type: array
+          items:
+            $ref: '#/components/schemas/CountryCodeEnum'
+          maxItems: 249
+      required:
+      - countries
+      - name
     GeoipBindingEnum:
       enum:
       - no_binding
@@ -39405,6 +40076,7 @@ components:
       - authentik_policies_event_matcher.eventmatcherpolicy
       - authentik_policies_expiry.passwordexpirypolicy
       - authentik_policies_expression.expressionpolicy
+      - authentik_policies_geoip.geoippolicy
       - authentik_policies_password.passwordpolicy
       - authentik_policies_reputation.reputationpolicy
       - authentik_policies.policybinding
@@ -40787,6 +41459,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowStageBinding'
+      required:
+      - pagination
+      - results
+    PaginatedGeoIPPolicyList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GeoIPPolicy'
       required:
       - pagination
       - results
@@ -42894,6 +43578,28 @@ components:
             to a challenge. RETRY returns the error message and a similar challenge
             to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT
             restarts the flow while keeping the current context.
+    PatchedGeoIPPolicyRequest:
+      type: object
+      description: GeoIP Policy Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        execution_logging:
+          type: boolean
+          description: When this option is enabled, all executions of this policy
+            will be logged. By default, only execution errors are logged.
+        asns:
+          type: array
+          items:
+            type: integer
+            maximum: 2147483647
+            minimum: -2147483648
+        countries:
+          type: array
+          items:
+            $ref: '#/components/schemas/CountryCodeEnum'
+          maxItems: 249
     PatchedGoogleWorkspaceProviderMappingRequest:
       type: object
       description: GoogleWorkspaceProviderMapping Serializer
