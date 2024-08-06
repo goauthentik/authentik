@@ -5,7 +5,11 @@ from rest_framework.test import APITestCase
 
 from authentik.brands.api import Themes
 from authentik.brands.models import Brand
+from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand
+from authentik.lib.generators import generate_id
+from authentik.providers.oauth2.models import OAuth2Provider
+from authentik.providers.saml.models import SAMLProvider
 
 
 class TestBrands(APITestCase):
@@ -75,3 +79,45 @@ class TestBrands(APITestCase):
             reverse("authentik_api:brand-list"), data={"domain": "bar", "default": True}
         )
         self.assertEqual(response.status_code, 400)
+
+    def test_webfinger_no_app(self):
+        """Test Webfinger"""
+        create_test_brand()
+        self.assertJSONEqual(
+            self.client.get(reverse("authentik_brands:webfinger")).content.decode(), {}
+        )
+
+    def test_webfinger_not_supported(self):
+        """Test Webfinger"""
+        brand = create_test_brand()
+        provider = SAMLProvider.objects.create(
+            name=generate_id(),
+        )
+        app = Application.objects.create(name=generate_id(), slug=generate_id(), provider=provider)
+        brand.default_application = app
+        brand.save()
+        self.assertJSONEqual(
+            self.client.get(reverse("authentik_brands:webfinger")).content.decode(), {}
+        )
+
+    def test_webfinger_oidc(self):
+        """Test Webfinger"""
+        brand = create_test_brand()
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+        )
+        app = Application.objects.create(name=generate_id(), slug=generate_id(), provider=provider)
+        brand.default_application = app
+        brand.save()
+        self.assertJSONEqual(
+            self.client.get(reverse("authentik_brands:webfinger")).content.decode(),
+            {
+                "links": [
+                    {
+                        "href": f"http://testserver/application/o/{app.slug}/",
+                        "rel": "http://openid.net/specs/connect/1.0/issuer",
+                    }
+                ],
+                "subject": None,
+            },
+        )
