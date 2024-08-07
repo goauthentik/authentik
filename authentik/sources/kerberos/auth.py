@@ -1,4 +1,5 @@
 """authentik Kerberos Authentication Backend"""
+
 import gssapi
 from django.http import HttpRequest
 from structlog.stdlib import get_logger
@@ -41,28 +42,24 @@ class KerberosBackend(InbuiltBackend):
 
         if user is not None:
             # User found, let's get its connections for the sources that are available
-            user_source_connections = (
-                UserKerberosSourceConnection.objects.filter(
-                    user=user, source__in=sources
-                )
+            user_source_connections = UserKerberosSourceConnection.objects.filter(
+                user=user, source__in=sources
             )
+        elif realm is not None:
+            user_source_connections = UserKerberosSourceConnection.objects.filter(
+                source__in=sources, identifier__iexact=f"{username}@{realm}"
+            )
+        # no realm specified, we can't do anything
         else:
-            # User not found, let's try to find it by identifier if the realm has been specified
-            if realm is not None:
-                user_source_connections = (
-                    UserKerberosSourceConnection.objects.filter(
-                        source__in=sources, identifier__iexact=f"{username}@{realm}"
-                    )
-                )
-            # no realm specified, we can't do anything
-            else:
-                user_source_connections = UserKerberosSourceConnection.objects.none()
+            user_source_connections = UserKerberosSourceConnection.objects.none()
 
         if not user_source_connections.exists():
             LOGGER.debug("no kerberos source found for user", username=username)
             return None, None
 
-        for user_source_connection in user_source_connections.prefetch_related().select_related("source__kerberossource"):
+        for user_source_connection in user_source_connections.prefetch_related().select_related(
+            "source__kerberossource"
+        ):
             # User either has an unusable password,
             # or has a password, but couldn't be authenticated by ModelBackend
             # This means we check with a kinit to see if the Kerberos password has changed

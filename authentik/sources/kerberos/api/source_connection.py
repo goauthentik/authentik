@@ -1,12 +1,20 @@
 """Kerberos Source Serializer"""
+
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.api.authorization import OwnerFilter, OwnerSuperuserPermissions
-from authentik.core.api.sources import GroupSourceConnectionSerializer, GroupSourceConnectionViewSet, UserSourceConnectionSerializer
+from authentik.core.api.sources import (
+    GroupSourceConnectionSerializer,
+    GroupSourceConnectionViewSet,
+    UserSourceConnectionSerializer,
+)
 from authentik.core.api.used_by import UsedByMixin
-from authentik.sources.kerberos.models import UserKerberosSourceConnection, GroupKerberosSourceConnection
+from authentik.sources.kerberos.models import (
+    GroupKerberosSourceConnection,
+    UserKerberosSourceConnection,
+)
 
 
 class UserKerberosSourceConnectionSerializer(UserSourceConnectionSerializer):
@@ -14,9 +22,7 @@ class UserKerberosSourceConnectionSerializer(UserSourceConnectionSerializer):
 
     class Meta:
         model = UserKerberosSourceConnection
-        fields = UserSourceConnectionSerializer.Meta.fields + [
-            "identifier"
-        ]
+        fields = UserSourceConnectionSerializer.Meta.fields + ["identifier"]
 
 
 class UserKerberosSourceConnectionViewSet(UsedByMixin, ModelViewSet):

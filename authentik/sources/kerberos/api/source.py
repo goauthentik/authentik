@@ -1,5 +1,4 @@
 """Source API Views"""
-from typing import Optional
 
 from django.core.cache import cache
 from drf_spectacular.utils import extend_schema
@@ -23,7 +22,7 @@ class KerberosSourceSerializer(SourceSerializer):
 
     connectivity = SerializerMethodField()
 
-    def get_connectivity(self, source: KerberosSource) -> Optional[dict[str, str]]:
+    def get_connectivity(self, source: KerberosSource) -> dict[str, str] | None:
         """Get cached source connectivity"""
         return cache.get(CACHE_KEY_STATUS + source.slug, None)
 
@@ -93,7 +92,13 @@ class KerberosSourceViewSet(UsedByMixin, ModelViewSet):
             200: KerberosSyncStatusSerializer(),
         }
     )
-    @action(methods=["GET"], detail=True, pagination_class=None, url_path="sync/status", filter_backends=[])
+    @action(
+        methods=["GET"],
+        detail=True,
+        pagination_class=None,
+        url_path="sync/status",
+        filter_backends=[],
+    )
     def sync_status(self, request: Request, slug: str) -> Response:
         """Get source's sync status"""
         source: KerberosSource = self.get_object()

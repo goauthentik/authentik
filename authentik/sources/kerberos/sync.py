@@ -1,17 +1,27 @@
 """Sync Kerberos users into authentik"""
+
 from typing import Any
-from django.core.exceptions import FieldError
-from authentik.events.models import Event, EventAction
-from authentik.lib.merge import MERGE_LIST_UNIQUE
-from authentik.lib.sync.outgoing.exceptions import StopSync
-from django.db import IntegrityError, transaction
+
 import kadmin
+from django.core.exceptions import FieldError
+from django.db import IntegrityError, transaction
 from structlog.stdlib import BoundLogger, get_logger
-from authentik.core.expression.exceptions import PropertyMappingExpressionException, SkipObjectException
+
+from authentik.core.expression.exceptions import (
+    PropertyMappingExpressionException,
+    SkipObjectException,
+)
 from authentik.core.models import User, UserTypes
-from authentik.sources.kerberos.models import KerberosSource, Krb5ConfContext, UserKerberosSourceConnection
 from authentik.core.sources.mapper import SourceMapper
+from authentik.events.models import Event, EventAction
 from authentik.lib.sync.mapper import PropertyMappingManager
+from authentik.lib.sync.outgoing.exceptions import StopSync
+from authentik.sources.kerberos.models import (
+    KerberosSource,
+    Krb5ConfContext,
+    UserKerberosSourceConnection,
+)
+
 
 class KerberosSync:
     """Sync Kerberos users into authentik"""
@@ -49,11 +59,7 @@ class KerberosSync:
     def _sync_principal(self, principal: str) -> bool:
         try:
             defaults = self.mapper.build_object_properties(
-                object_type=User,
-                manager=self.manager,
-                user=None,
-                request=None,
-                principal=principal
+                object_type=User, manager=self.manager, user=None, request=None, principal=principal
             )
             self._logger.debug("Writing user with attributes", **defaults)
             if "username" not in defaults:
@@ -66,9 +72,7 @@ class KerberosSync:
         except (IntegrityError, FieldError, TypeError, AttributeError) as exc:
             Event.new(
                 EventAction.CONFIGURATION_ERROR,
-                message=(
-                    f"Failed to create user: {str(exc)} "
-                ),
+                message=(f"Failed to create user: {str(exc)} "),
                 source=self._source,
                 principal=principal,
             ).save()

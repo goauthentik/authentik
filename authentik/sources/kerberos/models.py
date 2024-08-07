@@ -1,5 +1,5 @@
 """authentik Kerberos Source Models"""
-import pglock
+
 import os
 from pathlib import Path
 from tempfile import gettempdir
@@ -7,6 +7,7 @@ from typing import Any
 
 import gssapi
 import kadmin
+import pglock
 from django.db import connection, models
 from django.db.models.fields import b64decode
 from django.http import HttpRequest
@@ -16,14 +17,21 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
-from authentik.core.models import USER_PATH_SERVICE_ACCOUNT, GroupSourceConnection, PropertyMapping, Source, UserSourceConnection, UserTypes
+from authentik.core.models import (
+    USER_PATH_SERVICE_ACCOUNT,
+    GroupSourceConnection,
+    PropertyMapping,
+    Source,
+    UserSourceConnection,
+    UserTypes,
+)
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.flows.challenge import RedirectChallenge
 
 LOGGER = get_logger()
 
 
-# python-kadmin leaks file descriptors. As such, this global is used to re-use
+# python-kadmin leaks file descriptors. As such, this global is used to reuse
 # existing kadmin connections instead of creating new ones, which results in less to no file
 # descriptors leaks
 _kadmin_connections: dict[str, Any] = {}
@@ -54,19 +62,15 @@ class KerberosSource(Source):
     )
     sync_keytab = models.TextField(
         help_text=_(
-            (
-                "Keytab to authenticate to kadmin for sync. "
-                "Must be base64-encoded or in the form TYPE:residual"
-            )
+            "Keytab to authenticate to kadmin for sync. "
+            "Must be base64-encoded or in the form TYPE:residual"
         ),
         blank=True,
     )
     sync_ccache = models.TextField(
         help_text=_(
-            (
-                "Credentials cache to authenticate to kadmin for sync. "
-                "Must be in the form TYPE:residual"
-            )
+            "Credentials cache to authenticate to kadmin for sync. "
+            "Must be in the form TYPE:residual"
         ),
         blank=True,
     )
@@ -91,10 +95,8 @@ class KerberosSource(Source):
     password_login_update_internal_password = models.BooleanField(
         default=False,
         help_text=_(
-            (
-                "If enabled, the authentik-stored password will be updated upon "
-                "login with the Kerberos password backend"
-            )
+            "If enabled, the authentik-stored password will be updated upon "
+            "login with the Kerberos password backend"
         ),
     )
 
@@ -195,7 +197,14 @@ class KerberosSource(Source):
     @property
     def tempdir(self) -> Path:
         """Get temporary storage for Kerberos files"""
-        path = Path(gettempdir()) / "authentik" / connection.schema_name / "sources" / "kerberos" / str(self.pk)
+        path = (
+            Path(gettempdir())
+            / "authentik"
+            / connection.schema_name
+            / "sources"
+            / "kerberos"
+            / str(self.pk)
+        )
         path.mkdir(mode=0o700, parents=True, exist_ok=True)
         return path
 

@@ -1,10 +1,11 @@
 """Kerberos source SPNEGO views"""
+
 from base64 import b64decode, b64encode
 
 import gssapi
 from django.core.cache import cache
 from django.core.exceptions import SuspiciousOperation
-from django.http import Http404, HttpResponse
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
@@ -42,15 +43,20 @@ class SPNEGOView(View):
             "if/error.html",
             context={
                 "title": _("SPNEGO authentication required"),
-                "message": _("""
-                    Make sure you have valid tickets (obtainable via kinit) and configured the browser correctly.
+                "message": _(
+                    """
+                    Make sure you have valid tickets (obtainable via kinit)
+                    and configured the browser correctly.
                     You can find out more at https://goauthentik.io/integrations/sources/spnego/browser
-                """),
+                """
+                ),
             },
             status=401,
         )
         response[WWW_AUTHENTICATE] = (
-            NEGOTIATE if token is None else f"{NEGOTIATE} {b64encode(token.encode()).decode('ascii')}"
+            NEGOTIATE
+            if token is None
+            else f"{NEGOTIATE} {b64encode(token.encode()).decode('ascii')}"
         )
         return response
 
@@ -63,7 +69,7 @@ class SPNEGOView(View):
         auth_tuple = authorization_header.split(" ", 1)
         if not auth_tuple or auth_tuple[0].lower() != NEGOTIATE.lower():
             return None
-        if len(auth_tuple) != 2:
+        if len(auth_tuple) != 2:  # noqa: PLR2004
             raise SuspiciousOperation("Malformed authorization header")
         return auth_tuple[1]
 
@@ -95,7 +101,9 @@ class SPNEGOView(View):
     def dispatch(self, request, *args, **kwargs) -> HttpResponse:
         """Process SPNEGO request"""
         self.source: KerberosSource = get_object_or_404(
-            KerberosSource, slug=kwargs.get("source_slug", ""), enabled=True,
+            KerberosSource,
+            slug=kwargs.get("source_slug", ""),
+            enabled=True,
         )
 
         qstring = request.GET if request.method == "GET" else request.POST

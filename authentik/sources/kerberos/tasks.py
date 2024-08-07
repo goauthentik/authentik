@@ -3,7 +3,8 @@
 from django.core.cache import cache
 from structlog.stdlib import get_logger
 
-from authentik.events.models import SystemTask as DBSystemTask, TaskStatus
+from authentik.events.models import SystemTask as DBSystemTask
+from authentik.events.models import TaskStatus
 from authentik.events.system_tasks import SystemTask
 from authentik.lib.config import CONFIG
 from authentik.lib.sync.outgoing.exceptions import StopSync
@@ -53,7 +54,9 @@ def kerberos_sync_single(self, source_pk: str):
     try:
         with source.sync_lock as lock_acquired:
             if not lock_acquired:
-                LOGGER.debug("Failed to acquire lock for Kerberos sync, skipping task", source=source.slug)
+                LOGGER.debug(
+                    "Failed to acquire lock for Kerberos sync, skipping task", source=source.slug
+                )
                 return
             # Delete all sync tasks from the cache
             DBSystemTask.objects.filter(name="kerberos_sync", uid__startswith=source.slug).delete()

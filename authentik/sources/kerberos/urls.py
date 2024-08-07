@@ -1,9 +1,13 @@
 """Kerberos Source urls"""
+
 from django.urls import path
 
 from authentik.sources.kerberos.api.property_mappings import KerberosPropertyMappingViewSet
 from authentik.sources.kerberos.api.source import KerberosSourceViewSet
-from authentik.sources.kerberos.api.source_connection import GroupKerberosSourceConnectionViewSet, UserKerberosSourceConnectionViewSet
+from authentik.sources.kerberos.api.source_connection import (
+    GroupKerberosSourceConnectionViewSet,
+    UserKerberosSourceConnectionViewSet,
+)
 from authentik.sources.kerberos.views import SPNEGOView
 
 urlpatterns = [

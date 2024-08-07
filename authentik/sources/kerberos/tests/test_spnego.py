@@ -1,4 +1,5 @@
 """Kerberos Source SPNEGO tests"""
+
 from base64 import b64decode, b64encode
 from pathlib import Path
 
@@ -56,7 +57,7 @@ class TestSPNEGOSource(KerberosTestCase):
 
         status = 401
         server_token = None
-        while status == 401 and not client_ctx.complete:
+        while status == 401 and not client_ctx.complete:  # noqa: PLR2004
             client_token = client_ctx.step(server_token)
             if not client_token:
                 break
@@ -65,7 +66,7 @@ class TestSPNEGOSource(KerberosTestCase):
                 headers={"Authorization": f"Negotiate {b64encode(client_token).decode('ascii')}"},
             )
             status = response.status_code
-            if status == 401:
+            if status == 401:  # noqa: PLR2004
                 server_token = b64decode(response.headers["WWW-Authenticate"][9:].strip())
 
         # 400 because no enroll flow

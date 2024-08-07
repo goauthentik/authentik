@@ -1,4 +1,5 @@
 """Kerberos Source Auth tests"""
+
 from authentik.core.models import User
 from authentik.lib.generators import generate_id
 from authentik.sources.kerberos.auth import KerberosBackend

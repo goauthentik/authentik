@@ -1,4 +1,5 @@
 """authentik kerberos source signals"""
+
 import kadmin
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -30,16 +31,16 @@ def sync_kerberos_source_on_save(sender, instance: KerberosSource, **_):
 @receiver(password_changed)
 def kerberos_sync_password(sender, user: User, password: str, **_):
     """Connect to kerberos and update password."""
-    user_source_connections = UserKerberosSourceConnection.objects.select_related("source__kerberossource").filter(
-        user=user, source__kerberossource__sync_users_password=True
-    )
+    user_source_connections = UserKerberosSourceConnection.objects.select_related(
+        "source__kerberossource"
+    ).filter(user=user, source__kerberossource__sync_users_password=True)
     for user_source_connection in user_source_connections:
         source = user_source_connection.source.kerberossource
         with Krb5ConfContext(source):
             try:
-                source.connection().getprinc(
-                    user_source_connection.identifier
-                ).change_password(password)
+                source.connection().getprinc(user_source_connection.identifier).change_password(
+                    password
+                )
             except kadmin.KAdminError as exc:
                 LOGGER.warning("failed to set Kerberos password", exc=exc, source=source)
                 Event.new(

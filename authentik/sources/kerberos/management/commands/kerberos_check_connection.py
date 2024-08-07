@@ -1,4 +1,5 @@
 """Kerberos Connection check"""
+
 from json import dumps
 
 from structlog.stdlib import get_logger

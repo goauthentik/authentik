@@ -8,7 +8,12 @@ from rest_framework.serializers import BaseSerializer
 
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, Stage
-from authentik.stages.password import BACKEND_APP_PASSWORD, BACKEND_INBUILT, BACKEND_LDAP, BACKEND_KERBEROS
+from authentik.stages.password import (
+    BACKEND_APP_PASSWORD,
+    BACKEND_INBUILT,
+    BACKEND_KERBEROS,
+    BACKEND_LDAP,
+)
 
 
 def get_authentication_backends():
