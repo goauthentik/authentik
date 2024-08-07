@@ -2,7 +2,7 @@
 
 from datetime import datetime
 from hashlib import sha256
-from typing import TYPE_CHECKING, Any, Optional, Self
+from typing import Any, Optional, Self
 from uuid import uuid4
 
 from deepmerge import always_merger
@@ -40,8 +40,6 @@ from authentik.policies.models import PolicyBindingModel
 from authentik.tenants.models import DEFAULT_TOKEN_DURATION, DEFAULT_TOKEN_LENGTH
 from authentik.tenants.utils import get_current_tenant, get_unique_identifier
 
-if TYPE_CHECKING:
-    pass
 
 LOGGER = get_logger()
 USER_ATTRIBUTE_DEBUG = "goauthentik.io/user/debug"
