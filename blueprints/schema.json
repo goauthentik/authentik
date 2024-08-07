@@ -1209,6 +1209,46 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_sources_oauth.oauthsourcepropertymapping"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_sources_oauth.oauthsourcepropertymapping_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_sources_oauth.oauthsourcepropertymapping"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_sources_oauth.oauthsourcepropertymapping"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_sources_oauth.useroauthsourceconnection"
                             },
                             "id": {
@@ -1238,6 +1278,46 @@
                             },
                             "identifiers": {
                                 "$ref": "#/$defs/model_authentik_sources_oauth.useroauthsourceconnection"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
+                                "const": "authentik_sources_oauth.groupoauthsourceconnection"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_sources_oauth.groupoauthsourceconnection_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_sources_oauth.groupoauthsourceconnection"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_sources_oauth.groupoauthsourceconnection"
                             }
                         }
                     },
@@ -1369,6 +1449,46 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_sources_saml.samlsourcepropertymapping"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_sources_saml.samlsourcepropertymapping_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_sources_saml.samlsourcepropertymapping"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_sources_saml.samlsourcepropertymapping"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_sources_saml.usersamlsourceconnection"
                             },
                             "id": {
@@ -1398,6 +1518,46 @@
                             },
                             "identifiers": {
                                 "$ref": "#/$defs/model_authentik_sources_saml.usersamlsourceconnection"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
+                                "const": "authentik_sources_saml.groupsamlsourceconnection"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_sources_saml.groupsamlsourceconnection_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_sources_saml.groupsamlsourceconnection"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_sources_saml.groupsamlsourceconnection"
                             }
                         }
                     },
@@ -4106,11 +4266,15 @@
                         "authentik_sources_ldap.ldapsource",
                         "authentik_sources_ldap.ldapsourcepropertymapping",
                         "authentik_sources_oauth.oauthsource",
+                        "authentik_sources_oauth.oauthsourcepropertymapping",
                         "authentik_sources_oauth.useroauthsourceconnection",
+                        "authentik_sources_oauth.groupoauthsourceconnection",
                         "authentik_sources_plex.plexsource",
                         "authentik_sources_plex.plexsourceconnection",
                         "authentik_sources_saml.samlsource",
+                        "authentik_sources_saml.samlsourcepropertymapping",
                         "authentik_sources_saml.usersamlsourceconnection",
+                        "authentik_sources_saml.groupsamlsourceconnection",
                         "authentik_sources_scim.scimsource",
                         "authentik_sources_scim.scimsourcepropertymapping",
                         "authentik_stages_authenticator_duo.authenticatorduostage",
@@ -6615,6 +6779,16 @@
                     "minLength": 1,
                     "title": "Icon"
                 },
+                "group_matching_mode": {
+                    "type": "string",
+                    "enum": [
+                        "identifier",
+                        "name_link",
+                        "name_deny"
+                    ],
+                    "title": "Group matching mode",
+                    "description": "How the source determines if an existing group should be used or a new group created."
+                },
                 "provider_type": {
                     "type": "string",
                     "enum": [
@@ -6727,6 +6901,57 @@
                 }
             }
         },
+        "model_authentik_sources_oauth.oauthsourcepropertymapping": {
+            "type": "object",
+            "properties": {
+                "managed": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "minLength": 1,
+                    "title": "Managed by authentik",
+                    "description": "Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update."
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "expression": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Expression"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_sources_oauth.oauthsourcepropertymapping_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_oauthsourcepropertymapping",
+                            "change_oauthsourcepropertymapping",
+                            "delete_oauthsourcepropertymapping",
+                            "view_oauthsourcepropertymapping"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model_authentik_sources_oauth.useroauthsourceconnection": {
             "type": "object",
             "properties": {
@@ -6766,6 +6991,43 @@
                             "change_useroauthsourceconnection",
                             "delete_useroauthsourceconnection",
                             "view_useroauthsourceconnection"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_sources_oauth.groupoauthsourceconnection": {
+            "type": "object",
+            "properties": {
+                "icon": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Icon"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_sources_oauth.groupoauthsourceconnection_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_groupoauthsourceconnection",
+                            "change_groupoauthsourceconnection",
+                            "delete_groupoauthsourceconnection",
+                            "view_groupoauthsourceconnection"
                         ]
                     },
                     "user": {
@@ -7038,6 +7300,16 @@
                     "minLength": 1,
                     "title": "Icon"
                 },
+                "group_matching_mode": {
+                    "type": "string",
+                    "enum": [
+                        "identifier",
+                        "name_link",
+                        "name_deny"
+                    ],
+                    "title": "Group matching mode",
+                    "description": "How the source determines if an existing group should be used or a new group created."
+                },
                 "pre_authentication_flow": {
                     "type": "string",
                     "format": "uuid",
@@ -7135,6 +7407,12 @@
                     "minLength": 1,
                     "title": "Delete temporary users after",
                     "description": "Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually. (Format: hours=1;minutes=2;seconds=3)."
+                },
+                "encryption_kp": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Encryption Keypair",
+                    "description": "When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key."
                 }
             },
             "required": []
@@ -7154,6 +7432,57 @@
                             "change_samlsource",
                             "delete_samlsource",
                             "view_samlsource"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_sources_saml.samlsourcepropertymapping": {
+            "type": "object",
+            "properties": {
+                "managed": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "minLength": 1,
+                    "title": "Managed by authentik",
+                    "description": "Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update."
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "expression": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Expression"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_sources_saml.samlsourcepropertymapping_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_samlsourcepropertymapping",
+                            "change_samlsourcepropertymapping",
+                            "delete_samlsourcepropertymapping",
+                            "view_samlsourcepropertymapping"
                         ]
                     },
                     "user": {
@@ -7196,6 +7525,43 @@
                             "change_usersamlsourceconnection",
                             "delete_usersamlsourceconnection",
                             "view_usersamlsourceconnection"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_sources_saml.groupsamlsourceconnection": {
+            "type": "object",
+            "properties": {
+                "icon": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Icon"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_sources_saml.groupsamlsourceconnection_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_groupsamlsourceconnection",
+                            "change_groupsamlsourceconnection",
+                            "delete_groupsamlsourceconnection",
+                            "view_groupsamlsourceconnection"
                         ]
                     },
                     "user": {
@@ -10969,7 +11335,6 @@
             "properties": {
                 "name": {
                     "type": "string",
-                    "maxLength": 80,
                     "minLength": 1,
                     "title": "Name"
                 },

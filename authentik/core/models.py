@@ -173,7 +173,7 @@ class Group(SerializerModel, AttributesMixin):
 
     group_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
-    name = models.CharField(_("name"), max_length=80)
+    name = models.TextField(_("name"))
     is_superuser = models.BooleanField(
         default=False, help_text=_("Users added to this group will be superusers.")
     )
@@ -583,6 +583,19 @@ class SourceUserMatchingModes(models.TextChoices):
     )
 
 
+class SourceGroupMatchingModes(models.TextChoices):
+    """Different modes a source can handle new/returning groups"""
+
+    IDENTIFIER = "identifier", _("Use the source-specific identifier")
+    NAME_LINK = "name_link", _(
+        "Link to a group with identical name. Can have security implications "
+        "when a group name is used with another source."
+    )
+    NAME_DENY = "name_deny", _(
+        "Use the group name, but deny enrollment when the name already exists."
+    )
+
+
 class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     """Base Authentication source, i.e. an OAuth Provider, SAML Remote or LDAP Server"""
 
@@ -630,6 +643,14 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         help_text=_(
             "How the source determines if an existing user should be authenticated or "
             "a new user enrolled."
+        ),
+    )
+    group_matching_mode = models.TextField(
+        choices=SourceGroupMatchingModes.choices,
+        default=SourceGroupMatchingModes.IDENTIFIER,
+        help_text=_(
+            "How the source determines if an existing group should be used or "
+            "a new group created."
         ),
     )
 
@@ -725,6 +746,27 @@ class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
 
     class Meta:
         unique_together = (("user", "source"),)
+
+
+class GroupSourceConnection(SerializerModel, CreatedUpdatedModel):
+    """Connection between Group and Source."""
+
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    source = models.ForeignKey(Source, on_delete=models.CASCADE)
+    identifier = models.TextField()
+
+    objects = InheritanceManager()
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        """Get serializer for this model"""
+        raise NotImplementedError
+
+    def __str__(self) -> str:
+        return f"Group-source connection (group={self.group_id}, source={self.source_id})"
+
+    class Meta:
+        unique_together = (("group", "source"),)
 
 
 class ExpiringModel(models.Model):
