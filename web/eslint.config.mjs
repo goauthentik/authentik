@@ -64,6 +64,7 @@ export default [
         files: ["scripts/*.mjs", "*.ts", "*.mjs"],
         rules: {
             "no-unused-vars": "off",
+            // We WANT our scripts to output to the console!
             "no-console": "off",
             "@typescript-eslint/ban-ts-comment": "off",
             "@typescript-eslint/no-unused-vars": [
