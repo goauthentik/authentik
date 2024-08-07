@@ -115,6 +115,10 @@ class KerberosSource(Source):
 
         return KerberosSourceSerializer
 
+    @property
+    def property_mapping_type(self) -> type[PropertyMapping]:
+        return KerberosPropertyMapping
+
     def ui_login_button(self, request: HttpRequest) -> UILoginButton:
         return UILoginButton(
             challenge=RedirectChallenge(
