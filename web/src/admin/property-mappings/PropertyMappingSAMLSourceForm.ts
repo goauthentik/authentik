@@ -10,25 +10,25 @@ import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { LDAPSourcePropertyMapping, PropertymappingsApi } from "@goauthentik/api";
+import { PropertymappingsApi, SAMLSourcePropertyMapping } from "@goauthentik/api";
 
-@customElement("ak-property-mapping-ldap-source-form")
-export class PropertyMappingLDAPSourceForm extends BasePropertyMappingForm<LDAPSourcePropertyMapping> {
-    loadInstance(pk: string): Promise<LDAPSourcePropertyMapping> {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceLdapRetrieve({
+@customElement("ak-property-mapping-saml-source-form")
+export class PropertyMappingSAMLSourceForm extends BasePropertyMappingForm<SAMLSourcePropertyMapping> {
+    loadInstance(pk: string): Promise<SAMLSourcePropertyMapping> {
+        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceSamlRetrieve({
             pmUuid: pk,
         });
     }
 
-    async send(data: LDAPSourcePropertyMapping): Promise<LDAPSourcePropertyMapping> {
+    async send(data: SAMLSourcePropertyMapping): Promise<SAMLSourcePropertyMapping> {
         if (this.instance) {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceLdapUpdate({
+            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceSamlUpdate({
                 pmUuid: this.instance.pk,
-                lDAPSourcePropertyMappingRequest: data,
+                sAMLSourcePropertyMappingRequest: data,
             });
         } else {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceLdapCreate({
-                lDAPSourcePropertyMappingRequest: data,
+            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceSamlCreate({
+                sAMLSourcePropertyMappingRequest: data,
             });
         }
     }
@@ -70,6 +70,6 @@ export class PropertyMappingLDAPSourceForm extends BasePropertyMappingForm<LDAPS
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-property-mapping-ldap-source-form": PropertyMappingLDAPSourceForm;
+        "ak-property-mapping-saml-source-form": PropertyMappingSAMLSourceForm;
     }
 }

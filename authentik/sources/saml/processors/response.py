@@ -21,16 +21,18 @@ from authentik.core.models import (
     User,
 )
 from authentik.core.sources.flow_manager import SourceFlowManager
-from authentik.lib.expression.evaluator import BaseEvaluator
 from authentik.lib.utils.time import timedelta_from_string
-from authentik.policies.utils import delete_none_values
 from authentik.sources.saml.exceptions import (
     InvalidSignature,
     MismatchedRequestID,
     MissingSAMLResponse,
     UnsupportedNameIDFormat,
 )
-from authentik.sources.saml.models import SAMLSource, UserSAMLSourceConnection
+from authentik.sources.saml.models import (
+    GroupSAMLSourceConnection,
+    SAMLSource,
+    UserSAMLSourceConnection,
+)
 from authentik.sources.saml.processors.constants import (
     NS_MAP,
     NS_SAML_ASSERTION,
@@ -138,12 +140,12 @@ class ResponseProcessor:
         user has an attribute that refers to our Source for cleanup. The user is also deleted
         on logout and periodically."""
         # Create a temporary User
-        name_id = self._get_name_id().text
+        name_id = self._get_name_id()
         expiry = mktime(
             (now() + timedelta_from_string(self._source.temporary_user_delete_after)).timetuple()
         )
         user: User = User.objects.create(
-            username=name_id,
+            username=name_id.text,
             attributes={
                 USER_ATTRIBUTE_GENERATED: True,
                 USER_ATTRIBUTE_SOURCES: [
@@ -154,15 +156,21 @@ class ResponseProcessor:
             },
             path=self._source.get_user_path(),
         )
-        LOGGER.debug("Created temporary user for NameID Transient", username=name_id)
+        LOGGER.debug("Created temporary user for NameID Transient", username=name_id.text)
         user.set_unusable_password()
         user.save()
-        UserSAMLSourceConnection.objects.create(source=self._source, user=user, identifier=name_id)
+        UserSAMLSourceConnection.objects.create(
+            source=self._source, user=user, identifier=name_id.text
+        )
         return SAMLSourceFlowManager(
-            self._source,
-            self._http_request,
-            name_id,
-            delete_none_values(self.get_attributes()),
+            source=self._source,
+            request=self._http_request,
+            identifier=str(name_id.text),
+            user_info={
+                "root": self._root,
+                "name_id": name_id,
+            },
+            policy_context={},
         )
 
     def _get_name_id(self) -> "Element":
@@ -200,27 +208,6 @@ class ResponseProcessor:
             f"Assertion contains NameID with unsupported format {_format}."
         )
 
-    def get_attributes(self) -> dict[str, list[str] | str]:
-        """Get all attributes sent"""
-        attributes = {}
-        assertion = self._root.find(f"{{{NS_SAML_ASSERTION}}}Assertion")
-        if assertion is None:
-            raise ValueError("Assertion element not found")
-        attribute_statement = assertion.find(f"{{{NS_SAML_ASSERTION}}}AttributeStatement")
-        if attribute_statement is None:
-            raise ValueError("Attribute statement element not found")
-        # Get all attributes and their values into a dict
-        for attribute in attribute_statement.iterchildren():
-            key = attribute.attrib["Name"]
-            attributes.setdefault(key, [])
-            for value in attribute.iterchildren():
-                attributes[key].append(value.text)
-        # Flatten all lists in the dict
-        for key, value in attributes.items():
-            attributes[key] = BaseEvaluator.expr_flatten(value)
-        attributes["username"] = self._get_name_id().text
-        return attributes
-
     def prepare_flow_manager(self) -> SourceFlowManager:
         """Prepare flow plan depending on whether or not the user exists"""
         name_id = self._get_name_id()
@@ -235,17 +222,22 @@ class ResponseProcessor:
         if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_TRANSIENT:
             return self._handle_name_id_transient()
 
-        flow_manager = SAMLSourceFlowManager(
-            self._source,
-            self._http_request,
-            name_id.text,
-            delete_none_values(self.get_attributes()),
+        return SAMLSourceFlowManager(
+            source=self._source,
+            request=self._http_request,
+            identifier=str(name_id.text),
+            user_info={
+                "root": self._root,
+                "name_id": name_id,
+            },
+            policy_context={
+                "saml_response": etree.tostring(self._root),
+            },
         )
-        flow_manager.policy_context["saml_response"] = etree.tostring(self._root)
-        return flow_manager
 
 
 class SAMLSourceFlowManager(SourceFlowManager):
     """Source flow manager for SAML Sources"""
 
-    connection_type = UserSAMLSourceConnection
+    user_connection_type = UserSAMLSourceConnection
+    group_connection_type = GroupSAMLSourceConnection
