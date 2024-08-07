@@ -26,11 +26,6 @@ const selectStyles = css`
  */
 @customElement("ak-multi-select")
 export class AkMultiSelect extends AkControlElement {
-    constructor() {
-        super();
-        this.dataset.akControl = "true";
-    }
-
     static get styles() {
         return [PFBase, PFForm, PFFormControl, selectStyles];
     }
@@ -92,6 +87,11 @@ export class AkMultiSelect extends AkControlElement {
      */
     json() {
         return this.values;
+    }
+
+    connectedCallback() {
+        super.connectedCallback();
+        this.dataset.akControl = "true";
     }
 
     renderHelp() {

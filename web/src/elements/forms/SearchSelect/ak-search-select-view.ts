@@ -20,7 +20,8 @@ import {
     SearchSelectSelectEvent,
     SearchSelectSelectMenuEvent,
 } from "./SearchSelectEvents.js";
-import type { SearchOptions, SearchTuple } from "./types.js";
+import type { SearchOptions } from "./types.js";
+import { optionsToOptionsMap } from "./utils.js";
 
 /**
  * @class SearchSelectView
@@ -225,8 +226,8 @@ export class SearchSelectView extends AKElement {
     }
 
     updated() {
-        if (!(this.inputRef?.value && this.inputRef?.value?.value === this.displayValue)) {
-            this.inputRef.value && (this.inputRef.value.value = this.displayValue);
+        if (this.inputRef?.value && this.inputRef?.value?.value !== this.displayValue) {
+            this.inputRef.value.value = this.displayValue;
         }
     }
 
@@ -262,21 +263,6 @@ export class SearchSelectView extends AKElement {
                 ?open=${this.open}
             ></ak-search-select-menu-position> `;
     }
-}
-
-type Pair = [string, string];
-const justThePair = ([key, label]: SearchTuple): Pair => [key, label];
-
-function optionsToOptionsMap(options: SearchOptions): Map<string, string> {
-    const pairs: Pair[] = Array.isArray(options)
-        ? options.map(justThePair)
-        : options.grouped
-          ? options.options.reduce(
-                (acc: Pair[], { options }): Pair[] => [...acc, ...options.map(justThePair)],
-                [] as Pair[],
-            )
-          : options.options.map(justThePair);
-    return new Map(pairs);
 }
 
 declare global {
