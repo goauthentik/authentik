@@ -91,7 +91,6 @@ class MetadataProcessor:
         encryption_descriptor = self.get_encryption_key_descriptor()
         if encryption_descriptor is not None:
             sp_sso_descriptor.append(encryption_descriptor)
-            sp_sso_descriptor.attrib["WantAssertionsEncrypted"] = "true"
 
         for name_id_format in self.get_name_id_formats():
             sp_sso_descriptor.append(name_id_format)
