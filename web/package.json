@@ -46,7 +46,7 @@
         "@floating-ui/dom": "^1.6.9",
         "@formatjs/intl-listformat": "^7.5.7",
         "@fortawesome/fontawesome-free": "^6.6.0",
-        "@goauthentik/api": "^2024.6.3-1723050887",
+        "@goauthentik/api": "^2024.6.3-1723053526",
         "@lit/context": "^1.1.2",
         "@lit/localize": "^0.12.2",
         "@lit/reactive-element": "^2.0.4",
