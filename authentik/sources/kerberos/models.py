@@ -144,7 +144,7 @@ class KerberosSource(Source):
                 "title": self.name,
                 "component": "ak-user-settings-source-kerberos",
                 "configure_url": reverse(
-                    "authentik_sources_kerberos:login",
+                    "authentik_sources_kerberos:spnego-login",
                     kwargs={"source_slug": self.slug},
                 ),
                 "icon_url": icon,
