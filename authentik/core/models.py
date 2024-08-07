@@ -2,7 +2,7 @@
 
 from datetime import datetime
 from hashlib import sha256
-from typing import TYPE_CHECKING, Any, Optional, Self
+from typing import Any, Optional, Self
 from uuid import uuid4
 
 from deepmerge import always_merger
