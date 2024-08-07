@@ -9,7 +9,12 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
 from authentik.core.api.object_types import CreatableType, NonCreatableType
-from authentik.core.models import Source, UserSourceConnection
+from authentik.core.models import (
+    GroupSourceConnection,
+    PropertyMapping,
+    Source,
+    UserSourceConnection,
+)
 from authentik.core.types import UILoginButton, UserSettingSerializer
 
 if TYPE_CHECKING:
@@ -72,6 +77,16 @@ class OAuthSource(NonCreatableType, Source):
         from authentik.sources.oauth.api.source import OAuthSourceSerializer
 
         return OAuthSourceSerializer
+
+    @property
+    def property_mapping_type(self) -> type[PropertyMapping]:
+        return OAuthSourcePropertyMapping
+
+    def get_base_user_properties(self, **kwargs):
+        return self.source_type().get_base_user_properties(source=self, **kwargs)
+
+    def get_base_group_properties(self, **kwargs):
+        return self.source_type().get_base_group_properties(source=self, **kwargs)
 
     @property
     def icon_url(self) -> str | None:
@@ -248,6 +263,26 @@ class RedditOAuthSource(CreatableType, OAuthSource):
         verbose_name_plural = _("Reddit OAuth Sources")
 
 
+class OAuthSourcePropertyMapping(PropertyMapping):
+    """Map OAuth properties to User or Group object attributes"""
+
+    @property
+    def component(self) -> str:
+        return "ak-property-mapping-oauth-source-form"
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.sources.oauth.api.property_mappings import (
+            OAuthSourcePropertyMappingSerializer,
+        )
+
+        return OAuthSourcePropertyMappingSerializer
+
+    class Meta:
+        verbose_name = _("OAuth Source Property Mapping")
+        verbose_name_plural = _("OAuth Source Property Mappings")
+
+
 class UserOAuthSourceConnection(UserSourceConnection):
     """Authorized remote OAuth provider."""
 
@@ -269,3 +304,19 @@ class UserOAuthSourceConnection(UserSourceConnection):
     class Meta:
         verbose_name = _("User OAuth Source Connection")
         verbose_name_plural = _("User OAuth Source Connections")
+
+
+class GroupOAuthSourceConnection(GroupSourceConnection):
+    """Group-source connection"""
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.sources.oauth.api.source_connection import (
+            GroupOAuthSourceConnectionSerializer,
+        )
+
+        return GroupOAuthSourceConnectionSerializer
+
+    class Meta:
+        verbose_name = _("Group OAuth Source Connection")
+        verbose_name_plural = _("Group OAuth Source Connections")

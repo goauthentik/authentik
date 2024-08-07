@@ -41,9 +41,8 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
     name: string | null | undefined;
 
     /**
-     * Set to `true` if you want to find pairs that don't have a valid key. Of our 14 searches, 11
-     * require the key, 3 do not (as of 2023-08-01).
-     *
+     * Set to `true` to allow certificates without private key to show up. When set to `false`,
+     * a private key is not required to be set.
      * @attr
      */
     @property({ type: Boolean, attribute: "nokey" })
