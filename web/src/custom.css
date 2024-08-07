@@ -33,7 +33,17 @@
     background: rgba(255, 255, 255, 1); /* Default light background */
     animation: fadeOutOverlay 0.5s ease 2s forwards;
 }
-
+@keyframes hideElement {
+    0% {
+        opacity: 1;
+    }
+    99% {
+        opacity: 0;
+    }
+    100% {
+        display: none;
+    }
+}
 
 .ak-login-container::after {
     content: "";
@@ -46,7 +56,7 @@
     aspect-ratio: 1;
     border: 6px solid rgba(0, 0, 0, .1);
     border-left-color: transparent;
-    animation: spin89345 1s linear infinite;
+    animation: spin89345 1s linear infinite, hideElement 4s forwards;
     border-radius: 50%;
 
 
@@ -104,4 +114,29 @@ a[href^="https://goauthentik.io?utm_source=authentik&utm_medium=flow"] {display:
     font-size: small;
     text-align: center;
     color: grey;
+}
+.pf-c-drawer__content, .pf-c-drawer__panel, .pf-c-drawer__panel-main {
+    overflow: visible !important;
+}
+
+.pf-c-login__main > :last-child:not(.pf-c-login__main-footer) {
+    padding-bottom: 2rem;
+}
+.pf-c-login__main-header.pf-c-brand.ak-brand{
+    padding-top: 2rem;
+}
+.pf-c-login__main{
+    overflow-scrolling: auto;
+    padding-top: 1rem;
+    overflow: auto;
+}
+
+.pf-c-login__main::-webkit-scrollbar-thumb {
+    overflow: scroll;
+    background-color: var(--ak-dark-foreground-link);
+}
+
+.pf-c-login.sidebar_left .ak-login-container, .pf-c-login.sidebar_right .ak-login-container {
+    padding-left: 0;
+    padding-right: 0;
 }
