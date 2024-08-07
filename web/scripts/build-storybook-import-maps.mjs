@@ -4,7 +4,6 @@ import { fileURLToPath } from "url";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function* walkFilesystem(dir) {
     const openeddir = fs.opendirSync(dir);
     if (!openeddir) {

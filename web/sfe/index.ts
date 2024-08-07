@@ -154,6 +154,8 @@ class Stage<T extends FlowInfoChallenge> {
     }
 }
 
+const IS_INVALID = "is-invalid";
+
 class IdentificationStage extends Stage<IdentificationChallenge> {
     render() {
         this.html(`
@@ -173,7 +175,7 @@ class IdentificationStage extends Stage<IdentificationChallenge> {
                 ${
                     this.challenge.passwordFields
                         ? `<div class="form-label-group my-3 has-validation">
-                                <input type="password" class="form-control ${this.error("password").length > 0 ? "is-invalid" : ""}" name="password" placeholder="Password">
+                                <input type="password" class="form-control ${this.error("password").length > 0 ? IS_INVALID : ""}" name="password" placeholder="Password">
                                 ${this.renderInputError("password")}
                         </div>`
                         : ""
@@ -197,7 +199,7 @@ class PasswordStage extends Stage<PasswordChallenge> {
                 <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="">
                 <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
                 <div class="form-label-group my-3 has-validation">
-                    <input type="password" autofocus class="form-control ${this.error("password").length > 0 ? "is-invalid" : ""}" name="password" placeholder="Password">
+                    <input type="password" autofocus class="form-control ${this.error("password").length > 0 ? IS_INVALID : ""}" name="password" placeholder="Password">
                     ${this.renderInputError("password")}
                 </div>
                 <button class="btn btn-primary w-100 py-2" type="submit">Continue</button>
@@ -309,12 +311,10 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
         user.id = this.u8arr(this.b64enc(this.u8arr(stringId)));
         const challenge = this.u8arr(credentialCreateOptions.challenge.toString());
 
-        const transformedCredentialCreateOptions = Object.assign({}, credentialCreateOptions, {
+        return Object.assign({}, credentialCreateOptions, {
             challenge,
             user,
         });
-
-        return transformedCredentialCreateOptions;
     }
 
     /**
@@ -354,12 +354,10 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
             },
         );
 
-        const transformedCredentialRequestOptions = Object.assign({}, credentialRequestOptions, {
+        return Object.assign({}, credentialRequestOptions, {
             challenge,
             allowCredentials,
         });
-
-        return transformedCredentialRequestOptions;
     }
 
     /**
@@ -407,14 +405,11 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
     }
 
     renderChallengePicker() {
-        const challenges = this.challenge.deviceChallenges.filter((challenge) => {
-            if (challenge.deviceClass === "webauthn") {
-                if (!this.checkWebAuthnSupport()) {
-                    return undefined;
-                }
-            }
-            return challenge;
-        });
+        const challenges = this.challenge.deviceChallenges.filter((challenge) =>
+            challenge.deviceClass === "webauthn" && !this.checkWebAuthnSupport()
+                ? undefined
+                : challenge,
+        );
         this.html(`<form id="picker-form">
                 <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="">
                 <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
@@ -467,7 +462,7 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
                 <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="">
                 <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
                 <div class="form-label-group my-3 has-validation">
-                    <input type="text" autofocus class="form-control ${this.error("code").length > 0 ? "is-invalid" : ""}" name="code" placeholder="Please enter your code" autocomplete="one-time-code">
+                    <input type="text" autofocus class="form-control ${this.error("code").length > 0 ? IS_INVALID : ""}" name="code" placeholder="Please enter your code" autocomplete="one-time-code">
                     ${this.renderInputError("code")}
                 </div>
                 <button class="btn btn-primary w-100 py-2" type="submit">Continue</button>

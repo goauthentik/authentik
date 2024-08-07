@@ -93,7 +93,10 @@ export class AkAdminSidebar extends WithCapabilitiesConfig(AKElement) {
         // a browser reflow, which may trigger some other styling the application is monitoring,
         // triggering a re-render which triggers a browser reflow, ad infinitum. But we've been
         // living with that since jQuery, and it's both well-known and fortunately rare.
+
+        // eslint-disable-next-line wc/no-self-class
         this.classList.remove("pf-m-expanded", "pf-m-collapsed");
+        // eslint-disable-next-line wc/no-self-class
         this.classList.add(this.open ? "pf-m-expanded" : "pf-m-collapsed");
     }
 
@@ -153,7 +156,7 @@ export class AkAdminSidebar extends WithCapabilitiesConfig(AKElement) {
                 ? { ".activeWhen": attributes }
                 : (attributes ?? {});
             if (path) {
-                properties["path"] = path;
+                properties.path = path;
             }
             return html`<ak-sidebar-item ${spread(properties)}>
                 ${label ? html`<span slot="label">${label}</span>` : nothing}

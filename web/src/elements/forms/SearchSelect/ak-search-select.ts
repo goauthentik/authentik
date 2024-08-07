@@ -97,11 +97,6 @@ export class SearchSelect<T> extends CustomEmitterElement(AkControlElement) {
     @state()
     error?: APIErrorTypes;
 
-    constructor() {
-        super();
-        this.dataset.akControl = "true";
-    }
-
     toForm(): unknown {
         if (!this.objects) {
             throw new PreventFormSubmit(msg("Loading options..."));
@@ -113,9 +108,9 @@ export class SearchSelect<T> extends CustomEmitterElement(AkControlElement) {
         return this.toForm();
     }
 
-    updateData() {
+    async updateData() {
         if (this.isFetchingData) {
-            return;
+            return Promise.resolve();
         }
         this.isFetchingData = true;
         return this.fetchObjects(this.query)
@@ -140,6 +135,7 @@ export class SearchSelect<T> extends CustomEmitterElement(AkControlElement) {
 
     connectedCallback(): void {
         super.connectedCallback();
+        this.dataset.akControl = "true";
         this.updateData();
         this.addEventListener(EVENT_REFRESH, this.updateData);
     }
