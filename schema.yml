@@ -36459,8 +36459,24 @@ components:
           readOnly: true
         confirmed:
           type: boolean
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        last_used:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
       required:
       - confirmed
+      - created
+      - last_updated
+      - last_used
       - meta_model_name
       - name
       - pk
