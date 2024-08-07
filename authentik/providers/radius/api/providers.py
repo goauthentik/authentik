@@ -102,7 +102,14 @@ class RadiusOutpostConfigViewSet(ListModelMixin, GenericViewSet):
             ["packet"],
         )
         dict = Dictionary(
-            settings.BASE_DIR / "authentik" / "providers" / "radius" / "dictionaries" / "dictionary"
+            str(
+                settings.BASE_DIR
+                / "authentik"
+                / "providers"
+                / "radius"
+                / "dictionaries"
+                / "dictionary"
+            )
         )
 
         packet = AuthPacket()
