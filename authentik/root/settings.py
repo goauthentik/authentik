@@ -59,6 +59,7 @@ SHARED_APPS = [
     "django_filters",
     "drf_spectacular",
     "django_prometheus",
+    "django_countries",
     "pgactivity",
     "pglock",
     "channels",
@@ -76,6 +77,7 @@ TENANT_APPS = [
     "authentik.policies.event_matcher",
     "authentik.policies.expiry",
     "authentik.policies.expression",
+    "authentik.policies.geoip",
     "authentik.policies.password",
     "authentik.policies.reputation",
     "authentik.policies",
@@ -146,6 +148,7 @@ SPECTACULAR_SETTINGS = {
         "url": "https://github.com/goauthentik/authentik/blob/main/LICENSE",
     },
     "ENUM_NAME_OVERRIDES": {
+        "CountryCodeEnum": "django_countries.countries",
         "EventActions": "authentik.events.models.EventAction",
         "FlowDesignationEnum": "authentik.flows.models.FlowDesignation",
         "FlowLayoutEnum": "authentik.flows.models.FlowLayout",
