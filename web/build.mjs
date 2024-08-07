@@ -16,15 +16,13 @@ try {
     authentikProjectRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
         encoding: "utf8",
     }).replace("\n", "");
-} catch (exc) {
+} catch (_exc) {
     // We probably don't have a .git folder, which could happen in container builds
 }
 const rootPackage = JSON.parse(fs.readFileSync(path.join(authentikProjectRoot, "./package.json")));
 
-// eslint-disable-next-line no-undef
 const isProdBuild = process.env.NODE_ENV === "production";
 
-// eslint-disable-next-line no-undef
 const apiBasePath = process.env.AK_API_BASE_PATH || "";
 
 const envGitHashKey = "GIT_BUILD_HASH";
@@ -35,10 +33,11 @@ const definitions = {
     "process.env.AK_API_BASE_PATH": JSON.stringify(apiBasePath),
 };
 
-// All is magic is just to make sure the assets are copied into the right places. This is a very stripped down version
-// of what the rollup-copy-plugin does, without any of the features we don't use, and using globSync instead of globby
-// since we already had globSync lying around thanks to Typescript. If there's a third argument in an array entry, it's
-// used to replace the internal path before concatenating it all together as the destination target.
+// All is magic is just to make sure the assets are copied into the right places. This is a very
+// stripped down version of what the rollup-copy-plugin does, without any of the features we don't
+// use, and using globSync instead of globby since we already had globSync lying around thanks to
+// Typescript. If there's a third argument in an array entry, it's used to replace the internal path
+// before concatenating it all together as the destination target.
 
 const otherFiles = [
     ["node_modules/@patternfly/patternfly/patternfly.min.css", "."],
@@ -67,8 +66,8 @@ for (const [source, rawdest, strip] of otherFiles) {
     }
 }
 
-// This starts the definitions used for esbuild: Our targets, our arguments, the function for running a build, and three
-// options for building: watching, building, and building the proxy.
+// This starts the definitions used for esbuild: Our targets, our arguments, the function for
+// running a build, and three options for building: watching, building, and building the proxy.
 // Ordered by largest to smallest interface to build even faster
 const interfaces = [
     ["admin/AdminInterface/AdminInterface.ts", "admin"],
@@ -104,7 +103,6 @@ function getVersion() {
 
 async function buildOneSource(source, dest) {
     const DIST = path.join(__dirname, "./dist", dest);
-    // eslint-disable-next-line no-console
     console.log(`[${new Date(Date.now()).toISOString()}] Starting build for target ${source}`);
 
     try {
@@ -116,7 +114,6 @@ async function buildOneSource(source, dest) {
             outdir: DIST,
         });
         const end = Date.now();
-        // eslint-disable-next-line no-console
         console.log(
             `[${new Date(end).toISOString()}] Finished build for target ${source} in ${Date.now() - start}ms`,
         );
@@ -135,14 +132,12 @@ function debouncedBuild() {
         clearTimeout(timeoutId);
     }
     timeoutId = setTimeout(() => {
-        // eslint-disable-next-line no-console
         console.clear();
         buildAuthentik(interfaces);
     }, 250);
 }
 
 if (process.argv.length > 2 && (process.argv[2] === "-h" || process.argv[2] === "--help")) {
-    // eslint-disable-next-line no-console
     console.log(`Build the authentikUI
 
 options:
@@ -154,7 +149,6 @@ options:
 }
 
 if (process.argv.length > 2 && (process.argv[2] === "-w" || process.argv[2] === "--watch")) {
-    // eslint-disable-next-line no-console
     console.log("Watching ./src for changes");
     chokidar.watch("./src").on("all", (event, path) => {
         if (!["add", "change", "unlink"].includes(event)) {

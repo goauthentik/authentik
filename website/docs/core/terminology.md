@@ -61,9 +61,9 @@ See [Flows](../flow/index.md)
 
 ### Property Mappings
 
-Property Mappings allow you to make information available for external applications. For example, if you want to login to AWS with authentik, you'd use Property Mappings to set the user's roles in AWS based on their group memberships in authentik.
+Property Mappings allow you to make information available for external applications, and to modify how information from sources are stored in authentik. For example, if you want to log in to AWS with authentik, you'd use property mappings to set the user's roles in AWS based on their group memberships in authentik.
 
-See [Property Mappings](../property-mappings/index.md)
+See [Providers Property Mappings](../providers/property-mappings/index.md) and [Source Property Mappings](../sources/property-mappings/index.md).
 
 ### Outpost
 

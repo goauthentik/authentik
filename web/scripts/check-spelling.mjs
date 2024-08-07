@@ -12,5 +12,4 @@ const cmd = [
     "-S './src/locales/**' ./src -s",
 ].join(" ");
 
-// eslint-disable-next-line no-console
 console.log(execSync(cmd, { encoding: "utf8" }));

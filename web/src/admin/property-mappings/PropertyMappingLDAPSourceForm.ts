@@ -9,6 +9,10 @@ import { LDAPSourcePropertyMapping, PropertymappingsApi } from "@goauthentik/api
 
 @customElement("ak-property-mapping-ldap-source-form")
 export class PropertyMappingLDAPSourceForm extends BasePropertyMappingForm<LDAPSourcePropertyMapping> {
+    docLink(): string {
+        return "/docs/sources/property-mappings/expression?utm_source=authentik";
+    }
+
     loadInstance(pk: string): Promise<LDAPSourcePropertyMapping> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceLdapRetrieve({
             pmUuid: pk,

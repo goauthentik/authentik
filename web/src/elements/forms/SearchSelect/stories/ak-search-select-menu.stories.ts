@@ -29,7 +29,6 @@ const metadata: Meta<SearchSelectMenu> = {
 
 export default metadata;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const onClick = (event: SearchSelectSelectMenuEvent) => {
     const target = document.querySelector("#action-button-message-pad");
     target!.innerHTML = "";
