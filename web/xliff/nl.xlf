@@ -4575,7 +4575,7 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
 
       </trans-unit>
       <trans-unit id="sff3b708e23bb96b2">
-        <source>Evaluate policies before the Stage is present to the user.</source>
+        <source>Evaluate policies before the Stage is presented to the user.</source>
         <target>Evalueer beleid voordat de fase aan de gebruiker wordt gepresenteerd.</target>
 
       </trans-unit>

@@ -4610,7 +4610,7 @@ Można tu używać tylko zasad, ponieważ dostęp jest sprawdzany przed uwierzyt
         
       </trans-unit>
       <trans-unit id="sff3b708e23bb96b2">
-        <source>Evaluate policies before the Stage is present to the user.</source>
+        <source>Evaluate policies before the Stage is presented to the user.</source>
         <target>Oceń zasady, zanim etap jest obecny dla użytkownika.</target>
         
       </trans-unit>
