@@ -36471,6 +36471,7 @@ components:
           type: string
           format: date-time
           readOnly: true
+          nullable: true
       required:
       - confirmed
       - created

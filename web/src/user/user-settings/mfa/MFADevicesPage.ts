@@ -127,8 +127,10 @@ export class MFADevicesPage extends Table<Device> {
             html`${deviceTypeName(item)}`,
             html`<div>${getRelativeTime(item.created)}</div>
                 <small>${item.created.toLocaleString()}</small>`,
-            html`<div>${getRelativeTime(item.lastUsed)}</div>
-                <small>${item.lastUsed.toLocaleString()}</small>`,
+            html`${item.lastUsed
+                ? html`<div>${getRelativeTime(item.lastUsed)}</div>
+                      <small>${item.lastUsed.toLocaleString()}</small>`
+                : html`-`}`,
             html`
                 <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>

@@ -106,8 +106,10 @@ export class UserDeviceTable extends Table<Device> {
                 <small>${item.created.toLocaleString()}</small>`,
             html`<div>${getRelativeTime(item.lastUpdated)}</div>
                 <small>${item.lastUpdated.toLocaleString()}</small>`,
-            html`<div>${getRelativeTime(item.lastUsed)}</div>
-                <small>${item.lastUsed.toLocaleString()}</small>`,
+            html`${item.lastUsed
+                ? html`<div>${getRelativeTime(item.lastUsed)}</div>
+                      <small>${item.lastUsed.toLocaleString()}</small>`
+                : html`-`}`,
         ];
     }
 }

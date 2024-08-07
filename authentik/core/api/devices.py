@@ -28,7 +28,7 @@ class DeviceSerializer(MetaNameSerializer):
     confirmed = BooleanField()
     created = DateTimeField(read_only=True)
     last_updated = DateTimeField(read_only=True)
-    last_used = DateTimeField(read_only=True)
+    last_used = DateTimeField(read_only=True, allow_null=True)
 
     def get_type(self, instance: Device) -> str:
         """Get type of device"""
