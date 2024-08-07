@@ -2,16 +2,20 @@
 title: Upgrade authentik
 ---
 
-Upgrading to the latest version of authentik, whether a new major release or a patch, involves running a few commands to pull down the latest images and then restart the servers and databases.
+Upgrading to the latest version of authentik, whether a new major release or a patch, involves running a few commands to pull down the latest images and then restarting the servers and databases.
 
-For information about a specific version, refer to our [Release Notes](../releases/).
 
-:::warning
+## Important considerations
 
--   Be sure to make a backup of your databases before upgrading.
--   You need to upgrade in sequence; do not skip directly to the most recent version. For example, if you are currently running 2023.10.3, then you will need to upgrade to 2024.2.x then 2024.4.x and then 2024.6.x, in sequence.
+-   Be sure to carefully read the [Release Notes](../releases/) for the specific version to which you plan to upgrade. The release might have special requirements or actions or contain breaking changes.
+
+-   Make a backup of your PostgreSQL database before upgrading. You can dump your existing database to get a backup file. For more information about dumping and backing up your database, refer to [Upgrade PostgreSQL on Docker Compose](../troubleshooting/postgres/upgrade_docker.md) or [Upgrade PostgreSQL on Kubernetes](../troubleshooting/postgres/upgrade_kubernetes.md).
+
+-   You need to upgrade in sequence of the major releases; do not skip directly from an older major version to the most recent version. For example, if you are currently running 2023.10.3, you will need to first upgrade to 2024.2.x, then 2024.4.x, and then 2024.6.x, in sequence.
+
 -   The version of the authentik instance and any outposts must be the same. We recommended that you always upgrade any outposts at the same time you upgrade your authentik instance.
-    :::
+
+## Upgrade authentik
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
@@ -22,7 +26,7 @@ import TabItem from "@theme/TabItem";
 
     #### 1. Retrieve latest `docker-compose.yml` file
 
-Download the `docker-compose.yml` file using either `wget -O docker-compose.yml https://goauthentik.io/docker-compose.yml` oe `curl -O https://goauthentik.io/docker-compose.yml`or similar process.
+    ßDownload the `docker-compose.yml` file using either `wget -O docker-compose.yml https://goauthentik.io/docker-compose.yml` or `curl -O https://goauthentik.io/docker-compose.yml`or a similar process.
 
     **2. Run upgrade commands**
 
@@ -54,5 +58,5 @@ You can view the current version of your authentik instance by logging in to the
 If you run the upgrade commands but your version on the Dashboard doesn’t change, follow this steps:
 
 1. Look at the server logs and search for an entry of `migration inconsistency`.
-2. If you see this entry, revert to your db backup.
+2. If you see this entry, revert to your database backup.
 3. Now, upgrade to each subsequent higher version. That is, upgrade in sequence, do not skip directly to the most recent version.
