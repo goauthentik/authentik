@@ -34,7 +34,7 @@ export class PropertyMappingScopeForm extends BasePropertyMappingForm<ScopeMappi
     renderExtraFields(): TemplateResult {
         return html` <ak-form-element-horizontal
                 label=${msg("Scope name")}
-                ?required=${true}
+                required
                 name="scopeName"
             >
                 <input

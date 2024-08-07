@@ -34,7 +34,7 @@ export class PropertyMappingSAMLForm extends BasePropertyMappingForm<SAMLPropert
     renderExtraFields(): TemplateResult {
         return html` <ak-form-element-horizontal
                 label=${msg("SAML Attribute Name")}
-                ?required=${true}
+                required
                 name="samlName"
             >
                 <input

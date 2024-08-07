@@ -30,7 +30,7 @@ export abstract class BasePropertyMappingForm<T extends PropertyMapping> extends
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -39,11 +39,7 @@ export abstract class BasePropertyMappingForm<T extends PropertyMapping> extends
                 />
             </ak-form-element-horizontal>
             ${this.renderExtraFields()}
-            <ak-form-element-horizontal
-                label=${msg("Expression")}
-                ?required=${true}
-                name="expression"
-            >
+            <ak-form-element-horizontal label=${msg("Expression")} required name="expression">
                 <ak-codemirror
                     mode=${CodeMirrorMode.Python}
                     value="${ifDefined(this.instance?.expression)}"
