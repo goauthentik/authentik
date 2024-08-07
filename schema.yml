@@ -46361,6 +46361,14 @@ components:
           description: 'Time offset when temporary users should be deleted. This only
             applies if your IDP uses the NameID Format ''transient'', and the user
             doesn''t log out manually. (Format: hours=1;minutes=2;seconds=3).'
+        encryption_kp:
+          type: string
+          format: uuid
+          nullable: true
+          title: Encryption Keypair
+          description: When selected, incoming assertions are encrypted by the IdP
+            using the public key of the encryption keypair. The assertion is decrypted
+            by the SP using the the private key.
     PatchedSCIMMappingRequest:
       type: object
       description: SCIMMapping Serializer
@@ -49178,6 +49186,14 @@ components:
           description: 'Time offset when temporary users should be deleted. This only
             applies if your IDP uses the NameID Format ''transient'', and the user
             doesn''t log out manually. (Format: hours=1;minutes=2;seconds=3).'
+        encryption_kp:
+          type: string
+          format: uuid
+          nullable: true
+          title: Encryption Keypair
+          description: When selected, incoming assertions are encrypted by the IdP
+            using the public key of the encryption keypair. The assertion is decrypted
+            by the SP using the the private key.
       required:
       - component
       - icon
@@ -49363,6 +49379,14 @@ components:
           description: 'Time offset when temporary users should be deleted. This only
             applies if your IDP uses the NameID Format ''transient'', and the user
             doesn''t log out manually. (Format: hours=1;minutes=2;seconds=3).'
+        encryption_kp:
+          type: string
+          format: uuid
+          nullable: true
+          title: Encryption Keypair
+          description: When selected, incoming assertions are encrypted by the IdP
+            using the public key of the encryption keypair. The assertion is decrypted
+            by the SP using the the private key.
       required:
       - name
       - pre_authentication_flow
