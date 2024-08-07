@@ -97,14 +97,14 @@ class ResponseProcessor:
         encryption_context = xmlsec.EncryptionContext(manager)
 
         encrypted_assertion = self._root.find(f".//{{{NS_SAML_ASSERTION}}}EncryptedAssertion")
-        if not encrypted_assertion:
+        if encrypted_assertion is None:
             raise InvalidEncryption()
         encrypted_data = xmlsec.tree.find_child(
             encrypted_assertion, "EncryptedData", xmlsec.constants.EncNs
         )
         try:
             decrypted_assertion = encryption_context.decrypt(encrypted_data)
-        except (xmlsec.InternalError, xmlsec.VerificationError) as exc:
+        except xmlsec.Error as exc:
             raise InvalidEncryption() from exc
 
         index_of = self._root.index(encrypted_assertion)
@@ -134,8 +134,8 @@ class ResponseProcessor:
         ctx.set_enabled_key_data([xmlsec.constants.KeyDataX509])
         try:
             ctx.verify(signature_node)
-        except (xmlsec.InternalError, xmlsec.VerificationError) as exc:
-            raise InvalidSignature from exc
+        except xmlsec.Error as exc:
+            raise InvalidSignature() from exc
         LOGGER.debug("Successfully verified signature")
 
     def _verify_request_id(self):
