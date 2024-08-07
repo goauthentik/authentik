@@ -54,7 +54,9 @@
 # Split Property Mappings docs between Providers and Sources
 [[redirects]]
   from = "/docs/property-mappings/"
-  to = "/docs/providers/property-mappings/expression"
+  to = "/docs/providers/property-mappings/"
+  status = 302
 [[redirects]]
   from = "/docs/property-mappings/expression"
   to = "/docs/providers/property-mappings/expression"
+  status = 302
