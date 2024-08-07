@@ -9,7 +9,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import type { Config, CurrentBrand, LicenseSummary } from "@goauthentik/api";
 import { UiThemeEnum } from "@goauthentik/api";
 
-import { AKElement } from "../Base";
+import { AKElement, rootInterface } from "../Base";
 import { BrandContextController } from "./BrandContextController";
 import { ConfigContextController } from "./ConfigContextController";
 import { EnterpriseContextController } from "./EnterpriseContextController";
@@ -50,9 +50,19 @@ export class Interface extends AKElement implements AkInterface {
         this.dataset.akInterfaceRoot = "true";
     }
 
-    _activateTheme(root: DocumentOrShadowRoot, theme: UiThemeEnum): void {
-        super._activateTheme(root, theme);
-        super._activateTheme(document as unknown as DocumentOrShadowRoot, theme);
+    _activateTheme(theme: UiThemeEnum, ...roots: DocumentOrShadowRoot[]): void {
+        if (theme === this._activeTheme) {
+            return;
+        }
+        console.debug(
+            `authentik/interface[${rootInterface()?.tagName.toLowerCase()}]: Enabling theme ${theme}`,
+        );
+        // Special case for root interfaces, as they need to modify the global document CSS too
+        // Instead of calling ._activateTheme() twice, we insert the root document in the call
+        // since multiple calls to ._activateTheme() would not do anything after the first call
+        // as the theme is already enabled.
+        roots.unshift(document as unknown as DocumentOrShadowRoot);
+        super._activateTheme(theme, ...roots);
     }
 
     async getTheme(): Promise<UiThemeEnum> {

@@ -2,19 +2,19 @@
 title: Style Guide
 ---
 
-Here are a few guidelines to ensure that the documentation is easy to read and uses similar phrasing. Remember to use our [docs templates](./templates/index.md) when possible; they are already set up to follow may of the style guidelines below.
+The Style Guide provides guidelines to ensure that the authentik documentation is easy to read and uses similar phrasing, formatting, and tone.
+
+We appreciate contributions to our documentation; everything from fixing a typo to adding additional content to writing a completely new topic. To make the review and merging of your contributions faster and easier, please follow the [writing documentation](./writing-documentation.md) guidelines.
 
 If you find any documentation that doesn't match these guidelines, feel free to either open an [Issue](https://github.com/goauthentik/authentik/issues) or a [PR](https://github.com/goauthentik/authentik/pulls) so they can be fixed.
 
-To test how the documentation renders use the Netlify Deploy Preview, especially when using Docusaurus-specific features. Or [build it locally and test](./writing-documentation.md#set-up-your-local-build), using the `make website-watch` command.
+## General style guidelines
 
-:::info
-Make sure to add any new pages to the appropriate `sidebar` file. Otherwise, the new page will not appear in the table of contents to the left.
-:::
+-   Try to order the documentation sections in the order that makes it easiest for the user to follow. That is, order the sections in the same order as the actual workflow used to accomplish the task.
 
-## General guidelines
+-   Use headings (sub-titles) to break up long documents, and make it easier to find a specific section.
 
--   Try to order the documentation sections in the order that makes it easiest for the user to follow. That is, order the sections in the same order as the actual workflow used to accomplish the task. Use headings (sub-titles) to break up long documents, and make it easier to find a specific section.
+-   Add cross-reference links to related content whenever possible.
 
 -   You can use standard [Docusaurus-specific features](https://docusaurus.io/docs/next/markdown-features), which include MDX elements such as tabs and admonitions.
 
@@ -40,7 +40,7 @@ Make sure to add any new pages to the appropriate `sidebar` file. Otherwise, the
 
 -   Our documentation uses American English ("z" not "s").
 
--   Phrasing should almost always be in present tense and active voice:
+-   Use the present tense and active voice in almost all cases:
 
     -   DON'T: "The Applications page will be loaded."
 
@@ -56,12 +56,17 @@ Make sure to add any new pages to the appropriate `sidebar` file. Otherwise, the
 
 Formatting in documentation is important; it improves comprehension and readability, and allows the brain to more quickly determine what is a command or a configuration setting, what is a field name, or what is a variable.
 
+### Fonts and font styling
+
 -   When referring to UI elements or components in the authentik UI, such as field names, labels, etc., use **bold** text.
+
+-   When referring to internal components in authentik, like the policy engine, or blueprints, do not use any special formatting. Link to the relevant documentation when possible.
 
 -   Use `code` format when referring to:
 
     -   commands
     -   file paths
+    -   file names
     -   directory names
     -   code snippets (single line or a block of code)
 
@@ -77,5 +82,68 @@ Formatting in documentation is important; it improves comprehension and readabil
 
 -   Both titles and headers (H1, H2, H3) use sentence style capitalization, meaning that only the first word is capitalized. However, if the title or header includes a proper noun (name of a product, etc) then capitalize those words.
     Examples:
+
     -   Configure your provider
     -   Configure the Google Workspace provider
+
+-   Make sure the title/header is descriptive, and tells the reader what that section is about. Try to avoid titles or headers like "Overview". Instead say "About authentik policies".
+
+-   Use the imperative verb form (not the gerund form) for procedural topics. For example, use "Configure your instance" instead of "Configuring your instance".
+
+### Examples
+
+When you want to show an example (say, a code snippet), use a new line, bold text, and a semi-colon, like this:
+
+    **Example**:
+    This expression policy uses an expression based on the user's name.
+    ```
+    if request.context["pending_user"].username == "marie":
+      return True
+    return False
+    ```
+
+### Notes and warnings
+
+Use the following convention for a note:
+
+```
+:::info
+Write your note here.
+:::
+```
+
+:::info
+Write your note here.
+:::
+
+For a warning, use this:
+
+```
+:::warning
+Write your note here.
+:::
+```
+
+:::warning
+Write your warning here.
+:::
+
+```
+
+```
+
+## Word choices
+
+-   **May** versus **might** versus **can**
+    Typically, the word "may" is not used in technical writing, because it implies permission (rather than ability) to do something. Instead use the word "can". Use "might" when the scenario could be different in certain environments. Be sparing with your use of "might"; this word implies unpredictability, not our favorite thing with software.
+
+    -   DON'T: "You may use an Expression policy to enforce MFA adherence."
+
+    -   DO: "You can use an Expression policy to enforce MFA adherence."
+
+    -   Do: "Values might differ depending on the source of the property mappings.""
+
+-   **Login**, **log in**, and **log in to**
+    As a descriptive term, use one word: "login". (The login panel.)
+    As a verb, use "log in", with two words. (This stage prompts the user to log in.)
+    As a verb with the proposition "to", use "log in to". (Log in to the application.)

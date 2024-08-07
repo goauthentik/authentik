@@ -61,7 +61,10 @@ module.exports = {
                 {
                     type: "category",
                     label: "Dashboards",
-                    items: ["services/organizr/index"],
+                    items: [
+                        "services/organizr/index",
+                        "services/linkwarden/index",
+                    ],
                 },
                 {
                     type: "category",
@@ -143,6 +146,7 @@ module.exports = {
                         "services/ubuntu-landscape/index",
                         "services/uptime-kuma/index",
                         "services/zabbix/index",
+                        "services/whats-up-docker/index",
                     ],
                 },
                 {

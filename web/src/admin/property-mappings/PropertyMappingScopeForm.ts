@@ -1,8 +1,6 @@
 import { BasePropertyMappingForm } from "@goauthentik/admin/property-mappings/BasePropertyMappingForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { docLink } from "@goauthentik/common/global";
 import "@goauthentik/elements/CodeMirror";
-import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
 import { msg } from "@lit/localize";
@@ -33,18 +31,10 @@ export class PropertyMappingScopeForm extends BasePropertyMappingForm<ScopeMappi
         }
     }
 
-    renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal
+    renderExtraFields(): TemplateResult {
+        return html` <ak-form-element-horizontal
                 label=${msg("Scope name")}
-                ?required=${true}
+                required
                 name="scopeName"
             >
                 <input
@@ -67,27 +57,6 @@ export class PropertyMappingScopeForm extends BasePropertyMappingForm<ScopeMappi
                     ${msg(
                         "Description shown to the user when consenting. If left empty, the user won't be informed.",
                     )}
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Expression")}
-                ?required=${true}
-                name="expression"
-            >
-                <ak-codemirror
-                    mode=${CodeMirrorMode.Python}
-                    value="${ifDefined(this.instance?.expression)}"
-                >
-                </ak-codemirror>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Expression using Python.")}
-                    <a
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        href="${docLink("/docs/property-mappings/expression?utm_source=authentik")}"
-                    >
-                        ${msg("See documentation for a list of all variables.")}
-                    </a>
                 </p>
             </ak-form-element-horizontal>`;
     }

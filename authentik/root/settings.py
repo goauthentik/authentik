@@ -52,7 +52,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 SHARED_APPS = [
     "django_tenants",
     "authentik.tenants",
-    "daphne",
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.humanize",
@@ -60,6 +59,7 @@ SHARED_APPS = [
     "django_filters",
     "drf_spectacular",
     "django_prometheus",
+    "django_countries",
     "pgactivity",
     "pglock",
     "channels",
@@ -77,6 +77,7 @@ TENANT_APPS = [
     "authentik.policies.event_matcher",
     "authentik.policies.expiry",
     "authentik.policies.expression",
+    "authentik.policies.geoip",
     "authentik.policies.password",
     "authentik.policies.reputation",
     "authentik.policies",
@@ -148,6 +149,7 @@ SPECTACULAR_SETTINGS = {
         "url": "https://github.com/goauthentik/authentik/blob/main/LICENSE",
     },
     "ENUM_NAME_OVERRIDES": {
+        "CountryCodeEnum": "django_countries.countries",
         "EventActions": "authentik.events.models.EventAction",
         "FlowDesignationEnum": "authentik.flows.models.FlowDesignation",
         "FlowLayoutEnum": "authentik.flows.models.FlowLayout",
@@ -518,6 +520,7 @@ if DEBUG:
     REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"].append(
         "rest_framework.renderers.BrowsableAPIRenderer"
     )
+    SHARED_APPS.insert(SHARED_APPS.index("django.contrib.staticfiles"), "daphne")
 
 TENANT_APPS.append("authentik.core")
 

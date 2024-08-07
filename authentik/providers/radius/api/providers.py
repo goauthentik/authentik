@@ -2,6 +2,7 @@
 
 from base64 import b64encode
 
+from django.conf import settings
 from django.shortcuts import get_object_or_404
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
@@ -100,7 +101,16 @@ class RadiusOutpostConfigViewSet(ListModelMixin, GenericViewSet):
             RadiusProviderPropertyMapping,
             ["packet"],
         )
-        dict = Dictionary("authentik/providers/radius/dictionaries/dictionary")
+        dict = Dictionary(
+            str(
+                settings.BASE_DIR
+                / "authentik"
+                / "providers"
+                / "radius"
+                / "dictionaries"
+                / "dictionary"
+            )
+        )
 
         packet = AuthPacket()
         packet.secret = provider.shared_secret
@@ -117,8 +127,9 @@ class RadiusOutpostConfigViewSet(ListModelMixin, GenericViewSet):
             # Ensure the vendor exists
             if vendor_code not in dict.vendors.backward or vendor_name not in dict.vendors.forward:
                 dict.vendors.Add(vendor_name, vendor_code)
-            if attribute_name not in dict.attributes:
-                dict.attributes[f"{vendor_name}-{attribute_name}"] = Attribute(
+            full_attribute_name = f"{vendor_name}-{attribute_name}"
+            if full_attribute_name not in dict.attributes:
+                dict.attributes[full_attribute_name] = Attribute(
                     attribute_name, attribute_code, attribute_type, vendor=vendor_name
                 )
 
