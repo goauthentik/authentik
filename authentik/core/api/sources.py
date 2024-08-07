@@ -197,7 +197,7 @@ class UserSourceConnectionViewSet(
 
 
 class GroupSourceConnectionSerializer(SourceSerializer):
-    """OAuth Group Source Connection Serializer"""
+    """Group Source Connection Serializer"""
 
     source = SourceSerializer(read_only=True)
 

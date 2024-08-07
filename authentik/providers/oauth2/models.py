@@ -22,6 +22,7 @@ from jwt import encode
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
+from authentik.brands.models import WebfingerProvider
 from authentik.core.models import ExpiringModel, PropertyMapping, Provider, User
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_code_fixed_length, generate_id, generate_key
@@ -120,7 +121,7 @@ class ScopeMapping(PropertyMapping):
         verbose_name_plural = _("Scope Mappings")
 
 
-class OAuth2Provider(Provider):
+class OAuth2Provider(WebfingerProvider, Provider):
     """OAuth2 Provider for generic OAuth and OpenID Connect Applications."""
 
     client_type = models.CharField(
@@ -287,6 +288,24 @@ class OAuth2Provider(Provider):
             headers["kid"] = self.signing_key.kid
         key, alg = self.jwt_key
         return encode(payload, key, algorithm=alg, headers=headers)
+
+    def webfinger(self, resource: str, request: HttpRequest):
+        return {
+            "subject": resource,
+            "links": [
+                {
+                    "rel": "http://openid.net/specs/connect/1.0/issuer",
+                    "href": request.build_absolute_uri(
+                        reverse(
+                            "authentik_providers_oauth2:provider-root",
+                            kwargs={
+                                "application_slug": self.application.slug,
+                            },
+                        )
+                    ),
+                },
+            ],
+        }
 
     class Meta:
         verbose_name = _("OAuth2/OpenID Provider")

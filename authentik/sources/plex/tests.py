@@ -54,7 +54,12 @@ class TestPlexSource(TestCase):
             self.assertEqual(
                 api.get_user_info(),
                 (
-                    {"username": "username", "email": "foo@bar.baz", "name": "title", "id": 1234123419},
+                    {
+                        "username": "username",
+                        "email": "foo@bar.baz",
+                        "name": "title",
+                        "id": 1234123419,
+                    },
                     1234123419,
                 ),
             )
