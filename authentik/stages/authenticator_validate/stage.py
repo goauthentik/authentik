@@ -5,6 +5,7 @@ from hashlib import sha256
 
 from django.conf import settings
 from django.http import HttpRequest, HttpResponse
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from jwt import PyJWTError, decode, encode
 from rest_framework.fields import CharField, IntegerField, ListField, UUIDField
@@ -143,6 +144,8 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
         self.stage.executor.plan.context[PLAN_CONTEXT_METHOD_ARGS]["mfa_devices"].append(
             self.device
         )
+        self.device.last_used = now()
+        self.device.save()
         return attrs
 
 
