@@ -6,7 +6,7 @@ from requests_mock import Mocker
 
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_key
-from authentik.sources.plex.models import PlexSource, PlexSourcePropertyMapping
+from authentik.sources.plex.models import PlexSource
 from authentik.sources.plex.plex import PlexAuth
 from authentik.sources.plex.tasks import check_plex_token_all
 
