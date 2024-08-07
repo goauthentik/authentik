@@ -23,6 +23,7 @@ from authentik.core.models import (
 from authentik.core.sources.flow_manager import SourceFlowManager
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.sources.saml.exceptions import (
+    InvalidEncryption,
     InvalidSignature,
     MismatchedRequestID,
     MissingSAMLResponse,
@@ -76,10 +77,42 @@ class ResponseProcessor:
         self._root_xml = b64decode(raw_response.encode())
         self._root = fromstring(self._root_xml)
 
+        if self._source.encryption_kp:
+            self._decrypt_response()
+
         if self._source.verification_kp:
             self._verify_signed()
         self._verify_request_id()
         self._verify_status()
+
+    def _decrypt_response(self):
+        """Decrypt SAMLResponse EncryptedAssertion Element"""
+        manager = xmlsec.KeysManager()
+        key = xmlsec.Key.from_memory(
+            self._source.encryption_kp.key_data,
+            xmlsec.constants.KeyDataFormatPem,
+        )
+
+        manager.add_key(key)
+        encryption_context = xmlsec.EncryptionContext(manager)
+
+        encrypted_assertion = self._root.find(f".//{{{NS_SAML_ASSERTION}}}EncryptedAssertion")
+        if encrypted_assertion is None:
+            raise InvalidEncryption()
+        encrypted_data = xmlsec.tree.find_child(
+            encrypted_assertion, "EncryptedData", xmlsec.constants.EncNs
+        )
+        try:
+            decrypted_assertion = encryption_context.decrypt(encrypted_data)
+        except xmlsec.Error as exc:
+            raise InvalidEncryption() from exc
+
+        index_of = self._root.index(encrypted_assertion)
+        self._root.remove(encrypted_assertion)
+        self._root.insert(
+            index_of,
+            decrypted_assertion,
+        )
 
     def _verify_signed(self):
         """Verify SAML Response's Signature"""
@@ -101,9 +134,9 @@ class ResponseProcessor:
         ctx.set_enabled_key_data([xmlsec.constants.KeyDataX509])
         try:
             ctx.verify(signature_node)
-        except (xmlsec.InternalError, xmlsec.VerificationError) as exc:
-            raise InvalidSignature from exc
-        LOGGER.debug("Successfully verified signautre")
+        except xmlsec.Error as exc:
+            raise InvalidSignature() from exc
+        LOGGER.debug("Successfully verified signature")
 
     def _verify_request_id(self):
         if self._source.allow_idp_initiated:

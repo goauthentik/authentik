@@ -33,6 +33,7 @@ class SAMLSourceSerializer(SourceSerializer):
             "digest_algorithm",
             "signature_algorithm",
             "temporary_user_delete_after",
+            "encryption_kp",
         ]
 
 
