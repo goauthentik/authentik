@@ -161,12 +161,14 @@ class SAMLSource(Source):
         default=None,
         null=True,
         blank=True,
-        help_text=_("When selected, incoming assertions are encrypted by the IdP using the public "
-                    "key of the encryption keypair. The assertion is decrypted by the SP using the "
-                    "the private key."
+        help_text=_(
+            "When selected, incoming assertions are encrypted by the IdP using the public "
+            "key of the encryption keypair. The assertion is decrypted by the SP using the "
+            "the private key."
         ),
         on_delete=models.SET_NULL,
         verbose_name=_("Encryption Keypair"),
+        related_name="+",
     )
 
     digest_algorithm = models.TextField(
