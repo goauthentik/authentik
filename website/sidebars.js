@@ -180,6 +180,7 @@ const docsSidebar = {
                     type: "category",
                     label: "Protocols",
                     items: [
+                        "sources/kerberos/index",
                         "sources/ldap/index",
                         "sources/oauth/index",
                         "sources/saml/index",
