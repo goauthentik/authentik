@@ -35,14 +35,14 @@ class KerberosBackend(InbuiltBackend):
 
     def auth_user(
         self, username: str, realm: str | None, password: str, **filters
-    ) -> (User | None, KerberosSource | None):
+    ) -> tuple[User | None, KerberosSource | None]:
         sources = KerberosSource.objects.filter(enabled=True, password_login_enabled=True)
         user = User.objects.filter(usersourceconnection__source__in=sources, **filters).first()
 
         if user is not None:
             # User found, let's get its connections for the sources that are available
             user_source_connections = (
-                UserKerberosSourceConnection.objects.select_subclasses().filter(
+                UserKerberosSourceConnection.objects.filter(
                     user=user, source__in=sources
                 )
             )
@@ -50,7 +50,7 @@ class KerberosBackend(InbuiltBackend):
             # User not found, let's try to find it by identifier if the realm has been specified
             if realm is not None:
                 user_source_connections = (
-                    UserKerberosSourceConnection.objects.select_subclasses().filter(
+                    UserKerberosSourceConnection.objects.filter(
                         source__in=sources, identifier__iexact=f"{username}@{realm}"
                     )
                 )
@@ -62,7 +62,7 @@ class KerberosBackend(InbuiltBackend):
             LOGGER.debug("no kerberos source found for user", username=username)
             return None, None
 
-        for user_source_connection in user_source_connections.prefetch_related():
+        for user_source_connection in user_source_connections.prefetch_related().select_related("source__kerberossource"):
             # User either has an unusable password,
             # or has a password, but couldn't be authenticated by ModelBackend
             # This means we check with a kinit to see if the Kerberos password has changed

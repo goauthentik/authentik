@@ -13,6 +13,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.sources.flow_manager import SourceFlowManager
 from authentik.sources.kerberos.models import (
+    GroupKerberosSourceConnection,
     KerberosSource,
     Krb5ConfContext,
     UserKerberosSourceConnection,
@@ -49,7 +50,7 @@ class SPNEGOView(View):
             status=401,
         )
         response[WWW_AUTHENTICATE] = (
-            NEGOTIATE if token is None else f"{NEGOTIATE} {b64encode(token).decode('ascii')}"
+            NEGOTIATE if token is None else f"{NEGOTIATE} {b64encode(token.encode()).decode('ascii')}"
         )
         return response
 
@@ -94,10 +95,8 @@ class SPNEGOView(View):
     def dispatch(self, request, *args, **kwargs) -> HttpResponse:
         """Process SPNEGO request"""
         self.source: KerberosSource = get_object_or_404(
-            KerberosSource, slug=kwargs.get("source_slug", "")
+            KerberosSource, slug=kwargs.get("source_slug", ""), enabled=True,
         )
-        if not self.source.enabled:
-            raise Http404
 
         qstring = request.GET if request.method == "GET" else request.POST
         state = qstring.get("state", None)
@@ -135,32 +134,30 @@ class SPNEGOView(View):
                 self.set_server_ctx(state, server_ctx)
                 return self.challenge(request, out_token)
 
-            # TODO: property mappings
             identifier = str(server_ctx.initiator_name)
-            enroll_info = {
-                "username": identifier if "@" not in identifier else identifier.rsplit("@", 1)[0],
-                "email": "",
-                "name": "",
+            context = {
+                "spnego_info": {
+                    "initiator_name": str(server_ctx.initiator_name),
+                    "target_name": str(server_ctx.target_name),
+                    "mech": str(server_ctx.mech),
+                    "actual_flags": server_ctx.actual_flags,
+                },
             }
 
-        sfm = SPNEGOSourceFlowManager(
+        return SPNEGOSourceFlowManager(
             source=self.source,
             request=request,
             identifier=identifier,
-            enroll_info=enroll_info,
-        )
-        sfm.policy_context = {
-            "spnego_info": {
-                "initiator_name": str(server_ctx.initiator_name),
-                "target_name": str(server_ctx.target_name),
-                "mech": str(server_ctx.mech),
-                "actual_flags": server_ctx.actual_flags,
-            }
-        }
-        return sfm.get_flow()
+            user_info={
+                "principal": identifier,
+                **context,
+            },
+            policy_context=context,
+        ).get_flow()
 
 
 class SPNEGOSourceFlowManager(SourceFlowManager):
     """Flow manager for Kerberos SPNEGO sources"""
 
-    connection_type = UserKerberosSourceConnection
+    user_connection_type = UserKerberosSourceConnection
+    group_connection_type = GroupKerberosSourceConnection

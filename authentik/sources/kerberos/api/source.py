@@ -93,7 +93,7 @@ class KerberosSourceViewSet(UsedByMixin, ModelViewSet):
             200: KerberosSyncStatusSerializer(),
         }
     )
-    @action(methods=["GET"], detail=True, pagination_class=None, filter_backends=[])
+    @action(methods=["GET"], detail=True, pagination_class=None, url_path="sync/status", filter_backends=[])
     def sync_status(self, request: Request, slug: str) -> Response:
         """Get source's sync status"""
         source: KerberosSource = self.get_object()
@@ -103,8 +103,9 @@ class KerberosSourceViewSet(UsedByMixin, ModelViewSet):
                 uid__startswith=source.slug,
             )
         )
-        status = {
-            "tasks": tasks,
-            "is_running": source.sync_lock.locked(),
-        }
+        with source.sync_lock as lock_acquired:
+            status = {
+                "tasks": tasks,
+                "is_running": not lock_acquired,
+            }
         return Response(KerberosSyncStatusSerializer(status).data)

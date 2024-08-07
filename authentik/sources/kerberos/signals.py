@@ -30,23 +30,24 @@ def sync_kerberos_source_on_save(sender, instance: KerberosSource, **_):
 @receiver(password_changed)
 def kerberos_sync_password(sender, user: User, password: str, **_):
     """Connect to kerberos and update password."""
-    user_source_connections = UserKerberosSourceConnection.objects.filter(
+    user_source_connections = UserKerberosSourceConnection.objects.select_related("source__kerberossource").filter(
         user=user, source__kerberossource__sync_users_password=True
     )
     for user_source_connection in user_source_connections:
-        with Krb5ConfContext(user_source_connection.source):
+        source = user_source_connection.source.kerberossource
+        with Krb5ConfContext(source):
             try:
-                user_source_connection.source.connection().getprinc(
+                source.connection().getprinc(
                     user_source_connection.identifier
                 ).change_password(password)
             except kadmin.KAdminError as exc:
-                LOGGER.warning("failed to set Kerberos password", exc=exc)
+                LOGGER.warning("failed to set Kerberos password", exc=exc, source=source)
                 Event.new(
                     EventAction.CONFIGURATION_ERROR,
                     message=(
                         "Failed to change password in Kerberos source due to remote error: "
                         f"{exc}"
                     ),
-                    source=user_source_connection.source,
+                    source=source,
                 ).set_user(user).save()
                 raise ValidationError("Failed to set password") from exc

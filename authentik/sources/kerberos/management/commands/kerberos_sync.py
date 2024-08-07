@@ -20,4 +20,5 @@ class Command(TenantCommand):
             if not source:
                 LOGGER.warning("Source does not exist", slug=source_slug)
                 continue
-            KerberosSync(source).sync()
+            user_count = KerberosSync(source).sync()
+            LOGGER.info(f"Synced {user_count} users", slug=source_slug)

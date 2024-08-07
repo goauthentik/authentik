@@ -16,20 +16,21 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
-from authentik.core.models import USER_PATH_SERVICE_ACCOUNT, PropertyMapping, Source, UserSourceConnection, UserTypes
+from authentik.core.models import USER_PATH_SERVICE_ACCOUNT, GroupSourceConnection, PropertyMapping, Source, UserSourceConnection, UserTypes
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.flows.challenge import RedirectChallenge
 
 LOGGER = get_logger()
 
 
+# python-kadmin leaks file descriptors. As such, this global is used to re-use
+# existing kadmin connections instead of creating new ones, which results in less to no file
+# descriptors leaks
+_kadmin_connections: dict[str, Any] = {}
+
+
 class KerberosSource(Source):
     """Federate Kerberos realm with authentik"""
-
-    # python-kadmin leaks file descriptors. As such, this class attribute is used to re-use
-    # existing kadmin connections instead of creating new ones, which results in less to no file
-    # descriptors leaks
-    _kadmin_connections: dict[str, Any] = {}
 
     realm = models.TextField(help_text=_("Kerberos realm"), unique=True)
     krb5_conf = models.TextField(
@@ -165,7 +166,7 @@ class KerberosSource(Source):
                 username = None
                 break
         # By default, don't sync principals from another realm
-        if realm.lower() != self.realm.lower():
+        if realm.upper() != self.realm.upper():
             username = None
 
         properties = {
@@ -181,6 +182,11 @@ class KerberosSource(Source):
                 }
             )
         return properties
+
+    def get_base_group_properties(self, group_id: str, **kwargs):
+        return {
+            "name": group_id,
+        }
 
     @property
     def tempdir(self) -> Path:
@@ -228,11 +234,11 @@ class KerberosSource(Source):
 
     def connection(self) -> "kadmin.KAdmin | None":
         """Get kadmin connection"""
-        if str(self.pk) not in self._kadmin_connections:
+        if str(self.pk) not in _kadmin_connections:
             kadm = self._kadmin_init()
             if kadm is not None:
-                self._kadmin_connections[str(self.pk)] = self._kadmin_init()
-        return self._kadmin_connections.get(str(self.pk), None)
+                _kadmin_connections[str(self.pk)] = self._kadmin_init()
+        return _kadmin_connections.get(str(self.pk), None)
 
     def check_connection(self) -> dict[str, str]:
         """Check Kerberos Connection"""
@@ -319,24 +325,6 @@ class Krb5ConfContext:
             del os.environ["KRB5_CONFIG"]
 
 
-class UserKerberosSourceConnection(UserSourceConnection):
-    """Connection to configured Kerberos Sources."""
-
-    identifier = models.TextField(db_index=True)
-
-    @property
-    def serializer(self) -> Serializer:
-        from authentik.sources.kerberos.api.source_connection import (
-            UserKerberosSourceConnectionSerializer,
-        )
-
-        return UserKerberosSourceConnectionSerializer
-
-    class Meta:
-        verbose_name = _("User Kerberos Source Connection")
-        verbose_name_plural = _("User Kerberos Source Connections")
-
-
 class KerberosPropertyMapping(PropertyMapping):
     """Map Kerberos Property to User object attribute"""
 
@@ -346,7 +334,7 @@ class KerberosPropertyMapping(PropertyMapping):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.sources.kerberos.api.property_mapping import (
+        from authentik.sources.kerberos.api.property_mappings import (
             KerberosPropertyMappingSerializer,
         )
 
@@ -358,3 +346,37 @@ class KerberosPropertyMapping(PropertyMapping):
     class Meta:
         verbose_name = _("Kerberos Property Mapping")
         verbose_name_plural = _("Kerberos Property Mapping")
+
+
+class UserKerberosSourceConnection(UserSourceConnection):
+    """Connection to configured Kerberos Sources."""
+
+    identifier = models.TextField()
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.sources.kerberos.api.source_connection import (
+            UserKerberosSourceConnectionSerializer,
+        )
+
+        return UserKerberosSourceConnectionSerializer
+
+    class Meta:
+        verbose_name = _("User Kerberos Source Connection")
+        verbose_name_plural = _("User Kerberos Source Connections")
+
+
+class GroupKerberosSourceConnection(GroupSourceConnection):
+    """Connection to configured Kerberos Sources."""
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.sources.kerberos.api.source_connection import (
+            GroupKerberosSourceConnectionSerializer,
+        )
+
+        return GroupKerberosSourceConnectionSerializer
+
+    class Meta:
+        verbose_name = _("Group Kerberos Source Connection")
+        verbose_name_plural = _("Group Kerberos Source Connections")

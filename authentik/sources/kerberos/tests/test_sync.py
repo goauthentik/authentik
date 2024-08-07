@@ -1,7 +1,6 @@
 """Kerberos Source sync tests"""
 
 from authentik.core.models import User
-from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.sources.kerberos.models import KerberosPropertyMapping, KerberosSource
 from authentik.sources.kerberos.sync import KerberosSync
@@ -33,7 +32,7 @@ class TestKerberosSync(KerberosTestCase):
             name=generate_id(),
             expression='if "/" in principal:\n    return {"username": None}\nreturn {}',
         )
-        self.source.property_mappings.set([noop, email, dont_sync_service])
+        self.source.user_property_mappings.set([noop, email, dont_sync_service])
 
         KerberosSync(self.source).sync()
 
@@ -51,3 +50,6 @@ class TestKerberosSync(KerberosTestCase):
     def test_tasks(self):
         """Test Scheduled tasks"""
         kerberos_sync_all.delay().get()
+        self.assertTrue(
+            User.objects.filter(username=self.realm.user_princ.rsplit("@", 1)[0]).exists()
+        )

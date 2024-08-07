@@ -13,7 +13,7 @@ from authentik.sources.kerberos.models import KerberosSource, Krb5ConfContext, U
 from authentik.core.sources.mapper import SourceMapper
 from authentik.lib.sync.mapper import PropertyMappingManager
 
-class KerberosSynchronizer:
+class KerberosSync:
     """Sync Kerberos users into authentik"""
 
     _source: KerberosSource
@@ -85,6 +85,8 @@ class KerberosSynchronizer:
             source=self._source, identifier__iexact=principal
         ).first()
 
+        # TODO: handle groups
+
         # User doesn't exists
         if not user_source_connection:
             with transaction.atomic():
@@ -97,17 +99,8 @@ class KerberosSynchronizer:
                 )
             return user, True
 
-        user = user_source_connection.user
-        for key, value in data.items():
-            if key == "attributes":
-                continue
-            setattr(user, key, value)
-        final_attributes = {}
-        MERGE_LIST_UNIQUE.merge(final_attributes, user.attributes)
-        MERGE_LIST_UNIQUE.merge(final_attributes, data.get("attributes", {}))
-        user.attributes = final_attributes
-        user.save()
-        return user, False
+        user_source_connection.user.update_attributes(data)
+        return user_source_connection.user, False
 
     def sync(self) -> int:
         """Iterate over all Kerberos users and create authentik_core.User instances"""
