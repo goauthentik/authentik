@@ -86,12 +86,8 @@ export class LDAPProviderFormPage extends WithBrandConfig(BaseProviderForm<LDAPP
                         const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(args);
                         return groups.results;
                     }}
-                    .renderElement=${(group: Group): string => {
-                        return group.name;
-                    }}
-                    .value=${(group: Group | undefined): string | undefined => {
-                        return group?.pk;
-                    }}
+                    .renderElement=${"name"}
+                    .value=${"pk"}
                     .selected=${(group: Group): boolean => {
                         return group.pk === this.instance?.searchGroup;
                     }}

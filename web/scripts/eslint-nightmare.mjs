@@ -10,6 +10,7 @@ const projectRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
 process.chdir(path.join(projectRoot, "./web"));
 
 const eslintConfig = {
+    fix: true,
     overrideConfig: {
         env: {
             browser: true,
@@ -27,17 +28,29 @@ const eslintConfig = {
         parserOptions: {
             ecmaVersion: 12,
             sourceType: "module",
+            project: true,
         },
         plugins: ["@typescript-eslint", "lit", "custom-elements", "sonarjs"],
+        ignorePatterns: ["authentik-live-tests/**", "./.storybook/**/*.ts"],
         rules: {
             "indent": "off",
             "linebreak-style": ["error", "unix"],
             "quotes": ["error", "double", { avoidEscape: true }],
             "semi": ["error", "always"],
             "@typescript-eslint/ban-ts-comment": "off",
-            "sonarjs/cognitive-complexity": ["error", 9],
+            "no-unused-vars": "off",
+            "sonarjs/cognitive-complexity": ["warn", 9],
             "sonarjs/no-duplicate-string": "off",
             "sonarjs/no-nested-template-literals": "off",
+            "@typescript-eslint/no-unused-vars": [
+                "error",
+                {
+                    argsIgnorePattern: "^_",
+                    varsIgnorePattern: "^_",
+                    caughtErrorsIgnorePattern: "^_",
+                },
+            ],
+            "no-console": ["error", { allow: ["debug", "warn", "error"] }],
         },
     },
 };
