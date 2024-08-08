@@ -103,9 +103,6 @@ class GroupSerializer(ModelSerializer):
             "users": {
                 "default": list,
             },
-            # TODO: This field isn't unique on the database which is hard to backport
-            # hence we just validate the uniqueness here
-            "name": {"validators": [UniqueValidator(Group.objects.all())]},
         }
 
 
