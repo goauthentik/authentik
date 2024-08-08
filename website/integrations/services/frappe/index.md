@@ -23,6 +23,7 @@ The following placeholders will be used:
 -   `provider` is the name for the social login provider in Frappe.
 
 ## authentik configuration
+
 1. Log in to authentik as an admin, and go to the Admin interface,
 2. Create a new OAuth2/OpenID Provider under **Applications** -> **Providers** using the following settings:
 
@@ -39,7 +40,7 @@ The following placeholders will be used:
 
     Take note of **Client ID** and **Client Secret** as you will need them later.
 
-3. Create a new Application under **Applications** > **Applications**, pick a name and a slug, and assign the provider that you have just created. 
+3. Create a new Application under **Applications** > **Applications**, pick a name and a slug, and assign the provider that you have just created.
 
 ## Frappe configuration
 
@@ -73,8 +74,7 @@ Add a new Social login Key using the black button on top right.
         In Client Information:
         - Auth URL Data: `{"response_type": "code", "scope": "email profile openid"}`
 
-![](./frappe4.png)
-3. Press the black **Save** butoon on the top right. 
+![](./frappe4.png) 3. Press the black **Save** button on the top right.
 
 ## Verification
 
