@@ -244,7 +244,8 @@
         "lint": {
             "command": "eslint --max-warnings 0 --fix",
             "dependencies": [
-                "./packages/common:lint"
+                "./packages/common:lint",
+                "./packages/common:build:types"
             ],
             "env": {
                 "NODE_OPTIONS": "--max_old_space_size=65536"
@@ -256,8 +257,8 @@
         "lint:types": {
             "command": "tsc --noEmit -p .",
             "dependencies": [
-                "./packages/common:build:types"
-                "build-locales",
+                "./packages/common:build:types",
+                "build-locales"
             ]
         },
         "lint:lockfile": {
