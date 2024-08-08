@@ -1369,7 +1369,7 @@
                         ],
                         "properties": {
                             "model": {
-                                "const": "authentik_sources_plex.plexsourceconnection"
+                                "const": "authentik_sources_plex.plexsourcepropertymapping"
                             },
                             "id": {
                                 "type": "string"
@@ -1391,13 +1391,93 @@
                                 }
                             },
                             "permissions": {
-                                "$ref": "#/$defs/model_authentik_sources_plex.plexsourceconnection_permissions"
+                                "$ref": "#/$defs/model_authentik_sources_plex.plexsourcepropertymapping_permissions"
                             },
                             "attrs": {
-                                "$ref": "#/$defs/model_authentik_sources_plex.plexsourceconnection"
+                                "$ref": "#/$defs/model_authentik_sources_plex.plexsourcepropertymapping"
                             },
                             "identifiers": {
-                                "$ref": "#/$defs/model_authentik_sources_plex.plexsourceconnection"
+                                "$ref": "#/$defs/model_authentik_sources_plex.plexsourcepropertymapping"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
+                                "const": "authentik_sources_plex.userplexsourceconnection"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_sources_plex.userplexsourceconnection_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_sources_plex.userplexsourceconnection"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_sources_plex.userplexsourceconnection"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
+                                "const": "authentik_sources_plex.groupplexsourceconnection"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_sources_plex.groupplexsourceconnection_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_sources_plex.groupplexsourceconnection"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_sources_plex.groupplexsourceconnection"
                             }
                         }
                     },
@@ -4270,7 +4350,9 @@
                         "authentik_sources_oauth.useroauthsourceconnection",
                         "authentik_sources_oauth.groupoauthsourceconnection",
                         "authentik_sources_plex.plexsource",
-                        "authentik_sources_plex.plexsourceconnection",
+                        "authentik_sources_plex.plexsourcepropertymapping",
+                        "authentik_sources_plex.userplexsourceconnection",
+                        "authentik_sources_plex.groupplexsourceconnection",
                         "authentik_sources_saml.samlsource",
                         "authentik_sources_saml.samlsourcepropertymapping",
                         "authentik_sources_saml.usersamlsourceconnection",
@@ -5966,6 +6048,10 @@
                             "authentik_core.delete_group",
                             "authentik_core.remove_user_from_group",
                             "authentik_core.view_group",
+                            "authentik_core.add_groupsourceconnection",
+                            "authentik_core.change_groupsourceconnection",
+                            "authentik_core.delete_groupsourceconnection",
+                            "authentik_core.view_groupsourceconnection",
                             "authentik_core.add_propertymapping",
                             "authentik_core.change_propertymapping",
                             "authentik_core.delete_propertymapping",
@@ -6235,6 +6321,22 @@
                             "authentik_rbac.edit_system_settings",
                             "authentik_rbac.view_system_info",
                             "authentik_rbac.view_system_settings",
+                            "authentik_sources_kerberos.add_groupkerberossourceconnection",
+                            "authentik_sources_kerberos.change_groupkerberossourceconnection",
+                            "authentik_sources_kerberos.delete_groupkerberossourceconnection",
+                            "authentik_sources_kerberos.view_groupkerberossourceconnection",
+                            "authentik_sources_kerberos.add_kerberospropertymapping",
+                            "authentik_sources_kerberos.change_kerberospropertymapping",
+                            "authentik_sources_kerberos.delete_kerberospropertymapping",
+                            "authentik_sources_kerberos.view_kerberospropertymapping",
+                            "authentik_sources_kerberos.add_kerberossource",
+                            "authentik_sources_kerberos.change_kerberossource",
+                            "authentik_sources_kerberos.delete_kerberossource",
+                            "authentik_sources_kerberos.view_kerberossource",
+                            "authentik_sources_kerberos.add_userkerberossourceconnection",
+                            "authentik_sources_kerberos.change_userkerberossourceconnection",
+                            "authentik_sources_kerberos.delete_userkerberossourceconnection",
+                            "authentik_sources_kerberos.view_userkerberossourceconnection",
                             "authentik_sources_ldap.add_ldapsource",
                             "authentik_sources_ldap.change_ldapsource",
                             "authentik_sources_ldap.delete_ldapsource",
@@ -6243,10 +6345,18 @@
                             "authentik_sources_ldap.change_ldapsourcepropertymapping",
                             "authentik_sources_ldap.delete_ldapsourcepropertymapping",
                             "authentik_sources_ldap.view_ldapsourcepropertymapping",
+                            "authentik_sources_oauth.add_groupoauthsourceconnection",
+                            "authentik_sources_oauth.change_groupoauthsourceconnection",
+                            "authentik_sources_oauth.delete_groupoauthsourceconnection",
+                            "authentik_sources_oauth.view_groupoauthsourceconnection",
                             "authentik_sources_oauth.add_oauthsource",
                             "authentik_sources_oauth.change_oauthsource",
                             "authentik_sources_oauth.delete_oauthsource",
                             "authentik_sources_oauth.view_oauthsource",
+                            "authentik_sources_oauth.add_oauthsourcepropertymapping",
+                            "authentik_sources_oauth.change_oauthsourcepropertymapping",
+                            "authentik_sources_oauth.delete_oauthsourcepropertymapping",
+                            "authentik_sources_oauth.view_oauthsourcepropertymapping",
                             "authentik_sources_oauth.add_useroauthsourceconnection",
                             "authentik_sources_oauth.change_useroauthsourceconnection",
                             "authentik_sources_oauth.delete_useroauthsourceconnection",
@@ -6259,10 +6369,18 @@
                             "authentik_sources_plex.change_plexsourceconnection",
                             "authentik_sources_plex.delete_plexsourceconnection",
                             "authentik_sources_plex.view_plexsourceconnection",
+                            "authentik_sources_saml.add_groupsamlsourceconnection",
+                            "authentik_sources_saml.change_groupsamlsourceconnection",
+                            "authentik_sources_saml.delete_groupsamlsourceconnection",
+                            "authentik_sources_saml.view_groupsamlsourceconnection",
                             "authentik_sources_saml.add_samlsource",
                             "authentik_sources_saml.change_samlsource",
                             "authentik_sources_saml.delete_samlsource",
                             "authentik_sources_saml.view_samlsource",
+                            "authentik_sources_saml.add_samlsourcepropertymapping",
+                            "authentik_sources_saml.change_samlsourcepropertymapping",
+                            "authentik_sources_saml.delete_samlsourcepropertymapping",
+                            "authentik_sources_saml.view_samlsourcepropertymapping",
                             "authentik_sources_saml.add_usersamlsourceconnection",
                             "authentik_sources_saml.change_usersamlsourceconnection",
                             "authentik_sources_saml.delete_usersamlsourceconnection",
@@ -7118,6 +7236,16 @@
                     "minLength": 1,
                     "title": "Icon"
                 },
+                "group_matching_mode": {
+                    "type": "string",
+                    "enum": [
+                        "identifier",
+                        "name_link",
+                        "name_deny"
+                    ],
+                    "title": "Group matching mode",
+                    "description": "How the source determines if an existing group should be used or a new group created."
+                },
                 "client_id": {
                     "type": "string",
                     "minLength": 1,
@@ -7174,7 +7302,58 @@
                 }
             }
         },
-        "model_authentik_sources_plex.plexsourceconnection": {
+        "model_authentik_sources_plex.plexsourcepropertymapping": {
+            "type": "object",
+            "properties": {
+                "managed": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "minLength": 1,
+                    "title": "Managed by authentik",
+                    "description": "Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update."
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "expression": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Expression"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_sources_plex.plexsourcepropertymapping_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_plexsourcepropertymapping",
+                            "change_plexsourcepropertymapping",
+                            "delete_plexsourcepropertymapping",
+                            "view_plexsourcepropertymapping"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_sources_plex.userplexsourceconnection": {
             "type": "object",
             "properties": {
                 "identifier": {
@@ -7195,7 +7374,7 @@
             },
             "required": []
         },
-        "model_authentik_sources_plex.plexsourceconnection_permissions": {
+        "model_authentik_sources_plex.userplexsourceconnection_permissions": {
             "type": "array",
             "items": {
                 "type": "object",
@@ -7206,10 +7385,47 @@
                     "permission": {
                         "type": "string",
                         "enum": [
-                            "add_plexsourceconnection",
-                            "change_plexsourceconnection",
-                            "delete_plexsourceconnection",
-                            "view_plexsourceconnection"
+                            "add_userplexsourceconnection",
+                            "change_userplexsourceconnection",
+                            "delete_userplexsourceconnection",
+                            "view_userplexsourceconnection"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_sources_plex.groupplexsourceconnection": {
+            "type": "object",
+            "properties": {
+                "icon": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Icon"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_sources_plex.groupplexsourceconnection_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_groupplexsourceconnection",
+                            "change_groupplexsourceconnection",
+                            "delete_groupplexsourceconnection",
+                            "view_groupplexsourceconnection"
                         ]
                     },
                     "user": {
@@ -11495,6 +11711,10 @@
                             "authentik_core.delete_group",
                             "authentik_core.remove_user_from_group",
                             "authentik_core.view_group",
+                            "authentik_core.add_groupsourceconnection",
+                            "authentik_core.change_groupsourceconnection",
+                            "authentik_core.delete_groupsourceconnection",
+                            "authentik_core.view_groupsourceconnection",
                             "authentik_core.add_propertymapping",
                             "authentik_core.change_propertymapping",
                             "authentik_core.delete_propertymapping",
@@ -11764,6 +11984,22 @@
                             "authentik_rbac.edit_system_settings",
                             "authentik_rbac.view_system_info",
                             "authentik_rbac.view_system_settings",
+                            "authentik_sources_kerberos.add_groupkerberossourceconnection",
+                            "authentik_sources_kerberos.change_groupkerberossourceconnection",
+                            "authentik_sources_kerberos.delete_groupkerberossourceconnection",
+                            "authentik_sources_kerberos.view_groupkerberossourceconnection",
+                            "authentik_sources_kerberos.add_kerberospropertymapping",
+                            "authentik_sources_kerberos.change_kerberospropertymapping",
+                            "authentik_sources_kerberos.delete_kerberospropertymapping",
+                            "authentik_sources_kerberos.view_kerberospropertymapping",
+                            "authentik_sources_kerberos.add_kerberossource",
+                            "authentik_sources_kerberos.change_kerberossource",
+                            "authentik_sources_kerberos.delete_kerberossource",
+                            "authentik_sources_kerberos.view_kerberossource",
+                            "authentik_sources_kerberos.add_userkerberossourceconnection",
+                            "authentik_sources_kerberos.change_userkerberossourceconnection",
+                            "authentik_sources_kerberos.delete_userkerberossourceconnection",
+                            "authentik_sources_kerberos.view_userkerberossourceconnection",
                             "authentik_sources_ldap.add_ldapsource",
                             "authentik_sources_ldap.change_ldapsource",
                             "authentik_sources_ldap.delete_ldapsource",
@@ -11772,10 +12008,18 @@
                             "authentik_sources_ldap.change_ldapsourcepropertymapping",
                             "authentik_sources_ldap.delete_ldapsourcepropertymapping",
                             "authentik_sources_ldap.view_ldapsourcepropertymapping",
+                            "authentik_sources_oauth.add_groupoauthsourceconnection",
+                            "authentik_sources_oauth.change_groupoauthsourceconnection",
+                            "authentik_sources_oauth.delete_groupoauthsourceconnection",
+                            "authentik_sources_oauth.view_groupoauthsourceconnection",
                             "authentik_sources_oauth.add_oauthsource",
                             "authentik_sources_oauth.change_oauthsource",
                             "authentik_sources_oauth.delete_oauthsource",
                             "authentik_sources_oauth.view_oauthsource",
+                            "authentik_sources_oauth.add_oauthsourcepropertymapping",
+                            "authentik_sources_oauth.change_oauthsourcepropertymapping",
+                            "authentik_sources_oauth.delete_oauthsourcepropertymapping",
+                            "authentik_sources_oauth.view_oauthsourcepropertymapping",
                             "authentik_sources_oauth.add_useroauthsourceconnection",
                             "authentik_sources_oauth.change_useroauthsourceconnection",
                             "authentik_sources_oauth.delete_useroauthsourceconnection",
@@ -11788,10 +12032,18 @@
                             "authentik_sources_plex.change_plexsourceconnection",
                             "authentik_sources_plex.delete_plexsourceconnection",
                             "authentik_sources_plex.view_plexsourceconnection",
+                            "authentik_sources_saml.add_groupsamlsourceconnection",
+                            "authentik_sources_saml.change_groupsamlsourceconnection",
+                            "authentik_sources_saml.delete_groupsamlsourceconnection",
+                            "authentik_sources_saml.view_groupsamlsourceconnection",
                             "authentik_sources_saml.add_samlsource",
                             "authentik_sources_saml.change_samlsource",
                             "authentik_sources_saml.delete_samlsource",
                             "authentik_sources_saml.view_samlsource",
+                            "authentik_sources_saml.add_samlsourcepropertymapping",
+                            "authentik_sources_saml.change_samlsourcepropertymapping",
+                            "authentik_sources_saml.delete_samlsourcepropertymapping",
+                            "authentik_sources_saml.view_samlsourcepropertymapping",
                             "authentik_sources_saml.add_usersamlsourceconnection",
                             "authentik_sources_saml.change_usersamlsourceconnection",
                             "authentik_sources_saml.delete_usersamlsourceconnection",

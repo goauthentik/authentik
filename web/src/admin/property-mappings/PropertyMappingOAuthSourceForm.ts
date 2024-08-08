@@ -9,6 +9,10 @@ import { OAuthSourcePropertyMapping, PropertymappingsApi } from "@goauthentik/ap
 
 @customElement("ak-property-mapping-oauth-source-form")
 export class PropertyMappingOAuthSourceForm extends BasePropertyMappingForm<OAuthSourcePropertyMapping> {
+    docLink(): string {
+        return "/docs/sources/property-mappings/expression?utm_source=authentik";
+    }
+
     loadInstance(pk: string): Promise<OAuthSourcePropertyMapping> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceOauthRetrieve({
             pmUuid: pk,

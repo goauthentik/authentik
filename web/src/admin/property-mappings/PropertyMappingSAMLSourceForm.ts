@@ -9,6 +9,10 @@ import { PropertymappingsApi, SAMLSourcePropertyMapping } from "@goauthentik/api
 
 @customElement("ak-property-mapping-saml-source-form")
 export class PropertyMappingSAMLSourceForm extends BasePropertyMappingForm<SAMLSourcePropertyMapping> {
+    docLink(): string {
+        return "/docs/sources/property-mappings/expression?utm_source=authentik";
+    }
+
     loadInstance(pk: string): Promise<SAMLSourcePropertyMapping> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceSamlRetrieve({
             pmUuid: pk,

@@ -9,6 +9,10 @@ import { PropertymappingsApi, SCIMSourcePropertyMapping } from "@goauthentik/api
 
 @customElement("ak-property-mapping-scim-source-form")
 export class PropertyMappingSCIMSourceForm extends BasePropertyMappingForm<SCIMSourcePropertyMapping> {
+    docLink(): string {
+        return "/docs/sources/property-mappings/expression?utm_source=authentik";
+    }
+
     loadInstance(pk: string): Promise<SCIMSourcePropertyMapping> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceScimRetrieve({
             pmUuid: pk,

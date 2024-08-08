@@ -6,9 +6,9 @@
         "@trivago/prettier-plugin-sort-imports": "^4.3.0",
         "@typescript-eslint/eslint-plugin": "^7.17.0",
         "@typescript-eslint/parser": "^7.17.0",
-        "@wdio/cli": "^8.40.0",
-        "@wdio/local-runner": "^8.40.1",
-        "@wdio/mocha-framework": "^8.40.0",
+        "@wdio/cli": "^8.40.2",
+        "@wdio/local-runner": "^8.40.2",
+        "@wdio/mocha-framework": "^8.40.2",
         "@wdio/spec-reporter": "^8.39.0",
         "eslint": "^8.57.0",
         "eslint-config-google": "^0.14.0",
@@ -32,6 +32,6 @@
         "node": ">=20"
     },
     "dependencies": {
-        "chromedriver": "^127.0.1"
+        "chromedriver": "^127.0.2"
     }
 }

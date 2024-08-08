@@ -25,3 +25,14 @@ Save, and you now have Plex as a source.
 :::note
 For more details on how-to have the new source display on the Login Page see [here](../index.md#add-sources-to-default-login-page).
 :::
+
+## Plex source property mappings
+
+See the [overview](../property-mappings/index.md) for information on how property mappings work.
+
+### Expression data
+
+The following variables are available to OAuth source property mappings:
+
+-   `info`: A Python dictionary containing Plex user data.
+-   `auth_api`: A Plex client object to make requests to the Source with authentication built-in.

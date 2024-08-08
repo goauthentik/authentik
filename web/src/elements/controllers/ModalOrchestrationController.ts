@@ -98,7 +98,6 @@ export class ModalOrchestrationController implements ReactiveController {
         // Pop off modals until you find the first live one, schedule it to be closed, and make that
         // cleaned list the current state. Since this is our *only* state object, this has the
         // effect of creating a new "knownModals" collection with some semantics.
-        // eslint-disable-next-line no-constant-condition
         while (true) {
             const modal = knownModals.pop();
             if (!modal) {

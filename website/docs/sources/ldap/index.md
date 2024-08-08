@@ -45,7 +45,7 @@ To create or edit a source in authentik, open the Admin interface and navigate t
 
 #### LDAP Attribute mapping
 
--   **User Property mappings** and **Group Property Mappings**: Define which LDAP properties map to which authentik properties. The default set of property mappings is generated for Active Directory. See also [LDAP Property Mappings](../../../docs/property-mappings/#ldap-property-mapping).
+-   **User Property mappings** and **Group Property Mappings**: Define which LDAP properties map to which authentik properties. The default set of property mappings is generated for Active Directory. See also our documentation on [property mappings](#ldap-source-property-mappings).
 
 #### Additional Settings
 
@@ -65,11 +65,11 @@ To create or edit a source in authentik, open the Admin interface and navigate t
 
 -   **Object uniqueness field**: This field contains a unique identifier.
 
-## Property mappings
+## LDAP source property mappings
 
-LDAP property mappings can be used to convert the raw LDAP response into an authentik user/group.
+See the [overview](../property-mappings/index.md) for information on how property mappings work.
 
-By default, authentik ships with [pre-configured mappings](../../property-mappings/index.md#ldap-property-mapping) for the most common LDAP setups. These mappings can be found on the LDAP Source Configuration page in the Admin interface.
+By default, authentik ships with [pre-configured mappings](#built-in-property-mappings) for the most common LDAP setups. These mappings can be found on the LDAP Source Configuration page in the Admin interface.
 
 You can assign the value of a mapping to any user attribute. Keep in mind though, data types from the LDAP server will be carried over. This means that with some implementations, where fields are stored as array in LDAP, they will be saved as array in authentik. To prevent this, use the built-in `list_flatten` function. Here is an example mapping for the user's username and a custom attribute for a phone number:
 
@@ -82,19 +82,36 @@ return {
 }
 ```
 
-### Custom LDAP Property Mapping
+### Built-in property mappings
 
-If the default source mapping is not enough, you can set your own custom LDAP property mapping.
+LDAP property mappings are used when you define a LDAP source. These mappings define which LDAP property maps to which authentik property. By default, the following mappings are created:
 
-Here are the steps:
+-   authentik default Active Directory Mapping: givenName
+-   authentik default Active Directory Mapping: sAMAccountName
+-   authentik default Active Directory Mapping: sn
+-   authentik default Active Directory Mapping: userPrincipalName
+-   authentik default LDAP Mapping: mail
+-   authentik default LDAP Mapping: Name
+-   authentik default OpenLDAP Mapping: cn
+-   authentik default OpenLDAP Mapping: uid
 
-1. In authentik, open the Admin interface, and then navigate to **Customization -> Property Mappings**.
-2. Click **Create**, select **LDAP Property Mapping**, and then click **Next**.
-3. Type a unique and meaningful **Name**, such as `ldap-displayName-mapping:name`.
-4. In the**Object field** field, type the name of an existing authentik field, such as `name`. If you want to add more extended attributes, you can type `attributes.mobile` for example.
-5. In the **Expression** field enter Python expressions to retrieve the value from LDAP source. For example `return list_flatten(ldap.get("displayName"))`.
+These are configured with most common LDAP setups.
 
-`list_flatten(["input string array"])` will convert a string array to a single string. If you are not sure whether the LDAP field is an array or not, you can map the field to any `attributes.xxx` and then check the sync result in authentik UI.
+### Expression data
+
+The following variables are available to LDAP source property mappings:
+
+-   `ldap`: A Python dictionary containing data from LDAP.
+-   `dn`: The object DN.
+
+### Additional expression semantics
+
+If you need to skip synchronization for a specific object, you can raise the `StopSync` exception:
+
+```python
+if ldap.get("cn") == "doNotSync":
+    raise StopSync
+```
 
 ## Password login
 

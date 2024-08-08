@@ -60,9 +60,7 @@ if (!upToDate) {
         .map((locale) => `Locale '${locale}' has ${counts.get(locale)} missing translations`)
         .join("\n");
 
-    // eslint-disable-next-line no-console
     console.log(`Translation tables rebuilt.\n${report}\n`);
 }
 
-// eslint-disable-next-line no-console
 console.log("Locale ./src is up-to-date");
