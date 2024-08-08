@@ -256,7 +256,8 @@
         "lint:types": {
             "command": "tsc --noEmit -p .",
             "dependencies": [
-                "build-locales"
+                "./packages/common:build:types"
+                "build-locales",
             ]
         },
         "lint:lockfile": {
