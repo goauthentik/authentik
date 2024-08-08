@@ -32,7 +32,6 @@ export async function popupCenterScreen(
     w: number,
     h: number,
 ): Promise<Window | null> {
-    // eslint-disable-next-line no-magic-numbers
     const [top, left] = [(screen.height - h) / 4, (screen.width - w) / 2];
     return new Promise((resolve) => {
         setTimeout(() => {

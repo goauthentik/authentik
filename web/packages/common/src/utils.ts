@@ -9,7 +9,7 @@ export function getCookie(name: string): string {
         for (let i = 0; i < cookies.length; i++) {
             const cookie = cookies[i].trim();
             // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === name + "=") {
+            if (cookie.substring(0, name.length + 1) === `${name}=`) {
                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                 break;
             }
@@ -25,21 +25,21 @@ export function convertToSlug(text: string): string {
         .replace(/[^\w-]+/g, "");
 }
 
+const WORD_COUNT_TRUNCATION_DEFAULT = 10;
 /**
  * Truncate a string based on maximum word count
  */
-export function truncateWords(string: string, length = 10): string {
-    string = string || "";
-    const array = string.trim().split(" ");
-    const ellipsis = array.length > length ? "..." : "";
-
-    return array.slice(0, length).join(" ") + ellipsis;
+export function truncateWords(input: string, length = WORD_COUNT_TRUNCATION_DEFAULT): string {
+    const words = (input ?? "").trim().split(" ");
+    const ellipsis = words.length > length ? "..." : "";
+    return words.slice(0, length).join(" ") + ellipsis;
 }
 
+const CHAR_COUNT_TRUNCATION_DEFAULT = 10;
 /**
  * Truncate a string based on character count
  */
-export function truncate(string: string, length = 10): string {
+export function truncate(string: string, length = CHAR_COUNT_TRUNCATION_DEFAULT): string {
     return string.length > length ? `${string.substring(0, length)}...` : string;
 }
 
@@ -83,19 +83,23 @@ export const ascii_lowercase = "abcdefghijklmnopqrstuvwxyz";
 export const ascii_uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 export const ascii_letters = ascii_lowercase + ascii_uppercase;
 export const digits = "0123456789";
-export const hexdigits = digits + "abcdef" + "ABCDEF";
+export const hexdigits = `${digits}abcdefABCDEF}`;
 export const octdigits = "01234567";
 export const punctuation = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
+
+const BYTE_SIZE = 256;
 
 export function randomString(len: number, charset: string): string {
     const chars = [];
     const array = new Uint8Array(len);
     self.crypto.getRandomValues(array);
     for (let index = 0; index < len; index++) {
-        chars.push(charset[Math.floor(charset.length * (array[index] / Math.pow(2, 8)))]);
+        chars.push(charset[Math.floor(charset.length * (array[index] / BYTE_SIZE))]);
     }
     return chars.join("");
 }
+
+const TIMEZONE_OFFSET = 60000; // milliseconds
 
 export function dateTimeLocal(date: Date): string {
     // So for some reason, the datetime-local input field requires ISO Datetime as value
@@ -105,7 +109,7 @@ export function dateTimeLocal(date: Date): string {
     // figure.
     // Additionally, toISOString always returns the date without timezone, which we would like
     // to include for better usability
-    const tzOffset = new Date().getTimezoneOffset() * 60000; //offset in milliseconds
+    const tzOffset = new Date().getTimezoneOffset() * TIMEZONE_OFFSET;
     const localISOTime = new Date(date.getTime() - tzOffset).toISOString().slice(0, -1);
     const parts = localISOTime.split(":");
     return `${parts[0]}:${parts[1]}`;
@@ -122,7 +126,7 @@ export function dateToUTC(date: Date): Date {
     // then subtract the timezone offset to create an "invalid" date (correct time&date)
     // but it still "thinks" it's in local TZ
     const timestamp = date.getTime();
-    const offset = -1 * (new Date().getTimezoneOffset() * 60000);
+    const offset = -1 * (new Date().getTimezoneOffset() * TIMEZONE_OFFSET);
     return new Date(timestamp - offset);
 }
 
@@ -151,13 +155,26 @@ export function adaptCSS(sheet: AdaptableStylesheet | AdaptableStylesheet[]): Ad
     return Array.isArray(sheet) ? sheet.map(_adaptCSS) : _adaptCSS(sheet);
 }
 
+const SECONDS_IN_A_MINUTE = 60;
+const MINUTES_IN_AN_HOUR = 60;
+const HOURS_IN_A_DAY = 24;
+const DAYS_IN_A_YEAR = 365;
+const MONTHS_IN_A_YEAR = 12;
+
+const MILLISECONDS_IN_A_SECOND = 1000;
+const MILLISECONDS_IN_A_MINUTE = MILLISECONDS_IN_A_SECOND * SECONDS_IN_A_MINUTE;
+const MILLISECONDS_IN_AN_HOUR = MILLISECONDS_IN_A_MINUTE * MINUTES_IN_AN_HOUR;
+const MILLISECONDS_IN_A_DAY = MILLISECONDS_IN_AN_HOUR * HOURS_IN_A_DAY;
+const MILLISECONDS_IN_A_YEAR = MILLISECONDS_IN_A_DAY * DAYS_IN_A_YEAR;
+const MILLISECONDS_IN_A_MONTH = MILLISECONDS_IN_A_YEAR / MONTHS_IN_A_YEAR;
+
 const _timeUnits = new Map<Intl.RelativeTimeFormatUnit, number>([
-    ["year", 24 * 60 * 60 * 1000 * 365],
-    ["month", (24 * 60 * 60 * 1000 * 365) / 12],
-    ["day", 24 * 60 * 60 * 1000],
-    ["hour", 60 * 60 * 1000],
-    ["minute", 60 * 1000],
-    ["second", 1000],
+    ["year", MILLISECONDS_IN_A_YEAR],
+    ["month", MILLISECONDS_IN_A_MONTH],
+    ["day", MILLISECONDS_IN_A_DAY],
+    ["hour", MILLISECONDS_IN_AN_HOUR],
+    ["minute", MILLISECONDS_IN_A_MINUTE],
+    ["second", MILLISECONDS_IN_A_SECOND],
 ]);
 
 export function getRelativeTime(d1: Date, d2: Date = new Date()): string {
@@ -166,9 +183,9 @@ export function getRelativeTime(d1: Date, d2: Date = new Date()): string {
 
     // "Math.abs" accounts for both "past" & "future" scenarios
     for (const [key, value] of _timeUnits) {
-        if (Math.abs(elapsed) > value || key == "second") {
+        if (Math.abs(elapsed) > value || key === "second") {
             return rtf.format(Math.round(elapsed / value), key);
         }
     }
-    return rtf.format(Math.round(elapsed / 1000), "second");
+    return rtf.format(Math.round(elapsed / MILLISECONDS_IN_A_SECOND), "second");
 }

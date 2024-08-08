@@ -3,7 +3,7 @@ import * as base64js from "base64-js";
 import { msg } from "@lit/localize";
 
 export function b64enc(buf: Uint8Array): string {
-    return base64js.fromByteArray(buf).replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
+    return base64js.fromByteArray(buf).replace(/\+/g, "-").replace(/\//g, "_").replace(/[=]/g, "");
 }
 
 export function b64RawEnc(buf: Uint8Array): string {

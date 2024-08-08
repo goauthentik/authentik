@@ -7,9 +7,14 @@ export interface WSMessage {
     message_type: string;
 }
 
+const MESSAGE_RETRY_DELAY = 200; // milliseconds
+const CLOSE_RETRY_DELAY = 6000; // milliseconds
+const OPEN_RETRY_DELAY = 200; // milliseconds
+const RETRY_BACKOFF = 2;
+
 export class WebsocketClient {
     messageSocket?: WebSocket;
-    retryDelay = 200;
+    retryDelay = MESSAGE_RETRY_DELAY;
 
     constructor() {
         try {
@@ -20,18 +25,20 @@ export class WebsocketClient {
     }
 
     connect(): void {
-        if (navigator.webdriver) return;
+        if (navigator.webdriver) {
+            return;
+        }
         const wsUrl = `${window.location.protocol.replace("http", "ws")}//${
             window.location.host
         }/ws/client/`;
         this.messageSocket = new WebSocket(wsUrl);
         this.messageSocket.addEventListener("open", () => {
             console.debug(`authentik/ws: connected to ${wsUrl}`);
-            this.retryDelay = 200;
+            this.retryDelay = OPEN_RETRY_DELAY;
         });
         this.messageSocket.addEventListener("close", (e) => {
             console.debug("authentik/ws: closed ws connection", e);
-            if (this.retryDelay > 6000) {
+            if (this.retryDelay > CLOSE_RETRY_DELAY) {
                 window.dispatchEvent(
                     new CustomEvent(EVENT_MESSAGE, {
                         bubbles: true,
@@ -47,7 +54,7 @@ export class WebsocketClient {
                 console.debug(`authentik/ws: reconnecting ws in ${this.retryDelay}ms`);
                 this.connect();
             }, this.retryDelay);
-            this.retryDelay = this.retryDelay * 2;
+            this.retryDelay = this.retryDelay * RETRY_BACKOFF;
         });
         this.messageSocket.addEventListener("message", (e) => {
             const data = JSON.parse(e.data);
@@ -60,7 +67,7 @@ export class WebsocketClient {
             );
         });
         this.messageSocket.addEventListener("error", () => {
-            this.retryDelay = this.retryDelay * 2;
+            this.retryDelay = this.retryDelay * RETRY_BACKOFF;
         });
     }
 }

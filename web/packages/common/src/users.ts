@@ -5,10 +5,8 @@ import { CoreApi, ResponseError, SessionUser } from "@goauthentik/api";
 
 let globalMePromise: Promise<SessionUser> | undefined;
 
-export function refreshMe(): Promise<SessionUser> {
-    globalMePromise = undefined;
-    return me();
-}
+const HTTP_FORBIDDEN = 403;
+const HTTP_UNAUTHORIZED = 401;
 
 export function me(): Promise<SessionUser> {
     if (!globalMePromise) {
@@ -48,7 +46,10 @@ export function me(): Promise<SessionUser> {
                         systemPermissions: [],
                     },
                 };
-                if (ex.response?.status === 401 || ex.response?.status === 403) {
+                if (
+                    ex.response?.status === HTTP_UNAUTHORIZED ||
+                    ex.response?.status === HTTP_FORBIDDEN
+                ) {
                     const relativeUrl = window.location
                         .toString()
                         .substring(window.location.origin.length);
@@ -60,4 +61,9 @@ export function me(): Promise<SessionUser> {
             });
     }
     return globalMePromise;
+}
+
+export function refreshMe(): Promise<SessionUser> {
+    globalMePromise = undefined;
+    return me();
 }

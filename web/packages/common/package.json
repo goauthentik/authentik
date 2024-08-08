@@ -1,22 +1,10 @@
 {
     "name": "@goauthentik/common",
     "version": "0.0.0",
-    "private": true,
-    "license": "MIT",
-    "type": "module",
-    "exports": {
-        "./*": "./dist/*"
-    },
-    "files": [
-        "./dist/**/*"
-    ],
     "dependencies": {
         "@sentry/browser": "^8.23.0",
+        "@types/webappsec-credential-management": "^0.6.8",
         "base64-js": "^1.5.1"
-    },
-    "peerDependencies": {
-        "@lit/localize": "^0.12.2",
-        "lit": "^3.2.0"
     },
     "devDependencies": {
         "@eslint/js": "^9.8.0",
@@ -39,6 +27,18 @@
         "typesync": "^0.13.0",
         "wireit": "^0.14.4"
     },
+    "exports": {
+        "./*": "./dist/*"
+    },
+    "files": [
+        "./dist/**/*"
+    ],
+    "license": "MIT",
+    "peerDependencies": {
+        "@lit/localize": "^0.12.2",
+        "lit": "^3.2.0"
+    },
+    "private": true,
     "scripts": {
         "build": "wireit",
         "build:types": "wireit",
@@ -47,11 +47,12 @@
         "lint:lockfile": "wireit",
         "lint:nightmare": "wireit",
         "lint:package": "wireit",
-        "lint:precommit": "wireit",
         "lint:spelling": "wireit",
         "lint:types": "wireit",
+        "precommit": "wireit",
         "prettier": "wireit"
     },
+    "type": "module",
     "wireit": {
         "build": {
             "command": "${NODE_RUNNER} build.mjs",
@@ -88,22 +89,28 @@
             ]
         },
         "lint": {
-            "command": "eslint --max-warnings 0 --fix",
+            "command": "eslint --max-warnings 0 --fix --config ./eslint.config.mjs",
             "env": {
                 "NODE_OPTIONS": "--max_old_space_size=65536"
             }
         },
         "lint:types": {
-            "command": "tsc --noEmit -p .",
-            "dependencies": [
-                "build-locales"
-            ]
+            "command": "tsc --noEmit -p ."
         },
         "lint:lockfile": {
             "command": "lockfile-lint --path package.json --type npm --allowed-hosts npm --validate-https"
         },
         "lint:package": {
             "command": "syncpack format -i '    '"
+        },
+        "lint:precommit": {
+            "command": "${NODE_RUNNER} ./scripts/eslint.mjs --precommit",
+            "env": {
+                "NODE_RUNNER": {
+                    "external": true,
+                    "default": "node"
+                }
+            }
         },
         "lint:nightmare": {
             "command": "${NODE_RUNNER} ./scripts/eslint.mjs --nightmare",
@@ -114,8 +121,15 @@
                 }
             }
         },
-        "lint:precommit": {
-            "command": "${NODE_RUNNER} ./scripts/eslint.mjs --precommit",
+        "precommit": {
+            "command": "prettier --write .",
+            "dependencies": [
+                "lint:types",
+                "lint:spelling",
+                "lint:lockfile",
+                "lint:package",
+                "lint:precommit"
+            ],
             "env": {
                 "NODE_RUNNER": {
                     "external": true,

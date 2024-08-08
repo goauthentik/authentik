@@ -12,6 +12,8 @@ export default [
     {
         ignores: [
             "dist/",
+            ".wireit/",
+            "packages/common/.wireit/",
             // don't ever lint node_modules
             "node_modules/",
             ".storybook/*",

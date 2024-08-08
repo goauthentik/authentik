@@ -15,6 +15,17 @@ import { CapabilitiesEnum, Config, ResponseError } from "@goauthentik/api";
 
 export const TAG_SENTRY_COMPONENT = "authentik.component";
 export const TAG_SENTRY_CAPABILITIES = "authentik.capabilities";
+const MIN_PATH_LENGTH = 2;
+
+// Get the interface name from URL
+export function currentInterface(): string {
+    const pathMatches = window.location.pathname.match(/.+if\/(\w+)\//);
+    let knownInterface = "unknown";
+    if (pathMatches && pathMatches.length >= MIN_PATH_LENGTH) {
+        knownInterface = pathMatches[1];
+    }
+    return knownInterface.toLowerCase();
+}
 
 export async function configureSentry(canDoPpi = false): Promise<Config> {
     const cfg = await config();
@@ -80,14 +91,4 @@ export async function configureSentry(canDoPpi = false): Promise<Config> {
         }
     }
     return cfg;
-}
-
-// Get the interface name from URL
-export function currentInterface(): string {
-    const pathMatches = window.location.pathname.match(/.+if\/(\w+)\//);
-    let currentInterface = "unknown";
-    if (pathMatches && pathMatches.length >= 2) {
-        currentInterface = pathMatches[1];
-    }
-    return currentInterface.toLowerCase();
 }
