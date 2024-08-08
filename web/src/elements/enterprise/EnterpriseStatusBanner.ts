@@ -7,6 +7,8 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
+import { LicenseSummaryStatusEnum } from "@goauthentik/api";
+
 @customElement("ak-enterprise-status")
 export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
     @property()
@@ -17,25 +19,57 @@ export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
     }
 
     renderBanner(): TemplateResult {
+        let message = "";
+        switch (this.licenseSummary.status) {
+            case LicenseSummaryStatusEnum.LimitExceededAdmin:
+            case LicenseSummaryStatusEnum.LimitExceededUser:
+                message = msg(
+                    "Warning: The current user count has exceeded the configured licenses.",
+                );
+                break;
+            case LicenseSummaryStatusEnum.Expired:
+                message = msg("Warning: One or more license(s) have expired.");
+                break;
+            case LicenseSummaryStatusEnum.ExpirySoon:
+                message = msg(
+                    "Warning: One or more license(s) will expire within the next 2 weeks.",
+                );
+                break;
+            case LicenseSummaryStatusEnum.ReadOnly:
+                message = msg(
+                    "Caution: This authentik instance has entered read-only mode due to expired/exceeded licenses.",
+                );
+                break;
+            default:
+                break;
+        }
         return html`<div
-            class="pf-c-banner ${this.licenseSummary?.readOnly ? "pf-m-red" : "pf-m-gold"}"
+            class="pf-c-banner ${this.licenseSummary?.status === LicenseSummaryStatusEnum.ReadOnly
+                ? "pf-m-red"
+                : "pf-m-gold"}"
         >
-            ${msg("Warning: The current user count has exceeded the configured licenses.")}
+            ${message}
             <a href="/if/admin/#/enterprise/licenses"> ${msg("Click here for more info.")} </a>
         </div>`;
     }
 
     render(): TemplateResult {
-        switch (this.interface.toLowerCase()) {
-            case "admin":
-                if (this.licenseSummary?.showAdminWarning || this.licenseSummary?.readOnly) {
+        switch (this.licenseSummary.status) {
+            case LicenseSummaryStatusEnum.LimitExceededUser:
+                if (this.interface.toLowerCase() === "user") {
                     return this.renderBanner();
                 }
                 break;
-            case "user":
-                if (this.licenseSummary?.showUserWarning || this.licenseSummary?.readOnly) {
+            case LicenseSummaryStatusEnum.ExpirySoon:
+            case LicenseSummaryStatusEnum.Expired:
+            case LicenseSummaryStatusEnum.LimitExceededAdmin:
+                if (this.interface.toLowerCase() === "admin") {
                     return this.renderBanner();
                 }
+                break;
+            case LicenseSummaryStatusEnum.ReadOnly:
+                return this.renderBanner();
+            default:
                 break;
         }
         return html``;

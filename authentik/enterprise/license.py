@@ -3,24 +3,37 @@
 from base64 import b64decode
 from binascii import Error
 from dataclasses import asdict, dataclass, field
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from enum import Enum
 from functools import lru_cache
 from time import mktime
 
 from cryptography.exceptions import InvalidSignature
 from cryptography.x509 import Certificate, load_der_x509_certificate, load_pem_x509_certificate
-from dacite import from_dict
+from dacite import DaciteError, from_dict
 from django.core.cache import cache
 from django.db.models.query import QuerySet
 from django.utils.timezone import now
 from jwt import PyJWTError, decode, get_unverified_header
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import BooleanField, DateTimeField, IntegerField
+from rest_framework.fields import (
+    BooleanField,
+    ChoiceField,
+    DateTimeField,
+    IntegerField,
+)
 
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import User, UserTypes
-from authentik.enterprise.models import License, LicenseUsage
+from authentik.enterprise.models import (
+    THRESHOLD_READ_ONLY_WEEKS,
+    THRESHOLD_WARNING_ADMIN_WEEKS,
+    THRESHOLD_WARNING_EXPIRY_WEEKS,
+    THRESHOLD_WARNING_USER_WEEKS,
+    License,
+    LicenseUsage,
+    LicenseUsageStatus,
+)
 from authentik.tenants.utils import get_unique_identifier
 
 CACHE_KEY_ENTERPRISE_LICENSE = "goauthentik.io/enterprise/license"
@@ -42,6 +55,8 @@ def get_license_aud() -> str:
 class LicenseFlags(Enum):
     """License flags"""
 
+    TRIAL = "trial"
+
 
 @dataclass
 class LicenseSummary:
@@ -49,10 +64,7 @@ class LicenseSummary:
 
     internal_users: int
     external_users: int
-    valid: bool
-    show_admin_warning: bool
-    show_user_warning: bool
-    read_only: bool
+    status: LicenseUsageStatus
     latest_valid: datetime
     has_license: bool
 
@@ -62,10 +74,7 @@ class LicenseSummarySerializer(PassiveSerializer):
 
     internal_users = IntegerField(required=True)
     external_users = IntegerField(required=True)
-    valid = BooleanField()
-    show_admin_warning = BooleanField()
-    show_user_warning = BooleanField()
-    read_only = BooleanField()
+    status = ChoiceField(choices=LicenseUsageStatus.choices)
     latest_valid = DateTimeField()
     has_license = BooleanField()
 
@@ -144,58 +153,66 @@ class LicenseKey:
         """Get current external user count"""
         return LicenseKey.base_user_qs().filter(type=UserTypes.EXTERNAL).count()
 
-    def is_valid(self) -> bool:
-        """Check if the given license body covers all users
+    def _last_valid_date(self):
+        last_valid_date = (
+            LicenseUsage.objects.order_by("-record_date")
+            .filter(status=LicenseUsageStatus.VALID)
+            .first()
+        )
+        if not last_valid_date:
+            return datetime.fromtimestamp(0, UTC)
+        return last_valid_date.record_date
 
-        Only checks the current count, no historical data is checked"""
+    def is_valid(self) -> LicenseUsageStatus:
+        """Check if the given license body covers all users, and is valid."""
+        last_valid = self._last_valid_date()
+        _now = now()
+        # Check limit-exceeded  based status
         default_users = self.get_default_user_count()
-        if default_users > self.internal_users:
-            return False
         active_users = self.get_external_user_count()
-        if active_users > self.external_users:
-            return False
-        return True
+        if default_users > self.internal_users or active_users > self.external_users:
+            if last_valid < _now - timedelta(weeks=THRESHOLD_READ_ONLY_WEEKS):
+                return LicenseUsageStatus.READ_ONLY
+            if last_valid < _now - timedelta(weeks=THRESHOLD_WARNING_USER_WEEKS):
+                return LicenseUsageStatus.LIMIT_EXCEEDED_USER
+            if last_valid < _now - timedelta(weeks=THRESHOLD_WARNING_ADMIN_WEEKS):
+                return LicenseUsageStatus.LIMIT_EXCEEDED_ADMIN
+        # Check expiry based status
+        if self.exp < _now:
+            if self.exp < _now - timedelta(weeks=THRESHOLD_WARNING_EXPIRY_WEEKS):
+                return LicenseUsageStatus.EXPIRY_SOON
+            if self.exp < _now - timedelta(weeks=THRESHOLD_READ_ONLY_WEEKS):
+                return LicenseUsageStatus.READ_ONLY
+            return LicenseUsageStatus.EXPIRED
+        return LicenseUsageStatus.VALID
 
     def record_usage(self):
         """Capture the current validity status and metrics and save them"""
         threshold = now() - timedelta(hours=8)
-        if not LicenseUsage.objects.filter(record_date__gte=threshold).exists():
-            LicenseUsage.objects.create(
+        usage = (
+            LicenseUsage.objects.order_by("-record_date").filter(record_date__gte=threshold).first()
+        )
+        if not usage:
+            usage = LicenseUsage.objects.create(
                 user_count=self.get_default_user_count(),
                 external_user_count=self.get_external_user_count(),
-                within_limits=self.is_valid(),
+                status=self.is_valid(),
             )
         summary = asdict(self.summary())
         # Also cache the latest summary for the middleware
         cache.set(CACHE_KEY_ENTERPRISE_LICENSE, summary, timeout=CACHE_EXPIRY_ENTERPRISE_LICENSE)
-        return summary
-
-    @staticmethod
-    def last_valid_date() -> datetime:
-        """Get the last date the license was valid"""
-        usage: LicenseUsage = (
-            LicenseUsage.filter_not_expired(within_limits=True).order_by("-record_date").first()
-        )
-        if not usage:
-            return now()
-        return usage.record_date
+        return usage
 
     def summary(self) -> LicenseSummary:
         """Summary of license status"""
         has_license = License.objects.all().count() > 0
-        last_valid = LicenseKey.last_valid_date()
-        show_admin_warning = last_valid < now() - timedelta(weeks=2)
-        show_user_warning = last_valid < now() - timedelta(weeks=4)
-        read_only = last_valid < now() - timedelta(weeks=6)
+        status = self.is_valid()
         latest_valid = datetime.fromtimestamp(self.exp)
         return LicenseSummary(
-            show_admin_warning=show_admin_warning and has_license,
-            show_user_warning=show_user_warning and has_license,
-            read_only=read_only and has_license,
             latest_valid=latest_valid,
             internal_users=self.internal_users,
             external_users=self.external_users,
-            valid=self.is_valid(),
+            status=status if has_license else LicenseUsageStatus.VALID,
             has_license=has_license,
         )
 
@@ -205,4 +222,8 @@ class LicenseKey:
         summary = cache.get(CACHE_KEY_ENTERPRISE_LICENSE)
         if not summary:
             return LicenseKey.get_total().summary()
-        return from_dict(LicenseSummary, summary)
+        try:
+            return from_dict(LicenseSummary, summary)
+        except DaciteError:
+            cache.delete(CACHE_KEY_ENTERPRISE_LICENSE)
+            return LicenseKey.get_total().summary()

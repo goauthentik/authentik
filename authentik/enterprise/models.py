@@ -52,6 +52,25 @@ def usage_expiry():
     return now() + timedelta(days=30 * 3)
 
 
+THRESHOLD_WARNING_ADMIN_WEEKS = 2
+THRESHOLD_WARNING_USER_WEEKS = 4
+THRESHOLD_WARNING_EXPIRY_WEEKS = 2
+THRESHOLD_READ_ONLY_WEEKS = 6
+
+
+class LicenseUsageStatus(models.TextChoices):
+    """License states an instance/tenant can be in"""
+
+    VALID = "valid"
+    EXPIRED = "expired"
+    EXPIRY_SOON = "expiry_soon"
+    # User limit exceeded, 2 week threshold, show message in admin interface
+    LIMIT_EXCEEDED_ADMIN = "limit_exceeded_admin"
+    # User limit exceeded, 4 week threshold, show message in user interface
+    LIMIT_EXCEEDED_USER = "limit_exceeded_user"
+    READ_ONLY = "read_only"
+
+
 class LicenseUsage(ExpiringModel):
     """a single license usage record"""
 
@@ -61,7 +80,7 @@ class LicenseUsage(ExpiringModel):
 
     user_count = models.BigIntegerField()
     external_user_count = models.BigIntegerField()
-    within_limits = models.BooleanField()
+    status = models.TextField(choices=LicenseUsageStatus.choices)
 
     record_date = models.DateTimeField(auto_now_add=True)
 

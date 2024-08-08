@@ -41386,14 +41386,8 @@ components:
           type: integer
         external_users:
           type: integer
-        valid:
-          type: boolean
-        show_admin_warning:
-          type: boolean
-        show_user_warning:
-          type: boolean
-        read_only:
-          type: boolean
+        status:
+          $ref: '#/components/schemas/LicenseSummaryStatusEnum'
         latest_valid:
           type: string
           format: date-time
@@ -41404,10 +41398,16 @@ components:
       - has_license
       - internal_users
       - latest_valid
-      - read_only
-      - show_admin_warning
-      - show_user_warning
+      - status
+    LicenseSummaryStatusEnum:
+      enum:
       - valid
+      - expired
+      - expiry_soon
+      - limit_exceeded_admin
+      - limit_exceeded_user
+      - read_only
+      type: string
     Link:
       type: object
       description: Returns a single link
