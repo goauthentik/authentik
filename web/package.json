@@ -243,6 +243,9 @@
         },
         "lint": {
             "command": "eslint --max-warnings 0 --fix",
+            "dependencies": [
+                "./packages/common:lint"
+            ],
             "env": {
                 "NODE_OPTIONS": "--max_old_space_size=65536"
             }
