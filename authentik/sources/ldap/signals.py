@@ -42,7 +42,7 @@ def sync_ldap_source_on_save(sender, instance: LDAPSource, **_):
 @receiver(password_validate)
 def ldap_password_validate(sender, password: str, plan_context: dict[str, Any], **__):
     """if there's an LDAP Source with enabled password sync, check the password"""
-    sources = LDAPSource.objects.filter(sync_users_password=True)
+    sources = LDAPSource.objects.filter(sync_users_password=True, enabled=True)
     if not sources.exists():
         return
     source = sources.first()
@@ -59,7 +59,7 @@ def ldap_password_validate(sender, password: str, plan_context: dict[str, Any], 
 @receiver(password_changed)
 def ldap_sync_password(sender, user: User, password: str, **_):
     """Connect to ldap and update password."""
-    sources = LDAPSource.objects.filter(sync_users_password=True)
+    sources = LDAPSource.objects.filter(sync_users_password=True, enabled=True)
     if not sources.exists():
         return
     source = sources.first()

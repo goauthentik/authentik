@@ -33,6 +33,7 @@ from authentik.blueprints.v1.common import (
 from authentik.blueprints.v1.meta.registry import BaseMetaModel, registry
 from authentik.core.models import (
     AuthenticatedSession,
+    GroupSourceConnection,
     PropertyMapping,
     Provider,
     Source,
@@ -91,6 +92,7 @@ def excluded_models() -> list[type[Model]]:
         Source,
         PropertyMapping,
         UserSourceConnection,
+        GroupSourceConnection,
         Stage,
         OutpostServiceConnection,
         Policy,

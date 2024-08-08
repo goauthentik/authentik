@@ -25,16 +25,6 @@ class OAuth1Callback(OAuthCallback):
     def get_user_id(self, info: dict[str, str]) -> str:
         return info.get("id")
 
-    def get_user_enroll_context(
-        self,
-        info: dict[str, Any],
-    ) -> dict[str, Any]:
-        return {
-            "username": info.get("screen_name"),
-            "email": info.get("email"),
-            "name": info.get("name"),
-        }
-
 
 @registry.register()
 class OAUth1Type(SourceType):
@@ -49,6 +39,13 @@ class OAUth1Type(SourceType):
     authorization_url = "http://localhost:5001/oauth/authorize"
     profile_url = "http://localhost:5001/api/me"
     urls_customizable = False
+
+    def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
+        return {
+            "username": info.get("screen_name"),
+            "email": info.get("email"),
+            "name": info.get("name"),
+        }
 
 
 class TestSourceOAuth1(SeleniumTestCase):
