@@ -41391,16 +41391,14 @@ components:
         latest_valid:
           type: string
           format: date-time
-        has_license:
-          type: boolean
       required:
       - external_users
-      - has_license
       - internal_users
       - latest_valid
       - status
     LicenseSummaryStatusEnum:
       enum:
+      - unlicensed
       - valid
       - expired
       - expiry_soon

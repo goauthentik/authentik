@@ -17,7 +17,6 @@ from django.utils.timezone import now
 from jwt import PyJWTError, decode, get_unverified_header
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import (
-    BooleanField,
     ChoiceField,
     DateTimeField,
     IntegerField,
@@ -66,7 +65,6 @@ class LicenseSummary:
     external_users: int
     status: LicenseUsageStatus
     latest_valid: datetime
-    has_license: bool
 
 
 class LicenseSummarySerializer(PassiveSerializer):
@@ -76,7 +74,6 @@ class LicenseSummarySerializer(PassiveSerializer):
     external_users = IntegerField(required=True)
     status = ChoiceField(choices=LicenseUsageStatus.choices)
     latest_valid = DateTimeField()
-    has_license = BooleanField()
 
 
 @dataclass
@@ -163,9 +160,11 @@ class LicenseKey:
             return datetime.fromtimestamp(0, UTC)
         return last_valid_date.record_date
 
-    def is_valid(self) -> LicenseUsageStatus:
+    def status(self) -> LicenseUsageStatus:
         """Check if the given license body covers all users, and is valid."""
         last_valid = self._last_valid_date()
+        if self.exp == 0 and not License.objects.exists():
+            return LicenseUsageStatus.UNLICENSED
         _now = now()
         # Check limit-exceeded based status
         internal_users = self.get_internal_user_count()
@@ -201,7 +200,7 @@ class LicenseKey:
             usage = LicenseUsage.objects.create(
                 user_count=self.get_internal_user_count(),
                 external_user_count=self.get_external_user_count(),
-                status=self.is_valid(),
+                status=self.status(),
             )
         summary = asdict(self.summary())
         # Also cache the latest summary for the middleware
@@ -210,15 +209,13 @@ class LicenseKey:
 
     def summary(self) -> LicenseSummary:
         """Summary of license status"""
-        has_license = License.objects.all().count() > 0
-        status = self.is_valid()
+        status = self.status()
         latest_valid = datetime.fromtimestamp(self.exp)
         return LicenseSummary(
             latest_valid=latest_valid,
             internal_users=self.internal_users,
             external_users=self.external_users,
-            status=status if has_license else LicenseUsageStatus.VALID,
-            has_license=has_license,
+            status=status,
         )
 
     @staticmethod

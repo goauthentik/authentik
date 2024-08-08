@@ -140,7 +140,7 @@ class OutpostHealthSerializer(PassiveSerializer):
 
     def get_fips_enabled(self, obj: dict) -> bool | None:
         """Get FIPS enabled"""
-        if not LicenseKey.get_total().is_valid():
+        if not LicenseKey.get_total().status().is_valid:
             return None
         return obj["fips_enabled"]
 

@@ -61,6 +61,7 @@ class License(SerializerModel):
 class LicenseUsageStatus(models.TextChoices):
     """License states an instance/tenant can be in"""
 
+    UNLICENSED = "unlicensed"
     VALID = "valid"
     EXPIRED = "expired"
     EXPIRY_SOON = "expiry_soon"
@@ -70,6 +71,13 @@ class LicenseUsageStatus(models.TextChoices):
     LIMIT_EXCEEDED_USER = "limit_exceeded_user"
     READ_ONLY = "read_only"
 
+    @property
+    def is_valid(self) -> bool:
+        """Quickly check if a license is valid"""
+        return self in [
+            LicenseUsageStatus.VALID,
+            LicenseUsageStatus.EXPIRY_SOON
+        ]
 
 class LicenseUsage(ExpiringModel):
     """a single license usage record"""

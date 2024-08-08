@@ -49,7 +49,7 @@ class TestEnterpriseLicense(TestCase):
     def test_valid(self):
         """Check license verification"""
         lic = License.objects.create(key=generate_id())
-        self.assertTrue(lic.status.is_valid())
+        self.assertTrue(lic.status.status().is_valid)
         self.assertEqual(lic.internal_users, 100)
 
     def test_invalid(self):
@@ -72,14 +72,14 @@ class TestEnterpriseLicense(TestCase):
     def test_valid_multiple(self):
         """Check license verification"""
         lic = License.objects.create(key=generate_id())
-        self.assertTrue(lic.status.is_valid())
+        self.assertTrue(lic.status.status().is_valid)
         lic2 = License.objects.create(key=generate_id())
-        self.assertTrue(lic2.status.is_valid())
+        self.assertTrue(lic2.status.status().is_valid)
         total = LicenseKey.get_total()
         self.assertEqual(total.internal_users, 200)
         self.assertEqual(total.external_users, 200)
         self.assertEqual(total.exp, expiry_valid)
-        self.assertTrue(total.is_valid())
+        self.assertTrue(total.status().is_valid)
 
     @patch(
         "authentik.enterprise.license.LicenseKey.validate",

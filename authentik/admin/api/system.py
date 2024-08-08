@@ -73,7 +73,7 @@ class SystemInfoSerializer(PassiveSerializer):
             "authentik_version": get_full_version(),
             "environment": get_env(),
             "openssl_fips_enabled": (
-                backend._fips_enabled if LicenseKey.get_total().is_valid() else None
+                backend._fips_enabled if LicenseKey.get_total().status().is_valid.is_valid else None
             ),
             "openssl_version": OPENSSL_VERSION,
             "platform": platform.platform(),
