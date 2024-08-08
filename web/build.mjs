@@ -115,7 +115,9 @@ async function buildOneSource(source, dest) {
         });
         const end = Date.now();
         console.log(
-            `[${new Date(end).toISOString()}] Finished build for target ${source} in ${Date.now() - start}ms`,
+            `[${new Date(end).toISOString()}] Finished build for target ${source} in ${
+                Date.now() - start
+            }ms`,
         );
     } catch (exc) {
         console.error(`[${new Date(Date.now()).toISOString()}] Failed to build ${source}: ${exc}`);
