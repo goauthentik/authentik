@@ -171,7 +171,7 @@ class Group(SerializerModel, AttributesMixin):
 
     group_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
-    name = models.TextField(_("name"))
+    name = models.TextField(verbose_name=_("name"), unique=True)
     is_superuser = models.BooleanField(
         default=False, help_text=_("Users added to this group will be superusers.")
     )

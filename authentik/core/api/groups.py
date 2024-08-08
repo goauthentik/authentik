@@ -20,7 +20,6 @@ from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ListSerializer, ValidationError
-from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
@@ -177,9 +176,6 @@ class GroupSerializer(ModelSerializer):
                 "required": False,
                 "default": list,
             },
-            # TODO: This field isn't unique on the database which is hard to backport
-            # hence we just validate the uniqueness here
-            "name": {"validators": [UniqueValidator(Group.objects.all())]},
         }
 
 
