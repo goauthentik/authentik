@@ -4,7 +4,7 @@ import { Constructor } from "@goauthentik/elements/types.js";
 import { consume } from "@lit/context";
 import type { LitElement } from "lit";
 
-import { LicenseSummaryStatusEnum, type LicenseSummary } from "@goauthentik/api";
+import { type LicenseSummary, LicenseSummaryStatusEnum } from "@goauthentik/api";
 
 export function WithLicenseSummary<T extends Constructor<LitElement>>(
     superclass: T,

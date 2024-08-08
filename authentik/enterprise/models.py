@@ -74,10 +74,8 @@ class LicenseUsageStatus(models.TextChoices):
     @property
     def is_valid(self) -> bool:
         """Quickly check if a license is valid"""
-        return self in [
-            LicenseUsageStatus.VALID,
-            LicenseUsageStatus.EXPIRY_SOON
-        ]
+        return self in [LicenseUsageStatus.VALID, LicenseUsageStatus.EXPIRY_SOON]
+
 
 class LicenseUsage(ExpiringModel):
     """a single license usage record"""
