@@ -88,6 +88,9 @@ class SystemPermission(models.Model):
         verbose_name_plural = _("System permissions")
         permissions = [
             ("view_system_info", _("Can view system info")),
+            ("view_system_tasks", _("Can view system tasks")),
+            ("view_user_directory", _("Can view users in the user directory")),
+            ("run_system_tasks", _("Can run system tasks")),
             ("access_admin_interface", _("Can access admin interface")),
             ("view_system_settings", _("Can view system settings")),
             ("edit_system_settings", _("Can edit system settings")),

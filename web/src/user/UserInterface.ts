@@ -159,6 +159,13 @@ class UserInterfacePresentation extends AKElement {
             .otherwise(() => this.me.user.username);
     }
 
+    get canAccessUserDirectory() {
+        return (
+            this.me.user.isSuperuser ||
+            this.me.user.systemPermissions.includes("can_view_user_directory")
+        );
+    }
+
     get canAccessAdmin() {
         return (
             this.me.user.isSuperuser ||
@@ -203,6 +210,8 @@ class UserInterfacePresentation extends AKElement {
                             ${this.renderApiDrawerTrigger()}
                             <!-- -->
                             ${this.renderNotificationDrawerTrigger()}
+                            <!-- -->
+                            ${this.renderUserDirectory()}
                             <!-- -->
                             ${this.renderSettings()}
                             <div class="pf-c-page__header-tools-item">
@@ -353,6 +362,20 @@ class UserInterfacePresentation extends AKElement {
         >
             ${msg("Admin interface")}
         </a>`;
+    }
+
+    renderUserDirectory() {
+        if (!this.canAccessUserDirectory) {
+            return nothing;
+        }
+
+        return html` <div class="pf-c-page__header-tools-item">
+            <a class="pf-c-button pf-m-plain" type="button" href="#/directory">
+                <pf-tooltip position="top" content=${msg("User directory")}>
+                    <i class="pf-icon pf-icon-project" aria-hidden="true"></i>
+                </pf-tooltip>
+            </a>
+        </div>`;
     }
 
     renderImpersonation() {

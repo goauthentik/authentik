@@ -141,6 +141,7 @@ export class PageHeader extends WithBrandConfig(AKElement) {
         return html` <ak-enterprise-status interface="admin"></ak-enterprise-status>
             <div class="bar">
                 <button
+                    part="sidebar-trigger"
                     class="sidebar-trigger pf-c-button pf-m-plain"
                     @click=${() => {
                         this.dispatchEvent(

@@ -37,6 +37,10 @@ def _validate_schema_name(name):
         )
 
 
+def _default_user_directory_fields():
+    return ["avatar", "name", "username", "email", "groups"]
+
+
 class Tenant(TenantMixin, SerializerModel):
     """Tenant"""
 
@@ -84,6 +88,14 @@ class Tenant(TenantMixin, SerializerModel):
     )
     impersonation = models.BooleanField(
         help_text=_("Globally enable/disable impersonation."), default=True
+    )
+    user_directory_fields = models.JSONField(
+        help_text=_("Fields to show in the user directory."),
+        default=_default_user_directory_fields,
+        blank=True,
+    )
+    user_directory_attributes = models.JSONField(
+        help_text=_("Attributes to show in the user directory."), default=list, blank=True
     )
     default_token_duration = models.TextField(
         help_text=_("Default token duration"),

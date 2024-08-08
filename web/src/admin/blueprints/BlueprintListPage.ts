@@ -53,7 +53,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
         return msg("Automate and template configuration within authentik.");
     }
     pageIcon(): string {
-        return "pf-icon pf-icon-blueprint";
+        return "fa fa-user";
     }
 
     expandable = true;

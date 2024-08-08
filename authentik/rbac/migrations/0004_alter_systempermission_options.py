@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_rbac", "0003_alter_systempermission_options"),
     ]
@@ -17,6 +16,9 @@ class Migration(migrations.Migration):
                 "managed": False,
                 "permissions": [
                     ("view_system_info", "Can view system info"),
+                    ("view_system_tasks", "Can view system tasks"),
+                    ("view_user_directory", "Can view users in the user directory"),
+                    ("run_system_tasks", "Can run system tasks"),
                     ("access_admin_interface", "Can access admin interface"),
                     ("view_system_settings", "Can view system settings"),
                     ("edit_system_settings", "Can edit system settings"),
