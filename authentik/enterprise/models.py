@@ -39,7 +39,7 @@ class License(SerializerModel):
         """Get parsed license status"""
         from authentik.enterprise.license import LicenseKey
 
-        return LicenseKey.validate(self.key)
+        return LicenseKey.validate(self.key, check_expiry=False)
 
     class Meta:
         indexes = (HashIndex(fields=("key",)),)

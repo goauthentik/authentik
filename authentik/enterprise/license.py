@@ -92,7 +92,7 @@ class LicenseKey:
     flags: list[LicenseFlags] = field(default_factory=list)
 
     @staticmethod
-    def validate(jwt: str) -> "LicenseKey":
+    def validate(jwt: str, check_expiry=True) -> "LicenseKey":
         """Validate the license from a given JWT"""
         try:
             headers = get_unverified_header(jwt)
@@ -116,6 +116,7 @@ class LicenseKey:
                     our_cert.public_key(),
                     algorithms=["ES512"],
                     audience=get_license_aud(),
+                    options={"verify_exp": check_expiry},
                 ),
             )
         except PyJWTError:
@@ -125,9 +126,8 @@ class LicenseKey:
     @staticmethod
     def get_total() -> "LicenseKey":
         """Get a summarized version of all (not expired) licenses"""
-        active_licenses = License.objects.filter(expiry__gte=now())
         total = LicenseKey(get_license_aud(), 0, "Summarized license", 0, 0)
-        for lic in active_licenses:
+        for lic in License.objects.all():
             total.internal_users += lic.internal_users
             total.external_users += lic.external_users
             exp_ts = int(mktime(lic.expiry.timetuple()))
@@ -144,7 +144,7 @@ class LicenseKey:
         return User.objects.all().exclude_anonymous().exclude(is_active=False)
 
     @staticmethod
-    def get_default_user_count():
+    def get_internal_user_count():
         """Get current default user count"""
         return LicenseKey.base_user_qs().filter(type=UserTypes.INTERNAL).count()
 
@@ -168,9 +168,9 @@ class LicenseKey:
         last_valid = self._last_valid_date()
         _now = now()
         # Check limit-exceeded  based status
-        default_users = self.get_default_user_count()
-        active_users = self.get_external_user_count()
-        if default_users > self.internal_users or active_users > self.external_users:
+        internal_users = self.get_internal_user_count()
+        external_users = self.get_external_user_count()
+        if internal_users > self.internal_users or external_users > self.external_users:
             if last_valid < _now - timedelta(weeks=THRESHOLD_READ_ONLY_WEEKS):
                 return LicenseUsageStatus.READ_ONLY
             if last_valid < _now - timedelta(weeks=THRESHOLD_WARNING_USER_WEEKS):
@@ -178,12 +178,16 @@ class LicenseKey:
             if last_valid < _now - timedelta(weeks=THRESHOLD_WARNING_ADMIN_WEEKS):
                 return LicenseUsageStatus.LIMIT_EXCEEDED_ADMIN
         # Check expiry based status
-        if self.exp < _now:
-            if self.exp < _now - timedelta(weeks=THRESHOLD_WARNING_EXPIRY_WEEKS):
-                return LicenseUsageStatus.EXPIRY_SOON
-            if self.exp < _now - timedelta(weeks=THRESHOLD_READ_ONLY_WEEKS):
+        if datetime.fromtimestamp(self.exp, UTC) < _now:
+            if datetime.fromtimestamp(self.exp, UTC) < _now - timedelta(
+                weeks=THRESHOLD_READ_ONLY_WEEKS
+            ):
                 return LicenseUsageStatus.READ_ONLY
             return LicenseUsageStatus.EXPIRED
+        if datetime.fromtimestamp(self.exp, UTC) <= _now + timedelta(
+            weeks=THRESHOLD_WARNING_EXPIRY_WEEKS
+        ):
+            return LicenseUsageStatus.EXPIRY_SOON
         return LicenseUsageStatus.VALID
 
     def record_usage(self):
@@ -194,7 +198,7 @@ class LicenseKey:
         )
         if not usage:
             usage = LicenseUsage.objects.create(
-                user_count=self.get_default_user_count(),
+                user_count=self.get_internal_user_count(),
                 external_user_count=self.get_external_user_count(),
                 status=self.is_valid(),
             )

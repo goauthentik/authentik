@@ -128,7 +128,7 @@ class LicenseViewSet(UsedByMixin, ModelViewSet):
         forecast_for_months = 12
         response = LicenseForecastSerializer(
             data={
-                "internal_users": LicenseKey.get_default_user_count(),
+                "internal_users": LicenseKey.get_internal_user_count(),
                 "external_users": LicenseKey.get_external_user_count(),
                 "forecasted_internal_users": (internal_in_last_month * forecast_for_months),
                 "forecasted_external_users": (external_in_last_month * forecast_for_months),
