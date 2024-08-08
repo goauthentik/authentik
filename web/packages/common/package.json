@@ -1,0 +1,42 @@
+{
+    "name": "@goauthentik/common",
+    "version": "0.0.0",
+    "private": true,
+    "license": "MIT",
+    "type": "module",
+    "scripts": {},
+    "exports": {
+        "./*": "./dist/*"
+    },
+    "files": [
+        "./dist/**/*"
+    ],
+    "dependencies": {
+        "@sentry/browser": "^8.23.0",
+        "base64-js": "^1.5.1"
+    },
+    "peerDependencies": {
+        "@lit/localize": "^0.12.2",
+        "lit": "^3.2.0"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.8.0",
+        "@types/eslint__js": "^8.42.3",
+        "esbuild": "^0.23.0",
+        "eslint": "^9.8.0",
+        "eslint-config-google": "^0.14.0",
+        "eslint-config-nightmare-mode": "^2.3.0",
+        "eslint-plugin-custom-elements": "^0.0.8",
+        "eslint-plugin-lit": "^1.14.0",
+        "eslint-plugin-sonarjs": "^1.0.4",
+        "glob": "^11.0.0",
+        "lit-analyzer": "^2.0.3",
+        "lockfile-lint": "^4.14.0",
+        "prettier": "^3.3.3",
+        "rimraf": "^6.0.1",
+        "syncpack": "^12.4.0",
+        "typescript": "^5.5.4",
+        "typescript-eslint": "^8.0.1",
+        "typesync": "^0.13.0"
+    }
+}
