@@ -39,11 +39,11 @@ The following placeholders will be used:
 
     Take note of **Client ID** and **Client Secret** as you will need them later.
 
-3. Create a new Application under **Applications** > **Applications** and assign the provider that you have just created. 
+3. Create a new Application under **Applications** > **Applications**, pick a name and a slug, and assign the provider that you have just created. 
 
 ## Frappe configuration
 
-1. From the Frappe main menu navigate to **Integrations**, then to **Social Login Key**.
+1. From the Frappe main menu, navigate to **Integrations**, then to **Social Login Key**.
 
 Add a new Social login Key using the black button on top right.
 ![](./frappe1.png)
@@ -80,5 +80,5 @@ Add a new Social login Key using the black button on top right.
 
 1. Go to `https://frappe.company` from Incognito mode.
 2. Press **Login with provider** on the login screen.
-3. Authorize with Authentik.
+3. Authorize with authentik.
 4. You will be redirected to home screen of Frappe application.
