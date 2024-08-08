@@ -13,6 +13,7 @@ from rest_framework.serializers import ValidationError
 
 from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import User
+from authentik.events.middleware import audit_ignore
 from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import ChallengeResponse, WithUserInfoChallenge
 from authentik.flows.exceptions import FlowSkipStageException, StageInvalidException
@@ -144,8 +145,9 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
         self.stage.executor.plan.context[PLAN_CONTEXT_METHOD_ARGS]["mfa_devices"].append(
             self.device
         )
-        self.device.last_used = now()
-        self.device.save()
+        with audit_ignore():
+            self.device.last_used = now()
+            self.device.save()
         return attrs
 
 
