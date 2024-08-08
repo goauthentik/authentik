@@ -167,7 +167,7 @@ class LicenseKey:
         """Check if the given license body covers all users, and is valid."""
         last_valid = self._last_valid_date()
         _now = now()
-        # Check limit-exceeded  based status
+        # Check limit-exceeded based status
         internal_users = self.get_internal_user_count()
         external_users = self.get_external_user_count()
         if internal_users > self.internal_users or external_users > self.external_users:
@@ -184,6 +184,7 @@ class LicenseKey:
             ):
                 return LicenseUsageStatus.READ_ONLY
             return LicenseUsageStatus.EXPIRED
+        # Expiry warning
         if datetime.fromtimestamp(self.exp, UTC) <= _now + timedelta(
             weeks=THRESHOLD_WARNING_EXPIRY_WEEKS
         ):

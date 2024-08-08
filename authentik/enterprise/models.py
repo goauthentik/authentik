@@ -17,6 +17,17 @@ if TYPE_CHECKING:
     from authentik.enterprise.license import LicenseKey
 
 
+def usage_expiry():
+    """Keep license usage records for 3 months"""
+    return now() + timedelta(days=30 * 3)
+
+
+THRESHOLD_WARNING_ADMIN_WEEKS = 2
+THRESHOLD_WARNING_USER_WEEKS = 4
+THRESHOLD_WARNING_EXPIRY_WEEKS = 2
+THRESHOLD_READ_ONLY_WEEKS = 6
+
+
 class License(SerializerModel):
     """An authentik enterprise license"""
 
@@ -45,17 +56,6 @@ class License(SerializerModel):
         indexes = (HashIndex(fields=("key",)),)
         verbose_name = _("License")
         verbose_name_plural = _("Licenses")
-
-
-def usage_expiry():
-    """Keep license usage records for 3 months"""
-    return now() + timedelta(days=30 * 3)
-
-
-THRESHOLD_WARNING_ADMIN_WEEKS = 2
-THRESHOLD_WARNING_USER_WEEKS = 4
-THRESHOLD_WARNING_EXPIRY_WEEKS = 2
-THRESHOLD_READ_ONLY_WEEKS = 6
 
 
 class LicenseUsageStatus(models.TextChoices):
