@@ -1,4 +1,4 @@
-import { docLink } from "@goauthentik/common/global";
+import { docLink } from "@goauthentik/common/global.js";
 import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/TokenCopyButton";
 

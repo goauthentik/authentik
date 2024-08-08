@@ -1,13 +1,13 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
     EVENT_WS_MESSAGE,
-} from "@goauthentik/common/constants";
-import { configureSentry } from "@goauthentik/common/sentry";
-import { UIConfig, UserDisplay } from "@goauthentik/common/ui/config";
-import { me } from "@goauthentik/common/users";
-import { WebsocketClient } from "@goauthentik/common/ws";
+} from "@goauthentik/common/constants.js";
+import { configureSentry } from "@goauthentik/common/sentry.js";
+import { UIConfig, UserDisplay } from "@goauthentik/common/ui/config.js";
+import { me } from "@goauthentik/common/users.js";
+import { WebsocketClient } from "@goauthentik/common/ws.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import { EnterpriseAwareInterface } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/ak-locale-context";

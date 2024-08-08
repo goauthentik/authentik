@@ -1,4 +1,4 @@
-import { LOCALSTORAGE_AUTHENTIK_KEY } from "@goauthentik/common/constants";
+import { LOCALSTORAGE_AUTHENTIK_KEY } from "@goauthentik/common/constants.js";
 
 import { msg } from "@lit/localize";
 import { LitElement, ReactiveController, ReactiveControllerHost, html } from "lit";

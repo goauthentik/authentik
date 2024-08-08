@@ -1,6 +1,6 @@
 import "@goauthentik/admin/admin-settings/AdminSettingsForm";
 import { AdminSettingsForm } from "@goauthentik/admin/admin-settings/AdminSettingsForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import "@goauthentik/components/events/ObjectChangelog";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";

@@ -1,5 +1,5 @@
-import { EVENT_MESSAGE, EVENT_WS_MESSAGE } from "@goauthentik/common/constants";
-import { MessageLevel } from "@goauthentik/common/messages";
+import { EVENT_MESSAGE, EVENT_WS_MESSAGE } from "@goauthentik/common/constants.js";
+import { MessageLevel } from "@goauthentik/common/messages.js";
 
 import { msg } from "@lit/localize";
 

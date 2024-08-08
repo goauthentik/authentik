@@ -4,7 +4,6 @@
     "private": true,
     "license": "MIT",
     "type": "module",
-    "scripts": {},
     "exports": {
         "./*": "./dist/*"
     },
@@ -37,6 +36,95 @@
         "syncpack": "^12.4.0",
         "typescript": "^5.5.4",
         "typescript-eslint": "^8.0.1",
-        "typesync": "^0.13.0"
+        "typesync": "^0.13.0",
+        "wireit": "^0.14.4"
+    },
+    "scripts": {
+        "build": "wireit",
+        "build:types": "wireit",
+        "format": "wireit",
+        "lint": "wireit",
+        "lint:lockfile": "wireit",
+        "lint:nightmare": "wireit",
+        "lint:package": "wireit",
+        "lint:precommit": "wireit",
+        "lint:spelling": "wireit",
+        "lint:types": "wireit",
+        "prettier": "wireit"
+    },
+    "wireit": {
+        "build": {
+            "command": "${NODE_RUNNER} build.mjs",
+            "dependencies": [
+                "build:types"
+            ],
+            "files": [
+                "src/**/*.{css,jpg,png,ts,js,json}",
+                "!src/**/*.stories.ts",
+                "!src/**/*.tests.ts",
+                "!src/locales/*.ts",
+                "!src/locale-codes.ts"
+            ],
+            "output": [
+                "./dist/**/*.js",
+                "./dist/**/*.css"
+            ],
+            "env": {
+                "NODE_RUNNER": {
+                    "external": true,
+                    "default": "node"
+                }
+            }
+        },
+        "build:types": {
+            "command": "tsc --declaration -p .",
+            "files": [
+                "src/**/*.ts",
+                "!src/**/*.stories.ts",
+                "!src/**/*.tests.ts"
+            ],
+            "output": [
+                "./dist/**/*.d.ts"
+            ]
+        },
+        "lint": {
+            "command": "eslint --max-warnings 0 --fix",
+            "env": {
+                "NODE_OPTIONS": "--max_old_space_size=65536"
+            }
+        },
+        "lint:types": {
+            "command": "tsc --noEmit -p .",
+            "dependencies": [
+                "build-locales"
+            ]
+        },
+        "lint:lockfile": {
+            "command": "lockfile-lint --path package.json --type npm --allowed-hosts npm --validate-https"
+        },
+        "lint:package": {
+            "command": "syncpack format -i '    '"
+        },
+        "lint:nightmare": {
+            "command": "${NODE_RUNNER} ./scripts/eslint.mjs --nightmare",
+            "env": {
+                "NODE_RUNNER": {
+                    "external": true,
+                    "default": "node"
+                }
+            }
+        },
+        "lint:precommit": {
+            "command": "${NODE_RUNNER} ./scripts/eslint.mjs --precommit",
+            "env": {
+                "NODE_RUNNER": {
+                    "external": true,
+                    "default": "node"
+                }
+            }
+        },
+        "lint:spelling": {
+            "command": "node scripts/check-spelling.mjs"
+        }
     }
 }

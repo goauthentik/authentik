@@ -1,4 +1,4 @@
-import { getRelativeTime } from "@goauthentik/common/utils";
+import { getRelativeTime } from "@goauthentik/common/utils.js";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/EmptyState";
 import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";

@@ -1,5 +1,5 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { me } from "@goauthentik/common/users";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { me } from "@goauthentik/common/users.js";
 import { AKElement, rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
 

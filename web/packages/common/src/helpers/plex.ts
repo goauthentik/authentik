@@ -1,5 +1,5 @@
-import { VERSION } from "@goauthentik/common/constants";
-import { SentryIgnoredError } from "@goauthentik/common/errors";
+import { VERSION } from "@goauthentik/common/constants.js";
+import { SentryIgnoredError } from "@goauthentik/common/errors.js";
 
 export interface PlexPinResponse {
     // Only has the fields we care about
@@ -23,14 +23,17 @@ export const DEFAULT_HEADERS = {
     "X-Plex-Device-Vendor": "goauthentik.io",
 };
 
+const HTTP_OK = 200;
+const POLL_TIMEOUT = 500; // milliseconds
+
 export async function popupCenterScreen(
     url: string,
     title: string,
     w: number,
     h: number,
 ): Promise<Window | null> {
-    const top = (screen.height - h) / 4,
-        left = (screen.width - w) / 2;
+    // eslint-disable-next-line no-magic-numbers
+    const [top, left] = [(screen.height - h) / 4, (screen.width - w) / 2];
     return new Promise((resolve) => {
         setTimeout(() => {
             const popup = window.open(
@@ -78,7 +81,7 @@ export class PlexAPIClient {
         const pinResponse = await fetch(`https://plex.tv/api/v2/pins/${id}`, {
             headers: headers,
         });
-        if (pinResponse.status > 200) {
+        if (pinResponse.status > HTTP_OK) {
             throw new SentryIgnoredError("Invalid response code");
         }
         const pin: PlexPinResponse = await pinResponse.json();
@@ -97,7 +100,7 @@ export class PlexAPIClient {
                 if (response) {
                     resolve(response);
                 } else {
-                    setTimeout(executePoll, 500, resolve, reject);
+                    setTimeout(executePoll, POLL_TIMEOUT, resolve, reject);
                 }
             } catch (e) {
                 reject(e as Error);

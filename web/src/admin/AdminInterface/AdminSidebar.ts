@@ -1,6 +1,6 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_SIDEBAR_TOGGLE, VERSION } from "@goauthentik/common/constants";
-import { me } from "@goauthentik/common/users";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { EVENT_SIDEBAR_TOGGLE, VERSION } from "@goauthentik/common/constants.js";
+import { me } from "@goauthentik/common/users.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import {
     CapabilitiesEnum,

@@ -1,5 +1,5 @@
-import { EVENT_REFRESH, EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
-import { getRelativeTime } from "@goauthentik/common/utils";
+import { EVENT_REFRESH, EVENT_THEME_CHANGE } from "@goauthentik/common/constants.js";
+import { getRelativeTime } from "@goauthentik/common/utils.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
 import {

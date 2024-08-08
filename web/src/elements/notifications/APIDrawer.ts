@@ -1,5 +1,5 @@
-import { RequestInfo } from "@goauthentik/common/api/middleware";
-import { EVENT_API_DRAWER_TOGGLE, EVENT_REQUEST_POST } from "@goauthentik/common/constants";
+import { RequestInfo } from "@goauthentik/common/api/middleware.js";
+import { EVENT_API_DRAWER_TOGGLE, EVENT_REQUEST_POST } from "@goauthentik/common/constants.js";
 import { AKElement } from "@goauthentik/elements/Base";
 
 import { msg } from "@lit/localize";

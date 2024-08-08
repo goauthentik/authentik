@@ -8,6 +8,13 @@ export interface EventUser {
     is_anonymous?: boolean;
 }
 
+export interface EventModel {
+    pk: string;
+    name: string;
+    app: string;
+    model_name: string;
+}
+
 export interface EventContext {
     [key: string]: EventContext | EventModel | string | number | string[];
 }
@@ -15,13 +22,6 @@ export interface EventContext {
 export interface EventWithContext extends Event {
     user: EventUser;
     context: EventContext;
-}
-
-export interface EventModel {
-    pk: string;
-    name: string;
-    app: string;
-    model_name: string;
 }
 
 export interface EventRequest {

@@ -1,4 +1,4 @@
-import { docLink } from "@goauthentik/common/global";
+import { docLink } from "@goauthentik/common/global.js";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 

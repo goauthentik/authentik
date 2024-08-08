@@ -1,5 +1,5 @@
-import { EVENT_REQUEST_POST } from "@goauthentik/common/constants";
-import { getCookie } from "@goauthentik/common/utils";
+import { EVENT_REQUEST_POST } from "@goauthentik/common/constants.js";
+import { getCookie } from "@goauthentik/common/utils.js";
 
 import {
     CurrentBrand,
@@ -17,6 +17,8 @@ export interface RequestInfo {
     status: number;
 }
 
+const HTTP_BAD_REQUEST = 400;
+
 export class LoggingMiddleware implements Middleware {
     brand: CurrentBrand;
     constructor(brand: CurrentBrand) {
@@ -28,7 +30,7 @@ export class LoggingMiddleware implements Middleware {
         // https://developer.mozilla.org/en-US/docs/Web/API/console#styling_console_output
         msg += `%c${context.response.status}%c ${context.init.method} ${context.url}`;
         let style = "";
-        if (context.response.status >= 400) {
+        if (context.response.status >= HTTP_BAD_REQUEST) {
             style = "color: red; font-weight: bold;";
         }
         console.debug(msg, style, "");
@@ -38,7 +40,7 @@ export class LoggingMiddleware implements Middleware {
 
 export class CSRFMiddleware implements Middleware {
     pre?(context: RequestContext): Promise<FetchParams | void> {
-        // @ts-ignore
+        // @ts-expect-error Headers collection type does not recognize 'X-' headers.
         context.init.headers[CSRFHeaderName] = getCookie("authentik_csrf");
         return Promise.resolve(context);
     }

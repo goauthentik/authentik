@@ -1,4 +1,4 @@
-import { me } from "@goauthentik/common/users";
+import { me } from "@goauthentik/common/users.js";
 import { AKElement } from "@goauthentik/elements/Base";
 
 import { CSSResult, TemplateResult, css, html } from "lit";

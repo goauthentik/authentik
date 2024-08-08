@@ -1,4 +1,4 @@
-import { EVENT_SIDEBAR_TOGGLE } from "@goauthentik/common/constants";
+import { EVENT_SIDEBAR_TOGGLE } from "@goauthentik/common/constants.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import { themeImage } from "@goauthentik/elements/utils/images";

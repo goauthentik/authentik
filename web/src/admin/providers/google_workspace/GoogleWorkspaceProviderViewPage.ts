@@ -2,8 +2,8 @@ import "@goauthentik/admin/providers/google_workspace/GoogleWorkspaceProviderFor
 import "@goauthentik/admin/providers/google_workspace/GoogleWorkspaceProviderGroupList";
 import "@goauthentik/admin/providers/google_workspace/GoogleWorkspaceProviderUserList";
 import "@goauthentik/admin/rbac/ObjectPermissionsPage";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
 import "@goauthentik/components/events/ObjectChangelog";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Markdown";

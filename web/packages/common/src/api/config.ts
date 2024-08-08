@@ -2,11 +2,31 @@ import {
     CSRFMiddleware,
     EventMiddleware,
     LoggingMiddleware,
-} from "@goauthentik/common/api/middleware";
-import { EVENT_LOCALE_REQUEST, VERSION } from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
+} from "@goauthentik/common/api/middleware.js";
+import { EVENT_LOCALE_REQUEST, VERSION } from "@goauthentik/common/constants.js";
+import { globalAK } from "@goauthentik/common/global.js";
 
 import { Config, Configuration, CoreApi, CurrentBrand, RootApi } from "@goauthentik/api";
+
+export function getMetaContent(key: string): string {
+    const metaEl = document.querySelector<HTMLMetaElement>(`meta[name=${key}]`);
+    if (!metaEl) {
+        return "";
+    }
+    return metaEl.content;
+}
+
+export const DEFAULT_CONFIG = new Configuration({
+    basePath: `${process.env.AK_API_BASE_PATH || window.location.origin}/api/v3`,
+    headers: {
+        "sentry-trace": getMetaContent("sentry-trace"),
+    },
+    middleware: [
+        new CSRFMiddleware(),
+        new EventMiddleware(),
+        new LoggingMiddleware(globalAK().brand),
+    ],
+});
 
 let globalConfigPromise: Promise<Config> | undefined = Promise.resolve(globalAK().config);
 export function config(): Promise<Config> {
@@ -60,24 +80,6 @@ export function brand(): Promise<CurrentBrand> {
     }
     return globalBrandPromise;
 }
-
-export function getMetaContent(key: string): string {
-    const metaEl = document.querySelector<HTMLMetaElement>(`meta[name=${key}]`);
-    if (!metaEl) return "";
-    return metaEl.content;
-}
-
-export const DEFAULT_CONFIG = new Configuration({
-    basePath: (process.env.AK_API_BASE_PATH || window.location.origin) + "/api/v3",
-    headers: {
-        "sentry-trace": getMetaContent("sentry-trace"),
-    },
-    middleware: [
-        new CSRFMiddleware(),
-        new EventMiddleware(),
-        new LoggingMiddleware(globalAK().brand),
-    ],
-});
 
 // This is just a function so eslint doesn't complain about
 // missing-whitespace-between-attributes or

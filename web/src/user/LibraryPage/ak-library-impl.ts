@@ -1,4 +1,4 @@
-import { groupBy } from "@goauthentik/common/utils";
+import { groupBy } from "@goauthentik/common/utils.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
 import { bound } from "@goauthentik/elements/decorators/bound.js";

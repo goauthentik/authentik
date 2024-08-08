@@ -1,4 +1,4 @@
-import { LayoutType } from "@goauthentik/common/ui/config";
+import { LayoutType } from "@goauthentik/common/ui/config.js";
 import { AKElement } from "@goauthentik/elements/Base";
 
 import { css, html } from "lit";
