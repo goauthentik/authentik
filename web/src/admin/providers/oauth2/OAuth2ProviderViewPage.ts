@@ -354,7 +354,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                         <ak-markdown
                             .replacers=${[
                                 (input: string) => {
-                                    if (!this.provider) {
+                                    if (!this.provider || !this.provider.assignedApplicationSlug) {
                                         return input;
                                     }
                                     return input.replaceAll(
