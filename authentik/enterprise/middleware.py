@@ -8,6 +8,7 @@ from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.enterprise.api import LicenseViewSet
 from authentik.enterprise.license import LicenseKey
+from authentik.enterprise.models import LicenseUsageStatus
 from authentik.flows.views.executor import FlowExecutorView
 from authentik.lib.utils.reflection import class_to_path
 
@@ -43,7 +44,7 @@ class EnterpriseMiddleware:
         cached_status = LicenseKey.cached_summary()
         if not cached_status:
             return True
-        if cached_status.read_only:
+        if cached_status.status == LicenseUsageStatus.READ_ONLY:
             return False
         return True
 
