@@ -47,7 +47,7 @@ class KerberosBackend(InbuiltBackend):
             )
         elif realm is not None:
             user_source_connections = UserKerberosSourceConnection.objects.filter(
-                source__in=sources, identifier__iexact=f"{username}@{realm}"
+                source__in=sources, identifier=f"{username}@{realm}"
             )
         # no realm specified, we can't do anything
         else:

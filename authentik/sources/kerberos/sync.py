@@ -86,7 +86,7 @@ class KerberosSync:
         and create a UserKerberosSourceConnection object if needed
         """
         user_source_connection = UserKerberosSourceConnection.objects.filter(
-            source=self._source, identifier__iexact=principal
+            source=self._source, identifier=principal
         ).first()
 
         # TODO: handle groups
