@@ -332,17 +332,17 @@
         "test": {
             "command": "wdio run ./wdio.conf.ts --logLevel=warn --autoCompileOpts.tsNodeOpts.project=tsconfig.test.json",
             "dependencies": [
-                "./packages/common:build",
+                "./packages/common:build"
             ],                
             "env": {
                 "CI": "true"
             }
         },
         "test-view": {
-            "command": "wdio run ./wdio.conf.ts --autoCompileOpts.tsNodeOpts.project=tsconfig.test.json"
+            "command": "wdio run ./wdio.conf.ts --autoCompileOpts.tsNodeOpts.project=tsconfig.test.json",
             "dependencies": [
-                "./packages/common:build",
-            ],                
+                "./packages/common:build"
+            ]
         },
         "tsc": {
             "dependencies": [
