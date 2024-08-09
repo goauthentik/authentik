@@ -2,23 +2,45 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
-import { LicenseSummaryStatusEnum } from "@goauthentik/api";
+import { LicenseFlagsEnum, LicenseSummaryStatusEnum } from "@goauthentik/api";
 
 @customElement("ak-enterprise-status")
 export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
     @property()
-    interface: "admin" | "user" | "" = "";
+    interface: "admin" | "user" | "flow" | "" = "";
 
     static get styles(): CSSResult[] {
         return [PFBanner];
     }
 
-    renderBanner(): TemplateResult {
+    renderStatusBanner() {
+        // Check if we're in the correct interface to render a banner
+        switch (this.licenseSummary.status) {
+            // user warning is both on admin interface and user interface
+            case LicenseSummaryStatusEnum.LimitExceededUser:
+                if (
+                    this.interface.toLowerCase() !== "user" &&
+                    this.interface.toLowerCase() !== "admin"
+                ) {
+                    return nothing;
+                }
+                break;
+            case LicenseSummaryStatusEnum.ExpirySoon:
+            case LicenseSummaryStatusEnum.Expired:
+            case LicenseSummaryStatusEnum.LimitExceededAdmin:
+                if (this.interface.toLowerCase() !== "admin") {
+                    return nothing;
+                }
+                break;
+            case LicenseSummaryStatusEnum.ReadOnly:
+            default:
+                break;
+        }
         let message = "";
         switch (this.licenseSummary.status) {
             case LicenseSummaryStatusEnum.LimitExceededAdmin:
@@ -44,7 +66,8 @@ export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
                 break;
         }
         return html`<div
-            class="pf-c-banner ${this.licenseSummary?.status === LicenseSummaryStatusEnum.ReadOnly
+            class="pf-c-banner pf-m-sticky ${this.licenseSummary?.status ===
+            LicenseSummaryStatusEnum.ReadOnly
                 ? "pf-m-red"
                 : "pf-m-gold"}"
         >
@@ -53,26 +76,23 @@ export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
         </div>`;
     }
 
+    renderFlagBanner(): TemplateResult {
+        return html`
+            ${this.licenseSummary.licenseFlags.includes(LicenseFlagsEnum.Trial)
+                ? html`<div class="pf-c-banner pf-m-sticky pf-m-gold">
+                      ${msg("This authentik instance uses a Trial license.")}
+                  </div>`
+                : nothing}
+            ${this.licenseSummary.licenseFlags.includes(LicenseFlagsEnum.NonProduction)
+                ? html`<div class="pf-c-banner pf-m-sticky pf-m-gold">
+                      ${msg("This authentik instance uses a Non-production license.")}
+                  </div>`
+                : nothing}
+        `;
+    }
+
     render(): TemplateResult {
-        switch (this.licenseSummary.status) {
-            case LicenseSummaryStatusEnum.LimitExceededUser:
-                if (this.interface.toLowerCase() === "user") {
-                    return this.renderBanner();
-                }
-                break;
-            case LicenseSummaryStatusEnum.ExpirySoon:
-            case LicenseSummaryStatusEnum.Expired:
-            case LicenseSummaryStatusEnum.LimitExceededAdmin:
-                if (this.interface.toLowerCase() === "admin") {
-                    return this.renderBanner();
-                }
-                break;
-            case LicenseSummaryStatusEnum.ReadOnly:
-                return this.renderBanner();
-            default:
-                break;
-        }
-        return html``;
+        return html`${this.renderFlagBanner()}${this.renderStatusBanner()}`;
     }
 }
 

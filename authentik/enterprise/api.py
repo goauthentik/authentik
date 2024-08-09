@@ -1,6 +1,5 @@
 """Enterprise API Views"""
 
-from dataclasses import asdict
 from datetime import timedelta
 
 from django.utils.timezone import now
@@ -104,8 +103,7 @@ class LicenseViewSet(UsedByMixin, ModelViewSet):
     @action(detail=False, methods=["GET"], permission_classes=[IsAuthenticated])
     def summary(self, request: Request) -> Response:
         """Get the total license status"""
-        response = LicenseSummarySerializer(data=asdict(LicenseKey.cached_summary()))
-        response.is_valid(raise_exception=True)
+        response = LicenseSummarySerializer(instance=LicenseKey.cached_summary())
         return Response(response.data)
 
     @permission_required(None, ["authentik_enterprise.view_license"])
