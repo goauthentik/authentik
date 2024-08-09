@@ -94,7 +94,7 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     /bin/sh -c "/usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
 
 # Stage 5: Python dependencies
-FROM ghcr.io/goauthentik/fips-python:3.12.3-slim-bookworm-fips-full AS python-deps
+FROM ghcr.io/goauthentik/fips-python:3.12.5-slim-bookworm-fips-full AS python-deps
 
 WORKDIR /ak-root/poetry
 
@@ -121,7 +121,7 @@ RUN --mount=type=bind,target=./pyproject.toml,src=./pyproject.toml \
     pip install --force-reinstall /wheels/*"
 
 # Stage 6: Run
-FROM ghcr.io/goauthentik/fips-python:3.12.3-slim-bookworm-fips-full AS final-image
+FROM ghcr.io/goauthentik/fips-python:3.12.5-slim-bookworm-fips-full AS final-image
 
 ARG GIT_BUILD_HASH
 ARG VERSION
