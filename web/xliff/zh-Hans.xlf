@@ -2745,11 +2745,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>当前没有策略绑定到此对象。</target>
         
       </trans-unit>
-      <trans-unit id="sddb040c47daae56b">
-        <source>Bind existing policy</source>
-        <target>绑定已有策略</target>
-        
-      </trans-unit>
       <trans-unit id="saa855c61e0403fe6">
         <source>Warning: Application is not used by any Outpost.</source>
         <target>警告：应用程序未被任何前哨使用。</target>
@@ -2878,11 +2873,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s3de6db803012016a">
         <source>LDAP Attribute mapping</source>
         <target>LDAP 属性映射</target>
-        
-      </trans-unit>
-      <trans-unit id="s7c05ee41d634aa45">
-        <source>Property mappings used to user creation.</source>
-        <target>用于创建用户的属性映射。</target>
         
       </trans-unit>
       <trans-unit id="s94333971a07803b9">
@@ -3367,16 +3357,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>已成功创建映射。</target>
         
       </trans-unit>
-      <trans-unit id="s1c33d22492029aba">
-        <source>Object field</source>
-        <target>对象字段</target>
-        
-      </trans-unit>
-      <trans-unit id="s06df3c3b6a503da8">
-        <source>Field of the user object this value is written to.</source>
-        <target>写入此值的用户对象的字段。</target>
-        
-      </trans-unit>
       <trans-unit id="sd39c5e998efecf93">
         <source>SAML Attribute Name</source>
         <target>SAML 属性名称</target>
@@ -3650,11 +3630,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="sfeb779d4ccbc5a0e">
         <source>Recovery flow</source>
         <target>恢复流程</target>
-        
-      </trans-unit>
-      <trans-unit id="s1c2fd8097e14a608">
-        <source>Recovery flow. If left empty, the first applicable flow sorted by the slug is used.</source>
-        <target>恢复流程。如果留空，则使用按 Slug 排序的第一个适用流程。</target>
         
       </trans-unit>
       <trans-unit id="s836aa192b30c21da">
@@ -5726,11 +5701,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s9a393a04eaf1eb0e">
         <source>Create Stage binding</source>
         <target>创建阶段绑定</target>
-        
-      </trans-unit>
-      <trans-unit id="s207e8b106806d7e4">
-        <source>Bind stage</source>
-        <target>绑定阶段</target>
         
       </trans-unit>
       <trans-unit id="scc2e420c54dc8089">
@@ -7837,10 +7807,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Configure Proxy Provider</source>
   <target>配置代理提供程序</target>
 </trans-unit>
-<trans-unit id="sf6d46bb442b77e91">
-  <source>AdditionalScopes</source>
-  <target>额外的作用域</target>
-</trans-unit>
 <trans-unit id="s2c8c6f89089b31d4">
   <source>Configure Radius Provider</source>
   <target>配置 Radius 提供程序</target>
@@ -8048,10 +8014,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s95d56e58f816d211">
   <source>Dutch</source>
   <target>荷兰语</target>
-</trans-unit>
-<trans-unit id="s16a15af46bc9aeef">
-  <source>Failed to fetch objects: <x id="0" equiv-text="${this.error.detail}"/></source>
-  <target>获取对象失败：<x id="0" equiv-text="${this.error.detail}"/></target>
 </trans-unit>
 <trans-unit id="s744401846fea6e76">
   <source>Brand</source>
@@ -8862,6 +8824,120 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sec55a3a7f18615ec">
   <source>Outpost integrations define how authentik connects to external platforms to manage and deploy Outposts.</source>
   <target>前哨集成定义了 authentik 如何连接到外部平台以管理和部署前哨。</target>
+</trans-unit>
+<trans-unit id="s74d86eb7e5a10fdf">
+  <source>Operation failed to complete</source>
+</trans-unit>
+<trans-unit id="sc0448bc8a76227cb">
+  <source>Failed to fetch objects: </source>
+</trans-unit>
+<trans-unit id="s233a0201fde4a38d">
+  <source>Available Scopes</source>
+</trans-unit>
+<trans-unit id="s631b3419f6dfd031">
+  <source>Selected Scopes</source>
+</trans-unit>
+<trans-unit id="s81d76cccf339a43c">
+  <source>Available Property Mappings</source>
+</trans-unit>
+<trans-unit id="se9195c05c61d8ef8">
+  <source>Selected Property Mappings</source>
+</trans-unit>
+<trans-unit id="s0619413371f33083">
+  <source>Available User Property Mappings</source>
+</trans-unit>
+<trans-unit id="sbb46aed99e712337">
+  <source>Selected User Property Mappings</source>
+</trans-unit>
+<trans-unit id="se84ebf32648e6a63">
+  <source>Available Group Property Mappings</source>
+</trans-unit>
+<trans-unit id="seaf9f9ecb99568c7">
+  <source>Selected Group Property Mappings</source>
+</trans-unit>
+<trans-unit id="sc362f1f1e4044878">
+  <source>Ensure the user satisfies requirements of geography or network topology, based on IP address. If any of the configured values match, the policy passes.</source>
+</trans-unit>
+<trans-unit id="s26c2828bf8db525e">
+  <source>ASNs</source>
+</trans-unit>
+<trans-unit id="s72ee4dd6cfa6e10d">
+  <source>List of autonomous system numbers. Comma separated. E.g. 13335, 15169, 20940</source>
+</trans-unit>
+<trans-unit id="s77fbb0a6d145442d">
+  <source>Countries</source>
+</trans-unit>
+<trans-unit id="sdd277e10884a7272">
+  <source>Available Countries</source>
+</trans-unit>
+<trans-unit id="s7a93139fb12ebf96">
+  <source>Selected Countries</source>
+</trans-unit>
+<trans-unit id="s375a13497266db93">
+  <source>Bind existing policy/group/user</source>
+</trans-unit>
+<trans-unit id="s8e2de27afeb78e5a">
+  <source>Property mappings for user creation.</source>
+</trans-unit>
+<trans-unit id="s045cf2d851164d5a">
+  <source>Property mappings for group creation.</source>
+</trans-unit>
+<trans-unit id="s9642f1d8ee6e787d">
+  <source>Link to a group with identical name. Can have security implications when a group is used with another source</source>
+</trans-unit>
+<trans-unit id="s485964f83b5ed044">
+  <source>Use the group's name, but deny enrollment when the name already exists</source>
+</trans-unit>
+<trans-unit id="s2b1b532c5271b296">
+  <source>Group matching mode</source>
+</trans-unit>
+<trans-unit id="s704381cea57e5a12">
+  <source>OAuth Attribute mapping</source>
+</trans-unit>
+<trans-unit id="s4b9501c321dc4922">
+  <source>Plex Attribute mapping</source>
+</trans-unit>
+<trans-unit id="s6135938c50ad8a4b">
+  <source>Encryption Certificate</source>
+</trans-unit>
+<trans-unit id="s37b8d48b9416fc25">
+  <source>When selected, encrypted assertions will be decrypted using this keypair.</source>
+</trans-unit>
+<trans-unit id="s924a87f37bc0201e">
+  <source>SAML Attribute mapping</source>
+</trans-unit>
+<trans-unit id="sf0532ddee3b4e977">
+  <source>SCIM Attribute mapping</source>
+</trans-unit>
+<trans-unit id="sd61a4f736ac0a98e">
+  <source>External user settings</source>
+</trans-unit>
+<trans-unit id="sdc4f72f6a46ae2c8">
+  <source>Default application</source>
+</trans-unit>
+<trans-unit id="sac85801a25b7bb27">
+  <source>When configured, external users will automatically be redirected to this application when not attempting to access a different application</source>
+</trans-unit>
+<trans-unit id="s4a799b4562ab2051">
+  <source>Access Tokens(s)</source>
+</trans-unit>
+<trans-unit id="s4ae42fa672dd72bc">
+  <source>Created at</source>
+</trans-unit>
+<trans-unit id="see1f8a5c8e11c5ab">
+  <source>Last updated at</source>
+</trans-unit>
+<trans-unit id="s82dd7087cd1471ab">
+  <source>Last used at</source>
+</trans-unit>
+<trans-unit id="s9dda0789d278f5c5">
+  <source>Provide users with a 'show password' button.</source>
+</trans-unit>
+<trans-unit id="s2f7f35f6a5b733f5">
+  <source>Show password</source>
+</trans-unit>
+<trans-unit id="s452f791e0ff6a13e">
+  <source>Hide password</source>
 </trans-unit>
     </body>
   </file>
