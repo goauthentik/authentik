@@ -19,7 +19,7 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import User, UserTypes
 from authentik.enterprise.license import LicenseKey, LicenseSummarySerializer
-from authentik.enterprise.models import License
+from authentik.enterprise.models import License, LicenseUsageStatus
 from authentik.rbac.decorators import permission_required
 from authentik.tenants.utils import get_unique_identifier
 
@@ -30,7 +30,7 @@ class EnterpriseRequiredMixin:
 
     def validate(self, attrs: dict) -> dict:
         """Check that a valid license exists"""
-        if not LicenseKey.cached_summary().has_license:
+        if LicenseKey.cached_summary().status != LicenseUsageStatus.UNLICENSED:
             raise ValidationError(_("Enterprise is required to create/update this object."))
         return super().validate(attrs)
 
@@ -128,7 +128,7 @@ class LicenseViewSet(UsedByMixin, ModelViewSet):
         forecast_for_months = 12
         response = LicenseForecastSerializer(
             data={
-                "internal_users": LicenseKey.get_default_user_count(),
+                "internal_users": LicenseKey.get_internal_user_count(),
                 "external_users": LicenseKey.get_external_user_count(),
                 "forecasted_internal_users": (internal_in_last_month * forecast_for_months),
                 "forecasted_external_users": (external_in_last_month * forecast_for_months),

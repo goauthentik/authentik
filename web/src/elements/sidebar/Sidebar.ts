@@ -42,7 +42,6 @@ export class Sidebar extends AKElement {
                 nav {
                     display: flex;
                     flex-direction: column;
-                    max-height: 100vh;
                     height: 100%;
                     overflow-y: hidden;
                 }
