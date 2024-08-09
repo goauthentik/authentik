@@ -7,8 +7,6 @@ import * as postcssLit from "rollup-plugin-postcss-lit";
 import type { UserConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
-import { cssImportMaps } from "./.storybook/css-import-maps";
-
 const isProdBuild = process.env.NODE_ENV === "production";
 const apiBasePath = process.env.AK_API_BASE_PATH || "";
 const runHeadless = process.env.CI !== undefined;
@@ -25,7 +23,6 @@ export const config: Options.Testrunner = {
             viteConfig: (config: UserConfig = { plugins: [] }) => ({
                 ...config,
                 plugins: [
-                    modify(cssImportMaps),
                     replace({
                         "process.env.NODE_ENV": JSON.stringify(
                             isProdBuild ? "production" : "development",
