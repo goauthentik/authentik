@@ -3,7 +3,6 @@ import { deviceTypeRestrictionPair } from "@goauthentik/admin/stages/authenticat
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/Alert";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider";
-import { DataProvision } from "@goauthentik/elements/ak-dual-select/types";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
@@ -22,6 +21,35 @@ import {
     StagesApi,
     UserVerificationEnum,
 } from "@goauthentik/api";
+
+async function stagesProvider(page = 1, search = "") {
+    const stages = await new StagesApi(DEFAULT_CONFIG).stagesAllList({
+        ordering: "name",
+        pageSize: 20,
+        search: search.trim(),
+        page,
+    });
+
+    return {
+        pagination: stages.pagination,
+        options: stages.results.map((stage) => [stage.pk, `${stage.name} (${stage.verboseName})`]),
+    };
+}
+
+async function authenticatorWebauthnDeviceTypesListProvider(page = 1, search = "") {
+    const devicetypes = await new StagesApi(
+        DEFAULT_CONFIG,
+    ).stagesAuthenticatorWebauthnDeviceTypesList({
+        pageSize: 20,
+        search: search.trim(),
+        page,
+    });
+
+    return {
+        pagination: devicetypes.pagination,
+        options: devicetypes.results.map(deviceTypeRestrictionPair),
+    };
+}
 
 @customElement("ak-stage-authenticator-validate-form")
 export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorValidateStage> {
@@ -177,21 +205,14 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                                   label=${msg("Configuration stages")}
                                   name="configurationStages"
                               >
-                                  <select class="pf-c-form-control" multiple>
-                                      ${this.stages?.results.map((stage) => {
-                                          const selected = Array.from(
-                                              this.instance?.configurationStages || [],
-                                          ).some((su) => {
-                                              return su == stage.pk;
-                                          });
-                                          return html`<option
-                                              value=${ifDefined(stage.pk)}
-                                              ?selected=${selected}
-                                          >
-                                              ${stage.name} (${stage.verboseName})
-                                          </option>`;
-                                      })}
-                                  </select>
+                                  <ak-dual-select-provider
+                                      .provider=${stagesProvider}
+                                      .selected=${Array.from(
+                                          this.instance?.configurationStages ?? [],
+                                      )}
+                                      available-label="${msg("Available Stages")}"
+                                      selected-label="${msg("Selected Stages")}"
+                                  ></ak-dual-select-provider>
                                   <p class="pf-c-form__helper-text">
                                       ${msg(
                                           "Stages used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again.",
@@ -242,19 +263,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                         name="webauthnAllowedDeviceTypes"
                     >
                         <ak-dual-select-provider
-                            .provider=${(page: number, search?: string): Promise<DataProvision> => {
-                                return new StagesApi(DEFAULT_CONFIG)
-                                    .stagesAuthenticatorWebauthnDeviceTypesList({
-                                        page: page,
-                                        search: search,
-                                    })
-                                    .then((results) => {
-                                        return {
-                                            pagination: results.pagination,
-                                            options: results.results.map(deviceTypeRestrictionPair),
-                                        };
-                                    });
-                            }}
+                            .provider=${authenticatorWebauthnDeviceTypesListProvider}
                             .selected=${(this.instance?.webauthnAllowedDeviceTypesObj ?? []).map(
                                 deviceTypeRestrictionPair,
                             )}

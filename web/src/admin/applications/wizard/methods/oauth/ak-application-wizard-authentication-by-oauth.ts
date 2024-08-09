@@ -2,15 +2,16 @@ import "@goauthentik/admin/applications/wizard/ak-wizard-title";
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
 import {
+    makeOAuth2PropertyMappingsSelector,
+    oauth2PropertyMappingsProvider,
+} from "@goauthentik/admin/providers/oauth2/OAuth2PropertyMappings.js";
+import {
     clientTypeOptions,
     issuerModeOptions,
     redirectUriHelp,
     subjectModeOptions,
 } from "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
-import {
-    makeOAuth2PropertyMappingsSelector,
-    oauth2PropertyMappingsProvider,
-} from "@goauthentik/admin/providers/oauth2/Oauth2PropertyMappings.js";
+import { oauth2SourcesProvider } from "@goauthentik/admin/providers/oauth2/OAuth2Sources.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-number-input";
@@ -262,23 +263,16 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                             name="jwksSources"
                             .errorMessages=${errors?.jwksSources ?? []}
                         >
-                            <select class="pf-c-form-control" multiple>
-                                ${this.oauthSources?.results.map((source) => {
-                                    const selected = (provider?.jwksSources || []).some((su) => {
-                                        return su == source.pk;
-                                    });
-                                    return html`<option value=${source.pk} ?selected=${selected}>
-                                        ${source.name} (${source.slug})
-                                    </option>`;
-                                })}
-                            </select>
+                            <ak-dual-select-provider
+                                .provider=${oauth2SourcesProvider}
+                                .selected=${provider?.jwksSources}
+                                available-label=${msg("Available Sources")}
+                                selected-label=${msg("Selected Sources")}
+                            ></ak-dual-select-provider>
                             <p class="pf-c-form__helper-text">
                                 ${msg(
                                     "JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider.",
                                 )}
-                            </p>
-                            <p class="pf-c-form__helper-text">
-                                ${msg("Hold control/command to select multiple items.")}
                             </p>
                         </ak-form-element-horizontal>
                     </div>

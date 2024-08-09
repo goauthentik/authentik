@@ -20,6 +20,20 @@ import {
     SeverityEnum,
 } from "@goauthentik/api";
 
+async function eventTransportsProvider(page = 1, search = "") {
+    const eventTransports = await new EventsApi(DEFAULT_CONFIG).eventsTransportsList({
+        ordering: "name",
+        pageSize: 20,
+        search: search.trim(),
+        page,
+    });
+
+    return {
+        pagination: eventTransports.pagination,
+        options: eventTransports.results.map((transport) => [transport.pk, transport.name]),
+    };
+}
+
 @customElement("ak-event-rule-form")
 export class RuleForm extends ModelForm<NotificationRule, string> {
     eventTransports?: PaginatedNotificationTransportList;
@@ -100,23 +114,16 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                 ?required=${true}
                 name="transports"
             >
-                <select class="pf-c-form-control" multiple>
-                    ${this.eventTransports?.results.map((transport) => {
-                        const selected = Array.from(this.instance?.transports || []).some((su) => {
-                            return su == transport.pk;
-                        });
-                        return html`<option value=${ifDefined(transport.pk)} ?selected=${selected}>
-                            ${transport.name}
-                        </option>`;
-                    })}
-                </select>
+                <ak-dual-select-provider
+                    .provider=${eventTransportsProvider}
+                    .selected=${this.instance?.transports}
+                    available-label="${msg("Available Transports")}"
+                    selected-label="${msg("Selected Transports")}"
+                ></ak-dual-select-provider>
                 <p class="pf-c-form__helper-text">
                     ${msg(
                         "Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI.",
                     )}
-                </p>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Hold control/command to select multiple items.")}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Severity")} ?required=${true} name="severity">
