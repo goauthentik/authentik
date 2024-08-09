@@ -13,7 +13,7 @@ title: Netbird
 ## Preparation
 
 The following placeholders will be used:
-- `netbird.company` is the FQDN of the Netbird install.
+- `netbird.company` is the FQDN of the NetBird install.
 - `authentik.company` is the FQDN of the authentik install.
 
 ## authentik configuration
