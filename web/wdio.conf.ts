@@ -1,8 +1,6 @@
 import replace from "@rollup/plugin-replace";
 import type { Options } from "@wdio/types";
 import { cwd } from "process";
-// @ts-ignore
-import * as modify from "rollup-plugin-modify";
 import * as postcssLit from "rollup-plugin-postcss-lit";
 import type { UserConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
