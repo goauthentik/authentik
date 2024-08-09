@@ -9,6 +9,7 @@ Certificates in authentik are used for the following use cases:
 -   Connecting to remote docker hosts using the Docker integration
 -   Verifying LDAP Servers' certificates
 -   Encrypting outposts' endpoints
+-   Configure a webhook to use uploaded SSL certificates
 
 ## Default certificate
 
@@ -68,6 +69,24 @@ ak import_certificate --certificate /certs/mycert.pem --private-key /certs/somet
 ```
 
 This will import the certificate into authentik under the given name. This command is safe to run as a cron job; authentik will only re-import the certificate if it changes.
+
+## Configure a webhook to use uploaded SSL certificates
+
+When communicating with an external API, you will need to configure a generic webhook to utilize uploaded SSL certificates.
+
+1. Create a custom image with a Docker file that looks something like this:
+
+```
+FROM ghcr.io/goauthentik/server
+
+USER root
+COPY /ak-root/venv/lib/python3.12/site-packages/certifi/cacert.pem /etc/ssl/certs
+RUN update-ca-certificates
+USER authentik
+```
+
+2. Add your custom CA to /etc/ssl/certs
+3. Run `update-ca-certificates` as root to add the SSL certificates (CA) to the environment
 
 ## Web certificates
 
