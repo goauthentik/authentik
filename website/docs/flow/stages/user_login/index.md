@@ -42,42 +42,42 @@ When creating or editing this stage in the UI of the Admin interface, you can se
 
     Sessions that break this binding will be terminated on use. The created [`logout`](../../../events/index.md#logout) event will contain additional data related to what caused the binding to be broken:
 
-```json
-{
-    "asn": {
-        "asn": 6805,
-        "as_org": "Telefonica Germany",
-        "network": "5.4.0.0/14"
-    },
-    "geo": {
-        "lat": 51.2993,
-        "city": "",
-        "long": 9.491,
-        "country": "DE",
-        "continent": "EU"
-    },
-    "binding": {
-        "reason": "network.missing",
-        "new_value": {
+    ```json
+    {
+        "asn": {
             "asn": 6805,
             "as_org": "Telefonica Germany",
             "network": "5.4.0.0/14"
         },
-        "previous_value": {}
-    },
-    "ip": {
-        "previous": "1.2.3.4",
-        "new": "5.6.7.8"
-    },
-    "http_request": {
-        "args": {},
-        "path": "/if/admin/",
-        "method": "GET",
-        "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-    },
-    "logout_reason": "Session binding broken"
-}
-```
+        "geo": {
+            "lat": 51.2993,
+            "city": "",
+            "long": 9.491,
+            "country": "DE",
+            "continent": "EU"
+        },
+        "binding": {
+            "reason": "network.missing",
+            "new_value": {
+                "asn": 6805,
+                "as_org": "Telefonica Germany",
+                "network": "5.4.0.0/14"
+            },
+            "previous_value": {}
+        },
+        "ip": {
+            "previous": "1.2.3.4",
+            "new": "5.6.7.8"
+        },
+        "http_request": {
+            "args": {},
+            "path": "/if/admin/",
+            "method": "GET",
+            "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        },
+        "logout_reason": "Session binding broken"
+    }
+    ```
 
 -   **Terminate other sessions**
 
