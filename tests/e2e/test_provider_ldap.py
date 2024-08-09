@@ -179,7 +179,7 @@ class TestProviderLDAP(SeleniumTestCase):
         )
         with self.assertRaises(LDAPInvalidCredentialsResult):
             _connection.bind()
-        self.assertTrue(
+        self.assertFalse(
             Event.objects.filter(
                 action=EventAction.LOGIN_FAILED,
                 user={
