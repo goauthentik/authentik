@@ -48,7 +48,7 @@ The following placeholders will be used:
 
 ## Netbird Configuration
 
-To configure Netbird to use authentik, add the following values to your `setup.env` file:
+To configure NetBird to use authentik, add the following values to your `setup.env` file:
 
 ```
 NETBIRD_AUTH_OIDC_CONFIGURATION_ENDPOINT="https://authentik.company/application/o/netbird/.well-known/openid-configuration"
