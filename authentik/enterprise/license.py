@@ -198,7 +198,7 @@ class LicenseKey:
         )
         if not usage:
             usage = LicenseUsage.objects.create(
-                user_count=self.get_internal_user_count(),
+                internal_user_count=self.get_internal_user_count(),
                 external_user_count=self.get_external_user_count(),
                 status=self.status(),
             )

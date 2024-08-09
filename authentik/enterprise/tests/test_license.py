@@ -109,7 +109,7 @@ class TestEnterpriseLicense(TestCase):
         """Check license verification"""
         License.objects.create(key=generate_id())
         usage = LicenseUsage.objects.create(
-            user_count=100,
+            internal_user_count=100,
             external_user_count=100,
             status=LicenseUsageStatus.VALID,
         )
@@ -145,7 +145,7 @@ class TestEnterpriseLicense(TestCase):
         """Check license verification"""
         License.objects.create(key=generate_id())
         usage = LicenseUsage.objects.create(
-            user_count=100,
+            internal_user_count=100,
             external_user_count=100,
             status=LicenseUsageStatus.VALID,
         )
@@ -183,7 +183,7 @@ class TestEnterpriseLicense(TestCase):
         """Check license verification"""
         License.objects.create(key=generate_id())
         usage = LicenseUsage.objects.create(
-            user_count=100,
+            internal_user_count=100,
             external_user_count=100,
             status=LicenseUsageStatus.VALID,
         )

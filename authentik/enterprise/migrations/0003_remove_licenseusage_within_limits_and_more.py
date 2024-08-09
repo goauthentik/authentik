@@ -60,4 +60,9 @@ class Migration(migrations.Migration):
             ),
             preserve_default=False,
         ),
+        migrations.RenameField(
+            model_name="licenseusage",
+            old_name="user_count",
+            new_name="internal_user_count",
+        ),
     ]

@@ -58,7 +58,7 @@ class TestReadOnly(FlowTestCase):
         """Test flow, ensure login is still possible with read only mode"""
         License.objects.create(key=generate_id())
         usage = LicenseUsage.objects.create(
-            user_count=100,
+            internal_user_count=100,
             external_user_count=100,
             status=LicenseUsageStatus.VALID,
         )
@@ -143,7 +143,7 @@ class TestReadOnly(FlowTestCase):
         """Test that managing licenses is still possible"""
         license = License.objects.create(key=generate_id())
         usage = LicenseUsage.objects.create(
-            user_count=100,
+            internal_user_count=100,
             external_user_count=100,
             status=LicenseUsageStatus.VALID,
         )
@@ -191,7 +191,7 @@ class TestReadOnly(FlowTestCase):
         """Test flow"""
         License.objects.create(key=generate_id())
         usage = LicenseUsage.objects.create(
-            user_count=100,
+            internal_user_count=100,
             external_user_count=100,
             status=LicenseUsageStatus.VALID,
         )

@@ -84,7 +84,7 @@ class LicenseUsage(ExpiringModel):
 
     usage_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
-    user_count = models.BigIntegerField()
+    internal_user_count = models.BigIntegerField()
     external_user_count = models.BigIntegerField()
     status = models.TextField(choices=LicenseUsageStatus.choices)
 
