@@ -54,10 +54,10 @@ class EnterpriseMiddleware:
         if request.method.lower() in ["get", "head", "options", "trace"]:
             return True
         # Always allow requests to manage licenses
-        if class_to_path(request.resolver_match.func) == class_to_path(LicenseViewSet):
+        if request.resolver_match._func_path == class_to_path(LicenseViewSet):
             return True
         # Flow executor is mounted as an API path but explicitly allowed
-        if class_to_path(request.resolver_match.func) == class_to_path(FlowExecutorView):
+        if request.resolver_match._func_path == class_to_path(FlowExecutorView):
             return True
         # Only apply these restrictions to the API
         if "authentik_api" not in request.resolver_match.app_names:

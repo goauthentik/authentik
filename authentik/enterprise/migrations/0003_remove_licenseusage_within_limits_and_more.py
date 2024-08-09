@@ -26,6 +26,7 @@ class Migration(migrations.Migration):
             name="status",
             field=models.TextField(
                 choices=[
+                    ("unlicensed", "Unlicensed"),
                     ("valid", "Valid"),
                     ("expired", "Expired"),
                     ("expiry_soon", "Expiry Soon"),
@@ -48,6 +49,7 @@ class Migration(migrations.Migration):
             name="status",
             field=models.TextField(
                 choices=[
+                    ("unlicensed", "Unlicensed"),
                     ("valid", "Valid"),
                     ("expired", "Expired"),
                     ("expiry_soon", "Expiry Soon"),
