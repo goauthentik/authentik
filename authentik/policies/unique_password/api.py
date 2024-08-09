@@ -1,4 +1,5 @@
-from authentik.admin.api.meta import ModelViewSet
+from rest_framework.viewsets import ModelViewSet
+
 from authentik.core.api.used_by import UsedByMixin
 from authentik.policies.api.policies import PolicySerializer
 from authentik.policies.unique_password.models import UniquePasswordPolicy
