@@ -46,7 +46,7 @@ The following placeholders will be used:
 1. Under **Directory** -> **Groups**, select the `authentik Default Admins` group and switch to the **Users** tab near the top of the page.
 2. Click the **Add existing user** button and select your Netbird service account.
 
-## Netbird Configuration
+## NetBird configuration
 
 To configure NetBird to use authentik, add the following values to your `setup.env` file:
 
