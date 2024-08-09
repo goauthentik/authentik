@@ -183,7 +183,8 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                         header=${msg("Expiry")}
                         subtext=${msg("Cumulative license expiry")}
                     >
-                        ${this.summary?.status === LicenseSummaryStatusEnum.Unlicensed
+                        ${this.summary &&
+                        this.summary?.status !== LicenseSummaryStatusEnum.Unlicensed
                             ? html`<div>${getRelativeTime(this.summary.latestValid)}</div>
                                   <small>${this.summary.latestValid.toLocaleString()}</small>`
                             : "-"}
