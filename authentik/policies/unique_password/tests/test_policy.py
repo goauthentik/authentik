@@ -4,9 +4,9 @@ from django.contrib.auth.hashers import make_password
 from django.test import TestCase
 from guardian.shortcuts import get_anonymous_user
 
-from authentik.core.models import User, UserPasswordHistory
+from authentik.core.models import User
 from authentik.policies.types import PolicyRequest, PolicyResult
-from authentik.policies.unique_password.models import UniquePasswordPolicy
+from authentik.policies.unique_password.models import UniquePasswordPolicy, UserPasswordHistory
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 
@@ -34,9 +34,7 @@ class TestUniquePasswordPolicy(TestCase):
 
     def test_passes_passwords_are_different(self):
         # Seed database with an old password
-        UserPasswordHistory.objects.create(
-            user=self.user, change={"old_password": make_password("hunter1")}
-        )
+        UserPasswordHistory.objects.create(user=self.user, old_password=make_password("hunter1"))
 
         request = PolicyRequest(self.user)
         request.context = {PLAN_CONTEXT_PROMPT: {"password": "hunter2"}}
@@ -47,12 +45,8 @@ class TestUniquePasswordPolicy(TestCase):
         # Seed with multiple old passwords
         UserPasswordHistory.objects.bulk_create(
             [
-                UserPasswordHistory(
-                    user=self.user, change={"old_password": make_password("hunter1")}
-                ),
-                UserPasswordHistory(
-                    user=self.user, change={"old_password": make_password("hunter2")}
-                ),
+                UserPasswordHistory(user=self.user, old_password=make_password("hunter1")),
+                UserPasswordHistory(user=self.user, old_password=make_password("hunter2")),
             ]
         )
         request = PolicyRequest(self.user)
@@ -63,9 +57,7 @@ class TestUniquePasswordPolicy(TestCase):
     def test_fails_password_matches_old_password(self):
         # Seed database with an old password
 
-        UserPasswordHistory.objects.create(
-            user=self.user, change={"old_password": make_password("hunter1")}
-        )
+        UserPasswordHistory.objects.create(user=self.user, old_password=make_password("hunter1"))
 
         request = PolicyRequest(self.user)
         request.context = {PLAN_CONTEXT_PROMPT: {"password": "hunter1"}}
@@ -73,13 +65,9 @@ class TestUniquePasswordPolicy(TestCase):
         self.assertFalse(result.passing)
 
     def test_fails_if_identical_password_with_different_hash_algos(self):
-        UserPasswordHistory.objects.bulk_create(
-            [
-                UserPasswordHistory(
-                    user=self.user,
-                    change={"old_password": make_password("hunter2", "somesalt", "scrypt")},
-                ),
-            ]
+        UserPasswordHistory.objects.create(
+            user=self.user,
+            old_password=make_password("hunter2", "somesalt", "scrypt"),
         )
         request = PolicyRequest(self.user)
         request.context = {PLAN_CONTEXT_PROMPT: {"password": "hunter2"}}

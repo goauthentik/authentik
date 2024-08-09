@@ -4,6 +4,7 @@ from django.utils.translation import gettext as _
 from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
 
+from authentik.core.models import User
 from authentik.policies.models import Policy
 from authentik.policies.types import PolicyRequest, PolicyResult
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
@@ -13,7 +14,9 @@ LOGGER = get_logger()
 
 class UniquePasswordPolicy(Policy):
     """Policy ensuring a user's password is not identical to a previously used password.
-    The number of passwords stored by the system (and checked by the policy) is configurable.
+
+    After enabling the policy, Authentik stores every user's previous password whenever a user changes
+    their own password. Old passwords remain stored in hashed form.
     """
 
     password_field = models.TextField(
@@ -39,37 +42,39 @@ class UniquePasswordPolicy(Policy):
         return "ak-policy-password-uniqueness-form"
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
-        from authentik.core.models import UserPasswordHistory
+        from authentik.policies.unique_password.models import UserPasswordHistory
 
         password = request.context.get(PLAN_CONTEXT_PROMPT, {}).get(
             self.password_field, request.context.get(self.password_field)
         )
         if not password:
             LOGGER.warning(
-                "Password field not set in Password Uniqueness Policy Request",
+                "Password field not found in request when checking UniquePasswordPolicy",
                 field=self.password_field,
                 fields=request.context.keys(),
             )
             return PolicyResult(False, _("Password not set in context"))
         password = str(password)
 
-        # Query audit table for the last n passwords
-        password_history = UserPasswordHistory.objects.filter(user=request.user)
+        if not self.num_historical_passwords:
+            # Policy not configured to check against any passwords
+            return PolicyResult(True)
 
-        # If no passwords are found: Policy resolves with “allow”
+        num_to_check = self.num_historical_passwords
+        password_history = UserPasswordHistory.objects.filter(user=request.user).order_by(
+            "-created_at"
+        )[:num_to_check]
+
         if not password_history:
             return PolicyResult(True)
 
-        # For each password returned from audit table:
-        for history in password_history:
-            old_password = history.change.get("old_password")
-            if not old_password:
-                # TODO: how do we handle missing password?
+        for record in password_history:
+            if not record.old_password:
                 continue
 
-            if self._passwords_match(new_password=password, old_password=old_password):
+            if self._passwords_match(new_password=password, old_password=record.old_password):
                 # Return on first match. Authentik does not consider timing attacks
-                # on old passwords to be a useful attack surface.
+                # on old passwords to be an attack surface.
                 return PolicyResult(False, _("Password is not unique."))
 
         return PolicyResult(True)
@@ -79,9 +84,8 @@ class UniquePasswordPolicy(Policy):
             hasher = identify_hasher(old_password)
         except ValueError:
             LOGGER.warning(
-                "Could not load hash algorithm for old password.",
+                "Skipping password; could not load hash algorithm",
             )
-            # TODO: Define behavior if hasher cannot be identified or is unsupported
             return False
 
         return hasher.verify(new_password, old_password)
@@ -89,3 +93,16 @@ class UniquePasswordPolicy(Policy):
     class Meta(Policy.PolicyMeta):
         verbose_name = _("Password Uniqueness Policy")
         verbose_name_plural = _("Password Uniqueness Policies")
+
+
+class UserPasswordHistory(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="old_passwords")
+    # Mimic's column type of AbstractBaseUser.password
+    old_password = models.CharField(max_length=128)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = _("User Password History")
+
+    def __str__(self) -> str:
+        return f"Previous Password (user: {self.user_id}, recorded: {self.created_at:%Y/%m/%d %X})"

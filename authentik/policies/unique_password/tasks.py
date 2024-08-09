@@ -1,9 +1,8 @@
 from structlog import get_logger
 
-from authentik.core.models import UserPasswordHistory
 from authentik.events.system_tasks import SystemTask, TaskStatus, prefill_task
 from authentik.policies.models import PolicyBinding
-from authentik.policies.unique_password.models import UniquePasswordPolicy
+from authentik.policies.unique_password.models import UniquePasswordPolicy, UserPasswordHistory
 from authentik.root.celery import CELERY_APP
 
 LOGGER = get_logger()
@@ -12,7 +11,7 @@ LOGGER = get_logger()
 @CELERY_APP.task(bind=True, base=SystemTask)
 @prefill_task
 def purge_password_history_table(self: SystemTask):
-    """Remove all entries from the core.models.UserPasswordHistory table"""
+    """Remove all entries from the UserPasswordHistory table"""
     unique_pwd_policy_bindings = PolicyBinding.in_use.for_policy(UniquePasswordPolicy)
 
     if unique_pwd_policy_bindings.count() > 1:
@@ -29,15 +28,15 @@ def purge_password_history_table(self: SystemTask):
         # instead of all().delete() would eliminate any FK checks.
         UserPasswordHistory.objects.all().delete()
     except Exception as err:
-        LOGGER.debug("Failed to purge core.models.UserPasswordHistory table.")
+        LOGGER.debug("Failed to purge UserPasswordHistory table.")
         self.set_error(err)
         return
-    self.set_status(TaskStatus.SUCCESSFUL, "Successfully purged core.models.UserPasswordHistory")
+    self.set_status(TaskStatus.SUCCESSFUL, "Successfully purged UserPasswordHistory")
 
 
 @CELERY_APP.task()
 def trim_user_password_history(user_pk: int):
-    """Removes rows from core.models.UserPasswordHistory older than
+    """Removes rows from UserPasswordHistory older than
     the `n` most recent entries.
 
     The `n` is defined by the largest configured value for all bound

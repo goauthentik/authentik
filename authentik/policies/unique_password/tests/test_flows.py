@@ -3,12 +3,11 @@
 from django.contrib.auth.hashers import make_password
 from django.urls.base import reverse
 
-from authentik.core.models import UserPasswordHistory
 from authentik.core.tests.utils import create_test_flow, create_test_user
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
-from authentik.policies.unique_password.models import UniquePasswordPolicy
+from authentik.policies.unique_password.models import UniquePasswordPolicy, UserPasswordHistory
 from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
 
 
@@ -46,7 +45,7 @@ class TestUniquePasswordPolicyFlow(FlowTestCase):
 
         # Seed the user's password history
         UserPasswordHistory.objects.create(
-            user=self.user, change={"old_password": make_password(self.REUSED_PASSWORD)}
+            user=self.user, old_password=make_password(self.REUSED_PASSWORD)
         )
 
     def test_prompt_data(self):

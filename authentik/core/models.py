@@ -960,15 +960,3 @@ class AuthenticatedSession(ExpiringModel):
             last_user_agent=request.META.get("HTTP_USER_AGENT", ""),
             expires=request.session.get_expiry_date(),
         )
-
-
-class UserPasswordHistory(models.Model):
-    user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="old_passwords")
-    change = models.JSONField()
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        verbose_name = _("User Password History")
-
-    def __str__(self) -> str:
-        return f"Historical User Password (changed: {self.created_at:%Y/%m/%d %X})"
