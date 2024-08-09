@@ -6,7 +6,7 @@ title: Netbird
 
 ## What is Netbird?
 
-> NetBird is an Open-Source Zero Trust Networking platform that allows you to create secure private networks for your organization or home.
+> NetBird is an open source, zero trust, networking platform that allows you to create secure private networks for your organization or home.
 >
 > -- https://netbird.io
 
