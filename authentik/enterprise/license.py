@@ -20,6 +20,7 @@ from rest_framework.fields import (
     ChoiceField,
     DateTimeField,
     IntegerField,
+    ListField,
 )
 
 from authentik.core.api.utils import PassiveSerializer
@@ -55,6 +56,7 @@ class LicenseFlags(Enum):
     """License flags"""
 
     TRIAL = "trial"
+    NON_PRODUCTION = "non_production"
 
 
 @dataclass
@@ -65,6 +67,7 @@ class LicenseSummary:
     external_users: int
     status: LicenseUsageStatus
     latest_valid: datetime
+    license_flags: list[LicenseFlags]
 
 
 class LicenseSummarySerializer(PassiveSerializer):
@@ -74,6 +77,7 @@ class LicenseSummarySerializer(PassiveSerializer):
     external_users = IntegerField(required=True)
     status = ChoiceField(choices=LicenseUsageStatus.choices)
     latest_valid = DateTimeField()
+    license_flags = ListField(child=ChoiceField(choices=tuple(x.value for x in LicenseFlags)))
 
 
 @dataclass
@@ -86,7 +90,7 @@ class LicenseKey:
     name: str
     internal_users: int = 0
     external_users: int = 0
-    flags: list[LicenseFlags] = field(default_factory=list)
+    license_flags: list[LicenseFlags] = field(default_factory=list)
 
     @staticmethod
     def validate(jwt: str, check_expiry=True) -> "LicenseKey":
@@ -132,7 +136,7 @@ class LicenseKey:
                 total.exp = exp_ts
             if exp_ts <= total.exp:
                 total.exp = exp_ts
-            total.flags.extend(lic.status.flags)
+            total.license_flags.extend(lic.status.license_flags)
         return total
 
     @staticmethod
@@ -216,6 +220,7 @@ class LicenseKey:
             internal_users=self.internal_users,
             external_users=self.external_users,
             status=status,
+            license_flags=self.license_flags,
         )
 
     @staticmethod
