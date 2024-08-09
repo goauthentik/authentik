@@ -16,7 +16,7 @@ The following placeholders will be used:
 - `netbird.company` is the FQDN of the Netbird install.
 - `authentik.company` is the FQDN of the authentik install.
 
-## authentik Configuration
+## authentik configuration
 
 ### Provider & Application Configuration
 
