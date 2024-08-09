@@ -7,6 +7,7 @@ This stage attaches a currently pending user to the current session.
 It can be used after `user_write` during an enrollment flow, or after a `password` stage during an authentication flow.
 
 ## User login stage configuration options
+
 When creating or editing this stage in the UI of the Admin interface, you can set the following configuration options.
 
 **Name**: enter a descriptive name for the stage.
@@ -35,7 +36,7 @@ When creating or editing this stage in the UI of the Admin interface, you can se
 
     ![](./stay_signed_in.png)
 
--   **Network binding and GeoIP binding**
+-   **Network binding/GeoIP binding**
 
     When configured, all sessions authenticated by this stage will be bound to the selected network and/or GeoIP criteria.
 
