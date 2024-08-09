@@ -2,7 +2,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { KeyUnknown } from "@goauthentik/elements/forms/Form";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
+import { html, nothing } from "lit";
 import { property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -43,8 +43,14 @@ export interface PendingUserChallenge {
     pendingUserAvatar?: string;
 }
 
+export interface ResponseErrorsChallenge {
+    responseErrors?: {
+        [key: string]: Array<ErrorDetail>;
+    };
+}
+
 export class BaseStage<
-    Tin extends FlowInfoChallenge & PendingUserChallenge,
+    Tin extends FlowInfoChallenge & PendingUserChallenge & ResponseErrorsChallenge,
     Tout,
 > extends AKElement {
     host!: StageHost;
@@ -72,12 +78,17 @@ export class BaseStage<
         });
     }
 
-    renderNonFieldErrors(errors: ErrorDetail[]): TemplateResult {
-        if (!errors) {
-            return html``;
+    renderNonFieldErrors() {
+        const errors = this.challenge?.responseErrors || {};
+        if (!("non_field_errors" in errors)) {
+            return nothing;
+        }
+        const nonFieldErrors = errors["non_field_errors"];
+        if (!nonFieldErrors) {
+            return nothing;
         }
         return html`<div class="pf-c-form__alert">
-            ${errors.map((err) => {
+            ${nonFieldErrors.map((err) => {
                 return html`<div class="pf-c-alert pf-m-inline pf-m-danger">
                     <div class="pf-c-alert__icon">
                         <i class="fas fa-exclamation-circle"></i>
@@ -88,9 +99,9 @@ export class BaseStage<
         </div>`;
     }
 
-    renderUserInfo(): TemplateResult {
+    renderUserInfo() {
         if (!this.challenge.pendingUser || !this.challenge.pendingUserAvatar) {
-            return html``;
+            return nothing;
         }
         return html`
             <ak-form-static

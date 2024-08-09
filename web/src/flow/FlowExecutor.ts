@@ -281,8 +281,7 @@ export class FlowExecutor extends Interface implements StageHost {
 
     async renderChallenge(): Promise<TemplateResult> {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading=${true} header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state loading> </ak-empty-state>`;
         }
         switch (this.challenge?.component) {
             case "ak-stage-access-denied":
@@ -437,19 +436,19 @@ export class FlowExecutor extends Interface implements StageHost {
                 alt="authentik Logo"
             />
         </div>`;
+        const fallback = html`${logo}<ak-empty-state loading> </ak-empty-state>`;
         if (!this.challenge) {
-            return html`${logo}<ak-empty-state ?loading=${true} header=${msg("Loading")}>
-                </ak-empty-state>`;
+            return fallback;
         }
         return html`
             ${this.loading ? html`<ak-loading-overlay></ak-loading-overlay>` : nothing} ${logo}
-            ${until(this.renderChallenge())}
+            ${until(this.renderChallenge(), fallback)}
         `;
     }
 
-    async renderInspector(): Promise<TemplateResult> {
+    async renderInspector() {
         if (!this.inspectorOpen) {
-            return html``;
+            return nothing;
         }
         await import("@goauthentik/flow/FlowInspector");
         return html`<ak-flow-inspector

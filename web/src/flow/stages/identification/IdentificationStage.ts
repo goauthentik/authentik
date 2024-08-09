@@ -198,9 +198,9 @@ export class IdentificationStage extends BaseStage<
         </li>`;
     }
 
-    renderFooter(): TemplateResult {
+    renderFooter() {
         if (!this.challenge?.enrollUrl && !this.challenge?.recoveryUrl) {
-            return html``;
+            return nothing;
         }
         return html`<div class="pf-c-login__main-footer-band">
             ${this.challenge.enrollUrl
@@ -246,7 +246,7 @@ export class IdentificationStage extends BaseStage<
                 : nothing}
             <ak-form-element
                 label=${label}
-                ?required="${true}"
+                required
                 class="pf-c-form__group"
                 .errors=${(this.challenge.responseErrors || {})["uid_field"]}
             >
@@ -273,9 +273,7 @@ export class IdentificationStage extends BaseStage<
                       ></ak-flow-input-password>
                   `
                 : nothing}
-            ${"non_field_errors" in (this.challenge?.responseErrors || {})
-                ? this.renderNonFieldErrors(this.challenge?.responseErrors?.non_field_errors || [])
-                : nothing}
+            ${this.renderNonFieldErrors()}
             <div class="pf-c-form__group pf-m-action">
                 <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
                     ${this.challenge.primaryAction}
@@ -288,8 +286,7 @@ export class IdentificationStage extends BaseStage<
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state loading> </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>

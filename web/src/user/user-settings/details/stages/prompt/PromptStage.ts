@@ -75,12 +75,7 @@ export class UserSettingsPromptStage extends PromptStage {
                     ${this.challenge.fields.map((prompt) => {
                         return this.renderField(prompt);
                     })}
-                    ${"non_field_errors" in (this.challenge?.responseErrors || {})
-                        ? this.renderNonFieldErrors(
-                              this.challenge?.responseErrors?.non_field_errors || [],
-                          )
-                        : html``}
-                    ${this.renderContinue()}
+                    ${this.renderNonFieldErrors()} ${this.renderContinue()}
                 </form>
             </div>
             <footer class="pf-c-login__main-footer">
