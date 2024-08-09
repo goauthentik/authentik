@@ -28,42 +28,6 @@ class TestUserWriteStage(FlowTestCase):
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
         self.source = Source.objects.create(name="fake_source")
 
-    # def test_password_not_recorded_if_policy_not_active(self):
-    #     """Test system does not record user's previous password if UniquePasswordPolicy not active"""
-
-    #     test_user = create_test_user()
-    #     # We're changing our own password
-    #     self.client.force_login(test_user)
-
-    #     new_password = generate_key()
-    #     plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
-    #     plan.context[PLAN_CONTEXT_PENDING_USER] = test_user
-    #     plan.context[PLAN_CONTEXT_PROMPT] = {
-    #         "username": test_user.username,
-    #         "password": new_password,
-    #         "attributes": {
-    #             "foo": "bar",
-    #         },
-    #     }
-    #     session = self.client.session
-    #     session[SESSION_KEY_PLAN] = plan
-    #     session.save()
-
-    #     response = self.client.post(
-    #         reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
-    #     )
-
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
-    #     user_qs = User.objects.filter(username=plan.context[PLAN_CONTEXT_PROMPT]["username"])
-    #     self.assertTrue(user_qs.exists())
-    #     self.assertTrue(user_qs.first().check_password(new_password))
-    #     self.assertEqual(user_qs.first().attributes["foo"], "bar")
-
-    #     # Assert password not recorded if UniquePasswordPolicy not active
-    #     user_password_history_qs = UserPasswordHistory.objects.filter(user=user_qs.first())
-    #     self.assertFalse(user_password_history_qs.exists())
-
     def test_save_password_history_if_policy_binding_enforced(self):
         """Test user's new password is recorded when ANY enabled UniquePasswordPolicy exists"""
         unique_password_policy = UniquePasswordPolicy.objects.create(num_historical_passwords=5)
