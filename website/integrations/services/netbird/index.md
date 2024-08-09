@@ -34,7 +34,7 @@ The following placeholders will be used:
 8. Click **Finish** to save the provider configuration.
 9. Create a new application associated with this provider.
 
-### Service Account Setup
+### Service account setup
 
 1. Access the **Admin Interface** of your authentik install once more.
 2. Navigate to **Directory** -> **Users**, and click **Create a service account**.
