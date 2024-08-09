@@ -9,7 +9,7 @@ Certificates in authentik are used for the following use cases:
 -   Connecting to remote docker hosts using the Docker integration
 -   Verifying LDAP Servers' certificates
 -   Encrypting outposts' endpoints
--   Configure a webhook to use uploaded SSL certificates
+-   Configure a webhook to use uploaded SSL certificates (CA)
 
 ## Default certificate
 
@@ -72,7 +72,7 @@ This will import the certificate into authentik under the given name. This comma
 
 ## Configure a webhook to use uploaded SSL certificates
 
-When communicating with an external API, you will need to configure a generic webhook to utilize uploaded SSL certificates.
+When communicating with an external API, you will need to configure a generic webhook to utilize uploaded SSL certificates (CA).
 
 1. Create a custom image with a Docker file that looks something like this:
 
