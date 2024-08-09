@@ -55,6 +55,10 @@ services:
     image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2024.6.3}
     restart: unless-stopped
     command: worker
+    ulimits:
+      nofile:
+        soft: 10240
+        hard: 10240
     environment:
       AUTHENTIK_REDIS__HOST: redis
       AUTHENTIK_POSTGRESQL__HOST: postgresql
