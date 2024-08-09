@@ -36,7 +36,7 @@ When creating or editing this stage in the UI of the Admin interface, you can se
 
     ![](./stay_signed_in.png)
 
--   **Network binding/GeoIP binding**
+-   **Network binding and GeoIP binding**
 
     When configured, all sessions authenticated by this stage will be bound to the selected network and/or GeoIP criteria.
 
