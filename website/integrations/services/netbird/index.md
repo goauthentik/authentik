@@ -18,7 +18,7 @@ The following placeholders will be used:
 
 ## authentik configuration
 
-### Provider & Application Configuration
+### Provider & application configuration
 
 1. Access the **Admin Interface** of your authentik installation.
 2. Create a new **OAuth2 / OpenID Provider**.
