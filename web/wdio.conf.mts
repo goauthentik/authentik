@@ -1,7 +1,7 @@
 import replace from "@rollup/plugin-replace";
 import type { Options } from "@wdio/types";
 import { cwd } from "process";
-import * as postcssLit from "rollup-plugin-postcss-lit";
+import postcssLit from "rollup-plugin-postcss-lit";
 import type { UserConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
@@ -30,7 +30,6 @@ export const config: Options.Testrunner = {
                         "preventAssignment": true,
                     }),
                     ...(config?.plugins ?? []),
-                    // @ts-ignore
                     postcssLit(),
                     tsconfigPaths(),
                 ],
