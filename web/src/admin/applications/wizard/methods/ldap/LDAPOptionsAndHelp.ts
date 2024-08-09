@@ -43,10 +43,6 @@ export const mfaSupportHelp = msg(
     "When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.",
 );
 
-export const groupHelp = msg(
-    "The start for gidNumbers, this number is added to a number generated from the group.Pk to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to ensure that we don't collide with local groups or users primary groups gidNumber",
-);
-
 export const cryptoCertificateHelp = msg(
     "The certificate for the above configured Base DN. As a fallback, the provider uses a self-signed certificate.",
 );

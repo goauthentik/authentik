@@ -2,7 +2,6 @@ package server
 
 import (
 	"beryju.io/ldap"
-	"github.com/go-openapi/strfmt"
 
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/ldap/flags"
@@ -15,7 +14,7 @@ type LDAPServerInstance interface {
 	GetAuthenticationFlowSlug() string
 	GetInvalidationFlowSlug() string
 	GetAppSlug() string
-	GetSearchAllowedGroups() []*strfmt.UUID
+	GetProviderID() int32
 
 	UserEntry(u api.User) *ldap.Entry
 

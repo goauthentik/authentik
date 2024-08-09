@@ -15,10 +15,7 @@ import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
-    CoreApi,
-    CoreGroupsListRequest,
     FlowsInstancesListDesignationEnum,
-    Group,
     LDAPAPIAccessMode,
     LDAPProvider,
     ProvidersApi,
@@ -72,37 +69,6 @@ export class LDAPProviderFormPage extends WithBrandConfig(BaseProviderForm<LDAPP
                     required
                 ></ak-branded-flow-search>
                 <p class="pf-c-form__helper-text">${msg("Flow used for users to authenticate.")}</p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Search group")} name="searchGroup">
-                <ak-search-select
-                    .fetchObjects=${async (query?: string): Promise<Group[]> => {
-                        const args: CoreGroupsListRequest = {
-                            ordering: "name",
-                            includeUsers: false,
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(args);
-                        return groups.results;
-                    }}
-                    .renderElement=${(group: Group): string => {
-                        return group.name;
-                    }}
-                    .value=${(group: Group | undefined): string | undefined => {
-                        return group?.pk;
-                    }}
-                    .selected=${(group: Group): boolean => {
-                        return group.pk === this.instance?.searchGroup;
-                    }}
-                    ?blankable=${true}
-                >
-                </ak-search-select>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "Users in the selected group can do search queries. If no group is selected, no LDAP Searches are allowed.",
-                    )}
-                </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Bind mode")} name="bindMode">
                 <ak-radio

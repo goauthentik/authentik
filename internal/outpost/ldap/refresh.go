@@ -7,7 +7,6 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/go-openapi/strfmt"
 	log "github.com/sirupsen/logrus"
 
 	"goauthentik.io/api/v3"
@@ -23,7 +22,7 @@ import (
 
 func (ls *LDAPServer) getCurrentProvider(pk int32) *ProviderInstance {
 	for _, p := range ls.providers {
-		if p.outpostPk == pk {
+		if p.providerPk == pk {
 			return p
 		}
 	}
@@ -77,7 +76,6 @@ func (ls *LDAPServer) Refresh() error {
 			appSlug:                provider.ApplicationSlug,
 			authenticationFlowSlug: provider.BindFlowSlug,
 			invalidationFlowSlug:   invalidationFlow,
-			searchAllowedGroups:    []*strfmt.UUID{(*strfmt.UUID)(provider.SearchGroup.Get())},
 			boundUsersMutex:        usersMutex,
 			boundUsers:             users,
 			s:                      ls,
@@ -87,7 +85,7 @@ func (ls *LDAPServer) Refresh() error {
 			gidStartNumber:         provider.GetGidStartNumber(),
 			mfaSupport:             provider.GetMfaSupport(),
 			outpostName:            ls.ac.Outpost.Name,
-			outpostPk:              provider.Pk,
+			providerPk:             provider.Pk,
 		}
 		if kp := provider.Certificate.Get(); kp != nil {
 			err := ls.cs.AddKeypair(*kp)

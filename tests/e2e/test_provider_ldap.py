@@ -5,6 +5,7 @@ from time import sleep
 
 from docker.client import DockerClient, from_env
 from docker.models.containers import Container
+from guardian.shortcuts import assign_perm
 from ldap3 import ALL, ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES, SUBTREE, Connection, Server
 from ldap3.core.exceptions import LDAPInvalidCredentialsResult
 
@@ -54,9 +55,9 @@ class TestProviderLDAP(SeleniumTestCase):
         ldap: LDAPProvider = LDAPProvider.objects.create(
             name=generate_id(),
             authorization_flow=Flow.objects.get(slug="default-authentication-flow"),
-            search_group=self.user.ak_groups.first(),
             search_mode=APIAccessMode.CACHED,
         )
+        assign_perm("search_full_directory", self.user, ldap)
         # we need to create an application to actually access the ldap
         Application.objects.create(name=generate_id(), slug=generate_id(), provider=ldap)
         outpost: Outpost = Outpost.objects.create(

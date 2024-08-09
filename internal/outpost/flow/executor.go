@@ -120,21 +120,6 @@ func (fe *FlowExecutor) DelegateClientIP(a string) {
 	fe.api.GetConfig().AddDefaultHeader(HeaderAuthentikRemoteIP, fe.cip)
 }
 
-func (fe *FlowExecutor) CheckApplicationAccess(appSlug string) (bool, error) {
-	acsp := sentry.StartSpan(fe.Context, "authentik.outposts.flow_executor.check_access")
-	defer acsp.Finish()
-	p, _, err := fe.api.CoreApi.CoreApplicationsCheckAccessRetrieve(acsp.Context(), appSlug).Execute()
-	if err != nil {
-		return false, fmt.Errorf("failed to check access: %w", err)
-	}
-	if !p.Passing {
-		fe.log.Info("Access denied for user")
-		return false, nil
-	}
-	fe.log.Debug("User has access")
-	return true, nil
-}
-
 func (fe *FlowExecutor) getAnswer(stage StageComponent) string {
 	if v, o := fe.Answers[stage]; o {
 		return v
