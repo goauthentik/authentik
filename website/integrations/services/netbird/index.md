@@ -1,5 +1,5 @@
 ---
-title: Netbird
+title: NetBird
 ---
 
 <span class="badge badge--secondary">Support level: Community</span>
