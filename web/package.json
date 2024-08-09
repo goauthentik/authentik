@@ -153,7 +153,6 @@
         "tsc": "wireit",
         "watch": "run-s build-locales esbuild:watch"
     },
-    "type": "module",
     "wireit": {
         "build": {
             "#comment": [
