@@ -38,7 +38,7 @@ The following placeholders will be used:
 
 1. Access the **Admin Interface** of your authentik install once more.
 2. Navigate to **Directory** -> **Users**, and click **Create a service account**.
-3. Set the username to `Netbird` and disable the **Create group** option.
+3. Set the username to `NetBird` and disable the **Create group** option.
 4. Take note of the generated password.
 
 ### Adding the Service Account to the Administrator Group
