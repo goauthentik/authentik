@@ -66,4 +66,4 @@ NETBIRD_IDP_MGMT_EXTRA_PASSWORD="<Your Service Account password>"
 
 After making these changes, restart your Docker containers to apply the new configuration.
 
-Once completed, Netbird should be successfully configured to use authentik as its Single Sign-On provider.
+Once completed, NetBird should be successfully configured to use authentik as its Single Sign-On provider.
