@@ -41,7 +41,7 @@ The following placeholders will be used:
 3. Set the username to `NetBird` and disable the **Create group** option.
 4. Take note of the generated password.
 
-### Adding the Service Account to the Administrator Group
+### Adding the service account to the administrator group
 
 1. Under **Directory** -> **Groups**, select the `authentik Default Admins` group and switch to the **Users** tab near the top of the page.
 2. Click the **Add existing user** button and select your Netbird service account.
