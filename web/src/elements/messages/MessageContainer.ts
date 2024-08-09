@@ -2,9 +2,9 @@ import {
     EVENT_MESSAGE,
     EVENT_WS_MESSAGE,
     WS_MSG_TYPE_MESSAGE,
-} from "@goauthentik/common/constants";
-import { SentryIgnoredError } from "@goauthentik/common/errors";
-import { WSMessage } from "@goauthentik/common/ws";
+} from "@goauthentik/common/constants.js";
+import { SentryIgnoredError } from "@goauthentik/common/errors.js";
+import { WSMessage } from "@goauthentik/common/ws.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/messages/Message";
 import { APIMessage } from "@goauthentik/elements/messages/Message";

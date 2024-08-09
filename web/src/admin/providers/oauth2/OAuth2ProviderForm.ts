@@ -1,8 +1,8 @@
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils.js";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";

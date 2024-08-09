@@ -1,7 +1,7 @@
-import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
-import { UIConfig } from "@goauthentik/common/ui/config";
-import { adaptCSS } from "@goauthentik/common/utils";
+import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants.js";
+import { globalAK } from "@goauthentik/common/global.js";
+import { UIConfig } from "@goauthentik/common/ui/config.js";
+import { adaptCSS } from "@goauthentik/common/utils.js";
 import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet";
 
 import { localized } from "@lit/localize";

@@ -1,4 +1,4 @@
-import { globalAK } from "@goauthentik/common/global";
+import { globalAK } from "@goauthentik/common/global.js";
 import { Interface } from "@goauthentik/elements/Interface";
 
 import { msg } from "@lit/localize";

@@ -2,7 +2,7 @@ import {
     AdminStatus,
     AdminStatusCard,
 } from "@goauthentik/admin/admin-overview/cards/AdminStatusCard";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";

@@ -43,7 +43,7 @@ const otherFiles = [
     ["node_modules/@patternfly/patternfly/patternfly.min.css", "."],
     ["node_modules/@patternfly/patternfly/assets/**", ".", "node_modules/@patternfly/patternfly/"],
     ["src/custom.css", "."],
-    ["src/common/styles/**", "."],
+    ["packages/common/src/styles/**", "."],
     ["src/assets/images/**", "./assets/images"],
     ["./icons/*", "./assets/icons"],
 ];

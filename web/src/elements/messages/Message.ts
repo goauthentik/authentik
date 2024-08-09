@@ -1,4 +1,4 @@
-import { MessageLevel } from "@goauthentik/common/messages";
+import { MessageLevel } from "@goauthentik/common/messages.js";
 import { AKElement } from "@goauthentik/elements/Base";
 
 import { CSSResult, TemplateResult, html } from "lit";

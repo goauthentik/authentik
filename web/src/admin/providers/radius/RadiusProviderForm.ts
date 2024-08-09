@@ -1,6 +1,6 @@
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils.js";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types";
 import "@goauthentik/elements/forms/FormGroup";

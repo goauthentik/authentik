@@ -1,4 +1,4 @@
-import { CURRENT_CLASS, EVENT_REFRESH, ROUTE_SEPARATOR } from "@goauthentik/common/constants";
+import { CURRENT_CLASS, EVENT_REFRESH, ROUTE_SEPARATOR } from "@goauthentik/common/constants.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import { getURLParams, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
 

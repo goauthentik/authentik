@@ -3,7 +3,7 @@ import {
     checkWebAuthnSupport,
     transformCredentialCreateOptions,
     transformNewAssertionForServer,
-} from "@goauthentik/common/helpers/webauthn";
+} from "@goauthentik/common/helpers/webauthn.js";
 import "@goauthentik/elements/EmptyState";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 

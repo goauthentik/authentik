@@ -1,6 +1,6 @@
 import { renderSourceIcon } from "@goauthentik/admin/sources/utils";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/user/sources/SourceSettingsOAuth";

@@ -1,4 +1,4 @@
-import { convertToSlug } from "@goauthentik/common/utils";
+import { convertToSlug } from "@goauthentik/common/utils.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import { FormGroup } from "@goauthentik/elements/forms/FormGroup";
 

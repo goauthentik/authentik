@@ -3,7 +3,7 @@ import "@goauthentik/admin/applications/ApplicationCheckAccessForm";
 import "@goauthentik/admin/applications/ApplicationForm";
 import "@goauthentik/admin/policies/BoundPoliciesList";
 import "@goauthentik/admin/rbac/ObjectPermissionsPage";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { PFSize } from "@goauthentik/common/enums.js";
 import "@goauthentik/components/ak-app-icon";
 import "@goauthentik/components/events/ObjectChangelog";

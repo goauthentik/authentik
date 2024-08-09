@@ -1,5 +1,5 @@
 import "@goauthentik/admin/groups/GroupForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";

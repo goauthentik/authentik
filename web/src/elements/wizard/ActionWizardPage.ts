@@ -1,4 +1,4 @@
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
 import { WizardAction } from "@goauthentik/elements/wizard/Wizard";
 import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 

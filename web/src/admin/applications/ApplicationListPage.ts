@@ -1,5 +1,5 @@
 import "@goauthentik/admin/applications/ApplicationForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { PFSize } from "@goauthentik/common/enums.js";
 import "@goauthentik/components/ak-app-icon";
 import MDApplication from "@goauthentik/docs/applications/index.md";

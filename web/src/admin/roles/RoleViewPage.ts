@@ -1,8 +1,8 @@
 import "@goauthentik/admin/groups/RelatedGroupList";
 import "@goauthentik/admin/rbac/ObjectPermissionsPage";
 import "@goauthentik/admin/roles/RoleForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
 import { renderDescriptionList } from "@goauthentik/components/DescriptionList";
 import "@goauthentik/components/events/ObjectChangelog";
 import "@goauthentik/components/events/UserEvents";

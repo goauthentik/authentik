@@ -138,6 +138,8 @@
         "lint": "wireit",
         "lint:lockfile": "wireit",
         "lint:package": "wireit",
+        "lint:precommit": "wireit",
+        "lint:nightmare": "wireit",
         "lit-analyse": "wireit",
         "postinstall": "bash scripts/patch-spotlight.sh",
         "precommit": "wireit",
@@ -186,6 +188,7 @@
             ],
             "dependencies": [
                 "build-locales",
+                "./packages/common:build",
                 "./packages/sfe:build"
             ],
             "env": {
@@ -241,6 +244,10 @@
         },
         "lint": {
             "command": "eslint --max-warnings 0 --fix",
+            "dependencies": [
+                "./packages/common:lint",
+                "./packages/common:build:types"
+            ],
             "env": {
                 "NODE_OPTIONS": "--max_old_space_size=65536"
             }
@@ -251,6 +258,7 @@
         "lint:types": {
             "command": "tsc --noEmit -p .",
             "dependencies": [
+                "./packages/common:build:types",
                 "build-locales"
             ]
         },
@@ -338,6 +346,7 @@
     },
     "workspaces": [
         ".",
-        "./packages/*"
+        "./packages/sfe",
+        "./packages/common"
     ]
 }

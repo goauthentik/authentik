@@ -1,9 +1,9 @@
 import "@goauthentik/admin/providers/RelatedApplicationButton";
 import "@goauthentik/admin/providers/saml/SAMLProviderForm";
 import "@goauthentik/admin/rbac/ObjectPermissionsPage";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { MessageLevel } from "@goauthentik/common/messages";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
+import { MessageLevel } from "@goauthentik/common/messages.js";
 import renderDescriptionList from "@goauthentik/components/DescriptionList";
 import "@goauthentik/components/events/ObjectChangelog";
 import { AKElement } from "@goauthentik/elements/Base";

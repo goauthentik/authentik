@@ -11,8 +11,8 @@ import {
     makeOAuth2PropertyMappingsSelector,
     oauth2PropertyMappingsProvider,
 } from "@goauthentik/admin/providers/oauth2/Oauth2PropertyMappings.js";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils.js";
 import "@goauthentik/components/ak-number-input";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-switch-input";

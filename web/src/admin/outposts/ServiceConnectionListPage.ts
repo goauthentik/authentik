@@ -3,7 +3,7 @@ import "@goauthentik/admin/outposts/ServiceConnectionDockerForm";
 import "@goauthentik/admin/outposts/ServiceConnectionKubernetesForm";
 import "@goauthentik/admin/outposts/ServiceConnectionWizard";
 import "@goauthentik/admin/rbac/ObjectPermissionModal";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import "@goauthentik/components/ak-status-label";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/buttons/SpinnerButton";

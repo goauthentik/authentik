@@ -1,6 +1,6 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { deviceTypeName } from "@goauthentik/common/labels";
-import { getRelativeTime } from "@goauthentik/common/utils";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { deviceTypeName } from "@goauthentik/common/labels.js";
+import { getRelativeTime } from "@goauthentik/common/utils.js";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";

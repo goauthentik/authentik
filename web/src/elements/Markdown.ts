@@ -1,4 +1,4 @@
-import { docLink } from "@goauthentik/common/global";
+import { docLink } from "@goauthentik/common/global.js";
 import "@goauthentik/elements/Alert";
 import { Level } from "@goauthentik/elements/Alert";
 import { AKElement } from "@goauthentik/elements/Base";

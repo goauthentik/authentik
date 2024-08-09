@@ -48,6 +48,11 @@ const eslint = new ESLint({
     warnIgnored: false,
 });
 
+if (files.length < 1) {
+    console.log("eslint: change set contains no lintable files");
+    process.exit(0);
+}
+
 const results = await eslint.lintFiles(files);
 const formatter = await eslint.loadFormatter("stylish");
 const resultText = formatter.format(results);

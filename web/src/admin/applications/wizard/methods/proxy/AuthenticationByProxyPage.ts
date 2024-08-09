@@ -3,8 +3,8 @@ import {
     makeProxyPropertyMappingsSelector,
     proxyPropertyMappingsProvider,
 } from "@goauthentik/admin/providers/proxy/ProxyProviderPropertyMappings.js";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { first } from "@goauthentik/common/utils.js";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";

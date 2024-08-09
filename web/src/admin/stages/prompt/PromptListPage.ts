@@ -1,7 +1,7 @@
 import "@goauthentik/admin/rbac/ObjectPermissionModal";
 import "@goauthentik/admin/stages/prompt/PromptForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { PFSize } from "@goauthentik/common/enums";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { PFSize } from "@goauthentik/common/enums.js";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";

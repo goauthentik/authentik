@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 
 import { DetailedCountry, PoliciesApi } from "@goauthentik/api";
 

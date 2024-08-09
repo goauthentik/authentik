@@ -1,7 +1,7 @@
 import "@goauthentik/admin/enterprise/EnterpriseLicenseForm";
 import "@goauthentik/admin/rbac/ObjectPermissionModal";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { getRelativeTime } from "@goauthentik/common/utils";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { getRelativeTime } from "@goauthentik/common/utils.js";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/Spinner";
 import "@goauthentik/elements/buttons/SpinnerButton";

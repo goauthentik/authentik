@@ -1,7 +1,7 @@
 import { placeholderHelperText } from "@goauthentik/admin/helperText";
 import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { first } from "@goauthentik/common/utils.js";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types.js";
 import "@goauthentik/elements/forms/FormGroup";

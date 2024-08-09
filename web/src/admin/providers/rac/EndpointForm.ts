@@ -1,5 +1,5 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { first } from "@goauthentik/common/utils.js";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
