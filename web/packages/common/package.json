@@ -121,6 +121,18 @@
                 }
             }
         },
+        "prettier": {
+            "command": "prettier --write .",
+            "dependencies": [
+                "lint:package"
+            ]
+        },
+        "format": {
+            "command": "prettier --write .",
+            "dependencies": [
+                "lint:package"
+            ]
+        },
         "precommit": {
             "command": "prettier --write .",
             "dependencies": [
