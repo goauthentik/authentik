@@ -85,8 +85,8 @@ RUN update-ca-certificates
 USER authentik
 ```
 
-2. Add your custom CA to /etc/ssl/certs
-3. Run `update-ca-certificates` as root to add the SSL certificates (CA) to the environment
+2. Add your custom SSL certificates (CA) to `/etc/ssl/certs`.
+3. Run `update-ca-certificates` as root to add the certificates to the environment.
 
 ## Web certificates
 
