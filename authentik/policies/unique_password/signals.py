@@ -26,10 +26,13 @@ def purge_password_history(sender, instance, **_):
 
 
 @receiver(user_write)
-def on_user_write(sender, request: HttpRequest, user: User, data: dict[str, Any], **kwargs):
+def copy_password_to_password_history(
+    sender, request: HttpRequest, user: User, data: dict[str, Any], **kwargs
+):
     """Preserve the user's old password if UniquePasswordPolicy is enabled anywhere"""
-    from authentik.core.models import UserPasswordHistory
-    from authentik.policies.unique_password.models import UniquePasswordPolicy
+    from authentik.policies.unique_password.models import UniquePasswordPolicy, UserPasswordHistory
+
+    print("!!!!=========COPY_PASSWORD_TO_USER_PASSWORD_HISTORY")
 
     user_changed_own_password = (
         any("password" in x for x in data.keys())
@@ -37,13 +40,17 @@ def on_user_write(sender, request: HttpRequest, user: User, data: dict[str, Any]
         and SESSION_KEY_IMPERSONATE_USER not in request.session
     )
     if user_changed_own_password:
+        print("====== USER CHANGED OWN PASSWORD")
         unique_pwd_policy_binding_in_use = PolicyBinding.in_use.for_policy(
             UniquePasswordPolicy
         ).exists()
 
         if unique_pwd_policy_binding_in_use:
+            print("===== unique pwd policy in use")
             """NOTE: Because we run this in a signal after saving the user, 
             we are not atomically guaranteed to save password history.
             """
-            UserPasswordHistory.objects.create(user=user, change={"old_password": user.password})
+            UserPasswordHistory.objects.create(user=user, old_password=user.password)
             trim_user_password_history.delay(user.pk)
+        else:
+            print("==== policy not in use")

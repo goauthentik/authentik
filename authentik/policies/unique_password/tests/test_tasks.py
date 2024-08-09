@@ -2,10 +2,10 @@ from datetime import datetime, timedelta
 
 from django.test import TestCase
 
-from authentik.core.models import User, UserPasswordHistory
+from authentik.core.models import User
 from authentik.core.tests.utils import create_test_user
 from authentik.policies.models import PolicyBinding, PolicyBindingModel
-from authentik.policies.unique_password.models import UniquePasswordPolicy
+from authentik.policies.unique_password.models import UniquePasswordPolicy, UserPasswordHistory
 from authentik.policies.unique_password.tasks import (
     purge_password_history_table,
     trim_user_password_history,
@@ -18,11 +18,11 @@ class TestPurgePasswordHistory(TestCase):
         self.user = User.objects.create(username="testuser")
 
     def test_purge_password_history_table(self):
-        """Tests the task empties the core.models.UserPasswordHistory table"""
+        """Tests the task empties the UserPasswordHistory table"""
         UserPasswordHistory.objects.bulk_create(
             [
-                UserPasswordHistory(user=self.user, change={"old_password": "hunter1"}),
-                UserPasswordHistory(user=self.user, change={"old_password": "hunter2"}),
+                UserPasswordHistory(user=self.user, old_password="hunter1"),
+                UserPasswordHistory(user=self.user, old_password="hunter2"),
             ]
         )
         purge_password_history_table.delay().get()
@@ -43,17 +43,15 @@ class TestTrimPasswordHistory(TestCase):
             [
                 UserPasswordHistory(
                     user=self.user,
-                    change={"old_password": "hunter1"},
+                    old_password="hunter1",
                     created_at=_now - timedelta(days=3),
                 ),
                 UserPasswordHistory(
                     user=self.user,
-                    change={"old_password": "hunter2"},
+                    old_password="hunter2",
                     created_at=_now - timedelta(days=2),
                 ),
-                UserPasswordHistory(
-                    user=self.user, change={"old_password": "hunter3"}, created_at=_now
-                ),
+                UserPasswordHistory(user=self.user, old_password="hunter3", created_at=_now),
             ]
         )
 
@@ -72,7 +70,7 @@ class TestTrimPasswordHistory(TestCase):
         """Test no passwords removed if policy binding is disabled"""
 
         # Insert a record to ensure it's not deleted after executing task
-        UserPasswordHistory.objects.create(user=self.user, change={"old_password": "hunter2"})
+        UserPasswordHistory.objects.create(user=self.user, old_password="hunter2")
 
         policy = UniquePasswordPolicy.objects.create(num_historical_passwords=1)
         PolicyBinding.objects.create(
@@ -87,7 +85,7 @@ class TestTrimPasswordHistory(TestCase):
     def test_trim_password_history_fewer_records_than_maximum_is_no_op(self):
         """Test no passwords deleted if fewer passwords exist than limit"""
 
-        UserPasswordHistory.objects.create(user=self.user, change={"old_password": "hunter2"})
+        UserPasswordHistory.objects.create(user=self.user, old_password="hunter2")
 
         policy = UniquePasswordPolicy.objects.create(num_historical_passwords=2)
         PolicyBinding.objects.create(

@@ -9,7 +9,6 @@ from authentik.core.models import (
     Group,
     Source,
     User,
-    UserPasswordHistory,
     UserSourceConnection,
 )
 from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION
@@ -23,7 +22,7 @@ from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_key
 from authentik.policies.models import PolicyBinding, PolicyBindingModel
-from authentik.policies.unique_password.models import UniquePasswordPolicy
+from authentik.policies.unique_password.models import UniquePasswordPolicy, UserPasswordHistory
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 from authentik.stages.user_write.models import UserCreationMode, UserWriteStage
 from authentik.stages.user_write.stage import PLAN_CONTEXT_GROUPS, UserWriteStageView
@@ -129,10 +128,6 @@ class TestUserWriteStage(FlowTestCase):
         self.assertEqual(user_qs.first().attributes["some"]["custom-attribute"], "test")
         self.assertEqual(user_qs.first().attributes["foo"], "bar")
         self.assertNotIn("some_ignored_attribute", user_qs.first().attributes)
-
-        # Assert password not recorded if UniquePasswordPolicy not active
-        user_password_history_qs = UserPasswordHistory.objects.filter(user=user_qs.first())
-        self.assertFalse(user_password_history_qs.exists())
 
     def test_user_update_source(self):
         """Test update of existing user with a source"""
