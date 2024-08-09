@@ -31,3 +31,29 @@ This URL is fetched upon saving the source, and all the URLs will be replaced by
 To simplify Machine-to-machine authentication, you can create an OAuth Source as "trusted" source of JWTs. Create a source and configure either the Well-known URL or the OIDC JWKS URL, or you can manually enter the JWKS data if you so desire.
 
 Afterwards, this source can be selected in one or multiple OAuth2 providers, and any JWT issued by any of the configured sources' JWKS will be able to authenticate. To learn more about this, see [JWT-authentication](/docs/providers/oauth2/client_credentials#jwt-authentication).
+
+## OAuth source property mappings
+
+See the [overview](../property-mappings/index.md) for information on how property mappings work.
+
+### Expression data
+
+The following variables are available to OAuth source property mappings:
+
+-   `info`: A Python dictionary containing OAuth claims. For example (values might differ depending on the source):
+    ```python
+    {
+        "iss": "https://source.company",
+        "sub": "f153e7da687eec8c8789c72b6cc6bb5197df7b48b263b3151f36908e1bc10691",
+        "aud": "01e4DmQiG1d3kaewD3Mkz7E7kXknk9j43eZMkNaE",
+        "aud": "a7809c1b1c4aaa50adfb68660a6273dd9c8d15e4",
+        "email": "user@authentik.company",
+        "email_verified": True,
+        "name": "User",
+        "given_name": "User",
+        "preferred_username": "user",
+        "nickname": "user",
+    }
+    ```
+-   `client`: An OAuth client object to make requests to the Source with authentication built-in.
+-   `token`: A Python dictionary containing OAuth tokens.

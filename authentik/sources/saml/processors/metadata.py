@@ -46,6 +46,20 @@ class MetadataProcessor:
             return key_descriptor
         return None
 
+    def get_encryption_key_descriptor(self) -> Optional[Element]:  # noqa: UP007
+        """Get Encryption KeyDescriptor, if enabled for the source"""
+        if self.source.encryption_kp:
+            key_descriptor = Element(f"{{{NS_SAML_METADATA}}}KeyDescriptor")
+            key_descriptor.attrib["use"] = "encryption"
+            key_info = SubElement(key_descriptor, f"{{{NS_SIGNATURE}}}KeyInfo")
+            x509_data = SubElement(key_info, f"{{{NS_SIGNATURE}}}X509Data")
+            x509_certificate = SubElement(x509_data, f"{{{NS_SIGNATURE}}}X509Certificate")
+            x509_certificate.text = strip_pem_header(
+                self.source.encryption_kp.certificate_data.replace("\r", "")
+            ).replace("\n", "")
+            return key_descriptor
+        return None
+
     def get_name_id_formats(self) -> Iterator[Element]:
         """Get compatible NameID Formats"""
         formats = [
@@ -73,6 +87,10 @@ class MetadataProcessor:
         signing_descriptor = self.get_signing_key_descriptor()
         if signing_descriptor is not None:
             sp_sso_descriptor.append(signing_descriptor)
+
+        encryption_descriptor = self.get_encryption_key_descriptor()
+        if encryption_descriptor is not None:
+            sp_sso_descriptor.append(encryption_descriptor)
 
         for name_id_format in self.get_name_id_formats():
             sp_sso_descriptor.append(name_id_format)

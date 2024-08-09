@@ -63,7 +63,7 @@ A flag which decides whether or not this field is required.
 A field placeholder, shown within the input field.
 
 By default, the placeholder is interpreted as-is. If you enable _Interpret placeholder as expression_, the placeholder
-will be evaluated as a python expression. This happens in the same environment as [_Property mappings_](../../../property-mappings/expression).
+will be evaluated as a Python expression. This happens in the same environment as [_Policies_](../../../policies/expression).
 
 In the case of `Radio Button Group` and `Dropdown` prompts, this field defines all possible values (choices). When interpreted as-is, only one value will be allowed (the placeholder string). When interpreted as expression, a list of values can be returned to define multiple choices. For example, `return ["first option", 42, "another option"]` defines 3 possible values.
 
@@ -78,7 +78,7 @@ The prompt's initial value. It can also be left empty, in which case the field w
 With the `hidden` prompt, the initial value will also be the actual value, because the field is hidden to the user.
 
 By default, the initial value is interpreted as-is. If you enable _Interpret initial value as expression_, the initial value
-will be evaluated as a python expression. This happens in the same environment as [_Property mappings_](../../../property-mappings/expression).
+will be evaluated as a Python expression. This happens in the same environment as [_Policies_](../../../policies/expression).
 
 In the case of `Radio Button Group` and `Dropdown` prompts, this field defines the default choice. When interpreted as-is, the default choice will be the initial value string. When interpreted as expression, the default choice will be the returned value. For example, `return 42` defines `42` as the default choice.
 

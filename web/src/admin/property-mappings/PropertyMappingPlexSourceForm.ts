@@ -1,0 +1,40 @@
+import { BasePropertyMappingForm } from "@goauthentik/admin/property-mappings/BasePropertyMappingForm";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import "@goauthentik/elements/CodeMirror";
+import "@goauthentik/elements/forms/HorizontalFormElement";
+
+import { customElement } from "lit/decorators.js";
+
+import { PlexSourcePropertyMapping, PropertymappingsApi } from "@goauthentik/api";
+
+@customElement("ak-property-mapping-plex-source-form")
+export class PropertyMappingPlexSourceForm extends BasePropertyMappingForm<PlexSourcePropertyMapping> {
+    docLink(): string {
+        return "/docs/sources/property-mappings/expression?utm_source=authentik";
+    }
+
+    loadInstance(pk: string): Promise<PlexSourcePropertyMapping> {
+        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourcePlexRetrieve({
+            pmUuid: pk,
+        });
+    }
+
+    async send(data: PlexSourcePropertyMapping): Promise<PlexSourcePropertyMapping> {
+        if (this.instance) {
+            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourcePlexUpdate({
+                pmUuid: this.instance.pk,
+                plexSourcePropertyMappingRequest: data,
+            });
+        } else {
+            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourcePlexCreate({
+                plexSourcePropertyMappingRequest: data,
+            });
+        }
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-property-mapping-plex-source-form": PropertyMappingPlexSourceForm;
+    }
+}

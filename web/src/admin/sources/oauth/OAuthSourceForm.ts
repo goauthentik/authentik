@@ -1,7 +1,10 @@
 import "@goauthentik/admin/common/ak-flow-search/ak-source-flow-search";
 import { iconHelperText, placeholderHelperText } from "@goauthentik/admin/helperText";
 import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
-import { UserMatchingModeToLabel } from "@goauthentik/admin/sources/oauth/utils";
+import {
+    GroupMatchingModeToLabel,
+    UserMatchingModeToLabel,
+} from "@goauthentik/admin/sources/oauth/utils";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
@@ -10,6 +13,8 @@ import {
     CapabilitiesEnum,
     WithCapabilitiesConfig,
 } from "@goauthentik/elements/Interface/capabilitiesProvider";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
+import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -21,13 +26,38 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
     FlowsInstancesListDesignationEnum,
+    GroupMatchingModeEnum,
     OAuthSource,
+    OAuthSourcePropertyMapping,
     OAuthSourceRequest,
+    PropertymappingsApi,
     ProviderTypeEnum,
     SourceType,
     SourcesApi,
     UserMatchingModeEnum,
 } from "@goauthentik/api";
+
+async function propertyMappingsProvider(page = 1, search = "") {
+    const propertyMappings = await new PropertymappingsApi(
+        DEFAULT_CONFIG,
+    ).propertymappingsSourceOauthList({
+        ordering: "managed",
+        pageSize: 20,
+        search: search.trim(),
+        page,
+    });
+    return {
+        pagination: propertyMappings.pagination,
+        options: propertyMappings.results.map((m) => [m.pk, m.name, m.name, m]),
+    };
+}
+
+function makePropertyMappingsSelector(instanceMappings?: string[]) {
+    const localMappings = instanceMappings ? new Set(instanceMappings) : undefined;
+    return localMappings
+        ? ([pk, _]: DualSelectPair) => localMappings.has(pk)
+        : ([_0, _1, _2, _]: DualSelectPair<OAuthSourcePropertyMapping>) => false;
+}
 
 @customElement("ak-source-oauth-form")
 export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuthSource>) {
@@ -39,6 +69,8 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
         this.clearIcon = false;
         return source;
     }
+
+    _modelName?: string;
 
     @property()
     modelName?: string;
@@ -299,6 +331,35 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                     </option>
                 </select>
             </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${msg("Group matching mode")}
+                ?required=${true}
+                name="groupMatchingMode"
+            >
+                <select class="pf-c-form-control">
+                    <option
+                        value=${GroupMatchingModeEnum.Identifier}
+                        ?selected=${this.instance?.groupMatchingMode ===
+                        GroupMatchingModeEnum.Identifier}
+                    >
+                        ${UserMatchingModeToLabel(UserMatchingModeEnum.Identifier)}
+                    </option>
+                    <option
+                        value=${GroupMatchingModeEnum.NameLink}
+                        ?selected=${this.instance?.groupMatchingMode ===
+                        GroupMatchingModeEnum.NameLink}
+                    >
+                        ${GroupMatchingModeToLabel(GroupMatchingModeEnum.NameLink)}
+                    </option>
+                    <option
+                        value=${GroupMatchingModeEnum.NameDeny}
+                        ?selected=${this.instance?.groupMatchingMode ===
+                        GroupMatchingModeEnum.NameDeny}
+                    >
+                        ${GroupMatchingModeToLabel(GroupMatchingModeEnum.NameDeny)}
+                    </option>
+                </select>
+            </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("User path")} name="userPathTemplate">
                 <input
                     type="text"
@@ -397,6 +458,43 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                 </div>
             </ak-form-group>
             ${this.renderUrlOptions()}
+            <ak-form-group ?expanded=${true}>
+                <span slot="header"> ${msg("OAuth Attribute mapping")} </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("User Property Mappings")}
+                        name="userPropertyMappings"
+                    >
+                        <ak-dual-select-dynamic-selected
+                            .provider=${propertyMappingsProvider}
+                            .selector=${makePropertyMappingsSelector(
+                                this.instance?.userPropertyMappings,
+                            )}
+                            available-label="${msg("Available User Property Mappings")}"
+                            selected-label="${msg("Selected User Property Mappings")}"
+                        ></ak-dual-select-dynamic-selected>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Property mappings for user creation.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Group Property Mappings")}
+                        name="groupPropertyMappings"
+                    >
+                        <ak-dual-select-dynamic-selected
+                            .provider=${propertyMappingsProvider}
+                            .selector=${makePropertyMappingsSelector(
+                                this.instance?.groupPropertyMappings,
+                            )}
+                            available-label="${msg("Available Group Property Mappings")}"
+                            selected-label="${msg("Selected Group Property Mappings")}"
+                        ></ak-dual-select-dynamic-selected>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Property mappings for group creation.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
             <ak-form-group>
                 <span slot="header"> ${msg("Flow settings")} </span>
                 <div slot="body" class="pf-c-form">

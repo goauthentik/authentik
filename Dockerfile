@@ -30,12 +30,9 @@ WORKDIR /work/web
 
 RUN --mount=type=bind,target=/work/web/package.json,src=./web/package.json \
     --mount=type=bind,target=/work/web/package-lock.json,src=./web/package-lock.json \
-    --mount=type=bind,target=/work/web/sfe/package.json,src=./web/sfe/package.json \
-    --mount=type=bind,target=/work/web/sfe/package-lock.json,src=./web/sfe/package-lock.json \
+    --mount=type=bind,target=/work/web/packages/sfe/package.json,src=./web/packages/sfe/package.json \
     --mount=type=bind,target=/work/web/scripts,src=./web/scripts \
     --mount=type=cache,id=npm-web,sharing=shared,target=/root/.npm \
-    npm ci --include=dev && \
-    cd sfe && \
     npm ci --include=dev
 
 COPY ./package.json /work
@@ -43,9 +40,7 @@ COPY ./web /work/web/
 COPY ./website /work/website/
 COPY ./gen-ts-api /work/web/node_modules/@goauthentik/api
 
-RUN npm run build && \
-    cd sfe && \
-    npm run build
+RUN npm run build
 
 # Stage 3: Build go proxy
 FROM --platform=${BUILDPLATFORM} mcr.microsoft.com/oss/go/microsoft/golang:1.22-fips-bookworm AS go-builder

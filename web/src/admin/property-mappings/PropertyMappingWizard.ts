@@ -1,7 +1,10 @@
 import "@goauthentik/admin/property-mappings/PropertyMappingLDAPSourceForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingNotification";
+import "@goauthentik/admin/property-mappings/PropertyMappingOAuthSourceForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingPlexSourceForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingRACForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingSAMLForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingSAMLSourceForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingSCIMSourceForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingScopeForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingTestForm";

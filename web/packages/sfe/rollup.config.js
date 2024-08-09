@@ -4,16 +4,19 @@ import swc from "@rollup/plugin-swc";
 import copy from "rollup-plugin-copy";
 
 export default {
-    input: "index.ts",
+    input: "src/index.ts",
     output: {
-        dir: "../dist/sfe",
+        dir: "./dist/sfe",
         format: "cjs",
     },
     context: "window",
     plugins: [
         copy({
             targets: [
-                { src: "node_modules/bootstrap/dist/css/bootstrap.min.css", dest: "../dist/sfe" },
+                {
+                    src: "../../node_modules/bootstrap/dist/css/bootstrap.min.css",
+                    dest: "./dist/sfe",
+                },
             ],
         }),
         resolve({ browser: true }),
