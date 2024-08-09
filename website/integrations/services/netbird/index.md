@@ -29,7 +29,7 @@ The following placeholders will be used:
    - `https://netbird.company*`
    - `http://localhost:53000`
    Make sure each URI is on a separate line.
-6. Under **Signing Key**, select any available keys.
+6. Under **Signing Key**, select an available key. By default, the authentik self-signed certificate is available.
 7. Under **Advanced Protocol Settings**, set the **Access Code Validity** to `minutes=10` and set the **Subject Mode** to `Based on the User's ID`.
 8. Click **Finish** to save the provider configuration.
 9. Create a new application associated with this provider.
