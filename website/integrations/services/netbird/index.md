@@ -4,7 +4,7 @@ title: Netbird
 
 <span class="badge badge--secondary">Support level: Community</span>
 
-## What is Netbird?
+## What is NetBird?
 
 > NetBird is an open source, zero trust, networking platform that allows you to create secure private networks for your organization or home.
 >
