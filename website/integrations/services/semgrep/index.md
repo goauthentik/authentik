@@ -37,7 +37,7 @@ The following placeholders will be used:
     - **Audience**: `semgrep-dev`
     - **Service Provider Binding**: `Post`
     - **Signing Keypair**: Select the RSA certificate you have generated previously.
-    - **Property mappings**: Select `semgrep-name` and `semgrep-email` mappings, replacing authentik-provided email and name mappings.
+    - **Property mappings**: Select `semgrep-name` and `semgrep-email` mappings, replacing authentik-provided email and name mappings. Keep other mappings default.
 9. Create a new application under **Applications** -> **Applications**, pick a name and a slug, and assign the provider that you have just created.
 
 ## Semgrep Configuration
