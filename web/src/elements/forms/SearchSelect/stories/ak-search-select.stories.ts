@@ -2,7 +2,7 @@ import { groupBy } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/SearchSelect/ak-search-select";
 import { SearchSelect } from "@goauthentik/elements/forms/SearchSelect/ak-search-select";
 import "@goauthentik/elements/forms/SearchSelect/ak-search-select-ez";
-import { type ISearchSelectApi, SearchSelectEz } from "@goauthentik/elements/forms/SearchSelect/ak-search-select-ez";
+import { type ISearchSelectApi } from "@goauthentik/elements/forms/SearchSelect/ak-search-select-ez";
 import { Meta } from "@storybook/web-components";
 
 import { TemplateResult, html } from "lit";
@@ -61,7 +61,8 @@ const container = (testItem: TemplateResult) =>
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const displayChange = (ev: any) => {
-    document.getElementById("message-pad")!.innerText = `Value selected: ${JSON.stringify(ev.detail.value, null, 2)}`;
+    document.getElementById("message-pad")!.innerText =
+        `Value selected: ${JSON.stringify(ev.detail.value, null, 2)}`;
 };
 
 export const Default = () =>
@@ -71,7 +72,7 @@ export const Default = () =>
             .renderElement=${(sample: Sample) => sample.name}
             .value=${(sample: Sample) => sample.pk}
             @ak-change=${displayChange}
-        ></ak-search-select>`
+        ></ak-search-select>`,
     );
 
 export const Grouped = () => {
@@ -80,21 +81,28 @@ export const Grouped = () => {
             .fetchObjects=${getSamples}
             .renderElement=${(sample: Sample) => sample.name}
             .value=${(sample: Sample) => sample.pk}
-            .groupBy=${(samples: Sample[]) => groupBy(samples, (sample: Sample) => sample.season[0] ?? "")}
+            .groupBy=${(samples: Sample[]) =>
+                groupBy(samples, (sample: Sample) => sample.season[0] ?? "")}
             @ak-change=${displayChange}
-        ></ak-search-select>`
+        ></ak-search-select>`,
     );
 };
 
 export const GroupedAndEz = () => {
-    const config: ISearchSelectApi<unknown> = {
+    const config: ISearchSelectApi<Sample> = {
         fetchObjects: getSamples,
         renderElement: (sample: Sample) => sample.name,
-        value: (sample: Sample) => sample.pk,
-        groupBy: (samples: Sample[]) => groupBy(samples, (sample: Sample) => sample.season[0] ?? ""),
+        value: (sample: Sample | undefined) => sample?.pk,
+        groupBy: (samples: Sample[]) =>
+            groupBy(samples, (sample: Sample) => sample.season[0] ?? ""),
     };
 
-    return container(html`<ak-search-select-ez .config=${config} @ak-change=${displayChange}></ak-search-select-ez>`);
+    return container(
+        html`<ak-search-select-ez
+            .config=${config}
+            @ak-change=${displayChange}
+        ></ak-search-select-ez>`,
+    );
 };
 
 export const SelectedAndBlankable = () => {
@@ -106,6 +114,6 @@ export const SelectedAndBlankable = () => {
             .value=${(sample: Sample) => sample.pk}
             .selected=${(sample: Sample) => sample.pk === "herbs"}
             @ak-change=${displayChange}
-        ></ak-search-select>`
+        ></ak-search-select>`,
     );
 };

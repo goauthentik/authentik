@@ -1,5 +1,3 @@
-import { groupBy } from "@goauthentik/common/utils";
-
 import { TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -17,7 +15,7 @@ export interface ISearchSelectApi<T> {
 }
 
 export interface ISearchSelectEz<T> extends ISearchSelectBase<T> {
-    config: ISearchEselectApi<T>;
+    config: ISearchSelectApi<T>;
 }
 
 /**
@@ -54,7 +52,7 @@ export class SearchSelectEz<T> extends SearchSelectBase<T> implements ISearchSel
     }
 
     @property({ type: Object, attribute: false })
-    config: ISearchSelectApi<T>;
+    config!: ISearchSelectApi<T>;
 
     connectedCallback() {
         this.fetchObjects = this.config.fetchObjects;

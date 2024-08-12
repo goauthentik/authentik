@@ -31,7 +31,10 @@ export interface ISearchSelectBase<T> {
     emptyOption: string;
 }
 
-export class SearchSelectBase<T> extends CustomEmitterElement(AkControlElement) implements ISearchSelectBase<T> {
+export class SearchSelectBase<T>
+    extends CustomEmitterElement(AkControlElement)
+    implements ISearchSelectBase<T>
+{
     static get styles() {
         return [PFBase];
     }
@@ -199,7 +202,10 @@ export class SearchSelectBase<T> extends CustomEmitterElement(AkControlElement) 
             return { grouped: false, options: [] };
         }
 
-        if (groupedItems.length === 1 && (groupedItems[0].length < 1 || groupedItems[0][0] === "")) {
+        if (
+            groupedItems.length === 1 &&
+            (groupedItems[0].length < 1 || groupedItems[0][0] === "")
+        ) {
             return {
                 grouped: false,
                 options: makeSearchTuples(groupedItems[0][1]),
