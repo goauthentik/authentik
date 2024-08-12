@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-12 00:08+0000\n"
+"POT-Creation-Date: 2024-08-12 13:45+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -536,11 +536,11 @@ msgid "RAC Endpoints"
 msgstr ""
 
 #: authentik/enterprise/providers/rac/models.py
-msgid "RAC Property Mapping"
+msgid "RAC Provider Property Mapping"
 msgstr ""
 
 #: authentik/enterprise/providers/rac/models.py
-msgid "RAC Property Mappings"
+msgid "RAC Provider Property Mappings"
 msgstr ""
 
 #: authentik/enterprise/providers/rac/models.py
@@ -1595,11 +1595,11 @@ msgid "Radius Providers"
 msgstr ""
 
 #: authentik/providers/radius/models.py
-msgid "Radius Property Mapping"
+msgid "Radius Provider Property Mapping"
 msgstr ""
 
 #: authentik/providers/radius/models.py
-msgid "Radius Property Mappings"
+msgid "Radius Provider Property Mappings"
 msgstr ""
 
 #: authentik/providers/saml/api/providers.py
@@ -1746,11 +1746,11 @@ msgid "SAML Providers"
 msgstr ""
 
 #: authentik/providers/saml/models.py
-msgid "SAML Property Mapping"
+msgid "SAML Provider Property Mapping"
 msgstr ""
 
 #: authentik/providers/saml/models.py
-msgid "SAML Property Mappings"
+msgid "SAML Provider Property Mappings"
 msgstr ""
 
 #: authentik/providers/saml/models.py
@@ -1778,11 +1778,11 @@ msgid "SCIM Providers"
 msgstr ""
 
 #: authentik/providers/scim/models.py
-msgid "SCIM Mapping"
+msgid "SCIM Provider Mapping"
 msgstr ""
 
 #: authentik/providers/scim/models.py
-msgid "SCIM Mappings"
+msgid "SCIM Provider Mappings"
 msgstr ""
 
 #: authentik/rbac/models.py
