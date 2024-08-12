@@ -19,6 +19,18 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { findFlatOptions, findOptionsSubset, groupOptions, optionsToFlat } from "./utils.js";
 
+export interface ISearchSelectView {
+    options: SelectOptions;
+    value?: string;
+    open: boolean;
+    blankable: boolean;
+    caseSensitive: boolean;
+    name?: string;
+    placeholder: string;
+    managed: boolean;
+    emptyOption: string;
+}
+
 /**
  * @class SearchSelectView
  * @element ak-search-select-view
@@ -55,19 +67,6 @@ import { findFlatOptions, findOptionsSubset, groupOptions, optionsToFlat } from 
  * the object that key references when extracting the value for use.
  *
  */
-
-export interface ISearchSelectView {
-    options: SelectOptions;
-    value?: string;
-    open: boolean;
-    blankable: boolean;
-    caseSensitive: boolean;
-    name?: string;
-    placeholder: string;
-    managed: boolean;
-    emptyOption: string;
-}
-
 @customElement("ak-search-select-view")
 export class SearchSelectView extends AKElement implements ISearchSelectView {
     /**
@@ -216,8 +215,8 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
             return;
         }
         const probableValue = this.flatOptions.find((option) => option[0] === this.value);
-        if (probableValue) {
-            this.inputRef.value && (this.inputRef.value.value = probableValue[1][1]);
+        if (probableValue && this.inputRef.value) {
+            this.inputRef.value.value = probableValue[1][1];
         }
     }
 
@@ -252,7 +251,9 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         }
         this.open = false;
         if (this.value === undefined) {
-            this.inputRef.value && (this.inputRef.value.value = "");
+            if (this.inputRef.value) {
+                this.inputRef.value.value = "";
+            }
             this.setValue(undefined);
         }
     }
@@ -310,9 +311,11 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         const value = (event.target as HTMLInputElement).value;
         if (value !== undefined) {
             const newDisplayValue = this.findDisplayForValue(value);
-            this.inputRef.value && (this.inputRef.value.value = newDisplayValue ?? "");
-        } else {
-            this.inputRef.value && (this.inputRef.value.value = "");
+            if (this.inputRef.value) {
+                this.inputRef.value.value = newDisplayValue ?? "";
+            }
+        } else if (this.inputRef.value) {
+            this.inputRef.value.value = "";
         }
         this.open = false;
         this.setValue(value);
@@ -342,7 +345,9 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     }
 
     get managedOptions() {
-        return this.managed ? this._options : findOptionsSubset(this._options, this.rawValue, this.caseSensitive);
+        return this.managed
+            ? this._options
+            : findOptionsSubset(this._options, this.rawValue, this.caseSensitive);
     }
 
     public override render() {
@@ -371,7 +376,11 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
             </div>
             ${this.inputRefIsAvailable
                 ? html`
-                      <ak-portal name=${ifDefined(this.name)} .anchor=${this.inputRef.value} ?open=${open}>
+                      <ak-portal
+                          name=${ifDefined(this.name)}
+                          .anchor=${this.inputRef.value}
+                          ?open=${open}
+                      >
                           <ak-list-select
                               id="menu-${this.getAttribute("data-ouia-component-id")}"
                               ${ref(this.menuRef)}
@@ -394,7 +403,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     public override firstUpdated() {
         // Route around Lit's scheduling algorithm complaining about re-renders
         window.setTimeout(() => {
-            this.inputRefIsAvailable = !!this.inputRef?.value;
+            this.inputRefIsAvailable = Boolean(this.inputRef?.value);
         }, 0);
     }
 }

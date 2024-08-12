@@ -12,6 +12,10 @@ export default [
     {
         ignores: [
             "dist/",
+            // don't lint the cache
+            ".wireit/",
+            // let packages have their own configurations
+            "packages/",
             // don't ever lint node_modules
             "node_modules/",
             ".storybook/*",

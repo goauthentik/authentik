@@ -81,7 +81,7 @@ const updated = statuses.reduce(
         modified(status) && checkable(filename) && notIgnored(filename)
             ? [...acc, path.join(projectRoot, filename)]
             : acc,
-    []
+    [],
 );
 
 const eslint = new ESLint(eslintConfig);

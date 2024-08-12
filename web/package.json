@@ -137,6 +137,8 @@
         "lint": "wireit",
         "lint:lockfile": "wireit",
         "lint:package": "wireit",
+        "lint:precommit": "wireit",
+        "lint:nightmare": "wireit",
         "lit-analyse": "wireit",
         "postinstall": "bash scripts/patch-spotlight.sh",
         "precommit": "wireit",

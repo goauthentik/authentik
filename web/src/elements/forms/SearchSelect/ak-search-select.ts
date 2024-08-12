@@ -1,25 +1,20 @@
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { APIErrorTypes, parseAPIError } from "@goauthentik/common/errors";
 import { groupBy } from "@goauthentik/common/utils";
-import { AkControlElement } from "@goauthentik/elements/AkControlElement.js";
-import { PreventFormSubmit } from "@goauthentik/elements/forms/helpers";
-import type { GroupedOptions, SelectGroup, SelectOption } from "@goauthentik/elements/types.js";
-import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
-import { randomId } from "@goauthentik/elements/utils/randomId.js";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { ResponseError } from "@goauthentik/api";
+import { type ISearchSelectBase, SearchSelectBase } from "./SearchSelect.js";
 
-import "./ak-search-select-view.js";
-import { SearchSelectView } from "./ak-search-select-view.js";
-
-type Group<T> = [string, T[]];
+export interface ISearchSelect<T> extends ISearchSelectBase<T> {
+    fetchObjects: (query?: string) => Promise<T[]>;
+    renderElement: (element: T) => string;
+    renderDescription?: (element: T) => string | TemplateResult;
+    value: (element: T | undefined) => unknown;
+    selected?: (element: T, elements: T[]) => boolean;
+    groupBy: (items: T[]) => [string, T[]][];
+}
 
 /**
  * @class SearchSelect
@@ -59,24 +54,8 @@ type Group<T> = [string, T[]];
  *
  */
 
-export interface ISearchSelect<T> {
-    fetchObjects: (query?: string) => Promise<T[]>;
-    renderElement: ((element: T) => string) | string;
-    renderDescription?: ((element: T) => string | TemplateResult) | string;
-    value: ((element: T | undefined) => unknown) | string;
-    selected?: (element: T, elements: T[]) => boolean;
-    groupBy: (items: T[]) => [string, T[]][];
-    blankable: boolean;
-    query?: string;
-    objects?: T[];
-    selectedObject?: T;
-    name?: string;
-    placeholder: string;
-    emptyOption: string;
-}
-
 @customElement("ak-search-select")
-export class SearchSelect<T> extends CustomEmitterElement(AkControlElement) implements ISearchSelect<T> {
+export class SearchSelect<T> extends SearchSelectBase<T> implements ISearchSelect<T> {
     static get styles() {
         return [PFBase];
     }
@@ -89,23 +68,17 @@ export class SearchSelect<T> extends CustomEmitterElement(AkControlElement) impl
     // A function passed to this object that extracts a string representation of items of the
     // collection under search.
     @property({ attribute: false })
-    renderElement!: ((element: T) => string) | string;
-
-    _renderElement!: (element: T) => string;
+    renderElement!: (element: T) => string;
 
     // A function passed to this object that extracts an HTML representation of additional
     // information for items of the collection under search.
     @property({ attribute: false })
-    renderDescription?: ((element: T) => string | TemplateResult) | string;
-
-    _renderDescription?: (element: T) => string | TemplateResult;
+    renderDescription?: (element: T) => string | TemplateResult;
 
     // A function which returns the currently selected object's primary key, used for serialization
     // into forms.
     @property({ attribute: false })
-    value!: ((element: T | undefined) => unknown) | string;
-
-    _value!: (element: T | undefined) => unknown;
+    value!: (element: T | undefined) => unknown;
 
     // A function passed to this object that determines an object in the collection under search
     // should be automatically selected. Only used when the search itself is responsible for
@@ -121,215 +94,6 @@ export class SearchSelect<T> extends CustomEmitterElement(AkControlElement) impl
             return "";
         });
     };
-
-    // Whether or not the dropdown component can be left blank
-    @property({ type: Boolean })
-    blankable = false;
-
-    // An initial string to filter the search contents, and the value of the input which further
-    // serves to restrict the search
-    @property()
-    query?: string;
-
-    // The objects currently available under search
-    @property({ attribute: false })
-    objects?: T[];
-
-    // The currently selected object
-    @property({ attribute: false })
-    selectedObject?: T;
-
-    // Used to inform the form of the name of the object
-    @property()
-    name?: string;
-
-    // The textual placeholder for the search's <input> object, if currently empty. Used as the
-    // native <input> object's `placeholder` field.
-    @property()
-    placeholder: string = msg("Select an object.");
-
-    // A textual string representing "The user has affirmed they want to leave the selection blank."
-    // Only used if `blankable` above is true.
-    @property()
-    emptyOption = "---------";
-
-    isFetchingData = false;
-
-    @state()
-    error?: APIErrorTypes;
-
-    constructor() {
-        super();
-    }
-
-    public toForm(): unknown {
-        if (!this.objects) {
-            throw new PreventFormSubmit(msg("Loading options..."));
-        }
-        return this._value(this.selectedObject) || "";
-    }
-
-    public json() {
-        return this.toForm();
-    }
-
-    public async updateData() {
-        if (this.isFetchingData) {
-            return Promise.resolve();
-        }
-        this.isFetchingData = true;
-        return this.fetchObjects(this.query)
-            .then((objects) => {
-                objects.forEach((obj) => {
-                    if (this.selected && this.selected(obj, objects || [])) {
-                        this.selectedObject = obj;
-                        this.dispatchCustomEvent("ak-change", { value: this.selectedObject });
-                    }
-                });
-                this.objects = objects;
-                this.isFetchingData = false;
-            })
-            .catch((exc: ResponseError) => {
-                this.isFetchingData = false;
-                this.objects = undefined;
-                parseAPIError(exc).then((err) => {
-                    this.error = err;
-                });
-            });
-    }
-
-    public override connectedCallback(): void {
-        super.connectedCallback();
-        this.setAttribute("data-ouia-component-type", "ak-search-select");
-        this.setAttribute("data-ouia-component-id", this.getAttribute("id") || randomId());
-        if (typeof this.renderElement === "string") {
-            const reKey = this.renderElement as keyof T;
-            this._renderElement = (item: T) => item[reKey] as string;
-        } else {
-            this._renderElement = this.renderElement;
-        }
-
-        if (typeof this.value === "string") {
-            const vKey = this.value as keyof T;
-            this._value = (item: T | undefined) => (item ? (item[vKey] as string | undefined) : undefined);
-        } else {
-            this._value = this.value;
-        }
-
-        if (typeof this.renderDescription === "string") {
-            const rdKey = this.renderDescription as keyof T;
-            this._renderDescription = (item: T) => html`${item[rdKey]}`;
-        } else {
-            // undefined propagates to here.
-            this._renderDescription = this.renderDescription;
-        }
-        this.dataset.akControl = "true";
-        this.updateData();
-        this.addEventListener(EVENT_REFRESH, this.updateData);
-    }
-
-    public override disconnectedCallback(): void {
-        super.disconnectedCallback();
-        this.removeEventListener(EVENT_REFRESH, this.updateData);
-    }
-
-    private onSearch(event: InputEvent) {
-        const value = (event.target as SearchSelectView).rawValue;
-        if (value === undefined) {
-            this.selectedObject = undefined;
-            return;
-        }
-
-        this.query = value;
-        this.updateData()?.then(() => {
-            this.dispatchCustomEvent("ak-change", { value: this.selectedObject });
-        });
-    }
-
-    private onSelect(event: InputEvent) {
-        const value = (event.target as SearchSelectView).value;
-        if (value === undefined) {
-            this.selectedObject = undefined;
-            this.dispatchCustomEvent("ak-change", { value: undefined });
-            return;
-        }
-        const selected = (this.objects ?? []).find((obj) => `${this._value(obj)}` === value);
-        if (!selected) {
-            console.warn(`ak-search-select: No corresponding object found for value (${value}`);
-        }
-        this.selectedObject = selected;
-        this.dispatchCustomEvent("ak-change", { value: this.selectedObject });
-    }
-
-    private getGroupedItems(): GroupedOptions {
-        const items = this.groupBy(this.objects || []);
-        const makeSearchTuples = (items: T[]): SelectOption[] =>
-            items.map((item) => [
-                `${this._value(item)}`,
-                this._renderElement(item),
-                this._renderDescription ? this._renderDescription(item) : undefined,
-            ]);
-
-        const makeSearchGroups = (items: Group<T>[]): SelectGroup[] =>
-            items.map((group) => ({
-                name: group[0],
-                options: makeSearchTuples(group[1]),
-            }));
-
-        if (items.length === 0) {
-            return { grouped: false, options: [] };
-        }
-
-        if (items.length === 1 && (items[0].length < 1 || items[0][0] === "")) {
-            return {
-                grouped: false,
-                options: makeSearchTuples(items[0][1]),
-            };
-        }
-
-        return {
-            grouped: true,
-            options: makeSearchGroups(items),
-        };
-    }
-
-    public override performUpdate() {
-        this.removeAttribute("data-ouia-component-safe");
-        super.performUpdate();
-    }
-
-    public override render() {
-        if (this.error) {
-            return html`<em>${msg("Failed to fetch objects: ")} ${this.error.detail}</em>`;
-        }
-
-        if (!this.objects) {
-            return html`${msg("Loading...")}`;
-        }
-
-        const options = this.getGroupedItems();
-        const value = this.selectedObject ? `${this._value(this.selectedObject) ?? ""}` : undefined;
-
-        return html`<ak-search-select-view
-            managed
-            .options=${options}
-            value=${ifDefined(value)}
-            ?blankable=${this.blankable}
-            name=${ifDefined(this.name)}
-            placeholder=${this.placeholder}
-            emptyOption=${ifDefined(this.blankable ? this.emptyOption : undefined)}
-            @input=${this.onSearch}
-            @change=${this.onSelect}
-        ></ak-search-select-view> `;
-    }
-
-    public override updated() {
-        // It is not safe for automated tests to interact with this component while it is fetching
-        // data.
-        if (!this.isFetchingData) {
-            this.setAttribute("data-ouia-component-safe", "true");
-        }
-    }
 }
 
 export default SearchSelect;

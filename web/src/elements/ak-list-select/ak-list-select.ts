@@ -18,6 +18,12 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { groupOptions, isVisibleInScrollRegion } from "./utils.js";
 
+export interface IListSelect {
+    options: SelectOptions;
+    value?: string;
+    emptyOption?: string;
+}
+
 /**
  * @class ListSelect
  * @element ak-list-select
@@ -43,7 +49,7 @@ import { groupOptions, isVisibleInScrollRegion } from "./utils.js";
  * - @part ak-list-select-title: The title of a group
  */
 @customElement("ak-list-select")
-export class ListSelect extends AKElement {
+export class ListSelect extends AKElement implements IListSelect {
     static get styles() {
         return [
             PFBase,
@@ -149,7 +155,9 @@ export class ListSelect extends AKElement {
             return element.getAttribute("value") === this.value;
         });
         const elementCount = this.displayedElements.length;
-        return elementCount === 0 ? -1 : index === -1 ? 0 : index;
+
+        const checkIndex = () => (index === -1 ? 0 : index);
+        return elementCount === 0 ? -1 : checkIndex();
     }
 
     private highlightFocusedItem() {
@@ -235,7 +243,7 @@ export class ListSelect extends AKElement {
     }
 
     public override updated(changed: PropertyValueMap<this>) {
-        super.updated && super.updated(changed);
+        super.updated(changed);
         this.setAttribute("data-ouia-component-safe", "true");
     }
 
@@ -286,8 +294,8 @@ export class ListSelect extends AKElement {
         );
     }
 
-    private renderMenuGroups(options: SelectGroup[]) {
-        return options.map(
+    private renderMenuGroups(optionGroups: SelectGroup[]) {
+        return optionGroups.map(
             ({ name, options }) => html`
                 <section class="pf-c-dropdown__group" part="ak-list-select-group">
                     <h1 class="pf-c-dropdown__group-title" part="ak-list-select-group-title">
@@ -314,7 +322,7 @@ export class ListSelect extends AKElement {
                 tabindex="0"
                 part="ak-list-select"
             >
-                ${this.emptyOption !== undefined ? this.renderEmptyMenuItem() : nothing}
+                ${this.emptyOption === undefined ? nothing : this.renderEmptyMenuItem()}
                 ${this._options.grouped
                     ? this.renderMenuGroups(this._options.options)
                     : this.renderMenuItems(this._options.options)}
