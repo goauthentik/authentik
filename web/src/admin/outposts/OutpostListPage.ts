@@ -70,7 +70,7 @@ export class OutpostListPage extends TablePage<Outpost> {
         const outposts = await new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesList(
             await this.defaultEndpointConfig(),
         );
-        Promise.all(
+        await Promise.all(
             outposts.results.map((outpost) => {
                 return new OutpostsApi(DEFAULT_CONFIG)
                     .outpostsInstancesHealthList({

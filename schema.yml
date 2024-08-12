@@ -52712,9 +52712,14 @@ components:
           type: boolean
           description: Check if we're running the latest version
           readOnly: true
+        outpost_outdated:
+          type: boolean
+          description: Check if any outpost is outdated/has a version mismatch
+          readOnly: true
       required:
       - build_hash
       - outdated
+      - outpost_outdated
       - version_current
       - version_latest
       - version_latest_valid
