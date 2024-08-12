@@ -22,7 +22,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import {
     FlowsInstancesListDesignationEnum,
     PropertymappingsApi,
-    PropertymappingsSamlListRequest,
+    PropertymappingsProviderSamlListRequest,
     ProvidersApi,
     SAMLPropertyMapping,
     SAMLProvider,
@@ -226,7 +226,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                             .fetchObjects=${async (
                                 query?: string,
                             ): Promise<SAMLPropertyMapping[]> => {
-                                const args: PropertymappingsSamlListRequest = {
+                                const args: PropertymappingsProviderSamlListRequest = {
                                     ordering: "saml_name",
                                 };
                                 if (query !== undefined) {
@@ -234,7 +234,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                                 }
                                 const items = await new PropertymappingsApi(
                                     DEFAULT_CONFIG,
-                                ).propertymappingsSamlList(args);
+                                ).propertymappingsProviderSamlList(args);
                                 return items.results;
                             }}
                             .renderElement=${(item: SAMLPropertyMapping): string => {

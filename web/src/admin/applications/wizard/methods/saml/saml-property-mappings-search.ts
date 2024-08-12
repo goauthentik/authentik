@@ -9,12 +9,12 @@ import { property, query } from "lit/decorators.js";
 
 import {
     PropertymappingsApi,
-    PropertymappingsSamlListRequest,
+    PropertymappingsProviderSamlListRequest,
     SAMLPropertyMapping,
 } from "@goauthentik/api";
 
 async function fetchObjects(query?: string): Promise<SAMLPropertyMapping[]> {
-    const args: PropertymappingsSamlListRequest = {
+    const args: PropertymappingsProviderSamlListRequest = {
         ordering: "saml_name",
     };
     if (query !== undefined) {
