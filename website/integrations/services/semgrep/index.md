@@ -42,7 +42,7 @@ The following placeholders will be used:
     - **Property mappings**: `semgrep-name` and `semgrep-email`
 10. Create a new application under **Applications** -> **Applications**, pick a name and a slug, and assign the provider that you just created.
 
-## Semgrep Configuration
+## Semgrep configuration
 
 1. Log in to Semgrep Cloud platform as an administrator.
 2. Click **Settings** on bottom left corner.
@@ -57,7 +57,7 @@ The following placeholders will be used:
 
 ## Verification
 
-1. Open an Incaognito window and navigate to `https://semgrep.dev/login`
+1. Open an Incognito window and navigate to `https://semgrep.dev/login`
 2. Click **Use SSO** on the login screen.
 3. Enter the email address associated with the domain you provided earlier.
 4. Log in to authentik.
