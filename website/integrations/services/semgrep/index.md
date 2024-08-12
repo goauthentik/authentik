@@ -19,7 +19,7 @@ The following placeholders will be used:
 
 ## authentik configuration
 
-1. Login into authentik instance as an administrator.
+1. Log in to your authentik instance as an administrator.
 2. Go to the admin interface.
 3. Navigate to **Customization** -> **Property mappings**.
 4. Create a new SAML property mapping with these parameters:
