@@ -14,6 +14,7 @@ import "./application/ak-application-wizard-application-details";
 import "./auth-method-choice/ak-application-wizard-authentication-method-choice";
 import "./commit/ak-application-wizard-commit-application";
 import "./methods/ak-application-wizard-authentication-method";
+import "./policies/ak-application-wizard-policy-bindings";
 import { ApplicationStep as ApplicationStepType } from "./types";
 
 /**
@@ -58,11 +59,25 @@ class ProviderStepDetails implements ApplicationStepType {
     disabled = true;
     valid = false;
     get buttons() {
-        return [BackStep, this.valid ? SubmitStep : DisabledNextStep, CancelWizard];
+        return [BackStep, this.valid ? NextStep : DisabledNextStep, CancelWizard];
     }
 
     render() {
         return html`<ak-application-wizard-authentication-method></ak-application-wizard-authentication-method>`;
+    }
+}
+
+class PolicyStepDetails implements ApplicationStepType {
+    id = "policy-bindings";
+    label = msg("Policy / Group / User Bindings");
+    disabled = true;
+    valid = false;
+    get buttons() {
+        return [BackStep, this.valid ? SubmitStep : DisabledNextStep, CancelWizard];
+    }
+
+    render() {
+        return html`<ak-application-wizard-policy-bindings></ak-application-wizard-policy-bindings>`;
     }
 }
 
@@ -85,5 +100,6 @@ export const newSteps = (): ApplicationStep[] => [
     new ApplicationStep(),
     new ProviderMethodStep(),
     new ProviderStepDetails(),
+    new PolicyStepDetails(),
     new SubmitApplicationStep(),
 ];

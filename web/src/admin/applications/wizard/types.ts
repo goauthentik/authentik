@@ -27,6 +27,7 @@ export interface ApplicationWizardState {
     providerModel: string;
     app: Partial<ApplicationRequest>;
     provider: OneOfProvider;
+    policies: PolicyBinding[];
     errors: ValidationError;
 }
 
