@@ -14,7 +14,20 @@ import { LogEvent, LogLevelEnum } from "@goauthentik/api";
 @customElement("ak-log-viewer")
 export class LogViewer extends Table<LogEvent> {
     @property({ attribute: false })
-    logs?: LogEvent[] = [];
+    set logs(val: LogEvent[]) {
+        this.data = {
+            pagination: {
+                next: 0,
+                previous: 0,
+                count: val.length || 0,
+                current: 1,
+                totalPages: 1,
+                startIndex: 1,
+                endIndex: val.length || 0,
+            },
+            results: val,
+        };
+    }
 
     expandable = true;
     paginated = false;
@@ -24,18 +37,20 @@ export class LogViewer extends Table<LogEvent> {
     }
 
     async apiEndpoint(): Promise<PaginatedResponse<LogEvent>> {
-        return {
-            pagination: {
-                next: 0,
-                previous: 0,
-                count: this.logs?.length || 0,
-                current: 1,
-                totalPages: 1,
-                startIndex: 1,
-                endIndex: this.logs?.length || 0,
-            },
-            results: this.logs || [],
-        };
+        return (
+            this.data || {
+                pagination: {
+                    next: 0,
+                    previous: 0,
+                    count: this.logs?.length || 0,
+                    current: 1,
+                    totalPages: 1,
+                    startIndex: 1,
+                    endIndex: this.logs?.length || 0,
+                },
+                results: this.logs || [],
+            }
+        );
     }
 
     renderEmpty(): TemplateResult {

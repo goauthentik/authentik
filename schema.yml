@@ -12813,6 +12813,43 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /policies/expression/{policy_uuid}/test/:
+    post:
+      operationId: policies_expression_test_create
+      description: Test policy
+      parameters:
+      - in: path
+        name: policy_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Expression Policy.
+        required: true
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExpressionPolicyTestRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolicyTestResult'
+          description: ''
+        '400':
+          description: Invalid parameters
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /policies/expression/{policy_uuid}/used_by/:
     get:
       operationId: policies_expression_used_by_list
@@ -42280,6 +42317,21 @@ components:
       required:
       - expression
       - name
+    ExpressionPolicyTestRequest:
+      type: object
+      description: Expression policy test serializer
+      properties:
+        user:
+          type: integer
+        context:
+          type: object
+          additionalProperties: {}
+        expression:
+          type: string
+          minLength: 1
+      required:
+      - expression
+      - user
     ExtraRoleObjectPermission:
       type: object
       description: User permission with additional object-related data

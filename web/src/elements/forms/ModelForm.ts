@@ -38,6 +38,10 @@ export abstract class ModelForm<T, PKT extends string | number> extends Form<T> 
         });
     }
 
+    get instancePk(): PKT | undefined {
+        return this._instancePk;
+    }
+
     private _instancePk?: PKT;
 
     // Keep track if we've loaded the model instance
