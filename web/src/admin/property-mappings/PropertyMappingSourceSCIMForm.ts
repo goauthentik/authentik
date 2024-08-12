@@ -7,8 +7,8 @@ import { customElement } from "lit/decorators.js";
 
 import { PropertymappingsApi, SCIMSourcePropertyMapping } from "@goauthentik/api";
 
-@customElement("ak-property-mapping-scim-source-form")
-export class PropertyMappingSCIMSourceForm extends BasePropertyMappingForm<SCIMSourcePropertyMapping> {
+@customElement("ak-property-mapping-source-scim-form")
+export class PropertyMappingSourceSCIMForm extends BasePropertyMappingForm<SCIMSourcePropertyMapping> {
     docLink(): string {
         return "/docs/sources/property-mappings/expression?utm_source=authentik";
     }
@@ -35,6 +35,6 @@ export class PropertyMappingSCIMSourceForm extends BasePropertyMappingForm<SCIMS
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-property-mapping-scim-source-form": PropertyMappingSCIMSourceForm;
+        "ak-property-mapping-source-scim-form": PropertyMappingSourceSCIMForm;
     }
 }

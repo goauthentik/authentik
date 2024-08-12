@@ -191,7 +191,7 @@ class SAMLPropertyMapping(PropertyMapping):
 
     @property
     def component(self) -> str:
-        return "ak-property-mapping-saml-form"
+        return "ak-property-mapping-provider-saml-form"
 
     @property
     def serializer(self) -> type[Serializer]:
@@ -204,8 +204,8 @@ class SAMLPropertyMapping(PropertyMapping):
         return f"{self.name} ({name})"
 
     class Meta:
-        verbose_name = _("SAML Property Mapping")
-        verbose_name_plural = _("SAML Property Mappings")
+        verbose_name = _("SAML Provider Property Mapping")
+        verbose_name_plural = _("SAML Provider Property Mappings")
 
 
 class SAMLProviderImportModel(CreatableType, Provider):

@@ -7,8 +7,8 @@ import { customElement } from "lit/decorators.js";
 
 import { PlexSourcePropertyMapping, PropertymappingsApi } from "@goauthentik/api";
 
-@customElement("ak-property-mapping-plex-source-form")
-export class PropertyMappingPlexSourceForm extends BasePropertyMappingForm<PlexSourcePropertyMapping> {
+@customElement("ak-property-mapping-source-plex-form")
+export class PropertyMappingSourcePlexForm extends BasePropertyMappingForm<PlexSourcePropertyMapping> {
     docLink(): string {
         return "/docs/sources/property-mappings/expression?utm_source=authentik";
     }
@@ -35,6 +35,6 @@ export class PropertyMappingPlexSourceForm extends BasePropertyMappingForm<PlexS
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-property-mapping-plex-source-form": PropertyMappingPlexSourceForm;
+        "ak-property-mapping-source-plex-form": PropertyMappingSourcePlexForm;
     }
 }

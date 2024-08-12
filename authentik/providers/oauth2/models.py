@@ -105,7 +105,7 @@ class ScopeMapping(PropertyMapping):
 
     @property
     def component(self) -> str:
-        return "ak-property-mapping-scope-form"
+        return "ak-property-mapping-provider-scope-form"
 
     @property
     def serializer(self) -> type[Serializer]:

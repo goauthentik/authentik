@@ -7,22 +7,22 @@ import { customElement } from "lit/decorators.js";
 
 import { PropertymappingsApi, RadiusProviderPropertyMapping } from "@goauthentik/api";
 
-@customElement("ak-property-mapping-radius-form")
-export class PropertyMappingRadiusForm extends BasePropertyMappingForm<RadiusProviderPropertyMapping> {
+@customElement("ak-property-mapping-provider-radius-form")
+export class PropertyMappingProviderRadiusForm extends BasePropertyMappingForm<RadiusProviderPropertyMapping> {
     loadInstance(pk: string): Promise<RadiusProviderPropertyMapping> {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsRadiusRetrieve({
+        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderRadiusRetrieve({
             pmUuid: pk,
         });
     }
 
     async send(data: RadiusProviderPropertyMapping): Promise<RadiusProviderPropertyMapping> {
         if (this.instance) {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsRadiusUpdate({
+            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderRadiusUpdate({
                 pmUuid: this.instance.pk,
                 radiusProviderPropertyMappingRequest: data,
             });
         } else {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsRadiusCreate({
+            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderRadiusCreate({
                 radiusProviderPropertyMappingRequest: data,
             });
         }
@@ -31,6 +31,6 @@ export class PropertyMappingRadiusForm extends BasePropertyMappingForm<RadiusPro
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-property-mapping-radius-form": PropertyMappingRadiusForm;
+        "ak-property-mapping-provider-radius-form": PropertyMappingProviderRadiusForm;
     }
 }

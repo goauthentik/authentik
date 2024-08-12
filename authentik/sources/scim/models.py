@@ -85,7 +85,7 @@ class SCIMSourcePropertyMapping(PropertyMapping):
 
     @property
     def component(self) -> str:
-        return "ak-property-mapping-scim-source-form"
+        return "ak-property-mapping-source-scim-form"
 
     @property
     def serializer(self) -> type[Serializer]:
