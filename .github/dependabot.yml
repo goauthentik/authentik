@@ -58,6 +58,10 @@ updates:
         patterns:
           - "@rollup/*"
           - "rollup-*"
+      swc:
+        patterns:
+          - "@swc/*"
+          - "swc-*"
       wdio:
         patterns:
           - "@wdio/*"
