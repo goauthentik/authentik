@@ -51,7 +51,7 @@
         "@babel/preset-typescript": "^7.24.7",
         "@changesets/cli": "^2.27.5",
         "@custom-elements-manifest/analyzer": "^0.10.2",
-        "@eslint/js": "^9.8.0",
+        "@eslint/js": "^9.9.0",
         "@genesiscommunitysuccess/custom-elements-lsp": "^5.0.3",
         "@hcaptcha/types": "^1.0.4",
         "@jeysal/storybook-addon-css-user-preferences": "^0.2.0",
