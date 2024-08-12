@@ -104,7 +104,7 @@ export class LibraryPage extends AKElement {
     searchUpdated(event: LibraryPageSearchUpdated) {
         event.stopPropagation();
         const apps = event.apps;
-        if (!(apps.length > 0)) {
+        if (apps.length <= 0) {
             throw new Error(
                 "LibaryPageSearchUpdated had empty results body. This must not happen.",
             );
@@ -116,7 +116,9 @@ export class LibraryPage extends AKElement {
     @bound
     launchRequest(event: LibraryPageSearchSelected) {
         event.stopPropagation();
-        this.selectedApp?.launchUrl && window.location.assign(this.selectedApp?.launchUrl);
+        if (this.selectedApp?.launchUrl) {
+            window.location.assign(this.selectedApp?.launchUrl);
+        }
     }
 
     @bound

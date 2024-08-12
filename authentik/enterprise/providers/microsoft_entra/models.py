@@ -170,7 +170,7 @@ class MicrosoftEntraProviderMapping(PropertyMapping):
 
     @property
     def component(self) -> str:
-        return "ak-property-mapping-microsoft-entra-form"
+        return "ak-property-mapping-provider-microsoft-entra-form"
 
     @property
     def serializer(self) -> type[Serializer]:

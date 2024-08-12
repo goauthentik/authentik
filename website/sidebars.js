@@ -21,6 +21,7 @@ const docsSidebar = {
             items: [
                 "installation/docker-compose",
                 "installation/kubernetes",
+                "installation/upgrade",
                 "installation/beta",
                 "installation/configuration",
                 "installation/reverse-proxy",
@@ -74,6 +75,15 @@ const docsSidebar = {
                 id: "providers/index",
             },
             items: [
+                {
+                    type: "category",
+                    label: "Property Mappings",
+                    link: {
+                        type: "doc",
+                        id: "providers/property-mappings/index",
+                    },
+                    items: ["providers/property-mappings/expression"],
+                },
                 {
                     type: "category",
                     label: "Google Workspace Provider",
@@ -170,20 +180,29 @@ const docsSidebar = {
             items: [
                 {
                     type: "category",
-                    label: "Directory synchronization",
-                    items: [
-                        "sources/active-directory/index",
-                        "sources/freeipa/index",
-                    ],
-                },
-                {
-                    type: "category",
                     label: "Protocols",
                     items: [
                         "sources/ldap/index",
                         "sources/oauth/index",
                         "sources/saml/index",
                         "sources/scim/index",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "Property Mappings",
+                    link: {
+                        type: "doc",
+                        id: "sources/property-mappings/index",
+                    },
+                    items: ["sources/property-mappings/expressions"],
+                },
+                {
+                    type: "category",
+                    label: "Directory synchronization",
+                    items: [
+                        "sources/active-directory/index",
+                        "sources/freeipa/index",
                     ],
                 },
                 {
@@ -313,15 +332,6 @@ const docsSidebar = {
         },
         {
             type: "category",
-            label: "Property Mappings",
-            link: {
-                type: "doc",
-                id: "property-mappings/index",
-            },
-            items: ["property-mappings/expression"],
-        },
-        {
-            type: "category",
             label: "Events",
             link: {
                 type: "doc",
@@ -374,7 +384,10 @@ const docsSidebar = {
                         type: "doc",
                         id: "user-group-role/groups/index",
                     },
-                    items: ["user-group-role/groups/manage_groups"],
+                    items: [
+                        "user-group-role/groups/manage_groups",
+                        "user-group-role/groups/group_ref",
+                    ],
                 },
                 {
                     type: "category",

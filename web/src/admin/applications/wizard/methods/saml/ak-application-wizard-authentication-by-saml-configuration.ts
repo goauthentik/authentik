@@ -40,7 +40,7 @@ export class ApplicationWizardProviderSamlConfiguration extends BaseProviderPane
     constructor() {
         super();
         new PropertymappingsApi(DEFAULT_CONFIG)
-            .propertymappingsSamlList({
+            .propertymappingsProviderSamlList({
                 ordering: "saml_name",
             })
             .then((propertyMappings: PaginatedSAMLPropertyMappingList) => {

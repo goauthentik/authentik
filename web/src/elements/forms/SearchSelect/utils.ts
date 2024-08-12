@@ -1,9 +1,4 @@
-import type {
-    GroupedOptions,
-    SelectGrouped,
-    SelectOption,
-    SelectOptions,
-} from "@goauthentik/elements/types.js";
+import type { GroupedOptions, SelectGrouped, SelectOption, SelectOptions } from "@goauthentik/elements/types.js";
 
 type Pair = [string, SelectOption];
 const mapPair = (option: SelectOption): Pair => [option[0], option];
@@ -19,10 +14,7 @@ export const groupOptions = (options: SelectOptions): GroupedOptions =>
 
 export function optionsToFlat(options: GroupedOptions): Pair[] {
     return isGroupedOptionsCollection(options)
-        ? options.options.reduce(
-              (acc: Pair[], { options }): Pair[] => [...acc, ...options.map(mapPair)],
-              [] as Pair[],
-          )
+        ? options.options.reduce((acc: Pair[], { options }): Pair[] => [...acc, ...options.map(mapPair)], [] as Pair[])
         : options.options.map(mapPair);
 }
 
@@ -31,11 +23,7 @@ export function findFlatOptions(options: Pair[], value: string): Pair[] {
     return options.filter((option) => (option[1][1] ?? "").substring(0, fragLength) === value);
 }
 
-export function findOptionsSubset(
-    options: GroupedOptions,
-    value: string,
-    caseSensitive = false,
-): GroupedOptions {
+export function findOptionsSubset(options: GroupedOptions, value: string, caseSensitive = false): GroupedOptions {
     const fragLength = value.length;
     if (value.trim() === "") {
         return options;
@@ -47,8 +35,7 @@ export function findOptionsSubset(
         return caseSensitive ? compOption : compOption.toLowerCase();
     };
 
-    const optFilter = (options: SelectOption[]) =>
-        options.filter((option) => compOption(option) === compValue);
+    const optFilter = (options: SelectOption[]) => options.filter((option) => compOption(option) === compValue);
 
     return options.grouped
         ? {

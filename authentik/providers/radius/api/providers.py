@@ -2,6 +2,7 @@
 
 from base64 import b64encode
 
+from django.conf import settings
 from django.shortcuts import get_object_or_404
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
@@ -100,7 +101,16 @@ class RadiusOutpostConfigViewSet(ListModelMixin, GenericViewSet):
             RadiusProviderPropertyMapping,
             ["packet"],
         )
-        dict = Dictionary("authentik/providers/radius/dictionaries/dictionary")
+        dict = Dictionary(
+            str(
+                settings.BASE_DIR
+                / "authentik"
+                / "providers"
+                / "radius"
+                / "dictionaries"
+                / "dictionary"
+            )
+        )
 
         packet = AuthPacket()
         packet.secret = provider.shared_secret

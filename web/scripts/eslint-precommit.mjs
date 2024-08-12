@@ -81,7 +81,7 @@ const updated = statuses.reduce(
         modified(status) && checkable(filename) && notIgnored(filename)
             ? [...acc, path.join(projectRoot, filename)]
             : acc,
-    [],
+    []
 );
 
 const eslint = new ESLint(eslintConfig);
@@ -90,6 +90,5 @@ const formatter = await eslint.loadFormatter("stylish");
 const resultText = formatter.format(results);
 const errors = results.reduce((acc, result) => acc + result.errorCount, 0);
 
-// eslint-disable-next-line no-console
 console.log(resultText);
 process.exit(errors > 1 ? 1 : 0);

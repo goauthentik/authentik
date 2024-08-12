@@ -59,8 +59,24 @@ type Group<T> = [string, T[]];
  *
  */
 
+export interface ISearchSelect<T> {
+    fetchObjects: (query?: string) => Promise<T[]>;
+    renderElement: ((element: T) => string) | string;
+    renderDescription?: ((element: T) => string | TemplateResult) | string;
+    value: ((element: T | undefined) => unknown) | string;
+    selected?: (element: T, elements: T[]) => boolean;
+    groupBy: (items: T[]) => [string, T[]][];
+    blankable: boolean;
+    query?: string;
+    objects?: T[];
+    selectedObject?: T;
+    name?: string;
+    placeholder: string;
+    emptyOption: string;
+}
+
 @customElement("ak-search-select")
-export class SearchSelect<T> extends CustomEmitterElement(AkControlElement) {
+export class SearchSelect<T> extends CustomEmitterElement(AkControlElement) implements ISearchSelect<T> {
     static get styles() {
         return [PFBase];
     }
@@ -144,7 +160,6 @@ export class SearchSelect<T> extends CustomEmitterElement(AkControlElement) {
 
     constructor() {
         super();
-        this.dataset.akControl = "true";
     }
 
     public toForm(): unknown {
@@ -158,9 +173,9 @@ export class SearchSelect<T> extends CustomEmitterElement(AkControlElement) {
         return this.toForm();
     }
 
-    public updateData() {
+    public async updateData() {
         if (this.isFetchingData) {
-            return;
+            return Promise.resolve();
         }
         this.isFetchingData = true;
         return this.fetchObjects(this.query)
@@ -196,8 +211,7 @@ export class SearchSelect<T> extends CustomEmitterElement(AkControlElement) {
 
         if (typeof this.value === "string") {
             const vKey = this.value as keyof T;
-            this._value = (item: T | undefined) =>
-                item ? (item[vKey] as string | undefined) : undefined;
+            this._value = (item: T | undefined) => (item ? (item[vKey] as string | undefined) : undefined);
         } else {
             this._value = this.value;
         }
@@ -209,7 +223,7 @@ export class SearchSelect<T> extends CustomEmitterElement(AkControlElement) {
             // undefined propagates to here.
             this._renderDescription = this.renderDescription;
         }
-
+        this.dataset.akControl = "true";
         this.updateData();
         this.addEventListener(EVENT_REFRESH, this.updateData);
     }

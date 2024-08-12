@@ -23,7 +23,7 @@ import {
 export async function radiusPropertyMappingsProvider(page = 1, search = "") {
     const propertyMappings = await new PropertymappingsApi(
         DEFAULT_CONFIG,
-    ).propertymappingsRadiusList({
+    ).propertymappingsProviderRadiusList({
         ordering: "name",
         pageSize: 20,
         search: search.trim(),

@@ -19,8 +19,14 @@ import { customElement, property } from "lit/decorators.js";
  * - @attr name (string): (optional) used to managed the relationship the portal mediates.
  */
 
+export interface IPortal {
+    anchor: HTMLElement;
+    open: boolean;
+    name?: string;
+}
+
 @customElement("ak-portal")
-export class Portal extends LitElement {
+export class Portal extends LitElement implements IPortal {
     /**
      * The host element which will be our reference point for rendering.  Is not necessarily
      * the element that receives the events.

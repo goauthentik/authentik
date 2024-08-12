@@ -48,7 +48,9 @@ function assignValue(element: HTMLNamedElement, value: unknown, json: KeyUnknown
     for (let index = 0; index < nameElements.length - 1; index++) {
         const nameEl = nameElements[index];
         // Ensure all nested structures exist
-        if (!(nameEl in parent)) parent[nameEl] = {};
+        if (!(nameEl in parent)) {
+            parent[nameEl] = {};
+        }
         parent = parent[nameEl] as { [key: string]: unknown };
     }
     parent[nameElements[nameElements.length - 1]] = value;
@@ -103,7 +105,7 @@ export function serializeForm<T extends KeyUnknown>(
         } else if (
             inputElement.tagName.toLowerCase() === "input" &&
             "type" in inputElement.dataset &&
-            inputElement.dataset["type"] === "datetime-local"
+            inputElement.dataset.type === "datetime-local"
         ) {
             // Workaround for Firefox <93, since 92 and older don't support
             // datetime-local fields
@@ -121,6 +123,9 @@ export function serializeForm<T extends KeyUnknown>(
     });
     return json as unknown as T;
 }
+
+const HTTP_BAD_REQUEST = 400;
+const HTTP_INTERNAL_SERVICE_ERROR = 500;
 
 /**
  * Form
@@ -188,7 +193,7 @@ export abstract class Form<T> extends AKElement {
      */
     get isInViewport(): boolean {
         const rect = this.getBoundingClientRect();
-        return !(rect.x + rect.y + rect.width + rect.height === 0);
+        return rect.x + rect.y + rect.width + rect.height !== 0;
     }
 
     getSuccessMessage(): string {
@@ -275,7 +280,6 @@ export abstract class Form<T> extends AKElement {
         }
         return serializeForm(elements) as T;
     }
-
     /**
      * Serialize and send the form to the destination. The `send()` method must be overridden for
      * this to work. If processing the data results in an error, we catch the error, distribute
@@ -304,9 +308,14 @@ export abstract class Form<T> extends AKElement {
         } catch (ex) {
             if (ex instanceof ResponseError) {
                 let msg = ex.response.statusText;
-                if (ex.response.status > 399 && ex.response.status < 500) {
+                if (
+                    ex.response.status >= HTTP_BAD_REQUEST &&
+                    ex.response.status < HTTP_INTERNAL_SERVICE_ERROR
+                ) {
                     const errorMessage = ValidationErrorFromJSON(await ex.response.json());
-                    if (!errorMessage) return errorMessage;
+                    if (!errorMessage) {
+                        return errorMessage;
+                    }
                     if (errorMessage instanceof Error) {
                         throw errorMessage;
                     }
@@ -318,7 +327,9 @@ export abstract class Form<T> extends AKElement {
                     elements.forEach((element) => {
                         element.requestUpdate();
                         const elementName = element.name;
-                        if (!elementName) return;
+                        if (!elementName) {
+                            return;
+                        }
                         if (camelToSnake(elementName) in errorMessage) {
                             element.errorMessages = errorMessage[camelToSnake(elementName)];
                             element.invalid = true;

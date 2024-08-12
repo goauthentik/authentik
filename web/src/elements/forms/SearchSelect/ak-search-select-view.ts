@@ -56,8 +56,20 @@ import { findFlatOptions, findOptionsSubset, groupOptions, optionsToFlat } from 
  *
  */
 
+export interface ISearchSelectView {
+    options: SelectOptions;
+    value?: string;
+    open: boolean;
+    blankable: boolean;
+    caseSensitive: boolean;
+    name?: string;
+    placeholder: string;
+    managed: boolean;
+    emptyOption: string;
+}
+
 @customElement("ak-search-select-view")
-export class SearchSelectView extends AKElement {
+export class SearchSelectView extends AKElement implements ISearchSelectView {
     /**
      * The options collection. The simplest variant is just [key, label, optional<description>]. See
      * the `./types.ts` file for variants and how to use them.
@@ -330,9 +342,7 @@ export class SearchSelectView extends AKElement {
     }
 
     get managedOptions() {
-        return this.managed
-            ? this._options
-            : findOptionsSubset(this._options, this.rawValue, this.caseSensitive);
+        return this.managed ? this._options : findOptionsSubset(this._options, this.rawValue, this.caseSensitive);
     }
 
     public override render() {
@@ -361,11 +371,7 @@ export class SearchSelectView extends AKElement {
             </div>
             ${this.inputRefIsAvailable
                 ? html`
-                      <ak-portal
-                          name=${ifDefined(this.name)}
-                          .anchor=${this.inputRef.value}
-                          ?open=${open}
-                      >
+                      <ak-portal name=${ifDefined(this.name)} .anchor=${this.inputRef.value} ?open=${open}>
                           <ak-list-select
                               id="menu-${this.getAttribute("data-ouia-component-id")}"
                               ${ref(this.menuRef)}

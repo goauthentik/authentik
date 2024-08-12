@@ -136,7 +136,6 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
     constructor() {
         super();
         this.onClick = this.onClick.bind(this);
-        this.dataset.akControl = "true";
     }
 
     onClick(ev: Event) {
@@ -173,6 +172,7 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
 
     connectedCallback() {
         super.connectedCallback();
+        this.dataset.akControl = "true";
         if (this.name && !this.internals) {
             this.internals = this.attachInternals();
         }

@@ -29,6 +29,7 @@ import {
     License,
     LicenseForecast,
     LicenseSummary,
+    LicenseSummaryStatusEnum,
     RbacPermissionsAssignedByUsersListModelEnum,
 } from "@goauthentik/api";
 
@@ -182,7 +183,8 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                         header=${msg("Expiry")}
                         subtext=${msg("Cumulative license expiry")}
                     >
-                        ${this.summary?.hasLicense
+                        ${this.summary &&
+                        this.summary?.status !== LicenseSummaryStatusEnum.Unlicensed
                             ? html`<div>${getRelativeTime(this.summary.latestValid)}</div>
                                   <small>${this.summary.latestValid.toLocaleString()}</small>`
                             : "-"}

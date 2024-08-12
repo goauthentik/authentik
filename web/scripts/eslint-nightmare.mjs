@@ -63,6 +63,5 @@ const formatter = await eslint.loadFormatter("stylish");
 const resultText = formatter.format(results);
 const errors = results.reduce((acc, result) => acc + result.errorCount, 0);
 
-// eslint-disable-next-line no-console
 console.log(resultText);
 process.exit(errors > 1 ? 1 : 0);
