@@ -40,11 +40,11 @@ The following placeholders will be used:
     - **Service Provider Binding**: `Post`
     - **Signing Keypair**: Choose the RSA certificate you generated earlier.
     - **Property mappings**: `semgrep-name` and `semgrep-email`
-10. Create a new application under **Applications** -> **Applications**, pick a name and a slug, and assign the provider that you have just created.
+10. Create a new application under **Applications** -> **Applications**, pick a name and a slug, and assign the provider that you just created.
 
 ## Semgrep Configuration
 
-1. Login to Semgrep Cloud platform as an administrator.
+1. Log in to Semgrep Cloud platform as an administrator.
 2. Click **Settings** on bottom left corner.
 3. Navigate to **Access** -> **Login methods**.
 4. Locate Single sign-on entry, click **Add SSO configuration**, select **SAML2 SSO** from the drop down.
@@ -60,5 +60,5 @@ The following placeholders will be used:
 1. Open an Incaognito window and navigate to `https://semgrep.dev/login`
 2. Click **Use SSO** on the login screen.
 3. Enter the email address associated with the domain you provided earlier.
-4. Login with authentik.
-5. You will be redirected to home screen of Semgrep Cloud platform.
+4. Log in to authentik.
+5. You will be redirected to the home screen of Semgrep Cloud platform.
