@@ -14565,9 +14565,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /propertymappings/rac/:
+  /propertymappings/provider/rac/:
     get:
-      operationId: propertymappings_rac_list
+      operationId: propertymappings_provider_rac_list
       description: RACPropertyMapping Viewset
       parameters:
       - in: query
@@ -14630,7 +14630,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     post:
-      operationId: propertymappings_rac_create
+      operationId: propertymappings_provider_rac_create
       description: RACPropertyMapping Viewset
       tags:
       - propertymappings
@@ -14661,9 +14661,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /propertymappings/rac/{pm_uuid}/:
+  /propertymappings/provider/rac/{pm_uuid}/:
     get:
-      operationId: propertymappings_rac_retrieve
+      operationId: propertymappings_provider_rac_retrieve
       description: RACPropertyMapping Viewset
       parameters:
       - in: path
@@ -14671,7 +14671,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this RAC Property Mapping.
+        description: A UUID string identifying this RAC Provider Property Mapping.
         required: true
       tags:
       - propertymappings
@@ -14697,7 +14697,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     put:
-      operationId: propertymappings_rac_update
+      operationId: propertymappings_provider_rac_update
       description: RACPropertyMapping Viewset
       parameters:
       - in: path
@@ -14705,7 +14705,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this RAC Property Mapping.
+        description: A UUID string identifying this RAC Provider Property Mapping.
         required: true
       tags:
       - propertymappings
@@ -14737,7 +14737,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     patch:
-      operationId: propertymappings_rac_partial_update
+      operationId: propertymappings_provider_rac_partial_update
       description: RACPropertyMapping Viewset
       parameters:
       - in: path
@@ -14745,7 +14745,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this RAC Property Mapping.
+        description: A UUID string identifying this RAC Provider Property Mapping.
         required: true
       tags:
       - propertymappings
@@ -14776,7 +14776,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     delete:
-      operationId: propertymappings_rac_destroy
+      operationId: propertymappings_provider_rac_destroy
       description: RACPropertyMapping Viewset
       parameters:
       - in: path
@@ -14784,7 +14784,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this RAC Property Mapping.
+        description: A UUID string identifying this RAC Provider Property Mapping.
         required: true
       tags:
       - propertymappings
@@ -14805,9 +14805,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /propertymappings/rac/{pm_uuid}/used_by/:
+  /propertymappings/provider/rac/{pm_uuid}/used_by/:
     get:
-      operationId: propertymappings_rac_used_by_list
+      operationId: propertymappings_provider_rac_used_by_list
       description: Get a list of all objects that use this object
       parameters:
       - in: path
@@ -14815,7 +14815,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this RAC Property Mapping.
+        description: A UUID string identifying this RAC Provider Property Mapping.
         required: true
       tags:
       - propertymappings
@@ -14842,9 +14842,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /propertymappings/radius/:
+  /propertymappings/provider/radius/:
     get:
-      operationId: propertymappings_radius_list
+      operationId: propertymappings_provider_radius_list
       description: RadiusProviderPropertyMapping Viewset
       parameters:
       - in: query
@@ -14911,7 +14911,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     post:
-      operationId: propertymappings_radius_create
+      operationId: propertymappings_provider_radius_create
       description: RadiusProviderPropertyMapping Viewset
       tags:
       - propertymappings
@@ -14942,9 +14942,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /propertymappings/radius/{pm_uuid}/:
+  /propertymappings/provider/radius/{pm_uuid}/:
     get:
-      operationId: propertymappings_radius_retrieve
+      operationId: propertymappings_provider_radius_retrieve
       description: RadiusProviderPropertyMapping Viewset
       parameters:
       - in: path
@@ -14952,7 +14952,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Radius Property Mapping.
+        description: A UUID string identifying this Radius Provider Property Mapping.
         required: true
       tags:
       - propertymappings
@@ -14978,7 +14978,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     put:
-      operationId: propertymappings_radius_update
+      operationId: propertymappings_provider_radius_update
       description: RadiusProviderPropertyMapping Viewset
       parameters:
       - in: path
@@ -14986,7 +14986,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Radius Property Mapping.
+        description: A UUID string identifying this Radius Provider Property Mapping.
         required: true
       tags:
       - propertymappings
@@ -15018,7 +15018,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     patch:
-      operationId: propertymappings_radius_partial_update
+      operationId: propertymappings_provider_radius_partial_update
       description: RadiusProviderPropertyMapping Viewset
       parameters:
       - in: path
@@ -15026,7 +15026,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Radius Property Mapping.
+        description: A UUID string identifying this Radius Provider Property Mapping.
         required: true
       tags:
       - propertymappings
@@ -15057,7 +15057,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     delete:
-      operationId: propertymappings_radius_destroy
+      operationId: propertymappings_provider_radius_destroy
       description: RadiusProviderPropertyMapping Viewset
       parameters:
       - in: path
@@ -15065,7 +15065,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Radius Property Mapping.
+        description: A UUID string identifying this Radius Provider Property Mapping.
         required: true
       tags:
       - propertymappings
@@ -15086,9 +15086,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /propertymappings/radius/{pm_uuid}/used_by/:
+  /propertymappings/provider/radius/{pm_uuid}/used_by/:
     get:
-      operationId: propertymappings_radius_used_by_list
+      operationId: propertymappings_provider_radius_used_by_list
       description: Get a list of all objects that use this object
       parameters:
       - in: path
@@ -15096,7 +15096,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Radius Property Mapping.
+        description: A UUID string identifying this Radius Provider Property Mapping.
         required: true
       tags:
       - propertymappings
@@ -15123,9 +15123,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /propertymappings/saml/:
+  /propertymappings/provider/saml/:
     get:
-      operationId: propertymappings_saml_list
+      operationId: propertymappings_provider_saml_list
       description: SAMLPropertyMapping Viewset
       parameters:
       - in: query
@@ -15200,7 +15200,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     post:
-      operationId: propertymappings_saml_create
+      operationId: propertymappings_provider_saml_create
       description: SAMLPropertyMapping Viewset
       tags:
       - propertymappings
@@ -15231,9 +15231,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /propertymappings/saml/{pm_uuid}/:
+  /propertymappings/provider/saml/{pm_uuid}/:
     get:
-      operationId: propertymappings_saml_retrieve
+      operationId: propertymappings_provider_saml_retrieve
       description: SAMLPropertyMapping Viewset
       parameters:
       - in: path
@@ -15241,7 +15241,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this SAML Property Mapping.
+        description: A UUID string identifying this SAML Provider Property Mapping.
         required: true
       tags:
       - propertymappings
@@ -15267,7 +15267,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     put:
-      operationId: propertymappings_saml_update
+      operationId: propertymappings_provider_saml_update
       description: SAMLPropertyMapping Viewset
       parameters:
       - in: path
@@ -15275,7 +15275,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this SAML Property Mapping.
+        description: A UUID string identifying this SAML Provider Property Mapping.
         required: true
       tags:
       - propertymappings
@@ -15307,7 +15307,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     patch:
-      operationId: propertymappings_saml_partial_update
+      operationId: propertymappings_provider_saml_partial_update
       description: SAMLPropertyMapping Viewset
       parameters:
       - in: path
@@ -15315,7 +15315,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this SAML Property Mapping.
+        description: A UUID string identifying this SAML Provider Property Mapping.
         required: true
       tags:
       - propertymappings
@@ -15346,7 +15346,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     delete:
-      operationId: propertymappings_saml_destroy
+      operationId: propertymappings_provider_saml_destroy
       description: SAMLPropertyMapping Viewset
       parameters:
       - in: path
@@ -15354,7 +15354,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this SAML Property Mapping.
+        description: A UUID string identifying this SAML Provider Property Mapping.
         required: true
       tags:
       - propertymappings
@@ -15375,9 +15375,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /propertymappings/saml/{pm_uuid}/used_by/:
+  /propertymappings/provider/saml/{pm_uuid}/used_by/:
     get:
-      operationId: propertymappings_saml_used_by_list
+      operationId: propertymappings_provider_saml_used_by_list
       description: Get a list of all objects that use this object
       parameters:
       - in: path
@@ -15385,7 +15385,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this SAML Property Mapping.
+        description: A UUID string identifying this SAML Provider Property Mapping.
         required: true
       tags:
       - propertymappings
@@ -15412,9 +15412,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /propertymappings/scim/:
+  /propertymappings/provider/scim/:
     get:
-      operationId: propertymappings_scim_list
+      operationId: propertymappings_provider_scim_list
       description: SCIMMapping Viewset
       parameters:
       - in: query
@@ -15481,7 +15481,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     post:
-      operationId: propertymappings_scim_create
+      operationId: propertymappings_provider_scim_create
       description: SCIMMapping Viewset
       tags:
       - propertymappings
@@ -15512,9 +15512,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /propertymappings/scim/{pm_uuid}/:
+  /propertymappings/provider/scim/{pm_uuid}/:
     get:
-      operationId: propertymappings_scim_retrieve
+      operationId: propertymappings_provider_scim_retrieve
       description: SCIMMapping Viewset
       parameters:
       - in: path
@@ -15522,7 +15522,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this SCIM Mapping.
+        description: A UUID string identifying this SCIM Provider Mapping.
         required: true
       tags:
       - propertymappings
@@ -15548,7 +15548,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     put:
-      operationId: propertymappings_scim_update
+      operationId: propertymappings_provider_scim_update
       description: SCIMMapping Viewset
       parameters:
       - in: path
@@ -15556,7 +15556,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this SCIM Mapping.
+        description: A UUID string identifying this SCIM Provider Mapping.
         required: true
       tags:
       - propertymappings
@@ -15588,7 +15588,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     patch:
-      operationId: propertymappings_scim_partial_update
+      operationId: propertymappings_provider_scim_partial_update
       description: SCIMMapping Viewset
       parameters:
       - in: path
@@ -15596,7 +15596,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this SCIM Mapping.
+        description: A UUID string identifying this SCIM Provider Mapping.
         required: true
       tags:
       - propertymappings
@@ -15627,7 +15627,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     delete:
-      operationId: propertymappings_scim_destroy
+      operationId: propertymappings_provider_scim_destroy
       description: SCIMMapping Viewset
       parameters:
       - in: path
@@ -15635,7 +15635,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this SCIM Mapping.
+        description: A UUID string identifying this SCIM Provider Mapping.
         required: true
       tags:
       - propertymappings
@@ -15656,9 +15656,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /propertymappings/scim/{pm_uuid}/used_by/:
+  /propertymappings/provider/scim/{pm_uuid}/used_by/:
     get:
-      operationId: propertymappings_scim_used_by_list
+      operationId: propertymappings_provider_scim_used_by_list
       description: Get a list of all objects that use this object
       parameters:
       - in: path
@@ -15666,7 +15666,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this SCIM Mapping.
+        description: A UUID string identifying this SCIM Provider Mapping.
         required: true
       tags:
       - propertymappings
@@ -15693,9 +15693,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /propertymappings/scope/:
+  /propertymappings/provider/scope/:
     get:
-      operationId: propertymappings_scope_list
+      operationId: propertymappings_provider_scope_list
       description: ScopeMapping Viewset
       parameters:
       - in: query
@@ -15766,7 +15766,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     post:
-      operationId: propertymappings_scope_create
+      operationId: propertymappings_provider_scope_create
       description: ScopeMapping Viewset
       tags:
       - propertymappings
@@ -15797,9 +15797,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /propertymappings/scope/{pm_uuid}/:
+  /propertymappings/provider/scope/{pm_uuid}/:
     get:
-      operationId: propertymappings_scope_retrieve
+      operationId: propertymappings_provider_scope_retrieve
       description: ScopeMapping Viewset
       parameters:
       - in: path
@@ -15833,7 +15833,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     put:
-      operationId: propertymappings_scope_update
+      operationId: propertymappings_provider_scope_update
       description: ScopeMapping Viewset
       parameters:
       - in: path
@@ -15873,7 +15873,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     patch:
-      operationId: propertymappings_scope_partial_update
+      operationId: propertymappings_provider_scope_partial_update
       description: ScopeMapping Viewset
       parameters:
       - in: path
@@ -15912,7 +15912,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     delete:
-      operationId: propertymappings_scope_destroy
+      operationId: propertymappings_provider_scope_destroy
       description: ScopeMapping Viewset
       parameters:
       - in: path
@@ -15941,9 +15941,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /propertymappings/scope/{pm_uuid}/used_by/:
+  /propertymappings/provider/scope/{pm_uuid}/used_by/:
     get:
-      operationId: propertymappings_scope_used_by_list
+      operationId: propertymappings_provider_scope_used_by_list
       description: Get a list of all objects that use this object
       parameters:
       - in: path

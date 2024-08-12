@@ -7,8 +7,8 @@ import { customElement } from "lit/decorators.js";
 
 import { LDAPSourcePropertyMapping, PropertymappingsApi } from "@goauthentik/api";
 
-@customElement("ak-property-mapping-ldap-source-form")
-export class PropertyMappingLDAPSourceForm extends BasePropertyMappingForm<LDAPSourcePropertyMapping> {
+@customElement("ak-property-mapping-source-ldap-form")
+export class PropertyMappingSourceLDAPForm extends BasePropertyMappingForm<LDAPSourcePropertyMapping> {
     docLink(): string {
         return "/docs/sources/property-mappings/expression?utm_source=authentik";
     }
@@ -35,6 +35,6 @@ export class PropertyMappingLDAPSourceForm extends BasePropertyMappingForm<LDAPS
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-property-mapping-ldap-source-form": PropertyMappingLDAPSourceForm;
+        "ak-property-mapping-source-ldap-form": PropertyMappingSourceLDAPForm;
     }
 }

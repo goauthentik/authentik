@@ -7,8 +7,8 @@ import { customElement } from "lit/decorators.js";
 
 import { GoogleWorkspaceProviderMapping, PropertymappingsApi } from "@goauthentik/api";
 
-@customElement("ak-property-mapping-google-workspace-form")
-export class PropertyMappingGoogleWorkspaceForm extends BasePropertyMappingForm<GoogleWorkspaceProviderMapping> {
+@customElement("ak-property-mapping-provider-google-workspace-form")
+export class PropertyMappingProviderGoogleWorkspaceForm extends BasePropertyMappingForm<GoogleWorkspaceProviderMapping> {
     loadInstance(pk: string): Promise<GoogleWorkspaceProviderMapping> {
         return new PropertymappingsApi(
             DEFAULT_CONFIG,
@@ -37,6 +37,6 @@ export class PropertyMappingGoogleWorkspaceForm extends BasePropertyMappingForm<
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-property-mapping-google-workspace-form": PropertyMappingGoogleWorkspaceForm;
+        "ak-property-mapping-provider-google-workspace-form": PropertyMappingProviderGoogleWorkspaceForm;
     }
 }

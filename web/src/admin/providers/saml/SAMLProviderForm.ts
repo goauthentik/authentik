@@ -22,7 +22,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import {
     FlowsInstancesListDesignationEnum,
     PropertymappingsApi,
-    PropertymappingsSamlListRequest,
+    PropertymappingsProviderSamlListRequest,
     ProvidersApi,
     SAMLPropertyMapping,
     SAMLProvider,
@@ -30,14 +30,14 @@ import {
 } from "@goauthentik/api";
 
 export async function samlPropertyMappingsProvider(page = 1, search = "") {
-    const propertyMappings = await new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSamlList(
-        {
-            ordering: "saml_name",
-            pageSize: 20,
-            search: search.trim(),
-            page,
-        },
-    );
+    const propertyMappings = await new PropertymappingsApi(
+        DEFAULT_CONFIG,
+    ).propertymappingsProviderSamlList({
+        ordering: "saml_name",
+        pageSize: 20,
+        search: search.trim(),
+        page,
+    });
     return {
         pagination: propertyMappings.pagination,
         options: propertyMappings.results.map((m) => [m.pk, m.name, m.name, m]),
@@ -226,7 +226,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                             .fetchObjects=${async (
                                 query?: string,
                             ): Promise<SAMLPropertyMapping[]> => {
-                                const args: PropertymappingsSamlListRequest = {
+                                const args: PropertymappingsProviderSamlListRequest = {
                                     ordering: "saml_name",
                                 };
                                 if (query !== undefined) {
@@ -234,7 +234,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                                 }
                                 const items = await new PropertymappingsApi(
                                     DEFAULT_CONFIG,
-                                ).propertymappingsSamlList(args);
+                                ).propertymappingsProviderSamlList(args);
                                 return items.results;
                             }}
                             .renderElement=${(item: SAMLPropertyMapping): string => {

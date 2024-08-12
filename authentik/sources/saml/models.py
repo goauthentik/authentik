@@ -299,7 +299,7 @@ class SAMLSourcePropertyMapping(PropertyMapping):
 
     @property
     def component(self) -> str:
-        return "ak-property-mapping-saml-source-form"
+        return "ak-property-mapping-source-saml-form"
 
     @property
     def serializer(self) -> type[Serializer]:

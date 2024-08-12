@@ -7,22 +7,22 @@ import { customElement } from "lit/decorators.js";
 
 import { PropertymappingsApi, SCIMMapping } from "@goauthentik/api";
 
-@customElement("ak-property-mapping-scim-form")
-export class PropertyMappingSCIMForm extends BasePropertyMappingForm<SCIMMapping> {
+@customElement("ak-property-mapping-provider-scim-form")
+export class PropertyMappingProviderSCIMForm extends BasePropertyMappingForm<SCIMMapping> {
     loadInstance(pk: string): Promise<SCIMMapping> {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsScimRetrieve({
+        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderScimRetrieve({
             pmUuid: pk,
         });
     }
 
     async send(data: SCIMMapping): Promise<SCIMMapping> {
         if (this.instance) {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsScimUpdate({
+            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderScimUpdate({
                 pmUuid: this.instance.pk,
                 sCIMMappingRequest: data,
             });
         } else {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsScimCreate({
+            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderScimCreate({
                 sCIMMappingRequest: data,
             });
         }
@@ -31,6 +31,6 @@ export class PropertyMappingSCIMForm extends BasePropertyMappingForm<SCIMMapping
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-property-mapping-scim-form": PropertyMappingSCIMForm;
+        "ak-property-mapping-provider-scim-form": PropertyMappingProviderSCIMForm;
     }
 }

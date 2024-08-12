@@ -7,8 +7,8 @@ import { customElement } from "lit/decorators.js";
 
 import { PropertymappingsApi, SAMLSourcePropertyMapping } from "@goauthentik/api";
 
-@customElement("ak-property-mapping-saml-source-form")
-export class PropertyMappingSAMLSourceForm extends BasePropertyMappingForm<SAMLSourcePropertyMapping> {
+@customElement("ak-property-mapping-source-saml-form")
+export class PropertyMappingSourceSAMLForm extends BasePropertyMappingForm<SAMLSourcePropertyMapping> {
     docLink(): string {
         return "/docs/sources/property-mappings/expression?utm_source=authentik";
     }
@@ -35,6 +35,6 @@ export class PropertyMappingSAMLSourceForm extends BasePropertyMappingForm<SAMLS
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-property-mapping-saml-source-form": PropertyMappingSAMLSourceForm;
+        "ak-property-mapping-source-saml-form": PropertyMappingSourceSAMLForm;
     }
 }
