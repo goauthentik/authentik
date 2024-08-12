@@ -20,7 +20,9 @@ async function fetchObjects(query?: string): Promise<SAMLPropertyMapping[]> {
     if (query !== undefined) {
         args.search = query;
     }
-    const items = await new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSamlList(args);
+    const items = await new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderSamlList(
+        args,
+    );
     return items.results;
 }
 
