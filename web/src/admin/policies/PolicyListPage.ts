@@ -24,6 +24,7 @@ import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import { PoliciesApi, Policy } from "@goauthentik/api";
+import { PFSize } from "@goauthentik/common/enums";
 
 @customElement("ak-policy-list")
 export class PolicyListPage extends TablePage<Policy> {
@@ -71,7 +72,7 @@ export class PolicyListPage extends TablePage<Policy> {
                           ${msg("Warning: Policy is not assigned.")}
                       </ak-label>`}`,
             html`${item.verboseName}`,
-            html` <ak-forms-modal>
+            html` <ak-forms-modal size=${item.component === "ak-policy-expression-form" ? PFSize.XLarge : PFSize.Large}>
                     <span slot="submit"> ${msg("Update")} </span>
                     <span slot="header"> ${msg(str`Update ${item.verboseName}`)} </span>
                     <ak-proxy-form
@@ -79,7 +80,7 @@ export class PolicyListPage extends TablePage<Policy> {
                         .args=${{
                             instancePk: item.pk,
                         }}
-                        type=${ifDefined(item.component)}
+                        type=${item.component}
                     >
                     </ak-proxy-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
