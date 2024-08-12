@@ -8,14 +8,25 @@ import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { CSSResult, TemplateResult, html } from "lit";
+import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
+
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { ExpressionPolicy, PoliciesApi } from "@goauthentik/api";
 
 @customElement("ak-policy-expression-form")
 export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
+
+    @property({type: Boolean})
+    showPreview = true;
+
+    static get styles(): CSSResult[] {
+        return super.styles.concat(PFGrid, PFTitle);
+    }
+
     loadInstance(pk: string): Promise<ExpressionPolicy> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesExpressionRetrieve({
             policyUuid: pk,
@@ -36,9 +47,29 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
     }
 
     renderForm(): TemplateResult {
+        return html`<div class="pf-l-grid pf-m-gutter">
+            <div class="pf-l-grid__item pf-m-6-col pf-c-form pf-m-horizontal">
+                ${this.renderEditForm()}
+            </div>
+            <div class="pf-l-grid__item pf-m-6-col">${this.renderPreview()}</div>
+        </div> `;
+    }
+
+    renderPreview(): TemplateResult {
+        return html`
+            <h3 class="pf-c-title pf-m-lg">${msg("Preview")}</h3>
+            <div class="pf-l-grid pf-m-gutter">
+                <div class="pf-c-card pf-m-selectable pf-m-selected pf-l-grid__item pf-m-12-col">
+                    <div class="pf-c-card__body"></div>
+                </div>
+            </div>
+        `;
+    }
+
+    renderEditForm(): TemplateResult {
         return html` <span>
                 ${msg(
-                    "Executes the python snippet to determine whether to allow or deny a request.",
+                    "Executes the Python snippet to determine whether to allow or deny a request.",
                 )}
             </span>
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
