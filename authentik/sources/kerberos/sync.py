@@ -11,7 +11,7 @@ from authentik.core.expression.exceptions import (
     PropertyMappingExpressionException,
     SkipObjectException,
 )
-from authentik.core.models import User, UserTypes
+from authentik.core.models import Group, User, UserTypes
 from authentik.core.sources.mapper import SourceMapper
 from authentik.events.models import Event, EventAction
 from authentik.lib.sync.mapper import PropertyMappingManager
@@ -64,7 +64,17 @@ class KerberosSync:
             self._logger.debug("Writing user with attributes", **defaults)
             if "username" not in defaults:
                 raise IntegrityError("Username was not set by propertymappings")
-            ak_user, created = self.update_or_create_user(principal, defaults)
+
+            groups: list[Group] = []
+            group_ids = defaults.pop("groups", [])
+            for group_id in group_ids:
+                group = self.update_or_create_group(group_id, self.mapper.build_object_properties(
+                    object_type=Group, manager=self.manager, user=None, request=None, group_id=group_id, principal=principal,
+                ))
+                groups.append(group)
+
+            ak_user, created = self.update_or_create_user(principal, defaults, groups)
+
         except PropertyMappingExpressionException as exc:
             raise StopSync(exc, None, exc.mapping) from exc
         except SkipObjectException:
@@ -80,7 +90,7 @@ class KerberosSync:
         self._logger.debug("Synced User", user=ak_user.username, created=created)
         return True
 
-    def update_or_create_user(self, principal: str, data: dict[str, Any]) -> tuple[User, bool]:
+    def update_or_create_user(self, principal: str, data: dict[str, Any], groups: list[Group]) -> tuple[User, bool]:
         """
         Same as django's update_or_create but correctly update attributes by merging dicts,
         and create a UserKerberosSourceConnection object if needed
@@ -88,8 +98,6 @@ class KerberosSync:
         user_source_connection = UserKerberosSourceConnection.objects.filter(
             source=self._source, identifier=principal
         ).first()
-
-        # TODO: handle groups
 
         # User doesn't exists
         if not user_source_connection:
@@ -101,10 +109,21 @@ class KerberosSync:
                 user_source_connection = UserKerberosSourceConnection.objects.create(
                     source=self._source, user=user, identifier=principal
                 )
+                user.ak_groups.set(groups)
             return user, True
 
-        user_source_connection.user.update_attributes(data)
-        return user_source_connection.user, False
+        user = user_source_connection.user
+        user.update_attributes(data)
+        with transaction.atomic():
+            user.ak_groups.remove(
+                *user.ak_groups.filter(groupsourceconnection__source=self._source)
+            )
+            user.ak_groups.add(*groups)
+        return user, False
+
+    def update_or_create_group(self, group_id: str, group_attributes: dict[str, Any | dict[str, Any]]) -> Group:
+        # TODO: raise integrity error on group sync fail
+        pass
 
     def sync(self) -> int:
         """Iterate over all Kerberos users and create authentik_core.User instances"""
