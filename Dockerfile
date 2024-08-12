@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build website
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:22 as website-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:22 AS website-builder
 
 ENV NODE_ENV=production
 
@@ -20,7 +20,7 @@ COPY ./SECURITY.md /work/
 RUN npm run build-bundled
 
 # Stage 2: Build webui
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:22 as web-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:22 AS web-builder
 
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
@@ -80,7 +80,7 @@ RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     go build -o /go/authentik ./cmd/server
 
 # Stage 4: MaxMind GeoIP
-FROM --platform=${BUILDPLATFORM} ghcr.io/maxmind/geoipupdate:v7.0.1 as geoip
+FROM --platform=${BUILDPLATFORM} ghcr.io/maxmind/geoipupdate:v7.0.1 AS geoip
 
 ENV GEOIPUPDATE_EDITION_IDS="GeoLite2-City GeoLite2-ASN"
 ENV GEOIPUPDATE_VERBOSE="1"
@@ -95,6 +95,9 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
 
 # Stage 5: Python dependencies
 FROM ghcr.io/goauthentik/fips-python:3.12.5-slim-bookworm-fips-full AS python-deps
+
+ARG TARGETARCH
+ARG TARGETVARIANT
 
 WORKDIR /ak-root/poetry
 
@@ -123,15 +126,15 @@ RUN --mount=type=bind,target=./pyproject.toml,src=./pyproject.toml \
 # Stage 6: Run
 FROM ghcr.io/goauthentik/fips-python:3.12.5-slim-bookworm-fips-full AS final-image
 
-ARG GIT_BUILD_HASH
 ARG VERSION
+ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
 
-LABEL org.opencontainers.image.url https://goauthentik.io
-LABEL org.opencontainers.image.description goauthentik.io Main server image, see https://goauthentik.io for more info.
-LABEL org.opencontainers.image.source https://github.com/goauthentik/authentik
-LABEL org.opencontainers.image.version ${VERSION}
-LABEL org.opencontainers.image.revision ${GIT_BUILD_HASH}
+LABEL org.opencontainers.image.url=https://goauthentik.io
+LABEL org.opencontainers.image.description="goauthentik.io Main server image, see https://goauthentik.io for more info."
+LABEL org.opencontainers.image.source=https://github.com/goauthentik/authentik
+LABEL org.opencontainers.image.version=${VERSION}
+LABEL org.opencontainers.image.revision=${GIT_BUILD_HASH}
 
 WORKDIR /
 
