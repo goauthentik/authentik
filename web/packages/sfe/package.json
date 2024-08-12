@@ -30,7 +30,7 @@
         "@swc/core-darwin-x64": "^1.6.13",
         "@swc/core-linux-arm-gnueabihf": "^1.6.13",
         "@swc/core-linux-arm64-gnu": "^1.6.13",
-        "@swc/core-linux-arm64-musl": "^1.6.13",
+        "@swc/core-linux-arm64-musl": "^1.7.10",
         "@swc/core-linux-x64-gnu": "^1.6.13",
         "@swc/core-linux-x64-musl": "^1.6.13",
         "@swc/core-win32-arm64-msvc": "^1.6.13",
