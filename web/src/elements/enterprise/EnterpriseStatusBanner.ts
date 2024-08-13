@@ -2,7 +2,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html, nothing } from "lit";
+import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -14,7 +14,7 @@ export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
     @property()
     interface: "admin" | "user" | "flow" | "" = "";
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBanner];
     }
 
@@ -37,6 +37,7 @@ export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
                     return nothing;
                 }
                 break;
+            case LicenseSummaryStatusEnum.Unlicensed:
             case LicenseSummaryStatusEnum.Valid:
                 return nothing;
             case LicenseSummaryStatusEnum.ReadOnly:
@@ -78,7 +79,7 @@ export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
         </div>`;
     }
 
-    renderFlagBanner(): TemplateResult {
+    renderFlagBanner() {
         return html`
             ${this.licenseSummary.licenseFlags.includes(LicenseFlagsEnum.Trial)
                 ? html`<div class="pf-c-banner pf-m-sticky pf-m-gold">
@@ -93,8 +94,10 @@ export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
         `;
     }
 
-    render(): TemplateResult {
-        return html`${this.renderFlagBanner()}${this.renderStatusBanner()}`;
+    render() {
+        return this.licenseSummary
+            ? html`${this.renderFlagBanner()}${this.renderStatusBanner()}`
+            : nothing;
     }
 }
 
