@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build web
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:22 as web-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:22 AS web-builder
 
 ENV NODE_ENV=production
 WORKDIR /static
@@ -49,14 +49,15 @@ RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
 # Stage 3: Run
 FROM ghcr.io/goauthentik/fips-debian:bookworm-slim-fips
 
+ARG VERSION
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
 
-LABEL org.opencontainers.image.url https://goauthentik.io
-LABEL org.opencontainers.image.description goauthentik.io Proxy outpost image, see https://goauthentik.io for more info.
-LABEL org.opencontainers.image.source https://github.com/goauthentik/authentik
-LABEL org.opencontainers.image.version ${VERSION}
-LABEL org.opencontainers.image.revision ${GIT_BUILD_HASH}
+LABEL org.opencontainers.image.url=https://goauthentik.io
+LABEL org.opencontainers.image.description="goauthentik.io Proxy outpost image, see https://goauthentik.io for more info."
+LABEL org.opencontainers.image.source=https://github.com/goauthentik/authentik
+LABEL org.opencontainers.image.version=${VERSION}
+LABEL org.opencontainers.image.revision=${GIT_BUILD_HASH}
 
 COPY --from=builder /go/proxy /
 COPY --from=web-builder /static/robots.txt /web/robots.txt

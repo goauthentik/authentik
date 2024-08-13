@@ -32,10 +32,10 @@ export const staticSettingOptions: RadioOption<string | undefined>[] = [
     },
 ];
 
-@customElement("ak-property-mapping-rac-form")
-export class PropertyMappingRACForm extends ModelForm<RACPropertyMapping, string> {
+@customElement("ak-property-mapping-provider-rac-form")
+export class PropertyMappingProviderRACForm extends ModelForm<RACPropertyMapping, string> {
     loadInstance(pk: string): Promise<RACPropertyMapping> {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsRacRetrieve({
+        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderRacRetrieve({
             pmUuid: pk,
         });
     }
@@ -50,12 +50,12 @@ export class PropertyMappingRACForm extends ModelForm<RACPropertyMapping, string
 
     async send(data: RACPropertyMapping): Promise<RACPropertyMapping> {
         if (this.instance) {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsRacUpdate({
+            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderRacUpdate({
                 pmUuid: this.instance.pk,
                 rACPropertyMappingRequest: data,
             });
         } else {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsRacCreate({
+            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderRacCreate({
                 rACPropertyMappingRequest: data,
             });
         }
@@ -177,6 +177,6 @@ export class PropertyMappingRACForm extends ModelForm<RACPropertyMapping, string
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-property-mapping-rac-form": PropertyMappingRACForm;
+        "ak-property-mapping-provider-rac-form": PropertyMappingProviderRACForm;
     }
 }

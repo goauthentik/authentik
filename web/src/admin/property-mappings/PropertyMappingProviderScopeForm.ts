@@ -10,22 +10,22 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import { PropertymappingsApi, ScopeMapping } from "@goauthentik/api";
 
-@customElement("ak-property-mapping-scope-form")
-export class PropertyMappingScopeForm extends BasePropertyMappingForm<ScopeMapping> {
+@customElement("ak-property-mapping-provider-scope-form")
+export class PropertyMappingProviderScopeForm extends BasePropertyMappingForm<ScopeMapping> {
     loadInstance(pk: string): Promise<ScopeMapping> {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsScopeRetrieve({
+        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderScopeRetrieve({
             pmUuid: pk,
         });
     }
 
     async send(data: ScopeMapping): Promise<ScopeMapping> {
         if (this.instance) {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsScopeUpdate({
+            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderScopeUpdate({
                 pmUuid: this.instance.pk,
                 scopeMappingRequest: data,
             });
         } else {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsScopeCreate({
+            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderScopeCreate({
                 scopeMappingRequest: data,
             });
         }
@@ -64,6 +64,6 @@ export class PropertyMappingScopeForm extends BasePropertyMappingForm<ScopeMappi
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-property-mapping-scope-form": PropertyMappingScopeForm;
+        "ak-property-mapping-provider-scope-form": PropertyMappingProviderScopeForm;
     }
 }

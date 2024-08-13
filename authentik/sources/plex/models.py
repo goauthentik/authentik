@@ -123,7 +123,7 @@ class PlexSourcePropertyMapping(PropertyMapping):
 
     @property
     def component(self) -> str:
-        return "ak-property-mapping-plex-source-form"
+        return "ak-property-mapping-source-plex-form"
 
     @property
     def serializer(self) -> type[Serializer]:

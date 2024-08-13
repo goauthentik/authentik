@@ -70,7 +70,7 @@ class RadiusProviderPropertyMapping(PropertyMapping):
 
     @property
     def component(self) -> str:
-        return "ak-property-mapping-radius-form"
+        return "ak-property-mapping-provider-radius-form"
 
     @property
     def serializer(self) -> type[Serializer]:
@@ -81,8 +81,8 @@ class RadiusProviderPropertyMapping(PropertyMapping):
         return RadiusProviderPropertyMappingSerializer
 
     def __str__(self):
-        return f"Radius Property Mapping {self.name}"
+        return f"Radius Provider Property Mapping {self.name}"
 
     class Meta:
-        verbose_name = _("Radius Property Mapping")
-        verbose_name_plural = _("Radius Property Mappings")
+        verbose_name = _("Radius Provider Property Mapping")
+        verbose_name_plural = _("Radius Provider Property Mappings")

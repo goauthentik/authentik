@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-16 00:08+0000\n"
+"POT-Creation-Date: 2024-08-12 13:45+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Anton, 2024\n"
 "Language-Team: Russian (https://app.transifex.com/authentik/teams/119923/ru/)\n"
@@ -88,6 +88,14 @@ msgid ""
 msgstr ""
 "Домен, активирующий данный бренд. Может быть суперсетом, т.е. `a.b` для "
 "`aa.b` и `ba.b`."
+
+#: authentik/brands/models.py
+msgid ""
+"When set, external users will be redirected to this application after "
+"authenticating."
+msgstr ""
+"Если этот параметр установлен, внешние пользователи будут перенаправляться в"
+" это приложение после аутентификации."
 
 #: authentik/brands/models.py
 msgid "Web Certificate used by the authentik Core webserver."
@@ -259,6 +267,20 @@ msgstr ""
 "пользователя уже существует."
 
 #: authentik/core/models.py
+msgid ""
+"Link to a group with identical name. Can have security implications when a "
+"group name is used with another source."
+msgstr ""
+"Связать с группой с идентичным именем. Может иметь последствия для "
+"безопасности, если имя группы используется в другом источнике."
+
+#: authentik/core/models.py
+msgid "Use the group name, but deny enrollment when the name already exists."
+msgstr ""
+"Использовать имя группы, но отказывать в регистрации, если имя уже "
+"существует."
+
+#: authentik/core/models.py
 msgid "Source's display Name."
 msgstr "Отображаемое имя источника."
 
@@ -281,6 +303,14 @@ msgid ""
 msgstr ""
 "Как источник определяет, следует ли аутентифицировать существующего "
 "пользователя или зачислить нового."
+
+#: authentik/core/models.py
+msgid ""
+"How the source determines if an existing group should be used or a new group"
+" created."
+msgstr ""
+"Как источник определяет, следует ли использовать существующую группу или "
+"создать новую."
 
 #: authentik/core/models.py
 msgid "Token"
@@ -393,6 +423,7 @@ msgid "Go home"
 msgstr "Домой"
 
 #: authentik/core/templates/login/base_full.html
+#: authentik/flows/templates/if/flow-sfe.html
 msgid "Powered by authentik"
 msgstr "Основано на authentik"
 
@@ -402,6 +433,10 @@ msgstr "Основано на authentik"
 #, python-format
 msgid "You're about to sign into %(application)s."
 msgstr "Вы собираетесь войти в %(application)s."
+
+#: authentik/core/views/interface.py
+msgid "Interface can only be accessed by internal users."
+msgstr "Доступ к интерфейсу могут иметь только внутренние пользователи."
 
 #: authentik/crypto/api.py
 msgid "Subject-alt name"
@@ -481,7 +516,7 @@ msgstr "Группы провайдера Google Workspace"
 
 #: authentik/enterprise/providers/google_workspace/models.py
 #: authentik/enterprise/providers/microsoft_entra/models.py
-#: authentik/providers/scim/models.py authentik/sources/ldap/models.py
+#: authentik/providers/scim/models.py
 msgid "Property mappings used for group creation/updating."
 msgstr "Сопоставления свойств, используемые для создания/обновления групп."
 
@@ -561,12 +596,12 @@ msgid "RAC Endpoints"
 msgstr "Точки подключения RAC"
 
 #: authentik/enterprise/providers/rac/models.py
-msgid "RAC Property Mapping"
-msgstr "Сопоставление свойств RAC"
+msgid "RAC Provider Property Mapping"
+msgstr "Сопоставление свойства RAC провайдера"
 
 #: authentik/enterprise/providers/rac/models.py
-msgid "RAC Property Mappings"
-msgstr "Сопоставления свойств RAC"
+msgid "RAC Provider Property Mappings"
+msgstr "Сопоставление свойств RAC провайдера"
 
 #: authentik/enterprise/providers/rac/models.py
 msgid "RAC Connection token"
@@ -1106,6 +1141,30 @@ msgstr "Политика выражения"
 #: authentik/policies/expression/models.py
 msgid "Expression Policies"
 msgstr "Политики выражения"
+
+#: authentik/policies/geoip/models.py
+msgid "GeoIP: client IP not found in ASN database."
+msgstr "GeoIP: IP-адрес клиента не найден в базе данных ASN."
+
+#: authentik/policies/geoip/models.py
+msgid "Client IP is not part of an allowed autonomous system."
+msgstr "IP-адрес клиента не входит в разрешенную автономную систему."
+
+#: authentik/policies/geoip/models.py
+msgid "GeoIP: client IP address not found in City database."
+msgstr "GeoIP: IP-адрес клиента не найден в базе данных городов."
+
+#: authentik/policies/geoip/models.py
+msgid "Client IP is not in an allowed country."
+msgstr "IP-адрес клиента находится не в разрешенной стране."
+
+#: authentik/policies/geoip/models.py
+msgid "GeoIP Policy"
+msgstr "Политика GeoIP"
+
+#: authentik/policies/geoip/models.py
+msgid "GeoIP Policies"
+msgstr "Политики GeoIP"
 
 #: authentik/policies/models.py
 msgid "all, all policies must pass"
@@ -1708,6 +1767,14 @@ msgstr "Radius Провайдер"
 msgid "Radius Providers"
 msgstr "Radius Провайдеры"
 
+#: authentik/providers/radius/models.py
+msgid "Radius Provider Property Mapping"
+msgstr "Сопоставление свойства Radius провайдера"
+
+#: authentik/providers/radius/models.py
+msgid "Radius Provider Property Mappings"
+msgstr "Сопоставление свойств Radius провайдера"
+
 #: authentik/providers/saml/api/providers.py
 msgid "Invalid XML Syntax"
 msgstr "Некорректный синтаксис XML"
@@ -1868,12 +1935,12 @@ msgid "SAML Providers"
 msgstr "SAML Провайдеры"
 
 #: authentik/providers/saml/models.py
-msgid "SAML Property Mapping"
-msgstr "Сопоставление свойств SAML"
+msgid "SAML Provider Property Mapping"
+msgstr "Сопоставление свойства SAML провайдера"
 
 #: authentik/providers/saml/models.py
-msgid "SAML Property Mappings"
-msgstr "Сопоставления свойств SAML"
+msgid "SAML Provider Property Mappings"
+msgstr "Сопоставление свойств SAML провайдера"
 
 #: authentik/providers/saml/models.py
 msgid "SAML Provider from Metadata"
@@ -1900,12 +1967,12 @@ msgid "SCIM Providers"
 msgstr "SCIM Провайдеры"
 
 #: authentik/providers/scim/models.py
-msgid "SCIM Mapping"
-msgstr "Сопоставление SCIM"
+msgid "SCIM Provider Mapping"
+msgstr "Сопоставление свойства SCIM"
 
 #: authentik/providers/scim/models.py
-msgid "SCIM Mappings"
-msgstr "Сопоставления SCIM"
+msgid "SCIM Provider Mappings"
+msgstr "Сопоставления свойств SCIM"
 
 #: authentik/rbac/models.py
 msgid "Role"
@@ -2042,12 +2109,12 @@ msgid "LDAP Sources"
 msgstr "Источники LDAP"
 
 #: authentik/sources/ldap/models.py
-msgid "LDAP Property Mapping"
-msgstr "Сопоставление свойств LDAP"
+msgid "LDAP Source Property Mapping"
+msgstr "Сопоставление свойства LDAP источника"
 
 #: authentik/sources/ldap/models.py
-msgid "LDAP Property Mappings"
-msgstr "Сопоставления свойств LDAP"
+msgid "LDAP Source Property Mappings"
+msgstr "Сопоставление свойств LDAP источника"
 
 #: authentik/sources/ldap/signals.py
 msgid "Password does not match Active Directory Complexity."
@@ -2220,12 +2287,28 @@ msgid "Reddit OAuth Sources"
 msgstr "Источники Reddit OAuth"
 
 #: authentik/sources/oauth/models.py
+msgid "OAuth Source Property Mapping"
+msgstr "Сопоставление свойства OAuth источника"
+
+#: authentik/sources/oauth/models.py
+msgid "OAuth Source Property Mappings"
+msgstr "Сопоставление свойств OAuth источника"
+
+#: authentik/sources/oauth/models.py
 msgid "User OAuth Source Connection"
 msgstr "Пользовательское подключение к источнику OAuth"
 
 #: authentik/sources/oauth/models.py
 msgid "User OAuth Source Connections"
 msgstr "Пользовательские подключения к источнику OAuth"
+
+#: authentik/sources/oauth/models.py
+msgid "Group OAuth Source Connection"
+msgstr "Групповое подключение к источнику OAuth"
+
+#: authentik/sources/oauth/models.py
+msgid "Group OAuth Source Connections"
+msgstr "Групповые подключения к источнику OAuth"
 
 #: authentik/sources/oauth/views/callback.py
 #, python-brace-format
@@ -2262,12 +2345,28 @@ msgid "Plex Sources"
 msgstr "Источники Plex"
 
 #: authentik/sources/plex/models.py
+msgid "Plex Source Property Mapping"
+msgstr "Сопоставление свойства Plex источника"
+
+#: authentik/sources/plex/models.py
+msgid "Plex Source Property Mappings"
+msgstr "Сопоставление свойств Plex источника"
+
+#: authentik/sources/plex/models.py
 msgid "User Plex Source Connection"
 msgstr "Пользовательское подключение к источнику Plex"
 
 #: authentik/sources/plex/models.py
 msgid "User Plex Source Connections"
 msgstr "Пользовательские подключения к источнику Plex"
+
+#: authentik/sources/plex/models.py
+msgid "Group Plex Source Connection"
+msgstr "Групповое подключение к источнику Plex"
+
+#: authentik/sources/plex/models.py
+msgid "Group Plex Source Connections"
+msgstr "Групповые подключения к источнику Plex"
 
 #: authentik/sources/saml/models.py
 msgid "Redirect Binding"
@@ -2352,12 +2451,35 @@ msgstr ""
 "провайдеру идентификационных данных."
 
 #: authentik/sources/saml/models.py
+msgid ""
+"When selected, incoming assertions are encrypted by the IdP using the public"
+" key of the encryption keypair. The assertion is decrypted by the SP using "
+"the the private key."
+msgstr ""
+"При выборе этого варианта, входящие утверждения шифруются поставщиком "
+"идентификации (IdP) с использованием открытого ключа из пары ключей "
+"шифрования. Утверждение расшифровывается поставщиком услуг (SP) с "
+"использованием закрытого ключа."
+
+#: authentik/sources/saml/models.py
+msgid "Encryption Keypair"
+msgstr "Пара ключей шифрования"
+
+#: authentik/sources/saml/models.py
 msgid "SAML Source"
 msgstr "Источник SAML"
 
 #: authentik/sources/saml/models.py
 msgid "SAML Sources"
 msgstr "Источники SAML"
+
+#: authentik/sources/saml/models.py
+msgid "SAML Source Property Mapping"
+msgstr "Сопоставление свойства SAML источника"
+
+#: authentik/sources/saml/models.py
+msgid "SAML Source Property Mappings"
+msgstr "Сопоставление свойств SAML источника"
 
 #: authentik/sources/saml/models.py
 msgid "User SAML Source Connection"
@@ -2367,6 +2489,14 @@ msgstr "Пользовательское подключение к источн�
 msgid "User SAML Source Connections"
 msgstr "Пользовательские подключения к источнику SAML"
 
+#: authentik/sources/saml/models.py
+msgid "Group SAML Source Connection"
+msgstr "Групповое подключение к источнику SAML"
+
+#: authentik/sources/saml/models.py
+msgid "Group SAML Source Connections"
+msgstr "Групповые подключения к источнику SAML"
+
 #: authentik/sources/scim/models.py
 msgid "SCIM Source"
 msgstr "Источник SCIM"
@@ -2374,6 +2504,14 @@ msgstr "Источник SCIM"
 #: authentik/sources/scim/models.py
 msgid "SCIM Sources"
 msgstr "Источники SCIM"
+
+#: authentik/sources/scim/models.py
+msgid "SCIM Source Property Mapping"
+msgstr "Сопоставление свойства SCIM источника"
+
+#: authentik/sources/scim/models.py
+msgid "SCIM Source Property Mappings"
+msgstr "Сопоставление свойств SCIM источника"
 
 #: authentik/stages/authenticator_duo/models.py
 msgid "Duo Authenticator Setup Stage"
@@ -3007,6 +3145,14 @@ msgid ""
 msgstr ""
 "Количество попыток пользователя до отмены потока. Чтобы заблокировать "
 "пользователя, используйте политику репутации и этап user_write."
+
+#: authentik/stages/password/models.py
+msgid ""
+"When enabled, provides a 'show password' button with the password input "
+"field."
+msgstr ""
+"Если эта функция включена, в поле ввода пароля отображается кнопка "
+"\"показать пароль\"."
 
 #: authentik/stages/password/models.py
 msgid "Password Stage"

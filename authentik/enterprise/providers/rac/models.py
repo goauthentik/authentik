@@ -125,7 +125,7 @@ class RACPropertyMapping(PropertyMapping):
 
     @property
     def component(self) -> str:
-        return "ak-property-mapping-rac-form"
+        return "ak-property-mapping-provider-rac-form"
 
     @property
     def serializer(self) -> type[Serializer]:
@@ -136,8 +136,8 @@ class RACPropertyMapping(PropertyMapping):
         return RACPropertyMappingSerializer
 
     class Meta:
-        verbose_name = _("RAC Property Mapping")
-        verbose_name_plural = _("RAC Property Mappings")
+        verbose_name = _("RAC Provider Property Mapping")
+        verbose_name_plural = _("RAC Provider Property Mappings")
 
 
 class ConnectionToken(ExpiringModel):

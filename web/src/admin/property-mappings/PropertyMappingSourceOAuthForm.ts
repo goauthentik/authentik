@@ -7,8 +7,8 @@ import { customElement } from "lit/decorators.js";
 
 import { OAuthSourcePropertyMapping, PropertymappingsApi } from "@goauthentik/api";
 
-@customElement("ak-property-mapping-oauth-source-form")
-export class PropertyMappingOAuthSourceForm extends BasePropertyMappingForm<OAuthSourcePropertyMapping> {
+@customElement("ak-property-mapping-source-oauth-form")
+export class PropertyMappingSourceOAuthForm extends BasePropertyMappingForm<OAuthSourcePropertyMapping> {
     docLink(): string {
         return "/docs/sources/property-mappings/expression?utm_source=authentik";
     }
@@ -35,6 +35,6 @@ export class PropertyMappingOAuthSourceForm extends BasePropertyMappingForm<OAut
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-property-mapping-oauth-source-form": PropertyMappingOAuthSourceForm;
+        "ak-property-mapping-source-oauth-form": PropertyMappingSourceOAuthForm;
     }
 }

@@ -4,7 +4,9 @@ import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types.js";
 import { PropertymappingsApi } from "@goauthentik/api";
 
 export async function racPropertyMappingsProvider(page = 1, search = "") {
-    const propertyMappings = await new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsRacList({
+    const propertyMappings = await new PropertymappingsApi(
+        DEFAULT_CONFIG,
+    ).propertymappingsProviderRacList({
         ordering: "name",
         pageSize: 20,
         search: search.trim(),

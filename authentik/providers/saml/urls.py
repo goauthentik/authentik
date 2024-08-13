@@ -44,6 +44,6 @@ urlpatterns = [
 ]
 
 api_urlpatterns = [
-    ("propertymappings/saml", SAMLPropertyMappingViewSet),
+    ("propertymappings/provider/saml", SAMLPropertyMappingViewSet),
     ("providers/saml", SAMLProviderViewSet),
 ]
