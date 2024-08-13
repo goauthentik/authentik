@@ -492,6 +492,17 @@ export class FlowExecutor extends Interface implements StageHost {
                                             ${this.renderChallengeWrapper()}
                                         </div>
                                         <footer class="pf-c-login__footer">
+                                            <div style="padding: 1rem; text-align: center;">
+                                                <span>By logging in or signing up, you agree to abide by our policies, including our
+                                                <a href="https://scribesecurity.com/wp-content/uploads/2022/05/terms_of_use.pdf" target="_blank">
+                                                    Terms of Use
+                                                </a>
+                                                    and
+                                                <a href="https://scribesecurity.com/wp-content/uploads/2022/05/privacy_policy.pdf" target="_blank">
+                                                    Privacy Policy
+                                                </a>
+                                                </span>
+                                            </div>
                                             <ul class="pf-c-list pf-m-inline">
                                                 ${this.brand?.uiFooterLinks?.map((link) => {
                                                     return html`<li>

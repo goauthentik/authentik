@@ -107,14 +107,7 @@
 
 a[href^="https://unsplash.com/@theforestbirds"] {display:none !important}
 a[href^="https://goauthentik.io?utm_source=authentik&utm_medium=flow"] {display:none !important;}
-.pf-c-login__footer:before {
-    content: "By logging in or signing up, you agree to abide by our policies, including our Terms of Use and Privacy Policy";
-    display: block;
-    padding: 30px;
-    font-size: small;
-    text-align: center;
-    color: grey;
-}
+
 .pf-c-drawer__content, .pf-c-drawer__panel, .pf-c-drawer__panel-main {
     overflow: visible !important;
 }
@@ -141,6 +134,6 @@ a[href^="https://goauthentik.io?utm_source=authentik&utm_medium=flow"] {display:
     padding-right: 0;
 }
 .pf-c-login__footer ul.pf-c-list.pf-m-inline{
-    padding-left: 1rem;
+    padding-symotion-sleft: 1rem;
     padding-right: 1rem;
 }
