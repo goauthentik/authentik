@@ -41,6 +41,9 @@ export class ModalButton extends AKElement {
     size: PFSize = PFSize.Large;
 
     @property({ type: Boolean })
+    fullHeight = false;
+
+    @property({ type: Boolean })
     open = false;
 
     @property({ type: Boolean })
@@ -68,6 +71,9 @@ export class ModalButton extends AKElement {
                 }
                 .pf-c-modal-box.pf-m-xl {
                     --pf-c-modal-box--Width: calc(1.5 * var(--pf-c-modal-box--m-lg--lg--MaxWidth));
+                }
+                :host([fullHeight]) .pf-c-modal-box {
+                    height: 100%;
                 }
             `,
         ];

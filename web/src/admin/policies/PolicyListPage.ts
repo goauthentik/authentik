@@ -75,6 +75,7 @@ export class PolicyListPage extends TablePage<Policy> {
                     size=${item.component === "ak-policy-expression-form"
                         ? PFSize.XLarge
                         : PFSize.Large}
+                    ?fullHeight=${item.component === "ak-policy-expression-form"}
                 >
                     <span slot="submit"> ${msg("Update")} </span>
                     <span slot="header"> ${msg(str`Update ${item.verboseName}`)} </span>
