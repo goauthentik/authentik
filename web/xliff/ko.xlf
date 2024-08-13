@@ -5981,11 +5981,6 @@ Bindings to groups/users are checked against the user of the event.</source>
         <target>사용 불가</target>
 
       </trans-unit>
-      <trans-unit id="s02b632a9ac24a824">
-        <source>Last seen: <x id="0" equiv-text="${this.outpostHealth.lastSeen?.toLocaleTimeString()}"/></source>
-        <target>마지막 확인: <x id="0" equiv-text="${this.outpostHealth.lastSeen?.toLocaleTimeString()}"/></target>
-
-      </trans-unit>
       <trans-unit id="sa43153d53ae65063">
         <source>Unknown type</source>
         <target>알 수 없는 유형</target>
@@ -8667,6 +8662,15 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s452f791e0ff6a13e">
   <source>Hide password</source>
+</trans-unit>
+<trans-unit id="s08272eeeddfd244e">
+  <source>An outpost is on an incorrect version!</source>
+</trans-unit>
+<trans-unit id="sa30c12014e955946">
+  <source>Russian</source>
+</trans-unit>
+<trans-unit id="s354405ae02cb262d">
+  <source>Last seen: <x id="0" equiv-text="${getRelativeTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</source>
 </trans-unit>
     </body>
   </file>
