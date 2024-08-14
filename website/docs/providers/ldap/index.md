@@ -104,7 +104,7 @@ This mode uses the same logic as direct bind, however the result is cached for t
 
 ## Searching & Search Modes
 
-Any user that is authorized to access the LDAP Provider's application can execute search the LDAP directory. Without explicit permissions, users search request will return info about themselves, including user info, group info and group membership.
+Any user that is authorized to access the LDAP provider's application can execute search the LDAP directory. Without explicit permissions to do broader searches, a user's search request will return information about themselves, including user info, group info, and group membership.
 
 [Users](../../user-group-role/user/index.mdx) and [Roles](../../user-group-role/roles/index.mdx) can be assigned the permission "Search full LDAP directory" to allow them to search the full LDAP directory and retrieve information about all users in the authentik instance.
 
