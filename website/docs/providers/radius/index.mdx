@@ -4,17 +4,17 @@ title: RADIUS Provider
 
 import { Check, X, AlertTriangle } from "react-feather";
 
-You can configure a Radius Provider for applications that don't support any other protocols or require Radius.
+You can configure a Radius provider for applications that don't support any other protocols or that require Radius.
 
 :::info
-This provider requires the deployment of the [RADIUS Outpost](../../outposts/)
+This provider requires the deployment of the [RADIUS outpost](../../outposts/)
 :::
 
 Currently, only authentication requests are supported.
 
 ### Authentication flow
 
-Authentication requests against the Radius Server use a flow in the background. This allows you to use the same policies and flows as you do for web-based logins.
+Authentication requests against the Radius Server use a flow in the background. This allows you to use the same flows, stages, and policies as you do for web-based logins.
 
 The following stages are supported:
 
@@ -22,11 +22,11 @@ The following stages are supported:
 -   [Password](../../flow/stages/password/index.md)
 -   [Authenticator validation](../../flow/stages/authenticator_validate/index.md)
 
-    Note: Authenticator validation currently only supports DUO, TOTP and static authenticators.
+    Note: Authenticator validation currently only supports DUO, TOTP, and static authenticators.
 
-    For code-based authenticators, the code must be given as part of the bind password, separated by a semicolon. For example for the password `example-password` and the code `123456`, the input must be `example-password;123456`.
+    For code-based authenticators, the code must be given as part of the bind password, separated by a semicolon. For example for the password `example-password` and the MFA token `123456`, the input must be `example-password;123456`.
 
-    SMS-based authenticators are not supported as they require a code to be sent from authentik, which is not possible during the bind.
+    SMS-based authenticators are not supported because they require a code to be sent from authentik, which is not possible during the bind.
 
 -   [User Logout](../../flow/stages/user_logout.md)
 -   [User Login](../../flow/stages/user_login/index.md)
@@ -34,7 +34,7 @@ The following stages are supported:
 
 ### RADIUS attributes
 
-Starting with authentik 2024.8, RADIUS provider property mappings can be created, which make it possible to add custom attributes to the RADIUS response packets.
+Starting with authentik 2024.8, you can create RADIUS provider property mappings, which make it possible to add custom attributes to the RADIUS response packets.
 
 For example, to add the Cisco AV-Pair attribute, this snippet can be used:
 
@@ -50,7 +50,7 @@ packet["Cisco-AV-Pair"] = "shell:priv-lvl=15"
 return packet
 ```
 
-After creation, the RADIUS property mapping needs to be selected in the RADIUS provider.
+After creation, make sure to select the RADIUS property mapping in the RADIUS provider.
 
 ### Limitations
 
