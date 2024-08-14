@@ -49,14 +49,10 @@ class VersionSerializer(PassiveSerializer):
         """Check if we're running the latest version"""
         return parse(self.get_version_current(instance)) < parse(self.get_version_latest(instance))
 
+
     def get_outpost_outdated(self, _) -> bool:
         """Check if any outpost is outdated/has a version mismatch"""
-        any_outdated = False
-        for outpost in Outpost.objects.all():
-            for state in outpost.state:
-                if state.version_outdated:
-                    any_outdated = True
-        return any_outdated
+        return Outpost.objects.filter(state__version_outdated=True).exists()
 
 
 class VersionView(APIView):
