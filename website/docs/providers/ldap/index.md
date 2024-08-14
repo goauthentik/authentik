@@ -106,7 +106,7 @@ This mode uses the same logic as direct bind, however the result is cached for t
 
 Any user that is authorized to access the LDAP provider's application can execute search the LDAP directory. Without explicit permissions to do broader searches, a user's search request will return information about themselves, including user info, group info, and group membership.
 
-[Users](../../user-group-role/user/index.mdx) and [Roles](../../user-group-role/roles/index.mdx) can be assigned the permission "Search full LDAP directory" to allow them to search the full LDAP directory and retrieve information about all users in the authentik instance.
+[Users](../../user-group-role/user/index.mdx) and [roles](../../user-group-role/roles/index.mdx) can be assigned the permission "Search full LDAP directory" to allow them to search the full LDAP directory and retrieve information about all users in the authentik instance.
 
 :::info
 Up to authentik version 2024.8 this was managed using the "Search group" attribute in the LDAP Provider, where users could be added to a group to grant them this permission. With authentik 2024.8 this is automatically migrated to the "Search full LDAP directory" permission, which can be assigned more flexibly.
