@@ -154,6 +154,7 @@ class RadiusOutpostConfigViewSet(ListModelMixin, GenericViewSet):
         responses={
             200: RadiusCheckAccessSerializer(),
         },
+        operation_id="outposts_radius_access_check",
     )
     @action(detail=True)
     def check_access(self, request: Request, pk) -> Response:
