@@ -399,7 +399,7 @@
   <source>General system status</source>
 </trans-unit>
 <trans-unit id="s6dfd15978586d05f">
-  <source>Welcome, <x id="0" equiv-text="${name}"/>.</source>
+  <source>Welcome, <x id="0" equiv-text="${name || &quot;&quot;}"/>.</source>
 </trans-unit>
 <trans-unit id="sc381422c585b867f">
   <source>Quick actions</source>

@@ -493,7 +493,7 @@
         <target>General system status</target>
       </trans-unit>
       <trans-unit id="s6dfd15978586d05f">
-        <source>Welcome, <x id="0" equiv-text="${name}"/>.</source>
+        <source>Welcome, <x id="0" equiv-text="${name || &quot;&quot;}"/>.</source>
         <target>Welcome,
         <x id="0" equiv-text="${name}"/>.</target>
       </trans-unit>

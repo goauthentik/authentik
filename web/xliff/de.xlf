@@ -485,7 +485,7 @@
         <target>Allgemeiner Systemzustand</target>
       </trans-unit>
       <trans-unit id="s6dfd15978586d05f">
-        <source>Welcome, <x id="0" equiv-text="${name}"/>.</source>
+        <source>Welcome, <x id="0" equiv-text="${name || &quot;&quot;}"/>.</source>
         <target>Willkommen,
         <x id="0" equiv-text="${name}"/>!</target>
       </trans-unit>
