@@ -45,11 +45,6 @@ body {
 .pf-c-card.pf-m-non-selectable-raised {
     --pf-c-card--BackgroundColor: var(--ak-dark-background-lighter);
 }
-.pf-c-card.pf-m-hoverable-raised::before,
-.pf-c-card.pf-m-selectable-raised::before,
-.pf-c-card.pf-m-non-selectable-raised::before {
-    --pf-c-card--m-selectable-raised--before--BackgroundColor: var(--ak-dark-background-light);
-}
 .pf-c-card__title,
 .pf-c-card__body {
     color: var(--ak-dark-foreground);
