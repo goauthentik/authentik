@@ -26,7 +26,7 @@ def migrate_search_group(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
             provider.search_group.users.using(db_alias).all().values_list("pk", flat=True)
         ):
             # We need the correct user model instance to assign the permission
-            assign_perm("search_full_directory", User.objects.get(pk=user_pk), provider)
+            assign_perm("search_full_directory", User.objects.using(db_alias).get(pk=user_pk), provider)
 
 
 class Migration(migrations.Migration):
