@@ -384,7 +384,6 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Authentication flow")}
-                        ?required=${true}
                         name="authenticationFlow"
                     >
                         <ak-source-flow-search
@@ -399,7 +398,6 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Enrollment flow")}
-                        ?required=${true}
                         name="enrollmentFlow"
                     >
                         <ak-source-flow-search
