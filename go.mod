@@ -9,7 +9,6 @@ require (
 	github.com/go-http-utils/etag v0.0.0-20161124023236-513ea8f21eb1
 	github.com/go-ldap/ldap/v3 v3.4.8
 	github.com/go-openapi/runtime v0.28.0
-	github.com/go-openapi/strfmt v0.23.0
 	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/handlers v1.5.2
@@ -28,7 +27,7 @@ require (
 	github.com/spf13/cobra v1.8.1
 	github.com/stretchr/testify v1.9.0
 	github.com/wwt/guac v1.3.2
-	goauthentik.io/api/v3 v3.2024063.10
+	goauthentik.io/api/v3 v3.2024063.11
 	golang.org/x/exp v0.0.0-20230210204819-062eb4c674ab
 	golang.org/x/oauth2 v0.22.0
 	golang.org/x/sync v0.8.0
@@ -56,6 +55,7 @@ require (
 	github.com/go-openapi/jsonreference v0.21.0 // indirect
 	github.com/go-openapi/loads v0.22.0 // indirect
 	github.com/go-openapi/spec v0.21.0 // indirect
+	github.com/go-openapi/strfmt v0.23.0 // indirect
 	github.com/go-openapi/swag v0.23.0 // indirect
 	github.com/go-openapi/validate v0.24.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
