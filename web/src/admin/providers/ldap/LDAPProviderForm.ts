@@ -15,10 +15,7 @@ import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
-    CoreApi,
-    CoreGroupsListRequest,
     FlowsInstancesListDesignationEnum,
-    Group,
     LDAPAPIAccessMode,
     LDAPProvider,
     ProvidersApi,
