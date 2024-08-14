@@ -1,5 +1,5 @@
 ---
-title: Radius Provider
+title: RADIUS Provider
 ---
 
 import { Check, X, AlertTriangle } from "react-feather";
@@ -31,6 +31,26 @@ The following stages are supported:
 -   [User Logout](../../flow/stages/user_logout.md)
 -   [User Login](../../flow/stages/user_login/index.md)
 -   [Deny](../../flow/stages/deny.md)
+
+### RADIUS attributes
+
+Starting with authentik 2024.8, RADIUS provider property mappings can be created, which make it possible to add custom attributes to the RADIUS response packets.
+
+For example, to add the Cisco AV-Pair attribute, this snippet can be used:
+
+```python
+define_attribute(
+    vendor_code=9,
+    vendor_name="Cisco",
+    attribute_name="AV-Pair",
+    attribute_code=1,
+    attribute_type="string",
+)
+packet["Cisco-AV-Pair"] = "shell:priv-lvl=15"
+return packet
+```
+
+After creation, the RADIUS property mapping needs to be selected in the RADIUS provider.
 
 ### Limitations
 
