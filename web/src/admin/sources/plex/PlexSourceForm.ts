@@ -13,6 +13,8 @@ import {
     WithCapabilitiesConfig,
 } from "@goauthentik/elements/Interface/capabilitiesProvider";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
 import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
