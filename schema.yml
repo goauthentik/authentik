@@ -9641,6 +9641,44 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /outposts/ldap/{id}/check_access/:
+    get:
+      operationId: outposts_ldap_access_check
+      description: Check access to a single application by slug
+      parameters:
+      - in: query
+        name: app_slug
+        schema:
+          type: string
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this LDAP Provider.
+        required: true
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LDAPCheckAccess'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /outposts/proxy/:
     get:
       operationId: outposts_proxy_list
@@ -9755,7 +9793,7 @@ paths:
           description: ''
   /outposts/radius/{id}/check_access/:
     get:
-      operationId: outposts_radius_check_access_retrieve
+      operationId: outposts_radius_access_check
       description: Check access to a single application by slug
       parameters:
       - in: query
@@ -18340,15 +18378,6 @@ paths:
         required: false
         in: query
         description: A search term.
-        schema:
-          type: string
-      - in: query
-        name: search_group__group_uuid__iexact
-        schema:
-          type: string
-          format: uuid
-      - in: query
-        name: search_group__name__iexact
         schema:
           type: string
       - in: query
@@ -40705,6 +40734,16 @@ components:
       - direct
       - cached
       type: string
+    LDAPCheckAccess:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        has_search_permission:
+          type: boolean
+        access:
+          $ref: '#/components/schemas/PolicyTestResult'
+      required:
+      - access
     LDAPDebug:
       type: object
       properties:
@@ -40749,12 +40788,6 @@ components:
           type: string
           description: Prioritise backchannel slug over direct application slug
           readOnly: true
-        search_group:
-          type: string
-          format: uuid
-          nullable: true
-          description: Users in this group can do search queries. If not set, every
-            user can execute search queries.
         certificate:
           type: string
           format: uuid
@@ -40852,12 +40885,6 @@ components:
         base_dn:
           type: string
           description: DN under which objects are accessible.
-        search_group:
-          type: string
-          format: uuid
-          nullable: true
-          description: Users in this group can do search queries. If not set, every
-            user can execute search queries.
         certificate:
           type: string
           format: uuid
@@ -40934,12 +40961,6 @@ components:
           type: string
           minLength: 1
           description: DN under which objects are accessible.
-        search_group:
-          type: string
-          format: uuid
-          nullable: true
-          description: Users in this group can do search queries. If not set, every
-            user can execute search queries.
         certificate:
           type: string
           format: uuid
@@ -45706,12 +45727,6 @@ components:
           type: string
           minLength: 1
           description: DN under which objects are accessible.
-        search_group:
-          type: string
-          format: uuid
-          nullable: true
-          description: Users in this group can do search queries. If not set, every
-            user can execute search queries.
         certificate:
           type: string
           format: uuid
