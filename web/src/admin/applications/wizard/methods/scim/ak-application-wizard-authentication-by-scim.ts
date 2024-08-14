@@ -27,7 +27,7 @@ export class ApplicationWizardAuthenticationBySCIM extends BaseProviderPanel {
     constructor() {
         super();
         new PropertymappingsApi(DEFAULT_CONFIG)
-            .propertymappingsScimList({
+            .propertymappingsProviderScimList({
                 ordering: "managed",
             })
             .then((propertyMappings: PaginatedSCIMMappingList) => {

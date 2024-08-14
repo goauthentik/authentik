@@ -187,7 +187,7 @@ func (a *APIController) OnRefresh() error {
 func (a *APIController) getWebsocketPingArgs() map[string]interface{} {
 	args := map[string]interface{}{
 		"version":        constants.VERSION,
-		"buildHash":      constants.BUILD("tagged"),
+		"buildHash":      constants.BUILD(""),
 		"uuid":           a.instanceUUID.String(),
 		"golangVersion":  runtime.Version(),
 		"opensslEnabled": cryptobackend.OpensslEnabled,
@@ -207,7 +207,7 @@ func (a *APIController) StartBackgroundTasks() error {
 		"outpost_type": a.Server.Type(),
 		"uuid":         a.instanceUUID.String(),
 		"version":      constants.VERSION,
-		"build":        constants.BUILD("tagged"),
+		"build":        constants.BUILD(""),
 	}).Set(1)
 	go func() {
 		a.logger.Debug("Starting WS Handler...")

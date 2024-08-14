@@ -6,7 +6,7 @@ import { PropertymappingsApi, ScopeMapping } from "@goauthentik/api";
 export async function oauth2PropertyMappingsProvider(page = 1, search = "") {
     const propertyMappings = await new PropertymappingsApi(
         DEFAULT_CONFIG,
-    ).propertymappingsScopeList({
+    ).propertymappingsProviderScopeList({
         ordering: "scope_name",
         pageSize: 20,
         search: search.trim(),

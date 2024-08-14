@@ -31,6 +31,13 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
                 message: html`${msg(str`${value.versionLatest} is available!`)}`,
             });
         }
+        if (value.outpostOutdated) {
+            return Promise.resolve<AdminStatus>({
+                icon: "fa fa-exclamation-triangle pf-m-warning",
+                message: html`${msg("An outpost is on an incorrect version!")}
+                    <a href="#/outpost/outposts">${msg("Check outposts.")}</a>`,
+            });
+        }
         if (value.versionLatestValid) {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-check-circle pf-m-success",

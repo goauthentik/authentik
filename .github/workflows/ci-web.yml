@@ -28,15 +28,8 @@ jobs:
         include:
           - command: tsc
             project: web
-            extra_setup: |
-              cd sfe/ && npm ci
           - command: lit-analyse
             project: web
-            extra_setup: |
-              # lit-analyse doesn't understand path rewrites, so make it
-              # belive it's an actual module
-              cd node_modules/@goauthentik
-              ln -s ../../src/ web
         exclude:
           - command: lint:lockfile
             project: tests/wdio

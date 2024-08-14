@@ -24,14 +24,14 @@ import {
 } from "@goauthentik/api";
 
 export async function scimPropertyMappingsProvider(page = 1, search = "") {
-    const propertyMappings = await new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsScimList(
-        {
-            ordering: "managed",
-            pageSize: 20,
-            search: search.trim(),
-            page,
-        },
-    );
+    const propertyMappings = await new PropertymappingsApi(
+        DEFAULT_CONFIG,
+    ).propertymappingsProviderScimList({
+        ordering: "managed",
+        pageSize: 20,
+        search: search.trim(),
+        page,
+    });
     return {
         pagination: propertyMappings.pagination,
         options: propertyMappings.results.map((m) => [m.pk, m.name, m.name, m]),

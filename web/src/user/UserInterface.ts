@@ -117,7 +117,6 @@ const customStyles = css`
 
 @customElement("ak-interface-user-presentation")
 // @ts-ignore
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 class UserInterfacePresentation extends AKElement {
     static get styles() {
         return [
@@ -169,7 +168,7 @@ class UserInterfacePresentation extends AKElement {
     }
 
     get isFullyConfigured() {
-        return !!(this.uiConfig && this.me && this.brand);
+        return Boolean(this.uiConfig && this.me && this.brand);
     }
 
     render() {
@@ -455,7 +454,7 @@ export class UserInterface extends EnterpriseAwareInterface {
     }
 
     get isFullyConfigured() {
-        return !!(this.uiConfig && this.me);
+        return Boolean(this.uiConfig && this.me);
     }
 
     render() {

@@ -5,19 +5,25 @@ import { customElement } from "@lit/reactive-element/decorators.js";
 import { html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
+import PFList from "@patternfly/patternfly/components/List/list.css";
+
 import { ProxyProvider } from "@goauthentik/api";
 
 import AkTypeProxyApplicationWizardPage from "./AuthenticationByProxyPage";
 
 @customElement("ak-application-wizard-authentication-for-forward-proxy-domain")
 export class AkForwardDomainProxyApplicationWizardPage extends AkTypeProxyApplicationWizardPage {
+    static get styles() {
+        return super.styles.concat(PFList);
+    }
+
     renderModeDescription() {
-        return html`<p class="pf-u-mb-xl">
+        return html`<p>
                 ${msg(
                     "Use this provider with nginx's auth_request or traefik's forwardAuth. Only a single provider is required per root domain. You can't do per-application authorization, but you don't have to create a provider for each application.",
                 )}
             </p>
-            <div class="pf-u-mb-xl">
+            <div>
                 ${msg("An example setup can look like this:")}
                 <ul class="pf-c-list">
                     <li>${msg("authentik running on auth.example.com")}</li>

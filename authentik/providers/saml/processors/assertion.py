@@ -18,7 +18,7 @@ from authentik.providers.saml.processors.authn_request_parser import AuthNReques
 from authentik.providers.saml.utils import get_random_id
 from authentik.providers.saml.utils.time import get_time_string
 from authentik.sources.ldap.auth import LDAP_DISTINGUISHED_NAME
-from authentik.sources.saml.exceptions import UnsupportedNameIDFormat
+from authentik.sources.saml.exceptions import InvalidSignature, UnsupportedNameIDFormat
 from authentik.sources.saml.processors.constants import (
     DIGEST_ALGORITHM_TRANSLATION_MAP,
     NS_MAP,
@@ -318,6 +318,9 @@ class AssertionProcessor:
                 xmlsec.constants.KeyDataFormatCertPem,
             )
             ctx.key = key
-            ctx.sign(signature_node)
+            try:
+                ctx.sign(signature_node)
+            except xmlsec.Error as exc:
+                raise InvalidSignature() from exc
 
         return etree.tostring(root_response).decode("utf-8")  # nosec

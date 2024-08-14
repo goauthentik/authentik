@@ -8,8 +8,11 @@ import { classMap } from "lit/directives/class-map.js";
 import PFLabel from "@patternfly/patternfly/components/Label/label.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-const statusNames = ["error", "warning", "info"] as const;
-type StatusName = (typeof statusNames)[number];
+// The 'const ... as const' construction will throw a compilation error if the const variable is
+// only ever used to generate the type information, so the `_` (ignore unused variable) prefix must
+// be used here.
+const _statusNames = ["error", "warning", "info"] as const;
+type StatusName = (typeof _statusNames)[number];
 
 const statusToDetails = new Map<StatusName, [string, string]>([
     ["error", ["pf-m-red", "fa-times"]],
