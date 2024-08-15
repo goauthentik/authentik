@@ -833,16 +833,6 @@
         <target>用於使用者認證的流程</target>
 
       </trans-unit>
-      <trans-unit id="sbc80eab557fbf782">
-        <source>Search group</source>
-        <target>搜尋群組</target>
-
-      </trans-unit>
-      <trans-unit id="s04b7f8d6aaef3756">
-        <source>Users in the selected group can do search queries. If no group is selected, no LDAP Searches are allowed.</source>
-        <target>選中的群組中的使用者可以搜尋查詢，如果未選擇任何群組，則無法執行 LDAP 搜尋。</target>
-
-      </trans-unit>
       <trans-unit id="se5973e7c8ba0fc71">
         <source>Bind mode</source>
         <target>附加模式</target>

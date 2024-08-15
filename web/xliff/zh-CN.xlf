@@ -776,9 +776,6 @@
 <trans-unit id="s319040353f479853">
   <source>Flow used for users to authenticate.</source>
 </trans-unit>
-<trans-unit id="sbc80eab557fbf782">
-  <source>Search group</source>
-</trans-unit>
 <trans-unit id="se5973e7c8ba0fc71">
   <source>Bind mode</source>
 </trans-unit>
@@ -1209,9 +1206,6 @@
 </trans-unit>
 <trans-unit id="s070fdfb03034ca9b">
   <source>One hint, 'New Application Wizard', is currently hidden</source>
-</trans-unit>
-<trans-unit id="s04b7f8d6aaef3756">
-  <source>Users in the selected group can do search queries. If no group is selected, no LDAP Searches are allowed.</source>
 </trans-unit>
 <trans-unit id="sb8dd788adf7b907b">
   <source>Proxy</source>

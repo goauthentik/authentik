@@ -841,16 +841,6 @@
         <target>사용자가 인증하는 데 사용되는 플로우입니다.</target>
 
       </trans-unit>
-      <trans-unit id="sbc80eab557fbf782">
-        <source>Search group</source>
-        <target>그룹 검색</target>
-
-      </trans-unit>
-      <trans-unit id="s04b7f8d6aaef3756">
-        <source>Users in the selected group can do search queries. If no group is selected, no LDAP Searches are allowed.</source>
-        <target>선택한 그룹의 사용자는 검색 쿼리를 수행할 수 있습니다. 그룹이 선택되지 않은 경우, LDAP 검색을 할 수 없습니다.</target>
-
-      </trans-unit>
       <trans-unit id="se5973e7c8ba0fc71">
         <source>Bind mode</source>
         <target>모드 바인드</target>

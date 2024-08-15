@@ -657,14 +657,6 @@
       <trans-unit id="s319040353f479853">
         <source>Flow used for users to authenticate.</source>
       </trans-unit>
-      <trans-unit id="sbc80eab557fbf782">
-        <source>Search group</source>
-        <target>搜索组</target>
-      </trans-unit>
-      <trans-unit id="s04b7f8d6aaef3756">
-        <source>Users in the selected group can do search queries. If no group is selected, no LDAP Searches are allowed.</source>
-        <target>所选组中的用户可以执行搜索查询。如果未选择任何组，则不允许 LDAP 搜索。</target>
-      </trans-unit>
       <trans-unit id="se5973e7c8ba0fc71">
         <source>Bind mode</source>
       </trans-unit>
