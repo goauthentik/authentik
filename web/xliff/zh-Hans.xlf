@@ -1,4 +1,4 @@
-<?xml version="1.0"?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<?xml version="1.0" ?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
   <file target-language="zh-Hans" source-language="en" original="lit-localize-inputs" datatype="plaintext">
     <body>
       <trans-unit id="s4caed5b7a7e5d89b">
@@ -596,9 +596,9 @@
         
       </trans-unit>
       <trans-unit id="saa0e2675da69651b">
-        <source>The URL "<x id="0" equiv-text="${this.url}"/>" was not found.</source>
-        <target>未找到 URL "
-        <x id="0" equiv-text="${this.url}"/>"。</target>
+        <source>The URL &quot;<x id="0" equiv-text="${this.url}"/>&quot; was not found.</source>
+        <target>未找到 URL &quot;
+        <x id="0" equiv-text="${this.url}"/>&quot;。</target>
         
       </trans-unit>
       <trans-unit id="s58cd9c2fe836d9c6">
@@ -1030,8 +1030,8 @@
         
       </trans-unit>
       <trans-unit id="sa8384c9c26731f83">
-        <source>To allow any redirect URI, set this value to ".*". Be aware of the possible security implications this can have.</source>
-        <target>要允许任何重定向 URI，请将此值设置为 ".*"。请注意这可能带来的安全影响。</target>
+        <source>To allow any redirect URI, set this value to &quot;.*&quot;. Be aware of the possible security implications this can have.</source>
+        <target>要允许任何重定向 URI，请将此值设置为 &quot;.*&quot;。请注意这可能带来的安全影响。</target>
         
       </trans-unit>
       <trans-unit id="s55787f4dfcdce52b">
@@ -1757,8 +1757,8 @@
         
       </trans-unit>
       <trans-unit id="sa90b7809586c35ce">
-        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".</source>
-        <target>输入完整 URL、相对路径，或者使用 'fa://fa-test' 来使用 Font Awesome 图标 "fa-test"。</target>
+        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon &quot;fa-test&quot;.</source>
+        <target>输入完整 URL、相对路径，或者使用 'fa://fa-test' 来使用 Font Awesome 图标 &quot;fa-test&quot;。</target>
         
       </trans-unit>
       <trans-unit id="s0410779cb47de312">
@@ -2926,8 +2926,8 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="s76768bebabb7d543">
-        <source>Field which contains members of a group. Note that if using the "memberUid" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'</source>
-        <target>包含组成员的字段。请注意，如果使用 "memberUid" 字段，则假定该值包含相对可分辨名称。例如，'memberUid=some-user' 而不是 'memberUid=cn=some-user,ou=groups,...'</target>
+        <source>Field which contains members of a group. Note that if using the &quot;memberUid&quot; field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'</source>
+        <target>包含组成员的字段。请注意，如果使用 &quot;memberUid&quot; 字段，则假定该值包含相对可分辨名称。例如，'memberUid=some-user' 而不是 'memberUid=cn=some-user,ou=groups,...'</target>
         
       </trans-unit>
       <trans-unit id="s026555347e589f0e">
@@ -3673,8 +3673,8 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="s7b1fba26d245cb1c">
-        <source>When using an external logging solution for archiving, this can be set to "minutes=5".</source>
-        <target>使用外部日志记录解决方案进行存档时，可以将其设置为 "minutes=5"。</target>
+        <source>When using an external logging solution for archiving, this can be set to &quot;minutes=5&quot;.</source>
+        <target>使用外部日志记录解决方案进行存档时，可以将其设置为 &quot;minutes=5&quot;。</target>
         
       </trans-unit>
       <trans-unit id="s44536d20bb5c8257">
@@ -3850,10 +3850,10 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="sa95a538bfbb86111">
-        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> "<x id="1" equiv-text="${this.obj?.name}"/>"?</source>
+        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> &quot;<x id="1" equiv-text="${this.obj?.name}"/>&quot;?</source>
         <target>您确定要更新
-        <x id="0" equiv-text="${this.objectLabel}"/>"
-        <x id="1" equiv-text="${this.obj?.name}"/>" 吗？</target>
+        <x id="0" equiv-text="${this.objectLabel}"/>&quot;
+        <x id="1" equiv-text="${this.obj?.name}"/>&quot; 吗？</target>
         
       </trans-unit>
       <trans-unit id="sc92d7cfb6ee1fec6">
@@ -4929,7 +4929,7 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="sdf1d8edef27236f0">
-        <source>A "roaming" authenticator, like a YubiKey</source>
+        <source>A &quot;roaming&quot; authenticator, like a YubiKey</source>
         <target>像 YubiKey 这样的“漫游”身份验证器</target>
         
       </trans-unit>
@@ -5264,10 +5264,10 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="s2d5f69929bb7221d">
-        <source><x id="0" equiv-text="${prompt.name}"/> ("<x id="1" equiv-text="${prompt.fieldKey}"/>", of type <x id="2" equiv-text="${prompt.type}"/>)</source>
+        <source><x id="0" equiv-text="${prompt.name}"/> (&quot;<x id="1" equiv-text="${prompt.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${prompt.type}"/>)</source>
         <target>
-        <x id="0" equiv-text="${prompt.name}"/>（"
-        <x id="1" equiv-text="${prompt.fieldKey}"/>"，类型为
+        <x id="0" equiv-text="${prompt.name}"/>（&quot;
+        <x id="1" equiv-text="${prompt.fieldKey}"/>&quot;，类型为
         <x id="2" equiv-text="${prompt.type}"/>）</target>
         
       </trans-unit>
@@ -5316,7 +5316,7 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="s1608b2f94fa0dbd4">
-        <source>If set to a duration above 0, the user will have the option to choose to "stay signed in", which will extend their session by the time specified here.</source>
+        <source>If set to a duration above 0, the user will have the option to choose to &quot;stay signed in&quot;, which will extend their session by the time specified here.</source>
         <target>如果设置时长大于 0，用户可以选择“保持登录”选项，这将使用户的会话延长此处设置的时间。</target>
         
       </trans-unit>
@@ -7744,7 +7744,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>成功创建用户并添加到组 <x id="0" equiv-text="${this.group.name}"/></target>
 </trans-unit>
 <trans-unit id="s824e0943a7104668">
-  <source>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</source>
+  <source>This user will be added to the group &quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&quot;.</source>
   <target>此用户将会被添加到组 &amp;quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&amp;quot;。</target>
 </trans-unit>
 <trans-unit id="s62e7f6ed7d9cb3ca">
@@ -8811,141 +8811,187 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s74d86eb7e5a10fdf">
   <source>Operation failed to complete</source>
+  <target>完成操作失败</target>
 </trans-unit>
 <trans-unit id="sc0448bc8a76227cb">
   <source>Failed to fetch objects: </source>
+  <target>拉取对象失败：</target>
 </trans-unit>
 <trans-unit id="s233a0201fde4a38d">
   <source>Available Scopes</source>
+  <target>可用作用域</target>
 </trans-unit>
 <trans-unit id="s631b3419f6dfd031">
   <source>Selected Scopes</source>
+  <target>已选作用域</target>
 </trans-unit>
 <trans-unit id="s81d76cccf339a43c">
   <source>Available Property Mappings</source>
+  <target>可用属性映射</target>
 </trans-unit>
 <trans-unit id="se9195c05c61d8ef8">
   <source>Selected Property Mappings</source>
+  <target>已选属性映射</target>
 </trans-unit>
 <trans-unit id="s0619413371f33083">
   <source>Available User Property Mappings</source>
+  <target>可用用户属性映射</target>
 </trans-unit>
 <trans-unit id="sbb46aed99e712337">
   <source>Selected User Property Mappings</source>
+  <target>已选用户属性映射</target>
 </trans-unit>
 <trans-unit id="se84ebf32648e6a63">
   <source>Available Group Property Mappings</source>
+  <target>可用组属性映射</target>
 </trans-unit>
 <trans-unit id="seaf9f9ecb99568c7">
   <source>Selected Group Property Mappings</source>
+  <target>已选组属性映射</target>
 </trans-unit>
 <trans-unit id="sc362f1f1e4044878">
   <source>Ensure the user satisfies requirements of geography or network topology, based on IP address. If any of the configured values match, the policy passes.</source>
+  <target>确保用户满足基于 IP 地址的地理或网络拓扑要求。如果任何配置的值匹配，则策略通过。</target>
 </trans-unit>
 <trans-unit id="s26c2828bf8db525e">
   <source>ASNs</source>
+  <target>ASN</target>
 </trans-unit>
 <trans-unit id="s72ee4dd6cfa6e10d">
   <source>List of autonomous system numbers. Comma separated. E.g. 13335, 15169, 20940</source>
+  <target>ASN 列表。逗号分隔。例如 13335, 15169, 20940</target>
 </trans-unit>
 <trans-unit id="s77fbb0a6d145442d">
   <source>Countries</source>
+  <target>地区</target>
 </trans-unit>
 <trans-unit id="sdd277e10884a7272">
   <source>Available Countries</source>
+  <target>可用地区</target>
 </trans-unit>
 <trans-unit id="s7a93139fb12ebf96">
   <source>Selected Countries</source>
+  <target>已选地区</target>
 </trans-unit>
 <trans-unit id="s375a13497266db93">
   <source>Bind existing policy/group/user</source>
+  <target>绑定已有策略/组/用户</target>
 </trans-unit>
 <trans-unit id="s8e2de27afeb78e5a">
   <source>Property mappings for user creation.</source>
+  <target>用于创建用户的属性映射。</target>
 </trans-unit>
 <trans-unit id="s045cf2d851164d5a">
   <source>Property mappings for group creation.</source>
+  <target>用于创建组的属性映射。</target>
 </trans-unit>
 <trans-unit id="s9642f1d8ee6e787d">
   <source>Link to a group with identical name. Can have security implications when a group is used with another source</source>
+  <target>链接到名称相同的组。当其他源使用相同组名时，可能会有安全隐患。</target>
 </trans-unit>
 <trans-unit id="s485964f83b5ed044">
   <source>Use the group's name, but deny enrollment when the name already exists</source>
+  <target>使用组的名称，但在名称已存在时拒绝注册。</target>
 </trans-unit>
 <trans-unit id="s2b1b532c5271b296">
   <source>Group matching mode</source>
+  <target>组匹配模式</target>
 </trans-unit>
 <trans-unit id="s704381cea57e5a12">
   <source>OAuth Attribute mapping</source>
+  <target>OAuth 属性映射</target>
 </trans-unit>
 <trans-unit id="s4b9501c321dc4922">
   <source>Plex Attribute mapping</source>
+  <target>Plex 属性映射</target>
 </trans-unit>
 <trans-unit id="s6135938c50ad8a4b">
   <source>Encryption Certificate</source>
+  <target>加密证书</target>
 </trans-unit>
 <trans-unit id="s37b8d48b9416fc25">
   <source>When selected, encrypted assertions will be decrypted using this keypair.</source>
+  <target>选择此选项时，被加密的断言将以此密钥对解密。</target>
 </trans-unit>
 <trans-unit id="s924a87f37bc0201e">
   <source>SAML Attribute mapping</source>
+  <target>SAML 属性映射</target>
 </trans-unit>
 <trans-unit id="sf0532ddee3b4e977">
   <source>SCIM Attribute mapping</source>
+  <target>SCIM 属性映射</target>
 </trans-unit>
 <trans-unit id="sd61a4f736ac0a98e">
   <source>External user settings</source>
+  <target>外部用户设置</target>
 </trans-unit>
 <trans-unit id="sdc4f72f6a46ae2c8">
   <source>Default application</source>
+  <target>默认应用程序</target>
 </trans-unit>
 <trans-unit id="sac85801a25b7bb27">
   <source>When configured, external users will automatically be redirected to this application when not attempting to access a different application</source>
+  <target>配置时，外部用户会被自动重定向到此应用程序，除非用户尝试访问其他应用程序</target>
 </trans-unit>
 <trans-unit id="s9f4d6296b906d591">
   <source>Warning: One or more license(s) have expired.</source>
+  <target>警告：一个或多个许可证已过期。</target>
 </trans-unit>
 <trans-unit id="s3b016caea59af3ef">
   <source>Warning: One or more license(s) will expire within the next 2 weeks.</source>
+  <target>警告：一个或多个许可证将在 2 星期内过期。</target>
 </trans-unit>
 <trans-unit id="sd8a5f7269b7ac7a3">
   <source>Caution: This authentik instance has entered read-only mode due to expired/exceeded licenses.</source>
+  <target>注意：由于许可证过期/超限，此 authentik 实例已进入只读模式。</target>
 </trans-unit>
 <trans-unit id="se8c58e65674b6847">
   <source>This authentik instance uses a Trial license.</source>
+  <target>此 authentik 实例使用的是试用许可证。</target>
 </trans-unit>
 <trans-unit id="s6ee52309e586eb18">
   <source>This authentik instance uses a Non-production license.</source>
+  <target>此 authentik 实例使用的是非生产许可证。</target>
 </trans-unit>
 <trans-unit id="s4a799b4562ab2051">
   <source>Access Tokens(s)</source>
+  <target>访问令牌</target>
 </trans-unit>
 <trans-unit id="s4ae42fa672dd72bc">
   <source>Created at</source>
+  <target>创建于</target>
 </trans-unit>
 <trans-unit id="see1f8a5c8e11c5ab">
   <source>Last updated at</source>
+  <target>上次更新于</target>
 </trans-unit>
 <trans-unit id="s82dd7087cd1471ab">
   <source>Last used at</source>
+  <target>上次使用于</target>
 </trans-unit>
 <trans-unit id="s9dda0789d278f5c5">
   <source>Provide users with a 'show password' button.</source>
+  <target>为用户提供“显示密码”按钮。</target>
 </trans-unit>
 <trans-unit id="s2f7f35f6a5b733f5">
   <source>Show password</source>
+  <target>显示密码</target>
 </trans-unit>
 <trans-unit id="s452f791e0ff6a13e">
   <source>Hide password</source>
+  <target>隐藏密码</target>
 </trans-unit>
 <trans-unit id="s08272eeeddfd244e">
   <source>An outpost is on an incorrect version!</source>
+  <target>一个前哨的版本不正确！</target>
 </trans-unit>
 <trans-unit id="sa30c12014e955946">
   <source>Russian</source>
+  <target>俄语</target>
 </trans-unit>
 <trans-unit id="s354405ae02cb262d">
   <source>Last seen: <x id="0" equiv-text="${getRelativeTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</source>
+  <target>上次出现：<x id="0" equiv-text="${getRelativeTime(lastSeen)}"/>（<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>）</target>
 </trans-unit>
     </body>
   </file>
