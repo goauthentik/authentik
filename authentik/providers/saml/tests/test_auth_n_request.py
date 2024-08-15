@@ -112,8 +112,34 @@ class TestAuthNRequest(TestCase):
         self.assertEqual(parsed_request.id, request_proc.request_id)
         self.assertEqual(parsed_request.relay_state, "test_state")
 
-    def test_request_full_signed(self):
+    def test_request_signed(self):
         """Test full SAML Request/Response flow, fully signed"""
+        http_request = get_request("/")
+
+        # First create an AuthNRequest
+        request_proc = RequestProcessor(self.source, http_request, "test_state")
+        request = request_proc.build_auth_n()
+
+        # To get an assertion we need a parsed request (parsed by provider)
+        parsed_request = AuthNRequestParser(self.provider).parse(
+            b64encode(request.encode()).decode(), "test_state"
+        )
+        # Now create a response and convert it to string (provider)
+        response_proc = AssertionProcessor(self.provider, http_request, parsed_request)
+        response = response_proc.build_response()
+
+        # Now parse the response (source)
+        http_request.POST = QueryDict(mutable=True)
+        http_request.POST["SAMLResponse"] = b64encode(response.encode()).decode()
+
+        response_parser = ResponseProcessor(self.source, http_request)
+        response_parser.parse()
+
+    def test_request_signed_both(self):
+        """Test full SAML Request/Response flow, fully signed"""
+        self.provider.sign_assertion = True
+        self.provider.sign_response = True
+        self.provider.save()
         http_request = get_request("/")
 
         # First create an AuthNRequest

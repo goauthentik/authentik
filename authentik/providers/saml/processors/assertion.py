@@ -286,41 +286,48 @@ class AssertionProcessor:
         response.append(self.get_assertion())
         return response
 
+    def _sign(self, element: Element):
+        """Sign an XML element based on the providers' configured signing settings"""
+        digest_algorithm_transform = DIGEST_ALGORITHM_TRANSLATION_MAP.get(
+            self.provider.digest_algorithm, xmlsec.constants.TransformSha1
+        )
+        xmlsec.tree.add_ids(element, ["ID"])
+        signature_node = xmlsec.tree.find_node(element, xmlsec.constants.NodeSignature)
+        ref = xmlsec.template.add_reference(
+            signature_node,
+            digest_algorithm_transform,
+            uri="#" + self._assertion_id,
+        )
+        xmlsec.template.add_transform(ref, xmlsec.constants.TransformEnveloped)
+        xmlsec.template.add_transform(ref, xmlsec.constants.TransformExclC14N)
+        key_info = xmlsec.template.ensure_key_info(signature_node)
+        xmlsec.template.add_x509_data(key_info)
+
+        ctx = xmlsec.SignatureContext()
+
+        key = xmlsec.Key.from_memory(
+            self.provider.signing_kp.key_data,
+            xmlsec.constants.KeyDataFormatPem,
+            None,
+        )
+        key.load_cert_from_memory(
+            self.provider.signing_kp.certificate_data,
+            xmlsec.constants.KeyDataFormatCertPem,
+        )
+        ctx.key = key
+        try:
+            ctx.sign(signature_node)
+        except xmlsec.Error as exc:
+            raise InvalidSignature() from exc
+
     def build_response(self) -> str:
         """Build string XML Response and sign if signing is enabled."""
         root_response = self.get_response()
         if self.provider.signing_kp:
-            digest_algorithm_transform = DIGEST_ALGORITHM_TRANSLATION_MAP.get(
-                self.provider.digest_algorithm, xmlsec.constants.TransformSha1
-            )
-            assertion = root_response.xpath("//saml:Assertion", namespaces=NS_MAP)[0]
-            xmlsec.tree.add_ids(assertion, ["ID"])
-            signature_node = xmlsec.tree.find_node(assertion, xmlsec.constants.NodeSignature)
-            ref = xmlsec.template.add_reference(
-                signature_node,
-                digest_algorithm_transform,
-                uri="#" + self._assertion_id,
-            )
-            xmlsec.template.add_transform(ref, xmlsec.constants.TransformEnveloped)
-            xmlsec.template.add_transform(ref, xmlsec.constants.TransformExclC14N)
-            key_info = xmlsec.template.ensure_key_info(signature_node)
-            xmlsec.template.add_x509_data(key_info)
-
-            ctx = xmlsec.SignatureContext()
-
-            key = xmlsec.Key.from_memory(
-                self.provider.signing_kp.key_data,
-                xmlsec.constants.KeyDataFormatPem,
-                None,
-            )
-            key.load_cert_from_memory(
-                self.provider.signing_kp.certificate_data,
-                xmlsec.constants.KeyDataFormatCertPem,
-            )
-            ctx.key = key
-            try:
-                ctx.sign(signature_node)
-            except xmlsec.Error as exc:
-                raise InvalidSignature() from exc
-
+            if self.provider.sign_assertion:
+                assertion = root_response.xpath("//saml:Assertion", namespaces=NS_MAP)[0]
+                self._sign(assertion)
+            if self.provider.sign_response:
+                response = root_response.xpath("//samlp:Response", namespaces=NS_MAP)[0]
+                self._sign(response)
         return etree.tostring(root_response).decode("utf-8")  # nosec

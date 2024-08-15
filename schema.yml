@@ -20719,6 +20719,14 @@ paths:
         schema:
           type: string
       - in: query
+        name: sign_assertion
+        schema:
+          type: boolean
+      - in: query
+        name: sign_response
+        schema:
+          type: boolean
+      - in: query
         name: signature_algorithm
         schema:
           type: string
@@ -46866,6 +46874,10 @@ components:
           title: Verification Certificate
           description: When selected, incoming assertion's Signatures will be validated
             against this certificate. To allow unsigned Requests, leave on default.
+        sign_assertion:
+          type: boolean
+        sign_response:
+          type: boolean
         sp_binding:
           allOf:
           - $ref: '#/components/schemas/SpBindingEnum'
@@ -49581,6 +49593,10 @@ components:
           title: Verification Certificate
           description: When selected, incoming assertion's Signatures will be validated
             against this certificate. To allow unsigned Requests, leave on default.
+        sign_assertion:
+          type: boolean
+        sign_response:
+          type: boolean
         sp_binding:
           allOf:
           - $ref: '#/components/schemas/SpBindingEnum'
@@ -49725,6 +49741,10 @@ components:
           title: Verification Certificate
           description: When selected, incoming assertion's Signatures will be validated
             against this certificate. To allow unsigned Requests, leave on default.
+        sign_assertion:
+          type: boolean
+        sign_response:
+          type: boolean
         sp_binding:
           allOf:
           - $ref: '#/components/schemas/SpBindingEnum'

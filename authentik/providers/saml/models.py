@@ -149,6 +149,9 @@ class SAMLProvider(Provider):
         default="", blank=True, help_text=_("Default relay_state value for IDP-initiated logins")
     )
 
+    sign_assertion = models.BooleanField(default=True)
+    sign_response = models.BooleanField(default=True)
+
     @property
     def launch_url(self) -> str | None:
         """Use IDP-Initiated SAML flow as launch URL"""
