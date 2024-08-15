@@ -56,17 +56,20 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
         if not scim_group.externalId:
             scim_group.externalId = str(obj.pk)
 
-        users = list(obj.users.order_by("id").values_list("id", flat=True))
-        connections = SCIMProviderUser.objects.filter(provider=self.provider, user__pk__in=users)
-        members = []
-        for user in connections:
-            members.append(
-                GroupMember(
-                    value=user.scim_id,
+        if not self._config.patch.supported:
+            users = list(obj.users.order_by("id").values_list("id", flat=True))
+            connections = SCIMProviderUser.objects.filter(provider=self.provider, user__pk__in=users)
+            members = []
+            for user in connections:
+                members.append(
+                    GroupMember(
+                        value=user.scim_id,
+                    )
                 )
-            )
-        if members:
-            scim_group.members = members
+            if members:
+                scim_group.members = members
+        else:
+            del scim_group.members
         return scim_group
 
     def delete(self, obj: Group):
@@ -93,16 +96,19 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
         scim_id = response.get("id")
         if not scim_id or scim_id == "":
             raise StopSync("SCIM Response with missing or invalid `id`")
-        return SCIMProviderGroup.objects.create(
+        connection = SCIMProviderGroup.objects.create(
             provider=self.provider, group=group, scim_id=scim_id
         )
+        users = list(group.users.order_by("id").values_list("id", flat=True))
+        self._patch_add_users(group, users)
+        return connection
 
     def update(self, group: Group, connection: SCIMProviderGroup):
         """Update existing group"""
         scim_group = self.to_schema(group, connection)
         scim_group.id = connection.scim_id
         try:
-            return self._request(
+            self._request(
                 "PUT",
                 f"/Groups/{connection.scim_id}",
                 json=scim_group.model_dump(
@@ -110,6 +116,8 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                     exclude_unset=True,
                 ),
             )
+            users = list(group.users.order_by("id").values_list("id", flat=True))
+            return self._patch_add_users(group, users)
         except NotFoundSyncException:
             # Resource missing is handled by self.write, which will re-create the group
             raise
