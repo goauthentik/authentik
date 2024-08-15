@@ -246,6 +246,20 @@ export class ApplicationWizardProviderSamlConfiguration extends BaseProviderPane
                             </p>
                         </ak-form-element-horizontal>
 
+                        <ak-form-element-horizontal
+                            label=${msg("Encryption Certificate")}
+                            name="encryptionKp"
+                        >
+                            <ak-crypto-certificate-search
+                                certificate=${ifDefined(provider?.encryptionKp ?? undefined)}
+                            ></ak-crypto-certificate-search>
+                            <p class="pf-c-form__helper-text">
+                                ${msg(
+                                    "When selected, encrypted assertions will be decrypted using this keypair.",
+                                )}
+                            </p>
+                        </ak-form-element-horizontal>
+
                         <ak-multi-select
                             label=${msg("Property Mappings")}
                             name="propertyMappings"

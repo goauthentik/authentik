@@ -264,6 +264,19 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
+                        label=${msg("Encryption Certificate")}
+                        name="encryptionKp"
+                    >
+                        <ak-crypto-certificate-search
+                            .certificate=${this.instance?.encryptionKp}
+                        ></ak-crypto-certificate-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "When selected, assertions will be encrypted using this keypair.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
                         label=${msg("Property mappings")}
                         name="propertyMappings"
                     >
