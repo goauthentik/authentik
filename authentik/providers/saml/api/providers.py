@@ -159,6 +159,7 @@ class SAMLProviderSerializer(ProviderSerializer):
             "signature_algorithm",
             "signing_kp",
             "verification_kp",
+            "encryption_kp",
             "sign_assertion",
             "sign_response",
             "sp_binding",

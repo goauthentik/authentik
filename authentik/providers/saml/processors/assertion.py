@@ -18,7 +18,11 @@ from authentik.providers.saml.processors.authn_request_parser import AuthNReques
 from authentik.providers.saml.utils import get_random_id
 from authentik.providers.saml.utils.time import get_time_string
 from authentik.sources.ldap.auth import LDAP_DISTINGUISHED_NAME
-from authentik.sources.saml.exceptions import InvalidSignature, UnsupportedNameIDFormat
+from authentik.sources.saml.exceptions import (
+    InvalidEncryption,
+    InvalidSignature,
+    UnsupportedNameIDFormat,
+)
 from authentik.sources.saml.processors.constants import (
     DIGEST_ALGORITHM_TRANSLATION_MAP,
     NS_MAP,
@@ -256,9 +260,17 @@ class AssertionProcessor:
                 assertion,
                 xmlsec.constants.TransformExclC14N,
                 sign_algorithm_transform,
-                ns="ds",  # type: ignore
+                ns=xmlsec.constants.DSigNs,
             )
             assertion.append(signature)
+        if self.provider.encryption_kp:
+            encryption = xmlsec.template.encrypted_data_create(
+                assertion,
+                xmlsec.constants.TransformAes128Cbc,
+                self._assertion_id,
+                ns=xmlsec.constants.DSigNs,
+            )
+            assertion.append(encryption)
 
         assertion.append(self.get_assertion_subject())
         assertion.append(self.get_assertion_conditions())
@@ -320,6 +332,41 @@ class AssertionProcessor:
         except xmlsec.Error as exc:
             raise InvalidSignature() from exc
 
+    def _encrypt(self, element: Element, parent: Element):
+        """Encrypt SAMLResponse EncryptedAssertion Element"""
+        manager = xmlsec.KeysManager()
+        key = xmlsec.Key.from_memory(
+            self.provider.encryption_kp.key_data,
+            xmlsec.constants.KeyDataFormatPem,
+        )
+        key.load_cert_from_memory(
+            self.provider.encryption_kp.certificate_data,
+            xmlsec.constants.KeyDataFormatCertPem,
+        )
+
+        manager.add_key(key)
+        encryption_context = xmlsec.EncryptionContext(manager)
+        encryption_context.key = xmlsec.Key.generate(
+            xmlsec.constants.KeyDataAes, 128, xmlsec.constants.KeyDataTypeSession
+        )
+
+        container = SubElement(parent, f"{{{NS_SAML_ASSERTION}}}EncryptedAssertion")
+        enc_data = xmlsec.template.encrypted_data_create(
+            container, xmlsec.Transform.AES128, type=xmlsec.EncryptionType.ELEMENT, ns="xenc"
+        )
+        xmlsec.template.encrypted_data_ensure_cipher_value(enc_data)
+        key_info = xmlsec.template.encrypted_data_ensure_key_info(enc_data, ns="ds")
+        enc_key = xmlsec.template.add_encrypted_key(key_info, xmlsec.Transform.RSA_OAEP)
+        xmlsec.template.encrypted_data_ensure_cipher_value(enc_key)
+
+        try:
+            enc_data = encryption_context.encrypt_xml(enc_data, element)
+        except xmlsec.Error as exc:
+            raise InvalidEncryption() from exc
+
+        parent.remove(enc_data)
+        container.append(enc_data)
+
     def build_response(self) -> str:
         """Build string XML Response and sign if signing is enabled."""
         root_response = self.get_response()
@@ -330,4 +377,7 @@ class AssertionProcessor:
             if self.provider.sign_response:
                 response = root_response.xpath("//samlp:Response", namespaces=NS_MAP)[0]
                 self._sign(response)
+        if self.provider.encryption_kp:
+            assertion = root_response.xpath("//saml:Assertion", namespaces=NS_MAP)[0]
+            self._encrypt(assertion, root_response)
         return etree.tostring(root_response).decode("utf-8")  # nosec

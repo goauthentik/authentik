@@ -144,6 +144,20 @@ class SAMLProvider(Provider):
         on_delete=models.SET_NULL,
         verbose_name=_("Signing Keypair"),
     )
+    encryption_kp = models.ForeignKey(
+        CertificateKeyPair,
+        default=None,
+        null=True,
+        blank=True,
+        help_text=_(
+            "When selected, incoming assertions are encrypted by the IdP using the public "
+            "key of the encryption keypair. The assertion is decrypted by the SP using the "
+            "the private key."
+        ),
+        on_delete=models.SET_NULL,
+        verbose_name=_("Encryption Keypair"),
+        related_name="+",
+    )
 
     default_relay_state = models.TextField(
         default="", blank=True, help_text=_("Default relay_state value for IDP-initiated logins")
