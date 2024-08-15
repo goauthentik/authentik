@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-12 13:45+0000\n"
+"POT-Creation-Date: 2024-08-15 00:09+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1214,12 +1214,6 @@ msgstr ""
 
 #: authentik/providers/ldap/models.py
 msgid ""
-"Users in this group can do search queries. If not set, every user can "
-"execute search queries."
-msgstr ""
-
-#: authentik/providers/ldap/models.py
-msgid ""
 "The start for uidNumbers, this number is added to the user.pk to make sure "
 "that the numbers aren't too low for POSIX users. Default is 2000 to ensure "
 "that we don't collide with local users uidNumber"
@@ -1248,6 +1242,10 @@ msgstr ""
 
 #: authentik/providers/ldap/models.py
 msgid "LDAP Providers"
+msgstr ""
+
+#: authentik/providers/ldap/models.py
+msgid "Search full LDAP directory"
 msgstr ""
 
 #: authentik/providers/oauth2/id_token.py
