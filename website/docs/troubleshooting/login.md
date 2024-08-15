@@ -17,7 +17,7 @@ docker compose run --rm server create_recovery_key 10 akadmin
 For Kubernetes, run
 
 ```shell
-kubectl exec -it deployment/authentik-worker -c authentik -- ak create_recovery_key 10 akadmin
+kubectl exec -it deployment/authentik-worker -c worker -- ak create_recovery_key 10 akadmin
 ```
 
 or, for CLI, run
