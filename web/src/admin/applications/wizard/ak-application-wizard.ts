@@ -18,6 +18,7 @@ const freshWizardState = (): ApplicationWizardState => ({
     providerModel: "",
     app: {},
     provider: {},
+    policies: [],
     errors: {},
 });
 

@@ -4,6 +4,7 @@ import {
     type ApplicationRequest,
     type LDAPProviderRequest,
     type OAuth2ProviderRequest,
+    type PolicyBinding,
     type ProvidersSamlImportMetadataCreateRequest,
     type ProxyProviderRequest,
     type RACProviderRequest,

@@ -57,8 +57,6 @@ export class ApplicationWizardPageBase
         return this.form.checkValidity();
     }
 
-    rendered = false;
-
     /**
      * Provide a single source of truth for the token used to notify the orchestrator that an event
      * happens. The token `ak-wizard-update` is used by the Wizard framework's reactive controller

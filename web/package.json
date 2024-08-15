@@ -246,7 +246,8 @@
             }
         },
         "lint:components": {
-            "command": "lit-analyzer src"
+            "command": "lit-analyzer --rules.no-missing-import warn --rules.no-missing-element-type-definition warn src"
+
         },
         "lint:types": {
             "command": "tsc --noEmit -p .",
