@@ -77,9 +77,10 @@ export const MultiSelect: Story = {
         ),
 };
 
+type Ord = Record<string | number, string | number>;
+
 @customElement("ak-select-table-test-sort")
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-class SimpleTableSortTest extends LitElement {
+export class SimpleTableSortTest extends LitElement {
     @state()
     order = "name";
 
@@ -96,8 +97,8 @@ class SimpleTableSortTest extends LitElement {
 
         // Sort according to the key
         const comparison = this.sortDown
-            ? (a, b) => (a[this.order] > b[this.order] ? -1 : 1)
-            : (a, b) => (a[this.order] > b[this.order] ? 1 : -1);
+            ? (a: Ord, b: Ord) => (a[this.order] > b[this.order] ? -1 : 1)
+            : (a: Ord, b: Ord) => (a[this.order] > b[this.order] ? 1 : -1);
         content.sort(comparison);
 
         // Return the content, processed to comply with the format expected by a selectable table.

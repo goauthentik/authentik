@@ -19,6 +19,7 @@ import { TableColumn } from "./TableColumn";
 export type TableRow = {
     key?: string;
     content: TemplateResult[];
+    expansion?: () => TemplateResult;
 };
 
 /**

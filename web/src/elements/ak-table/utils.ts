@@ -34,7 +34,6 @@ export function convertContent(content: TableInputType): TableType {
         return {
             kind: "table-flat",
             content: content.map((onerow) => ({
-                kind: "table-row",
                 content: onerow.map((item: string | number | TemplateResult) =>
                     typeof item === "object" ? item : html`${item}`,
                 ),

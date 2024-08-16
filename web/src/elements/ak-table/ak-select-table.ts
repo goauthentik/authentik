@@ -17,18 +17,15 @@ export interface ISelectTable extends ISimpleTable {
 
 /**
  * @element ak-select-table
- * class Table
+ * @class SelectTable
  *
- * A simple table with sort events, and now a select column. Handles both single (checkbox) and
- * multiple (radio) behaviors.
+ * Extends the SimpleTable with a select column, emitting a `change` event whenever the selected
+ * table updates. The `multiple` keyword creates a multi-select table. Sorting behavior resembles
+ * that of `SimpleTable`.
  *
- * ## Does not handle sorting.
- *
- * ... that's _all_ this does. It is the responsibility of clients using this table to:
- *
- * - marshall their content into TemplateResults
- * - catch the 'tablesort' event and send the table a new collection of rows sorted according to
- *   the client scheme.
+ * Note that it *preserves* any values that it may have seen prior, but are not currently visible
+ * on the page.  This preserves the selection collection in case the client wishes to implement
+ * pagination.
  *
  * ## Properties
  *
@@ -53,6 +50,10 @@ export interface ISelectTable extends ISimpleTable {
  *
  * - @prop selected (string[]): The values selected. Always an array, even for mult-select. When not
  *   multi-select, will have zero or one items only.
+ *
+ * ## Messages
+ *
+ * - `clear()`: Sets the `selected` collection to empty, erasing all values.
  *
  * ## Events
  *
@@ -119,7 +120,7 @@ export class SelectTable extends SimpleTable {
         return this._selected;
     }
 
-    public get json() {
+    public json() {
         return this._selected;
     }
 
@@ -137,10 +138,14 @@ export class SelectTable extends SimpleTable {
         return this.checkedValuesOnPage.filter((value) => this._selected.includes(value));
     }
 
+    public clear() {
+        this.selected = [];
+    }
+
     private _selected: string[] = [];
 
     @bound
-    onSelect(ev: InputEvent) {
+    private onSelect(ev: InputEvent) {
         ev.stopPropagation();
         const value = (ev.target as HTMLInputElement).value;
         if (this.multiple) {
@@ -153,14 +158,12 @@ export class SelectTable extends SimpleTable {
         this.dispatchEvent(new Event("change"));
     }
 
-    protected ouiaTypeDeclaration() {
+    protected override ouiaTypeDeclaration() {
         this.setAttribute("data-ouia-component-type", "ak-select-table");
     }
 
-    willUpdate(changed: PropertyValues<this>) {
-        if (super.willUpdate) {
-            super.willUpdate(changed);
-        }
+    public override willUpdate(changed: PropertyValues<this>) {
+        super.willUpdate(changed);
         // Ensure the value attribute in the component reflects the current value after an update
         // via onSelect() or other change to `this.selected`. Done here instead of in `updated` as
         // changes here cannot trigger an update. See:
@@ -193,20 +196,30 @@ export class SelectTable extends SimpleTable {
 
     // Without the `bound`, Lit's `map()` will pick up the parent class's `renderRow()`.
     @bound
-    public renderRow(row: TableRow) {
-        return html` <tr>
+    public override renderRow(row: TableRow, _rowidx: number) {
+        return html` <tr part="row">
             ${this.renderCheckbox(row.key)}
-            ${map(row.content, (col) => html`<td role="cell">${col}</td>`)}
+            ${map(
+                row.content,
+                (col, idx) => html`<td part="cell cell-${idx}" role="cell">${col}</td>`,
+            )}
         </tr>`;
     }
 
     renderAllOnThisPageCheckbox(): TemplateResult {
-        const checked =
-            this.selectedOnPage.length > 0 &&
-            this.selectedOnPage.length === this.valuesOnPage.length;
+        const checked = this.selectedOnPage.length === this.valuesOnPage.length;
 
         const onInput = (ev: InputEvent) => {
-            this.selected = (ev.target as HTMLInputElement).checked ? this.valuesOnPage : [];
+            const selected = [...this.selected];
+            const values = this.valuesOnPage;
+            // The behavior preserves the `selected` elements that are not currently visible; its
+            // purpose is to preserve the complete value list locally in case clients want to
+            // implement pagination.  To clear the entire list, call `clear()` on the component.
+            this.selected = (ev.target as HTMLInputElement).checked
+                ? // add to `selected` all values not already present
+                  [...selected, ...values.filter((i) => !selected.includes(i))]
+                : // remove from `selected` all values present
+                  this.selected.filter((i) => !values.includes(i));
         };
 
         return html`<th part="select-all-header" class="pf-c-table__check" role="cell">
@@ -221,7 +234,7 @@ export class SelectTable extends SimpleTable {
         </th>`;
     }
 
-    public renderColumnHeaders() {
+    public override renderColumnHeaders() {
         return html`<tr part="column-row" role="row">
             ${this.multiple ? this.renderAllOnThisPageCheckbox() : html`<th></th>`}
             ${map(this.icolumns, (col) => col.render(this.order))}

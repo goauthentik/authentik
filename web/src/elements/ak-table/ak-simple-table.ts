@@ -82,7 +82,7 @@ export class SimpleTable extends AKElement implements ISimpleTable {
     @property({ type: Array, attribute: false })
     columns: Column[] = [];
 
-    @property({ type: Array, attribute: false })
+    @property({ type: Object, attribute: false })
     set content(content: ContentType) {
         this._content = convertContent(content);
     }
@@ -91,7 +91,7 @@ export class SimpleTable extends AKElement implements ISimpleTable {
         return this._content;
     }
 
-    _content: TableGrouped | TableFlat = {
+    private _content: TableGrouped | TableFlat = {
         kind: "table-flat",
         content: [],
     };
@@ -126,7 +126,7 @@ export class SimpleTable extends AKElement implements ISimpleTable {
         super.performUpdate();
     }
 
-    public renderRow(row: TableRow) {
+    public renderRow(row: TableRow, _rownum: number) {
         return html` <tr part="row">
             ${map(
                 row.content,

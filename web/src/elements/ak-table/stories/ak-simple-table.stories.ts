@@ -7,8 +7,8 @@ import { customElement, state } from "lit/decorators.js";
 import { TableSortEvent } from "../TableColumn.js";
 import "../ak-simple-table.js";
 import { SimpleTable } from "../ak-simple-table.js";
+import type { TableRow } from "../types";
 import { nutritionDbUSDA } from "./sample_nutrition_db.js";
-import type { TableRow } from "./types";
 
 const metadata: Meta<SimpleTable> = {
     title: "Elements / Table / SimpleTable",
@@ -70,9 +70,10 @@ export const Default: Story = {
         ),
 };
 
+type Ord = Record<string | number, string | number>;
+
 @customElement("ak-simple-table-test-sort")
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-class SimpleTableSortTest extends LitElement {
+export class SimpleTableSortTest extends LitElement {
     @state()
     order = "name";
 
@@ -84,8 +85,8 @@ class SimpleTableSortTest extends LitElement {
     get content() {
         const content = [...nutritionDbUSDA];
         const comparison = this.sortDown
-            ? (a, b) => (a[this.order] < b[this.order] ? -1 : 1)
-            : (a, b) => (a[this.order] < b[this.order] ? 1 : -1);
+            ? (a: Ord, b: Ord) => (a[this.order] < b[this.order] ? -1 : 1)
+            : (a: Ord, b: Ord) => (a[this.order] < b[this.order] ? 1 : -1);
         content.sort(comparison);
         return content.map(({ name, calories, sugar, fiber, protein }) => [
             name,

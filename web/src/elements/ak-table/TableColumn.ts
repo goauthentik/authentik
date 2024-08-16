@@ -51,7 +51,7 @@ export class TableColumn {
     }
 
     @bound
-    onSort() {
+    private onSort() {
         if (this.host && this.orderBy) {
             this.host.dispatchEvent(new TableSortEvent(this.orderBy));
         }
