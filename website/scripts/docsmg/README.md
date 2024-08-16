@@ -29,7 +29,10 @@ Use this migration tool to:
     :::
 
 3. Edit the `migratefile` to add the target directory paths in the new structure for each entry.
-   Find the files you want to move in `migratefile` and insert the path you want to move them to after the arrow; ex `path/to/move/from/file.md -> path/to/move/to/file.md` Note: make sure to put spaces on either side of the arrow or that line won't be recognized.
+    For each file listed in `migratefile` insert the path you want to move them to.
+    EXAMPLE: `path/to/move/from/file.md -> path/to/move/to/file.md`
+
+    Note: make sure to put spaces on either side of the arrow or that line won't be recognized.
 
 ### Migrate the docs
 
@@ -39,7 +42,8 @@ Use this migration tool to:
 After you have run `migrate`, you cannot run it again or you will get a `panic` error... because the files have already been moved.
 :::
 
-2. To revert the migration, use `docsmg unmigrate`. Note: DO NOT edit the `migratefile` file in befor running `unmigrate`.
+2. To revert the migration, use `docsmg unmigrate`.
+    Note: DO NOT edit the `migratefile` file in befor running `unmigrate`.
 3. Continue modifying the `migratefile` file and then using the `docsmg migrate` command until you are satisfied with the result.
 
 ### Update the `sidebar.js file`
@@ -52,5 +56,7 @@ To test the internal links, navigate up a level to `authentik` and then run `mak
 
 ## Toubleshooting
 
--   Verify that you have the `docsmg.env` file, with this entry: `MIGRATE_PATH=./docs`
--   If the `docsmg generate` command pulls _all_ of the files in the repo (even non-docs files), then do this:
+-   If the `docsmg generate` command pulls _all_ of the files in the repo (even non-docs files), then check that:
+    -  the `docsmg.env` exists
+    - that it is in `/website`
+    - the content is `MIGRATE_PATH=./docs`
