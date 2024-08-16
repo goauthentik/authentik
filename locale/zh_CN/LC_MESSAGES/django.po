@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-05 00:07+0000\n"
+"POT-Creation-Date: 2024-08-15 00:09+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/authentik/teams/119923/zh_CN/)\n"
@@ -82,6 +82,12 @@ msgid ""
 "Domain that activates this brand. Can be a superset, i.e. `a.b` for `aa.b` "
 "and `ba.b`"
 msgstr "激活此品牌的域。可以是超集，即 `a.b` 可以同时表示 `aa.b` 和 `ba.b`"
+
+#: authentik/brands/models.py
+msgid ""
+"When set, external users will be redirected to this application after "
+"authenticating."
+msgstr "设置时，外部用户在验证身份后会被重定向到此应用程序。"
 
 #: authentik/brands/models.py
 msgid "Web Certificate used by the authentik Core webserver."
@@ -236,6 +242,16 @@ msgid ""
 msgstr "使用用户的用户名，但在用户名已存在时拒绝注册。"
 
 #: authentik/core/models.py
+msgid ""
+"Link to a group with identical name. Can have security implications when a "
+"group name is used with another source."
+msgstr "链接到名称相同的组。当其他源使用相同组名时，可能会有安全隐患。"
+
+#: authentik/core/models.py
+msgid "Use the group name, but deny enrollment when the name already exists."
+msgstr "使用组的名称，但在名称已存在时拒绝注册。"
+
+#: authentik/core/models.py
 msgid "Source's display Name."
 msgstr "源的显示名称。"
 
@@ -256,6 +272,12 @@ msgid ""
 "How the source determines if an existing user should be authenticated or a "
 "new user enrolled."
 msgstr "源怎样确定应该验证已有用户的身份还是注册新用户。"
+
+#: authentik/core/models.py
+msgid ""
+"How the source determines if an existing group should be used or a new group"
+" created."
+msgstr "源怎样确定应该使用已有组的身份还是创建新组。"
 
 #: authentik/core/models.py
 msgid "Token"
@@ -364,6 +386,7 @@ msgid "Go home"
 msgstr "前往首页"
 
 #: authentik/core/templates/login/base_full.html
+#: authentik/flows/templates/if/flow-sfe.html
 msgid "Powered by authentik"
 msgstr "由 authentik 强力驱动"
 
@@ -373,6 +396,10 @@ msgstr "由 authentik 强力驱动"
 #, python-format
 msgid "You're about to sign into %(application)s."
 msgstr "您即将登录 %(application)s。"
+
+#: authentik/core/views/interface.py
+msgid "Interface can only be accessed by internal users."
+msgstr "仅内部用户能访问此接口。"
 
 #: authentik/crypto/api.py
 msgid "Subject-alt name"
@@ -433,8 +460,24 @@ msgid "Feature only accessible for internal users."
 msgstr "仅内部用户能访问此功能。"
 
 #: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider User"
+msgstr "Google Workspace 提供程序用户"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Users"
+msgstr "Google Workspace 提供程序用户"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Group"
+msgstr "Google Workspace 提供程序组"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Groups"
+msgstr "Google Workspace 提供程序组"
+
+#: authentik/enterprise/providers/google_workspace/models.py
 #: authentik/enterprise/providers/microsoft_entra/models.py
-#: authentik/providers/scim/models.py authentik/sources/ldap/models.py
+#: authentik/providers/scim/models.py
 msgid "Property mappings used for group creation/updating."
 msgstr "用于创建/更新组的属性映射。"
 
@@ -454,21 +497,17 @@ msgstr "Google Workspace 提供程序映射"
 msgid "Google Workspace Provider Mappings"
 msgstr "Google Workspace 提供程序映射"
 
-#: authentik/enterprise/providers/google_workspace/models.py
-msgid "Google Workspace Provider User"
-msgstr "Google Workspace 提供程序用户"
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider User"
+msgstr "Microsoft Entra 提供程序用户"
 
-#: authentik/enterprise/providers/google_workspace/models.py
-msgid "Google Workspace Provider Users"
-msgstr "Google Workspace 提供程序用户"
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Group"
+msgstr "Microsoft Entra 提供程序组"
 
-#: authentik/enterprise/providers/google_workspace/models.py
-msgid "Google Workspace Provider Group"
-msgstr "Google Workspace 提供程序组"
-
-#: authentik/enterprise/providers/google_workspace/models.py
-msgid "Google Workspace Provider Groups"
-msgstr "Google Workspace 提供程序组"
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Groups"
+msgstr "Microsoft Entra 提供程序组"
 
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Provider"
@@ -485,18 +524,6 @@ msgstr "Microsoft Entra 提供程序映射"
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Provider Mappings"
 msgstr "Microsoft Entra 提供程序映射"
-
-#: authentik/enterprise/providers/microsoft_entra/models.py
-msgid "Microsoft Entra Provider User"
-msgstr "Microsoft Entra 提供程序用户"
-
-#: authentik/enterprise/providers/microsoft_entra/models.py
-msgid "Microsoft Entra Provider Group"
-msgstr "Microsoft Entra 提供程序组"
-
-#: authentik/enterprise/providers/microsoft_entra/models.py
-msgid "Microsoft Entra Provider Groups"
-msgstr "Microsoft Entra 提供程序组"
 
 #: authentik/enterprise/providers/rac/models.py
 #: authentik/stages/user_login/models.py
@@ -526,12 +553,12 @@ msgid "RAC Endpoints"
 msgstr "RAC 端点"
 
 #: authentik/enterprise/providers/rac/models.py
-msgid "RAC Property Mapping"
-msgstr "RAC 属性映射"
+msgid "RAC Provider Property Mapping"
+msgstr "RAC 提供程序属性映射"
 
 #: authentik/enterprise/providers/rac/models.py
-msgid "RAC Property Mappings"
-msgstr "RAC 属性映射"
+msgid "RAC Provider Property Mappings"
+msgstr "RAC 提供程序属性映射"
 
 #: authentik/enterprise/providers/rac/models.py
 msgid "RAC Connection token"
@@ -1030,6 +1057,30 @@ msgstr "表达式策略"
 msgid "Expression Policies"
 msgstr "表达式策略"
 
+#: authentik/policies/geoip/models.py
+msgid "GeoIP: client IP not found in ASN database."
+msgstr "GeoIP：无法在 ASN 数据库中找到客户端 IP。"
+
+#: authentik/policies/geoip/models.py
+msgid "Client IP is not part of an allowed autonomous system."
+msgstr "客户端 IP 不属于受允许的自治系统（AS）。"
+
+#: authentik/policies/geoip/models.py
+msgid "GeoIP: client IP address not found in City database."
+msgstr "GeoIP：无法在城市数据库中找到客户端 IP。"
+
+#: authentik/policies/geoip/models.py
+msgid "Client IP is not in an allowed country."
+msgstr "客户端 IP 不在受允许的地区。"
+
+#: authentik/policies/geoip/models.py
+msgid "GeoIP Policy"
+msgstr "GeoIP 策略"
+
+#: authentik/policies/geoip/models.py
+msgid "GeoIP Policies"
+msgstr "GeoIP 策略"
+
 #: authentik/policies/models.py
 msgid "all, all policies must pass"
 msgstr "All，必须通过所有策略"
@@ -1187,12 +1238,6 @@ msgstr "可访问对象的 DN。"
 
 #: authentik/providers/ldap/models.py
 msgid ""
-"Users in this group can do search queries. If not set, every user can "
-"execute search queries."
-msgstr "该组中的用户可以执行搜索查询。如果未设置，则每个用户都可以执行搜索查询。"
-
-#: authentik/providers/ldap/models.py
-msgid ""
 "The start for uidNumbers, this number is added to the user.pk to make sure "
 "that the numbers aren't too low for POSIX users. Default is 2000 to ensure "
 "that we don't collide with local users uidNumber"
@@ -1228,6 +1273,10 @@ msgstr "LDAP 提供程序"
 #: authentik/providers/ldap/models.py
 msgid "LDAP Providers"
 msgstr "LDAP 提供程序"
+
+#: authentik/providers/ldap/models.py
+msgid "Search full LDAP directory"
+msgstr "搜索完整 LDAP 目录"
 
 #: authentik/providers/oauth2/id_token.py
 msgid "Based on the Hashed User ID"
@@ -1575,6 +1624,14 @@ msgstr "Radius 提供程序"
 msgid "Radius Providers"
 msgstr "Radius 提供程序"
 
+#: authentik/providers/radius/models.py
+msgid "Radius Provider Property Mapping"
+msgstr "Radius 提供程序属性映射"
+
+#: authentik/providers/radius/models.py
+msgid "Radius Provider Property Mappings"
+msgstr "Radius 提供程序属性映射"
+
 #: authentik/providers/saml/api/providers.py
 msgid "Invalid XML Syntax"
 msgstr "无效 XML 语法"
@@ -1719,12 +1776,12 @@ msgid "SAML Providers"
 msgstr "SAML 提供程序"
 
 #: authentik/providers/saml/models.py
-msgid "SAML Property Mapping"
-msgstr "SAML 属性映射"
+msgid "SAML Provider Property Mapping"
+msgstr "SAML 提供程序属性映射"
 
 #: authentik/providers/saml/models.py
-msgid "SAML Property Mappings"
-msgstr "SAML 属性映射"
+msgid "SAML Provider Property Mappings"
+msgstr "SAML 提供程序属性映射"
 
 #: authentik/providers/saml/models.py
 msgid "SAML Provider from Metadata"
@@ -1751,12 +1808,12 @@ msgid "SCIM Providers"
 msgstr "SCIM 提供程序"
 
 #: authentik/providers/scim/models.py
-msgid "SCIM Mapping"
-msgstr "SCIM 映射"
+msgid "SCIM Provider Mapping"
+msgstr "SCIM 提供程序映射"
 
 #: authentik/providers/scim/models.py
-msgid "SCIM Mappings"
-msgstr "SCIM 映射"
+msgid "SCIM Provider Mappings"
+msgstr "SCIM 提供程序映射"
 
 #: authentik/rbac/models.py
 msgid "Role"
@@ -1884,12 +1941,12 @@ msgid "LDAP Sources"
 msgstr "LDAP 源"
 
 #: authentik/sources/ldap/models.py
-msgid "LDAP Property Mapping"
-msgstr "LDAP 属性映射"
+msgid "LDAP Source Property Mapping"
+msgstr "LDAP 源属性映射"
 
 #: authentik/sources/ldap/models.py
-msgid "LDAP Property Mappings"
-msgstr "LDAP 属性映射"
+msgid "LDAP Source Property Mappings"
+msgstr "LDAP 源属性映射"
 
 #: authentik/sources/ldap/signals.py
 msgid "Password does not match Active Directory Complexity."
@@ -2058,12 +2115,28 @@ msgid "Reddit OAuth Sources"
 msgstr "Reddit OAuth 源"
 
 #: authentik/sources/oauth/models.py
+msgid "OAuth Source Property Mapping"
+msgstr "OAuth 源属性映射"
+
+#: authentik/sources/oauth/models.py
+msgid "OAuth Source Property Mappings"
+msgstr "OAuth 源属性映射"
+
+#: authentik/sources/oauth/models.py
 msgid "User OAuth Source Connection"
 msgstr "用户 OAuth 源连接"
 
 #: authentik/sources/oauth/models.py
 msgid "User OAuth Source Connections"
 msgstr "用户 OAuth 源连接"
+
+#: authentik/sources/oauth/models.py
+msgid "Group OAuth Source Connection"
+msgstr "组 OAuth 源连接"
+
+#: authentik/sources/oauth/models.py
+msgid "Group OAuth Source Connections"
+msgstr "组 OAuth 源连接"
 
 #: authentik/sources/oauth/views/callback.py
 #, python-brace-format
@@ -2097,12 +2170,28 @@ msgid "Plex Sources"
 msgstr "Plex 源"
 
 #: authentik/sources/plex/models.py
+msgid "Plex Source Property Mapping"
+msgstr "Plex 源属性映射"
+
+#: authentik/sources/plex/models.py
+msgid "Plex Source Property Mappings"
+msgstr "Plex 源属性映射"
+
+#: authentik/sources/plex/models.py
 msgid "User Plex Source Connection"
 msgstr "用户 Plex 源连接"
 
 #: authentik/sources/plex/models.py
 msgid "User Plex Source Connections"
 msgstr "用户 Plex 源连接"
+
+#: authentik/sources/plex/models.py
+msgid "Group Plex Source Connection"
+msgstr "组 Plex 源连接"
+
+#: authentik/sources/plex/models.py
+msgid "Group Plex Source Connections"
+msgstr "组 Plex 源连接"
 
 #: authentik/sources/saml/models.py
 msgid "Redirect Binding"
@@ -2175,12 +2264,31 @@ msgid ""
 msgstr "密钥对，用于签署发送给身份提供程序的传出响应。"
 
 #: authentik/sources/saml/models.py
+msgid ""
+"When selected, incoming assertions are encrypted by the IdP using the public"
+" key of the encryption keypair. The assertion is decrypted by the SP using "
+"the the private key."
+msgstr "选择此选项后，传入的断言将由 IdP 使用加密密钥对的公钥进行加密。 SP 会使用私钥解密该断言。"
+
+#: authentik/sources/saml/models.py
+msgid "Encryption Keypair"
+msgstr "加密密钥对"
+
+#: authentik/sources/saml/models.py
 msgid "SAML Source"
 msgstr "SAML 源"
 
 #: authentik/sources/saml/models.py
 msgid "SAML Sources"
 msgstr "SAML 源"
+
+#: authentik/sources/saml/models.py
+msgid "SAML Source Property Mapping"
+msgstr "SAML 源属性映射"
+
+#: authentik/sources/saml/models.py
+msgid "SAML Source Property Mappings"
+msgstr "SAML 源属性映射"
 
 #: authentik/sources/saml/models.py
 msgid "User SAML Source Connection"
@@ -2190,6 +2298,14 @@ msgstr "用户 SAML 源连接"
 msgid "User SAML Source Connections"
 msgstr "用户 SAML 源连接"
 
+#: authentik/sources/saml/models.py
+msgid "Group SAML Source Connection"
+msgstr "组 SAML 源连接"
+
+#: authentik/sources/saml/models.py
+msgid "Group SAML Source Connections"
+msgstr "组 SAML 源连接"
+
 #: authentik/sources/scim/models.py
 msgid "SCIM Source"
 msgstr "SCIM 源"
@@ -2197,6 +2313,14 @@ msgstr "SCIM 源"
 #: authentik/sources/scim/models.py
 msgid "SCIM Sources"
 msgstr "SCIM 源"
+
+#: authentik/sources/scim/models.py
+msgid "SCIM Source Property Mapping"
+msgstr "SCIM 源属性映射"
+
+#: authentik/sources/scim/models.py
+msgid "SCIM Source Property Mappings"
+msgstr "SCIM 源属性映射"
 
 #: authentik/stages/authenticator_duo/models.py
 msgid "Duo Authenticator Setup Stage"
@@ -2779,6 +2903,12 @@ msgid ""
 "How many attempts a user has before the flow is canceled. To lock the user "
 "out, use a reputation policy and a user_write stage."
 msgstr "在取消流程之前，用户可以尝试多少次。要锁定用户，请使用信誉策略和 user_write 阶段。"
+
+#: authentik/stages/password/models.py
+msgid ""
+"When enabled, provides a 'show password' button with the password input "
+"field."
+msgstr "启用时，在密码输入字段中提供“显示密码”按钮。"
 
 #: authentik/stages/password/models.py
 msgid "Password Stage"
