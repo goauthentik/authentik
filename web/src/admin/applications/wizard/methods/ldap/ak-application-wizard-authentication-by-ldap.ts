@@ -1,5 +1,4 @@
 import "@goauthentik/admin/applications/wizard/ak-wizard-title";
-import "@goauthentik/admin/common/ak-core-group-search";
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
 import { first } from "@goauthentik/common/utils";
@@ -24,7 +23,6 @@ import {
     bindModeOptions,
     cryptoCertificateHelp,
     gidStartNumberHelp,
-    groupHelp,
     mfaSupportHelp,
     searchModeOptions,
     tlsServerNameHelp,
@@ -63,18 +61,6 @@ export class ApplicationWizardApplicationDetails extends WithBrandConfig(BasePro
                     <p class="pf-c-form__helper-text">
                         ${msg("Flow used for users to authenticate.")}
                     </p>
-                </ak-form-element-horizontal>
-
-                <ak-form-element-horizontal
-                    label=${msg("Search group")}
-                    name="searchGroup"
-                    .errorMessages=${errors?.searchGroup ?? []}
-                >
-                    <ak-core-group-search
-                        name="searchGroup"
-                        group=${ifDefined(provider?.searchGroup ?? nothing)}
-                    ></ak-core-group-search>
-                    <p class="pf-c-form__helper-text">${groupHelp}</p>
                 </ak-form-element-horizontal>
 
                 <ak-radio-input

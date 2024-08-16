@@ -399,7 +399,7 @@
   <source>General system status</source>
 </trans-unit>
 <trans-unit id="s6dfd15978586d05f">
-  <source>Welcome, <x id="0" equiv-text="${name}"/>.</source>
+  <source>Welcome, <x id="0" equiv-text="${name || &quot;&quot;}"/>.</source>
 </trans-unit>
 <trans-unit id="sc381422c585b867f">
   <source>Quick actions</source>
@@ -775,9 +775,6 @@
 </trans-unit>
 <trans-unit id="s319040353f479853">
   <source>Flow used for users to authenticate.</source>
-</trans-unit>
-<trans-unit id="sbc80eab557fbf782">
-  <source>Search group</source>
 </trans-unit>
 <trans-unit id="se5973e7c8ba0fc71">
   <source>Bind mode</source>
@@ -1209,9 +1206,6 @@
 </trans-unit>
 <trans-unit id="s070fdfb03034ca9b">
   <source>One hint, 'New Application Wizard', is currently hidden</source>
-</trans-unit>
-<trans-unit id="s04b7f8d6aaef3756">
-  <source>Users in the selected group can do search queries. If no group is selected, no LDAP Searches are allowed.</source>
 </trans-unit>
 <trans-unit id="sb8dd788adf7b907b">
   <source>Proxy</source>

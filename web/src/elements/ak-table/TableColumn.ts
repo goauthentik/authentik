@@ -1,5 +1,4 @@
 import { bound } from "@goauthentik/elements/decorators/bound";
-import { match } from "ts-pattern";
 
 import { html } from "lit";
 import { classMap } from "lit/directives/class-map.js";
@@ -70,8 +69,8 @@ export class TableColumn {
     private sortButton(orderBy: string) {
         return html` <button class="pf-c-table__button" @click=${this.onSort}>
             <div class="pf-c-table__button-content">
-                <span class="pf-c-table__text">${this.value}</span>
-                <span class="pf-c-table__sort-indicator">
+                <span part="column-text" class="pf-c-table__text">${this.value}</span>
+                <span part="column-sort" class="pf-c-table__sort-indicator">
                     <i class="fas ${this.sortIndicator(orderBy)}"></i>
                 </span>
             </div>
@@ -82,11 +81,16 @@ export class TableColumn {
         const isSelected = orderBy === this.orderBy || orderBy === `-${this.orderBy}`;
 
         const classes = {
-            "pf-c-table__sort": !!(this.host && this.orderBy),
-            "pf-m-selected": this.host && isSelected,
+            "pf-c-table__sort": Boolean(this.host && this.orderBy),
+            "pf-m-selected": Boolean(this.host && isSelected),
         };
 
-        return html`<th role="columnheader" scope="col" class="${classMap(classes)}">
+        return html`<th
+            part="column-item"
+            role="columnheader"
+            scope="col"
+            class="${classMap(classes)}"
+        >
             ${orderBy && this.orderBy ? this.sortButton(orderBy) : html`${this.value}`}
         </th>`;
     }

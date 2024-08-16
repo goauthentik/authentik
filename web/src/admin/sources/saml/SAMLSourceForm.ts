@@ -580,7 +580,6 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Authentication flow")}
-                        ?required=${true}
                         name="authenticationFlow"
                     >
                         <ak-source-flow-search
@@ -595,7 +594,6 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Enrollment flow")}
-                        ?required=${true}
                         name="enrollmentFlow"
                     >
                         <ak-source-flow-search

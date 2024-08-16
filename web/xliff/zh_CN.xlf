@@ -612,7 +612,7 @@
         
       </trans-unit>
       <trans-unit id="s6dfd15978586d05f">
-        <source>Welcome, <x id="0" equiv-text="${name}"/>.</source>
+        <source>Welcome, <x id="0" equiv-text="${name || &quot;&quot;}"/>.</source>
         <target>欢迎，
         <x id="0" equiv-text="${name}"/>。</target>
         
@@ -842,16 +842,6 @@
       <trans-unit id="s319040353f479853">
         <source>Flow used for users to authenticate.</source>
         <target>用于验证用户身份的流程。</target>
-        
-      </trans-unit>
-      <trans-unit id="sbc80eab557fbf782">
-        <source>Search group</source>
-        <target>搜索组</target>
-        
-      </trans-unit>
-      <trans-unit id="s04b7f8d6aaef3756">
-        <source>Users in the selected group can do search queries. If no group is selected, no LDAP Searches are allowed.</source>
-        <target>所选组中的用户可以执行搜索查询。如果未选择任何组，则不允许 LDAP 搜索。</target>
         
       </trans-unit>
       <trans-unit id="se5973e7c8ba0fc71">
@@ -2745,11 +2735,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>当前没有策略绑定到此对象。</target>
         
       </trans-unit>
-      <trans-unit id="sddb040c47daae56b">
-        <source>Bind existing policy</source>
-        <target>绑定已有策略</target>
-        
-      </trans-unit>
       <trans-unit id="saa855c61e0403fe6">
         <source>Warning: Application is not used by any Outpost.</source>
         <target>警告：应用程序未被任何前哨使用。</target>
@@ -2878,11 +2863,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s3de6db803012016a">
         <source>LDAP Attribute mapping</source>
         <target>LDAP 属性映射</target>
-        
-      </trans-unit>
-      <trans-unit id="s7c05ee41d634aa45">
-        <source>Property mappings used to user creation.</source>
-        <target>用于创建用户的属性映射。</target>
         
       </trans-unit>
       <trans-unit id="s94333971a07803b9">
@@ -3367,16 +3347,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>已成功创建映射。</target>
         
       </trans-unit>
-      <trans-unit id="s1c33d22492029aba">
-        <source>Object field</source>
-        <target>对象字段</target>
-        
-      </trans-unit>
-      <trans-unit id="s06df3c3b6a503da8">
-        <source>Field of the user object this value is written to.</source>
-        <target>写入此值的用户对象的字段。</target>
-        
-      </trans-unit>
       <trans-unit id="sd39c5e998efecf93">
         <source>SAML Attribute Name</source>
         <target>SAML 属性名称</target>
@@ -3650,11 +3620,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="sfeb779d4ccbc5a0e">
         <source>Recovery flow</source>
         <target>恢复流程</target>
-        
-      </trans-unit>
-      <trans-unit id="s1c2fd8097e14a608">
-        <source>Recovery flow. If left empty, the first applicable flow sorted by the slug is used.</source>
-        <target>恢复流程。如果留空，则使用按 Slug 排序的第一个适用流程。</target>
         
       </trans-unit>
       <trans-unit id="s836aa192b30c21da">
@@ -5728,11 +5693,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>创建阶段绑定</target>
         
       </trans-unit>
-      <trans-unit id="s207e8b106806d7e4">
-        <source>Bind stage</source>
-        <target>绑定阶段</target>
-        
-      </trans-unit>
       <trans-unit id="scc2e420c54dc8089">
         <source>Bind existing stage</source>
         <target>绑定已有阶段</target>
@@ -6035,12 +5995,6 @@ Bindings to groups/users are checked against the user of the event.</source>
       <trans-unit id="s322e34cfcba47155">
         <source>Not available</source>
         <target>不可用</target>
-        
-      </trans-unit>
-      <trans-unit id="s02b632a9ac24a824">
-        <source>Last seen: <x id="0" equiv-text="${this.outpostHealth.lastSeen?.toLocaleTimeString()}"/></source>
-        <target>上次出现：
-        <x id="0" equiv-text="${this.outpostHealth.lastSeen?.toLocaleTimeString()}"/></target>
         
       </trans-unit>
       <trans-unit id="sa43153d53ae65063">
@@ -7837,10 +7791,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Configure Proxy Provider</source>
   <target>配置代理提供程序</target>
 </trans-unit>
-<trans-unit id="sf6d46bb442b77e91">
-  <source>AdditionalScopes</source>
-  <target>额外的作用域</target>
-</trans-unit>
 <trans-unit id="s2c8c6f89089b31d4">
   <source>Configure Radius Provider</source>
   <target>配置 Radius 提供程序</target>
@@ -8048,10 +7998,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s95d56e58f816d211">
   <source>Dutch</source>
   <target>荷兰语</target>
-</trans-unit>
-<trans-unit id="s16a15af46bc9aeef">
-  <source>Failed to fetch objects: <x id="0" equiv-text="${this.error.detail}"/></source>
-  <target>获取对象失败：<x id="0" equiv-text="${this.error.detail}"/></target>
 </trans-unit>
 <trans-unit id="s744401846fea6e76">
   <source>Brand</source>
@@ -8862,6 +8808,190 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sec55a3a7f18615ec">
   <source>Outpost integrations define how authentik connects to external platforms to manage and deploy Outposts.</source>
   <target>前哨集成定义了 authentik 如何连接到外部平台以管理和部署前哨。</target>
+</trans-unit>
+<trans-unit id="s74d86eb7e5a10fdf">
+  <source>Operation failed to complete</source>
+  <target>完成操作失败</target>
+</trans-unit>
+<trans-unit id="sc0448bc8a76227cb">
+  <source>Failed to fetch objects: </source>
+  <target>拉取对象失败：</target>
+</trans-unit>
+<trans-unit id="s233a0201fde4a38d">
+  <source>Available Scopes</source>
+  <target>可用作用域</target>
+</trans-unit>
+<trans-unit id="s631b3419f6dfd031">
+  <source>Selected Scopes</source>
+  <target>已选作用域</target>
+</trans-unit>
+<trans-unit id="s81d76cccf339a43c">
+  <source>Available Property Mappings</source>
+  <target>可用属性映射</target>
+</trans-unit>
+<trans-unit id="se9195c05c61d8ef8">
+  <source>Selected Property Mappings</source>
+  <target>已选属性映射</target>
+</trans-unit>
+<trans-unit id="s0619413371f33083">
+  <source>Available User Property Mappings</source>
+  <target>可用用户属性映射</target>
+</trans-unit>
+<trans-unit id="sbb46aed99e712337">
+  <source>Selected User Property Mappings</source>
+  <target>已选用户属性映射</target>
+</trans-unit>
+<trans-unit id="se84ebf32648e6a63">
+  <source>Available Group Property Mappings</source>
+  <target>可用组属性映射</target>
+</trans-unit>
+<trans-unit id="seaf9f9ecb99568c7">
+  <source>Selected Group Property Mappings</source>
+  <target>已选组属性映射</target>
+</trans-unit>
+<trans-unit id="sc362f1f1e4044878">
+  <source>Ensure the user satisfies requirements of geography or network topology, based on IP address. If any of the configured values match, the policy passes.</source>
+  <target>确保用户满足基于 IP 地址的地理或网络拓扑要求。如果任何配置的值匹配，则策略通过。</target>
+</trans-unit>
+<trans-unit id="s26c2828bf8db525e">
+  <source>ASNs</source>
+  <target>ASN</target>
+</trans-unit>
+<trans-unit id="s72ee4dd6cfa6e10d">
+  <source>List of autonomous system numbers. Comma separated. E.g. 13335, 15169, 20940</source>
+  <target>ASN 列表。逗号分隔。例如 13335, 15169, 20940</target>
+</trans-unit>
+<trans-unit id="s77fbb0a6d145442d">
+  <source>Countries</source>
+  <target>地区</target>
+</trans-unit>
+<trans-unit id="sdd277e10884a7272">
+  <source>Available Countries</source>
+  <target>可用地区</target>
+</trans-unit>
+<trans-unit id="s7a93139fb12ebf96">
+  <source>Selected Countries</source>
+  <target>已选地区</target>
+</trans-unit>
+<trans-unit id="s375a13497266db93">
+  <source>Bind existing policy/group/user</source>
+  <target>绑定已有策略/组/用户</target>
+</trans-unit>
+<trans-unit id="s8e2de27afeb78e5a">
+  <source>Property mappings for user creation.</source>
+  <target>用于创建用户的属性映射。</target>
+</trans-unit>
+<trans-unit id="s045cf2d851164d5a">
+  <source>Property mappings for group creation.</source>
+  <target>用于创建组的属性映射。</target>
+</trans-unit>
+<trans-unit id="s9642f1d8ee6e787d">
+  <source>Link to a group with identical name. Can have security implications when a group is used with another source</source>
+  <target>链接到名称相同的组。当其他源使用相同组名时，可能会有安全隐患。</target>
+</trans-unit>
+<trans-unit id="s485964f83b5ed044">
+  <source>Use the group's name, but deny enrollment when the name already exists</source>
+  <target>使用组的名称，但在名称已存在时拒绝注册。</target>
+</trans-unit>
+<trans-unit id="s2b1b532c5271b296">
+  <source>Group matching mode</source>
+  <target>组匹配模式</target>
+</trans-unit>
+<trans-unit id="s704381cea57e5a12">
+  <source>OAuth Attribute mapping</source>
+  <target>OAuth 属性映射</target>
+</trans-unit>
+<trans-unit id="s4b9501c321dc4922">
+  <source>Plex Attribute mapping</source>
+  <target>Plex 属性映射</target>
+</trans-unit>
+<trans-unit id="s6135938c50ad8a4b">
+  <source>Encryption Certificate</source>
+  <target>加密证书</target>
+</trans-unit>
+<trans-unit id="s37b8d48b9416fc25">
+  <source>When selected, encrypted assertions will be decrypted using this keypair.</source>
+  <target>选择此选项时，被加密的断言将以此密钥对解密。</target>
+</trans-unit>
+<trans-unit id="s924a87f37bc0201e">
+  <source>SAML Attribute mapping</source>
+  <target>SAML 属性映射</target>
+</trans-unit>
+<trans-unit id="sf0532ddee3b4e977">
+  <source>SCIM Attribute mapping</source>
+  <target>SCIM 属性映射</target>
+</trans-unit>
+<trans-unit id="sd61a4f736ac0a98e">
+  <source>External user settings</source>
+  <target>外部用户设置</target>
+</trans-unit>
+<trans-unit id="sdc4f72f6a46ae2c8">
+  <source>Default application</source>
+  <target>默认应用程序</target>
+</trans-unit>
+<trans-unit id="sac85801a25b7bb27">
+  <source>When configured, external users will automatically be redirected to this application when not attempting to access a different application</source>
+  <target>配置时，外部用户会被自动重定向到此应用程序，除非用户尝试访问其他应用程序</target>
+</trans-unit>
+<trans-unit id="s9f4d6296b906d591">
+  <source>Warning: One or more license(s) have expired.</source>
+  <target>警告：一个或多个许可证已过期。</target>
+</trans-unit>
+<trans-unit id="s3b016caea59af3ef">
+  <source>Warning: One or more license(s) will expire within the next 2 weeks.</source>
+  <target>警告：一个或多个许可证将在 2 星期内过期。</target>
+</trans-unit>
+<trans-unit id="sd8a5f7269b7ac7a3">
+  <source>Caution: This authentik instance has entered read-only mode due to expired/exceeded licenses.</source>
+  <target>注意：由于许可证过期/超限，此 authentik 实例已进入只读模式。</target>
+</trans-unit>
+<trans-unit id="se8c58e65674b6847">
+  <source>This authentik instance uses a Trial license.</source>
+  <target>此 authentik 实例使用的是试用许可证。</target>
+</trans-unit>
+<trans-unit id="s6ee52309e586eb18">
+  <source>This authentik instance uses a Non-production license.</source>
+  <target>此 authentik 实例使用的是非生产许可证。</target>
+</trans-unit>
+<trans-unit id="s4a799b4562ab2051">
+  <source>Access Tokens(s)</source>
+  <target>访问令牌</target>
+</trans-unit>
+<trans-unit id="s4ae42fa672dd72bc">
+  <source>Created at</source>
+  <target>创建于</target>
+</trans-unit>
+<trans-unit id="see1f8a5c8e11c5ab">
+  <source>Last updated at</source>
+  <target>上次更新于</target>
+</trans-unit>
+<trans-unit id="s82dd7087cd1471ab">
+  <source>Last used at</source>
+  <target>上次使用于</target>
+</trans-unit>
+<trans-unit id="s9dda0789d278f5c5">
+  <source>Provide users with a 'show password' button.</source>
+  <target>为用户提供“显示密码”按钮。</target>
+</trans-unit>
+<trans-unit id="s2f7f35f6a5b733f5">
+  <source>Show password</source>
+  <target>显示密码</target>
+</trans-unit>
+<trans-unit id="s452f791e0ff6a13e">
+  <source>Hide password</source>
+  <target>隐藏密码</target>
+</trans-unit>
+<trans-unit id="s08272eeeddfd244e">
+  <source>An outpost is on an incorrect version!</source>
+  <target>一个前哨的版本不正确！</target>
+</trans-unit>
+<trans-unit id="sa30c12014e955946">
+  <source>Russian</source>
+  <target>俄语</target>
+</trans-unit>
+<trans-unit id="s354405ae02cb262d">
+  <source>Last seen: <x id="0" equiv-text="${getRelativeTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</source>
+  <target>上次出现：<x id="0" equiv-text="${getRelativeTime(lastSeen)}"/>（<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>）</target>
 </trans-unit>
     </body>
   </file>

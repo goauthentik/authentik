@@ -17,7 +17,6 @@ import { TableColumn } from "./TableColumn";
  * - content (TemplateResult[]): The contents of the rows to be shown
  */
 export type TableRow = {
-    kind: "table-row";
     key?: string;
     content: TemplateResult[];
 };

@@ -14,7 +14,9 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="totpdevice",
             name="created",
-            field=models.DateTimeField(auto_now_add=True, default=datetime.datetime(1, 1, 1, 0, 0)),
+            field=models.DateTimeField(
+                auto_now_add=True, default=datetime.datetime(1, 1, 1, 0, 0, tzinfo=datetime.UTC)
+            ),
             preserve_default=False,
         ),
         migrations.AddField(

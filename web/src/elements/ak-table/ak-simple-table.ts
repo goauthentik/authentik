@@ -1,8 +1,7 @@
 import { AKElement } from "@goauthentik/elements/Base.js";
-import "@goauthentik/elements/table/standalone/table.js";
+import { randomId } from "@goauthentik/elements/utils/randomId.js";
 
-import { html } from "lit";
-import { TemplateResult } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 
@@ -11,7 +10,16 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { TableColumn } from "./TableColumn.js";
 import type { Column, TableFlat, TableGroup, TableGrouped, TableRow } from "./types";
-import { groupContent } from "./utils";
+import { convertContent } from "./utils";
+
+export type RawContent = string | number | TemplateResult;
+export type ContentType = RawContent[][] | TableRow[] | TableGrouped;
+
+export interface ISimpleTable {
+    columns: Column[];
+    content: TableGrouped | TableFlat;
+    order?: string;
+}
 
 /**
  * @element ak-simple-table
@@ -21,27 +29,62 @@ import { groupContent } from "./utils";
  * TemplateResults, and it renders a table. If the column definition includes keys, the column will
  * be rendered with a sort indicator.
  *
- * ... and that's _all_ this does. It is the responsibility of clients using this table to:
- * - marshall their content into TemplateResults and
- * - catch the 'tablesort' event and send the table a new collection of rows sorted according to the
- *   client scheme.
+ * ## Does not handle sorting.
+ *
+ * ... that's _all_ this does. It is the responsibility of clients using this table to:
+ *
+ * - marshall their content into TemplateResults
+ * - catch the 'tablesort' event and send the table a new collection of rows sorted according to
+ *   the client scheme.
+ *
+ * ## Properties
+ *
+ * - @prop content (see types): The content to show. The simplest content is just `string[][]`, but
+ *   see the types.
+ *
+ * - @prop columns (see types): The column headers for the table.  Can be just a `string[]`, but see
+ *   the types.
+ *
+ * - @attr order (string, optional): The current column to order the content by.  By convention, prefix
+ *   with a `-` to indicate a reverse sort order.  (See "Does not handle sorting" above).
+ *
+ * ## Events
+ *
+ * - @fires tablesort (Custom): A table header has been clicked, requesting a sort event. See "Does
+ *   not handle sorting" above.
+ *
+ * ## CSS Customizations
+ *
+ * - @part table: the `<table>` element
+ * - @part column-header: the `<thead>` element for the column headers themselves
+ * - @part column-row: The `<tr>` element for the column headers
+ * - @part column-item: The `<th>` element for each column header
+ * - @part column-text: The text `<span>` of the column header
+ * - @part column-sort: The sort indicator `<span>` of a column header, if activated
+ * - @part group-header: The `<thead>` element for a group header
+ * - @part group-row: The `<tr>` element for a group header
+ * - @part group-head: The `<th>` element for a group header
+ * - @part row: The `<tr>` element for a standard row
+ * - @part cell cell-{index}: The `<td>` element for a single datum. Can be accessed via the index,
+ *   which is zero-indexed
+ *
  */
 
 @customElement("ak-simple-table")
-export class SimpleTable extends AKElement {
+export class SimpleTable extends AKElement implements ISimpleTable {
     static get styles() {
         return [PFBase, PFTable];
     }
 
-    @property({ type: String, reflect: true })
+    @property({ type: String, attribute: true, reflect: true })
     order?: string;
 
     @property({ type: Array, attribute: false })
     columns: Column[] = [];
 
     @property({ type: Array, attribute: false })
-    set content(content: TemplateResult[][] | TableRow[] | TableGrouped) {
-        this._content = groupContent(content);
+    set content(content: ContentType) {
+        this._content = convertContent(content);
     }
 
     get content(): TableGrouped | TableFlat {
@@ -53,7 +96,7 @@ export class SimpleTable extends AKElement {
         content: [],
     };
 
-    private get icolumns(): TableColumn[] {
+    protected get icolumns(): TableColumn[] {
         const hosted = (column: TableColumn) => {
             column.host = this;
             return column;
@@ -68,22 +111,42 @@ export class SimpleTable extends AKElement {
         );
     }
 
+    protected ouiaTypeDeclaration() {
+        this.setAttribute("data-ouia-component-type", "ak-simple-table");
+    }
+
+    public override connectedCallback(): void {
+        super.connectedCallback();
+        this.ouiaTypeDeclaration();
+        this.setAttribute("data-ouia-component-id", this.getAttribute("id") || randomId());
+    }
+
+    public override performUpdate() {
+        this.removeAttribute("data-ouia-component-safe");
+        super.performUpdate();
+    }
+
     public renderRow(row: TableRow) {
-        return html` <tr>
-            ${map(row.content, (col) => html`<td role="cell">${col}</td>`)}
+        return html` <tr part="row">
+            ${map(
+                row.content,
+                (col, idx) => html`<td part="cell cell-${idx}" role="cell">${col}</td>`,
+            )}
         </tr>`;
     }
 
     public renderRows(rows: TableRow[]) {
-        return html`<tbody>
+        return html`<tbody part="body">
             ${map(rows, this.renderRow)}
         </tbody>`;
     }
 
     public renderRowGroup({ group, content }: TableGroup) {
-        return html`<thead>
-                <tr>
-                    <th role="columnheader" scope="row" colspan="200">${group}</th>
+        return html`<thead part="group-header">
+                <tr part="group-row">
+                    <th role="columnheader" scope="row" colspan="200" part="group-head">
+                        ${group}
+                    </th>
                 </tr>
             </thead>
             ${this.renderRows(content)}`;
@@ -101,15 +164,15 @@ export class SimpleTable extends AKElement {
     }
 
     public renderColumnHeaders() {
-        return html`<tr role="row">
+        return html`<tr part="column-row" role="row">
             ${map(this.icolumns, (col) => col.render(this.order))}
         </tr>`;
     }
 
     public renderTable() {
         return html`
-            <table class="pf-c-table pf-m-compact pf-m-grid-md pf-m-expandable">
-                <thead>
+            <table part="table" class="pf-c-table pf-m-compact pf-m-grid-md pf-m-expandable">
+                <thead part="column-header">
                     ${this.renderColumnHeaders()}
                 </thead>
                 ${this.renderBody()}
@@ -119,5 +182,15 @@ export class SimpleTable extends AKElement {
 
     public render() {
         return this.renderTable();
+    }
+
+    public override updated() {
+        this.setAttribute("data-ouia-component-safe", "true");
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-simple-table": SimpleTable;
     }
 }

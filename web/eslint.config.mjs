@@ -12,6 +12,10 @@ export default [
     {
         ignores: [
             "dist/",
+            // don't lint the cache
+            ".wireit/",
+            // let packages have their own configurations
+            "packages/",
             // don't ever lint node_modules
             "node_modules/",
             ".storybook/*",
@@ -40,7 +44,6 @@ export default [
             "lit/attribute-names": "error",
             "lit/no-private-properties": "error",
             "lit/prefer-nothing": "warn",
-            "lit/no-template-map": "warn",
             "lit/no-template-bind": "error",
             "no-unused-vars": "off",
             "no-console": ["error", { allow: ["debug", "warn", "error"] }],

@@ -37,6 +37,7 @@ export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
                     return nothing;
                 }
                 break;
+            case LicenseSummaryStatusEnum.Unlicensed:
             case LicenseSummaryStatusEnum.Valid:
                 return nothing;
             case LicenseSummaryStatusEnum.ReadOnly:

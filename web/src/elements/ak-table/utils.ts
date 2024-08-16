@@ -1,9 +1,21 @@
-import { TableGrouped, TableRow } from "./types";
+import { TemplateResult, html } from "lit";
 
-const isTableRow = (v: unknown): v is TableRow =>
-    typeof v === "object" && v !== null && "kind" in v && v.kind === "table-row";
+import { TableFlat, TableGrouped, TableRow } from "./types";
 
-export function groupContent(content: TemplateResult[][] | TableRow[] | TableGrouped): GroupedOptions {
+// TypeScript was extremely specific about due diligence here.
+const isTableRows = (v: unknown): v is TableRow[] =>
+    Array.isArray(v) &&
+    v.length > 0 &&
+    typeof v[0] === "object" &&
+    v[0] !== null &&
+    !("kind" in v[0]) &&
+    "content" in v[0];
+
+type RawType = string | number | TemplateResult;
+type TableInputType = RawType[][] | TableRow[] | TableGrouped;
+type TableType = TableGrouped | TableFlat;
+
+export function convertContent(content: TableInputType): TableType {
     if (Array.isArray(content)) {
         if (content.length === 0) {
             return {
@@ -12,19 +24,20 @@ export function groupContent(content: TemplateResult[][] | TableRow[] | TableGro
             };
         }
 
-        if (isTableRow(content[0])) {
+        if (isTableRows(content)) {
             return {
                 kind: "table-flat",
-                content,
+                content: content,
             };
         }
 
-        // TemplateResult[][]
         return {
             kind: "table-flat",
             content: content.map((onerow) => ({
                 kind: "table-row",
-                content: onerow,
+                content: onerow.map((item: string | number | TemplateResult) =>
+                    typeof item === "object" ? item : html`${item}`,
+                ),
             })),
         };
     }
