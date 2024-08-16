@@ -53,4 +53,4 @@ To test the internal links, navigate up a level to `authentik` and then run `mak
 ## Toubleshooting
 
 -   Verify that you have the `docsmg.env` file, with this entry: `MIGRATE_PATH=./docs`
--
+-   If the `docsmg generate` command pulls _all_ of the files in the repo (even non-docs files), then do this:
