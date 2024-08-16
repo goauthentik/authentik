@@ -24,8 +24,15 @@ Use this migration tool to:
 1. Navigate to the `authentik/website` dir.
 2. Generate a migratefile with `docsmg generate | sort  >> migratefile`.
    You can also just run `docsmg generate | sort` to see the output in the terminal, before writing it to a file.
+
+    :::info The new `migratefile` will be created in the `/website` dir.
+    :::
+
 3. Edit the `migratefile` to add the target directory paths in the new structure for each entry.
-   Find the files you want to move in `migratefile` and insert the path you want to move them to after the arrow; ex `path/to/move/from/file.md -> path/to/move/to/file.md` Note: make sure to put spaces on either side of the arrow or that line won't be recognized.
+   For each file listed in `migratefile` insert the path you want to move them to.
+   EXAMPLE: `path/to/move/from/file.md -> path/to/move/to/file.md`
+
+    Note: make sure to put spaces on either side of the arrow or that line won't be recognized.
 
 ### Migrate the docs
 
@@ -35,7 +42,8 @@ Use this migration tool to:
 After you have run `migrate`, you cannot run it again or you will get a `panic` error... because the files have already been moved.
 :::
 
-2. To revert the migration, use `docsmg unmigrate`. Note: DO NOT edit the `migratefile` file in befor running `unmigrate`.
+2. To revert the migration, use `docsmg unmigrate`.
+   Note: DO NOT edit the `migratefile` file in befor running `unmigrate`.
 3. Continue modifying the `migratefile` file and then using the `docsmg migrate` command until you are satisfied with the result.
 
 ### Update the `sidebar.js file`
@@ -45,3 +53,10 @@ Because the structure is completely changed, you will need to modify/reconstruct
 ## Test the results
 
 To test the internal links, navigate up a level to `authentik` and then run `make website-watch`.
+
+## Toubleshooting
+
+-   If the `docsmg generate` command pulls _all_ of the files in the repo (even non-docs files), then check that:
+    -   the `docsmg.env` exists
+    -   that it is in `/website`
+    -   the content is `MIGRATE_PATH=./docs`
