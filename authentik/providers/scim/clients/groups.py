@@ -1,5 +1,7 @@
 """Group client"""
 
+from itertools import batched
+
 from pydantic import ValidationError
 from pydanticscim.group import GroupMember
 from pydanticscim.responses import PatchOp, PatchOperation
@@ -58,7 +60,9 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
 
         if not self._config.patch.supported:
             users = list(obj.users.order_by("id").values_list("id", flat=True))
-            connections = SCIMProviderUser.objects.filter(provider=self.provider, user__pk__in=users)
+            connections = SCIMProviderUser.objects.filter(
+                provider=self.provider, user__pk__in=users
+            )
             members = []
             for user in connections:
                 members.append(
@@ -160,14 +164,18 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
         group_id: str,
         *ops: PatchOperation,
     ):
-        req = PatchRequest(Operations=ops)
-        self._request(
-            "PATCH",
-            f"/Groups/{group_id}",
-            json=req.model_dump(
-                mode="json",
-            ),
-        )
+        chunk_size = self._config.bulk.maxOperations
+        if chunk_size < 1:
+            chunk_size = len(ops)
+        for chunk in batched(ops, chunk_size):
+            req = PatchRequest(Operations=list(chunk))
+            self._request(
+                "PATCH",
+                f"/Groups/{group_id}",
+                json=req.model_dump(
+                    mode="json",
+                ),
+            )
 
     def _patch_add_users(self, group: Group, users_set: set[int]):
         """Add users in users_set to group"""
@@ -188,11 +196,14 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
             return
         self._patch(
             scim_group.scim_id,
-            PatchOperation(
-                op=PatchOp.add,
-                path="members",
-                value=[{"value": x} for x in user_ids],
-            ),
+            *[
+                PatchOperation(
+                    op=PatchOp.add,
+                    path="members",
+                    value=[{"value": x}],
+                )
+                for x in user_ids
+            ],
         )
 
     def _patch_remove_users(self, group: Group, users_set: set[int]):
@@ -214,9 +225,12 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
             return
         self._patch(
             scim_group.scim_id,
-            PatchOperation(
-                op=PatchOp.remove,
-                path="members",
-                value=[{"value": x} for x in user_ids],
-            ),
+            *[
+                PatchOperation(
+                    op=PatchOp.remove,
+                    path="members",
+                    value=[{"value": x}],
+                )
+                for x in user_ids
+            ],
         )
