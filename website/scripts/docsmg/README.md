@@ -25,8 +25,8 @@ Use this migration tool to:
 2. Generate a migratefile with `docsmg generate | sort  >> migratefile`.
    You can also just run `docsmg generate | sort` to see the output in the terminal, before writing it to a file.
 
-   :::info The new `migratefile` will be created in the `/website` dir.
-   :::
+    :::info The new `migratefile` will be created in the `/website` dir.
+    :::
 
 3. Edit the `migratefile` to add the target directory paths in the new structure for each entry.
    Find the files you want to move in `migratefile` and insert the path you want to move them to after the arrow; ex `path/to/move/from/file.md -> path/to/move/to/file.md` Note: make sure to put spaces on either side of the arrow or that line won't be recognized.
