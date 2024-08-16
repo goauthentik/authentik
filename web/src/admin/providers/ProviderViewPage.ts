@@ -7,6 +7,7 @@ import "@goauthentik/admin/providers/rac/RACProviderViewPage";
 import "@goauthentik/admin/providers/radius/RadiusProviderViewPage";
 import "@goauthentik/admin/providers/saml/SAMLProviderViewPage";
 import "@goauthentik/admin/providers/scim/SCIMProviderViewPage";
+import "@goauthentik/admin/providers/ssf/SSFProviderViewPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
@@ -80,6 +81,10 @@ export class ProviderViewPage extends AKElement {
                 return html`<ak-provider-microsoft-entra-view
                     providerID=${ifDefined(this.provider.pk)}
                 ></ak-provider-microsoft-entra-view>`;
+            case "ak-provider-ssf-form":
+                return html`<ak-provider-ssf-view
+                    providerID=${ifDefined(this.provider.pk)}
+                ></ak-provider-ssf-view>`;
             default:
                 return html`<p>Invalid provider type ${this.provider?.component}</p>`;
         }

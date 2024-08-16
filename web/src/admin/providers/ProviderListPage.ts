@@ -9,6 +9,7 @@ import "@goauthentik/admin/providers/rac/RACProviderForm";
 import "@goauthentik/admin/providers/radius/RadiusProviderForm";
 import "@goauthentik/admin/providers/saml/SAMLProviderForm";
 import "@goauthentik/admin/providers/scim/SCIMProviderForm";
+import "@goauthentik/admin/providers/ssf/SSFProviderFormPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
