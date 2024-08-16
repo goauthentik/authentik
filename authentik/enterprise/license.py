@@ -134,8 +134,7 @@ class LicenseKey:
             exp_ts = int(mktime(lic.expiry.timetuple()))
             if total.exp == 0:
                 total.exp = exp_ts
-            if exp_ts <= total.exp:
-                total.exp = exp_ts
+            total.exp = min(total.exp, exp_ts)
             total.license_flags.extend(lic.status.license_flags)
         return total
 
