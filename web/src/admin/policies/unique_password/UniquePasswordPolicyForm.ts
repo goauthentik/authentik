@@ -88,7 +88,7 @@ export class UniquePasswordPolicyForm extends BasePolicyForm<UniquePasswordPolic
             >
                 <input
                     type="number"
-                    value="${first(this.instance?.numHistoricalPasswords, 10)}"
+                    value="${first(this.instance?.numHistoricalPasswords, 1)}"
                     class="pf-c-form-control"
                     required
                 />
