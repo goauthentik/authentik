@@ -1,9 +1,10 @@
 """authentik Unique Password policy app config"""
 
-from django.apps import AppConfig
+from authentik.blueprints.apps import ManagedAppConfig
 
 
-class AuthentikPoliciesUniquePasswordConfig(AppConfig):
+class AuthentikPoliciesUniquePasswordConfig(ManagedAppConfig):
     name = "authentik.policies.unique_password"
     label = "authentik_policies_unique_password"
     verbose_name = "authentik Policies.Unique Password"
+    default = True

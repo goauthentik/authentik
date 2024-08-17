@@ -22756,8 +22756,8 @@ paths:
           - authentik_policies_expression.expressionpolicy
           - authentik_policies_geoip.geoippolicy
           - authentik_policies_password.passwordpolicy
-          - authentik_policies_password.uniquepasswordpolicy
           - authentik_policies_reputation.reputationpolicy
+          - authentik_policies_unique_password.uniquepasswordpolicy
           - authentik_providers_google_workspace.googleworkspaceprovider
           - authentik_providers_google_workspace.googleworkspaceprovidermapping
           - authentik_providers_ldap.ldapprovider
@@ -22991,8 +22991,8 @@ paths:
           - authentik_policies_expression.expressionpolicy
           - authentik_policies_geoip.geoippolicy
           - authentik_policies_password.passwordpolicy
-          - authentik_policies_password.uniquepasswordpolicy
           - authentik_policies_reputation.reputationpolicy
+          - authentik_policies_unique_password.uniquepasswordpolicy
           - authentik_providers_google_workspace.googleworkspaceprovider
           - authentik_providers_google_workspace.googleworkspaceprovidermapping
           - authentik_providers_ldap.ldapprovider
@@ -35943,6 +35943,7 @@ components:
       - authentik.policies.geoip
       - authentik.policies.password
       - authentik.policies.reputation
+      - authentik.policies.unique_password
       - authentik.policies
       - authentik.providers.ldap
       - authentik.providers.oauth2
@@ -42119,8 +42120,8 @@ components:
       - authentik_policies_expression.expressionpolicy
       - authentik_policies_geoip.geoippolicy
       - authentik_policies_password.passwordpolicy
-      - authentik_policies_password.uniquepasswordpolicy
       - authentik_policies_reputation.reputationpolicy
+      - authentik_policies_unique_password.uniquepasswordpolicy
       - authentik_policies.policybinding
       - authentik_providers_ldap.ldapprovider
       - authentik_providers_oauth2.scopemapping
