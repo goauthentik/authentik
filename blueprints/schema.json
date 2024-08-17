@@ -5189,6 +5189,7 @@
                     "permission": {
                         "type": "string",
                         "enum": [
+                            "search_full_directory",
                             "add_ldapprovider",
                             "change_ldapprovider",
                             "delete_ldapprovider",
@@ -5773,6 +5774,20 @@
                     "title": "Verification Certificate",
                     "description": "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default."
                 },
+                "encryption_kp": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Encryption Keypair",
+                    "description": "When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key."
+                },
+                "sign_assertion": {
+                    "type": "boolean",
+                    "title": "Sign assertion"
+                },
+                "sign_response": {
+                    "type": "boolean",
+                    "title": "Sign response"
+                },
                 "sp_binding": {
                     "type": "string",
                     "enum": [
@@ -6212,6 +6227,7 @@
                             "authentik_providers_ldap.add_ldapprovider",
                             "authentik_providers_ldap.change_ldapprovider",
                             "authentik_providers_ldap.delete_ldapprovider",
+                            "authentik_providers_ldap.search_full_directory",
                             "authentik_providers_ldap.view_ldapprovider",
                             "authentik_providers_microsoft_entra.add_microsoftentraprovider",
                             "authentik_providers_microsoft_entra.change_microsoftentraprovider",
@@ -11867,6 +11883,7 @@
                             "authentik_providers_ldap.add_ldapprovider",
                             "authentik_providers_ldap.change_ldapprovider",
                             "authentik_providers_ldap.delete_ldapprovider",
+                            "authentik_providers_ldap.search_full_directory",
                             "authentik_providers_ldap.view_ldapprovider",
                             "authentik_providers_microsoft_entra.add_microsoftentraprovider",
                             "authentik_providers_microsoft_entra.change_microsoftentraprovider",

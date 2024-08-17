@@ -20665,6 +20665,11 @@ paths:
           - http://www.w3.org/2001/04/xmlenc#sha256
           - http://www.w3.org/2001/04/xmlenc#sha512
       - in: query
+        name: encryption_kp
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: is_backchannel
         schema:
           type: boolean
@@ -20718,6 +20723,14 @@ paths:
         name: session_valid_not_on_or_after
         schema:
           type: string
+      - in: query
+        name: sign_assertion
+        schema:
+          type: boolean
+      - in: query
+        name: sign_response
+        schema:
+          type: boolean
       - in: query
         name: signature_algorithm
         schema:
@@ -46866,6 +46879,18 @@ components:
           title: Verification Certificate
           description: When selected, incoming assertion's Signatures will be validated
             against this certificate. To allow unsigned Requests, leave on default.
+        encryption_kp:
+          type: string
+          format: uuid
+          nullable: true
+          title: Encryption Keypair
+          description: When selected, incoming assertions are encrypted by the IdP
+            using the public key of the encryption keypair. The assertion is decrypted
+            by the SP using the the private key.
+        sign_assertion:
+          type: boolean
+        sign_response:
+          type: boolean
         sp_binding:
           allOf:
           - $ref: '#/components/schemas/SpBindingEnum'
@@ -49581,6 +49606,18 @@ components:
           title: Verification Certificate
           description: When selected, incoming assertion's Signatures will be validated
             against this certificate. To allow unsigned Requests, leave on default.
+        encryption_kp:
+          type: string
+          format: uuid
+          nullable: true
+          title: Encryption Keypair
+          description: When selected, incoming assertions are encrypted by the IdP
+            using the public key of the encryption keypair. The assertion is decrypted
+            by the SP using the the private key.
+        sign_assertion:
+          type: boolean
+        sign_response:
+          type: boolean
         sp_binding:
           allOf:
           - $ref: '#/components/schemas/SpBindingEnum'
@@ -49725,6 +49762,18 @@ components:
           title: Verification Certificate
           description: When selected, incoming assertion's Signatures will be validated
             against this certificate. To allow unsigned Requests, leave on default.
+        encryption_kp:
+          type: string
+          format: uuid
+          nullable: true
+          title: Encryption Keypair
+          description: When selected, incoming assertions are encrypted by the IdP
+            using the public key of the encryption keypair. The assertion is decrypted
+            by the SP using the the private key.
+        sign_assertion:
+          type: boolean
+        sign_response:
+          type: boolean
         sp_binding:
           allOf:
           - $ref: '#/components/schemas/SpBindingEnum'
