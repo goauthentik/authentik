@@ -9,11 +9,7 @@ import xmlsec
 from defusedxml import ElementTree
 from structlog.stdlib import get_logger
 
-from authentik.lib.xml import lxml_from_string
-from authentik.providers.saml.exceptions import CannotHandleAssertion
-from authentik.providers.saml.models import SAMLProvider
-from authentik.providers.saml.utils.encoding import decode_base64_and_inflate
-from authentik.sources.saml.processors.constants import (
+from authentik.common.saml.constants import (
     DSA_SHA1,
     NS_MAP,
     NS_SAML_PROTOCOL,
@@ -23,6 +19,10 @@ from authentik.sources.saml.processors.constants import (
     RSA_SHA512,
     SAML_NAME_ID_FORMAT_UNSPECIFIED,
 )
+from authentik.common.saml.encoding import decode_base64_and_inflate
+from authentik.lib.xml import lxml_from_string
+from authentik.providers.saml.exceptions import CannotHandleAssertion
+from authentik.providers.saml.models import SAMLProvider
 
 ERROR_CANNOT_DECODE_REQUEST = "Cannot decode SAML request."
 ERROR_SIGNATURE_REQUIRED_BUT_ABSENT = (

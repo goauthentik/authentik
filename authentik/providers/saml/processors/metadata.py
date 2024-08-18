@@ -9,9 +9,7 @@ from django.http import HttpRequest
 from django.urls import reverse
 from lxml.etree import Element, SubElement, tostring  # nosec
 
-from authentik.providers.saml.models import SAMLProvider
-from authentik.providers.saml.utils.encoding import strip_pem_header
-from authentik.sources.saml.processors.constants import (
+from authentik.common.saml.constants import (
     DIGEST_ALGORITHM_TRANSLATION_MAP,
     NS_MAP,
     NS_SAML_METADATA,
@@ -25,6 +23,8 @@ from authentik.sources.saml.processors.constants import (
     SAML_NAME_ID_FORMAT_X509,
     SIGN_ALGORITHM_TRANSFORM_MAP,
 )
+from authentik.common.saml.encoding import strip_pem_header
+from authentik.providers.saml.models import SAMLProvider
 
 
 class MetadataProcessor:

@@ -10,21 +10,7 @@ from lxml import etree  # nosec
 from lxml.etree import Element, SubElement  # nosec
 from structlog.stdlib import get_logger
 
-from authentik.core.expression.exceptions import PropertyMappingExpressionException
-from authentik.events.models import Event, EventAction
-from authentik.events.signals import get_login_event
-from authentik.lib.utils.time import timedelta_from_string
-from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
-from authentik.providers.saml.processors.authn_request_parser import AuthNRequest
-from authentik.providers.saml.utils import get_random_id
-from authentik.providers.saml.utils.time import get_time_string
-from authentik.sources.ldap.auth import LDAP_DISTINGUISHED_NAME
-from authentik.sources.saml.exceptions import (
-    InvalidEncryption,
-    InvalidSignature,
-    UnsupportedNameIDFormat,
-)
-from authentik.sources.saml.processors.constants import (
+from authentik.common.saml.constants import (
     DIGEST_ALGORITHM_TRANSLATION_MAP,
     NS_MAP,
     NS_SAML_ASSERTION,
@@ -37,6 +23,20 @@ from authentik.sources.saml.processors.constants import (
     SAML_NAME_ID_FORMAT_X509,
     SIGN_ALGORITHM_TRANSFORM_MAP,
 )
+from authentik.common.saml.exceptions import (
+    InvalidEncryption,
+    InvalidSignature,
+    UnsupportedNameIDFormat,
+)
+from authentik.common.saml.id import get_random_id
+from authentik.common.saml.time import get_time_string
+from authentik.core.expression.exceptions import PropertyMappingExpressionException
+from authentik.events.models import Event, EventAction
+from authentik.events.signals import get_login_event
+from authentik.lib.utils.time import timedelta_from_string
+from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
+from authentik.providers.saml.processors.authn_request_parser import AuthNRequest
+from authentik.sources.ldap.auth import LDAP_DISTINGUISHED_NAME
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
 LOGGER = get_logger()

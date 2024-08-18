@@ -8,6 +8,13 @@ from django.test import TestCase
 from lxml import etree  # nosec
 
 from authentik.blueprints.tests import apply_blueprint
+from authentik.common.saml.constants import (
+    NS_MAP,
+    SAML_BINDING_REDIRECT,
+    SAML_NAME_ID_FORMAT_EMAIL,
+    SAML_NAME_ID_FORMAT_UNSPECIFIED,
+)
+from authentik.common.saml.exceptions import MismatchedRequestID
 from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
@@ -17,14 +24,7 @@ from authentik.lib.xml import lxml_from_string
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequestParser
-from authentik.sources.saml.exceptions import MismatchedRequestID
 from authentik.sources.saml.models import SAMLSource
-from authentik.sources.saml.processors.constants import (
-    NS_MAP,
-    SAML_BINDING_REDIRECT,
-    SAML_NAME_ID_FORMAT_EMAIL,
-    SAML_NAME_ID_FORMAT_UNSPECIFIED,
-)
 from authentik.sources.saml.processors.request import SESSION_KEY_REQUEST_ID, RequestProcessor
 from authentik.sources.saml.processors.response import ResponseProcessor
 

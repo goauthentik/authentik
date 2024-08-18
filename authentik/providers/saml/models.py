@@ -7,12 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
-from authentik.core.api.object_types import CreatableType
-from authentik.core.models import PropertyMapping, Provider
-from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.models import DomainlessURLValidator
-from authentik.lib.utils.time import timedelta_string_validator
-from authentik.sources.saml.processors.constants import (
+from authentik.common.saml.constants import (
     DSA_SHA1,
     ECDSA_SHA1,
     ECDSA_SHA256,
@@ -27,6 +22,11 @@ from authentik.sources.saml.processors.constants import (
     SHA384,
     SHA512,
 )
+from authentik.core.api.object_types import CreatableType
+from authentik.core.models import PropertyMapping, Provider
+from authentik.crypto.models import CertificateKeyPair
+from authentik.lib.models import DomainlessURLValidator
+from authentik.lib.utils.time import timedelta_string_validator
 
 LOGGER = get_logger()
 

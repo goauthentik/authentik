@@ -5,11 +5,11 @@ from dataclasses import dataclass
 
 from defusedxml import ElementTree
 
+from authentik.common.saml.constants import NS_SAML_PROTOCOL
+from authentik.common.saml.encoding import decode_base64_and_inflate
 from authentik.providers.saml.exceptions import CannotHandleAssertion
 from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.processors.authn_request_parser import ERROR_CANNOT_DECODE_REQUEST
-from authentik.providers.saml.utils.encoding import decode_base64_and_inflate
-from authentik.sources.saml.processors.constants import NS_SAML_PROTOCOL
 
 
 @dataclass(slots=True)
