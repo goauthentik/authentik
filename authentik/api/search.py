@@ -37,15 +37,26 @@ class JSONSearchField(StrField):
     def get_nested_options(self):
         """Get keys of all nested objects to show autocomplete"""
         keys = (
-            self.model.objects.annotate(
-                keys=models.Func(models.F(self.name), function="jsonb_object_keys")
+            # self.model.objects.annotate(
+            #     keys=models.Func(models.F("user"), function="jsonb_object_keys"),
+            #     values=models.Func(models.Expression(), function="jsonb_each"),
+            # )
+            # .values("keys")
+            # .distinct("keys")
+            # .order_by("keys")
+            # .values_list("keys", flat=True)
+            self.model.objects.raw(
+                'SELECT event_uuid, key, context->key AS value FROM authentik_events_event, jsonb_object_keys("context") as key;'
             )
-            .values("keys")
-            .distinct("keys")
-            .order_by("keys")
-            .values_list("keys", flat=True)
         )
-        return list(keys)
+        fields = {}
+        for evt in keys:
+            fields[evt.key] = {
+                "type": "str",
+                "nullable": False,
+                "options": evt.value,
+            }
+        return fields
 
     def relation(self) -> str:
         return f"{self.model._meta.app_label}.{self.model._meta.model_name}_{self.name}"
@@ -96,14 +107,10 @@ class JSONDjangoQLSchemaSerializer(DjangoQLSchemaSerializer):
                 if not isinstance(field, JSONSearchField):
                     continue
                 nested_model = OrderedDict()
-                for nested_field in field.get_nested_options():
+                for nested_field_name, nested_field in field.get_nested_options().items():
                     # Can't generate a temporary StrField instance here as that requires a
                     # model, and we're only pretending there's a model
-                    nested_model[nested_field] = {
-                        "type": "str",
-                        "nullable": True,
-                        "options": [],
-                    }
+                    nested_model[nested_field_name] = nested_field
                 serialization["models"][field.relation()] = nested_model
         return serialization
 
