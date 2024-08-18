@@ -8662,6 +8662,18 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s354405ae02cb262d">
   <source>Last seen: <x id="0" equiv-text="${getRelativeTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</source>
 </trans-unit>
+<trans-unit id="s5aebe06e3ddf6ca9">
+  <source>Sign assertions</source>
+</trans-unit>
+<trans-unit id="s4e2329ffa0ef6b74">
+  <source>When enabled, the assertion element of the SAML response will be signed.</source>
+</trans-unit>
+<trans-unit id="s2ad1b968b37ded68">
+  <source>Sign responses</source>
+</trans-unit>
+<trans-unit id="sb416d07987093cd5">
+  <source>When selected, assertions will be encrypted using this keypair.</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
