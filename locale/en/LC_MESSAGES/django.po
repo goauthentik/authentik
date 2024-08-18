@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-15 00:09+0000\n"
+"POT-Creation-Date: 2024-08-18 00:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1601,6 +1601,12 @@ msgid "Radius Provider Property Mappings"
 msgstr ""
 
 #: authentik/providers/saml/api/providers.py
+msgid ""
+"With a signing keypair selected, at least one of 'Sign assertion' and 'Sign "
+"Response' must be selected."
+msgstr ""
+
+#: authentik/providers/saml/api/providers.py
 msgid "Invalid XML Syntax"
 msgstr ""
 
@@ -1729,6 +1735,17 @@ msgstr ""
 
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "Signing Keypair"
+msgstr ""
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid ""
+"When selected, incoming assertions are encrypted by the IdP using the public "
+"key of the encryption keypair. The assertion is decrypted by the SP using "
+"the the private key."
+msgstr ""
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "Encryption Keypair"
 msgstr ""
 
 #: authentik/providers/saml/models.py
@@ -2224,17 +2241,6 @@ msgstr ""
 
 #: authentik/sources/saml/models.py
 msgid "Keypair used to sign outgoing Responses going to the Identity Provider."
-msgstr ""
-
-#: authentik/sources/saml/models.py
-msgid ""
-"When selected, incoming assertions are encrypted by the IdP using the public "
-"key of the encryption keypair. The assertion is decrypted by the SP using "
-"the the private key."
-msgstr ""
-
-#: authentik/sources/saml/models.py
-msgid "Encryption Keypair"
 msgstr ""
 
 #: authentik/sources/saml/models.py
