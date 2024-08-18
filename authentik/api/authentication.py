@@ -10,10 +10,10 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.request import Request
 from structlog.stdlib import get_logger
 
+from authentik.common.oauth.constants import SCOPE_AUTHENTIK_API
 from authentik.core.middleware import CTX_AUTH_VIA
 from authentik.core.models import Token, TokenIntents, User
 from authentik.outposts.models import Outpost
-from authentik.providers.oauth2.constants import SCOPE_AUTHENTIK_API
 
 LOGGER = get_logger()
 

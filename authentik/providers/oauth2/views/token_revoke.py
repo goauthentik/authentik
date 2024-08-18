@@ -8,7 +8,7 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
 
-from authentik.providers.oauth2.errors import TokenRevocationError
+from authentik.common.oauth.errors import TokenRevocationError
 from authentik.providers.oauth2.models import AccessToken, ClientTypes, OAuth2Provider, RefreshToken
 from authentik.providers.oauth2.utils import (
     TokenResponse,

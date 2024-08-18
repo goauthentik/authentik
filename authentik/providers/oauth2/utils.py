@@ -11,9 +11,9 @@ from django.http.response import HttpResponseRedirect
 from django.utils.cache import patch_vary_headers
 from structlog.stdlib import get_logger
 
+from authentik.common.oauth.errors import BearerTokenError
 from authentik.core.middleware import CTX_AUTH_VIA, KEY_USER
 from authentik.events.models import Event, EventAction
-from authentik.providers.oauth2.errors import BearerTokenError
 from authentik.providers.oauth2.models import AccessToken, OAuth2Provider
 
 LOGGER = get_logger()

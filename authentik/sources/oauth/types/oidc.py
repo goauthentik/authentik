@@ -4,6 +4,7 @@ from typing import Any
 
 from requests.auth import AuthBase, HTTPBasicAuth
 
+from authentik.common.oauth.constants import SCOPE_OPENID, SCOPE_OPENID_EMAIL, SCOPE_OPENID_PROFILE
 from authentik.sources.oauth.clients.oauth2 import UserprofileHeaderAuthClient
 from authentik.sources.oauth.models import AuthorizationCodeAuthMethod, OAuthSource
 from authentik.sources.oauth.types.registry import SourceType, registry
@@ -16,7 +17,7 @@ class OpenIDConnectOAuthRedirect(OAuthRedirect):
 
     def get_additional_parameters(self, source: OAuthSource):  # pragma: no cover
         return {
-            "scope": ["openid", "email", "profile"],
+            "scope": [SCOPE_OPENID, SCOPE_OPENID_PROFILE, SCOPE_OPENID_EMAIL],
         }
 
 
