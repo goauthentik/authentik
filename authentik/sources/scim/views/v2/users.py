@@ -11,9 +11,9 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.request import Request
 from rest_framework.response import Response
 
+from authentik.common.scim.schema import SCIM_USER_SCHEMA
+from authentik.common.scim.schema import User as SCIMUserModel
 from authentik.core.models import User
-from authentik.providers.scim.clients.schema import SCIM_USER_SCHEMA
-from authentik.providers.scim.clients.schema import User as SCIMUserModel
 from authentik.sources.scim.models import SCIMSourceUser
 from authentik.sources.scim.views.v2.base import SCIMObjectView
 

@@ -7,6 +7,8 @@ from pydantic import ValidationError
 from pydanticscim.group import GroupMember
 from pydanticscim.responses import PatchOp
 
+from authentik.common.scim.schema import SCIM_GROUP_SCHEMA, PatchOperation, PatchRequest
+from authentik.common.scim.schema import Group as SCIMGroupSchema
 from authentik.core.models import Group
 from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.lib.sync.outgoing.base import Direction
@@ -20,8 +22,6 @@ from authentik.providers.scim.clients.base import SCIMClient
 from authentik.providers.scim.clients.exceptions import (
     SCIMRequestException,
 )
-from authentik.providers.scim.clients.schema import SCIM_GROUP_SCHEMA, PatchOperation, PatchRequest
-from authentik.providers.scim.clients.schema import Group as SCIMGroupSchema
 from authentik.providers.scim.models import (
     SCIMMapping,
     SCIMProvider,
