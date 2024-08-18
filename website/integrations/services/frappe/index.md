@@ -66,7 +66,7 @@ Add a new Social login Key using the black button on top right.
             - In Client URLs section:
             - Authorize URL: `/application/o/authorize/`
             - Access Token URL: `/application/o/token/`
-            - Redirect URL: `/api/method/frappe.integrations.oauth2_logins.custom/provider/`
+            - Redirect URL: `/api/method/frappe.integrations.oauth2_logins.custom/provider`
             - API Endpoint: `/application/o/userinfo/`
 
     ![](./frappe3.png)
