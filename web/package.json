@@ -82,7 +82,7 @@
         "babel-plugin-tsconfig-paths": "^1.0.3",
         "chokidar": "^3.6.0",
         "cross-env": "^7.0.3",
-        "esbuild": "^0.23.0",
+        "esbuild": "^0.23.1",
         "eslint": "^9.8.0",
         "eslint-plugin-lit": "^1.14.0",
         "eslint-plugin-sonarjs": "^1.0.4",
