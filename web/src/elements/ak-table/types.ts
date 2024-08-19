@@ -27,7 +27,7 @@ export type TableRow = {
  *
  */
 export type TableFlat = {
-    kind: "table-flat";
+    kind: "flat";
     content: TableRow[];
 };
 
@@ -35,7 +35,7 @@ export type TableFlat = {
  * For a single grouped collection; the name of the group and the contents.
  */
 export type TableGroup = {
-    kind: "table-group";
+    kind: "group";
     group: string;
     content: TableRow[];
 };
@@ -44,7 +44,7 @@ export type TableGroup = {
  * For a grouped collection, all of the groups.
  */
 export type TableGrouped = {
-    kind: "table-grouped";
+    kind: "groups";
     content: TableGroup[];
 };
 
@@ -54,3 +54,9 @@ export type TableGrouped = {
  * used to indicate and control sortability.
  */
 export type Column = TableColumn | string | [string, string?];
+
+export type RawType = string | number | TemplateResult;
+export type TableInputType = RawType[][] | TableRow[] | TableGrouped | TableFlat;
+export type TableType = TableGrouped | TableFlat;
+
+export type KeyBy = (_: RawType[]) => string;

@@ -23,9 +23,13 @@ export interface ISelectTable extends ISimpleTable {
  * table updates. The `multiple` keyword creates a multi-select table. Sorting behavior resembles
  * that of `SimpleTable`.
  *
- * Note that it *preserves* any values that it may have seen prior, but are not currently visible
- * on the page.  This preserves the selection collection in case the client wishes to implement
- * pagination.
+ * Aside from overriding the `renderRow()` and `renderColumnHeaders()` methods to add the room
+ * for the checkbox, this is entirely an additive feature; the logic of `ak-simple-table` is
+ * otherwise completely preserved.
+ *
+ * Note that this implementation caches any values that it may have seen prior, but are not
+ * currently visible on the page. This preserves the selection collection in case the client wishes
+ * to implement pagination.
  *
  * ## Properties
  *
@@ -162,6 +166,11 @@ export class SelectTable extends SimpleTable {
         this.setAttribute("data-ouia-component-type", "ak-select-table");
     }
 
+    public override connectedCallback(): void {
+        super.connectedCallback();
+        this.dataset.akControl = "true";
+    }
+
     public override willUpdate(changed: PropertyValues<this>) {
         super.willUpdate(changed);
         // Ensure the value attribute in the component reflects the current value after an update
@@ -194,7 +203,8 @@ export class SelectTable extends SimpleTable {
         </td>`;
     }
 
-    // Without the `bound`, Lit's `map()` will pick up the parent class's `renderRow()`.
+    // Without the `bound`, Lit's `map()` will pick up the parent class's `renderRow()`.  This
+    // override makes room for the select checkbox.
     @bound
     public override renderRow(row: TableRow, _rowidx: number) {
         return html` <tr part="row">
@@ -234,6 +244,7 @@ export class SelectTable extends SimpleTable {
         </th>`;
     }
 
+    // This override makes room for the select checkbox.
     public override renderColumnHeaders() {
         return html`<tr part="column-row" role="row">
             ${this.multiple ? this.renderAllOnThisPageCheckbox() : html`<th></th>`}

@@ -14,6 +14,17 @@ type Constructor<T = object> = {
     prototype: T;
 };
 
+/**
+ * class ExpansionRenderer
+ *
+ * This mixin provides the visual controls and state for the tables with an expansion row. It adds:
+ *
+ * - style for the control
+ * - The control for a row
+ * - The expansion row into which the content will be rendered
+ * - a state which memoizes which rows are open/closed
+ */
+
 export function ExpansionRenderer<T extends Constructor<LitElement>>(superclass: T) {
     const parentStyles = (superclass as unknown as typeof LitElement)?.styles ?? [];
 

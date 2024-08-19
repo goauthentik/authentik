@@ -1,4 +1,5 @@
 import { AKElement } from "@goauthentik/elements/Base.js";
+import { bound } from "@goauthentik/elements/decorators/bound";
 import { randomId } from "@goauthentik/elements/utils/randomId.js";
 
 import { TemplateResult, html } from "lit";
@@ -92,7 +93,7 @@ export class SimpleTable extends AKElement implements ISimpleTable {
     }
 
     private _content: TableGrouped | TableFlat = {
-        kind: "table-flat",
+        kind: "flat",
         content: [],
     };
 
@@ -141,6 +142,7 @@ export class SimpleTable extends AKElement implements ISimpleTable {
         </tbody>`;
     }
 
+    @bound
     public renderRowGroup({ group, content }: TableGroup) {
         return html`<thead part="group-header">
                 <tr part="group-row">
@@ -152,13 +154,14 @@ export class SimpleTable extends AKElement implements ISimpleTable {
             ${this.renderRows(content)}`;
     }
 
+    @bound
     public renderRowGroups(rowGroups: TableGroup[]) {
         return html`${map(rowGroups, this.renderRowGroup)}`;
     }
 
     public renderBody() {
         // prettier-ignore
-        return this.content.kind === 'table-flat' 
+        return this.content.kind === 'flat' 
             ? this.renderRows(this.content.content)
             : this.renderRowGroups(this.content.content);
     }

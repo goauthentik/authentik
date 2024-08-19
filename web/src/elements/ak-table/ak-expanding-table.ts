@@ -15,12 +15,16 @@ const ExpansionTableBase = ExpansionRenderer(SimpleTable);
  * @element ak-expandable-table
  * class Table
  *
- * Extends the SimpleTable with...
+ * Extends the SimpleTable so that an expansion row can be shown below a content row.
+ *
+ * Because both this implementation and `ak-full-table` use the exact same rendering infrastructure,
+ * that has been broken out into a mixin named [`ExpansionRenderer`](./ExpansionRenderer.ts).
  *
  * ## Properties
  *
  * - @prop content (see types): The content to show. The simplest content is just `string[][]`, but
- *   see the types.
+ *   see the types. You will need to use a type that implements [`TableRow[]`](./types.ts) to
+ *   include the expansion content as part of the payload.
  *
  * - @prop columns (see types): The column headers for the table.  Can be just a `string[]`, but see
  *   the types.
@@ -60,7 +64,8 @@ const ExpansionTableBase = ExpansionRenderer(SimpleTable);
 
 @customElement("ak-expandable-table")
 export class ExpandableTable extends ExpansionTableBase {
-    // Without the `bound`, Lit's `map()` will pick up the parent class's `renderRow()`.
+    // Without the `bound`, Lit's `map()` will pick up the parent class's `renderRow()`. This
+    // override adds the expansion control and expansion row rendering to this method.
     @bound
     public override renderRow(row: TableRow, rowidx: number) {
         const expanded = this.expandedRows.includes(rowidx);
@@ -77,6 +82,7 @@ export class ExpandableTable extends ExpansionTableBase {
         `;
     }
 
+    // This override adds room for the expansion control.
     public override renderColumnHeaders() {
         return html`<tr part="column-row" role="row">
             <td role="cell"></td>

@@ -2,11 +2,44 @@
 
 export const nutritionDbUSDA = [
     {
+        name: "Hummus",
+        calories: 229,
+        sugar: "0.34g",
+        fiber: "5.4g",
+        protein: "7.35g",
+        group: "processed",
+    },
+    {
+        name: "Onion Rings, breaded",
+        calories: 288,
+        sugar: "4.5g",
+        fiber: "2.4g",
+        protein: "4.52g",
+        group: "processed",
+    },
+    {
+        name: "Bread, white",
+        calories: 270,
+        sugar: "5.34g",
+        fiber: "2.3g",
+        protein: "9.43g",
+        group: "processed",
+    },
+    {
+        name: "Sweet and Sour Pork, frozen",
+        calories: 260,
+        sugar: "10.3g",
+        fiber: "1g",
+        protein: "8.88g",
+        group: "processed",
+    },
+    {
         name: "Almonds",
         calories: 620,
         sugar: "4.17g",
         fiber: "11g",
         protein: "20.4g",
+        group: "organic",
     },
     {
         name: "Kale",
@@ -14,6 +47,7 @@ export const nutritionDbUSDA = [
         sugar: "0.8g",
         fiber: "4.1g",
         protein: "2.92g",
+        group: "organic",
     },
     {
         name: "Pickles",
@@ -21,6 +55,7 @@ export const nutritionDbUSDA = [
         sugar: "1.28g",
         fiber: "1g",
         protein: "0.48g",
+        group: "organic",
     },
     {
         name: "Kiwifruit",
@@ -28,6 +63,7 @@ export const nutritionDbUSDA = [
         sugar: "8.99g",
         fiber: "3g",
         protein: "1.06g",
+        group: "organic",
     },
     {
         name: "Sunflower Seeds",
@@ -35,6 +71,7 @@ export const nutritionDbUSDA = [
         sugar: "3.14g",
         fiber: "10.3g",
         protein: "21g",
+        group: "organic",
     },
 
     {
@@ -43,6 +80,7 @@ export const nutritionDbUSDA = [
         sugar: "7.89g",
         fiber: "1.5g",
         protein: "1.06g",
+        group: "organic",
     },
     {
         name: "Oatmeal Cookies",
@@ -50,6 +88,7 @@ export const nutritionDbUSDA = [
         sugar: "34.8g",
         fiber: "3.3g",
         protein: "5.79g",
+        group: "processed",
     },
     {
         name: "Carrots",
@@ -57,6 +96,7 @@ export const nutritionDbUSDA = [
         sugar: "4.2g",
         fiber: "3.2g",
         protein: "0.81g",
+        group: "organic",
     },
     {
         name: "Figs",
@@ -64,6 +104,7 @@ export const nutritionDbUSDA = [
         sugar: "47.9g",
         fiber: "9.8g",
         protein: "3.3g",
+        group: "organic",
     },
     {
         name: "Lettuce",
@@ -71,6 +112,7 @@ export const nutritionDbUSDA = [
         sugar: "1.19g",
         fiber: "1.8g",
         protein: "1.24g",
+        group: "organic",
     },
     {
         name: "Cantaloupe",
@@ -78,6 +120,7 @@ export const nutritionDbUSDA = [
         sugar: "7.88g",
         fiber: "0.8g",
         protein: "0.82g",
+        group: "organic",
     },
     {
         name: "Oranges",
@@ -85,6 +128,7 @@ export const nutritionDbUSDA = [
         sugar: "8.57g",
         fiber: "2g",
         protein: "0.91g",
+        group: "organic",
     },
     {
         name: "Pears",
@@ -92,6 +136,7 @@ export const nutritionDbUSDA = [
         sugar: "9.69g",
         fiber: "3.1g",
         protein: "0.38g",
+        group: "organic",
     },
     {
         name: "Broccoli",
@@ -99,6 +144,7 @@ export const nutritionDbUSDA = [
         sugar: "1.4g",
         fiber: "2.4g",
         protein: "2.57g",
+        group: "organic",
     },
     {
         name: "Eggs",
@@ -106,6 +152,7 @@ export const nutritionDbUSDA = [
         sugar: "0.2g",
         fiber: "0g",
         protein: "12.4g",
+        group: "organic",
     },
     {
         name: "Onions",
@@ -113,6 +160,7 @@ export const nutritionDbUSDA = [
         sugar: "5.76g",
         fiber: "2.2g",
         protein: "0.94g",
+        group: "organic",
     },
     {
         name: "Bananas",
@@ -120,6 +168,7 @@ export const nutritionDbUSDA = [
         sugar: "15.8g",
         fiber: "1.7g",
         protein: "0.74g",
+        group: "organic",
     },
     {
         name: "Apples",
@@ -127,6 +176,7 @@ export const nutritionDbUSDA = [
         sugar: "13.3g",
         fiber: "2.08g",
         protein: "0.148g",
+        group: "organic",
     },
     {
         name: "Pineapple",
@@ -134,6 +184,7 @@ export const nutritionDbUSDA = [
         sugar: "11.4g",
         fiber: "0.935g",
         protein: "0.461g",
+        group: "organic",
     },
     {
         name: "Snap Green Beans",
@@ -141,6 +192,7 @@ export const nutritionDbUSDA = [
         sugar: "2.33g",
         fiber: "3.01g",
         protein: "1.97g",
+        group: "organic",
     },
     {
         name: "Beets",
@@ -148,6 +200,7 @@ export const nutritionDbUSDA = [
         sugar: "5.1g",
         fiber: "3.12g",
         protein: "1.69g",
+        group: "organic",
     },
     {
         name: "Eggplant",
@@ -155,5 +208,6 @@ export const nutritionDbUSDA = [
         sugar: "2.35g",
         fiber: "2.45g",
         protein: "0.852g",
+        group: "organic",
     },
 ];

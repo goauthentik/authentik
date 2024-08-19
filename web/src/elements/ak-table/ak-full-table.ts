@@ -15,7 +15,11 @@ const FullTableBase = ExpansionRenderer(SelectTable);
  * @element ak-expandable-table
  * class Table
  *
- * Extends the SimpleTable with...
+ * Extends the SelectTable with an expansion row that can be shown below a content row.
+ *
+ * Because both this implementation and `ak-expanding-table` use the exact same rendering
+ * infrastructure, that has been broken out into a mixin named
+ * [`ExpansionRenderer`](./ExpansionRenderer.ts).
  *
  * ## Properties
  *
@@ -28,10 +32,28 @@ const FullTableBase = ExpansionRenderer(SelectTable);
  * - @attr (string, optional): The current column to order the content by.  By convention, prefix
  *   with a `-` to indicate a reverse sort order.  (See "Does not handle sorting" above).
  *
+ * - @attr (string, optional): The current column to order the content by.  By convention, prefix
+ *   with a `-` to indicate a reverse sort order.  (See "Does not handle sorting" above).
+ *
+ * - @attr multiple (boolean): If true, this table is "multi-select" and a 'select all' checkbox will
+ *   be available.
+ *
+ * - @attr value (string): If set, will set the value of the component. For multi-select, will split
+ *   on the `valueSep` (see next entry).  Get is the reverse: either the value of the component,
+ *   or for multi-select, the value of the component `.join()`ed with the `valueSep`
+ *
+ * - @attr valueSep (string): For multi-select only, the (ideally one) characters which will separate
+ *   values.
+ *
+ * - @prop selected (string[]): The values selected. Always an array, even for mult-select. When not
+ *   multi-select, will have zero or one items only.
+ *
  * ## Events
  *
  * - @fires tablesort (Custom): A table header has been clicked, requesting a sort event. See "Does
  *   not handle sorting" above.
+ *
+ * - @fires change: Notifies clients that the user has changed the collective value of the control.
  *
  * ## CSS Customizations
  *
@@ -62,10 +84,15 @@ const FullTableBase = ExpansionRenderer(SelectTable);
  *
  */
 
-@customElement("ak-full-table")
+@customElement("ak-table-view")
 export class TableView extends FullTableBase {
-    // Without the `bound`, Lit's `map()` will pick up the parent class's `renderRow()`.
+    protected override ouiaTypeDeclaration() {
+        this.setAttribute("data-ouia-component-type", "ak-full-table");
+    }
 
+    // Without the `bound`, Lit's `map()` will pick up the parent class's `renderRow()`. This
+    // override adds the expansion control and expansion row rendering to this method, while
+    // preserving room for the select control.
     @bound
     public override renderRow(row: TableRow, rowidx: number) {
         const expanded = this.expandedRows.includes(rowidx);
@@ -84,6 +111,8 @@ export class TableView extends FullTableBase {
         `;
     }
 
+    // This override adds room for the expansion control, while also providing room
+    // for the `select` control.
     public override renderColumnHeaders() {
         return html`<tr part="column-row" role="row">
             <td role="cell"></td>

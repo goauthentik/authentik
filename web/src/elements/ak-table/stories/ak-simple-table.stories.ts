@@ -7,7 +7,9 @@ import { customElement, state } from "lit/decorators.js";
 import { TableSortEvent } from "../TableColumn.js";
 import "../ak-simple-table.js";
 import { SimpleTable } from "../ak-simple-table.js";
+import { KeyBy } from "../types";
 import type { TableRow } from "../types";
+import { convertContent } from "../utils.js";
 import { nutritionDbUSDA } from "./sample_nutrition_db.js";
 
 const metadata: Meta<SimpleTable> = {
@@ -131,4 +133,15 @@ export const PreprocessedContent: Story = {
         container(
             html`<ak-simple-table .columns=${columns} .content=${rowContent}></ak-simple-table>`,
         ),
+};
+
+const capitalize = (s = "") => `${s.substring(0, 1).toUpperCase()}${s.substring(1)}`;
+
+const groups = new Map(nutritionDbUSDA.map(({ name, group }) => [name, group]));
+const groupFoods: KeyBy = (content) => capitalize(groups.get(content[0] as string));
+const groupedContent = convertContent(content, { groupBy: groupFoods });
+
+export const GroupedTable: Story = {
+    render: () =>
+        html`<ak-simple-table .columns=${columns} .content=${groupedContent}></ak-simple-table>`,
 };

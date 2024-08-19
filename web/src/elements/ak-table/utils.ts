@@ -1,9 +1,19 @@
-import { TemplateResult, html } from "lit";
+import { groupBy as groupByProcessor } from "@goauthentik/common/utils.js";
 
-import { TableFlat, TableGrouped, TableRow } from "./types";
+import { html } from "lit";
+
+import {
+    KeyBy,
+    RawType,
+    TableFlat,
+    TableGrouped,
+    TableInputType,
+    TableRow,
+    TableType,
+} from "./types";
 
 // TypeScript was extremely specific about due diligence here.
-const isTableRows = (v: unknown): v is TableRow[] =>
+export const isTableRows = (v: unknown): v is TableRow[] =>
     Array.isArray(v) &&
     v.length > 0 &&
     typeof v[0] === "object" &&
@@ -11,36 +21,79 @@ const isTableRows = (v: unknown): v is TableRow[] =>
     !("kind" in v[0]) &&
     "content" in v[0];
 
-type RawType = string | number | TemplateResult;
-type TableInputType = RawType[][] | TableRow[] | TableGrouped;
-type TableType = TableGrouped | TableFlat;
+export const isTableGrouped = (v: unknown): v is TableGrouped =>
+    typeof v === "object" && v !== null && "kind" in v && v.kind === "groups";
 
-export function convertContent(content: TableInputType): TableType {
-    if (Array.isArray(content)) {
-        if (content.length === 0) {
-            return {
-                kind: "table-flat",
-                content: [],
-            };
+export const isTableFlat = (v: unknown): v is TableFlat =>
+    typeof v === "object" && v !== null && "kind" in v && v.kind === "flat";
+
+/**
+ * @func convertForTable
+ *
+ * Takes a variety of input types and streamlines them. Can't handle every contingency; be prepared
+ * to do conversions yourself as resources demand.  Great for about 80% of use cases, though.
+ */
+
+export function convertContent(
+    content: TableInputType,
+    { groupBy, keyBy }: { groupBy?: KeyBy; keyBy?: KeyBy } = {},
+): TableType {
+    // TableGrouped
+    if (isTableGrouped(content)) {
+        if (groupBy || keyBy) {
+            console.warn("Passed processor function when content is already marked as grouped");
         }
+        return content;
+    }
 
-        if (isTableRows(content)) {
-            return {
-                kind: "table-flat",
-                content: content,
-            };
+    if (isTableFlat(content)) {
+        if (groupBy || keyBy) {
+            console.warn("Passed processor function when content is already marked as flat");
         }
+        return content;
+    }
 
+    // TableRow[]
+    if (isTableRows(content)) {
+        if (groupBy) {
+            console.warn(
+                "Passed processor function when content is processed and can't be analyzed for grouping",
+            );
+        }
         return {
-            kind: "table-flat",
-            content: content.map((onerow) => ({
-                content: onerow.map((item: string | number | TemplateResult) =>
-                    typeof item === "object" ? item : html`${item}`,
-                ),
+            kind: "flat",
+            content: content,
+        };
+    }
+
+    // TableRow or Rawtype, but empty
+    if (Array.isArray(content) && content.length === 0) {
+        return {
+            kind: "flat",
+            content: [],
+        };
+    }
+
+    const templatizeAsNeeded = (rows: RawType[][]): TableRow[] =>
+        rows.map((row) => ({
+            ...(keyBy ? { key: keyBy(row) } : {}),
+            content: row.map((item) => (typeof item === "object" ? item : html`${item}`)),
+        }));
+
+    if (groupBy) {
+        const groupedContent = groupByProcessor(content, groupBy);
+        return {
+            kind: "groups",
+            content: groupedContent.map(([group, rowsForGroup]) => ({
+                kind: "group",
+                group,
+                content: templatizeAsNeeded(rowsForGroup),
             })),
         };
     }
 
-    // Must be TableGrouped already, then.
-    return content;
+    return {
+        kind: "flat",
+        content: templatizeAsNeeded(content),
+    };
 }
