@@ -58,6 +58,7 @@ const docsSidebar = {
                         type: "doc",
                         id: "install-config/configuration/configuration",
                     },
+                    items: [],
                 },
                 "install-config/upgrade",
                 "install-config/beta",
