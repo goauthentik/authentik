@@ -15,6 +15,7 @@ from ldap3 import ALL, NONE, RANDOM, Connection, Server, ServerPool, Tls
 from ldap3.core.exceptions import LDAPException, LDAPInsufficientAccessRightsResult, LDAPSchemaError
 from rest_framework.serializers import Serializer
 
+from authentik.common.ldap.constants import LDAP_DISTINGUISHED_NAME
 from authentik.core.models import (
     Group,
     GroupSourceConnection,
@@ -24,11 +25,10 @@ from authentik.core.models import (
 )
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.config import CONFIG
-from authentik.lib.models import DomainlessURLValidator
+from authentik.lib.models import DomainlessURLValidator, internal_model
 
 LDAP_TIMEOUT = 15
 LDAP_UNIQUENESS = "ldap_uniq"
-LDAP_DISTINGUISHED_NAME = "distinguishedName"
 
 
 def flatten(value: Any) -> Any:
@@ -320,6 +320,7 @@ class LDAPSourcePropertyMapping(PropertyMapping):
         verbose_name_plural = _("LDAP Source Property Mappings")
 
 
+@internal_model
 class UserLDAPSourceConnection(UserSourceConnection):
     @property
     def serializer(self) -> type[Serializer]:
@@ -334,6 +335,7 @@ class UserLDAPSourceConnection(UserSourceConnection):
         verbose_name_plural = _("User LDAP Source Connections")
 
 
+@internal_model
 class GroupLDAPSourceConnection(GroupSourceConnection):
     @property
     def serializer(self) -> type[Serializer]:

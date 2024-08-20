@@ -4,9 +4,10 @@ from django.http import HttpRequest
 from ldap3.core.exceptions import LDAPException, LDAPInvalidCredentialsResult
 from structlog.stdlib import get_logger
 
+from authentik.common.ldap.constants import LDAP_DISTINGUISHED_NAME
 from authentik.core.auth import InbuiltBackend
 from authentik.core.models import User
-from authentik.sources.ldap.models import LDAP_DISTINGUISHED_NAME, LDAPSource
+from authentik.sources.ldap.models import LDAPSource
 
 LOGGER = get_logger()
 

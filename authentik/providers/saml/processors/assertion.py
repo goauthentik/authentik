@@ -10,6 +10,7 @@ from lxml import etree  # nosec
 from lxml.etree import Element, SubElement  # nosec
 from structlog.stdlib import get_logger
 
+from authentik.common.ldap.constants import LDAP_DISTINGUISHED_NAME
 from authentik.common.saml.constants import (
     DIGEST_ALGORITHM_TRANSLATION_MAP,
     NS_MAP,
@@ -36,7 +37,6 @@ from authentik.events.signals import get_login_event
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequest
-from authentik.sources.ldap.auth import LDAP_DISTINGUISHED_NAME
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
 LOGGER = get_logger()
