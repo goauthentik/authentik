@@ -56,6 +56,7 @@
   from = "/docs/property-mappings/"
   to = "/docs/providers/property-mappings/"
   status = 302
+
 [[redirects]]
   from = "/docs/property-mappings/expression"
   to = "/docs/providers/property-mappings/expression"
@@ -134,20 +135,8 @@
   force = true
 
 [[redirects]]
-  from = "enterprise/licenses-page-admin.png"
-  to = "enterprise/licenses-page-admin.png"
-  status = 302
-  force = true
-
-[[redirects]]
   from = "enterprise/manage-enterprise"
   to = "enterprise/manage-enterprise"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "events/event_matcher.png"
-  to = "sys-mgmt/events/event_matcher.png"
   status = 302
   force = true
 
@@ -194,12 +183,6 @@
   force = true
 
 [[redirects]]
-  from = "flow/create-flow.png"
-  to = "add-secure-apps/flows-stages/flow/create-flow.png"
-  status = 302
-  force = true
-
-[[redirects]]
   from = "flow/examples/flows"
   to = "add-secure-apps/flows-stages/flow/examples/flows"
   status = 302
@@ -236,12 +219,6 @@
   force = true
 
 [[redirects]]
-  from = "flow/flow-inspector.png"
-  to = "add-secure-apps/flows-stages/flow/flow-inspector.png"
-  status = 302
-  force = true
-
-[[redirects]]
   from = "flow"
   to = "add-secure-apps/flows-stages/flow"
   status = 302
@@ -256,42 +233,6 @@
 [[redirects]]
   from = "flow/layouts"
   to = "add-secure-apps/flows-stages/flow/layouts"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "flow/layouts/content_left.png"
-  to = "add-secure-apps/flows-stages/flow/layouts/content_left.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "flow/layouts/content_right.png"
-  to = "add-secure-apps/flows-stages/flow/layouts/content_right.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "flow/layouts/sidebar_left.png"
-  to = "add-secure-apps/flows-stages/flow/layouts/sidebar_left.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "flow/layouts/sidebar_right.png"
-  to = "add-secure-apps/flows-stages/flow/layouts/sidebar_right.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "flow/layouts/stacked.png"
-  to = "add-secure-apps/flows-stages/flow/layouts/stacked.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "flow/simple_stages.png"
-  to = "add-secure-apps/flows-stages/flow/simple_stages.png"
   status = 302
   force = true
 
@@ -332,12 +273,6 @@
   force = true
 
 [[redirects]]
-  from = "flow/stages/captcha/captcha-admin.png"
-  to = "add-secure-apps/flows-stages/stages/captcha/captcha-admin.png"
-  status = 302
-  force = true
-
-[[redirects]]
   from = "flow/stages/captcha"
   to = "add-secure-apps/flows-stages/stages/captcha"
   status = 302
@@ -346,18 +281,6 @@
 [[redirects]]
   from = "flow/stages/deny"
   to = "add-secure-apps/flows-stages/stages/deny"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "flow/stages/email/custom_template.png"
-  to = "add-secure-apps/flows-stages/stages/email/custom_template.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "flow/stages/email/email_recovery.png"
-  to = "add-secure-apps/flows-stages/stages/email/email_recovery.png"
   status = 302
   force = true
 
@@ -416,12 +339,6 @@
   force = true
 
 [[redirects]]
-  from = "flow/stages/user_login/stay_signed_in.png"
-  to = "add-secure-apps/flows-stages/stages/user_login/stay_signed_in.png"
-  status = 302
-  force = true
-
-[[redirects]]
   from = "flow/stages/user_logout"
   to = "add-secure-apps/flows-stages/stages/user_logout"
   status = 302
@@ -464,12 +381,6 @@
   force = true
 
 [[redirects]]
-  from = "installation/dashboard.png"
-  to = "install-config/dashboard.png"
-  status = 302
-  force = true
-
-[[redirects]]
   from = "installation/docker-compose"
   to = "install-config/install/docker-compose"
   status = 302
@@ -508,12 +419,6 @@
 [[redirects]]
   from = "installation/upgrade"
   to = "install-config/upgrade"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "installation/version1.png"
-  to = "install-config/version1.png"
   status = 302
   force = true
 
@@ -590,20 +495,8 @@
   force = true
 
 [[redirects]]
-  from = "outposts/outpost-create.png"
-  to = "add-secure-apps/outposts/outpost-create.png"
-  status = 302
-  force = true
-
-[[redirects]]
   from = "outposts/upgrading"
   to = "add-secure-apps/outposts/upgrading"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "outposts/upgrading_outdated.png"
-  to = "add-secure-apps/outposts/upgrading_outdated.png"
   status = 302
   force = true
 
@@ -676,102 +569,6 @@
 [[redirects]]
   from = "providers"
   to = "add-secure-apps/providers"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "providers/ldap/general_setup1.png"
-  to = "add-secure-apps/providers/ldap/general_setup1.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "providers/ldap/general_setup10.png"
-  to = "add-secure-apps/providers/general_setup10.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "providers/ldap/general_setup11.png"
-  to = "add-secure-apps/providers/general_setup11.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "providers/ldap/general_setup12.png"
-  to = "add-secure-apps/providers/general_setup12.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "providers/ldap/general_setup13.png"
-  to = "add-secure-apps/providers/general_setup13.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "providers/ldap/general_setup14.png"
-  to = "add-secure-apps/providers/general_setup14.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "providers/ldap/general_setup15.png"
-  to = "add-secure-apps/providers/general_setup15.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "providers/ldap/general_setup16.png"
-  to = "add-secure-apps/providers/general_setup16.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "providers/ldap/general_setup2.png"
-  to = "add-secure-apps/providers/general_setup2.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "providers/ldap/general_setup3.png"
-  to = "add-secure-apps/providers/general_setup3.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "providers/ldap/general_setup4.png"
-  to = "add-secure-apps/providers/general_setup4.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "providers/ldap/general_setup5.png"
-  to = "add-secure-apps/providers/general_setup5.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "providers/ldap/general_setup6.png"
-  to = "add-secure-apps/providers/general_setup6.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "providers/ldap/general_setup7.png"
-  to = "add-secure-apps/providers/general_setup7.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "providers/ldap/general_setup8.png"
-  to = "add-secure-apps/providers/general_setup8.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "providers/ldap/general_setup9.png"
-  to = "add-secure-apps/providers/general_setup9.png"
   status = 302
   force = true
 
@@ -928,12 +725,6 @@
 [[redirects]]
   from = "providers/rac"
   to = "add-secure-apps/providers/rac"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "providers/rac/rac-v3.png"
-  to = "add-secure-apps/providers/rac/rac-v3.png"
   status = 302
   force = true
 
@@ -1298,44 +1089,8 @@
   force = true
 
 [[redirects]]
-  from = "sources/active-directory/01_user_create.png"
-  to = "user-sources/sources/directory-sync/active-directory/01_user_create.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/active-directory/02_delegate.png"
-  to = "user-sources/sources/directory-sync/active-directory/02_delegate.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/active-directory/03_additional_perms.png"
-  to = "user-sources/sources/directory-sync/active-directory/03_additional_perms.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/active-directory/10_ak_status.png"
-  to = "user-sources/sources/directory-sync/active-directory/03_additional_perms.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/active-directory/11_ak_stage.png"
-  to = "user-sources/sources/directory-sync/active-directory/11_ak_stage.png"
-  status = 302
-  force = true
-
-[[redirects]]
   from = "sources/active-directory"
   to = "user-sources/sources/directory-sync/active-directory"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/apple/app_service_config.png"
-  to = "user-sources/sources/social-logins/apple/app_service_config.png"
   status = 302
   force = true
 
@@ -1346,56 +1101,8 @@
   force = true
 
 [[redirects]]
-  from = "sources/apple/key.png"
-  to = "user-sources/sources/social-logins/apple/key.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/apple/service_id.png"
-  to = "user-sources/sources/social-logins/apple/service_id.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/azure-ad/aad_01.png"
-  to = "user-sources/sources/social-logins/azure-ad/aad_01.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/azure-ad/authentik_01.png"
-  to = "user-sources/sources/social-logins/azure-ad/authentik_01.png"
-  status = 302
-  force = true
-
-[[redirects]]
   from = "sources/azure-ad"
   to = "user-sources/sources/social-logins/azure-ad"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/discord/discord1.png"
-  to = "user-sources/sources/social-logins/discord/discord1.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/discord/discord2.png"
-  to = "user-sources/sources/social-logins/discord/discord2.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/discord/discord3.png"
-  to = "user-sources/sources/social-logins/discord/discord3.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/discord/discord4.png"
-  to = "user-sources/sources/social-logins/discord/discord4.png"
   status = 302
   force = true
 
@@ -1412,122 +1119,14 @@
   force = true
 
 [[redirects]]
-  from = "sources/freeipa/01_user_create.png"
-  to = "user-sources/sources/directory-sync/freeipa/01_user_create.pn"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/freeipa/02_user_roles.png"
-  to = "user-sources/sources/directory-sync/freeipa/02_user_roles.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/freeipa/03_add_user_role.png"
-  to = "user-sources/sources/directory-sync/freeipa/03_add_user_role.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/freeipa/04_source_settings_1.png"
-  to = "user-sources/sources/directory-sync/freeipa/04_source_settings_1.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/freeipa/05_source_settings_2.png"
-  to = "user-sources/sources/directory-sync/freeipa/05_source_settings_2.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/freeipa/06_sync_source.png"
-  to = "user-sources/sources/directory-sync/freeipa/06_sync_source.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/freeipa/07_password_stage.png"
-  to = "user-sources/sources/directory-sync/freeipa/07_password_stage.png"
-  status = 302
-  force = true
-
-[[redirects]]
   from = "sources/freeipa"
   to = "user-sources/sources/directory-sync/freeipa"
   status = 302
   force = true
 
 [[redirects]]
-  from = "sources/github/github_org_membership.png"
-  to = "user-sources/sources/social-logins/github/github_org_membership.pn"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/github/githubdeveloper1.png"
-  to = "user-sources/sources/social-logins/github/githubdeveloper1.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/github/githubdeveloperexample.png"
-  to = "user-sources/sources/social-logins/github/githubdeveloperexample.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/github/githubexample2.png"
-  to = "user-sources/sources/social-logins/github/githubexample2.png"
-  status = 302
-  force = true
-
-[[redirects]]
   from = "sources/github"
   to = "user-sources/sources/social-logins/github"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/google/authentiksource.png"
-  to = "user-sources/sources/social-logins/google/authentiksource.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/google/googledeveloper1.png"
-  to = "user-sources/sources/social-logins/google/googledeveloper1.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/google/googledeveloper2.png"
-  to = "user-sources/sources/social-logins/google/googledeveloper2.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/google/googledeveloper3.png"
-  to = "user-sources/sources/social-logins/google/googledeveloper3.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/google/googledeveloper4.png"
-  to = "user-sources/sources/social-logins/google/googledeveloper4.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/google/googledeveloper5.png"
-  to = "user-sources/sources/social-logins/google/googledeveloper5.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/google/googledeveloper6.png"
-  to = "user-sources/sources/social-logins/google/googledeveloper6.png"
   status = 302
   force = true
 
@@ -1552,36 +1151,6 @@
 [[redirects]]
   from = "sources/mailcow"
   to = "user-sources/sources/social-logins/mailcow"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/mailcow/mailcow1.png"
-  to = "user-sources/sources/social-logins/mailcow/mailcow1.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/mailcow/mailcow2.png"
-  to = "user-sources/sources/social-logins/mailcow/mailcow2.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/mailcow/mailcow3.png"
-  to = "user-sources/sources/social-logins/mailcow/mailcow3.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/mailcow/mailcow4.png"
-  to = "user-sources/sources/social-logins/mailcow/mailcow4.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/mailcow/mailcow5.png"
-  to = "user-sources/sources/social-logins/mailcow/mailcow5.png"
   status = 302
   force = true
 
@@ -1628,68 +1197,14 @@
   force = true
 
 [[redirects]]
-  from = "sources/twitch/twitch1.png"
-  to = "user-sources/sources/social-logins/twitch/twitch1.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/twitch/twitch2.png"
-  to = "user-sources/sources/social-logins/twitch/twitch2.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/twitch/twitch3.png"
-  to = "user-sources/sources/social-logins/twitch/twitch3.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/twitch/twitch4.png"
-  to = "user-sources/sources/social-logins/twitch/twitch4.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/twitch/twitch5.png"
-  to = "user-sources/sources/social-logins/twitch/twitch5.png"
-  status = 302
-  force = true
-
-[[redirects]]
   from = "sources/twitter"
   to = "user-sources/sources/social-logins/twitter"
   status = 302
   force = true
 
 [[redirects]]
-  from = "sources/twitter/twitter1.png"
-  to = "user-sources/sources/social-logins/twitter/twitter1.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "sources/twitter/twitter2.png"
-  to = "user-sources/sources/social-logins/twitter/twitter2.png"
-  status = 302
-  force = true
-
-[[redirects]]
   from = "troubleshooting/access"
   to = "troubleshooting/access"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "troubleshooting/access_denied_message.png"
-  to = "troubleshooting/access_denied_message.png"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "troubleshooting/authentik_user_debug.png"
-  to = "troubleshooting/authentik_user_debug.png"
   status = 302
   force = true
 
@@ -1748,12 +1263,6 @@
   force = true
 
 [[redirects]]
-  from = "user-group-role/access-control/flow-page.png"
-  to = "user-sources/access-control/flow-page.png"
-  status = 302
-  force = true
-
-[[redirects]]
   from = "user-group-role/access-control"
   to = "user-sources/access-control"
   status = 302
@@ -1768,12 +1277,6 @@
 [[redirects]]
   from = "user-group-role/access-control/permissions"
   to = "user-sources/access-control/permissions"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "user-group-role/access-control/user-page.png"
-  to = "user-sources/access-control/user-page.png"
   status = 302
   force = true
 
@@ -1804,12 +1307,6 @@
 [[redirects]]
   from = "user-group-role/roles/manage_roles"
   to = "user-sources/roles/manage_roles"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "user-group-role/user/create_invite.png"
-  to = "user-sources/user/create_invite.png"
   status = 302
   force = true
 
