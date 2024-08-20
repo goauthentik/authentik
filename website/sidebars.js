@@ -192,7 +192,7 @@ const docsSidebar = {
                         "user-sources/user/user_ref",
                         "user-sources/user/invitations",
                     ],
-                    {
+
                     type: "category",
                     label: "Groups",
                     link: {
@@ -203,83 +203,82 @@ const docsSidebar = {
                         "user-sources/groups/manage_groups",
                         "user-sources/groups/group_ref",
                     ],
-                    {
-                        type: "category",
-                        label: "Roles",
-                        link: {
-                            type: "doc",
-                            id: "user-sources/roles/index",
-                        },
-                        items: [
-                            "user-sources/groups/manage_roles",
+
+                    type: "category",
+                    label: "Roles",
+                    link: {
+                        type: "doc",
+                        id: "user-sources/roles/index",
+                    },
+                    items: [
+                        "user-sources/groups/manage_roles",
                     ],
-                    {
-                        type: "category",
-                        label: "Access Control",
-                        link: {
-                            type: "doc",
-                            id: "user-sources/access-control/index",
-                        },
-                        items: [
-                            "user-sources/access-control/permissions",
-                            "user-sources/access-control/manage_permissions",
+
+                    type: "category",
+                    label: "Access Control",
+                    link: {
+                        type: "doc",
+                        id: "user-sources/access-control/index",
+                    },
+                    items: [
+                        "user-sources/access-control/permissions",
+                         "user-sources/access-control/manage_permissions",
                     ],
-                    }
+
+                    type: "category",
+                    label: "Federated and Social Sources",
+                    collapsed: true,
+                    link: {
+                        type: "doc",
+                        id: "user-sources/index",
+                    },
+                    items: [
+                        {
+                        type: "category",
+                        label: "Protocols",
+                        items: [
+                            "user-sources/sources/protocols/ldap/index",
+                             "user-sources/sources/protocols/oauth/index",
+                             "user-sources/sources/protocols/saml/index",
+                             "user-sources/sources/protocols/scim/index",
+                        ],
+                    },
                     {
                         type: "category",
-                        label: "Federated and Social Sources",
-                        collapsed: true,
+                        label: "Source Property Mappings",
                         link: {
                             type: "doc",
-                            id: "user-sources/index",
-                        },
-                        items: [
-                        {
-                            type: "category",
-                            label: "Protocols",
-                            items: [
-                                "user-sources/sources/protocols/ldap/index",
-                                "user-sources/sources/protocols/oauth/index",
-                                "user-sources/sources/protocols/saml/index",
-                                "user-sources/sources/protocols/scim/index",
-                            ],
-                        },
-                        {
-                            type: "category",
-                            label: "Source Property Mappings",
-                            link: {
-                                type: "doc",
-                                id: "user-sources/sources/property-mappings/index",
+                            id: "user-sources/sources/property-mappings/index",
                             },
                             items: ["user-sources/sources/property-mappings/expressions"],
                         },
                         {
-                            type: "category",
-                            label: "Directory synchronization",
-                            items: [
-                                "user-sources/sources/directory-sync/active-directory/index",
-                                "user-sources/sources/directory-sync/freeipa/index",
-                            ],
-                        },
-                        {
-                            type: "category",
-                            label: "Social Logins",
-                            items: [
-                                "user-sources/sources/social-logins/apple/index",
-                                "user-sources/sources/social-logins/azure-ad/index",
-                                "user-sources/sources/social-logins/discord/index",
-                                "user-sources/sources/social-logins/facebook/index",
-                                "user-sources/sources/social-logins/github/index",
-                                "user-sources/sources/social-logins/google/index",
-                                "user-sources/sources/social-logins/mailcow/index",
-                                "user-sources/sources/social-logins/twitch/index",
-                                "user-sources/sources/social-logins/plex/index",
-                                "user-sources/sources/social-logins/twitter/index",
-                            ],
-                        },
-                    ],
-                },
-            {
+                        type: "category",
+                        label: "Directory synchronization",
+                        items: [
+                            "user-sources/sources/directory-sync/active-directory/index",
+                            "user-sources/sources/directory-sync/freeipa/index",
+                        ],
+                    },
+                    {
+                        type: "category",
+                        label: "Social Logins",
+                        items: [
+                            "user-sources/sources/social-logins/apple/index",
+                            "user-sources/sources/social-logins/azure-ad/index",
+                            "user-sources/sources/social-logins/discord/index",
+                            "user-sources/sources/social-logins/facebook/index",
+                            "user-sources/sources/social-logins/github/index",
+                            "user-sources/sources/social-logins/google/index",
+                            "user-sources/sources/social-logins/mailcow/index",
+                            "user-sources/sources/social-logins/twitch/index",
+                            "user-sources/sources/social-logins/plex/index",
+                            "user-sources/sources/social-logins/twitter/index",
+                        ],
+                    },
+                ],
+            },
+        {
             type: "category",
             label: "Customize your authentik Instance",
             collapsed: true,
@@ -293,24 +292,22 @@ const docsSidebar = {
                 link: {
                     type: "doc",
                     id: "customize/policies/index",
-                    },
+                },
                 items: [
                     {
-                        type: "category",
-                        label: "Working with Policies",
-                        link: {
-                            type: "doc"
-                            id: "customize/policies/working_with_policies/working_with_policies.md"
-                        }
-                        items: [
-                            "customize/policies/working_with_policies/unique_email.md",
-                            "customize/policies/working_with_policies/whitelist_email.md",
-                        ],
+                    type: "category",
+                    label: "Working with Policies",
+                    link: {
+                        type: "doc",
+                        id: "customize/policies/working_with_policies/working_with_policies.md",
                     },
+                    items: [
+                        "customize/policies/working_with_policies/unique_email.md",
+                        "customize/policies/working_with_policies/whitelist_email.md",
+                    ],
+                },
             ],
-        },
-    ],
-};
+        };
 
-docsSidebar.docs[0].value = generateVersionDropdown(docsSidebar);
-module.exports = docsSidebar;
+    docsSidebar.docs[0].value = generateVersionDropdown(docsSidebar);
+    module.exports = docsSidebar;
