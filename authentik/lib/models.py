@@ -111,6 +111,7 @@ class DomainlessFormattedURLValidator(DomainlessURLValidator):
 
 __internal_models = []
 
+
 def internal_model(cls):
     __internal_models.append(cls)
     return cls
@@ -132,6 +133,4 @@ def excluded_models() -> list[type[Model]]:
         Permission,
         UserObjectPermission,
     ]
-    return tuple(
-        static + [x for x in apps.get_models() if x in __internal_models]
-    )
+    return tuple(static + [x for x in apps.get_models() if x in __internal_models])
