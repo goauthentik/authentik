@@ -102,6 +102,7 @@ entries:
       user_fields:
         - email
         - username
+      pretend_user_exists: false
     state: present
   - attrs:
       deny_message: Password reset is not allowed for this user
