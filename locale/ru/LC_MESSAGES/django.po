@@ -9,16 +9,16 @@
 # Nicholas Winterhalter, 2023
 # Ренат Шарафутдинов, 2023
 # Stepan Karavaev, 2024
-# Anton, 2024
+# Anton Babenko, 2024
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-12 13:45+0000\n"
+"POT-Creation-Date: 2024-08-15 00:09+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
-"Last-Translator: Anton, 2024\n"
+"Last-Translator: Anton Babenko, 2024\n"
 "Language-Team: Russian (https://app.transifex.com/authentik/teams/119923/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1328,14 +1328,6 @@ msgstr "DN, под которым доступны объекты."
 
 #: authentik/providers/ldap/models.py
 msgid ""
-"Users in this group can do search queries. If not set, every user can "
-"execute search queries."
-msgstr ""
-"Пользователи этой группы могут выполнять поисковые запросы. Если не задано, "
-"каждый пользователь может выполнять поисковые запросы."
-
-#: authentik/providers/ldap/models.py
-msgid ""
 "The start for uidNumbers, this number is added to the user.pk to make sure "
 "that the numbers aren't too low for POSIX users. Default is 2000 to ensure "
 "that we don't collide with local users uidNumber"
@@ -1378,6 +1370,10 @@ msgstr "LDAP Провайдер"
 #: authentik/providers/ldap/models.py
 msgid "LDAP Providers"
 msgstr "LDAP Провайдеры"
+
+#: authentik/providers/ldap/models.py
+msgid "Search full LDAP directory"
+msgstr "Поиск по всему каталогу LDAP"
 
 #: authentik/providers/oauth2/id_token.py
 msgid "Based on the Hashed User ID"

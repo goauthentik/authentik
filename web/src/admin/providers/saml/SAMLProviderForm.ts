@@ -3,9 +3,11 @@ import {
     signatureAlgorithmOptions,
 } from "@goauthentik/admin/applications/wizard/methods/saml/SamlProviderOptions";
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
+import AkCryptoCertificateSearch from "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types.js";
 import "@goauthentik/elements/forms/FormGroup";
@@ -15,8 +17,8 @@ import "@goauthentik/elements/forms/SearchSelect";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { TemplateResult, html, nothing } from "lit";
+import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
@@ -54,10 +56,15 @@ export function makeSAMLPropertyMappingsSelector(instanceMappings?: string[]) {
 
 @customElement("ak-provider-saml-form")
 export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
-    loadInstance(pk: number): Promise<SAMLProvider> {
-        return new ProvidersApi(DEFAULT_CONFIG).providersSamlRetrieve({
+    @state()
+    hasSigningKp = false;
+
+    async loadInstance(pk: number): Promise<SAMLProvider> {
+        const provider = await new ProvidersApi(DEFAULT_CONFIG).providersSamlRetrieve({
             id: pk,
         });
+        this.hasSigningKp = !!provider.signingKp;
+        return provider;
     }
 
     async send(data: SAMLProvider): Promise<SAMLProvider> {
@@ -184,6 +191,11 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                     >
                         <ak-crypto-certificate-search
                             .certificate=${this.instance?.signingKp}
+                            @input=${(ev: InputEvent) => {
+                                const target = ev.target as AkCryptoCertificateSearch;
+                                if (!target) return;
+                                this.hasSigningKp = !!target.selectedKeypair;
+                            }}
                         ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(
@@ -191,6 +203,52 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                             )}
                         </p>
                     </ak-form-element-horizontal>
+                    ${this.hasSigningKp
+                        ? html` <ak-form-element-horizontal name="signAssertion">
+                                  <label class="pf-c-switch">
+                                      <input
+                                          class="pf-c-switch__input"
+                                          type="checkbox"
+                                          ?checked=${first(this.instance?.signAssertion, true)}
+                                      />
+                                      <span class="pf-c-switch__toggle">
+                                          <span class="pf-c-switch__toggle-icon">
+                                              <i class="fas fa-check" aria-hidden="true"></i>
+                                          </span>
+                                      </span>
+                                      <span class="pf-c-switch__label"
+                                          >${msg("Sign assertions")}</span
+                                      >
+                                  </label>
+                                  <p class="pf-c-form__helper-text">
+                                      ${msg(
+                                          "When enabled, the assertion element of the SAML response will be signed.",
+                                      )}
+                                  </p>
+                              </ak-form-element-horizontal>
+                              <ak-form-element-horizontal name="signResponse">
+                                  <label class="pf-c-switch">
+                                      <input
+                                          class="pf-c-switch__input"
+                                          type="checkbox"
+                                          ?checked=${first(this.instance?.signResponse, false)}
+                                      />
+                                      <span class="pf-c-switch__toggle">
+                                          <span class="pf-c-switch__toggle-icon">
+                                              <i class="fas fa-check" aria-hidden="true"></i>
+                                          </span>
+                                      </span>
+                                      <span class="pf-c-switch__label"
+                                          >${msg("Sign responses")}</span
+                                      >
+                                  </label>
+                                  <p class="pf-c-form__helper-text">
+                                      ${msg(
+                                          "When enabled, the assertion element of the SAML response will be signed.",
+                                      )}
+                                  </p>
+                              </ak-form-element-horizontal>`
+                        : nothing}
                     <ak-form-element-horizontal
                         label=${msg("Verification Certificate")}
                         name="verificationKp"
@@ -202,6 +260,19 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Encryption Certificate")}
+                        name="encryptionKp"
+                    >
+                        <ak-crypto-certificate-search
+                            .certificate=${this.instance?.encryptionKp}
+                        ></ak-crypto-certificate-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "When selected, assertions will be encrypted using this keypair.",
                             )}
                         </p>
                     </ak-form-element-horizontal>

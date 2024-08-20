@@ -6,12 +6,14 @@ NS_SAML_PROTOCOL = "urn:oasis:names:tc:SAML:2.0:protocol"
 NS_SAML_ASSERTION = "urn:oasis:names:tc:SAML:2.0:assertion"
 NS_SAML_METADATA = "urn:oasis:names:tc:SAML:2.0:metadata"
 NS_SIGNATURE = "http://www.w3.org/2000/09/xmldsig#"
+NS_ENC = "http://www.w3.org/2001/04/xmlenc#"
 
 NS_MAP = {
     "samlp": NS_SAML_PROTOCOL,
     "saml": NS_SAML_ASSERTION,
     "ds": NS_SIGNATURE,
     "md": NS_SAML_METADATA,
+    "xenc": NS_ENC,
 }
 
 SAML_NAME_ID_FORMAT_EMAIL = "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"

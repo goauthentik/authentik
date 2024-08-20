@@ -11,6 +11,7 @@ import { WebsocketClient } from "@goauthentik/common/ws";
 import { Interface } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/LoadingOverlay";
 import "@goauthentik/elements/ak-locale-context";
+import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
 import { themeImage } from "@goauthentik/elements/utils/images";
 import "@goauthentik/flow/sources/apple/AppleLoginInit";
 import "@goauthentik/flow/sources/plex/PlexLoginInit";
@@ -281,8 +282,7 @@ export class FlowExecutor extends Interface implements StageHost {
 
     async renderChallenge(): Promise<TemplateResult> {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading=${true} header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state loading> </ak-empty-state>`;
         }
         switch (this.challenge?.component) {
             case "ak-stage-access-denied":
@@ -428,28 +428,9 @@ export class FlowExecutor extends Interface implements StageHost {
         }
     }
 
-    renderChallengeWrapper(): TemplateResult {
-        const logo = html`<div class="pf-c-login__main-header pf-c-brand ak-brand">
-            <img
-                src="${themeImage(
-                    first(this.brand?.brandingLogo, globalAK()?.brand.brandingLogo, ""),
-                )}"
-                alt="authentik Logo"
-            />
-        </div>`;
-        if (!this.challenge) {
-            return html`${logo}<ak-empty-state ?loading=${true} header=${msg("Loading")}>
-                </ak-empty-state>`;
-        }
-        return html`
-            ${this.loading ? html`<ak-loading-overlay></ak-loading-overlay>` : nothing} ${logo}
-            ${until(this.renderChallenge())}
-        `;
-    }
-
-    async renderInspector(): Promise<TemplateResult> {
+    async renderInspector() {
         if (!this.inspectorOpen) {
-            return html``;
+            return nothing;
         }
         await import("@goauthentik/flow/FlowInspector");
         return html`<ak-flow-inspector
@@ -489,7 +470,24 @@ export class FlowExecutor extends Interface implements StageHost {
                                 <div class="pf-c-login ${this.getLayout()}">
                                     <div class="${this.getLayoutClass()}">
                                         <div class="pf-c-login__main">
-                                            ${this.renderChallengeWrapper()}
+                                            ${this.loading && this.challenge
+                                                ? html`<ak-loading-overlay></ak-loading-overlay>`
+                                                : nothing}
+                                            <div
+                                                class="pf-c-login__main-header pf-c-brand ak-brand"
+                                            >
+                                                <img
+                                                    src="${themeImage(
+                                                        first(
+                                                            this.brand?.brandingLogo,
+                                                            globalAK()?.brand.brandingLogo,
+                                                            DefaultBrand.brandingLogo,
+                                                        ),
+                                                    )}"
+                                                    alt="authentik Logo"
+                                                />
+                                            </div>
+                                            ${until(this.renderChallenge())}
                                         </div>
                                         <footer class="pf-c-login__footer">
                                             <ul class="pf-c-list pf-m-inline">
