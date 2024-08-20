@@ -60,3 +60,1779 @@
   from = "/docs/property-mappings/expression"
   to = "/docs/providers/property-mappings/expression"
   status = 302
+
+[[redirects]]
+  from = "advanced/tenancy.md"
+  to = "sys-mgmt/tenancy.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "applications/index.md"
+  to = "add-secure-apps/applications/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "applications/manage_apps.md"
+  to = "add-secure-apps/applications/i"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "core/architecture.md"
+  to = "core/architecture.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "core/brands.md"
+  to = "customize/brands.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "core/certificates.md"
+  to = "sys-mgmt/certificates.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "core/geoip.mdx"
+  to = "install-config/geoip.mdx"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "core/settings.md"
+  to = "sys-mgmt/settings.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "core/terminology.md"
+  to = "core/terminology.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "enterprise/entsupport.md"
+  to = "enterprise/entsupport.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "enterprise/get-started.md"
+  to = "enterprise/get-started.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "enterprise/index.md"
+  to = "enterprise/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "enterprise/licenses-page-admin.png"
+  to = "enterprise/licenses-page-admin.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "enterprise/manage-enterprise.md"
+  to = "enterprise/manage-enterprise.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "events/event_matcher.png"
+  to = "sys-mgmt/events/event_matcher.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "events/index.md"
+  to = "sys-mgmt/events/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "events/notifications.md"
+  to = "sys-mgmt/events/notifications.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "events/transports.md"
+  to = "sys-mgmt/events/transports.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "expressions/_functions.md"
+  to = "add-secure-apps/providers/prov-prop-mappings/expressions/_functions.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "expressions/_objects.md"
+  to = "add-secure-apps/providers/prov-prop-mappings/expressions/_objects.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "expressions/_user.md"
+  to = "add-secure-apps/providers/prov-prop-mappings/expressions/_user.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/context/index.md"
+  to = "add-secure-apps/flows-stages/flow/context/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/create-flow.png"
+  to = "add-secure-apps/flows-stages/flow/create-flow.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/examples/flows.md"
+  to = "add-secure-apps/flows-stages/flow/examples/flows.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/examples/snippets.md"
+  to = "add-secure-apps/flows-stages/flow/examples/snippets.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/executors/headless.md"
+  to = "add-secure-apps/flows-stages/flow/executors/headless.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/executors/if-flow.md"
+  to = "add-secure-apps/flows-stages/flow/executors/if-flow.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/executors/sfe.md"
+  to = "add-secure-apps/flows-stages/flow/executors/sfe.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/executors/user-settings.md"
+  to = "add-secure-apps/flows-stages/flow/executors/user-settings.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/flow-inspector.png"
+  to = "add-secure-apps/flows-stages/flow/flow-inspector.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/index.md"
+  to = "add-secure-apps/flows-stages/flow/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/inspector.md"
+  to = "add-secure-apps/flows-stages/flow/inspector.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/layouts.md"
+  to = "add-secure-apps/flows-stages/flow/layouts.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/layouts/content_left.png"
+  to = "add-secure-apps/flows-stages/flow/layouts/content_left.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/layouts/content_right.png"
+  to = "add-secure-apps/flows-stages/flow/layouts/content_right.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/layouts/sidebar_left.png"
+  to = "add-secure-apps/flows-stages/flow/layouts/sidebar_left.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/layouts/sidebar_right.png"
+  to = "add-secure-apps/flows-stages/flow/layouts/sidebar_right.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/layouts/stacked.png"
+  to = "add-secure-apps/flows-stages/flow/layouts/stacked.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/simple_stages.png"
+  to = "add-secure-apps/flows-stages/flow/simple_stages.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/stages/authenticator_duo/index.md"
+  to = "add-secure-apps/flows-stages/stages//authenticator_duo/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/stages/authenticator_sms/index.md"
+  to = "add-secure-apps/flows-stages/stages/authenticator_sms/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/stages/authenticator_static/index.md"
+  to = "add-secure-apps/flows-stages/stages/authenticator_static/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/stages/authenticator_totp/index.md"
+  to = "add-secure-apps/flows-stages/stages/authenticator_totp/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/stages/authenticator_validate/index.md"
+  to = "add-secure-apps/flows-stages/stages/authenticator_validate/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/stages/authenticator_webauthn/index.md"
+  to = "add-secure-apps/flows-stages/stages/authenticator_webauthn/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/stages/captcha/captcha-admin.png"
+  to = "add-secure-apps/flows-stages/stages/captcha/captcha-admin.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/stages/captcha/index.md"
+  to = "add-secure-apps/flows-stages/stages/captcha/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/stages/deny.md"
+  to = "add-secure-apps/flows-stages/stages/deny.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/stages/email/custom_template.png"
+  to = "add-secure-apps/flows-stages/stages/email/custom_template.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/stages/email/email_recovery.png"
+  to = "add-secure-apps/flows-stages/stages/email/email_recovery.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/stages/email/index.mdx"
+  to = "add-secure-apps/flows-stages/stages/email/index.mdx"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/stages/identification/index.md"
+  to = "add-secure-apps/flows-stages/stages/identification/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/stages/index.md"
+  to = "add-secure-apps/flows-stages/stages/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/stages/invitation/index.md"
+  to = "add-secure-apps/flows-stages/stages/invitation/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/stages/password/index.md"
+  to = "add-secure-apps/flows-stages/stages/password/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/stages/prompt/index.md"
+  to = "add-secure-apps/flows-stages/stages/prompt/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/stages/source/index.md"
+  to = "add-secure-apps/flows-stages/stages/source/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/stages/user_delete.md"
+  to = "add-secure-apps/flows-stages/stages/user_delete.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/stages/user_login/index.md"
+  to = "add-secure-apps/flows-stages/stages/user_login/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/stages/user_login/stay_signed_in.png"
+  to = "add-secure-apps/flows-stages/stages/user_login/stay_signed_in.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/stages/user_logout.md"
+  to = "add-secure-apps/flows-stages/stages/user_logout.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "flow/stages/user_write.md"
+  to = "add-secure-apps/flows-stages/stages/user_write.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "index.mdx"
+  to = "index.mdx"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "installation/air-gapped.mdx"
+  to = "install-config/air-gapped.mdx"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "installation/automated-install.md"
+  to = "install-config/automated-install.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "installation/beta.mdx"
+  to = "install-config/beta.mdx"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "installation/configuration.mdx"
+  to = "install-config/configuration/configuration.mdx"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "installation/dashboard.png"
+  to = "install-config/dashboard.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "installation/docker-compose.mdx"
+  to = "install-config/install/docker-compose.mdx"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "installation/index.mdx"
+  to = "install-config/index.mdx"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "installation/kubernetes.md"
+  to = "install-config/install/kubernetes.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "installation/monitoring.md"
+  to = "sys-mgmt/ops/monitoring.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "installation/reverse-proxy.md"
+  to = "install-config/reverse-proxy.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "installation/storage-s3.md"
+  to = "install-config/storage-s3.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "installation/upgrade.mdx"
+  to = "install-config/upgrade.mdx"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "installation/version1.png"
+  to = "install-config/version1.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "interfaces/_global/customcss.mdx"
+  to = "customize/_global/customcss.mdx"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "interfaces/_global/global.mdx"
+  to = "customize/_global/global.mdx"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "interfaces/admin/customization.mdx"
+  to = "customize/admin/customization.mdx"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "interfaces/flow/customization.mdx"
+  to = "customize/flow/customization.mdx"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "interfaces/user/customization.mdx"
+  to = "customize/user/customization.mdx"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "outposts/_config.md"
+  to = "add-secure-apps/outposts/_config.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "outposts/embedded/embedded.mdx"
+  to = "add-secure-apps/outposts/embedded/embedded.mdx"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "outposts/index.mdx"
+  to = "add-secure-apps/outposts/index.mdx"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "outposts/integrations/docker.md"
+  to = "add-secure-apps/outposts/integrations/docker.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "outposts/integrations/kubernetes.md"
+  to = "add-secure-apps/outposts/integrations/kubernetes.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "outposts/manual-deploy-docker-compose.md"
+  to = "add-secure-apps/outposts/manual-deploy-docker-compose.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "outposts/manual-deploy-kubernetes.md"
+  to = "add-secure-apps/outposts/manual-deploy-kubernetes.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "outposts/outpost-create.png"
+  to = "add-secure-apps/outposts/outpost-create.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "outposts/upgrading.md"
+  to = "add-secure-apps/outposts/upgrading.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "outposts/upgrading_outdated.png"
+  to = "add-secure-apps/outposts/upgrading_outdated.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "policies/expression.mdx"
+  to = "customize/policies/expression.mdx"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "policies/index.md"
+  to = "customize/policies/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "policies/working_with_policies/unique_email.md"
+  to = "customize/policies/working_with_policies/unique_email.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "policies/working_with_policies/whitelist_email.md"
+  to = "customize/policies/working_with_policies/whitelist_email.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "policies/working_with_policies/working_with_policies.md"
+  to = "customize/policies/working_with_policies/working_with_policies.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/entra/add-entra-provider.md"
+  to = "add-secure-apps/providers/entra/add-entra-provider.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/entra/index.md"
+  to = "add-secure-apps/providers/entra/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/entra/setup-entra.md"
+  to = "add-secure-apps/providers/entra/setup-entra.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/gws/add-gws-provider.md"
+  to = "add-secure-apps/providers/gws/add-gws-provider.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/gws/index.md"
+  to = "add-secure-apps/providers/gws/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/gws/setup-gws.md"
+  to = "add-secure-apps/providers/gws/setup-gws.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/index.mdx"
+  to = "add-secure-apps/providers/index.mdx"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/ldap/general_setup1.png"
+  to = "add-secure-apps/providers/ldap/general_setup1.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/ldap/general_setup10.png"
+  to = "add-secure-apps/providers/general_setup10.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/ldap/general_setup11.png"
+  to = "add-secure-apps/providers/general_setup11.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/ldap/general_setup12.png"
+  to = "add-secure-apps/providers/general_setup12.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/ldap/general_setup13.png"
+  to = "add-secure-apps/providers/general_setup13.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/ldap/general_setup14.png"
+  to = "add-secure-apps/providers/general_setup14.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/ldap/general_setup15.png"
+  to = "add-secure-apps/providers/general_setup15.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/ldap/general_setup16.png"
+  to = "add-secure-apps/providers/general_setup16.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/ldap/general_setup2.png"
+  to = "add-secure-apps/providers/general_setup2.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/ldap/general_setup3.png"
+  to = "add-secure-apps/providers/general_setup3.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/ldap/general_setup4.png"
+  to = "add-secure-apps/providers/general_setup4.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/ldap/general_setup5.png"
+  to = "add-secure-apps/providers/general_setup5.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/ldap/general_setup6.png"
+  to = "add-secure-apps/providers/general_setup6.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/ldap/general_setup7.png"
+  to = "add-secure-apps/providers/general_setup7.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/ldap/general_setup8.png"
+  to = "add-secure-apps/providers/general_setup8.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/ldap/general_setup9.png"
+  to = "add-secure-apps/providers/general_setup9.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/ldap/generic_setup.md"
+  to = "add-secure-apps/providers/generic_setup.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/ldap/index.md"
+  to = "add-secure-apps/providers/ldap/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/oauth2/client_credentials.md"
+  to = "add-secure-apps/providers/oauth2/client_credentials.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/oauth2/device_code.md"
+  to = "add-secure-apps/providers/oauth2/device_code.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/oauth2/index.md"
+  to = "add-secure-apps/providers/oauth2/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/property-mappings/expression.mdx"
+  to = "add-secure-apps/providers/property-mappings/expression.mdx"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/property-mappings/index.md"
+  to = "add-secure-apps/providers/property-mappings/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/proxy/__placeholders.md"
+  to = "add-secure-apps/providers/proxy/__placeholders.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/proxy/_caddy_standalone.md"
+  to = "add-secure-apps/providers/proxy/_caddy_standalone.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/proxy/_envoy_istio.md"
+  to = "add-secure-apps/providers/proxy/_envoy_istio.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/proxy/_nginx_ingress.md"
+  to = "add-secure-apps/providers/proxy/_nginx_ingress.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/proxy/_nginx_proxy_manager.md"
+  to = "add-secure-apps/providers/proxy/_nginx_proxy_manager.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/proxy/_nginx_standalone.md"
+  to = "add-secure-apps/providers/proxy/_nginx_standalone.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/proxy/_traefik_compose.md"
+  to = "add-secure-apps/providers/proxy/_traefik_compose.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/proxy/_traefik_ingress.md"
+  to = "add-secure-apps/providers/proxy/_traefik_ingress.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/proxy/_traefik_standalone.md"
+  to = "add-secure-apps/providers/proxy/_traefik_standalone.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/proxy/custom_headers.md"
+  to = "add-secure-apps/providers/proxy/custom_headers.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/proxy/forward_auth.mdx"
+  to = "add-secure-apps/providers/proxy/forward_auth.mdx"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/proxy/header_authentication.md"
+  to = "add-secure-apps/providers/proxy/header_authentication.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/proxy/index.md"
+  to = "add-secure-apps/providers/proxy/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/proxy/server_caddy.mdx"
+  to = "add-secure-apps/providers/proxy/server_caddy.mdx"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/proxy/server_envoy.mdx"
+  to = "add-secure-apps/providers/proxy/server_envoy.mdx"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/proxy/server_nginx.mdx"
+  to = "add-secure-apps/providers/proxy/server_nginx.mdx"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/proxy/server_traefik.mdx"
+  to = "add-secure-apps/providers/proxy/server_traefik.mdx"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/rac/how-to-rac.md"
+  to = "add-secure-apps/providers/rac/how-to-rac.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/rac/index.md"
+  to = "add-secure-apps/providers/rac/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/rac/rac-v3.png"
+  to = "add-secure-apps/providers/rac/rac-v3.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/radius/index.mdx"
+  to = "add-secure-apps/providers/radius/index.mdx"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/saml/index.md"
+  to = "add-secure-apps/providers/saml/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "providers/scim/index.md"
+  to = "add-secure-apps/providers/scim/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/2021/v2021.1.md"
+  to = "releases/2021/v2021.1.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/2021/v2021.10.md"
+  to = "releases/2021/v2021.10.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/2021/v2021.12.md"
+  to = "releases/2021/v2021.12.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/2021/v2021.2.md"
+  to = "releases/2021/v2021.2.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/2021/v2021.3.md"
+  to = "releases/2021/v2021.3.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/2021/v2021.4.md"
+  to = "releases/2021/v2021.4.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/2021/v2021.5.md"
+  to = "releases/2021/v2021.5.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/2021/v2021.6.md"
+  to = "releases/2021/v2021.6.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/2021/v2021.7.md"
+  to = "releases/2021/v2021.7.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/2021/v2021.8.md"
+  to = "releases/2021/v2021.8.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/2021/v2021.9.md"
+  to = "releases/2021/v2021.9.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/2022/v2022.1.md"
+  to = "releases/2022/v2022.1.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/2022/v2022.10.md"
+  to = "releases/2022/v2022.10.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/2022/v2022.11.md"
+  to = "releases/2022/v2022.11.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/2022/v2022.12.md"
+  to = "releases/2022/v2022.12.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/2022/v2022.2.md"
+  to = "releases/2022/v2022.2.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/2022/v2022.3.md"
+  to = "releases/2022/v2022.3.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/2022/v2022.4.md"
+  to = "releases/2022/v2022.4.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/2022/v2022.5.md"
+  to = "releases/2022/v2022.5.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/2022/v2022.6.md"
+  to = "releases/2022/v2022.6.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/2022/v2022.7.md"
+  to = "releases/2022/v2022.7.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/2022/v2022.8.md"
+  to = "releases/2022/v2022.8.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/2022/v2022.9.md"
+  to = "releases/2022/v2022.9.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/2023/v2023.1.md"
+  to = "releases/2023/v2023.1.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/2023/v2023.10.md"
+  to = "releases/2023/v2023.10.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/2023/v2023.2.md"
+  to = "releases/2023/v2023.2.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/2023/v2023.3.md"
+  to = "releases/2023/v2023.3.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/2023/v2023.4.md"
+  to = "releases/2023/v2023.4.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/2023/v2023.5.md"
+  to = "releases/2023/v2023.5.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/2023/v2023.6.md"
+  to = "releases/2023/v2023.6.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/2023/v2023.8.md"
+  to = "releases/2023/v2023.8.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/2024/v2024.2.md"
+  to = "releases/2024/v2024.2.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/2024/v2024.4.md"
+  to = "releases/2024/v2024.4.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/2024/v2024.6.md"
+  to = "releases/2024/v2024.6.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/2024/v2024.8.md"
+  to = "releases/2024/v2024.8.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/_template.md"
+  to = "releases/_template.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/old/v0.10.md"
+  to = "releases/old/v0.10.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/old/v0.11.md"
+  to = "releases/old/v0.11.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/old/v0.12.md"
+  to = "releases/old/v0.12.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/old/v0.13.md"
+  to = "releases/old/v0.13.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/old/v0.14.md"
+  to = "releases/old/v0.14.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "releases/old/v0.9.md"
+  to = "releases/old/v0.9.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "security/2023-06-cure53.md"
+  to = "security/audits-and-certs/2023-06-cure53.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "security/CVE-2022-23555.md"
+  to = "security/cves/CVE-2022-23555.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "security/CVE-2022-46145.md"
+  to = "security/cves/CVE-2022-46145.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "security/CVE-2022-46172.md"
+  to = "security/cves/CVE-2022-46172.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "security/CVE-2023-26481.md"
+  to = "security/cves/CVE-2023-26481.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "security/CVE-2023-36456.md"
+  to = "security/cves/CVE-2023-36456.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "security/CVE-2023-39522.md"
+  to = "security/cves/CVE-2023-39522.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "security/CVE-2023-48228.md"
+  to = "security/cves/CVE-2023-48228.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "security/CVE-2024-21637.md"
+  to = "security/cves/CVE-2024-21637.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "security/CVE-2024-23647.md"
+  to = "security/cves/CVE-2024-23647.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "security/CVE-2024-37905.md"
+  to = "security/cves/CVE-2024-37905.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "security/CVE-2024-38371.md"
+  to = "security/cves/CVE-2024-38371.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "security/GHSA-rjvp-29xq-f62w.md"
+  to = "security/cves/GHSA-rjvp-29xq-f62w.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "security/policy.mdx"
+  to = "security/policy.mdx"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "security/security-hardening.md"
+  to = "security/security-hardening.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/active-directory/01_user_create.png"
+  to = "user-sources/sources/directory-sync/active-directory/01_user_create.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/active-directory/02_delegate.png"
+  to = "user-sources/sources/directory-sync/active-directory/02_delegate.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/active-directory/03_additional_perms.png"
+  to = "user-sources/sources/directory-sync/active-directory/03_additional_perms.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/active-directory/10_ak_status.png"
+  to = "user-sources/sources/directory-sync/active-directory/03_additional_perms.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/active-directory/11_ak_stage.png"
+  to = "user-sources/sources/directory-sync/active-directory/11_ak_stage.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/active-directory/index.md"
+  to = "user-sources/sources/directory-sync/active-directory/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/apple/app_service_config.png"
+  to = "user-sources/sources/social-logins/apple/app_service_config.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/apple/index.md"
+  to = "user-sources/sources/social-logins/apple/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/apple/key.png"
+  to = "user-sources/sources/social-logins/apple/key.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/apple/service_id.png"
+  to = "user-sources/sources/social-logins/apple/service_id.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/azure-ad/aad_01.png"
+  to = "user-sources/sources/social-logins/azure-ad/aad_01.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/azure-ad/authentik_01.png"
+  to = "user-sources/sources/social-logins/azure-ad/authentik_01.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/azure-ad/index.md"
+  to = "user-sources/sources/social-logins/azure-ad/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/discord/discord1.png"
+  to = "user-sources/sources/social-logins/discord/discord1.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/discord/discord2.png"
+  to = "user-sources/sources/social-logins/discord/discord2.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/discord/discord3.png"
+  to = "user-sources/sources/social-logins/discord/discord3.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/discord/discord4.png"
+  to = "user-sources/sources/social-logins/discord/discord4.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/discord/index.md"
+  to = "user-sources/sources/social-logins/discord/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/facebook/index.md"
+  to = "user-sources/sources/social-logins/facebook/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/freeipa/01_user_create.png"
+  to = "user-sources/sources/directory-sync/freeipa/01_user_create.pn"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/freeipa/02_user_roles.png"
+  to = "user-sources/sources/directory-sync/freeipa/02_user_roles.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/freeipa/03_add_user_role.png"
+  to = "user-sources/sources/directory-sync/freeipa/03_add_user_role.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/freeipa/04_source_settings_1.png"
+  to = "user-sources/sources/directory-sync/freeipa/04_source_settings_1.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/freeipa/05_source_settings_2.png"
+  to = "user-sources/sources/directory-sync/freeipa/05_source_settings_2.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/freeipa/06_sync_source.png"
+  to = "user-sources/sources/directory-sync/freeipa/06_sync_source.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/freeipa/07_password_stage.png"
+  to = "user-sources/sources/directory-sync/freeipa/07_password_stage.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/freeipa/index.md"
+  to = "user-sources/sources/directory-sync/freeipa/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/github/github_org_membership.png"
+  to = "user-sources/sources/social-logins/github/github_org_membership.pn"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/github/githubdeveloper1.png"
+  to = "user-sources/sources/social-logins/github/githubdeveloper1.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/github/githubdeveloperexample.png"
+  to = "user-sources/sources/social-logins/github/githubdeveloperexample.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/github/githubexample2.png"
+  to = "user-sources/sources/social-logins/github/githubexample2.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/github/index.md"
+  to = "user-sources/sources/social-logins/github/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/google/authentiksource.png"
+  to = "user-sources/sources/social-logins/google/authentiksource.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/google/googledeveloper1.png"
+  to = "user-sources/sources/social-logins/google/googledeveloper1.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/google/googledeveloper2.png"
+  to = "user-sources/sources/social-logins/google/googledeveloper2.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/google/googledeveloper3.png"
+  to = "user-sources/sources/social-logins/google/googledeveloper3.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/google/googledeveloper4.png"
+  to = "user-sources/sources/social-logins/google/googledeveloper4.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/google/googledeveloper5.png"
+  to = "user-sources/sources/social-logins/google/googledeveloper5.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/google/googledeveloper6.png"
+  to = "user-sources/sources/social-logins/google/googledeveloper6.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/google/index.md"
+  to = "user-sources/sources/social-logins/google/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/index.md"
+  to = "user-sources/sources/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/ldap/index.md"
+  to = "user-sources/sources/protocols/ldap/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/mailcow/index.md"
+  to = "user-sources/sources/social-logins/mailcow/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/mailcow/mailcow1.png"
+  to = "user-sources/sources/social-logins/mailcow/mailcow1.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/mailcow/mailcow2.png"
+  to = "user-sources/sources/social-logins/mailcow/mailcow2.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/mailcow/mailcow3.png"
+  to = "user-sources/sources/social-logins/mailcow/mailcow3.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/mailcow/mailcow4.png"
+  to = "user-sources/sources/social-logins/mailcow/mailcow4.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/mailcow/mailcow5.png"
+  to = "user-sources/sources/social-logins/mailcow/mailcow5.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/oauth/index.md"
+  to = "user-sources/sources/protocols/oauth/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/plex/index.md"
+  to = "user-sources/sources/social-logins/plex/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/property-mappings/expressions.md"
+  to = "user-sources/sources/property-mappings/expressions.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/property-mappings/index.md"
+  to = "user-sources/sources/property-mappings/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/saml/index.md"
+  to = "user-sources/sources/protocols/saml/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/scim/index.md"
+  to = "user-sources/sources/protocols/scim/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/twitch/index.md"
+  to = "user-sources/sources/social-logins/twitch/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/twitch/twitch1.png"
+  to = "user-sources/sources/social-logins/twitch/twitch1.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/twitch/twitch2.png"
+  to = "user-sources/sources/social-logins/twitch/twitch2.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/twitch/twitch3.png"
+  to = "user-sources/sources/social-logins/twitch/twitch3.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/twitch/twitch4.png"
+  to = "user-sources/sources/social-logins/twitch/twitch4.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/twitch/twitch5.png"
+  to = "user-sources/sources/social-logins/twitch/twitch5.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/twitter/index.md"
+  to = "user-sources/sources/social-logins/twitter/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/twitter/twitter1.png"
+  to = "user-sources/sources/social-logins/twitter/twitter1.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "sources/twitter/twitter2.png"
+  to = "user-sources/sources/social-logins/twitter/twitter2.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "troubleshooting/access.md"
+  to = "troubleshooting/access.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "troubleshooting/access_denied_message.png"
+  to = "troubleshooting/access_denied_message.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "troubleshooting/authentik_user_debug.png"
+  to = "troubleshooting/authentik_user_debug.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "troubleshooting/csrf.md"
+  to = "troubleshooting/csrf.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "troubleshooting/emails.md"
+  to = "troubleshooting/emails.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "troubleshooting/forward_auth/general.mdx"
+  to = "troubleshooting/forward_auth/general.mdx"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "troubleshooting/image_upload.md"
+  to = "troubleshooting/image_upload.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "troubleshooting/ldap_source.md"
+  to = "troubleshooting/ldap_source.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "troubleshooting/login.md"
+  to = "troubleshooting/login.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "troubleshooting/missing_admin_group.md"
+  to = "troubleshooting/missing_admin_group.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "troubleshooting/postgres/upgrade_docker.md"
+  to = "troubleshooting/postgres/upgrade_docker.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "troubleshooting/postgres/upgrade_kubernetes.md"
+  to = "troubleshooting/postgres/upgrade_kubernetes.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "user-group-role/access-control/flow-page.png"
+  to = "user-sources/access-control/flow-page.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "user-group-role/access-control/index.mdx"
+  to = "user-sources/access-control/index.mdx"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "user-group-role/access-control/manage_permissions.md"
+  to = "user-sources/access-control/manage_permissions.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "user-group-role/access-control/permissions.md"
+  to = "user-sources/access-control/permissions.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "user-group-role/access-control/user-page.png"
+  to = "user-sources/access-control/user-page.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "user-group-role/groups/group_ref.md"
+  to = "user-sources/groups/group_ref.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "user-group-role/groups/index.mdx"
+  to = "user-sources/groups/index.mdx"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "user-group-role/groups/manage_groups.md"
+  to = "user-sources/groups/manage_groups.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "user-group-role/roles/index.mdx"
+  to = "user-sources/roles/index.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "user-group-role/roles/manage_roles.md"
+  to = "user-sources/roles/manage_roles.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "user-group-role/user/create_invite.png"
+  to = "user-sources/user/create_invite.png"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "user-group-role/user/index.mdx"
+  to = "user-sources/user/index.mdx"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "user-group-role/user/invitations.md"
+  to = "user-sources/user/invitations.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "user-group-role/user/user_basic_operations.md"
+  to = "user-sources/user/user_basic_operations.md"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "user-group-role/user/user_ref.md"
+  to = "user-sources/user/user_ref.md"
+  status = 301
+  force = true
