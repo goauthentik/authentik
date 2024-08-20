@@ -43,7 +43,7 @@ After you have run `migrate`, you cannot run it again or you will get a `panic` 
 :::
 
 2. To revert the migration, use `docsmg unmigrate`.
-   Note: DO NOT edit the `migratefile` file in befor running `unmigrate`.
+   Note: DO NOT edit the `migratefile` file before running `unmigrate`.
 3. Continue modifying the `migratefile` file and then using the `docsmg migrate` command until you are satisfied with the result.
 
 ### Update the `sidebar.js file`
@@ -54,7 +54,7 @@ Because the structure is completely changed, you will need to modify/reconstruct
 
 To test the internal links, navigate up a level to `authentik` and then run `make website-watch`.
 
-## Toubleshooting
+## Troubleshooting
 
 -   If the `docsmg generate` command pulls _all_ of the files in the repo (even non-docs files), then check that:
     -   the `docsmg.env` exists
