@@ -98,7 +98,9 @@ const docsSidebar = {
                                 type: "doc",
                                 id: "add-secure-apps/providers/property-mappings/index",
                             },
-                            items: ["add-secure-apps/providers/property-mappings/expression"],
+                            items: [
+                                "add-secure-apps/providers/property-mappings/expression",
+                            ],
                         },
                         {
                             type: "category",
@@ -191,8 +193,8 @@ const docsSidebar = {
                     type: "category",
                     label: "Flows and Stages",
                     link: {
-                            type: "doc",
-                            id: "add-secure-apps/flows-stages/index",
+                        type: "doc",
+                        id: "add-secure-apps/flows-stages/index",
                     },
                     items: [
                         {
@@ -202,14 +204,19 @@ const docsSidebar = {
                                 type: "doc",
                                 id: "add-secure-apps/flows-stages/flow/index",
                             },
-                        items: [
-                            "add-secure-apps/flows-stages/flow/layouts",
-                            "add-secure-apps/flows-stages/flow/inspector",
-                            "add-secure-apps/flows-stages/flow/context/index",
+                            items: [
+                                "add-secure-apps/flows-stages/flow/layouts",
+                                "add-secure-apps/flows-stages/flow/inspector",
+                                "add-secure-apps/flows-stages/flow/context/index",
+                            ],
+                        },
                         {
                             type: "category",
                             label: "Examples",
-                            items: ["add-secure-apps/flows-stages/flow/examples/flows", "add-secure-apps/flows-stages/flow/examples/snippets"],
+                            items: [
+                                "add-secure-apps/flows-stages/flow/examples/flows",
+                                "add-secure-apps/flows-stages/flow/examples/snippets",
+                            ],
                         },
                         {
                             type: "category",
@@ -302,15 +309,17 @@ const docsSidebar = {
                     },
                     items: [
                         {
-                        type: "category",
-                        label: "Working with Policies",
-                        link: {
-                            type: "doc",
-                            id: "customize/policies/working_with_policies/working_with_policies",
+                            type: "category",
+                            label: "Working with Policies",
+                            link: {
+                                type: "doc",
+                                id: "customize/policies/working_with_policies/working_with_policies",
+                            },
+                            items: [
+                                "customize/policies/working_with_policies/unique_email",
+                                "customize/policies/working_with_policies/whitelist_email",
+                            ],
                         },
-                        items: [
-                        "customize/policies/working_with_policies/unique_email",
-                        "customize/policies/working_with_policies/whitelist_email",
                     ],
                 },
                 {
@@ -468,9 +477,7 @@ const docsSidebar = {
                         type: "doc",
                         id: "sys-mgmt/ops/index",
                     },
-                    items: [
-                        "sys-mgmt/ops/monitoring",
-                    ],
+                    items: ["sys-mgmt/ops/monitoring"],
                 },
                 {
                     type: "category",
@@ -480,10 +487,7 @@ const docsSidebar = {
                         type: "doc",
                         id: "sys-mgmt/events/index",
                     },
-                    items: [
-                        "events/notifications",
-                        "events/transports",
-                    ],
+                    items: ["events/notifications", "events/transports"],
                 },
                 "certificates",
                 "settings",
@@ -573,7 +577,6 @@ const docsSidebar = {
             ],
         },
     ],
-},
-
+};
 docsSidebar.docs[0].value = generateVersionDropdown(docsSidebar);
 module.exports = docsSidebar;
