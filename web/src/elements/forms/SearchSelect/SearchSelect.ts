@@ -16,6 +16,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { ResponseError } from "@goauthentik/api";
 
+import "./ak-search-select-loading-indicator.js";
 import "./ak-search-select-view.js";
 import { SearchSelectView } from "./ak-search-select-view.js";
 
@@ -229,7 +230,9 @@ export class SearchSelectBase<T>
         }
 
         if (!this.objects) {
-            return html`${msg("Loading...")}`;
+            return html`<ak-search-select-loading-indicator
+                tabindex="-1"
+            ></ak-search-select-loading-indicator>`;
         }
 
         const options = this.getGroupedItems();
