@@ -40,7 +40,7 @@ def auth_user_lookup(raw_header: bytes) -> User | None:
     if user:
         CTX_AUTH_VIA.set("secret_key")
         return user
-    raise AuthenticationFailed("Token invalid/expired")
+    return None
 
 
 def token_secret_key(value: str) -> User | None:
