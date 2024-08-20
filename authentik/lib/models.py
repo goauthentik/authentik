@@ -109,8 +109,10 @@ class DomainlessFormattedURLValidator(DomainlessURLValidator):
         self.schemes = ["http", "https", "blank"] + list(self.schemes)
 
 
+__internal_models = []
+
 def internal_model(cls):
-    setattr(cls, "__authentik_lib_internal_model", True)
+    __internal_models.append(cls)
     return cls
 
 
@@ -131,5 +133,5 @@ def excluded_models() -> list[type[Model]]:
         UserObjectPermission,
     ]
     return tuple(
-        static + [x for x in apps.get_models() if hasattr(x, "__authentik_lib_internal_model")]
+        static + [x for x in apps.get_models() if x in __internal_models]
     )

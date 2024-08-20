@@ -29,7 +29,7 @@ CELERY_BEAT_SCHEDULE = {
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "authentik.outposts.authentication.OutpostTokenAuthentication"
+        "authentik.outposts.authentication.OutpostTokenAuthentication",
         "authentik.api.authentication.TokenAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ),
