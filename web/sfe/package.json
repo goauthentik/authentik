@@ -4,7 +4,7 @@
     "private": true,
     "license": "MIT",
     "dependencies": {
-        "@goauthentik/api": "^2024.6.3-1723645891",
+        "@goauthentik/api": "^2024.6.3-1723921843",
         "base64-js": "^1.5.1",
         "bootstrap": "^4.6.1",
         "formdata-polyfill": "^4.0.10",
@@ -20,7 +20,7 @@
         "@rollup/plugin-node-resolve": "^15.2.3",
         "@rollup/plugin-swc": "^0.3.1",
         "@swc/cli": "^0.4.0",
-        "@swc/core": "^1.7.12",
+        "@swc/core": "^1.7.14",
         "@types/jquery": "^3.5.30",
         "rollup": "^4.21.0",
         "rollup-plugin-copy": "^3.5.0"

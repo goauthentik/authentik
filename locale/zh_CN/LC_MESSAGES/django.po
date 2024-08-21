@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-15 00:09+0000\n"
+"POT-Creation-Date: 2024-08-18 00:08+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/authentik/teams/119923/zh_CN/)\n"
@@ -1633,6 +1633,12 @@ msgid "Radius Provider Property Mappings"
 msgstr "Radius 提供程序属性映射"
 
 #: authentik/providers/saml/api/providers.py
+msgid ""
+"With a signing keypair selected, at least one of 'Sign assertion' and 'Sign "
+"Response' must be selected."
+msgstr "选择签名密钥对后，必须至少选择“签名断言”和“签名响应”之一。"
+
+#: authentik/providers/saml/api/providers.py
 msgid "Invalid XML Syntax"
 msgstr "无效 XML 语法"
 
@@ -1762,6 +1768,17 @@ msgstr "密钥对，用于签署发送给服务提供程序的传出响应。"
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "Signing Keypair"
 msgstr "签名密钥对"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid ""
+"When selected, incoming assertions are encrypted by the IdP using the public"
+" key of the encryption keypair. The assertion is decrypted by the SP using "
+"the the private key."
+msgstr "选择此选项后，传入的断言将由 IdP 使用加密密钥对的公钥进行加密。 SP 会使用私钥解密该断言。"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "Encryption Keypair"
+msgstr "加密密钥对"
 
 #: authentik/providers/saml/models.py
 msgid "Default relay_state value for IDP-initiated logins"
@@ -2262,17 +2279,6 @@ msgstr ""
 msgid ""
 "Keypair used to sign outgoing Responses going to the Identity Provider."
 msgstr "密钥对，用于签署发送给身份提供程序的传出响应。"
-
-#: authentik/sources/saml/models.py
-msgid ""
-"When selected, incoming assertions are encrypted by the IdP using the public"
-" key of the encryption keypair. The assertion is decrypted by the SP using "
-"the the private key."
-msgstr "选择此选项后，传入的断言将由 IdP 使用加密密钥对的公钥进行加密。 SP 会使用私钥解密该断言。"
-
-#: authentik/sources/saml/models.py
-msgid "Encryption Keypair"
-msgstr "加密密钥对"
 
 #: authentik/sources/saml/models.py
 msgid "SAML Source"
