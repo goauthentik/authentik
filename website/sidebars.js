@@ -293,10 +293,6 @@ const docsSidebar = {
             type: "category",
             label: "Customize your authentik Instance",
             collapsed: true,
-            link: {
-                type: "doc",
-                id: "customize/index",
-            },
             items: [
                 {
                     type: "category",
