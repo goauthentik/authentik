@@ -46,6 +46,21 @@ Starting with authentik 2022.11.0, the following checks can also be done with th
 -   Check the password hash against the database of [Have I Been Pwned](https://haveibeenpwned.com/). Only the first 5 characters of the hashed password are transmitted, the rest is compared in authentik
 -   Check the password against the password complexity checker [zxcvbn](https://github.com/dropbox/zxcvbn), which detects weak password on various metrics.
 
+### Password Uniqueness Policy
+
+Prevents users from reusing old passwords when changing their own password. The policy offers an option to limit the number many previous passwords to consider during evaluation.
+
+When this policy is bound and enabled to at least one [User write stage](../flow/stages/user_write.md):
+
+1.  authentik compares the hashes of the new password and the old password for a match. The policy check fails and exits if the hashes match.
+2.  authentik copies the hashed form of the user's old password for future comparison
+
+:::info
+authentik purges the password history for all users when you disable or unbind the all Password Uniquess policy instances in your setup.
+:::
+
+Passwords changed by administrators are never subject to this policy.
+
 ### Reputation Policy
 
 authentik keeps track of failed login attempts by source IP and attempted username. These values are saved as scores. Each failed login decreases the score for the client IP as well as the targeted username by 1 (one).
