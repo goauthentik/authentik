@@ -32,7 +32,10 @@ export interface ISearchSelectBase<T> {
     emptyOption: string;
 }
 
-export class SearchSelectBase<T> extends CustomEmitterElement(AkControlElement) implements ISearchSelectBase<T> {
+export class SearchSelectBase<T>
+    extends CustomEmitterElement(AkControlElement)
+    implements ISearchSelectBase<T>
+{
     static get styles() {
         return [PFBase];
     }
@@ -201,7 +204,10 @@ export class SearchSelectBase<T> extends CustomEmitterElement(AkControlElement) 
             return { grouped: false, options: [] };
         }
 
-        if (groupedItems.length === 1 && (groupedItems[0].length < 1 || groupedItems[0][0] === "")) {
+        if (
+            groupedItems.length === 1 &&
+            (groupedItems[0].length < 1 || groupedItems[0][0] === "")
+        ) {
             return {
                 grouped: false,
                 options: makeSearchTuples(groupedItems[0][1]),
@@ -230,7 +236,9 @@ export class SearchSelectBase<T> extends CustomEmitterElement(AkControlElement) 
         // a subsequent retrieval failure, in which case `this.error` above will be populated and
         // displayed before this.
         if (!this.objects) {
-            return html`<ak-search-select-loading-indicator tabindex="-1"></ak-search-select-loading-indicator>`;
+            return html`<ak-search-select-loading-indicator
+                tabindex="-1"
+            ></ak-search-select-loading-indicator>`;
         }
 
         const options = this.getGroupedItems();
