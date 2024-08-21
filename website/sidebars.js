@@ -70,14 +70,14 @@ const docsSidebar = {
             type: "category",
             label: "Add and Secure Applications",
             collapsed: true,
-            link: {
-                type: "doc",
-                id: "add-secure-apps/index",
-            },
             items: [
                 {
                     type: "category",
                     label: "Applications",
+                    link: {
+                        type: "doc",
+                        id: "add-secure-apps/applications/index",
+                    },
                     items: ["add-secure-apps/applications/manage_apps"],
                 },
                 {
