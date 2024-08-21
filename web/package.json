@@ -296,6 +296,7 @@
                 "lint:types",
                 "lint:components",
                 "lint:spelling",
+                "lint:package",
                 "lint:lockfile",
                 "lint:lockfiles",
                 "lint:precommit",
