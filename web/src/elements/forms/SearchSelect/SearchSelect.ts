@@ -8,7 +8,7 @@ import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 import { randomId } from "@goauthentik/elements/utils/randomId.js";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
+import { PropertyValues, TemplateResult, html } from "lit";
 import { property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -32,10 +32,7 @@ export interface ISearchSelectBase<T> {
     emptyOption: string;
 }
 
-export class SearchSelectBase<T>
-    extends CustomEmitterElement(AkControlElement)
-    implements ISearchSelectBase<T>
-{
+export class SearchSelectBase<T> extends CustomEmitterElement(AkControlElement) implements ISearchSelectBase<T> {
     static get styles() {
         return [PFBase];
     }
@@ -121,6 +118,7 @@ export class SearchSelectBase<T>
             return Promise.resolve();
         }
         this.isFetchingData = true;
+        this.dispatchEvent(new Event("loading"));
         return this.fetchObjects(this.query)
             .then((objects) => {
                 objects.forEach((obj) => {
@@ -203,10 +201,7 @@ export class SearchSelectBase<T>
             return { grouped: false, options: [] };
         }
 
-        if (
-            groupedItems.length === 1 &&
-            (groupedItems[0].length < 1 || groupedItems[0][0] === "")
-        ) {
+        if (groupedItems.length === 1 && (groupedItems[0].length < 1 || groupedItems[0][0] === "")) {
             return {
                 grouped: false,
                 options: makeSearchTuples(groupedItems[0][1]),
@@ -229,10 +224,13 @@ export class SearchSelectBase<T>
             return html`<em>${msg("Failed to fetch objects: ")} ${this.error.detail}</em>`;
         }
 
+        // `this.objects` is both a container and a sigil; if it is in the `undefined` state, it's a
+        // marker that this component has not yet completed a *first* load. After that, it should
+        // never be empty. The only state that allows it to be empty after a successful retrieval is
+        // a subsequent retrieval failure, in which case `this.error` above will be populated and
+        // displayed before this.
         if (!this.objects) {
-            return html`<ak-search-select-loading-indicator
-                tabindex="-1"
-            ></ak-search-select-loading-indicator>`;
+            return html`<ak-search-select-loading-indicator tabindex="-1"></ak-search-select-loading-indicator>`;
         }
 
         const options = this.getGroupedItems();
@@ -251,7 +249,10 @@ export class SearchSelectBase<T>
         ></ak-search-select-view> `;
     }
 
-    public override updated() {
+    public override updated(changed: PropertyValues<this>) {
+        if (!this.isFetchingData && changed.has("objects")) {
+            this.dispatchEvent(new Event("ready"));
+        }
         // It is not safe for automated tests to interact with this component while it is fetching
         // data.
         if (!this.isFetchingData) {
