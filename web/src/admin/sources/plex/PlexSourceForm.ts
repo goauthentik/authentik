@@ -196,9 +196,6 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
                         "Select which server a user has to be a member of to be allowed to authenticate.",
                     )}
                 </p>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Hold control/command to select multiple items.")}
-                </p>
             </ak-form-element-horizontal>`;
     }
 

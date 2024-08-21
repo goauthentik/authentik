@@ -235,9 +235,6 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                         <p class="pf-c-form__helper-text">
                             ${msg("Property mappings used to user mapping.")}
                         </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Hold control/command to select multiple items.")}
-                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Group Property Mappings")}
@@ -254,9 +251,6 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                         ></ak-dual-select-dynamic-selected>
                         <p class="pf-c-form__helper-text">
                             ${msg("Property mappings used to group creation.")}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Hold control/command to select multiple items.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>
