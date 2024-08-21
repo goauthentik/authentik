@@ -69,14 +69,23 @@
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "applications"
   to = "add-secure-apps/applications"
+=======
+  from = "applications/index"
+  to = "add-secure-apps/applications/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
   from = "applications/manage_apps"
+<<<<<<< HEAD
   to = "add-secure-apps/applications/i"
+=======
+  to = "add-secure-apps/applications/manage_apps"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
@@ -129,8 +138,13 @@
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "enterprise"
   to = "enterprise"
+=======
+  from = "enterprise/index"
+  to = "enterprise/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
@@ -141,8 +155,13 @@
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "events"
   to = "sys-mgmt/events"
+=======
+  from = "events/index"
+  to = "sys-mgmt/events/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
@@ -177,8 +196,13 @@
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "flow/context"
   to = "add-secure-apps/flows-stages/flow/context"
+=======
+  from = "flow/context/index"
+  to = "add-secure-apps/flows-stages/flow/context/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
@@ -219,8 +243,13 @@
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "flow"
   to = "add-secure-apps/flows-stages/flow"
+=======
+  from = "flow/index"
+  to = "add-secure-apps/flows-stages/flow/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
@@ -237,44 +266,79 @@
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "flow/stages/authenticator_duo"
   to = "add-secure-apps/flows-stages/stages//authenticator_duo"
+=======
+  from = "flow/stages/authenticator_duo/index"
+  to = "add-secure-apps/flows-stages/stages//authenticator_duo/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "flow/stages/authenticator_sms"
   to = "add-secure-apps/flows-stages/stages/authenticator_sms"
+=======
+  from = "flow/stages/authenticator_sms/index"
+  to = "add-secure-apps/flows-stages/stages/authenticator_sms/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "flow/stages/authenticator_static"
   to = "add-secure-apps/flows-stages/stages/authenticator_static"
+=======
+  from = "flow/stages/authenticator_static/index"
+  to = "add-secure-apps/flows-stages/stages/authenticator_static/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "flow/stages/authenticator_totp"
   to = "add-secure-apps/flows-stages/stages/authenticator_totp"
+=======
+  from = "flow/stages/authenticator_totp/index"
+  to = "add-secure-apps/flows-stages/stages/authenticator_totp/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "flow/stages/authenticator_validate"
   to = "add-secure-apps/flows-stages/stages/authenticator_validate"
+=======
+  from = "flow/stages/authenticator_validate/index"
+  to = "add-secure-apps/flows-stages/stages/authenticator_validate/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "flow/stages/authenticator_webauthn"
   to = "add-secure-apps/flows-stages/stages/authenticator_webauthn"
+=======
+  from = "flow/stages/authenticator_webauthn/index"
+  to = "add-secure-apps/flows-stages/stages/authenticator_webauthn/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "flow/stages/captcha"
   to = "add-secure-apps/flows-stages/stages/captcha"
+=======
+  from = "flow/stages/captcha/index"
+  to = "add-secure-apps/flows-stages/stages/captcha/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
@@ -285,44 +349,79 @@
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "flow/stages/email"
   to = "add-secure-apps/flows-stages/stages/email"
+=======
+  from = "flow/stages/email/index"
+  to = "add-secure-apps/flows-stages/stages/email/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "flow/stages/identification"
   to = "add-secure-apps/flows-stages/stages/identification"
+=======
+  from = "flow/stages/identification/index"
+  to = "add-secure-apps/flows-stages/stages/identification/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "flow/stages"
   to = "add-secure-apps/flows-stages/stages"
+=======
+  from = "flow/stages/index"
+  to = "add-secure-apps/flows-stages/stages/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "flow/stages/invitation"
   to = "add-secure-apps/flows-stages/stages/invitation"
+=======
+  from = "flow/stages/invitation/index"
+  to = "add-secure-apps/flows-stages/stages/invitation/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "flow/stages/password"
   to = "add-secure-apps/flows-stages/stages/password"
+=======
+  from = "flow/stages/password/index"
+  to = "add-secure-apps/flows-stages/stages/password/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "flow/stages/prompt"
   to = "add-secure-apps/flows-stages/stages/prompt"
+=======
+  from = "flow/stages/prompt/index"
+  to = "add-secure-apps/flows-stages/stages/prompt/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "flow/stages/source"
   to = "add-secure-apps/flows-stages/stages/source"
+=======
+  from = "flow/stages/source/index"
+  to = "add-secure-apps/flows-stages/stages/source/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
@@ -333,8 +432,13 @@
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "flow/stages/user_login"
   to = "add-secure-apps/flows-stages/stages/user_login"
+=======
+  from = "flow/stages/user_login/index"
+  to = "add-secure-apps/flows-stages/stages/user_login/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
@@ -387,8 +491,13 @@
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "installation"
   to = "install-config"
+=======
+  from = "installation/index"
+  to = "install-config/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
@@ -465,8 +574,13 @@
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "outposts"
   to = "add-secure-apps/outposts"
+=======
+  from = "outposts/index"
+  to = "add-secure-apps/outposts/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
@@ -507,8 +621,13 @@
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "policies"
   to = "customize/policies"
+=======
+  from = "policies/index"
+  to = "customize/policies/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
@@ -537,8 +656,13 @@
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "providers/entra"
   to = "add-secure-apps/providers/entra"
+=======
+  from = "providers/entra/index"
+  to = "add-secure-apps/providers/entra/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
@@ -555,8 +679,13 @@
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "providers/gws"
   to = "add-secure-apps/providers/gws"
+=======
+  from = "providers/gws/index"
+  to = "add-secure-apps/providers/gws/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
@@ -567,8 +696,13 @@
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "providers"
   to = "add-secure-apps/providers"
+=======
+  from = "providers/index"
+  to = "add-secure-apps/providers/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
@@ -579,8 +713,13 @@
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "providers/ldap"
   to = "add-secure-apps/providers/ldap"
+=======
+  from = "providers/ldap/index"
+  to = "add-secure-apps/providers/ldap/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
@@ -597,8 +736,13 @@
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "providers/oauth2"
   to = "add-secure-apps/providers/oauth2"
+=======
+  from = "providers/oauth2/index"
+  to = "add-secure-apps/providers/oauth2/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
@@ -609,8 +753,13 @@
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "providers/property-mappings"
   to = "add-secure-apps/providers/property-mappings"
+=======
+  from = "providers/property-mappings/index"
+  to = "add-secure-apps/providers/property-mappings/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
@@ -687,8 +836,13 @@
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "providers/proxy"
   to = "add-secure-apps/providers/proxy"
+=======
+  from = "providers/proxy/index"
+  to = "add-secure-apps/providers/proxy/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
@@ -717,32 +871,57 @@
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "providers/rac/how-to-rac"
   to = "add-secure-apps/providers/rac/how-to-rac"
+=======
+  from = "providers/rac/how-to-rac
+  to = "add-secure-apps/providers/rac/how-to-rac
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "providers/rac"
   to = "add-secure-apps/providers/rac"
+=======
+  from = "providers/rac/index
+  to = "add-secure-apps/providers/rac/index
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "providers/radius"
   to = "add-secure-apps/providers/radius"
+=======
+  from = "providers/radius/index"
+  to = "add-secure-apps/providers/radius/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "providers/saml"
   to = "add-secure-apps/providers/saml"
+=======
+  from = "providers/saml/index"
+  to = "add-secure-apps/providers/saml/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "providers/scim"
   to = "add-secure-apps/providers/scim"
+=======
+  from = "providers/scim/index"
+  to = "add-secure-apps/providers/scim/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
@@ -825,80 +1004,151 @@
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "sources/active-directory"
   to = "user-sources/sources/directory-sync/active-directory"
+=======
+  from = "sources/active-directory/index"
+  to = "user-sources/sources/directory-sync/active-directory/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "sources/apple"
   to = "user-sources/sources/social-logins/apple"
+=======
+  from = "sources/apple/app_service_config.png"
+  to = "user-sources/sources/social-logins/apple/app_service_config.png"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "sources/azure-ad"
   to = "user-sources/sources/social-logins/azure-ad"
+=======
+  from = "sources/apple/index"
+  to = "user-sources/sources/social-logins/apple/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "sources/discord"
   to = "user-sources/sources/social-logins/discord"
+=======
+  from = "sources/azure-ad/index"
+  to = "user-sources/sources/social-logins/azure-ad/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "sources/facebook"
   to = "user-sources/sources/social-logins/facebook"
+=======
+  from = "sources/discord/index"
+  to = "user-sources/sources/social-logins/discord/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "sources/freeipa"
   to = "user-sources/sources/directory-sync/freeipa"
+=======
+  from = "sources/facebook/index"
+  to = "user-sources/sources/social-logins/facebook/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "sources/github"
   to = "user-sources/sources/social-logins/github"
+=======
+  from = "sources/freeipa/index"
+  to = "user-sources/sources/directory-sync/freeipa/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "sources/google"
   to = "user-sources/sources/social-logins/google"
+=======
+  from = "sources/github/index"
+  to = "user-sources/sources/social-logins/github/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "sources"
   to = "user-sources/sources"
+=======
+  from = "sources/google/index"
+  to = "user-sources/sources/social-logins/google/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "sources/ldap"
   to = "user-sources/sources/protocols/ldap"
+=======
+  from = "sources/index"
+  to = "user-sources/sources/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "sources/mailcow"
   to = "user-sources/sources/social-logins/mailcow"
+=======
+  from = "sources/ldap/index"
+  to = "user-sources/sources/protocols/ldap/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "sources/oauth"
   to = "user-sources/sources/protocols/oauth"
+=======
+  from = "sources/mailcow/index"
+  to = "user-sources/sources/social-logins/mailcow/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "sources/plex"
   to = "user-sources/sources/social-logins/plex"
+=======
+  from = "sources/oauth/index"
+  to = "user-sources/sources/protocols/oauth/index"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "sources/plex/index"
+  to = "user-sources/sources/social-logins/plex/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
@@ -909,36 +1159,62 @@
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "sources/property-mappings"
   to = "user-sources/sources/property-mappings"
+=======
+  from = "sources/property-mappings/index"
+  to = "user-sources/sources/property-mappings/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "sources/saml"
   to = "user-sources/sources/protocols/saml"
+=======
+  from = "sources/saml/index"
+  to = "user-sources/sources/protocols/saml/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "sources/scim"
   to = "user-sources/sources/protocols/scim"
+=======
+  from = "sources/scim/index"
+  to = "user-sources/sources/protocols/scim/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "sources/twitch"
   to = "user-sources/sources/social-logins/twitch"
+=======
+  from = "sources/twitch/index"
+  to = "user-sources/sources/social-logins/twitch/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "sources/twitter"
   to = "user-sources/sources/social-logins/twitter"
+=======
+  from = "sources/twitter/index
+  to = "user-sources/sources/social-logins/twitter/index
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "troubleshooting/access"
   to = "troubleshooting/access"
   status = 302
@@ -1001,6 +1277,10 @@
 [[redirects]]
   from = "user-group-role/access-control"
   to = "user-sources/access-control"
+=======
+  from = "user-group-role/access-control/index"
+  to = "user-sources/access-control/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
@@ -1023,8 +1303,13 @@
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "user-group-role/groups"
   to = "user-sources/groups"
+=======
+  from = "user-group-role/groups/index"
+  to = "user-sources/groups/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
@@ -1035,8 +1320,13 @@
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "user-group-role/roles"
   to = "user-sources/roles"
+=======
+  from = "user-group-role/roles/index"
+  to = "user-sources/roles/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
@@ -1047,8 +1337,13 @@
   force = true
 
 [[redirects]]
+<<<<<<< HEAD
   from = "user-group-role/user"
   to = "user-sources/user"
+=======
+  from = "user-group-role/user/index"
+  to = "user-sources/user/index"
+>>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
