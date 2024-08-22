@@ -14,6 +14,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from authentik.core.api.utils import PassiveSerializer
+from authentik.rbac.filters import ObjectFilter
 
 
 class DeleteAction(Enum):
@@ -53,7 +54,7 @@ class UsedByMixin:
     @extend_schema(
         responses={200: UsedBySerializer(many=True)},
     )
-    @action(detail=True, pagination_class=None, filter_backends=[])
+    @action(detail=True, pagination_class=None, filter_backends=[ObjectFilter])
     def used_by(self, request: Request, *args, **kwargs) -> Response:
         """Get a list of all objects that use this object"""
         model: Model = self.get_object()
