@@ -103,4 +103,4 @@ return user_matched
 
 If a user is not member of the chosen organisation, they will see this message
 
-![](../../user-sources/sources/social-logins/github/github_org_membership.pn)
+![](../../users-sources/sources/social-logins/github/github_org_membership.pn)

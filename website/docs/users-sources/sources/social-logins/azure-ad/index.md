@@ -17,7 +17,7 @@ The following placeholders will be used:
 
     Under _Supported account types_, select whichever account type applies to your use-case.
 
-    ![](../../user-sources/sources/social-logins/azure-ad/aad_01.png)
+    ![](../../users-sources/sources/social-logins/azure-ad/aad_01.png)
 
 3. Take note of the _Application (client) ID_ value.
 
@@ -42,7 +42,7 @@ If you kept the default _Supported account types_ selection of _Single tenant_, 
 
 -   OIDC Well-known URL: `https://login.microsoftonline.com/*Directory (tenant) ID* from above/v2.0/.well-known/openid-configuration`
 
-![](../../user-sources/sources/social-logins/azure-ad/authentik_01.png)
+![](../../users-sources/sources/social-logins/azure-ad/authentik_01.png)
 
 Save, and you now have Azure AD as a source.
 

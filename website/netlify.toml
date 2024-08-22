@@ -1006,10 +1006,10 @@
 [[redirects]]
 <<<<<<< HEAD
   from = "sources/active-directory"
-  to = "user-sources/sources/directory-sync/active-directory"
+  to = "users-sources/sources/directory-sync/active-directory"
 =======
   from = "sources/active-directory/index"
-  to = "user-sources/sources/directory-sync/active-directory/index"
+  to = "users-sources/sources/directory-sync/active-directory/index"
 >>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
@@ -1017,10 +1017,10 @@
 [[redirects]]
 <<<<<<< HEAD
   from = "sources/apple"
-  to = "user-sources/sources/social-logins/apple"
+  to = "users-sources/sources/social-logins/apple"
 =======
   from = "sources/apple/app_service_config.png"
-  to = "user-sources/sources/social-logins/apple/app_service_config.png"
+  to = "users-sources/sources/social-logins/apple/app_service_config.png"
 >>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
@@ -1028,10 +1028,10 @@
 [[redirects]]
 <<<<<<< HEAD
   from = "sources/azure-ad"
-  to = "user-sources/sources/social-logins/azure-ad"
+  to = "users-sources/sources/social-logins/azure-ad"
 =======
   from = "sources/apple/index"
-  to = "user-sources/sources/social-logins/apple/index"
+  to = "users-sources/sources/social-logins/apple/index"
 >>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
@@ -1039,10 +1039,10 @@
 [[redirects]]
 <<<<<<< HEAD
   from = "sources/discord"
-  to = "user-sources/sources/social-logins/discord"
+  to = "users-sources/sources/social-logins/discord"
 =======
   from = "sources/azure-ad/index"
-  to = "user-sources/sources/social-logins/azure-ad/index"
+  to = "users-sources/sources/social-logins/azure-ad/index"
 >>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
@@ -1050,10 +1050,10 @@
 [[redirects]]
 <<<<<<< HEAD
   from = "sources/facebook"
-  to = "user-sources/sources/social-logins/facebook"
+  to = "users-sources/sources/social-logins/facebook"
 =======
   from = "sources/discord/index"
-  to = "user-sources/sources/social-logins/discord/index"
+  to = "users-sources/sources/social-logins/discord/index"
 >>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
@@ -1061,10 +1061,10 @@
 [[redirects]]
 <<<<<<< HEAD
   from = "sources/freeipa"
-  to = "user-sources/sources/directory-sync/freeipa"
+  to = "users-sources/sources/directory-sync/freeipa"
 =======
   from = "sources/facebook/index"
-  to = "user-sources/sources/social-logins/facebook/index"
+  to = "users-sources/sources/social-logins/facebook/index"
 >>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
@@ -1072,10 +1072,10 @@
 [[redirects]]
 <<<<<<< HEAD
   from = "sources/github"
-  to = "user-sources/sources/social-logins/github"
+  to = "users-sources/sources/social-logins/github"
 =======
   from = "sources/freeipa/index"
-  to = "user-sources/sources/directory-sync/freeipa/index"
+  to = "users-sources/sources/directory-sync/freeipa/index"
 >>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
@@ -1083,10 +1083,10 @@
 [[redirects]]
 <<<<<<< HEAD
   from = "sources/google"
-  to = "user-sources/sources/social-logins/google"
+  to = "users-sources/sources/social-logins/google"
 =======
   from = "sources/github/index"
-  to = "user-sources/sources/social-logins/github/index"
+  to = "users-sources/sources/social-logins/github/index"
 >>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
@@ -1094,10 +1094,10 @@
 [[redirects]]
 <<<<<<< HEAD
   from = "sources"
-  to = "user-sources/sources"
+  to = "users-sources/sources"
 =======
   from = "sources/google/index"
-  to = "user-sources/sources/social-logins/google/index"
+  to = "users-sources/sources/social-logins/google/index"
 >>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
@@ -1105,10 +1105,10 @@
 [[redirects]]
 <<<<<<< HEAD
   from = "sources/ldap"
-  to = "user-sources/sources/protocols/ldap"
+  to = "users-sources/sources/protocols/ldap"
 =======
   from = "sources/index"
-  to = "user-sources/sources/index"
+  to = "users-sources/sources/index"
 >>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
@@ -1116,10 +1116,10 @@
 [[redirects]]
 <<<<<<< HEAD
   from = "sources/mailcow"
-  to = "user-sources/sources/social-logins/mailcow"
+  to = "users-sources/sources/social-logins/mailcow"
 =======
   from = "sources/ldap/index"
-  to = "user-sources/sources/protocols/ldap/index"
+  to = "users-sources/sources/protocols/ldap/index"
 >>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
@@ -1127,10 +1127,10 @@
 [[redirects]]
 <<<<<<< HEAD
   from = "sources/oauth"
-  to = "user-sources/sources/protocols/oauth"
+  to = "users-sources/sources/protocols/oauth"
 =======
   from = "sources/mailcow/index"
-  to = "user-sources/sources/social-logins/mailcow/index"
+  to = "users-sources/sources/social-logins/mailcow/index"
 >>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
@@ -1138,33 +1138,33 @@
 [[redirects]]
 <<<<<<< HEAD
   from = "sources/plex"
-  to = "user-sources/sources/social-logins/plex"
+  to = "users-sources/sources/social-logins/plex"
 =======
   from = "sources/oauth/index"
-  to = "user-sources/sources/protocols/oauth/index"
+  to = "users-sources/sources/protocols/oauth/index"
   status = 302
   force = true
 
 [[redirects]]
   from = "sources/plex/index"
-  to = "user-sources/sources/social-logins/plex/index"
+  to = "users-sources/sources/social-logins/plex/index"
 >>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
   from = "sources/property-mappings/expressions"
-  to = "user-sources/sources/property-mappings/expressions"
+  to = "users-sources/sources/property-mappings/expressions"
   status = 302
   force = true
 
 [[redirects]]
 <<<<<<< HEAD
   from = "sources/property-mappings"
-  to = "user-sources/sources/property-mappings"
+  to = "users-sources/sources/property-mappings"
 =======
   from = "sources/property-mappings/index"
-  to = "user-sources/sources/property-mappings/index"
+  to = "users-sources/sources/property-mappings/index"
 >>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
@@ -1172,10 +1172,10 @@
 [[redirects]]
 <<<<<<< HEAD
   from = "sources/saml"
-  to = "user-sources/sources/protocols/saml"
+  to = "users-sources/sources/protocols/saml"
 =======
   from = "sources/saml/index"
-  to = "user-sources/sources/protocols/saml/index"
+  to = "users-sources/sources/protocols/saml/index"
 >>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
@@ -1183,10 +1183,10 @@
 [[redirects]]
 <<<<<<< HEAD
   from = "sources/scim"
-  to = "user-sources/sources/protocols/scim"
+  to = "users-sources/sources/protocols/scim"
 =======
   from = "sources/scim/index"
-  to = "user-sources/sources/protocols/scim/index"
+  to = "users-sources/sources/protocols/scim/index"
 >>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
@@ -1194,10 +1194,10 @@
 [[redirects]]
 <<<<<<< HEAD
   from = "sources/twitch"
-  to = "user-sources/sources/social-logins/twitch"
+  to = "users-sources/sources/social-logins/twitch"
 =======
   from = "sources/twitch/index"
-  to = "user-sources/sources/social-logins/twitch/index"
+  to = "users-sources/sources/social-logins/twitch/index"
 >>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
@@ -1205,10 +1205,10 @@
 [[redirects]]
 <<<<<<< HEAD
   from = "sources/twitter"
-  to = "user-sources/sources/social-logins/twitter"
+  to = "users-sources/sources/social-logins/twitter"
 =======
   from = "sources/twitter/index
-  to = "user-sources/sources/social-logins/twitter/index
+  to = "users-sources/sources/social-logins/twitter/index
 >>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
@@ -1276,91 +1276,91 @@
 
 [[redirects]]
   from = "user-group-role/access-control"
-  to = "user-sources/access-control"
+  to = "users-sources/access-control"
 =======
   from = "user-group-role/access-control/index"
-  to = "user-sources/access-control/index"
+  to = "users-sources/access-control/index"
 >>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
   from = "user-group-role/access-control/manage_permissions"
-  to = "user-sources/access-control/manage_permissions"
+  to = "users-sources/access-control/manage_permissions"
   status = 302
   force = true
 
 [[redirects]]
   from = "user-group-role/access-control/permissions"
-  to = "user-sources/access-control/permissions"
+  to = "users-sources/access-control/permissions"
   status = 302
   force = true
 
 [[redirects]]
   from = "user-group-role/groups/group_ref"
-  to = "user-sources/groups/group_ref"
+  to = "users-sources/groups/group_ref"
   status = 302
   force = true
 
 [[redirects]]
 <<<<<<< HEAD
   from = "user-group-role/groups"
-  to = "user-sources/groups"
+  to = "users-sources/groups"
 =======
   from = "user-group-role/groups/index"
-  to = "user-sources/groups/index"
+  to = "users-sources/groups/index"
 >>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
   from = "user-group-role/groups/manage_groups"
-  to = "user-sources/groups/manage_groups"
+  to = "users-sources/groups/manage_groups"
   status = 302
   force = true
 
 [[redirects]]
 <<<<<<< HEAD
   from = "user-group-role/roles"
-  to = "user-sources/roles"
+  to = "users-sources/roles"
 =======
   from = "user-group-role/roles/index"
-  to = "user-sources/roles/index"
+  to = "users-sources/roles/index"
 >>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
   from = "user-group-role/roles/manage_roles"
-  to = "user-sources/roles/manage_roles"
+  to = "users-sources/roles/manage_roles"
   status = 302
   force = true
 
 [[redirects]]
 <<<<<<< HEAD
   from = "user-group-role/user"
-  to = "user-sources/user"
+  to = "users-sources/user"
 =======
   from = "user-group-role/user/index"
-  to = "user-sources/user/index"
+  to = "users-sources/user/index"
 >>>>>>> d6a59f9a8 (syntax fixes and sidebar fixes)
   status = 302
   force = true
 
 [[redirects]]
   from = "user-group-role/user/invitations"
-  to = "user-sources/user/invitations"
+  to = "users-sources/user/invitations"
   status = 302
   force = true
 
 [[redirects]]
   from = "user-group-role/user/user_basic_operations"
-  to = "user-sources/user/user_basic_operations"
+  to = "users-sources/user/user_basic_operations"
   status = 302
   force = true
 
 [[redirects]]
   from = "user-group-role/user/user_ref"
-  to = "user-sources/user/user_ref"
+  to = "users-sources/user/user_ref"
   status = 302
   force = true

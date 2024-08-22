@@ -3,7 +3,7 @@ title: Manage groups
 description: "Learn how to work with groups in authentik."
 ---
 
-A group is a collection of users. Refer to the following sections to learn how to create and manage groups, assign users and roles to groups, and how [permissions](../../user-sources/access-control/manage_permissions.md) work on a group level.
+A group is a collection of users. Refer to the following sections to learn how to create and manage groups, assign users and roles to groups, and how [permissions](../../users-sources/access-control/manage_permissions.md) work on a group level.
 
 ## Create a group
 

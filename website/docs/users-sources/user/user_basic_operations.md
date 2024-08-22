@@ -8,7 +8,7 @@ The following topics are for the basic management of users: how to create, modif
 
 ### Create a user
 
-> If you want to automate user creation, you can do that either by [invitations](../../user-sources/user/invitations.md), [`user_write` stage](../../flow/stages/user_write), or [using the API](/developer-docs/api/reference/core-users-create).
+> If you want to automate user creation, you can do that either by [invitations](../../users-sources/user/invitations.md), [`user_write` stage](../../flow/stages/user_write), or [using the API](/developer-docs/api/reference/core-users-create).
 
 1. In the Admin interface of your authentik instance, select **Directory > Users** in the left side menu.
 2. Select the folder where you want to create a user.
@@ -58,7 +58,7 @@ To modify a user object, go to **Directory > Users**, and click the edit icon be
 
 You can grant a user specific global or object-level permissions. Alternatively, you can add a user to a group that has the appropriate permissions, and the user inherits all of the group's permissions.
 
-For more information, review ["Permissions"](../../user-sources/access-control/permissions.md).
+For more information, review ["Permissions"](../../users-sources/access-control/permissions.md).
 
 ## Add a user to a group
 

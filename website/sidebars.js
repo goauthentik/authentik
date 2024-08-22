@@ -96,9 +96,8 @@ const docsSidebar = {
                                 id: "add-secure-apps/providers/property-mappings/index",
                             },
                             items: [
-
                                 "add-secure-apps/providers/property-mappings/expression",
-                            ,
+                                ,
                             ],
                         },
                         {
@@ -355,12 +354,12 @@ const docsSidebar = {
                     label: "Users",
                     link: {
                         type: "doc",
-                        id: "user-sources/user/index",
+                        id: "users-sources/user/index",
                     },
                     items: [
-                        "user-sources/user/user_basic_operations",
-                        "user-sources/user/user_ref",
-                        "user-sources/user/invitations",
+                        "users-sources/user/user_basic_operations",
+                        "users-sources/user/user_ref",
+                        "users-sources/user/invitations",
                     ],
                 },
                 {
@@ -368,11 +367,11 @@ const docsSidebar = {
                     label: "Groups",
                     link: {
                         type: "doc",
-                        id: "user-sources/groups/index",
+                        id: "users-sources/groups/index",
                     },
                     items: [
-                        "user-sources/groups/manage_groups",
-                        "user-sources/groups/group_ref",
+                        "users-sources/groups/manage_groups",
+                        "users-sources/groups/group_ref",
                     ],
                 },
                 {
@@ -380,20 +379,20 @@ const docsSidebar = {
                     label: "Roles",
                     link: {
                         type: "doc",
-                        id: "user-sources/roles/index",
+                        id: "users-sources/roles/index",
                     },
-                    items: ["user-sources/roles/manage_roles"],
+                    items: ["users-sources/roles/manage_roles"],
                 },
                 {
                     type: "category",
                     label: "Access Control",
                     link: {
                         type: "doc",
-                        id: "user-sources/access-control/index",
+                        id: "users-sources/access-control/index",
                     },
                     items: [
-                        "user-sources/access-control/permissions",
-                        "user-sources/access-control/manage_permissions",
+                        "users-sources/access-control/permissions",
+                        "users-sources/access-control/manage_permissions",
                     ],
                 },
                 {
@@ -402,7 +401,7 @@ const docsSidebar = {
                     collapsed: true,
                     link: {
                         type: "doc",
-                        id: "user-sources/sources/index",
+                        id: "users-sources/sources/index",
                     },
                     items: [
                         {
@@ -410,10 +409,10 @@ const docsSidebar = {
                             label: "Protocols",
                             collapsed: true,
                             items: [
-                                "user-sources/sources/protocols/ldap/index",
-                                "user-sources/sources/protocols/oauth/index",
-                                "user-sources/sources/protocols/saml/index",
-                                "user-sources/sources/protocols/scim/index",
+                                "users-sources/sources/protocols/ldap/index",
+                                "users-sources/sources/protocols/oauth/index",
+                                "users-sources/sources/protocols/saml/index",
+                                "users-sources/sources/protocols/scim/index",
                             ],
                         },
                         {
@@ -421,34 +420,34 @@ const docsSidebar = {
                             label: "Source Property Mappings",
                             link: {
                                 type: "doc",
-                                id: "user-sources/sources/property-mappings/index",
+                                id: "users-sources/sources/property-mappings/index",
                             },
                             items: [
-                                "user-sources/sources/property-mappings/expressions",
+                                "users-sources/sources/property-mappings/expressions",
                             ],
                         },
                         {
                             type: "category",
                             label: "Directory synchronization",
                             items: [
-                                "user-sources/sources/directory-sync/active-directory/index",
-                                "user-sources/sources/directory-sync/freeipa/index",
+                                "users-sources/sources/directory-sync/active-directory/index",
+                                "users-sources/sources/directory-sync/freeipa/index",
                             ],
                         },
                         {
                             type: "category",
                             label: "Social Logins",
                             items: [
-                                "user-sources/sources/social-logins/apple/index",
-                                "user-sources/sources/social-logins/azure-ad/index",
-                                "user-sources/sources/social-logins/discord/index",
-                                "user-sources/sources/social-logins/facebook/index",
-                                "user-sources/sources/social-logins/github/index",
-                                "user-sources/sources/social-logins/google/index",
-                                "user-sources/sources/social-logins/mailcow/index",
-                                "user-sources/sources/social-logins/twitch/index",
-                                "user-sources/sources/social-logins/plex/index",
-                                "user-sources/sources/social-logins/twitter/index",
+                                "users-sources/sources/social-logins/apple/index",
+                                "users-sources/sources/social-logins/azure-ad/index",
+                                "users-sources/sources/social-logins/discord/index",
+                                "users-sources/sources/social-logins/facebook/index",
+                                "users-sources/sources/social-logins/github/index",
+                                "users-sources/sources/social-logins/google/index",
+                                "users-sources/sources/social-logins/mailcow/index",
+                                "users-sources/sources/social-logins/twitch/index",
+                                "users-sources/sources/social-logins/plex/index",
+                                "users-sources/sources/social-logins/twitter/index",
                             ],
                         },
                     ],
@@ -502,30 +501,28 @@ const docsSidebar = {
             },
             items: [
                 "security/policy",
-                "security/security-hardening"
-                ],
-            },
-            {
-                type: "category",
-                label: "Audits and Certificates",
-                items: ["security/audit-and-certs/2023-06-cure53"],
-            },
-            {
-                type: "category",
-                label: "CVEs",
-                items: [
-                    "security/cves/CVE-2024-38371",
-                    "security/cves/CVE-2024-37905",
-                    "security/cves/CVE-2024-23647",
-                    "security/cves/CVE-2024-21637",
-                    "security/cves/CVE-2023-48228",
-                    "security/cves/GHSA-rjvp-29xq-f62w",
-                    "security/cves/CVE-2023-39522",
-                    "security/cves/CVE-2023-36456",
-                    "security/cves/CVE-2023-26481",
-                    "security/cves/CVE-2022-23555",
-                    "security/cves/CVE-2022-46145",
-                    "security/cves/CVE-2022-46172",
+                "security/security-hardening",
+                {
+                    type: "category",
+                    label: "Audits and Certificates",
+                    items: ["security/audits-and-certs/2023-06-cure53"],
+                },
+                {
+                    type: "category",
+                    label: "CVEs",
+                    items: [
+                        "security/cves/CVE-2024-38371",
+                        "security/cves/CVE-2024-37905",
+                        "security/cves/CVE-2024-23647",
+                        "security/cves/CVE-2024-21637",
+                        "security/cves/CVE-2023-48228",
+                        "security/cves/GHSA-rjvp-29xq-f62w",
+                        "security/cves/CVE-2023-39522",
+                        "security/cves/CVE-2023-36456",
+                        "security/cves/CVE-2023-26481",
+                        "security/cves/CVE-2022-23555",
+                        "security/cves/CVE-2022-46145",
+                        "security/cves/CVE-2022-46172",
                     ],
                 },
             ],

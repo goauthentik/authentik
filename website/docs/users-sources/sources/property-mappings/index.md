@@ -37,7 +37,7 @@ return {
 
 You can see that the expression returns a Python dictionary. The dictionary keys must match [User properties](../../user-group-role/user/user_ref.md#object-properties) or [Group properties](../../user-group-role/groups/group_ref.md#object-properties). Note that for users, `ak_groups` and `group_attributes` cannot be set.
 
-See each source documentation for a reference of the available data. See the authentik [expressions documentation](../../user-sources/sources/property-mappings/expressions.md) for available data and functions.
+See each source documentation for a reference of the available data. See the authentik [expressions documentation](../../users-sources/sources/property-mappings/expressions.md) for available data and functions.
 
 Note that the [`list_flatten`](./expressions.md#list_flattenvalue-listany--any---optionalany) method is applied for all top-level properties, but not for attributes:
 

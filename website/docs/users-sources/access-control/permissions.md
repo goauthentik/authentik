@@ -37,10 +37,10 @@ When working with object permissions it is important to understand that when you
 
 For example, the Admin interface UI shown below shows a user page for the user named Peter.
 
-![](../../user-sources/access-control/user-page.png)
+![](../../users-sources/access-control/user-page.png)
 
 You can see in the **User Object Permissions** table that the Admin user (`akadmin`) and one other user (roberto) has permissions on Peter (that is, on the user object named Peter).
 
 Looking at another example, with a flow object called `default-recovery-flow`, you can see that the Admin user (akadmin) has all object permissions on the flow, but roberto only has a few permissions on that flow.
 
-![](../../user-sources/access-control/flow-page.png)
+![](../../users-sources/access-control/flow-page.png)

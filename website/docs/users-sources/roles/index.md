@@ -4,7 +4,7 @@ title: About roles
 
 import DocCardList from "@theme/DocCardList";
 
-Roles are a way to simplify the assignment of permissions. Roles are also the backbone of role-based access control (RBAC), an industry standard for managing [access control](../../user-sources/access-control). In authentik, RBAC is how you manage access to system components and specific objects such as flows, stages, users, etc.
+Roles are a way to simplify the assignment of permissions. Roles are also the backbone of role-based access control (RBAC), an industry standard for managing [access control](../../users-sources/access-control). In authentik, RBAC is how you manage access to system components and specific objects such as flows, stages, users, etc.
 
 Think of roles as a collection of permissions. A role, along with its "bucket" of assigned permissions, can then be assigned to a group, which means that every user who is a part of that group will inherit all of the permissions in that role's "bucket".
 

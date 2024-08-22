@@ -16,7 +16,7 @@ Be aware that when running a flow with the inspector enabled, the flow is still 
 
 ### Permissions and debug mode
 
-By default, the inspector is only enabled when the currently authenticated user is a superuser, OR if a user has been granted the [permission](../user-sources/access-control/permissions.md) **Can inspect a Flow's execution** (or is a user assigned to role with the permission).
+By default, the inspector is only enabled when the currently authenticated user is a superuser, OR if a user has been granted the [permission](../users-sources/access-control/permissions.md) **Can inspect a Flow's execution** (or is a user assigned to role with the permission).
 
 When developing authentik with the debug mode enabled, the inspector is enabled by default and can be accessed by both unauthenticated users and standard users. However the debug mode should only be used for the development of authentik. So unless you are a developer and need the more verbose error information, the best practice for using the flow inspector is to assign the permission, not use debug mode.
 
