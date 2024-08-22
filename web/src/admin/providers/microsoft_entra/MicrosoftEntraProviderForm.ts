@@ -232,7 +232,7 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                         <ak-dual-select-dynamic-selected
                             .provider=${microsoftEntraPropertyMappingsProvider}
                             .selector=${makeMicrosoftEntraPropertyMappingsSelector(
-                                this.instance?.propertyMappings,
+                                this.instance?.propertyMappingsGroup,
                                 "goauthentik.io/providers/microsoft_entra/group",
                             )}
                             available-label=${msg("Available Property Mappings")}

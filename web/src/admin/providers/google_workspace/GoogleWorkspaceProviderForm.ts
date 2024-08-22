@@ -243,7 +243,7 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                         <ak-dual-select-dynamic-selected
                             .provider=${googleWorkspacePropertyMappingsProvider}
                             .selector=${makeGoogleWorkspacePropertyMappingsSelector(
-                                this.instance?.propertyMappings,
+                                this.instance?.propertyMappingsGroup,
                                 "goauthentik.io/providers/google_workspace/group",
                             )}
                             available-label=${msg("Available Property Mappings")}
