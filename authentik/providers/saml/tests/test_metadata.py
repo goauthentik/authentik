@@ -5,6 +5,7 @@ from defusedxml.lxml import fromstring
 from django.test import RequestFactory, TestCase
 from lxml import etree  # nosec
 
+from authentik.common.saml.constants import ECDSA_SHA256, NS_MAP, NS_SAML_METADATA
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_cert, create_test_flow
 from authentik.crypto.builder import PrivateKeyAlg
@@ -14,7 +15,6 @@ from authentik.lib.xml import lxml_from_string
 from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.metadata import MetadataProcessor
 from authentik.providers.saml.processors.metadata_parser import ServiceProviderMetadataParser
-from authentik.sources.saml.processors.constants import ECDSA_SHA256, NS_MAP, NS_SAML_METADATA
 
 
 class TestServiceProviderMetadataParser(TestCase):

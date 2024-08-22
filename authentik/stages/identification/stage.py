@@ -20,6 +20,7 @@ from authentik.events.utils import sanitize_item
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
+    LoginChallenge,
     RedirectChallenge,
 )
 from authentik.flows.models import FlowDesignation
@@ -28,21 +29,24 @@ from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, Challeng
 from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE, SESSION_KEY_GET
 from authentik.lib.utils.urls import reverse_with_qs
 from authentik.root.middleware import ClientIPMiddleware
-from authentik.sources.oauth.types.apple import AppleLoginChallenge
-from authentik.sources.plex.models import PlexAuthenticationChallenge
 from authentik.stages.identification.models import IdentificationStage
 from authentik.stages.identification.signals import identification_failed
 from authentik.stages.password.stage import authenticate
 
 
+def login_challenge_types():
+    mapping = {
+        RedirectChallenge().fields["component"].default: RedirectChallenge,
+    }
+    for cls in LoginChallenge.__subclasses__():
+        mapping[cls().fields["component"].default] = cls
+    return mapping
+
+
 @extend_schema_field(
     PolymorphicProxySerializer(
         component_name="LoginChallengeTypes",
-        serializers={
-            RedirectChallenge().fields["component"].default: RedirectChallenge,
-            PlexAuthenticationChallenge().fields["component"].default: PlexAuthenticationChallenge,
-            AppleLoginChallenge().fields["component"].default: AppleLoginChallenge,
-        },
+        serializers=login_challenge_types,
         resource_type_field_name="component",
     )
 )

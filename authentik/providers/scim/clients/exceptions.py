@@ -3,8 +3,8 @@
 from pydantic import ValidationError
 from requests import Response
 
+from authentik.common.scim.schema import SCIMError
 from authentik.lib.sync.outgoing.exceptions import TransientSyncException
-from authentik.providers.scim.clients.schema import SCIMError
 
 
 class SCIMRequestException(TransientSyncException):

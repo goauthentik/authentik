@@ -6,10 +6,10 @@ from uuid import uuid4
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
+from authentik.common.scim.schema import User as SCIMUserSchema
 from authentik.core.tests.utils import create_test_user
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
-from authentik.providers.scim.clients.schema import User as SCIMUserSchema
 from authentik.sources.scim.models import SCIMSource, SCIMSourcePropertyMapping, SCIMSourceUser
 from authentik.sources.scim.views.v2.base import SCIM_CONTENT_TYPE
 

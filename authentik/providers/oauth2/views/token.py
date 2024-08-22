@@ -20,6 +20,20 @@ from jwt import PyJWK, PyJWT, PyJWTError, decode
 from sentry_sdk import start_span
 from structlog.stdlib import get_logger
 
+from authentik.common.oauth.constants import (
+    CLIENT_ASSERTION,
+    CLIENT_ASSERTION_TYPE,
+    CLIENT_ASSERTION_TYPE_JWT,
+    GRANT_TYPE_AUTHORIZATION_CODE,
+    GRANT_TYPE_CLIENT_CREDENTIALS,
+    GRANT_TYPE_DEVICE_CODE,
+    GRANT_TYPE_PASSWORD,
+    GRANT_TYPE_REFRESH_TOKEN,
+    PKCE_METHOD_S256,
+    SCOPE_OFFLINE_ACCESS,
+    TOKEN_TYPE,
+)
+from authentik.common.oauth.errors import DeviceCodeError, TokenError, UserAuthError
 from authentik.core.middleware import CTX_AUTH_VIA
 from authentik.core.models import (
     USER_ATTRIBUTE_EXPIRES,
@@ -37,20 +51,6 @@ from authentik.events.signals import get_login_event
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.engine import PolicyEngine
-from authentik.providers.oauth2.constants import (
-    CLIENT_ASSERTION,
-    CLIENT_ASSERTION_TYPE,
-    CLIENT_ASSERTION_TYPE_JWT,
-    GRANT_TYPE_AUTHORIZATION_CODE,
-    GRANT_TYPE_CLIENT_CREDENTIALS,
-    GRANT_TYPE_DEVICE_CODE,
-    GRANT_TYPE_PASSWORD,
-    GRANT_TYPE_REFRESH_TOKEN,
-    PKCE_METHOD_S256,
-    SCOPE_OFFLINE_ACCESS,
-    TOKEN_TYPE,
-)
-from authentik.providers.oauth2.errors import DeviceCodeError, TokenError, UserAuthError
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
     AccessToken,

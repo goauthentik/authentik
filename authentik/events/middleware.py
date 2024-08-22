@@ -15,10 +15,10 @@ from django.db.models.signals import m2m_changed, post_save, pre_delete
 from django.http import HttpRequest, HttpResponse
 from structlog.stdlib import BoundLogger, get_logger
 
-from authentik.blueprints.v1.importer import excluded_models
 from authentik.core.models import Group, User
 from authentik.events.models import Event, EventAction, Notification
 from authentik.events.utils import model_to_dict
+from authentik.lib.models import excluded_models
 from authentik.lib.sentry import before_send
 from authentik.lib.utils.errors import exception_to_string
 from authentik.stages.authenticator_static.models import StaticToken

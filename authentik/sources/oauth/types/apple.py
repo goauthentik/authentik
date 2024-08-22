@@ -9,7 +9,7 @@ from jwt import decode, encode
 from rest_framework.fields import CharField
 from structlog.stdlib import get_logger
 
-from authentik.flows.challenge import Challenge, ChallengeResponse
+from authentik.flows.challenge import ChallengeResponse, LoginChallenge
 from authentik.sources.oauth.clients.oauth2 import OAuth2Client
 from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.registry import SourceType, registry
@@ -20,7 +20,7 @@ LOGGER = get_logger()
 APPLE_CLIENT_ID_PARTS = 3
 
 
-class AppleLoginChallenge(Challenge):
+class AppleLoginChallenge(LoginChallenge):
     """Special challenge for apple-native authentication flow, which happens on the client."""
 
     client_id = CharField()
@@ -104,7 +104,7 @@ class AppleType(SourceType):
     access_token_url = "https://appleid.apple.com/auth/token"  # nosec
     profile_url = ""
 
-    def login_challenge(self, source: OAuthSource, request: HttpRequest) -> Challenge:
+    def login_challenge(self, source: OAuthSource, request: HttpRequest) -> AppleLoginChallenge:
         """Pre-general all the things required for the JS SDK"""
         apple_client = AppleOAuthClient(
             source,

@@ -15,6 +15,7 @@ from ldap3 import ALL, NONE, RANDOM, Connection, Server, ServerPool, Tls
 from ldap3.core.exceptions import LDAPException, LDAPInsufficientAccessRightsResult, LDAPSchemaError
 from rest_framework.serializers import Serializer
 
+from authentik.common.ldap.constants import LDAP_DISTINGUISHED_NAME
 from authentik.core.models import Group, PropertyMapping, Source
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.config import CONFIG
@@ -22,7 +23,6 @@ from authentik.lib.models import DomainlessURLValidator
 
 LDAP_TIMEOUT = 15
 LDAP_UNIQUENESS = "ldap_uniq"
-LDAP_DISTINGUISHED_NAME = "distinguishedName"
 
 
 def flatten(value: Any) -> Any:

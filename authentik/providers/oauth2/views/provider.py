@@ -8,9 +8,7 @@ from django.views import View
 from guardian.shortcuts import get_anonymous_user
 from structlog.stdlib import get_logger
 
-from authentik.core.expression.exceptions import PropertyMappingExpressionException
-from authentik.core.models import Application
-from authentik.providers.oauth2.constants import (
+from authentik.common.oauth.constants import (
     ACR_AUTHENTIK_DEFAULT,
     GRANT_TYPE_AUTHORIZATION_CODE,
     GRANT_TYPE_CLIENT_CREDENTIALS,
@@ -22,6 +20,8 @@ from authentik.providers.oauth2.constants import (
     PKCE_METHOD_S256,
     SCOPE_OPENID,
 )
+from authentik.core.expression.exceptions import PropertyMappingExpressionException
+from authentik.core.models import Application
 from authentik.providers.oauth2.models import (
     OAuth2Provider,
     ResponseMode,

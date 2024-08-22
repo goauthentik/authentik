@@ -6,6 +6,7 @@ from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from pydantic import ValidationError
 from requests import RequestException, Session
 
+from authentik.common.scim.schema import ServiceProviderConfiguration
 from authentik.lib.sync.outgoing import (
     HTTP_CONFLICT,
     HTTP_NO_CONTENT,
@@ -20,7 +21,6 @@ from authentik.lib.sync.outgoing.exceptions import (
 )
 from authentik.lib.utils.http import get_http_session
 from authentik.providers.scim.clients.exceptions import SCIMRequestException
-from authentik.providers.scim.clients.schema import ServiceProviderConfiguration
 from authentik.providers.scim.models import SCIMProvider
 
 if TYPE_CHECKING:
