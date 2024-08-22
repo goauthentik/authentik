@@ -31,7 +31,15 @@ export const isTableFlat = (v: unknown): v is TableFlat =>
  * @func convertForTable
  *
  * Takes a variety of input types and streamlines them. Can't handle every contingency; be prepared
- * to do conversions yourself as resources demand.  Great for about 80% of use cases, though.
+ * to do conversions yourself as resources demand. Great for about 80% of use cases, though.
+ *
+ * - @param groupBy: If provided, for each item it must provide the group's name, by which the
+ *   content will be grouped. The name is not a slug; it is what will be displayed.
+ * - @param keyBy: If provided, for each item it must provide a key for the item, which will be the
+ *   value returned.
+ *
+ * For content that has already been grouped or converted into a single "flat" group, providing
+ * these functions will not do anything except generate a warning on the console.
  */
 
 export function convertContent(

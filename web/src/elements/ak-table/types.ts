@@ -2,15 +2,14 @@ import { TemplateResult } from "lit";
 
 import { TableColumn } from "./TableColumn";
 
-// authentik's tables (ak-basic-table, ak-select-table, ak-table) all take a tuple of two
-// or three items, or a collection of groups of such tuples. In order to push dynamic checking
-// around, we also allow the inclusion of a fourth component, which is just a scratchpad the
-// developer can use for their own reasons.
-
-// The displayed element for our list can be a TemplateResult. If it is, we *strongly* recommend
-// that you include the `sortBy` string as well, which is used for sorting but is also used for our
-// autocomplete element (ak-search-select) both for tracking the user's input and for what we
-// display in the autocomplete input box.
+// authentik's standard tables (ak-simple-table, ak-select-table) all take a variety of types, the
+// simplest of which is just an array of tuples, one for each column, along with an tuple for
+// the definition of the column itself.
+//
+// More complex types are defined below, including those for grouped content. In he "utils"
+// collection with this element you can find the [`convertContent`](./utils.ts) function, which can
+// be used to create grouped content by providing a `groupBy` function, as well as selectable
+// content by providing a `keyBy` function. See the documentation for `convertContent`.
 
 /**
  * - key (string, option): the value to return on "click", if the table is clickable / selectable
@@ -19,7 +18,7 @@ import { TableColumn } from "./TableColumn";
 export type TableRow = {
     key?: string;
     content: TemplateResult[];
-    expansion?: () => TemplateResult;
+    // expansion?: () => TemplateResult;
 };
 
 /**

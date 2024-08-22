@@ -209,12 +209,16 @@ export class SelectTable extends SimpleTable {
     public override renderRow(row: TableRow, _rowidx: number) {
         return html` <tr part="row">
             ${this.renderCheckbox(row.key)}
-            ${map(row.content, (col, idx) => html`<td part="cell cell-${idx}" role="cell">${col}</td>`)}
+            ${map(
+                row.content,
+                (col, idx) => html`<td part="cell cell-${idx}" role="cell">${col}</td>`,
+            )}
         </tr>`;
     }
 
     renderAllOnThisPageCheckbox(): TemplateResult {
-        const checked = this.selectedOnPage.length && this.selectedOnPage.length === this.valuesOnPage.length;
+        const checked =
+            this.selectedOnPage.length && this.selectedOnPage.length === this.valuesOnPage.length;
 
         const onInput = (ev: InputEvent) => {
             const selected = [...this.selected];

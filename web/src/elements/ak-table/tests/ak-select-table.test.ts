@@ -4,11 +4,14 @@ import { slug } from "github-slugger";
 import { html, render } from "lit";
 
 import "../ak-select-table.js";
-import { SelectTable } from "../ak-select-table.js";
 import { nutritionDbUSDA as unsortedNutritionDbUSDA } from "../stories/sample_nutrition_db.js";
 
-const alphaSort = (a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
-const nutritionDbUSDA = unsortedNutritionDbUSDA.toSorted(alphaSort);
+type SortableRecord = Record<string, string | number>;
+
+const dbSort = (a: SortableRecord, b: SortableRecord) =>
+    a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+const alphaSort = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0);
+const nutritionDbUSDA = unsortedNutritionDbUSDA.toSorted(dbSort);
 
 const columns = ["Name", "Calories", "Protein", "Fiber", "Sugar"];
 const content = nutritionDbUSDA.map(({ name, calories, sugar, fiber, protein }) => ({
@@ -19,11 +22,14 @@ const content = nutritionDbUSDA.map(({ name, calories, sugar, fiber, protein }) 
 const item3 = nutritionDbUSDA[2];
 
 describe("Select Table", () => {
-    let selecttable: SelectTable;
-    let table: HTMLTableElement;
+    let selecttable: WebdriverIO.Element;
+    let table: WebdriverIO.Element;
 
     beforeEach(async () => {
-        await render(html`<ak-select-table .content=${content} .columns=${columns}> </ak-select-table>`, document.body);
+        await render(
+            html`<ak-select-table .content=${content} .columns=${columns}> </ak-select-table>`,
+            document.body,
+        );
         // @ts-ignore
         selecttable = await $("ak-select-table");
         table = await selecttable.$(">>>table");
@@ -65,13 +71,14 @@ describe("Select Table", () => {
 });
 
 describe("Multiselect Table", () => {
-    let selecttable: SelectTable;
-    let table: HTMLTableElement;
+    let selecttable: WebdriverIO.Element;
+    let table: WebdriverIO.Element;
 
     beforeEach(async () => {
         await render(
-            html`<ak-select-table multiple .content=${content} .columns=${columns}> </ak-select-table>`,
-            document.body
+            html`<ak-select-table multiple .content=${content} .columns=${columns}>
+            </ak-select-table>`,
+            document.body,
         );
         // @ts-ignore
         selecttable = await $("ak-select-table");
@@ -80,6 +87,9 @@ describe("Multiselect Table", () => {
 
     it("it should render the select-all control", async () => {
         const selall = await table.$("thead").$$("tr")[0].$$("th")[0];
+        if (selall === undefined) {
+            throw new Error("Could not find table header");
+        }
         const input = await selall.$("input");
         expect(await input.getProperty("name")).toEqual("select-all-input");
     });
@@ -92,6 +102,9 @@ describe("Multiselect Table", () => {
 
     it("it should select all when that control is clicked", async () => {
         const selall = await table.$("thead").$$("tr")[0].$$("th")[0];
+        if (selall === undefined) {
+            throw new Error("Could not find table header");
+        }
         const input = await selall.$("input");
         await input.click();
         const value = await selecttable.getValue();
@@ -102,6 +115,9 @@ describe("Multiselect Table", () => {
 
     it("it should clear all when that control is clicked twice", async () => {
         const selall = await table.$("thead").$$("tr")[0].$$("th")[0];
+        if (selall === undefined) {
+            throw new Error("Could not find table header");
+        }
         const input = await selall.$("input");
         await input.click();
         const value = await selecttable.getValue();

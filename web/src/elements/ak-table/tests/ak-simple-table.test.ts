@@ -4,7 +4,6 @@ import { slug } from "github-slugger";
 import { html, render } from "lit";
 
 import "../ak-simple-table.js";
-import { SimpleTable } from "../ak-simple-table.js";
 import { nutritionDbUSDA } from "../stories/sample_nutrition_db.js";
 
 const columns = ["Name", "Calories", "Protein", "Fiber", "Sugar"];
@@ -14,10 +13,13 @@ const content = nutritionDbUSDA.map(({ name, calories, sugar, fiber, protein }) 
 }));
 
 describe("Simple Table", () => {
-    let table: SimpleTable;
+    let table: WebdriverIO.Element;
 
     beforeEach(async () => {
-        await render(html`<ak-simple-table .content=${content} .columns=${columns}> </ak-simple-table>`, document.body);
+        await render(
+            html`<ak-simple-table .content=${content} .columns=${columns}> </ak-simple-table>`,
+            document.body,
+        );
         // @ts-ignore
         table = await $("ak-simple-table").$(">>>table");
     });
