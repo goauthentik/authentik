@@ -34,11 +34,13 @@ describe("Simple Table", () => {
     });
 
     afterEach(async () => {
-        await document.body.querySelector("ak-simple-table")?.remove();
-        // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-        if (document.body["_$litPart$"]) {
+        await browser.execute(() => {
+            document.body.querySelector("ak-simple-table")?.remove();
             // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-            delete document.body["_$litPart$"];
-        }
+            if (document.body["_$litPart$"]) {
+                // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
+                delete document.body["_$litPart$"];
+            }
+        });
     });
 });

@@ -61,12 +61,12 @@ describe("Select Table", () => {
     afterEach(async () => {
         await browser.execute(() => {
             document.body.querySelector("ak-select-table")?.remove();
-        });
-        // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-        if (document.body["_$litPart$"]) {
             // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-            delete document.body["_$litPart$"];
-        }
+            if (document.body["_$litPart$"]) {
+                // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
+                delete document.body["_$litPart$"];
+            }
+        });
     });
 });
 
@@ -132,11 +132,11 @@ describe("Multiselect Table", () => {
     afterEach(async () => {
         await browser.execute(() => {
             document.body.querySelector("ak-select-table")?.remove();
-        });
-        // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-        if (document.body["_$litPart$"]) {
             // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-            delete document.body["_$litPart$"];
-        }
+            if (document.body["_$litPart$"]) {
+                // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
+                delete document.body["_$litPart$"];
+            }
+        });
     });
 });
