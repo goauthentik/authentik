@@ -436,6 +436,7 @@ const docsSidebar = {
             },
             items: [
                 "security/policy",
+                "security/CVE-2024-42490",
                 "security/CVE-2024-38371",
                 "security/CVE-2024-37905",
                 "security/CVE-2024-23647",
