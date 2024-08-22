@@ -174,6 +174,9 @@ a[href^="https://goauthentik.io?utm_source=authentik&utm_medium=flow"] {display:
 .pf-c-form__group.pf-m-action {
     margin-top: 0;
 }
+.pf-c-login__footer .pf-c-list a {
+    color: var(--pf-global--link--Color) !important;
+}
 
 body{
     font-size: 12px!important;
