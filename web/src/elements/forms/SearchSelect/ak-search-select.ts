@@ -3,8 +3,6 @@ import { groupBy } from "@goauthentik/common/utils";
 import { TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
 import { type ISearchSelectBase, SearchSelectBase } from "./SearchSelect.js";
 
 export interface ISearchSelect<T> extends ISearchSelectBase<T> {
@@ -57,7 +55,7 @@ export interface ISearchSelect<T> extends ISearchSelectBase<T> {
 @customElement("ak-search-select")
 export class SearchSelect<T> extends SearchSelectBase<T> implements ISearchSelect<T> {
     static get styles() {
-        return [PFBase];
+        return [...SearchSelectBase.styles];
     }
 
     // A function which takes the query state object (accepting that it may be empty) and returns a
