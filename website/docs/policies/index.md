@@ -48,15 +48,16 @@ Starting with authentik 2022.11.0, the following checks can also be done with th
 
 ### Password Uniqueness Policy
 
-Prevents users from reusing old passwords when changing their own password. The policy offers an option to limit the number many previous passwords to consider during evaluation.
+This policy allows admins to specify how many previous password hashes should be kept to prevent reuse. By default, the password history depth is 1, requiring a user's new password to be different from their last password.
 
-When this policy is bound and enabled to at least one [User write stage](../flow/stages/user_write.md):
+When this policy is bound and enabled to at least one [user write stage](../flow/stages/user_write.md):
 
-1.  authentik compares the hashes of the new password and the old password for a match. The policy check fails and exits if the hashes match.
-2.  authentik copies the hashed form of the user's old password for future comparison
+1.  authentik compares the hash of the new password in the request with the user's password history. If there is a match, the policy fails.
+2.  When the policy succeeds, the user's current password hash is copied into their password history during the [user write stage](../flow/stages/user_write.md).
+3.  Password hashes are removed, oldest first, from the user's password history if it contains more entries than the configured depth setting.
 
 :::info
-authentik purges the password history for all users when you disable or unbind the all Password Uniquess policy instances in your setup.
+authentik purges the password history for all users when you disable or unbind the all Password Uniqueness policy bindings in your setup.
 :::
 
 Passwords changed by administrators are never subject to this policy.
