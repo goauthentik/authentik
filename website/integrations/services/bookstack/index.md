@@ -105,6 +105,6 @@ SAML2_AUTOLOAD_METADATA=true
 
 BookStack will attempt to match the SAML user to an existing BookStack user based on a stored external ID attribute. If not found, BookStack will auto-register the user to provide a seamless access experience.
 
-SAML Group Sync is supported by BookStack. Review the BookStack documentation on the required environment variables: https://www.bookstackapp.com/docs/admin/saml2-auth/
+SAML Group Sync is supported by BookStack. For detailed information on the required environment variables, review the [BookStack SAML2 Authentication documentation](https://www.bookstackapp.com/docs/admin/saml2-auth/).
 
-In some cases, you might need to define the full SAML property name. For example: `SAML2_GROUP_ATTRIBUTE="http://schemas.xmlsoap.org/claims/Group"`. See https://github.com/BookStackApp/BookStack/issues/3109 for more details.
+In some cases, you might need to define the full SAML property name. For example: `SAML2_GROUP_ATTRIBUTE="http://schemas.xmlsoap.org/claims/Group"`. For more details, see [this GitHub issue](https://github.com/BookStackApp/BookStack/issues/3109).
