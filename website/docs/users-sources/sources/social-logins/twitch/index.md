@@ -16,7 +16,7 @@ The following placeholders will be used:
 
 1. Click **Register Your Application** in the Twitch Developers Console https://dev.twitch.tv/console
 
-![Register Your Application Button](twitch1.png)
+![Register Your Application Button](./twitch1.png)
 
 2. Name your Application
 
@@ -26,11 +26,11 @@ The following placeholders will be used:
 
 5. Click **Create** to finish the registration of your Application
 
-![Create Application](twitch2.png)
+![Create Application](./twitch2.png)
 
 6. Click **Manage** on your newly created Application
 
-![Manage Application](twitch3.png)
+![Manage Application](./twitch3.png)
 
 7. Copy your Client ID and save it for later
 
@@ -38,7 +38,7 @@ The following placeholders will be used:
 
 9. Copy the above Secret and also save it for later
 
-![Copy Keys](twitch4.png)
+![Copy Keys](./twitch4.png)
 
 ## authentik
 

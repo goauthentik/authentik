@@ -26,7 +26,7 @@ For instructions on creating a RAC provider, refer to the [Managing RAC provider
 
 There are several components used with a RAC provider; let's take a closer look at the high-level configuration layout of these components and how they are managed using endpoints and connections.
 
-![](../../add-secure-apps/providers/rac/rac-v3.png)
+![](./rac-v3.png)
 
 The provider-application pair, the authentik server, and the authentik API are typical to all configurations. With RAC, there are some new components, namely the endpoints, the outpost, and of course the target remote machines.
 

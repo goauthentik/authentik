@@ -38,7 +38,7 @@ In the Admin UI, navigate to **Directory --> Invitations**, and then click **Cre
 -   **Flow**: in the drop-down menu, select the **default-enrollment-flow** Flow.
 -   **Custom attributes**: (_optional_) enter optional key/value pairs here, to pre-define any information about the user that you will invite to enroll. The data entered here is considered as a variable, specifically the `context['prompt_data']` variable. This data is read by the context flow's [prompt stage](../../flow/stages/prompt/index.md) in an expression policy.
 
-![Create an invitation modal box](../../users-sources/user/create_invite.png)
+![Create an invitation modal box](./create_invite.png)
 
 -   **Single use**: specify whether or not you want the invitation to expire after a single use.
 

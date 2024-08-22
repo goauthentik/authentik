@@ -12,7 +12,7 @@ Starting with authentik 0.15, you can create notification rules, which can alert
 
 Filtering is done by using the Policy Engine. You can do simple filtering using the "Event Matcher Policy" type.
 
-![](../sys-mgmt/events/event_matcher.png)
+![](./event_matcher.png)
 
 An event has to match all configured fields, otherwise the rule will not trigger.
 

@@ -19,23 +19,23 @@ You will need to create a new project, and OAuth credentials in the Google Devel
 1. Visit https://console.developers.google.com/ to create a new project
 2. Create a New project.
 
-![](googledeveloper1.png)
+![](./googledeveloper1.png)
 
 3. **Project Name**: Choose a name
 4. **Organization**: Leave as default if unsure
 5. **Location**: Leave as default if unsure
 
-![](googledeveloper2.png)
+![](./googledeveloper2.png)
 
 6. Click **Create**
 7. Choose your project from the drop down at the top
 8. Click the **Credentials** menu item on the left. It looks like a key.
 
-![](googledeveloper3.png)
+![](./googledeveloper3.png)
 
 9. Click on **Configure Consent Screen**
 
-![](googledeveloper4.png)
+![](./googledeveloper4.png)
 
 10. **User Type:** If you do not have a Google Workspace (GSuite) account choose _External_. If you do have a Google Workspace (Gsuite) account and want to limit access to only users inside of your organization choose _Internal_
 
@@ -52,13 +52,13 @@ _I'm only going to list the mandatory/important fields to complete._
 19. Click **Create Credentials** on the top of the screen
 20. Choose **OAuth Client ID**
 
-![](googledeveloper5.png)
+![](./googledeveloper5.png)
 
 21. **Application Type:** Web Application
 22. **Name:** Choose a name
 23. **Authorized redirect URIs:** `https://authentik.company/source/oauth/callback/google/`
 
-![](googledeveloper6.png)
+![](./googledeveloper6.png)
 
 24. Click **Create**
 25. Copy and store _Your Client ID_ and _Your Client Secret_ for later

@@ -46,7 +46,7 @@ On this page:
 -   For `Public certificate`, paste the _full_ signing certificate into this field.
 -   Verify that the `Signature method` and `Digest method` match your SAML provider settings in authentik.
 
-![Screenshot showing populated GitHub enterprise SAML settings](ghec_saml_settings.png)
+![Screenshot showing populated GitHub enterprise SAML settings](./ghec_saml_settings.png)
 
 Once these fields are populated, you can use the `Test SAML configuration` button to test the authentication flow. If the flow completes successfully, you will see a green tick next to the Test button.
 

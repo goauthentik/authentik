@@ -29,28 +29,28 @@ The following placeholders will be used:
 5. Scroll down the list of capabilities, and check the box next to **Sign In with Apple**.
 6. At the top, click **Continue** and **Register**.
 
-![](app_id.png)
+![](./app_id.png)
 
 7. Register another new Identifier with the type of **Services IDs**.
 8. Again, choose the same name as above for your **Description** field.
 9. Use the same identifier as above, but add a suffix like `signin` or `oauth`, as identifiers are unique.
 10. At the top, click **Continue** and **Register**.
 
-![](service_id.png)
+![](./service_id.png)
 
 11. Once back at the overview list, click on the just-created Identifier.
 12. Enable the checkbox next to **Sign In with Apple**, and click **Configure**
 13. Under domains, enter `authentik.company`.
 14. Under **Return URLs**, enter `https://authentik.company/source/oauth/callback/apple/`.
 
-![](app_service_config.png)
+![](./app_service_config.png)
 
 15. Click on **Keys** in the sidebar. Register a new Key with any name, and select **Sign in with Apple**.
 16. Click on **Configure**, and select the App ID you've created above.
 17. At the top, click **Save**, **Continue** and **Register**.
 18. Download the Key file and note the **Key ID**.
 
-![](key.png)
+![](./key.png)
 
 19. Note the Team ID, visible at the top of the page.
 

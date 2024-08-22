@@ -16,7 +16,7 @@ For example, a standard login flow would consist of the following stages:
 
 When these stages are successfully completed, authentik logs in the user.
 
-![](../add-secure-apps/flows-stages/flow/simple_stages.png)
+![](./simple_stages.png)
 
 By default, policies are evaluated dynamically, right before the stage (to which a policy is bound) is presented to the user. This flexibility allows the login process to continue, change, or stop, based on the success or failure of each policy.
 
@@ -54,7 +54,7 @@ To determine which flow should be used, authentik will first check which default
 
 When creating or editing a flow in the UI of the Admin interface, you can set the following configuration options.
 
-![](../add-secure-apps/flows-stages/flow/create-flow.png)
+![](./create-flow.png)
 
 **Name**: Enter a descriptive name. This is the name that will appear on the list of flows in the Admin interface.
 

@@ -34,7 +34,7 @@ When creating or editing this stage in the UI of the Admin interface, you can se
 
 -   **Stay signed in offset**: When this is set to a higher value than the default _seconds=0_, the user logging in is shown a prompt, allowing the user to choose if their session should be extended or not. The same syntax as for _Session duration_ applies.
 
-    ![](../../../add-secure-apps/flows-stages/stages/user_login/stay_signed_in.png)
+    ![](./stay_signed_in.png)
 
 -   **Network binding and GeoIP binding**
 

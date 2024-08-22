@@ -16,9 +16,9 @@ events/event_matcher.png -> sys-mgmt/events/event_matcher.png
 events/index.md -> sys-mgmt/events/index.md
 events/notifications.md -> sys-mgmt/events/notifications.md
 events/transports.md -> sys-mgmt/events/transports.md
-expressions/_functions.md -> add-secure-apps/providers/prov-prop-mappings/expressions/_functions.md
-expressions/_objects.md -> add-secure-apps/providers/prov-prop-mappings/expressions/_objects.md
-expressions/_user.md -> add-secure-apps/providers/prov-prop-mappings/expressions/_user.md
+expressions/_functions.md -> expressions/_functions.md
+expressions/_objects.md -> expressions/_objects.md
+expressions/_user.md -> expressions/_user.md
 flow/context/index.md -> add-secure-apps/flows-stages/flow/context/index.md
 flow/create-flow.png -> add-secure-apps/flows-stages/flow/create-flow.png
 flow/examples/flows.md -> add-secure-apps/flows-stages/flow/examples/flows.md
@@ -232,7 +232,7 @@ sources/freeipa/05_source_settings_2.png -> users-sources/sources/directory-sync
 sources/freeipa/06_sync_source.png -> users-sources/sources/directory-sync/freeipa/06_sync_source.png
 sources/freeipa/07_password_stage.png -> users-sources/sources/directory-sync/freeipa/07_password_stage.png
 sources/freeipa/index.md -> users-sources/sources/directory-sync/freeipa/index.md
-sources/github/github_org_membership.png -> users-sources/sources/social-logins/github/github_org_membership.pn
+sources/github/github_org_membership.png -> users-sources/sources/social-logins/github/github_org_membership.png
 sources/github/githubdeveloper1.png -> users-sources/sources/social-logins/github/githubdeveloper1.png
 sources/github/githubdeveloperexample.png -> users-sources/sources/social-logins/github/githubdeveloperexample.png
 sources/github/githubexample2.png -> users-sources/sources/social-logins/github/githubexample2.png

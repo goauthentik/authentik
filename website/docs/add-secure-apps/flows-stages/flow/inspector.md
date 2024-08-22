@@ -6,7 +6,7 @@ The flow inspector, introduced in 2021.10, allows administrators to visually det
 
 As shown in the screenshot below, the flow inspector displays next to the selected flow (in this case, "Change Password"), with [information](#flow-inspector-details) about that specific flow and flow context.
 
-![](../add-secure-apps/flows-stages/flow/flow-inspector.png)
+![](./flow-inspector.png)
 
 ## Access the Flow Inspector
 

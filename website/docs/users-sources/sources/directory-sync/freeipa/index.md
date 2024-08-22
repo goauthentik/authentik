@@ -18,15 +18,15 @@ The following placeholders will be used:
 
 2. Create a user in FreeIPA, matching your naming scheme. Provide a strong password, example generation methods: `pwgen 64 1` or `openssl rand 36 | base64 -w 0`. After you are done click **Add and Edit**.
 
-    ![](../../users-sources/sources/directory-sync/freeipa/01_user_create.pn)
+    ![](./01_user_create.png)
 
 3. In the user management screen, select the Roles tab.
 
-    ![](../../users-sources/sources/directory-sync/freeipa/02_user_roles.png)
+    ![](./02_user_roles.png)
 
 4. Add a role that has privileges to change user passwords, the default `User Administrators` role is sufficient. This is needed to support password resets from within authentik.
 
-    ![](../../users-sources/sources/directory-sync/freeipa/03_add_user_role.png)
+    ![](./03_add_user_role.png)
 
 5. By default, if an administrator account resets a user's password in FreeIPA the user's password expires after the first use and must be reset again. This is a security feature to ensure password complexity and history policies are enforced. To bypass this feature for a more seamless experience, you can make the following modification on each of your FreeIPA servers:
 
@@ -69,13 +69,13 @@ Additional settings:
 -   Group membership field: `member`
 -   Object uniqueness field: `ipaUniqueID`
 
-    ![](../../users-sources/sources/directory-sync/freeipa/04_source_settings_1.png)
-    ![](../../users-sources/sources/directory-sync/freeipa/05_source_settings_2.png)
+    ![](./04_source_settings_1.png)
+    ![](./05_source_settings_2.png)
 
 After you save the source, you can kick off a synchronization by navigating to the source, clicking on the "Sync" tab, and clicking the "Run sync again" button.
 
-![](../../users-sources/sources/directory-sync/freeipa/06_sync_source.png)
+![](./06_sync_source.png)
 
 Lastly, verify that the "User database + LDAP password" backend is selected in the "Password Stage" under Flows -> Stages.
 
-![](../../users-sources/sources/directory-sync/freeipa/07_password_stage.png)
+![](./07_password_stage.png)

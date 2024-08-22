@@ -17,38 +17,38 @@ Note: The `default-authentication-flow` validates MFA by default, and currently 
 #### Create Custom Stages
 
 1. Create a new identification stage. _Flows & Stage_ -> _Stages_ -> _Create_
-   ![](../../add-secure-apps/providers/ldap/general_setup1.png)
+   ![](./general_setup1.png)
 2. Name it `ldap-identification-stage`. Select User fields Username and Email (and UPN if it is relevant to your setup).
-   ![](../../add-secure-apps/providers/general_setup2.png)
+   ![](./general_setup2.png)
 3. Create a new password stage. _Flows & Stage_ -> _Stages_ -> _Create_
-   ![](../../add-secure-apps/providers/general_setup3.png)
+   ![](./general_setup3.png)
 4. Name it `ldap-authentication-password`. Leave the defaults for Backends.
-   ![](../../add-secure-apps/providers/general_setup4.png)
+   ![](./general_setup4.png)
 5. Create a new user login stage. _Flows & Stage_ -> _Stages_ -> _Create_
-   ![](../../add-secure-apps/providers/general_setup5.png)
+   ![](./general_setup5.png)
 6. Name it `ldap-authentication-login`.
-   ![](../../add-secure-apps/providers/general_setup6.png)
+   ![](./general_setup6.png)
 
 #### Create Custom Flow
 
 1. Create a new authentication flow under _Flows & Stage_ -> _Flows_ -> _Create_, and name it `ldap-authentication-flow`
-   ![](../../add-secure-apps/providers/general_setup7.png)
+   ![](./general_setup7.png)
 2. Click the newly created flow and choose _Stage Bindings_.
-   ![](../../add-secure-apps/providers/general_setup8.png)
+   ![](./general_setup8.png)
 3. Click `Bind Stage` choose `ldap-identification-stage` and set the order to `10`.
-   ![](../../add-secure-apps/providers/general_setup9.png)
+   ![](./general_setup9.png)
 4. Click `Bind Stage` choose `ldap-authentication-login` and set the order to `30`.
-   ![](../../add-secure-apps/providers/general_setup11.png)
+   ![](./general_setup11.png)
 5. Edit the `ldap-identification-stage`.
-   ![](../../add-secure-apps/providers/general_setup12.png)
+   ![](./general_setup12.png)
 6. Change the Password stage to `ldap-authentication-password`.
-   ![](../../add-secure-apps/providers/general_setup13.png)
+   ![](./general_setup13.png)
 
 ### Create LDAP Application & Provider
 
 1. Create the LDAP Application under _Applications_ -> _Applications_ -> _Create With Wizard_ and name it `LDAP`.
-   ![](../../add-secure-apps/providers/general_setup14.png)
-   ![](../../add-secure-apps/providers/general_setup15.png)
+   ![](./general_setup14.png)
+   ![](./general_setup15.png)
 
 ### Assign LDAP permissions
 
@@ -60,7 +60,7 @@ Note: The `default-authentication-flow` validates MFA by default, and currently 
 ### Create LDAP Outpost
 
 1. Create (or update) the LDAP Outpost under _Applications_ -> _Outposts_ -> _Create_. Set the Type to `LDAP` and choose the `LDAP` application created in the previous step.
-   ![](../../add-secure-apps/providers/general_setup16.png)
+   ![](./general_setup16.png)
 
 :::info
 The LDAP Outpost selects different providers based on their Base DN. Adding multiple providers with the same Base DN will result in inconsistent access

@@ -26,7 +26,7 @@ The following placeholders will be used:
 
 Example screenshot
 
-![](githubdeveloperexample.png)
+![](./githubdeveloperexample.png)
 
 6. Copy the **Client ID** and _save it for later_
 7. Click **Generate a new client secret** and _save it for later_ You will not be able to see the secret again, so be sure to copy it now.
@@ -42,7 +42,7 @@ Example screenshot
 
 Here is an example of a complete authentik Github OAuth Source
 
-![](githubexample2.png)
+![](./githubexample2.png)
 
 Save, and you now have Github as a source.
 
@@ -103,4 +103,4 @@ return user_matched
 
 If a user is not member of the chosen organisation, they will see this message
 
-![](../../users-sources/sources/social-logins/github/github_org_membership.pn)
+![](./github_org_membership.png)

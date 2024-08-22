@@ -10,12 +10,12 @@ The property mapping should return a value that is expected by the source. Retur
 -   `properties`: A Python dictionary containing the result of the previously run property mappings, plus the initial data computed by the source.
 -   `request`: The current request. This may be `None` if there is no contextual request. See ([Django documentation](https://docs.djangoproject.com/en/3.0/ref/request-response/#httprequest-objects))
 
-import Objects from "../../expressions/\_objects.md";
+import Objects from "../../../add-secure-apps/providers/prov-prop-mappings/expressions/\_objects.md";
 
 <Objects />
 
 ## Available Functions
 
-import Functions from "../../expressions/\_functions.md";
+import Functions from "../../../add-secure-apps/providers/prov-prop-mappings/expressions/\_functions";
 
 <Functions />

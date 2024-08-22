@@ -39,7 +39,7 @@ Set the Launch URL to `https://proxmox.company:8006`.
 
 Proxmox VE allows configuration of authentication sources using the web interface (under Datacenter -> Permissions -> Realms).
 
-![](proxmox-source.png)
+![](./proxmox-source.png)
 
 Another way is to use the CLI. SSH into any Proxmox cluster node, and issue the following command:
 
@@ -53,4 +53,4 @@ the user to be able to perform actions immediately after first login.
 
 There is no way to directly trigger an OpenID Connect login in Proxmox, but if you set the source as 'default', it will be automatically selected on the Proxmox login screen.
 
-![](proxmox-login.png)
+![](./proxmox-login.png)

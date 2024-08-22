@@ -16,11 +16,11 @@ The following placeholders will be used:
 
 1. Create an application in the Discord Developer Portal (This is Free) https://discord.com/developers/applications
 
-![New Application Button](discord1.png)
+![New Application Button](./discord1.png)
 
 2. Name the Application
 
-![Name App](discord2.png)
+![Name App](./discord2.png)
 
 3. Select **OAuth2** from the left Menu
 
@@ -32,7 +32,7 @@ The following placeholders will be used:
 
 Here is an example of a completed OAuth2 screen for Discord.
 
-![](discord3.png)
+![](./discord3.png)
 
 ## authentik
 
@@ -45,7 +45,7 @@ Here is an example of a completed OAuth2 screen for Discord.
 
 Here is an example of a complete authentik Discord OAuth Source
 
-![](discord4.png)
+![](./discord4.png)
 
 Save, and you now have Discord as a source.
 
@@ -162,13 +162,13 @@ Ensure that the Discord OAuth source in **Federation & Social login** has the ad
 :::
 
 :::info
-Any authentik role that you want to sync with a Discord role needs to have the **attribute** `discord_role_id` with a value of the Discord role's ID set.  
-This setting can be found under `Authentik > Admin Interface > Directory > Groups > YOUR_GROUP > Attributes`  
+Any authentik role that you want to sync with a Discord role needs to have the **attribute** `discord_role_id` with a value of the Discord role's ID set.
+This setting can be found under `Authentik > Admin Interface > Directory > Groups > YOUR_GROUP > Attributes`
 Example: `discord_role_id: "<ROLE ID>"`
 :::
 
-The following two policies allow you to synchronize roles in a Discord guild with roles in authentik.  
-Whenever a user enrolls or signs in to authentik via a Discord source, these policies will check the user's Discord roles and apply the user's authentik roles accordingly.  
+The following two policies allow you to synchronize roles in a Discord guild with roles in authentik.
+Whenever a user enrolls or signs in to authentik via a Discord source, these policies will check the user's Discord roles and apply the user's authentik roles accordingly.
 All roles with the attribute `discord_role_id` defined will be added or removed depending on whether the user is a member of the defined Discord role.
 
 Create a new **Expression Policy** with the content below, adjusting the variables where required.

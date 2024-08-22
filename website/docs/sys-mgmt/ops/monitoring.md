@@ -26,4 +26,4 @@ Both the core authentik server and any outposts expose Prometheus metrics on a s
 
 You can find an example dashboard here: [grafana.com](https://grafana.com/grafana/dashboards/14837-authentik/)
 
-![](../install-config/dashboard.png)
+![](../../install-config/dashboard.png)

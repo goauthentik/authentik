@@ -41,6 +41,6 @@ On this page:
 -   For `Validation certificate`, upload the signing certificate you downloaded after creating the provider.
 -   Press Save settings on the left-hand side and wait for the changes to apply.
 
-![Screenshot showing populated GitHub Enterprise Server SAML settings](ghes_saml_settings.png)
+![Screenshot showing populated GitHub Enterprise Server SAML settings](./ghes_saml_settings.png)
 
 Once the appliance has saved the settings and reloaded the services, you should be able to navigate to your instance URL at `https://github.company` and sign in with SAML.

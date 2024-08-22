@@ -17,7 +17,7 @@ The following placeholders will be used:
 
 2. Create a user in Active Directory, matching your naming scheme
 
-    ![](../../users-sources/sources/directory-sync/active-directory/01_user_create.png)
+    ![](./01_user_create.png)
 
 3. Give the User a password, generated using for example `pwgen 64 1` or `openssl rand 36 | base64 -w 0`.
 
@@ -27,11 +27,11 @@ The following placeholders will be used:
 
 6. Ensure the "Reset user password and force password change at next logon" Option is checked.
 
-    ![](../../users-sources/sources/directory-sync/active-directory/02_delegate.png)
+    ![](./02_delegate.png)
 
 7. Grant these additional permissions (only required when _Sync users' password_ is enabled, and dependent on your AD Domain)
 
-    ![](../../users-sources/sources/directory-sync/active-directory/03_additional_perms.png)
+    ![](./03_additional_perms.png)
 
 Additional info: https://support.microfocus.com/kb/doc.php?id=7023371
 
@@ -66,8 +66,8 @@ Additional settings that might need to be adjusted based on the setup of your do
 
 After you save the source, a synchronization will start in the background. When its done, you can see the summary under Dashboards -> System Tasks.
 
-![](../../users-sources/sources/directory-sync/active-directory/03_additional_perms.png)
+![](./03_additional_perms.png)
 
 To finalise the Active Directory setup, you need to enable the backend "authentik LDAP" in the Password Stage.
 
-![](../../users-sources/sources/directory-sync/active-directory/11_ak_stage.png)
+![](./11_ak_stage.png)
