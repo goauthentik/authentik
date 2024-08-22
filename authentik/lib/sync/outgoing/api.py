@@ -34,6 +34,7 @@ class SyncObjectSerializer(PassiveSerializer):
     )
     sync_object_id = CharField()
 
+
 class SyncObjectResultSerializer(PassiveSerializer):
     """Result of a single object sync"""
 
