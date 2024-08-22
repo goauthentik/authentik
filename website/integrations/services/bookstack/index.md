@@ -18,7 +18,7 @@ This is based on authentik 2021.7.2 and BookStack V21.05.3. Instructions may dif
 
 The following placeholders will be used:
 
--   `book.company` is the FQDN of BookStack.
+-   `bookstack.company` is the FQDN of BookStack.
 -   `authentik.company` is the FQDN of authentik.
 -   `METADATAURL` is the URL for the SAML metadata from authentik.
 
@@ -31,10 +31,10 @@ In authentik, under **Providers**, create a **SAML Provider** with these setting
 **Protocol Settings**
 
 -   **Name:** Bookstack
--   **ACS URL:** `https://book.company/saml2/acs`
+-   **ACS URL:** `https://bookstack.company/saml2/acs`
 -   **Issuer:** `https://authentik.company`
 -   **Service Provider Binding:** Post
--   **Audience:** `https://book.company/saml2/metadata`
+-   **Audience:** `https://bookstack.company/saml2/metadata`
 
 **Advanced Protocol Settings**
 
@@ -49,7 +49,7 @@ In authentik, create an application that uses this provider. Optionally apply ac
 -   **Name:** Bookstack
 -   **Slug:** bookstack
 -   **Provider:** Bookstack
--   **Launch URL:** `https://book.company`
+-   **Launch URL:** `https://bookstack.company`
 
 ### Step 3
 
