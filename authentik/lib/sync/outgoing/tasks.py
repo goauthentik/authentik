@@ -105,7 +105,7 @@ class SyncTasks:
                 return
         task.set_status(TaskStatus.SUCCESSFUL, *messages)
 
-    def sync_objects(self, object_type: str, page: int, provider_pk: int):
+    def sync_objects(self, object_type: str, page: int, provider_pk: int, **filter):
         _object_type = path_to_class(object_type)
         self.logger = get_logger().bind(
             provider_type=class_to_path(self._provider_model),
@@ -120,7 +120,7 @@ class SyncTasks:
             client = provider.client_for_model(_object_type)
         except TransientSyncException:
             return messages
-        paginator = Paginator(provider.get_object_qs(_object_type), PAGE_SIZE)
+        paginator = Paginator(provider.get_object_qs(_object_type).filter(**filter), PAGE_SIZE)
         if client.can_discover:
             self.logger.debug("starting discover")
             client.discover()

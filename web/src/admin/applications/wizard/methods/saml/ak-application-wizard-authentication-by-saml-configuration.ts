@@ -266,11 +266,8 @@ export class ApplicationWizardProviderSamlConfiguration extends BaseProviderPane
                             .options=${propertyPairs}
                             .values=${pmValues}
                             .richhelp=${html` <p class="pf-c-form__helper-text">
-                                    ${msg("Property mappings used for user mapping.")}
-                                </p>
-                                <p class="pf-c-form__helper-text">
-                                    ${msg("Hold control/command to select multiple items.")}
-                                </p>`}
+                                ${msg("Property mappings used for user mapping.")}
+                            </p>`}
                         ></ak-multi-select>
 
                         <ak-form-element-horizontal
