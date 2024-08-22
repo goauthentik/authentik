@@ -1,8 +1,14 @@
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
+import {
+    googleWorkspacePropertyMappingsProvider,
+    makeGoogleWorkspacePropertyMappingsSelector,
+} from "@goauthentik/admin/providers/google_workspace/GoogleWorkspaceProviderPropertyMappings";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
@@ -19,8 +25,6 @@ import {
     GoogleWorkspaceProvider,
     Group,
     OutgoingSyncDeleteAction,
-    PaginatedGoogleWorkspaceProviderMappingList,
-    PropertymappingsApi,
     ProvidersApi,
 } from "@goauthentik/api";
 
@@ -31,16 +35,6 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
             id: pk,
         });
     }
-
-    async load(): Promise<void> {
-        this.propertyMappings = await new PropertymappingsApi(
-            DEFAULT_CONFIG,
-        ).propertymappingsProviderGoogleWorkspaceList({
-            ordering: "managed",
-        });
-    }
-
-    propertyMappings?: PaginatedGoogleWorkspaceProviderMappingList;
 
     async send(data: GoogleWorkspaceProvider): Promise<GoogleWorkspaceProvider> {
         if (this.instance) {
@@ -229,67 +223,34 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                         label=${msg("User Property Mappings")}
                         name="propertyMappings"
                     >
-                        <select class="pf-c-form-control" multiple>
-                            ${this.propertyMappings?.results.map((mapping) => {
-                                let selected = false;
-                                if (!this.instance?.propertyMappings) {
-                                    selected =
-                                        mapping.managed ===
-                                            "goauthentik.io/providers/google_workspace/user" ||
-                                        false;
-                                } else {
-                                    selected = Array.from(this.instance?.propertyMappings).some(
-                                        (su) => {
-                                            return su == mapping.pk;
-                                        },
-                                    );
-                                }
-                                return html`<option
-                                    value=${ifDefined(mapping.pk)}
-                                    ?selected=${selected}
-                                >
-                                    ${mapping.name}
-                                </option>`;
-                            })}
-                        </select>
+                        <ak-dual-select-dynamic-selected
+                            .provider=${googleWorkspacePropertyMappingsProvider}
+                            .selector=${makeGoogleWorkspacePropertyMappingsSelector(
+                                this.instance?.propertyMappings,
+                                "goauthentik.io/providers/google_workspace/user",
+                            )}
+                            available-label=${msg("Available Property Mappings")}
+                            selected-label=${msg("Selected Property Mappings")}
+                        ></ak-dual-select-dynamic-selected>
                         <p class="pf-c-form__helper-text">
                             ${msg("Property mappings used to user mapping.")}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Hold control/command to select multiple items.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Group Property Mappings")}
                         name="propertyMappingsGroup"
                     >
-                        <select class="pf-c-form-control" multiple>
-                            ${this.propertyMappings?.results.map((mapping) => {
-                                let selected = false;
-                                if (!this.instance?.propertyMappingsGroup) {
-                                    selected =
-                                        mapping.managed ===
-                                        "goauthentik.io/providers/google_workspace/group";
-                                } else {
-                                    selected = Array.from(
-                                        this.instance?.propertyMappingsGroup,
-                                    ).some((su) => {
-                                        return su == mapping.pk;
-                                    });
-                                }
-                                return html`<option
-                                    value=${ifDefined(mapping.pk)}
-                                    ?selected=${selected}
-                                >
-                                    ${mapping.name}
-                                </option>`;
-                            })}
-                        </select>
+                        <ak-dual-select-dynamic-selected
+                            .provider=${googleWorkspacePropertyMappingsProvider}
+                            .selector=${makeGoogleWorkspacePropertyMappingsSelector(
+                                this.instance?.propertyMappingsGroup,
+                                "goauthentik.io/providers/google_workspace/group",
+                            )}
+                            available-label=${msg("Available Property Mappings")}
+                            selected-label=${msg("Selected Property Mappings")}
+                        ></ak-dual-select-dynamic-selected>
                         <p class="pf-c-form__helper-text">
                             ${msg("Property mappings used to group creation.")}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Hold control/command to select multiple items.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>

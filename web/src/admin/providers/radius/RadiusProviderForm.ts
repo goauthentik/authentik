@@ -159,9 +159,6 @@ export class RadiusProviderFormPage extends WithBrandConfig(BaseProviderForm<Rad
                             available-label=${msg("Available Property Mappings")}
                             selected-label=${msg("Selected Property Mappings")}
                         ></ak-dual-select-dynamic-selected>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Hold control/command to select multiple items.")}
-                        </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>`;
