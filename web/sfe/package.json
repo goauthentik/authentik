@@ -4,7 +4,7 @@
     "private": true,
     "license": "MIT",
     "dependencies": {
-        "@goauthentik/api": "^2024.6.3-1723921843",
+        "@goauthentik/api": "^2024.6.3-1724337552",
         "base64-js": "^1.5.1",
         "bootstrap": "^4.6.1",
         "formdata-polyfill": "^4.0.10",
