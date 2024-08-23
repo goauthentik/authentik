@@ -21,7 +21,7 @@
         "prettier": "^3.3.2",
         "rollup": "^4.21.0",
         "rollup-plugin-copy": "^3.5.0",
-        "wireit": "^0.14.4"
+        "wireit": "^0.14.8"
     },
     "license": "MIT",
     "optionalDependencies": {
