@@ -27,7 +27,7 @@
         "clsx": "^2.1.1",
         "disqus-react": "^1.1.5",
         "docusaurus-plugin-openapi-docs": "^4.0.0",
-        "docusaurus-theme-openapi-docs": "^4.0.0",
+        "docusaurus-theme-openapi-docs": "^4.0.1",
         "postcss": "^8.4.41",
         "prism-react-renderer": "^2.3.1",
         "react": "^18.3.1",
