@@ -19,6 +19,9 @@ export const config: Options.Testrunner = {
     runner: [
         "browser",
         {
+            coverage: {
+                enabled: true,
+            },
             viteConfig: (config: UserConfig = { plugins: [] }) => ({
                 ...config,
                 plugins: [
