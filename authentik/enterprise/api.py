@@ -112,7 +112,7 @@ class LicenseViewSet(UsedByMixin, ModelViewSet):
     def summary(self, request: Request) -> Response:
         """Get the total license status"""
         summary = LicenseKey.cached_summary()
-        if request.query_params.get("cached").lower() == "false":
+        if request.query_params.get("cached", "true").lower() == "false":
             summary = LicenseKey.get_total().summary()
         response = LicenseSummarySerializer(instance=summary)
         return Response(response.data)
