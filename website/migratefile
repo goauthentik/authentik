@@ -74,8 +74,8 @@ installation/reverse-proxy.md -> install-config/reverse-proxy.md
 installation/storage-s3.md -> install-config/storage-s3.md
 installation/upgrade.mdx -> install-config/upgrade.mdx
 installation/version1.png -> install-config/version1.png
-interfaces/_global/customcss.mdx -> customize/_global/customcss.mdx
-interfaces/_global/global.mdx -> customize/_global/global.mdx
+interfaces/_global/customcss.mdx -> customize/interfaces/_global/customcss.mdx
+interfaces/_global/global.mdx -> customize/interfaces/_global/global.mdx
 interfaces/admin/customization.mdx -> customize/interfaces/admin/customization.mdx
 interfaces/flow/customization.mdx -> customize/interfaces/flow/customization.mdx
 interfaces/user/customization.mdx -> customize/interfaces/user/customization.mdx

@@ -57,6 +57,7 @@ When adding the Google Workspace provider in authentik, you must define the **Ba
    :::info
    If you have also configured Google Workspace to log in using authentik following [these](../../../../integrations/services/google/), then this configuration can be done on the same app by adding this new provider as a backchannel provider on the existing app instead of creating a new app.
    :::
+
 3. Click **Create**, and in the **New provider** modal box, and define the following fields:
 
     - **Slug**: enter the name of the app as you want it to appear in the URL.
