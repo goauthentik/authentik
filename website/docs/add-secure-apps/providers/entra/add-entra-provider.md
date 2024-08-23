@@ -14,7 +14,7 @@ This feature is in technical preview, so please report any bugs on [GitHub](http
 
 ## Prerequisites
 
-To create an Entra ID provider provider in authentik, you must have already [configured Entra ID](../../add-secure-apps/providers/entra/setup-entra.md) to integrate with authentik. You will need to obtain from Entra three values: the Application (client) ID, the Directory (tenant) ID, and the Client secret. When adding an Entra ID provider in authentik, you must provide these values.
+To create an Entra ID provider provider in authentik, you must have already [configured Entra ID](./setup-entra) to integrate with authentik. You will need to obtain from Entra three values: the Application (client) ID, the Directory (tenant) ID, and the Client secret. When adding an Entra ID provider in authentik, you must provide these values.
 
 :::info
 As detailed in the steps below, when you add an Entra ID provider in authentik you must define the **Backchannel provider** using the name of the Entra ID provider that you created in authentik. If you have also configured Entra ID to log in using authentik, then this configuration can be done on the same app.
@@ -31,7 +31,7 @@ As detailed in the steps below, when you add an Entra ID provider in authentik y
 
     -   **Protocol settings**
 
-        -   **Client ID**: enter the Client ID that you [copied from your Entra app](../../add-secure-apps/providers/entra/setup-entra.md).
+        -   **Client ID**: enter the Client ID that you [copied from your Entra app](./setup-entra.md).
         -   **Client Secret**: enter the secret from Entra.
         -   **Tenant ID**: enter the Tenant ID from Entra.
         -   **User deletion action**: determines what authentik will do when a user is deleted from the Entra ID system.

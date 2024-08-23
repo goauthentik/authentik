@@ -12,7 +12,7 @@ Applications are the "other half" of providers. They typically exist in a 1-to-1
 Furthermore, the [RAC (Remote Access Control)](../providers/rac/index.md) feature uses a single application and a single provider, but multiple "endpoints". An endpoint defines each remote machine.
 
 :::info
-For information about creating and managing applications refer to [Manage applications](../add-secure-apps/applications/manage_apps).
+For information about creating and managing applications refer to [Manage applications](./manage_apps).
 :::
 
 ## Appearance
@@ -35,7 +35,7 @@ The following aspects can be configured:
 
     If the authentik server does not have a volume mounted under `/media`, you'll get a text input. This accepts absolute URLs. If you've mounted single files into the container, you can reference them using `https://authentik.company/media/my-file.png`.
 
-    If there is a mount under `/media` or if [S3 storage](../install-config/storage-s3.md) is configured, you'll instead see a field to upload a file.
+    If there is a mount under `/media` or if [S3 storage](../../install-config/storage-s3.md) is configured, you'll instead see a field to upload a file.
 
 -   _Publisher_: Text shown below the application
 -   _Description_: Subtext shown on the application card below the publisher

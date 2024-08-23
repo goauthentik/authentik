@@ -6,7 +6,7 @@ title: Configure Entra ID
 
 ---
 
-The configuration of your Microsoft Entra ID environment must be completed before you [add the new provider](../../add-secure-apps/providers/entra/add-entra-provider.md) in authentik.
+The configuration of your Microsoft Entra ID environment must be completed before you [add the new provider](./add-entra-provider.md) in authentik.
 
 For detailed instructions, refer to Microsoft Entra ID documentation.
 
@@ -28,4 +28,4 @@ For detailed instructions, refer to Microsoft Entra ID documentation.
     - `User.Read`
     - `User.ReadWrite.All`
 
-Now you are ready to [add Entra ID as a provider](../../add-secure-apps/providers/entra/add-entra-provider.md) in authentik.
+Now you are ready to [add Entra ID as a provider](./add-entra-provider.md) in authentik.

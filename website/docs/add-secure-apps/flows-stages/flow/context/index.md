@@ -22,15 +22,15 @@ Keys prefixed with `goauthentik.io` are used internally by authentik and are sub
 
 ### Common keys
 
-#### `pending_user` ([User object](../../user-group-role/user/user_ref.md#object-properties))
+#### `pending_user` ([User object](../../../../users-sources/user/user_ref.md#object-properties)
 
-`pending_user` is used by multiple stages. In the context of most flow executions, it represents the data of the user that is executing the flow. This value is not set automatically, it is set via the [Identification stage](../stages/identification/).
+`pending_user` is used by multiple stages. In the context of most flow executions, it represents the data of the user that is executing the flow. This value is not set automatically, it is set via the [Identification stage](../../stages/identification/index.md).
 
-Stages that require a user, such as the [Password stage](../stages/password/), the [Authenticator validation stage](../stages/authenticator_validate/) and others will use this value if it is set, and fallback to the request's users when possible.
+Stages that require a user, such as the [Password stage](../../stages/password/), the [Authenticator validation stage](../../stages/authenticator_validate/) and others will use this value if it is set, and fallback to the request's users when possible.
 
 #### `prompt_data` (Dictionary)
 
-`prompt_data` is primarily used by the [Prompt stage](../stages/prompt/). The value of any field within a prompt stage is written to the `prompt_data` dictionary. For example, given a field with the _Field key_ `email` that was submitted with the value `foo@bar.baz` will result in the following context:
+`prompt_data` is primarily used by the [Prompt stage](../../stages/prompt/). The value of any field within a prompt stage is written to the `prompt_data` dictionary. For example, given a field with the _Field key_ `email` that was submitted with the value `foo@bar.baz` will result in the following context:
 
 ```json
 {
@@ -40,7 +40,7 @@ Stages that require a user, such as the [Password stage](../stages/password/), t
 }
 ```
 
-This data can be modified with policies. The data is also used by stages like [User write](../../add-secure-apps/flows-stages/stages/user_write.md), which takes data in `prompt_data` and writes it to `pending_user`.
+This data can be modified with policies. The data is also used by stages like [User write](../../../../add-secure-apps/flows-stages/stages/user_write.md), which takes data in `prompt_data` and writes it to `pending_user`.
 
 #### `redirect` (string)
 
@@ -68,7 +68,7 @@ Set to `True` when the flow is executed from an "SSO" context. For example, this
 
 #### `is_restored` (Token object)
 
-Set when a flow execution is continued from a token. This happens for example when an [Email stage](../stages/email/index.mdx) is used and the user clicks on the link within the email. The token object contains the key that was used to restore the flow execution.
+Set when a flow execution is continued from a token. This happens for example when an [Email stage](../../stages/email/index.mdx) is used and the user clicks on the link within the email. The token object contains the key that was used to restore the flow execution.
 
 ### Stage-specific keys
 
@@ -122,9 +122,9 @@ Optionally overwrite the deny message shown, has a higher priority than the mess
 
 #### User write stage
 
-##### `groups` (List of [Group objects](../../user-group-role/groups/index.mdx))
+##### `groups` (List of [Group objects](../../../../users-sources/user/user_ref.md))
 
-See [Group](../../user-group-role/groups/index.mdx). If set in the flow context, the `pending_user` will be added to all the groups in this list.
+See [Group](../../../../users-sources/groups/index.mdx). If set in the flow context, the `pending_user` will be added to all the groups in this list.
 
 If set, this must be a list of group objects and not group names.
 
@@ -144,11 +144,11 @@ Type the `pending_user` will be created as. Must be one of `internal`, `external
 
 ##### `user_backend` (string)
 
-Set by the [Password stage](../stages/password/index.md) after successfully authenticating in the user. Contains a dot-notation to the authentication backend that was used to successfully authenticate the user.
+Set by the [Password stage](../../stages/password/index.md) after successfully authenticating in the user. Contains a dot-notation to the authentication backend that was used to successfully authenticate the user.
 
 ##### `auth_method` (string)
 
-Set by the [Password stage](../stages/password/index.md), the [Authenticator validation stage](../stages/authenticator_validate/index.md), the [OAuth2 Provider](../../providers/oauth2/index.md), and the API authentication depending on which method was used to authenticate.
+Set by the [Password stage](../../stages/password/index.md), the [Authenticator validation stage](../../stages/authenticator_validate/index.md), the [OAuth2 Provider](../../../providers/oauth2/index.md), and the API authentication depending on which method was used to authenticate.
 
 Possible options:
 
@@ -157,7 +157,7 @@ Possible options:
 -   `ldap` (Authenticated via LDAP bind from an LDAP source)
 -   `auth_mfa` (Authentication via MFA device without password)
 -   `auth_webauthn_pwl` (Passwordless authentication via WebAuthn)
--   `jwt` ([M2M](../../add-secure-apps/providers/oauth2/client_credentials.md) authentication via an existing JWT)
+-   `jwt` ([M2M](../../../providers/oauth2/client_credentials.md) authentication via an existing JWT)
 
 ##### `auth_method_args` (dictionary)
 
