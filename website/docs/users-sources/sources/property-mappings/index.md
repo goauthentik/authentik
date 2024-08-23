@@ -20,7 +20,7 @@ Here are the steps:
 1. In authentik, open the Admin interface, and then navigate to **Customization -> Property Mappings**.
 2. Click **Create**, select the property mapping type for your source, and then click **Next**.
 3. Type a unique and meaningful **Name**, such as `ldap-displayName-mapping:name`.
-4. In the **Expression** field enter Python expressions to retrieve the value from the source. See [Expression Semantics](#expression-semantics) below for details.
+4. In the **Expression** field enter Python expressions to retrieve the value from the source. See [Expression Semantics](./index.md#expression-semantics) below for details.
 5. In the source configuration, select the newly created property mapping as a **User property mapping** if it applies to users, or **Group property mapping** if it applies to groups.
 
 ## How it works
@@ -35,9 +35,9 @@ return {
 }
 ```
 
-You can see that the expression returns a Python dictionary. The dictionary keys must match [User properties](../../user-group-role/user/user_ref.md#object-properties) or [Group properties](../../user-group-role/groups/group_ref.md#object-properties). Note that for users, `ak_groups` and `group_attributes` cannot be set.
+You can see that the expression returns a Python dictionary. The dictionary keys must match [User properties](../../user/user_ref.md#object-properties) or [Group properties](../../groups/group_ref.md#object-properties). Note that for users, `ak_groups` and `group_attributes` cannot be set.
 
-See each source documentation for a reference of the available data. See the authentik [expressions documentation](../../users-sources/sources/property-mappings/expressions.md) for available data and functions.
+See each source documentation for a reference of the available data. See the authentik [expressions documentation](./expressions.md) for available data and functions.
 
 Note that the [`list_flatten`](./expressions.md#list_flattenvalue-listany--any---optionalany) method is applied for all top-level properties, but not for attributes:
 
