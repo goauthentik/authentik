@@ -1,63 +1,56 @@
-#!/usr/bin/env node --max_old_space_size=65536
 import { execFileSync } from "child_process";
 import { ESLint } from "eslint";
+import fs from "fs";
 import path from "path";
 import process from "process";
+import { fileURLToPath } from "url";
 
-// Code assumes this script is in the './web/scripts' folder.
-const projectRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
-    encoding: "utf8",
-}).replace("\n", "");
-process.chdir(path.join(projectRoot, "./web"));
+function changedFiles() {
+    const gitStatus = execFileSync("git", ["diff", "--name-only", "HEAD"], { encoding: "utf8" });
+    const gitUntracked = execFileSync("git", ["ls-files", "--others", "--exclude-standard"], {
+        encoding: "utf8",
+    });
 
-const eslintConfig = {
-    fix: true,
-    overrideConfig: {
-        env: {
-            browser: true,
-            es2021: true,
-        },
-        extends: [
-            "eslint:recommended",
-            "plugin:@typescript-eslint/recommended",
-            "plugin:lit/recommended",
-            "plugin:custom-elements/recommended",
-            "plugin:storybook/recommended",
-        ],
-        parser: "@typescript-eslint/parser",
-        parserOptions: {
-            ecmaVersion: 12,
-            sourceType: "module",
-            project: true,
-        },
-        plugins: ["@typescript-eslint", "lit", "custom-elements"],
-        ignorePatterns: ["authentik-live-tests/**"],
-        rules: {
-            "indent": "off",
-            "linebreak-style": ["error", "unix"],
-            "quotes": ["error", "double", { avoidEscape: true }],
-            "semi": ["error", "always"],
-            "@typescript-eslint/ban-ts-comment": "off",
-            "no-unused-vars": "off",
-            "@typescript-eslint/no-unused-vars": [
-                "error",
-                {
-                    argsIgnorePattern: "^_",
-                    varsIgnorePattern: "^_",
-                    caughtErrorsIgnorePattern: "^_",
-                },
-            ],
-            "no-console": ["error", { allow: ["debug", "warn", "error"] }],
-        },
-    },
-};
+    const changed = gitStatus
+        .split("\n")
+        .filter((line) => line.trim().substring(0, 4) === "web/")
+        .filter((line) => /\.(m|c)?(t|j)s$/.test(line))
+        .map((line) => line.substring(4))
+        .filter((line) => fs.existsSync(line));
 
-const eslint = new ESLint(eslintConfig);
-const results = await eslint.lintFiles(".");
+    const untracked = gitUntracked
+        .split("\n")
+        .filter((line) => /\.(m|c)?(t|j)s$/.test(line))
+        .filter((line) => fs.existsSync(line));
+
+    const sourceFiles = [...changed, ...untracked].filter((line) => /^src\//.test(line));
+    const scriptFiles = [...changed, ...untracked].filter(
+        (line) => /^scripts\//.test(line) || !/^src\//.test(line),
+    );
+
+    return [...sourceFiles, ...scriptFiles];
+}
+
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
+const projectRoot = path.join(__dirname, "..");
+process.chdir(projectRoot);
+
+const hasFlag = (flags) => process.argv.length > 1 && flags.includes(process.argv[2]);
+
+const [configFile, files] = hasFlag(["-n", "--nightmare"])
+    ? [path.join(__dirname, "eslint.nightmare.mjs"), changedFiles()]
+    : hasFlag(["-p", "--precommit"])
+      ? [path.join(__dirname, "eslint.precommit.mjs"), changedFiles()]
+      : [path.join(projectRoot, "eslint.config.mjs"), ["."]];
+
+const eslint = new ESLint({
+    overrideConfigFile: configFile,
+    warnIgnored: false,
+});
+
+const results = await eslint.lintFiles(files);
 const formatter = await eslint.loadFormatter("stylish");
 const resultText = formatter.format(results);
 const errors = results.reduce((acc, result) => acc + result.errorCount, 0);
-
-// eslint-disable-next-line no-console
 console.log(resultText);
 process.exit(errors > 1 ? 1 : 0);

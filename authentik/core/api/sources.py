@@ -19,7 +19,7 @@ from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.object_types import TypesMixin
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import MetaNameSerializer, ModelSerializer
-from authentik.core.models import Source, UserSourceConnection
+from authentik.core.models import GroupSourceConnection, Source, UserSourceConnection
 from authentik.core.types import UserSettingSerializer
 from authentik.lib.utils.file import (
     FilePathSerializer,
@@ -191,6 +191,46 @@ class UserSourceConnectionViewSet(
     serializer_class = UserSourceConnectionSerializer
     permission_classes = [OwnerSuperuserPermissions]
     filterset_fields = ["user", "source__slug"]
+    search_fields = ["source__slug"]
+    filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
+    ordering = ["source__slug", "pk"]
+
+
+class GroupSourceConnectionSerializer(SourceSerializer):
+    """Group Source Connection Serializer"""
+
+    source = SourceSerializer(read_only=True)
+
+    class Meta:
+        model = GroupSourceConnection
+        fields = [
+            "pk",
+            "group",
+            "source",
+            "identifier",
+            "created",
+        ]
+        extra_kwargs = {
+            "group": {"read_only": True},
+            "identifier": {"read_only": True},
+            "created": {"read_only": True},
+        }
+
+
+class GroupSourceConnectionViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    UsedByMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
+):
+    """Group-source connection Viewset"""
+
+    queryset = GroupSourceConnection.objects.all()
+    serializer_class = GroupSourceConnectionSerializer
+    permission_classes = [OwnerSuperuserPermissions]
+    filterset_fields = ["group", "source__slug"]
     search_fields = ["source__slug"]
     filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
     ordering = ["source__slug", "pk"]

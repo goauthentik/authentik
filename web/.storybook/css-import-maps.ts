@@ -40,7 +40,6 @@ const rawCssImportMaps = [
     'import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";',
     'import PFGlobal from "@patternfly/patternfly/patternfly-base.css";',
     'import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";',
-    'import PFHint from "@patternfly/patternfly/components/Hint/hint.css";',
     'import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";',
     'import PFLabel from "@patternfly/patternfly/components/Label/label.css";',
     'import PFList from "@patternfly/patternfly/components/List/list.css";',

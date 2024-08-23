@@ -15,7 +15,9 @@
 
 ## What is authentik?
 
-authentik is an open-source Identity Provider that emphasizes flexibility and versatility. It can be seamlessly integrated into existing environments to support new protocols. authentik is also a great solution for implementing sign-up, recovery, and other similar features in your application, saving you the hassle of dealing with them.
+authentik is an open-source Identity Provider that emphasizes flexibility and versatility, with support for a wide set of protocols.
+
+Our [enterprise offer](https://goauthentik.io/pricing) can also be used as a self-hosted replacement for large-scale deployments of Okta/Auth0, Entra ID, Ping Identity, or other legacy IdPs for employees and B2B2C use.
 
 ## Installation
 

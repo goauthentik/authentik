@@ -19,15 +19,6 @@ class GoogleOAuthRedirect(OAuthRedirect):
 class GoogleOAuth2Callback(OAuthCallback):
     """Google OAuth2 Callback"""
 
-    def get_user_enroll_context(
-        self,
-        info: dict[str, Any],
-    ) -> dict[str, Any]:
-        return {
-            "email": info.get("email"),
-            "name": info.get("name"),
-        }
-
 
 @registry.register()
 class GoogleType(SourceType):
@@ -43,3 +34,9 @@ class GoogleType(SourceType):
     profile_url = "https://www.googleapis.com/oauth2/v1/userinfo"
     oidc_well_known_url = "https://accounts.google.com/.well-known/openid-configuration"
     oidc_jwks_url = "https://www.googleapis.com/oauth2/v3/certs"
+
+    def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
+        return {
+            "email": info.get("email"),
+            "name": info.get("name"),
+        }

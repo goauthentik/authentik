@@ -35,6 +35,7 @@ from authentik.crypto.builder import CertificateBuilder, PrivateKeyAlg
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
 from authentik.rbac.decorators import permission_required
+from authentik.rbac.filters import ObjectFilter
 
 LOGGER = get_logger()
 
@@ -265,7 +266,7 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
         ],
         responses={200: CertificateDataSerializer(many=False)},
     )
-    @action(detail=True, pagination_class=None, filter_backends=[])
+    @action(detail=True, pagination_class=None, filter_backends=[ObjectFilter])
     def view_certificate(self, request: Request, pk: str) -> Response:
         """Return certificate-key pairs certificate and log access"""
         certificate: CertificateKeyPair = self.get_object()
@@ -295,7 +296,7 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
         ],
         responses={200: CertificateDataSerializer(many=False)},
     )
-    @action(detail=True, pagination_class=None, filter_backends=[])
+    @action(detail=True, pagination_class=None, filter_backends=[ObjectFilter])
     def view_private_key(self, request: Request, pk: str) -> Response:
         """Return certificate-key pairs private key and log access"""
         certificate: CertificateKeyPair = self.get_object()
