@@ -5842,9 +5842,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /enterprise/license/get_install_id/:
+  /enterprise/license/install_id/:
     get:
-      operationId: enterprise_license_get_install_id_retrieve
+      operationId: enterprise_license_install_id_retrieve
       description: Get install_id
       tags:
       - enterprise
@@ -5873,6 +5873,12 @@ paths:
     get:
       operationId: enterprise_license_summary_retrieve
       description: Get the total license status
+      parameters:
+      - in: query
+        name: cached
+        schema:
+          type: boolean
+          default: true
       tags:
       - enterprise
       security:
