@@ -92,7 +92,7 @@ The following stages are supported:
 
 -   [User Logout](../../add-secure-apps/flows-stages/stages/user_logout.md)
 -   [User Login](../../flow/stages/user_login/index.md)
--   [Deny](../../add-secure-apps/flows-stages/stages/deny.md)
+-   [Deny](../../flows-stages/stages/deny.md)
 
 #### Direct bind
 
