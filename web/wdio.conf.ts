@@ -95,14 +95,13 @@ export const config: Options.Testrunner = {
     capabilities: [
         {
             // capabilities for local browser web tests
-            browserName: "chrome", // or "firefox", "microsoftedge", "safari"
-            ...(runHeadless
-                ? {
-                      "goog:chromeOptions": {
-                          args: ["headless", "disable-gpu"],
-                      },
-                  }
-                : {}),
+            "browserName": "chrome", // or "firefox", "microsoftedge", "safari"
+            "goog:chromeOptions": {
+                args: [
+                    "disable-search-engine-choice-screen",
+                    ...(runHeadless ? ["headless", "disable-gpu"] : []),
+                ],
+            },
         },
     ],
 
