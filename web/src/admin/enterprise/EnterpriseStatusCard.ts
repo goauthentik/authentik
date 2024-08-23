@@ -123,7 +123,9 @@ export class EnterpriseStatusCard extends AKElement {
                             </div>
                             <div class="pf-c-progress__status" aria-hidden="true">
                                 <span class="pf-c-progress__measure"
-                                    >${msg(str`${externalUserPercentage}%`)}</span
+                                    >${msg(
+                                        str`${externalUserPercentage < Infinity ? externalUserPercentage : "∞"}%`,
+                                    )}</span
                                 >
                             </div>
                             <div
