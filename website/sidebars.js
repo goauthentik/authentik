@@ -55,7 +55,6 @@ const docsSidebar = {
                         id: "install-config/configuration/configuration",
                     },
                     items: [],
-                    items: [],
                 },
                 "install-config/upgrade",
                 "install-config/beta",
@@ -206,24 +205,25 @@ const docsSidebar = {
                                 "add-secure-apps/flows-stages/flow/layouts",
                                 "add-secure-apps/flows-stages/flow/inspector",
                                 "add-secure-apps/flows-stages/flow/context/index",
-                            {
-                                type: "category",
-                                label: "Examples",
-                                items: [
-                                    "add-secure-apps/flows-stages/flow/examples/flows",
-                                    "add-secure-apps/flows-stages/flow/examples/snippets",
-                                ],
-                            },
-                            {
-                                type: "category",
-                                label: "Executors",
-                                items: [
-                                    "add-secure-apps/flows-stages/flow/executors/if-flow",
-                                    "add-secure-apps/flows-stages/flow/executors/sfe",
-                                    "add-secure-apps/flows-stages/flow/executors/user-settings",
-                                    "add-secure-apps/flows-stages/flow/executors/headless",
-                                ],
-                            }
+                                {
+                                    type: "category",
+                                    label: "Examples",
+                                    items: [
+                                        "add-secure-apps/flows-stages/flow/examples/flows",
+                                        "add-secure-apps/flows-stages/flow/examples/snippets",
+                                    ],
+                                },
+                                {
+                                    type: "category",
+                                    label: "Executors",
+                                    items: [
+                                        "add-secure-apps/flows-stages/flow/executors/if-flow",
+                                        "add-secure-apps/flows-stages/flow/executors/sfe",
+                                        "add-secure-apps/flows-stages/flow/executors/user-settings",
+                                        "add-secure-apps/flows-stages/flow/executors/headless",
+                                    ],
+                                },
+                            ],
                         },
                         {
                             type: "category",
