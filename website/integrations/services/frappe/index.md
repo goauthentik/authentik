@@ -32,7 +32,7 @@ The following placeholders will be used:
     - **Client ID**: Use the auto-populated ID
     - **Client Secret**: Use the auto-populated secret
     - **Redirect URIs/Origins (RegEx)**:
-        - `https://frappe.company/api/method/frappe.integrations.oauth2_logins.custom/provider`
+        - `https://frappe.company/api/method/frappe.integrations.oauth2_logins.custom/provider/`
     - **Scopes**: `email`, `openid`, `profile`
     - **Subject mode**: `Based on the Users's username`
     - **Include claims in id_token**: `True`
