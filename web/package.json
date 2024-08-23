@@ -108,7 +108,7 @@
         "turnstile-types": "^1.2.2",
         "typescript": "^5.5.4",
         "typescript-eslint": "^8.2.0",
-        "vite-tsconfig-paths": "^4.3.2",
+        "vite-tsconfig-paths": "^5.0.1",
         "wdio-wait-for": "^3.0.11",
         "wireit": "^0.14.8"
     },
