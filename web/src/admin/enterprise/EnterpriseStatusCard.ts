@@ -42,6 +42,12 @@ export class EnterpriseStatusCard extends AKElement {
         }
     }
 
+    calcUserPercentage(licensed: number, current: number) {
+        const percentage = licensed > 0 ? Math.ceil(current / (licensed / 100)) : 0;
+        if (current > 0 && licensed === 0) return Infinity;
+        return percentage;
+    }
+
     render() {
         if (!this.forecast || !this.summary) {
             return html`${msg("Loading")}`;
@@ -49,18 +55,14 @@ export class EnterpriseStatusCard extends AKElement {
         let internalUserPercentage = 0;
         let externalUserPercentage = 0;
         if (this.summary.status !== LicenseSummaryStatusEnum.Unlicensed) {
-            internalUserPercentage =
-                this.summary.internalUsers > 0
-                    ? Math.ceil(this.forecast.internalUsers / (this.summary.internalUsers / 100))
-                    : 0;
-            externalUserPercentage =
-                this.summary.externalUsers > 0
-                    ? Math.ceil(this.forecast.externalUsers / (this.summary.externalUsers / 100))
-                    : 0;
-            if (this.forecast.externalUsers > 0 && this.summary.externalUsers === 0)
-                externalUserPercentage = Infinity;
-            if (this.forecast.internalUsers > 0 && this.summary.internalUsers === 0)
-                externalUserPercentage = Infinity;
+            internalUserPercentage = this.calcUserPercentage(
+                this.summary.internalUsers,
+                this.forecast.internalUsers,
+            );
+            externalUserPercentage = this.calcUserPercentage(
+                this.summary.externalUsers,
+                this.forecast.externalUsers,
+            );
         }
         return html`<div class="pf-c-card">
             <div class="pf-c-card__title">${msg("Current license status")}</div>
@@ -85,6 +87,7 @@ export class EnterpriseStatusCard extends AKElement {
                             class="pf-c-progress ${internalUserPercentage > 100
                                 ? "pf-m-danger"
                                 : ""} ${internalUserPercentage >= 80 ? "pf-m-warning" : ""}"
+                            id="internalUsers"
                         >
                             <div class="pf-c-progress__description">
                                 ${msg("Internal user usage")}
@@ -113,6 +116,7 @@ export class EnterpriseStatusCard extends AKElement {
                             class="pf-c-progress ${externalUserPercentage > 100
                                 ? "pf-m-danger"
                                 : ""} ${externalUserPercentage >= 80 ? "pf-m-warning" : ""}"
+                            id="externalUsers"
                         >
                             <div class="pf-c-progress__description">
                                 ${msg("External user usage")}
