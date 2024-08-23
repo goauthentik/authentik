@@ -266,7 +266,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                         >
                             <div
                                 class="pf-c-progress__indicator"
-                                style="width:${internalUserPercentage}%;"
+                                style="width:${Math.min(internalUserPercentage, 100)}%;"
                             ></div>
                         </div>
                     </div>
@@ -286,7 +286,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                         >
                             <div
                                 class="pf-c-progress__indicator"
-                                style="width:${externalUserPercentage}%;"
+                                style="width:${Math.min(externalUserPercentage, 100)}%;"
                             ></div>
                         </div>
                     </div>
