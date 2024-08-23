@@ -323,13 +323,17 @@
             "command": "node scripts/build-storybook-import-maps.mjs"
         },
         "test": {
-            "command": "wdio run ./wdio.conf.ts --logLevel=warn --autoCompileOpts.tsNodeOpts.project=tsconfig.test.json",
+            "command": "wdio run ./wdio.conf.ts --logLevel=warn",
             "env": {
-                "CI": "true"
+                "CI": "true",
+                "TS_NODE_PROJECT": "tsconfig.test.json"
             }
         },
         "test-view": {
-            "command": "wdio run ./wdio.conf.ts --autoCompileOpts.tsNodeOpts.project=tsconfig.test.json"
+            "command": "wdio run ./wdio.conf.ts",
+            "env": {
+                "TS_NODE_PROJECT": "tsconfig.test.json"
+            }
         },
         "tsc": {
             "dependencies": [
