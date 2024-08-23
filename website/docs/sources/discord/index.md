@@ -327,10 +327,10 @@ Create a new **Expression Policy** with the content below, adjusting the variabl
 import base64
 import requests
 
-AVATAR_SIZE = "64"  # Valid values: 16,32,64,128,256,512,1024
+AVATAR_SIZE = "64"  # Valid values: 16,32,64,128,256,512,1024. Larger values may cause HTTP error 431 on applications/providers due to headers being too large.
 
 # Only change below here if you know what you are doing.
-AVATAR_URL = "https://cdn.discordapp.com/avatars/{id}/{avatar}.png?site={avatar_size}"
+AVATAR_URL = "https://cdn.discordapp.com/avatars/{id}/{avatar}.png?size={avatar_size}"
 AVATAR_STREAM_CONTENT = "data:image/png;base64,{base64_string}"  # Converts base64 image into html syntax usable with authentik's avatar attributes feature
 
 
