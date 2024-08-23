@@ -1076,11 +1076,6 @@
         <target>Selecteer welke scopes door de klant kunnen worden gebruikt. De klant moet nog steeds de scope specificeren om toegang te krijgen tot de gegevens.</target>
 
       </trans-unit>
-      <trans-unit id="sffd2e553143d1b0e">
-        <source>Hold control/command to select multiple items.</source>
-        <target>Houd control/command ingedrukt om meerdere items te selecteren.</target>
-
-      </trans-unit>
       <trans-unit id="s26bf2730430efbea">
         <source>Subject mode</source>
         <target>Onderwerpmodus</target>
@@ -5230,11 +5225,6 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
         <target>Velden</target>
 
       </trans-unit>
-      <trans-unit id="s2d5f69929bb7221d">
-        <source><x id="0" equiv-text="${prompt.name}"/> ("<x id="1" equiv-text="${prompt.fieldKey}"/>", of type <x id="2" equiv-text="${prompt.type}"/>)</source>
-        <target><x id="0" equiv-text="${prompt.name}"/> ("<x id="1" equiv-text="${prompt.fieldKey}"/>", van het type <x id="2" equiv-text="${prompt.type}"/>)</target>
-
-      </trans-unit>
       <trans-unit id="s3b7b519444181264">
         <source>Validation Policies</source>
         <target>Validatiebeleid</target>
@@ -8518,6 +8508,39 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 </trans-unit>
 <trans-unit id="sb416d07987093cd5">
   <source>When selected, assertions will be encrypted using this keypair.</source>
+</trans-unit>
+<trans-unit id="sa42be520242dec2a">
+  <source>Available Sources</source>
+</trans-unit>
+<trans-unit id="s876e75cf2c07b38e">
+  <source>Selected Sources</source>
+</trans-unit>
+<trans-unit id="s3b579c4bb6b447ae">
+  <source>Successfully triggered sync.</source>
+</trans-unit>
+<trans-unit id="s05073d2537b45d1a">
+  <source>Sync</source>
+</trans-unit>
+<trans-unit id="se9da93aa2e6cce21">
+  <source>Sync User</source>
+</trans-unit>
+<trans-unit id="s7bd456df0becbbff">
+  <source>Available Stages</source>
+</trans-unit>
+<trans-unit id="sf80798d2f56b540b">
+  <source>Selected Stages</source>
+</trans-unit>
+<trans-unit id="sf651943c3ddff635">
+  <source>Available Fields</source>
+</trans-unit>
+<trans-unit id="s80ba9c5ebb7826a9">
+  <source>Selected Fields</source>
+</trans-unit>
+<trans-unit id="s26733a6289ca6f1a">
+  <source>Available Transports</source>
+</trans-unit>
+<trans-unit id="sa65f772cfc5aa67e">
+  <source>Selected Transports</source>
 </trans-unit>
     </body>
   </file>
