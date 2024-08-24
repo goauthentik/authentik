@@ -108,7 +108,7 @@
         "turnstile-types": "^1.2.2",
         "typescript": "^5.5.4",
         "typescript-eslint": "^8.2.0",
-        "vite-tsconfig-paths": "^4.3.2",
+        "vite-tsconfig-paths": "^5.0.1",
         "wdio-wait-for": "^3.0.11",
         "wireit": "^0.14.8"
     },
@@ -154,6 +154,7 @@
         "tsc": "wireit",
         "watch": "run-s build-locales esbuild:watch"
     },
+    "type": "module",
     "wireit": {
         "build": {
             "#comment": [
@@ -323,13 +324,17 @@
             "command": "node scripts/build-storybook-import-maps.mjs"
         },
         "test": {
-            "command": "wdio run ./wdio.conf.ts --logLevel=warn --autoCompileOpts.tsNodeOpts.project=tsconfig.test.json",
+            "command": "wdio run ./wdio.conf.ts --logLevel=warn",
             "env": {
-                "CI": "true"
+                "CI": "true",
+                "TS_NODE_PROJECT": "tsconfig.test.json"
             }
         },
         "test-view": {
-            "command": "wdio run ./wdio.conf.ts --autoCompileOpts.tsNodeOpts.project=tsconfig.test.json"
+            "command": "wdio run ./wdio.conf.ts",
+            "env": {
+                "TS_NODE_PROJECT": "tsconfig.test.json"
+            }
         },
         "tsc": {
             "dependencies": [

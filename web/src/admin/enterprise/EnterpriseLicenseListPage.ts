@@ -1,4 +1,5 @@
 import "@goauthentik/admin/enterprise/EnterpriseLicenseForm";
+import "@goauthentik/admin/enterprise/EnterpriseStatusCard";
 import "@goauthentik/admin/rbac/ObjectPermissionModal";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { getRelativeTime } from "@goauthentik/common/utils";
@@ -14,17 +15,14 @@ import { TablePage } from "@goauthentik/elements/table/TablePage";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html, nothing } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFProgress from "@patternfly/patternfly/components/Progress/progress.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-import PFSplit from "@patternfly/patternfly/layouts/Split/split.css";
 
 import {
     EnterpriseApi,
@@ -67,13 +65,10 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
 
     static get styles(): CSSResult[] {
         return super.styles.concat(
-            PFDescriptionList,
             PFGrid,
             PFBanner,
             PFFormControl,
             PFButton,
-            PFProgress,
-            PFSplit,
             PFCard,
             css`
                 .pf-m-no-padding-bottom {
@@ -198,101 +193,12 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                 </div>
             </section>
             <section class="pf-c-page__main-section pf-m-no-padding-bottom">
-                ${this.renderCurrentSummary()}
+                <ak-enterprise-status-card
+                    .summary=${this.summary}
+                    .forecast=${this.forecast}
+                ></ak-enterprise-status-card>
             </section>
         `;
-    }
-
-    renderSummaryBadge() {
-        switch (this.summary?.status) {
-            case LicenseSummaryStatusEnum.Expired:
-                return html`<ak-label color=${PFColor.Red}>${msg("Expired")}</ak-label>`;
-            case LicenseSummaryStatusEnum.ExpirySoon:
-                return html`<ak-label color=${PFColor.Orange}>${msg("Expiring soon")}</ak-label>`;
-            case LicenseSummaryStatusEnum.Unlicensed:
-                return html`<ak-label color=${PFColor.Grey}>${msg("Unlicensed")}</ak-label>`;
-            case LicenseSummaryStatusEnum.ReadOnly:
-                return html`<ak-label color=${PFColor.Red}>${msg("Read Only")}</ak-label>`;
-            case LicenseSummaryStatusEnum.Valid:
-                return html`<ak-label color=${PFColor.Green}>${msg("Valid")}</ak-label>`;
-            default:
-                return nothing;
-        }
-    }
-
-    renderCurrentSummary() {
-        if (!this.forecast || !this.summary) {
-            return html`${msg("Loading")}`;
-        }
-        const internalUserPercentage =
-            this.summary.internalUsers > 0
-                ? Math.ceil(this.forecast.internalUsers / (this.summary.internalUsers / 100))
-                : 0;
-        const externalUserPercentage =
-            this.summary.externalUsers > 0
-                ? Math.ceil(this.forecast.externalUsers / (this.summary.externalUsers / 100))
-                : 0;
-        return html`<div class="pf-c-card">
-            <div class="pf-c-card__title">${msg("Current license status")}</div>
-            <div class="pf-c-card__body pf-l-split pf-m-gutter">
-                <dl class="pf-l-split__item pf-c-description-list pf-m-horizontal">
-                    <div class="pf-c-description-list__group">
-                        <dt class="pf-c-description-list__term">
-                            <span class="pf-c-description-list__text"
-                                >${msg("Overall license status")}</span
-                            >
-                        </dt>
-                        <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">
-                                ${this.renderSummaryBadge()}
-                            </div>
-                        </dd>
-                    </div>
-                </dl>
-                <div class="pf-l-split__item pf-m-fill">
-                    <div class="pf-c-progress">
-                        <div class="pf-c-progress__description">${msg("Internal user usage")}</div>
-                        <div class="pf-c-progress__status" aria-hidden="true">
-                            <span class="pf-c-progress__measure"
-                                >${msg(str`${internalUserPercentage}%`)}</span
-                            >
-                        </div>
-                        <div
-                            class="pf-c-progress__bar"
-                            role="progressbar"
-                            aria-valuemin="0"
-                            aria-valuemax="100"
-                            aria-valuenow="${internalUserPercentage}"
-                        >
-                            <div
-                                class="pf-c-progress__indicator"
-                                style="width:${internalUserPercentage}%;"
-                            ></div>
-                        </div>
-                    </div>
-                    <div class="pf-c-progress">
-                        <div class="pf-c-progress__description">${msg("External user usage")}</div>
-                        <div class="pf-c-progress__status" aria-hidden="true">
-                            <span class="pf-c-progress__measure"
-                                >${msg(str`${externalUserPercentage}%`)}</span
-                            >
-                        </div>
-                        <div
-                            class="pf-c-progress__bar"
-                            role="progressbar"
-                            aria-valuemin="0"
-                            aria-valuemax="100"
-                            aria-valuenow="${externalUserPercentage}"
-                        >
-                            <div
-                                class="pf-c-progress__indicator"
-                                style="width:${externalUserPercentage}%;"
-                            ></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>`;
     }
 
     row(item: License): TemplateResult[] {
