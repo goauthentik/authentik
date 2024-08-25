@@ -43,3 +43,4 @@ envFrom:
 ```
 
 where _some-secret_ contains the environment variables as in the documentation above.
+[![CodeQL](https://github.com/goauthentik/authentik/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/goauthentik/authentik/actions/workflows/codeql-analysis.yml)
