@@ -11,6 +11,7 @@ import { WebsocketClient } from "@goauthentik/common/ws";
 import { Interface } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/LoadingOverlay";
 import "@goauthentik/elements/ak-locale-context";
+import { themeImage } from "@goauthentik/elements/utils/images";
 import "@goauthentik/flow/sources/apple/AppleLoginInit";
 import "@goauthentik/flow/sources/plex/PlexLoginInit";
 import "@goauthentik/flow/stages/FlowErrorStage";
@@ -430,7 +431,9 @@ export class FlowExecutor extends Interface implements StageHost {
     renderChallengeWrapper(): TemplateResult {
         const logo = html`<div class="pf-c-login__main-header pf-c-brand ak-brand">
             <img
-                src="${first(this.brand?.brandingLogo, globalAK()?.brand.brandingLogo, "")}"
+                src="${themeImage(
+                    first(this.brand?.brandingLogo, globalAK()?.brand.brandingLogo, ""),
+                )}"
                 alt="authentik Logo"
             />
         </div>`;
