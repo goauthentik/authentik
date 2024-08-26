@@ -104,7 +104,7 @@
         "syncpack": "^12.3.3",
         "ts-lit-plugin": "^2.0.2",
         "ts-node": "^10.9.2",
-        "tslib": "^2.6.3",
+        "tslib": "^2.7.0",
         "turnstile-types": "^1.2.2",
         "typescript": "^5.5.4",
         "typescript-eslint": "^8.2.0",
