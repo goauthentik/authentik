@@ -6,6 +6,7 @@ mod generate;
 mod migrate;
 mod migratefile;
 mod r#move;
+mod links;
 
 #[derive(Parser)]
 struct Cli {

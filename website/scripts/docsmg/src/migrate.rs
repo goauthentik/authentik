@@ -7,7 +7,7 @@ use std::{
 use colored::Colorize;
 use regex::{Captures, Regex};
 
-use crate::{migratefile::read_migrate_file, recurse_directory};
+use crate::{links::shorten_all_external_links, migratefile::read_migrate_file, recurse_directory};
 
 pub fn migrate(quiet: bool, migratefile: PathBuf, migrate_path: PathBuf) {
     if !quiet {
@@ -31,6 +31,7 @@ pub fn migrate(quiet: bool, migratefile: PathBuf, migrate_path: PathBuf) {
     replace_links(migrate_path.clone(), files.clone());
     let successful_moves = move_files(quiet, migrate_path.clone(), files);
     add_redirects(successful_moves.clone(), migrate_path.clone());
+    shorten_all_external_links(migrate_path);
 }
 
 pub fn unmigrate(quiet: bool, migratefile: PathBuf, migrate_path: PathBuf) {
@@ -59,7 +60,8 @@ pub fn unmigrate(quiet: bool, migratefile: PathBuf, migrate_path: PathBuf) {
         .iter()
         .map(|x| (x.1.clone(), x.0.clone()))
         .collect(); //switch files to reverse a migration
-    remove_redirects(successful_moves, migrate_path);
+    remove_redirects(successful_moves, migrate_path.clone());
+    shorten_all_external_links(migrate_path);
 }
 
 fn move_files(
