@@ -140,7 +140,11 @@ fn replace_links(migrate_path: PathBuf, successful_moves: Vec<(PathBuf, PathBuf)
 fn fix_internal_links_in_file(migrate_path: PathBuf, move_from: PathBuf, move_to: PathBuf) {
     let move_from = migrate_path.join(move_from);
     let move_to = migrate_path.join(move_to);
-    let mut contents = read_to_string(&move_from).expect(&format!("to find {}", move_from.display()));
+    let contents = read_to_string(&move_from);
+    let mut contents = match contents {
+        Ok(ok) => ok,
+        Err(_) => return,
+    };
     let re = Regex::new(r"\[(?<name>.*)\]\((?<link>.*)\)").unwrap();
     let captures: Vec<Captures> = re.captures_iter(&contents).collect();
     let mut changes = vec![];
