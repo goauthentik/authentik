@@ -14,7 +14,7 @@
         "@rollup/plugin-node-resolve": "^15.2.3",
         "@rollup/plugin-swc": "^0.3.1",
         "@swc/cli": "^0.4.0",
-        "@swc/core": "^1.7.14",
+        "@swc/core": "^1.7.18",
         "@trivago/prettier-plugin-sort-imports": "^4.3.0",
         "@types/jquery": "^3.5.30",
         "lockfile-lint": "^4.14.0",
@@ -25,7 +25,7 @@
     },
     "license": "MIT",
     "optionalDependencies": {
-        "@swc/core": "^1.7.14",
+        "@swc/core": "^1.7.18",
         "@swc/core-darwin-arm64": "^1.6.13",
         "@swc/core-darwin-x64": "^1.6.13",
         "@swc/core-linux-arm-gnueabihf": "^1.6.13",
