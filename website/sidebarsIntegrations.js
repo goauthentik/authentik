@@ -61,7 +61,10 @@ module.exports = {
                 {
                     type: "category",
                     label: "Dashboards",
-                    items: ["services/organizr/index"],
+                    items: [
+                        "services/organizr/index",
+                        "services/linkwarden/index",
+                    ],
                 },
                 {
                     type: "category",
@@ -93,6 +96,7 @@ module.exports = {
                         "services/powerdns-admin/index",
                         "services/proftpd/index",
                         "services/qnap-nas/index",
+                        "services/semgrep/index",
                         "services/synology-dsm/index",
                         "services/skyhigh/index",
                         "services/snipe-it/index",
@@ -112,6 +116,7 @@ module.exports = {
                         "services/fortimanager/index",
                         "services/opnsense/index",
                         "services/pfsense/index",
+                        "services/netbird/index",
                     ],
                 },
                 {
@@ -119,6 +124,7 @@ module.exports = {
                     label: "Miscellaneous",
                     items: [
                         "services/engomo/index",
+                        "services/frappe/index",
                         "services/freshrss/index",
                         "services/gravitee/index",
                         "services/home-assistant/index",
@@ -143,6 +149,7 @@ module.exports = {
                         "services/ubuntu-landscape/index",
                         "services/uptime-kuma/index",
                         "services/zabbix/index",
+                        "services/whats-up-docker/index",
                     ],
                 },
                 {

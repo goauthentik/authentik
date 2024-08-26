@@ -60,6 +60,11 @@ entries:
           designation: stage_configuration
           name: default-oobe-setup
           title: Welcome to authentik!
+      # Optionally set object-level permissions on the object
+      # Requires authentik 2024.8
+      permissions:
+          - permission: inspect_flow
+            user: !Find [authentik_core.user, [username, akadmin]]
 ```
 
 ## Special Labels

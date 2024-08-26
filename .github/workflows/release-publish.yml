@@ -51,6 +51,8 @@ jobs:
           secrets: |
             GEOIPUPDATE_ACCOUNT_ID=${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}
             GEOIPUPDATE_LICENSE_KEY=${{ secrets.GEOIPUPDATE_LICENSE_KEY }}
+          build-args: |
+            VERSION=${{ github.ref }}
           tags: ${{ steps.ev.outputs.imageTags }}
           platforms: linux/amd64,linux/arm64
       - uses: actions/attest-build-provenance@v1
@@ -111,6 +113,8 @@ jobs:
         id: push
         with:
           push: true
+          build-args: |
+            VERSION=${{ github.ref }}
           tags: ${{ steps.ev.outputs.imageTags }}
           file: ${{ matrix.type }}.Dockerfile
           platforms: linux/amd64,linux/arm64

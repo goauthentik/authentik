@@ -10,7 +10,7 @@ Note: This provider requires the deployment of the [LDAP Outpost](../../outposts
 
 All users and groups in authentik's database are searchable. Currently, there is limited support for filters (you can only search for objectClass), but this will be expanded in further releases.
 
-Binding against the LDAP Server uses a flow in the background. This allows you to use the same policies and flows as you do for web-based logins. For more info, see [Bind modes](#bind-modes).
+Binding against the LDAP Server uses a flow in the background. This allows you to use the same policies and flows as you do for web-based logins. For more info, see [Bind modes](#binding--bind-modes).
 
 You can configure under which base DN the information should be available. For this documentation we'll use the default of `DC=ldap,DC=goauthentik,DC=io`.
 
@@ -72,7 +72,7 @@ This enables you to bind on port 636 using LDAPS.
 
 See the integration guide for [sssd](../../../integrations/services/sssd/) for an example guide.
 
-## Bind Modes
+## Binding & Bind Modes
 
 All bind modes rely on flows.
 
@@ -102,7 +102,15 @@ In this mode, the outpost will always execute the configured flow when a new bin
 
 This mode uses the same logic as direct bind, however the result is cached for the entered credentials, and saved in memory for the standard session duration. Sessions are saved independently, meaning that revoking sessions does _not_ remove them from the outpost, and neither will changing a users credentials.
 
-## Search Modes
+## Searching & Search Modes
+
+Any user that is authorized to access the LDAP provider's application can execute search the LDAP directory. Without explicit permissions to do broader searches, a user's search request will return information about themselves, including user info, group info, and group membership.
+
+[Users](../../user-group-role/user/index.mdx) and [roles](../../user-group-role/roles/index.mdx) can be assigned the permission "Search full LDAP directory" to allow them to search the full LDAP directory and retrieve information about all users in the authentik instance.
+
+:::info
+Up to authentik version 2024.8 this was managed using the "Search group" attribute in the LDAP Provider, where users could be added to a group to grant them this permission. With authentik 2024.8 this is automatically migrated to the "Search full LDAP directory" permission, which can be assigned more flexibly.
+:::
 
 #### Direct search
 

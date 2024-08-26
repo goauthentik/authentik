@@ -137,7 +137,7 @@ Add a new provider using the `+` button and set the following values:
     :::tip
     If you are running both your authentik and Nextcloud instances behind a reverse proxy, you can go ahead and use your internal FQDN here (i.e. `http://authentik.local`, however, note that if you do so there is [extra configuration required](#extra-configuration-when-running-behind-a-reverse-proxy)).
     :::
--   Scope: `email`, `profile` (you can safely omit `openid` if you prefer)
+-   Scope: `email profile` (you can safely omit `openid` if you prefer)
 -   Attribute mappings:
     -   User ID mapping: sub (or `user_id` if you need to connect to an already existing Nextcloud user)
     -   Display name mapping: name

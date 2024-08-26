@@ -21,6 +21,7 @@ const docsSidebar = {
             items: [
                 "installation/docker-compose",
                 "installation/kubernetes",
+                "installation/upgrade",
                 "installation/beta",
                 "installation/configuration",
                 "installation/reverse-proxy",
@@ -74,6 +75,15 @@ const docsSidebar = {
                 id: "providers/index",
             },
             items: [
+                {
+                    type: "category",
+                    label: "Property Mappings",
+                    link: {
+                        type: "doc",
+                        id: "providers/property-mappings/index",
+                    },
+                    items: ["providers/property-mappings/expression"],
+                },
                 {
                     type: "category",
                     label: "Google Workspace Provider",
@@ -170,20 +180,29 @@ const docsSidebar = {
             items: [
                 {
                     type: "category",
-                    label: "Directory synchronization",
-                    items: [
-                        "sources/active-directory/index",
-                        "sources/freeipa/index",
-                    ],
-                },
-                {
-                    type: "category",
                     label: "Protocols",
                     items: [
                         "sources/ldap/index",
                         "sources/oauth/index",
                         "sources/saml/index",
                         "sources/scim/index",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "Property Mappings",
+                    link: {
+                        type: "doc",
+                        id: "sources/property-mappings/index",
+                    },
+                    items: ["sources/property-mappings/expressions"],
+                },
+                {
+                    type: "category",
+                    label: "Directory synchronization",
+                    items: [
+                        "sources/active-directory/index",
+                        "sources/freeipa/index",
                     ],
                 },
                 {
@@ -264,10 +283,8 @@ const docsSidebar = {
             type: "category",
             label: "Stages",
             link: {
-                type: "generated-index",
-                title: "Stages",
-                slug: "flow/stages",
-                description: "Overview of all available stages",
+                type: "doc",
+                id: "flow/stages/index",
             },
             items: [
                 "flow/stages/authenticator_duo/index",
@@ -302,10 +319,8 @@ const docsSidebar = {
                     type: "category",
                     label: "Working with policies",
                     link: {
-                        type: "generated-index",
-                        title: "Working with policies",
-                        slug: "policies/working_with_policies",
-                        description: "Overview of policies configuration",
+                        type: "doc",
+                        id: "policies/working_with_policies/working_with_policies",
                     },
                     items: [
                         "policies/working_with_policies/whitelist_email",
@@ -314,15 +329,6 @@ const docsSidebar = {
                 },
                 "policies/expression",
             ],
-        },
-        {
-            type: "category",
-            label: "Property Mappings",
-            link: {
-                type: "doc",
-                id: "property-mappings/index",
-            },
-            items: ["property-mappings/expression"],
         },
         {
             type: "category",
@@ -378,7 +384,10 @@ const docsSidebar = {
                         type: "doc",
                         id: "user-group-role/groups/index",
                     },
-                    items: ["user-group-role/groups/manage_groups"],
+                    items: [
+                        "user-group-role/groups/manage_groups",
+                        "user-group-role/groups/group_ref",
+                    ],
                 },
                 {
                     type: "category",
@@ -511,6 +520,7 @@ const docsSidebar = {
             items: [
                 "security/security-hardening",
                 "security/policy",
+                "security/CVE-2024-42490",
                 "security/CVE-2024-38371",
                 "security/CVE-2024-37905",
                 "security/CVE-2024-23647",
