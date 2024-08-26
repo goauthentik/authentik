@@ -1,6 +1,6 @@
 use std::{
     ffi::OsStr,
-    fs::{read_to_string, remove_file, write, File},
+    fs::{create_dir_all, read_to_string, remove_file, write, File},
     path::PathBuf,
 };
 
@@ -153,6 +153,9 @@ fn fix_internal_links_in_file(migrate_path: PathBuf, move_from: PathBuf, move_to
         let link = PathBuf::from(link);
         //println!("{} {}", move_from.display(), link.display());
         let absolute_link = move_from.parent().unwrap().canonicalize().unwrap().join(&link);
+        if move_to.components().collect::<Vec<_>>().len() > 1 {
+            let _ = create_dir_all(move_to.parent().unwrap());
+        }
         File::create(move_to.clone()).unwrap();
         //println!("{} {} {} {}", name, link.display(), absolute_link.display(), make_path_relative(absolute_link.clone(), move_to.canonicalize().unwrap().clone()).display());
         let new_link = make_path_relative(absolute_link.clone(), move_to.canonicalize().unwrap().clone());
