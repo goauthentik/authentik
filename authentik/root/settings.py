@@ -308,8 +308,8 @@ DATABASES = {
         ),
         # https://docs.djangoproject.com/en/4.0/ref/databases/#persistent-connections
         # Not a PostgreSQL-specific setting, but a database-specific setting.
-        # Only PostgreSQL is supported as a database, so we place this setting it in the
-        # 'postgresql' path.
+        # However, only PostgreSQL is supported as a database, so we place this setting
+        # in the 'postgresql' path.
         "CONN_MAX_AGE": CONFIG.get_optional_int("postgresql.conn_max_age", 0),
     }
 }
@@ -318,11 +318,19 @@ for replica in CONFIG.get_keys("postgresql.read_replicas"):
     _database = DATABASES["default"].copy()
     for setting in DATABASES["default"].keys():
         default = object()
+
         if setting in ("TEST",):
             continue
-        override = CONFIG.get(
-            f"postgresql.read_replicas.{replica}.{setting.lower()}", default=default
-        )
+
+        if setting in ("CONN_MAX_AGE",):
+            override = CONFIG.get_optional_int(
+                f"postgresql.read_replicas.{replica}.{setting.lower()}",
+            )
+        else:
+            override = CONFIG.get(
+                f"postgresql.read_replicas.{replica}.{setting.lower()}", default=default
+            )
+
         if override is not default:
             _database[setting] = override
     DATABASES[f"replica_{replica}"] = _database
