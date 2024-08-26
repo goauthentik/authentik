@@ -8697,6 +8697,36 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sa65f772cfc5aa67e">
   <source>Selected Transports</source>
 </trans-unit>
+<trans-unit id="sd923f95605fed7b2">
+  <source>Expired</source>
+</trans-unit>
+<trans-unit id="s86959994f28077dc">
+  <source>Expiring soon</source>
+</trans-unit>
+<trans-unit id="sc60a5fba70bf5a53">
+  <source>Unlicensed</source>
+</trans-unit>
+<trans-unit id="s4f9880ce82953741">
+  <source>Read Only</source>
+</trans-unit>
+<trans-unit id="s4220dda46d622211">
+  <source>Valid</source>
+</trans-unit>
+<trans-unit id="sdc94711a2eb66a45">
+  <source>Current license status</source>
+</trans-unit>
+<trans-unit id="se10fb73c1f1039c5">
+  <source>Overall license status</source>
+</trans-unit>
+<trans-unit id="sc4804358f202968c">
+  <source>Internal user usage</source>
+</trans-unit>
+<trans-unit id="s087d6f07b52b30ec">
+  <source><x id="0" equiv-text="${internalUserPercentage &lt; Infinity ? internalUserPercentage : &quot;∞&quot;}"/>%</source>
+</trans-unit>
+<trans-unit id="sae72e1569d34fb02">
+  <source>External user usage</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
