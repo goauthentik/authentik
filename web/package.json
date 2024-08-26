@@ -101,7 +101,7 @@
         "rollup-plugin-postcss-lit": "^2.1.0",
         "storybook": "^8.1.11",
         "storybook-addon-mock": "^5.0.0",
-        "syncpack": "^12.3.3",
+        "syncpack": "^13.0.0",
         "ts-lit-plugin": "^2.0.2",
         "ts-node": "^10.9.2",
         "tslib": "^2.6.3",
