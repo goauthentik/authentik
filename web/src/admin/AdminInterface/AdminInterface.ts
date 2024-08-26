@@ -71,6 +71,12 @@ export class AdminInterface extends EnterpriseAwareInterface {
                 :host([theme="dark"]) .pf-c-page {
                     --pf-c-page--BackgroundColor: var(--ak-dark-background);
                 }
+                ak-enterprise-status {
+                    grid-area: header;
+                }
+                ak-admin-sidebar {
+                    grid-area: nav;
+                }
             `,
         ];
     }
@@ -118,6 +124,7 @@ export class AdminInterface extends EnterpriseAwareInterface {
 
         return html` <ak-locale-context>
             <div class="pf-c-page">
+                <ak-enterprise-status interface="admin"></ak-enterprise-status>
                 <ak-admin-sidebar
                     class="pf-c-page__sidebar ${classMap(sidebarClasses)}"
                 ></ak-admin-sidebar>

@@ -36,7 +36,7 @@ def update_score(request: HttpRequest, identifier: str, amount: int):
         if not created:
             reputation.score = F("score") + amount
             reputation.save()
-    LOGGER.debug("Updated score", amount=amount, for_user=identifier, for_ip=remote_ip)
+    LOGGER.info("Updated score", amount=amount, for_user=identifier, for_ip=remote_ip)
 
 
 @receiver(login_failed)

@@ -73,9 +73,10 @@ export class CodeMirrorTextarea<T> extends AKElement {
     }
 
     @property()
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
     set value(v: T | string) {
-        if (v === null || v === undefined) return;
+        if (v === null || v === undefined) {
+            return;
+        }
         // Value might be an object if within an iron-form, as that calls the getter of value
         // in the beginning and the calls this setter on reset
         let textValue = v;
@@ -114,7 +115,7 @@ export class CodeMirrorTextarea<T> extends AKElement {
                 default:
                     return this.getInnerValue();
             }
-        } catch (e) {
+        } catch (_e: unknown) {
             return this.getInnerValue();
         }
     }

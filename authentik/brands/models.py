@@ -3,6 +3,7 @@
 from uuid import uuid4
 
 from django.db import models
+from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
@@ -98,3 +99,13 @@ class Brand(SerializerModel):
             models.Index(fields=["domain"]),
             models.Index(fields=["default"]),
         ]
+
+
+class WebfingerProvider(models.Model):
+    """Provider which supports webfinger discovery"""
+
+    class Meta:
+        abstract = True
+
+    def webfinger(self, resource: str, request: HttpRequest) -> dict:
+        raise NotImplementedError()

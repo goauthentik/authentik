@@ -11,5 +11,7 @@ from authentik.providers.oauth2.models import AccessToken
 @receiver(user_logged_out)
 def user_logged_out_oauth_access_token(sender, request: HttpRequest, user: User, **_):
     """Revoke access tokens upon user logout"""
+    if not request.session or not request.session.session_key:
+        return
     hashed_session_key = sha256(request.session.session_key.encode("ascii")).hexdigest()
     AccessToken.objects.filter(user=user, session_id=hashed_session_key).delete()

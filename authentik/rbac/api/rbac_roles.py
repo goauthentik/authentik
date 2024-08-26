@@ -6,7 +6,12 @@ from django_filters.filterset import FilterSet
 from guardian.models import GroupObjectPermission
 from guardian.shortcuts import get_objects_for_group
 from rest_framework.fields import SerializerMethodField
-from rest_framework.mixins import ListModelMixin
+from rest_framework.mixins import (
+    DestroyModelMixin,
+    ListModelMixin,
+    RetrieveModelMixin,
+    UpdateModelMixin,
+)
 from rest_framework.viewsets import GenericViewSet
 
 from authentik.api.pagination import SmallerPagination
@@ -64,10 +69,12 @@ class ExtraRoleObjectPermissionSerializer(RoleObjectPermissionSerializer):
 class RolePermissionFilter(FilterSet):
     """Role permission filter"""
 
-    uuid = UUIDFilter("group__role__uuid", required=True)
+    uuid = UUIDFilter("group__role__uuid")
 
 
-class RolePermissionViewSet(ListModelMixin, GenericViewSet):
+class RolePermissionViewSet(
+    ListModelMixin, UpdateModelMixin, RetrieveModelMixin, DestroyModelMixin, GenericViewSet
+):
     """Get a role's assigned object permissions"""
 
     serializer_class = ExtraRoleObjectPermissionSerializer

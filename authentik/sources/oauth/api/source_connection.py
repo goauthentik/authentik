@@ -3,10 +3,12 @@
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.sources import (
+    GroupSourceConnectionSerializer,
+    GroupSourceConnectionViewSet,
     UserSourceConnectionSerializer,
     UserSourceConnectionViewSet,
 )
-from authentik.sources.oauth.models import UserOAuthSourceConnection
+from authentik.sources.oauth.models import GroupOAuthSourceConnection, UserOAuthSourceConnection
 
 
 class UserOAuthSourceConnectionSerializer(UserSourceConnectionSerializer):
@@ -26,3 +28,17 @@ class UserOAuthSourceConnectionViewSet(UserSourceConnectionViewSet, ModelViewSet
 
     queryset = UserOAuthSourceConnection.objects.all()
     serializer_class = UserOAuthSourceConnectionSerializer
+
+
+class GroupOAuthSourceConnectionSerializer(GroupSourceConnectionSerializer):
+    """OAuth Group-Source connection Serializer"""
+
+    class Meta(GroupSourceConnectionSerializer.Meta):
+        model = GroupOAuthSourceConnection
+
+
+class GroupOAuthSourceConnectionViewSet(GroupSourceConnectionViewSet, ModelViewSet):
+    """Group-source connection Viewset"""
+
+    queryset = GroupOAuthSourceConnection.objects.all()
+    serializer_class = GroupOAuthSourceConnectionSerializer
