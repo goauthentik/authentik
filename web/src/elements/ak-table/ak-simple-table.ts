@@ -5,6 +5,7 @@ import { randomId } from "@goauthentik/elements/utils/randomId.js";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
+import { repeat } from "lit/directives/repeat.js";
 
 import PFTable from "@patternfly/patternfly/components/Table/table.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -138,7 +139,7 @@ export class SimpleTable extends AKElement implements ISimpleTable {
 
     public renderRows(rows: TableRow[]) {
         return html`<tbody part="body">
-            ${map(rows, this.renderRow)}
+            ${repeat(rows, (row) => row.key, this.renderRow)}
         </tbody>`;
     }
 
