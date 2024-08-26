@@ -105,6 +105,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
             uuid: pk,
         });
         this.type = o.type || OutpostTypeEnum.Proxy;
+        this.providers = providerProvider(o.type);
         return o;
     }
 
@@ -112,7 +113,6 @@ export class OutpostForm extends ModelForm<Outpost, string> {
         this.defaultConfig = await new OutpostsApi(
             DEFAULT_CONFIG,
         ).outpostsInstancesDefaultSettingsRetrieve();
-        this.providers = providerProvider(this.type);
     }
 
     getSuccessMessage(): string {

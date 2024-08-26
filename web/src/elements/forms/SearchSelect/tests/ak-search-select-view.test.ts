@@ -17,11 +17,10 @@ describe("Search select: Test Input Field", () => {
     let select: AkSearchSelectViewDriver;
 
     beforeEach(async () => {
-        await render(
+        render(
             html`<ak-search-select-view .options=${longGoodForYouPairs}> </ak-search-select-view>`,
             document.body,
         );
-        // @ts-ignore
         select = await AkSearchSelectViewDriver.build(await $("ak-search-select-view"));
     });
 
@@ -57,6 +56,7 @@ describe("Search select: Test Input Field", () => {
         expect(await select.open).toBe(false);
         expect(await select.menuIsVisible()).toBe(false);
         await browser.keys("A");
+        select = await AkSearchSelectViewDriver.build(await $("ak-search-select-view"));
         expect(await select.open).toBe(true);
         expect(await select.menuIsVisible()).toBe(true);
     });
@@ -64,19 +64,19 @@ describe("Search select: Test Input Field", () => {
     it("should update the list as the user types", async () => {
         await select.focusOnInput();
         await browser.keys("Ap");
-        expect(await select.menuIsVisible()).toBe(true);
+        await expect(await select.menuIsVisible()).toBe(true);
         const elements = Array.from(await select.listElements());
-        expect(elements.length).toBe(2);
+        await expect(elements.length).toBe(2);
     });
 
     it("set the value when a match is close", async () => {
         await select.focusOnInput();
         await browser.keys("Ap");
-        expect(await select.menuIsVisible()).toBe(true);
+        await expect(await select.menuIsVisible()).toBe(true);
         const elements = Array.from(await select.listElements());
-        expect(elements.length).toBe(2);
+        await expect(elements.length).toBe(2);
         await browser.keys(Key.Tab);
-        expect(await (await select.input()).getValue()).toBe("Apples");
+        await expect(await (await select.input()).getValue()).toBe("Apples");
     });
 
     it("should close the menu when the user clicks away", async () => {
