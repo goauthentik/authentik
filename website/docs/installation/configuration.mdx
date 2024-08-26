@@ -74,7 +74,7 @@ To check if your config has been applied correctly, you can run the following co
 -   `AUTHENTIK_POSTGRESQL__SSLROOTCERT`: CA root for server ssl verification
 -   `AUTHENTIK_POSTGRESQL__SSLCERT`: Path to x509 client certificate to authenticate to server
 -   `AUTHENTIK_POSTGRESQL__SSLKEY`: Path to private key of `SSLCERT` certificate
--   `AUTHENTIK_POSTGRESQL__CONN_MAX_AGE`: Database connection lifetime. Defaults to `null` (unlimited persistent connections).
+-   `AUTHENTIK_POSTGRESQL__CONN_MAX_AGE`: Database connection lifetime. Defaults to `0` (no persistent connections). Can be set to `none` for unlimited persistent connections.
 -   `AUTHENTIK_POSTGRESQL__DISABLE_SERVER_SIDE_CURSORS`: Disable server side cursors when set to `true`. Defaults to `false`.
 
 All PostgreSQL settings support hot-reloading. Adding and removing read replicas doesn't support hot-reloading.
