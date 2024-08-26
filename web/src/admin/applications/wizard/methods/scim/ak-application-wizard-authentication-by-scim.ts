@@ -126,24 +126,22 @@ export class ApplicationWizardAuthenticationBySCIM extends BaseProviderPanel {
                             name="propertyMappings"
                             .options=${propertyPairs}
                             .values=${pmUserValues}
-                            .richhelp=${html` <p class="pf-c-form__helper-text">
+                            .richhelp=${html`
+                                <p class="pf-c-form__helper-text">
                                     ${msg("Property mappings used for user mapping.")}
                                 </p>
-                                <p class="pf-c-form__helper-text">
-                                    ${msg("Hold control/command to select multiple items.")}
-                                </p>`}
+                            `}
                         ></ak-multi-select>
                         <ak-multi-select
                             label=${msg("Group Property Mappings")}
                             name="propertyMappingsGroup"
                             .options=${propertyPairs}
                             .values=${pmGroupValues}
-                            .richhelp=${html` <p class="pf-c-form__helper-text">
+                            .richhelp=${html`
+                                <p class="pf-c-form__helper-text">
                                     ${msg("Property mappings used for group creation.")}
                                 </p>
-                                <p class="pf-c-form__helper-text">
-                                    ${msg("Hold control/command to select multiple items.")}
-                                </p>`}
+                            `}
                         ></ak-multi-select>
                     </div>
                 </ak-form-group>

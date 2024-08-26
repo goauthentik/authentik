@@ -1497,13 +1497,13 @@ tests = ["black", "django-stubs[compatible-mypy]", "djangorestframework-stubs[co
 
 [[package]]
 name = "drf-orjson-renderer"
-version = "1.7.2"
+version = "1.7.3"
 description = "Django RestFramework JSON Renderer Backed by orjson"
 optional = false
 python-versions = ">=3.6.0"
 files = [
-    {file = "drf_orjson_renderer-1.7.2-py3-none-any.whl", hash = "sha256:4fbf6f91d7032fbf23e31837e4c5cf6950af4e588bf34e9feadc809c67977657"},
-    {file = "drf_orjson_renderer-1.7.2.tar.gz", hash = "sha256:b8a47c38a6eeaf5ffc7a5d53d028b95fa8b340999507681e403a599f0a3be456"},
+    {file = "drf_orjson_renderer-1.7.3-py3-none-any.whl", hash = "sha256:9c3fe521b0e8c641b334c40bb81ecadb14519a27599a495d360385abe193a4b4"},
+    {file = "drf_orjson_renderer-1.7.3.tar.gz", hash = "sha256:0c49760fc415df8096c1ef05f029802f2e5862d4e15fe96066289b8c526835f1"},
 ]
 
 [package.dependencies]

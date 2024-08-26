@@ -217,7 +217,8 @@ export class SelectTable extends SimpleTable {
     }
 
     renderAllOnThisPageCheckbox(): TemplateResult {
-        const checked = this.selectedOnPage.length === this.valuesOnPage.length;
+        const checked =
+            this.selectedOnPage.length && this.selectedOnPage.length === this.valuesOnPage.length;
 
         const onInput = (ev: InputEvent) => {
             const selected = [...this.selected];

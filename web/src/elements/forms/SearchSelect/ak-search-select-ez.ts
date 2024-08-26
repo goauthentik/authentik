@@ -1,8 +1,6 @@
 import { TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
 import { type ISearchSelectBase, SearchSelectBase } from "./SearchSelect.js";
 
 export interface ISearchSelectApi<T> {
@@ -48,7 +46,7 @@ export interface ISearchSelectEz<T> extends ISearchSelectBase<T> {
 @customElement("ak-search-select-ez")
 export class SearchSelectEz<T> extends SearchSelectBase<T> implements ISearchSelectEz<T> {
     static get styles() {
-        return [PFBase];
+        return [...SearchSelectBase.styles];
     }
 
     @property({ type: Object, attribute: false })

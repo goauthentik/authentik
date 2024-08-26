@@ -9,6 +9,39 @@ import tsconfigPaths from "vite-tsconfig-paths";
 const isProdBuild = process.env.NODE_ENV === "production";
 const apiBasePath = process.env.AK_API_BASE_PATH || "";
 const runHeadless = process.env.CI !== undefined;
+const testSafari = process.env.WDIO_TEST_SAFARI !== undefined;
+const testFirefox = process.env.WDIO_TEST_FIREFOX !== undefined;
+const skipChrome = process.env.WDIO_SKIP_CHROME !== undefined;
+
+const capabilities = [];
+
+const MAX_INSTANCES = 10;
+
+if (!skipChrome) {
+    capabilities.push({
+        // capabilities for local browser web tests
+        browserName: "chrome", // or "firefox", "microsoftedge", "safari"
+        ...(runHeadless
+            ? {
+                  "goog:chromeOptions": {
+                      args: ["headless", "disable-gpu"],
+                  },
+              }
+            : {}),
+    });
+}
+
+if (testSafari) {
+    capabilities.push({
+        browserName: "safari", // or "firefox", "microsoftedge", "safari"
+    });
+}
+
+if (testFirefox) {
+    capabilities.push({
+        browserName: "firefox", // or "firefox", "microsoftedge", "safari"
+    });
+}
 
 export const config: Options.Testrunner = {
     //
@@ -19,18 +52,16 @@ export const config: Options.Testrunner = {
     runner: [
         "browser",
         {
-            viteConfig: (config: UserConfig = { plugins: [] }) => ({
-                ...config,
+            viteConfig: (userConfig: UserConfig = { plugins: [] }) => ({
+                ...userConfig,
                 plugins: [
                     replace({
-                        "process.env.NODE_ENV": JSON.stringify(
-                            isProdBuild ? "production" : "development",
-                        ),
+                        "process.env.NODE_ENV": JSON.stringify(isProdBuild ? "production" : "development"),
                         "process.env.CWD": JSON.stringify(cwd()),
                         "process.env.AK_API_BASE_PATH": JSON.stringify(apiBasePath),
                         "preventAssignment": true,
                     }),
-                    ...(config?.plugins ?? []),
+                    ...(userConfig?.plugins ?? []),
                     // @ts-ignore
                     postcssLit(),
                     tsconfigPaths(),
@@ -83,26 +114,13 @@ export const config: Options.Testrunner = {
     // and 30 processes will get spawned. The property handles how many capabilities
     // from the same test should run tests.
     //
-    maxInstances: 10,
+    maxInstances: runHeadless ? MAX_INSTANCES : 1,
     //
     // If you have trouble getting all important capabilities together, check out the
     // Sauce Labs platform configurator - a great tool to configure your capabilities:
     // https://saucelabs.com/platform/platform-configurator
     //
-    capabilities: [
-        {
-            // capabilities for local browser web tests
-            browserName: "chrome", // or "firefox", "microsoftedge", "safari"
-            ...(runHeadless
-                ? {
-                      "goog:chromeOptions": {
-                          args: ["headless", "disable-gpu"],
-                      },
-                  }
-                : {}),
-        },
-    ],
-
+    capabilities,
     //
     // ===================
     // Test Configurations

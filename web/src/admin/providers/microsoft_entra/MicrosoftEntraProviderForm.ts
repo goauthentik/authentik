@@ -1,6 +1,12 @@
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
+import {
+    makeMicrosoftEntraPropertyMappingsSelector,
+    microsoftEntraPropertyMappingsProvider,
+} from "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderPropertyMappings";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
@@ -17,8 +23,6 @@ import {
     Group,
     MicrosoftEntraProvider,
     OutgoingSyncDeleteAction,
-    PaginatedMicrosoftEntraProviderMappingList,
-    PropertymappingsApi,
     ProvidersApi,
 } from "@goauthentik/api";
 
@@ -29,16 +33,6 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
             id: pk,
         });
     }
-
-    async load(): Promise<void> {
-        this.propertyMappings = await new PropertymappingsApi(
-            DEFAULT_CONFIG,
-        ).propertymappingsProviderMicrosoftEntraList({
-            ordering: "managed",
-        });
-    }
-
-    propertyMappings?: PaginatedMicrosoftEntraProviderMappingList;
 
     async send(data: MicrosoftEntraProvider): Promise<MicrosoftEntraProvider> {
         if (this.instance) {
@@ -218,67 +212,34 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                         label=${msg("User Property Mappings")}
                         name="propertyMappings"
                     >
-                        <select class="pf-c-form-control" multiple>
-                            ${this.propertyMappings?.results.map((mapping) => {
-                                let selected = false;
-                                if (!this.instance?.propertyMappings) {
-                                    selected =
-                                        mapping.managed ===
-                                            "goauthentik.io/providers/microsoft_entra/user" ||
-                                        false;
-                                } else {
-                                    selected = Array.from(this.instance?.propertyMappings).some(
-                                        (su) => {
-                                            return su == mapping.pk;
-                                        },
-                                    );
-                                }
-                                return html`<option
-                                    value=${ifDefined(mapping.pk)}
-                                    ?selected=${selected}
-                                >
-                                    ${mapping.name}
-                                </option>`;
-                            })}
-                        </select>
+                        <ak-dual-select-dynamic-selected
+                            .provider=${microsoftEntraPropertyMappingsProvider}
+                            .selector=${makeMicrosoftEntraPropertyMappingsSelector(
+                                this.instance?.propertyMappings,
+                                "goauthentik.io/providers/microsoft_entra/user",
+                            )}
+                            available-label=${msg("Available Property Mappings")}
+                            selected-label=${msg("Selected Property Mappings")}
+                        ></ak-dual-select-dynamic-selected>
                         <p class="pf-c-form__helper-text">
                             ${msg("Property mappings used to user mapping.")}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Hold control/command to select multiple items.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Group Property Mappings")}
                         name="propertyMappingsGroup"
                     >
-                        <select class="pf-c-form-control" multiple>
-                            ${this.propertyMappings?.results.map((mapping) => {
-                                let selected = false;
-                                if (!this.instance?.propertyMappingsGroup) {
-                                    selected =
-                                        mapping.managed ===
-                                        "goauthentik.io/providers/microsoft_entra/group";
-                                } else {
-                                    selected = Array.from(
-                                        this.instance?.propertyMappingsGroup,
-                                    ).some((su) => {
-                                        return su == mapping.pk;
-                                    });
-                                }
-                                return html`<option
-                                    value=${ifDefined(mapping.pk)}
-                                    ?selected=${selected}
-                                >
-                                    ${mapping.name}
-                                </option>`;
-                            })}
-                        </select>
+                        <ak-dual-select-dynamic-selected
+                            .provider=${microsoftEntraPropertyMappingsProvider}
+                            .selector=${makeMicrosoftEntraPropertyMappingsSelector(
+                                this.instance?.propertyMappingsGroup,
+                                "goauthentik.io/providers/microsoft_entra/group",
+                            )}
+                            available-label=${msg("Available Property Mappings")}
+                            selected-label=${msg("Selected Property Mappings")}
+                        ></ak-dual-select-dynamic-selected>
                         <p class="pf-c-form__helper-text">
                             ${msg("Property mappings used to group creation.")}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Hold control/command to select multiple items.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>

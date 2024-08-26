@@ -17853,6 +17853,46 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /providers/google_workspace/{id}/sync/object/:
+    post:
+      operationId: providers_google_workspace_sync_object_create
+      description: Sync/Re-sync a single user/group object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Google Workspace Provider.
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SyncObjectRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncObjectResult'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /providers/google_workspace/{id}/sync/status/:
     get:
       operationId: providers_google_workspace_sync_status_retrieve
@@ -18844,6 +18884,46 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/microsoft_entra/{id}/sync/object/:
+    post:
+      operationId: providers_microsoft_entra_sync_object_create
+      description: Sync/Re-sync a single user/group object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Microsoft Entra Provider.
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SyncObjectRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncObjectResult'
+          description: ''
         '400':
           content:
             application/json:
@@ -21334,6 +21414,46 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/scim/{id}/sync/object/:
+    post:
+      operationId: providers_scim_sync_object_create
+      description: Sync/Re-sync a single user/group object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this SCIM Provider.
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SyncObjectRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncObjectResult'
+          description: ''
         '400':
           content:
             application/json:
@@ -51354,6 +51474,34 @@ components:
       - user_email
       - user_upn
       type: string
+    SyncObjectModelEnum:
+      enum:
+      - authentik.core.models.User
+      - authentik.core.models.Group
+      type: string
+    SyncObjectRequest:
+      type: object
+      description: Sync object serializer
+      properties:
+        sync_object_model:
+          $ref: '#/components/schemas/SyncObjectModelEnum'
+        sync_object_id:
+          type: string
+          minLength: 1
+      required:
+      - sync_object_id
+      - sync_object_model
+    SyncObjectResult:
+      type: object
+      description: Result of a single object sync
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogEvent'
+          readOnly: true
+      required:
+      - messages
     SyncStatus:
       type: object
       description: Provider sync status

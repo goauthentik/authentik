@@ -1,12 +1,14 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/forms/DeleteBulkForm";
+import "@goauthentik/elements/forms/ModalForm";
+import "@goauthentik/elements/sync/SyncObjectForm";
 import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { MicrosoftEntraProviderGroup, ProvidersApi } from "@goauthentik/api";
+import { MicrosoftEntraProviderGroup, ProvidersApi, SyncObjectModelEnum } from "@goauthentik/api";
 
 @customElement("ak-provider-microsoft-entra-groups-list")
 export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProviderGroup> {
@@ -17,6 +19,23 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
 
     searchEnabled(): boolean {
         return true;
+    }
+
+    renderToolbar(): TemplateResult {
+        return html`<ak-forms-modal cancelText=${msg("Close")} ?closeAfterSuccessfulSubmit=${false}>
+                <span slot="submit">${msg("Sync")}</span>
+                <span slot="header">${msg("Sync User")}</span>
+                <ak-sync-object-form
+                    .provider=${this.providerId}
+                    model=${SyncObjectModelEnum.Group}
+                    .sync=${new ProvidersApi(DEFAULT_CONFIG)
+                        .providersMicrosoftEntraSyncObjectCreate}
+                    slot="form"
+                >
+                </ak-sync-object-form>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Sync")}</button>
+            </ak-forms-modal>
+            ${super.renderToolbar()}`;
     }
 
     renderToolbarSelected(): TemplateResult {
