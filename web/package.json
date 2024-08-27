@@ -32,7 +32,7 @@
         "guacamole-common-js": "^1.5.0",
         "lit": "^3.2.0",
         "md-front-matter": "^1.0.4",
-        "mermaid": "^10.9.1",
+        "mermaid": "^11.0.2",
         "rapidoc": "^9.3.4",
         "showdown": "^2.1.0",
         "style-mod": "^4.1.2",
@@ -51,7 +51,7 @@
         "@babel/preset-typescript": "^7.24.7",
         "@changesets/cli": "^2.27.5",
         "@custom-elements-manifest/analyzer": "^0.10.2",
-        "@eslint/js": "^9.9.0",
+        "@eslint/js": "^9.9.1",
         "@genesiscommunitysuccess/custom-elements-lsp": "^5.0.3",
         "@hcaptcha/types": "^1.0.4",
         "@jeysal/storybook-addon-css-user-preferences": "^0.2.0",
@@ -101,14 +101,14 @@
         "rollup-plugin-postcss-lit": "^2.1.0",
         "storybook": "^8.1.11",
         "storybook-addon-mock": "^5.0.0",
-        "syncpack": "^12.3.3",
+        "syncpack": "^13.0.0",
         "ts-lit-plugin": "^2.0.2",
         "ts-node": "^10.9.2",
-        "tslib": "^2.6.3",
+        "tslib": "^2.7.0",
         "turnstile-types": "^1.2.2",
         "typescript": "^5.5.4",
-        "typescript-eslint": "^8.2.0",
-        "vite-tsconfig-paths": "^4.3.2",
+        "typescript-eslint": "^8.3.0",
+        "vite-tsconfig-paths": "^5.0.1",
         "wdio-wait-for": "^3.0.11",
         "wireit": "^0.14.8"
     },
@@ -120,9 +120,9 @@
         "@esbuild/darwin-arm64": "^0.23.0",
         "@esbuild/linux-amd64": "^0.18.11",
         "@esbuild/linux-arm64": "^0.23.0",
-        "@rollup/rollup-darwin-arm64": "4.21.0",
-        "@rollup/rollup-linux-arm64-gnu": "4.21.0",
-        "@rollup/rollup-linux-x64-gnu": "4.21.0"
+        "@rollup/rollup-darwin-arm64": "4.21.1",
+        "@rollup/rollup-linux-arm64-gnu": "4.21.1",
+        "@rollup/rollup-linux-x64-gnu": "4.21.1"
     },
     "private": true,
     "scripts": {
@@ -154,6 +154,7 @@
         "tsc": "wireit",
         "watch": "run-s build-locales esbuild:watch"
     },
+    "type": "module",
     "wireit": {
         "build": {
             "#comment": [
@@ -323,13 +324,17 @@
             "command": "node scripts/build-storybook-import-maps.mjs"
         },
         "test": {
-            "command": "wdio run ./wdio.conf.ts --logLevel=warn --autoCompileOpts.tsNodeOpts.project=tsconfig.test.json",
+            "command": "wdio run ./wdio.conf.ts --logLevel=warn",
             "env": {
-                "CI": "true"
+                "CI": "true",
+                "TS_NODE_PROJECT": "tsconfig.test.json"
             }
         },
         "test-view": {
-            "command": "wdio run ./wdio.conf.ts --autoCompileOpts.tsNodeOpts.project=tsconfig.test.json"
+            "command": "wdio run ./wdio.conf.ts",
+            "env": {
+                "TS_NODE_PROJECT": "tsconfig.test.json"
+            }
         },
         "tsc": {
             "dependencies": [

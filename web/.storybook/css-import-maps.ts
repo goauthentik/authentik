@@ -62,6 +62,7 @@ const rawCssImportMaps = [
     'import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";',
     'import PFTable from "@patternfly/patternfly/components/Table/table.css";',
     'import PFTabs from "@patternfly/patternfly/components/Tabs/tabs.css";',
+    'import PFText from "@patternfly/patternfly/utilities/Text/text.css";',
     'import PFTitle from "@patternfly/patternfly/components/Title/title.css";',
     'import PFToggleGroup from "@patternfly/patternfly/components/ToggleGroup/toggle-group.css";',
     'import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";',
