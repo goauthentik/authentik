@@ -246,10 +246,11 @@ export class AuthenticatorValidateStage
         const totpChallenge = this.challenge.deviceChallenges.find(
             (challenge) => challenge.deviceClass === DeviceClassesEnum.Totp,
         );
-        if (PasswordManagerPrefill.totp && totpChallenge) {
+        if (PasswordManagerPrefill.totp && totpChallenge && !this._initialized) {
             console.debug(
                 "authentik/stages/authenticator_validate: found prefill totp code, selecting totp challenge",
             );
+            this._initialized = true;
             this.selectedDeviceChallenge = totpChallenge;
         }
 
