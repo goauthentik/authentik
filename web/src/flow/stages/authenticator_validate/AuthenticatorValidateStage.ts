@@ -48,6 +48,9 @@ export class AuthenticatorValidateStage
     }
 
     @state()
+    _initialized: boolean = false;
+
+    @state()
     _selectedDeviceChallenge?: DeviceChallenge;
 
     set selectedDeviceChallenge(value: DeviceChallenge | undefined) {
@@ -231,10 +234,12 @@ export class AuthenticatorValidateStage
         if (!this.challenge) {
             return html`<ak-empty-state loading> </ak-empty-state>`;
         }
+
         // User only has a single device class, so we don't show a picker
         if (this.challenge?.deviceChallenges.length === 1) {
             this.selectedDeviceChallenge = this.challenge.deviceChallenges[0];
         }
+
         // TOTP is a bit special, assuming that TOTP is allowed from the backend,
         // and we have a pre-filled value from the password manager,
         // directly set the the TOTP device Challenge as active.
@@ -247,6 +252,17 @@ export class AuthenticatorValidateStage
             );
             this.selectedDeviceChallenge = totpChallenge;
         }
+
+        // Pick the last used validator, if any
+        const lastUsedChallenge = this.challenge.deviceChallenges
+            .filter((deviceChallenge) => deviceChallenge.lastUsed)
+            .sort((a, b) => b.lastUsed!.valueOf() - a.lastUsed!.valueOf())[0];
+        if (lastUsedChallenge && !this._initialized) {
+            this._initialized = true;
+            this.selectedDeviceChallenge = lastUsedChallenge;
+        }
+
+        // Otherwise, present the user with a picker
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
             </header>

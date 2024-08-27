@@ -38269,6 +38269,9 @@ components:
         challenge:
           type: object
           additionalProperties: {}
+        last_used:
+          type: string
+          format: date-time
       required:
       - challenge
       - device_class
@@ -38286,6 +38289,9 @@ components:
         challenge:
           type: object
           additionalProperties: {}
+        last_used:
+          type: string
+          format: date-time
       required:
       - challenge
       - device_class
