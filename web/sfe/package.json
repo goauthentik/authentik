@@ -22,7 +22,7 @@
         "@swc/cli": "^0.4.0",
         "@swc/core": "^1.7.18",
         "@types/jquery": "^3.5.30",
-        "rollup": "^4.21.0",
+        "rollup": "^4.21.1",
         "rollup-plugin-copy": "^3.5.0"
     }
 }
