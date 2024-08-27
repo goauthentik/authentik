@@ -254,11 +254,15 @@ export class AuthenticatorValidateStage
             this.selectedDeviceChallenge = totpChallenge;
         }
 
-        // Pick the last used validator, if any
+        // Pick the last used validator, if it's not a recovery key
         const lastUsedChallenge = this.challenge.deviceChallenges
             .filter((deviceChallenge) => deviceChallenge.lastUsed)
             .sort((a, b) => b.lastUsed!.valueOf() - a.lastUsed!.valueOf())[0];
-        if (lastUsedChallenge && !this._initialized) {
+        if (
+            lastUsedChallenge &&
+            lastUsedChallenge.deviceClass !== DeviceClassesEnum.Static &&
+            !this._initialized
+        ) {
             this._initialized = true;
             this.selectedDeviceChallenge = lastUsedChallenge;
         }
