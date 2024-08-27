@@ -1089,11 +1089,6 @@
         <target>选择客户端可以使用哪些作用域。客户端仍然需要指定访问数据的范围。</target>
         
       </trans-unit>
-      <trans-unit id="sffd2e553143d1b0e">
-        <source>Hold control/command to select multiple items.</source>
-        <target>按住 ctrl/command 键可选择多个项目。</target>
-        
-      </trans-unit>
       <trans-unit id="s26bf2730430efbea">
         <source>Subject mode</source>
         <target>Subject 模式</target>
@@ -5263,14 +5258,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>字段</target>
         
       </trans-unit>
-      <trans-unit id="s2d5f69929bb7221d">
-        <source><x id="0" equiv-text="${prompt.name}"/> (&quot;<x id="1" equiv-text="${prompt.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${prompt.type}"/>)</source>
-        <target>
-        <x id="0" equiv-text="${prompt.name}"/>（&quot;
-        <x id="1" equiv-text="${prompt.fieldKey}"/>&quot;，类型为
-        <x id="2" equiv-text="${prompt.type}"/>）</target>
-        
-      </trans-unit>
       <trans-unit id="s3b7b519444181264">
         <source>Validation Policies</source>
         <target>验证策略</target>
@@ -9008,6 +8995,90 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sb416d07987093cd5">
   <source>When selected, assertions will be encrypted using this keypair.</source>
   <target>选择此选项时，断言将以此密钥对加密。</target>
+</trans-unit>
+<trans-unit id="sa42be520242dec2a">
+  <source>Available Sources</source>
+  <target>可用源</target>
+</trans-unit>
+<trans-unit id="s876e75cf2c07b38e">
+  <source>Selected Sources</source>
+  <target>已选源</target>
+</trans-unit>
+<trans-unit id="s3b579c4bb6b447ae">
+  <source>Successfully triggered sync.</source>
+  <target>已成功触发同步。</target>
+</trans-unit>
+<trans-unit id="s05073d2537b45d1a">
+  <source>Sync</source>
+  <target>同步</target>
+</trans-unit>
+<trans-unit id="se9da93aa2e6cce21">
+  <source>Sync User</source>
+  <target>同步用户</target>
+</trans-unit>
+<trans-unit id="s7bd456df0becbbff">
+  <source>Available Stages</source>
+  <target>可用阶段</target>
+</trans-unit>
+<trans-unit id="sf80798d2f56b540b">
+  <source>Selected Stages</source>
+  <target>已选阶段</target>
+</trans-unit>
+<trans-unit id="sf651943c3ddff635">
+  <source>Available Fields</source>
+  <target>可用字段</target>
+</trans-unit>
+<trans-unit id="s80ba9c5ebb7826a9">
+  <source>Selected Fields</source>
+  <target>已选字段</target>
+</trans-unit>
+<trans-unit id="s26733a6289ca6f1a">
+  <source>Available Transports</source>
+  <target>可用传输</target>
+</trans-unit>
+<trans-unit id="sa65f772cfc5aa67e">
+  <source>Selected Transports</source>
+  <target>已选传输</target>
+</trans-unit>
+<trans-unit id="sd923f95605fed7b2">
+  <source>Expired</source>
+  <target>已过期</target>
+</trans-unit>
+<trans-unit id="s86959994f28077dc">
+  <source>Expiring soon</source>
+  <target>即将过期</target>
+</trans-unit>
+<trans-unit id="sc60a5fba70bf5a53">
+  <source>Unlicensed</source>
+  <target>未许可</target>
+</trans-unit>
+<trans-unit id="s4f9880ce82953741">
+  <source>Read Only</source>
+  <target>只读</target>
+</trans-unit>
+<trans-unit id="s4220dda46d622211">
+  <source>Valid</source>
+  <target>有效</target>
+</trans-unit>
+<trans-unit id="sdc94711a2eb66a45">
+  <source>Current license status</source>
+  <target>当前许可证状态</target>
+</trans-unit>
+<trans-unit id="se10fb73c1f1039c5">
+  <source>Overall license status</source>
+  <target>总体许可证状态</target>
+</trans-unit>
+<trans-unit id="sc4804358f202968c">
+  <source>Internal user usage</source>
+  <target>内部用户用量</target>
+</trans-unit>
+<trans-unit id="s087d6f07b52b30ec">
+  <source><x id="0" equiv-text="${internalUserPercentage &lt; Infinity ? internalUserPercentage : &quot;∞&quot;}"/>%</source>
+  <target><x id="0" equiv-text="${internalUserPercentage &lt; Infinity ? internalUserPercentage : &quot;∞&quot;}"/>%</target>
+</trans-unit>
+<trans-unit id="sae72e1569d34fb02">
+  <source>External user usage</source>
+  <target>外部用户用量</target>
 </trans-unit>
     </body>
   </file>
