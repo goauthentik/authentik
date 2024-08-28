@@ -1,7 +1,7 @@
 import Page from "../page.js";
 
 export class LdapForm extends Page {
-    async setBindFlow(selector: string) {
+    async setBindFlow(_selector: string) {
         await this.searchSelect(
             'ak-search-select-view[name="authorizationFlow"]',
             "authorizationFlow",
