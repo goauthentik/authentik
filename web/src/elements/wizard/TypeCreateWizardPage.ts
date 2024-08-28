@@ -75,6 +75,10 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
         >
             ${this.types.map((type, idx) => {
                 const requiresEnterprise = type.requiresEnterprise && !this.hasEnterpriseLicense;
+
+                // It's valid to pass in a local modelName or the full name with application
+                // part.  If the latter, we only want the part after the dot to appear as our
+                // OUIA tag for test automation.
                 const componentName = type.modelName.includes(".")
                     ? (type.modelName.split(".")[1] ?? "--unknown--")
                     : type.modelName;
