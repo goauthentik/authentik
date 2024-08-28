@@ -36,11 +36,11 @@ To disable existing blueprints, an empty file can be mounted over the existing b
 
 File-based blueprints are automatically removed once they become unavailable, however none of the objects created by those blueprints afre affected by this.
 
-    :::info
-    Please note that, by default, blueprint discovery and evaluation is not guaranteed to follow any specific order.
+:::info
+Please note that, by default, blueprint discovery and evaluation is not guaranteed to follow any specific order.
 
-    If you have dependencies between blueprints, you should use [meta models](/developer-docs/blueprints/v1/meta#authentik_blueprintsmetaapplyblueprint) to make sure that objects are created in the correct order.
-    :::
+If you have dependencies between blueprints, you should use [meta models](./v1/meta#authentik_blueprintsmetaapplyblueprint) to make sure that objects are created in the correct order.
+:::
 
 ## Storage - OCI
 
