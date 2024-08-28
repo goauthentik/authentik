@@ -69,9 +69,15 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
     }
 
     renderGrid(): TemplateResult {
-        return html`<div class="pf-l-grid pf-m-gutter">
+        return html`<div
+            class="pf-l-grid pf-m-gutter"
+            data-ouid-component-type="ak-type-create-grid"
+        >
             ${this.types.map((type, idx) => {
                 const requiresEnterprise = type.requiresEnterprise && !this.hasEnterpriseLicense;
+                const componentName = type.modelName.includes(".")
+                    ? (type.modelName.split(".")[1] ?? "--unknown--")
+                    : type.modelName;
                 return html`<div
                     class="pf-l-grid__item pf-m-3-col pf-c-card ${requiresEnterprise
                         ? "pf-m-non-selectable-raised"
@@ -79,6 +85,8 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
                         ? "pf-m-selected-raised"
                         : ""}"
                     tabindex=${idx}
+                    data-ouid-component-type="ak-type-create-grid-card"
+                    data-ouid-component-name=${componentName}
                     @click=${() => {
                         if (requiresEnterprise) {
                             return;
@@ -107,10 +115,17 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
     }
 
     renderList(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
+        return html`<form
+            class="pf-c-form pf-m-horizontal"
+            data-ouid-component-type="ak-type-create-list"
+        >
             ${this.types.map((type) => {
                 const requiresEnterprise = type.requiresEnterprise && !this.hasEnterpriseLicense;
-                return html`<div class="pf-c-radio">
+                return html`<div
+                    class="pf-c-radio"
+                    data-ouid-component-type="ak-type-create-list-card"
+                    data-ouid-component-name=${type.modelName.split(".")[1] ?? "--unknown--"}
+                >
                     <input
                         class="pf-c-radio__input"
                         type="radio"

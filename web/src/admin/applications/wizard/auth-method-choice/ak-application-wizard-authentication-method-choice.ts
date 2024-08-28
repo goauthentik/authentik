@@ -21,10 +21,15 @@ export class ApplicationWizardAuthenticationMethodChoice extends WithLicenseSumm
         const selectedTypes = providerModelsList.filter(
             (t) => t.formName === this.wizard.providerModel,
         );
+        const typesForWizard = providerModelsList.map((provider) => ({
+            ...provider,
+            modelName: provider.formName,
+        }));
+
         return providerModelsList.length > 0
             ? html`<form class="pf-c-form pf-m-horizontal">
                   <ak-wizard-page-type-create
-                      .types=${providerModelsList}
+                      .types=${typesForWizard}
                       layout=${TypeCreateWizardPageLayouts.grid}
                       .selectedType=${selectedTypes.length > 0 ? selectedTypes[0] : undefined}
                       @select=${(ev: CustomEvent<LocalTypeCreate>) => {
