@@ -21,6 +21,11 @@ export class ApplicationWizardAuthenticationMethodChoice extends WithLicenseSumm
         const selectedTypes = providerModelsList.filter(
             (t) => t.formName === this.wizard.providerModel,
         );
+
+        // As a hack, the Application wizard has separate provider paths for our three types of
+        // proxy providers. This patch swaps the form we want to be directed to on page 3 from the
+        // modelName to the formName, so we get the right one.  This information isn't modified
+        // or forwarded, so the proxy-plus-subtype is correctly mapped on submission.
         const typesForWizard = providerModelsList.map((provider) => ({
             ...provider,
             modelName: provider.formName,
