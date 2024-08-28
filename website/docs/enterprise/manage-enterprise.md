@@ -105,11 +105,7 @@ The following events occur when a license expeires and is not renewed within two
 
 ### About users and licenses
 
-License usage is calculated based on total user counts and log-in data data that authentik regularly captures. This data is checked against all valid licenses, and the sum total of all users.
-
--   The **_internal user_** count is calculated based on actual users assigned to the organization.
-
--   The **_external user_** count is calculated based on how many external users were active (i.e. logged in) since the start of the current month.
+License usage is calculated based on total user counts that authentik regularly captures. This data is checked against all valid licenses, and the sum total of all users. Internal and external users are counted based on the number of active users of the respective type saved in authentik. Service account users are not counted towards the license.
 
 :::info
 An **internal** user is typically a team member, such as company employees, who has access to the full Enterprise feature set. An **external** user might be an external consultant, a volunteer in a charitable site, or a B2C customer who logged onto your website to shop. These users don't get access to Enterprise features.
