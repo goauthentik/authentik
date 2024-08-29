@@ -43,26 +43,22 @@ To create an application in authentik:
 
 ## DokuWiki configuration
 
-To configure DokuWiki:
-
-1. Navigate to the **Extension Manager** section in the **Administration** interface.
-2. Install the following plugins:
+1. Navigate to the **Extension Manager** section in the **Administration** interface and install the following plugins:
    - `https://www.dokuwiki.org/plugin:oauth`
    - `https://www.dokuwiki.org/plugin:oauthgeneric`
 
 3. Go to **Configuration Settings** in the **Administration** interface.
 4. Update the **Oauth** and **Oauthgeneric** options:
-   - For **Oauth**:
-     - Check the **plugin»oauth»register-on-auth** option
-   - For **Oauthgeneric**:
-     - **plugin»oauthgeneric»key**: The authentik application ID
-     - **plugin»oauthgeneric»secret**: The authentik application secret
+   - For **Oauth**, check the **plugin»oauth»register-on-auth** option.
+   - For **Oauthgeneric**, update the following values:
+     - **plugin»oauthgeneric»key**: The authentik application ID from above.
+     - **plugin»oauthgeneric»secret**: The authentik application secret from above.
      - **plugin»oauthgeneric»authurl**: `https://authentik.company/application/o/authorize/`
      - **plugin»oauthgeneric»tokenurl**: `https://authentik.company/application/o/token/`
      - **plugin»oauthgeneric»userurl**: `https://authentik.company/application/o/userinfo/`
      - **plugin»oauthgeneric»authmethod**: Bearer Header
      - **plugin»oauthgeneric»scopes**: `email`, `openid`, `profile`, `offline_access`
-     - **plugin»oauthgeneric»needs-state**: checked
+     - **plugin»oauthgeneric»needs-state**: `checked`
      - **plugin»oauthgeneric»json-user**: `preferred_username`
      - **plugin»oauthgeneric»json-name**: `name`
      - **plugin»oauthgeneric»json-mail**: `email`
@@ -70,4 +66,4 @@ To configure DokuWiki:
 
 ![](./dokuwiki_oauth_generic.png)
 
-5. In **Configuration Settings**, go to **Authentication** and activate **oauth** in **Authentication backend**.
+5. Under **Configuration Settings**, go to **Authentication** and activate `oauth` under **Authentication backend**.
