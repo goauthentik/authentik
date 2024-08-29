@@ -26,7 +26,7 @@ Create an application in authentik. Configure an OAuth2/OpenID provider with the
 
 Note the **Client ID** and **Client Secret** values. Create an application using the provider you've created above.
 
-## Budibase Configuration
+## Budibase configuration
 
 In Budibase under **Auth**, set the following values:
 
