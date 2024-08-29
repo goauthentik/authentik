@@ -16,6 +16,31 @@ The following placeholders will be used:
 - `dokuwiki.company` is the FQDN of the DokiWiki install.
 - `authentik.company` is the FQDN of the authentik install.
 
+## authentik configuration
+
+### Provider
+
+To set up the provider in authentik:
+
+1. Go to **Providers** and create an **OAuth2/OpenID Provider**.
+2. Configure the following settings:
+   - **Redirect URI**: The **Callback URL / Redirect URI** from **plugin»oauth»info**, usually `dokuwiki.company/doku.php`
+   - **Signing Key**: Select any available key
+3. Take note of the **client ID** and **client secret**, then save the provider.
+
+:::info
+To prevent users from needing to log in again when the access token expires, include the **offline_access** scope in both authentik and DokuWiki. This allows DokuWiki to use refresh tokens.
+:::
+
+### Application
+
+To create an application in authentik:
+
+1. Navigate to **Applications** under the **Applications** tab.
+2. Set the provider to the one you previously created.
+3. Fill out the remaining of the values to your liking and click **Create**.
+
+
 ## DokuWiki configuration
 
 To configure DokuWiki:
@@ -46,27 +71,3 @@ To configure DokuWiki:
 ![](./dokuwiki_oauth_generic.png)
 
 5. In **Configuration Settings**, go to **Authentication** and activate **oauth** in **Authentication backend**.
-
-## authentik configuration
-
-### Provider
-
-To set up the provider in authentik:
-
-1. Go to **Providers** and create an **OAuth2/OpenID Provider**.
-2. Configure the following settings:
-   - **Redirect URI**: The **Callback URL / Redirect URI** from **plugin»oauth»info**, usually `dokuwiki.company/doku.php`
-   - **Signing Key**: Select any available key
-3. Take note of the **client ID** and **client secret**, then save the provider.
-
-:::info
-To prevent users from needing to log in again when the access token expires, include the **offline_access** scope in both authentik and DokuWiki. This allows DokuWiki to use refresh tokens.
-:::
-
-### Application
-
-To create an application in authentik:
-
-1. Navigate to **Applications** under the **Applications tab**.
-2. Set the provider to the one you previously created.
-3. Fill out the remaining of the values to your liking and click **Create**.
