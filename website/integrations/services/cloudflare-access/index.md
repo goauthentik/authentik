@@ -1,7 +1,6 @@
 ---
 title: Cloudflare Access
 ---
-
 <span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Cloudflare Access
@@ -12,53 +11,52 @@ title: Cloudflare Access
 
 ## Preparation
 
-The following placeholders will be used:
+Before you begin, note the following placeholders:
 
--   `company.cloudflareaccess.com` is the FQDN of your Cloudflare Access subdomain.
--   `authentik.company` is the FQDN of the authentik install.
+- `company.cloudflareaccess.com`: Your Cloudflare Access subdomain FQDN
+- `authentik.company`: Your authentik install FQDN
 
-To proceed, you need to register for a free Cloudflare Access account and have both a Cloudflare account and a publicly accessible authentik instance with a trusted SSL certificate.
+Prerequisites:
+- A free Cloudflare Access account
+- A Cloudflare account
+- A publicly accessible authentik instance with a trusted SSL certificate
 
 ## authentik configuration
 
-### Step 1: Log in to authentik
+To set up authentik for Cloudflare Access:
 
-1. Log in to your authentik instance.
-2. Click **Admin interface**.
+1. Log in to your authentik instance and access the Admin interface.
 
-### Step 2: Create a new authentication provider
+2. Create a new OAuth2/OpenID Provider:
+   - Navigate to **Application** > **Providers**
+   - Choose **OAuth2/OpenID Provider**
+   - Set the authorization flow to **Authorize Application**
+   - Set the client type to **Confidential**
+   - Set the redirect URI to `https://company.cloudflareaccess.com/cdn-cgi/access/callback`
+   - Ensure the signing key is set to **Authentik Self-signed Certificate**
 
-3. Under **Application**, click **Providers** and create a new provider.
-4. Choose **OAuth2/OpenID Provider** and then click **Next**.
-5. Set the authorization flow to **Authorize Application** (`default-provider-authorization-explicit-consent`).
-6. Set the client type to **Confidential**.
-7. Set the redirect URI to `https://company.cloudflareaccess.com/cdn-cgi/access/callback`.
-8. Ensure that the signing key is set to **Authentik Self-signed Certificate**.
-9. Click **Finish** to create the provider.
-
-### Step 3: Create a new application
-
-10. Create a new application and give it a name.
-11. Set the provider to the one you just created.
-12. Ensure that the **Policy engine mode** is set to **ANY, any policy must match to grant access**.
-13. Click **Create** and then navigate to your [Cloudflare Access dashboard](https://one.dash.cloudflare.com).
+3. Create a new application:
+   - Give it a name
+   - Set the provider to the one you just created
+   - Ensure the **Policy engine mode** is set to **ANY, any policy must match to grant access**
 
 ## Cloudflare Access configuration
 
-### Step 4: Configure Cloudflare Access
+To configure Cloudflare Access:
 
-1. Go to the Cloudflare One dashboard.
-2. Click **Settings** at the bottom of the menu, then select **Authentication**.
+1. Navigate to the [Cloudflare One dashboard](https://one.dash.cloudflare.com).
 
-### Step 5: Add a login method
+2. Add a login method:
+   - Go to **Settings** > **Authentication**
+   - Click **Add** under **Login methods** and select **OpenID Connect**
+   - Enter a name for your login method
 
-3. From **Login methods** click **Add** and select **OpenID Connect"**
-4. Enter a name for your login method. This can be anything.
-5. Copy the following details from the authentik provider settings you previously created and paste them into the text boxes:
-    - **Client ID** -> App ID
-    - **Client Secret** -> Client Secret
-    - **Authorize URL** -> Auth URL
-    - **Token URL** -> Token URL
-    - **JWKS URL** -> Certificate URL
-6. Click **Save**.
-7. Click **Test** to verify your login provider.
+3. Configure the OpenID Connect settings:
+   - Copy the following details from your authentik provider settings:
+     - **Client ID** → App ID
+     - **Client Secret** → Client Secret
+     - **Authorize URL** → Auth URL
+     - **Token URL** → Token URL
+     - **JWKS URL** → Certificate URL
+
+4. Save your settings and test the login provider to verify the configuration.
