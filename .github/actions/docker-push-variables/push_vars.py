@@ -58,7 +58,8 @@ def get_attest_image_names(image_with_tags: list[str]):
     image_tags = []
     for image_name in set(name.split(":")[0] for name in image_with_tags):
         if not image_name.startswith("ghcr.io"):
-            image_tags.append(image_name)
+            continue
+        image_tags.append(image_name)
     return ",".join(set(image_tags))
 
 
