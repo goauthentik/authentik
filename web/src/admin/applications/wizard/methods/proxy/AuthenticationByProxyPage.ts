@@ -230,7 +230,7 @@ export class AkTypeProxyApplicationWizardPage extends BaseProviderPanel {
                         >
                             <ak-dual-select-provider
                                 .provider=${oauth2SourcesProvider}
-                                .selected=${this.instance?.jwksSources}
+                                .selected=${this.instance?.jwksSources ?? []}
                                 available-label=${msg("Available Sources")}
                                 selected-label=${msg("Selected Sources")}
                             ></ak-dual-select-provider>

@@ -265,7 +265,7 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                         >
                             <ak-dual-select-provider
                                 .provider=${oauth2SourcesProvider}
-                                .selected=${provider?.jwksSources}
+                                .selected=${provider?.jwksSources ?? []}
                                 available-label=${msg("Available Sources")}
                                 selected-label=${msg("Selected Sources")}
                             ></ak-dual-select-provider>
