@@ -1,11 +1,11 @@
 import Page from "../page.js";
 
 export class LdapForm extends Page {
-    async setBindFlow(selector: string) {
+    async setBindFlow(_selector: string) {
         await this.searchSelect(
-            '>>>ak-branded-flow-search[name="authorizationFlow"] input[type="text"]',
+            'ak-search-select-view[name="authorizationFlow"]',
             "authorizationFlow",
-            `button*=${selector}`,
+            "default-authentication-flow",
         );
     }
 }
