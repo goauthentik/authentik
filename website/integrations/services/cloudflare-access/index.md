@@ -11,13 +11,13 @@ title: Cloudflare Access
 
 ## Preparation
 
-Before you begin, note the following placeholders:
+The following placeholders will be used:
 
-- `company.cloudflareaccess.com`: Your Cloudflare Access subdomain FQDN
-- `authentik.company`: Your authentik install FQDN
+- `company.cloudflareaccess.com` is the FQDN of your Cloudflare Access setup
+- `authentik.company` is the FQDN of your authentik install
 
-Prerequisites:
-- A free Cloudflare Access account
+### Prerequisites:
+- A (free) Cloudflare Access account
 - A Cloudflare account
 - A publicly accessible authentik instance with a trusted SSL certificate
 
@@ -25,17 +25,18 @@ Prerequisites:
 
 To set up authentik for Cloudflare Access:
 
-1. Log in to your authentik instance and access the Admin interface.
+1. Log in to your authentik instance and access the **Admin interface**.
 
-2. Create a new OAuth2/OpenID Provider:
-   - Navigate to **Application** > **Providers**
+2. Create a new **OAuth2/OpenID Provider**:
+
+   - Navigate to **Application** → **Providers**
    - Choose **OAuth2/OpenID Provider**
    - Set the authorization flow to **Authorize Application**
    - Set the client type to **Confidential**
    - Set the redirect URI to `https://company.cloudflareaccess.com/cdn-cgi/access/callback`
    - Ensure the signing key is set to **Authentik Self-signed Certificate**
 
-3. Create a new application:
+4. Create a new application:
    - Give it a name
    - Set the provider to the one you just created
    - Ensure the **Policy engine mode** is set to **ANY, any policy must match to grant access**
@@ -47,7 +48,7 @@ To configure Cloudflare Access:
 1. Navigate to the [Cloudflare One dashboard](https://one.dash.cloudflare.com).
 
 2. Add a login method:
-   - Go to **Settings** > **Authentication**
+   - Go to **Settings** → **Authentication**
    - Click **Add** under **Login methods** and select **OpenID Connect**
    - Enter a name for your login method
 
