@@ -117,7 +117,7 @@ class LicenseKey:
                     our_cert.public_key(),
                     algorithms=["ES512"],
                     audience=get_license_aud(),
-                    options={"verify_exp": check_expiry},
+                    options={"verify_exp": check_expiry, "verify_signature": check_expiry},
                 ),
             )
         except PyJWTError:
@@ -134,7 +134,7 @@ class LicenseKey:
             exp_ts = int(mktime(lic.expiry.timetuple()))
             if total.exp == 0:
                 total.exp = exp_ts
-            total.exp = min(total.exp, exp_ts)
+            total.exp = max(total.exp, exp_ts)
             total.license_flags.extend(lic.status.license_flags)
         return total
 

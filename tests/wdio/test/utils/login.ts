@@ -6,5 +6,5 @@ import { expect } from "@wdio/globals";
 export const login = async () => {
     await LoginPage.open();
     await LoginPage.login(GOOD_USERNAME, GOOD_PASSWORD);
-    await expect(UserLibraryPage.pageHeader).toHaveText("My applications");
+    await expect(await UserLibraryPage.pageHeader()).toHaveText("My applications");
 };

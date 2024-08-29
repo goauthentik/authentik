@@ -18,7 +18,7 @@ require (
 	github.com/gorilla/securecookie v1.1.2
 	github.com/gorilla/sessions v1.4.0
 	github.com/gorilla/websocket v1.5.3
-	github.com/jellydator/ttlcache/v3 v3.2.1
+	github.com/jellydator/ttlcache/v3 v3.3.0
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/nmcclain/asn1-ber v0.0.0-20170104154839-2661553a0484
 	github.com/pires/go-proxyproto v0.7.0
