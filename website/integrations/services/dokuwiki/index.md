@@ -43,6 +43,8 @@ To configure DokuWiki:
      - **plugin»oauthgeneric»json-mail**: `email`
      - **plugin»oauthgeneric»json-grps**: `groups`
 
+![](./dokuwiki_oauth_generic.png)
+
 5. In **Configuration Settings**, go to **Authentication** and activate **oauth** in **Authentication backend**.
 
 ## authentik configuration
