@@ -91,8 +91,9 @@ export class AuthenticatorValidateStage
     set selectedDeviceChallenge(value: DeviceChallenge | undefined) {
         const previousChallenge = this._selectedDeviceChallenge;
         this._selectedDeviceChallenge = value;
-        if (!value) return;
-        if (value === previousChallenge) return;
+        if (value === undefined || value === previousChallenge) {
+            return;
+        }
         // We don't use this.submit here, as we don't want to advance the flow.
         // We just want to notify the backend which challenge has been selected.
         new FlowsApi(DEFAULT_CONFIG).flowsExecutorSolve({
