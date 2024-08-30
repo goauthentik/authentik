@@ -25,6 +25,37 @@ import {
     FlowsApi,
 } from "@goauthentik/api";
 
+const customCSS = css`
+    ul {
+        padding-top: 1rem;
+    }
+    ul > li:not(:last-child) {
+        padding-bottom: 1rem;
+    }
+    .authenticator-button {
+        display: flex;
+        align-items: center;
+    }
+    :host([theme="dark"]) .authenticator-button {
+        color: var(--ak-dark-foreground) !important;
+    }
+    i {
+        font-size: 1.5rem;
+        padding: 1rem 0;
+        width: 3rem;
+    }
+    .right {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+        text-align: left;
+    }
+    .right > * {
+        height: 50%;
+    }
+`;
+
 @customElement("ak-stage-authenticator-validate")
 export class AuthenticatorValidateStage
     extends BaseStage<
@@ -33,6 +64,10 @@ export class AuthenticatorValidateStage
     >
     implements StageHost
 {
+    static get styles(): CSSResult[] {
+        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, customCSS];
+    }
+
     flowSlug = "";
 
     set loading(value: boolean) {
@@ -80,39 +115,6 @@ export class AuthenticatorValidateStage
         options?: SubmitOptions,
     ): Promise<boolean> {
         return this.host?.submit(payload, options) || Promise.resolve();
-    }
-
-    static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton].concat(css`
-            ul {
-                padding-top: 1rem;
-            }
-            ul > li:not(:last-child) {
-                padding-bottom: 1rem;
-            }
-            .authenticator-button {
-                display: flex;
-                align-items: center;
-            }
-            :host([theme="dark"]) .authenticator-button {
-                color: var(--ak-dark-foreground) !important;
-            }
-            i {
-                font-size: 1.5rem;
-                padding: 1rem 0;
-                width: 3rem;
-            }
-            .right {
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-                height: 100%;
-                text-align: left;
-            }
-            .right > * {
-                height: 50%;
-            }
-        `);
     }
 
     willUpdate(_changed: PropertyValues<this>) {
