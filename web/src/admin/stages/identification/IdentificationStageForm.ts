@@ -46,7 +46,8 @@ async function makeSourcesSelector(instanceSources: string[] | undefined) {
 
     return localSources
         ? ([pk, _]: DualSelectPair) => localSources.has(pk)
-        : ([_0, _1, _2, source]: DualSelectPair<Source>) =>
+        : // Creating a new instance, auto-select built-in source only when no other sources exist
+          ([_0, _1, _2, source]: DualSelectPair<Source>) =>
               source !== undefined && source.component === "";
 }
 
