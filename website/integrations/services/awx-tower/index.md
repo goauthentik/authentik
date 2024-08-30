@@ -20,15 +20,15 @@ AWX is the open-source version of RHAAP. The term "AWX" will be used interchange
 
 The following placeholders will be used:
 
-- `awx.company` is the FQDN of the AWX/RHAAP installation.
-- `authentik.company` is the FQDN of the authentik installation.
+-   `awx.company` is the FQDN of the AWX/RHAAP installation.
+-   `authentik.company` is the FQDN of the authentik installation.
 
 Create an application in authentik and note the slug, as this will be used later. Create a SAML provider with the following parameters:
 
-- **ACS URL:** `https://awx.company/sso/complete/saml/`
-- **Audience:** `awx`
-- **Service Provider Binding:** Post
-- **Issuer:** `https://awx.company/sso/metadata/saml/`
+-   **ACS URL:** `https://awx.company/sso/complete/saml/`
+-   **Audience:** `awx`
+-   **Service Provider Binding:** Post
+-   **Issuer:** `https://awx.company/sso/metadata/saml/`
 
 You can use a custom signing certificate and adjust durations as needed.
 
@@ -51,6 +51,7 @@ Provide metadata in the `SAML Service Provider Organization Info` field:
 ```
 
 Provide `metadata` in the `SAML Service Provider Technical Contact` field:
+
 ```json
 {
     "givenName": "Admin Name",
@@ -59,6 +60,7 @@ Provide `metadata` in the `SAML Service Provider Technical Contact` field:
 ```
 
 In the `SAML Enabled Identity Providers field`, paste the following configuration:
+
 ```json
 {
     "authentik": {

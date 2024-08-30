@@ -14,8 +14,8 @@ title: ArgoCD
 
 The following placeholders will be used:
 
-- `argocd.company` is the FQDN of the ArgoCD installation.
-- `authentik.company` is the FQDN of the authentik installation.
+-   `argocd.company` is the FQDN of the ArgoCD installation.
+-   `authentik.company` is the FQDN of the authentik installation.
 
 :::info
 Only settings that have been modified from defaults are listed.
@@ -27,10 +27,11 @@ Only settings that have been modified from defaults are listed.
 
 In authentik, create an OAuth2/OpenID provider (under **Applications** > **Providers**) with the following settings:
 
-- **Name:** ArgoCD
-- **Client Type:** `Confidential`
-- **Signing Key:** Select any available key
-- **Redirect URIs:**
+-   **Name:** ArgoCD
+-   **Client Type:** `Confidential`
+-   **Signing Key:** Select any available key
+-   **Redirect URIs:**
+
 ```md
 https://argocd.company/api/dex/callback
 http://localhost:8085/auth/callback
@@ -42,22 +43,22 @@ After creating the provider, note the `Client ID` and `Client Secret`; you will 
 
 Create a new **Application** (under **Applications** > **Applications**) with the following settings:
 
-- **Name:** ArgoCD
-- **Provider:** ArgoCD
-- **Slug:** argocd
-- **Launch URL:** https://argocd.company/auth/login
+-   **Name:** ArgoCD
+-   **Provider:** ArgoCD
+-   **Slug:** argocd
+-   **Launch URL:** https://argocd.company/auth/login
 
 ### Step 3: Create ArgoCD groups
 
 Create a new **Group** (under **Directory** > **Groups**) to be used as the admin group for ArgoCD (if you already have an "admin" group, you can skip this step):
 
-- **Name:** ArgoCD Admins
-- **Members:** Add your user and/or any user who should be an ArgoCD admin
+-   **Name:** ArgoCD Admins
+-   **Members:** Add your user and/or any user who should be an ArgoCD admin
 
 You can also create another group for read-only access to ArgoCD if desired:
 
-- **Name:** ArgoCD Viewers
-- **Members:** Any user who should have ArgoCD read-only access
+-   **Name:** ArgoCD Viewers
+-   **Members:** Any user who should have ArgoCD read-only access
 
 ## Terraform provider
 
@@ -122,11 +123,13 @@ We're using the "dex" configuration instead of OIDC because OIDC doesn't support
 Step 1: Add the OIDC Secret to ArgoCD
 
 In the `argocd-secret` secret, add the following value to the `data` field:
+
 ```yaml
 dex.authentik.clientSecret: <base 64 encoded value of the Client Secret from the Provider above>
 ```
 
 If using Helm, the above can be added to `configs.secret.extra` in your ArgoCD Helm `values.yaml` file as shown below, substituting the string as needed:
+
 ```yaml
 configs:
     secret:
@@ -137,6 +140,7 @@ configs:
 ### Step 2: Configure ArgoCD to use authentik as an OIDC backend
 
 In the `argocd-cm` ConfigMap, add the following to the `data` field:
+
 ```yaml
 url: https://argocd.company
 dex.config: |
@@ -158,6 +162,7 @@ dex.config: |
 ### Step 3: Map the ArgoCD Admins group to ArgoCD's admin role
 
 In the `argocd-rbac-cm` ConfigMap, add the following to the `data` field (or create it if it's not already there):
+
 ```yaml
 policy.csv: |
     g, ArgoCD Admins, role:admin
