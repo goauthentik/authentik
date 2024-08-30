@@ -2384,11 +2384,6 @@
         <target>생성된 이벤트를 이 작업 유형과 일치시킵니다. 비워두면 모든 액션 유형이 일치합니다.</target>
 
       </trans-unit>
-      <trans-unit id="sfab527528ea64618">
-        <source>Matches Event's Client IP (strict matching, for network matching use an Expression Policy.</source>
-        <target>이벤트의 클라이언트 IP를 일치시킵니다 (엄격 일치, 네트워크 일치의 경우 표현식 정책 사용.</target>
-
-      </trans-unit>
       <trans-unit id="s5a15a8f39c699273">
         <source>Match events created by selected application. When left empty, all applications are matched.</source>
         <target>선택한 애플리케이션에서 생성한 이벤트와 일치시킵니다. 비워두면 모든 애플리케이션이 일치합니다.</target>
@@ -8726,6 +8721,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sae72e1569d34fb02">
   <source>External user usage</source>
+</trans-unit>
+<trans-unit id="sa82f8948649d0989">
+  <source>Matches Event's Client IP (strict matching, for network matching use an Expression Policy).</source>
 </trans-unit>
     </body>
   </file>
