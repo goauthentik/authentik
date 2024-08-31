@@ -24,4 +24,13 @@ class BrandMiddleware:
             locale = brand.default_locale
             if locale != "":
                 activate(locale)
-        return self.get_response(request)
+        response = self.get_response(request)
+        response["Access-Control-Allow-Origin"] = "http://localhost:8080"
+        response["Access-Control-Allow-Credentials"] = "true"
+        if request.method == "OPTIONS":
+            response.status_code = 200
+            response["Access-Control-Allow-Headers"] = (
+                "authorization,sentry-trace,x-authentik-csrf,content-type"
+            )
+            response["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+        return response
