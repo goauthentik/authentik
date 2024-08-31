@@ -10,6 +10,7 @@
             "@goauthentik/flow/*": ["./src/flow/*"],
             "@goauthentik/locales/*": ["./src/locales/*"],
             "@goauthentik/polyfill/*": ["./src/polyfill/*"],
+            "@goauthentik/sdk/*": ["./src/sdk/*"],
             "@goauthentik/standalone/*": ["./src/standalone/*"],
             "@goauthentik/user/*": ["./src/user/*"]
         }

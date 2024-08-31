@@ -12,3 +12,11 @@ declare namespace Intl {
         public format: (items: string[]) => string;
     }
 }
+
+declare interface Window {
+    authentik_sdk?: {
+        base: string;
+        token?: string;
+        forceTheme?: string;
+    };
+}

@@ -1,10 +1,11 @@
+import { isEmbedded } from "@goauthentik/common/global";
 import { UIConfig, uiConfig } from "@goauthentik/common/ui/config";
 import { ModalOrchestrationController } from "@goauthentik/elements/controllers/ModalOrchestrationController.js";
 import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet";
 
 import { state } from "lit/decorators.js";
 
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFVariables from "@patternfly/patternfly/base/patternfly-variables.css";
 
 import type { Config, CurrentBrand, LicenseSummary } from "@goauthentik/api";
 import { UiThemeEnum } from "@goauthentik/api";
@@ -43,7 +44,10 @@ export class Interface extends AKElement implements AkInterface {
 
     constructor() {
         super();
-        document.adoptedStyleSheets = [...document.adoptedStyleSheets, ensureCSSStyleSheet(PFBase)];
+        document.adoptedStyleSheets = [
+            ...document.adoptedStyleSheets,
+            ensureCSSStyleSheet(PFVariables),
+        ];
         this[brandContext] = new BrandContextController(this);
         this[configContext] = new ConfigContextController(this);
         this[modalController] = new ModalOrchestrationController(this);
@@ -61,7 +65,9 @@ export class Interface extends AKElement implements AkInterface {
         // Instead of calling ._activateTheme() twice, we insert the root document in the call
         // since multiple calls to ._activateTheme() would not do anything after the first call
         // as the theme is already enabled.
-        roots.unshift(document as unknown as DocumentOrShadowRoot);
+        if (!isEmbedded()) {
+            roots.unshift(document as unknown as DocumentOrShadowRoot);
+        }
         super._activateTheme(theme, ...roots);
     }
 

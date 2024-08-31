@@ -44,6 +44,21 @@ export class CSRFMiddleware implements Middleware {
     }
 }
 
+export class SDKMiddleware implements Middleware {
+    token?: string;
+    constructor() {
+        this.token = window.authentik_sdk?.token;
+    }
+    pre?(context: RequestContext): Promise<FetchParams | void> {
+        if (this.token) {
+            context.init.credentials = "include";
+            // @ts-ignore
+            context.init.headers["Authorization"] = `Bearer ${this.token}`;
+        }
+        return Promise.resolve(context);
+    }
+}
+
 export class EventMiddleware implements Middleware {
     post?(context: ResponseContext): Promise<Response | void> {
         const request: RequestInfo = {

@@ -1,4 +1,10 @@
-import { Config, ConfigFromJSON, CurrentBrand, CurrentBrandFromJSON } from "@goauthentik/api";
+import {
+    Config,
+    ConfigFromJSON,
+    CurrentBrand,
+    CurrentBrandFromJSON,
+    UiThemeEnum,
+} from "@goauthentik/api";
 
 export interface GlobalAuthentik {
     _converted?: boolean;
@@ -30,7 +36,9 @@ export function globalAK(): GlobalAuthentik {
                 capabilities: [],
             }),
             brand: CurrentBrandFromJSON({
+                matched_domain: window.location.host,
                 ui_footer_links: [],
+                ui_theme: window.authentik_sdk?.forceTheme ?? UiThemeEnum.Automatic,
             }),
             versionFamily: "",
             versionSubdomain: "",
@@ -38,6 +46,10 @@ export function globalAK(): GlobalAuthentik {
         };
     }
     return ak;
+}
+
+export function isEmbedded() {
+    return !!window.authentik_sdk;
 }
 
 export function docLink(path: string): string {

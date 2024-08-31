@@ -2,6 +2,7 @@ import {
     CSRFMiddleware,
     EventMiddleware,
     LoggingMiddleware,
+    SDKMiddleware,
 } from "@goauthentik/common/api/middleware";
 import { EVENT_LOCALE_REQUEST, VERSION } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
@@ -67,8 +68,18 @@ export function getMetaContent(key: string): string {
     return metaEl.content;
 }
 
+export function apiBase(): string {
+    if (process.env.AK_API_BASE_PATH) {
+        return process.env.AK_API_BASE_PATH;
+    }
+    if (window.authentik_sdk?.base) {
+        return window.authentik_sdk?.base;
+    }
+    return window.location.origin;
+}
+
 export const DEFAULT_CONFIG = new Configuration({
-    basePath: (process.env.AK_API_BASE_PATH || window.location.origin) + "/api/v3",
+    basePath: `${apiBase()}/api/v3`,
     headers: {
         "sentry-trace": getMetaContent("sentry-trace"),
     },
@@ -76,6 +87,7 @@ export const DEFAULT_CONFIG = new Configuration({
         new CSRFMiddleware(),
         new EventMiddleware(),
         new LoggingMiddleware(globalAK().brand),
+        new SDKMiddleware(),
     ],
 });
 

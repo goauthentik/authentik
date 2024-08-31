@@ -7,6 +7,9 @@ export function renderSourceIcon(name: string, iconUrl: string | undefined | nul
             const url = iconUrl.replaceAll("fa://", "");
             return html`<i class="fas ${url}" title="${name}"></i>`;
         }
+        if (window.authentik_sdk?.base) {
+            return html`<img src="${window.authentik_sdk?.base}${iconUrl}" alt="${name}" />`;
+        }
         return html`<img src="${iconUrl}" alt="${name}" />`;
     }
     return icon;
