@@ -16,12 +16,14 @@ from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.generic import View
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, PolymorphicProxySerializer, extend_schema
+from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from sentry_sdk import capture_exception, start_span
 from sentry_sdk.api import set_tag
 from structlog.stdlib import BoundLogger, get_logger
 
+from authentik.api.authentication import bearer_auth, get_authorization_header
 from authentik.brands.models import Brand
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction, cleanse_dict
@@ -116,6 +118,14 @@ class FlowExecutorView(APIView):
         super().setup(request, flow_slug=flow_slug)
         self.flow = get_object_or_404(Flow.objects.select_related(), slug=flow_slug)
         self._logger = get_logger().bind(flow_slug=flow_slug)
+        # Usually flows are authenticated by session, we don't really use rest_framework's
+        # authentication method.
+        try:
+            user = bearer_auth(get_authorization_header(request))
+            if user:
+                request.user = user
+        except AuthenticationFailed:
+            pass
         set_tag("authentik.flow", self.flow.slug)
 
     def handle_invalid_flow(self, exc: FlowNonApplicableException) -> HttpResponse:
