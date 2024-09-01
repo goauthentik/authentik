@@ -2,7 +2,7 @@
 title: Stages
 ---
 
-Stages are one of the fundamental building blocks in authentik, along with [flows](../index.md) and [policies](docs/policies/index.md).
+Stages are one of the fundamental building blocks in authentik, along with [flows](../index.md) and [policies](../../policies/index.md).
 
 A stage represents a single verification or logic step within a flow. You can bind one or more stages to a flow to create a customized, flexible login and authentication process.
 
