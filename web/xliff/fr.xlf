@@ -2390,11 +2390,6 @@
         <target>Inclure les événements créés avec ce type d'action. S'il est laissé vide, tous les types d'action seront inclus.</target>
         
       </trans-unit>
-      <trans-unit id="sfab527528ea64618">
-        <source>Matches Event's Client IP (strict matching, for network matching use an Expression Policy.</source>
-        <target>Inclure l'adresse IP du client de l'évènement (correspondante stricte, pour un correspondance sur le réseau utiliser une politique d'expression)</target>
-        
-      </trans-unit>
       <trans-unit id="s5a15a8f39c699273">
         <source>Match events created by selected application. When left empty, all applications are matched.</source>
         <target>Inclure les évènements créés par cette application. S'il est laissé vide, toutes les applications seront incluses.</target>
@@ -9052,6 +9047,9 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="sae72e1569d34fb02">
   <source>External user usage</source>
+</trans-unit>
+<trans-unit id="sa82f8948649d0989">
+  <source>Matches Event's Client IP (strict matching, for network matching use an Expression Policy).</source>
 </trans-unit>
     </body>
   </file>

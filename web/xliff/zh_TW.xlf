@@ -2374,11 +2374,6 @@
         <target>將此動作類型與建立的事件配對。如果為空則將符合所有動作類型。</target>
 
       </trans-unit>
-      <trans-unit id="sfab527528ea64618">
-        <source>Matches Event's Client IP (strict matching, for network matching use an Expression Policy.</source>
-        <target>配對事件的用戶端 IP（嚴格篩選，如要配對網路請使用表示式政策）。</target>
-
-      </trans-unit>
       <trans-unit id="s5a15a8f39c699273">
         <source>Match events created by selected application. When left empty, all applications are matched.</source>
         <target>將選擇的應用程式與建立的事件配對。如果為空則將符合所有應用程式。</target>
@@ -8687,6 +8682,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sae72e1569d34fb02">
   <source>External user usage</source>
+</trans-unit>
+<trans-unit id="sa82f8948649d0989">
+  <source>Matches Event's Client IP (strict matching, for network matching use an Expression Policy).</source>
 </trans-unit>
     </body>
   </file>

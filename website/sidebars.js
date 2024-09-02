@@ -422,13 +422,14 @@ const docsSidebar = {
                 description: "Release Notes for recent authentik versions",
             },
             items: [
+                "releases/2024/v2024.8",
                 "releases/2024/v2024.6",
                 "releases/2024/v2024.4",
-                "releases/2024/v2024.2",
                 {
                     type: "category",
                     label: "Previous versions",
                     items: [
+                        "releases/2024/v2024.2",
                         "releases/2023/v2023.10",
                         "releases/2023/v2023.8",
                         "releases/2023/v2023.6",

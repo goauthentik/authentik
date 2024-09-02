@@ -120,9 +120,9 @@
         "@esbuild/darwin-arm64": "^0.23.0",
         "@esbuild/linux-amd64": "^0.18.11",
         "@esbuild/linux-arm64": "^0.23.0",
-        "@rollup/rollup-darwin-arm64": "4.21.1",
-        "@rollup/rollup-linux-arm64-gnu": "4.21.1",
-        "@rollup/rollup-linux-x64-gnu": "4.21.1"
+        "@rollup/rollup-darwin-arm64": "4.21.2",
+        "@rollup/rollup-linux-arm64-gnu": "4.21.2",
+        "@rollup/rollup-linux-x64-gnu": "4.21.2"
     },
     "private": true,
     "scripts": {

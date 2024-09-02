@@ -2392,11 +2392,6 @@
         <target>Dopasuj utworzone zdarzenia do tego typu akcji. Jeśli pozostawisz to puste, wszystkie typy akcji zostaną dopasowane.</target>
         
       </trans-unit>
-      <trans-unit id="sfab527528ea64618">
-        <source>Matches Event's Client IP (strict matching, for network matching use an Expression Policy.</source>
-        <target>Dopasowuje adres IP klienta zdarzenia (ścisłe dopasowanie, do dopasowywania sieci należy użyć zasady wyrażeń.</target>
-        
-      </trans-unit>
       <trans-unit id="s5a15a8f39c699273">
         <source>Match events created by selected application. When left empty, all applications are matched.</source>
         <target>Dopasuj wydarzenia utworzone przez wybraną aplikację. Jeśli pozostanie pusty, wszystkie aplikacje zostaną dopasowane.</target>
@@ -8991,6 +8986,9 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 </trans-unit>
 <trans-unit id="sae72e1569d34fb02">
   <source>External user usage</source>
+</trans-unit>
+<trans-unit id="sa82f8948649d0989">
+  <source>Matches Event's Client IP (strict matching, for network matching use an Expression Policy).</source>
 </trans-unit>
     </body>
   </file>
