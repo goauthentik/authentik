@@ -1165,14 +1165,17 @@ files = [
 
 [[package]]
 name = "deepmerge"
-version = "1.1.1"
-description = "a toolset to deeply merge python dictionaries."
+version = "2.0"
+description = "A toolset for deeply merging Python dictionaries."
 optional = false
-python-versions = "*"
+python-versions = ">=3.8"
 files = [
-    {file = "deepmerge-1.1.1-py3-none-any.whl", hash = "sha256:7219dad9763f15be9dcd4bcb53e00f48e4eed6f5ed8f15824223eb934bb35977"},
-    {file = "deepmerge-1.1.1.tar.gz", hash = "sha256:53a489dc9449636e480a784359ae2aab3191748c920649551c8e378622f0eca4"},
+    {file = "deepmerge-2.0-py3-none-any.whl", hash = "sha256:6de9ce507115cff0bed95ff0ce9ecc31088ef50cbdf09bc90a09349a318b3d00"},
+    {file = "deepmerge-2.0.tar.gz", hash = "sha256:5c3d86081fbebd04dd5de03626a0607b809a98fb6ccba5770b62466fe940ff20"},
 ]
+
+[package.extras]
+dev = ["black", "build", "mypy", "pytest", "pyupgrade", "twine", "validate-pyproject[all]"]
 
 [[package]]
 name = "defusedxml"
