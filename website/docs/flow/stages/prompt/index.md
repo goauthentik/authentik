@@ -78,7 +78,7 @@ The prompt's initial value. It can also be left empty, in which case the field w
 With the `hidden` prompt, the initial value will also be the actual value, because the field is hidden to the user.
 
 By default, the initial value is interpreted as-is. If you enable _Interpret initial value as expression_, the initial value
-will be evaluated as a Python expression. This happens in the same environment as [_Policies_](../../../policies/expression).
+will be evaluated as a Python expression. This happens in the same environment as [_Policies_](../../../policies/expression.mdx).
 
 In the case of `Radio Button Group` and `Dropdown` prompts, this field defines the default choice. When interpreted as-is, the default choice will be the initial value string. When interpreted as expression, the default choice will be the returned value. For example, `return 42` defines `42` as the default choice.
 
