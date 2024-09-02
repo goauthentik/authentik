@@ -193,7 +193,7 @@ fn replace_links(migrate_path: PathBuf, moves: Vec<(PathBuf, PathBuf)>) {
                 .or(absolute_link.with_extension("mdx").canonicalize()) {
                 Ok(link) => link,
                 _ => {
-                    println!("    {}: {}\n        {}", "failed".red(), absolute_file.to_string_lossy().to_string().red(), absolute_link.to_string_lossy().to_string().red());
+                    println!("    {}: {} -> {}", "failed".red(), absolute_file.to_string_lossy().to_string().red(), absolute_link.to_string_lossy().to_string().red());
                     continue;
                 }
             };
