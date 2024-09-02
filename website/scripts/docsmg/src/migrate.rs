@@ -187,15 +187,16 @@ fn replace_links(migrate_path: PathBuf, moves: Vec<(PathBuf, PathBuf)>) {
             //let _ = create_dir_all(absolute_link.parent().unwrap());
             //let tmp_file = File::create_new(&absolute_link);
 
-            let absolute_link = absolute_link
+            let absolute_link = match absolute_link
                 .canonicalize()
                 .or(absolute_link.with_extension("md").canonicalize())
-                .or(absolute_link.with_extension("mdx").canonicalize())
-                .expect(&format!(
-                    "{}",
-                    absolute_link.display()
-                    //tmp_file
-                ));
+                .or(absolute_link.with_extension("mdx").canonicalize()) {
+                Ok(link) => link,
+                _ => {
+                    println!("    {}: {}\n        {}", "failed".red(), absolute_file.to_string_lossy().to_string().red(), absolute_link.to_string_lossy().to_string().red());
+                    continue;
+                }
+            };
             // delete file if it didnt already exist
             //if let Ok(_) = tmp_file {
             //    let _ = remove_file(&absolute_link);
