@@ -168,20 +168,24 @@ fn replace_links(migrate_path: PathBuf, moves: Vec<(PathBuf, PathBuf)>) {
 
         for capture in captures {
             let mut capture_log = String::new();
-            let mut link = capture["link"].to_owned();
+            let link = capture["link"].to_owned();
+            let link_path;
 
             let link_postfix_index = link.find('#');
 
             let link_postfix = match link_postfix_index {
                 Some(i) => {
                     let link_postfix = link[i..].to_owned();
-                    link = link[..i].to_owned();
+                    link_path = link[..i].to_owned();
                     Some(link_postfix)
                 }
-                None => None,
+                None => {
+                    link_path = link.clone();
+                    None
+                },
             };
 
-            let absolute_link = old_absolute_file.parent().unwrap().join(link.clone());
+            let absolute_link = old_absolute_file.parent().unwrap().join(link_path.clone());
             //let _ = create_dir_all(absolute_link.parent().unwrap());
             //let tmp_file = File::create_new(&absolute_link);
 
