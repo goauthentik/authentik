@@ -148,13 +148,11 @@ fn replace_links(migrate_path: PathBuf, moves: Vec<(PathBuf, PathBuf)>) {
                 moved.insert(absolute_file);
                 file.clone()
             }
-            None => {
-                absolute_file.clone()
-            },
+            None => absolute_file.clone(),
         };
 
         // get all links in file and remove web links and link to self
-        let re = Regex::new(r"\[(?<name>[\w -]*)\]\((?<link>[\w\-\\\/\.#]*)\)").unwrap();
+        let re = Regex::new(r"\[(?<name>[\w -\*]*)\]\((?<link>[\w\-\\\/\.#]*)\)").unwrap();
         let tmp_contents = contents.clone();
         let captures: Vec<Captures> = re
             .captures_iter(&tmp_contents)
@@ -190,12 +188,33 @@ fn replace_links(migrate_path: PathBuf, moves: Vec<(PathBuf, PathBuf)>) {
             let absolute_link = match absolute_link
                 .canonicalize()
                 .or(absolute_link.with_extension("md").canonicalize())
-                .or(absolute_link.with_extension("mdx").canonicalize()) {
+                .or(absolute_link.with_extension("mdx").canonicalize())
+            {
                 Ok(link) => link,
                 _ => {
-                    println!("    {}: {} -> {}", "failed".red(), absolute_file.to_string_lossy().to_string().red(), absolute_link.to_string_lossy().to_string().red());
+                    println!(
+                        "    {}: {} -> {}",
+                        "failed".red(),
+                        absolute_file.to_string_lossy().to_string().red(),
+                        absolute_link.to_string_lossy().to_string().red()
+                    );
                     continue;
                 }
+            };
+            let absolute_link = if absolute_link.is_file() {
+                absolute_link
+            } else if absolute_link.join("index.md").is_file() {
+                absolute_link.join("index.md")
+            } else if absolute_link.join("index.mdx").is_file() {
+                absolute_link.join("index.mdx")
+            } else {
+                println!(
+                    "    {}: {} -> {}",
+                    "failed".red(),
+                    absolute_file.to_string_lossy().to_string().red(),
+                    absolute_link.to_string_lossy().to_string().red()
+                );
+                continue;
             };
             // delete file if it didnt already exist
             //if let Ok(_) = tmp_file {
@@ -218,16 +237,30 @@ fn replace_links(migrate_path: PathBuf, moves: Vec<(PathBuf, PathBuf)>) {
             let mut tmp_absolute_link = tmp_absolute_link.components().collect::<VecDeque<_>>();
             // remove the shared path components
             loop {
-                if tmp_absolute_file.front() != tmp_absolute_link.front() || tmp_absolute_file.front() == None {
+                if tmp_absolute_file.front() != tmp_absolute_link.front()
+                    || tmp_absolute_file.front() == None
+                {
                     break;
                 }
                 tmp_absolute_file.pop_front();
                 tmp_absolute_link.pop_front();
             }
-            capture_log.push_str(&format!("    shrtfile: {}\n",tmp_absolute_file.iter().collect::<PathBuf>().display()));
-            capture_log.push_str(&format!("    shrtlink: {}\n", tmp_absolute_link.iter().collect::<PathBuf>().display()));
+            capture_log.push_str(&format!(
+                "    shrtfile: {}\n",
+                tmp_absolute_file.iter().collect::<PathBuf>().display()
+            ));
+            capture_log.push_str(&format!(
+                "    shrtlink: {}\n",
+                tmp_absolute_link.iter().collect::<PathBuf>().display()
+            ));
 
             if tmp_absolute_file.len() <= 0 {
+                println!(
+                    "    {}: {} -> {}",
+                    "failed".red(),
+                    absolute_file.to_string_lossy().to_string().red(),
+                    absolute_link.to_string_lossy().to_string().red()
+                );
                 continue;
             }
             let escapes = (0..tmp_absolute_file.len() - 1)
@@ -235,6 +268,19 @@ fn replace_links(migrate_path: PathBuf, moves: Vec<(PathBuf, PathBuf)>) {
                 .collect::<PathBuf>();
 
             let new_link = escapes.join(tmp_absolute_link.iter().collect::<PathBuf>());
+            // add a . to the begining if it doesnt already start with . or ..
+            let new_link = match new_link
+                .components()
+                .collect::<Vec<_>>()
+                .first()
+                .iter()
+                .collect::<PathBuf>()
+                .to_str()
+            {
+                Some(".") => new_link,
+                Some("..") => new_link,
+                _ => PathBuf::from(".").join(new_link),
+            };
             let mut new_link = new_link.to_string_lossy().to_string();
             match link_postfix {
                 Some(i) => new_link.push_str(&i),
