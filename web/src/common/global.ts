@@ -3,6 +3,7 @@ import {
     ConfigFromJSON,
     CurrentBrand,
     CurrentBrandFromJSON,
+    ErrorReportingConfigFromJSON,
     UiThemeEnum,
 } from "@goauthentik/api";
 
@@ -34,6 +35,7 @@ export function globalAK(): GlobalAuthentik {
         return {
             config: ConfigFromJSON({
                 capabilities: [],
+                error_reporting: ErrorReportingConfigFromJSON({}),
             }),
             brand: CurrentBrandFromJSON({
                 matched_domain: window.location.host,
