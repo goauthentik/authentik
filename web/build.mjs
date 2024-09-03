@@ -83,6 +83,7 @@ const interfaces = [
 const extraTargets = [
     ["sdk/index.ts", "sdk", { entryNames: "[dir]/[name]" }],
     ["sdk/user-settings.ts", "sdk/user-settings", { entryNames: "[dir]/[name]" }],
+    ["sdk/flow.ts", "sdk/flow", { entryNames: "[dir]/[name]" }],
 ];
 
 const baseArgs = {

@@ -9,5 +9,9 @@ export function themeImage(rawPath: string) {
             ? UiThemeEnum.Light
             : UiThemeEnum.Dark;
     }
-    return rawPath.replaceAll("%(theme)s", enabledTheme);
+    const final = rawPath.replaceAll("%(theme)s", enabledTheme);
+    if (window.authentik_sdk?.base) {
+        return `${window.authentik_sdk.base}${final}`;
+    }
+    return final;
 }

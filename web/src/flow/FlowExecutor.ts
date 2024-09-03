@@ -4,7 +4,7 @@ import {
     EVENT_FLOW_INSPECTOR_TOGGLE,
     TITLE_DEFAULT,
 } from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
+import { globalAK, isEmbedded } from "@goauthentik/common/global";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { first } from "@goauthentik/common/utils";
 import { WebsocketClient } from "@goauthentik/common/ws";
@@ -262,8 +262,11 @@ export class FlowExecutor extends Interface implements StageHost {
         this.challenge = challenge as ChallengeTypes;
     }
 
-    setShadowStyles(value: ContextualFlowInfo) {
+    setBackgroundImage(value: ContextualFlowInfo) {
         if (!value) {
+            return;
+        }
+        if (isEmbedded()) {
             return;
         }
         this.shadowRoot
@@ -276,7 +279,7 @@ export class FlowExecutor extends Interface implements StageHost {
     // DOM post-processing has to happen after the render.
     updated(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("flowInfo") && this.flowInfo !== undefined) {
-            this.setShadowStyles(this.flowInfo);
+            this.setBackgroundImage(this.flowInfo);
         }
     }
 
@@ -459,56 +462,61 @@ export class FlowExecutor extends Interface implements StageHost {
         }
     }
 
+    renderCard() {
+        return html`<div class="pf-c-login ${this.getLayout()}">
+            <div class="${this.getLayoutClass()}">
+                <div class="pf-c-login__main">
+                    ${this.loading && this.challenge
+                        ? html`<ak-loading-overlay></ak-loading-overlay>`
+                        : nothing}
+                    <div class="pf-c-login__main-header pf-c-brand ak-brand">
+                        <img
+                            src="${themeImage(
+                                first(
+                                    this.brand?.brandingLogo,
+                                    globalAK()?.brand.brandingLogo,
+                                    DefaultBrand.brandingLogo,
+                                ),
+                            )}"
+                            alt="authentik Logo"
+                        />
+                    </div>
+                    ${until(this.renderChallenge())}
+                </div>
+                ${isEmbedded()
+                    ? nothing
+                    : html` <footer class="pf-c-login__footer">
+                          <ul class="pf-c-list pf-m-inline">
+                              ${this.brand?.uiFooterLinks?.map((link) => {
+                                  if (link.href) {
+                                      return html`<li>
+                                          <a href="${link.href}">${link.name}</a>
+                                      </li>`;
+                                  }
+                                  return html`<li>
+                                      <span>${link.name}</span>
+                                  </li>`;
+                              })}
+                              <li>
+                                  <span>${msg("Powered by authentik")}</span>
+                              </li>
+                          </ul>
+                      </footer>`}
+            </div>
+        </div>`;
+    }
+
     render(): TemplateResult {
+        if (isEmbedded()) {
+            return this.renderCard();
+        }
         return html` <ak-locale-context>
             <div class="pf-c-background-image"></div>
             <div class="pf-c-page__drawer">
                 <div class="pf-c-drawer ${this.inspectorOpen ? "pf-m-expanded" : "pf-m-collapsed"}">
                     <div class="pf-c-drawer__main">
                         <div class="pf-c-drawer__content">
-                            <div class="pf-c-drawer__body">
-                                <div class="pf-c-login ${this.getLayout()}">
-                                    <div class="${this.getLayoutClass()}">
-                                        <div class="pf-c-login__main">
-                                            ${this.loading && this.challenge
-                                                ? html`<ak-loading-overlay></ak-loading-overlay>`
-                                                : nothing}
-                                            <div
-                                                class="pf-c-login__main-header pf-c-brand ak-brand"
-                                            >
-                                                <img
-                                                    src="${themeImage(
-                                                        first(
-                                                            this.brand?.brandingLogo,
-                                                            globalAK()?.brand.brandingLogo,
-                                                            DefaultBrand.brandingLogo,
-                                                        ),
-                                                    )}"
-                                                    alt="authentik Logo"
-                                                />
-                                            </div>
-                                            ${until(this.renderChallenge())}
-                                        </div>
-                                        <footer class="pf-c-login__footer">
-                                            <ul class="pf-c-list pf-m-inline">
-                                                ${this.brand?.uiFooterLinks?.map((link) => {
-                                                    if (link.href) {
-                                                        return html`<li>
-                                                            <a href="${link.href}">${link.name}</a>
-                                                        </li>`;
-                                                    }
-                                                    return html`<li>
-                                                        <span>${link.name}</span>
-                                                    </li>`;
-                                                })}
-                                                <li>
-                                                    <span>${msg("Powered by authentik")}</span>
-                                                </li>
-                                            </ul>
-                                        </footer>
-                                    </div>
-                                </div>
-                            </div>
+                            <div class="pf-c-drawer__body">${this.renderCard()}</div>
                         </div>
                         ${until(this.renderInspector())}
                     </div>
