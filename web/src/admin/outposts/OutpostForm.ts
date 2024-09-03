@@ -97,7 +97,8 @@ export class OutpostForm extends ModelForm<Outpost, string> {
     embedded = false;
 
     @state()
-    providers?: DataProvider;
+    providers: DataProvider = providerProvider(this.type);
+
     defaultConfig?: OutpostDefaultConfig;
 
     async loadInstance(pk: string): Promise<Outpost> {
@@ -113,6 +114,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
         this.defaultConfig = await new OutpostsApi(
             DEFAULT_CONFIG,
         ).outpostsInstancesDefaultSettingsRetrieve();
+        this.providers = providerProvider(this.type);
     }
 
     getSuccessMessage(): string {
