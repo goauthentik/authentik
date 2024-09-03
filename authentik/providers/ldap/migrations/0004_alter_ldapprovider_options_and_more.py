@@ -22,6 +22,8 @@ def migrate_search_group(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     LDAPProvider = apps.get_model("authentik_providers_ldap", "ldapprovider")
 
     for provider in LDAPProvider.objects.using(db_alias).all():
+        if not provider.search_group:
+            continue
         for user_pk in (
             provider.search_group.users.using(db_alias).all().values_list("pk", flat=True)
         ):
