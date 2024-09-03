@@ -84,6 +84,7 @@ export class FlowExecutor extends Interface implements StageHost {
         return [PFBase, PFLogin, PFDrawer, PFButton, PFTitle, PFList, PFBackgroundImage].concat(css`
             :host {
                 --pf-c-login__main-body--PaddingBottom: var(--pf-global--spacer--2xl);
+                position: relative;
             }
             .pf-c-background-image::before {
                 --pf-c-background-image--BackgroundImage: var(--ak-flow-background);
@@ -94,9 +95,6 @@ export class FlowExecutor extends Interface implements StageHost {
             }
             .ak-hidden {
                 display: none;
-            }
-            :host {
-                position: relative;
             }
             .pf-c-drawer__content {
                 background-color: transparent;
@@ -469,18 +467,20 @@ export class FlowExecutor extends Interface implements StageHost {
                     ${this.loading && this.challenge
                         ? html`<ak-loading-overlay></ak-loading-overlay>`
                         : nothing}
-                    <div class="pf-c-login__main-header pf-c-brand ak-brand">
-                        <img
-                            src="${themeImage(
-                                first(
-                                    this.brand?.brandingLogo,
-                                    globalAK()?.brand.brandingLogo,
-                                    DefaultBrand.brandingLogo,
-                                ),
-                            )}"
-                            alt="authentik Logo"
-                        />
-                    </div>
+                    ${isEmbedded()
+                        ? nothing
+                        : html` <div class="pf-c-login__main-header pf-c-brand ak-brand">
+                              <img
+                                  src="${themeImage(
+                                      first(
+                                          this.brand?.brandingLogo,
+                                          globalAK()?.brand.brandingLogo,
+                                          DefaultBrand.brandingLogo,
+                                      ),
+                                  )}"
+                                  alt="authentik Logo"
+                              />
+                          </div>`}
                     ${until(this.renderChallenge())}
                 </div>
                 ${isEmbedded()
