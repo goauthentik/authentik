@@ -11,7 +11,7 @@
         "@floating-ui/dom": "^1.6.9",
         "@formatjs/intl-listformat": "^7.5.7",
         "@fortawesome/fontawesome-free": "^6.6.0",
-        "@goauthentik/api": "^2024.6.3-1724414734",
+        "@goauthentik/api": "^2024.8.0-1725367323",
         "@lit/context": "^1.1.2",
         "@lit/localize": "^0.12.2",
         "@lit/reactive-element": "^2.0.4",
@@ -32,7 +32,7 @@
         "guacamole-common-js": "^1.5.0",
         "lit": "^3.2.0",
         "md-front-matter": "^1.0.4",
-        "mermaid": "^11.0.2",
+        "mermaid": "^11.1.0",
         "rapidoc": "^9.3.4",
         "showdown": "^2.1.0",
         "style-mod": "^4.1.2",
@@ -57,7 +57,7 @@
         "@jeysal/storybook-addon-css-user-preferences": "^0.2.0",
         "@lit/localize-tools": "^0.8.0",
         "@rollup/plugin-replace": "^5.0.7",
-        "@spotlightjs/spotlight": "^2.3.0",
+        "@spotlightjs/spotlight": "^2.3.2",
         "@storybook/addon-essentials": "^8.2.9",
         "@storybook/addon-links": "^8.2.9",
         "@storybook/api": "^7.6.17",
@@ -71,6 +71,7 @@
         "@types/eslint__js": "^8.42.3",
         "@types/grecaptcha": "^3.0.9",
         "@types/guacamole-common-js": "1.5.2",
+        "@types/node": "^22.5.0",
         "@types/showdown": "^2.0.6",
         "@typescript-eslint/eslint-plugin": "^8.0.1",
         "@typescript-eslint/parser": "^8.0.1",
@@ -90,6 +91,7 @@
         "github-slugger": "^2.0.0",
         "glob": "^11.0.0",
         "globals": "^15.9.0",
+        "knip": "^5.27.4",
         "lit-analyzer": "^2.0.3",
         "lockfile-lint": "^4.14.0",
         "npm-run-all": "^4.1.5",
@@ -107,7 +109,7 @@
         "tslib": "^2.7.0",
         "turnstile-types": "^1.2.2",
         "typescript": "^5.5.4",
-        "typescript-eslint": "^8.3.0",
+        "typescript-eslint": "^8.4.0",
         "vite-tsconfig-paths": "^5.0.1",
         "wdio-wait-for": "^3.0.11",
         "wireit": "^0.14.8"
@@ -135,6 +137,7 @@
         "extract-locales": "wireit",
         "format": "wireit",
         "lint": "wireit",
+        "lint:imports": "wireit",
         "lint:lockfile": "wireit",
         "lint:nightmare": "wireit",
         "lint:package": "wireit",
@@ -149,8 +152,7 @@
         "storybook:build": "wireit",
         "storybook:build-import-map": "wireit",
         "test": "wireit",
-        "test-view": "wireit",
-        "test-watch": "npx wdio run ./wdio.conf.ts --autoCompileOpts.tsNodeOpts.project=tsconfig.test.json --watch",
+        "test-watch": "wireit",
         "tsc": "wireit",
         "watch": "run-s build-locales esbuild:watch"
     },
@@ -250,6 +252,9 @@
         "lint:components": {
             "command": "lit-analyzer src"
         },
+        "lint:imports": {
+            "command": "knip --config scripts/knip.config.ts"
+        },
         "lint:types": {
             "command": "tsc --noEmit -p .",
             "dependencies": [
@@ -330,7 +335,7 @@
                 "TS_NODE_PROJECT": "tsconfig.test.json"
             }
         },
-        "test-view": {
+        "test-watch": {
             "command": "wdio run ./wdio.conf.ts",
             "env": {
                 "TS_NODE_PROJECT": "tsconfig.test.json"

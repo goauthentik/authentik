@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-15 00:09+0000\n"
+"POT-Creation-Date: 2024-08-18 00:08+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Anton Babenko, 2024\n"
 "Language-Team: Russian (https://app.transifex.com/authentik/teams/119923/ru/)\n"
@@ -739,7 +739,7 @@ msgstr "Правило Уведомления"
 
 #: authentik/events/models.py
 msgid "Notification Rules"
-msgstr "Правило Уведомлений"
+msgstr "Правила уведомлений"
 
 #: authentik/events/models.py
 msgid "Webhook Mapping"
@@ -1772,6 +1772,14 @@ msgid "Radius Provider Property Mappings"
 msgstr "Сопоставление свойств Radius провайдера"
 
 #: authentik/providers/saml/api/providers.py
+msgid ""
+"With a signing keypair selected, at least one of 'Sign assertion' and 'Sign "
+"Response' must be selected."
+msgstr ""
+"При выборе пары ключей для подписи необходимо выбрать как минимум один из "
+"вариантов: 'Подписывать утверждение' или 'Подписывать ответ'."
+
+#: authentik/providers/saml/api/providers.py
 msgid "Invalid XML Syntax"
 msgstr "Некорректный синтаксис XML"
 
@@ -1917,6 +1925,21 @@ msgstr ""
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "Signing Keypair"
 msgstr "Пара ключей для подписи"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid ""
+"When selected, incoming assertions are encrypted by the IdP using the public"
+" key of the encryption keypair. The assertion is decrypted by the SP using "
+"the the private key."
+msgstr ""
+"При выборе этого варианта, входящие утверждения шифруются поставщиком "
+"идентификации (IdP) с использованием открытого ключа из пары ключей "
+"шифрования. Утверждение расшифровывается поставщиком услуг (SP) с "
+"использованием закрытого ключа."
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "Encryption Keypair"
+msgstr "Пара ключей шифрования"
 
 #: authentik/providers/saml/models.py
 msgid "Default relay_state value for IDP-initiated logins"
@@ -2445,21 +2468,6 @@ msgid ""
 msgstr ""
 "Пара ключей, используемая для подписи исходящих ответов, направляемых "
 "провайдеру идентификационных данных."
-
-#: authentik/sources/saml/models.py
-msgid ""
-"When selected, incoming assertions are encrypted by the IdP using the public"
-" key of the encryption keypair. The assertion is decrypted by the SP using "
-"the the private key."
-msgstr ""
-"При выборе этого варианта, входящие утверждения шифруются поставщиком "
-"идентификации (IdP) с использованием открытого ключа из пары ключей "
-"шифрования. Утверждение расшифровывается поставщиком услуг (SP) с "
-"использованием закрытого ключа."
-
-#: authentik/sources/saml/models.py
-msgid "Encryption Keypair"
-msgstr "Пара ключей шифрования"
 
 #: authentik/sources/saml/models.py
 msgid "SAML Source"
