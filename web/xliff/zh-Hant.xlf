@@ -1816,10 +1816,6 @@
         <source>Match created events with this action type. When left empty, all action types will be matched.</source>
         <target>将创建的事件与此操作类型匹配。留空时，所有操作类型都将匹配。</target>
       </trans-unit>
-      <trans-unit id="sfab527528ea64618">
-        <source>Matches Event's Client IP (strict matching, for network matching use an Expression Policy.</source>
-        <target>匹配事件的客户端 IP（严格匹配），对于网络匹配，请使用表达式策略。</target>
-      </trans-unit>
       <trans-unit id="s5a15a8f39c699273">
         <source>Match events created by selected application. When left empty, all applications are matched.</source>
         <target>匹配选定应用程序创建的事件。如果留空，则匹配所有应用程序。</target>
@@ -6848,6 +6844,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sae72e1569d34fb02">
   <source>External user usage</source>
+</trans-unit>
+<trans-unit id="sa82f8948649d0989">
+  <source>Matches Event's Client IP (strict matching, for network matching use an Expression Policy).</source>
 </trans-unit>
     </body>
   </file>

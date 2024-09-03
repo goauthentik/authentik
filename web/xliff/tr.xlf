@@ -1798,10 +1798,6 @@
         <source>Match created events with this action type. When left empty, all action types will be matched.</source>
         <target>Oluşturulan olayları bu eylem türüyle eşleştirin. Boş bırakıldığında tüm eylem türleri eşleştirilir.</target>
       </trans-unit>
-      <trans-unit id="sfab527528ea64618">
-        <source>Matches Event's Client IP (strict matching, for network matching use an Expression Policy.</source>
-        <target>Olayın İstemci IP'siyle eşleşir (katı eşleştirme, ağ eşleştirme için bir İfade İlkesi kullanın.</target>
-      </trans-unit>
       <trans-unit id="s5a15a8f39c699273">
         <source>Match events created by selected application. When left empty, all applications are matched.</source>
         <target>Seçilen uygulama tarafından oluşturulan olayları eşleştir. Boş bırakıldığında, tüm uygulamalar eşleştirilir.</target>
@@ -6800,6 +6796,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sae72e1569d34fb02">
   <source>External user usage</source>
+</trans-unit>
+<trans-unit id="sa82f8948649d0989">
+  <source>Matches Event's Client IP (strict matching, for network matching use an Expression Policy).</source>
 </trans-unit>
     </body>
   </file>

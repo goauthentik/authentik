@@ -2372,11 +2372,6 @@
         <target>Match gecreëerde gebeurtenissen met dit actietype. Wanneer leeg gelaten, worden alle actietypen gematcht.</target>
 
       </trans-unit>
-      <trans-unit id="sfab527528ea64618">
-        <source>Matches Event's Client IP (strict matching, for network matching use an Expression Policy.</source>
-        <target>Matcht de cliënt IP van een gebeurtenis (strikt matchen, voor netwerk matchen gebruik een Expressie Beleid).</target>
-
-      </trans-unit>
       <trans-unit id="s5a15a8f39c699273">
         <source>Match events created by selected application. When left empty, all applications are matched.</source>
         <target>Match gebeurtenissen gecreëerd door de geselecteerde applicatie. Wanneer leeg gelaten, worden alle applicaties gematcht.</target>
@@ -8571,6 +8566,9 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 </trans-unit>
 <trans-unit id="sae72e1569d34fb02">
   <source>External user usage</source>
+</trans-unit>
+<trans-unit id="sa82f8948649d0989">
+  <source>Matches Event's Client IP (strict matching, for network matching use an Expression Policy).</source>
 </trans-unit>
     </body>
   </file>

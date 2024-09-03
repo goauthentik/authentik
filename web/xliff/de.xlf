@@ -1831,10 +1831,6 @@
         <source>Match created events with this action type. When left empty, all action types will be matched.</source>
         <target>Ordnen Sie erstellte Ereignisse diesem Aktionstyp zu. Wenn es leer gelassen wird, werden alle Aktionstypen abgeglichen.</target>
       </trans-unit>
-      <trans-unit id="sfab527528ea64618">
-        <source>Matches Event's Client IP (strict matching, for network matching use an Expression Policy.</source>
-        <target>Stimmt mit der Client-IP des Ereignisses überein (strenge Übereinstimmung, verwenden Sie für die Netzwerkübereinstimmung eine Ausdrucksrichtlinie.</target>
-      </trans-unit>
       <trans-unit id="s5a15a8f39c699273">
         <source>Match events created by selected application. When left empty, all applications are matched.</source>
         <target>Übereinstimmungsereignisse, die von der ausgewählten Anwendung erstellt wurden. Wenn es leer gelassen wird, werden alle Anwendungen abgeglichen.</target>
@@ -6890,6 +6886,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sae72e1569d34fb02">
   <source>External user usage</source>
+</trans-unit>
+<trans-unit id="sa82f8948649d0989">
+  <source>Matches Event's Client IP (strict matching, for network matching use an Expression Policy).</source>
 </trans-unit>
     </body>
   </file>
