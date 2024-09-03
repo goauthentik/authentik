@@ -2,13 +2,13 @@ use std::{
     collections::{HashMap, HashSet, VecDeque},
     ffi::OsStr,
     fs::{create_dir_all, read_to_string, remove_file, write, File},
-    path::{Component, Components, PathBuf},
+    path::{Component, PathBuf},
 };
 
 use colored::Colorize;
 use regex::{Captures, Regex};
 
-use crate::{links::shorten_all_external_links, migratefile::read_migrate_file, recurse_directory};
+use crate::{hackyfixes::add_extra_dot_dot_to_expression_mdx, migratefile::read_migrate_file, recurse_directory};
 
 pub fn migrate(quiet: bool, migratefile: PathBuf, migrate_path: PathBuf) {
     if !quiet {
@@ -33,6 +33,7 @@ pub fn migrate(quiet: bool, migratefile: PathBuf, migrate_path: PathBuf) {
     let successful_moves = move_files(quiet, migrate_path.clone(), files);
     add_redirects(successful_moves.clone(), migrate_path.clone());
     //shorten_all_external_links(migrate_path);
+    add_extra_dot_dot_to_expression_mdx(migrate_path);
 }
 
 pub fn unmigrate(quiet: bool, migratefile: PathBuf, migrate_path: PathBuf) {
@@ -152,7 +153,7 @@ fn replace_links(migrate_path: PathBuf, moves: Vec<(PathBuf, PathBuf)>) {
         };
 
         // get all links in file and remove web links and link to self
-        let re = Regex::new(r"\[(?<name>[\w -\*]*)\]\((?<link>[\w\-\\\/\.#]*)\)").unwrap();
+        let re = Regex::new(r"\[(?<name>[\w \-\*'`]*)\]\((?<link>[\w\-\\/\\.#]*)\)").unwrap();
         let tmp_contents = contents.clone();
         let captures: Vec<Captures> = re
             .captures_iter(&tmp_contents)
@@ -292,9 +293,15 @@ fn replace_links(migrate_path: PathBuf, moves: Vec<(PathBuf, PathBuf)>) {
             }
             capture_log.push_str(&format!("    old link: {}\n", link));
             capture_log.push_str(&format!("    new link: {}\n", new_link));
-            println!("{}", capture_log);
+            print!("{}", capture_log);
             //println!("{} {} {}", absolute_file.display(), absolute_link.display(), new_link.display());
-            contents = contents.replace(&format!("({})", link), &format!("({})", new_link));
+            let tmp_contents = contents.replace(&format!("({})", link), &format!("({})", new_link));
+            if tmp_contents == contents {
+                println!("{}", "    nothing replaced".yellow());
+            } else {
+                contents = tmp_contents;
+            };
+            println!("");
         }
 
         write(file, contents).unwrap();
