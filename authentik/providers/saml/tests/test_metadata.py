@@ -54,7 +54,11 @@ class TestServiceProviderMetadataParser(TestCase):
         request = self.factory.get("/")
         metadata = lxml_from_string(MetadataProcessor(provider, request).build_entity_descriptor())
 
-        schema = etree.XMLSchema(etree.parse("schemas/saml-schema-metadata-2.0.xsd"))  # nosec
+        schema = etree.XMLSchema(
+            etree.parse(
+                source="schemas/saml-schema-metadata-2.0.xsd", parser=etree.XMLParser()
+            )  # nosec
+        )
         self.assertTrue(schema.validate(metadata))
 
     def test_schema_want_authn_requests_signed(self):
