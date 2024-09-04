@@ -119,19 +119,20 @@ export class AuthenticatorValidateStage
     }
 
     willUpdate(_changed: PropertyValues<this>) {
-        // User only has a single device class, so we don't show a picker
-        if (this.challenge?.deviceChallenges.length === 1) {
+        if (this._firstInitialized || !this.challenge) {
+            return;
+        }
+
+        this._firstInitialized = true;
+
+        // If user only has a single device, autoselect that device.
+        if (this.challenge.deviceChallenges.length === 1) {
             this.selectedDeviceChallenge = this.challenge.deviceChallenges[0];
             return;
         }
 
-        if (this._firstInitialized) {
-            return;
-        }
-
-        // TOTP is a bit special, assuming that TOTP is allowed from the backend,
-        // and we have a pre-filled value from the password manager,
-        // directly set the the TOTP device Challenge as active.
+        // If TOTP is allowed from the backend and we have a pre-filled value
+        // from the password manager, autoselect TOTP.
         const totpChallenge = this.challenge.deviceChallenges.find(
             (challenge) => challenge.deviceClass === DeviceClassesEnum.Totp,
         );
@@ -139,17 +140,15 @@ export class AuthenticatorValidateStage
             console.debug(
                 "authentik/stages/authenticator_validate: found prefill totp code, selecting totp challenge",
             );
-            this._firstInitialized = true;
             this.selectedDeviceChallenge = totpChallenge;
             return;
         }
 
-        // Pick the last used validator, if it's not a recovery key
+        // If the last used device is not Static, autoselect that device.
         const lastUsedChallenge = this.challenge.deviceChallenges
             .filter((deviceChallenge) => deviceChallenge.lastUsed)
             .sort((a, b) => b.lastUsed!.valueOf() - a.lastUsed!.valueOf())[0];
         if (lastUsedChallenge && lastUsedChallenge.deviceClass !== DeviceClassesEnum.Static) {
-            this._firstInitialized = true;
             this.selectedDeviceChallenge = lastUsedChallenge;
         }
     }
