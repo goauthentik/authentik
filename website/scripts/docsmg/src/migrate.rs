@@ -1,14 +1,11 @@
 use std::{
-    collections::{HashMap, HashSet, VecDeque},
-    ffi::OsStr,
-    fs::{create_dir_all, read_to_string, remove_file, write, File},
-    path::{Component, PathBuf},
+    collections::{HashMap, HashSet, VecDeque}, env::consts::OS, ffi::OsStr, fs::{create_dir_all, read_to_string, remove_file, write, File}, path::{Component, PathBuf}, process::Command
 };
 
 use colored::Colorize;
 use regex::{Captures, Regex};
 
-use crate::{hackyfixes::add_extra_dot_dot_to_expression_mdx, migratefile::read_migrate_file, recurse_directory};
+use crate::{hackyfixes::add_extra_dot_dot_to_expression_mdx, migratefile::read_migrate_file, recurse_directory, Cli};
 
 pub fn migrate(quiet: bool, migratefile: PathBuf, migrate_path: PathBuf) {
     if !quiet {
@@ -33,7 +30,12 @@ pub fn migrate(quiet: bool, migratefile: PathBuf, migrate_path: PathBuf) {
     let successful_moves = move_files(quiet, migrate_path.clone(), files);
     add_redirects(successful_moves.clone(), migrate_path.clone());
     //shorten_all_external_links(migrate_path);
-    add_extra_dot_dot_to_expression_mdx(migrate_path);
+    add_extra_dot_dot_to_expression_mdx(migrate_path.clone());
+    let _ = Command::new("sh")
+        .arg("-c")
+        .arg("find . -empty -type d -delete")
+        .current_dir(migrate_path)
+        .output();
 }
 
 pub fn unmigrate(quiet: bool, migratefile: PathBuf, migrate_path: PathBuf) {
