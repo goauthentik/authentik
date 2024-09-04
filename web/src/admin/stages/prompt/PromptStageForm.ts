@@ -2,6 +2,8 @@ import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import "@goauthentik/admin/stages/prompt/PromptForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { PFSize } from "@goauthentik/common/enums";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
+import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/ModalForm";
@@ -11,9 +13,9 @@ import { TemplateResult, html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { PoliciesApi, PromptStage, StagesApi } from "@goauthentik/api";
+import { PoliciesApi, Policy, Prompt, PromptStage, StagesApi } from "@goauthentik/api";
 
-async function promptsProvider(page = 1, search = "") {
+async function promptFieldsProvider(page = 1, search = "") {
     const prompts = await new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsList({
         ordering: "field_name",
         pageSize: 20,
@@ -25,9 +27,17 @@ async function promptsProvider(page = 1, search = "") {
         pagination: prompts.pagination,
         options: prompts.results.map((prompt) => [
             prompt.pk,
-            str`${prompt.name} ("${prompt.fieldKey}", of type ${prompt.type})`,
+            msg(str`${prompt.name} ("${prompt.fieldKey}", of type ${prompt.type})`),
         ]),
     };
+}
+
+function makeFieldSelector(instanceFields: string[] | undefined) {
+    const localFields = instanceFields ? new Set(instanceFields) : undefined;
+
+    return localFields
+        ? ([pk, _]: DualSelectPair) => localFields.has(pk)
+        : ([_0, _1, _2, prompt]: DualSelectPair<Prompt>) => prompt !== undefined;
 }
 
 async function policiesProvider(page = 1, search = "") {
@@ -45,6 +55,14 @@ async function policiesProvider(page = 1, search = "") {
             `${policy.name} (${policy.verboseName})`,
         ]),
     };
+}
+
+function makePoliciesSelector(instancePolicies: string[] | undefined) {
+    const localPolicies = instancePolicies ? new Set(instancePolicies) : undefined;
+
+    return localPolicies
+        ? ([pk, _]: DualSelectPair) => localPolicies.has(pk)
+        : ([_0, _1, _2, policy]: DualSelectPair<Policy>) => policy !== undefined;
 }
 
 @customElement("ak-stage-prompt-form")
@@ -90,12 +108,12 @@ export class PromptStageForm extends BaseStageForm<PromptStage> {
                         ?required=${true}
                         name="fields"
                     >
-                        <ak-dual-select-provider
-                            .provider=${promptsProvider}
-                            .selected=${this.instance?.fields}
+                        <ak-dual-select-dynamic-selected
+                            .provider=${promptFieldsProvider}
+                            .selector=${makeFieldSelector(this.instance?.fields)}
                             available-label="${msg("Available Fields")}"
                             selected-label="${msg("Selected Fields")}"
-                        ></ak-dual-select-provider>
+                        ></ak-dual-select-dynamic-selected>
                         ${this.instance
                             ? html`<ak-forms-modal size=${PFSize.XLarge}>
                                   <span slot="submit"> ${msg("Create")} </span>
@@ -115,12 +133,12 @@ export class PromptStageForm extends BaseStageForm<PromptStage> {
                         label=${msg("Validation Policies")}
                         name="validationPolicies"
                     >
-                        <ak-dual-select-provider
+                        <ak-dual-select-dynamic-selected
                             .provider=${policiesProvider}
-                            .selected=${this.instance?.validationPolicies}
+                            .selector=${makePoliciesSelector(this.instance?.validationPolicies)}
                             available-label="${msg("Available Fields")}"
                             selected-label="${msg("Selected Fields")}"
-                        ></ak-dual-select-provider>
+                        ></ak-dual-select-dynamic-selected>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Selected policies are executed when the stage is submitted to validate the data.",
