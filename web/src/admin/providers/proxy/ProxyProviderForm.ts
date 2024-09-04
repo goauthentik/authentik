@@ -1,12 +1,14 @@
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
-import { oauth2SourcesProvider } from "@goauthentik/admin/providers/oauth2/OAuth2Sources.js";
+import {
+    makeSourceSelector,
+    oauth2SourcesProvider,
+} from "@goauthentik/admin/providers/oauth2/OAuth2Sources.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-toggle-group";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -403,12 +405,12 @@ ${this.instance?.skipPathRegex}</textarea
                         label=${msg("Trusted OIDC Sources")}
                         name="jwksSources"
                     >
-                        <ak-dual-select-provider
+                        <ak-dual-select-dynamic-selected
                             .provider=${oauth2SourcesProvider}
-                            .selected=${this.instance?.jwksSources}
+                            .selector=${makeSourceSelector(this.instance?.jwksSources)}
                             available-label=${msg("Available Sources")}
                             selected-label=${msg("Selected Sources")}
-                        ></ak-dual-select-provider>
+                        ></ak-dual-select-dynamic-selected>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider.",
