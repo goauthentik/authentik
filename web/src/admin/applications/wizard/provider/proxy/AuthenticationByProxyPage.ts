@@ -28,7 +28,7 @@ import {
     SourcesApi,
 } from "@goauthentik/api";
 
-import BaseProviderPanel from "../BaseProviderPanel";
+import { BaseProviderPanel } from "../BaseProviderPanel";
 
 type MaybeTemplateResult = TemplateResult | typeof nothing;
 
@@ -245,5 +245,3 @@ export class AkTypeProxyApplicationWizardPage extends BaseProviderPanel {
             </form>`;
     }
 }
-
-export default AkTypeProxyApplicationWizardPage;

@@ -17,7 +17,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import { PaginatedSCIMMappingList, PropertymappingsApi, type SCIMProvider } from "@goauthentik/api";
 
-import BaseProviderPanel from "../BaseProviderPanel";
+import { BaseProviderPanel } from "../BaseProviderPanel";
 
 @customElement("ak-application-wizard-authentication-by-scim")
 export class ApplicationWizardAuthenticationBySCIM extends BaseProviderPanel {
@@ -148,8 +148,6 @@ export class ApplicationWizardAuthenticationBySCIM extends BaseProviderPanel {
             </form>`;
     }
 }
-
-export default ApplicationWizardAuthenticationBySCIM;
 
 declare global {
     interface HTMLElementTagNameMap {

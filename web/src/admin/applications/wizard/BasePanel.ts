@@ -1,8 +1,8 @@
+import { WizardUpdateEvent } from "@goauthentik/components/ak-wizard-main/events.js";
 import { WizardPanel } from "@goauthentik/components/ak-wizard-main/types";
 import { AKElement } from "@goauthentik/elements/Base";
 import { KeyUnknown, serializeForm } from "@goauthentik/elements/forms/Form";
 import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
-import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
 import { consume } from "@lit/context";
 import { query } from "@lit/reactive-element/decorators.js";
@@ -21,10 +21,7 @@ import type { ApplicationWizardState, ApplicationWizardStateUpdate } from "./typ
  *
  */
 
-export class ApplicationWizardPageBase
-    extends CustomEmitterElement(AKElement)
-    implements WizardPanel
-{
+export class BasePanel extends AKElement implements WizardPanel {
     static get styles() {
         return AwadStyles;
     }
@@ -65,8 +62,6 @@ export class ApplicationWizardPageBase
      * to route "data on the current step has changed" events to the orchestrator.
      */
     dispatchWizardUpdate(update: ApplicationWizardStateUpdate) {
-        this.dispatchCustomEvent("ak-wizard-update", update);
+        this.dispatchEvent(new WizardUpdateEvent<typeof update>(update));
     }
 }
-
-export default ApplicationWizardPageBase;

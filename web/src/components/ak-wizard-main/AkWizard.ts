@@ -1,5 +1,6 @@
 import "@goauthentik/components/ak-wizard-main/ak-wizard-frame";
 import { AKElement } from "@goauthentik/elements/Base";
+import { P, match } from "ts-pattern";
 
 import { msg } from "@lit/localize";
 import { ReactiveControllerHost, html } from "lit";
@@ -10,8 +11,8 @@ import { Ref, createRef, ref } from "lit/directives/ref.js";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { AkWizardController } from "./AkWizardController";
 import { AkWizardFrame } from "./ak-wizard-frame";
+import { WizardCloseEvent, WizardNavigationEvent, WizardUpdateEvent } from "./events.js";
 import { type WizardStep, type WizardStepLabel } from "./types";
 
 /**
@@ -31,7 +32,9 @@ export class AkWizard<D, Step extends WizardStep = WizardStep>
     steps: Step[] = [];
 
     @state()
-    currentStep = 0;
+    currentStep = "";
+
+    public canCancel = false;
 
     /**
      * A reference to the frame.  Since the frame implements and inherits from ModalButton,
@@ -41,7 +44,11 @@ export class AkWizard<D, Step extends WizardStep = WizardStep>
     frame: Ref<AkWizardFrame> = createRef();
 
     get step() {
-        return this.steps[this.currentStep];
+        const nextstep = this.steps.find((step) => step.id === this.currentStep);
+        if (!nextstep) {
+            throw new Error(`Requested a step that is not defined: ${this.currentStep}`);
+        }
+        return nextstep;
     }
 
     prompt = msg("Create");
@@ -50,14 +57,25 @@ export class AkWizard<D, Step extends WizardStep = WizardStep>
 
     description?: string;
 
-    wizard: AkWizardController<D>;
-
     constructor(prompt: string, header: string, description?: string) {
         super();
         this.header = header;
         this.prompt = prompt;
         this.description = description;
-        this.wizard = new AkWizardController(this);
+    }
+
+    connectedCallback() {
+        super.connectedCallback();
+        this.addEventListener(WizardNavigationEvent.eventName, this.onNavigation);
+        this.addEventListener(WizardUpdateEvent.eventName, this.onUpdate);
+        this.addEventListener(WizardCloseEvent.eventName, this.onClose);
+    }
+
+    disconnectedCallback() {
+        this.removeEventListener(WizardNavigationEvent.eventName, this.onNavigation);
+        this.removeEventListener(WizardUpdateEvent.eventName, this.onUpdate);
+        this.removeEventListener(WizardCloseEvent.eventName, this.onClose);
+        super.disconnectedCallback();
     }
 
     /**
@@ -65,12 +83,12 @@ export class AkWizard<D, Step extends WizardStep = WizardStep>
      */
     get stepLabels(): WizardStepLabel[] {
         let disabled = false;
-        return this.steps.map((step, index) => {
+        return this.steps.map((step) => {
             disabled = disabled || step.disabled;
             return {
                 label: step.label,
-                active: index === this.currentStep,
-                index,
+                active: step.id === this.currentStep,
+                id: step.id,
                 disabled,
             };
         });
@@ -80,16 +98,21 @@ export class AkWizard<D, Step extends WizardStep = WizardStep>
      * You should still consider overriding this if you need to consider details like "Is the step
      * requested valid?"
      */
-    handleNav(stepId: number | undefined) {
-        if (stepId === undefined || this.steps[stepId] === undefined) {
-            throw new Error(`Attempt to navigate to undefined step: ${stepId}`);
+    navigateTo(stepId: string) {
+        const nextstep = this.steps.find((step) => step.id === stepId);
+        if (!nextstep) {
+            throw new Error(`Navigation request for a step that does not exist: ${stepId}`);
         }
-        this.currentStep = stepId;
+        this.currentStep = nextstep.id;
         this.requestUpdate();
     }
 
     close() {
         throw new Error("This function must be overridden in the child class.");
+    }
+
+    onClose(_event: WizardCloseEvent) {
+        this.close();
     }
 
     /**
@@ -99,8 +122,26 @@ export class AkWizard<D, Step extends WizardStep = WizardStep>
      * here. (Any step implementing WizardStep can do it anyhow it pleases, putting "is the current
      * form valid" and so forth into the step object itself.)
      */
-    handleUpdate(_detail: D) {
+    onUpdate(_event: WizardUpdateEvent<D>) {
         throw new Error("This function must be overridden in the child class.");
+    }
+
+    onNavigation(event: WizardNavigationEvent) {
+        match(event.command)
+            .with({ disabled: true }, () => {
+                throw new Error("Wizard received a command from a disabled component");
+            })
+            .with({ kind: P.union("close", "cancel") }, () => {
+                this.close();
+            })
+            .with({ kind: P.union("next", "back"), target: P.string }, ({ target }) => {
+                this.navigateTo(target);
+            })
+            .otherwise(() => {
+                throw new Error(
+                    `Wizard received a command it does not recognize: ${JSON.stringify(event.command)}`,
+                );
+            });
     }
 
     render() {
@@ -110,6 +151,7 @@ export class AkWizard<D, Step extends WizardStep = WizardStep>
                 header=${this.header}
                 description=${ifDefined(this.description)}
                 prompt=${this.prompt}
+                ?can-cancel=${this.canCancel}
                 .buttons=${this.step.buttons}
                 .stepLabels=${this.stepLabels}
                 .form=${this.step.render.bind(this.step)}

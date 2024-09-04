@@ -25,7 +25,7 @@ import {
     SAMLProvider,
 } from "@goauthentik/api";
 
-import BaseProviderPanel from "../BaseProviderPanel";
+import { BaseProviderPanel } from "../BaseProviderPanel";
 import {
     digestAlgorithmOptions,
     signatureAlgorithmOptions,
@@ -174,8 +174,10 @@ export class ApplicationWizardProviderSamlConfiguration extends BaseProviderPane
                                 certificate=${ifDefined(provider?.signingKp ?? undefined)}
                                 @input=${(ev: InputEvent) => {
                                     const target = ev.target as AkCryptoCertificateSearch;
-                                    if (!target) return;
-                                    this.hasSigningKp = !!target.selectedKeypair;
+                                    if (!target) {
+                                        return;
+                                    }
+                                    this.hasSigningKp = Boolean(target.selectedKeypair);
                                 }}
                             ></ak-crypto-certificate-search>
                             <p class="pf-c-form__helper-text">
@@ -338,8 +340,6 @@ export class ApplicationWizardProviderSamlConfiguration extends BaseProviderPane
             </form>`;
     }
 }
-
-export default ApplicationWizardProviderSamlConfiguration;
 
 declare global {
     interface HTMLElementTagNameMap {

@@ -14,7 +14,9 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import { FlowsInstancesListDesignationEnum, RadiusProvider } from "@goauthentik/api";
 
-import BaseProviderPanel from "../BaseProviderPanel";
+import { BaseProviderPanel } from "../BaseProviderPanel";
+
+const SHARED_SECRET_LENGTH = 128;
 
 @customElement("ak-application-wizard-authentication-by-radius")
 export class ApplicationWizardAuthenticationByRadius extends WithBrandConfig(BaseProviderPanel) {
@@ -59,7 +61,7 @@ export class ApplicationWizardAuthenticationByRadius extends WithBrandConfig(Bas
                             .errorMessages=${errors?.sharedSecret ?? []}
                             value=${first(
                                 provider?.sharedSecret,
-                                randomString(128, ascii_letters + digits),
+                                randomString(SHARED_SECRET_LENGTH, ascii_letters + digits),
                             )}
                             required
                         ></ak-text-input>
@@ -78,8 +80,6 @@ export class ApplicationWizardAuthenticationByRadius extends WithBrandConfig(Bas
             </form>`;
     }
 }
-
-export default ApplicationWizardAuthenticationByRadius;
 
 declare global {
     interface HTMLElementTagNameMap {

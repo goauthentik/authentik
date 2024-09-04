@@ -17,7 +17,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import { FlowsInstancesListDesignationEnum, RACProvider } from "@goauthentik/api";
 
-import BaseProviderPanel from "../BaseProviderPanel";
+import { BaseProviderPanel } from "../BaseProviderPanel";
 
 @customElement("ak-application-wizard-authentication-for-rac")
 export class ApplicationWizardAuthenticationByRAC extends BaseProviderPanel {
@@ -83,8 +83,6 @@ export class ApplicationWizardAuthenticationByRAC extends BaseProviderPanel {
             </form>`;
     }
 }
-
-export default ApplicationWizardAuthenticationByRAC;
 
 declare global {
     interface HTMLElementTagNameMap {

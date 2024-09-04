@@ -19,6 +19,8 @@ const metadata: Meta<ApplicationWizard> = {
     },
 };
 
+export default metadata;
+
 const LIGHT = "pf-t-light";
 function injectTheme() {
     setTimeout(() => {
@@ -27,8 +29,6 @@ function injectTheme() {
         }
     });
 }
-
-export default metadata;
 
 const container = (testItem: TemplateResult) => {
     injectTheme();

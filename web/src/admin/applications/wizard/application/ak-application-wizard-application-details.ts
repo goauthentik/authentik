@@ -12,7 +12,7 @@ import { customElement } from "@lit/reactive-element/decorators/custom-element.j
 import { TemplateResult, html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import BasePanel from "../BasePanel";
+import { BasePanel } from "../BasePanel";
 
 @customElement("ak-application-wizard-application-details")
 export class ApplicationWizardApplicationDetails extends BasePanel {
@@ -93,8 +93,6 @@ export class ApplicationWizardApplicationDetails extends BasePanel {
         </form>`;
     }
 }
-
-export default ApplicationWizardApplicationDetails;
 
 declare global {
     interface HTMLElementTagNameMap {

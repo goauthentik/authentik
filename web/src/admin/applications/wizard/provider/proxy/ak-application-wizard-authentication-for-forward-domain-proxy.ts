@@ -9,7 +9,7 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 
 import { ProxyProvider } from "@goauthentik/api";
 
-import AkTypeProxyApplicationWizardPage from "./AuthenticationByProxyPage";
+import { AkTypeProxyApplicationWizardPage } from "./AuthenticationByProxyPage";
 
 @customElement("ak-application-wizard-authentication-for-forward-proxy-domain")
 export class AkForwardDomainProxyApplicationWizardPage extends AkTypeProxyApplicationWizardPage {
@@ -64,8 +64,6 @@ export class AkForwardDomainProxyApplicationWizardPage extends AkTypeProxyApplic
         `;
     }
 }
-
-export default AkForwardDomainProxyApplicationWizardPage;
 
 declare global {
     interface HTMLElementTagNameMap {

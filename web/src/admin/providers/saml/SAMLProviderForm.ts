@@ -1,7 +1,7 @@
 import {
     digestAlgorithmOptions,
     signatureAlgorithmOptions,
-} from "@goauthentik/admin/applications/wizard/methods/saml/SamlProviderOptions";
+} from "@goauthentik/admin/applications/wizard/provider/saml/SamlProviderOptions";
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import AkCryptoCertificateSearch from "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
@@ -63,7 +63,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
         const provider = await new ProvidersApi(DEFAULT_CONFIG).providersSamlRetrieve({
             id: pk,
         });
-        this.hasSigningKp = !!provider.signingKp;
+        this.hasSigningKp = Boolean(provider.signingKp);
         return provider;
     }
 
@@ -73,11 +73,11 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                 id: this.instance.pk,
                 sAMLProviderRequest: data,
             });
-        } else {
-            return new ProvidersApi(DEFAULT_CONFIG).providersSamlCreate({
-                sAMLProviderRequest: data,
-            });
         }
+
+        return new ProvidersApi(DEFAULT_CONFIG).providersSamlCreate({
+            sAMLProviderRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
@@ -193,8 +193,10 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                             .certificate=${this.instance?.signingKp}
                             @input=${(ev: InputEvent) => {
                                 const target = ev.target as AkCryptoCertificateSearch;
-                                if (!target) return;
-                                this.hasSigningKp = !!target.selectedKeypair;
+                                if (!target) {
+                                    return;
+                                }
+                                this.hasSigningKp = Boolean(target.selectedKeypair);
                             }}
                         ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">

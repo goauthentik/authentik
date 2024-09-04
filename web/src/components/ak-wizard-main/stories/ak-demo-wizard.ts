@@ -9,7 +9,6 @@ import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { AkWizard } from "../AkWizard";
-import { BackStep, CancelWizard, CloseWizard, NextStep } from "../commonWizardButtons";
 
 type WizardStateUpdate = {
     message: string;
@@ -17,16 +16,18 @@ type WizardStateUpdate = {
 
 const dummySteps: WizardStep[] = [
     {
+        id: "test-step-1",
         label: "Test Step1",
         render: () => html`<h2>This space intentionally left blank today</h2>`,
         disabled: false,
-        buttons: [NextStep, CancelWizard],
+        buttons: [{ kind: "next", target: "test-step-2" }, { kind: "cancel" }],
     },
     {
+        id: "test-step-2",
         label: "Test Step 2",
         render: () => html`<h2>This space also intentionally left blank</h2>`,
         disabled: false,
-        buttons: [BackStep, CloseWizard],
+        buttons: [{ kind: "back", target: "test-step-1" }, { kind: "close" }],
     },
 ];
 
@@ -36,9 +37,12 @@ export class ApplicationWizard extends AkWizard<WizardStateUpdate, WizardStep> {
         return [PFBase, PFButton, PFRadio];
     }
 
+    override canCancel = true;
+
     constructor() {
         super(msg("Open Wizard"), msg("Demo Wizard"), msg("Run the demo wizard"));
         this.steps = [...dummySteps];
+        this.currentStep = this.steps[0].id;
     }
 
     close() {

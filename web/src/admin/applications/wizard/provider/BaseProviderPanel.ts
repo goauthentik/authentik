@@ -1,6 +1,6 @@
-import BasePanel from "../BasePanel";
+import { BasePanel } from "../BasePanel";
 
-export class ApplicationWizardProviderPageBase extends BasePanel {
+export class BaseProviderPanel extends BasePanel {
     handleChange(_ev: InputEvent) {
         const formValues = this.formValues;
         if (!formValues) {
@@ -15,5 +15,3 @@ export class ApplicationWizardProviderPageBase extends BasePanel {
         });
     }
 }
-
-export default ApplicationWizardProviderPageBase;

@@ -9,7 +9,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import { ProxyProvider } from "@goauthentik/api";
 
-import AkTypeProxyApplicationWizardPage from "./AuthenticationByProxyPage";
+import { AkTypeProxyApplicationWizardPage } from "./AuthenticationByProxyPage";
 
 @customElement("ak-application-wizard-authentication-for-reverse-proxy")
 export class AkReverseProxyApplicationWizardPage extends AkTypeProxyApplicationWizardPage {
@@ -52,8 +52,6 @@ export class AkReverseProxyApplicationWizardPage extends AkTypeProxyApplicationW
             </ak-switch-input>`;
     }
 }
-
-export default AkReverseProxyApplicationWizardPage;
 
 declare global {
     interface HTMLElementTagNameMap {

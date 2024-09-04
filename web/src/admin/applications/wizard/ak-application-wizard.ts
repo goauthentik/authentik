@@ -1,16 +1,22 @@
-import { AkWizard } from "@goauthentik/components/ak-wizard-main/AkWizard";
-import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
+import { AkWizard } from "@goauthentik/components/ak-wizard-main/AkWizard.js";
+import {
+    WizardNavigationEvent,
+    WizardUpdateEvent,
+} from "@goauthentik/components/ak-wizard-main/events.js";
 
 import { ContextProvider } from "@lit/context";
 import { msg } from "@lit/localize";
 import { customElement, state } from "lit/decorators.js";
 
 import { applicationWizardContext } from "./ContextIdentity";
-import { newSteps } from "./steps";
+import { ApplicationStep } from "./application/ApplicationStep.js";
+import { ProviderChoiceStep } from "./provider-choice/ProviderChoiceStep.js";
+import { ProviderStep } from "./provider/ProviderStep.js";
+import { SubmitStep } from "./submit/SubmitStep.js";
 import {
-    ApplicationStep,
     ApplicationWizardState,
     ApplicationWizardStateUpdate,
+    ApplicationWizardStep,
     OneOfProvider,
 } from "./types";
 
@@ -21,14 +27,19 @@ const freshWizardState = (): ApplicationWizardState => ({
     errors: {},
 });
 
+export const newSteps = (): ApplicationWizardStep[] => [
+    new ApplicationStep(),
+    new ProviderChoiceStep(),
+    new ProviderStep(),
+    new SubmitStep(),
+];
+
 @customElement("ak-application-wizard")
-export class ApplicationWizard extends CustomListenerElement(
-    AkWizard<ApplicationWizardStateUpdate, ApplicationStep>,
-) {
-    constructor() {
-        super(msg("Create With Wizard"), msg("New application"), msg("Create a new application"));
-        this.steps = newSteps();
-    }
+export class ApplicationWizard extends AkWizard<
+    ApplicationWizardStateUpdate,
+    ApplicationWizardStep
+> {
+    canCancel = true;
 
     /**
      * We're going to be managing the content of the forms by percolating all of the data up to this
@@ -46,6 +57,14 @@ export class ApplicationWizard extends CustomListenerElement(
         initialValue: this.wizardState,
     });
 
+    providerCache: Map<string, OneOfProvider> = new Map();
+
+    constructor() {
+        super(msg("Create With Wizard"), msg("New application"), msg("Create a new application"));
+        this.steps = newSteps();
+        this.currentStep = this.steps[0].id;
+    }
+
     /**
      * One of our steps has multiple display variants, one for each type of service provider. We
      * want to *preserve* a customer's decisions about different providers; never make someone "go
@@ -54,18 +73,18 @@ export class ApplicationWizard extends CustomListenerElement(
      * back*. Nonetheless, strive to *never* lose customer input.
      *
      */
-    providerCache: Map<string, OneOfProvider> = new Map();
-
     // And this is where all the special cases go...
-    handleUpdate(detail: ApplicationWizardStateUpdate) {
-        if (detail.status === "submitted") {
+    onUpdate(event: WizardUpdateEvent<ApplicationWizardStateUpdate>) {
+        const { content } = event;
+
+        if (content.status === "submitted") {
             this.step.valid = true;
             this.requestUpdate();
             return;
         }
 
-        this.step.valid = this.step.valid || detail.status === "valid";
-        const update = detail.update;
+        this.step.valid = this.step.valid || content.status === "valid";
+        const { update } = content;
 
         if (!update) {
             return;
@@ -91,22 +110,18 @@ export class ApplicationWizard extends CustomListenerElement(
 
     close() {
         this.steps = newSteps();
-        this.currentStep = 0;
+        this.currentStep = this.steps[0].id;
         this.wizardState = freshWizardState();
         this.providerCache = new Map();
         this.wizardStateProvider.setValue(this.wizardState);
         this.frame.value!.open = false;
     }
 
-    handleNav(stepId: number | undefined) {
-        if (stepId === undefined || this.steps[stepId] === undefined) {
-            throw new Error(`Attempt to navigate to undefined step: ${stepId}`);
-        }
-        if (stepId > this.currentStep && !this.step.valid) {
+    onNavigation(event: WizardNavigationEvent) {
+        if (!this.step.valid) {
             return;
         }
-        this.currentStep = stepId;
-        this.requestUpdate();
+        super.onNavigation(event);
     }
 }
 

@@ -9,7 +9,22 @@ import { map } from "lit/directives/map.js";
 
 import PFWizard from "@patternfly/patternfly/components/Wizard/wizard.css";
 
+import { WizardNavigationEvent } from "./events.js";
 import { type WizardButton, WizardStepLabel } from "./types";
+
+const WIZARD_BUTTON_LABEL = {
+    next: msg("Next"),
+    back: msg("Back"),
+    cancel: msg("Cancel"),
+    close: msg("Close"),
+};
+
+const WIZARD_BUTTON_CLASS = {
+    next: "pf-m-primary",
+    back: "pf-m-secondary",
+    close: "pf-m-primary",
+    cancel: "pf-m-link",
+};
 
 /**
  * AKWizardFrame is the main container for displaying Wizard pages.
@@ -24,7 +39,8 @@ import { type WizardButton, WizardStepLabel } from "./types";
  *
  * @slot trigger - (Inherited from ModalButton) Define the "summon modal" button here
  *
- * @fires ak-wizard-nav - Tell the orchestrator what page the user wishes to move to.
+ * @fires `WizardNavigationEvent.eventName` - Tell the orchestrator what page the user wishes to
+ * move to.
  *
  */
 
@@ -83,7 +99,7 @@ export class AkWizardFrame extends CustomEmitterElement(ModalButton) {
 
     constructor() {
         super();
-        this.renderButtons = this.renderButtons.bind(this);
+        this.renderButton = this.renderButton.bind(this);
     }
 
     renderModalInner() {
@@ -113,7 +129,7 @@ export class AkWizardFrame extends CustomEmitterElement(ModalButton) {
             class="pf-c-button pf-m-plain pf-c-wizard__close"
             type="button"
             aria-label="${msg("Close")}"
-            @click=${() => this.dispatchCustomEvent("ak-wizard-nav", { command: "close" })}
+            @click=${() => this.dispatchEvent(new WizardNavigationEvent({ kind: "close" }))}
         >
             <i class="fas fa-times" aria-hidden="true"></i>
         </button>`;
@@ -141,10 +157,9 @@ export class AkWizardFrame extends CustomEmitterElement(ModalButton) {
                     class=${classMap(buttonClasses)}
                     ?disabled=${step.disabled}
                     @click=${() =>
-                        this.dispatchCustomEvent("ak-wizard-nav", {
-                            command: "goto",
-                            step: step.index,
-                        })}
+                        this.dispatchEvent(
+                            new WizardNavigationEvent({ kind: "next", target: step.id }),
+                        )}
                 >
                     ${step.label}
                 </button>
@@ -162,47 +177,32 @@ export class AkWizardFrame extends CustomEmitterElement(ModalButton) {
 
     renderFooter() {
         return html`
-            <footer class="pf-c-wizard__footer">${map(this.buttons, this.renderButtons)}</footer>
+            <footer class="pf-c-wizard__footer">${map(this.buttons, this.renderButton)}</footer>
         `;
     }
 
-    renderButtons([label, command]: WizardButton) {
-        switch (command.command) {
-            case "next":
-                return this.renderButton(label, "pf-m-primary", command.command);
-            case "back":
-                return this.renderButton(label, "pf-m-secondary", command.command);
-            case "close":
-                return this.renderLink(label, "pf-m-link");
-            default:
-                throw new Error(`Button type not understood: ${command} for ${label}`);
-        }
-    }
-
-    renderButton(label: string, classname: string, command: string) {
+    renderButton(button: WizardButton) {
+        const label = button.label ?? WIZARD_BUTTON_LABEL[button.kind];
+        const classname = WIZARD_BUTTON_CLASS[button.kind];
         const buttonClasses = { "pf-c-button": true, [classname]: true };
-        return html`<button
-            class=${classMap(buttonClasses)}
-            type="button"
-            @click=${() => {
-                this.dispatchCustomEvent("ak-wizard-nav", { command });
-            }}
-        >
-            ${label}
-        </button>`;
-    }
-
-    renderLink(label: string, classname: string) {
-        const buttonClasses = { "pf-c-button": true, [classname]: true };
-        return html`<div class="pf-c-wizard__footer-cancel">
-            <button
-                class=${classMap(buttonClasses)}
-                type="button"
-                @click=${() => this.dispatchCustomEvent("ak-wizard-nav", { command: "close" })}
-            >
-                ${label}
-            </button>
-        </div>`;
+        return "disabled" in button && button.disabled
+            ? html`<button
+                  class=${classMap(buttonClasses)}
+                  type="button"
+                  disabled
+                  aria-disabled="true"
+              >
+                  ${label}
+              </button>`
+            : html`<button
+                  class=${classMap(buttonClasses)}
+                  type="button"
+                  @click=${() => {
+                      this.dispatchEvent(new WizardNavigationEvent(button));
+                  }}
+              >
+                  ${label}
+              </button>`;
     }
 }
 

@@ -172,5 +172,3 @@ export const providerModelsList: LocalTypeCreate[] = [
 export const providerRendererList = new Map<string, ProviderRenderer>(
     providerModelsList.map((tc) => [tc.formName, tc.renderer]),
 );
-
-export default providerModelsList;

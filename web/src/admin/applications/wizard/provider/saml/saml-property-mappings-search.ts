@@ -13,12 +13,12 @@ import {
     SAMLPropertyMapping,
 } from "@goauthentik/api";
 
-async function fetchObjects(query?: string): Promise<SAMLPropertyMapping[]> {
+async function fetchObjects(search?: string): Promise<SAMLPropertyMapping[]> {
     const args: PropertymappingsProviderSamlListRequest = {
         ordering: "saml_name",
     };
     if (query !== undefined) {
-        args.search = query;
+        args.search = search;
     }
     const items = await new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderSamlList(
         args,
@@ -110,8 +110,6 @@ export class SAMLPropertyMappingSearch extends CustomListenerElement(AKElement) 
         `;
     }
 }
-
-export default SAMLPropertyMappingSearch;
 
 declare global {
     interface HTMLElementTagNameMap {

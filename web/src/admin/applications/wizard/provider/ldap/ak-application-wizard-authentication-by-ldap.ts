@@ -18,7 +18,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { FlowsInstancesListDesignationEnum } from "@goauthentik/api";
 import type { LDAPProvider } from "@goauthentik/api";
 
-import BaseProviderPanel from "../BaseProviderPanel";
+import { BaseProviderPanel } from "../BaseProviderPanel";
 import {
     bindModeOptions,
     cryptoCertificateHelp,
@@ -28,6 +28,9 @@ import {
     tlsServerNameHelp,
     uidStartNumberHelp,
 } from "./LDAPOptionsAndHelp";
+
+const UID_START_NUMBER = 2000;
+const GID_START_NUMBER = 4000;
 
 @customElement("ak-application-wizard-authentication-by-ldap")
 export class ApplicationWizardApplicationDetails extends WithBrandConfig(BaseProviderPanel) {
@@ -131,7 +134,7 @@ export class ApplicationWizardApplicationDetails extends WithBrandConfig(BasePro
                             label=${msg("UID start number")}
                             required
                             name="uidStartNumber"
-                            value="${first(provider?.uidStartNumber, 2000)}"
+                            value="${first(provider?.uidStartNumber, UID_START_NUMBER)}"
                             .errorMessages=${errors?.uidStartNumber ?? []}
                             help=${uidStartNumberHelp}
                         ></ak-number-input>
@@ -140,7 +143,7 @@ export class ApplicationWizardApplicationDetails extends WithBrandConfig(BasePro
                             label=${msg("GID start number")}
                             required
                             name="gidStartNumber"
-                            value="${first(provider?.gidStartNumber, 4000)}"
+                            value="${first(provider?.gidStartNumber, GID_START_NUMBER)}"
                             .errorMessages=${errors?.gidStartNumber ?? []}
                             help=${gidStartNumberHelp}
                         ></ak-number-input>
@@ -149,8 +152,6 @@ export class ApplicationWizardApplicationDetails extends WithBrandConfig(BasePro
             </form>`;
     }
 }
-
-export default ApplicationWizardApplicationDetails;
 
 declare global {
     interface HTMLElementTagNameMap {

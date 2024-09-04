@@ -11,12 +11,11 @@ import { msg } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { html } from "lit";
 
-import BasePanel from "../BasePanel";
-import type { LocalTypeCreate } from "./ak-application-wizard-authentication-method-choice.choices";
-import providerModelsList from "./ak-application-wizard-authentication-method-choice.choices";
+import { BasePanel } from "../BasePanel";
+import { type LocalTypeCreate, providerModelsList } from "./ak-application-wizard-provider.choices";
 
-@customElement("ak-application-wizard-authentication-method-choice")
-export class ApplicationWizardAuthenticationMethodChoice extends WithLicenseSummary(BasePanel) {
+@customElement("ak-application-wizard-provider-choice")
+export class ApplicationWizardProviderChoice extends WithLicenseSummary(BasePanel) {
     render() {
         const selectedTypes = providerModelsList.filter(
             (t) => t.formName === this.wizard.providerModel,
@@ -53,10 +52,8 @@ export class ApplicationWizardAuthenticationMethodChoice extends WithLicenseSumm
     }
 }
 
-export default ApplicationWizardAuthenticationMethodChoice;
-
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-application-wizard-authentication-method-choice": ApplicationWizardAuthenticationMethodChoice;
+        "ak-application-wizard-provider-choice": ApplicationWizardProviderChoice;
     }
 }

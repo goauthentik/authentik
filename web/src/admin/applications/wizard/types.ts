@@ -37,7 +37,6 @@ export type ApplicationWizardStateUpdate = {
     status?: StatusType;
 };
 
-export type ApplicationStep = WizardStep & {
-    id: string;
+export type ApplicationWizardStep = WizardStep & {
     valid: boolean;
 };

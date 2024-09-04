@@ -7,7 +7,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import { ProxyProvider } from "@goauthentik/api";
 
-import AkTypeProxyApplicationWizardPage from "./AuthenticationByProxyPage";
+import { AkTypeProxyApplicationWizardPage } from "./AuthenticationByProxyPage";
 
 @customElement("ak-application-wizard-authentication-for-single-forward-proxy")
 export class AkForwardSingleProxyApplicationWizardPage extends AkTypeProxyApplicationWizardPage {
@@ -38,8 +38,6 @@ export class AkForwardSingleProxyApplicationWizardPage extends AkTypeProxyApplic
         ></ak-text-input>`;
     }
 }
-
-export default AkForwardSingleProxyApplicationWizardPage;
 
 declare global {
     interface HTMLElementTagNameMap {

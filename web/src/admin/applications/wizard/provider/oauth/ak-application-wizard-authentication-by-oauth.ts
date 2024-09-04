@@ -31,7 +31,10 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { ClientTypeEnum, FlowsInstancesListDesignationEnum, SourcesApi } from "@goauthentik/api";
 import { type OAuth2Provider, type PaginatedOAuthSourceList } from "@goauthentik/api";
 
-import BaseProviderPanel from "../BaseProviderPanel";
+import { BaseProviderPanel } from "../BaseProviderPanel";
+
+const DEFAULT_CLIENT_ID_LENGTH = 40;
+const CLIENT_SECRET_LENGTH = 128;
 
 @customElement("ak-application-wizard-authentication-by-oauth")
 export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
@@ -117,7 +120,8 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                         <ak-text-input
                             name="clientId"
                             label=${msg("Client ID")}
-                            value=${provider?.clientId ?? randomString(40, ascii_letters + digits)}
+                            value=${provider?.clientId ??
+                            randomString(DEFAULT_CLIENT_ID_LENGTH, ascii_letters + digits)}
                             .errorMessages=${errors?.clientId ?? []}
                             required
                         >
@@ -127,7 +131,7 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                             name="clientSecret"
                             label=${msg("Client Secret")}
                             value=${provider?.clientSecret ??
-                            randomString(128, ascii_letters + digits)}
+                            randomString(CLIENT_SECRET_LENGTH, ascii_letters + digits)}
                             .errorMessages=${errors?.clientSecret ?? []}
                             ?hidden=${!this.showClientSecret}
                         >
@@ -280,8 +284,6 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
             </form>`;
     }
 }
-
-export default ApplicationWizardAuthenticationByOauth;
 
 declare global {
     interface HTMLElementTagNameMap {
