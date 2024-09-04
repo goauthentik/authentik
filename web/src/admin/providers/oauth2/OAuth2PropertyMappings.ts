@@ -3,6 +3,12 @@ import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types.js";
 
 import { PropertymappingsApi, ScopeMapping } from "@goauthentik/api";
 
+export const defaultScopes = [
+    "goauthentik.io/providers/oauth2/scope-openid",
+    "goauthentik.io/providers/oauth2/scope-email",
+    "goauthentik.io/providers/oauth2/scope-profile",
+];
+
 export async function oauth2PropertyMappingsProvider(page = 1, search = "") {
     const propertyMappings = await new PropertymappingsApi(
         DEFAULT_CONFIG,
@@ -23,6 +29,5 @@ export function makeOAuth2PropertyMappingsSelector(instanceMappings: string[] | 
     return localMappings
         ? ([pk, _]: DualSelectPair) => localMappings.has(pk)
         : ([_0, _1, _2, scope]: DualSelectPair<ScopeMapping>) =>
-              scope?.managed?.startsWith("goauthentik.io/providers/oauth2/scope-") &&
-              scope?.managed !== "goauthentik.io/providers/oauth2/scope-offline_access";
+              scope?.managed && defaultScopes.includes(scope?.managed);
 }

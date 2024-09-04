@@ -52,12 +52,6 @@ export const clientTypeOptions = [
     },
 ];
 
-export const defaultScopes = [
-    "goauthentik.io/providers/oauth2/scope-openid",
-    "goauthentik.io/providers/oauth2/scope-email",
-    "goauthentik.io/providers/oauth2/scope-profile",
-];
-
 export const subjectModeOptions = [
     {
         label: msg("Based on the User's hashed ID"),
