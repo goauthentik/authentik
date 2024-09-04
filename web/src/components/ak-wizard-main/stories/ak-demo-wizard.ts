@@ -41,12 +41,12 @@ export class ApplicationWizard extends AkWizard<WizardStateUpdate, WizardStep> {
 
     constructor() {
         super(msg("Open Wizard"), msg("Demo Wizard"), msg("Run the demo wizard"));
-        this.steps = [...dummySteps];
-        this.currentStep = this.steps[0].id;
+        this.reset(dummySteps);
     }
 
     close() {
         this.frame.value!.open = false;
+        this.reset();
     }
 }
 

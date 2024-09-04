@@ -61,8 +61,7 @@ export class ApplicationWizard extends AkWizard<
 
     constructor() {
         super(msg("Create With Wizard"), msg("New application"), msg("Create a new application"));
-        this.steps = newSteps();
-        this.currentStep = this.steps[0].id;
+        this.reset(newSteps());
     }
 
     /**
@@ -109,12 +108,11 @@ export class ApplicationWizard extends AkWizard<
     }
 
     close() {
-        this.steps = newSteps();
-        this.currentStep = this.steps[0].id;
+        this.frame.value!.open = false;
+        this.reset(newSteps());
         this.wizardState = freshWizardState();
         this.providerCache = new Map();
         this.wizardStateProvider.setValue(this.wizardState);
-        this.frame.value!.open = false;
     }
 
     onNavigation(event: WizardNavigationEvent) {

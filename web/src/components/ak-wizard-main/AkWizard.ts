@@ -16,9 +16,13 @@ import { WizardCloseEvent, WizardNavigationEvent, WizardUpdateEvent } from "./ev
 import { type WizardStep, type WizardStepLabel } from "./types";
 
 /**
- * Abstract parent class for wizards. This Class activates the Controller, provides the default
- * renderer and handleNav() functions, and organizes the various texts used to describe a Modal
- * Wizard's interaction: its prompt, header, and description.
+ * START HERE
+ *
+ * @class AKWizard
+ *
+ * Abstract parent class for wizards. This component tracks the steps, the current steps, and the
+ * events that change from one step to the next. It then renders the actual wizard, the "frame," and
+ * listens to the frame's content for messages about state changes.
  */
 
 export class AkWizard<D, Step extends WizardStep = WizardStep>
@@ -42,14 +46,6 @@ export class AkWizard<D, Step extends WizardStep = WizardStep>
      * `.close()` on it.
      */
     frame: Ref<AkWizardFrame> = createRef();
-
-    get step() {
-        const nextstep = this.steps.find((step) => step.id === this.currentStep);
-        if (!nextstep) {
-            throw new Error(`Requested a step that is not defined: ${this.currentStep}`);
-        }
-        return nextstep;
-    }
 
     prompt = msg("Create");
 
@@ -76,6 +72,25 @@ export class AkWizard<D, Step extends WizardStep = WizardStep>
         this.removeEventListener(WizardUpdateEvent.eventName, this.onUpdate);
         this.removeEventListener(WizardCloseEvent.eventName, this.onClose);
         super.disconnectedCallback();
+    }
+
+    // Note: this will trigger a re-render.
+    reset(steps?: Step[]) {
+        if (steps) {
+            this.steps = [...steps];
+        }
+
+        if (this.steps.length > 0) {
+            this.currentStep = this.steps[0].id;
+        }
+    }
+
+    get step() {
+        const nextstep = this.steps.find((step) => step.id === this.currentStep);
+        if (!nextstep) {
+            throw new Error(`Requested a step that is not defined: ${this.currentStep}`);
+        }
+        return nextstep;
     }
 
     /**

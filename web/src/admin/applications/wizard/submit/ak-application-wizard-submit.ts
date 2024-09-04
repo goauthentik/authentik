@@ -7,6 +7,7 @@ import { WizardNavigationEvent } from "@goauthentik/components/ak-wizard-main/ev
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
+import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
 import { msg } from "@lit/localize";
 import { customElement, state } from "@lit/reactive-element/decorators.js";
@@ -71,7 +72,7 @@ const successState: State = {
 };
 
 @customElement("ak-application-wizard-commit-application")
-export class ApplicationWizardCommitApplication extends BasePanel {
+export class ApplicationWizardCommitApplication extends CustomEmitterElement(BasePanel) {
     static get styles() {
         return [
             ...super.styles,
@@ -154,7 +155,7 @@ export class ApplicationWizardCommitApplication extends BasePanel {
         }
 
         const navTo = (target: string) => () =>
-            this.dispatchEvent(WizardNavigationEvent({ kind: "back", target }));
+            this.dispatchEvent(new WizardNavigationEvent({ kind: "back", target }));
 
         if (errors.app) {
             return html`<p>${msg("There was an error in the application.")}</p>
