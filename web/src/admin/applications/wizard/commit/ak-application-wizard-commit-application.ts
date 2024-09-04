@@ -1,5 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { parseAPIError } from "@goauthentik/common/errors";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
@@ -24,7 +25,6 @@ import {
     type TransactionApplicationRequest,
     type TransactionApplicationResponse,
     ValidationError,
-    ValidationErrorFromJSON,
 } from "@goauthentik/api";
 
 import BasePanel from "../BasePanel";
@@ -133,9 +133,7 @@ export class ApplicationWizardCommitApplication extends BasePanel {
             })
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .catch(async (resolution: any) => {
-                const errors = (this.errors = ValidationErrorFromJSON(
-                    await resolution.response.json(),
-                ));
+                const errors = await parseAPIError(resolution);
                 this.dispatchWizardUpdate({
                     update: {
                         ...this.wizard,
