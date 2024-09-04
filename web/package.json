@@ -112,7 +112,7 @@
         "typescript-eslint": "^8.4.0",
         "vite-tsconfig-paths": "^5.0.1",
         "wdio-wait-for": "^3.0.11",
-        "wireit": "^0.14.8"
+        "wireit": "^0.14.9"
     },
     "engines": {
         "node": ">=20"
