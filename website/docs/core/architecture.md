@@ -25,7 +25,7 @@ The core sub-component handles most of authentik's logic, such as API requests, 
 
 #### Embedded outpost
 
-Similar to [other outposts](../outposts/index.mdx), this outpost allows using [Proxy providers](../providers/proxy/index.md) without deploying a separate outpost.
+Similar to [other outposts](../add-secure-apps/outposts/index.mdx), this outpost allows using [Proxy providers](../add-secure-apps/providers/proxy/index.md) without deploying a separate outpost.
 
 #### Persistence
 
@@ -37,8 +37,8 @@ This container executes background tasks, such as sending emails, the event noti
 
 #### Persistence
 
--   `/certs` is used for authentik to import external certs, which in most cases shouldn't be used for SAML, but rather if you use authentik without a reverse proxy, this can be used for example for the [Let's Encrypt integration](../core/certificates.md#lets-encrypt)
--   `/templates` is used for [custom email templates](../flow/stages/email/index.mdx#custom-templates), and as with the other ones fully optional
+-   `/certs` is used for authentik to import external certs, which in most cases shouldn't be used for SAML, but rather if you use authentik without a reverse proxy, this can be used for example for the [Let's Encrypt integration](../sys-mgmt/certificates.md#lets-encrypt)
+-   `/templates` is used for [custom email templates](../add-secure-apps/flows-stages/stages/email/index.mdx#custom-templates), and as with the other ones fully optional
 
 ### PostgreSQL
 

@@ -15,6 +15,10 @@ Use this migration tool to:
     - Install [rust](rustup.rs) or update rust to the latest version with `rustup update`
     - If installing rust from scratch, you may need to run `. $HOME/.cargo/env`
 2. Install the cli tool with `cargo install --git https://github.com/goauthentik/authentik --bin docsmg`
+
+:::info For now use the following command to install the latest migration tool: `cargo install --git https://github.com/ObamaTheLlama114/authentik --branch rework_docsmg`.
+:::
+
 3. In the `/website` directory, create a file named `docsmg.env` with the entry of `MIGRATE_PATH=./docs`.
 
 ## Steps to use
