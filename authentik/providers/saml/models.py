@@ -164,7 +164,7 @@ class SAMLProvider(Provider):
     )
 
     sign_assertion = models.BooleanField(default=True)
-    sign_response = models.BooleanField(default=True)
+    sign_response = models.BooleanField(default=False)
 
     @property
     def launch_url(self) -> str | None:

@@ -38,7 +38,7 @@ Requires authentik 2021.12.4
 :::
 
 :::caution
-Firefox has some known issues regarding FIDO (see https://bugzilla.mozilla.org/show_bug.cgi?id=1530370) and TouchID (see https://bugzilla.mozilla.org/show_bug.cgi?id=1536482)
+Firefox has some known issues regarding TouchID (see https://bugzilla.mozilla.org/show_bug.cgi?id=1536482)
 :::
 
 Passwordless authentication currently only supports WebAuthn devices, like security keys and biometrics. For an alternate passwordless setup, see [Password stage](../password/index.md#passwordless-login), which supports other types.

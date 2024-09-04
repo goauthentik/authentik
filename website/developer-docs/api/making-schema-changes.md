@@ -8,9 +8,9 @@ This will update the `schema.yml` file in the root of the repository.
 
 ## Building the Go Client
 
-The Go client is used by the Outpost to communicate with the backend authentik server. To build the go client, run `make gen-outpost`.
+The Go client is used by the Outpost to communicate with the backend authentik server. To build the go client, run `make gen-client-go`.
 
-The generated files are stored in `/api` in the root of the repository.
+The generated files are stored in `/gen-go-api` in the root of the repository.
 
 ## Building the Web Client
 

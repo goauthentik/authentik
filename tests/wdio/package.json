@@ -1,9 +1,13 @@
 {
     "name": "@goauthentik/web-tests",
-    "private": true,
-    "type": "module",
+    "dependencies": {
+        "chromedriver": "^128.0.1",
+        "lockfile-lint": "^4.14.0",
+        "syncpack": "^13.0.0"
+    },
     "devDependencies": {
         "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+        "@types/mocha": "^10.0.7",
         "@typescript-eslint/eslint-plugin": "^7.17.0",
         "@typescript-eslint/parser": "^7.17.0",
         "@wdio/cli": "^9.0.3",
@@ -19,19 +23,20 @@
         "typescript": "^5.5.4",
         "wdio-wait-for": "^3.0.11"
     },
-    "scripts": {
-        "wdio": "wdio run ./wdio.conf.ts",
-        "lint:precommit": "eslint --max-warnings 0 --config ./.eslintrc.precommit.json $(git status --porcelain . | grep '^[AM?][M?]' | cut -d'/' -f3- | grep -E '\\.(ts|js|tsx|jsx)$')",
-        "lint": "eslint . --max-warnings 0 --fix",
-        "lint:spelling": "codespell -D - -D $(git rev-parse --show-toplevel 2> /dev/null)/.github/codespell-dictionary.txt -I $(git rev-parse --show-toplevel 2> /dev/null)/.github/codespell-words.txt ./test -s",
-        "precommit": "run-s lint:precommit lint:spelling prettier",
-        "prettier-check": "prettier --check .",
-        "prettier": "prettier --write ."
-    },
     "engines": {
         "node": ">=20"
     },
-    "dependencies": {
-        "chromedriver": "^128.0.0"
-    }
+    "private": true,
+    "scripts": {
+        "lint": "eslint . --max-warnings 0 --fix",
+        "lint:lockfile": "lockfile-lint --path package.json --type npm --allowed-hosts npm --validate-https",
+        "lint:package": "syncpack format -i '    '",
+        "lint:precommit": "eslint --max-warnings 0 --config ./.eslintrc.precommit.json $(git status --porcelain . | grep '^[AM?][M?]' | cut -d'/' -f3- | grep -E '\\.(ts|js|tsx|jsx)$')",
+        "lint:spelling": "codespell -D - -D $(git rev-parse --show-toplevel 2> /dev/null)/.github/codespell-dictionary.txt -I $(git rev-parse --show-toplevel 2> /dev/null)/.github/codespell-words.txt ./test -s",
+        "precommit": "run-s lint:precommit lint:spelling prettier",
+        "prettier": "prettier --write .",
+        "prettier-check": "prettier --check .",
+        "wdio": "wdio run ./wdio.conf.ts"
+    },
+    "type": "module"
 }

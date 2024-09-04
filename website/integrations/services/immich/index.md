@@ -33,7 +33,7 @@ The following placeholders will be used:
       :::note
       Please note that the following URIs are just examples. Be sure to include all of the domains / URLs that you will use to access Immich.
       :::
-        - app.immich:/
+        - app.immich:///oauth-callback
         - https://immich.company/auth/login
         - https://immich.company/user-settings
     - **Signing Key**: authentik Self-signed Certificate
