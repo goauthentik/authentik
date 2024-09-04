@@ -41,7 +41,7 @@ async function sourcesProvider(page = 1, search = "") {
     };
 }
 
-async function makeSourcesSelector(instanceSources: string[] | undefined) {
+function makeSourcesSelector(instanceSources: string[] | undefined) {
     const localSources = instanceSources ? new Set(instanceSources) : undefined;
 
     return localSources
