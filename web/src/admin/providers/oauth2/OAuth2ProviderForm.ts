@@ -32,7 +32,7 @@ import {
     makeOAuth2PropertyMappingsSelector,
     oauth2PropertyMappingsProvider,
 } from "./OAuth2PropertyMappings.js";
-import { oauth2SourcesProvider } from "./OAuth2Sources.js";
+import { makeSourceSelector, oauth2SourcesProvider } from "./OAuth2Sources.js";
 
 export const clientTypeOptions = [
     {
@@ -50,12 +50,6 @@ export const clientTypeOptions = [
             "Public clients are incapable of maintaining the confidentiality and should use methods like PKCE. ",
         )}`,
     },
-];
-
-export const defaultScopes = [
-    "goauthentik.io/providers/oauth2/scope-openid",
-    "goauthentik.io/providers/oauth2/scope-email",
-    "goauthentik.io/providers/oauth2/scope-profile",
 ];
 
 export const subjectModeOptions = [
@@ -335,12 +329,12 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
                         label=${msg("Trusted OIDC Sources")}
                         name="jwksSources"
                     >
-                        <ak-dual-select-provider
+                        <ak-dual-select-dynamic-selected
                             .provider=${oauth2SourcesProvider}
-                            .selected=${provider?.jwksSources}
+                            .selector=${makeSourceSelector(provider?.jwksSources)}
                             available-label=${msg("Available Sources")}
                             selected-label=${msg("Selected Sources")}
-                        ></ak-dual-select-provider>
+                        ></ak-dual-select-dynamic-selected>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider.",

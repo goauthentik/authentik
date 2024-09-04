@@ -11,7 +11,10 @@ import {
     redirectUriHelp,
     subjectModeOptions,
 } from "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
-import { oauth2SourcesProvider } from "@goauthentik/admin/providers/oauth2/OAuth2Sources.js";
+import {
+    makeSourceSelector,
+    oauth2SourcesProvider,
+} from "@goauthentik/admin/providers/oauth2/OAuth2Sources.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-number-input";
@@ -263,12 +266,12 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                             name="jwksSources"
                             .errorMessages=${errors?.jwksSources ?? []}
                         >
-                            <ak-dual-select-provider
+                            <ak-dual-select-dynamic-selected
                                 .provider=${oauth2SourcesProvider}
-                                .selected=${provider?.jwksSources ?? []}
+                                .selector=${makeSourceSelector(provider?.jwksSources)}
                                 available-label=${msg("Available Sources")}
                                 selected-label=${msg("Selected Sources")}
-                            ></ak-dual-select-provider>
+                            ></ak-dual-select-dynamic-selected>
                             <p class="pf-c-form__helper-text">
                                 ${msg(
                                     "JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider.",
