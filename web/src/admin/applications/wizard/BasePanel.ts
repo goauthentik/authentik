@@ -1,4 +1,5 @@
-import { WizardPanel } from "@goauthentik/components/ak-wizard-main/types";
+import { WizardStep } from "@goauthentik/components/ak-wizard-main/AkWizardStep";
+import { WizardUpdateEvent } from "@goauthentik/components/ak-wizard-main/events";
 import { AKElement } from "@goauthentik/elements/Base";
 import { KeyUnknown, serializeForm } from "@goauthentik/elements/forms/Form";
 import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
@@ -21,10 +22,7 @@ import type { ApplicationWizardState, ApplicationWizardStateUpdate } from "./typ
  *
  */
 
-export class ApplicationWizardPageBase
-    extends CustomEmitterElement(AKElement)
-    implements WizardPanel
-{
+export class ApplicationWizardPageBase extends CustomEmitterElement(AKElement) {
     static get styles() {
         return AwadStyles;
     }
@@ -34,6 +32,13 @@ export class ApplicationWizardPageBase
 
     @query("form")
     form!: HTMLFormElement;
+
+    step: WizardStep;
+
+    constructor(step: WizardStep) {
+        super();
+        this.step = step;
+    }
 
     /**
      * Provide access to the values on the current form. Child implementations use this to craft the
@@ -57,15 +62,13 @@ export class ApplicationWizardPageBase
         return this.form.checkValidity();
     }
 
-    rendered = false;
-
     /**
      * Provide a single source of truth for the token used to notify the orchestrator that an event
      * happens. The token `ak-wizard-update` is used by the Wizard framework's reactive controller
      * to route "data on the current step has changed" events to the orchestrator.
      */
     dispatchWizardUpdate(update: ApplicationWizardStateUpdate) {
-        this.dispatchCustomEvent("ak-wizard-update", update);
+        this.dispatchEvent(new WizardUpdateEvent(update));
     }
 }
 

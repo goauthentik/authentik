@@ -13,6 +13,7 @@ import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";
 import "@goauthentik/components/ak-toggle-group";
+import { WizardStep } from "@goauthentik/components/ak-wizard-main/AkWizardStep";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
@@ -35,8 +36,8 @@ import BaseProviderPanel from "../BaseProviderPanel";
 type MaybeTemplateResult = TemplateResult | typeof nothing;
 
 export class AkTypeProxyApplicationWizardPage extends BaseProviderPanel {
-    constructor() {
-        super();
+    constructor(step: WizardStep) {
+        super(step);
         new SourcesApi(DEFAULT_CONFIG)
             .sourcesOauthList({
                 ordering: "name",

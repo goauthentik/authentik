@@ -113,7 +113,7 @@ export class AkWizard<State, Step extends WizardStep = WizardStep>
 
     // END PUBLIC API
 
-    protected findStep(stepId?: string) {
+    public findStep(stepId?: string): Step | undefined {
         return this.steps.find((step) => step.id === stepId);
     }
 
@@ -121,17 +121,18 @@ export class AkWizard<State, Step extends WizardStep = WizardStep>
      * Derive the labels used by the frame's Breadcrumbs display.
      */
     protected get stepLabels(): WizardStepLabel[] {
-        let disabled = false;
+        let valid = true;
         return this.steps
             .filter((step) => !step.hidden)
             .map((step) => {
-                disabled = disabled || step.disabled;
-                return {
+                const nextStep = {
                     label: step.label,
                     active: step.id === this.currentStepId,
                     id: step.id,
-                    disabled,
+                    disabled: !valid,
                 };
+                valid = valid && step.valid;
+                return nextStep;
             });
     }
 

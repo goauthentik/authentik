@@ -4,6 +4,9 @@ import { parseAPIError } from "@goauthentik/common/errors";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
+import { WizardStep } from "@goauthentik/components/ak-wizard-main/AkWizardStep";
+import { WizardNavigationEvent } from "@goauthentik/components/ak-wizard-main/events";
+import { WizardButton } from "@goauthentik/components/ak-wizard-main/types";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -29,6 +32,27 @@ import {
 
 import BasePanel from "../BasePanel";
 import providerModelsList from "../auth-method-choice/ak-application-wizard-authentication-method-choice.choices";
+
+const JSON_INDENT = 2;
+
+export class SubmitApplicationStep extends WizardStep {
+    id = "submit";
+    label = msg("Submit Application");
+    disabled = true;
+    valid = false;
+
+    get buttons(): WizardButton[] {
+        return this.valid
+            ? [{ kind: "close" }]
+            : [{ kind: "back", destination: "provider-details" }, { kind: "cancel" }];
+    }
+
+    render() {
+        return html`<ak-application-wizard-commit-application
+            .step=${this}
+        ></ak-application-wizard-commit-application>`;
+    }
+}
 
 function cleanApplication(app: Partial<ApplicationRequest>): ApplicationRequest {
     return {
@@ -103,7 +127,7 @@ export class ApplicationWizardCommitApplication extends BasePanel {
             );
             if (!providerModel) {
                 throw new Error(
-                    `Could not determine provider model from user request: ${JSON.stringify(this.wizard, null, 2)}`,
+                    `Could not determine provider model from user request: ${JSON.stringify(this.wizard, null, JSON_INDENT)}`,
                 );
             }
 
@@ -150,19 +174,15 @@ export class ApplicationWizardCommitApplication extends BasePanel {
             return nothing;
         }
 
-        const navTo = (step: number) => () =>
-            this.dispatchCustomEvent("ak-wizard-nav", {
-                command: "goto",
-                step,
-            });
+        const navTo = (step: string) => () => this.dispatchEvent(new WizardNavigationEvent(step));
 
         if (errors.app) {
             return html`<p>${msg("There was an error in the application.")}</p>
-                <p><a @click=${navTo(0)}>${msg("Review the application.")}</a></p>`;
+                <p><a @click=${navTo("application")}>${msg("Review the application.")}</a></p>`;
         }
         if (errors.provider) {
             return html`<p>${msg("There was an error in the provider.")}</p>
-                <p><a @click=${navTo(2)}>${msg("Review the provider.")}</a></p>`;
+                <p><a @click=${navTo("provider-details")}>${msg("Review the provider.")}</a></p>`;
         }
         if (errors.detail) {
             return html`<p>${msg("There was an error")}: ${errors.detail}</p>`;
@@ -182,7 +202,7 @@ export class ApplicationWizardCommitApplication extends BasePanel {
 
     render() {
         const icon = classMap(
-            this.commitState.icon.reduce((acc, icon) => ({ ...acc, [icon]: true }), {}),
+            this.commitState.icon.reduce((acc, iconname) => ({ ...acc, [iconname]: true }), {}),
         );
 
         return html`

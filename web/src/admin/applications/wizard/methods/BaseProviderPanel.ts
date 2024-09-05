@@ -6,6 +6,7 @@ export class ApplicationWizardProviderPageBase extends BasePanel {
         if (!formValues) {
             throw new Error("No provider values on form?");
         }
+        this.step.valid = this.valid;
         this.dispatchWizardUpdate({
             update: {
                 ...this.wizard,

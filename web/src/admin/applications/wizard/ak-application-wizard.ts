@@ -1,4 +1,4 @@
-import { AkWizard } from "@goauthentik/components/ak-wizard-main/AkWizard";
+import { AkWizard } from "@goauthentik/components/ak-wizard-main/AkWizard.js";
 import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
 
 import { ContextProvider } from "@lit/context";
@@ -6,13 +6,11 @@ import { msg } from "@lit/localize";
 import { customElement, state } from "lit/decorators.js";
 
 import { applicationWizardContext } from "./ContextIdentity";
-import { newSteps } from "./steps";
-import {
-    ApplicationStep,
-    ApplicationWizardState,
-    ApplicationWizardStateUpdate,
-    OneOfProvider,
-} from "./types";
+import { ApplicationStep } from "./application/ak-application-wizard-application-details.js";
+import { ProviderMethodStep } from "./auth-method-choice/ak-application-wizard-authentication-method-choice.js";
+import { SubmitApplicationStep } from "./commit/ak-application-wizard-commit-application.js";
+import { ProviderDetailsStep } from "./methods/ak-application-wizard-authentication-method.js";
+import { ApplicationWizardState, ApplicationWizardStateUpdate, OneOfProvider } from "./types";
 
 const freshWizardState = (): ApplicationWizardState => ({
     providerModel: "",
@@ -25,11 +23,6 @@ const freshWizardState = (): ApplicationWizardState => ({
 export class ApplicationWizard extends CustomListenerElement(
     AkWizard<ApplicationWizardStateUpdate, ApplicationStep>,
 ) {
-    constructor() {
-        super(msg("Create With Wizard"), msg("New application"), msg("Create a new application"));
-        this.steps = newSteps();
-    }
-
     /**
      * We're going to be managing the content of the forms by percolating all of the data up to this
      * class, which will ultimately transmit all of it to the server as a transaction. The
@@ -56,8 +49,21 @@ export class ApplicationWizard extends CustomListenerElement(
      */
     providerCache: Map<string, OneOfProvider> = new Map();
 
+    constructor() {
+        super(msg("Create With Wizard"), msg("New application"), msg("Create a new application"));
+    }
+
+    public override newSteps() {
+        return [
+            new ApplicationStep(),
+            new ProviderMethodStep(),
+            new ProviderDetailsStep(),
+            new SubmitApplicationStep(),
+        ];
+    }
+
     // And this is where all the special cases go...
-    handleUpdate(detail: ApplicationWizardStateUpdate) {
+    public override handleUpdate(detail: ApplicationWizardStateUpdate) {
         if (detail.status === "submitted") {
             this.step.valid = true;
             this.requestUpdate();
@@ -90,22 +96,17 @@ export class ApplicationWizard extends CustomListenerElement(
     }
 
     close() {
-        this.steps = newSteps();
-        this.currentStep = 0;
+        super.close();
         this.wizardState = freshWizardState();
         this.providerCache = new Map();
         this.wizardStateProvider.setValue(this.wizardState);
-        this.frame.value!.open = false;
     }
 
-    handleNav(stepId: number | undefined) {
-        if (stepId === undefined || this.steps[stepId] === undefined) {
+    navigateTo(stepId: string | undefined) {
+        if (stepId === undefined || this.findStep(stepId) === undefined) {
             throw new Error(`Attempt to navigate to undefined step: ${stepId}`);
         }
-        if (stepId > this.currentStep && !this.step.valid) {
-            return;
-        }
-        this.currentStep = stepId;
+        this.currentStepId = stepId;
         this.requestUpdate();
     }
 }

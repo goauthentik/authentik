@@ -13,16 +13,15 @@ export abstract class WizardStep {
     // always lead with the [Back] button and ensure it's in the same place every time. The
     // controller's current behavior is to call the host's `handleNav()` command with the index of
     // the requested step, or undefined if the command is nonsensical.
-    buttons: WizardButton[] = [];
+    get buttons(): WizardButton[] {
+        return [];
+    }
 
     // If true, will not be shown in the navigation sidebar
     hidden = false;
 
     // Returns true if the current step is "valid";
     valid: boolean = false;
-
-    // If this step is "disabled," the prior step's next button will be disabled.
-    disabled: boolean = false;
 
     // A function which returns the html for rendering the actual content of the step, its form and
     // such.

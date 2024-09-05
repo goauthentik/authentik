@@ -19,7 +19,10 @@ class Step1 extends WizardStep {
     label = "Test Step 1";
     disabled = false;
     valid = true;
-    buttons: WizardButton[] = [{ kind: "next", destination: "test-step-2" }, { kind: "cancel" }];
+    get buttons(): WizardButton[] {
+        return [{ kind: "next", destination: "test-step-2" }, { kind: "cancel" }];
+    }
+
     render() {
         return html`<h2>This space intentionally left blank</h2>`;
     }
@@ -30,7 +33,9 @@ class Step2 extends WizardStep {
     label = "Test Step 2";
     disabled = false;
     valid = true;
-    buttons: WizardButton[] = [{ kind: "back", destination: "test-step-1" }, { kind: "close" }];
+    get buttons(): WizardButton[] {
+        return [{ kind: "back", destination: "test-step-1" }, { kind: "close" }];
+    }
     render() {
         return html`<h2>This space also intentionally left blank</h2>`;
     }
