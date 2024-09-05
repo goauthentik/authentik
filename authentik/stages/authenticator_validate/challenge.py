@@ -45,7 +45,7 @@ class DeviceChallenge(PassiveSerializer):
     device_class = CharField()
     device_uid = CharField()
     challenge = JSONDictField()
-    last_used = DateTimeField(required=False)
+    last_used = DateTimeField(allow_null=True)
 
 
 def get_challenge_for_device(
