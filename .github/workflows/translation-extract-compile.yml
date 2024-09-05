@@ -32,7 +32,7 @@ jobs:
           poetry run ak compilemessages
           make web-check-compile
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ steps.generate_token.outputs.token }}
           branch: extract-compile-backend-translation

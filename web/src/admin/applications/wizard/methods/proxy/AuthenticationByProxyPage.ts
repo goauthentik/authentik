@@ -1,5 +1,8 @@
 import "@goauthentik/admin/applications/wizard/ak-wizard-title";
-import { oauth2SourcesProvider } from "@goauthentik/admin/providers/oauth2/OAuth2Sources.js";
+import {
+    makeSourceSelector,
+    oauth2SourcesProvider,
+} from "@goauthentik/admin/providers/oauth2/OAuth2Sources.js";
 import {
     makeProxyPropertyMappingsSelector,
     proxyPropertyMappingsProvider,
@@ -11,7 +14,6 @@ import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";
 import "@goauthentik/components/ak-toggle-group";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
 import { msg } from "@lit/localize";
@@ -228,12 +230,12 @@ export class AkTypeProxyApplicationWizardPage extends BaseProviderPanel {
                             name="jwksSources"
                             .errorMessages=${errors?.jwksSources ?? []}
                         >
-                            <ak-dual-select-provider
+                            <ak-dual-select-dynamic-selected
                                 .provider=${oauth2SourcesProvider}
-                                .selected=${this.instance?.jwksSources ?? []}
+                                .selector=${makeSourceSelector(this.instance?.jwksSources)}
                                 available-label=${msg("Available Sources")}
                                 selected-label=${msg("Selected Sources")}
-                            ></ak-dual-select-provider>
+                            ></ak-dual-select-dynamic-selected>
                             <p class="pf-c-form__helper-text">
                                 ${msg(
                                     "JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider.",
