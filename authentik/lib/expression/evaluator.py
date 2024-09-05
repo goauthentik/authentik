@@ -27,9 +27,11 @@ from authentik.stages.authenticator import devices_for_user
 
 LOGGER = get_logger()
 
+ARG_SANITIZE = re.compile(r"[:.-]")
+
 
 def sanitize_arg(arg_name: str) -> str:
-    return slugify(arg_name).replace("-", "_")
+    return re.sub(ARG_SANITIZE, "_", arg_name)
 
 
 class BaseEvaluator:
