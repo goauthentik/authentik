@@ -1,18 +1,20 @@
 import "@goauthentik/components/ak-wizard-main/ak-wizard-frame";
 import { AKElement } from "@goauthentik/elements/Base";
+import { bound } from "@goauthentik/elements/decorators/bound.js";
 
 import { msg } from "@lit/localize";
 import { ReactiveControllerHost, html } from "lit";
-import { state } from "lit/decorators.js";
+import { property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { Ref, createRef, ref } from "lit/directives/ref.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { AkWizardController } from "./AkWizardController";
+import { type WizardStep } from "./AkWizardStep.js";
 import { AkWizardFrame } from "./ak-wizard-frame";
-import { type WizardStep, type WizardStepLabel } from "./types";
+import { WizardCloseEvent, WizardNavigationEvent, WizardUpdateEvent } from "./events";
+import { type WizardStepLabel } from "./types";
 
 /**
  * Abstract parent class for wizards. This Class activates the Controller, provides the default
@@ -20,18 +22,21 @@ import { type WizardStep, type WizardStepLabel } from "./types";
  * Wizard's interaction: its prompt, header, and description.
  */
 
-export class AkWizard<D, Step extends WizardStep = WizardStep>
+export class AkWizard<State, Step extends WizardStep = WizardStep>
     extends AKElement
     implements ReactiveControllerHost
 {
     // prettier-ignore
     static get styles() { return [PFBase, PFButton]; }
 
+    @property({ type: Boolean, attribute: "can-cancel" })
+    canCancel = false;
+
     @state()
     steps: Step[] = [];
 
     @state()
-    currentStep = 0;
+    currentStepId = "";
 
     /**
      * A reference to the frame.  Since the frame implements and inherits from ModalButton,
@@ -41,7 +46,11 @@ export class AkWizard<D, Step extends WizardStep = WizardStep>
     frame: Ref<AkWizardFrame> = createRef();
 
     get step() {
-        return this.steps[this.currentStep];
+        const nextStep = this.findStep(this.currentStepId);
+        if (!nextStep) {
+            throw new Error("Unable to identify current step.");
+        }
+        return nextStep;
     }
 
     prompt = msg("Create");
@@ -50,46 +59,41 @@ export class AkWizard<D, Step extends WizardStep = WizardStep>
 
     description?: string;
 
-    wizard: AkWizardController<D>;
+    // BEGIN PUBLIC API
 
     constructor(prompt: string, header: string, description?: string) {
         super();
         this.header = header;
         this.prompt = prompt;
         this.description = description;
-        this.wizard = new AkWizardController(this);
+        this.reset();
+        this.addEventListener(WizardNavigationEvent.eventName, this.onNavigation);
+        this.addEventListener(WizardCloseEvent.eventName, this.onClose);
+        this.addEventListener(WizardUpdateEvent.eventName, this.onUpdate);
     }
 
-    /**
-     * Derive the labels used by the frame's Breadcrumbs display.
-     */
-    get stepLabels(): WizardStepLabel[] {
-        let disabled = false;
-        return this.steps.map((step, index) => {
-            disabled = disabled || step.disabled;
-            return {
-                label: step.label,
-                active: index === this.currentStep,
-                index,
-                disabled,
-            };
-        });
+    public newSteps(): Step[] {
+        throw new Error("This method must be overridden in the child class.");
+    }
+
+    public reset(steps?: Step[]) {
+        this.steps = steps ?? this.newSteps();
+        this.currentStepId = this.steps[0].id;
+        if (this.frame.value) {
+            this.frame.value!.open = false;
+        }
     }
 
     /**
      * You should still consider overriding this if you need to consider details like "Is the step
      * requested valid?"
      */
-    handleNav(stepId: number | undefined) {
-        if (stepId === undefined || this.steps[stepId] === undefined) {
+    public navigateTo(stepId: string | undefined) {
+        if (stepId === undefined || this.findStep(stepId) === undefined) {
             throw new Error(`Attempt to navigate to undefined step: ${stepId}`);
         }
-        this.currentStep = stepId;
+        this.currentStepId = stepId;
         this.requestUpdate();
-    }
-
-    close() {
-        throw new Error("This function must be overridden in the child class.");
     }
 
     /**
@@ -99,8 +103,54 @@ export class AkWizard<D, Step extends WizardStep = WizardStep>
      * here. (Any step implementing WizardStep can do it anyhow it pleases, putting "is the current
      * form valid" and so forth into the step object itself.)
      */
-    handleUpdate(_detail: D) {
-        throw new Error("This function must be overridden in the child class.");
+    public handleUpdate(_update: State) {
+        throw new Error("This method must be overridden in the child class.");
+    }
+
+    public close() {
+        this.reset();
+    }
+
+    // END PUBLIC API
+
+    protected findStep(stepId?: string) {
+        return this.steps.find((step) => step.id === stepId);
+    }
+
+    /**
+     * Derive the labels used by the frame's Breadcrumbs display.
+     */
+    protected get stepLabels(): WizardStepLabel[] {
+        let disabled = false;
+        return this.steps
+            .filter((step) => !step.hidden)
+            .map((step) => {
+                disabled = disabled || step.disabled;
+                return {
+                    label: step.label,
+                    active: step.id === this.currentStepId,
+                    id: step.id,
+                    disabled,
+                };
+            });
+    }
+
+    @bound
+    private onNavigation(ev: WizardNavigationEvent) {
+        ev.stopPropagation();
+        this.navigateTo(ev.destination);
+    }
+
+    @bound
+    private onClose(ev: WizardCloseEvent) {
+        ev.stopPropagation();
+        this.close();
+    }
+
+    @bound
+    private onUpdate(ev: WizardUpdateEvent<State>) {
+        ev.stopPropagation();
+        this.handleUpdate(ev.content);
     }
 
     render() {
@@ -113,9 +163,16 @@ export class AkWizard<D, Step extends WizardStep = WizardStep>
                 .buttons=${this.step.buttons}
                 .stepLabels=${this.stepLabels}
                 .form=${this.step.render.bind(this.step)}
+                ?can-cancel=${this.canCancel}
             >
                 <button slot="trigger" class="pf-c-button pf-m-primary">${this.prompt}</button>
             </ak-wizard-frame>
         `;
     }
 }
+
+/**
+ * Design:
+ *
+ * The Wizard has two parts: the logic part and the display part, here called the "frame."
+ */

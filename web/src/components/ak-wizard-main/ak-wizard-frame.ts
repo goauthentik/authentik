@@ -1,4 +1,5 @@
 import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
+import { bound } from "@goauthentik/elements/decorators/bound";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
 import { msg } from "@lit/localize";
@@ -9,7 +10,36 @@ import { map } from "lit/directives/map.js";
 
 import PFWizard from "@patternfly/patternfly/components/Wizard/wizard.css";
 
-import { type WizardButton, WizardStepLabel } from "./types";
+import { WizardCloseEvent, WizardNavigationEvent } from "./events";
+import {
+    type ButtonKind,
+    type DisabledWizardButton,
+    type NavigableButton,
+    type WizardButton,
+    WizardStepLabel,
+} from "./types";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isDisabledButton = (v: any): v is DisabledWizardButton =>
+    typeof v === "object" && v !== null && "disabled" in v && v.disabled;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isNavigableButton = (v: any): v is NavigableButton =>
+    !isDisabledButton(v) && "destination" in v && typeof v.destination === "string";
+
+const BUTTON_KIND_TO_CLASS: Record<ButtonKind, string> = {
+    next: "pf-m-primary",
+    back: "pf-m-secondary",
+    close: "pf-m-link",
+    cancel: "pf-m-link",
+};
+
+const BUTTON_KIND_TO_LABEL: Record<ButtonKind, string> = {
+    next: msg("Next"),
+    back: msg("Back"),
+    cancel: msg("Cancel"),
+    close: msg("Close"),
+};
 
 /**
  * AKWizardFrame is the main container for displaying Wizard pages.
@@ -81,11 +111,6 @@ export class AkWizardFrame extends CustomEmitterElement(ModalButton) {
     @query("#main-content *:first-child")
     content!: HTMLElement;
 
-    constructor() {
-        super();
-        this.renderButtons = this.renderButtons.bind(this);
-    }
-
     renderModalInner() {
         // prettier-ignore
         return html`<div class="pf-c-wizard">
@@ -113,7 +138,10 @@ export class AkWizardFrame extends CustomEmitterElement(ModalButton) {
             class="pf-c-button pf-m-plain pf-c-wizard__close"
             type="button"
             aria-label="${msg("Close")}"
-            @click=${() => this.dispatchCustomEvent("ak-wizard-nav", { command: "close" })}
+            @click=${(ev: Event) => {
+                ev.stopPropagation();
+                this.dispatchEvent(new WizardCloseEvent());
+            }}
         >
             <i class="fas fa-times" aria-hidden="true"></i>
         </button>`;
@@ -140,11 +168,10 @@ export class AkWizardFrame extends CustomEmitterElement(ModalButton) {
                 <button
                     class=${classMap(buttonClasses)}
                     ?disabled=${step.disabled}
-                    @click=${() =>
-                        this.dispatchCustomEvent("ak-wizard-nav", {
-                            command: "goto",
-                            step: step.index,
-                        })}
+                    @click=${(ev: Event) => {
+                        ev.stopPropagation();
+                        this.dispatchEvent(new WizardNavigationEvent(step.id));
+                    }}
                 >
                     ${step.label}
                 </button>
@@ -160,49 +187,57 @@ export class AkWizardFrame extends CustomEmitterElement(ModalButton) {
         </main>`;
     }
 
-    renderFooter() {
-        return html`
-            <footer class="pf-c-wizard__footer">${map(this.buttons, this.renderButtons)}</footer>
-        `;
-    }
+    @bound
+    renderButton(button: WizardButton) {
+        const buttonClasses = {
+            "pf-c-button": true,
+            [BUTTON_KIND_TO_CLASS[button.kind]]: true,
+        };
 
-    renderButtons([label, command]: WizardButton) {
-        switch (command.command) {
-            case "next":
-                return this.renderButton(label, "pf-m-primary", command.command);
-            case "back":
-                return this.renderButton(label, "pf-m-secondary", command.command);
-            case "close":
-                return this.renderLink(label, "pf-m-link");
-            default:
-                throw new Error(`Button type not understood: ${command} for ${label}`);
+        const label = button.label ?? BUTTON_KIND_TO_LABEL[button.kind];
+
+        if (["close", "cancel"].includes(button.kind)) {
+            return html`<div class="pf-c-wizard__footer-cancel">
+                <button
+                    class=${classMap(buttonClasses)}
+                    type="button"
+                    @click=${(ev: Event) => {
+                        ev.stopPropagation();
+                        this.dispatchEvent(new WizardCloseEvent());
+                    }}
+                >
+                    ${label}
+                </button>
+            </div>`;
         }
-    }
 
-    renderButton(label: string, classname: string, command: string) {
-        const buttonClasses = { "pf-c-button": true, [classname]: true };
-        return html`<button
-            class=${classMap(buttonClasses)}
-            type="button"
-            @click=${() => {
-                this.dispatchCustomEvent("ak-wizard-nav", { command });
-            }}
-        >
-            ${label}
-        </button>`;
-    }
+        if (isDisabledButton(button)) {
+            return html`<button class=${classMap(buttonClasses)} type="button" disabled>
+                ${label}
+            </button>`;
+        }
 
-    renderLink(label: string, classname: string) {
-        const buttonClasses = { "pf-c-button": true, [classname]: true };
-        return html`<div class="pf-c-wizard__footer-cancel">
-            <button
+        if (isNavigableButton(button)) {
+            return html`<button
                 class=${classMap(buttonClasses)}
                 type="button"
-                @click=${() => this.dispatchCustomEvent("ak-wizard-nav", { command: "close" })}
+                @click=${(ev: Event) => {
+                    ev.stopPropagation();
+                    this.dispatchEvent(new WizardNavigationEvent(button.destination));
+                }}
             >
                 ${label}
-            </button>
-        </div>`;
+            </button>`;
+        }
+
+        console.warn(button);
+        throw new Error("Button type is not close, disabled, or navigable?");
+    }
+
+    renderFooter() {
+        return html`
+            <footer class="pf-c-wizard__footer">${map(this.buttons, this.renderButton)}</footer>
+        `;
     }
 }
 
