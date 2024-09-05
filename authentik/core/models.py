@@ -901,7 +901,7 @@ class PropertyMapping(SerializerModel, ManagedModel):
         except ControlFlowException as exc:
             raise exc
         except Exception as exc:
-            raise PropertyMappingExpressionException(self, exc) from exc
+            raise PropertyMappingExpressionException(exc, self) from exc
 
     def __str__(self):
         return f"Property Mapping {self.name}"
