@@ -6807,6 +6807,15 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sa82f8948649d0989">
   <source>Matches Event's Client IP (strict matching, for network matching use an Expression Policy).</source>
 </trans-unit>
+<trans-unit id="s6506b7c69456b0d6">
+  <source>Invalid update request.</source>
+</trans-unit>
+<trans-unit id="s3819162efec77de1">
+  <source>Sync Group</source>
+</trans-unit>
+<trans-unit id="s2d5f69929bb7221d">
+  <source><x id="0" equiv-text="${prompt.name}"/> ("<x id="1" equiv-text="${prompt.fieldKey}"/>", of type <x id="2" equiv-text="${prompt.type}"/>)</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
