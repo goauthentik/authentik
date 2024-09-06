@@ -1,5 +1,5 @@
 name: Build and Push Authentik Image
-run-name: ${{ github.event_name == 'release' && startsWith(github.ref, 'refs/tags/v') ? 'Building Authentik image with ' + github.ref_name : 'Build Authentik from ' + github.ref }}
+run-name: ${{ github.event_name == 'workflow_dispatch' && 'Build Authentik from ' + github.ref || github.event_name == 'release' && 'Building Authentik image with ' + github.ref_name }}
 
 
 permissions:
