@@ -8,6 +8,7 @@ import { customElement, state } from "lit/decorators.js";
 import { applicationWizardContext } from "./ContextIdentity";
 import { ApplicationStep } from "./application/ak-application-wizard-application-details.js";
 import { ProviderMethodStep } from "./auth-method-choice/ak-application-wizard-authentication-method-choice.js";
+import { BindingFormStep } from "./bindings/ak-application-wizard-policy-binding-form.js";
 import { BindingTableStep } from "./bindings/ak-application-wizard-policy-bindings.js";
 import { SubmitApplicationStep } from "./commit/ak-application-wizard-commit-application.js";
 import { ProviderDetailsStep } from "./methods/ak-application-wizard-authentication-method.js";
@@ -61,6 +62,7 @@ export class ApplicationWizard extends CustomListenerElement(
             new ProviderMethodStep(),
             new ProviderDetailsStep(),
             new BindingTableStep(),
+            new BindingFormStep(),
             new SubmitApplicationStep(),
         ];
     }

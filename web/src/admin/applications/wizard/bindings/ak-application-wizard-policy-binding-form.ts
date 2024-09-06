@@ -1,7 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { groupBy } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-toggle-group";
-import { AKElement } from "@goauthentik/elements/Base.js";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -28,23 +27,21 @@ import BasePanel from "../BasePanel";
 export class BindingFormStep implements WizardStep {
     id = "binding-form";
     label = msg("Bind A Policy / User / Group");
-    disabled = false;
-
-    // Always valid; it's just a list of
-    valid = true;
+    hidden = true;
+    valid = false;
 
     get buttons(): WizardButton[] {
         return [
-            { kind: "next", label: msg("Save"), destination: "binding-choice" },
-            { kind: "back", destination: "binding-choice" },
+            { kind: "next", label: msg("Add Binding"), destination: "bindings" },
+            { kind: "back", destination: "bindings" },
             { kind: "cancel" },
         ];
     }
 
     render() {
-        return html`<ak-application-wizard-binding-choice
+        return html`<ak-application-wizard-policy-binding-form
             .step=${this}
-        ></ak-application-wizard-binding-choice>`;
+        ></ak-application-wizard-policy-binding-form>`;
     }
 }
 
@@ -65,10 +62,6 @@ const PASS_FAIL = [
 
 @customElement("ak-application-wizard-policy-binding-form")
 export class PolicyBindingFormView extends BasePanel {
-    static get styles() {
-        return [PFBase, PFCard, PFButton, PFForm, PFAlert, PFInputGroup, PFFormControl, PFSwitch];
-    }
-
     @state()
     policyGroupUser: target = target.policy;
 
@@ -78,54 +71,50 @@ export class PolicyBindingFormView extends BasePanel {
     @state()
     defaultOrder = 0;
 
-    get policySearchConfig() {
+    get searchSelectConfigs() {
         return {
-            fetchObjects: async (query?: string): Promise<Policy[]> => {
-                const policies = await new PoliciesApi(DEFAULT_CONFIG).policiesAllList(
-                    withQuery(query, {
-                        ordering: "name",
-                    }),
-                );
-                return policies.results;
+            policiesSelect: {
+                fetchObjects: async (query?: string): Promise<Policy[]> => {
+                    const policies = await new PoliciesApi(DEFAULT_CONFIG).policiesAllList(
+                        withQuery(query, {
+                            ordering: "name",
+                        }),
+                    );
+                    return policies.results;
+                },
+                groupBy: (items: Policy[]) => groupBy(items, (policy) => policy.verboseNamePlural),
+                renderElement: (policy: Policy): string => policy.name,
+                value: (policy: Policy | undefined): string | undefined => policy?.pk,
+                selected: (policy: Policy): boolean => policy.pk === this.instance?.policy,
             },
-            groupBy: (items: Policy[]) => groupBy(items, (policy) => policy.verboseNamePlural),
-            renderElement: (policy: Policy): string => policy.name,
-            value: (policy: Policy | undefined): string | undefined => policy?.pk,
-            selected: (policy: Policy): boolean => policy.pk === this.instance?.policy,
-        };
-    }
-
-    get groupSearchConfig() {
-        return {
-            fetchObjects: async (query?: string): Promise<Group[]> => {
-                const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(
-                    withQuery(query, {
-                        ordering: "name",
-                        includeUsers: false,
-                    }),
-                );
-                return groups.results;
+            groupsSelect: {
+                fetchObjects: async (query?: string): Promise<Group[]> => {
+                    const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(
+                        withQuery(query, {
+                            ordering: "name",
+                            includeUsers: false,
+                        }),
+                    );
+                    return groups.results;
+                },
+                renderElement: (group: Group): string => group.name,
+                value: (group: Group | undefined): string | undefined => group?.pk,
+                selected: (group: Group): boolean => group.pk === this.instance?.group,
             },
-            renderElement: (group: Group): string => group.name,
-            value: (group: Group | undefined): string | undefined => group?.pk,
-            selected: (group: Group): boolean => group.pk === this.instance?.group,
-        };
-    }
-
-    get userSearchConfig() {
-        return {
-            fetchObjects: async (query?: string): Promise<User[]> => {
-                const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList(
-                    withQuery(query, {
-                        ordering: "username",
-                    }),
-                );
-                return users.results;
+            usersSelect: {
+                fetchObjects: async (query?: string): Promise<User[]> => {
+                    const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList(
+                        withQuery(query, {
+                            ordering: "username",
+                        }),
+                    );
+                    return users.results;
+                },
+                renderElement: (user: User): string => user.username,
+                renderDescription: (user: User) => html`${user.name}`,
+                value: (user: User | undefined): number | undefined => user?.pk,
+                selected: (user: User): boolean => user.pk === this.instance?.user,
             },
-            renderElement: (user: User): string => user.username,
-            renderDescription: (user: User) => html`${user.name}`,
-            value: (user: User | undefined): number | undefined => user?.pk,
-            selected: (user: User): boolean => user.pk === this.instance?.user,
         };
     }
 
@@ -153,17 +142,14 @@ export class PolicyBindingFormView extends BasePanel {
     }
 
     render() {
-        return html` 
+        const { policiesSelect, groupsSelect, usersSelect } = this.searchSelectConfigs;
+
+        return html` <form class="pf-c-form">
             <div class="pf-c-card__body">${this.renderModeSelector()}</div>
             <div class="pf-c-card__footer">
-                ${this.renderSearch(
-                    msg("Policy"),
-                    "policy",
-                    this.policySearchConfig,
-                    target.policy,
-                )}
-                ${this.renderSearch(msg("Group"), "group", this.groupSearchConfig, target.group)}
-                ${this.renderSearch(msg("User"), "user", this.userSearchConfig, target.user)}
+                ${this.renderSearch(msg("Policy"), "policy", policiesSelect, target.policy)}
+                ${this.renderSearch(msg("Group"), "group", groupsSelect, target.group)}
+                ${this.renderSearch(msg("User"), "user", usersSelect, target.user)}
             </div>
             <ak-switch-input
                 name="enabled"
@@ -193,7 +179,7 @@ export class PolicyBindingFormView extends BasePanel {
                 label=${msg("Failure result")}
                 .options=${PASS_FAIL}
             ></ak-radio-input>
-        </div>`;
+        </form>`;
     }
 }
 

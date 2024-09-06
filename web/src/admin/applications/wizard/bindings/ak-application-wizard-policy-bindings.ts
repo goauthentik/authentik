@@ -3,9 +3,10 @@ import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-slug-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
-import { WizardStep } from "@goauthentik/components/ak-wizard-main/AkWizardStep";
+import { WizardStep } from "@goauthentik/components/ak-wizard-main/AkWizardStep.js";
+import { WizardNavigationEvent } from "@goauthentik/components/ak-wizard-main/events.js";
 import { WizardButton } from "@goauthentik/components/ak-wizard-main/types";
-import { Toolbar } from "@goauthentik/elements/ak-table/Toolbar";
+import { Toolbar } from "@goauthentik/elements/ak-table/Toolbar.js";
 import "@goauthentik/elements/ak-table/ak-select-table.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -56,7 +57,11 @@ export class ApplicationWizardPolicyBindingsToolbar extends Toolbar {
     }
 
     public override renderToolbar() {
-        return html`<button slot="trigger" class="pf-c-button pf-m-primary">
+        return html`<button
+            slot="trigger"
+            @click=${() => this.dispatchEvent(new WizardNavigationEvent("binding-form"))}
+            class="pf-c-button pf-m-primary"
+        >
             ${msg("Bind existing policy/group/user")}
         </button>`;
     }
@@ -74,26 +79,19 @@ export class ApplicationWizardPolicyBindings extends BasePanel {
             <ak-empty-state header=${msg("No bound policies.")} icon="pf-icon-module">
                 <div slot="body">${msg("No policies are currently bound to this object.")}</div>
                 <div slot="primary">
-                    <ak-forms-modal size=${PFSize.Medium}>
-                        <span slot="submit"> ${msg("Create")} </span>
-                        <span slot="header"> ${msg("Create Binding")} </span>
-                        <p>Insert static binding form here</p>
-                        <button
-                            @click=${this.onClick}
-                            slot="trigger"
-                            class="pf-c-button pf-m-primary"
-                        >
-                            ${msg("Bind existing policy/group/user")}
-                        </button>
-                    </ak-forms-modal>
+                    <button
+                        @click=${() =>
+                            this.dispatchEvent(new WizardNavigationEvent("binding-form"))}
+                        class="pf-c-button pf-m-primary"
+                    >
+                        ${msg("Bind existing policy/group/user")}
+                    </button>
                 </div>
             </ak-empty-state>`;
     }
 
     renderCollection() {
-        return html`<ak-application-wizard-policy-bindings-toolbar
-                @click=${this.onClick}
-            ></ak-application-wizard-policy-bindings-toolbar>
+        return html`<ak-application-wizard-policy-bindings-toolbar></ak-application-wizard-policy-bindings-toolbar>
             <ak-select-table
                 multiple
                 order="order"
