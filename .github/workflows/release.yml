@@ -38,4 +38,3 @@ jobs:
         release_name: v${{ github.event.inputs.version }}
         draft: false
         prerelease: false
-        token: ${{ secrets.K8S_GH_TOKEN }}
