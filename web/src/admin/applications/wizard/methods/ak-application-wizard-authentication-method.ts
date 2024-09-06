@@ -25,7 +25,9 @@ export class ProviderDetailsStep extends WizardStep {
 
     override get buttons(): WizardButton[] {
         return [
-            this.valid ? { kind: "next", destination: "submit" } : { kind: "next", disabled: true },
+            this.valid
+                ? { kind: "next", destination: "bindings" }
+                : { kind: "next", disabled: true },
             { kind: "back", destination: "provider-method" },
             { kind: "cancel" },
         ];

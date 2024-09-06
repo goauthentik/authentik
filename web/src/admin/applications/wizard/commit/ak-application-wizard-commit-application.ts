@@ -44,7 +44,7 @@ export class SubmitApplicationStep extends WizardStep {
     get buttons(): WizardButton[] {
         return this.valid
             ? [{ kind: "close" }]
-            : [{ kind: "back", destination: "provider-details" }, { kind: "cancel" }];
+            : [{ kind: "back", destination: "bindings" }, { kind: "cancel" }];
     }
 
     render() {
