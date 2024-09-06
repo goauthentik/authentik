@@ -8,15 +8,20 @@ on:
         description: 'Version to release'
         required: true
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   create-release:
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/stable'
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
-        ref: stable
+        fetch-depth: 0
 
     - name: Create a tag
       run: |
