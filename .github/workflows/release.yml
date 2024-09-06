@@ -30,13 +30,13 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.K8S_GH_TOKEN }}
 
-    # - name: Create a GitHub release
-    #   id: create_release
-    #   uses: actions/create-release@v1
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   with:
-    #     tag_name: v${{ github.event.inputs.version }}
-    #     release_name: v${{ github.event.inputs.version }}
-    #     draft: false
-    #     prerelease: false
+    - name: Create a GitHub release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ github.event.inputs.version }}
+        release_name: v${{ github.event.inputs.version }}
+        draft: false
+        prerelease: false
