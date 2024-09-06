@@ -28,40 +28,40 @@ on:
         type: string
         required: true
 jobs:
-  # Build-Authentik:
-  #   name: Build Authentik Image
-  #   runs-on: ubuntu-latest
-  #   environment: ${{ inputs.environment }}
-  #   env:
-  #     ENVIRONMENT: ${{ inputs.environment }}
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
+  Build-Authentik:
+    name: Build Authentik Image
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    env:
+      ENVIRONMENT: ${{ inputs.environment }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-  #     - name: Configure AWS credentials
-  #       uses: aws-actions/configure-aws-credentials@v4
-  #       with:
-  #         role-to-assume: ${{ secrets.SCRIBE2_GITHUB_ROLE }}
-  #         role-session-name: Github
-  #         aws-region: ${{ secrets.AWS_REGION }}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.SCRIBE2_GITHUB_ROLE }}
+          role-session-name: Github
+          aws-region: ${{ secrets.AWS_REGION }}
 
-  #     - name: Login to Amazon ECR
-  #       id: login-ecr
-  #       uses: aws-actions/amazon-ecr-login@v2
-  #       with:
-  #         mask-password: 'true'
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+        with:
+          mask-password: 'true'
 
-  #     - name: Build, Tag and Push Authentik Image to Amazon ECR
-  #       id: build-image
-  #       run: |
-  #         DOCKER_BUILDKIT=1 docker build -t ${{ steps.login-ecr.outputs.registry }}/authentik:${{ github.sha }} .
-  #         docker push ${{ steps.login-ecr.outputs.registry }}/authentik:${{ github.sha }}
+      - name: Build, Tag and Push Authentik Image to Amazon ECR
+        id: build-image
+        run: |
+          DOCKER_BUILDKIT=1 docker build -t ${{ steps.login-ecr.outputs.registry }}/authentik:${{ github.sha }} .
+          docker push ${{ steps.login-ecr.outputs.registry }}/authentik:${{ github.sha }}
 
   Update-Environment-Variable:
-    if: ${{ always() }}
+    if: ${{ always() && (needs.Build-Authentik.result == 'success') }}
     name: Update Environment Variable with Docker Image Tag
     runs-on: ubuntu-latest
-    # needs: [Build-Authentik]
+    needs: [Build-Authentik]
     steps:
       - name: Update Environment Variable
         run: |
