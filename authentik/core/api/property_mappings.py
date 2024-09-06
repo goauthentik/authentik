@@ -30,8 +30,10 @@ from authentik.core.api.utils import (
     PassiveSerializer,
 )
 from authentik.core.expression.evaluator import PropertyMappingEvaluator
+from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.models import Group, PropertyMapping, User
 from authentik.events.utils import sanitize_item
+from authentik.lib.utils.errors import exception_to_string
 from authentik.policies.api.exec import PolicyTestSerializer
 from authentik.rbac.decorators import permission_required
 
@@ -162,12 +164,15 @@ class PropertyMappingViewSet(
 
         response_data = {"successful": True, "result": ""}
         try:
-            result = mapping.evaluate(**context)
+            result = mapping.evaluate(dry_run=True, **context)
             response_data["result"] = dumps(
                 sanitize_item(result), indent=(4 if format_result else None)
             )
+        except PropertyMappingExpressionException as exc:
+            response_data["result"] = exception_to_string(exc.exc)
+            response_data["successful"] = False
         except Exception as exc:
-            response_data["result"] = str(exc)
+            response_data["result"] = exception_to_string(exc)
             response_data["successful"] = False
         response = PropertyMappingTestResultSerializer(response_data)
         return Response(response.data)

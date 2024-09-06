@@ -41,12 +41,13 @@ async function sourcesProvider(page = 1, search = "") {
     };
 }
 
-async function makeSourcesSelector(instanceSources: string[] | undefined) {
+function makeSourcesSelector(instanceSources: string[] | undefined) {
     const localSources = instanceSources ? new Set(instanceSources) : undefined;
 
     return localSources
         ? ([pk, _]: DualSelectPair) => localSources.has(pk)
-        : ([_0, _1, _2, source]: DualSelectPair<Source>) =>
+        : // Creating a new instance, auto-select built-in source only when no other sources exist
+          ([_0, _1, _2, source]: DualSelectPair<Source>) =>
               source !== undefined && source.component === "";
 }
 
@@ -75,11 +76,11 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                 stageUuid: this.instance.pk || "",
                 identificationStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesIdentificationCreate({
-                identificationStageRequest: data,
-            });
         }
+
+        return new StagesApi(DEFAULT_CONFIG).stagesIdentificationCreate({
+            identificationStageRequest: data,
+        });
     }
 
     isUserFieldSelected(field: UserFieldsEnum): boolean {
@@ -232,12 +233,12 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                         ?required=${true}
                         name="sources"
                     >
-                        <ak-dual-select-provider-dynamic-selected
+                        <ak-dual-select-dynamic-selected
                             .provider=${sourcesProvider}
-                            .selected=${makeSourcesSelector(this.instance?.sources)}
+                            .selector=${makeSourcesSelector(this.instance?.sources)}
                             available-label="${msg("Available Stages")}"
                             selected-label="${msg("Selected Stages")}"
-                        ></ak-dual-select-provider-dynamic-selected>
+                        ></ak-dual-select-dynamic-selected>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Select sources should be shown for users to authenticate with. This only affects web-based sources, not LDAP.",
