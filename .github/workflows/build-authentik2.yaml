@@ -30,9 +30,6 @@ jobs:
     if: github.event_name == 'workflow_dispatch'
     name: Build Authentik Image
     runs-on: ubuntu-latest
-    environment: dev
-    env:
-      ENVIRONMENT: dev
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -40,9 +37,9 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.SCRIBE2_GITHUB_ROLE }}
+          role-to-assume: ${{ secrets.SCRIBE2_GITHUB_ROLE_DEV }}
           role-session-name: Github
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: ${{ secrets.AWS_REGION_DEV }}
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -67,39 +64,34 @@ jobs:
       - name: Configure AWS credentials for Dev
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.SCRIBE2_GITHUB_ROLE }}
+          role-to-assume: ${{ secrets.SCRIBE2_GITHUB_ROLE_DEV }}
           role-session-name: Github
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: ${{ secrets.AWS_REGION_DEV }}
 
       - name: Login to Amazon ECR (Dev)
         id: login-ecr-dev
         uses: aws-actions/amazon-ecr-login@v2
         with:
-          registry: ${{ secrets.DEV_ECR_REGISTRY }}
           mask-password: 'true'
 
       - name: Build, Tag, and Push Authentik Image to Dev ECR
         id: build-image-dev
         run: |
-          # Build the image
           DOCKER_BUILDKIT=1 docker build -t authentik:${{ needs.Stage-Setup-Release.outputs.tag_name }} .
-
-          # Tag and Push to Dev ECR
           docker tag authentik:${{ needs.Stage-Setup-Release.outputs.tag_name }} ${{ steps.login-ecr-dev.outputs.registry }}/authentik:${{ needs.Stage-Setup-Release.outputs.tag_name }}
           docker push ${{ steps.login-ecr-dev.outputs.registry }}/authentik:${{ needs.Stage-Setup-Release.outputs.tag_name }}
 
       - name: Configure AWS credentials for Prod
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.SCRIBE2_GITHUB_ROLE }}
+          role-to-assume: ${{ secrets.SCRIBE2_GITHUB_ROLE_PROD }}
           role-session-name: Github
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: ${{ secrets.AWS_REGION_PROD }}
 
       - name: Login to Amazon ECR (Prod)
         id: login-ecr-prod
         uses: aws-actions/amazon-ecr-login@v2
         with:
-          registry: ${{ secrets.PROD_ECR_REGISTRY }}
           mask-password: 'true'
 
       - name: Tag and Push Authentik Image to Prod ECR
