@@ -22,7 +22,6 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
-        token: ${{ secrets.PAT_TOKEN }}
 
     - name: Create tag
       id: create-tag
@@ -37,7 +36,7 @@ jobs:
       id: create_release
       uses: actions/create-release@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
       with:
         tag_name: v${{ github.event.inputs.version }}
         release_name: v${{ github.event.inputs.version }}
