@@ -23,12 +23,19 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Create a tag
-      run: |
-        git tag v${{ github.event.inputs.version }}
-        git push origin v${{ github.event.inputs.version }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.K8S_GH_TOKEN }}
+    # - name: Create a tag
+    #   run: |
+    #     git tag v${{ github.event.inputs.version }}
+    #     git push origin v${{ github.event.inputs.version }}
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.K8S_GH_TOKEN }}
+        
+    - uses: rickstaa/action-create-tag@v1
+      id: "tag_create"
+      with:
+        tag: ${{ github.event.inputs.version }}
+        tag_exists_error: false
+        message: "Latest release"
 
     - name: Create a GitHub release
       id: create_release
