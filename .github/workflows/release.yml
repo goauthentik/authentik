@@ -1,0 +1,37 @@
+name: Create Release
+run-name: Create Release for version ${{ github.event.inputs.version }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release'
+        required: true
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        ref: stable
+
+    - name: Create a tag
+      run: |
+        git tag v${{ github.event.inputs.version }}
+        git push origin v${{ github.event.inputs.version }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.K8S_GH_TOKEN }}
+
+    - name: Create a GitHub release
+      id: create_release
+      uses: actions/create-release@v1
+      with:
+        tag_name: v${{ github.event.inputs.version }}
+        release_name: v${{ github.event.inputs.version }}
+        draft: false
+        prerelease: false
+        generate_release_notes: true
+        token: ${{ secrets.K8S_GH_TOKEN }}
