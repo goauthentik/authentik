@@ -22,7 +22,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
-        token: ${{ secrets.K8S_GH_TOKEN }}
+        token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Create tag
       id: create-tag
