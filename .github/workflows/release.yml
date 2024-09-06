@@ -15,7 +15,7 @@ concurrency:
 jobs:
   create-release:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/stable'
+    if: github.ref == 'refs/heads/supreme'
 
     steps:
     - name: Checkout code
