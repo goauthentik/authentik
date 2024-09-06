@@ -1,5 +1,4 @@
 name: Build and Push Authentik Image
-run-name: ${{ github.event_name == 'workflow_dispatch' && format('Build Authentik from {0}', github.ref) || github.event_name == 'release' && format('Building Authentik image with latest tag {0}', github.ref) }}
 
 permissions:
   id-token: write
