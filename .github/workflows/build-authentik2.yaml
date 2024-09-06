@@ -10,6 +10,7 @@ on:
       - created
     tags:
       - 'v**'
+  workflow_dispatch:
 
 jobs:
   Stage-Setup-Release:
@@ -57,6 +58,7 @@ jobs:
   Build-Authentik-Image-Release:
     if: github.event_name == 'release' && startsWith(github.ref, 'refs/tags/v')
     name: Build and Push Authentik Image
+    needs: [Stage-Setup-Release]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
