@@ -1,4 +1,4 @@
-name: Create Release
+name: Create Release for Authentik
 run-name: Create Release for version ${{ github.event.inputs.version }}
 
 on:
