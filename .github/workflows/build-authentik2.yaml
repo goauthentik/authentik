@@ -10,7 +10,6 @@ on:
       - created
     tags:
       - 'v**'
-  workflow_dispatch:
 
 jobs:
   Stage-Setup-Release:
