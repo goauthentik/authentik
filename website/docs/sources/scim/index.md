@@ -34,6 +34,43 @@ See the [overview](../property-mappings/index.md) for information on how propert
 
 ### Expression data
 
-The following variables are available to SCIM source property mappings:
+Each top level SCIM attribute is available as a variable in the expression. For example given an SCIM request with the payload of
 
--   `data`: A Python dictionary containing data from the SCIM source.
+```json
+{
+    "schemas": [
+        "urn:scim:schemas:core:2.0",
+        "urn:scim:schemas:extension:enterprise:2.0"
+    ],
+    "userName": "foo.bar",
+    "name": {
+        "familyName": "bar",
+        "givenName": "foo",
+        "formatted": "foo.bar"
+    },
+    "emails": [
+        {
+            "value": "foo.bar@authentik.company",
+            "type": "work",
+            "primary": true
+        }
+    ],
+    "title": "",
+    "urn:scim:schemas:extension:enterprise:2.0": {
+        "department": ""
+    }
+}
+```
+
+The following variables are available in the expression:
+
+-   `schemas` as a list of strings
+-   `userName` as a string
+-   `name` as a dictionary
+-   `emails` as a dictionary
+-   `title` as a string
+-   `urn_scim_schemas_extension_enterprise_2_0` as a dictionary
+
+    :::info
+    Top-level keys which include symbols not allowed in python syntax are converted to `_`.
+    :::
