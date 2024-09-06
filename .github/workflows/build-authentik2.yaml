@@ -17,27 +17,6 @@ jobs:
     if: github.event_name == 'release' && startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     outputs:
-      tag_name: ${{ steps.extract-tag.outputs.tag
-
-
-
-permissions:
-  id-token: write
-  contents: read
-
-on:
-  release:
-    types:
-      - created
-    tags:
-      - 'v**'
-  workflow_dispatch:
-
-jobs:
-  Stage-Setup-Release:
-    if: github.event_name == 'release' && startsWith(github.ref, 'refs/tags/v')
-    runs-on: ubuntu-latest
-    outputs:
       tag_name: ${{ steps.extract-tag.outputs.tag_name }}
     steps:
       - name: Checkout
