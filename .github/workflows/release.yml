@@ -36,7 +36,7 @@ jobs:
       id: create_release
       uses: actions/create-release@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.K8S_GH_TOKEN }}
       with:
         tag_name: v${{ github.event.inputs.version }}
         release_name: v${{ github.event.inputs.version }}
