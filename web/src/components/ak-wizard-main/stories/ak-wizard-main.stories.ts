@@ -1,4 +1,4 @@
-import type { WizardStep } from "@goauthentik/components/ak-wizard-main/types";
+import type { WizardStep } from "@goauthentik/components/ak-wizard-main/AkWizardStep";
 import "@goauthentik/elements/messages/MessageContainer";
 import { Meta } from "@storybook/web-components";
 

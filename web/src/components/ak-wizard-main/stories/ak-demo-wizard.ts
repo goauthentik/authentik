@@ -1,5 +1,3 @@
-import type { WizardStep } from "@goauthentik/components/ak-wizard-main/types";
-
 import { msg } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { html } from "lit";
@@ -9,26 +7,39 @@ import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { AkWizard } from "../AkWizard";
-import { BackStep, CancelWizard, CloseWizard, NextStep } from "../commonWizardButtons";
+import { WizardStep } from "../AkWizardStep";
+import { WizardButton } from "../types";
 
 type WizardStateUpdate = {
     message: string;
 };
 
-const dummySteps: WizardStep[] = [
-    {
-        label: "Test Step1",
-        render: () => html`<h2>This space intentionally left blank today</h2>`,
-        disabled: false,
-        buttons: [NextStep, CancelWizard],
-    },
-    {
-        label: "Test Step 2",
-        render: () => html`<h2>This space also intentionally left blank</h2>`,
-        disabled: false,
-        buttons: [BackStep, CloseWizard],
-    },
-];
+class Step1 extends WizardStep {
+    id = "test-step-1";
+    label = "Test Step 1";
+    disabled = false;
+    valid = true;
+    get buttons(): WizardButton[] {
+        return [{ kind: "next", destination: "test-step-2" }, { kind: "cancel" }];
+    }
+
+    render() {
+        return html`<h2>This space intentionally left blank</h2>`;
+    }
+}
+
+class Step2 extends WizardStep {
+    id = "test-step-2";
+    label = "Test Step 2";
+    disabled = false;
+    valid = true;
+    get buttons(): WizardButton[] {
+        return [{ kind: "back", destination: "test-step-1" }, { kind: "close" }];
+    }
+    render() {
+        return html`<h2>This space also intentionally left blank</h2>`;
+    }
+}
 
 @customElement("ak-demo-wizard")
 export class ApplicationWizard extends AkWizard<WizardStateUpdate, WizardStep> {
@@ -38,10 +49,14 @@ export class ApplicationWizard extends AkWizard<WizardStateUpdate, WizardStep> {
 
     constructor() {
         super(msg("Open Wizard"), msg("Demo Wizard"), msg("Run the demo wizard"));
-        this.steps = [...dummySteps];
+    }
+
+    newSteps() {
+        return [new Step1(), new Step2()];
     }
 
     close() {
+        super.close();
         this.frame.value!.open = false;
     }
 }

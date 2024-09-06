@@ -22,6 +22,7 @@ import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";
+import { WizardStep } from "@goauthentik/components/ak-wizard-main/AkWizardStep";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -36,6 +37,9 @@ import { type OAuth2Provider, type PaginatedOAuthSourceList } from "@goauthentik
 
 import BaseProviderPanel from "../BaseProviderPanel";
 
+const CLIENT_ID_DEFAULT_LENGTH = 40;
+const CLIENT_SECRET_DEFAULT_LENGTH = 128;
+
 @customElement("ak-application-wizard-authentication-by-oauth")
 export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
     @state()
@@ -44,8 +48,8 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
     @state()
     oauthSources?: PaginatedOAuthSourceList;
 
-    constructor() {
-        super();
+    constructor(step: WizardStep) {
+        super(step);
         new SourcesApi(DEFAULT_CONFIG)
             .sourcesOauthList({
                 ordering: "name",
@@ -120,7 +124,8 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                         <ak-text-input
                             name="clientId"
                             label=${msg("Client ID")}
-                            value=${provider?.clientId ?? randomString(40, ascii_letters + digits)}
+                            value=${provider?.clientId ??
+                            randomString(CLIENT_ID_DEFAULT_LENGTH, ascii_letters + digits)}
                             .errorMessages=${errors?.clientId ?? []}
                             required
                         >
@@ -130,7 +135,7 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                             name="clientSecret"
                             label=${msg("Client Secret")}
                             value=${provider?.clientSecret ??
-                            randomString(128, ascii_letters + digits)}
+                            randomString(CLIENT_SECRET_DEFAULT_LENGTH, ascii_letters + digits)}
                             .errorMessages=${errors?.clientSecret ?? []}
                             ?hidden=${!this.showClientSecret}
                         >

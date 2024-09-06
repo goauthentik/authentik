@@ -1,5 +1,3 @@
-import { type WizardStep } from "@goauthentik/components/ak-wizard-main/types";
-
 import {
     type ApplicationRequest,
     type LDAPProviderRequest,
@@ -35,9 +33,4 @@ type StatusType = "invalid" | "valid" | "submitted" | "failed";
 export type ApplicationWizardStateUpdate = {
     update?: ApplicationWizardState;
     status?: StatusType;
-};
-
-export type ApplicationStep = WizardStep & {
-    id: string;
-    valid: boolean;
 };

@@ -1,9 +1,11 @@
 import { policyOptions } from "@goauthentik/admin/applications/ApplicationForm";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-slug-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
+import { WizardStep } from "@goauthentik/components/ak-wizard-main/AkWizardStep";
+import { WizardButton } from "@goauthentik/components/ak-wizard-main/types";
+import { bound } from "@goauthentik/elements/decorators/bound";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
@@ -14,13 +16,37 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import BasePanel from "../BasePanel";
 
+export class ApplicationStep extends WizardStep {
+    id = "application";
+    label = msg("Application Details");
+    disabled = false;
+    valid = false;
+
+    get buttons(): WizardButton[] {
+        return [
+            this.valid
+                ? { kind: "next", destination: "provider-method" }
+                : { kind: "next", disabled: true },
+            { kind: "cancel" },
+        ];
+    }
+
+    render() {
+        return html`<ak-application-wizard-application-details
+            .step=${this}
+        ></ak-application-wizard-application-details>`;
+    }
+}
+
 @customElement("ak-application-wizard-application-details")
 export class ApplicationWizardApplicationDetails extends BasePanel {
+    @bound
     handleChange(_ev: Event) {
         const formValues = this.formValues;
         if (!formValues) {
             throw new Error("No application values on form?");
         }
+        this.step.valid = this.valid;
         this.dispatchWizardUpdate({
             update: {
                 ...this.wizard,
@@ -81,7 +107,7 @@ export class ApplicationWizardApplicationDetails extends BasePanel {
                     ></ak-text-input>
                     <ak-switch-input
                         name="openInNewTab"
-                        ?checked=${first(this.wizard.app?.openInNewTab, false)}
+                        ?checked=${this.wizard.app?.openInNewTab ?? false}
                         label=${msg("Open in new tab")}
                         help=${msg(
                             "If checked, the launch URL will open in a new browser tab or window from the user's application library.",
@@ -93,8 +119,6 @@ export class ApplicationWizardApplicationDetails extends BasePanel {
         </form>`;
     }
 }
-
-export default ApplicationWizardApplicationDetails;
 
 declare global {
     interface HTMLElementTagNameMap {

@@ -7,6 +7,7 @@ import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-multi-select";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
+import { WizardStep } from "@goauthentik/components/ak-wizard-main/AkWizardStep";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
@@ -24,8 +25,8 @@ export class ApplicationWizardAuthenticationBySCIM extends BaseProviderPanel {
     @state()
     propertyMappings?: PaginatedSCIMMappingList;
 
-    constructor() {
-        super();
+    constructor(step: WizardStep) {
+        super(step);
         new PropertymappingsApi(DEFAULT_CONFIG)
             .propertymappingsProviderScimList({
                 ordering: "managed",

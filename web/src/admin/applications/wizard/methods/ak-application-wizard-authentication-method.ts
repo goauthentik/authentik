@@ -1,4 +1,9 @@
+import { WizardStep } from "@goauthentik/components/ak-wizard-main/AkWizardStep";
+import { WizardButton } from "@goauthentik/components/ak-wizard-main/types";
+
+import { msg } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
+import { html } from "lit";
 
 import BasePanel from "../BasePanel";
 import { providerRendererList } from "../auth-method-choice/ak-application-wizard-authentication-method-choice.choices";
@@ -12,6 +17,27 @@ import "./radius/ak-application-wizard-authentication-by-radius";
 import "./saml/ak-application-wizard-authentication-by-saml-configuration";
 import "./scim/ak-application-wizard-authentication-by-scim";
 
+export class ProviderDetailsStep extends WizardStep {
+    id = "provider-details";
+    label = msg("Provider Configuration");
+    disabled = true;
+    valid = false;
+
+    override get buttons(): WizardButton[] {
+        return [
+            this.valid ? { kind: "next", destination: "submit" } : { kind: "next", disabled: true },
+            { kind: "back", destination: "provider-method" },
+            { kind: "cancel" },
+        ];
+    }
+
+    render() {
+        return html`<ak-application-wizard-authentication-method
+            .step=${this}
+        ></ak-application-wizard-authentication-method>`;
+    }
+}
+
 @customElement("ak-application-wizard-authentication-method")
 export class ApplicationWizardApplicationDetails extends BasePanel {
     render() {
@@ -21,7 +47,7 @@ export class ApplicationWizardApplicationDetails extends BasePanel {
                 "Unrecognized authentication method in ak-application-wizard-authentication-method",
             );
         }
-        return handler();
+        return handler(this.step);
     }
 }
 

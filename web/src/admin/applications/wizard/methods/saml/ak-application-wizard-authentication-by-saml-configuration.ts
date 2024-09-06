@@ -10,6 +10,7 @@ import "@goauthentik/components/ak-number-input";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
+import { WizardStep } from "@goauthentik/components/ak-wizard-main/AkWizardStep";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
@@ -41,8 +42,8 @@ export class ApplicationWizardProviderSamlConfiguration extends BaseProviderPane
     @state()
     hasSigningKp = false;
 
-    constructor() {
-        super();
+    constructor(step: WizardStep) {
+        super(step);
         new PropertymappingsApi(DEFAULT_CONFIG)
             .propertymappingsProviderSamlList({
                 ordering: "saml_name",
@@ -174,8 +175,10 @@ export class ApplicationWizardProviderSamlConfiguration extends BaseProviderPane
                                 certificate=${ifDefined(provider?.signingKp ?? undefined)}
                                 @input=${(ev: InputEvent) => {
                                     const target = ev.target as AkCryptoCertificateSearch;
-                                    if (!target) return;
-                                    this.hasSigningKp = !!target.selectedKeypair;
+                                    if (!target) {
+                                        return;
+                                    }
+                                    this.hasSigningKp = Boolean(target.selectedKeypair);
                                 }}
                             ></ak-crypto-certificate-search>
                             <p class="pf-c-form__helper-text">
