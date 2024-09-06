@@ -1,4 +1,5 @@
-name: Build and Push Authentik Image
+name: Build Authentik Image
+run-name: Building Authentik Image
 
 permissions:
   id-token: write
