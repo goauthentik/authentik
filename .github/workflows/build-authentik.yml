@@ -58,7 +58,7 @@ jobs:
   #         docker push ${{ steps.login-ecr.outputs.registry }}/authentik:${{ github.sha }}
 
   Update-Environment-Variable:
-    if: ${{ always() && (needs.Build-Authentik.result == 'success') }}
+    if: ${{ always() }}
     name: Update Environment Variable with Docker Image Tag
     runs-on: ubuntu-latest
     # needs: [Build-Authentik]
