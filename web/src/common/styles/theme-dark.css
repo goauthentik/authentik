@@ -155,7 +155,7 @@ select[multiple] option:checked {
     background-color: var(--ak-dark-background-light);
 }
 .pf-c-form-control[readonly] {
-    background-color: var(--ak-dark-background-light);
+    background-color: var(--ak-dark-background-light) !important;
 }
 .pf-c-switch__input:checked ~ .pf-c-switch__label {
     --pf-c-switch__input--checked__label--Color: var(--ak-dark-foreground);
