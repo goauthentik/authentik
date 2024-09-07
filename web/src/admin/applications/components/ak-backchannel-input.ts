@@ -57,7 +57,7 @@ export class AkBackchannelProvidersInput extends AKElement {
     render() {
         const renderOneChip = (provider: Provider) =>
             html`<ak-chip
-                .removable=${true}
+                removable
                 value=${ifDefined(provider.pk)}
                 @remove=${this.remover(provider)}
                 >${provider.name}</ak-chip

@@ -90,7 +90,7 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
                     <ak-chip-group>
                         ${this.usersToAdd.map((user) => {
                             return html`<ak-chip
-                                .removable=${true}
+                                removable
                                 value=${ifDefined(user.pk)}
                                 @remove=${() => {
                                     const idx = this.usersToAdd.indexOf(user);
