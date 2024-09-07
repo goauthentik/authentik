@@ -114,7 +114,7 @@ export class GroupForm extends ModelForm<Group, string> {
                     .selected=${(group: Group): boolean => {
                         return group.pk === this.instance?.parent;
                     }}
-                    ?blankable=${true}
+                    blankable
                 >
                 </ak-search-select>
             </ak-form-element-horizontal>

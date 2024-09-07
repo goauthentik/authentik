@@ -175,7 +175,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     <span class="pf-c-switch__label">${msg("Sync groups")}</span>
                 </label>
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Connection settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
@@ -347,7 +347,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                             .selected=${(group: Group): boolean => {
                                 return group.pk === this.instance?.syncParentGroup;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">

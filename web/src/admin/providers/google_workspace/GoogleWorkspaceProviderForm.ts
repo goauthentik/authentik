@@ -58,7 +58,7 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
@@ -207,7 +207,7 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                             .selected=${(group: Group): boolean => {
                                 return group.pk === this.instance?.filterGroup;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">

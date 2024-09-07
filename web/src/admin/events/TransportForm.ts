@@ -143,7 +143,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                     .selected=${(item: NotificationWebhookMapping): boolean => {
                         return this.instance?.webhookMapping === item.pk;
                     }}
-                    ?blankable=${true}
+                    blankable
                 >
                 </ak-search-select>
             </ak-form-element-horizontal>

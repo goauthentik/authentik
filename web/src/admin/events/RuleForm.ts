@@ -110,7 +110,7 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                     .selected=${(group: Group): boolean => {
                         return group.pk === this.instance?.group;
                     }}
-                    ?blankable=${true}
+                    blankable
                 >
                 </ak-search-select>
                 <p class="pf-c-form__helper-text">

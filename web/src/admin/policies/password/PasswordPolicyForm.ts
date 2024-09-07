@@ -144,7 +144,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
 
     renderHIBP(): TemplateResult {
         return html`
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("HaveIBeenPwned settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
@@ -169,7 +169,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
 
     renderZxcvbn(): TemplateResult {
         return html`
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("zxcvbn settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal

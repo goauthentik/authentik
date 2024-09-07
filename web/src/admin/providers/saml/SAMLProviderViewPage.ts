@@ -539,7 +539,7 @@ export class SAMLProviderViewPage extends AKElement {
                                     .selected=${(user: User): boolean => {
                                         return user.pk === this.previewUser?.pk;
                                     }}
-                                    ?blankable=${true}
+                                    blankable
                                     @ak-change=${(ev: CustomEvent) => {
                                         this.previewUser = ev.detail.value;
                                         this.fetchPreview();

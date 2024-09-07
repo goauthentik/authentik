@@ -57,7 +57,7 @@ export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="userCreationMode">
@@ -183,7 +183,7 @@ export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
                             .selected=${(group: Group): boolean => {
                                 return group.pk === this.instance?.createUsersGroup;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">

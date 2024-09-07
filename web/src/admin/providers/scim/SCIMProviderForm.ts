@@ -76,7 +76,7 @@ export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("URL")} required name="url">
@@ -153,7 +153,7 @@ export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
                             .selected=${(group: Group): boolean => {
                                 return group.pk === this.instance?.filterGroup;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">

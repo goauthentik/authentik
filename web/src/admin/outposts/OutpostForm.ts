@@ -203,7 +203,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                         }
                         return selected;
                     }}
-                    ?blankable=${true}
+                    blankable
                 >
                 </ak-search-select>
                 <p class="pf-c-form__helper-text">

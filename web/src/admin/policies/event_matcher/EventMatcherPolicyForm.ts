@@ -78,7 +78,7 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Policy-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Action")} name="action">
@@ -100,7 +100,7 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                             .selected=${(item: TypeCreate): boolean => {
                                 return this.instance?.action === item.component;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
@@ -138,7 +138,7 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                             .selected=${(item: App): boolean => {
                                 return this.instance?.app === item.name;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
@@ -168,7 +168,7 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                             .selected=${(item: App): boolean => {
                                 return this.instance?.model === item.name;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">

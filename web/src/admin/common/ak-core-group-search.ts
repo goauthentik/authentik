@@ -95,7 +95,7 @@ export class CoreGroupSearch extends CustomListenerElement(AKElement) {
                 .value=${renderValue}
                 .selected=${this.selected}
                 @ak-change=${this.handleSearchUpdate}
-                ?blankable=${true}
+                blankable
             >
             </ak-search-select>
         `;

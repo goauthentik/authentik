@@ -109,7 +109,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("User fields")} name="userFields">
@@ -152,7 +152,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                             .selected=${(stage: Stage): boolean => {
                                 return stage.pk === this.instance?.passwordStage;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">

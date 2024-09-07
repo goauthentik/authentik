@@ -72,7 +72,7 @@ export class MockSearch extends CustomListenerElement(AKElement) {
                 .selected=${this.selected}
                 managed
                 @ak-change=${this.handleSearchUpdate}
-                ?blankable=${true}
+                blankable
             >
             </ak-search-select>
         `;

@@ -135,7 +135,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                                   .selected=${(item: BlueprintFile): boolean => {
                                       return this.instance?.path === item.path;
                                   }}
-                                  ?blankable=${true}
+                                  blankable
                               >
                               </ak-search-select>
                           </ak-form-element-horizontal>`

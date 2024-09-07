@@ -135,7 +135,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
         if (!this.providerType?.urlsCustomizable) {
             return html``;
         }
-        return html` <ak-form-group .expanded=${true}>
+        return html` <ak-form-group expanded>
             <span slot="header"> ${msg("URL settings")} </span>
             <div slot="body" class="pf-c-form">
                 <ak-form-element-horizontal
@@ -418,7 +418,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                       <p class="pf-c-form__helper-text">${iconHelperText}</p>
                   </ak-form-element-horizontal>`}
 
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal

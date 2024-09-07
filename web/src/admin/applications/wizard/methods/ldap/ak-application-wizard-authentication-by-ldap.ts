@@ -91,7 +91,7 @@ export class ApplicationWizardApplicationDetails extends WithBrandConfig(BasePro
                 >
                 </ak-switch-input>
 
-                <ak-form-group .expanded=${true}>
+                <ak-form-group expanded>
                     <span slot="header"> ${msg("Protocol settings")} </span>
                     <div slot="body" class="pf-c-form">
                         <ak-text-input

@@ -79,7 +79,7 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Backends")} required name="backends">
@@ -134,7 +134,7 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                                 }
                                 return selected;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">

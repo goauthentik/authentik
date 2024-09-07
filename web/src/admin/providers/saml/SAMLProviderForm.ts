@@ -118,7 +118,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                 </p>
             </ak-form-element-horizontal>
 
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("ACS URL")} required name="acsUrl">
@@ -311,7 +311,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                             .selected=${(item: SAMLPropertyMapping): boolean => {
                                 return this.instance?.nameIdMapping === item.pk;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
