@@ -120,6 +120,11 @@ jobs:
         with:
           flags: unit
           token: ${{ secrets.CODECOV_TOKEN }}
+      - if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          flags: unit
+          token: ${{ secrets.CODECOV_TOKEN }}
   test-integration:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -135,6 +140,11 @@ jobs:
           poetry run coverage xml
       - if: ${{ always() }}
         uses: codecov/codecov-action@v4
+        with:
+          flags: integration
+          token: ${{ secrets.CODECOV_TOKEN }}
+      - if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
         with:
           flags: integration
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -187,6 +197,11 @@ jobs:
           poetry run coverage xml
       - if: ${{ always() }}
         uses: codecov/codecov-action@v4
+        with:
+          flags: e2e
+          token: ${{ secrets.CODECOV_TOKEN }}
+      - if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
         with:
           flags: e2e
           token: ${{ secrets.CODECOV_TOKEN }}
