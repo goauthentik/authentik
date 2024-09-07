@@ -124,6 +124,7 @@ jobs:
         uses: codecov/test-results-action@v1
         with:
           flags: unit
+          file: unittest.xml
           token: ${{ secrets.CODECOV_TOKEN }}
   test-integration:
     runs-on: ubuntu-latest
@@ -147,6 +148,7 @@ jobs:
         uses: codecov/test-results-action@v1
         with:
           flags: integration
+          file: unittest.xml
           token: ${{ secrets.CODECOV_TOKEN }}
   test-e2e:
     name: test-e2e (${{ matrix.job.name }})
@@ -204,6 +206,7 @@ jobs:
         uses: codecov/test-results-action@v1
         with:
           flags: e2e
+          file: unittest.xml
           token: ${{ secrets.CODECOV_TOKEN }}
   ci-core-mark:
     needs:
