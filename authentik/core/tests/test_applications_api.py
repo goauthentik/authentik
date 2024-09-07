@@ -9,9 +9,11 @@ from rest_framework.test import APITestCase
 
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.models import OAuth2Provider
+from authentik.providers.proxy.models import ProxyProvider
 
 
 class TestApplicationsAPI(APITestCase):
@@ -222,3 +224,15 @@ class TestApplicationsAPI(APITestCase):
                 ],
             },
         )
+
+    def test_get_provider(self):
+        """Ensure that proxy providers (at the time of writing that is the only provider
+        that inherits from another proxy type (OAuth) instead of inheriting from the root
+        provider class) is correctly looked up and selected from the database"""
+        provider = ProxyProvider.objects.create(name=generate_id())
+        app = Application.objects.create(
+            name=generate_id(),
+            slug=generate_id(),
+            provider=provider,
+        )
+        self.assertEqual(app.get_provider(), provider)
