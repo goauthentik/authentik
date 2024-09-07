@@ -58,7 +58,7 @@ Only settings that have been modified from default have been listed.
 -   End Session Endpoint URL: `https://authentik.company/application/o/wordpress/end-session/`
 
 :::note
-Make sure to include the _offline_access_ scope to ensure refresh tokens are generated. Otherwise your session will expire and force users to manually login again. Refer to the [Oauth 2.0 Core specification](https://openid.net/specs/openid-connect-core-1_0.html#OfflineAccess) for more information 
+Make sure to include the _offline_access_ scope to ensure refresh tokens are generated. Otherwise your session will expire and force users to manually login again. Refer to the [OpenID Connect Core specification](https://openid.net/specs/openid-connect-core-1_0.html#OfflineAccess) for more information 
 :::
 
 :::note
