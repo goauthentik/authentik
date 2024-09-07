@@ -240,7 +240,7 @@ export class OAuthSourceViewPage extends AKElement {
                             )}
                         </div>
                         <div class="pf-c-card__body">
-                            <ak-bound-policies-list .target=${this.source.pk} ?policyOnly=${true}>
+                            <ak-bound-policies-list .target=${this.source.pk} policyOnly>
                             </ak-bound-policies-list>
                         </div>
                     </div>

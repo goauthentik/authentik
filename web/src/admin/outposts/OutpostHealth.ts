@@ -49,7 +49,7 @@ export class OutpostHealthElement extends AKElement {
                 </dt>
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">
-                        <ak-label color=${PFColor.Green} ?compact=${true}>
+                        <ak-label color=${PFColor.Green} compact>
                             ${msg(
                                 str`${getRelativeTime(this.outpostHealth.lastSeen)} (${this.outpostHealth.lastSeen?.toLocaleTimeString()})`,
                             )}
@@ -64,12 +64,12 @@ export class OutpostHealthElement extends AKElement {
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">
                         ${this.outpostHealth.versionOutdated
-                            ? html`<ak-label color=${PFColor.Red} ?compact=${true}
+                            ? html`<ak-label color=${PFColor.Red} compact
                                   >${msg(
                                       str`${this.outpostHealth.version}, should be ${this.outpostHealth.versionShould}`,
                                   )}
                               </ak-label>`
-                            : html`<ak-label color=${PFColor.Green} ?compact=${true}
+                            : html`<ak-label color=${PFColor.Green} compact
                                   >${versionString}
                               </ak-label>`}
                     </div>

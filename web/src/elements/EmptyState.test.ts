@@ -20,7 +20,7 @@ const render = (body: TemplateResult) => {
 
 describe("ak-empty-state", () => {
     it("should render the default loader", async () => {
-        render(html`<ak-empty-state ?loading=${true} header=${msg("Loading")}> </ak-empty-state>`);
+        render(html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`);
 
         const empty = await $("ak-empty-state").$(">>>.pf-c-empty-state__icon");
         await expect(empty).toExist();

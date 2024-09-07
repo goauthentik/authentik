@@ -51,7 +51,7 @@ export class Route {
         if (this.callback) {
             return html`${until(
                 this.callback(args),
-                html`<ak-empty-state ?loading=${true}></ak-empty-state>`,
+                html`<ak-empty-state loading></ak-empty-state>`,
             )}`;
         }
         if (this.element) {

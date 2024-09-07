@@ -263,7 +263,7 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
 
     renderTabCredentialsToken(user: User): TemplateResult {
         return html`
-            <ak-tabs pageIdentifier="userCredentialsTokens" ?vertical=${true}>
+            <ak-tabs pageIdentifier="userCredentialsTokens" vertical>
                 <section
                     slot="page-sessions"
                     data-tab-title="${msg("Sessions")}"

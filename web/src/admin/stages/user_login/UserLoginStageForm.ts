@@ -63,7 +63,7 @@ export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
                             )}
                         </p>
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>
-                        <ak-alert ?inline=${true}>
+                        <ak-alert inline>
                             ${msg(
                                 "Different browsers handle session cookies differently, and might not remove them even when the browser is closed.",
                             )}

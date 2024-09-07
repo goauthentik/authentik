@@ -33,7 +33,7 @@ export class SourceViewPage extends AKElement {
 
     renderSource(): TemplateResult {
         if (!this.source) {
-            return html`<ak-empty-state ?loading=${true} ?fullHeight=${true}></ak-empty-state>`;
+            return html`<ak-empty-state loading fullHeight></ak-empty-state>`;
         }
         switch (this.source?.component) {
             case "ak-source-ldap-form":

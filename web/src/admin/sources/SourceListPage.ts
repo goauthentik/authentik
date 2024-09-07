@@ -86,7 +86,7 @@ export class SourceListPage extends TablePage<Source> {
                 <div>${item.name}</div>
                 ${item.enabled
                     ? html``
-                    : html`<ak-label color=${PFColor.Orange} ?compact=${true}>
+                    : html`<ak-label color=${PFColor.Orange} compact>
                           ${msg("Disabled")}</ak-label
                       >`}
             </a>`,
@@ -115,7 +115,7 @@ export class SourceListPage extends TablePage<Source> {
         return [
             html`<div>
                 <div>${item.name}</div>
-                <ak-label color=${PFColor.Grey} ?compact=${true}> ${msg("Built-in")}</ak-label>
+                <ak-label color=${PFColor.Grey} compact> ${msg("Built-in")}</ak-label>
             </div>`,
             html`${msg("Built-in")}`,
             html``,

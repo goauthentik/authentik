@@ -118,7 +118,7 @@ export class ApplicationWizardAuthenticationBySCIM extends BaseProviderPanel {
                         </ak-form-element-horizontal>
                     </div>
                 </ak-form-group>
-                <ak-form-group ?expanded=${true}>
+                <ak-form-group expanded>
                     <span slot="header"> ${msg("Attribute mapping")} </span>
                     <div slot="body" class="pf-c-form">
                         <ak-multi-select

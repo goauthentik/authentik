@@ -174,7 +174,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                 <div slot="primary">
                     <ak-policy-wizard
                         createText=${msg("Create and bind Policy")}
-                        ?showBindingPage=${true}
+                        showBindingPage
                         bindingTarget=${ifDefined(this.target)}
                     ></ak-policy-wizard>
                     <ak-forms-modal size=${PFSize.Medium}>
@@ -198,7 +198,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
     renderToolbar(): TemplateResult {
         return html`<ak-policy-wizard
                 createText=${msg("Create and bind Policy")}
-                ?showBindingPage=${true}
+                showBindingPage
                 bindingTarget=${ifDefined(this.target)}
             ></ak-policy-wizard>
             <ak-forms-modal size=${PFSize.Medium}>

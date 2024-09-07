@@ -95,7 +95,7 @@ export class SCIMSourceForm extends BaseSourceForm<SCIMSource> {
                     <label class="pf-c-check__label"> ${msg("Enabled")} </label>
                 </div>
             </ak-form-element-horizontal>
-            <ak-form-group ?expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("SCIM Attribute mapping")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal

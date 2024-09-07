@@ -489,7 +489,7 @@ export class SAMLProviderViewPage extends AKElement {
                               <div class="pf-c-card__footer">
                                   <ak-codemirror
                                       mode=${CodeMirrorMode.XML}
-                                      ?readOnly=${true}
+                                      readOnly
                                       value="${ifDefined(this.metadata?.metadata)}"
                                   ></ak-codemirror>
                               </div>
@@ -502,7 +502,7 @@ export class SAMLProviderViewPage extends AKElement {
 
     renderTabPreview(): TemplateResult {
         if (!this.preview) {
-            return html`<ak-empty-state ?loading=${true}></ak-empty-state>`;
+            return html`<ak-empty-state loading></ak-empty-state>`;
         }
         return html` <div
             class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"

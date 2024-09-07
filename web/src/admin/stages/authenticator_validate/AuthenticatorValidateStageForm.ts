@@ -286,7 +286,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                                 "Optionally restrict which WebAuthn device types may be used. When no device types are selected, all devices are allowed.",
                             )}
                         </p>
-                        <ak-alert ?inline=${true}>
+                        <ak-alert inline>
                             ${
                                 /* TODO: Remove this after 2024.6..or maybe later? */
                                 msg(

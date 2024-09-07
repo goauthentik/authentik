@@ -62,7 +62,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="createGroup">
                 <label class="pf-c-switch">
-                    <input class="pf-c-switch__input" type="checkbox" ?checked=${true} />
+                    <input class="pf-c-switch__input" type="checkbox" checked />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
                             <i class="fas fa-check" aria-hidden="true"></i>
@@ -78,7 +78,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="expiring">
                 <label class="pf-c-switch">
-                    <input class="pf-c-switch__input" type="checkbox" ?checked=${true} />
+                    <input class="pf-c-switch__input" type="checkbox" checked />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
                             <i class="fas fa-check" aria-hidden="true"></i>

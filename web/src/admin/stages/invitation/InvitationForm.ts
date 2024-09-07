@@ -43,7 +43,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
 
     renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal
-                ?slugMode=${true}
+                slugMode
                 label=${msg("Name")}
                 required
                 name="name"

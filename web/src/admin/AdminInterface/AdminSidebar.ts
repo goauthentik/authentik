@@ -176,7 +176,7 @@ export class AkAdminSidebar extends WithCapabilitiesConfig(AKElement) {
     renderNewVersionMessage() {
         return this.version && this.version !== VERSION
             ? html`
-                  <ak-sidebar-item ?highlight=${true}>
+                  <ak-sidebar-item highlight>
                       <span slot="label"
                           >${msg("A newer version of the frontend is available.")}</span
                       >
@@ -192,7 +192,7 @@ export class AkAdminSidebar extends WithCapabilitiesConfig(AKElement) {
             });
 
         return this.impersonation
-            ? html`<ak-sidebar-item ?highlight=${true} @click=${reload}>
+            ? html`<ak-sidebar-item highlight @click=${reload}>
                   <span slot="label"
                       >${msg(
                           str`You're currently impersonating ${this.impersonation}. Click to stop.`,
