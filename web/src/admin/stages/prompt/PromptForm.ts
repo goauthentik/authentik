@@ -199,7 +199,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
     }
 
     renderEditForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -213,7 +213,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     ${msg("Unique name of this field, used for selecting fields in prompt stages.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Field Key")} ?required=${true} name="fieldKey">
+            <ak-form-element-horizontal label=${msg("Field Key")} required name="fieldKey">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.fieldKey)}"
@@ -232,7 +232,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Label")} ?required=${true} name="label">
+            <ak-form-element-horizontal label=${msg("Label")} required name="label">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.label)}"
@@ -246,7 +246,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     ${msg("Label shown next to/above the prompt.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Type")} ?required=${true} name="type">
+            <ak-form-element-horizontal label=${msg("Type")} required name="type">
                 <select
                     class="pf-c-form-control"
                     @change=${() => {
@@ -365,7 +365,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">${msg("Any HTML can be used.")}</p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Order")} ?required=${true} name="order">
+            <ak-form-element-horizontal label=${msg("Order")} required name="order">
                 <input
                     type="number"
                     value="${first(this.instance?.order, 0)}"

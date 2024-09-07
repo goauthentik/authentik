@@ -38,7 +38,7 @@ export class PasswordExpiryPolicyForm extends BasePolicyForm<PasswordExpiryPolic
                     "Checks if the request's user's password has been changed in the last x days, and denys based on settings.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -71,7 +71,7 @@ export class PasswordExpiryPolicyForm extends BasePolicyForm<PasswordExpiryPolic
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Maximum age (in days)")}
-                        ?required=${true}
+                        required
                         name="days"
                     >
                         <input

@@ -124,7 +124,7 @@ export class AkTypeProxyApplicationWizardPage extends BaseProviderPanel {
 
                 <ak-form-element-horizontal
                     label=${msg("Authorization flow")}
-                    ?required=${true}
+                    required
                     name="authorizationFlow"
                     .errorMessages=${errors?.authorizationFlow ?? []}
                 >

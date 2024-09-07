@@ -81,7 +81,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -105,7 +105,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Authorization flow")}
-                ?required=${true}
+                required
                 name="authorizationFlow"
             >
                 <ak-flow-search
@@ -121,11 +121,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("ACS URL")}
-                        ?required=${true}
-                        name="acsUrl"
-                    >
+                    <ak-form-element-horizontal label=${msg("ACS URL")} required name="acsUrl">
                         <input
                             type="text"
                             value="${ifDefined(this.instance?.acsUrl)}"
@@ -133,11 +129,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                             required
                         />
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Issuer")}
-                        ?required=${true}
-                        name="issuer"
-                    >
+                    <ak-form-element-horizontal label=${msg("Issuer")} required name="issuer">
                         <input
                             type="text"
                             value="${this.instance?.issuer || "authentik"}"
@@ -148,7 +140,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Service Provider Binding")}
-                        ?required=${true}
+                        required
                         name="spBinding"
                     >
                         <ak-radio
@@ -331,7 +323,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
 
                     <ak-form-element-horizontal
                         label=${msg("Assertion valid not before")}
-                        ?required=${true}
+                        required
                         name="assertionValidNotBefore"
                     >
                         <input
@@ -347,7 +339,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Assertion valid not on or after")}
-                        ?required=${true}
+                        required
                         name="assertionValidNotOnOrAfter"
                     >
                         <input
@@ -363,7 +355,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Session valid not on or after")}
-                        ?required=${true}
+                        required
                         name="sessionValidNotOnOrAfter"
                     >
                         <input
@@ -379,7 +371,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Default relay state")}
-                        ?required=${true}
+                        required
                         name="defaultRelayState"
                     >
                         <input
@@ -398,7 +390,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
 
                     <ak-form-element-horizontal
                         label=${msg("Digest algorithm")}
-                        ?required=${true}
+                        required
                         name="digestAlgorithm"
                     >
                         <ak-radio
@@ -409,7 +401,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Signature algorithm")}
-                        ?required=${true}
+                        required
                         name="signatureAlgorithm"
                     >
                         <ak-radio

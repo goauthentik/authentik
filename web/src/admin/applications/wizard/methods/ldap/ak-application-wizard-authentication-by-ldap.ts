@@ -48,7 +48,7 @@ export class ApplicationWizardApplicationDetails extends WithBrandConfig(BasePro
 
                 <ak-form-element-horizontal
                     label=${msg("Bind flow")}
-                    ?required=${true}
+                    required
                     name="authorizationFlow"
                     .errorMessages=${errors?.authorizationFlow ?? []}
                 >

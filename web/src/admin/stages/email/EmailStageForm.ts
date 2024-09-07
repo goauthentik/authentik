@@ -50,7 +50,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
         return html`<ak-form-group>
             <span slot="header"> ${msg("Connection settings")} </span>
             <div slot="body" class="pf-c-form">
-                <ak-form-element-horizontal label=${msg("SMTP Host")} ?required=${true} name="host">
+                <ak-form-element-horizontal label=${msg("SMTP Host")} required name="host">
                     <input
                         type="text"
                         value="${ifDefined(this.instance?.host || "")}"
@@ -58,7 +58,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                         required
                     />
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal label=${msg("SMTP Port")} ?required=${true} name="port">
+                <ak-form-element-horizontal label=${msg("SMTP Port")} required name="port">
                     <input
                         type="number"
                         value="${first(this.instance?.port, 25)}"
@@ -110,11 +110,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                         <span class="pf-c-switch__label">${msg("Use SSL")}</span>
                     </label>
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("Timeout")}
-                    ?required=${true}
-                    name="timeout"
-                >
+                <ak-form-element-horizontal label=${msg("Timeout")} required name="timeout">
                     <input
                         type="number"
                         value="${first(this.instance?.timeout, 30)}"
@@ -124,7 +120,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
                     label=${msg("From address")}
-                    ?required=${true}
+                    required
                     name="fromAddress"
                 >
                     <input
@@ -144,7 +140,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                     "Verify the user's email address by sending them a one-time-link. Can also be used for recovery to verify the user's authenticity.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -203,7 +199,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Token expiry")}
-                        ?required=${true}
+                        required
                         name="tokenExpiry"
                     >
                         <input
@@ -216,11 +212,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                             ${msg("Time in minutes the token sent is valid.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Subject")}
-                        ?required=${true}
-                        name="subject"
-                    >
+                    <ak-form-element-horizontal label=${msg("Subject")} required name="subject">
                         <input
                             type="text"
                             value="${first(this.instance?.subject, "authentik")}"
@@ -228,11 +220,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                             required
                         />
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Template")}
-                        ?required=${true}
-                        name="template"
-                    >
+                    <ak-form-element-horizontal label=${msg("Template")} required name="template">
                         <select name="users" class="pf-c-form-control">
                             ${this.templates?.map((template) => {
                                 const selected = this.instance?.template === template.name;

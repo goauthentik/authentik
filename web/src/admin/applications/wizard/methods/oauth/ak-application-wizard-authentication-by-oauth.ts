@@ -90,7 +90,7 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                     name="authorizationFlow"
                     label=${msg("Authorization flow")}
                     .errorMessages=${errors?.authorizationFlow ?? []}
-                    ?required=${true}
+                    required
                 >
                     <ak-flow-search
                         flowType=${FlowsInstancesListDesignationEnum.Authorization}
@@ -197,7 +197,7 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                             label=${msg("Refresh Token validity")}
                             value="${first(provider?.refreshTokenValidity, "days=30")}"
                             .errorMessages=${errors?.refreshTokenValidity ?? []}
-                            ?required=${true}
+                            required
                             .bighelp=${html` <p class="pf-c-form__helper-text">
                                     ${msg("Configure how long refresh tokens are valid for.")}
                                 </p>

@@ -66,7 +66,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -74,7 +74,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Mode")} ?required=${true} name="mode">
+            <ak-form-element-horizontal label=${msg("Mode")} required name="mode">
                 <ak-radio
                     @change=${(ev: CustomEvent<{ value: NotificationTransportModeEnum }>) => {
                         this.onModeChange(ev.detail.value);
@@ -106,7 +106,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                 ?hidden=${!this.showWebhook}
                 label=${msg("Webhook URL")}
                 name="webhookUrl"
-                ?required=${true}
+                required
             >
                 <input
                     type="text"

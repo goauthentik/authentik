@@ -45,7 +45,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
         return html` <ak-form-element-horizontal
                 ?slugMode=${true}
                 label=${msg("Name")}
-                ?required=${true}
+                required
                 name="name"
             >
                 <input
@@ -56,7 +56,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
                     data-ak-slug="true"
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Expires")} ?required=${true} name="expires">
+            <ak-form-element-horizontal label=${msg("Expires")} required name="expires">
                 <input
                     type="datetime-local"
                     data-type="datetime-local"

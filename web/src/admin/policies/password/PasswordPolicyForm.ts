@@ -51,7 +51,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
             <div slot="body" class="pf-c-form">
                 <ak-form-element-horizontal
                     label=${msg("Minimum length")}
-                    ?required=${true}
+                    required
                     name="lengthMin"
                 >
                     <input
@@ -63,7 +63,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
                     label=${msg("Minimum amount of Uppercase Characters")}
-                    ?required=${true}
+                    required
                     name="amountUppercase"
                 >
                     <input
@@ -75,7 +75,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
                     label=${msg("Minimum amount of Lowercase Characters")}
-                    ?required=${true}
+                    required
                     name="amountLowercase"
                 >
                     <input
@@ -87,7 +87,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
                     label=${msg("Minimum amount of Digits")}
-                    ?required=${true}
+                    required
                     name="amountDigits"
                 >
                     <input
@@ -99,7 +99,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
                     label=${msg("Minimum amount of Symbols Characters")}
-                    ?required=${true}
+                    required
                     name="amountSymbols"
                 >
                     <input
@@ -111,7 +111,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
                     label=${msg("Error message")}
-                    ?required=${true}
+                    required
                     name="errorMessage"
                 >
                     <input
@@ -123,7 +123,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
                     label=${msg("Symbol charset")}
-                    ?required=${true}
+                    required
                     name="symbolCharset"
                 >
                     <input
@@ -149,7 +149,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Allowed count")}
-                        ?required=${true}
+                        required
                         name="hibpAllowedCount"
                     >
                         <input
@@ -174,7 +174,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Score threshold")}
-                        ?required=${true}
+                        required
                         name="zxcvbnScoreThreshold"
                     >
                         <input
@@ -223,7 +223,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                     "Checks the value from the policy request against several rules, mostly used to ensure password strength.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -253,7 +253,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Password field")}
-                ?required=${true}
+                required
                 name="passwordField"
             >
                 <input

@@ -120,7 +120,7 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
                     </p>
                     <ak-form-element-horizontal
                         label=${msg("External host")}
-                        ?required=${true}
+                        required
                         name="externalHost"
                     >
                         <input
@@ -137,7 +137,7 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Internal host")}
-                        ?required=${true}
+                        required
                         name="internalHost"
                     >
                         <input
@@ -178,7 +178,7 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
                     </p>
                     <ak-form-element-horizontal
                         label=${msg("External host")}
-                        ?required=${true}
+                        required
                         name="externalHost"
                     >
                         <input
@@ -211,7 +211,7 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
                     </div>
                     <ak-form-element-horizontal
                         label=${msg("Authentication URL")}
-                        ?required=${true}
+                        required
                         name="externalHost"
                     >
                         <input
@@ -229,7 +229,7 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
                     <ak-form-element-horizontal
                         label=${msg("Cookie domain")}
                         name="cookieDomain"
-                        ?required=${true}
+                        required
                     >
                         <input
                             type="text"
@@ -249,7 +249,7 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -273,7 +273,7 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Authorization flow")}
-                ?required=${true}
+                required
                 name="authorizationFlow"
             >
                 <ak-flow-search

@@ -171,7 +171,7 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
             <ak-form-element-horizontal
                 name="authorizationFlow"
                 label=${msg("Authorization flow")}
-                ?required=${true}
+                required
             >
                 <ak-flow-search
                     flowType=${FlowsInstancesListDesignationEnum.Authorization}
@@ -266,7 +266,7 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
                         name="refreshTokenValidity"
                         label=${msg("Refresh Token validity")}
                         value="${first(provider?.refreshTokenValidity, "days=30")}"
-                        ?required=${true}
+                        required
                         .bighelp=${html` <p class="pf-c-form__helper-text">
                                 ${msg("Configure how long refresh tokens are valid for.")}
                             </p>

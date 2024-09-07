@@ -78,11 +78,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         if (this.instance?.target || this.targetPk) {
             return html``;
         }
-        return html`<ak-form-element-horizontal
-            label=${msg("Target")}
-            ?required=${true}
-            name="target"
-        >
+        return html`<ak-form-element-horizontal label=${msg("Target")} required name="target">
             <ak-flow-search
                 flowType=${FlowsInstancesListDesignationEnum.Authorization}
                 .currentFlow=${this.instance?.target}
@@ -93,7 +89,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
 
     renderForm(): TemplateResult {
         return html` ${this.renderTarget()}
-            <ak-form-element-horizontal label=${msg("Stage")} ?required=${true} name="stage">
+            <ak-form-element-horizontal label=${msg("Stage")} required name="stage">
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<Stage[]> => {
                         const args: StagesAllListRequest = {
@@ -120,7 +116,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                 >
                 </ak-search-select>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Order")} ?required=${true} name="order">
+            <ak-form-element-horizontal label=${msg("Order")} required name="order">
                 <input
                     type="number"
                     value="${first(this.instance?.order, this.defaultOrder)}"
@@ -166,7 +162,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Invalid response behavior")}
-                ?required=${true}
+                required
                 name="invalidResponseAction"
             >
                 <ak-radio
@@ -203,7 +199,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Policy engine mode")}
-                ?required=${true}
+                required
                 name="policyEngineMode"
             >
                 <ak-radio

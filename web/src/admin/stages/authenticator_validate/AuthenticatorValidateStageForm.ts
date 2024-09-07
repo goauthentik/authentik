@@ -120,7 +120,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                     "Stage used to validate any authenticator. This stage should be used during authentication or authorization flows.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -133,7 +133,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Device classes")}
-                        ?required=${true}
+                        required
                         name="deviceClasses"
                     >
                         <ak-checkbox-group
@@ -152,7 +152,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Last validation threshold")}
-                        ?required=${true}
+                        required
                         name="lastAuthThreshold"
                     >
                         <input
@@ -170,7 +170,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Not configured action")}
-                        ?required=${true}
+                        required
                         name="notConfiguredAction"
                     >
                         <select
@@ -244,7 +244,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("WebAuthn User verification")}
-                        ?required=${true}
+                        required
                         name="webauthnUserVerification"
                     >
                         <ak-radio

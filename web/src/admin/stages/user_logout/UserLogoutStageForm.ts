@@ -32,7 +32,7 @@ export class UserLogoutStageForm extends BaseStageForm<UserLogoutStage> {
 
     renderForm(): TemplateResult {
         return html` <span>${msg("Remove the user from the current session.")}</span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"

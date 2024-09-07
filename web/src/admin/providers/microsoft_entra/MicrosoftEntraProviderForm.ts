@@ -48,7 +48,7 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -59,11 +59,7 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Client ID")}
-                        ?required=${true}
-                        name="clientId"
-                    >
+                    <ak-form-element-horizontal label=${msg("Client ID")} required name="clientId">
                         <input
                             type="text"
                             value="${first(this.instance?.clientId, "")}"
@@ -76,7 +72,7 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Client Secret")}
-                        ?required=${true}
+                        required
                         name="clientSecret"
                     >
                         <input
@@ -89,11 +85,7 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                             ${msg("Client secret for the app registration.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Tenant ID")}
-                        ?required=${true}
-                        name="tenantId"
-                    >
+                    <ak-form-element-horizontal label=${msg("Tenant ID")} required name="tenantId">
                         <input
                             type="text"
                             value="${first(this.instance?.tenantId, "")}"

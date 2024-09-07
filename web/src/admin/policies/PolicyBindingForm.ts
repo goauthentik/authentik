@@ -283,7 +283,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                     ${msg("Negates the outcome of the binding. Messages are unaffected.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Order")} ?required=${true} name="order">
+            <ak-form-element-horizontal label=${msg("Order")} required name="order">
                 <input
                     type="number"
                     value="${first(this.instance?.order, this.defaultOrder)}"
@@ -291,7 +291,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Timeout")} ?required=${true} name="timeout">
+            <ak-form-element-horizontal label=${msg("Timeout")} required name="timeout">
                 <input
                     type="number"
                     value="${first(this.instance?.timeout, 30)}"

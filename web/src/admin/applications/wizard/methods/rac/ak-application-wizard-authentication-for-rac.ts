@@ -40,7 +40,7 @@ export class ApplicationWizardAuthenticationByRAC extends BaseProviderPanel {
                 <ak-form-element-horizontal
                     name="authorizationFlow"
                     label=${msg("Authorization flow")}
-                    ?required=${true}
+                    required
                 >
                     <ak-flow-search
                         flowType=${FlowsInstancesListDesignationEnum.Authorization}

@@ -50,7 +50,7 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -63,7 +63,7 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Credentials")}
-                        ?required=${true}
+                        required
                         name="credentials"
                     >
                         <ak-codemirror
@@ -76,7 +76,7 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Delegated Subject")}
-                        ?required=${true}
+                        required
                         name="delegatedSubject"
                     >
                         <input
@@ -93,7 +93,7 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Default group email domain")}
-                        ?required=${true}
+                        required
                         name="defaultGroupEmailDomain"
                     >
                         <input

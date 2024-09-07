@@ -80,11 +80,7 @@ export class UserForm extends ModelForm<User, number> {
     }
 
     renderForm(): TemplateResult {
-        return html`<ak-form-element-horizontal
-                label=${msg("Username")}
-                ?required=${true}
-                name="username"
-            >
+        return html`<ak-form-element-horizontal label=${msg("Username")} required name="username">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.username)}"
@@ -103,7 +99,7 @@ export class UserForm extends ModelForm<User, number> {
                 />
                 <p class="pf-c-form__helper-text">${msg("User's display name.")}</p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("User type")} ?required=${true} name="type">
+            <ak-form-element-horizontal label=${msg("User type")} required name="type">
                 <ak-radio
                     .options=${[
                         {
@@ -169,7 +165,7 @@ export class UserForm extends ModelForm<User, number> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Path")} ?required=${true} name="path">
+            <ak-form-element-horizontal label=${msg("Path")} required name="path">
                 <input
                     type="text"
                     value="${first(this.instance?.path, "users")}"

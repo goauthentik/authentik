@@ -108,7 +108,7 @@ export class ApplicationWizardProviderSamlConfiguration extends BaseProviderPane
 
                 <ak-form-element-horizontal
                     label=${msg("Authorization flow")}
-                    ?required=${true}
+                    required
                     name="authorizationFlow"
                     .errorMessages=${errors?.authorizationFlow ?? []}
                 >

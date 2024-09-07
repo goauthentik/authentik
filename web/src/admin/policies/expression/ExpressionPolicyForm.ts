@@ -41,7 +41,7 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
                     "Executes the python snippet to determine whether to allow or deny a request.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -74,7 +74,7 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Expression")}
-                        ?required=${true}
+                        required
                         name="expression"
                     >
                         <ak-codemirror

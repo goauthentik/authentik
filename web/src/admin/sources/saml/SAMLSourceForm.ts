@@ -107,7 +107,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -115,7 +115,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Slug")} ?required=${true} name="slug">
+            <ak-form-element-horizontal label=${msg("Slug")} required name="slug">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.slug)}"
@@ -140,7 +140,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("User matching mode")}
-                ?required=${true}
+                required
                 name="userMatchingMode"
             >
                 <select class="pf-c-form-control">
@@ -183,7 +183,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Group matching mode")}
-                ?required=${true}
+                required
                 name="groupMatchingMode"
             >
                 <select class="pf-c-form-control">
@@ -260,11 +260,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("SSO URL")}
-                        ?required=${true}
-                        name="ssoUrl"
-                    >
+                    <ak-form-element-horizontal label=${msg("SSO URL")} required name="ssoUrl">
                         <input
                             type="text"
                             value="${ifDefined(this.instance?.ssoUrl)}"
@@ -297,7 +293,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Binding Type")}
-                        ?required=${true}
+                        required
                         name="bindingType"
                     >
                         <ak-radio
@@ -376,7 +372,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("NameID Policy")}
-                        ?required=${true}
+                        required
                         name="nameIdPolicy"
                     >
                         <select class="pf-c-form-control">
@@ -430,7 +426,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Delete temporary users after")}
-                        ?required=${true}
+                        required
                         name="temporaryUserDeleteAfter"
                     >
                         <input
@@ -448,7 +444,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Digest algorithm")}
-                        ?required=${true}
+                        required
                         name="digestAlgorithm"
                     >
                         <ak-radio
@@ -477,7 +473,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Signature algorithm")}
-                        ?required=${true}
+                        required
                         name="signatureAlgorithm"
                     >
                         <ak-radio
@@ -565,7 +561,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Pre-authentication flow")}
-                        ?required=${true}
+                        required
                         name="preAuthenticationFlow"
                     >
                         <ak-source-flow-search

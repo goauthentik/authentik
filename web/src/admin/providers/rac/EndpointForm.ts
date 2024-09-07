@@ -58,7 +58,7 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
 
     renderForm(): TemplateResult {
         return html`
-            <ak-form-element-horizontal label=${msg("Name")} name="name" ?required=${true}>
+            <ak-form-element-horizontal label=${msg("Name")} name="name" required>
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -66,7 +66,7 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Protocol")} ?required=${true} name="protocol">
+            <ak-form-element-horizontal label=${msg("Protocol")} required name="protocol">
                 <ak-radio
                     .options=${[
                         {
@@ -86,7 +86,7 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
                 >
                 </ak-radio>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Host")} name="host" ?required=${true}>
+            <ak-form-element-horizontal label=${msg("Host")} name="host" required>
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.host)}"
@@ -98,7 +98,7 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
             <ak-form-element-horizontal
                 label=${msg("Maximum concurrent connections")}
                 name="maximumConnections"
-                ?required=${true}
+                required
             >
                 <input
                     type="number"

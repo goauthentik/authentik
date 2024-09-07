@@ -59,7 +59,7 @@ export class TokenForm extends ModelForm<Token, string> {
         return html` <ak-form-element-horizontal
                 label=${msg("Identifier")}
                 name="identifier"
-                ?required=${true}
+                required
             >
                 <input
                     type="text"
@@ -71,7 +71,7 @@ export class TokenForm extends ModelForm<Token, string> {
                     ${msg("Unique identifier the token is referenced by.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("User")} ?required=${true} name="user">
+            <ak-form-element-horizontal label=${msg("User")} required name="user">
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<User[]> => {
                         const args: CoreUsersListRequest = {
@@ -98,7 +98,7 @@ export class TokenForm extends ModelForm<Token, string> {
                 >
                 </ak-search-select>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Intent")} ?required=${true} name="intent">
+            <ak-form-element-horizontal label=${msg("Intent")} required name="intent">
                 <ak-radio
                     .options=${[
                         {

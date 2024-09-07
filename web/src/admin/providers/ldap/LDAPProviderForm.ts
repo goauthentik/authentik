@@ -49,7 +49,7 @@ export class LDAPProviderFormPage extends WithBrandConfig(BaseProviderForm<LDAPP
     // weird-- we're looking up Authentication flows, but we're storing them in the Authorization
     // field of the target Provider.
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -57,11 +57,7 @@ export class LDAPProviderFormPage extends WithBrandConfig(BaseProviderForm<LDAPP
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Bind flow")}
-                ?required=${true}
-                name="authorizationFlow"
-            >
+            <ak-form-element-horizontal label=${msg("Bind flow")} required name="authorizationFlow">
                 <ak-branded-flow-search
                     flowType=${FlowsInstancesListDesignationEnum.Authentication}
                     .currentFlow=${this.instance?.authorizationFlow}
@@ -146,11 +142,7 @@ export class LDAPProviderFormPage extends WithBrandConfig(BaseProviderForm<LDAPP
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Base DN")}
-                        ?required=${true}
-                        name="baseDn"
-                    >
+                    <ak-form-element-horizontal label=${msg("Base DN")} required name="baseDn">
                         <input
                             type="text"
                             value="${first(this.instance?.baseDn, "DC=ldap,DC=goauthentik,DC=io")}"
@@ -191,7 +183,7 @@ export class LDAPProviderFormPage extends WithBrandConfig(BaseProviderForm<LDAPP
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("UID start number")}
-                        ?required=${true}
+                        required
                         name="uidStartNumber"
                     >
                         <input
@@ -208,7 +200,7 @@ export class LDAPProviderFormPage extends WithBrandConfig(BaseProviderForm<LDAPP
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("GID start number")}
-                        ?required=${true}
+                        required
                         name="gidStartNumber"
                     >
                         <input

@@ -70,7 +70,7 @@ export class RadiusProviderFormPage extends WithBrandConfig(BaseProviderForm<Rad
     // weird-- we're looking up Authentication flows, but we're storing them in the Authorization
     // field of the target Provider.
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -80,7 +80,7 @@ export class RadiusProviderFormPage extends WithBrandConfig(BaseProviderForm<Rad
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Authentication flow")}
-                ?required=${true}
+                required
                 name="authorizationFlow"
             >
                 <ak-branded-flow-search
@@ -117,7 +117,7 @@ export class RadiusProviderFormPage extends WithBrandConfig(BaseProviderForm<Rad
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Shared secret")}
-                        ?required=${true}
+                        required
                         name="sharedSecret"
                     >
                         <input
@@ -132,7 +132,7 @@ export class RadiusProviderFormPage extends WithBrandConfig(BaseProviderForm<Rad
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Client Networks")}
-                        ?required=${true}
+                        required
                         name="clientNetworks"
                     >
                         <input

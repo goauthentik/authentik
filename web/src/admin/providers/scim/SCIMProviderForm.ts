@@ -68,7 +68,7 @@ export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -79,7 +79,7 @@ export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal label=${msg("URL")} ?required=${true} name="url">
+                    <ak-form-element-horizontal label=${msg("URL")} required name="url">
                         <input
                             type="text"
                             value="${first(this.instance?.url, "")}"
@@ -92,7 +92,7 @@ export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Token")}
-                        ?required=${true}
+                        required
                         name="token"
                     >
                         <input

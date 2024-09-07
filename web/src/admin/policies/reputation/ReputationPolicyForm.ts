@@ -48,7 +48,7 @@ username they are attempting to login as, by one.`,
 doesn't pass when either or both of the selected options are equal or above the threshold.`,
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -109,11 +109,7 @@ doesn't pass when either or both of the selected options are equal or above the 
                             <span class="pf-c-switch__label">${msg("Check Username")}</span>
                         </label>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Threshold")}
-                        ?required=${true}
-                        name="threshold"
-                    >
+                    <ak-form-element-horizontal label=${msg("Threshold")} required name="threshold">
                         <input
                             type="number"
                             value="${ifDefined(this.instance?.threshold || -5)}"

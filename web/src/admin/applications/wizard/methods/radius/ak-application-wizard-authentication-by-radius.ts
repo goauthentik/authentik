@@ -35,7 +35,7 @@ export class ApplicationWizardAuthenticationByRadius extends WithBrandConfig(Bas
 
                 <ak-form-element-horizontal
                     label=${msg("Authentication flow")}
-                    ?required=${true}
+                    required
                     name="authorizationFlow"
                     .errorMessages=${errors?.authorizationFlow ?? []}
                 >

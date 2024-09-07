@@ -55,7 +55,7 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
 
     renderForm(): TemplateResult {
         return html`
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -67,7 +67,7 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
             <ak-form-element-horizontal
                 name="authorizationFlow"
                 label=${msg("Authorization flow")}
-                ?required=${true}
+                required
             >
                 <ak-flow-search
                     flowType=${FlowsInstancesListDesignationEnum.Authorization}
@@ -80,7 +80,7 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Connection expiry")}
-                ?required=${true}
+                required
                 name="connectionExpiry"
             >
                 <input
