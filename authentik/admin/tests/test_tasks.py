@@ -17,6 +17,7 @@ RESPONSE_VALID = {
     "stable": {
         "version": "99999999.9999999",
         "changelog": "See https://goauthentik.io/test",
+        "changelog_url": "https://goauthentik.io/test",
         "reason": "bugfix",
     },
 }
@@ -35,7 +36,7 @@ class TestAdminTasks(TestCase):
                 Event.objects.filter(
                     action=EventAction.UPDATE_AVAILABLE,
                     context__new_version="99999999.9999999",
-                    context__message="Changelog: https://goauthentik.io/test",
+                    context__message="New version 99999999.9999999 available!",
                 ).exists()
             )
             # test that a consecutive check doesn't create a duplicate event
@@ -45,7 +46,7 @@ class TestAdminTasks(TestCase):
                     Event.objects.filter(
                         action=EventAction.UPDATE_AVAILABLE,
                         context__new_version="99999999.9999999",
-                        context__message="Changelog: https://goauthentik.io/test",
+                        context__message="New version 99999999.9999999 available!",
                     )
                 ),
                 1,
