@@ -544,7 +544,8 @@ class Application(SerializerModel, PolicyBindingModel):
             return None
 
         candidates = []
-        for subclass in Provider.objects.get_queryset()._get_subclasses_recurse(Provider):
+        base_class = Provider
+        for subclass in base_class.objects.get_queryset()._get_subclasses_recurse(base_class):
             parent = self.provider
             for level in subclass.split(LOOKUP_SEP):
                 try:
@@ -553,7 +554,10 @@ class Application(SerializerModel, PolicyBindingModel):
                     break
             if parent in candidates:
                 continue
-            candidates.insert(subclass.count(LOOKUP_SEP), parent)
+            idx = subclass.count(LOOKUP_SEP)
+            if type(parent) is not base_class:
+                idx += 1
+            candidates.insert(idx, parent)
         if not candidates:
             return None
         return candidates[-1]
