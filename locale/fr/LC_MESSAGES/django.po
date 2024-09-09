@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-12 13:45+0000\n"
+"POT-Creation-Date: 2024-09-08 00:09+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Marc Schmitt, 2024\n"
 "Language-Team: French (https://app.transifex.com/authentik/teams/119923/fr/)\n"
@@ -28,6 +28,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
 "Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+
+#: authentik/admin/tasks.py
+#, python-brace-format
+msgid "New version {version} available!"
+msgstr "Une nouvelle version {version} est disponible !"
 
 #: authentik/api/schema.py
 msgid "Generic API Error"
@@ -1344,14 +1349,6 @@ msgstr "DN sous lequel les objets sont accessibles."
 
 #: authentik/providers/ldap/models.py
 msgid ""
-"Users in this group can do search queries. If not set, every user can "
-"execute search queries."
-msgstr ""
-"Les utilisateurs dans ce groupe peuvent faire des requêtes de recherche. Si "
-"laissé vide, tous les utilisateurs peuvent faire des requêtes de recherche."
-
-#: authentik/providers/ldap/models.py
-msgid ""
 "The start for uidNumbers, this number is added to the user.pk to make sure "
 "that the numbers aren't too low for POSIX users. Default is 2000 to ensure "
 "that we don't collide with local users uidNumber"
@@ -1395,6 +1392,10 @@ msgstr "Fournisseur LDAP"
 #: authentik/providers/ldap/models.py
 msgid "LDAP Providers"
 msgstr "Fournisseurs LDAP"
+
+#: authentik/providers/ldap/models.py
+msgid "Search full LDAP directory"
+msgstr "Rechercher dans l'annuaire LDAP complet"
 
 #: authentik/providers/oauth2/id_token.py
 msgid "Based on the Hashed User ID"
@@ -1797,6 +1798,14 @@ msgid "Radius Provider Property Mappings"
 msgstr "Mappages de propriété fournisseur Radius"
 
 #: authentik/providers/saml/api/providers.py
+msgid ""
+"With a signing keypair selected, at least one of 'Sign assertion' and 'Sign "
+"Response' must be selected."
+msgstr ""
+"Quand une clé de signature est sélectionnée, au moins l'un de « Signer les "
+"assertions » et « Signer les réponses » doit être sélectionné."
+
+#: authentik/providers/saml/api/providers.py
 msgid "Invalid XML Syntax"
 msgstr "Syntaxe XML Invalide"
 
@@ -1943,6 +1952,20 @@ msgstr ""
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "Signing Keypair"
 msgstr "Paire de clés de Signature"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid ""
+"When selected, incoming assertions are encrypted by the IdP using the public"
+" key of the encryption keypair. The assertion is decrypted by the SP using "
+"the the private key."
+msgstr ""
+"Si activé, les assertions entrantes seront chiffrées par l'IdP avec la clé "
+"publique de la paire de clé de chiffrement. L'assertion est déchiffrée par "
+"le SP en utilisant la clé privée."
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "Encryption Keypair"
+msgstr "Paire de clés de chiffrement"
 
 #: authentik/providers/saml/models.py
 msgid "Default relay_state value for IDP-initiated logins"
@@ -2465,20 +2488,6 @@ msgid ""
 msgstr ""
 "Paire de clés utilisées pour signer les réponses sortantes allant vers le "
 "fournisseur d'identité."
-
-#: authentik/sources/saml/models.py
-msgid ""
-"When selected, incoming assertions are encrypted by the IdP using the public"
-" key of the encryption keypair. The assertion is decrypted by the SP using "
-"the the private key."
-msgstr ""
-"Si activé, les assertions entrantes seront chiffrées par l'IdP avec la clé "
-"publique de la paire de clé de chiffrement. L'assertion est déchiffrée par "
-"le SP en utilisant la clé privée."
-
-#: authentik/sources/saml/models.py
-msgid "Encryption Keypair"
-msgstr "Paire de clés de chiffrement"
 
 #: authentik/sources/saml/models.py
 msgid "SAML Source"
