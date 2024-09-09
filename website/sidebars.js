@@ -77,13 +77,17 @@ const docsSidebar = {
             items: [
                 {
                     type: "category",
-                    label: "Property Mappings",
+                    label: "OAuth2 Provider",
                     link: {
                         type: "doc",
-                        id: "providers/property-mappings/index",
+                        id: "providers/oauth2/index",
                     },
-                    items: ["providers/property-mappings/expression"],
+                    items: [
+                        "providers/oauth2/client_credentials",
+                        "providers/oauth2/device_code",
+                    ],
                 },
+                "providers/saml/index",
                 {
                     type: "category",
                     label: "Google Workspace Provider",
@@ -117,19 +121,6 @@ const docsSidebar = {
                         "providers/entra/add-entra-provider",
                     ],
                 },
-                {
-                    type: "category",
-                    label: "OAuth2 Provider",
-                    link: {
-                        type: "doc",
-                        id: "providers/oauth2/index",
-                    },
-                    items: [
-                        "providers/oauth2/client_credentials",
-                        "providers/oauth2/device_code",
-                    ],
-                },
-                "providers/saml/index",
                 "providers/radius/index",
                 {
                     type: "category",
@@ -166,6 +157,15 @@ const docsSidebar = {
                         id: "providers/rac/index",
                     },
                     items: ["providers/rac/how-to-rac"],
+                },
+                {
+                    type: "category",
+                    label: "Property Mappings",
+                    link: {
+                        type: "doc",
+                        id: "providers/property-mappings/index",
+                    },
+                    items: ["providers/property-mappings/expression"],
                 },
             ],
         },
