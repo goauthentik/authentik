@@ -20,7 +20,7 @@
         "@rollup/plugin-node-resolve": "^15.2.3",
         "@rollup/plugin-swc": "^0.4.0",
         "@swc/cli": "^0.4.0",
-        "@swc/core": "^1.7.23",
+        "@swc/core": "^1.7.24",
         "@types/jquery": "^3.5.30",
         "rollup": "^4.21.2",
         "rollup-plugin-copy": "^3.5.0"
