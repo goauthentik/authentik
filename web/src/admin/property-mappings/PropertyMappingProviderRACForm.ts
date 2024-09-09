@@ -1,10 +1,10 @@
+import { BasePropertyMappingForm } from "@goauthentik/admin/property-mappings/BasePropertyMappingForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { docLink } from "@goauthentik/common/global";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
 import type { RadioOption } from "@goauthentik/elements/forms/Radio";
 
@@ -33,19 +33,11 @@ export const staticSettingOptions: RadioOption<string | undefined>[] = [
 ];
 
 @customElement("ak-property-mapping-provider-rac-form")
-export class PropertyMappingProviderRACForm extends ModelForm<RACPropertyMapping, string> {
+export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACPropertyMapping> {
     loadInstance(pk: string): Promise<RACPropertyMapping> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderRacRetrieve({
             pmUuid: pk,
         });
-    }
-
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated mapping.");
-        } else {
-            return msg("Successfully created mapping.");
-        }
     }
 
     async send(data: RACPropertyMapping): Promise<RACPropertyMapping> {
