@@ -35,6 +35,7 @@ Only settings that have been modified from default have been listed.
 -   Client ID: Copy and Save this for Later
 -   Client Secret: Copy and Save this for later
 -   Redirect URIs/Origins: `https://wp.company/wp-admin/admin-ajax.php\?action=openid-connect-authorize`
+-   Scopes: _email_, _offline_access_, _open_id_, _profile_
 
 ### Step 2 - WordPress
 
