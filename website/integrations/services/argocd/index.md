@@ -14,51 +14,51 @@ title: ArgoCD
 
 The following placeholders will be used:
 
--   `argocd.company` is the FQDN of the ArgoCD install.
--   `authentik.company` is the FQDN of the authentik install.
+-   `argocd.company` is the FQDN of the ArgoCD installation.
+-   `authentik.company` is the FQDN of the authentik installation.
 
-:::note
-Only settings that have been modified from default have been listed.
+:::info
+Only settings that have been modified from defaults are listed.
 :::
 
-## authentik Configuration
+## authentik configuration
 
-### Step 1 - Provider creation
+### Step 1: Create a provider
 
-In authentik, create an _OAuth2/OpenID Provider_ (under _Applications/Providers_) with these settings:
+In authentik, create an OAuth2/OpenID provider (under **Applications** > **Providers**) with the following settings:
 
--   Name: ArgoCD
--   Client Type: `Confidential`
--   Signing Key: Select any available key
--   Redirect URIs:
+-   **Name:** ArgoCD
+-   **Client Type:** `Confidential`
+-   **Signing Key:** Select any available key
+-   **Redirect URIs:**
 
-```
+```md
 https://argocd.company/api/dex/callback
 http://localhost:8085/auth/callback
 ```
 
-After creating the provider, take note of the `Client ID` and `Client Secret`, you'll need to give them to ArgoCD in the _ArgoCD Configuration_ field.
+After creating the provider, note the `Client ID` and `Client Secret`; you will need to provide these to ArgoCD in the **ArgoCD Configuration** field.
 
-### Step 2 - Application creation
+### Step 2: Create an application
 
-Create a new _Application_ (under _Applications/Applications_) with these settings:
+Create a new **Application** (under **Applications** > **Applications**) with the following settings:
 
--   Name: ArgoCD
--   Provider: ArgoCD
--   Slug: argocd
--   Launch URL: https://argocd.company/auth/login
+-   **Name:** ArgoCD
+-   **Provider:** ArgoCD
+-   **Slug:** argocd
+-   **Launch URL:** https://argocd.company/auth/login
 
-### Step 3 - ArgoCD Group creation
+### Step 3: Create ArgoCD groups
 
-Create a new _Group_ (under _Directory/Groups_) that'll be used as the admin group for ArgoCD (if you already have an "admin" group, you can skip this part!)
+Create a new **Group** (under **Directory** > **Groups**) to be used as the admin group for ArgoCD (if you already have an "admin" group, you can skip this step):
 
--   Name: ArgoCD Admins
--   Members: Add your user and/or any user that should be an ArgoCD admin
+-   **Name:** ArgoCD Admins
+-   **Members:** Add your user and/or any user who should be an ArgoCD admin
 
-You can create another group for read-only access to ArgoCD as well if desired:
+You can also create another group for read-only access to ArgoCD if desired:
 
--   Name: ArgoCD Viewers
--   Members: Any user that should have ArgoCD read-only access
+-   **Name:** ArgoCD Viewers
+-   **Members:** Any user who should have ArgoCD read-only access
 
 ## Terraform provider
 
@@ -112,7 +112,6 @@ resource "authentik_group" "argocd_admins" {
   name    = "ArgoCD Admins"
 }
 
-
 resource "authentik_group" "argocd_viewers" {
   name    = "ArgoCD Viewers"
 }
@@ -120,19 +119,16 @@ resource "authentik_group" "argocd_viewers" {
 
 ## ArgoCD Configuration
 
-:::note
-We're not going to use the oidc config, but instead the "dex", oidc doesn't allow ArgoCD CLI usage while DEX does.
-:::
+We're using the "dex" configuration instead of OIDC because OIDC doesn't support ArgoCD CLI usage, whereas DEX does.
+Step 1: Add the OIDC Secret to ArgoCD
 
-### Step 1 - Add the OIDC Secret to ArgoCD
-
-In the `argocd-secret` Secret, add the following value to the `data` field:
+In the `argocd-secret` secret, add the following value to the `data` field:
 
 ```yaml
 dex.authentik.clientSecret: <base 64 encoded value of the Client Secret from the Provider above>
 ```
 
-If using Helm, the above can be added to `configs.secret.extra` in your ArgoCD Helm `values.yaml` file as shown below, securely substituting the string however you see fit:
+If using Helm, the above can be added to `configs.secret.extra` in your ArgoCD Helm `values.yaml` file as shown below, substituting the string as needed:
 
 ```yaml
 configs:
@@ -141,9 +137,9 @@ configs:
             dex.authentik.clientSecret: "${argocd_authentik_client_secret}"
 ```
 
-### Step 2 - Configure ArgoCD to use authentik as OIDC backend
+### Step 2: Configure ArgoCD to use authentik as an OIDC backend
 
-In the `argocd-cm` ConfigMap, add the following to the data field :
+In the `argocd-cm` ConfigMap, add the following to the `data` field:
 
 ```yaml
 url: https://argocd.company
@@ -163,9 +159,9 @@ dex.config: |
       id: authentik
 ```
 
-### Step 3 - Map the `ArgoCD Admins` group to ArgoCD's admin role
+### Step 3: Map the ArgoCD Admins group to ArgoCD's admin role
 
-In the `argocd-rbac-cm` ConfigMap, add the following to the data field (or create it if it's not already there) :
+In the `argocd-rbac-cm` ConfigMap, add the following to the `data` field (or create it if it's not already there):
 
 ```yaml
 policy.csv: |
@@ -173,7 +169,6 @@ policy.csv: |
     g, ArgoCD Viewers, role:readonly
 ```
 
-If you already had an "admin" group and thus didn't create the `ArgoCD Admins` one, just replace `ArgoCD Admins` with your existing group name.
-If you did not opt to create a read-only group, or chose to use one with a different name in authentik, rename or remove here accordingly.
+If you already had an "admin" group and thus didn't create the `ArgoCD Admins` one, just replace `ArgoCD Admins` with your existing group name. If you did not opt to create a read-only group, or chose to use one with a different name in authentik, rename or remove here accordingly.
 
-Apply all the modified manifests, and you should be able to login to ArgoCD both through the UI and the CLI.
+Apply all the modified manifests, and you should be able to log in to ArgoCD both through the UI and the CLI.
