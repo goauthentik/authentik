@@ -6,6 +6,7 @@
         "authn",
         "entra",
         "goauthentik",
+        "jwe",
         "jwks",
         "kubernetes",
         "oidc",
