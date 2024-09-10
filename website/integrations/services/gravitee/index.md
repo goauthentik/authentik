@@ -1,6 +1,9 @@
 ---
-title: Gravitee
+title: Integrate with Gravitee
+sidebar_label: Gravitee
 ---
+
+# Gravitee
 
 <span class="badge badge--secondary">Support level: Community</span>
 

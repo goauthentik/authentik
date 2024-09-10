@@ -1,6 +1,9 @@
 ---
-title: Bookstack
+title: Integrate with Bookstack
+sidebar_label: Bookstack
 ---
+
+# Bookstack
 
 <span class="badge badge--secondary">Support level: Community</span>
 

@@ -1,6 +1,9 @@
 ---
-title: Nextcloud
+title: Integrate with Nextcloud
+sidebar_label: Nextcloud
 ---
+
+# Nextcloud
 
 <span class="badge badge--secondary">Support level: Community</span>
 
