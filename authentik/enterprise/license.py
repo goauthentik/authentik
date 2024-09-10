@@ -121,6 +121,9 @@ class LicenseKey:
                 ),
             )
         except PyJWTError:
+            unverified = decode(jwt, options={"verify_signature": False})
+            if unverified["aud"] != get_license_aud():
+                raise ValidationError("Invalid Install ID in license") from None
             raise ValidationError("Unable to verify license") from None
         return body
 
