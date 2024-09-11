@@ -221,9 +221,9 @@ class ClientIPMiddleware:
             )
             return None
         # Update sentry scope to include correct IP
-        user = Scope.get_isolation_scope()._user or {}
-        user["ip_address"] = delegated_ip
-        Scope.get_isolation_scope().set_user(user)
+        sentry_user = Scope.get_isolation_scope()._user or {}
+        sentry_user["ip_address"] = delegated_ip
+        Scope.get_isolation_scope().set_user(sentry_user)
         # Set the outpost service account on the request
         setattr(request, self.request_attr_outpost_user, user)
         return delegated_ip

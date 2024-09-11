@@ -60,6 +60,10 @@ When an unauthenticated user attempts to access a secured resource, they are red
 
 When a user authenticates/enrolls via an external source, this will be set to the source they are using.
 
+#### `outpost` (dictionary) <span class="badge badge--info">authentik 2024.10+</span>
+
+When a flow is executed by an Outpost (for example the [LDAP](../../providers/ldap/index.md) or [RADIUS](../../providers/radius/index.mdx)), this will be set to a dictionary containing the Outpost instance under the key `"instance"`.
+
 ### Scenario-specific keys
 
 #### `is_sso` (boolean)
