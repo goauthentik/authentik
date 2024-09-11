@@ -59,7 +59,7 @@ const runningState: State = {
 };
 const errorState: State = {
     state: "error",
-    label: msg("Authentik was unable to save this application:"),
+    label: msg("authentik was unable to save this application:"),
     icon: ["fa-times-circle", "pf-m-danger"],
 };
 
