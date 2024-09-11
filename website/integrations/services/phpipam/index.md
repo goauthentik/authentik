@@ -1,6 +1,9 @@
 ---
-title: phpIPAM
+title: Integrate with phpIPAM
+sidebar_label: phpIPAM
 ---
+
+# phpIPAM
 
 <span class="badge badge--secondary">Support level: Community</span>
 
