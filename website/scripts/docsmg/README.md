@@ -36,7 +36,7 @@ Use this migration tool to:
 
 ### Migrate the docs
 
-1. After you have entered all the paths you want to move, migrate the files with the command `docsmg migrate`.
+1. After you have entered all the paths you want to move, verify that you are in the `authentik/website` directory, and then migrate the files with the command `docsmg migrate`.
 
 :::info
 After you have run `migrate`, you cannot run it again or you will get a `panic` error... because the files have already been moved.

@@ -1,0 +1,416 @@
+---
+id: crypto-certificatekeypairs-retrieve
+title: "crypto_certificatekeypairs_retrieve"
+description: "CertificateKeyPair Viewset"
+sidebar_label: "crypto_certificatekeypairs_retrieve"
+hide_title: true
+hide_table_of_contents: true
+api: eJytV21v2zYQ/iuEvqwFPCtJ030whmFZF6RB2zVokgJDEAi0dLJYUyRLUk49Q/99d6IUK5acbG0+mSLv5bn38ybSBiz3QqvzLJpFqV0br5MUrBe5SLmHJawNF9YlFrwVsIJoEmXgUisMcSHPmy3xO1hfIDH7LODOgUdSwy0vwYN10exmEwliMNwX+KTwAb+WJqkqkeGFSwsoeTTbRH5t6MmhRrXAl1zbknu8aSjrXQQn7Pr6/E8WyJnIQCGgNZ19IRzrAfwZETKCOEWpFr5WwgLa7W0F9e0k8nxBOFs3RHjjIK2s8OsGPa98QbKX+HVL9Bac0cqBI9BHBwf0k2rlkYiO3BhJahFl/MUR1M3QSD3/Aqn/L169BCu4FP+AJcdaipwXQbdZPu02gsuzj0qug8ForvCSGN4Z1jk2BGVXFD7k+AvW4KdPXMGPXv8yplFVUvI5CQ0aHtp0Bp71Uou95a5gLy7fnqC0lwN8Q6WHz6jycFQhkSbwzQi7ftShGeWSFyX8bwCt8H26XRXS4YcNbQUx7liOjMzm6fHrw+MxxejfFbIkWOoJX3HRarlHMNdaAleDFL0s9B0TeSiytk+wAhVy1oqkW4YFkYtFhYXGtGVK+6cwBLXf4wAsz77qnxwjGRMCGdrRqNNblyWZvlNS8yyprBzTP9R3/ek985p1jP0APGXkjyvrGTqmrOSKL6i5DWXv9oFdx3Z94UMQweZrtm19u9A+NnmGni44ZpsFVo5wTdlVAQ6YbomJLkUYHum4ylhlsnCuvMYKQw9KuSYmzKxc8gXTCJcJlTW+7ZSpVh5L8ThH6Suwd9itsf+S9lIswmhzU/a3rhoq5wUWQ6kzHBBNunSIVoI33ycX5xM2rzwVaiO64NiDHHl+R4NQmOgS4dgW/jSq6/5UuXnQTnYK/JHUG+l7o/13G+O2b09oDuyr50fSb6T8brdZMJxEaOdgBtOMOH7WCfgZZ13WsLJTa/Vw6CmtklyAzBKgd9cTya3l5HLhoXQj84wqX2djkw5feJYJUsvlRV9fvXXJFlpAttcfr57RH2egcAFIKUP3OCQDj9EeHd/7re3nayugF/xW6SNmUqsBX2haHxftzof73SyKwxYVjyyT8abd+uqY9j6wq25BbLphFHMj4tWrOKp7K9gl+SkY2lvE7k0qvDfdEtlMLcAmYxt8QuW6oWyN6jcz0hxMOTo4Op4eT48Gjv/Al7RLdlwhfMyJ0kigPZLiy8PMxkBSAKICpNS/L/S2AQpNYcDgA+6LTfaG9ffD+RWKCGaTCW4Wxwvhi2o+TXUZ90TE29Nc6nmMqlT8/vzN6V+Xp42ZRjuPHaEnPESAjUSA7Vvne+n6+Gbfut3DNx8biVjIvnaYhQy436Mf9LoOAd7Otrs/5VyB+Ilrs5lzB9dW1jVdf62AtrEbPK44bsDNoMJUyYSjM+ZdzqXb3Qf6drz41Ob4S/adfxVGje16jaJOs+Kyoi880kDe/q+pb5G0wImLyUiww+tJmoLxPb5BZ6DUvy+ss1PKEkqA/l4WMnzSHUj6KKZf/2gI2JVegvrtHqGnT8JX1/8CKMvq0Q==
+sidebar_class_name: "get api-method"
+info_path: developer-docs/api/reference/authentik
+custom_edit_url: null
+hide_send_button: true
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import Markdown from "@theme/Markdown";
+import Heading from "@theme/Heading";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"crypto_certificatekeypairs_retrieve"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/crypto/certificatekeypairs/{kp_uuid}/"}
+>
+  
+</MethodEndpoint>
+
+
+
+CertificateKeyPair Viewset
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<details
+  style={{"marginBottom":"1rem"}}
+  className={"openapi-markdown__details"}
+  data-collapsed={false}
+  open={true}
+>
+  <summary
+    style={{}}
+  >
+    <h3
+      className={"openapi-markdown__details-summary-header-params"}
+    >
+      Path Parameters
+    </h3>
+  </summary><div>
+    <ul>
+      <ParamsItem
+        className={"paramsItem"}
+        param={{"in":"path","name":"kp_uuid","schema":{"type":"string","format":"uuid"},"description":"A UUID string identifying this Certificate-Key Pair.","required":true}}
+      >
+        
+      </ParamsItem>
+    </ul>
+  </div>
+</details><div>
+  <div>
+    <ApiTabs
+      label={undefined}
+      id={undefined}
+    >
+      <TabItem
+        label={"200"}
+        value={"200"}
+      >
+        <div>
+          
+          
+          
+          
+          
+        </div><div>
+          <MimeTabs
+            className={"openapi-tabs__mime"}
+            schemaType={"response"}
+          >
+            <TabItem
+              label={"application/json"}
+              value={"application/json"}
+            >
+              <SchemaTabs
+                className={"openapi-tabs__schema"}
+              >
+                <TabItem
+                  label={"Schema"}
+                  value={"Schema"}
+                >
+                  <details
+                    style={{}}
+                    className={"openapi-markdown__details response"}
+                    data-collapsed={false}
+                    open={true}
+                  >
+                    <summary
+                      style={{}}
+                      className={"openapi-markdown__details-summary-response"}
+                    >
+                      <strong>
+                        Schema
+                      </strong>
+                    </summary><div
+                      style={{"textAlign":"left","marginLeft":"1rem"}}
+                    >
+                      
+                    </div><ul
+                      style={{"marginLeft":"1rem"}}
+                    >
+                      <SchemaItem
+                        collapsible={false}
+                        name={"pk"}
+                        required={true}
+                        schemaName={"uuid"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","format":"uuid","readOnly":true,"title":"Kp uuid"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"name"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"fingerprint_sha256"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","nullable":true,"description":"Get certificate Hash (SHA256)","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"fingerprint_sha1"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","nullable":true,"description":"Get certificate Hash (SHA1)","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"cert_expiry"}
+                        required={true}
+                        schemaName={"date-time"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","format":"date-time","nullable":true,"description":"Get certificate expiry","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"cert_subject"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","nullable":true,"description":"Get certificate subject as full rfc4514","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"private_key_available"}
+                        required={true}
+                        schemaName={"boolean"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"boolean","description":"Show if this keypair has a private key configured or not","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"private_key_type"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","nullable":true,"description":"Get the private key's type, if set","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"certificate_download_url"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Get URL to download certificate","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"private_key_download_url"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Get URL to download private key","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"managed"}
+                        required={true}
+                        schemaName={"Managed by authentik (string)"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","readOnly":true,"nullable":true,"title":"Managed by authentik","description":"Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update."}}
+                      >
+                        
+                      </SchemaItem>
+                    </ul>
+                  </details>
+                </TabItem><TabItem
+                  label={"Example (from schema)"}
+                  value={"Example (from schema)"}
+                >
+                  <ResponseSamples
+                    responseExample={"{\n  \"pk\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"name\": \"string\",\n  \"fingerprint_sha256\": \"string\",\n  \"fingerprint_sha1\": \"string\",\n  \"cert_expiry\": \"2024-06-18T20:43:54.457Z\",\n  \"cert_subject\": \"string\",\n  \"private_key_available\": true,\n  \"private_key_type\": \"string\",\n  \"certificate_download_url\": \"string\",\n  \"private_key_download_url\": \"string\",\n  \"managed\": \"string\"\n}"}
+                    language={"json"}
+                  >
+                    
+                  </ResponseSamples>
+                </TabItem>
+              </SchemaTabs>
+            </TabItem>
+          </MimeTabs>
+        </div>
+      </TabItem><TabItem
+        label={"400"}
+        value={"400"}
+      >
+        <div>
+          
+          
+          
+          
+          
+        </div><div>
+          <MimeTabs
+            className={"openapi-tabs__mime"}
+            schemaType={"response"}
+          >
+            <TabItem
+              label={"application/json"}
+              value={"application/json"}
+            >
+              <SchemaTabs
+                className={"openapi-tabs__schema"}
+              >
+                <TabItem
+                  label={"Schema"}
+                  value={"Schema"}
+                >
+                  <details
+                    style={{}}
+                    className={"openapi-markdown__details response"}
+                    data-collapsed={false}
+                    open={true}
+                  >
+                    <summary
+                      style={{}}
+                      className={"openapi-markdown__details-summary-response"}
+                    >
+                      <strong>
+                        Schema
+                      </strong>
+                    </summary><div
+                      style={{"textAlign":"left","marginLeft":"1rem"}}
+                    >
+                      
+                    </div><ul
+                      style={{"marginLeft":"1rem"}}
+                    >
+                      <SchemaItem
+                        collapsible={false}
+                        name={"non_field_errors"}
+                        required={false}
+                        schemaName={"string[]"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"array","items":{"type":"string"}}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"code"}
+                        required={false}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string"}}
+                      >
+                        
+                      </SchemaItem>
+                    </ul>
+                  </details>
+                </TabItem><TabItem
+                  label={"Example (from schema)"}
+                  value={"Example (from schema)"}
+                >
+                  <ResponseSamples
+                    responseExample={"{\n  \"non_field_errors\": [\n    \"string\"\n  ],\n  \"code\": \"string\"\n}"}
+                    language={"json"}
+                  >
+                    
+                  </ResponseSamples>
+                </TabItem>
+              </SchemaTabs>
+            </TabItem>
+          </MimeTabs>
+        </div>
+      </TabItem><TabItem
+        label={"403"}
+        value={"403"}
+      >
+        <div>
+          
+          
+          
+          
+          
+        </div><div>
+          <MimeTabs
+            className={"openapi-tabs__mime"}
+            schemaType={"response"}
+          >
+            <TabItem
+              label={"application/json"}
+              value={"application/json"}
+            >
+              <SchemaTabs
+                className={"openapi-tabs__schema"}
+              >
+                <TabItem
+                  label={"Schema"}
+                  value={"Schema"}
+                >
+                  <details
+                    style={{}}
+                    className={"openapi-markdown__details response"}
+                    data-collapsed={false}
+                    open={true}
+                  >
+                    <summary
+                      style={{}}
+                      className={"openapi-markdown__details-summary-response"}
+                    >
+                      <strong>
+                        Schema
+                      </strong>
+                    </summary><div
+                      style={{"textAlign":"left","marginLeft":"1rem"}}
+                    >
+                      
+                    </div><ul
+                      style={{"marginLeft":"1rem"}}
+                    >
+                      <SchemaItem
+                        collapsible={false}
+                        name={"detail"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"code"}
+                        required={false}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string"}}
+                      >
+                        
+                      </SchemaItem>
+                    </ul>
+                  </details>
+                </TabItem><TabItem
+                  label={"Example (from schema)"}
+                  value={"Example (from schema)"}
+                >
+                  <ResponseSamples
+                    responseExample={"{\n  \"detail\": \"string\",\n  \"code\": \"string\"\n}"}
+                    language={"json"}
+                  >
+                    
+                  </ResponseSamples>
+                </TabItem>
+              </SchemaTabs>
+            </TabItem>
+          </MimeTabs>
+        </div>
+      </TabItem>
+    </ApiTabs>
+  </div>
+</div>
+      

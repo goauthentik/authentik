@@ -1,0 +1,165 @@
+---
+id: policies-all-cache-clear-create
+title: "policies_all_cache_clear_create"
+description: "Clear policy cache"
+sidebar_label: "policies_all_cache_clear_create"
+hide_title: true
+hide_table_of_contents: true
+api: eJx1U8Fu2zAM/RVDZyMK0pyCYVhbBEOAdSuQ7jQUgSyzsRpFUiU5WGD430dKTuI23cmS9chHvkd2zDrwIiprVjVbMGe1kgrCRmi9kUI2sJEahN9IDyICK1kNQXrlKALx9/RYpKhjkfAIiWIb2OLPORl7LlkA2XoVj/i/Y6KNDZiodnh77vHVQ3DWBIQuOjabzunznmjdSgkhvLRaIxGxQj0Q9iWbT6fXIXeiLjy8tRBixtwQRloTkZuOwjksMDXPXwPFdCxgxr2gUzw6wCy2egUZrxr/Dga8ksXt46pYem89IpwnMaPKbdQQhdKjTCF6ZbZUirQ1fPLQkxBvrcLWSL4hAcoTVdRwIc18PeHfF5VS7CE2NnsZqG4nYoM3fnKDo7V8ZC1n5I4/gA/JnNZrggun+OGGs35k3prEyd2NLDz30cToKFlC4b0il3wqSpkXm5BDJ5fwkhFzrn82nc0n88nsSu0HsUOFilNU9qwIau80TFiZTBUymYrukeqsAa3tt609M02UJe1RBMBJI6gRqcyH1ROmyG1TC2HB+VbFpq0m0u75KAW/nCptK45Uhv9Y3S9/rpepTZJ8L8wo+Un1AlXP85qnt/h8oUbz+Z/dylJH+Bu508hPPaXau8Hp0d6VDFlJnovbeKOJamg2ENp1lQjw2+u+p9+4LJ5WFI8H4ZWoyCxcUQwAUaOXNCA7QAi7xX10NF8Hodtk6cdtosk5D+PjrzWpTAKOJmaYkPJ0oPTDkzDHUfIvdwlQPNkdmK/4kIuIdEUi3IV/qKKjPg==
+sidebar_class_name: "post api-method"
+info_path: developer-docs/api/reference/authentik
+custom_edit_url: null
+hide_send_button: true
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import Markdown from "@theme/Markdown";
+import Heading from "@theme/Heading";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"policies_all_cache_clear_create"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/policies/all/cache_clear/"}
+>
+  
+</MethodEndpoint>
+
+
+
+Clear policy cache
+
+<div>
+  <div>
+    <ApiTabs
+      label={undefined}
+      id={undefined}
+    >
+      <TabItem
+        label={"204"}
+        value={"204"}
+      >
+        <div>
+          
+          
+          Successfully cleared cache
+          
+          
+        </div><div>
+          
+        </div>
+      </TabItem><TabItem
+        label={"400"}
+        value={"400"}
+      >
+        <div>
+          
+          
+          Bad request
+          
+          
+        </div><div>
+          
+        </div>
+      </TabItem><TabItem
+        label={"403"}
+        value={"403"}
+      >
+        <div>
+          
+          
+          
+          
+          
+        </div><div>
+          <MimeTabs
+            className={"openapi-tabs__mime"}
+            schemaType={"response"}
+          >
+            <TabItem
+              label={"application/json"}
+              value={"application/json"}
+            >
+              <SchemaTabs
+                className={"openapi-tabs__schema"}
+              >
+                <TabItem
+                  label={"Schema"}
+                  value={"Schema"}
+                >
+                  <details
+                    style={{}}
+                    className={"openapi-markdown__details response"}
+                    data-collapsed={false}
+                    open={true}
+                  >
+                    <summary
+                      style={{}}
+                      className={"openapi-markdown__details-summary-response"}
+                    >
+                      <strong>
+                        Schema
+                      </strong>
+                    </summary><div
+                      style={{"textAlign":"left","marginLeft":"1rem"}}
+                    >
+                      
+                    </div><ul
+                      style={{"marginLeft":"1rem"}}
+                    >
+                      <SchemaItem
+                        collapsible={false}
+                        name={"detail"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"code"}
+                        required={false}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string"}}
+                      >
+                        
+                      </SchemaItem>
+                    </ul>
+                  </details>
+                </TabItem><TabItem
+                  label={"Example (from schema)"}
+                  value={"Example (from schema)"}
+                >
+                  <ResponseSamples
+                    responseExample={"{\n  \"detail\": \"string\",\n  \"code\": \"string\"\n}"}
+                    language={"json"}
+                  >
+                    
+                  </ResponseSamples>
+                </TabItem>
+              </SchemaTabs>
+            </TabItem>
+          </MimeTabs>
+        </div>
+      </TabItem>
+    </ApiTabs>
+  </div>
+</div>
+      

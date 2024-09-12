@@ -1,0 +1,512 @@
+---
+id: policies-event-matcher-partial-update
+title: "policies_event_matcher_partial_update"
+description: "Event Matcher Policy Viewset"
+sidebar_label: "policies_event_matcher_partial_update"
+hide_title: true
+hide_table_of_contents: true
+api: eJztW+uP47YR/1cIfUkCbO3rJZ8WRdG96yJdINcc7pF+SBcCLdE2Y0lUScq7zsL/e+eh98PyFQcULYTD3kqcH4fD4XBmyFm9BCZXVnptsoc4uA1yk+hIKxeqo8p8mEof7ZUNc2m9lklY5LH0KrgJYuUiq3PsB73uESzeMVi8Rx4n8YtWT055AENvmSqvrAtuf30JNHbJpd8DKQNCNewpLAodQ6MDNqkMbl8Cf8qR7LzV2Q4oW2NBJGgh5Lkvx534/Pnhr4LhQscgld6e8NnvtRNjYq6Aq1X/KrRVMH9vC3V+vAm83KGstTqCR0Yp59+Y+ISiRSbzwA4fZZ4DjJS4/s2hJC/DOZjNbyry16nuo7Kgbf27sqg9i0vkUQrgxgobaibV2U8q24FSb/8IelHPKipwiDAxux1Cmj4bYxIls4Eo/9irjBVlqEnAk8rkJlHxjZBJImqmgNgykhdOPGkgb5TAwVS8Em9OIlZbWST+RpgsOTVdhbLWWCekrdG4jjJiIUCZSfLzluxEZUWKiwAwjdLS73ArNQjEr6ZAhRYOLPTJajJMV7gclswULiwXjAzQuSdj45Dt0anIKh8ewUCbN2s8m7bOjtrTYobAGUeShd8bC8sRtlYae5rCRipMdHYgnE5hoWD9ubPzsGlG2lUWU+s2MU9hrReUkjfBaFOk8qqJzeEEezPPYWE7RHdyXqWhl+7Q4dNtH+DbTWDXW70rbCksrhaal4lVEoKiJE+J39kdNO/wo/gdbF8noO6MFohgoTxCG5oTjlI4b9IQ91Xfkr32iap2xh3ZhQtwU2ZFwt1pm/atl7aQKCUU5L4c2KXfs6GygQkcbCXI0hO19UKluT+xdbcQrjZodoBso1Gi0SfqfGz/9YVr78dRUVXpj75x4i0xFg/vxbfIL/I8LDC+EeDxRKY8WO+hbhVgl0Jm4v45t8o5lJodx3e0lfJ8fB+hGaNHPKzAcUlQT2na3CbjlHZZqyXXnffInnJvOk1ow102sCVz43q8Kze6ios0PY2TOgFnAvKcazvVvdbFOL1yAeNUq/LCV9t6SO82WnOE0GLdKollPkEy2Ph6gghPz6cJmpWxLqYGdDJNpkiRTjsku5FRt0FF5qh6+mMXNjKVikATGaXkiXoeJQykrAl9GcFF7qC9agDHauwsIIwLMw9yqbsChGsezeO88fk86gghu0yPZpBPaoMN2RgykjlsATlKAk/IHnVAglTnNNo+2HAlgRz0GKHMmpooN0TUAXKMOrrRKpo14G/HKBTDOXxMkqs8YJLK6cA4ucoPGurGyizuGskmKVQODr3nviJju13hf2UB6KaaYb1j7aeIza7dGbNLVIje3eUymmTX9Eh1ZI0zWw95hLdyvoPtuYEWqNQPb88uiMLnpeh8l+f3GFeuDcxlQK7i8+YkHKx2hM+tpGoqNDcIzhzbYZlSj5mIF5YRbxUbsPuOEYUc1lYR5thk9uqgTrnUHU8UUqSjeDfRTMrc6CxmPTWQKiLC2NEBVkTZo47AF2eZivqbqAEfio2yEPghpl3XoXzoEOvTHLkBdgacUo7DOjGYjaB8udiLwnK98fl1pkMZq1th+1KHinU9xiVwE8tbYf1CB47yp7Glq3dRiPGRgmTVNIHjuA+RDpL0MkG/jORfM1wpYeC0YQbJ6UOZRcxgMU5TsP4CHB09Lk8MozyF+jm2FW6MHWYvK2uSjlsKy0SiWY2h6xpiLkldgWkVeC0usGQUhpMWcmJfVn0wS6JU6QLfHmaGY70cFzgSBgVtcHNcq9UY40pxIhxkYd2sBhoIeF1X+IkV+rV5OKRy3ZGg4cqRsCv8XD0S5YO9wajt2vGYAf+6dlTMLrtjYsuVI1Jn/O/a0aostTti1XrlqFUC22VStX4pk+phegplUlwlx5MDlBlylSnP4nCLjGTVFQyzakqtJxm1AuskhlJtTrgnMd2su5eET/eqM/FWUv5l6DHgINxOsuSEfiSvHwVMsmll/7Qk/HgZTqcBQtPTLBjyowoNj5fhdFggND0NwXx24CNEl1CfIJrDBAmX9QwbzxSrnTVFPmzGgYet3bvHHtGbg+o2t/J86Kay7lmlFYf7Z5DyUFK/z4Txa7tfThp6x5rmmEOvMyJc1/myABbzDRnNplcRHKAg/dQ9hzHGaDrrYFPjSFvdjgxsjE9MnIWPETLTeAiYZuZyCBxzwDm6LZJRKdoYcNd7Yw7VzC4cEt/h0exrHRPpnDdxQCRa92jIQJnh4RErGRUf7gDTa58qv3FjLILzuZnLe26kO9uyXMOXrh/KMsP5jHCnogJ8xonOobUa4e3xTDUkWCXYilTKef3q1X+xkJQf5gtsKLCMf86SU7VmtTaYf1WGG69K/Q/WoSKIUyYrl6OvnK6YPyoveC1E3Us4A/JIL56UOGTmSezhxxuhYu3J5urF6yoWRj4quzFOhVMFvu7gH5QvbFayA+vt9J7hDueNwsrkywfhfrNjpcrLkAtCXzQZjRErk+VuFlPsN6bIYsh7W3yx545s/MIEaiMBcyEegooZA/5LKXIpRf5flSKX4uNSfFyKj0vxcSk+LsXHpfi4FB+X4uNSfGTkUnxcio9L8fEifCk+znVeio9L8XEpPi7Fx07VaCk+LsXHAXCOvhQf+8XH5su0X5u6R7tKNay2lMW4Gyzw9apK42Wgx949d6e4GVBRs6ssPPf+8FVrl79wAoB3yfflLX/vqzeThVutkpirAK7FUlor8WwFrjJ1IzVIKurFY9VJvK6OY43DyuR9e7xW2bcRjSWb1Mf3X1EfP6pMWR2Ju/cPEwqJYdX1SAnv4mzb1lQyaC1+OeiFaXJtb29i/n4zwqtZ+o7zNlhXB9p15xi/fml92XleB1jissfqQ9DCJthV5np9/H5N27Qqn39ETfFUa3fQmtTe050o6ZNKyQq2jiUJUdcfmk81759lmieq+XSycRQjtWn2DVUFsC73tcotTXcqdbSurZq6RnkpNH0DdMbS3pYrmKX2m1nSLnUswOtXr39Y/bB6PbCQd/KAtZhWToubx2mc64o8ROZhGjgCX7aCzlSSmL/sTCOxNihJFaAbDb17+AQseHVQ0+52vd5pvy82kNum6xaLdfO0ScxmjbNb//Tw9v7vH+9pNfBWKJVZi3llKOxtS3dnRfmFsRj/wri1s+Y+Ni4txKtnv86TUts0l5fSWFuf9YIR9Co/t91PkXGD7PFmC3q9vGykU59tcj5jM5iYxT/zgMejtJqDC1h1rB39rUJwu5WJ64ea9ky+/VBuyO/Ef/jl8uhkK8dIl/JwtirwDR4P6tT71Pr8CPC9kphzoOiMeMsC/uET8mk4DBza+abqcRdh0fYi9rHlO97ffXr7twAr+fwpdUoeK7ASrzfx/9vgn/APXvgPQMgNUPtLkMhsV2C2chswY3LjBa5r84cl7A1uqgec2qhS/vSGAOITJrB/rlXE+Swo53z+N8XFw7k=
+sidebar_class_name: "patch api-method"
+info_path: developer-docs/api/reference/authentik
+custom_edit_url: null
+hide_send_button: true
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import Markdown from "@theme/Markdown";
+import Heading from "@theme/Heading";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"policies_event_matcher_partial_update"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"patch"}
+  path={"/policies/event_matcher/{policy_uuid}/"}
+>
+  
+</MethodEndpoint>
+
+
+
+Event Matcher Policy Viewset
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<details
+  style={{"marginBottom":"1rem"}}
+  className={"openapi-markdown__details"}
+  data-collapsed={false}
+  open={true}
+>
+  <summary
+    style={{}}
+  >
+    <h3
+      className={"openapi-markdown__details-summary-header-params"}
+    >
+      Path Parameters
+    </h3>
+  </summary><div>
+    <ul>
+      <ParamsItem
+        className={"paramsItem"}
+        param={{"in":"path","name":"policy_uuid","schema":{"type":"string","format":"uuid"},"description":"A UUID string identifying this Event Matcher Policy.","required":true}}
+      >
+        
+      </ParamsItem>
+    </ul>
+  </div>
+</details><MimeTabs
+  className={"openapi-tabs__mime"}
+>
+  <TabItem
+    label={"application/json"}
+    value={"application/json-schema"}
+  >
+    <details
+      style={{}}
+      className={"openapi-markdown__details mime"}
+      data-collapsed={false}
+      open={true}
+    >
+      <summary
+        style={{}}
+        className={"openapi-markdown__details-summary-mime"}
+      >
+        <h3
+          className={"openapi-markdown__details-summary-header-body"}
+        >
+          Body
+        </h3>
+      </summary><div
+        style={{"textAlign":"left","marginLeft":"1rem"}}
+      >
+        
+      </div><ul
+        style={{"marginLeft":"1rem"}}
+      >
+        <SchemaItem
+          collapsible={false}
+          name={"name"}
+          required={false}
+          schemaName={"string"}
+          qualifierMessage={"**Possible values:** `non-empty`"}
+          schema={{"type":"string","minLength":1}}
+        >
+          
+        </SchemaItem><SchemaItem
+          collapsible={false}
+          name={"execution_logging"}
+          required={false}
+          schemaName={"boolean"}
+          qualifierMessage={undefined}
+          schema={{"type":"boolean","description":"When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged."}}
+        >
+          
+        </SchemaItem><SchemaItem
+          collapsible={false}
+          name={"action"}
+          required={false}
+          schemaName={"EventActions (string)"}
+          qualifierMessage={"**Possible values:** [`login`, `login_failed`, `logout`, `user_write`, `suspicious_request`, `password_set`, `secret_view`, `secret_rotate`, `invitation_used`, `authorize_application`, `source_linked`, `impersonation_started`, `impersonation_ended`, `flow_execution`, `policy_execution`, `policy_exception`, `property_mapping_exception`, `system_task_execution`, `system_task_exception`, `system_exception`, `configuration_error`, `model_created`, `model_updated`, `model_deleted`, `email_sent`, `update_available`, `custom_`]"}
+          schema={{"enum":["login","login_failed","logout","user_write","suspicious_request","password_set","secret_view","secret_rotate","invitation_used","authorize_application","source_linked","impersonation_started","impersonation_ended","flow_execution","policy_execution","policy_exception","property_mapping_exception","system_task_execution","system_task_exception","system_exception","configuration_error","model_created","model_updated","model_deleted","email_sent","update_available","custom_"],"type":"string","title":"EventActions"}}
+        >
+          
+        </SchemaItem><SchemaItem
+          collapsible={false}
+          name={"client_ip"}
+          required={false}
+          schemaName={"string"}
+          qualifierMessage={"**Possible values:** `non-empty`"}
+          schema={{"type":"string","nullable":true,"minLength":1,"description":"Matches Event's Client IP (strict matching, for network matching use an Expression Policy)"}}
+        >
+          
+        </SchemaItem><SchemaItem
+          collapsible={false}
+          name={"app"}
+          required={false}
+          schemaName={"AppEnum (string)"}
+          qualifierMessage={"**Possible values:** [`authentik.tenants`, `authentik.admin`, `authentik.api`, `authentik.crypto`, `authentik.flows`, `authentik.outposts`, `authentik.policies.dummy`, `authentik.policies.event_matcher`, `authentik.policies.expiry`, `authentik.policies.expression`, `authentik.policies.password`, `authentik.policies.reputation`, `authentik.policies`, `authentik.providers.ldap`, `authentik.providers.oauth2`, `authentik.providers.proxy`, `authentik.providers.radius`, `authentik.providers.saml`, `authentik.providers.scim`, `authentik.rbac`, `authentik.recovery`, `authentik.sources.ldap`, `authentik.sources.oauth`, `authentik.sources.plex`, `authentik.sources.saml`, `authentik.sources.scim`, `authentik.stages.authenticator`, `authentik.stages.authenticator_duo`, `authentik.stages.authenticator_sms`, `authentik.stages.authenticator_static`, `authentik.stages.authenticator_totp`, `authentik.stages.authenticator_validate`, `authentik.stages.authenticator_webauthn`, `authentik.stages.captcha`, `authentik.stages.consent`, `authentik.stages.deny`, `authentik.stages.dummy`, `authentik.stages.email`, `authentik.stages.identification`, `authentik.stages.invitation`, `authentik.stages.password`, `authentik.stages.prompt`, `authentik.stages.user_delete`, `authentik.stages.user_login`, `authentik.stages.user_logout`, `authentik.stages.user_write`, `authentik.brands`, `authentik.blueprints`, `authentik.core`, `authentik.enterprise`, `authentik.enterprise.audit`, `authentik.enterprise.providers.google_workspace`, `authentik.enterprise.providers.microsoft_entra`, `authentik.enterprise.providers.rac`, `authentik.enterprise.stages.source`, `authentik.events`]"}
+          schema={{"enum":["authentik.tenants","authentik.admin","authentik.api","authentik.crypto","authentik.flows","authentik.outposts","authentik.policies.dummy","authentik.policies.event_matcher","authentik.policies.expiry","authentik.policies.expression","authentik.policies.password","authentik.policies.reputation","authentik.policies","authentik.providers.ldap","authentik.providers.oauth2","authentik.providers.proxy","authentik.providers.radius","authentik.providers.saml","authentik.providers.scim","authentik.rbac","authentik.recovery","authentik.sources.ldap","authentik.sources.oauth","authentik.sources.plex","authentik.sources.saml","authentik.sources.scim","authentik.stages.authenticator","authentik.stages.authenticator_duo","authentik.stages.authenticator_sms","authentik.stages.authenticator_static","authentik.stages.authenticator_totp","authentik.stages.authenticator_validate","authentik.stages.authenticator_webauthn","authentik.stages.captcha","authentik.stages.consent","authentik.stages.deny","authentik.stages.dummy","authentik.stages.email","authentik.stages.identification","authentik.stages.invitation","authentik.stages.password","authentik.stages.prompt","authentik.stages.user_delete","authentik.stages.user_login","authentik.stages.user_logout","authentik.stages.user_write","authentik.brands","authentik.blueprints","authentik.core","authentik.enterprise","authentik.enterprise.audit","authentik.enterprise.providers.google_workspace","authentik.enterprise.providers.microsoft_entra","authentik.enterprise.providers.rac","authentik.enterprise.stages.source","authentik.events"],"type":"string","title":"AppEnum"}}
+        >
+          
+        </SchemaItem><SchemaItem
+          collapsible={false}
+          name={"model"}
+          required={false}
+          schemaName={"ModelEnum (string)"}
+          qualifierMessage={"**Possible values:** [`authentik_tenants.domain`, `authentik_crypto.certificatekeypair`, `authentik_flows.flow`, `authentik_flows.flowstagebinding`, `authentik_outposts.dockerserviceconnection`, `authentik_outposts.kubernetesserviceconnection`, `authentik_outposts.outpost`, `authentik_policies_dummy.dummypolicy`, `authentik_policies_event_matcher.eventmatcherpolicy`, `authentik_policies_expiry.passwordexpirypolicy`, `authentik_policies_expression.expressionpolicy`, `authentik_policies_password.passwordpolicy`, `authentik_policies_reputation.reputationpolicy`, `authentik_policies.policybinding`, `authentik_providers_ldap.ldapprovider`, `authentik_providers_oauth2.scopemapping`, `authentik_providers_oauth2.oauth2provider`, `authentik_providers_proxy.proxyprovider`, `authentik_providers_radius.radiusprovider`, `authentik_providers_saml.samlprovider`, `authentik_providers_saml.samlpropertymapping`, `authentik_providers_scim.scimprovider`, `authentik_providers_scim.scimmapping`, `authentik_rbac.role`, `authentik_sources_ldap.ldapsource`, `authentik_sources_ldap.ldappropertymapping`, `authentik_sources_oauth.oauthsource`, `authentik_sources_oauth.useroauthsourceconnection`, `authentik_sources_plex.plexsource`, `authentik_sources_plex.plexsourceconnection`, `authentik_sources_saml.samlsource`, `authentik_sources_saml.usersamlsourceconnection`, `authentik_sources_scim.scimsource`, `authentik_stages_authenticator_duo.authenticatorduostage`, `authentik_stages_authenticator_duo.duodevice`, `authentik_stages_authenticator_sms.authenticatorsmsstage`, `authentik_stages_authenticator_sms.smsdevice`, `authentik_stages_authenticator_static.authenticatorstaticstage`, `authentik_stages_authenticator_static.staticdevice`, `authentik_stages_authenticator_totp.authenticatortotpstage`, `authentik_stages_authenticator_totp.totpdevice`, `authentik_stages_authenticator_validate.authenticatorvalidatestage`, `authentik_stages_authenticator_webauthn.authenticatorwebauthnstage`, `authentik_stages_authenticator_webauthn.webauthndevice`, `authentik_stages_captcha.captchastage`, `authentik_stages_consent.consentstage`, `authentik_stages_consent.userconsent`, `authentik_stages_deny.denystage`, `authentik_stages_dummy.dummystage`, `authentik_stages_email.emailstage`, `authentik_stages_identification.identificationstage`, `authentik_stages_invitation.invitationstage`, `authentik_stages_invitation.invitation`, `authentik_stages_password.passwordstage`, `authentik_stages_prompt.prompt`, `authentik_stages_prompt.promptstage`, `authentik_stages_user_delete.userdeletestage`, `authentik_stages_user_login.userloginstage`, `authentik_stages_user_logout.userlogoutstage`, `authentik_stages_user_write.userwritestage`, `authentik_brands.brand`, `authentik_blueprints.blueprintinstance`, `authentik_core.group`, `authentik_core.user`, `authentik_core.application`, `authentik_core.token`, `authentik_enterprise.license`, `authentik_providers_google_workspace.googleworkspaceprovider`, `authentik_providers_google_workspace.googleworkspaceprovidermapping`, `authentik_providers_microsoft_entra.microsoftentraprovider`, `authentik_providers_microsoft_entra.microsoftentraprovidermapping`, `authentik_providers_rac.racprovider`, `authentik_providers_rac.endpoint`, `authentik_providers_rac.racpropertymapping`, `authentik_stages_source.sourcestage`, `authentik_events.event`, `authentik_events.notificationtransport`, `authentik_events.notification`, `authentik_events.notificationrule`, `authentik_events.notificationwebhookmapping`]"}
+          schema={{"enum":["authentik_tenants.domain","authentik_crypto.certificatekeypair","authentik_flows.flow","authentik_flows.flowstagebinding","authentik_outposts.dockerserviceconnection","authentik_outposts.kubernetesserviceconnection","authentik_outposts.outpost","authentik_policies_dummy.dummypolicy","authentik_policies_event_matcher.eventmatcherpolicy","authentik_policies_expiry.passwordexpirypolicy","authentik_policies_expression.expressionpolicy","authentik_policies_password.passwordpolicy","authentik_policies_reputation.reputationpolicy","authentik_policies.policybinding","authentik_providers_ldap.ldapprovider","authentik_providers_oauth2.scopemapping","authentik_providers_oauth2.oauth2provider","authentik_providers_proxy.proxyprovider","authentik_providers_radius.radiusprovider","authentik_providers_saml.samlprovider","authentik_providers_saml.samlpropertymapping","authentik_providers_scim.scimprovider","authentik_providers_scim.scimmapping","authentik_rbac.role","authentik_sources_ldap.ldapsource","authentik_sources_ldap.ldappropertymapping","authentik_sources_oauth.oauthsource","authentik_sources_oauth.useroauthsourceconnection","authentik_sources_plex.plexsource","authentik_sources_plex.plexsourceconnection","authentik_sources_saml.samlsource","authentik_sources_saml.usersamlsourceconnection","authentik_sources_scim.scimsource","authentik_stages_authenticator_duo.authenticatorduostage","authentik_stages_authenticator_duo.duodevice","authentik_stages_authenticator_sms.authenticatorsmsstage","authentik_stages_authenticator_sms.smsdevice","authentik_stages_authenticator_static.authenticatorstaticstage","authentik_stages_authenticator_static.staticdevice","authentik_stages_authenticator_totp.authenticatortotpstage","authentik_stages_authenticator_totp.totpdevice","authentik_stages_authenticator_validate.authenticatorvalidatestage","authentik_stages_authenticator_webauthn.authenticatorwebauthnstage","authentik_stages_authenticator_webauthn.webauthndevice","authentik_stages_captcha.captchastage","authentik_stages_consent.consentstage","authentik_stages_consent.userconsent","authentik_stages_deny.denystage","authentik_stages_dummy.dummystage","authentik_stages_email.emailstage","authentik_stages_identification.identificationstage","authentik_stages_invitation.invitationstage","authentik_stages_invitation.invitation","authentik_stages_password.passwordstage","authentik_stages_prompt.prompt","authentik_stages_prompt.promptstage","authentik_stages_user_delete.userdeletestage","authentik_stages_user_login.userloginstage","authentik_stages_user_logout.userlogoutstage","authentik_stages_user_write.userwritestage","authentik_brands.brand","authentik_blueprints.blueprintinstance","authentik_core.group","authentik_core.user","authentik_core.application","authentik_core.token","authentik_enterprise.license","authentik_providers_google_workspace.googleworkspaceprovider","authentik_providers_google_workspace.googleworkspaceprovidermapping","authentik_providers_microsoft_entra.microsoftentraprovider","authentik_providers_microsoft_entra.microsoftentraprovidermapping","authentik_providers_rac.racprovider","authentik_providers_rac.endpoint","authentik_providers_rac.racpropertymapping","authentik_stages_source.sourcestage","authentik_events.event","authentik_events.notificationtransport","authentik_events.notification","authentik_events.notificationrule","authentik_events.notificationwebhookmapping"],"type":"string","title":"ModelEnum"}}
+        >
+          
+        </SchemaItem>
+      </ul>
+    </details>
+  </TabItem>
+</MimeTabs><div>
+  <div>
+    <ApiTabs
+      label={undefined}
+      id={undefined}
+    >
+      <TabItem
+        label={"200"}
+        value={"200"}
+      >
+        <div>
+          
+          
+          
+          
+          
+        </div><div>
+          <MimeTabs
+            className={"openapi-tabs__mime"}
+            schemaType={"response"}
+          >
+            <TabItem
+              label={"application/json"}
+              value={"application/json"}
+            >
+              <SchemaTabs
+                className={"openapi-tabs__schema"}
+              >
+                <TabItem
+                  label={"Schema"}
+                  value={"Schema"}
+                >
+                  <details
+                    style={{}}
+                    className={"openapi-markdown__details response"}
+                    data-collapsed={false}
+                    open={true}
+                  >
+                    <summary
+                      style={{}}
+                      className={"openapi-markdown__details-summary-response"}
+                    >
+                      <strong>
+                        Schema
+                      </strong>
+                    </summary><div
+                      style={{"textAlign":"left","marginLeft":"1rem"}}
+                    >
+                      
+                    </div><ul
+                      style={{"marginLeft":"1rem"}}
+                    >
+                      <SchemaItem
+                        collapsible={false}
+                        name={"pk"}
+                        required={true}
+                        schemaName={"uuid"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","format":"uuid","readOnly":true,"title":"Policy uuid"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"name"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"execution_logging"}
+                        required={false}
+                        schemaName={"boolean"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"boolean","description":"When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged."}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"component"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Get object component so that we know how to edit the object","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"verbose_name"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Return object's verbose_name","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"verbose_name_plural"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Return object's plural verbose_name","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"meta_model_name"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Return internal model name","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"bound_to"}
+                        required={true}
+                        schemaName={"integer"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"integer","description":"Return objects policy is bound to","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"action"}
+                        required={false}
+                        schemaName={"EventActions (string)"}
+                        qualifierMessage={"**Possible values:** [`login`, `login_failed`, `logout`, `user_write`, `suspicious_request`, `password_set`, `secret_view`, `secret_rotate`, `invitation_used`, `authorize_application`, `source_linked`, `impersonation_started`, `impersonation_ended`, `flow_execution`, `policy_execution`, `policy_exception`, `property_mapping_exception`, `system_task_execution`, `system_task_exception`, `system_exception`, `configuration_error`, `model_created`, `model_updated`, `model_deleted`, `email_sent`, `update_available`, `custom_`]"}
+                        schema={{"enum":["login","login_failed","logout","user_write","suspicious_request","password_set","secret_view","secret_rotate","invitation_used","authorize_application","source_linked","impersonation_started","impersonation_ended","flow_execution","policy_execution","policy_exception","property_mapping_exception","system_task_execution","system_task_exception","system_exception","configuration_error","model_created","model_updated","model_deleted","email_sent","update_available","custom_"],"type":"string","title":"EventActions"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"client_ip"}
+                        required={false}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","nullable":true,"description":"Matches Event's Client IP (strict matching, for network matching use an Expression Policy)"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"app"}
+                        required={false}
+                        schemaName={"AppEnum (string)"}
+                        qualifierMessage={"**Possible values:** [`authentik.tenants`, `authentik.admin`, `authentik.api`, `authentik.crypto`, `authentik.flows`, `authentik.outposts`, `authentik.policies.dummy`, `authentik.policies.event_matcher`, `authentik.policies.expiry`, `authentik.policies.expression`, `authentik.policies.password`, `authentik.policies.reputation`, `authentik.policies`, `authentik.providers.ldap`, `authentik.providers.oauth2`, `authentik.providers.proxy`, `authentik.providers.radius`, `authentik.providers.saml`, `authentik.providers.scim`, `authentik.rbac`, `authentik.recovery`, `authentik.sources.ldap`, `authentik.sources.oauth`, `authentik.sources.plex`, `authentik.sources.saml`, `authentik.sources.scim`, `authentik.stages.authenticator`, `authentik.stages.authenticator_duo`, `authentik.stages.authenticator_sms`, `authentik.stages.authenticator_static`, `authentik.stages.authenticator_totp`, `authentik.stages.authenticator_validate`, `authentik.stages.authenticator_webauthn`, `authentik.stages.captcha`, `authentik.stages.consent`, `authentik.stages.deny`, `authentik.stages.dummy`, `authentik.stages.email`, `authentik.stages.identification`, `authentik.stages.invitation`, `authentik.stages.password`, `authentik.stages.prompt`, `authentik.stages.user_delete`, `authentik.stages.user_login`, `authentik.stages.user_logout`, `authentik.stages.user_write`, `authentik.brands`, `authentik.blueprints`, `authentik.core`, `authentik.enterprise`, `authentik.enterprise.audit`, `authentik.enterprise.providers.google_workspace`, `authentik.enterprise.providers.microsoft_entra`, `authentik.enterprise.providers.rac`, `authentik.enterprise.stages.source`, `authentik.events`]"}
+                        schema={{"enum":["authentik.tenants","authentik.admin","authentik.api","authentik.crypto","authentik.flows","authentik.outposts","authentik.policies.dummy","authentik.policies.event_matcher","authentik.policies.expiry","authentik.policies.expression","authentik.policies.password","authentik.policies.reputation","authentik.policies","authentik.providers.ldap","authentik.providers.oauth2","authentik.providers.proxy","authentik.providers.radius","authentik.providers.saml","authentik.providers.scim","authentik.rbac","authentik.recovery","authentik.sources.ldap","authentik.sources.oauth","authentik.sources.plex","authentik.sources.saml","authentik.sources.scim","authentik.stages.authenticator","authentik.stages.authenticator_duo","authentik.stages.authenticator_sms","authentik.stages.authenticator_static","authentik.stages.authenticator_totp","authentik.stages.authenticator_validate","authentik.stages.authenticator_webauthn","authentik.stages.captcha","authentik.stages.consent","authentik.stages.deny","authentik.stages.dummy","authentik.stages.email","authentik.stages.identification","authentik.stages.invitation","authentik.stages.password","authentik.stages.prompt","authentik.stages.user_delete","authentik.stages.user_login","authentik.stages.user_logout","authentik.stages.user_write","authentik.brands","authentik.blueprints","authentik.core","authentik.enterprise","authentik.enterprise.audit","authentik.enterprise.providers.google_workspace","authentik.enterprise.providers.microsoft_entra","authentik.enterprise.providers.rac","authentik.enterprise.stages.source","authentik.events"],"type":"string","title":"AppEnum"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"model"}
+                        required={false}
+                        schemaName={"ModelEnum (string)"}
+                        qualifierMessage={"**Possible values:** [`authentik_tenants.domain`, `authentik_crypto.certificatekeypair`, `authentik_flows.flow`, `authentik_flows.flowstagebinding`, `authentik_outposts.dockerserviceconnection`, `authentik_outposts.kubernetesserviceconnection`, `authentik_outposts.outpost`, `authentik_policies_dummy.dummypolicy`, `authentik_policies_event_matcher.eventmatcherpolicy`, `authentik_policies_expiry.passwordexpirypolicy`, `authentik_policies_expression.expressionpolicy`, `authentik_policies_password.passwordpolicy`, `authentik_policies_reputation.reputationpolicy`, `authentik_policies.policybinding`, `authentik_providers_ldap.ldapprovider`, `authentik_providers_oauth2.scopemapping`, `authentik_providers_oauth2.oauth2provider`, `authentik_providers_proxy.proxyprovider`, `authentik_providers_radius.radiusprovider`, `authentik_providers_saml.samlprovider`, `authentik_providers_saml.samlpropertymapping`, `authentik_providers_scim.scimprovider`, `authentik_providers_scim.scimmapping`, `authentik_rbac.role`, `authentik_sources_ldap.ldapsource`, `authentik_sources_ldap.ldappropertymapping`, `authentik_sources_oauth.oauthsource`, `authentik_sources_oauth.useroauthsourceconnection`, `authentik_sources_plex.plexsource`, `authentik_sources_plex.plexsourceconnection`, `authentik_sources_saml.samlsource`, `authentik_sources_saml.usersamlsourceconnection`, `authentik_sources_scim.scimsource`, `authentik_stages_authenticator_duo.authenticatorduostage`, `authentik_stages_authenticator_duo.duodevice`, `authentik_stages_authenticator_sms.authenticatorsmsstage`, `authentik_stages_authenticator_sms.smsdevice`, `authentik_stages_authenticator_static.authenticatorstaticstage`, `authentik_stages_authenticator_static.staticdevice`, `authentik_stages_authenticator_totp.authenticatortotpstage`, `authentik_stages_authenticator_totp.totpdevice`, `authentik_stages_authenticator_validate.authenticatorvalidatestage`, `authentik_stages_authenticator_webauthn.authenticatorwebauthnstage`, `authentik_stages_authenticator_webauthn.webauthndevice`, `authentik_stages_captcha.captchastage`, `authentik_stages_consent.consentstage`, `authentik_stages_consent.userconsent`, `authentik_stages_deny.denystage`, `authentik_stages_dummy.dummystage`, `authentik_stages_email.emailstage`, `authentik_stages_identification.identificationstage`, `authentik_stages_invitation.invitationstage`, `authentik_stages_invitation.invitation`, `authentik_stages_password.passwordstage`, `authentik_stages_prompt.prompt`, `authentik_stages_prompt.promptstage`, `authentik_stages_user_delete.userdeletestage`, `authentik_stages_user_login.userloginstage`, `authentik_stages_user_logout.userlogoutstage`, `authentik_stages_user_write.userwritestage`, `authentik_brands.brand`, `authentik_blueprints.blueprintinstance`, `authentik_core.group`, `authentik_core.user`, `authentik_core.application`, `authentik_core.token`, `authentik_enterprise.license`, `authentik_providers_google_workspace.googleworkspaceprovider`, `authentik_providers_google_workspace.googleworkspaceprovidermapping`, `authentik_providers_microsoft_entra.microsoftentraprovider`, `authentik_providers_microsoft_entra.microsoftentraprovidermapping`, `authentik_providers_rac.racprovider`, `authentik_providers_rac.endpoint`, `authentik_providers_rac.racpropertymapping`, `authentik_stages_source.sourcestage`, `authentik_events.event`, `authentik_events.notificationtransport`, `authentik_events.notification`, `authentik_events.notificationrule`, `authentik_events.notificationwebhookmapping`]"}
+                        schema={{"enum":["authentik_tenants.domain","authentik_crypto.certificatekeypair","authentik_flows.flow","authentik_flows.flowstagebinding","authentik_outposts.dockerserviceconnection","authentik_outposts.kubernetesserviceconnection","authentik_outposts.outpost","authentik_policies_dummy.dummypolicy","authentik_policies_event_matcher.eventmatcherpolicy","authentik_policies_expiry.passwordexpirypolicy","authentik_policies_expression.expressionpolicy","authentik_policies_password.passwordpolicy","authentik_policies_reputation.reputationpolicy","authentik_policies.policybinding","authentik_providers_ldap.ldapprovider","authentik_providers_oauth2.scopemapping","authentik_providers_oauth2.oauth2provider","authentik_providers_proxy.proxyprovider","authentik_providers_radius.radiusprovider","authentik_providers_saml.samlprovider","authentik_providers_saml.samlpropertymapping","authentik_providers_scim.scimprovider","authentik_providers_scim.scimmapping","authentik_rbac.role","authentik_sources_ldap.ldapsource","authentik_sources_ldap.ldappropertymapping","authentik_sources_oauth.oauthsource","authentik_sources_oauth.useroauthsourceconnection","authentik_sources_plex.plexsource","authentik_sources_plex.plexsourceconnection","authentik_sources_saml.samlsource","authentik_sources_saml.usersamlsourceconnection","authentik_sources_scim.scimsource","authentik_stages_authenticator_duo.authenticatorduostage","authentik_stages_authenticator_duo.duodevice","authentik_stages_authenticator_sms.authenticatorsmsstage","authentik_stages_authenticator_sms.smsdevice","authentik_stages_authenticator_static.authenticatorstaticstage","authentik_stages_authenticator_static.staticdevice","authentik_stages_authenticator_totp.authenticatortotpstage","authentik_stages_authenticator_totp.totpdevice","authentik_stages_authenticator_validate.authenticatorvalidatestage","authentik_stages_authenticator_webauthn.authenticatorwebauthnstage","authentik_stages_authenticator_webauthn.webauthndevice","authentik_stages_captcha.captchastage","authentik_stages_consent.consentstage","authentik_stages_consent.userconsent","authentik_stages_deny.denystage","authentik_stages_dummy.dummystage","authentik_stages_email.emailstage","authentik_stages_identification.identificationstage","authentik_stages_invitation.invitationstage","authentik_stages_invitation.invitation","authentik_stages_password.passwordstage","authentik_stages_prompt.prompt","authentik_stages_prompt.promptstage","authentik_stages_user_delete.userdeletestage","authentik_stages_user_login.userloginstage","authentik_stages_user_logout.userlogoutstage","authentik_stages_user_write.userwritestage","authentik_brands.brand","authentik_blueprints.blueprintinstance","authentik_core.group","authentik_core.user","authentik_core.application","authentik_core.token","authentik_enterprise.license","authentik_providers_google_workspace.googleworkspaceprovider","authentik_providers_google_workspace.googleworkspaceprovidermapping","authentik_providers_microsoft_entra.microsoftentraprovider","authentik_providers_microsoft_entra.microsoftentraprovidermapping","authentik_providers_rac.racprovider","authentik_providers_rac.endpoint","authentik_providers_rac.racpropertymapping","authentik_stages_source.sourcestage","authentik_events.event","authentik_events.notificationtransport","authentik_events.notification","authentik_events.notificationrule","authentik_events.notificationwebhookmapping"],"type":"string","title":"ModelEnum"}}
+                      >
+                        
+                      </SchemaItem>
+                    </ul>
+                  </details>
+                </TabItem><TabItem
+                  label={"Example (from schema)"}
+                  value={"Example (from schema)"}
+                >
+                  <ResponseSamples
+                    responseExample={"{\n  \"pk\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"name\": \"string\",\n  \"execution_logging\": true,\n  \"component\": \"string\",\n  \"verbose_name\": \"string\",\n  \"verbose_name_plural\": \"string\",\n  \"meta_model_name\": \"string\",\n  \"bound_to\": 0,\n  \"action\": \"login\",\n  \"client_ip\": \"string\",\n  \"app\": \"authentik.tenants\",\n  \"model\": \"authentik_tenants.domain\"\n}"}
+                    language={"json"}
+                  >
+                    
+                  </ResponseSamples>
+                </TabItem>
+              </SchemaTabs>
+            </TabItem>
+          </MimeTabs>
+        </div>
+      </TabItem><TabItem
+        label={"400"}
+        value={"400"}
+      >
+        <div>
+          
+          
+          
+          
+          
+        </div><div>
+          <MimeTabs
+            className={"openapi-tabs__mime"}
+            schemaType={"response"}
+          >
+            <TabItem
+              label={"application/json"}
+              value={"application/json"}
+            >
+              <SchemaTabs
+                className={"openapi-tabs__schema"}
+              >
+                <TabItem
+                  label={"Schema"}
+                  value={"Schema"}
+                >
+                  <details
+                    style={{}}
+                    className={"openapi-markdown__details response"}
+                    data-collapsed={false}
+                    open={true}
+                  >
+                    <summary
+                      style={{}}
+                      className={"openapi-markdown__details-summary-response"}
+                    >
+                      <strong>
+                        Schema
+                      </strong>
+                    </summary><div
+                      style={{"textAlign":"left","marginLeft":"1rem"}}
+                    >
+                      
+                    </div><ul
+                      style={{"marginLeft":"1rem"}}
+                    >
+                      <SchemaItem
+                        collapsible={false}
+                        name={"non_field_errors"}
+                        required={false}
+                        schemaName={"string[]"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"array","items":{"type":"string"}}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"code"}
+                        required={false}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string"}}
+                      >
+                        
+                      </SchemaItem>
+                    </ul>
+                  </details>
+                </TabItem><TabItem
+                  label={"Example (from schema)"}
+                  value={"Example (from schema)"}
+                >
+                  <ResponseSamples
+                    responseExample={"{\n  \"non_field_errors\": [\n    \"string\"\n  ],\n  \"code\": \"string\"\n}"}
+                    language={"json"}
+                  >
+                    
+                  </ResponseSamples>
+                </TabItem>
+              </SchemaTabs>
+            </TabItem>
+          </MimeTabs>
+        </div>
+      </TabItem><TabItem
+        label={"403"}
+        value={"403"}
+      >
+        <div>
+          
+          
+          
+          
+          
+        </div><div>
+          <MimeTabs
+            className={"openapi-tabs__mime"}
+            schemaType={"response"}
+          >
+            <TabItem
+              label={"application/json"}
+              value={"application/json"}
+            >
+              <SchemaTabs
+                className={"openapi-tabs__schema"}
+              >
+                <TabItem
+                  label={"Schema"}
+                  value={"Schema"}
+                >
+                  <details
+                    style={{}}
+                    className={"openapi-markdown__details response"}
+                    data-collapsed={false}
+                    open={true}
+                  >
+                    <summary
+                      style={{}}
+                      className={"openapi-markdown__details-summary-response"}
+                    >
+                      <strong>
+                        Schema
+                      </strong>
+                    </summary><div
+                      style={{"textAlign":"left","marginLeft":"1rem"}}
+                    >
+                      
+                    </div><ul
+                      style={{"marginLeft":"1rem"}}
+                    >
+                      <SchemaItem
+                        collapsible={false}
+                        name={"detail"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"code"}
+                        required={false}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string"}}
+                      >
+                        
+                      </SchemaItem>
+                    </ul>
+                  </details>
+                </TabItem><TabItem
+                  label={"Example (from schema)"}
+                  value={"Example (from schema)"}
+                >
+                  <ResponseSamples
+                    responseExample={"{\n  \"detail\": \"string\",\n  \"code\": \"string\"\n}"}
+                    language={"json"}
+                  >
+                    
+                  </ResponseSamples>
+                </TabItem>
+              </SchemaTabs>
+            </TabItem>
+          </MimeTabs>
+        </div>
+      </TabItem>
+    </ApiTabs>
+  </div>
+</div>
+      
