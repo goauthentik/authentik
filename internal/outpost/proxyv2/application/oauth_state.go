@@ -51,7 +51,11 @@ func (a *Application) checkRedirectParam(r *http.Request) (string, bool) {
 			return "", false
 		}
 		// Either hostname needs to match the configured domain, or host name must be empty for just a path
-		if u.Host != ext.Host && u.Host != "" {
+		if u.Host == "" {
+			u.Host = ext.Host
+			u.Scheme = ext.Scheme
+		}
+		if u.Host != ext.Host {
 			a.log.WithField("url", u.String()).WithField("ext", ext.String()).Warning("redirect URI did not contain external host")
 			return "", false
 		}
