@@ -7377,10 +7377,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Saving Application...</source>
   <target>Enregistrement de l'application...</target>
 </trans-unit>
-<trans-unit id="s823abdb61543a826">
-  <source>Authentik was unable to save this application:</source>
-  <target>authentik n'a pas pu sauvegarder cette application :</target>
-</trans-unit>
 <trans-unit id="s848288f8c2265aad">
   <source>Your application has been saved</source>
   <target>L'application a été sauvegardée</target>
@@ -9088,6 +9084,9 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="s2d5f69929bb7221d">
   <source><x id="0" equiv-text="${prompt.name}"/> ("<x id="1" equiv-text="${prompt.fieldKey}"/>", of type <x id="2" equiv-text="${prompt.type}"/>)</source>
   <target><x id="0" equiv-text="${prompt.name}"/> (&amp;quot;<x id="1" equiv-text="${prompt.fieldKey}"/>&amp;quot;, de type <x id="2" equiv-text="${prompt.type}"/>)</target>
+</trans-unit>
+<trans-unit id="sa38c5a2731be3a46">
+  <source>authentik was unable to save this application:</source>
 </trans-unit>
     </body>
   </file>
