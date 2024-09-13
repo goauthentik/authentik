@@ -8,7 +8,6 @@ from typing import Any
 from unittest.case import skip, skipUnless
 
 from channels.testing import ChannelsLiveServerTestCase
-from docker.models.containers import Container
 from selenium.webdriver.common.by import By
 
 from authentik.blueprints.tests import apply_blueprint, reconcile_app
@@ -34,21 +33,17 @@ class TestProviderProxy(SeleniumTestCase):
             "auto_remove": True,
         }
 
-    def start_proxy(self, outpost: Outpost) -> Container:
+    def start_proxy(self, outpost: Outpost):
         """Start proxy container based on outpost created"""
-        container = self.docker_client.containers.run(
+        self.run_container(
             image=self.get_container_image("ghcr.io/goauthentik/dev-proxy"),
-            detach=True,
             ports={
                 "9000": "9000",
             },
             environment={
-                "AUTHENTIK_HOST": self.live_server_url,
                 "AUTHENTIK_TOKEN": outpost.token.key,
             },
-            labels=self.docker_labels,
         )
-        return container
 
     @retry()
     @apply_blueprint(

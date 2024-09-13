@@ -3,7 +3,6 @@
 from dataclasses import asdict
 from time import sleep
 
-from docker.models.containers import Container
 from guardian.shortcuts import assign_perm
 from ldap3 import ALL, ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES, SUBTREE, Connection, Server
 from ldap3.core.exceptions import LDAPInvalidCredentialsResult
@@ -23,22 +22,18 @@ from tests.e2e.utils import SeleniumTestCase, retry
 class TestProviderLDAP(SeleniumTestCase):
     """LDAP and Outpost e2e tests"""
 
-    def start_ldap(self, outpost: Outpost) -> Container:
+    def start_ldap(self, outpost: Outpost):
         """Start ldap container based on outpost created"""
-        container = self.docker_client.containers.run(
+        self.run_container(
             image=self.get_container_image("ghcr.io/goauthentik/dev-ldap"),
-            detach=True,
             ports={
                 "3389": "3389",
                 "6636": "6636",
             },
             environment={
-                "AUTHENTIK_HOST": self.live_server_url,
                 "AUTHENTIK_TOKEN": outpost.token.key,
             },
-            labels=self.docker_labels,
         )
-        return container
 
     def _prepare(self) -> User:
         """prepare user, provider, app and container"""

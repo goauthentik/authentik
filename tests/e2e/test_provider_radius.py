@@ -3,7 +3,6 @@
 from dataclasses import asdict
 from time import sleep
 
-from docker.models.containers import Container
 from pyrad.client import Client
 from pyrad.dictionary import Dictionary
 from pyrad.packet import AccessAccept, AccessReject, AccessRequest
@@ -24,19 +23,15 @@ class TestProviderRadius(SeleniumTestCase):
         super().setUp()
         self.shared_secret = generate_key()
 
-    def start_radius(self, outpost: Outpost) -> Container:
+    def start_radius(self, outpost: Outpost):
         """Start radius container based on outpost created"""
-        container = self.docker_client.containers.run(
+        self.run_container(
             image=self.get_container_image("ghcr.io/goauthentik/dev-radius"),
-            detach=True,
             ports={"1812/udp": "1812/udp"},
             environment={
-                "AUTHENTIK_HOST": self.live_server_url,
                 "AUTHENTIK_TOKEN": outpost.token.key,
             },
-            labels=self.docker_labels,
         )
-        return container
 
     def _prepare(self) -> User:
         """prepare user, provider, app and container"""

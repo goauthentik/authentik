@@ -27,42 +27,31 @@ class TestProviderProxyForwardNginx(SeleniumTestCase):
             "name": "ak-whoami",
         }
 
-    def start_outpost(self, outpost: Outpost) -> Container:
+    def start_outpost(self, outpost: Outpost):
         """Start proxy container based on outpost created"""
-        container = self.docker_client.containers.run(
+        self.run_container(
             image=self.get_container_image("ghcr.io/goauthentik/dev-proxy"),
-            detach=True,
-            auto_remove=True,
             ports={
                 "9000": "9000",
             },
-            network=self.docker_network.name,
             environment={
-                "AUTHENTIK_HOST": self.live_server_url,
                 "AUTHENTIK_TOKEN": outpost.token.key,
             },
             name="ak-test-outpost",
-            labels=self.docker_labels,
         )
-        return container
 
     def start_reverse_proxy(self):
-        container = self.docker_client.containers.run(
+        self.run_container(
             image="docker.io/library/nginx:1.27",
-            detach=True,
-            auto_remove=True,
             ports={
                 "80": "80",
             },
-            network=self.docker_network.name,
             volumes={
                 f"{Path(__file__).parent / "proxy_forward_auth" / "nginx_single" / "nginx.conf"}": {
                     "bind": "/etc/nginx/conf.d/default.conf",
                 }
             },
-            labels=self.docker_labels,
         )
-        return container
 
     @retry()
     @apply_blueprint(

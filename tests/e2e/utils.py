@@ -72,7 +72,7 @@ class DockerTestCase(TestCase):
         self.__client = from_env()
         self.__network = self.docker_client.networks.create(name=f"authentik-test-{generate_id()}")
         if specs := self.get_container_specs():
-            self.container = self._start_container(specs)
+            self.container = self.run_container(**specs)
 
     @property
     def docker_client(self) -> DockerClient:
@@ -115,11 +115,15 @@ class DockerTestCase(TestCase):
             self.docker_client.images.pull(image)
         return image
 
-    def _start_container(self, specs: dict[str, Any]) -> Container:
-        specs["network"] = self.__network.name
+    def run_container(self, **specs: dict[str, Any]) -> Container:
+        if "network_mode" not in specs:
+            specs["network"] = self.__network.name
         specs["labels"] = self.docker_labels
         specs["detach"] = True
         specs["auto_remove"] = True
+        if hasattr(self, "live_server_url"):
+            specs.setdefault("environment", {})
+            specs["environment"]["AUTHENTIK_HOST"] = self.live_server_url
         container = self.docker_client.containers.run(**specs)
         container.reload()
         state = container.attrs.get("State", {})
