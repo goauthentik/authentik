@@ -118,6 +118,8 @@ class DockerTestCase(TestCase):
     def _start_container(self, specs: dict[str, Any]) -> Container:
         specs["network"] = self.__network.name
         specs["labels"] = self.docker_labels
+        specs["detach"] = True
+        specs["auto_remove"] = True
         container = self.docker_client.containers.run(**specs)
         container.reload()
         state = container.attrs.get("State", {})

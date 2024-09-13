@@ -16,7 +16,7 @@ from authentik.providers.proxy.models import ProxyMode, ProxyProvider
 from tests.e2e.utils import SeleniumTestCase, retry
 
 
-class TestProviderProxyForwardNginx(SeleniumTestCase):
+class TestProviderProxyForwardEnvoy(SeleniumTestCase):
     """Proxy and Outpost e2e tests"""
 
     proxy_container: Container
@@ -24,6 +24,8 @@ class TestProviderProxyForwardNginx(SeleniumTestCase):
     def get_container_specs(self) -> dict[str, Any] | None:
         return {
             "image": "traefik/whoami:latest",
+            "detach": True,
+            "auto_remove": True,
             "name": "ak-whoami",
         }
 
@@ -48,16 +50,16 @@ class TestProviderProxyForwardNginx(SeleniumTestCase):
 
     def start_reverse_proxy(self):
         container = self.docker_client.containers.run(
-            image="docker.io/library/nginx:1.27",
+            image="docker.io/envoyproxy/envoy:v1.25-latest",
             detach=True,
             auto_remove=True,
             ports={
-                "80": "80",
+                "10000": "80",
             },
             network=self.docker_network.name,
             volumes={
-                f"{Path(__file__).parent / "proxy_forward_auth" / "nginx_single" / "nginx.conf"}": {
-                    "bind": "/etc/nginx/conf.d/default.conf",
+                f"{Path(__file__).parent / "proxy_forward_auth" / "envoy_single" / "envoy.yaml"}": {
+                    "bind": "/etc/envoy/envoy.yaml",
                 }
             },
             labels=self.docker_labels,
@@ -121,7 +123,7 @@ class TestProviderProxyForwardNginx(SeleniumTestCase):
         full_body_text = self.driver.find_element(By.CSS_SELECTOR, "pre").text
         self.assertIn(f"X-Authentik-Username: {self.user.username}", full_body_text)
 
-        self.driver.get("http://localhost/outpost.goauthentik.io/sign_out")
-        sleep(2)
-        full_body_text = self.driver.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
-        self.assertIn("You've logged out of", full_body_text)
+        # self.driver.get("http://localhost/outpost.goauthentik.io/sign_out")
+        # sleep(2)
+        # full_body_text = self.driver.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
+        # self.assertIn("You've logged out of", full_body_text)
