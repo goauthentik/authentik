@@ -503,68 +503,69 @@ const docsSidebar = {
         {
             type: "category",
             label: "Developer Documentation",
+            collapsed: true,
             link: {
                 type: "doc",
-                id: "developer-docs/docs/index",
+                id: "developer-docs/index",
             },
-            items: [
-            {
-                type: "category",
-                label: "API",
-                link: {
-                    type: "doc",
-                    id: "developer-docs/api/api",
-                },
                 items: [
-                    "developer-docs/api/flow-executor",
-                    "developer-docs/api/making-schema-changes",
-                    "developer-docs/api/websocket",
                     {
+                        type: "category",
+                        label: "Setup",
+                        items: [
+                        "developer-docs/setup/full-dev-environment",
+                        "developer-docs/setup/frontend-dev-environment",
+                        "developer-docs/setup/website-dev-environment",
+                        ],
+                    },
+                    {
+                        type: "category",
+                        label: "API",
+                        ink: {
+                            type: "doc",
+                            id: "developer-docs/api/api",
+                        },
+                        items: [
+                        "developer-docs/api/flow-executor",
+                        "developer-docs/api/making-schema-changes",
+                        "developer-docs/api/websocket",
+                        {
                         type: "category",
                         label: "Reference",
                         items: apiReference,
-                    },
-                    "developer-docs/api/clients",
-                ],
-            },
-            {
-                type: "category",
-                label: "Setup",
-                items: [
-                    "developer-docs/setup/full-dev-environment",
-                    "developer-docs/setup/frontend-dev-environment",
-                    "developer-docs/setup/website-dev-environment",
-                ],
-            },
-            {
-                type: "doc",
-                id: "developer-docs/translation",
-            },
-            {
-                type: "category",
-                label: "Writing documentation",
-                link: {
-                    type: "doc",
-                    id: "developer-docs/docs/writing-documentation",
-                },
-                items: [
-                    "developer-docs/docs/style-guide",
-                    {
-                        type: "category",
-                        label: "Templates",
-                        link: {
-                            type: "doc",
-                            id: "developer-docs/docs/templates/index",
                         },
-                        items: [
-                            "developer-docs/docs/templates/procedural",
-                            "developer-docs/docs/templates/conceptual",
-                            "developer-docs/docs/templates/reference",
-                            "developer-docs/docs/templates/combo",
+                        "developer-docs/api/clients",
                         ],
                     },
-                ],
-            },
+                    {
+                        type: "category",
+                        label: "Writing documentation",
+                        link: {
+                            type: "doc",
+                            id: "developer-docs/docs/writing-documentation",
+                        },
+                        items: [
+                            "developer-docs/docs/style-guide",
+                            {
+                                type: "category",
+                                label: "Templates",
+                                link: {
+                                    type: "doc",
+                                    id: "developer-docs/docs/templates/index",
+                                },
+                                items: [
+                                    "developer-docs/docs/templates/procedural",
+                                    "developer-docs/docs/templates/conceptual",
+                                    "developer-docs/docs/templates/reference",
+                                    "developer-docs/docs/templates/combo",
+                                ],
+                            },
+                        ],
+                    },
+                type: "doc",
+                id: "developer-docs/translation",
+            ],
+        },
         {
             type: "category",
             label: "Release Notes",
