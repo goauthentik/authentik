@@ -566,6 +566,83 @@ const docsSidebar = {
         },
         {
             type: "category",
+            label: "Security",
+            collapsed: true,
+            link: {
+                type: "generated-index",
+                title: "Security",
+                slug: "security",
+            },
+            items: [
+                "security/policy",
+                "security/security-hardening",
+                {
+                    type: "category",
+                    label: "Audits and Certificates",
+                    items: ["security/audits-and-certs/2023-06-cure53"],
+                },
+                {
+                    type: "category",
+                    label: "CVEs",
+                    items: [
+                        "security/cves/CVE-2024-38371",
+                        "security/cves/CVE-2024-37905",
+                        "security/cves/CVE-2024-23647",
+                        "security/cves/CVE-2024-21637",
+                        "security/cves/CVE-2023-48228",
+                        "security/cves/GHSA-rjvp-29xq-f62w",
+                        "security/cves/CVE-2023-39522",
+                        "security/cves/CVE-2023-36456",
+                        "security/cves/CVE-2023-26481",
+                        "security/cves/CVE-2022-23555",
+                        "security/cves/CVE-2022-46145",
+                        "security/cves/CVE-2022-46172",
+                    ],
+                },
+            ],
+        },
+        {
+            type: "category",
+            label: "Troubleshooting",
+            link: {
+                type: "generated-index",
+                title: "Troubleshooting",
+                slug: "troubleshooting",
+                description: "Troubleshooting various issues",
+            },
+            items: [
+                {
+                    type: "category",
+                    label: "Forward auth",
+                    items: ["troubleshooting/forward_auth/general"],
+                    link: {
+                        type: "generated-index",
+                        title: "Forward auth troubleshooting",
+                        slug: "troubleshooting/forward_auth",
+                        description:
+                            "Steps to help debug forward auth setups with various reverse proxies.",
+                    },
+                },
+                {
+                    type: "category",
+                    label: "PostgreSQL",
+                    items: [
+                        "troubleshooting/postgres/upgrade_kubernetes",
+                        "troubleshooting/postgres/upgrade_docker",
+                    ],
+                },
+                "troubleshooting/access",
+                "troubleshooting/login",
+                "troubleshooting/image_upload",
+                "troubleshooting/missing_permission",
+                "troubleshooting/missing_admin_group",
+                "troubleshooting/csrf",
+                "troubleshooting/emails",
+                "troubleshooting/ldap_source",
+            ],
+        },
+        {
+            type: "category",
             label: "Release Notes",
             link: {
                 type: "generated-index",
