@@ -43,11 +43,6 @@ module.exports = async function (): Promise<Config> {
                         position: "left",
                     },
                     {
-                        to: "developer-docs/",
-                        label: "Developer",
-                        position: "left",
-                    },
-                    {
                         to: "https://goauthentik.io/pricing/",
                         label: "Pricing",
                         position: "left",
@@ -132,18 +127,6 @@ module.exports = async function (): Promise<Config> {
                 },
             ],
             [
-                "@docusaurus/plugin-content-docs",
-                {
-                    id: "docsDevelopers",
-                    path: "developer-docs",
-                    routeBasePath: "developer-docs",
-                    sidebarPath: "./sidebarsDev.js",
-                    docItemComponent: "@theme/ApiItem",
-                    editUrl:
-                        "https://github.com/goauthentik/authentik/edit/main/website/",
-                },
-            ],
-            [
                 "docusaurus-plugin-openapi-docs",
                 {
                     id: "api",
@@ -151,7 +134,7 @@ module.exports = async function (): Promise<Config> {
                     config: {
                         authentik: {
                             specPath: "static/schema.yaml",
-                            outputDir: "developer-docs/api/reference/",
+                            outputDir: "docs/developer-docs/api/reference/",
                             hideSendButton: true,
                             sidebarOptions: {
                                 groupPathsBy: "tag",

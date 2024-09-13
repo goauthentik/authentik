@@ -562,8 +562,7 @@ const docsSidebar = {
                             },
                         ],
                     },
-                type: "doc",
-                id: "developer-docs/translation",
+                "developer-docs/translation",
             ],
         },
         {
