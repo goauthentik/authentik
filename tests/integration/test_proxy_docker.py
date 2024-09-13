@@ -6,7 +6,6 @@ from tempfile import mkdtemp
 import pytest
 import yaml
 from channels.testing.live import ChannelsLiveServerTestCase
-from docker import DockerClient, from_env
 from docker.models.containers import Container
 from docker.types.healthcheck import Healthcheck
 
@@ -28,8 +27,7 @@ class TestProxyDocker(DockerTestCase, ChannelsLiveServerTestCase):
     """Test Docker Controllers"""
 
     def _start_container(self, ssl_folder: str) -> Container:
-        client: DockerClient = from_env()
-        container = client.containers.run(
+        container = self.docker_client.containers.run(
             image="library/docker:dind",
             detach=True,
             network_mode="host",
@@ -45,6 +43,7 @@ class TestProxyDocker(DockerTestCase, ChannelsLiveServerTestCase):
                     "bind": "/ssl",
                 }
             },
+            labels=self.docker_labels,
         )
         self.wait_for_container(container)
         return container
@@ -91,7 +90,6 @@ class TestProxyDocker(DockerTestCase, ChannelsLiveServerTestCase):
 
     def tearDown(self) -> None:
         super().tearDown()
-        self.container.kill()
         try:
             rmtree(self.ssl_folder)
         except PermissionError:

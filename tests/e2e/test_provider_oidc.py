@@ -3,7 +3,6 @@
 from json import loads
 from time import sleep
 
-from docker import DockerClient, from_env
 from docker.models.containers import Container
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
@@ -37,8 +36,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
     def setup_client(self) -> Container:
         """Setup client oidc-test-client container which we test OIDC against"""
         sleep(1)
-        client: DockerClient = from_env()
-        container = client.containers.run(
+        container = self.docker_client.containers.run(
             image="ghcr.io/beryju/oidc-test-client:2.1",
             detach=True,
             ports={
@@ -49,6 +47,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
                 "OIDC_CLIENT_SECRET": self.client_secret,
                 "OIDC_PROVIDER": f"{self.live_server_url}/application/o/{self.application_slug}/",
             },
+            labels=self.docker_labels,
         )
         self.wait_for_container(container)
         return container

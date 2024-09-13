@@ -8,7 +8,6 @@ from typing import Any
 from unittest.case import skip, skipUnless
 
 from channels.testing import ChannelsLiveServerTestCase
-from docker.client import DockerClient, from_env
 from docker.models.containers import Container
 from selenium.webdriver.common.by import By
 
@@ -25,13 +24,6 @@ from tests.e2e.utils import SeleniumTestCase, retry
 class TestProviderProxy(SeleniumTestCase):
     """Proxy and Outpost e2e tests"""
 
-    proxy_container: Container
-
-    def tearDown(self) -> None:
-        super().tearDown()
-        self.output_container_logs(self.proxy_container)
-        self.proxy_container.kill()
-
     def get_container_specs(self) -> dict[str, Any] | None:
         return {
             "image": "traefik/whoami:latest",
@@ -44,8 +36,7 @@ class TestProviderProxy(SeleniumTestCase):
 
     def start_proxy(self, outpost: Outpost) -> Container:
         """Start proxy container based on outpost created"""
-        client: DockerClient = from_env()
-        container = client.containers.run(
+        container = self.docker_client.containers.run(
             image=self.get_container_image("ghcr.io/goauthentik/dev-proxy"),
             detach=True,
             ports={
@@ -55,6 +46,7 @@ class TestProviderProxy(SeleniumTestCase):
                 "AUTHENTIK_HOST": self.live_server_url,
                 "AUTHENTIK_TOKEN": outpost.token.key,
             },
+            labels=self.docker_labels,
         )
         return container
 
@@ -99,7 +91,7 @@ class TestProviderProxy(SeleniumTestCase):
         outpost.providers.add(proxy)
         outpost.build_user_permissions(outpost.user)
 
-        self.proxy_container = self.start_proxy(outpost)
+        self.start_proxy(outpost)
 
         # Wait until outpost healthcheck succeeds
         healthcheck_retries = 0
@@ -173,7 +165,7 @@ class TestProviderProxy(SeleniumTestCase):
         outpost.providers.add(proxy)
         outpost.build_user_permissions(outpost.user)
 
-        self.proxy_container = self.start_proxy(outpost)
+        self.start_proxy(outpost)
 
         # Wait until outpost healthcheck succeeds
         healthcheck_retries = 0
