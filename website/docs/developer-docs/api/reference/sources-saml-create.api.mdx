@@ -1,0 +1,835 @@
+---
+id: sources-saml-create
+title: "sources_saml_create"
+description: "SAMLSource Viewset"
+sidebar_label: "sources_saml_create"
+hide_title: true
+hide_table_of_contents: true
+api: eJztW3lvI7cV/yrENIBbVLeP7CpYoM7a2Rq1Y9fybtoa7oCaoSRGM+SU5FhWDH/3vEfOJWkkSxs3QAv9s56DfHz38dPssycTpqjhUlyEXt/TMlUB076mceQHilHDvIYXMh0onuAqWDM4vboc2HXkC2czzQwsMXSsvf59TsB7aHiK/Sdl2nwvw7nXf/YCKQwTBi9pkkQ8sKe2f9ZI9NnTwYTFFK/MPGFwjBz+zAKz6fQBU5xG/BemYFWiUBLD4WygIWjMKrS0UVyMYVXMxSUTYzPx+t0VypbqgSYh10lE5+RHINLyXhqejtLxrtQuQFolaEScRghy1CCpZiHhgny+vdQtpECfcgrHHRCCGtwF2/9936TNX06b/+o03/sPf/4G2WCCDiMWVjgZShkxKvAlTc0E1Jup1R9FclbH8kiqmIIRvDTlIdyLNIqQqtc3KmXLQvwAVIiRyDaZAXlSPUWMCXvi2l7AAqVbjkkloyiGRf8tHtwJeKpgs8rJeOVnbjD3Y3AyWKMrDFCl6BzO44bF+nXGXoDmWMk0eWuiiQTvn/tgdy6YH8vQuioTaYwRRKMIdlExxxhaJma4QT15N5bEuaVwhQRy+eGoYAJrC7JA7noEdMsDeIgWHHEbNhBzPPJBm9PiBl6jQEgOnTZ/Wdzb9xt4+wwLrzI2kLdzPPflYdmuf0WzTlgeHyEDz4eAYprwEaFi0beInsg0CsmQVV0QYkkqQgs/yFyDhRV/oGbig2kgoM2rGaEw+K5arOppKx19wmPeUkmW74qWbKIplOPeunzulJMo5n9lyqgJT3vakMHKBfvACnsY1zoFPdXQXqR1GmlJpkLOINFocg5EzJxcnLXIGRvRNDLa6uKKGRpSQzGJuvSspZ+qaDPvir+SsIEakKfGnsEFN1BbyKWECCNZJSNcEw2iQTZayt29TseWiW352Jzxru0FnI4sgZ3nYHxQww3RaZJIBWoYANWINYE7mZpaXsBh5cznYeI7UUxt3Vg1AOzSSyYkI/uwoEOGc6uji/CmRe4moJQAPBEjE7QTgIBgNMX1tIFGFJI8Qo0OHSU5sjtzfV6coUpDKVyZtZHDQ9/lx/qwS5XoS6q57uNq3TdBHzuCfrfVtU942HS67ttkdhqGimmN6WvNxl6rs7QRUj0ss73KLtv+cdx5P0ht04KNw057f+IiBB2fSeBZ/D0FhUFiCXcmYxQVmiPjG1IPUgXTZQWkNuvYJWfErcldvrT5R2fuVEDr18BuZjbhwQS8ACo02DvblgWLtewQ5MN06ngqrXl7fnZxe/7xDti7uR7kf/zTz3fXm0T43pG7g9dOgob3CL3gKM9k0+Rr2o6c+pcKKfIRe0p7t9oI/4TdiGYRWJyFqIhAxpiLqda4S4oDjNSxoCYFJyQzHkWotyweIJDoGMytMeNgEJUnQVhJYiMYlQwUYO2tixndIBC5j4wAb6HLii4HwirU8G8TfeCokL+xeUK5WpE4e+7yPbgEnkogBY0l7rplOpHgFJq4+8JnmMvkN0o+QtlUluGQj0Ecn0ZjCRljElfdYmJM0m+3Z7NZa3bYkmrchqTWaXfet5/iKIRD/6AntAvc1S7stjtHuJCJANf1jk9eW4kkmzEUL1x/+O5oS8rH3d4mLz2zEp7mAuaeqnOP+FrZlabNbeQvpcp27KSJbM8W2ljZg3rZeg8Lwp3lKfbsJFGxayeZil0bpFowTyHOBtcossKKd2CrKhVVc9+2ryFkFwOeMjL1/dNiQ1N4nt1FClpuSCKOynJM3/EYssloBMnczVfL28qm0nETZlVfimhO7Cjv2tGiTUkxBWDkZ3XkB5t9yEFRng6gNRChXWLb9lAyLQ4MieQYswmJqYAaGM1b5I9ub58AD0p/6H4HAqeG6Q+976DXkCLUHw7/lM2dgZonb5D+zwtCa9Pgq4kfdA2dcMbSQscEAtvUCHdJOoRCSaZsnvdFpQz4FI9GVbOSrm2X2BLVQZWoJaz4I1QRpNGyAyf2W1xhB3jvkJH1/X8GdpRN9UPFawvoJStGQHyBOioSM1zWBdrGLT9kCncPLxYWyqoEGqnX6f7u2FAy3cY9YFYKr8HDl93jZhgTN8k31qJMvxVX2iNJeyRpK6KQdyCWssjZ7EWfIL27sCHFLvAoN/LOmB27IctaBbGQuzG4iLPFaHD99lBq5m8XArcMip3IyEEkLOx+hbqfRKmitVP15kPcvlfPipmhFueJdhOG52Fp95J15Pdg3+8C9kHLQMcLGa1gdV2hv3JbsIyWRWoFi7HepF2YYFGPa3bZKq3zcHHFPwPbbKOTJtm8lxqY8FEa29zYLmoU0bFrpXCoRTnzw0QRr27eluDJM6irUCnx9JiP3Q83ukX+KVO7CnQYWYfko3klgCHgOLX3pzcXDTKEFos9JZb0hIoxniiXT4DSQgmCpipjv1Xn3dtgrAgABq6QL5tmhd4efv1/hl/3gOsecN0DrnvAdQ+47gHXPeC6B1z/BwHXPcS6h1hfg1hLVCabfMrxdBVuaBSI7HQXWHYJgamHTGqxWwfaLmobrXvU6bwhFPul7EHPlZI1X+ihaJxFoc/w/Q5AmAO+wrpJE/vwMOSum7+pnvdSaTcK1hxna/Vx+Ib6+MQEdDkBDuBrFALDJfTPtePzemmrbpcRqBg9O3SDmA7/mkj89jORGvnGaR7u2tmXnG38FLSNnscU+Ji2w4Edurw2TXj78bBtG9p8EhmgQpxEFei/4B3TORKzq3AwYhDGyjKCKr0tvxk9f6JxErHya84yzzjcvLwv4GyXZmoHa+9wRN8dj06Omsffdr9tHh2f9JrDw1HQ7AXvTw5HJyd0RE+8GtR5243rQOP77Qg8bICItydRhzZmIGMdYrgIo9SBOaWSa6GZRQJrUY1tdZgjFRVT5+BC1forj2qHb+cMyzPu1w+0izNVdZRamYW2lbc6RGy7Z7WP3759r22Fd+uAN/ZL1ZBc6BW2Ew6xKjGSNl1kKayKzGL6cYmr1+kdtd61uitp9opObZewiKdojpkEYRvM5jSw2dxaF6Vn4Dx/GcsSzeUSOQF3YTBbVfLP1cWdRQeiTGcalDYGHabDFpT8doVEu7waRnLYRpShfXnx8fzHwXn2CbA20BNUk5tLtwTTLan/8r5SjNZ8hO8807An04b45fbnvAwgc2m9/EAfnAFOgj+YNiaY+uHl8/OQavZZRS8v+BhyscJfceHykSruWrn7ByA6YTREg0MtgBYIzvzoOGsiRICmolFqzbdcMl8a+Y7TIGCJ2bj2oVKdMrhimP1vgiz9KIq9Ef4L1azhSaspW3zss2cvomKcQusF7x3Nl+wXzio452pQI79AqfJWxP46knMI6rEr7uSUCVBRIxPF4D2wC8R/BWbkB5Y=
+sidebar_class_name: "post api-method"
+info_path: docs/developer-docs/api/reference/authentik
+custom_edit_url: null
+hide_send_button: true
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import Markdown from "@theme/Markdown";
+import Heading from "@theme/Heading";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"sources_saml_create"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/sources/saml/"}
+>
+  
+</MethodEndpoint>
+
+
+
+SAMLSource Viewset
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<MimeTabs
+  className={"openapi-tabs__mime"}
+>
+  <TabItem
+    label={"application/json"}
+    value={"application/json-schema"}
+  >
+    <details
+      style={{}}
+      className={"openapi-markdown__details mime"}
+      data-collapsed={false}
+      open={true}
+    >
+      <summary
+        style={{}}
+        className={"openapi-markdown__details-summary-mime"}
+      >
+        <h3
+          className={"openapi-markdown__details-summary-header-body"}
+        >
+          Body
+        </h3><strong
+          className={"openapi-schema__required"}
+        >
+          required
+        </strong>
+      </summary><div
+        style={{"textAlign":"left","marginLeft":"1rem"}}
+      >
+        
+      </div><ul
+        style={{"marginLeft":"1rem"}}
+      >
+        <SchemaItem
+          collapsible={false}
+          name={"name"}
+          required={true}
+          schemaName={"string"}
+          qualifierMessage={"**Possible values:** `non-empty`"}
+          schema={{"type":"string","minLength":1,"description":"Source's display Name."}}
+        >
+          
+        </SchemaItem><SchemaItem
+          collapsible={false}
+          name={"slug"}
+          required={true}
+          schemaName={"string"}
+          qualifierMessage={"**Possible values:** `non-empty` and `<= 50 characters`, Value must match regular expression `^[-a-zA-Z0-9_]+$`"}
+          schema={{"type":"string","minLength":1,"description":"Internal source name, used in URLs.","maxLength":50,"pattern":"^[-a-zA-Z0-9_]+$"}}
+        >
+          
+        </SchemaItem><SchemaItem
+          collapsible={false}
+          name={"enabled"}
+          required={false}
+          schemaName={"boolean"}
+          qualifierMessage={undefined}
+          schema={{"type":"boolean"}}
+        >
+          
+        </SchemaItem><SchemaItem
+          collapsible={false}
+          name={"authentication_flow"}
+          required={false}
+          schemaName={"uuid"}
+          qualifierMessage={undefined}
+          schema={{"type":"string","format":"uuid","nullable":true,"description":"Flow to use when authenticating existing users."}}
+        >
+          
+        </SchemaItem><SchemaItem
+          collapsible={false}
+          name={"enrollment_flow"}
+          required={false}
+          schemaName={"uuid"}
+          qualifierMessage={undefined}
+          schema={{"type":"string","format":"uuid","nullable":true,"description":"Flow to use when enrolling new users."}}
+        >
+          
+        </SchemaItem><SchemaItem
+          collapsible={false}
+          name={"user_property_mappings"}
+          required={false}
+          schemaName={"uuid[]"}
+          qualifierMessage={undefined}
+          schema={{"type":"array","items":{"type":"string","format":"uuid"}}}
+        >
+          
+        </SchemaItem><SchemaItem
+          collapsible={false}
+          name={"group_property_mappings"}
+          required={false}
+          schemaName={"uuid[]"}
+          qualifierMessage={undefined}
+          schema={{"type":"array","items":{"type":"string","format":"uuid"}}}
+        >
+          
+        </SchemaItem><SchemaItem
+          collapsible={false}
+          name={"policy_engine_mode"}
+          required={false}
+          schemaName={"PolicyEngineMode (string)"}
+          qualifierMessage={"**Possible values:** [`all`, `any`]"}
+          schema={{"enum":["all","any"],"type":"string","title":"PolicyEngineMode"}}
+        >
+          
+        </SchemaItem><SchemaItem
+          collapsible={false}
+          name={"user_matching_mode"}
+          required={false}
+          schemaName={"UserMatchingModeEnum (string)"}
+          qualifierMessage={"**Possible values:** [`identifier`, `email_link`, `email_deny`, `username_link`, `username_deny`]"}
+          schema={{"enum":["identifier","email_link","email_deny","username_link","username_deny"],"type":"string","title":"UserMatchingModeEnum"}}
+        >
+          
+        </SchemaItem><SchemaItem
+          collapsible={false}
+          name={"user_path_template"}
+          required={false}
+          schemaName={"string"}
+          qualifierMessage={"**Possible values:** `non-empty`"}
+          schema={{"type":"string","minLength":1}}
+        >
+          
+        </SchemaItem><SchemaItem
+          collapsible={false}
+          name={"group_matching_mode"}
+          required={false}
+          schemaName={"GroupMatchingModeEnum (string)"}
+          qualifierMessage={"**Possible values:** [`identifier`, `name_link`, `name_deny`]"}
+          schema={{"enum":["identifier","name_link","name_deny"],"type":"string","title":"GroupMatchingModeEnum"}}
+        >
+          
+        </SchemaItem><SchemaItem
+          collapsible={false}
+          name={"pre_authentication_flow"}
+          required={true}
+          schemaName={"uuid"}
+          qualifierMessage={undefined}
+          schema={{"type":"string","format":"uuid","description":"Flow used before authentication."}}
+        >
+          
+        </SchemaItem><SchemaItem
+          collapsible={false}
+          name={"issuer"}
+          required={false}
+          schemaName={"string"}
+          qualifierMessage={undefined}
+          schema={{"type":"string","description":"Also known as Entity ID. Defaults the Metadata URL."}}
+        >
+          
+        </SchemaItem><SchemaItem
+          collapsible={false}
+          name={"sso_url"}
+          required={true}
+          schemaName={"uri"}
+          qualifierMessage={"**Possible values:** `non-empty` and `<= 200 characters`"}
+          schema={{"type":"string","format":"uri","minLength":1,"description":"URL that the initial Login request is sent to.","maxLength":200}}
+        >
+          
+        </SchemaItem><SchemaItem
+          collapsible={false}
+          name={"slo_url"}
+          required={false}
+          schemaName={"uri"}
+          qualifierMessage={"**Possible values:** `<= 200 characters`"}
+          schema={{"type":"string","format":"uri","nullable":true,"description":"Optional URL if your IDP supports Single-Logout.","maxLength":200}}
+        >
+          
+        </SchemaItem><SchemaItem
+          collapsible={false}
+          name={"allow_idp_initiated"}
+          required={false}
+          schemaName={"boolean"}
+          qualifierMessage={undefined}
+          schema={{"type":"boolean","description":"Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done."}}
+        >
+          
+        </SchemaItem><SchemaItem
+          collapsible={false}
+          name={"name_id_policy"}
+          required={false}
+          schemaName={"NameIdPolicyEnum (string)"}
+          qualifierMessage={"**Possible values:** [`urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`, `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent`, `urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName`, `urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName`, `urn:oasis:names:tc:SAML:2.0:nameid-format:transient`]"}
+          schema={{"enum":["urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress","urn:oasis:names:tc:SAML:2.0:nameid-format:persistent","urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName","urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName","urn:oasis:names:tc:SAML:2.0:nameid-format:transient"],"type":"string","title":"NameIdPolicyEnum"}}
+        >
+          
+        </SchemaItem><SchemaItem
+          collapsible={false}
+          name={"binding_type"}
+          required={false}
+          schemaName={"BindingTypeEnum (string)"}
+          qualifierMessage={"**Possible values:** [`REDIRECT`, `POST`, `POST_AUTO`]"}
+          schema={{"enum":["REDIRECT","POST","POST_AUTO"],"type":"string","title":"BindingTypeEnum"}}
+        >
+          
+        </SchemaItem><SchemaItem
+          collapsible={false}
+          name={"verification_kp"}
+          required={false}
+          schemaName={"uuid"}
+          qualifierMessage={undefined}
+          schema={{"type":"string","format":"uuid","nullable":true,"title":"Verification Certificate","description":"When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default."}}
+        >
+          
+        </SchemaItem><SchemaItem
+          collapsible={false}
+          name={"signing_kp"}
+          required={false}
+          schemaName={"uuid"}
+          qualifierMessage={undefined}
+          schema={{"type":"string","format":"uuid","nullable":true,"title":"Signing Keypair","description":"Keypair used to sign outgoing Responses going to the Identity Provider."}}
+        >
+          
+        </SchemaItem><SchemaItem
+          collapsible={false}
+          name={"digest_algorithm"}
+          required={false}
+          schemaName={"DigestAlgorithmEnum (string)"}
+          qualifierMessage={"**Possible values:** [`http://www.w3.org/2000/09/xmldsig#sha1`, `http://www.w3.org/2001/04/xmlenc#sha256`, `http://www.w3.org/2001/04/xmldsig-more#sha384`, `http://www.w3.org/2001/04/xmlenc#sha512`]"}
+          schema={{"enum":["http://www.w3.org/2000/09/xmldsig#sha1","http://www.w3.org/2001/04/xmlenc#sha256","http://www.w3.org/2001/04/xmldsig-more#sha384","http://www.w3.org/2001/04/xmlenc#sha512"],"type":"string","title":"DigestAlgorithmEnum"}}
+        >
+          
+        </SchemaItem><SchemaItem
+          collapsible={false}
+          name={"signature_algorithm"}
+          required={false}
+          schemaName={"SignatureAlgorithmEnum (string)"}
+          qualifierMessage={"**Possible values:** [`http://www.w3.org/2000/09/xmldsig#rsa-sha1`, `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256`, `http://www.w3.org/2001/04/xmldsig-more#rsa-sha384`, `http://www.w3.org/2001/04/xmldsig-more#rsa-sha512`, `http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1`, `http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256`, `http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384`, `http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512`, `http://www.w3.org/2000/09/xmldsig#dsa-sha1`]"}
+          schema={{"enum":["http://www.w3.org/2000/09/xmldsig#rsa-sha1","http://www.w3.org/2001/04/xmldsig-more#rsa-sha256","http://www.w3.org/2001/04/xmldsig-more#rsa-sha384","http://www.w3.org/2001/04/xmldsig-more#rsa-sha512","http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1","http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256","http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384","http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512","http://www.w3.org/2000/09/xmldsig#dsa-sha1"],"type":"string","title":"SignatureAlgorithmEnum"}}
+        >
+          
+        </SchemaItem><SchemaItem
+          collapsible={false}
+          name={"temporary_user_delete_after"}
+          required={false}
+          schemaName={"Delete temporary users after (string)"}
+          qualifierMessage={"**Possible values:** `non-empty`"}
+          schema={{"type":"string","minLength":1,"title":"Delete temporary users after","description":"Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually. (Format: hours=1;minutes=2;seconds=3)."}}
+        >
+          
+        </SchemaItem><SchemaItem
+          collapsible={false}
+          name={"encryption_kp"}
+          required={false}
+          schemaName={"uuid"}
+          qualifierMessage={undefined}
+          schema={{"type":"string","format":"uuid","nullable":true,"title":"Encryption Keypair","description":"When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key."}}
+        >
+          
+        </SchemaItem>
+      </ul>
+    </details>
+  </TabItem>
+</MimeTabs><div>
+  <div>
+    <ApiTabs
+      label={undefined}
+      id={undefined}
+    >
+      <TabItem
+        label={"201"}
+        value={"201"}
+      >
+        <div>
+          
+          
+          
+          
+          
+        </div><div>
+          <MimeTabs
+            className={"openapi-tabs__mime"}
+            schemaType={"response"}
+          >
+            <TabItem
+              label={"application/json"}
+              value={"application/json"}
+            >
+              <SchemaTabs
+                className={"openapi-tabs__schema"}
+              >
+                <TabItem
+                  label={"Schema"}
+                  value={"Schema"}
+                >
+                  <details
+                    style={{}}
+                    className={"openapi-markdown__details response"}
+                    data-collapsed={false}
+                    open={true}
+                  >
+                    <summary
+                      style={{}}
+                      className={"openapi-markdown__details-summary-response"}
+                    >
+                      <strong>
+                        Schema
+                      </strong>
+                    </summary><div
+                      style={{"textAlign":"left","marginLeft":"1rem"}}
+                    >
+                      
+                    </div><ul
+                      style={{"marginLeft":"1rem"}}
+                    >
+                      <SchemaItem
+                        collapsible={false}
+                        name={"pk"}
+                        required={true}
+                        schemaName={"uuid"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","format":"uuid","readOnly":true,"title":"Pbm uuid"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"name"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Source's display Name."}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"slug"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={"**Possible values:** `<= 50 characters`, Value must match regular expression `^[-a-zA-Z0-9_]+$`"}
+                        schema={{"type":"string","description":"Internal source name, used in URLs.","maxLength":50,"pattern":"^[-a-zA-Z0-9_]+$"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"enabled"}
+                        required={false}
+                        schemaName={"boolean"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"boolean"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"authentication_flow"}
+                        required={false}
+                        schemaName={"uuid"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","format":"uuid","nullable":true,"description":"Flow to use when authenticating existing users."}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"enrollment_flow"}
+                        required={false}
+                        schemaName={"uuid"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","format":"uuid","nullable":true,"description":"Flow to use when enrolling new users."}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"user_property_mappings"}
+                        required={false}
+                        schemaName={"uuid[]"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"array","items":{"type":"string","format":"uuid"}}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"group_property_mappings"}
+                        required={false}
+                        schemaName={"uuid[]"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"array","items":{"type":"string","format":"uuid"}}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"component"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Get object component so that we know how to edit the object","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"verbose_name"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Return object's verbose_name","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"verbose_name_plural"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Return object's plural verbose_name","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"meta_model_name"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Return internal model name","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"policy_engine_mode"}
+                        required={false}
+                        schemaName={"PolicyEngineMode (string)"}
+                        qualifierMessage={"**Possible values:** [`all`, `any`]"}
+                        schema={{"enum":["all","any"],"type":"string","title":"PolicyEngineMode"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"user_matching_mode"}
+                        required={false}
+                        schemaName={"UserMatchingModeEnum (string)"}
+                        qualifierMessage={"**Possible values:** [`identifier`, `email_link`, `email_deny`, `username_link`, `username_deny`]"}
+                        schema={{"enum":["identifier","email_link","email_deny","username_link","username_deny"],"type":"string","title":"UserMatchingModeEnum"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"managed"}
+                        required={true}
+                        schemaName={"Managed by authentik (string)"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","nullable":true,"title":"Managed by authentik","description":"Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"user_path_template"}
+                        required={false}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"icon"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"group_matching_mode"}
+                        required={false}
+                        schemaName={"GroupMatchingModeEnum (string)"}
+                        qualifierMessage={"**Possible values:** [`identifier`, `name_link`, `name_deny`]"}
+                        schema={{"enum":["identifier","name_link","name_deny"],"type":"string","title":"GroupMatchingModeEnum"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"pre_authentication_flow"}
+                        required={true}
+                        schemaName={"uuid"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","format":"uuid","description":"Flow used before authentication."}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"issuer"}
+                        required={false}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Also known as Entity ID. Defaults the Metadata URL."}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"sso_url"}
+                        required={true}
+                        schemaName={"uri"}
+                        qualifierMessage={"**Possible values:** `<= 200 characters`"}
+                        schema={{"type":"string","format":"uri","description":"URL that the initial Login request is sent to.","maxLength":200}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"slo_url"}
+                        required={false}
+                        schemaName={"uri"}
+                        qualifierMessage={"**Possible values:** `<= 200 characters`"}
+                        schema={{"type":"string","format":"uri","nullable":true,"description":"Optional URL if your IDP supports Single-Logout.","maxLength":200}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"allow_idp_initiated"}
+                        required={false}
+                        schemaName={"boolean"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"boolean","description":"Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done."}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"name_id_policy"}
+                        required={false}
+                        schemaName={"NameIdPolicyEnum (string)"}
+                        qualifierMessage={"**Possible values:** [`urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`, `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent`, `urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName`, `urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName`, `urn:oasis:names:tc:SAML:2.0:nameid-format:transient`]"}
+                        schema={{"enum":["urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress","urn:oasis:names:tc:SAML:2.0:nameid-format:persistent","urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName","urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName","urn:oasis:names:tc:SAML:2.0:nameid-format:transient"],"type":"string","title":"NameIdPolicyEnum"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"binding_type"}
+                        required={false}
+                        schemaName={"BindingTypeEnum (string)"}
+                        qualifierMessage={"**Possible values:** [`REDIRECT`, `POST`, `POST_AUTO`]"}
+                        schema={{"enum":["REDIRECT","POST","POST_AUTO"],"type":"string","title":"BindingTypeEnum"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"verification_kp"}
+                        required={false}
+                        schemaName={"uuid"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","format":"uuid","nullable":true,"title":"Verification Certificate","description":"When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default."}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"signing_kp"}
+                        required={false}
+                        schemaName={"uuid"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","format":"uuid","nullable":true,"title":"Signing Keypair","description":"Keypair used to sign outgoing Responses going to the Identity Provider."}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"digest_algorithm"}
+                        required={false}
+                        schemaName={"DigestAlgorithmEnum (string)"}
+                        qualifierMessage={"**Possible values:** [`http://www.w3.org/2000/09/xmldsig#sha1`, `http://www.w3.org/2001/04/xmlenc#sha256`, `http://www.w3.org/2001/04/xmldsig-more#sha384`, `http://www.w3.org/2001/04/xmlenc#sha512`]"}
+                        schema={{"enum":["http://www.w3.org/2000/09/xmldsig#sha1","http://www.w3.org/2001/04/xmlenc#sha256","http://www.w3.org/2001/04/xmldsig-more#sha384","http://www.w3.org/2001/04/xmlenc#sha512"],"type":"string","title":"DigestAlgorithmEnum"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"signature_algorithm"}
+                        required={false}
+                        schemaName={"SignatureAlgorithmEnum (string)"}
+                        qualifierMessage={"**Possible values:** [`http://www.w3.org/2000/09/xmldsig#rsa-sha1`, `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256`, `http://www.w3.org/2001/04/xmldsig-more#rsa-sha384`, `http://www.w3.org/2001/04/xmldsig-more#rsa-sha512`, `http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1`, `http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256`, `http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384`, `http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512`, `http://www.w3.org/2000/09/xmldsig#dsa-sha1`]"}
+                        schema={{"enum":["http://www.w3.org/2000/09/xmldsig#rsa-sha1","http://www.w3.org/2001/04/xmldsig-more#rsa-sha256","http://www.w3.org/2001/04/xmldsig-more#rsa-sha384","http://www.w3.org/2001/04/xmldsig-more#rsa-sha512","http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1","http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256","http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384","http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512","http://www.w3.org/2000/09/xmldsig#dsa-sha1"],"type":"string","title":"SignatureAlgorithmEnum"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"temporary_user_delete_after"}
+                        required={false}
+                        schemaName={"Delete temporary users after (string)"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","title":"Delete temporary users after","description":"Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually. (Format: hours=1;minutes=2;seconds=3)."}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"encryption_kp"}
+                        required={false}
+                        schemaName={"uuid"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","format":"uuid","nullable":true,"title":"Encryption Keypair","description":"When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key."}}
+                      >
+                        
+                      </SchemaItem>
+                    </ul>
+                  </details>
+                </TabItem><TabItem
+                  label={"Example (from schema)"}
+                  value={"Example (from schema)"}
+                >
+                  <ResponseSamples
+                    responseExample={"{\n  \"pk\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"name\": \"string\",\n  \"slug\": \"string\",\n  \"enabled\": true,\n  \"authentication_flow\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"enrollment_flow\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"user_property_mappings\": [\n    \"3fa85f64-5717-4562-b3fc-2c963f66afa6\"\n  ],\n  \"group_property_mappings\": [\n    \"3fa85f64-5717-4562-b3fc-2c963f66afa6\"\n  ],\n  \"component\": \"string\",\n  \"verbose_name\": \"string\",\n  \"verbose_name_plural\": \"string\",\n  \"meta_model_name\": \"string\",\n  \"policy_engine_mode\": \"all\",\n  \"user_matching_mode\": \"identifier\",\n  \"managed\": \"string\",\n  \"user_path_template\": \"string\",\n  \"icon\": \"string\",\n  \"group_matching_mode\": \"identifier\",\n  \"pre_authentication_flow\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"issuer\": \"string\",\n  \"sso_url\": \"string\",\n  \"slo_url\": \"string\",\n  \"allow_idp_initiated\": true,\n  \"name_id_policy\": \"urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress\",\n  \"binding_type\": \"REDIRECT\",\n  \"verification_kp\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"signing_kp\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"digest_algorithm\": \"http://www.w3.org/2000/09/xmldsig#sha1\",\n  \"signature_algorithm\": \"http://www.w3.org/2000/09/xmldsig#rsa-sha1\",\n  \"temporary_user_delete_after\": \"string\",\n  \"encryption_kp\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\"\n}"}
+                    language={"json"}
+                  >
+                    
+                  </ResponseSamples>
+                </TabItem>
+              </SchemaTabs>
+            </TabItem>
+          </MimeTabs>
+        </div>
+      </TabItem><TabItem
+        label={"400"}
+        value={"400"}
+      >
+        <div>
+          
+          
+          
+          
+          
+        </div><div>
+          <MimeTabs
+            className={"openapi-tabs__mime"}
+            schemaType={"response"}
+          >
+            <TabItem
+              label={"application/json"}
+              value={"application/json"}
+            >
+              <SchemaTabs
+                className={"openapi-tabs__schema"}
+              >
+                <TabItem
+                  label={"Schema"}
+                  value={"Schema"}
+                >
+                  <details
+                    style={{}}
+                    className={"openapi-markdown__details response"}
+                    data-collapsed={false}
+                    open={true}
+                  >
+                    <summary
+                      style={{}}
+                      className={"openapi-markdown__details-summary-response"}
+                    >
+                      <strong>
+                        Schema
+                      </strong>
+                    </summary><div
+                      style={{"textAlign":"left","marginLeft":"1rem"}}
+                    >
+                      
+                    </div><ul
+                      style={{"marginLeft":"1rem"}}
+                    >
+                      <SchemaItem
+                        collapsible={false}
+                        name={"non_field_errors"}
+                        required={false}
+                        schemaName={"string[]"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"array","items":{"type":"string"}}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"code"}
+                        required={false}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        name={"property name*"}
+                        required={false}
+                        schemaName={"any"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"object","description":"Validation Error","properties":{"non_field_errors":{"type":"array","items":{"type":"string"}},"code":{"type":"string"}},"additionalProperties":{},"title":"ValidationError"}}
+                        collapsible={false}
+                        discriminator={false}
+                      >
+                        
+                      </SchemaItem>
+                    </ul>
+                  </details>
+                </TabItem><TabItem
+                  label={"Example (from schema)"}
+                  value={"Example (from schema)"}
+                >
+                  <ResponseSamples
+                    responseExample={"{\n  \"non_field_errors\": [\n    \"string\"\n  ],\n  \"code\": \"string\"\n}"}
+                    language={"json"}
+                  >
+                    
+                  </ResponseSamples>
+                </TabItem>
+              </SchemaTabs>
+            </TabItem>
+          </MimeTabs>
+        </div>
+      </TabItem><TabItem
+        label={"403"}
+        value={"403"}
+      >
+        <div>
+          
+          
+          
+          
+          
+        </div><div>
+          <MimeTabs
+            className={"openapi-tabs__mime"}
+            schemaType={"response"}
+          >
+            <TabItem
+              label={"application/json"}
+              value={"application/json"}
+            >
+              <SchemaTabs
+                className={"openapi-tabs__schema"}
+              >
+                <TabItem
+                  label={"Schema"}
+                  value={"Schema"}
+                >
+                  <details
+                    style={{}}
+                    className={"openapi-markdown__details response"}
+                    data-collapsed={false}
+                    open={true}
+                  >
+                    <summary
+                      style={{}}
+                      className={"openapi-markdown__details-summary-response"}
+                    >
+                      <strong>
+                        Schema
+                      </strong>
+                    </summary><div
+                      style={{"textAlign":"left","marginLeft":"1rem"}}
+                    >
+                      
+                    </div><ul
+                      style={{"marginLeft":"1rem"}}
+                    >
+                      <SchemaItem
+                        collapsible={false}
+                        name={"detail"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"code"}
+                        required={false}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string"}}
+                      >
+                        
+                      </SchemaItem>
+                    </ul>
+                  </details>
+                </TabItem><TabItem
+                  label={"Example (from schema)"}
+                  value={"Example (from schema)"}
+                >
+                  <ResponseSamples
+                    responseExample={"{\n  \"detail\": \"string\",\n  \"code\": \"string\"\n}"}
+                    language={"json"}
+                  >
+                    
+                  </ResponseSamples>
+                </TabItem>
+              </SchemaTabs>
+            </TabItem>
+          </MimeTabs>
+        </div>
+      </TabItem>
+    </ApiTabs>
+  </div>
+</div>
+      

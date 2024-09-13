@@ -1,0 +1,495 @@
+---
+id: outposts-service-connections-docker-partial-update
+title: "outposts_service_connections_docker_partial_update"
+description: "DockerServiceConnection Viewset"
+sidebar_label: "outposts_service_connections_docker_partial_update"
+hide_title: true
+hide_table_of_contents: true
+api: eJztV21v2zYQ/iuEvmQDbCuxU6czhmKZG2xG2y3IS78UhkFLJ5u1TGoklcQ1/N93R0qWYstJhgXoh+1LIln3+tzdw+M6UBloboWSozgYBCq3mTLWTAzoOxHBJFJSQkTfzSRW0QL0JOPaCp5O8izmFoJWEIOJtMhICE28d1LXXn+4VWefBdwbsCiPBvgSLGgTDL6sA0FaGbdz/CTxA77luYjxzURzWPJgsA7sKqPfjdVCzvBLovSS21JysxvDObu9Hb1nXpyJGKQVyYqe7VwY5kNkRYztKsgOmtbwVy40IBpW57AZtwLLZxTpFpxg7KXA2F9VvKL4ECaLTuiRZ1kqIgdp+NVQOOv9RNT0K3p8MXb4CyIuvoEm+DTVzAowZNAjto/QUsiPIGeI6uAE8UlVxNOa3FSpFLjci2CUMJB8mkLcYrkBxAuY02VVJ3TYVYFRiaShfzb8kE9BS6ysYSPEY+Ybi8qT6/S5IHcjGXLJpsCEdDH4gjOVsKNciodBGP5MLfPuiN3PQW6DoworxouQfcOymMNSyRZTmh3Nrc0Mac+xkoTdu0G3d9Y/YEajogVmVsbCskOJ2NRM7rAaSVHi55sTmzpPU4LUd9RenufoW0RzlybIOFNC2iPDhlRj5wZBMMw7Rcj5jAtpbIcVAKWQWAbLzK4IJCYVu8NWibnv5yJknqN1HIJXC7oKLvwAK2qV2Ll/7OiJIHcEgw1FKiw5DC65xYGJD0zDlR891CAdA1GuhV05KimNLvBtvHFjajKkLj8q3ePj7zur2eIlyGvg8Z8yXZXIl6jcFlTXPPHff8YjtUSsC2R3k3ycFEpjP0+Vgckh/noc8hXYXEvmS3HkpqHSfsb6JEtzzRv552knXu9ZX3iU8clSxZD+s2RwzBFJdOB02SHzB6jzf7L8j5Nltad8qY3efjsWhNEi9vHdtDN8zdMyrojnANMFjn8fp0oQnr4qzX7e1oddaK0aFiAlJ1jrNJ4AfTc1k1xrvkIFgQ1pGijTkVbcRKb4hcexILc8vaz7qx1TVWg+soN49F4Rj99AYnNH7PxydACQGBtANHDGk9nWu6kwUOuAwukTaXoenKvY7/LR3O35tNgFYbk3hw2XitDTTrimSdqEtPSjUHk1cNwXhDwT4V0vDOhEL8/7a8LLJ1w79bepEXWVNwh3FgLXoF2chPhVtb5fPPBllkK1S1djXhyofqZ9LNtv+9wW9BL+9k3SP22/OTs5a5++6Xfb014StbvRT/1e0u/zhPeDZop5mS4GL2SiXJpFZarc3Rgbb6173D3tvO2c7HXPJ74gvn7snhlBCNDlh5qUR65JsRupi4I5pKn6Zaa2njpCuW0DK4mbVQ23T6OboMSpPDpmws7zaQcJKqyZCKunaaqmIbqS4cfR8OKP6wtXI+qXJZc142UTsaKJaruKKc+u4mbKmm+mtRF8wSW16CMLDzbMUoyvdo3xjV27EPqu3Wlt8u/c4MOgOChoqOgwJe31esoN3Op0s6GfsSE1bbH4eMdxhXTHCc5ALIzb1YJBwlOze7jUk/qhXNl+ZP/mAtyYecmokvgUz8yc3vBxAavtLXyMcnNcXzBjCtx/Gvrw2jdkoFLdo8BNq9Q4jyLI7JOy4xrbXJ7fDH9H6WlxFV86jgs0v6dtCv+6OFXma4IC7rd1kHI5y/mMZL1RR/o5VbbaoD1rtMoHSqsRCaylk7hRC5BYzxIYS++EzGbzN5q7Fyc=
+sidebar_class_name: "patch api-method"
+info_path: docs/developer-docs/api/reference/authentik
+custom_edit_url: null
+hide_send_button: true
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import Markdown from "@theme/Markdown";
+import Heading from "@theme/Heading";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"outposts_service_connections_docker_partial_update"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"patch"}
+  path={"/outposts/service_connections/docker/{uuid}/"}
+>
+  
+</MethodEndpoint>
+
+
+
+DockerServiceConnection Viewset
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<details
+  style={{"marginBottom":"1rem"}}
+  className={"openapi-markdown__details"}
+  data-collapsed={false}
+  open={true}
+>
+  <summary
+    style={{}}
+  >
+    <h3
+      className={"openapi-markdown__details-summary-header-params"}
+    >
+      Path Parameters
+    </h3>
+  </summary><div>
+    <ul>
+      <ParamsItem
+        className={"paramsItem"}
+        param={{"in":"path","name":"uuid","schema":{"type":"string","format":"uuid"},"description":"A UUID string identifying this Docker Service-Connection.","required":true}}
+      >
+        
+      </ParamsItem>
+    </ul>
+  </div>
+</details><MimeTabs
+  className={"openapi-tabs__mime"}
+>
+  <TabItem
+    label={"application/json"}
+    value={"application/json-schema"}
+  >
+    <details
+      style={{}}
+      className={"openapi-markdown__details mime"}
+      data-collapsed={false}
+      open={true}
+    >
+      <summary
+        style={{}}
+        className={"openapi-markdown__details-summary-mime"}
+      >
+        <h3
+          className={"openapi-markdown__details-summary-header-body"}
+        >
+          Body
+        </h3>
+      </summary><div
+        style={{"textAlign":"left","marginLeft":"1rem"}}
+      >
+        
+      </div><ul
+        style={{"marginLeft":"1rem"}}
+      >
+        <SchemaItem
+          collapsible={false}
+          name={"name"}
+          required={false}
+          schemaName={"string"}
+          qualifierMessage={"**Possible values:** `non-empty`"}
+          schema={{"type":"string","minLength":1}}
+        >
+          
+        </SchemaItem><SchemaItem
+          collapsible={false}
+          name={"local"}
+          required={false}
+          schemaName={"boolean"}
+          qualifierMessage={undefined}
+          schema={{"type":"boolean","description":"If enabled, use the local connection. Required Docker socket/Kubernetes Integration"}}
+        >
+          
+        </SchemaItem><SchemaItem
+          collapsible={false}
+          name={"url"}
+          required={false}
+          schemaName={"string"}
+          qualifierMessage={"**Possible values:** `non-empty`"}
+          schema={{"type":"string","minLength":1,"description":"Can be in the format of 'unix://<path>' when connecting to a local docker daemon, or 'https://<hostname>:2376' when connecting to a remote system."}}
+        >
+          
+        </SchemaItem><SchemaItem
+          collapsible={false}
+          name={"tls_verification"}
+          required={false}
+          schemaName={"uuid"}
+          qualifierMessage={undefined}
+          schema={{"type":"string","format":"uuid","nullable":true,"description":"CA which the endpoint's Certificate is verified against. Can be left empty for no validation."}}
+        >
+          
+        </SchemaItem><SchemaItem
+          collapsible={false}
+          name={"tls_authentication"}
+          required={false}
+          schemaName={"uuid"}
+          qualifierMessage={undefined}
+          schema={{"type":"string","format":"uuid","nullable":true,"description":"Certificate/Key used for authentication. Can be left empty for no authentication."}}
+        >
+          
+        </SchemaItem>
+      </ul>
+    </details>
+  </TabItem>
+</MimeTabs><div>
+  <div>
+    <ApiTabs
+      label={undefined}
+      id={undefined}
+    >
+      <TabItem
+        label={"200"}
+        value={"200"}
+      >
+        <div>
+          
+          
+          
+          
+          
+        </div><div>
+          <MimeTabs
+            className={"openapi-tabs__mime"}
+            schemaType={"response"}
+          >
+            <TabItem
+              label={"application/json"}
+              value={"application/json"}
+            >
+              <SchemaTabs
+                className={"openapi-tabs__schema"}
+              >
+                <TabItem
+                  label={"Schema"}
+                  value={"Schema"}
+                >
+                  <details
+                    style={{}}
+                    className={"openapi-markdown__details response"}
+                    data-collapsed={false}
+                    open={true}
+                  >
+                    <summary
+                      style={{}}
+                      className={"openapi-markdown__details-summary-response"}
+                    >
+                      <strong>
+                        Schema
+                      </strong>
+                    </summary><div
+                      style={{"textAlign":"left","marginLeft":"1rem"}}
+                    >
+                      
+                    </div><ul
+                      style={{"marginLeft":"1rem"}}
+                    >
+                      <SchemaItem
+                        collapsible={false}
+                        name={"pk"}
+                        required={true}
+                        schemaName={"uuid"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","format":"uuid","readOnly":true,"title":"Uuid"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"name"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"local"}
+                        required={false}
+                        schemaName={"boolean"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"boolean","description":"If enabled, use the local connection. Required Docker socket/Kubernetes Integration"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"component"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"verbose_name"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Return object's verbose_name","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"verbose_name_plural"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Return object's plural verbose_name","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"meta_model_name"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Return internal model name","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"url"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Can be in the format of 'unix://<path>' when connecting to a local docker daemon, or 'https://<hostname>:2376' when connecting to a remote system."}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"tls_verification"}
+                        required={false}
+                        schemaName={"uuid"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","format":"uuid","nullable":true,"description":"CA which the endpoint's Certificate is verified against. Can be left empty for no validation."}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"tls_authentication"}
+                        required={false}
+                        schemaName={"uuid"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","format":"uuid","nullable":true,"description":"Certificate/Key used for authentication. Can be left empty for no authentication."}}
+                      >
+                        
+                      </SchemaItem>
+                    </ul>
+                  </details>
+                </TabItem><TabItem
+                  label={"Example (from schema)"}
+                  value={"Example (from schema)"}
+                >
+                  <ResponseSamples
+                    responseExample={"{\n  \"pk\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"name\": \"string\",\n  \"local\": true,\n  \"component\": \"string\",\n  \"verbose_name\": \"string\",\n  \"verbose_name_plural\": \"string\",\n  \"meta_model_name\": \"string\",\n  \"url\": \"string\",\n  \"tls_verification\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"tls_authentication\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\"\n}"}
+                    language={"json"}
+                  >
+                    
+                  </ResponseSamples>
+                </TabItem>
+              </SchemaTabs>
+            </TabItem>
+          </MimeTabs>
+        </div>
+      </TabItem><TabItem
+        label={"400"}
+        value={"400"}
+      >
+        <div>
+          
+          
+          
+          
+          
+        </div><div>
+          <MimeTabs
+            className={"openapi-tabs__mime"}
+            schemaType={"response"}
+          >
+            <TabItem
+              label={"application/json"}
+              value={"application/json"}
+            >
+              <SchemaTabs
+                className={"openapi-tabs__schema"}
+              >
+                <TabItem
+                  label={"Schema"}
+                  value={"Schema"}
+                >
+                  <details
+                    style={{}}
+                    className={"openapi-markdown__details response"}
+                    data-collapsed={false}
+                    open={true}
+                  >
+                    <summary
+                      style={{}}
+                      className={"openapi-markdown__details-summary-response"}
+                    >
+                      <strong>
+                        Schema
+                      </strong>
+                    </summary><div
+                      style={{"textAlign":"left","marginLeft":"1rem"}}
+                    >
+                      
+                    </div><ul
+                      style={{"marginLeft":"1rem"}}
+                    >
+                      <SchemaItem
+                        collapsible={false}
+                        name={"non_field_errors"}
+                        required={false}
+                        schemaName={"string[]"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"array","items":{"type":"string"}}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"code"}
+                        required={false}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        name={"property name*"}
+                        required={false}
+                        schemaName={"any"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"object","description":"Validation Error","properties":{"non_field_errors":{"type":"array","items":{"type":"string"}},"code":{"type":"string"}},"additionalProperties":{},"title":"ValidationError"}}
+                        collapsible={false}
+                        discriminator={false}
+                      >
+                        
+                      </SchemaItem>
+                    </ul>
+                  </details>
+                </TabItem><TabItem
+                  label={"Example (from schema)"}
+                  value={"Example (from schema)"}
+                >
+                  <ResponseSamples
+                    responseExample={"{\n  \"non_field_errors\": [\n    \"string\"\n  ],\n  \"code\": \"string\"\n}"}
+                    language={"json"}
+                  >
+                    
+                  </ResponseSamples>
+                </TabItem>
+              </SchemaTabs>
+            </TabItem>
+          </MimeTabs>
+        </div>
+      </TabItem><TabItem
+        label={"403"}
+        value={"403"}
+      >
+        <div>
+          
+          
+          
+          
+          
+        </div><div>
+          <MimeTabs
+            className={"openapi-tabs__mime"}
+            schemaType={"response"}
+          >
+            <TabItem
+              label={"application/json"}
+              value={"application/json"}
+            >
+              <SchemaTabs
+                className={"openapi-tabs__schema"}
+              >
+                <TabItem
+                  label={"Schema"}
+                  value={"Schema"}
+                >
+                  <details
+                    style={{}}
+                    className={"openapi-markdown__details response"}
+                    data-collapsed={false}
+                    open={true}
+                  >
+                    <summary
+                      style={{}}
+                      className={"openapi-markdown__details-summary-response"}
+                    >
+                      <strong>
+                        Schema
+                      </strong>
+                    </summary><div
+                      style={{"textAlign":"left","marginLeft":"1rem"}}
+                    >
+                      
+                    </div><ul
+                      style={{"marginLeft":"1rem"}}
+                    >
+                      <SchemaItem
+                        collapsible={false}
+                        name={"detail"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"code"}
+                        required={false}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string"}}
+                      >
+                        
+                      </SchemaItem>
+                    </ul>
+                  </details>
+                </TabItem><TabItem
+                  label={"Example (from schema)"}
+                  value={"Example (from schema)"}
+                >
+                  <ResponseSamples
+                    responseExample={"{\n  \"detail\": \"string\",\n  \"code\": \"string\"\n}"}
+                    language={"json"}
+                  >
+                    
+                  </ResponseSamples>
+                </TabItem>
+              </SchemaTabs>
+            </TabItem>
+          </MimeTabs>
+        </div>
+      </TabItem>
+    </ApiTabs>
+  </div>
+</div>
+      

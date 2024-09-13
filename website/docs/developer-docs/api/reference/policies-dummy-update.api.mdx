@@ -1,0 +1,508 @@
+---
+id: policies-dummy-update
+title: "policies_dummy_update"
+description: "Dummy Viewset"
+sidebar_label: "policies_dummy_update"
+hide_title: true
+hide_table_of_contents: true
+api: eJzVV1tv2zYU/iuEXrYBrpUb1sBPS9ugCNBuQS7dQxEYlHRssaZIjaTiuIb++84hdXOsJAhWYOhDHIo81+9ceLiNdAmGO6HVRRbNolJLkQqw86wqis28KjPuIJpEGdjUiJLokOoDHbIvAtYWHJ6W3PACHBgbzb5uI0E0JXc5Hik8aOWivEpkuGnTHAoezbaR25R0bJ0RaoknC20K7nDHU9aPFZ+x29uLDyyQM5GBcmKxobXLhWXBrkuva4rSDPxTCQPomDMV1HeTyPEl2dj5Gd0FKrDunc42ZFKqlUO5tORliWQenfibJQu2+7br5Buk7gmMgi3sGozgUnwHQ2gZwtyRdpQSANpHohDqE6glgjg7RBzgAdKKRM+lXi6JpOdJtJbA1Z4Jf+egAjDabzFcgeKJhGzCuJSsE4oUi0AZAsXWAo8TYKQMsil7t2EZLHgl3YRpJTc9KwNjtLGMm46a4mbAIvGIkXi25sLNC6EGpwIxX3p0Cv4giqqIZkeHJ29PTo9/P3nrwQibb7rd004Qf/iPguphpnwNEaFcEU5CG8kQyKuQKlG9y+OzC9MaITHCbXwR8MrllJ4r/LqrfZrZEpEOUT86OPgfcq1cvVxzZCjP/sIYB796HBr5bWWOJ+5PmKqpLjAwTRgeg7Nr5kdwLMSAdVzMarSHO7YGtlJ6zXL8c5pBJhweAOuCtgssar4Hk2gL86d6wK7yK3CVUY24Xyzb4X5B+ryUleHy9UoC34u6sPvzeaEzkK9zhsrVKFTgedlT4hNdqWzu9GihP+NAlySYLl4GBmZM/k/crTpohom8H5CmXifUAx4l3nimjDfA0Pl2ESeQTn5oP/uC/SvzrOycSnb/0sTmshAgs3ko6YFIbgzfIINwUNiR/uQLPhvrXHjCMyxaVMvl5VBf3WPRmxYsexKP4x+Ix0dQ2NRTdnZ58QQgGYZbjJT3s94O06gRMIh6o/QZN0Pd59oPjlUYBGleieJ2vIr9GBlvB+NfHdMACOa+nRYrI4mFlyK+P44juirbi/Sa8AkODq7TzpXcubKdJn3RAnZ24+0ihK/6ue78gRelhH7e6tvSyG0Vrr22J4SvvgscDCv5AHUJtQiNqQGuN9VXlg1wHR0cnUxPp4d7wf3MVzTAtlwhRZgVZPDUV7VyPPU5hMlCQY5ykFL/sdSdpqnQFGoEGXDCGLj5+eIGRQSICS47i+OlcHmVTLFbxAMRcb9KpE5iVKXiTxfvz/+8PveQltq6gquB8DbKzEeZjT8WBkWw925o4ujgwcWlRIXkhDd226TSYFJHucSO/2e7rwlK2hyNI+rtNuEWbo2sa9rGBDA0juHynuNYlFCAMOcyYf1sEc0WXFp4xuRfr5oi+Y298vEx6lzbpBT5cc9lRV+4XMHm0SupvkPyHC8qzGgyOVC8D4a9uSE5vYS95lJPWo6zNIXSPUt7N6jjy1tKmKR5CxW+d0SGr+nWxF9vbBjRfFn6vW0kuVpWfEm0QaRvphVFsL9SQ3VO2gU5NQoHxtBT3OgVKIxji46jb8Klrv8F910W7g==
+sidebar_class_name: "put api-method"
+info_path: docs/developer-docs/api/reference/authentik
+custom_edit_url: null
+hide_send_button: true
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import Markdown from "@theme/Markdown";
+import Heading from "@theme/Heading";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"policies_dummy_update"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"put"}
+  path={"/policies/dummy/{policy_uuid}/"}
+>
+  
+</MethodEndpoint>
+
+
+
+Dummy Viewset
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<details
+  style={{"marginBottom":"1rem"}}
+  className={"openapi-markdown__details"}
+  data-collapsed={false}
+  open={true}
+>
+  <summary
+    style={{}}
+  >
+    <h3
+      className={"openapi-markdown__details-summary-header-params"}
+    >
+      Path Parameters
+    </h3>
+  </summary><div>
+    <ul>
+      <ParamsItem
+        className={"paramsItem"}
+        param={{"in":"path","name":"policy_uuid","schema":{"type":"string","format":"uuid"},"description":"A UUID string identifying this Dummy Policy.","required":true}}
+      >
+        
+      </ParamsItem>
+    </ul>
+  </div>
+</details><MimeTabs
+  className={"openapi-tabs__mime"}
+>
+  <TabItem
+    label={"application/json"}
+    value={"application/json-schema"}
+  >
+    <details
+      style={{}}
+      className={"openapi-markdown__details mime"}
+      data-collapsed={false}
+      open={true}
+    >
+      <summary
+        style={{}}
+        className={"openapi-markdown__details-summary-mime"}
+      >
+        <h3
+          className={"openapi-markdown__details-summary-header-body"}
+        >
+          Body
+        </h3><strong
+          className={"openapi-schema__required"}
+        >
+          required
+        </strong>
+      </summary><div
+        style={{"textAlign":"left","marginLeft":"1rem"}}
+      >
+        
+      </div><ul
+        style={{"marginLeft":"1rem"}}
+      >
+        <SchemaItem
+          collapsible={false}
+          name={"name"}
+          required={true}
+          schemaName={"string"}
+          qualifierMessage={"**Possible values:** `non-empty`"}
+          schema={{"type":"string","minLength":1}}
+        >
+          
+        </SchemaItem><SchemaItem
+          collapsible={false}
+          name={"execution_logging"}
+          required={false}
+          schemaName={"boolean"}
+          qualifierMessage={undefined}
+          schema={{"type":"boolean","description":"When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged."}}
+        >
+          
+        </SchemaItem><SchemaItem
+          collapsible={false}
+          name={"result"}
+          required={false}
+          schemaName={"boolean"}
+          qualifierMessage={undefined}
+          schema={{"type":"boolean"}}
+        >
+          
+        </SchemaItem><SchemaItem
+          collapsible={false}
+          name={"wait_min"}
+          required={false}
+          schemaName={"integer"}
+          qualifierMessage={"**Possible values:** `>= -2147483648` and `<= 2147483647`"}
+          schema={{"type":"integer","maximum":2147483647,"minimum":-2147483648}}
+        >
+          
+        </SchemaItem><SchemaItem
+          collapsible={false}
+          name={"wait_max"}
+          required={false}
+          schemaName={"integer"}
+          qualifierMessage={"**Possible values:** `>= -2147483648` and `<= 2147483647`"}
+          schema={{"type":"integer","maximum":2147483647,"minimum":-2147483648}}
+        >
+          
+        </SchemaItem>
+      </ul>
+    </details>
+  </TabItem>
+</MimeTabs><div>
+  <div>
+    <ApiTabs
+      label={undefined}
+      id={undefined}
+    >
+      <TabItem
+        label={"200"}
+        value={"200"}
+      >
+        <div>
+          
+          
+          
+          
+          
+        </div><div>
+          <MimeTabs
+            className={"openapi-tabs__mime"}
+            schemaType={"response"}
+          >
+            <TabItem
+              label={"application/json"}
+              value={"application/json"}
+            >
+              <SchemaTabs
+                className={"openapi-tabs__schema"}
+              >
+                <TabItem
+                  label={"Schema"}
+                  value={"Schema"}
+                >
+                  <details
+                    style={{}}
+                    className={"openapi-markdown__details response"}
+                    data-collapsed={false}
+                    open={true}
+                  >
+                    <summary
+                      style={{}}
+                      className={"openapi-markdown__details-summary-response"}
+                    >
+                      <strong>
+                        Schema
+                      </strong>
+                    </summary><div
+                      style={{"textAlign":"left","marginLeft":"1rem"}}
+                    >
+                      
+                    </div><ul
+                      style={{"marginLeft":"1rem"}}
+                    >
+                      <SchemaItem
+                        collapsible={false}
+                        name={"pk"}
+                        required={true}
+                        schemaName={"uuid"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","format":"uuid","readOnly":true,"title":"Policy uuid"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"name"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"execution_logging"}
+                        required={false}
+                        schemaName={"boolean"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"boolean","description":"When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged."}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"component"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Get object component so that we know how to edit the object","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"verbose_name"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Return object's verbose_name","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"verbose_name_plural"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Return object's plural verbose_name","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"meta_model_name"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Return internal model name","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"bound_to"}
+                        required={true}
+                        schemaName={"integer"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"integer","description":"Return objects policy is bound to","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"result"}
+                        required={false}
+                        schemaName={"boolean"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"boolean"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"wait_min"}
+                        required={false}
+                        schemaName={"integer"}
+                        qualifierMessage={"**Possible values:** `>= -2147483648` and `<= 2147483647`"}
+                        schema={{"type":"integer","maximum":2147483647,"minimum":-2147483648}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"wait_max"}
+                        required={false}
+                        schemaName={"integer"}
+                        qualifierMessage={"**Possible values:** `>= -2147483648` and `<= 2147483647`"}
+                        schema={{"type":"integer","maximum":2147483647,"minimum":-2147483648}}
+                      >
+                        
+                      </SchemaItem>
+                    </ul>
+                  </details>
+                </TabItem><TabItem
+                  label={"Example (from schema)"}
+                  value={"Example (from schema)"}
+                >
+                  <ResponseSamples
+                    responseExample={"{\n  \"pk\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"name\": \"string\",\n  \"execution_logging\": true,\n  \"component\": \"string\",\n  \"verbose_name\": \"string\",\n  \"verbose_name_plural\": \"string\",\n  \"meta_model_name\": \"string\",\n  \"bound_to\": 0,\n  \"result\": true,\n  \"wait_min\": 0,\n  \"wait_max\": 0\n}"}
+                    language={"json"}
+                  >
+                    
+                  </ResponseSamples>
+                </TabItem>
+              </SchemaTabs>
+            </TabItem>
+          </MimeTabs>
+        </div>
+      </TabItem><TabItem
+        label={"400"}
+        value={"400"}
+      >
+        <div>
+          
+          
+          
+          
+          
+        </div><div>
+          <MimeTabs
+            className={"openapi-tabs__mime"}
+            schemaType={"response"}
+          >
+            <TabItem
+              label={"application/json"}
+              value={"application/json"}
+            >
+              <SchemaTabs
+                className={"openapi-tabs__schema"}
+              >
+                <TabItem
+                  label={"Schema"}
+                  value={"Schema"}
+                >
+                  <details
+                    style={{}}
+                    className={"openapi-markdown__details response"}
+                    data-collapsed={false}
+                    open={true}
+                  >
+                    <summary
+                      style={{}}
+                      className={"openapi-markdown__details-summary-response"}
+                    >
+                      <strong>
+                        Schema
+                      </strong>
+                    </summary><div
+                      style={{"textAlign":"left","marginLeft":"1rem"}}
+                    >
+                      
+                    </div><ul
+                      style={{"marginLeft":"1rem"}}
+                    >
+                      <SchemaItem
+                        collapsible={false}
+                        name={"non_field_errors"}
+                        required={false}
+                        schemaName={"string[]"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"array","items":{"type":"string"}}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"code"}
+                        required={false}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        name={"property name*"}
+                        required={false}
+                        schemaName={"any"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"object","description":"Validation Error","properties":{"non_field_errors":{"type":"array","items":{"type":"string"}},"code":{"type":"string"}},"additionalProperties":{},"title":"ValidationError"}}
+                        collapsible={false}
+                        discriminator={false}
+                      >
+                        
+                      </SchemaItem>
+                    </ul>
+                  </details>
+                </TabItem><TabItem
+                  label={"Example (from schema)"}
+                  value={"Example (from schema)"}
+                >
+                  <ResponseSamples
+                    responseExample={"{\n  \"non_field_errors\": [\n    \"string\"\n  ],\n  \"code\": \"string\"\n}"}
+                    language={"json"}
+                  >
+                    
+                  </ResponseSamples>
+                </TabItem>
+              </SchemaTabs>
+            </TabItem>
+          </MimeTabs>
+        </div>
+      </TabItem><TabItem
+        label={"403"}
+        value={"403"}
+      >
+        <div>
+          
+          
+          
+          
+          
+        </div><div>
+          <MimeTabs
+            className={"openapi-tabs__mime"}
+            schemaType={"response"}
+          >
+            <TabItem
+              label={"application/json"}
+              value={"application/json"}
+            >
+              <SchemaTabs
+                className={"openapi-tabs__schema"}
+              >
+                <TabItem
+                  label={"Schema"}
+                  value={"Schema"}
+                >
+                  <details
+                    style={{}}
+                    className={"openapi-markdown__details response"}
+                    data-collapsed={false}
+                    open={true}
+                  >
+                    <summary
+                      style={{}}
+                      className={"openapi-markdown__details-summary-response"}
+                    >
+                      <strong>
+                        Schema
+                      </strong>
+                    </summary><div
+                      style={{"textAlign":"left","marginLeft":"1rem"}}
+                    >
+                      
+                    </div><ul
+                      style={{"marginLeft":"1rem"}}
+                    >
+                      <SchemaItem
+                        collapsible={false}
+                        name={"detail"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"code"}
+                        required={false}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string"}}
+                      >
+                        
+                      </SchemaItem>
+                    </ul>
+                  </details>
+                </TabItem><TabItem
+                  label={"Example (from schema)"}
+                  value={"Example (from schema)"}
+                >
+                  <ResponseSamples
+                    responseExample={"{\n  \"detail\": \"string\",\n  \"code\": \"string\"\n}"}
+                    language={"json"}
+                  >
+                    
+                  </ResponseSamples>
+                </TabItem>
+              </SchemaTabs>
+            </TabItem>
+          </MimeTabs>
+        </div>
+      </TabItem>
+    </ApiTabs>
+  </div>
+</div>
+      

@@ -1,0 +1,174 @@
+---
+id: sources-plex-redeem-token-authenticated-create
+title: "sources_plex_redeem_token_authenticated_create"
+description: "Redeem a plex token for an authenticated user, creating a connection"
+sidebar_label: "sources_plex_redeem_token_authenticated_create"
+hide_title: true
+hide_table_of_contents: true
+api: eJytVctu2zAQ/BWBZ9XK61D41DbIIUCSBnF6KgKDkjYSY4lUScqNK/jfu0PKL6i59WJJJHe4Mzu7HoTpyEqvjL4txVw409uC3LJr6H1pqSRql96sSC9l72vSXhXSU7ksLPFTpKIkV1jVAYDDn0JEIhPEJyEweTU2kTo5iU96RzZNAorSFQcURmsqAkwqOmllS56sE/Ofg1CA/tWT3fCe5h0k2vQVf7miplaK+SD8pgvr3jKg2G5fUuFlBYAdKcFLlhjH+W+m3CCIb/WcFF5l1zVIjjPI3hzYDFN0k79xkhPaC7JKNuoPWeac2KkI4GShtFecB+MFfePWJPdUtErfka58Lebn223MWjEsyBxFgqLyDUIfefUZi7ECT5Emy3AS7W1PvOCo6K3ymyDuri4r/nrZBolcZ7SLeV6cXeFxSvcBHOOhJIeSjHl1djY9GDJKtPFsgl6X8dzl9NzXgsvjkpK04jSRM1e/NjBkZ5wPjoAYIhtLmUGF7GN/ZrAG2fXOQb1tEC07la0vMwGaOxEWqHEkeyTFvia1993OZ/jOSVqyIUe45Ongp5t32XYoxml1945M2cevJkCPRTvclwqkGsW4OLu4mn2enU9cdi9XoVcORHk9cQq3zvg0zCyLYGZ2rQLjmprGfKnM/qaZMsiEnU5cPRwd++n+9pkhok7g7OZZVilf9/msMG12BJEd3vLG5BlfpbO72+ubh8VN0AUla6U+Ah+rFhtibI84HE6nwr+nylGb/q8BMxbX07tnKzEBiBLID6PVDlMjDeUUaIyP7MabaMYaXuXIYcilox+22W6xHCcXbFgqJ/MGnfgqG0epWNHmMMvWsumRVbDnWvJIyWET7kqGJlmy7QASY66jJJ+eweQQO5liwNo30+P3Baqcj9OvNSVirPwNdvzLd6f8h4Do0BBhbRCN1FUvK5yNmKgyBDjqk7Ev0t0LMh23pN4cZcjihBNhNrBAOxFiu2xfGPwvJCZL/g==
+sidebar_class_name: "post api-method"
+info_path: docs/developer-docs/api/reference/authentik
+custom_edit_url: null
+hide_send_button: true
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import Markdown from "@theme/Markdown";
+import Heading from "@theme/Heading";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"sources_plex_redeem_token_authenticated_create"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/sources/plex/redeem_token_authenticated/"}
+>
+  
+</MethodEndpoint>
+
+
+
+Redeem a plex token for an authenticated user, creating a connection
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<details
+  style={{"marginBottom":"1rem"}}
+  className={"openapi-markdown__details"}
+  data-collapsed={false}
+  open={true}
+>
+  <summary
+    style={{}}
+  >
+    <h3
+      className={"openapi-markdown__details-summary-header-params"}
+    >
+      Query Parameters
+    </h3>
+  </summary><div>
+    <ul>
+      <ParamsItem
+        className={"paramsItem"}
+        param={{"in":"query","name":"slug","schema":{"type":"string"}}}
+      >
+        
+      </ParamsItem>
+    </ul>
+  </div>
+</details><MimeTabs
+  className={"openapi-tabs__mime"}
+>
+  <TabItem
+    label={"application/json"}
+    value={"application/json-schema"}
+  >
+    <details
+      style={{}}
+      className={"openapi-markdown__details mime"}
+      data-collapsed={false}
+      open={true}
+    >
+      <summary
+        style={{}}
+        className={"openapi-markdown__details-summary-mime"}
+      >
+        <h3
+          className={"openapi-markdown__details-summary-header-body"}
+        >
+          Body
+        </h3><strong
+          className={"openapi-schema__required"}
+        >
+          required
+        </strong>
+      </summary><div
+        style={{"textAlign":"left","marginLeft":"1rem"}}
+      >
+        
+      </div><ul
+        style={{"marginLeft":"1rem"}}
+      >
+        <SchemaItem
+          collapsible={false}
+          name={"plex_token"}
+          required={true}
+          schemaName={"string"}
+          qualifierMessage={"**Possible values:** `non-empty`"}
+          schema={{"type":"string","minLength":1}}
+        >
+          
+        </SchemaItem>
+      </ul>
+    </details>
+  </TabItem>
+</MimeTabs><div>
+  <div>
+    <ApiTabs
+      label={undefined}
+      id={undefined}
+    >
+      <TabItem
+        label={"204"}
+        value={"204"}
+      >
+        <div>
+          
+          
+          No response body
+          
+          
+        </div><div>
+          
+        </div>
+      </TabItem><TabItem
+        label={"400"}
+        value={"400"}
+      >
+        <div>
+          
+          
+          Token not found
+          
+          
+        </div><div>
+          
+        </div>
+      </TabItem><TabItem
+        label={"403"}
+        value={"403"}
+      >
+        <div>
+          
+          
+          Access denied
+          
+          
+        </div><div>
+          
+        </div>
+      </TabItem>
+    </ApiTabs>
+  </div>
+</div>
+      

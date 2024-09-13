@@ -1,0 +1,642 @@
+---
+id: providers-saml-retrieve
+title: "providers_saml_retrieve"
+description: "SAMLProvider Viewset"
+sidebar_label: "providers_saml_retrieve"
+hide_title: true
+hide_table_of_contents: true
+api: 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
+sidebar_class_name: "get api-method"
+info_path: docs/developer-docs/api/reference/authentik
+custom_edit_url: null
+hide_send_button: true
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import Markdown from "@theme/Markdown";
+import Heading from "@theme/Heading";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"providers_saml_retrieve"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/providers/saml/{id}/"}
+>
+  
+</MethodEndpoint>
+
+
+
+SAMLProvider Viewset
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<details
+  style={{"marginBottom":"1rem"}}
+  className={"openapi-markdown__details"}
+  data-collapsed={false}
+  open={true}
+>
+  <summary
+    style={{}}
+  >
+    <h3
+      className={"openapi-markdown__details-summary-header-params"}
+    >
+      Path Parameters
+    </h3>
+  </summary><div>
+    <ul>
+      <ParamsItem
+        className={"paramsItem"}
+        param={{"in":"path","name":"id","schema":{"type":"integer"},"description":"A unique integer value identifying this SAML Provider.","required":true}}
+      >
+        
+      </ParamsItem>
+    </ul>
+  </div>
+</details><div>
+  <div>
+    <ApiTabs
+      label={undefined}
+      id={undefined}
+    >
+      <TabItem
+        label={"200"}
+        value={"200"}
+      >
+        <div>
+          
+          
+          
+          
+          
+        </div><div>
+          <MimeTabs
+            className={"openapi-tabs__mime"}
+            schemaType={"response"}
+          >
+            <TabItem
+              label={"application/json"}
+              value={"application/json"}
+            >
+              <SchemaTabs
+                className={"openapi-tabs__schema"}
+              >
+                <TabItem
+                  label={"Schema"}
+                  value={"Schema"}
+                >
+                  <details
+                    style={{}}
+                    className={"openapi-markdown__details response"}
+                    data-collapsed={false}
+                    open={true}
+                  >
+                    <summary
+                      style={{}}
+                      className={"openapi-markdown__details-summary-response"}
+                    >
+                      <strong>
+                        Schema
+                      </strong>
+                    </summary><div
+                      style={{"textAlign":"left","marginLeft":"1rem"}}
+                    >
+                      
+                    </div><ul
+                      style={{"marginLeft":"1rem"}}
+                    >
+                      <SchemaItem
+                        collapsible={false}
+                        name={"pk"}
+                        required={true}
+                        schemaName={"ID (integer)"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"integer","readOnly":true,"title":"ID"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"name"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"authentication_flow"}
+                        required={false}
+                        schemaName={"uuid"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","format":"uuid","nullable":true,"description":"Flow used for authentication when the associated application is accessed by an un-authenticated user."}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"authorization_flow"}
+                        required={true}
+                        schemaName={"uuid"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","format":"uuid","description":"Flow used when authorizing this provider."}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"property_mappings"}
+                        required={false}
+                        schemaName={"uuid[]"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"array","items":{"type":"string","format":"uuid"}}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"component"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Get object component so that we know how to edit the object","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"assigned_application_slug"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Internal application name, used in URLs.","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"assigned_application_name"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Application's display Name.","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"assigned_backchannel_application_slug"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Internal application name, used in URLs.","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"assigned_backchannel_application_name"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Application's display Name.","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"verbose_name"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Return object's verbose_name","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"verbose_name_plural"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Return object's plural verbose_name","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"meta_model_name"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Return internal model name","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"acs_url"}
+                        required={true}
+                        schemaName={"uri"}
+                        qualifierMessage={"**Possible values:** `<= 200 characters`"}
+                        schema={{"type":"string","format":"uri","maxLength":200}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"audience"}
+                        required={false}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Value of the audience restriction field of the assertion. When left empty, no audience restriction will be added."}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"issuer"}
+                        required={false}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Also known as EntityID"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"assertion_valid_not_before"}
+                        required={false}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Assertion valid not before current time + this value (Format: hours=-1;minutes=-2;seconds=-3)."}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"assertion_valid_not_on_or_after"}
+                        required={false}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"session_valid_not_on_or_after"}
+                        required={false}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Session not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"name_id_mapping"}
+                        required={false}
+                        schemaName={"uuid"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","format":"uuid","nullable":true,"title":"NameID Property Mapping","description":"Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be considered"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"digest_algorithm"}
+                        required={false}
+                        schemaName={"DigestAlgorithmEnum (string)"}
+                        qualifierMessage={"**Possible values:** [`http://www.w3.org/2000/09/xmldsig#sha1`, `http://www.w3.org/2001/04/xmlenc#sha256`, `http://www.w3.org/2001/04/xmldsig-more#sha384`, `http://www.w3.org/2001/04/xmlenc#sha512`]"}
+                        schema={{"enum":["http://www.w3.org/2000/09/xmldsig#sha1","http://www.w3.org/2001/04/xmlenc#sha256","http://www.w3.org/2001/04/xmldsig-more#sha384","http://www.w3.org/2001/04/xmlenc#sha512"],"type":"string","title":"DigestAlgorithmEnum"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"signature_algorithm"}
+                        required={false}
+                        schemaName={"SignatureAlgorithmEnum (string)"}
+                        qualifierMessage={"**Possible values:** [`http://www.w3.org/2000/09/xmldsig#rsa-sha1`, `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256`, `http://www.w3.org/2001/04/xmldsig-more#rsa-sha384`, `http://www.w3.org/2001/04/xmldsig-more#rsa-sha512`, `http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1`, `http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256`, `http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384`, `http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512`, `http://www.w3.org/2000/09/xmldsig#dsa-sha1`]"}
+                        schema={{"enum":["http://www.w3.org/2000/09/xmldsig#rsa-sha1","http://www.w3.org/2001/04/xmldsig-more#rsa-sha256","http://www.w3.org/2001/04/xmldsig-more#rsa-sha384","http://www.w3.org/2001/04/xmldsig-more#rsa-sha512","http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1","http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256","http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384","http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512","http://www.w3.org/2000/09/xmldsig#dsa-sha1"],"type":"string","title":"SignatureAlgorithmEnum"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"signing_kp"}
+                        required={false}
+                        schemaName={"uuid"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","format":"uuid","nullable":true,"title":"Signing Keypair","description":"Keypair used to sign outgoing Responses going to the Service Provider."}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"verification_kp"}
+                        required={false}
+                        schemaName={"uuid"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","format":"uuid","nullable":true,"title":"Verification Certificate","description":"When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default."}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"encryption_kp"}
+                        required={false}
+                        schemaName={"uuid"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","format":"uuid","nullable":true,"title":"Encryption Keypair","description":"When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key."}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"sign_assertion"}
+                        required={false}
+                        schemaName={"boolean"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"boolean"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"sign_response"}
+                        required={false}
+                        schemaName={"boolean"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"boolean"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"sp_binding"}
+                        required={false}
+                        schemaName={"SpBindingEnum (string)"}
+                        qualifierMessage={"**Possible values:** [`redirect`, `post`]"}
+                        schema={{"enum":["redirect","post"],"type":"string","title":"SpBindingEnum"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"default_relay_state"}
+                        required={false}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Default relay_state value for IDP-initiated logins"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"url_download_metadata"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Get metadata download URL","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"url_sso_post"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Get SSO Post URL","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"url_sso_redirect"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Get SSO Redirect URL","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"url_sso_init"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Get SSO IDP-Initiated URL","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"url_slo_post"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Get SLO POST URL","readOnly":true}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"url_slo_redirect"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"Get SLO redirect URL","readOnly":true}}
+                      >
+                        
+                      </SchemaItem>
+                    </ul>
+                  </details>
+                </TabItem><TabItem
+                  label={"Example (from schema)"}
+                  value={"Example (from schema)"}
+                >
+                  <ResponseSamples
+                    responseExample={"{\n  \"pk\": 0,\n  \"name\": \"string\",\n  \"authentication_flow\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"authorization_flow\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"property_mappings\": [\n    \"3fa85f64-5717-4562-b3fc-2c963f66afa6\"\n  ],\n  \"component\": \"string\",\n  \"assigned_application_slug\": \"string\",\n  \"assigned_application_name\": \"string\",\n  \"assigned_backchannel_application_slug\": \"string\",\n  \"assigned_backchannel_application_name\": \"string\",\n  \"verbose_name\": \"string\",\n  \"verbose_name_plural\": \"string\",\n  \"meta_model_name\": \"string\",\n  \"acs_url\": \"string\",\n  \"audience\": \"string\",\n  \"issuer\": \"string\",\n  \"assertion_valid_not_before\": \"string\",\n  \"assertion_valid_not_on_or_after\": \"string\",\n  \"session_valid_not_on_or_after\": \"string\",\n  \"name_id_mapping\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"digest_algorithm\": \"http://www.w3.org/2000/09/xmldsig#sha1\",\n  \"signature_algorithm\": \"http://www.w3.org/2000/09/xmldsig#rsa-sha1\",\n  \"signing_kp\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"verification_kp\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"encryption_kp\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n  \"sign_assertion\": true,\n  \"sign_response\": true,\n  \"sp_binding\": \"redirect\",\n  \"default_relay_state\": \"string\",\n  \"url_download_metadata\": \"string\",\n  \"url_sso_post\": \"string\",\n  \"url_sso_redirect\": \"string\",\n  \"url_sso_init\": \"string\",\n  \"url_slo_post\": \"string\",\n  \"url_slo_redirect\": \"string\"\n}"}
+                    language={"json"}
+                  >
+                    
+                  </ResponseSamples>
+                </TabItem>
+              </SchemaTabs>
+            </TabItem>
+          </MimeTabs>
+        </div>
+      </TabItem><TabItem
+        label={"400"}
+        value={"400"}
+      >
+        <div>
+          
+          
+          
+          
+          
+        </div><div>
+          <MimeTabs
+            className={"openapi-tabs__mime"}
+            schemaType={"response"}
+          >
+            <TabItem
+              label={"application/json"}
+              value={"application/json"}
+            >
+              <SchemaTabs
+                className={"openapi-tabs__schema"}
+              >
+                <TabItem
+                  label={"Schema"}
+                  value={"Schema"}
+                >
+                  <details
+                    style={{}}
+                    className={"openapi-markdown__details response"}
+                    data-collapsed={false}
+                    open={true}
+                  >
+                    <summary
+                      style={{}}
+                      className={"openapi-markdown__details-summary-response"}
+                    >
+                      <strong>
+                        Schema
+                      </strong>
+                    </summary><div
+                      style={{"textAlign":"left","marginLeft":"1rem"}}
+                    >
+                      
+                    </div><ul
+                      style={{"marginLeft":"1rem"}}
+                    >
+                      <SchemaItem
+                        collapsible={false}
+                        name={"non_field_errors"}
+                        required={false}
+                        schemaName={"string[]"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"array","items":{"type":"string"}}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"code"}
+                        required={false}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        name={"property name*"}
+                        required={false}
+                        schemaName={"any"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"object","description":"Validation Error","properties":{"non_field_errors":{"type":"array","items":{"type":"string"}},"code":{"type":"string"}},"additionalProperties":{},"title":"ValidationError"}}
+                        collapsible={false}
+                        discriminator={false}
+                      >
+                        
+                      </SchemaItem>
+                    </ul>
+                  </details>
+                </TabItem><TabItem
+                  label={"Example (from schema)"}
+                  value={"Example (from schema)"}
+                >
+                  <ResponseSamples
+                    responseExample={"{\n  \"non_field_errors\": [\n    \"string\"\n  ],\n  \"code\": \"string\"\n}"}
+                    language={"json"}
+                  >
+                    
+                  </ResponseSamples>
+                </TabItem>
+              </SchemaTabs>
+            </TabItem>
+          </MimeTabs>
+        </div>
+      </TabItem><TabItem
+        label={"403"}
+        value={"403"}
+      >
+        <div>
+          
+          
+          
+          
+          
+        </div><div>
+          <MimeTabs
+            className={"openapi-tabs__mime"}
+            schemaType={"response"}
+          >
+            <TabItem
+              label={"application/json"}
+              value={"application/json"}
+            >
+              <SchemaTabs
+                className={"openapi-tabs__schema"}
+              >
+                <TabItem
+                  label={"Schema"}
+                  value={"Schema"}
+                >
+                  <details
+                    style={{}}
+                    className={"openapi-markdown__details response"}
+                    data-collapsed={false}
+                    open={true}
+                  >
+                    <summary
+                      style={{}}
+                      className={"openapi-markdown__details-summary-response"}
+                    >
+                      <strong>
+                        Schema
+                      </strong>
+                    </summary><div
+                      style={{"textAlign":"left","marginLeft":"1rem"}}
+                    >
+                      
+                    </div><ul
+                      style={{"marginLeft":"1rem"}}
+                    >
+                      <SchemaItem
+                        collapsible={false}
+                        name={"detail"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"code"}
+                        required={false}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string"}}
+                      >
+                        
+                      </SchemaItem>
+                    </ul>
+                  </details>
+                </TabItem><TabItem
+                  label={"Example (from schema)"}
+                  value={"Example (from schema)"}
+                >
+                  <ResponseSamples
+                    responseExample={"{\n  \"detail\": \"string\",\n  \"code\": \"string\"\n}"}
+                    language={"json"}
+                  >
+                    
+                  </ResponseSamples>
+                </TabItem>
+              </SchemaTabs>
+            </TabItem>
+          </MimeTabs>
+        </div>
+      </TabItem>
+    </ApiTabs>
+  </div>
+</div>
+      

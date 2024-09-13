@@ -1,0 +1,408 @@
+---
+id: sources-plex-redeem-token-create
+title: "sources_plex_redeem_token_create"
+description: "Redeem a plex token, check it's access to resources against what's allowed"
+sidebar_label: "sources_plex_redeem_token_create"
+hide_title: true
+hide_table_of_contents: true
+api: eJzNVsFu4zYQ/RWCl14UK5vdQ+FT29QFAmTbIElPrWGMpLHMNUWqJJXENfTvnSElW7HdbQ899GKY5Mxw+ObNG+2lbdFBUNbcVXIuve1ciX7VanxbOawQm1WwWzSr0iEElJms0JdOtexCDo/RRoBgDxFNM1FusNwKFb7xAkoK5+lAOByCC6hBGR/E6waiidb2Favfzdo6ETYokl0mwFTkVSmHZeAIYAR0ZGCCKmPKORpntW5oR6wpyIzSa8FBgwGdl/Pf9lJxkn906HZ0ZuiEH6m7mlae0mxAzvcy7Nq4H5wytez7ZSYD1BxgBETSlkOK48MPttqxU2lNoIv5L7StHlP64hmX/Xl0W3yhd5wB+IROgVZ/oksgncHJb3JcpaAoD4oXa5OOznLPZKPMPZo6bOT8Q9+nrAnBih8z8eQnqqDZ9YF2n3kz1fIxPZNgeOcdXIe04bHsnAq7CO5YjS2tln227yNKvrXGp1Rvrq//Q6huN0QVehsKthvgGthBtCm14ktO4WJirBSR619cwHm+hQ50pJNgL9fEZAWTE4jZQwpn1wxonpEpkwWU29rZzlQXj0swJepV5/TFYw0720Xo0HRNpGSggFSSbMR1pXEdJkun6g2vvaqwADcej8t0zAQ4oc5IiCMMPxEKdwTCfUxiwQmccmqS/iHZ5ddixTfbhkgyUOI0jQrX0Gk6km+wveJCXI11lv2RYCt0zjp/qapQVYqLBvrhfY2SHTgHLAcqYHPR/287lElA94fVmkXm1bot6VfMQzQkc1DTPafEGN51sfS2ukSZU4TZKhtPJ9gu+OIfMYDSqVuD/edoZDMJ8TgAe2itFOg9AJzqp9TJ7w+iaghjSX0jvaPdx3O779MQqNAoSoIvIIXeWB44rfWxZYEFS+aD3OasVPl0/uSMALqXUddju8gcWpW/fMwlK88oTU8sJwn7iUAdcNmE0I7qz+sCwaGLWbEgPR5VfvEGTZuaeqq5kwIeZGWA83hfJjnV9Pyb65tPs29nH86Y9Rm2FOhkqAmv+NbZ0NBQpuZvuMqUPdK0/K62h5tmKnYUiSpSU7DpMOU+3z1TiIQTv9nP87xWYdMVM2q/fBIiP/4rtC1yusrk93e3i5+fFhEXLlIDZhJ8HOVxTA1DK8IjLn8nTGbA/++TYSAG6xQRjy5iQAc9TsQ8fgdkkQqSe+pITlpyU22Yy2S73xfg8Ven+56309cHk7ZSHgrNfbgG7TGTW9wdv0deQHcY223JCxKdgknFk5XKDhWRlIMkn9sE59Uz5370PRuvNJUHD27CNnzVdjlpzIdfnpg/xfC100Spkg5e+e30S3lm9PHI3rHV4t6eJoCpO9JBOk8xmT9cgkkHDh2XjX/4VaM0m90kQwIyWkSdITBHwBLo/ZKC/wXqXMTk
+sidebar_class_name: "post api-method"
+info_path: docs/developer-docs/api/reference/authentik
+custom_edit_url: null
+hide_send_button: true
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import Markdown from "@theme/Markdown";
+import Heading from "@theme/Heading";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"sources_plex_redeem_token_create"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/sources/plex/redeem_token/"}
+>
+  
+</MethodEndpoint>
+
+
+
+Redeem a plex token, check it's access to resources against what's allowed
+for the source, and redirect to an authentication/enrollment flow.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<details
+  style={{"marginBottom":"1rem"}}
+  className={"openapi-markdown__details"}
+  data-collapsed={false}
+  open={true}
+>
+  <summary
+    style={{}}
+  >
+    <h3
+      className={"openapi-markdown__details-summary-header-params"}
+    >
+      Query Parameters
+    </h3>
+  </summary><div>
+    <ul>
+      <ParamsItem
+        className={"paramsItem"}
+        param={{"in":"query","name":"slug","schema":{"type":"string"}}}
+      >
+        
+      </ParamsItem>
+    </ul>
+  </div>
+</details><MimeTabs
+  className={"openapi-tabs__mime"}
+>
+  <TabItem
+    label={"application/json"}
+    value={"application/json-schema"}
+  >
+    <details
+      style={{}}
+      className={"openapi-markdown__details mime"}
+      data-collapsed={false}
+      open={true}
+    >
+      <summary
+        style={{}}
+        className={"openapi-markdown__details-summary-mime"}
+      >
+        <h3
+          className={"openapi-markdown__details-summary-header-body"}
+        >
+          Body
+        </h3><strong
+          className={"openapi-schema__required"}
+        >
+          required
+        </strong>
+      </summary><div
+        style={{"textAlign":"left","marginLeft":"1rem"}}
+      >
+        
+      </div><ul
+        style={{"marginLeft":"1rem"}}
+      >
+        <SchemaItem
+          collapsible={false}
+          name={"plex_token"}
+          required={true}
+          schemaName={"string"}
+          qualifierMessage={"**Possible values:** `non-empty`"}
+          schema={{"type":"string","minLength":1}}
+        >
+          
+        </SchemaItem>
+      </ul>
+    </details>
+  </TabItem>
+</MimeTabs><div>
+  <div>
+    <ApiTabs
+      label={undefined}
+      id={undefined}
+    >
+      <TabItem
+        label={"200"}
+        value={"200"}
+      >
+        <div>
+          
+          
+          
+          
+          
+        </div><div>
+          <MimeTabs
+            className={"openapi-tabs__mime"}
+            schemaType={"response"}
+          >
+            <TabItem
+              label={"application/json"}
+              value={"application/json"}
+            >
+              <SchemaTabs
+                className={"openapi-tabs__schema"}
+              >
+                <TabItem
+                  label={"Schema"}
+                  value={"Schema"}
+                >
+                  <details
+                    style={{}}
+                    className={"openapi-markdown__details response"}
+                    data-collapsed={false}
+                    open={true}
+                  >
+                    <summary
+                      style={{}}
+                      className={"openapi-markdown__details-summary-response"}
+                    >
+                      <strong>
+                        Schema
+                      </strong>
+                    </summary><div
+                      style={{"textAlign":"left","marginLeft":"1rem"}}
+                    >
+                      
+                    </div><ul
+                      style={{"marginLeft":"1rem"}}
+                    >
+                      <SchemaItem
+                        collapsible={true}
+                        className={"schemaItem"}
+                      >
+                        <details
+                          style={{}}
+                          className={"openapi-markdown__details"}
+                        >
+                          <summary
+                            style={{}}
+                          >
+                            <span
+                              className={"openapi-schema__container"}
+                            >
+                              <strong
+                                className={"openapi-schema__property"}
+                              >
+                                flow_info
+                              </strong><span
+                                className={"openapi-schema__name"}
+                              >
+                                 object
+                              </span>
+                            </span>
+                          </summary><div
+                            style={{"marginLeft":"1rem"}}
+                          >
+                            <div
+                              style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                            >
+                              
+                              
+                              Contextual flow information for a challenge
+                              
+                              
+                            </div><SchemaItem
+                              collapsible={false}
+                              name={"title"}
+                              required={false}
+                              schemaName={"string"}
+                              qualifierMessage={undefined}
+                              schema={{"type":"string"}}
+                            >
+                              
+                            </SchemaItem><SchemaItem
+                              collapsible={false}
+                              name={"background"}
+                              required={false}
+                              schemaName={"string"}
+                              qualifierMessage={undefined}
+                              schema={{"type":"string"}}
+                            >
+                              
+                            </SchemaItem><SchemaItem
+                              collapsible={false}
+                              name={"cancel_url"}
+                              required={true}
+                              schemaName={"string"}
+                              qualifierMessage={undefined}
+                              schema={{"type":"string"}}
+                            >
+                              
+                            </SchemaItem><SchemaItem
+                              collapsible={false}
+                              name={"layout"}
+                              required={true}
+                              schemaName={"ContextualFlowInfoLayoutEnum (string)"}
+                              qualifierMessage={"**Possible values:** [`stacked`, `content_left`, `content_right`, `sidebar_left`, `sidebar_right`]"}
+                              schema={{"enum":["stacked","content_left","content_right","sidebar_left","sidebar_right"],"type":"string","title":"ContextualFlowInfoLayoutEnum"}}
+                            >
+                              
+                            </SchemaItem>
+                          </div>
+                        </details>
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"component"}
+                        required={false}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","default":"xak-flow-redirect"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={true}
+                        className={"schemaItem"}
+                      >
+                        <details
+                          style={{}}
+                          className={"openapi-markdown__details"}
+                        >
+                          <summary
+                            style={{}}
+                          >
+                            <span
+                              className={"openapi-schema__container"}
+                            >
+                              <strong
+                                className={"openapi-schema__property"}
+                              >
+                                response_errors
+                              </strong><span
+                                className={"openapi-schema__name"}
+                              >
+                                 object
+                              </span>
+                            </span>
+                          </summary><div
+                            style={{"marginLeft":"1rem"}}
+                          >
+                            <SchemaItem
+                              collapsible={true}
+                              className={"schemaItem"}
+                            >
+                              <details
+                                style={{}}
+                                className={"openapi-markdown__details"}
+                              >
+                                <summary
+                                  style={{}}
+                                >
+                                  <span
+                                    className={"openapi-schema__container"}
+                                  >
+                                    <strong
+                                      className={"openapi-schema__property"}
+                                    >
+                                      property name*
+                                    </strong><span
+                                      className={"openapi-schema__name"}
+                                    >
+                                       object[]
+                                    </span>
+                                  </span>
+                                </summary><div
+                                  style={{"marginLeft":"1rem"}}
+                                >
+                                  <li>
+                                    <div
+                                      style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem","paddingBottom":".5rem"}}
+                                    >
+                                      Array [
+                                    </div>
+                                  </li><SchemaItem
+                                    collapsible={false}
+                                    name={"string"}
+                                    required={true}
+                                    schemaName={"string"}
+                                    qualifierMessage={undefined}
+                                    schema={{"type":"string"}}
+                                  >
+                                    
+                                  </SchemaItem><SchemaItem
+                                    collapsible={false}
+                                    name={"code"}
+                                    required={true}
+                                    schemaName={"string"}
+                                    qualifierMessage={undefined}
+                                    schema={{"type":"string"}}
+                                  >
+                                    
+                                  </SchemaItem><li>
+                                    <div
+                                      style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem"}}
+                                    >
+                                      ]
+                                    </div>
+                                  </li>
+                                </div>
+                              </details>
+                            </SchemaItem>
+                          </div>
+                        </details>
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"to"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string"}}
+                      >
+                        
+                      </SchemaItem>
+                    </ul>
+                  </details>
+                </TabItem><TabItem
+                  label={"Example (from schema)"}
+                  value={"Example (from schema)"}
+                >
+                  <ResponseSamples
+                    responseExample={"{\n  \"flow_info\": {\n    \"title\": \"string\",\n    \"background\": \"string\",\n    \"cancel_url\": \"string\",\n    \"layout\": \"stacked\"\n  },\n  \"component\": \"xak-flow-redirect\",\n  \"response_errors\": {},\n  \"to\": \"string\"\n}"}
+                    language={"json"}
+                  >
+                    
+                  </ResponseSamples>
+                </TabItem>
+              </SchemaTabs>
+            </TabItem>
+          </MimeTabs>
+        </div>
+      </TabItem><TabItem
+        label={"400"}
+        value={"400"}
+      >
+        <div>
+          
+          
+          Token not found
+          
+          
+        </div><div>
+          
+        </div>
+      </TabItem><TabItem
+        label={"403"}
+        value={"403"}
+      >
+        <div>
+          
+          
+          Access denied
+          
+          
+        </div><div>
+          
+        </div>
+      </TabItem>
+    </ApiTabs>
+  </div>
+</div>
+      
