@@ -7379,10 +7379,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Saving Application...</source>
   <target>正在保存应用程序…</target>
 </trans-unit>
-<trans-unit id="s823abdb61543a826">
-  <source>Authentik was unable to save this application:</source>
-  <target>Authentik 无法保存此应用程序：</target>
-</trans-unit>
 <trans-unit id="s848288f8c2265aad">
   <source>Your application has been saved</source>
   <target>您的应用程序已保存</target>
@@ -9090,6 +9086,10 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s2d5f69929bb7221d">
   <source><x id="0" equiv-text="${prompt.name}"/> (&quot;<x id="1" equiv-text="${prompt.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${prompt.type}"/>)</source>
   <target><x id="0" equiv-text="${prompt.name}"/>（&amp;quot;<x id="1" equiv-text="${prompt.fieldKey}"/>&amp;quot;，类型为 <x id="2" equiv-text="${prompt.type}"/>）</target>
+</trans-unit>
+<trans-unit id="sa38c5a2731be3a46">
+  <source>authentik was unable to save this application:</source>
+  <target>authentik 无法保存此应用程序：</target>
 </trans-unit>
     </body>
   </file>
