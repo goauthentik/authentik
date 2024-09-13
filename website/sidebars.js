@@ -1,5 +1,6 @@
 const generateVersionDropdown =
     require("./src/utils.js").generateVersionDropdown;
+const apiReference = require("./docs/developer-docs/api/reference/sidebar");
 
 const docsSidebar = {
     docs: [
@@ -339,27 +340,25 @@ const docsSidebar = {
                     label: "Blueprints",
                     link: {
                         type: "doc",
-                        id: "blueprints/index",
+                        id: "customize/blueprints/index",
                     },
                     items: [
-                        "blueprints/export",
-                        "blueprints/v1/structure",
-                        "blueprints/v1/tags",
-                        "blueprints/v1/example",
+                        "customize/blueprints/export",
+                        "customize/blueprints/v1/structure",
+                        "customize/blueprints/v1/tags",
+                        "customize/blueprints/v1/example",
                         {
                             type: "category",
                             label: "Models",
                             link: {
                                 type: "doc",
-                                id: "blueprints/v1/models",
-                                    },
-                            items: ["blueprints/v1/meta"],
+                                id: "customize/blueprints/v1/models",
+                            },
+                            items: ["customize/blueprints/v1/meta"],
                         },
                     ],
                 },
-                        "customize/brands",
-                    ],
-                },
+                "customize/brands",
             ],
         },
         {
@@ -508,60 +507,60 @@ const docsSidebar = {
                 type: "doc",
                 id: "developer-docs/index",
             },
-                items: [
-                    {
-                        type: "category",
-                        label: "Setup",
-                        items: [
+            items: [
+                {
+                    type: "category",
+                    label: "Setup",
+                    items: [
                         "developer-docs/setup/full-dev-environment",
                         "developer-docs/setup/frontend-dev-environment",
                         "developer-docs/setup/website-dev-environment",
-                        ],
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "API",
+                    link: {
+                        type: "doc",
+                        id: "developer-docs/api/api",
                     },
-                    {
-                        type: "category",
-                        label: "API",
-                        ink: {
-                            type: "doc",
-                            id: "developer-docs/api/api",
-                        },
-                        items: [
+                    items: [
                         "developer-docs/api/flow-executor",
                         "developer-docs/api/making-schema-changes",
                         "developer-docs/api/websocket",
                         {
-                        type: "category",
-                        label: "Reference",
-                        items: apiReference,
+                            type: "category",
+                            label: "Reference",
+                            items: apiReference,
                         },
                         "developer-docs/api/clients",
-                        ],
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "Writing documentation",
+                    link: {
+                        type: "doc",
+                        id: "developer-docs/docs/writing-documentation",
                     },
-                    {
-                        type: "category",
-                        label: "Writing documentation",
-                        link: {
-                            type: "doc",
-                            id: "developer-docs/docs/writing-documentation",
-                        },
-                        items: [
-                            "developer-docs/docs/style-guide",
-                            {
-                                type: "category",
-                                label: "Templates",
-                                link: {
-                                    type: "doc",
-                                    id: "developer-docs/docs/templates/index",
-                                },
-                                items: [
-                                    "developer-docs/docs/templates/procedural",
-                                    "developer-docs/docs/templates/conceptual",
-                                    "developer-docs/docs/templates/reference",
-                                    "developer-docs/docs/templates/combo",
-                                ],
+                    items: [
+                        "developer-docs/docs/style-guide",
+                        {
+                            type: "category",
+                            label: "Templates",
+                            link: {
+                                type: "doc",
+                                id: "developer-docs/docs/templates/index",
                             },
-                        ],
-                    },
+                            items: [
+                                "developer-docs/docs/templates/procedural",
+                                "developer-docs/docs/templates/conceptual",
+                                "developer-docs/docs/templates/reference",
+                                "developer-docs/docs/templates/combo",
+                            ],
+                        },
+                    ],
+                },
                 "developer-docs/translation",
             ],
         },

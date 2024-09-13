@@ -130,7 +130,7 @@ module.exports = async function (): Promise<Config> {
                 "docusaurus-plugin-openapi-docs",
                 {
                     id: "api",
-                    docsPluginId: "docsDevelopers",
+                    docsPluginId: "docs",
                     config: {
                         authentik: {
                             specPath: "static/schema.yaml",
