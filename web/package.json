@@ -81,7 +81,7 @@
         "@wdio/spec-reporter": "^8.36.1",
         "babel-plugin-macros": "^3.1.0",
         "babel-plugin-tsconfig-paths": "^1.0.3",
-        "chokidar": "^3.6.0",
+        "chokidar": "^4.0.0",
         "cross-env": "^7.0.3",
         "esbuild": "^0.23.1",
         "eslint": "^9.8.0",
