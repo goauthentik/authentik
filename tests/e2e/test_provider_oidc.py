@@ -85,7 +85,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
             slug=self.application_slug,
             provider=provider,
         )
-        self.container = self.setup_client()
+        self.setup_client()
 
         self.driver.get("http://localhost:9009")
         sleep(2)
@@ -134,7 +134,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
             slug=self.application_slug,
             provider=provider,
         )
-        self.container = self.setup_client()
+        self.setup_client()
 
         self.driver.get("http://localhost:9009")
         self.login()
@@ -204,7 +204,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
             slug=self.application_slug,
             provider=provider,
         )
-        self.container = self.setup_client()
+        self.setup_client()
 
         self.driver.get("http://localhost:9009")
         self.login()
@@ -281,7 +281,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         )
         PolicyBinding.objects.create(target=app, policy=negative_policy, order=0)
 
-        self.container = self.setup_client()
+        self.setup_client()
         self.driver.get("http://localhost:9009")
         self.login()
         self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "header > h1")))

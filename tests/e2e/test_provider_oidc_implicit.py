@@ -87,7 +87,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
             slug=self.application_slug,
             provider=provider,
         )
-        self.container = self.setup_client()
+        self.setup_client()
 
         self.driver.get("http://localhost:9009/implicit/")
         sleep(2)
@@ -136,7 +136,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
             slug=self.application_slug,
             provider=provider,
         )
-        self.container = self.setup_client()
+        self.setup_client()
 
         self.driver.get("http://localhost:9009/implicit/")
         self.wait.until(ec.title_contains("authentik"))
@@ -188,7 +188,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
             slug=self.application_slug,
             provider=provider,
         )
-        self.container = self.setup_client()
+        self.setup_client()
 
         self.driver.get("http://localhost:9009/implicit/")
         self.wait.until(ec.title_contains("authentik"))
@@ -262,7 +262,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
         )
         PolicyBinding.objects.create(target=app, policy=negative_policy, order=0)
 
-        self.container = self.setup_client()
+        self.setup_client()
         self.driver.get("http://localhost:9009/implicit/")
         self.wait.until(ec.title_contains("authentik"))
         self.login()
