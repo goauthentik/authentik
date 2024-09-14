@@ -86,7 +86,7 @@
         "esbuild": "^0.23.1",
         "eslint": "^9.8.0",
         "eslint-plugin-lit": "^1.14.0",
-        "eslint-plugin-sonarjs": "^1.0.4",
+        "eslint-plugin-sonarjs": "^2.0.2",
         "eslint-plugin-wc": "^2.1.0",
         "github-slugger": "^2.0.0",
         "glob": "^11.0.0",
