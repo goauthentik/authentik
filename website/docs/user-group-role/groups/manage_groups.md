@@ -12,11 +12,16 @@ To create a new group, follow these steps:
 1. In the Admin interface, navigate to **Directory > Groups**.
 2. Click **Create** at the top of the Groups page.
 3. In the Create modal, define the following:
-    - name of the group
-    - whether or not users in that group will all be superusers (means anyone in that group has all permissions on everything)
-    - the parent group
-    - any custom attributes
+    - **Name** of the group
+    - Whether or not users in that group will all be **super-users** (means anyone in that group has all permissions on everything)
+    - The **Parent** group
+    - Select **Roles** to apply to this group
+    - Any custom attributes
 4. Click **Create**.
+
+:::info
+To create a super-user, you need to add the user to a group that has super-user permissions. All members of that group are super-users.
+:::
 
 ## Modify a group
 

@@ -58,7 +58,7 @@ jobs:
       - uses: actions/attest-build-provenance@v1
         id: attest
         with:
-          subject-name: ${{ steps.ev.outputs.imageNames }}
+          subject-name: ${{ steps.ev.outputs.attestImageNames }}
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
   build-outpost:
@@ -122,7 +122,7 @@ jobs:
       - uses: actions/attest-build-provenance@v1
         id: attest
         with:
-          subject-name: ${{ steps.ev.outputs.imageNames }}
+          subject-name: ${{ steps.ev.outputs.attestImageNames }}
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
   build-outpost-binary:

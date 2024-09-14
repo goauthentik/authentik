@@ -2,7 +2,9 @@ import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { deviceTypeRestrictionPair } from "@goauthentik/admin/stages/authenticator_webauthn/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/Alert";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider";
+import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
@@ -18,6 +20,7 @@ import {
     DeviceClassesEnum,
     NotConfiguredActionEnum,
     PaginatedStageList,
+    Stage,
     StagesApi,
     UserVerificationEnum,
 } from "@goauthentik/api";
@@ -34,6 +37,14 @@ async function stagesProvider(page = 1, search = "") {
         pagination: stages.pagination,
         options: stages.results.map((stage) => [stage.pk, `${stage.name} (${stage.verboseName})`]),
     };
+}
+
+export function makeStageSelector(instanceStages: string[] | undefined) {
+    const localStages = instanceStages ? new Set(instanceStages) : undefined;
+
+    return localStages
+        ? ([pk, _]: DualSelectPair) => localStages.has(pk)
+        : ([_0, _1, _2, stage]: DualSelectPair<Stage>) => stage !== undefined;
 }
 
 async function authenticatorWebauthnDeviceTypesListProvider(page = 1, search = "") {
@@ -205,14 +216,14 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                                   label=${msg("Configuration stages")}
                                   name="configurationStages"
                               >
-                                  <ak-dual-select-provider
+                                  <ak-dual-select-dynamic-selected
                                       .provider=${stagesProvider}
-                                      .selected=${Array.from(
-                                          this.instance?.configurationStages ?? [],
+                                      .selector=${makeStageSelector(
+                                          this.instance?.configurationStages,
                                       )}
                                       available-label="${msg("Available Stages")}"
                                       selected-label="${msg("Selected Stages")}"
-                                  ></ak-dual-select-provider>
+                                  ></ak-dual-select-dynamic-selected>
                                   <p class="pf-c-form__helper-text">
                                       ${msg(
                                           "Stages used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again.",

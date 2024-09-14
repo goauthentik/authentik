@@ -341,7 +341,7 @@ def get_as_base64(url):
 
 def get_avatar_from_avatar_url(url):
     """Returns an authentik-avatar-attributes-compatible string from an image url"""
-    cut_url = f"{url}?size=64"
+    cut_url = f"{url}"
     return AVATAR_STREAM_CONTENT.format(
         base64_string=(get_as_base64(cut_url).decode("utf-8"))
     )

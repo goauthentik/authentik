@@ -1,6 +1,9 @@
 ---
-title: Proxmox VE
+title: Integrate with Proxmox VE
+sidebar_label: Proxmox VE
 ---
+
+# Proxmox VE
 
 <span class="badge badge--secondary">Support level: Community</span>
 

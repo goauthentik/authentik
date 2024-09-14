@@ -4,14 +4,14 @@ import { $ } from "@wdio/globals";
 export class ForwardProxyForm extends Page {
     async setAuthorizationFlow(selector: string) {
         await this.searchSelect(
-            '>>>ak-flow-search[name="authorizationFlow"] input[type="text"]',
+            'ak-flow-search[name="authorizationFlow"]',
             "authorizationFlow",
-            `button*=${selector}`,
+            selector,
         );
     }
 
     get externalHost() {
-        return $('>>>input[name="externalHost"]');
+        return $('input[name="externalHost"]');
     }
 }
 

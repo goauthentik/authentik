@@ -117,7 +117,7 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                         />
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Matches Event's Client IP (strict matching, for network matching use an Expression Policy.",
+                                "Matches Event's Client IP (strict matching, for network matching use an Expression Policy).",
                             )}
                         </p>
                     </ak-form-element-horizontal>

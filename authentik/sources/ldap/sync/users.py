@@ -40,7 +40,11 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
             search_base=self.base_dn_users,
             search_filter=self._source.user_object_filter,
             search_scope=SUBTREE,
-            attributes=[ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES],
+            attributes=[
+                ALL_ATTRIBUTES,
+                ALL_OPERATIONAL_ATTRIBUTES,
+                self._source.object_uniqueness_field,
+            ],
             **kwargs,
         )
 
@@ -55,9 +59,9 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                 continue
             attributes = user.get("attributes", {})
             user_dn = flatten(user.get("entryDN", user.get("dn")))
-            if self._source.object_uniqueness_field not in attributes:
+            if not attributes.get(self._source.object_uniqueness_field):
                 self.message(
-                    f"Cannot find uniqueness field in attributes: '{user_dn}'",
+                    f"Uniqueness field not found/not set in attributes: '{user_dn}'",
                     attributes=attributes.keys(),
                     dn=user_dn,
                 )
