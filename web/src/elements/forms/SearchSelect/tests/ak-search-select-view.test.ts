@@ -1,4 +1,4 @@
-import { $, browser } from "@wdio/globals";
+import { $, browser, expect } from "@wdio/globals";
 import { slug } from "github-slugger";
 import { Key } from "webdriverio";
 
@@ -21,7 +21,9 @@ describe("Search select: Test Input Field", () => {
             html`<ak-search-select-view .options=${longGoodForYouPairs}> </ak-search-select-view>`,
             document.body,
         );
-        select = await AkSearchSelectViewDriver.build(await $("ak-search-select-view"));
+        select = await AkSearchSelectViewDriver.build(
+            await $("ak-search-select-view").getElement(),
+        );
     });
 
     it("should open the menu when the input is clicked", async () => {
@@ -56,7 +58,9 @@ describe("Search select: Test Input Field", () => {
         expect(await select.open).toBe(false);
         expect(await select.menuIsVisible()).toBe(false);
         await browser.keys("A");
-        select = await AkSearchSelectViewDriver.build(await $("ak-search-select-view"));
+        select = await AkSearchSelectViewDriver.build(
+            await $("ak-search-select-view").getElement(),
+        );
         expect(await select.open).toBe(true);
         expect(await select.menuIsVisible()).toBe(true);
     });
