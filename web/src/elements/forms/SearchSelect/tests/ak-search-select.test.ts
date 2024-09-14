@@ -2,7 +2,7 @@
 import { AKElement } from "@goauthentik/elements/Base";
 import { bound } from "@goauthentik/elements/decorators/bound.js";
 import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
-import { $, browser } from "@wdio/globals";
+import { $, browser, expect } from "@wdio/globals";
 import { slug } from "github-slugger";
 
 import { html, render } from "lit";
@@ -97,7 +97,9 @@ describe("Search select: event driven startup", () => {
             mock?.dispatchEvent(new Event("resolve"));
         });
         expect(await $(">>>ak-search-select-loading-indicator")).not.toBeDisplayed();
-        select = await AkSearchSelectViewDriver.build(await $(">>>ak-search-select-view"));
+        select = await AkSearchSelectViewDriver.build(
+            await $(">>>ak-search-select-view").getElement(),
+        );
         expect(await select).toBeExisting();
     });
 
