@@ -1315,13 +1315,13 @@ django = ">=3"
 
 [[package]]
 name = "django-pglock"
-version = "1.6.1"
+version = "1.6.2"
 description = "Postgres locking routines and lock table access."
 optional = false
 python-versions = "<4,>=3.8.0"
 files = [
-    {file = "django_pglock-1.6.1-py3-none-any.whl", hash = "sha256:2ba592c4df1d6c8033c80297fb46252c774e347c3087d34279f1a47d07346dc3"},
-    {file = "django_pglock-1.6.1.tar.gz", hash = "sha256:01c1592dae0affc7d7710a53a03cf22653d870f362ef7ae84312cb7fa9c2cb5e"},
+    {file = "django_pglock-1.6.2-py3-none-any.whl", hash = "sha256:abdb92531bf8cb36471dc9eb33ed163b06bd3323140d132ed4f308b9e5505f50"},
+    {file = "django_pglock-1.6.2.tar.gz", hash = "sha256:05db998cab21556d4a307eac4b5db8e50f874f42b1a581560b3c54610fee6a1b"},
 ]
 
 [package.dependencies]
