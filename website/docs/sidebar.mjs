@@ -86,6 +86,7 @@ const items = [
             "install-config/reverse-proxy",
             "install-config/automated-install",
             "install-config/air-gapped",
+            "install-config/scaling",
         ],
     },
     {
