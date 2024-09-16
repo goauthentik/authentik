@@ -3437,36 +3437,36 @@ files = [
 
 [[package]]
 name = "psycopg"
-version = "3.2.1"
+version = "3.2.2"
 description = "PostgreSQL database adapter for Python"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "psycopg-3.2.1-py3-none-any.whl", hash = "sha256:ece385fb413a37db332f97c49208b36cf030ff02b199d7635ed2fbd378724175"},
-    {file = "psycopg-3.2.1.tar.gz", hash = "sha256:dc8da6dc8729dacacda3cc2f17d2c9397a70a66cf0d2b69c91065d60d5f00cb7"},
+    {file = "psycopg-3.2.2-py3-none-any.whl", hash = "sha256:babf565d459d8f72fb65da5e211dd0b58a52c51e4e1fa9cadecff42d6b7619b2"},
+    {file = "psycopg-3.2.2.tar.gz", hash = "sha256:8bad2e497ce22d556dac1464738cb948f8d6bab450d965cf1d8a8effd52412e0"},
 ]
 
 [package.dependencies]
-psycopg-c = {version = "3.2.1", optional = true, markers = "implementation_name != \"pypy\" and extra == \"c\""}
-typing-extensions = ">=4.4"
+psycopg-c = {version = "3.2.2", optional = true, markers = "implementation_name != \"pypy\" and extra == \"c\""}
+typing-extensions = {version = ">=4.6", markers = "python_version < \"3.13\""}
 tzdata = {version = "*", markers = "sys_platform == \"win32\""}
 
 [package.extras]
-binary = ["psycopg-binary (==3.2.1)"]
-c = ["psycopg-c (==3.2.1)"]
-dev = ["ast-comments (>=1.1.2)", "black (>=24.1.0)", "codespell (>=2.2)", "dnspython (>=2.1)", "flake8 (>=4.0)", "mypy (>=1.6)", "types-setuptools (>=57.4)", "wheel (>=0.37)"]
+binary = ["psycopg-binary (==3.2.2)"]
+c = ["psycopg-c (==3.2.2)"]
+dev = ["ast-comments (>=1.1.2)", "black (>=24.1.0)", "codespell (>=2.2)", "dnspython (>=2.1)", "flake8 (>=4.0)", "mypy (>=1.11)", "types-setuptools (>=57.4)", "wheel (>=0.37)"]
 docs = ["Sphinx (>=5.0)", "furo (==2022.6.21)", "sphinx-autobuild (>=2021.3.14)", "sphinx-autodoc-typehints (>=1.12)"]
 pool = ["psycopg-pool"]
-test = ["anyio (>=4.0)", "mypy (>=1.6)", "pproxy (>=2.7)", "pytest (>=6.2.5)", "pytest-cov (>=3.0)", "pytest-randomly (>=3.5)"]
+test = ["anyio (>=4.0)", "mypy (>=1.11)", "pproxy (>=2.7)", "pytest (>=6.2.5)", "pytest-cov (>=3.0)", "pytest-randomly (>=3.5)"]
 
 [[package]]
 name = "psycopg-c"
-version = "3.2.1"
+version = "3.2.2"
 description = "PostgreSQL database adapter for Python -- C optimisation distribution"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "psycopg_c-3.2.1.tar.gz", hash = "sha256:2d09943cc8a855c42c1e23b4298957b7ce8f27bf3683258c52fd139f601f7cda"},
+    {file = "psycopg_c-3.2.2.tar.gz", hash = "sha256:de8cac75bc6640ef0f54ad9187b81e07c430206a83c566b73d4cca41ecccb7c8"},
 ]
 
 [[package]]
