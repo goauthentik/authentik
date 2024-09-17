@@ -54,7 +54,7 @@
         "@docusaurus/module-type-aliases": "^3.3.2",
         "@docusaurus/tsconfig": "^3.5.2",
         "@docusaurus/types": "^3.3.2",
-        "@types/react": "^18.3.5",
+        "@types/react": "^18.3.6",
         "cross-env": "^7.0.3",
         "lockfile-lint": "^4.14.0",
         "prettier": "3.3.3",
