@@ -38,7 +38,10 @@ export async function scimPropertyMappingsProvider(page = 1, search = "") {
     };
 }
 
-export function makeSCIMPropertyMappingsSelector(instanceMappings: string[] | undefined, defaultSelected: string) {
+export function makeSCIMPropertyMappingsSelector(
+    instanceMappings: string[] | undefined,
+    defaultSelected: string,
+) {
     const localMappings = instanceMappings ? new Set(instanceMappings) : undefined;
     return localMappings
         ? ([pk, _]: DualSelectPair) => localMappings.has(pk)
@@ -172,7 +175,7 @@ export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
                             .provider=${scimPropertyMappingsProvider}
                             .selector=${makeSCIMPropertyMappingsSelector(
                                 this.instance?.propertyMappings,
-                                "goauthentik.io/providers/scim/user"
+                                "goauthentik.io/providers/scim/user",
                             )}
                             available-label=${msg("Available User Property Mappings")}
                             selected-label=${msg("Selected User Property Mappings")}
@@ -189,7 +192,7 @@ export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
                             .provider=${scimPropertyMappingsProvider}
                             .selector=${makeSCIMPropertyMappingsSelector(
                                 this.instance?.propertyMappingsGroup,
-                                "goauthentik.io/providers/scim/group"
+                                "goauthentik.io/providers/scim/group",
                             )}
                             available-label=${msg("Available Group Property Mappings")}
                             selected-label=${msg("Selected Group Property Mappings")}
