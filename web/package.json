@@ -32,7 +32,7 @@
         "guacamole-common-js": "^1.5.0",
         "lit": "^3.2.0",
         "md-front-matter": "^1.0.4",
-        "mermaid": "^11.2.0",
+        "mermaid": "^11.2.1",
         "rapidoc": "^9.3.4",
         "showdown": "^2.1.0",
         "style-mod": "^4.1.2",
