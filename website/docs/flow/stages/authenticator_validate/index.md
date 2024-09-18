@@ -87,3 +87,7 @@ Optionally restrict which WebAuthn device types can be used to authenticate.
 When no restriction is set, all WebAuthn devices a user has registered are allowed.
 
 These restrictions only apply to WebAuthn devices created with authentik 2024.4 or later.
+
+#### Automatic device selection
+
+If the user has more than one device, a device picker screen is shown. Once the user successfully authenticates with a device, that device is marked as "last used". In subsequent challenges, the last used device will be automatically selected for the user. (Should they wish to use another device, the user can return to the device picker screen.)
