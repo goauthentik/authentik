@@ -8,7 +8,7 @@ This stage validates an already configured Authenticator Device. This device has
 -   [SMS authenticator stage](../authenticator_sms/).
 -   [Static authenticator stage](../authenticator_static/).
 -   [TOTP authenticator stage](../authenticator_totp/)
--   [WebAuth authenticator stage](../authenticator_webauthn/).
+-   [WebAuthn authenticator stage](../authenticator_webauthn/).
 
 You can select which type of device classes are allowed.
 
