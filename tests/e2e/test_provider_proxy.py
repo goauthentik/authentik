@@ -174,7 +174,7 @@ class TestProviderProxy(SeleniumTestCase):
             sleep(0.5)
         sleep(5)
 
-        self.driver.get("http://localhost:9000")
+        self.driver.get("http://localhost:9000/api")
         self.login()
         sleep(1)
 

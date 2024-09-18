@@ -1,6 +1,7 @@
+# yaml-language-server: $schema=https://github.com/jcchavezs/envoy-config-schema/releases/download/v1.21.0/v3_Bootstrap.json
 static_resources:
   listeners:
-    - name: listener_0
+    - name: main_listener
       address:
         socket_address:
           address: 0.0.0.0
@@ -26,7 +27,7 @@ static_resources:
                         path_prefix: /outpost.goauthentik.io/auth/envoy
                         server_uri:
                           uri: http://ak-test-outpost:9000
-                          cluster: docker_host_authentik
+                          cluster: authentik_outpost
                           timeout: 0.25s
                         authorization_request:
                           allowed_headers:
@@ -54,9 +55,13 @@ static_resources:
                       domains: ["localhost"]
                       routes:
                         - match:
+                            prefix: "/outpost.goauthentik.io"
+                          route:
+                            cluster: authentik_outpost
+                        - match:
                             prefix: "/"
                           route:
-                            cluster: docker_host_whoami
+                            cluster: whoami
                     - name: local_service
                       domains: ["*"]
                       typed_per_filter_config:
@@ -67,13 +72,13 @@ static_resources:
                         - match:
                             prefix: "/"
                           route:
-                            cluster: docker_host_authentik
+                            cluster: authentik_outpost
 
   clusters:
-    - name: docker_host_authentik
+    - name: authentik_outpost
       type: LOGICAL_DNS
       load_assignment:
-        cluster_name: docker_host_authentik
+        cluster_name: authentik_outpost
         endpoints:
           - lb_endpoints:
               - endpoint:
@@ -81,10 +86,10 @@ static_resources:
                     socket_address:
                       address: ak-test-outpost
                       port_value: 9000
-    - name: docker_host_whoami
+    - name: whoami
       type: LOGICAL_DNS
       load_assignment:
-        cluster_name: docker_host_whoami
+        cluster_name: whoami
         endpoints:
           - lb_endpoints:
               - endpoint:

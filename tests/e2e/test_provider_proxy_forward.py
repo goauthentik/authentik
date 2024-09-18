@@ -15,7 +15,7 @@ from authentik.providers.proxy.models import ProxyMode, ProxyProvider
 from tests.e2e.utils import SeleniumTestCase, retry
 
 
-class TestProviderProxyForwardTraefik(SeleniumTestCase):
+class TestProviderProxyForward(SeleniumTestCase):
     """Proxy and Outpost e2e tests"""
 
     def setUp(self):
