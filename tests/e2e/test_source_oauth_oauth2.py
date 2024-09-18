@@ -28,9 +28,7 @@ class TestSourceOAuth2(SeleniumTestCase):
         super().setUp()
         self.run_container(
             image="ghcr.io/dexidp/dex:v2.28.1",
-            detach=True,
             ports={"5556": "5556"},
-            auto_remove=True,
             healthcheck=Healthcheck(
                 test=["CMD", "wget", "--spider", "http://localhost:5556/dex/healthz"],
                 interval=5 * 1_000 * 1_000_000,

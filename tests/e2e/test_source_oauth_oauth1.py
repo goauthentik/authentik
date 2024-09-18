@@ -58,9 +58,7 @@ class TestSourceOAuth1(SeleniumTestCase):
         super().setUp()
         self.run_container(
             image="ghcr.io/beryju/oauth1-test-server:v1.1",
-            detach=True,
             ports={"5000": "5001"},
-            auto_remove=True,
             environment={
                 "OAUTH1_CLIENT_ID": self.client_id,
                 "OAUTH1_CLIENT_SECRET": self.client_secret,

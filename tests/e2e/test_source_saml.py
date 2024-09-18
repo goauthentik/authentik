@@ -78,9 +78,7 @@ class TestSourceSAML(SeleniumTestCase):
         super().setUp()
         self.run_container(
             image="kristophjunge/test-saml-idp:1.15",
-            detach=True,
             ports={"8080": "8080"},
-            auto_remove=True,
             healthcheck=Healthcheck(
                 test=["CMD", "curl", "http://localhost:8080"],
                 interval=5 * 1_000 * 1_000_000,

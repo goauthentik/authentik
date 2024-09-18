@@ -33,11 +33,9 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         super().setUp()
         self.run_container(
             image="grafana/grafana:7.1.0",
-            detach=True,
             ports={
                 "3000": "3000",
             },
-            auto_remove=True,
             healthcheck=Healthcheck(
                 test=["CMD", "wget", "--spider", "http://localhost:3000"],
                 interval=5 * 1_000 * 1_000_000,

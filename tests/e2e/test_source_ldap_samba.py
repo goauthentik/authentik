@@ -22,12 +22,10 @@ class TestSourceLDAPSamba(SeleniumTestCase):
         super().setUp()
         self.samba = self.run_container(
             image="ghcr.io/beryju/test-samba-dc:latest",
-            detach=True,
             cap_add=["SYS_ADMIN"],
             ports={
                 "389": "389/tcp",
             },
-            auto_remove=True,
             environment={
                 "SMB_DOMAIN": "test.goauthentik.io",
                 "SMB_NETBIOS": "goauthentik",
