@@ -171,7 +171,7 @@ class Importer:
     def default_context(self):
         """Default context"""
         return {
-            "goauthentik.io/enterprise/licensed": LicenseKey.get_total().is_valid(),
+            "goauthentik.io/enterprise/licensed": LicenseKey.get_total().status().is_valid,
             "goauthentik.io/rbac/models": rbac_models(),
         }
 

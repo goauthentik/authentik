@@ -1,3 +1,4 @@
+import { getRelativeTime } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/Spinner";
@@ -49,7 +50,9 @@ export class OutpostHealthElement extends AKElement {
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">
                         <ak-label color=${PFColor.Green} ?compact=${true}>
-                            ${this.outpostHealth.lastSeen?.toLocaleTimeString()}
+                            ${msg(
+                                str`${getRelativeTime(this.outpostHealth.lastSeen)} (${this.outpostHealth.lastSeen?.toLocaleTimeString()})`,
+                            )}
                         </ak-label>
                     </div>
                 </dd>

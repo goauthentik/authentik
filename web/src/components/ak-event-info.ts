@@ -513,16 +513,14 @@ ${JSON.stringify(value.new_value, null, 4)}</pre
     }
 
     renderUpdateAvailable() {
+        let url = `https://github.com/goauthentik/authentik/releases/tag/version%2F${this.event.context.new_version}`;
+        if (this.event.context.changelog) {
+            url = this.event.context.changelog as string;
+        }
         return html`<div class="pf-c-card__title">${msg("New version available")}</div>
-            <a
-                target="_blank"
-                href="https://github.com/goauthentik/authentik/releases/tag/version%2F${this.event
-                    .context.new_version}"
-            >
-                ${this.event.context.new_version}
-            </a>`;
-        // Action types which typically don't record any extra context.
-        // If context is not empty, we fall to the default response.
+            <div class="pf-c-card__body">
+                <a target="_blank" href=${url}> ${this.event.context.new_version} </a>
+            </div>`;
     }
 
     renderLogin() {

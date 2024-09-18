@@ -45,7 +45,9 @@ func (rs *RadiusServer) Handle_AccessRequest(w radius.ResponseWriter, r *RadiusR
 		_ = w.Write(r.Response(radius.CodeAccessReject))
 		return
 	}
-	access, _, err := fe.ApiClient().OutpostsApi.OutpostsRadiusCheckAccessRetrieve(r.Context(), r.pi.providerId).AppSlug(r.pi.appSlug).Execute()
+	access, _, err := fe.ApiClient().OutpostsApi.OutpostsRadiusAccessCheck(
+		r.Context(), r.pi.providerId,
+	).AppSlug(r.pi.appSlug).Execute()
 	if err != nil {
 		r.Log().WithField("username", username).WithError(err).Warning("failed to check access")
 		_ = w.Write(r.Response(radius.CodeAccessReject))

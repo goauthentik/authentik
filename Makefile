@@ -43,7 +43,7 @@ help:  ## Show this help
 		sort
 	@echo ""
 
-test-go:
+go-test:
 	go test -timeout 0 -v -race -cover ./...
 
 test-docker:  ## Run all tests in a docker-compose
@@ -209,6 +209,9 @@ web: web-lint-fix web-lint web-check-compile  ## Automatically fix formatting is
 
 web-install:  ## Install the necessary libraries to build the Authentik UI
 	cd web && npm ci
+
+web-test: ## Run tests for the Authentik UI
+	cd web && npm run test
 
 web-watch:  ## Build and watch the Authentik UI for changes, updating automatically
 	rm -rf web/dist/

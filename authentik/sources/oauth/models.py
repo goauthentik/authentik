@@ -268,7 +268,7 @@ class OAuthSourcePropertyMapping(PropertyMapping):
 
     @property
     def component(self) -> str:
-        return "ak-property-mapping-oauth-source-form"
+        return "ak-property-mapping-source-oauth-form"
 
     @property
     def serializer(self) -> type[Serializer]:

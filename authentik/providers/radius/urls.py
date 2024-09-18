@@ -7,7 +7,7 @@ from authentik.providers.radius.api.providers import (
 )
 
 api_urlpatterns = [
-    ("propertymappings/radius", RadiusProviderPropertyMappingViewSet),
+    ("propertymappings/provider/radius", RadiusProviderPropertyMappingViewSet),
     ("outposts/radius", RadiusOutpostConfigViewSet, "radiusprovideroutpost"),
     ("providers/radius", RadiusProviderViewSet),
 ]

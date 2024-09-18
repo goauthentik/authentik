@@ -1,5 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { severityToLabel } from "@goauthentik/common/labels";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
+import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
@@ -16,10 +18,32 @@ import {
     EventsApi,
     Group,
     NotificationRule,
+    NotificationTransport,
     PaginatedNotificationTransportList,
     SeverityEnum,
 } from "@goauthentik/api";
 
+async function eventTransportsProvider(page = 1, search = "") {
+    const eventTransports = await new EventsApi(DEFAULT_CONFIG).eventsTransportsList({
+        ordering: "name",
+        pageSize: 20,
+        search: search.trim(),
+        page,
+    });
+
+    return {
+        pagination: eventTransports.pagination,
+        options: eventTransports.results.map((transport) => [transport.pk, transport.name]),
+    };
+}
+
+export function makeTransportSelector(instanceTransports: string[] | undefined) {
+    const localTransports = instanceTransports ? new Set(instanceTransports) : undefined;
+
+    return localTransports
+        ? ([pk, _]: DualSelectPair) => localTransports.has(pk)
+        : ([_0, _1, _2, stage]: DualSelectPair<NotificationTransport>) => stage !== undefined;
+}
 @customElement("ak-event-rule-form")
 export class RuleForm extends ModelForm<NotificationRule, string> {
     eventTransports?: PaginatedNotificationTransportList;
@@ -100,23 +124,16 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                 ?required=${true}
                 name="transports"
             >
-                <select class="pf-c-form-control" multiple>
-                    ${this.eventTransports?.results.map((transport) => {
-                        const selected = Array.from(this.instance?.transports || []).some((su) => {
-                            return su == transport.pk;
-                        });
-                        return html`<option value=${ifDefined(transport.pk)} ?selected=${selected}>
-                            ${transport.name}
-                        </option>`;
-                    })}
-                </select>
+                <ak-dual-select-dynamic-selected
+                    .provider=${eventTransportsProvider}
+                    .selector=${makeTransportSelector(this.instance?.transports)}
+                    available-label="${msg("Available Transports")}"
+                    selected-label="${msg("Selected Transports")}"
+                ></ak-dual-select-dynamic-selected>
                 <p class="pf-c-form__helper-text">
                     ${msg(
                         "Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI.",
                     )}
-                </p>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Hold control/command to select multiple items.")}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Severity")} ?required=${true} name="severity">

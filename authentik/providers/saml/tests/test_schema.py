@@ -47,7 +47,9 @@ class TestSchema(TestCase):
 
         metadata = lxml_from_string(request)
 
-        schema = etree.XMLSchema(etree.parse("schemas/saml-schema-protocol-2.0.xsd"))  # nosec
+        schema = etree.XMLSchema(
+            etree.parse("schemas/saml-schema-protocol-2.0.xsd", parser=etree.XMLParser())  # nosec
+        )
         self.assertTrue(schema.validate(metadata))
 
     def test_response_schema(self):
@@ -68,5 +70,7 @@ class TestSchema(TestCase):
 
         metadata = lxml_from_string(response)
 
-        schema = etree.XMLSchema(etree.parse("schemas/saml-schema-protocol-2.0.xsd"))  # nosec
+        schema = etree.XMLSchema(
+            etree.parse("schemas/saml-schema-protocol-2.0.xsd", parser=etree.XMLParser())  # nosec
+        )
         self.assertTrue(schema.validate(metadata))

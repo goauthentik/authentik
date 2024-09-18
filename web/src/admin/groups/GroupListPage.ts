@@ -79,7 +79,7 @@ export class GroupListPage extends TablePage<Group> {
             html`<a href="#/identity/groups/${item.pk}">${item.name}</a>`,
             html`${item.parentName || msg("-")}`,
             html`${Array.from(item.users || []).length}`,
-            html`<ak-label type="info" ?good=${item.isSuperuser}></ak-label>`,
+            html`<ak-status-label type="info" ?good=${item.isSuperuser}></ak-status-label>`,
             html`<ak-forms-modal>
                 <span slot="submit"> ${msg("Update")} </span>
                 <span slot="header"> ${msg("Update Group")} </span>

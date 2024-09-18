@@ -1,6 +1,8 @@
 import { groupBy } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/SearchSelect/ak-search-select";
 import { SearchSelect } from "@goauthentik/elements/forms/SearchSelect/ak-search-select";
+import "@goauthentik/elements/forms/SearchSelect/ak-search-select-ez";
+import { type ISearchSelectApi } from "@goauthentik/elements/forms/SearchSelect/ak-search-select-ez";
 import { Meta } from "@storybook/web-components";
 
 import { TemplateResult, html } from "lit";
@@ -59,11 +61,8 @@ const container = (testItem: TemplateResult) =>
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const displayChange = (ev: any) => {
-    document.getElementById("message-pad")!.innerText = `Value selected: ${JSON.stringify(
-        ev.detail.value,
-        null,
-        2,
-    )}`;
+    document.getElementById("message-pad")!.innerText =
+        `Value selected: ${JSON.stringify(ev.detail.value, null, 2)}`;
 };
 
 export const Default = () =>
@@ -86,6 +85,23 @@ export const Grouped = () => {
                 groupBy(samples, (sample: Sample) => sample.season[0] ?? "")}
             @ak-change=${displayChange}
         ></ak-search-select>`,
+    );
+};
+
+export const GroupedAndEz = () => {
+    const config: ISearchSelectApi<Sample> = {
+        fetchObjects: getSamples,
+        renderElement: (sample: Sample) => sample.name,
+        value: (sample: Sample | undefined) => sample?.pk,
+        groupBy: (samples: Sample[]) =>
+            groupBy(samples, (sample: Sample) => sample.season[0] ?? ""),
+    };
+
+    return container(
+        html`<ak-search-select-ez
+            .config=${config}
+            @ak-change=${displayChange}
+        ></ak-search-select-ez>`,
     );
 };
 

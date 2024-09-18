@@ -87,7 +87,7 @@ authentik
 │   ├── user_delete - Delete the currently pending user
 │   ├── user_login - Login the currently pending user
 │   ├── user_logout - Logout the currently pending user
-│   └── user_write - Write any currenetly pending data to the user.
+│   └── user_write - Write any currently pending data to the user.
 └── tenants - Soft tennancy, configure defaults and branding per domain
 ```
 

@@ -1,4 +1,4 @@
-import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderFormPage";
+import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderForm";
 import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderGroupList";
 import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderUserList";
 import "@goauthentik/admin/rbac/ObjectPermissionsPage";

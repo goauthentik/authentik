@@ -33,7 +33,7 @@ export class LoadingOverlay extends AKElement {
     }
 
     render(): TemplateResult {
-        return html`<ak-empty-state ?loading="${true}">
+        return html`<ak-empty-state loading header="">
             <slot name="body" slot="body"></slot>
         </ak-empty-state>`;
     }

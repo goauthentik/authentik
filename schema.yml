@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2024.6.3
+  version: 2024.8.2
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -5842,9 +5842,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /enterprise/license/get_install_id/:
+  /enterprise/license/install_id/:
     get:
-      operationId: enterprise_license_get_install_id_retrieve
+      operationId: enterprise_license_install_id_retrieve
       description: Get install_id
       tags:
       - enterprise
@@ -5873,6 +5873,12 @@ paths:
     get:
       operationId: enterprise_license_summary_retrieve
       description: Get the total license status
+      parameters:
+      - in: query
+        name: cached
+        schema:
+          type: boolean
+          default: true
       tags:
       - enterprise
       security:
@@ -9641,6 +9647,44 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /outposts/ldap/{id}/check_access/:
+    get:
+      operationId: outposts_ldap_access_check
+      description: Check access to a single application by slug
+      parameters:
+      - in: query
+        name: app_slug
+        schema:
+          type: string
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this LDAP Provider.
+        required: true
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LDAPCheckAccess'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /outposts/proxy/:
     get:
       operationId: outposts_proxy_list
@@ -9755,7 +9799,7 @@ paths:
           description: ''
   /outposts/radius/{id}/check_access/:
     get:
-      operationId: outposts_radius_check_access_retrieve
+      operationId: outposts_radius_access_check
       description: Check access to a single application by slug
       parameters:
       - in: query
@@ -14565,9 +14609,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /propertymappings/rac/:
+  /propertymappings/provider/rac/:
     get:
-      operationId: propertymappings_rac_list
+      operationId: propertymappings_provider_rac_list
       description: RACPropertyMapping Viewset
       parameters:
       - in: query
@@ -14630,7 +14674,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     post:
-      operationId: propertymappings_rac_create
+      operationId: propertymappings_provider_rac_create
       description: RACPropertyMapping Viewset
       tags:
       - propertymappings
@@ -14661,9 +14705,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /propertymappings/rac/{pm_uuid}/:
+  /propertymappings/provider/rac/{pm_uuid}/:
     get:
-      operationId: propertymappings_rac_retrieve
+      operationId: propertymappings_provider_rac_retrieve
       description: RACPropertyMapping Viewset
       parameters:
       - in: path
@@ -14671,7 +14715,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this RAC Property Mapping.
+        description: A UUID string identifying this RAC Provider Property Mapping.
         required: true
       tags:
       - propertymappings
@@ -14697,7 +14741,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     put:
-      operationId: propertymappings_rac_update
+      operationId: propertymappings_provider_rac_update
       description: RACPropertyMapping Viewset
       parameters:
       - in: path
@@ -14705,7 +14749,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this RAC Property Mapping.
+        description: A UUID string identifying this RAC Provider Property Mapping.
         required: true
       tags:
       - propertymappings
@@ -14737,7 +14781,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     patch:
-      operationId: propertymappings_rac_partial_update
+      operationId: propertymappings_provider_rac_partial_update
       description: RACPropertyMapping Viewset
       parameters:
       - in: path
@@ -14745,7 +14789,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this RAC Property Mapping.
+        description: A UUID string identifying this RAC Provider Property Mapping.
         required: true
       tags:
       - propertymappings
@@ -14776,7 +14820,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     delete:
-      operationId: propertymappings_rac_destroy
+      operationId: propertymappings_provider_rac_destroy
       description: RACPropertyMapping Viewset
       parameters:
       - in: path
@@ -14784,7 +14828,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this RAC Property Mapping.
+        description: A UUID string identifying this RAC Provider Property Mapping.
         required: true
       tags:
       - propertymappings
@@ -14805,9 +14849,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /propertymappings/rac/{pm_uuid}/used_by/:
+  /propertymappings/provider/rac/{pm_uuid}/used_by/:
     get:
-      operationId: propertymappings_rac_used_by_list
+      operationId: propertymappings_provider_rac_used_by_list
       description: Get a list of all objects that use this object
       parameters:
       - in: path
@@ -14815,7 +14859,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this RAC Property Mapping.
+        description: A UUID string identifying this RAC Provider Property Mapping.
         required: true
       tags:
       - propertymappings
@@ -14842,9 +14886,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /propertymappings/radius/:
+  /propertymappings/provider/radius/:
     get:
-      operationId: propertymappings_radius_list
+      operationId: propertymappings_provider_radius_list
       description: RadiusProviderPropertyMapping Viewset
       parameters:
       - in: query
@@ -14911,7 +14955,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     post:
-      operationId: propertymappings_radius_create
+      operationId: propertymappings_provider_radius_create
       description: RadiusProviderPropertyMapping Viewset
       tags:
       - propertymappings
@@ -14942,9 +14986,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /propertymappings/radius/{pm_uuid}/:
+  /propertymappings/provider/radius/{pm_uuid}/:
     get:
-      operationId: propertymappings_radius_retrieve
+      operationId: propertymappings_provider_radius_retrieve
       description: RadiusProviderPropertyMapping Viewset
       parameters:
       - in: path
@@ -14952,7 +14996,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Radius Property Mapping.
+        description: A UUID string identifying this Radius Provider Property Mapping.
         required: true
       tags:
       - propertymappings
@@ -14978,7 +15022,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     put:
-      operationId: propertymappings_radius_update
+      operationId: propertymappings_provider_radius_update
       description: RadiusProviderPropertyMapping Viewset
       parameters:
       - in: path
@@ -14986,7 +15030,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Radius Property Mapping.
+        description: A UUID string identifying this Radius Provider Property Mapping.
         required: true
       tags:
       - propertymappings
@@ -15018,7 +15062,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     patch:
-      operationId: propertymappings_radius_partial_update
+      operationId: propertymappings_provider_radius_partial_update
       description: RadiusProviderPropertyMapping Viewset
       parameters:
       - in: path
@@ -15026,7 +15070,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Radius Property Mapping.
+        description: A UUID string identifying this Radius Provider Property Mapping.
         required: true
       tags:
       - propertymappings
@@ -15057,7 +15101,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     delete:
-      operationId: propertymappings_radius_destroy
+      operationId: propertymappings_provider_radius_destroy
       description: RadiusProviderPropertyMapping Viewset
       parameters:
       - in: path
@@ -15065,7 +15109,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Radius Property Mapping.
+        description: A UUID string identifying this Radius Provider Property Mapping.
         required: true
       tags:
       - propertymappings
@@ -15086,9 +15130,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /propertymappings/radius/{pm_uuid}/used_by/:
+  /propertymappings/provider/radius/{pm_uuid}/used_by/:
     get:
-      operationId: propertymappings_radius_used_by_list
+      operationId: propertymappings_provider_radius_used_by_list
       description: Get a list of all objects that use this object
       parameters:
       - in: path
@@ -15096,7 +15140,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Radius Property Mapping.
+        description: A UUID string identifying this Radius Provider Property Mapping.
         required: true
       tags:
       - propertymappings
@@ -15123,9 +15167,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /propertymappings/saml/:
+  /propertymappings/provider/saml/:
     get:
-      operationId: propertymappings_saml_list
+      operationId: propertymappings_provider_saml_list
       description: SAMLPropertyMapping Viewset
       parameters:
       - in: query
@@ -15200,7 +15244,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     post:
-      operationId: propertymappings_saml_create
+      operationId: propertymappings_provider_saml_create
       description: SAMLPropertyMapping Viewset
       tags:
       - propertymappings
@@ -15231,9 +15275,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /propertymappings/saml/{pm_uuid}/:
+  /propertymappings/provider/saml/{pm_uuid}/:
     get:
-      operationId: propertymappings_saml_retrieve
+      operationId: propertymappings_provider_saml_retrieve
       description: SAMLPropertyMapping Viewset
       parameters:
       - in: path
@@ -15241,7 +15285,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this SAML Property Mapping.
+        description: A UUID string identifying this SAML Provider Property Mapping.
         required: true
       tags:
       - propertymappings
@@ -15267,7 +15311,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     put:
-      operationId: propertymappings_saml_update
+      operationId: propertymappings_provider_saml_update
       description: SAMLPropertyMapping Viewset
       parameters:
       - in: path
@@ -15275,7 +15319,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this SAML Property Mapping.
+        description: A UUID string identifying this SAML Provider Property Mapping.
         required: true
       tags:
       - propertymappings
@@ -15307,7 +15351,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     patch:
-      operationId: propertymappings_saml_partial_update
+      operationId: propertymappings_provider_saml_partial_update
       description: SAMLPropertyMapping Viewset
       parameters:
       - in: path
@@ -15315,7 +15359,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this SAML Property Mapping.
+        description: A UUID string identifying this SAML Provider Property Mapping.
         required: true
       tags:
       - propertymappings
@@ -15346,7 +15390,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     delete:
-      operationId: propertymappings_saml_destroy
+      operationId: propertymappings_provider_saml_destroy
       description: SAMLPropertyMapping Viewset
       parameters:
       - in: path
@@ -15354,7 +15398,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this SAML Property Mapping.
+        description: A UUID string identifying this SAML Provider Property Mapping.
         required: true
       tags:
       - propertymappings
@@ -15375,9 +15419,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /propertymappings/saml/{pm_uuid}/used_by/:
+  /propertymappings/provider/saml/{pm_uuid}/used_by/:
     get:
-      operationId: propertymappings_saml_used_by_list
+      operationId: propertymappings_provider_saml_used_by_list
       description: Get a list of all objects that use this object
       parameters:
       - in: path
@@ -15385,7 +15429,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this SAML Property Mapping.
+        description: A UUID string identifying this SAML Provider Property Mapping.
         required: true
       tags:
       - propertymappings
@@ -15412,9 +15456,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /propertymappings/scim/:
+  /propertymappings/provider/scim/:
     get:
-      operationId: propertymappings_scim_list
+      operationId: propertymappings_provider_scim_list
       description: SCIMMapping Viewset
       parameters:
       - in: query
@@ -15481,7 +15525,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     post:
-      operationId: propertymappings_scim_create
+      operationId: propertymappings_provider_scim_create
       description: SCIMMapping Viewset
       tags:
       - propertymappings
@@ -15512,9 +15556,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /propertymappings/scim/{pm_uuid}/:
+  /propertymappings/provider/scim/{pm_uuid}/:
     get:
-      operationId: propertymappings_scim_retrieve
+      operationId: propertymappings_provider_scim_retrieve
       description: SCIMMapping Viewset
       parameters:
       - in: path
@@ -15522,7 +15566,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this SCIM Mapping.
+        description: A UUID string identifying this SCIM Provider Mapping.
         required: true
       tags:
       - propertymappings
@@ -15548,7 +15592,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     put:
-      operationId: propertymappings_scim_update
+      operationId: propertymappings_provider_scim_update
       description: SCIMMapping Viewset
       parameters:
       - in: path
@@ -15556,7 +15600,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this SCIM Mapping.
+        description: A UUID string identifying this SCIM Provider Mapping.
         required: true
       tags:
       - propertymappings
@@ -15588,7 +15632,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     patch:
-      operationId: propertymappings_scim_partial_update
+      operationId: propertymappings_provider_scim_partial_update
       description: SCIMMapping Viewset
       parameters:
       - in: path
@@ -15596,7 +15640,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this SCIM Mapping.
+        description: A UUID string identifying this SCIM Provider Mapping.
         required: true
       tags:
       - propertymappings
@@ -15627,7 +15671,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     delete:
-      operationId: propertymappings_scim_destroy
+      operationId: propertymappings_provider_scim_destroy
       description: SCIMMapping Viewset
       parameters:
       - in: path
@@ -15635,7 +15679,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this SCIM Mapping.
+        description: A UUID string identifying this SCIM Provider Mapping.
         required: true
       tags:
       - propertymappings
@@ -15656,9 +15700,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /propertymappings/scim/{pm_uuid}/used_by/:
+  /propertymappings/provider/scim/{pm_uuid}/used_by/:
     get:
-      operationId: propertymappings_scim_used_by_list
+      operationId: propertymappings_provider_scim_used_by_list
       description: Get a list of all objects that use this object
       parameters:
       - in: path
@@ -15666,7 +15710,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this SCIM Mapping.
+        description: A UUID string identifying this SCIM Provider Mapping.
         required: true
       tags:
       - propertymappings
@@ -15693,9 +15737,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /propertymappings/scope/:
+  /propertymappings/provider/scope/:
     get:
-      operationId: propertymappings_scope_list
+      operationId: propertymappings_provider_scope_list
       description: ScopeMapping Viewset
       parameters:
       - in: query
@@ -15766,7 +15810,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     post:
-      operationId: propertymappings_scope_create
+      operationId: propertymappings_provider_scope_create
       description: ScopeMapping Viewset
       tags:
       - propertymappings
@@ -15797,9 +15841,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /propertymappings/scope/{pm_uuid}/:
+  /propertymappings/provider/scope/{pm_uuid}/:
     get:
-      operationId: propertymappings_scope_retrieve
+      operationId: propertymappings_provider_scope_retrieve
       description: ScopeMapping Viewset
       parameters:
       - in: path
@@ -15833,7 +15877,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     put:
-      operationId: propertymappings_scope_update
+      operationId: propertymappings_provider_scope_update
       description: ScopeMapping Viewset
       parameters:
       - in: path
@@ -15873,7 +15917,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     patch:
-      operationId: propertymappings_scope_partial_update
+      operationId: propertymappings_provider_scope_partial_update
       description: ScopeMapping Viewset
       parameters:
       - in: path
@@ -15912,7 +15956,7 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
     delete:
-      operationId: propertymappings_scope_destroy
+      operationId: propertymappings_provider_scope_destroy
       description: ScopeMapping Viewset
       parameters:
       - in: path
@@ -15941,9 +15985,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /propertymappings/scope/{pm_uuid}/used_by/:
+  /propertymappings/provider/scope/{pm_uuid}/used_by/:
     get:
-      operationId: propertymappings_scope_used_by_list
+      operationId: propertymappings_provider_scope_used_by_list
       description: Get a list of all objects that use this object
       parameters:
       - in: path
@@ -17815,6 +17859,46 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /providers/google_workspace/{id}/sync/object/:
+    post:
+      operationId: providers_google_workspace_sync_object_create
+      description: Sync/Re-sync a single user/group object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Google Workspace Provider.
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SyncObjectRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncObjectResult'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /providers/google_workspace/{id}/sync/status/:
     get:
       operationId: providers_google_workspace_sync_status_retrieve
@@ -18343,15 +18427,6 @@ paths:
         schema:
           type: string
       - in: query
-        name: search_group__group_uuid__iexact
-        schema:
-          type: string
-          format: uuid
-      - in: query
-        name: search_group__name__iexact
-        schema:
-          type: string
-      - in: query
         name: tls_server_name__iexact
         schema:
           type: string
@@ -18815,6 +18890,46 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/microsoft_entra/{id}/sync/object/:
+    post:
+      operationId: providers_microsoft_entra_sync_object_create
+      description: Sync/Re-sync a single user/group object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Microsoft Entra Provider.
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SyncObjectRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncObjectResult'
+          description: ''
         '400':
           content:
             application/json:
@@ -20636,6 +20751,11 @@ paths:
           - http://www.w3.org/2001/04/xmlenc#sha256
           - http://www.w3.org/2001/04/xmlenc#sha512
       - in: query
+        name: encryption_kp
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: is_backchannel
         schema:
           type: boolean
@@ -20689,6 +20809,14 @@ paths:
         name: session_valid_not_on_or_after
         schema:
           type: string
+      - in: query
+        name: sign_assertion
+        schema:
+          type: boolean
+      - in: query
+        name: sign_response
+        schema:
+          type: boolean
       - in: query
         name: signature_algorithm
         schema:
@@ -21292,6 +21420,46 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/scim/{id}/sync/object/:
+    post:
+      operationId: providers_scim_sync_object_create
+      description: Sync/Re-sync a single user/group object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this SCIM Provider.
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SyncObjectRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncObjectResult'
+          description: ''
         '400':
           content:
             application/json:
@@ -40705,6 +40873,16 @@ components:
       - direct
       - cached
       type: string
+    LDAPCheckAccess:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        has_search_permission:
+          type: boolean
+        access:
+          $ref: '#/components/schemas/PolicyTestResult'
+      required:
+      - access
     LDAPDebug:
       type: object
       properties:
@@ -40749,12 +40927,6 @@ components:
           type: string
           description: Prioritise backchannel slug over direct application slug
           readOnly: true
-        search_group:
-          type: string
-          format: uuid
-          nullable: true
-          description: Users in this group can do search queries. If not set, every
-            user can execute search queries.
         certificate:
           type: string
           format: uuid
@@ -40852,12 +41024,6 @@ components:
         base_dn:
           type: string
           description: DN under which objects are accessible.
-        search_group:
-          type: string
-          format: uuid
-          nullable: true
-          description: Users in this group can do search queries. If not set, every
-            user can execute search queries.
         certificate:
           type: string
           format: uuid
@@ -40934,12 +41100,6 @@ components:
           type: string
           minLength: 1
           description: DN under which objects are accessible.
-        search_group:
-          type: string
-          format: uuid
-          nullable: true
-          description: Users in this group can do search queries. If not set, every
-            user can execute search queries.
         certificate:
           type: string
           format: uuid
@@ -41352,6 +41512,11 @@ components:
       - key
       - license_uuid
       - name
+    LicenseFlagsEnum:
+      enum:
+      - trial
+      - non_production
+      type: string
     LicenseForecast:
       type: object
       description: Serializer for license forecast
@@ -41386,28 +41551,31 @@ components:
           type: integer
         external_users:
           type: integer
-        valid:
-          type: boolean
-        show_admin_warning:
-          type: boolean
-        show_user_warning:
-          type: boolean
-        read_only:
-          type: boolean
+        status:
+          $ref: '#/components/schemas/LicenseSummaryStatusEnum'
         latest_valid:
           type: string
           format: date-time
-        has_license:
-          type: boolean
+        license_flags:
+          type: array
+          items:
+            $ref: '#/components/schemas/LicenseFlagsEnum'
       required:
       - external_users
-      - has_license
       - internal_users
       - latest_valid
-      - read_only
-      - show_admin_warning
-      - show_user_warning
+      - license_flags
+      - status
+    LicenseSummaryStatusEnum:
+      enum:
+      - unlicensed
       - valid
+      - expired
+      - expiry_soon
+      - limit_exceeded_admin
+      - limit_exceeded_user
+      - read_only
+      type: string
     Link:
       type: object
       description: Returns a single link
@@ -45698,12 +45866,6 @@ components:
           type: string
           minLength: 1
           description: DN under which objects are accessible.
-        search_group:
-          type: string
-          format: uuid
-          nullable: true
-          description: Users in this group can do search queries. If not set, every
-            user can execute search queries.
         certificate:
           type: string
           format: uuid
@@ -46843,6 +47005,18 @@ components:
           title: Verification Certificate
           description: When selected, incoming assertion's Signatures will be validated
             against this certificate. To allow unsigned Requests, leave on default.
+        encryption_kp:
+          type: string
+          format: uuid
+          nullable: true
+          title: Encryption Keypair
+          description: When selected, incoming assertions are encrypted by the IdP
+            using the public key of the encryption keypair. The assertion is decrypted
+            by the SP using the the private key.
+        sign_assertion:
+          type: boolean
+        sign_response:
+          type: boolean
         sp_binding:
           allOf:
           - $ref: '#/components/schemas/SpBindingEnum'
@@ -49558,6 +49732,18 @@ components:
           title: Verification Certificate
           description: When selected, incoming assertion's Signatures will be validated
             against this certificate. To allow unsigned Requests, leave on default.
+        encryption_kp:
+          type: string
+          format: uuid
+          nullable: true
+          title: Encryption Keypair
+          description: When selected, incoming assertions are encrypted by the IdP
+            using the public key of the encryption keypair. The assertion is decrypted
+            by the SP using the the private key.
+        sign_assertion:
+          type: boolean
+        sign_response:
+          type: boolean
         sp_binding:
           allOf:
           - $ref: '#/components/schemas/SpBindingEnum'
@@ -49702,6 +49888,18 @@ components:
           title: Verification Certificate
           description: When selected, incoming assertion's Signatures will be validated
             against this certificate. To allow unsigned Requests, leave on default.
+        encryption_kp:
+          type: string
+          format: uuid
+          nullable: true
+          title: Encryption Keypair
+          description: When selected, incoming assertions are encrypted by the IdP
+            using the public key of the encryption keypair. The assertion is decrypted
+            by the SP using the the private key.
+        sign_assertion:
+          type: boolean
+        sign_response:
+          type: boolean
         sp_binding:
           allOf:
           - $ref: '#/components/schemas/SpBindingEnum'
@@ -51282,6 +51480,34 @@ components:
       - user_email
       - user_upn
       type: string
+    SyncObjectModelEnum:
+      enum:
+      - authentik.core.models.User
+      - authentik.core.models.Group
+      type: string
+    SyncObjectRequest:
+      type: object
+      description: Sync object serializer
+      properties:
+        sync_object_model:
+          $ref: '#/components/schemas/SyncObjectModelEnum'
+        sync_object_id:
+          type: string
+          minLength: 1
+      required:
+      - sync_object_id
+      - sync_object_model
+    SyncObjectResult:
+      type: object
+      description: Result of a single object sync
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogEvent'
+          readOnly: true
+      required:
+      - messages
     SyncStatus:
       type: object
       description: Provider sync status
@@ -52704,9 +52930,14 @@ components:
           type: boolean
           description: Check if we're running the latest version
           readOnly: true
+        outpost_outdated:
+          type: boolean
+          description: Check if any outpost is outdated/has a version mismatch
+          readOnly: true
       required:
       - build_hash
       - outdated
+      - outpost_outdated
       - version_current
       - version_latest
       - version_latest_valid

@@ -145,7 +145,7 @@ func (ac *APIController) startWSHandler() {
 					"outpost_type": ac.Server.Type(),
 					"uuid":         ac.instanceUUID.String(),
 					"version":      constants.VERSION,
-					"build":        constants.BUILD("tagged"),
+					"build":        constants.BUILD(""),
 				}).SetToCurrentTime()
 			}
 		} else if wsMsg.Instruction == WebsocketInstructionProviderSpecific {
@@ -207,7 +207,7 @@ func (ac *APIController) startIntervalUpdater() {
 				"outpost_type": ac.Server.Type(),
 				"uuid":         ac.instanceUUID.String(),
 				"version":      constants.VERSION,
-				"build":        constants.BUILD("tagged"),
+				"build":        constants.BUILD(""),
 			}).SetToCurrentTime()
 		}
 		ticker.Reset(getInterval())

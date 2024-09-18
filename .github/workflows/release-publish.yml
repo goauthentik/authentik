@@ -51,12 +51,14 @@ jobs:
           secrets: |
             GEOIPUPDATE_ACCOUNT_ID=${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}
             GEOIPUPDATE_LICENSE_KEY=${{ secrets.GEOIPUPDATE_LICENSE_KEY }}
+          build-args: |
+            VERSION=${{ github.ref }}
           tags: ${{ steps.ev.outputs.imageTags }}
           platforms: linux/amd64,linux/arm64
       - uses: actions/attest-build-provenance@v1
         id: attest
         with:
-          subject-name: ${{ steps.ev.outputs.imageNames }}
+          subject-name: ${{ steps.ev.outputs.attestImageNames }}
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
   build-outpost:
@@ -111,6 +113,8 @@ jobs:
         id: push
         with:
           push: true
+          build-args: |
+            VERSION=${{ github.ref }}
           tags: ${{ steps.ev.outputs.imageTags }}
           file: ${{ matrix.type }}.Dockerfile
           platforms: linux/amd64,linux/arm64
@@ -118,7 +122,7 @@ jobs:
       - uses: actions/attest-build-provenance@v1
         id: attest
         with:
-          subject-name: ${{ steps.ev.outputs.imageNames }}
+          subject-name: ${{ steps.ev.outputs.attestImageNames }}
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
   build-outpost-binary:
