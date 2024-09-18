@@ -28,7 +28,7 @@
         "disqus-react": "^1.1.5",
         "docusaurus-plugin-openapi-docs": "^4.0.0",
         "docusaurus-theme-openapi-docs": "^4.0.1",
-        "postcss": "^8.4.45",
+        "postcss": "^8.4.47",
         "prism-react-renderer": "^2.4.0",
         "react": "^18.3.1",
         "react-before-after-slider-component": "^1.1.8",
@@ -54,11 +54,11 @@
         "@docusaurus/module-type-aliases": "^3.3.2",
         "@docusaurus/tsconfig": "^3.5.2",
         "@docusaurus/types": "^3.3.2",
-        "@types/react": "^18.3.5",
+        "@types/react": "^18.3.6",
         "cross-env": "^7.0.3",
         "lockfile-lint": "^4.14.0",
         "prettier": "3.3.3",
-        "typescript": "~5.5.4"
+        "typescript": "~5.6.2"
     },
     "engines": {
         "node": ">=20"

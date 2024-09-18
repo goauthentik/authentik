@@ -23,6 +23,7 @@ from authentik.flows.models import (
     in_memory_stage,
 )
 from authentik.lib.config import CONFIG
+from authentik.outposts.models import Outpost
 from authentik.policies.engine import PolicyEngine
 from authentik.root.middleware import ClientIPMiddleware
 
@@ -32,6 +33,7 @@ PLAN_CONTEXT_SSO = "is_sso"
 PLAN_CONTEXT_REDIRECT = "redirect"
 PLAN_CONTEXT_APPLICATION = "application"
 PLAN_CONTEXT_SOURCE = "source"
+PLAN_CONTEXT_OUTPOST = "outpost"
 # Is set by the Flow Planner when a FlowToken was used, and the currently active flow plan
 # was restored.
 PLAN_CONTEXT_IS_RESTORED = "is_restored"
@@ -143,10 +145,23 @@ class FlowPlanner:
             and not request.user.is_superuser
         ):
             raise FlowNonApplicableException()
+        outpost_user = ClientIPMiddleware.get_outpost_user(request)
         if self.flow.authentication == FlowAuthenticationRequirement.REQUIRE_OUTPOST:
-            outpost_user = ClientIPMiddleware.get_outpost_user(request)
             if not outpost_user:
                 raise FlowNonApplicableException()
+        if outpost_user:
+            outpost = Outpost.objects.filter(
+                # TODO: Since Outpost and user are not directly connected, we have to look up a user
+                # like this. This should ideally by in authentik/outposts/models.py
+                pk=outpost_user.username.replace("ak-outpost-", "")
+            ).first()
+            if outpost:
+                return {
+                    PLAN_CONTEXT_OUTPOST: {
+                        "instance": outpost,
+                    }
+                }
+        return {}
 
     def plan(self, request: HttpRequest, default_context: dict[str, Any] | None = None) -> FlowPlan:
         """Check each of the flows' policies, check policies for each stage with PolicyBinding
@@ -159,11 +174,12 @@ class FlowPlanner:
             self._logger.debug(
                 "f(plan): starting planning process",
             )
+            context = default_context or {}
             # Bit of a workaround here, if there is a pending user set in the default context
             # we use that user for our cache key
             # to make sure they don't get the generic response
-            if default_context and PLAN_CONTEXT_PENDING_USER in default_context:
-                user = default_context[PLAN_CONTEXT_PENDING_USER]
+            if context and PLAN_CONTEXT_PENDING_USER in context:
+                user = context[PLAN_CONTEXT_PENDING_USER]
             else:
                 user = request.user
                 # We only need to check the flow authentication if it's planned without a user
@@ -171,14 +187,13 @@ class FlowPlanner:
                 # or if a flow is restarted due to `invalid_response_action` being set to
                 # `restart_with_context`, which can only happen if the user was already authorized
                 # to use the flow
-                self._check_authentication(request)
+                context.update(self._check_authentication(request))
             # First off, check the flow's direct policy bindings
             # to make sure the user even has access to the flow
             engine = PolicyEngine(self.flow, user, request)
             engine.use_cache = self.use_cache
-            if default_context:
-                span.set_data("default_context", cleanse_dict(default_context))
-                engine.request.context.update(default_context)
+            span.set_data("context", cleanse_dict(context))
+            engine.request.context.update(context)
             engine.build()
             result = engine.result
             if not result.passing:
@@ -195,12 +210,12 @@ class FlowPlanner:
                         key=cached_plan_key,
                     )
                     # Reset the context as this isn't factored into caching
-                    cached_plan.context = default_context or {}
+                    cached_plan.context = context
                     return cached_plan
             self._logger.debug(
                 "f(plan): building plan",
             )
-            plan = self._build_plan(user, request, default_context)
+            plan = self._build_plan(user, request, context)
             if self.use_cache:
                 cache.set(cache_key(self.flow, user), plan, CACHE_TIMEOUT)
             if not plan.bindings and not self.allow_empty_flows:

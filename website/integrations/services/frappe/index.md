@@ -1,6 +1,9 @@
 ---
-title: Frappe Helpdesk
+title: Integrate with Frappe Helpdesk
+sidebar_label: Frappe Helpdesk
 ---
+
+# Frappe Helpdesk
 
 <span class="badge badge--secondary">Support level: Community</span>
 

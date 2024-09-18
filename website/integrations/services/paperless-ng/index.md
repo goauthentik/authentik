@@ -1,6 +1,9 @@
 ---
-title: Paperless-ng
+title: Integrate with Paperless-ng
+sidebar_label: Paperless-ng
 ---
+
+# Paperless-ng
 
 <span class="badge badge--secondary">Support level: Community</span>
 

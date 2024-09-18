@@ -8,7 +8,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 interface PropertyMapping {
     name: string;
-    expression: string;
+    expression?: string;
 }
 
 export abstract class BasePropertyMappingForm<T extends PropertyMapping> extends ModelForm<

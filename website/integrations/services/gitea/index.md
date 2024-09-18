@@ -1,6 +1,9 @@
 ---
-title: Gitea
+title: Integrate with Gitea
+sidebar_label: Gitea
 ---
+
+# Gitea
 
 <span class="badge badge--secondary">Support level: Community</span>
 

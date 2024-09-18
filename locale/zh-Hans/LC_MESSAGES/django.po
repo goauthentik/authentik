@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-18 00:08+0000\n"
+"POT-Creation-Date: 2024-09-08 00:09+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2024\n"
 "Language-Team: Chinese Simplified (https://app.transifex.com/authentik/teams/119923/zh-Hans/)\n"
@@ -24,6 +24,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh-Hans\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+
+#: authentik/admin/tasks.py
+#, python-brace-format
+msgid "New version {version} available!"
+msgstr "新版本 {version} 可用！"
 
 #: authentik/api/schema.py
 msgid "Generic API Error"

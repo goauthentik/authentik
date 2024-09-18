@@ -1,6 +1,9 @@
 ---
-title: Budibase
+title: Integrate with Budibase
+sidebar_label: Budibase
 ---
+
+# Budibase
 
 <span class="badge badge--secondary">Support level: Community</span>
 

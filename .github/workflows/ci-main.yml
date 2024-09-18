@@ -120,6 +120,12 @@ jobs:
         with:
           flags: unit
           token: ${{ secrets.CODECOV_TOKEN }}
+      - if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          flags: unit
+          file: unittest.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
   test-integration:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -137,6 +143,12 @@ jobs:
         uses: codecov/codecov-action@v4
         with:
           flags: integration
+          token: ${{ secrets.CODECOV_TOKEN }}
+      - if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          flags: integration
+          file: unittest.xml
           token: ${{ secrets.CODECOV_TOKEN }}
   test-e2e:
     name: test-e2e (${{ matrix.job.name }})
@@ -189,6 +201,12 @@ jobs:
         uses: codecov/codecov-action@v4
         with:
           flags: e2e
+          token: ${{ secrets.CODECOV_TOKEN }}
+      - if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          flags: e2e
+          file: unittest.xml
           token: ${{ secrets.CODECOV_TOKEN }}
   ci-core-mark:
     needs:

@@ -125,8 +125,10 @@ export class MFADevicesPage extends Table<Device> {
         return [
             html`${item.name}`,
             html`${deviceTypeName(item)}`,
-            html`<div>${getRelativeTime(item.created)}</div>
-                <small>${item.created.toLocaleString()}</small>`,
+            html`${item.created.getTime() > 0
+                ? html`<div>${getRelativeTime(item.created)}</div>
+                      <small>${item.created.toLocaleString()}</small>`
+                : html`-`}`,
             html`${item.lastUsed
                 ? html`<div>${getRelativeTime(item.lastUsed)}</div>
                       <small>${item.lastUsed.toLocaleString()}</small>`
