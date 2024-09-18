@@ -1,0 +1,165 @@
+import { policyOptions } from "@goauthentik/admin/applications/PolicyOptions.js";
+import { ApplicationWizardStep } from "@goauthentik/admin/applications/wizard/ApplicationWizardStep.js";
+import { isSlug } from "@goauthentik/common/utils.js";
+import "@goauthentik/components/ak-radio-input";
+import "@goauthentik/components/ak-slug-input";
+import "@goauthentik/components/ak-switch-input";
+import "@goauthentik/components/ak-text-input";
+import { type WizardButton } from "@goauthentik/components/ak-wizard/types";
+import { type KeyUnknown } from "@goauthentik/elements/forms/Form";
+import "@goauthentik/elements/forms/FormGroup";
+import "@goauthentik/elements/forms/HorizontalFormElement";
+
+import { msg } from "@lit/localize";
+import { css, html } from "lit";
+import { customElement, query, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+
+import { type ApplicationRequest, type ValidationError } from "@goauthentik/api";
+
+const autoTrim = (v: unknown) => (typeof v === "string" ? v.trim() : v);
+
+const trimMany = (o: KeyUnknown, vs: string[]) =>
+    Object.fromEntries(vs.map((v) => [v, autoTrim(o[v])]));
+
+const isStr = (v: any): v is string => typeof v === "string";
+
+@customElement("ak-application-wizard-application-step")
+export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
+    label = msg("Application");
+
+    @state()
+    errors = new Map<string, string>();
+
+    @query("form#applicationform")
+    form!: HTMLFormElement;
+
+    constructor() {
+        super();
+        this.enabled = true;
+    }
+
+    get buttons(): WizardButton[] {
+        return [{ kind: "next", destination: "provider-choice" }, { kind: "cancel" }];
+    }
+
+    get valid() {
+        this.errors = new Map();
+        const values = trimMany(this.formValues ?? {}, ["metaLaunchUrl", "name", "slug"]);
+
+        if (values["name"] === "") {
+            this.errors.set("name", msg("An application name is required"));
+        }
+        if (
+            !(
+                isStr(values["metaLaunchUrl"]) &&
+                (values["metaLaunchUrl"] === "" || URL.canParse(values["metaLaunchUrl"]))
+            )
+        ) {
+            this.errors.set("metaLaunchUrl", msg("Not a valid URL"));
+        }
+        if (!(isStr(values["slug"]) && values["slug"] !== "" && isSlug(values["slug"]))) {
+            this.errors.set("slug", msg("Not a valid slug"));
+        }
+        return this.errors.size === 0;
+    }
+
+    errorMessage(name: string) {
+        return this.errors.has(name) ? [this.errors.get(name)] : [];
+    }
+
+    override handleNavigationEvent(button: WizardButton) {
+        if (button.kind === "next" && !this.valid) {
+            this.dispatchUpdate({
+                status: { disable: ["provider-choice", "provider", "bindings", "submit"] },
+            });
+            return;
+        }
+
+        this.dispatchUpdate({
+            update: { app: this.formValues },
+            status: { enable: "provider-choice" },
+        });
+        super.handleNavigationEvent(button);
+    }
+
+    renderForm(app: Partial<ApplicationRequest>, errors: ValidationError) {
+        return html` <form id="applicationform" class="pf-c-form pf-m-horizontal" slot="form">
+            <ak-text-input
+                name="name"
+                value=${ifDefined(app.name)}
+                label=${msg("Name")}
+                required
+                ?invalid=${this.errors.has("name")}
+                .errorMessages=${errors.app?.name ?? this.errorMessage("name")}
+                help=${msg("Application's display Name.")}
+                id="ak-application-wizard-details-name"
+            ></ak-text-input>
+            <ak-slug-input
+                name="slug"
+                value=${ifDefined(app.slug)}
+                label=${msg("Slug")}
+                source="#ak-application-wizard-details-name"
+                required
+                ?invalid=${errors.app?.slug ?? this.errors.has("slug")}
+                .errorMessages=${this.errorMessage("slug")}
+                help=${msg("Internal application name used in URLs.")}
+            ></ak-slug-input>
+            <ak-text-input
+                name="group"
+                value=${ifDefined(app.group)}
+                label=${msg("Group")}
+                .errorMessages=${errors.app?.group ?? []}
+                help=${msg(
+                    "Optionally enter a group name. Applications with identical groups are shown grouped together."
+                )}
+            ></ak-text-input>
+            <ak-radio-input
+                label=${msg("Policy engine mode")}
+                required
+                name="policyEngineMode"
+                .options=${policyOptions}
+                .value=${app.policyEngineMode}
+                .errorMessages=${errors.app?.policyEngineMode ?? []}
+            ></ak-radio-input>
+            <ak-form-group aria-label=${msg("UI Settings")}>
+                <span slot="header"> ${msg("UI Settings")} </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-text-input
+                        name="metaLaunchUrl"
+                        label=${msg("Launch URL")}
+                        value=${ifDefined(app.metaLaunchUrl)}
+                        ?invalid=${this.errors.has("metaLaunchUrl")}
+                        .errorMessages=${errors.app?.metaLaunchUrl ??
+                        this.errorMessage("metaLaunchUrl")}
+                        help=${msg(
+                            "If left empty, authentik will try to extract the launch URL based on the selected provider."
+                        )}
+                    ></ak-text-input>
+                    <ak-switch-input
+                        name="openInNewTab"
+                        ?checked=${app.openInNewTab ?? false}
+                        label=${msg("Open in new tab")}
+                        help=${msg(
+                            "If checked, the launch URL will open in a new browser tab or window from the user's application library."
+                        )}
+                    >
+                    </ak-switch-input>
+                </div>
+            </ak-form-group>
+        </form>`;
+    }
+
+    renderMain() {
+        if (!(this.wizard.app && this.wizard.errors)) {
+            throw new Error("Application Step received uninitialized wizard context.");
+        }
+        return this.renderForm(this.wizard.app as ApplicationRequest, this.wizard.errors);
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-wizard-application-step": ApplicationWizardApplicationStep;
+    }
+}

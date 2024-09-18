@@ -1,3 +1,4 @@
+import "@goauthentik/admin/providers/RelatedApplicationButton";
 import "@goauthentik/admin/providers/scim/SCIMProviderForm";
 import "@goauthentik/admin/providers/scim/SCIMProviderGroupList";
 import "@goauthentik/admin/providers/scim/SCIMProviderUserList";
@@ -163,6 +164,21 @@ export class SCIMProviderViewPage extends AKElement {
                                         </div>
                                     </dd>
                                 </div>
+                                <div class="pf-c-description-list__group">
+                                    <dt class="pf-c-description-list__term">
+                                        <span class="pf-c-description-list__text"
+                                            >${msg("Assigned to application")}</span
+                                        >
+                                    </dt>
+                                    <dd class="pf-c-description-list__description">
+                                        <div class="pf-c-description-list__text">
+                                            <ak-provider-related-application
+                                                .provider=${this.provider}
+                                            ></ak-provider-related-application>
+                                        </div>
+                                    </dd>
+                                </div>
+
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
                                         <span class="pf-c-description-list__text"

@@ -36,8 +36,8 @@ function fetchCustomCSS(): Promise<string[]> {
                         .finally(() => {
                             return "";
                         });
-                },
-            ),
+                }
+            )
         );
     }
     return css;
@@ -110,6 +110,9 @@ export class AKElement extends LitElement {
                 root.adoptedStyleSheets = [...root.adoptedStyleSheets, sheet];
             });
         });
+        if ("wizardTitle" in this) {
+            console.log(this, root, root.adoptedStyleSheets);
+        }
     }
 
     _applyTheme(root: DocumentOrShadowRoot, theme?: UiThemeEnum): void {
@@ -162,7 +165,7 @@ export class AKElement extends LitElement {
                 bubbles: true,
                 composed: true,
                 detail: theme,
-            }),
+            })
         );
         this.setAttribute("theme", theme);
         const stylesheet = AKElement.themeToStylesheet(theme);
@@ -176,7 +179,7 @@ export class AKElement extends LitElement {
             }
             if (oldStylesheet) {
                 root.adoptedStyleSheets = root.adoptedStyleSheets.filter(
-                    (v) => v !== oldStylesheet,
+                    (v) => v !== oldStylesheet
                 );
             }
         });

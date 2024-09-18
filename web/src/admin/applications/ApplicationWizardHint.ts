@@ -106,11 +106,11 @@ export class AkApplicationWizardHint extends AKElement implements ShowHintContro
                         the same time with our new Application Wizard.
                         <!-- <a href="(link to docs)">Learn more about the wizard here.</a> -->
                     </p>
-
-                    <ak-application-wizard
-                        .open=${getURLParam("createWizard", false)}
-                        .showButton=${false}
-                    ></ak-application-wizard>
+                    <ak-application-wizard .open=${getURLParam("createWizard", false)}>
+                        <button slot="trigger" class="pf-c-button pf-m-primary">
+                            ${msg("Create with wizard")}
+                        </button>
+                    </ak-application-wizard>
                 </ak-hint-body>
                 ${this.showHintController.render()}
             </ak-hint>

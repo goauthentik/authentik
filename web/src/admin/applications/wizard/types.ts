@@ -1,9 +1,8 @@
-import { type WizardStep } from "@goauthentik/components/ak-wizard-main/types";
-
 import {
     type ApplicationRequest,
     type LDAPProviderRequest,
     type OAuth2ProviderRequest,
+    type PolicyBinding,
     type ProvidersSamlImportMetadataCreateRequest,
     type ProxyProviderRequest,
     type RACProviderRequest,
@@ -28,16 +27,16 @@ export interface ApplicationWizardState {
     app: Partial<ApplicationRequest>;
     provider: OneOfProvider;
     errors: ValidationError;
+    bindings: Partial<PolicyBinding>[];
+    currentBinding: number;
 }
 
-type StatusType = "invalid" | "valid" | "submitted" | "failed";
+export interface StatusType {
+    enable?: string | string[];
+    disable?: string | string[];
+}
 
 export type ApplicationWizardStateUpdate = {
-    update?: ApplicationWizardState;
+    update?: Partial<ApplicationWizardState>;
     status?: StatusType;
-};
-
-export type ApplicationStep = WizardStep & {
-    id: string;
-    valid: boolean;
 };
