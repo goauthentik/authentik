@@ -145,6 +145,7 @@ class DockerTestCase(TestCase):
                 container.kill()
             except DockerException:
                 pass
+        self.__network.remove()
 
 
 class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
