@@ -4,7 +4,6 @@ from base64 import b64encode
 from dataclasses import asdict
 from sys import platform
 from time import sleep
-from typing import Any
 from unittest.case import skip, skipUnless
 
 from channels.testing import ChannelsLiveServerTestCase
@@ -23,15 +22,14 @@ from tests.e2e.utils import SeleniumTestCase, retry
 class TestProviderProxy(SeleniumTestCase):
     """Proxy and Outpost e2e tests"""
 
-    def get_container_specs(self) -> dict[str, Any] | None:
-        return {
-            "image": "traefik/whoami:latest",
-            "detach": True,
-            "ports": {
+    def setUp(self):
+        super().setUp()
+        self.run_container(
+            image="traefik/whoami:latest",
+            ports={
                 "80": "80",
             },
-            "auto_remove": True,
-        }
+        )
 
     def start_proxy(self, outpost: Outpost):
         """Start proxy container based on outpost created"""

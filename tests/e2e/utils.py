@@ -60,7 +60,6 @@ def get_local_ip() -> str:
 class DockerTestCase(TestCase):
     """Mixin for dealing with containers"""
 
-    container: Container | None = None
     max_healthcheck_attempts = 30
 
     __client: DockerClient
@@ -71,8 +70,6 @@ class DockerTestCase(TestCase):
     def setUp(self) -> None:
         self.__client = from_env()
         self.__network = self.docker_client.networks.create(name=f"authentik-test-{generate_id()}")
-        if specs := self.get_container_specs():
-            self.container = self.run_container(**specs)
 
     @property
     def docker_client(self) -> DockerClient:
@@ -85,11 +82,6 @@ class DockerTestCase(TestCase):
     @property
     def docker_labels(self) -> dict:
         return {"io.goauthentik.test": self.__label_id}
-
-    def get_container_specs(self) -> dict[str, Any] | None:
-        """Optionally get container specs which will launched on setup, wait for the container to
-        be healthy, and deleted again on tearDown"""
-        return None
 
     def wait_for_container(self, container: Container):
         """Check that container is health"""

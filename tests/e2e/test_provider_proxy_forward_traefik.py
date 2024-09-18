@@ -2,9 +2,7 @@
 
 from pathlib import Path
 from time import sleep
-from typing import Any
 
-from docker.models.containers import Container
 from selenium.webdriver.common.by import By
 
 from authentik.blueprints.tests import apply_blueprint, reconcile_app
@@ -19,28 +17,12 @@ from tests.e2e.utils import SeleniumTestCase, retry
 class TestProviderProxyForwardTraefik(SeleniumTestCase):
     """Proxy and Outpost e2e tests"""
 
-    proxy_container: Container
-
-    def get_container_specs(self) -> dict[str, Any] | None:
-        return {
-            "image": "traefik/whoami:latest",
-            "name": "ak-whoami",
-        }
-
-    def start_outpost(self, outpost: Outpost):
-        """Start proxy container based on outpost created"""
+    def setUp(self):
+        super().setUp()
         self.run_container(
-            image=self.get_container_image("ghcr.io/goauthentik/dev-proxy"),
-            ports={
-                "9000": "9000",
-            },
-            environment={
-                "AUTHENTIK_TOKEN": outpost.token.key,
-            },
-            name="ak-test-outpost",
+            image="traefik/whoami:latest",
+            name="ak-whoami",
         )
-
-    def start_reverse_proxy(self):
         local_config_path = (
             Path(__file__).parent / "proxy_forward_auth" / "traefik_single" / "config-static.yaml"
         )
@@ -54,6 +36,19 @@ class TestProviderProxyForwardTraefik(SeleniumTestCase):
                     "bind": "/etc/traefik/traefik.yml",
                 }
             },
+        )
+
+    def start_outpost(self, outpost: Outpost):
+        """Start proxy container based on outpost created"""
+        self.run_container(
+            image=self.get_container_image("ghcr.io/goauthentik/dev-proxy"),
+            ports={
+                "9000": "9000",
+            },
+            environment={
+                "AUTHENTIK_TOKEN": outpost.token.key,
+            },
+            name="ak-test-outpost",
         )
 
     @retry()
@@ -92,8 +87,8 @@ class TestProviderProxyForwardTraefik(SeleniumTestCase):
         outpost.providers.add(proxy)
         outpost.build_user_permissions(outpost.user)
 
-        self.proxy_container = self.start_outpost(outpost)
-        self.rp_container = self.start_reverse_proxy()
+        self.start_outpost(outpost)
+        self.start_reverse_proxy()
 
         # Wait until outpost healthcheck succeeds
         healthcheck_retries = 0
