@@ -31,7 +31,6 @@ class TestSourceOAuth2(SeleniumTestCase):
             detach=True,
             ports={"5556": "5556"},
             auto_remove=True,
-            command="dex serve /config.yml",
             healthcheck=Healthcheck(
                 test=["CMD", "wget", "--spider", "http://localhost:5556/dex/healthz"],
                 interval=5 * 1_000 * 1_000_000,
@@ -46,7 +45,7 @@ class TestSourceOAuth2(SeleniumTestCase):
             },
             volumes={
                 f"{Path(__file__).parent / "sources_oauth2_dex" / "dex.yaml"}": {
-                    "bind": "/config.yml",
+                    "bind": "/etc/dex/config.docker.yaml",
                 }
             },
         )
