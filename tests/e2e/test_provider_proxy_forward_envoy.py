@@ -18,6 +18,7 @@ class TestProviderProxyForwardEnvoy(SeleniumTestCase):
     """Proxy and Outpost e2e tests"""
 
     def setUp(self):
+        super().setUp()
         self.run_container(
             image="traefik/whoami:latest",
             name="ak-whoami",

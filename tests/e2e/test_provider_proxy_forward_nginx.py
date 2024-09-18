@@ -23,17 +23,6 @@ class TestProviderProxyForwardNginx(SeleniumTestCase):
             image="traefik/whoami:latest",
             name="ak-whoami",
         )
-        self.run_container(
-            image="docker.io/library/nginx:1.27",
-            ports={
-                "80": "80",
-            },
-            volumes={
-                f"{Path(__file__).parent / "proxy_forward_auth" / "nginx_single" / "nginx.conf"}": {
-                    "bind": "/etc/nginx/conf.d/default.conf",
-                }
-            },
-        )
 
     def start_outpost(self, outpost: Outpost):
         """Start proxy container based on outpost created"""
@@ -85,6 +74,18 @@ class TestProviderProxyForwardNginx(SeleniumTestCase):
         outpost.build_user_permissions(outpost.user)
 
         self.start_outpost(outpost)
+        # Start nginx last so all hosts are resolvable, otherwise nginx exits
+        self.run_container(
+            image="docker.io/library/nginx:1.27",
+            ports={
+                "80": "80",
+            },
+            volumes={
+                f"{Path(__file__).parent / "proxy_forward_auth" / "nginx_single" / "nginx.conf"}": {
+                    "bind": "/etc/nginx/conf.d/default.conf",
+                }
+            },
+        )
 
         # Wait until outpost healthcheck succeeds
         healthcheck_retries = 0

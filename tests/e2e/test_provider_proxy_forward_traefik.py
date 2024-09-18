@@ -88,7 +88,6 @@ class TestProviderProxyForwardTraefik(SeleniumTestCase):
         outpost.build_user_permissions(outpost.user)
 
         self.start_outpost(outpost)
-        self.start_reverse_proxy()
 
         # Wait until outpost healthcheck succeeds
         healthcheck_retries = 0
