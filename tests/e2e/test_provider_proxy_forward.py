@@ -1,5 +1,6 @@
 """Proxy and Outpost e2e tests"""
 
+from json import loads
 from pathlib import Path
 from time import sleep
 
@@ -104,12 +105,14 @@ class TestProviderProxyForwardTraefik(SeleniumTestCase):
 
         self.prepare()
 
-        self.driver.get("http://localhost")
+        self.driver.get("http://localhost/api")
         self.login()
         sleep(1)
 
         full_body_text = self.driver.find_element(By.CSS_SELECTOR, "pre").text
-        self.assertIn(f"X-Authentik-Username: {self.user.username}", full_body_text)
+        body = loads(full_body_text)
+
+        self.assertEqual(body["headers"]["X-Authentik-Username"], [self.user.username])
 
         self.driver.get("http://localhost/outpost.goauthentik.io/sign_out")
         sleep(2)
@@ -134,12 +137,14 @@ class TestProviderProxyForwardTraefik(SeleniumTestCase):
             },
         )
 
-        self.driver.get("http://localhost")
+        self.driver.get("http://localhost/api")
         self.login()
         sleep(1)
 
         full_body_text = self.driver.find_element(By.CSS_SELECTOR, "pre").text
-        self.assertIn(f"X-Authentik-Username: {self.user.username}", full_body_text)
+        body = loads(full_body_text)
+
+        self.assertEqual(body["headers"]["X-Authentik-Username"], [self.user.username])
 
         self.driver.get("http://localhost/outpost.goauthentik.io/sign_out")
         sleep(2)
@@ -163,17 +168,19 @@ class TestProviderProxyForwardTraefik(SeleniumTestCase):
 
         self.prepare()
 
-        self.driver.get("http://localhost")
+        self.driver.get("http://localhost/api")
         self.login()
         sleep(1)
 
         full_body_text = self.driver.find_element(By.CSS_SELECTOR, "pre").text
-        self.assertIn(f"X-Authentik-Username: {self.user.username}", full_body_text)
+        body = loads(full_body_text)
 
-        # self.driver.get("http://localhost/outpost.goauthentik.io/sign_out")
-        # sleep(2)
-        # full_body_text = self.driver.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
-        # self.assertIn("You've logged out of", full_body_text)
+        self.assertEqual(body["headers"]["X-Authentik-Username"], [self.user.username])
+
+        self.driver.get("http://localhost/outpost.goauthentik.io/sign_out")
+        sleep(2)
+        full_body_text = self.driver.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
+        self.assertIn("You've logged out of", full_body_text)
 
     @retry()
     def test_caddy(self):
@@ -195,12 +202,14 @@ class TestProviderProxyForwardTraefik(SeleniumTestCase):
 
         self.prepare()
 
-        self.driver.get("http://localhost")
+        self.driver.get("http://localhost/api")
         self.login()
         sleep(1)
 
         full_body_text = self.driver.find_element(By.CSS_SELECTOR, "pre").text
-        self.assertIn(f"X-Authentik-Username: {self.user.username}", full_body_text)
+        body = loads(full_body_text)
+
+        self.assertEqual(body["headers"]["X-Authentik-Username"], [self.user.username])
 
         self.driver.get("http://localhost/outpost.goauthentik.io/sign_out")
         sleep(2)

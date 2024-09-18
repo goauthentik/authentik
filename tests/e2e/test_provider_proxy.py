@@ -2,6 +2,7 @@
 
 from base64 import b64encode
 from dataclasses import asdict
+from json import loads
 from sys import platform
 from time import sleep
 from unittest.case import skip, skipUnless
@@ -97,13 +98,15 @@ class TestProviderProxy(SeleniumTestCase):
             sleep(0.5)
         sleep(5)
 
-        self.driver.get("http://localhost:9000")
+        self.driver.get("http://localhost:9000/api")
         self.login()
         sleep(1)
 
         full_body_text = self.driver.find_element(By.CSS_SELECTOR, "pre").text
-        self.assertIn(f"X-Authentik-Username: {self.user.username}", full_body_text)
-        self.assertIn("X-Foo: bar", full_body_text)
+        body = loads(full_body_text)
+
+        self.assertEqual(body["headers"]["X-Authentik-Username"], [self.user.username])
+        self.assertEqual(body["headers"]["X-Foo"], ["bar"])
 
         self.driver.get("http://localhost:9000/outpost.goauthentik.io/sign_out")
         sleep(2)
@@ -176,9 +179,11 @@ class TestProviderProxy(SeleniumTestCase):
         sleep(1)
 
         full_body_text = self.driver.find_element(By.CSS_SELECTOR, "pre").text
-        self.assertIn(f"X-Authentik-Username: {self.user.username}", full_body_text)
+        body = loads(full_body_text)
+
+        self.assertEqual(body["headers"]["X-Authentik-Username"], [self.user.username])
         auth_header = b64encode(f"{cred}:{cred}".encode()).decode()
-        self.assertIn(f"Authorization: Basic {auth_header}", full_body_text)
+        self.assertEqual(body["headers"]["Authorization"], [f"Basic {auth_header}"])
 
         self.driver.get("http://localhost:9000/outpost.goauthentik.io/sign_out")
         sleep(2)
