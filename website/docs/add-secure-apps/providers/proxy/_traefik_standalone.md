@@ -32,7 +32,7 @@ http:
         app:
             loadBalancer:
                 servers:
-                    - url: http://ipp.internal
+                    - url: http://ip.internal
         authentik:
             loadBalancer:
                 servers:
