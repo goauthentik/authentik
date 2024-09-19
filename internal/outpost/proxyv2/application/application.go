@@ -65,8 +65,11 @@ type Server interface {
 	CryptoStore() *ak.CryptoStore
 }
 
-func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server) (*Application, error) {
+func init() {
 	gob.Register(Claims{})
+}
+
+func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, oldApp *Application) (*Application, error) {
 	muxLogger := log.WithField("logger", "authentik.outpost.proxyv2.application").WithField("name", p.Name)
 
 	externalHost, err := url.Parse(p.ExternalHost)
@@ -137,11 +140,15 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server) (*A
 		isEmbedded:           isEmbedded,
 	}
 	go a.authHeaderCache.Start()
-	sess, err := a.getStore(p, externalHost)
-	if err != nil {
-		return nil, err
+	if oldApp != nil && oldApp.sessions != nil {
+		a.sessions = oldApp.sessions
+	} else {
+		sess, err := a.getStore(p, externalHost)
+		if err != nil {
+			return nil, err
+		}
+		a.sessions = sess
 	}
-	a.sessions = sess
 	mux.Use(web.NewLoggingHandler(muxLogger, func(l *log.Entry, r *http.Request) *log.Entry {
 		c := a.getClaimsFromSession(r)
 		if c == nil {
@@ -239,9 +246,8 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server) (*A
 				// TODO: maybe create event for this?
 				a.log.WithError(err).Warning("failed to compile SkipPathRegex")
 				continue
-			} else {
-				a.UnauthenticatedRegex = append(a.UnauthenticatedRegex, re)
 			}
+			a.UnauthenticatedRegex = append(a.UnauthenticatedRegex, re)
 		}
 	}
 	return a, nil
