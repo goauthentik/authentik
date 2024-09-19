@@ -25,6 +25,8 @@ For small/test setups it is recommended to use Docker Compose; refer to the [doc
 
 For bigger setups, there is a Helm Chart [here](https://github.com/goauthentik/helm). This is documented [here](https://goauthentik.io/docs/installation/kubernetes/?utm_source=github).
 
+For one-click deployment setups, there is Elestio [here](https://elest.io/open-source/authentik).
+
 ## Screenshots
 
 | Light                                                       | Dark                                                       |
