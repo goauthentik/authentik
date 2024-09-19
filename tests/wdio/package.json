@@ -1,7 +1,7 @@
 {
     "name": "@goauthentik/web-tests",
     "dependencies": {
-        "chromedriver": "^128.0.3",
+        "chromedriver": "^129.0.0",
         "lockfile-lint": "^4.14.0",
         "syncpack": "^13.0.0"
     },
