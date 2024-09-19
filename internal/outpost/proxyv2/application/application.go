@@ -137,7 +137,11 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server) (*A
 		isEmbedded:           isEmbedded,
 	}
 	go a.authHeaderCache.Start()
-	a.sessions = a.getStore(p, externalHost)
+	sess, err := a.getStore(p, externalHost)
+	if err != nil {
+		return nil, err
+	}
+	a.sessions = sess
 	mux.Use(web.NewLoggingHandler(muxLogger, func(l *log.Entry, r *http.Request) *log.Entry {
 		c := a.getClaimsFromSession(r)
 		if c == nil {
