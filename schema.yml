@@ -47200,6 +47200,8 @@ components:
           type: string
           minLength: 1
           description: Base URL to SCIM requests, usually ends in /v2
+        verify_certificates:
+          type: boolean
         token:
           type: string
           minLength: 1
@@ -50368,6 +50370,8 @@ components:
         url:
           type: string
           description: Base URL to SCIM requests, usually ends in /v2
+        verify_certificates:
+          type: boolean
         token:
           type: string
           description: Authentication token
@@ -50451,6 +50455,8 @@ components:
           type: string
           minLength: 1
           description: Base URL to SCIM requests, usually ends in /v2
+        verify_certificates:
+          type: boolean
         token:
           type: string
           minLength: 1

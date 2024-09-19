@@ -5926,6 +5926,10 @@
                     "title": "Url",
                     "description": "Base URL to SCIM requests, usually ends in /v2"
                 },
+                "verify_certificates": {
+                    "type": "boolean",
+                    "title": "Verify certificates"
+                },
                 "token": {
                     "type": "string",
                     "minLength": 1,
