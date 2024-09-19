@@ -25,7 +25,7 @@ The following placeholders will be used:
 Create an OAuth2/OpenID provider with the following parameters:
 
 -   Client Type: `Confidential`
--   Redirect URIs: `https://glitchtip.company/auth/authentik`
+-   Redirect URIs: `https://glitchtip.company/accounts/oidc/authentik/login/callback/`
 
 Note the Client ID and Client Secret values.
 
