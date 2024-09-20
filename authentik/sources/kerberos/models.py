@@ -119,7 +119,7 @@ class KerberosSource(Source):
 
     @property
     def property_mapping_type(self) -> type[PropertyMapping]:
-        return KerberosPropertyMapping
+        return KerberosSourcePropertyMapping
 
     def ui_login_button(self, request: HttpRequest) -> UILoginButton:
         return UILoginButton(
@@ -338,7 +338,7 @@ class Krb5ConfContext:
             del os.environ["KRB5_CONFIG"]
 
 
-class KerberosPropertyMapping(PropertyMapping):
+class KerberosSourcePropertyMapping(PropertyMapping):
     """Map Kerberos Property to User object attribute"""
 
     @property
@@ -348,17 +348,17 @@ class KerberosPropertyMapping(PropertyMapping):
     @property
     def serializer(self) -> type[Serializer]:
         from authentik.sources.kerberos.api.property_mappings import (
-            KerberosPropertyMappingSerializer,
+            KerberosSourcePropertyMappingSerializer,
         )
 
-        return KerberosPropertyMappingSerializer
+        return KerberosSourcePropertyMappingSerializer
 
     def __str__(self):
         return str(self.name)
 
     class Meta:
-        verbose_name = _("Kerberos Property Mapping")
-        verbose_name_plural = _("Kerberos Property Mapping")
+        verbose_name = _("Kerberos Source Property Mapping")
+        verbose_name_plural = _("Kerberos Source Property Mappings")
 
 
 class UserKerberosSourceConnection(UserSourceConnection):

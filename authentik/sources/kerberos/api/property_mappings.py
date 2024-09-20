@@ -4,28 +4,28 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.property_mappings import PropertyMappingFilterSet, PropertyMappingSerializer
 from authentik.core.api.used_by import UsedByMixin
-from authentik.sources.kerberos.models import KerberosPropertyMapping
+from authentik.sources.kerberos.models import KerberosSourcePropertyMapping
 
 
-class KerberosPropertyMappingSerializer(PropertyMappingSerializer):
+class KerberosSourcePropertyMappingSerializer(PropertyMappingSerializer):
     """Kerberos PropertyMapping Serializer"""
 
     class Meta(PropertyMappingSerializer.Meta):
-        model = KerberosPropertyMapping
+        model = KerberosSourcePropertyMapping
 
 
-class KerberosPropertyMappingFilter(PropertyMappingFilterSet):
-    """Filter for KerberosPropertyMapping"""
+class KerberosSourcePropertyMappingFilter(PropertyMappingFilterSet):
+    """Filter for KerberosSourcePropertyMapping"""
 
     class Meta(PropertyMappingFilterSet.Meta):
-        model = KerberosPropertyMapping
+        model = KerberosSourcePropertyMapping
 
 
-class KerberosPropertyMappingViewSet(UsedByMixin, ModelViewSet):
-    """Kerberos PropertyMapping Viewset"""
+class KerberosSourcePropertyMappingViewSet(UsedByMixin, ModelViewSet):
+    """KerberosSource PropertyMapping Viewset"""
 
-    queryset = KerberosPropertyMapping.objects.all()
-    serializer_class = KerberosPropertyMappingSerializer
-    filterset_class = KerberosPropertyMappingFilter
+    queryset = KerberosSourcePropertyMapping.objects.all()
+    serializer_class = KerberosSourcePropertyMappingSerializer
+    filterset_class = KerberosSourcePropertyMappingFilter
     search_fields = ["name"]
     ordering = ["name"]
