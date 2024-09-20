@@ -13,7 +13,7 @@ from authentik.core.expression.exceptions import (
 )
 from authentik.core.models import Group, User, UserTypes
 from authentik.core.sources.mapper import SourceMapper
-from authentik.core.sources.matcher import SourceMatcher, Action
+from authentik.core.sources.matcher import Action, SourceMatcher
 from authentik.events.models import Event, EventAction
 from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.lib.sync.outgoing.exceptions import StopSync
@@ -42,7 +42,9 @@ class KerberosSync:
         self._logger = get_logger().bind(source=self._source, syncer=self.__class__.__name__)
         self.mapper = SourceMapper(self._source)
         self.manager = self.mapper.get_manager(User, ["principal"])
-        self.matcher = SourceMatcher(self._source, UserKerberosSourceConnection, GroupKerberosSourceConnection)
+        self.matcher = SourceMatcher(
+            self._source, UserKerberosSourceConnection, GroupKerberosSourceConnection
+        )
 
     @staticmethod
     def name() -> str:
@@ -70,6 +72,7 @@ class KerberosSync:
                 raise IntegrityError("Username was not set by propertymappings")
 
             action, connection = self.matcher.get_user_action(principal, defaults)
+            self._logger.debug("Action returned", action=action, connection=connection)
             if action == Action.DENY:
                 return False
 
@@ -105,7 +108,9 @@ class KerberosSync:
                     groups.append(group)
 
             with transaction.atomic():
-                user.ak_groups.remove(*user.ak_groups.filter(groupsourceconnection__source=self.source))
+                user.ak_groups.remove(
+                    *user.ak_groups.filter(groupsourceconnection__source=self.source)
+                )
                 user.ak_groups.add(*groups)
 
         except PropertyMappingExpressionException as exc:
@@ -120,10 +125,12 @@ class KerberosSync:
                 principal=principal,
             ).save()
             return False
-        self._logger.debug("Synced User", user=ak_user.username, created=created)
+        self._logger.debug("Synced User", user=user.username)
         return True
 
-    def _handle_group(self, group_id: str, defaults: dict[str, Any | dict[str, Any]]) -> Group | None:
+    def _handle_group(
+        self, group_id: str, defaults: dict[str, Any | dict[str, Any]]
+    ) -> Group | None:
         action, connection = self.matcher.get_group_action(group_id, defaults)
         if action == Action.DENY:
             return None
