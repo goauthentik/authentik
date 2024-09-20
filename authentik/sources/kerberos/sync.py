@@ -13,10 +13,12 @@ from authentik.core.expression.exceptions import (
 )
 from authentik.core.models import Group, User, UserTypes
 from authentik.core.sources.mapper import SourceMapper
+from authentik.core.sources.matcher import SourceMatcher, Action
 from authentik.events.models import Event, EventAction
 from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.lib.sync.outgoing.exceptions import StopSync
 from authentik.sources.kerberos.models import (
+    GroupKerberosSourceConnection,
     KerberosSource,
     Krb5ConfContext,
     UserKerberosSourceConnection,
@@ -31,6 +33,7 @@ class KerberosSync:
     _connection: "kadmin.KAdmin"
     mapper: SourceMapper
     manager: PropertyMappingManager
+    matcher: SourceMatcher
 
     def __init__(self, source: KerberosSource):
         self._source = source
@@ -39,6 +42,7 @@ class KerberosSync:
         self._logger = get_logger().bind(source=self._source, syncer=self.__class__.__name__)
         self.mapper = SourceMapper(self._source)
         self.manager = self.mapper.get_manager(User, ["principal"])
+        self.matcher = SourceMatcher(self._source, UserKerberosSourceConnection, GroupKerberosSourceConnection)
 
     @staticmethod
     def name() -> str:
@@ -56,7 +60,7 @@ class KerberosSync:
         self._messages.append(formatted_message)
         self._logger.warning(*args, **kwargs)
 
-    def _sync_principal(self, principal: str) -> bool:
+    def _handle_principal(self, principal: str) -> bool:
         try:
             defaults = self.mapper.build_object_properties(
                 object_type=User, manager=self.manager, user=None, request=None, principal=principal
@@ -65,15 +69,44 @@ class KerberosSync:
             if "username" not in defaults:
                 raise IntegrityError("Username was not set by propertymappings")
 
-            groups: list[Group] = []
-            group_ids = defaults.pop("groups", [])
-            for group_id in group_ids:
-                group = self.update_or_create_group(group_id, self.mapper.build_object_properties(
-                    object_type=Group, manager=self.manager, user=None, request=None, group_id=group_id, principal=principal,
-                ))
-                groups.append(group)
+            action, connection = self.matcher.get_user_action(principal, defaults)
+            if action == Action.DENY:
+                return False
 
-            ak_user, created = self.update_or_create_user(principal, defaults, groups)
+            group_properties = {
+                group_id: self.mapper.build_object_properties(
+                    object_type=Group,
+                    manager=self.manager,
+                    user=None,
+                    request=None,
+                    group_id=group_id,
+                    principal=principal,
+                )
+                for group_id in defaults.pop("groups", [])
+            }
+
+            if action == Action.ENROLL:
+                user = User.objects.create(**defaults)
+                if user.type == UserTypes.INTERNAL_SERVICE_ACCOUNT:
+                    user.set_unusable_password()
+                    user.save()
+                connection.user = user
+                connection.save()
+            elif action in (Action.AUTH, Action.LINK):
+                user = connection.user
+                user.update_attributes(defaults)
+            else:
+                return False
+
+            groups: list[Group] = []
+            for group_id, properties in group_properties.items():
+                group = self._handle_group(group_id, properties)
+                if group:
+                    groups.append(group)
+
+            with transaction.atomic():
+                user.ak_groups.remove(*user.ak_groups.filter(groupsourceconnection__source=self.source))
+                user.ak_groups.add(*groups)
 
         except PropertyMappingExpressionException as exc:
             raise StopSync(exc, None, exc.mapping) from exc
@@ -90,40 +123,21 @@ class KerberosSync:
         self._logger.debug("Synced User", user=ak_user.username, created=created)
         return True
 
-    def update_or_create_user(self, principal: str, data: dict[str, Any], groups: list[Group]) -> tuple[User, bool]:
-        """
-        Same as django's update_or_create but correctly update attributes by merging dicts,
-        and create a UserKerberosSourceConnection object if needed
-        """
-        user_source_connection = UserKerberosSourceConnection.objects.filter(
-            source=self._source, identifier=principal
-        ).first()
-
-        # User doesn't exists
-        if not user_source_connection:
-            with transaction.atomic():
-                user = User.objects.create(**data)
-                if user.type == UserTypes.INTERNAL_SERVICE_ACCOUNT:
-                    user.set_unusable_password()
-                    user.save()
-                user_source_connection = UserKerberosSourceConnection.objects.create(
-                    source=self._source, user=user, identifier=principal
-                )
-                user.ak_groups.set(groups)
-            return user, True
-
-        user = user_source_connection.user
-        user.update_attributes(data)
-        with transaction.atomic():
-            user.ak_groups.remove(
-                *user.ak_groups.filter(groupsourceconnection__source=self._source)
-            )
-            user.ak_groups.add(*groups)
-        return user, False
-
-    def update_or_create_group(self, group_id: str, group_attributes: dict[str, Any | dict[str, Any]]) -> Group:
-        # TODO: raise integrity error on group sync fail
-        pass
+    def _handle_group(self, group_id: str, defaults: dict[str, Any | dict[str, Any]]) -> Group | None:
+        action, connection = self.matcher.get_group_action(group_id, defaults)
+        if action == Action.DENY:
+            return None
+        if action == Action.ENROLL:
+            group = Group.objects.create(**defaults)
+            connection.group = group
+            connection.save()
+            return group
+        if action in (Action.AUTH, Action.LINK):
+            group = connection.group
+            group.update_attributes(**defaults)
+            connection.save()
+            return group
+        return None
 
     def sync(self) -> int:
         """Iterate over all Kerberos users and create authentik_core.User instances"""
@@ -134,6 +148,6 @@ class KerberosSync:
         user_count = 0
         with Krb5ConfContext(self._source):
             for principal in self._connection.principals():
-                if self._sync_principal(principal):
+                if self._handle_principal(principal):
                     user_count += 1
         return user_count
