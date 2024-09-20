@@ -54,10 +54,12 @@ updates:
       esbuild:
         patterns:
           - "@esbuild/*"
+          - "esbuild*"
       rollup:
         patterns:
           - "@rollup/*"
           - "rollup-*"
+          - "rollup*"
       swc:
         patterns:
           - "@swc/*"
