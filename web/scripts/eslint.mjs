@@ -25,7 +25,7 @@ function changedFiles() {
 
     const sourceFiles = [...changed, ...untracked].filter((line) => /^src\//.test(line));
     const scriptFiles = [...changed, ...untracked].filter(
-        (line) => /^scripts\//.test(line) || !/^src\//.test(line),
+        (line) => /^scripts\//.test(line) || !/^src\//.test(line)
     );
 
     return [...sourceFiles, ...scriptFiles];

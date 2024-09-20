@@ -27,16 +27,15 @@ export interface ApplicationWizardState {
     app: Partial<ApplicationRequest>;
     provider: OneOfProvider;
     errors: ValidationError;
-    bindings: Partial<PolicyBinding>[];
+    bindings: PolicyBinding[];
     currentBinding: number;
 }
 
-export interface StatusType {
-    enable?: string | string[];
-    disable?: string | string[];
+export interface ApplicationWizardStateUpdate {
+    providerModel?: string;
+    app?: Partial<ApplicationRequest>;
+    provider?: OneOfProvider;
+    errors?: ValidationError;
+    bindings?: PolicyBinding[];
+    currentBinding?: number;
 }
-
-export type ApplicationWizardStateUpdate = {
-    update?: Partial<ApplicationWizardState>;
-    status?: StatusType;
-};

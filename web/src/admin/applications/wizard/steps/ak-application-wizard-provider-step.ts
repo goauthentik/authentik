@@ -1,11 +1,13 @@
-import { type WizardButton } from "@goauthentik/components/ak-wizard/types";
+import { type NavigableButton, type WizardButton } from "@goauthentik/components/ak-wizard/types";
 
 import { msg } from "@lit/localize";
-import { nothing } from "lit";
+import { PropertyValues, nothing } from "lit";
 import { customElement, query, state } from "lit/decorators.js";
 import { html, unsafeStatic } from "lit/static-html.js";
 
 import { ApplicationWizardStep } from "../ApplicationWizardStep.js";
+import { OneOfProvider } from "../types.js";
+import { ApplicationWizardProviderForm } from "./providers/ApplicationWizardProviderForm.js";
 import "./providers/ak-application-wizard-provider-for-forward-domain-proxy.js";
 import "./providers/ak-application-wizard-provider-for-ldap.js";
 import "./providers/ak-application-wizard-provider-for-oauth.js";
@@ -37,32 +39,44 @@ export class ApplicationWizardProviderStep extends ApplicationWizardStep {
     errors = new Map<string, string>();
 
     @query("#providerform")
-    form!: HTMLFormElement;
+    element!: ApplicationWizardProviderForm<OneOfProvider>;
 
-    override handleNavigationEvent(button: WizardButton) {
-        if (button.kind === "next" && !this.form.valid) {
-            this.dispatchUpdate({
-                status: { disable: ["bindings", "submit"] },
+    get valid() {
+        return this.element.valid;
+    }
+
+    get formValues() {
+        return this.element.formValues;
+    }
+
+    override handleButton(button: NavigableButton) {
+        if (button.kind === "next") {
+            if (!this.valid) {
+                this.handleEnabling({
+                    disabled: ["bindings", "submit"],
+                });
+                return;
+            }
+            this.handleUpdate({ provider: this.formValues }, button.destination, {
+                enable: ["bindings", "submit"],
             });
             return;
         }
-
-        this.dispatchUpdate({
-            update: { provider: this.formValues },
-            status: { enable: "bindings" },
-        });
-        super.handleNavigationEvent(button);
+        super.handleButton(button);
     }
 
     get buttons(): WizardButton[] {
         return [
-            { kind: "next", destination: "submit" },
+            { kind: "next", destination: "bindings" },
             { kind: "back", destination: "provider-choice" },
             { kind: "cancel" },
         ];
     }
 
     renderMain() {
+        if (!this.wizard.providerModel) {
+            throw new Error("Attempted to access provider page without providing a provider type.");
+        }
         const tag = providerToTag.get(this.wizard.providerModel);
         return tag
             ? html`<${unsafeStatic(tag)}
@@ -71,6 +85,15 @@ export class ApplicationWizardProviderStep extends ApplicationWizardStep {
             .errors=${this.errors}
             ></${unsafeStatic(tag)}>`
             : nothing;
+    }
+
+    updated(changed: PropertyValues<this>) {
+        if (changed.has("wizard")) {
+            const label = this.element?.label ?? this.label;
+            if (label !== this.label) {
+                this.label = label;
+            }
+        }
     }
 }
 

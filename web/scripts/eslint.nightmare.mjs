@@ -1,7 +1,6 @@
 import eslint from "@eslint/js";
 import tsparser from "@typescript-eslint/parser";
 import litconf from "eslint-plugin-lit";
-import sonar from "eslint-plugin-sonarjs";
 import wcconf from "eslint-plugin-wc";
 import globals from "globals";
 import tseslint from "typescript-eslint";
@@ -9,7 +8,6 @@ import tseslint from "typescript-eslint";
 const MAX_DEPTH = 4;
 const MAX_NESTED_CALLBACKS = 4;
 const MAX_PARAMS = 5;
-const MAX_COGNITIVE_COMPLEXITY = 9;
 
 const rules = {
     "accessor-pairs": "error",
@@ -128,9 +126,6 @@ const rules = {
 
     "no-unused-vars": "off",
     "no-console": ["error", { allow: ["debug", "warn", "error"] }],
-    "sonarjs/cognitive-complexity": ["off", MAX_COGNITIVE_COMPLEXITY],
-    "sonarjs/no-duplicate-string": "off",
-    "sonarjs/no-nested-template-literals": "off",
     "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/no-unused-vars": [
         "error",
@@ -167,7 +162,6 @@ export default [
     wcconf.configs["flat/recommended"],
     litconf.configs["flat/recommended"],
     ...tseslint.configs.recommended,
-    sonar.configs.recommended,
     {
         languageOptions: {
             parser: tsparser,

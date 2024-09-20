@@ -61,7 +61,7 @@ export class AkApplicationWizardHint extends AKElement implements ShowHintContro
         super();
         this.showHintController = new ShowHintController(
             this,
-            "202310-application-wizard-announcement",
+            "202310-application-wizard-announcement"
         );
     }
 
@@ -107,7 +107,11 @@ export class AkApplicationWizardHint extends AKElement implements ShowHintContro
                         <!-- <a href="(link to docs)">Learn more about the wizard here.</a> -->
                     </p>
                     <ak-application-wizard .open=${getURLParam("createWizard", false)}>
-                        <button slot="trigger" class="pf-c-button pf-m-primary">
+                        <button
+                            slot="trigger"
+                            class="pf-c-button pf-m-primary"
+                            data-ouia-component-id="start-application-wizard"
+                        >
                             ${msg("Create with wizard")}
                         </button>
                     </ak-application-wizard>

@@ -7,7 +7,7 @@ import { customElement, property } from "lit/decorators.js";
 
 import { wizardStepContext } from "./WizardContexts";
 import { type WizardStep } from "./WizardStep";
-import { WizardNavigationEvent } from "./events";
+import { NavigationUpdate, WizardNavigationEvent } from "./events";
 import { WizardStepState } from "./types";
 
 /**
@@ -15,9 +15,11 @@ import { WizardStepState } from "./types";
  * @component ak-wizard-Steps
  *
  * This class keeps *all* the steps of the wizard, and knows the identity of the "current" step.
- * When a navigation event reaches it, it changes the view to show that step. It can determine the
- * slot names and identities dynamically from the slot names of its immediate children, and will
- * recalculate the slots if the component using this class changes them.
+ * When a navigation event reaches it, it changes the view to show that step. Optionally, it can
+ * process a "details" object from the WizardNavigationEvent that assigns enabled/disabled flags to
+ * children that inherit from WizardStep. It can determine the slot names and identities dynamically
+ * from the slot names of its immediate children, and will recalculate the slots if the component
+ * using this class changes them.
  *
  */
 
@@ -25,9 +27,6 @@ import { WizardStepState } from "./types";
 export class WizardStepsManager extends AKElement {
     @property({ type: String, attribute: true })
     currentStep?: string;
-
-    @property({ type: Array, attribute: false })
-    enabled: string[] = [];
 
     wizardStepContext!: ContextProvider<{ __context__: WizardStepState | undefined }>;
 
@@ -48,6 +47,14 @@ export class WizardStepsManager extends AKElement {
 
     findSlots() {
         this.slots = Array.from(this.querySelectorAll("[slot]"));
+    }
+
+    findSlot(name?: string) {
+        const target = this.slots.find((slot) => slot.slot === name);
+        if (!target) {
+            throw new Error(`Request for wizard panel that does not exist: ${name}`);
+        }
+        return target;
     }
 
     get stepLabels() {
@@ -89,23 +96,62 @@ export class WizardStepsManager extends AKElement {
     onSlotchange(ev: Event) {
         ev.stopPropagation();
         this.findSlots();
-        if (!this.slots.find((slot) => slot.id === this.currentStep)) {
-            throw new Error(`Slot update caused currentStep ${this.currentStep} to be invalid.`);
-        }
+        this.findSlot(this.currentStep);
         this.findStepLabels();
+    }
+
+    // This event sequence handles the following possibilities:
+    // - The user on a step validated and wants to move forward. We want to make sure the *next*
+    //   step in enabled.
+    // - The user went *back* and changed a step and it is no longer valid. We want to disable all
+    //   future steps until that is corrected. Yes, in this case the flow is "Now you have to go
+    //   through the entire wizard," but since the user invalidated a prior, that shouldn't be
+    //   unexpected.  None of the data will have been lost.
+
+    updateStepAvailability(details: NavigationUpdate) {
+        const asArr = (v?: string[] | string) =>
+            v === undefined ? [] : Array.isArray(v) ? v : [v];
+        const enabled = asArr(details.enable);
+        enabled.forEach((name) => {
+            this.findSlot(name).enabled = true;
+        });
+        if (details.disabled !== undefined) {
+            const disabled = asArr(details.disabled);
+            this.slots.forEach((slot) => {
+                slot.enabled = !disabled.includes(slot.slot);
+            });
+        }
+        if (details.hidden !== undefined) {
+            const hidden = asArr(details.hidden);
+            this.slots.forEach((slot) => {
+                slot.hidden = hidden.includes(slot.slot);
+            });
+        }
     }
 
     @bound
     onNavigation(ev: WizardNavigationEvent) {
         ev.stopPropagation();
-        const { destination } = ev;
-        // This overcomes a scheduling bug where native events can be asynchronous, resulting in the
-        // delivery of enabling messages happening after the delivery of navigation messages.
+        const { destination, details } = ev;
+
+        if (details) {
+            this.updateStepAvailability(details);
+        }
+
+        if (!destination) {
+            return;
+        }
+
         const target = this.slots.find((slot) => slot.slot === destination);
         if (!target) {
             throw new Error(`Attempted to navigate to unknown step: ${destination}`);
         }
-        target.enabled = true;
+        if (!target.enabled) {
+            throw new Error(`Attempted to navigate to disabled step: ${destination}`);
+        }
+        if (target.slot === this.currentStep) {
+            return;
+        }
         this.currentStep = target.slot;
         this.wizardStepContext.setValue({
             stepLabels: this.stepLabels,

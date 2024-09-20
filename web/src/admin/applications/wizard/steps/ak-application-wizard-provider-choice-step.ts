@@ -1,6 +1,5 @@
-import { styles } from "@goauthentik/admin/applications/wizard/ApplicationWizardFormStepStyles.css.js";
 import { ApplicationWizardStep } from "@goauthentik/admin/applications/wizard/ApplicationWizardStep.js";
-import type { WizardButton } from "@goauthentik/components/ak-wizard/types";
+import type { NavigableButton, WizardButton } from "@goauthentik/components/ak-wizard/types";
 import "@goauthentik/elements/EmptyState.js";
 import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider.js";
 import { bound } from "@goauthentik/elements/decorators/bound.js";
@@ -22,7 +21,7 @@ export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(Appl
     label = msg("Choose A Provider");
 
     @state()
-    errorMessage = "";
+    failureMessage = "";
 
     get buttons(): WizardButton[] {
         return [
@@ -32,26 +31,25 @@ export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(Appl
         ];
     }
 
-    override handleNavigationEvent(button: WizardButton) {
-        this.errorMessage = "";
-        if (button.kind === "next" && !this.wizard.providerModel) {
-            this.errorMessage = msg("Please choose a provider type before proceeding.");
-            this.dispatchUpdate({
-                status: { disable: ["provider", "bindings", "submit"] },
-            });
+    override handleButton(button: NavigableButton) {
+        this.failureMessage = "";
+        if (button.kind === "next") {
+            if (!this.wizard.providerModel) {
+                this.failureMessage = msg("Please choose a provider type before proceeding.");
+                this.handleEnabling({ disabled: ["provider", "bindings", "submit"] });
+                return;
+            }
+            this.handleUpdate(undefined, button.destination, { enable: "provider" });
             return;
         }
-        this.dispatchUpdate({ status: { enable: ["provider"] } });
-        super.handleNavigationEvent(button);
+        super.handleButton(button);
     }
 
     @bound
     onSelect(ev: CustomEvent<LocalTypeCreate>) {
         ev.stopPropagation();
         const detail: TypeCreate = ev.detail;
-        this.dispatchUpdate({
-            update: { providerModel: detail.modelName },
-        });
+        this.handleUpdate({ providerModel: detail.modelName });
     }
 
     renderForm(model: string) {
@@ -68,9 +66,9 @@ export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(Appl
 
         return providerModelsList.length > 0
             ? html`<form class="pf-c-form pf-m-horizontal" slot="form">
-                  ${this.errorMessage !== ""
+                  ${this.failureMessage !== ""
                       ? html`<p class="pf-c-form__helper-text pf-m-error" aria-live="polite">
-                            ${this.errorMessage}
+                            ${this.failureMessage}
                         </p>`
                       : nothing}
 

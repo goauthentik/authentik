@@ -1,9 +1,19 @@
+export type NavigationUpdate = {
+    disabled?: string[];
+    enable?: string | string[];
+    hidden?: string[];
+};
+
 export class WizardNavigationEvent extends Event {
-    destination: string;
+    destination?: string;
+
+    details?: NavigationUpdate;
+
     static readonly eventName = "ak-wizard-navigation";
-    constructor(destination: string) {
+    constructor(destination?: string, details?: NavigationUpdate) {
         super(WizardNavigationEvent.eventName, { bubbles: true, composed: true });
         this.destination = destination;
+        this.details = details;
     }
 }
 

@@ -110,9 +110,6 @@ export class AKElement extends LitElement {
                 root.adoptedStyleSheets = [...root.adoptedStyleSheets, sheet];
             });
         });
-        if ("wizardTitle" in this) {
-            console.log(this, root, root.adoptedStyleSheets);
-        }
     }
 
     _applyTheme(root: DocumentOrShadowRoot, theme?: UiThemeEnum): void {

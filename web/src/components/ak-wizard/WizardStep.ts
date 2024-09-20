@@ -10,12 +10,11 @@ import { classMap } from "lit/directives/class-map.js";
 import { map } from "lit/directives/map.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFModalBox from "@patternfly/patternfly/components/ModalBox/modal-box.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFWizard from "@patternfly/patternfly/components/Wizard/wizard.css";
 
 import { wizardStepContext } from "./WizardContexts.js";
-import { WizardCloseEvent, WizardNavigationEvent } from "./events.js";
+import { NavigationUpdate, WizardCloseEvent, WizardNavigationEvent } from "./events.js";
 import { WizardStepLabel, WizardStepState } from "./types";
 import { type ButtonKind, type NavigableButton, type WizardButton } from "./types";
 
@@ -63,6 +62,7 @@ export class WizardStep extends AKElement {
             PFTitle,
             css`
                 .ak-wizard-box {
+                    max-height: 75%;
                     max-height: 75vh;
                 }
             `,
@@ -131,13 +131,24 @@ export class WizardStep extends AKElement {
         throw new Error("This must be overridden in client classes");
     }
 
-    // Override this to intercept 'next' and 'back' events and perform validation before allowing
-    // navigation to continue.
-    public handleNavigationEvent(button: WizardButton) {
-        if (!isNavigable(button)) {
-            throw new Error("Non-navigable button sent to handleNavigationEvent");
+    // Override this to intercept 'next' and 'back' events, perform validation, and include enabling
+    // before allowing navigation to continue.
+    public handleButton(button: WizardButton, details?: NavigationUpdate) {
+        if (["close", "cancel"].includes(button.kind)) {
+            this.dispatchEvent(new WizardCloseEvent());
+            return;
         }
-        this.dispatchEvent(new WizardNavigationEvent(button.destination));
+
+        if (isNavigable(button)) {
+            this.dispatchEvent(new WizardNavigationEvent(button.destination, details));
+            return;
+        }
+
+        throw new Error(`Incoherent button passed: ${JSON.stringify(button, null, 2)}`);
+    }
+
+    public handleEnabling(details: NavigationUpdate) {
+        this.dispatchEvent(new WizardNavigationEvent(undefined, details));
     }
 
     // END Public API
@@ -156,7 +167,10 @@ export class WizardStep extends AKElement {
     @bound
     onWizardNavigationEvent(ev: Event, button: WizardButton) {
         ev.stopPropagation();
-        this.handleNavigationEvent(button);
+        if (!isNavigable(button)) {
+            throw new Error("Non-navigable button sent to handleNavigationEvent");
+        }
+        this.handleButton(button);
     }
 
     @bound
@@ -209,6 +223,7 @@ export class WizardStep extends AKElement {
             class=${classMap(this.getButtonClasses(button))}
             type="button"
             @click=${(ev: Event) => this.onWizardNavigationEvent(ev, button)}
+            data-ouid-button-kind="wizard-${button.kind}"
         >
             ${this.getButtonLabel(button)}
         </button>`;
@@ -249,7 +264,7 @@ export class WizardStep extends AKElement {
                         class=${classMap(buttonClasses)}
                         ?disabled=${!step.enabled}
                         @click=${this.onSidebarNav}
-                        target=${step.id}
+                        value=${step.id}
                     >
                         ${step.label}
                     </button>
@@ -262,7 +277,7 @@ export class WizardStep extends AKElement {
         return this.wizardStepState.currentStep === this.getAttribute("slot")
             ? html` <div class="pf-c-modal-box">
                   <div class="pf-c-wizard ak-wizard-box">
-                      <div class="pf-c-wizard__header">
+                      <div class="pf-c-wizard__header" data-ouid-component-id="wizard-header">
                           ${this.canCancel ? this.renderHeaderCancelIcon() : nothing}
                           <h1 class="pf-c-title pf-m-3xl pf-c-wizard__title">
                               ${this.wizardTitle}
@@ -272,7 +287,7 @@ export class WizardStep extends AKElement {
 
                       <div class="pf-c-wizard__outer-wrap">
                           <div class="pf-c-wizard__inner-wrap">
-                              <nav class="pf-c-wizard__nav">
+                              <nav class="pf-c-wizard__nav" data-ouid-component-id="wizard-navbar">
                                   <ol class="pf-c-wizard__nav-list">
                                       ${map(
                                           this.wizardStepState.stepLabels,
@@ -281,13 +296,20 @@ export class WizardStep extends AKElement {
                                   </ol>
                               </nav>
                               <main class="pf-c-wizard__main">
-                                  <div id="main-content" class="pf-c-wizard__main-body">
+                                  <div
+                                      id="main-content"
+                                      class="pf-c-wizard__main-body"
+                                      data-ouid-component-id="wizard-body"
+                                  >
                                       ${this.renderMain()}
                                   </div>
                               </main>
                           </div>
-                          <footer class="pf-c-wizard__footer">
-                              ${map(this.buttons, this.renderButton)}
+                          <footer
+                              class="pf-c-wizard__footer"
+                              data-ouid-component-id="wizard-footer"
+                          >
+                              ${this.buttons.map(this.renderButton)}
                           </footer>
                       </div>
                   </div>

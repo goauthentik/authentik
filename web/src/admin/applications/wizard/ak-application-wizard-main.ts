@@ -7,12 +7,11 @@ import { html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 import "./steps/ak-application-wizard-application-step.js";
+import "./steps/ak-application-wizard-bindings-step.js";
 import "./steps/ak-application-wizard-provider-choice-step.js";
 import "./steps/ak-application-wizard-provider-step.js";
 import "./steps/ak-application-wizard-submit-step.js";
 import { type ApplicationWizardState, type ApplicationWizardStateUpdate } from "./types";
-
-const asArr = <T>(v: T | T[]): T[] => (Array.isArray(v) ? v : [v]);
 
 const freshWizardState = (): ApplicationWizardState => ({
     providerModel: "",
@@ -28,9 +27,6 @@ export class AkApplicationWizardMain extends AKElement {
     @state()
     wizard: ApplicationWizardState = freshWizardState();
 
-    @state()
-    enabled: Set<string> = new Set(["application"]);
-
     constructor() {
         super();
         this.addEventListener(WizardUpdateEvent.eventName, this.handleUpdate);
@@ -39,25 +35,17 @@ export class AkApplicationWizardMain extends AKElement {
     @bound
     handleUpdate(ev: WizardUpdateEvent<ApplicationWizardStateUpdate>) {
         ev.stopPropagation();
-        const { update, status } = ev.content;
+        const update = ev.content;
         if (update !== undefined) {
             this.wizard = {
                 ...this.wizard,
                 ...update,
             };
         }
-        if (status !== undefined) {
-            const enable = asArr(status.enable ?? []);
-            const disable = asArr(status.disable ?? []);
-            this.enabled = new Set([
-                ...Array.from(this.enabled.keys()).filter((k: string) => !disable.includes(k)),
-                ...enable,
-            ]);
-        }
     }
 
     render() {
-        return html`<ak-wizard-steps .enabled=${Array.from(this.enabled.keys())}>
+        return html`<ak-wizard-steps>
             <ak-application-wizard-application-step
                 slot="application"
                 .wizard=${this.wizard}
@@ -70,6 +58,10 @@ export class AkApplicationWizardMain extends AKElement {
                 slot="provider"
                 .wizard=${this.wizard}
             ></ak-application-wizard-provider-step>
+            <ak-application-wizard-bindings-step
+                slot="bindings"
+                .wizard=${this.wizard}
+            ></ak-application-wizard-bindings-step>
             <ak-application-wizard-submit-step
                 slot="submit"
                 .wizard=${this.wizard}

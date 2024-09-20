@@ -1,7 +1,6 @@
 import eslint from "@eslint/js";
 import tsparser from "@typescript-eslint/parser";
 import litconf from "eslint-plugin-lit";
-import sonar from "eslint-plugin-sonarjs";
 import wcconf from "eslint-plugin-wc";
 import globals from "globals";
 import tseslint from "typescript-eslint";
@@ -30,7 +29,6 @@ export default [
     wcconf.configs["flat/recommended"],
     litconf.configs["flat/recommended"],
     ...tseslint.configs.recommended,
-    sonar.configs.recommended,
     {
         languageOptions: {
             parser: tsparser,
@@ -43,9 +41,6 @@ export default [
         rules: {
             "no-unused-vars": "off",
             "no-console": ["error", { allow: ["debug", "warn", "error"] }],
-            "sonarjs/cognitive-complexity": ["off", 9],
-            "sonarjs/no-duplicate-string": "off",
-            "sonarjs/no-nested-template-literals": "off",
             "@typescript-eslint/ban-ts-comment": "off",
             "@typescript-eslint/no-unused-vars": [
                 "error",

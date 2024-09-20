@@ -10,6 +10,8 @@ import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+
 import {
     type ApplicationRequest,
     CoreApi,
@@ -20,6 +22,7 @@ import {
 } from "@goauthentik/api";
 
 import { ApplicationWizardStep } from "../ApplicationWizardStep.js";
+import { OneOfProvider } from "../types.js";
 import { type ProviderModelType, providerModelsList } from "./ProviderChoices.js";
 import { providerRenderers } from "./SubmitStepOverviewRenderers.js";
 
@@ -29,8 +32,11 @@ type SubmitStates = (typeof _submitStates)[number];
 type NonEmptyArray<T> = [T, ...T[]];
 
 type ExtendedValidationError = ValidationError & {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     app?: any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     provider?: any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     detail?: any;
 };
 
@@ -49,6 +55,10 @@ function cleanApplication(app: Partial<ApplicationRequest>): ApplicationRequest 
 
 @customElement("ak-application-wizard-submit-step")
 export class ApplicationWizardSubmitStep extends CustomEmitterElement(ApplicationWizardStep) {
+    static get styles() {
+        return [...ApplicationWizardStep.styles, PFDescriptionList];
+    }
+
     label = msg("Review and Submit Application");
 
     @state()
@@ -58,10 +68,20 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
     errors?: ValidationError;
 
     async send() {
+        const app = this.wizard.app;
+        const provider = this.wizard.provider;
+        if (app === undefined) {
+            throw new Error("Reached the submit state with the app undefined");
+        }
+
+        if (provider === undefined) {
+            throw new Error("Reached the submit state with the provider undefined");
+        }
+
         const request: TransactionApplicationRequest = {
             providerModel: this.currentProviderModel.modelName as ProviderModelType,
-            app: cleanApplication(this.wizard.app),
-            provider: this.currentProviderModel.converter(this.wizard.provider),
+            app: cleanApplication(app),
+            provider: this.currentProviderModel.converter(provider),
         };
 
         this.errors = undefined;
@@ -85,13 +105,13 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
         );
     }
 
-    override handleNavigationEvent(button: WizardButton) {
-        match([button.kind, state])
+    override handleButton(button: WizardButton) {
+        match([button.kind, this.state])
             .with([P.union("back", "cancel"), P._], () => {
-                super.handleNavigationEvent(button);
+                super.handleButton(button);
             })
             .with(["close", "submitted"], () => {
-                super.handleNavigationEvent(button);
+                super.handleButton(button);
             })
             .with(["next", "reviewing"], () => {
                 this.send();
@@ -100,18 +120,26 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
                 throw new Error("No buttons should be showing when running submit phase");
             })
             .otherwise(() => {
-                throw new Error("Submit step received incoherent button/state combination");
+                throw new Error(
+                    `Submit step received incoherent button/state combination: ${[button.kind, state]}`
+                );
             });
     }
 
     get buttons(): WizardButton[] {
-        return match<SubmitStates, WizardButton[]>(this.state)
-            .with("submitted", () => [{ kind: "close" }])
+        const forReview: WizardButton[] = [
+            { kind: "next", label: msg("Submit"), destination: "here" },
+            { kind: "back", destination: "bindings" },
+            { kind: "cancel" },
+        ];
+
+        const forSubmit: WizardButton[] = [{ kind: "close" }];
+
+        return match(this.state)
+            .with("submitted", () => forSubmit)
             .with("running", () => [])
-            .with("reviewing", () => [
-                { kind: "next", label: msg("Submit"), destination: "here" },
-                { kind: "cancel" },
-            ]) as unknown as WizardButton[];
+            .with("reviewing", () => forReview)
+            .exhaustive();
     }
 
     get currentProviderModel() {
@@ -138,7 +166,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
     }
 
     renderInfo(state: string, label: string, icon: string[]) {
-        return html`<div>
+        return html`<div data-ouid-component-state=${this.state}>
             <div class="pf-l-bullseye">
                 <div class="pf-c-empty-state pf-m-lg">
                     <div class="pf-c-empty-state__content">
@@ -209,49 +237,49 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
                 )}`;
     }
 
-    renderReview() {
+    renderReview(app: Partial<ApplicationRequest>, provider: OneOfProvider) {
         const renderer = providerRenderers.get(this.currentProviderModel.modelName);
         return html`<h2 class="pf-c-title pf-m-xl">${msg("Application")}</h2>
             <dl class="pf-c-description-list">
                 <div class="pf-c-description-list__group">
                     <dt class="pf-c-description-list__term">Name</dt>
-                    <dt class="pf-c-description-list__description">${this.wizard.app.name}</dt>
+                    <dt class="pf-c-description-list__description">${app.name}</dt>
                 </div>
                 <div class="pf-c-description-list__group">
                     <dt class="pf-c-description-list__description">
                         ${msg("Policy Engine Mode:")}:
                         <strong
-                            >${this.wizard.app.policyEngineMode === PolicyEngineMode.Any
+                            >${app.policyEngineMode === PolicyEngineMode.Any
                                 ? msg("Any")
                                 : msg("All")}</strong
                         >
                     </dt>
                 </div>
-                ${(this.wizard.app.metaLaunchUrl ?? "").trim() !== ""
+                ${(app.metaLaunchUrl ?? "").trim() !== ""
                     ? html` <div class="pf-c-description-list__group">
                           <dt class="pf-c-description-list__term">Launch URL</dt>
-                          <dt class="pf-c-description-list__description">
-                              ${this.wizard.app.metaLaunchUrl}
-                          </dt>
+                          <dt class="pf-c-description-list__description">${app.metaLaunchUrl}</dt>
                       </div>`
                     : nothing}
             </dl>
             ${renderer
-                ? html` <h2 class="pf-c-title pf-m-xl">${msg("Provider")}</h2>
-                      ${renderer(this.wizard.provider)}`
+                ? html` <h2 class="pf-c-title pf-m-xl pf-u-pt-xl">${msg("Provider")}</h2>
+                      ${renderer(provider)}`
                 : nothing}
             ${this.renderErrors()} `;
     }
 
     renderMain() {
-        if (!(this.wizard && this.wizard.app && this.wizard.provider)) {
+        const app = this.wizard.app;
+        const provider = this.wizard.provider;
+        if (!(this.wizard && app && provider)) {
             throw new Error("Submit step received uninitialized wizard context");
         }
-
-        match(this.state)
+        return match(this.state)
             .with("submitted", () => this.renderSuccess())
             .with("running", () => this.renderRunning())
-            .with("reviewing", () => this.renderReview());
+            .with("reviewing", () => this.renderReview(app, provider))
+            .exhaustive();
     }
 }
 

@@ -3,7 +3,7 @@ import "@goauthentik/admin/common/ak-license-notice";
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 
-import type { ProviderModelEnum as ProviderModelEnumType, TypeCreate } from "@goauthentik/api";
+import type { TypeCreate } from "@goauthentik/api";
 import { ProviderModelEnum, ProxyMode } from "@goauthentik/api";
 import type {
     LDAPProviderRequest,

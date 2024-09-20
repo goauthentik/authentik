@@ -5,23 +5,26 @@ import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-slug-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
-import { type WizardButton } from "@goauthentik/components/ak-wizard/types";
+import { type NavigableButton, type WizardButton } from "@goauthentik/components/ak-wizard/types";
 import { type KeyUnknown } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
 import { msg } from "@lit/localize";
-import { css, html } from "lit";
+import { html } from "lit";
 import { customElement, query, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import { type ApplicationRequest, type ValidationError } from "@goauthentik/api";
+
+import { ApplicationWizardStateUpdate } from "../types";
 
 const autoTrim = (v: unknown) => (typeof v === "string" ? v.trim() : v);
 
 const trimMany = (o: KeyUnknown, vs: string[]) =>
     Object.fromEntries(vs.map((v) => [v, autoTrim(o[v])]));
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isStr = (v: any): v is string => typeof v === "string";
 
 @customElement("ak-application-wizard-application-step")
@@ -37,6 +40,10 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
     constructor() {
         super();
         this.enabled = true;
+    }
+
+    errorMessage(name: string) {
+        return this.errors.has(name) ? [this.errors.get(name)] : [];
     }
 
     get buttons(): WizardButton[] {
@@ -64,23 +71,29 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
         return this.errors.size === 0;
     }
 
-    errorMessage(name: string) {
-        return this.errors.has(name) ? [this.errors.get(name)] : [];
-    }
+    override handleButton(button: NavigableButton) {
+        if (button.kind === "next") {
+            if (!this.valid) {
+                this.handleEnabling({
+                    disabled: ["provider-choice", "provider", "bindings", "submit"],
+                });
+                return;
+            }
+            const app: Partial<ApplicationRequest> = this.formValues as Partial<ApplicationRequest>;
 
-    override handleNavigationEvent(button: WizardButton) {
-        if (button.kind === "next" && !this.valid) {
-            this.dispatchUpdate({
-                status: { disable: ["provider-choice", "provider", "bindings", "submit"] },
+            let payload: ApplicationWizardStateUpdate = { app: this.formValues };
+            if (app.name && (this.wizard.provider?.name ?? "").trim() === "") {
+                payload = {
+                    ...payload,
+                    provider: { name: `Provider for ${app.name}` },
+                };
+            }
+            this.handleUpdate(payload, button.destination, {
+                enable: "provider-choice",
             });
             return;
         }
-
-        this.dispatchUpdate({
-            update: { app: this.formValues },
-            status: { enable: "provider-choice" },
-        });
-        super.handleNavigationEvent(button);
+        super.handleButton(button);
     }
 
     renderForm(app: Partial<ApplicationRequest>, errors: ValidationError) {

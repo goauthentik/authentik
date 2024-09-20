@@ -1,13 +1,17 @@
 import { styles } from "@goauthentik/admin/applications/wizard/ApplicationWizardFormStepStyles.css.js";
 import { WizardStep } from "@goauthentik/components/ak-wizard/WizardStep.js";
-import { WizardUpdateEvent } from "@goauthentik/components/ak-wizard/events";
+import {
+    NavigationUpdate,
+    WizardNavigationEvent,
+    WizardUpdateEvent,
+} from "@goauthentik/components/ak-wizard/events";
 import { KeyUnknown, serializeForm } from "@goauthentik/elements/forms/Form";
 import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
 
 import { msg } from "@lit/localize";
 import { property, query } from "lit/decorators.js";
 
-import { type ApplicationWizardState, ApplicationWizardStateUpdate } from "./types";
+import { type ApplicationWizardStateUpdate } from "./types";
 
 export class ApplicationWizardStep extends WizardStep {
     static get styles() {
@@ -15,7 +19,7 @@ export class ApplicationWizardStep extends WizardStep {
     }
 
     @property({ type: Object, attribute: false })
-    wizard!: ApplicationWizardState;
+    wizard!: ApplicationWizardStateUpdate;
 
     wizardTitle = msg("New application");
 
@@ -36,11 +40,19 @@ export class ApplicationWizardStep extends WizardStep {
         return serializeForm(elements as unknown as NodeListOf<HorizontalFormElement>);
     }
 
-    dispatchUpdate(update: ApplicationWizardStateUpdate) {
-        this.dispatchEvent(new WizardUpdateEvent(update));
-    }
+    handleUpdate(
+        update?: ApplicationWizardStateUpdate,
+        destination?: string,
+        enable?: NavigationUpdate
+    ) {
+        // Inform ApplicationWizard of content state
+        if (update) {
+            this.dispatchEvent(new WizardUpdateEvent(update));
+        }
 
-    public handleChange(_ev: Event) {
-        /* no op */
+        // Inform WizardStepManager of steps state
+        if (destination || enable) {
+            this.dispatchEvent(new WizardNavigationEvent(destination, enable));
+        }
     }
 }
