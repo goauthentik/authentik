@@ -1567,6 +1567,16 @@ setuptools = "*"
 six = "*"
 
 [[package]]
+name = "durationpy"
+version = "0.7"
+description = "Module for converting between datetime.timedelta and Go's Duration strings."
+optional = false
+python-versions = "*"
+files = [
+    {file = "durationpy-0.7.tar.gz", hash = "sha256:8447c43df4f1a0b434e70c15a38d77f5c9bd17284bfc1ff1d430f233d5083732"},
+]
+
+[[package]]
 name = "email-validator"
 version = "2.2.0"
 description = "A robust email address syntax and deliverability validation library."
@@ -2243,17 +2253,18 @@ zookeeper = ["kazoo (>=2.8.0)"]
 
 [[package]]
 name = "kubernetes"
-version = "30.1.0"
+version = "31.0.0"
 description = "Kubernetes python client"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "kubernetes-30.1.0-py2.py3-none-any.whl", hash = "sha256:e212e8b7579031dd2e512168b617373bc1e03888d41ac4e04039240a292d478d"},
-    {file = "kubernetes-30.1.0.tar.gz", hash = "sha256:41e4c77af9f28e7a6c314e3bd06a8c6229ddd787cad684e0ab9f69b498e98ebc"},
+    {file = "kubernetes-31.0.0-py2.py3-none-any.whl", hash = "sha256:bf141e2d380c8520eada8b351f4e319ffee9636328c137aa432bc486ca1200e1"},
+    {file = "kubernetes-31.0.0.tar.gz", hash = "sha256:28945de906c8c259c1ebe62703b56a03b714049372196f854105afe4e6d014c0"},
 ]
 
 [package.dependencies]
 certifi = ">=14.05.14"
+durationpy = ">=0.7"
 google-auth = ">=1.0.1"
 oauthlib = ">=3.2.2"
 python-dateutil = ">=2.5.3"
