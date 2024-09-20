@@ -28,23 +28,27 @@ class ApplicationWizardView extends AdminPage {
     app = ApplicationForm;
 
     async wizardTitle() {
-        return await $("ak-wizard-frame").$(".pf-c-wizard__title");
+        return await $(".pf-c-wizard__title");
     }
 
     async providerList() {
-        return await $("ak-application-wizard-authentication-method-choice");
+        return await $("ak-application-wizard-provider-choice-step");
     }
 
     async nextButton() {
-        return await $("ak-wizard-frame").$("footer button.pf-m-primary");
+        return await $('button[data-ouid-button-kind="wizard-next"]');
     }
 
     async getProviderType(type: string) {
         return await this.providerList().$(`input[value="${type}"]`);
     }
 
+    async submitPage() {
+        return await $("ak-application-wizard-submit-step");
+    }
+
     async successMessage() {
-        return await $('[data-commit-state="success"]');
+        return await $('[data-ouid-component-state="submitted"]');
     }
 }
 
