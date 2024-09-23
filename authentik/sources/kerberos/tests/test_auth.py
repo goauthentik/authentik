@@ -15,7 +15,6 @@ class TestKerberosAuth(KerberosTestCase):
             name="kerberos",
             slug="kerberos",
             realm=self.realm.realm,
-            password_login_enabled=True,
             sync_users=False,
         )
         self.user = User.objects.create(username=generate_id())

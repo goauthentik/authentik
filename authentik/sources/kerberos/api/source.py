@@ -42,7 +42,6 @@ class KerberosSourceSerializer(SourceSerializer):
             "spnego_server_name",
             "spnego_keytab",
             "spnego_ccache",
-            "password_login_enabled",
             "password_login_update_internal_password",
         ]
         extra_kwargs = {
@@ -74,7 +73,6 @@ class KerberosSourceViewSet(UsedByMixin, ModelViewSet):
         "sync_users_password",
         "sync_principal",
         "spnego_server_name",
-        "password_login_enabled",
         "password_login_update_internal_password",
     ]
     search_fields = [

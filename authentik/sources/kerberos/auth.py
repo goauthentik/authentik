@@ -37,7 +37,7 @@ class KerberosBackend(InbuiltBackend):
     def auth_user(
         self, username: str, realm: str | None, password: str, **filters
     ) -> tuple[User | None, KerberosSource | None]:
-        sources = KerberosSource.objects.filter(enabled=True, password_login_enabled=True)
+        sources = KerberosSource.objects.filter(enabled=True)
         user = User.objects.filter(usersourceconnection__source__in=sources, **filters).first()
 
         if user is not None:

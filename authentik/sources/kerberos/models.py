@@ -79,7 +79,6 @@ class KerberosSource(Source):
         help_text=_("Force the use of a specific server name for SPNEGO"),
         blank=True,
     )
-
     spnego_keytab = models.TextField(
         help_text=_("SPNEGO keytab base64-encoded or path to keytab in the form FILE:path"),
         blank=True,
@@ -89,9 +88,6 @@ class KerberosSource(Source):
         blank=True,
     )
 
-    password_login_enabled = models.BooleanField(
-        default=False, help_text=_("Enable the passwword authentication backend"), db_index=True
-    )
     password_login_update_internal_password = models.BooleanField(
         default=False,
         help_text=_(
@@ -120,6 +116,13 @@ class KerberosSource(Source):
     @property
     def property_mapping_type(self) -> type[PropertyMapping]:
         return KerberosSourcePropertyMapping
+
+    @property
+    def icon_url(self) -> str:
+        icon = super().icon_url
+        if not icon:
+            return static("authentik/sources/kerberos.png")
+        return icon
 
     def ui_login_button(self, request: HttpRequest) -> UILoginButton:
         return UILoginButton(
