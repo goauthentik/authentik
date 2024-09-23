@@ -121,6 +121,8 @@ compliance:
 
 cert_discovery_dir: /certs
 
+django_primary_hasher: null
+
 tenants:
   enabled: false
   api_key: ""
