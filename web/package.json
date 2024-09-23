@@ -83,7 +83,7 @@
         "babel-plugin-tsconfig-paths": "^1.0.3",
         "chokidar": "^4.0.1",
         "cross-env": "^7.0.3",
-        "esbuild": "^0.23.1",
+        "esbuild": "^0.24.0",
         "eslint": "^9.11.0",
         "eslint-plugin-lit": "^1.14.0",
         "eslint-plugin-sonarjs": "^2.0.2",
@@ -118,9 +118,9 @@
     },
     "license": "MIT",
     "optionalDependencies": {
-        "@esbuild/darwin-arm64": "^0.23.0",
+        "@esbuild/darwin-arm64": "^0.24.0",
         "@esbuild/linux-amd64": "^0.18.11",
-        "@esbuild/linux-arm64": "^0.23.0",
+        "@esbuild/linux-arm64": "^0.24.0",
         "@rollup/rollup-darwin-arm64": "4.22.4",
         "@rollup/rollup-linux-arm64-gnu": "4.22.4",
         "@rollup/rollup-linux-x64-gnu": "4.22.4"
