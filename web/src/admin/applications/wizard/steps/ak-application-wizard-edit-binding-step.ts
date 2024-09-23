@@ -9,10 +9,11 @@ import { type NavigableButton, type WizardButton } from "@goauthentik/components
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
+import "@goauthentik/elements/forms/SearchSelect/ak-search-select-ez.js";
 import { ISearchSelectApi } from "@goauthentik/elements/forms/SearchSelect/ak-search-select-ez.js";
 
 import { msg } from "@lit/localize";
-import { html } from "lit";
+import { html, nothing } from "lit";
 import { customElement, query, state } from "lit/decorators.js";
 
 import { CoreApi, Group, PoliciesApi, Policy, PolicyBinding, User } from "@goauthentik/api";
@@ -36,7 +37,7 @@ const PASS_FAIL = [
 export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
     label = msg("Edit Binding");
 
-    hidden = true;
+    hide = true;
 
     @query("form#bindingform")
     form!: HTMLFormElement;
@@ -137,13 +138,15 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
     }
 
     renderSearch(title: string, name: string, config: SearchConfig, policyKind: target) {
-        return html`<ak-form-element-horizontal
-            label=${title}
-            name="policy"
-            ?hidden=${this.policyGroupUser !== policyKind}
-        >
-            <ak-search-select-ez .config=${config} blankable></ak-search-select-ez>
-        </ak-form-element-horizontal>`;
+        return this.policyGroupUser === policyKind
+            ? html`<ak-form-element-horizontal
+                  label=${title}
+                  name="policy"
+                  ?hidden=${this.policyGroupUser !== policyKind}
+              >
+                  <ak-search-select-ez .config=${config} blankable></ak-search-select-ez>
+              </ak-form-element-horizontal>`
+            : nothing;
     }
 
     renderForm(instance?: PolicyBinding) {

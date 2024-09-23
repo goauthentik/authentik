@@ -1,15 +1,22 @@
 import { ApplicationWizardStep } from "@goauthentik/admin/applications/wizard/ApplicationWizardStep.js";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-slug-input";
+import "@goauthentik/components/ak-status-label";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
 import { type WizardButton } from "@goauthentik/components/ak-wizard/types";
+import "@goauthentik/elements/ak-table/ak-select-table.js";
+import { SelectTable } from "@goauthentik/elements/ak-table/ak-select-table.js";
+import { bound } from "@goauthentik/elements/decorators/bound.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement, query } from "lit/decorators.js";
+
+import { makeEditButton } from "./bindings/ak-application-wizard-bindings-edit-button.js";
+import "./bindings/ak-application-wizard-bindings-toolbar.js";
 
 const COLUMNS = [
     [msg("Order"), "order"],
@@ -31,6 +38,26 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
         ];
     }
 
+    @query("ak-select-table")
+    selectTable: SelectTable;
+
+    get bindingsAsColumns() {
+        return this.wizard.bindings.map(({ order, policy, enabled, timeout }, index) => {
+            return {
+                key: index,
+                content: [
+                    order,
+                    policy,
+                    html`<ak-status-label type="warning" ?good=${enabled}></ak-status-label>`,
+                    timeout,
+                    makeEditButton(msg("Edit"), index, (ev: CustomEvent<number>) =>
+                        this.onBindingEvent(ev.detail)
+                    ),
+                ],
+            };
+        });
+    }
+
     // TODO Fix those dispatches so that we handle them here, in this component, and *choose* how to
     // forward them.
     onBindingEvent(binding?: number) {
@@ -39,9 +66,25 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
         });
     }
 
+    onDeleteBindings() {
+        const toDelete = this.selectTable
+            .json()
+            .map((i) => (typeof i === "string" ? parseInt(i, 10) : i));
+        const bindings = this.wizard.bindings.filter((binding, index) => !toDelete.includes(index));
+        this.handleUpdate({ bindings }, "bindings");
+    }
+
     renderEmptyCollection() {
-        return html` <ak-select-table
+        return html` <h6 class="pf-c-title pf-m-md">
+                ${msg("These policies control which users can access this application.")}
+            </h6>
+            <ak-application-wizard-bindings-toolbar
+                @clickNew=${() => this.onBindingEvent()}
+                @clickDelete=${() => this.onDeleteBindings()}
+            ></ak-application-wizard-bindings-toolbar>
+            <ak-select-table
                 multiple
+                id="bindings"
                 order="order"
                 .columns=${COLUMNS}
                 .content=${[]}
@@ -57,18 +100,21 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
     }
 
     renderCollection() {
-        return html`<ak-application-wizard-policy-bindings-toolbar></ak-application-wizard-policy-bindings-toolbar>
+        return html`<h6 class="pf-c-title pf-m-md">
+                ${msg("These policies control which users can access this application.")}
+            </h6>
+            <ak-application-wizard-bindings-toolbar
+                @clickNew=${() => this.onBindingEvent()}
+                @clickDelete=${() => this.onDeleteBindings()}
+                ?can-delete=${this.wizard.bindings.length > 0}
+            ></ak-application-wizard-bindings-toolbar>
             <ak-select-table
                 multiple
+                id="bindings"
                 order="order"
                 .columns=${COLUMNS}
-                .content=${this.wizard.bindings}
-            ></ak-select-table>
-            <div slot="primary">
-                <button @click=${() => this.onBindingEvent()} class="pf-c-button pf-m-primary">
-                    ${msg("Bind policy/group/user")}
-                </button>
-            </div> `;
+                .content=${this.bindingsAsColumns}
+            ></ak-select-table>`;
     }
 
     renderMain() {

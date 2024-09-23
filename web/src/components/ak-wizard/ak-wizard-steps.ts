@@ -46,7 +46,7 @@ export class WizardStepsManager extends AKElement {
     }
 
     findSlots() {
-        this.slots = Array.from(this.querySelectorAll("[slot]"));
+        this.slots = Array.from(this.querySelectorAll("[slot]")) as WizardStep[];
     }
 
     findSlot(name?: string) {
@@ -59,7 +59,7 @@ export class WizardStepsManager extends AKElement {
 
     get stepLabels() {
         return this.slots
-            .filter((slot) => !slot.hidden)
+            .filter((slot) => !slot.hide)
             .map((slot) => ({
                 label: slot.label,
                 id: slot.slot,
@@ -124,7 +124,7 @@ export class WizardStepsManager extends AKElement {
         if (details.hidden !== undefined) {
             const hidden = asArr(details.hidden);
             this.slots.forEach((slot) => {
-                slot.hidden = hidden.includes(slot.slot);
+                slot.hide = hidden.includes(slot.slot);
             });
         }
     }

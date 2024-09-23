@@ -2,7 +2,7 @@ import { AKElement } from "@goauthentik/elements/Base.js";
 import { bound } from "@goauthentik/elements/decorators/bound";
 import { randomId } from "@goauthentik/elements/utils/randomId.js";
 
-import { TemplateResult, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 import { repeat } from "lit/directives/repeat.js";
@@ -75,7 +75,24 @@ export interface ISimpleTable {
 @customElement("ak-simple-table")
 export class SimpleTable extends AKElement implements ISimpleTable {
     static get styles() {
-        return [PFBase, PFTable];
+        return [
+            PFBase,
+            PFTable,
+            css`
+                .pf-c-table thead .pf-c-table__check {
+                    min-width: 3rem;
+                }
+                .pf-c-table tbody .pf-c-table__check input {
+                    margin-top: calc(var(--pf-c-table__check--input--MarginTop) + 1px);
+                }
+                .pf-c-toolbar__content {
+                    row-gap: var(--pf-global--spacer--sm);
+                }
+                .pf-c-toolbar__item .pf-c-input-group {
+                    padding: 0 var(--pf-global--spacer--sm);
+                }
+            `,
+        ];
     }
 
     @property({ type: String, attribute: true, reflect: true })
@@ -109,7 +126,7 @@ export class SimpleTable extends AKElement implements ISimpleTable {
                 ? hosted(new TableColumn(column))
                 : Array.isArray(column)
                   ? hosted(new TableColumn(...column))
-                  : hosted(column),
+                  : hosted(column)
         );
     }
 
@@ -129,10 +146,11 @@ export class SimpleTable extends AKElement implements ISimpleTable {
     }
 
     public renderRow(row: TableRow, _rownum: number) {
+        console.log(row[4].getHTML());
         return html` <tr part="row">
             ${map(
                 row.content,
-                (col, idx) => html`<td part="cell cell-${idx}" role="cell">${col}</td>`,
+                (col, idx) => html`<td part="cell cell-${idx}" role="cell">${col}</td>`
             )}
         </tr>`;
     }
@@ -147,9 +165,9 @@ export class SimpleTable extends AKElement implements ISimpleTable {
     public renderRowGroup({ group, content }: TableGroup) {
         return html`<thead part="group-header">
                 <tr part="group-row">
-                    <th role="columnheader" scope="row" colspan="200" part="group-head">
+                    <td role="columnheader" scope="row" colspan="200" part="group-head">
                         ${group}
-                    </th>
+                    </td>
                 </tr>
             </thead>
             ${this.renderRows(content)}`;

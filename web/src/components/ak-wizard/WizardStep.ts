@@ -111,7 +111,7 @@ export class WizardStep extends AKElement {
     /**
      * If true, this step's label will not be shown in the navigation bar
      */
-    hidden = false;
+    hide = false;
 
     //  ___      _    _ _        _   ___ ___
     // | _ \_  _| |__| (_)__    /_\ | _ \_ _|

@@ -8,6 +8,7 @@ import { customElement, state } from "lit/decorators.js";
 
 import "./steps/ak-application-wizard-application-step.js";
 import "./steps/ak-application-wizard-bindings-step.js";
+import "./steps/ak-application-wizard-edit-binding-step.js";
 import "./steps/ak-application-wizard-provider-choice-step.js";
 import "./steps/ak-application-wizard-provider-step.js";
 import "./steps/ak-application-wizard-submit-step.js";
@@ -62,6 +63,10 @@ export class AkApplicationWizardMain extends AKElement {
                 slot="bindings"
                 .wizard=${this.wizard}
             ></ak-application-wizard-bindings-step>
+            <ak-application-wizard-edit-binding-step
+                slot="edit-binding"
+                .wizard=${this.wizard}
+            ></ak-application-wizard-edit-binding-step>
             <ak-application-wizard-submit-step
                 slot="submit"
                 .wizard=${this.wizard}
