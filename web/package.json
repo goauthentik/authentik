@@ -84,7 +84,7 @@
         "chokidar": "^4.0.1",
         "cross-env": "^7.0.3",
         "esbuild": "^0.23.1",
-        "eslint": "^9.8.0",
+        "eslint": "^9.11.0",
         "eslint-plugin-lit": "^1.14.0",
         "eslint-plugin-sonarjs": "^2.0.2",
         "eslint-plugin-wc": "^2.1.0",

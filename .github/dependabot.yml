@@ -47,6 +47,7 @@ updates:
           - "@typescript-eslint/*"
           - "eslint"
           - "eslint-*"
+          - "@eslint/*"
       storybook:
         patterns:
           - "@storybook/*"
