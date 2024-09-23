@@ -2,7 +2,7 @@
 
 from authentik.core.models import User
 from authentik.lib.generators import generate_id
-from authentik.sources.kerberos.models import KerberosPropertyMapping, KerberosSource
+from authentik.sources.kerberos.models import KerberosSourcePropertyMapping, KerberosSource
 from authentik.sources.kerberos.sync import KerberosSync
 from authentik.sources.kerberos.tasks import kerberos_sync_all
 from authentik.sources.kerberos.tests.utils import KerberosTestCase
@@ -24,11 +24,11 @@ class TestKerberosSync(KerberosTestCase):
 
     def test_sync_mapping(self):
         """Test property mappings"""
-        noop = KerberosPropertyMapping.objects.create(name=generate_id(), expression="return {}")
-        email = KerberosPropertyMapping.objects.create(
+        noop = KerberosSourcePropertyMapping.objects.create(name=generate_id(), expression="return {}")
+        email = KerberosSourcePropertyMapping.objects.create(
             name=generate_id(), expression='return {"email": principal.lower()}'
         )
-        dont_sync_service = KerberosPropertyMapping.objects.create(
+        dont_sync_service = KerberosSourcePropertyMapping.objects.create(
             name=generate_id(),
             expression='if "/" in principal:\n    return {"username": None}\nreturn {}',
         )
