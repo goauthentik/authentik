@@ -39,9 +39,7 @@ class DeviceSerializer(MetaNameSerializer):
     def get_extra_description(self, instance: Device) -> str:
         """Get extra description"""
         if isinstance(instance, WebAuthnDevice):
-            device_type = WebAuthnDeviceType.objects.filter(aaguid=instance.aaguid).first()
-            if device_type:
-                return device_type.description
+            return instance.device_type.description
         return ""
 
 
