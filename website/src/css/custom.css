@@ -119,7 +119,8 @@ body {
 }
 
 .badge--version {
-    --ifm-badge-background-color: var(--ifm-color-info);
+    --ifm-badge-background-color: var(--ifm-color-primary-contrast-background);
+    color: var(--ifm-color-primary-contrast-foreground);
     --ifm-badge-border-color: var(--ifm-badge-background-color);
     font-size: 0.75rem;
     vertical-align: middle;
