@@ -22,7 +22,7 @@ import "@goauthentik/elements/forms/SearchSelect";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
