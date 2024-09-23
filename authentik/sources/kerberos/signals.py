@@ -33,7 +33,7 @@ def kerberos_sync_password(sender, user: User, password: str, **_):
     """Connect to kerberos and update password."""
     user_source_connections = UserKerberosSourceConnection.objects.select_related(
         "source__kerberossource"
-    ).filter(user=user, source__kerberossource__sync_users=True, source__kerberossource__sync_users_password=True)
+    ).filter(user=user, source__enabled=True, source__kerberossource__sync_users=True, source__kerberossource__sync_users_password=True)
     for user_source_connection in user_source_connections:
         source = user_source_connection.source.kerberossource
         with Krb5ConfContext(source):
