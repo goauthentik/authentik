@@ -42,7 +42,7 @@ Starting with authentik 2023.5, when no user fields are selected and only one so
 
 ### Passwordless flow
 
-See [Passwordless authentication](../authenticator_validate/index.md#passwordless-authentication).
+See [Passwordless authentication](../authenticator_validate/index.md#passwordless-authentication-authentik-2021124).
 
 ### Enrollment flow
 

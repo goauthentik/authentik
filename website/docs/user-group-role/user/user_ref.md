@@ -14,7 +14,7 @@ The User object has the following properties:
 -   `is_active` Boolean field if user is active.
 -   `date_joined` Date user joined/was created.
 -   `password_change_date` Date password was last changed.
--   `path` User's path, see [Path](#path)
+-   `path` User's path, see [Path](#path-authentik-20227)
 -   `attributes` Dynamic attributes, see [Attributes](#attributes)
 -   `group_attributes()` Merged attributes of all groups the user is member of and the user's own attributes.
 -   `ak_groups` This is a queryset of all the user's groups.
