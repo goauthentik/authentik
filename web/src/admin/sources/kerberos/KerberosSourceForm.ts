@@ -244,9 +244,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                         name="syncPrincipal"
                         label=${msg("Sync principal")}
                         value=${ifDefined(this.instance?.syncPrincipal)}
-                        help=${msg(
-                            "Principal used to authenticate to the KDC for syncing. Optional if Sync keytab or Sync credentials cache is provided.",
-                        )}
+                        help=${msg("Principal used to authenticate to the KDC for syncing.")}
                     ></ak-text-input>
                     <ak-form-element-horizontal
                         name="syncPassword"
@@ -268,7 +266,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                         <input type="text" value="" class="pf-c-form-control" />
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Keytab used to authenticate to the KDC for syncing. Optional if Sync principal/password or Sync credentials cache is provided. Must be base64 encoded or in the form TYPE:residual.",
+                                "Keytab used to authenticate to the KDC for syncing. Optional if Sync password or Sync credentials cache is provided. Must be base64 encoded or in the form TYPE:residual.",
                             )}
                         </p>
                     </ak-form-element-horizontal>
@@ -277,7 +275,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                         label=${msg("Sync credentials cache")}
                         value=${ifDefined(this.instance?.syncCcache)}
                         help=${msg(
-                            "Credentials cache used to authenticate to the KDC for syncing. Optional if Sync principal/password or Sync keytab is provided. Must be in the form TYPE:residual.",
+                            "Credentials cache used to authenticate to the KDC for syncing. Optional if Sync password or Sync keytab is provided. Must be in the form TYPE:residual.",
                         )}
                     ></ak-text-input>
                 </div>

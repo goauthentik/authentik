@@ -247,7 +247,7 @@ class KerberosSource(Source):
                     status["status"] = "no connection"
                     return status
                 status["principal_exists"] = kadm.principal_exists(self.sync_principal)
-            except kadmin.Error as exc:
+            except kadmin.KAdminError as exc:
                 status["status"] = str(exc)
         return status
 

@@ -1,7 +1,7 @@
 """Kerberos Source sync tests"""
 
-from authentik.core.models import User
 from authentik.blueprints.tests import apply_blueprint
+from authentik.core.models import User
 from authentik.lib.generators import generate_id
 from authentik.sources.kerberos.models import KerberosSource, KerberosSourcePropertyMapping
 from authentik.sources.kerberos.sync import KerberosSync
@@ -23,7 +23,11 @@ class TestKerberosSync(KerberosTestCase):
             sync_principal=self.realm.admin_princ,
             sync_password=self.realm.password("admin"),
         )
-        self.source.user_property_mappings.set(KerberosSourcePropertyMapping.objects.filter(managed__startswith="goauthentik.io/sources/kerberos/user/default/"))
+        self.source.user_property_mappings.set(
+            KerberosSourcePropertyMapping.objects.filter(
+                managed__startswith="goauthentik.io/sources/kerberos/user/default/"
+            )
+        )
 
     def test_default_mappings(self):
         """Test default mappings"""
