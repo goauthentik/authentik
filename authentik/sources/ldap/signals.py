@@ -13,7 +13,6 @@ from authentik.core.models import User
 from authentik.core.signals import password_changed
 from authentik.events.models import Event, EventAction
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
-from authentik.sources.ldap.auth import LDAPBackend
 from authentik.sources.ldap.models import LDAPSource
 from authentik.sources.ldap.password import LDAPPasswordChanger
 from authentik.sources.ldap.tasks import ldap_connectivity_check, ldap_sync_single
