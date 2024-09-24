@@ -73,7 +73,7 @@ class KerberosBackend(InbuiltBackend):
                 if (
                     user_source_connection.source.kerberossource.password_login_update_internal_password
                 ):
-                    user_source_connection.user.set_password(password)
+                    user_source_connection.user.set_password(password, sender=self)
                     user_source_connection.user.save()
                 return user, user_source_connection.source
             # Password doesn't match, onto next source

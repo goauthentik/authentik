@@ -13,6 +13,7 @@ from authentik.core.models import User
 from authentik.core.signals import password_changed
 from authentik.events.models import Event, EventAction
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
+from authentik.sources.ldap.auth import LDAPBackend
 from authentik.sources.ldap.models import LDAPSource
 from authentik.sources.ldap.password import LDAPPasswordChanger
 from authentik.sources.ldap.tasks import ldap_connectivity_check, ldap_sync_single
@@ -59,6 +60,8 @@ def ldap_password_validate(sender, password: str, plan_context: dict[str, Any], 
 @receiver(password_changed)
 def ldap_sync_password(sender, user: User, password: str, **_):
     """Connect to ldap and update password."""
+    if isinstance(sender, LDAPBackend):
+        return
     sources = LDAPSource.objects.filter(sync_users_password=True, enabled=True)
     if not sources.exists():
         return
