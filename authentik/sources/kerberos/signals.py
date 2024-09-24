@@ -9,7 +9,6 @@ from structlog.stdlib import get_logger
 from authentik.core.models import User
 from authentik.core.signals import password_changed
 from authentik.events.models import Event, EventAction
-from authentik.sources.kerberos.auth import KerberosBackend
 from authentik.sources.kerberos.models import (
     KerberosSource,
     Krb5ConfContext,
