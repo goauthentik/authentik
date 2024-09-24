@@ -21,12 +21,13 @@ export class ApplicationWizardStep extends WizardStep {
     @property({ type: Object, attribute: false })
     wizard!: ApplicationWizardStateUpdate;
 
+    // As recommended in [WizardStep](../../../components/ak-wizard/WizardStep.ts), we override
+    // these fields and provide them to all the child classes.
     wizardTitle = msg("New application");
-
     wizardDescription = msg("Create a new application");
-
     canCancel = true;
 
+    // This should be overriden in the children for more precise targeting.
     @query("form")
     form!: HTMLFormElement;
 
@@ -40,7 +41,9 @@ export class ApplicationWizardStep extends WizardStep {
         return serializeForm(elements as unknown as NodeListOf<HorizontalFormElement>);
     }
 
-    handleUpdate(
+    // This pattern became visible during development, and the order is important: wizard updating
+    // and validation must complete before navigation is attempted.
+    public handleUpdate(
         update?: ApplicationWizardStateUpdate,
         destination?: string,
         enable?: NavigationUpdate

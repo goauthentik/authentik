@@ -18,11 +18,7 @@ Configure if the created authenticator is stored in the encrypted memory on the 
 
 Configure if authentik will require either a removable device (like a YubiKey, Google Titan, etc) or a non-removable device (like Windows Hello, TouchID or password managers), or not send a requirement.
 
-#### Device type restrictions
-
-:::info
-Requires authentik 2024.4
-:::
+#### Device type restrictions <span class="badge badge--version">authentik 2024.4+</span>
 
 Optionally restrict the types of devices allowed to be enrolled. This option can be used to ensure users are only able to enroll FIPS-compliant devices for example.
 

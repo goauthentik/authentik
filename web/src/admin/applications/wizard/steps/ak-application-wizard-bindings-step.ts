@@ -7,11 +7,11 @@ import "@goauthentik/components/ak-text-input";
 import { type WizardButton } from "@goauthentik/components/ak-wizard/types";
 import "@goauthentik/elements/ak-table/ak-select-table.js";
 import { SelectTable } from "@goauthentik/elements/ak-table/ak-select-table.js";
-import { bound } from "@goauthentik/elements/decorators/bound.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
+import { P, match } from "ts-pattern";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { html } from "lit";
 import { customElement, query } from "lit/decorators.js";
 
@@ -42,7 +42,15 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
     selectTable: SelectTable;
 
     get bindingsAsColumns() {
-        return this.wizard.bindings.map(({ order, policy, enabled, timeout }, index) => {
+        return this.wizard.bindings.map((binding, index) => {
+            const { order, enabled, timeout } = binding;
+            const isSet = P.string.minLength(1);
+            const policy = match(binding)
+                .with({ policy: isSet }, (v) => msg(str`Policy ${v.policyObj?.name}`))
+                .with({ group: isSet }, (v) => msg(str`Group ${v.groupObj?.name}`))
+                .with({ user: isSet }, (v) => msg(str`User ${v.userObj?.name}`))
+                .otherwise(() => msg("-"));
+
             return {
                 key: index,
                 content: [

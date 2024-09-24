@@ -1,5 +1,4 @@
 import { AKElement } from "@goauthentik/elements/Base";
-import { bound } from "@goauthentik/elements/decorators/bound";
 
 import { msg } from "@lit/localize";
 import { css, html } from "lit";

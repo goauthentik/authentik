@@ -10,6 +10,7 @@ import { classMap } from "lit/directives/class-map.js";
 import { map } from "lit/directives/map.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFModalBox from "@patternfly/patternfly/components/ModalBox/modal-box.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFWizard from "@patternfly/patternfly/components/Wizard/wizard.css";
 
@@ -55,6 +56,8 @@ const BUTTON_KIND_TO_LABEL: Record<ButtonKind, string> = {
  */
 
 export class WizardStep extends AKElement {
+    // These additions are necessary because we don't want to inherit *all* of the modal box
+    // modifiers, just the ones related to managing the height of the display box.
     static get styles() {
         return [
             PFWizard,
@@ -62,8 +65,14 @@ export class WizardStep extends AKElement {
             PFTitle,
             css`
                 .ak-wizard-box {
+                    min-height: 60%;
+                    min-height: 60vh;
                     max-height: 75%;
                     max-height: 75vh;
+                    display: flex;
+                    flex-direction: column;
+                    position: relative;
+                    z-index: 500;
                 }
             `,
         ];
@@ -119,15 +128,15 @@ export class WizardStep extends AKElement {
     // |_|  \_,_|_.__/_|_\__| /_/ \_\_| |___|
     //
 
+    // Override this and provide the buttons for this step. The button type is documented in the
+    // [types](./types.ts) file, but in short, there are four "kinds": "next", "back", "cancel", and
+    // "close."
     public get buttons(): WizardButton[] {
         return [];
     }
 
+    // Override this to provide the form.
     public renderMain() {
-        throw new Error("This must be overridden in client classes");
-    }
-
-    public renderButtons() {
         throw new Error("This must be overridden in client classes");
     }
 
@@ -275,8 +284,8 @@ export class WizardStep extends AKElement {
 
     render() {
         return this.wizardStepState.currentStep === this.getAttribute("slot")
-            ? html` <div class="pf-c-modal-box">
-                  <div class="pf-c-wizard ak-wizard-box">
+            ? html` <div class="pf-c-modal-box ak-wizard-box">
+                  <div class="pf-c-wizard">
                       <div class="pf-c-wizard__header" data-ouid-component-id="wizard-header">
                           ${this.canCancel ? this.renderHeaderCancelIcon() : nothing}
                           <h1 class="pf-c-title pf-m-3xl pf-c-wizard__title">

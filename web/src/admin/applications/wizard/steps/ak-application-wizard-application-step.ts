@@ -39,6 +39,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
 
     constructor() {
         super();
+        // This is the first step. Ensure it is always enabled.
         this.enabled = true;
     }
 

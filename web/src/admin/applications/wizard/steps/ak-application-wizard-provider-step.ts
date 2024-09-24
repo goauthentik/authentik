@@ -77,13 +77,22 @@ export class ApplicationWizardProviderStep extends ApplicationWizardStep {
         if (!this.wizard.providerModel) {
             throw new Error("Attempted to access provider page without providing a provider type.");
         }
+
+        // This is, I'm afraid, some rather esoteric bit of Lit-ing, and it makes ESLint
+        // sad.  It does allow us to get away with specifying very little about the
+        // provider here.
         const tag = providerToTag.get(this.wizard.providerModel);
         return tag
-            ? html`<${unsafeStatic(tag)}
+            ? // eslint-disable-next-line lit/binding-positions,lit/no-invalid-html
+              html`<${unsafeStatic(tag)}
                 id="providerform"
             .wizard=${this.wizard}
             .errors=${this.errors}
-            ></${unsafeStatic(tag)}>`
+
+            ></${
+                /* eslint-disable-next-line lit/binding-positions,lit/no-invalid-html */
+                unsafeStatic(tag)
+            }>`
             : nothing;
     }
 

@@ -9,6 +9,7 @@ import { type NavigableButton, type WizardButton } from "@goauthentik/components
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
+import { type SearchSelectBase } from "@goauthentik/elements/forms/SearchSelect/SearchSelect.js";
 import "@goauthentik/elements/forms/SearchSelect/ak-search-select-ez.js";
 import { ISearchSelectApi } from "@goauthentik/elements/forms/SearchSelect/ak-search-select-ez.js";
 
@@ -28,6 +29,12 @@ enum target {
     user = "user",
 }
 
+const policyObjectKeys: Record<target, keyof PolicyBinding> = {
+    [target.policy]: "policyObj",
+    [target.group]: "groupObj",
+    [target.user]: "userObj",
+};
+
 const PASS_FAIL = [
     [msg("Pass"), true, false],
     [msg("Don't Pass"), false, true],
@@ -41,6 +48,9 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
 
     @query("form#bindingform")
     form!: HTMLFormElement;
+
+    @query(".policy-search-select")
+    searchSelect!: SearchSelectBase<Policy> | SearchSelectBase<Group> | SearchSelectBase<User>;
 
     @state()
     policyGroupUser: target = target.policy;
@@ -62,8 +72,16 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
             if (!this.form.checkValidity()) {
                 return;
             }
-            const newBinding: PolicyBinding = this.formValues as unknown as PolicyBinding;
+            const policyObject = this.searchSelect.selectedObject;
+            const policyKey = policyObjectKeys[this.policyGroupUser];
+            const newBinding: PolicyBinding = {
+                ...(this.formValues as unknown as PolicyBinding),
+                [policyKey]: policyObject,
+            };
+            console.log(newBinding);
+
             const bindings = [...(this.wizard.bindings ?? [])];
+
             if (this.instanceId === -1) {
                 bindings.push(newBinding);
             } else {
@@ -77,9 +95,11 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
         super.handleButton(button);
     }
 
+    // The search select configurations for the three different types of fetches that we care about,
+    // policy, user, and group, all using the SearchSelectEZ protocol.
     get searchSelectConfigs() {
         return {
-            policiesSelect: {
+            policySelect: {
                 fetchObjects: async (query?: string): Promise<Policy[]> => {
                     const policies = await new PoliciesApi(DEFAULT_CONFIG).policiesAllList(
                         withQuery(query, {
@@ -93,7 +113,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
                 value: (policy: Policy | undefined): string | undefined => policy?.pk,
                 selected: (policy: Policy): boolean => policy.pk === this.instance?.policy,
             },
-            groupsSelect: {
+            groupSelect: {
                 fetchObjects: async (query?: string): Promise<Group[]> => {
                     const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(
                         withQuery(query, {
@@ -107,7 +127,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
                 value: (group: Group | undefined): string | undefined => group?.pk,
                 selected: (group: Group): boolean => group.pk === this.instance?.group,
             },
-            usersSelect: {
+            userSelect: {
                 fetchObjects: async (query?: string): Promise<User[]> => {
                     const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList(
                         withQuery(query, {
@@ -124,40 +144,42 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
         };
     }
 
-    renderModeSelector() {
-        return html` <ak-toggle-group
-            value=${this.policyGroupUser}
-            @ak-toggle=${(ev: CustomEvent<{ value: target }>) => {
-                this.policyGroupUser = ev.detail.value;
-            }}
-        >
-            <option value=${target.policy}>${msg("Policy")}</option>
-            <option value=${target.group}>${msg("Group")}</option>
-            <option value=${target.user}>${msg("User")}</option>
-        </ak-toggle-group>`;
-    }
-
-    renderSearch(title: string, name: string, config: SearchConfig, policyKind: target) {
+    renderSearch(title: string, config: SearchConfig, policyKind: target) {
         return this.policyGroupUser === policyKind
             ? html`<ak-form-element-horizontal
                   label=${title}
-                  name="policy"
+                  name=${policyKind}
                   ?hidden=${this.policyGroupUser !== policyKind}
               >
-                  <ak-search-select-ez .config=${config} blankable></ak-search-select-ez>
+                  <ak-search-select-ez
+                      .config=${config}
+                      class="policy-search-select"
+                      blankable
+                  ></ak-search-select-ez>
               </ak-form-element-horizontal>`
             : nothing;
     }
 
     renderForm(instance?: PolicyBinding) {
-        const { policiesSelect, groupsSelect, usersSelect } = this.searchSelectConfigs;
+        const { policySelect, groupSelect, userSelect } = this.searchSelectConfigs;
 
         return html` <form id="bindingform" class="pf-c-form pf-m-horizontal" slot="form">
-            <div class="pf-c-card__body">${this.renderModeSelector()}</div>
+            <div class="pf-c-card__body">
+                <ak-toggle-group
+                    value=${this.policyGroupUser}
+                    @ak-toggle=${(ev: CustomEvent<{ value: target }>) => {
+                        this.policyGroupUser = ev.detail.value;
+                    }}
+                >
+                    <option value=${target.policy}>${msg("Policy")}</option>
+                    <option value=${target.group}>${msg("Group")}</option>
+                    <option value=${target.user}>${msg("User")}</option>
+                </ak-toggle-group>
+            </div>
             <div class="pf-c-card__footer">
-                ${this.renderSearch(msg("Policy"), "policy", policiesSelect, target.policy)}
-                ${this.renderSearch(msg("Group"), "group", groupsSelect, target.group)}
-                ${this.renderSearch(msg("User"), "user", usersSelect, target.user)}
+                ${this.renderSearch(msg("Policy"), policySelect, target.policy)}
+                ${this.renderSearch(msg("Group"), groupSelect, target.group)}
+                ${this.renderSearch(msg("User"), userSelect, target.user)}
             </div>
             <ak-switch-input
                 name="enabled"

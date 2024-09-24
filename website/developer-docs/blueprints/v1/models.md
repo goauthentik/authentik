@@ -4,11 +4,7 @@ Some models behave differently and allow for access to different API fields when
 
 ## `authentik_core.token`
 
-### `key`
-
-:::info
-Requires authentik 2023.4
-:::
+### `key` <span class="badge badge--version">authentik 2023.4+</span>
 
 Via the standard API, a token's key cannot be changed, it can only be rotated. This is to ensure a high entropy in it's key, and to prevent insecure data from being used. However, when provisioning tokens via a blueprint, it may be required to set a token to an existing value.
 
@@ -30,11 +26,7 @@ For example:
 
 ## `authentik_core.user`
 
-### `password`
-
-:::info
-Requires authentik 2023.6
-:::
+### `password` <span class="badge badge--version">authentik 2023.6+</span>
 
 Via the standard API, a user's password can only be set via the separate `/api/v3/core/users/<id>/set_password/` endpoint. In blueprints, the password of a user can be set using the `password` field.
 
@@ -53,11 +45,7 @@ For example:
       password: this-should-be-a-long-value
 ```
 
-### `permissions`
-
-:::info
-Requires authentik 2024.8
-:::
+### `permissions` <span class="badge badge--version">authentik 2024.8+</span>
 
 The `permissions` field can be used to set global permissions for a user. A full list of possible permissions is included in the JSON schema for blueprints.
 
@@ -75,11 +63,7 @@ For example:
 
 ## `authentik_core.application`
 
-### `icon`
-
-:::info
-Requires authentik 2023.5
-:::
+### `icon` <span class="badge badge--version">authentik 2023.5+</span>
 
 Application icons can be directly set to URLs with the `icon` field.
 
@@ -97,11 +81,7 @@ For example:
 
 ## `authentik_sources_oauth.oauthsource`, `authentik_sources_saml.samlsource`, `authentik_sources_plex.plexsource`
 
-### `icon`
-
-:::info
-Requires authentik 2023.5
-:::
+### `icon` <span class="badge badge--version">authentik 2023.5+</span>
 
 Source icons can be directly set to URLs with the `icon` field.
 
@@ -119,11 +99,7 @@ For example:
 
 ## `authentik_flows.flow`
 
-### `icon`
-
-:::info
-Requires authentik 2023.5
-:::
+### `icon` <span class="badge badge--version">authentik 2023.5+</span>
 
 Flow backgrounds can be directly set to URLs with the `background` field.
 
@@ -143,11 +119,7 @@ For example:
 
 ## `authentik_rbac.role`
 
-### `permissions`
-
-:::info
-Requires authentik 2024.8
-:::
+### `permissions` <span class="badge badge--version">authentik 2024.8+</span>
 
 The `permissions` field can be used to set global permissions for a role. A full list of possible permissions is included in the JSON schema for blueprints.
 

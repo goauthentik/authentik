@@ -7,18 +7,26 @@ import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 import { P, match } from "ts-pattern";
 
 import { msg } from "@lit/localize";
-import { html, nothing } from "lit";
+import { TemplateResult, css, html, nothing } from "lit";
 import { customElement, state } from "lit/decorators.js";
+import { classMap } from "lit/directives/class-map.js";
 
+// import { map } from "lit/directives/map.js";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
+import PFProgressStepper from "@patternfly/patternfly/components/ProgressStepper/progress-stepper.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 
 import {
     type ApplicationRequest,
     CoreApi,
+    type PolicyBinding,
     PolicyEngineMode,
     type TransactionApplicationRequest,
     type TransactionApplicationResponse,
-    ValidationError,
+    type TransactionPolicyBindingRequest,
+    type ValidationError,
 } from "@goauthentik/api";
 
 import { ApplicationWizardStep } from "../ApplicationWizardStep.js";
@@ -30,6 +38,8 @@ const _submitStates = ["reviewing", "running", "submitted"] as const;
 type SubmitStates = (typeof _submitStates)[number];
 
 type NonEmptyArray<T> = [T, ...T[]];
+
+type MaybeTemplateResult = TemplateResult | typeof nothing;
 
 type ExtendedValidationError = ValidationError & {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -45,18 +55,41 @@ const JSON_INDENT = 2;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const errStr = (o: any) => JSON.stringify(o, null, JSON_INDENT);
 
-function cleanApplication(app: Partial<ApplicationRequest>): ApplicationRequest {
-    return {
-        name: "",
-        slug: "",
-        ...app,
-    };
-}
+const isNotEmpty = (arr: any): arr is NonEmptyArray<any> => Array.isArray(arr) && arr.length > 0;
+
+const cleanApplication = (app: Partial<ApplicationRequest>): ApplicationRequest => ({
+    name: "",
+    slug: "",
+    ...app,
+});
+
+const cleanBinding = (binding: PolicyBinding): TransactionPolicyBindingRequest => ({
+    policy: binding.policy,
+    group: binding.group,
+    user: binding.user,
+    negate: binding.negate,
+    enabled: binding.enabled,
+    order: binding.order,
+    timeout: binding.timeout,
+    failureResult: binding.failureResult,
+});
 
 @customElement("ak-application-wizard-submit-step")
 export class ApplicationWizardSubmitStep extends CustomEmitterElement(ApplicationWizardStep) {
     static get styles() {
-        return [...ApplicationWizardStep.styles, PFDescriptionList];
+        return [
+            ...ApplicationWizardStep.styles,
+            PFBullseye,
+            PFEmptyState,
+            PFTitle,
+            PFProgressStepper,
+            PFDescriptionList,
+            css`
+                .pf-c-title {
+                    padding-bottom: var(--pf-global--spacer--md);
+                }
+            `,
+        ];
     }
 
     label = msg("Review and Submit Application");
@@ -82,6 +115,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
             providerModel: this.currentProviderModel.modelName as ProviderModelType,
             app: cleanApplication(app),
             provider: this.currentProviderModel.converter(provider),
+            policyBindings: (this.wizard.bindings ?? []).map(cleanBinding),
         };
 
         this.errors = undefined;
@@ -99,7 +133,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
 
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 .catch(async (resolution: any) => {
-                    this.errors = await parseAPIError(resolution);
+                    this.errors = await parseAPIError(await resolution);
                     this.state = "reviewing";
                 })
         );
@@ -154,39 +188,35 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
         return providerModel;
     }
 
-    renderSuccess() {
-        return this.renderInfo("success", msg("Your application has been saved"), [
-            "fa-check-circle",
-            "pf-m-success",
-        ]);
-    }
+    renderInfo(
+        state: string,
+        label: string,
+        icons: string[],
+        extraInfo: MaybeTemplateResult = nothing
+    ) {
+        const icon = classMap(icons.reduce((acc, icon) => ({ ...acc, [icon]: true }), {}));
 
-    renderRunning() {
-        return this.renderInfo("running", msg("Saving application..."), ["fa-cogs", "pf-m-info"]);
-    }
-
-    renderInfo(state: string, label: string, icon: string[]) {
         return html`<div data-ouid-component-state=${this.state}>
             <div class="pf-l-bullseye">
                 <div class="pf-c-empty-state pf-m-lg">
                     <div class="pf-c-empty-state__content">
-                        <i class="fas fa- ${icon} pf-c-empty-state__icon" aria-hidden="true"></i>
+                        <i class="fas ${icon} pf-c-empty-state__icon" aria-hidden="true"></i>
                         <h1 data-ouia-commit-state=${state} class="pf-c-title pf-m-lg">${label}</h1>
+                        ${extraInfo}
                     </div>
                 </div>
             </div>
         </div>`;
     }
 
-    renderErrors(errors?: ValidationError) {
-        if (!errors) {
+    renderError() {
+        if (!this.errors || this.errors.length === 0) {
             return nothing;
         }
 
         const navTo = (step: string) => () => this.dispatchEvent(new WizardNavigationEvent(step));
-
+        const errors = this.errors;
         return html` <hr class="pf-c-divider" />
-            <h3>${msg("There was a problem saving your application.")}</h3>
             ${match(errors as ExtendedValidationError)
                 .with(
                     { app: P.nonNullable },
@@ -213,10 +243,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
                 )
                 .with(
                     {
-                        nonFieldErrors: P.when(
-                            (nonFieldErrors: string[]): nonFieldErrors is NonEmptyArray<string> =>
-                                nonFieldErrors.length > 0
-                        ),
+                        nonFieldErrors: P.when(isNotEmpty(errors.nonFieldErrors)),
                     },
                     () =>
                         html`<p>${msg("There was an error:")}:</p>
@@ -265,8 +292,14 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
             ${renderer
                 ? html` <h2 class="pf-c-title pf-m-xl pf-u-pt-xl">${msg("Provider")}</h2>
                       ${renderer(provider)}`
-                : nothing}
-            ${this.renderErrors()} `;
+                : nothing}`;
+    }
+    renderSuccess() {
+        return;
+    }
+
+    renderRunning() {
+        return;
     }
 
     renderMain() {
@@ -275,10 +308,25 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
         if (!(this.wizard && app && provider)) {
             throw new Error("Submit step received uninitialized wizard context");
         }
-        return match(this.state)
-            .with("submitted", () => this.renderSuccess())
-            .with("running", () => this.renderRunning())
-            .with("reviewing", () => this.renderReview(app, provider))
+        return match([this.state, this.errors])
+            .with(["submitted", P._], () =>
+                this.renderInfo("success", msg("Your application has been saved"), [
+                    "fa-check-circle",
+                    "pf-m-success",
+                ])
+            )
+            .with(["running", P._], () =>
+                this.renderInfo("running", msg("Saving application..."), ["fa-cogs", "pf-m-info"])
+            )
+            .with(["reviewing", P.when(isNotEmpty)], () => this.renderReview(app, provider))
+            .with(["reviewing", P.not(P.when(isNotEmpty))], () =>
+                this.renderInfo(
+                    "error",
+                    msg("authentik was unable to complete this process."),
+                    ["fa-times-circle", "pf-m-danger"],
+                    this.renderError()
+                )
+            )
             .exhaustive();
     }
 }

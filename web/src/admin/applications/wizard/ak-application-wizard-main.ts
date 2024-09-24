@@ -23,6 +23,8 @@ const freshWizardState = (): ApplicationWizardState => ({
     bindings: [],
 });
 
+//
+
 @customElement("ak-application-wizard-main")
 export class AkApplicationWizardMain extends AKElement {
     @state()
@@ -33,7 +35,8 @@ export class AkApplicationWizardMain extends AKElement {
         this.addEventListener(WizardUpdateEvent.eventName, this.handleUpdate);
     }
 
-    @bound
+    // This is the actual top of the Wizard; so this is where we accept the update information and
+    // incorporate it into the wizard.
     handleUpdate(ev: WizardUpdateEvent<ApplicationWizardStateUpdate>) {
         ev.stopPropagation();
         const update = ev.content;
