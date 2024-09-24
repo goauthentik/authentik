@@ -162,7 +162,6 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
                 <ak-flow-search
                     flowType=${FlowsInstancesListDesignationEnum.Authentication}
                     .currentFlow=${provider?.authenticationFlow}
-                    required
                 ></ak-flow-search>
                 <p class="pf-c-form__helper-text">
                     ${msg("Flow used when a user access this provider and is not authenticated.")}
@@ -171,7 +170,7 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
             <ak-form-element-horizontal
                 name="authorizationFlow"
                 label=${msg("Authorization flow")}
-                ?required=${true}
+                required
             >
                 <ak-flow-search
                     flowType=${FlowsInstancesListDesignationEnum.Authorization}
