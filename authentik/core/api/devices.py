@@ -53,7 +53,7 @@ class AdminDeviceViewSet(ViewSet):
     """Viewset for authenticator devices"""
 
     serializer_class = DeviceSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = []
 
     def get_devices(self, **kwargs):
         """Get all devices in all child classes"""
