@@ -27,13 +27,7 @@ export class KerberosSourceConnectivity extends AKElement {
         }
         return html`<ul class="pf-c-list">
             ${Object.keys(this.connectivity).map((serverKey) => {
-                let serverLabel = html`${serverKey}`;
-                if (serverKey === "__all__") {
-                    serverLabel = html`<b>${msg("Global status")}</b>`;
-                }
-                const server = this.connectivity![serverKey];
-                const content = html`${serverLabel}: ${server.status}`;
-                return html`<li>${content}</li>`;
+                return html`<li>${serverKey}: ${this.connectivity![serverKey]}</li>`;
             })}
         </ul>`;
     }

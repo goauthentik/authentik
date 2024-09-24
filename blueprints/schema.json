@@ -6892,11 +6892,6 @@
                     "title": "Spnego ccache",
                     "description": "Credential cache to use for SPNEGO in form type:residual"
                 },
-                "password_login_enabled": {
-                    "type": "boolean",
-                    "title": "Password login enabled",
-                    "description": "Enable the passwword authentication backend"
-                },
                 "password_login_update_internal_password": {
                     "type": "boolean",
                     "title": "Password login update internal password",

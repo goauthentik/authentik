@@ -25441,10 +25441,6 @@ paths:
         schema:
           type: integer
       - in: query
-        name: password_login_enabled
-        schema:
-          type: boolean
-      - in: query
         name: password_login_update_internal_password
         schema:
           type: boolean
@@ -42035,10 +42031,6 @@ components:
           type: string
         icon:
           type: string
-          nullable: true
-          description: |-
-            Get the URL to the Icon. If the name is /static or
-            starts with http it is returned as-is
           readOnly: true
         group_matching_mode:
           allOf:
@@ -42077,9 +42069,6 @@ components:
         spnego_ccache:
           type: string
           description: Credential cache to use for SPNEGO in form type:residual
-        password_login_enabled:
-          type: boolean
-          description: Enable the passwword authentication backend
         password_login_update_internal_password:
           type: boolean
           description: If enabled, the authentik-stored password will be updated upon
@@ -42254,9 +42243,6 @@ components:
         spnego_ccache:
           type: string
           description: Credential cache to use for SPNEGO in form type:residual
-        password_login_enabled:
-          type: boolean
-          description: Enable the passwword authentication backend
         password_login_update_internal_password:
           type: boolean
           description: If enabled, the authentik-stored password will be updated upon
@@ -47459,9 +47445,6 @@ components:
         spnego_ccache:
           type: string
           description: Credential cache to use for SPNEGO in form type:residual
-        password_login_enabled:
-          type: boolean
-          description: Enable the passwword authentication backend
         password_login_update_internal_password:
           type: boolean
           description: If enabled, the authentik-stored password will be updated upon

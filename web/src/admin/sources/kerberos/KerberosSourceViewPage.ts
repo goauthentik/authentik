@@ -73,6 +73,39 @@ export class KerberosSourceViewPage extends AKElement {
             });
     }
 
+    renderSyncCards(): TemplateResult {
+        if (!this.source.syncUsers) {
+            return html``;
+        }
+        return html`
+            <div class="pf-c-card pf-l-grid__item pf-m-2-col">
+                <div class="pf-c-card__title">
+                    <p>${msg("Connectivity")}</p>
+                </div>
+                <div class="pf-c-card__body">
+                    <ak-source-kerberos-connectivity
+                        .connectivity=${this.source.connectivity}
+                    ></ak-source-kerberos-connectivity>
+                </div>
+            </div>
+            <div class="pf-l-grid__item pf-m-10-col">
+                <ak-sync-status-card
+                    .fetch=${() => {
+                        return new SourcesApi(DEFAULT_CONFIG).sourcesKerberosSyncStatusRetrieve({
+                            slug: this.source?.slug,
+                        });
+                    }}
+                    .triggerSync=${() => {
+                        return new SourcesApi(DEFAULT_CONFIG).sourcesKerberosPartialUpdate({
+                            slug: this.source?.slug || "",
+                            patchedKerberosSourceRequest: {},
+                        });
+                    }}
+                ></ak-sync-status-card>
+            </div>
+        `;
+    }
+
     render(): TemplateResult {
         if (!this.source) {
             return html``;
@@ -131,33 +164,7 @@ export class KerberosSourceViewPage extends AKElement {
                             </ak-forms-modal>
                         </div>
                     </div>
-                    <div class="pf-c-card pf-l-grid__item pf-m-2-col">
-                        <div class="pf-c-card__title">
-                            <p>${msg("Connectivity")}</p>
-                        </div>
-                        <div class="pf-c-card__body">
-                            <ak-source-kerberos-connectivity
-                                .connectivity=${this.source.connectivity}
-                            ></ak-source-kerberos-connectivity>
-                        </div>
-                    </div>
-                    <div class="pf-l-grid__item pf-m-10-col">
-                        <ak-sync-status-card
-                            .fetch=${() => {
-                                return new SourcesApi(
-                                    DEFAULT_CONFIG,
-                                ).sourcesKerberosSyncStatusRetrieve({
-                                    slug: this.source?.slug,
-                                });
-                            }}
-                            .triggerSync=${() => {
-                                return new SourcesApi(DEFAULT_CONFIG).sourcesKerberosPartialUpdate({
-                                    slug: this.source?.slug || "",
-                                    patchedKerberosSourceRequest: {},
-                                });
-                            }}
-                        ></ak-sync-status-card>
-                    </div>
+                    ${this.renderSyncCards()}
                 </div>
             </section>
             <section

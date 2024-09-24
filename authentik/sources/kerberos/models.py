@@ -18,7 +18,6 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.core.models import (
-    USER_PATH_SERVICE_ACCOUNT,
     GroupSourceConnection,
     PropertyMapping,
     Source,
@@ -164,33 +163,13 @@ class KerberosSource(Source):
         )
 
     def get_base_user_properties(self, principal: str, **kwargs):
-        localpart, realm = principal.rsplit("@", 1)
-        is_service_account = "/" in localpart
-        username = localpart
+        localpart, _ = principal.rsplit("@", 1)
 
-        # By default, don't sync system principals
-        denied_prefixes = ["kadmin/", "krbtgt/", "K/M", "WELLKNOWN/"]
-        for prefix in denied_prefixes:
-            if username.lower().startswith(prefix.lower()):
-                username = None
-                break
-        # By default, don't sync principals from another realm
-        if realm.upper() != self.realm.upper():
-            username = None
-
-        properties = {
-            "username": username,
+        return {
+            "username": localpart,
             "type": UserTypes.INTERNAL,
             "path": self.get_user_path(),
         }
-        if is_service_account:
-            properties.update(
-                {
-                    "type": UserTypes.SERVICE_ACCOUNT,
-                    "path": USER_PATH_SERVICE_ACCOUNT,
-                }
-            )
-        return properties
 
     def get_base_group_properties(self, group_id: str, **kwargs):
         return {
@@ -346,7 +325,7 @@ class KerberosSourcePropertyMapping(PropertyMapping):
 
     @property
     def component(self) -> str:
-        return "ak-property-mapping-kerberos-form"
+        return "ak-property-mapping-source-kerberos-form"
 
     @property
     def serializer(self) -> type[Serializer]:

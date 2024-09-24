@@ -1,6 +1,7 @@
 """Kerberos Source Auth tests"""
 
 from django.contrib.auth.hashers import is_password_usable
+
 from authentik.core.models import User
 from authentik.lib.generators import generate_id
 from authentik.sources.kerberos.auth import KerberosBackend

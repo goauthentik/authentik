@@ -51,11 +51,13 @@ async function propertyMappingsProvider(page = 1, search = "") {
     };
 }
 
-function makePropertyMappingsSelector(instanceMappings?: string[]) {
+function makePropertyMappingsSelector(object: string, instanceMappings?: string[]) {
     const localMappings = instanceMappings ? new Set(instanceMappings) : undefined;
     return localMappings
         ? ([pk, _]: DualSelectPair) => localMappings.has(pk)
-        : ([_0, _1, _2, _mapping]: DualSelectPair<KerberosSourcePropertyMapping>) => false;
+        : ([_0, _1, _2, mapping]: DualSelectPair<KerberosSourcePropertyMapping>) =>
+              object == "user" &&
+              mapping?.managed?.startsWith("goauthentik.io/sources/kerberos/user/default/");
 }
 
 @customElement("ak-source-kerberos-form")
@@ -123,12 +125,6 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                 label=${msg("Enabled")}
             ></ak-switch-input>
             <ak-switch-input
-                name="passwordLoginEnabled"
-                ?checked=${first(this.instance?.passwordLoginEnabled, true)}
-                label=${msg("Enable password login")}
-                help=${msg("Allow users to use their Kerberos password to log in to authentik.")}
-            ></ak-switch-input>
-            <ak-switch-input
                 name="passwordLoginUpdateInternalPassword"
                 ?checked=${first(this.instance?.passwordLoginUpdateInternalPassword, false)}
                 label=${msg("Update internal password on login")}
@@ -146,7 +142,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                 ?checked=${first(this.instance?.syncUsersPassword, true)}
                 label=${msg("User password writeback")}
                 help=${msg(
-                    "Enable this option only to write password changes made in authentik back to Kerberos.",
+                    "Enable this option to write password changes made in authentik back to Kerberos. Ignored if sync is disabled.",
                 )}
             ></ak-switch-input>
             <ak-form-group .expanded=${true}>
@@ -167,79 +163,79 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                             "Kerberos 5 configuration. See man krb5.conf(5) for configuration format. If left empty, a default krb5.conf will be used.",
                         )}
                     ></ak-textarea-input>
+                    <ak-form-element-horizontal
+                        label=${msg("User matching mode")}
+                        ?required=${true}
+                        name="userMatchingMode"
+                    >
+                        <select class="pf-c-form-control">
+                            <option
+                                value=${UserMatchingModeEnum.Identifier}
+                                ?selected=${this.instance?.userMatchingMode ===
+                                UserMatchingModeEnum.Identifier}
+                            >
+                                ${UserMatchingModeToLabel(UserMatchingModeEnum.Identifier)}
+                            </option>
+                            <option
+                                value=${UserMatchingModeEnum.EmailLink}
+                                ?selected=${this.instance?.userMatchingMode ===
+                                UserMatchingModeEnum.EmailLink}
+                            >
+                                ${UserMatchingModeToLabel(UserMatchingModeEnum.EmailLink)}
+                            </option>
+                            <option
+                                value=${UserMatchingModeEnum.EmailDeny}
+                                ?selected=${this.instance?.userMatchingMode ===
+                                UserMatchingModeEnum.EmailDeny}
+                            >
+                                ${UserMatchingModeToLabel(UserMatchingModeEnum.EmailDeny)}
+                            </option>
+                            <option
+                                value=${UserMatchingModeEnum.UsernameLink}
+                                ?selected=${this.instance?.userMatchingMode ===
+                                UserMatchingModeEnum.UsernameLink}
+                            >
+                                ${UserMatchingModeToLabel(UserMatchingModeEnum.UsernameLink)}
+                            </option>
+                            <option
+                                value=${UserMatchingModeEnum.UsernameDeny}
+                                ?selected=${this.instance?.userMatchingMode ===
+                                UserMatchingModeEnum.UsernameDeny}
+                            >
+                                ${UserMatchingModeToLabel(UserMatchingModeEnum.UsernameDeny)}
+                            </option>
+                        </select>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Group matching mode")}
+                        ?required=${true}
+                        name="groupMatchingMode"
+                    >
+                        <select class="pf-c-form-control">
+                            <option
+                                value=${GroupMatchingModeEnum.Identifier}
+                                ?selected=${this.instance?.groupMatchingMode ===
+                                GroupMatchingModeEnum.Identifier}
+                            >
+                                ${UserMatchingModeToLabel(UserMatchingModeEnum.Identifier)}
+                            </option>
+                            <option
+                                value=${GroupMatchingModeEnum.NameLink}
+                                ?selected=${this.instance?.groupMatchingMode ===
+                                GroupMatchingModeEnum.NameLink}
+                            >
+                                ${GroupMatchingModeToLabel(GroupMatchingModeEnum.NameLink)}
+                            </option>
+                            <option
+                                value=${GroupMatchingModeEnum.NameDeny}
+                                ?selected=${this.instance?.groupMatchingMode ===
+                                GroupMatchingModeEnum.NameDeny}
+                            >
+                                ${GroupMatchingModeToLabel(GroupMatchingModeEnum.NameDeny)}
+                            </option>
+                        </select>
+                    </ak-form-element-horizontal>
                 </div>
-                <ak-form-element-horizontal
-                    label=${msg("User matching mode")}
-                    ?required=${true}
-                    name="userMatchingMode"
-                >
-                    <select class="pf-c-form-control">
-                        <option
-                            value=${UserMatchingModeEnum.Identifier}
-                            ?selected=${this.instance?.userMatchingMode ===
-                            UserMatchingModeEnum.Identifier}
-                        >
-                            ${UserMatchingModeToLabel(UserMatchingModeEnum.Identifier)}
-                        </option>
-                        <option
-                            value=${UserMatchingModeEnum.EmailLink}
-                            ?selected=${this.instance?.userMatchingMode ===
-                            UserMatchingModeEnum.EmailLink}
-                        >
-                            ${UserMatchingModeToLabel(UserMatchingModeEnum.EmailLink)}
-                        </option>
-                        <option
-                            value=${UserMatchingModeEnum.EmailDeny}
-                            ?selected=${this.instance?.userMatchingMode ===
-                            UserMatchingModeEnum.EmailDeny}
-                        >
-                            ${UserMatchingModeToLabel(UserMatchingModeEnum.EmailDeny)}
-                        </option>
-                        <option
-                            value=${UserMatchingModeEnum.UsernameLink}
-                            ?selected=${this.instance?.userMatchingMode ===
-                            UserMatchingModeEnum.UsernameLink}
-                        >
-                            ${UserMatchingModeToLabel(UserMatchingModeEnum.UsernameLink)}
-                        </option>
-                        <option
-                            value=${UserMatchingModeEnum.UsernameDeny}
-                            ?selected=${this.instance?.userMatchingMode ===
-                            UserMatchingModeEnum.UsernameDeny}
-                        >
-                            ${UserMatchingModeToLabel(UserMatchingModeEnum.UsernameDeny)}
-                        </option>
-                    </select>
-                </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("Group matching mode")}
-                    ?required=${true}
-                    name="groupMatchingMode"
-                >
-                    <select class="pf-c-form-control">
-                        <option
-                            value=${GroupMatchingModeEnum.Identifier}
-                            ?selected=${this.instance?.groupMatchingMode ===
-                            GroupMatchingModeEnum.Identifier}
-                        >
-                            ${UserMatchingModeToLabel(UserMatchingModeEnum.Identifier)}
-                        </option>
-                        <option
-                            value=${GroupMatchingModeEnum.NameLink}
-                            ?selected=${this.instance?.groupMatchingMode ===
-                            GroupMatchingModeEnum.NameLink}
-                        >
-                            ${GroupMatchingModeToLabel(GroupMatchingModeEnum.NameLink)}
-                        </option>
-                        <option
-                            value=${GroupMatchingModeEnum.NameDeny}
-                            ?selected=${this.instance?.groupMatchingMode ===
-                            GroupMatchingModeEnum.NameDeny}
-                        >
-                            ${GroupMatchingModeToLabel(GroupMatchingModeEnum.NameDeny)}
-                        </option>
-                    </select>
-                </ak-form-element-horizontal>
             </ak-form-group>
             <ak-form-group .expanded=${false}>
                 <span slot="header"> ${msg("Sync connection settings")} </span>
@@ -254,7 +250,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     ></ak-text-input>
                     <ak-form-element-horizontal
                         name="syncPassword"
-                        label=${msg("Sync Password")}
+                        label=${msg("Sync password")}
                         ?writeOnly=${this.instance !== undefined}
                     >
                         <input type="text" value="" class="pf-c-form-control" />
@@ -327,6 +323,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                         <ak-dual-select-dynamic-selected
                             .provider=${propertyMappingsProvider}
                             .selector=${makePropertyMappingsSelector(
+                                "user",
                                 this.instance?.userPropertyMappings,
                             )}
                             available-label="${msg("Available User Property Mappings")}"
@@ -343,6 +340,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                         <ak-dual-select-dynamic-selected
                             .provider=${propertyMappingsProvider}
                             .selector=${makePropertyMappingsSelector(
+                                "group",
                                 this.instance?.groupPropertyMappings,
                             )}
                             available-label="${msg("Available Group Property Mappings")}"
