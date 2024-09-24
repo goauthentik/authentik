@@ -60,12 +60,12 @@ def ldap_password_validate(sender, password: str, plan_context: dict[str, Any], 
 @receiver(password_changed)
 def ldap_sync_password(sender, user: User, password: str, **_):
     """Connect to ldap and update password."""
-    if isinstance(sender, LDAPBackend):
-        return
     sources = LDAPSource.objects.filter(sync_users_password=True, enabled=True)
     if not sources.exists():
         return
     source = sources.first()
+    if source.pk == getattr(sender, "pk", None):
+        return
     if not LDAPPasswordChanger.should_check_user(user):
         return
     try:

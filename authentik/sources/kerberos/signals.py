@@ -44,6 +44,8 @@ def kerberos_sync_password(sender, user: User, password: str, **_):
     )
     for user_source_connection in user_source_connections:
         source = user_source_connection.source.kerberossource
+        if source.pk == getattr(sender, "pk", None):
+            continue
         with Krb5ConfContext(source):
             try:
                 source.connection().getprinc(user_source_connection.identifier).change_password(
