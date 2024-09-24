@@ -44,10 +44,11 @@ updates:
           - "babel-*"
       eslint:
         patterns:
-          - "@typescript-eslint/*"
-          - "eslint"
-          - "eslint-*"
           - "@eslint/*"
+          - "@typescript-eslint/*"
+          - "eslint-*"
+          - "eslint"
+          - "typescript-eslint"
       storybook:
         patterns:
           - "@storybook/*"
