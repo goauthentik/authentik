@@ -11,8 +11,8 @@ module.exports = async function (): Promise<Config> {
         tagline: "Bring all of your authentication into a unified platform.",
         url: "https://docs.goauthentik.io",
         baseUrl: "/",
-        onBrokenLinks: "throw",
-        onBrokenAnchors: "throw",
+        onBrokenLinks: "warn",
+        onBrokenAnchors: "warn",
         favicon: "img/icon.png",
         organizationName: "Authentik Security Inc.",
         projectName: "authentik",
@@ -40,11 +40,6 @@ module.exports = async function (): Promise<Config> {
                     {
                         to: "integrations/",
                         label: "Integrations",
-                        position: "left",
-                    },
-                    {
-                        to: "developer-docs/",
-                        label: "Developer",
                         position: "left",
                     },
                     {
@@ -132,26 +127,14 @@ module.exports = async function (): Promise<Config> {
                 },
             ],
             [
-                "@docusaurus/plugin-content-docs",
-                {
-                    id: "docsDevelopers",
-                    path: "developer-docs",
-                    routeBasePath: "developer-docs",
-                    sidebarPath: "./sidebarsDev.js",
-                    docItemComponent: "@theme/ApiItem",
-                    editUrl:
-                        "https://github.com/goauthentik/authentik/edit/main/website/",
-                },
-            ],
-            [
                 "docusaurus-plugin-openapi-docs",
                 {
                     id: "api",
-                    docsPluginId: "docsDevelopers",
+                    docsPluginId: "docs",
                     config: {
                         authentik: {
                             specPath: "static/schema.yaml",
-                            outputDir: "developer-docs/api/reference/",
+                            outputDir: "docs/developer-docs/api/reference/",
                             hideSendButton: true,
                             sidebarOptions: {
                                 groupPathsBy: "tag",

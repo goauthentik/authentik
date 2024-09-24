@@ -1,5 +1,6 @@
 const generateVersionDropdown =
     require("./src/utils.js").generateVersionDropdown;
+const apiReference = require("./docs/developer-docs/api/reference/sidebar");
 
 const docsSidebar = {
     docs: [
@@ -332,9 +333,32 @@ const docsSidebar = {
                             label: "Admin",
                             items: ["customize/interfaces/admin/customization"],
                         },
-                        "customize/brands",
                     ],
                 },
+                {
+                    type: "category",
+                    label: "Blueprints",
+                    link: {
+                        type: "doc",
+                        id: "customize/blueprints/index",
+                    },
+                    items: [
+                        "customize/blueprints/export",
+                        "customize/blueprints/v1/structure",
+                        "customize/blueprints/v1/tags",
+                        "customize/blueprints/v1/example",
+                        {
+                            type: "category",
+                            label: "Models",
+                            link: {
+                                type: "doc",
+                                id: "customize/blueprints/v1/models",
+                            },
+                            items: ["customize/blueprints/v1/meta"],
+                        },
+                    ],
+                },
+                "customize/brands",
             ],
         },
         {
@@ -477,6 +501,71 @@ const docsSidebar = {
         },
         {
             type: "category",
+            label: "Developer Documentation",
+            collapsed: true,
+            link: {
+                type: "doc",
+                id: "developer-docs/index",
+            },
+            items: [
+                {
+                    type: "category",
+                    label: "Setup",
+                    items: [
+                        "developer-docs/setup/full-dev-environment",
+                        "developer-docs/setup/frontend-dev-environment",
+                        "developer-docs/setup/website-dev-environment",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "API",
+                    link: {
+                        type: "doc",
+                        id: "developer-docs/api/api",
+                    },
+                    items: [
+                        "developer-docs/api/flow-executor",
+                        "developer-docs/api/making-schema-changes",
+                        "developer-docs/api/websocket",
+                        {
+                            type: "category",
+                            label: "Reference",
+                            items: apiReference,
+                        },
+                        "developer-docs/api/clients",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "Writing documentation",
+                    link: {
+                        type: "doc",
+                        id: "developer-docs/docs/writing-documentation",
+                    },
+                    items: [
+                        "developer-docs/docs/style-guide",
+                        {
+                            type: "category",
+                            label: "Templates",
+                            link: {
+                                type: "doc",
+                                id: "developer-docs/docs/templates/index",
+                            },
+                            items: [
+                                "developer-docs/docs/templates/procedural",
+                                "developer-docs/docs/templates/conceptual",
+                                "developer-docs/docs/templates/reference",
+                                "developer-docs/docs/templates/combo",
+                            ],
+                        },
+                    ],
+                },
+                "developer-docs/translation",
+            ],
+        },
+        {
+            type: "category",
             label: "Security",
             collapsed: true,
             link: {
@@ -510,6 +599,46 @@ const docsSidebar = {
                         "security/cves/CVE-2022-46172",
                     ],
                 },
+            ],
+        },
+        {
+            type: "category",
+            label: "Troubleshooting",
+            link: {
+                type: "generated-index",
+                title: "Troubleshooting",
+                slug: "troubleshooting",
+                description: "Troubleshooting various issues",
+            },
+            items: [
+                {
+                    type: "category",
+                    label: "Forward auth",
+                    items: ["troubleshooting/forward_auth/general"],
+                    link: {
+                        type: "generated-index",
+                        title: "Forward auth troubleshooting",
+                        slug: "troubleshooting/forward_auth",
+                        description:
+                            "Steps to help debug forward auth setups with various reverse proxies.",
+                    },
+                },
+                {
+                    type: "category",
+                    label: "PostgreSQL",
+                    items: [
+                        "troubleshooting/postgres/upgrade_kubernetes",
+                        "troubleshooting/postgres/upgrade_docker",
+                    ],
+                },
+                "troubleshooting/access",
+                "troubleshooting/login",
+                "troubleshooting/image_upload",
+                "troubleshooting/missing_permission",
+                "troubleshooting/missing_admin_group",
+                "troubleshooting/csrf",
+                "troubleshooting/emails",
+                "troubleshooting/ldap_source",
             ],
         },
         {
