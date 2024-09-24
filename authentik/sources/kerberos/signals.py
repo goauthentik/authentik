@@ -32,8 +32,6 @@ def sync_kerberos_source_on_save(sender, instance: KerberosSource, **_):
 @receiver(password_changed)
 def kerberos_sync_password(sender, user: User, password: str, **_):
     """Connect to kerberos and update password."""
-    if isinstance(sender, KerberosBackend):
-        return
     user_source_connections = UserKerberosSourceConnection.objects.select_related(
         "source__kerberossource"
     ).filter(
