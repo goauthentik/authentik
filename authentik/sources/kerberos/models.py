@@ -128,7 +128,7 @@ class KerberosSource(Source):
             challenge=RedirectChallenge(
                 instance={
                     "to": reverse(
-                        "authentik_sources_kerberos:login",
+                        "authentik_sources_kerberos:spnego-login",
                         kwargs={"source_slug": self.slug},
                     ),
                 }
