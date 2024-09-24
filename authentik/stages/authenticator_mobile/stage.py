@@ -8,7 +8,6 @@ from authentik.core.api.utils import PassiveSerializer
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
-    ChallengeTypes,
     WithUserInfoChallenge,
 )
 from authentik.flows.stage import ChallengeStageView
@@ -83,7 +82,6 @@ class AuthenticatorMobileStageView(ChallengeStageView):
         payload.is_valid()
         return AuthenticatorMobileChallenge(
             data={
-                "type": ChallengeTypes.NATIVE.value,
                 "payload": payload.validated_data,
             }
         )

@@ -9,7 +9,6 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from authentik.api.authorization import OwnerFilter, OwnerPermissions
 from authentik.core.api.devices import DeviceSerializer
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import ModelSerializer
 from authentik.stages.authenticator_webauthn.api.device_types import WebAuthnDeviceTypeSerializer
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 

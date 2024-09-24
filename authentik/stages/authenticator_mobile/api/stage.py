@@ -29,7 +29,7 @@ class AuthenticatorMobileStageSerializer(StageSerializer):
             client.Check(empty_pb2.Empty())
         except RpcError as exc:
             LOGGER.warning("failed to connect to cgw", error=exc)
-            raise ValidationError("Failed to connect to cloud gateway")
+            raise ValidationError("Failed to connect to cloud gateway") from None
         return endpoint
 
     class Meta:

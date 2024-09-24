@@ -6,10 +6,8 @@ from rest_framework.fields import (
     BooleanField,
     CharField,
     DateTimeField,
-    IntegerField,
     SerializerMethodField,
 )
-from rest_framework.fields import BooleanField, CharField, SerializerMethodField
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response

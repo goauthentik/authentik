@@ -108,7 +108,7 @@ def get_webauthn_challenge(
 
 
 def get_mobile_challenge(
-    request: HttpRequest, stage: AuthenticatorValidateStage, device: Optional[MobileDevice] = None
+    request: HttpRequest, stage: AuthenticatorValidateStage, device: MobileDevice | None = None
 ) -> dict:
     """Create a mobile transaction"""
     request.session.pop(SESSION_KEY_MOBILE_TRANSACTION, None)
@@ -158,7 +158,7 @@ def select_challenge_mobile(request: HttpRequest, stage_view: StageView, device:
             exception=exception_to_string(exc),
             user=device.user,
         ).from_http(stage_view.request, device.user)
-        raise ValidationError("Mobile denied access", code="denied")
+        raise ValidationError("Mobile denied access", code="denied") from exc
 
 
 def validate_challenge_code(code: str, stage_view: StageView, user: User) -> Device:
@@ -269,14 +269,14 @@ def validate_challenge_mobile(device_pk: str, stage_view: StageView, user: User)
             raise ValidationError("Mobile denied access", code="denied")
         return device
     except TimeoutError:
-        raise ValidationError("Mobile push notification timed out.")
+        raise ValidationError("Mobile push notification timed out.") from None
     except RuntimeError as exc:
         Event.new(
             EventAction.CONFIGURATION_ERROR,
             message=f"Failed to Mobile authenticate user: {str(exc)}",
             user=user,
         ).from_http(stage_view.request, user)
-        raise ValidationError("Mobile denied access", code="denied")
+        raise ValidationError("Mobile denied access", code="denied") from exc
 
 
 def validate_challenge_duo(device_pk: int, stage_view: StageView, user: User) -> Device:

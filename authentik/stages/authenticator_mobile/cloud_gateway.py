@@ -51,7 +51,7 @@ class AuthInterceptor(UnaryUnaryClientInterceptor, UnaryStreamClientInterceptor)
         return continuation(self._intercept_client_call_details(client_call_details), request)
 
 
-@lru_cache()
+@lru_cache
 def get_enterprise_token() -> str:
     """Get enterprise license key, if a license is installed, otherwise use the install ID"""
     from authentik.root.install_id import get_install_id
@@ -67,7 +67,7 @@ def get_enterprise_token() -> str:
         return get_install_id()
 
 
-@lru_cache()
+@lru_cache
 def get_client(addr: str, client_type=AuthenticationPushStub):
     """get a cached client to a cloud-gateway"""
     channel = secure_channel(addr, ssl_channel_credentials())

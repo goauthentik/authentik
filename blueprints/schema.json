@@ -1809,6 +1809,86 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_stages_authenticator_mobile.authenticatormobilestage"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_stages_authenticator_mobile.authenticatormobilestage_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_stages_authenticator_mobile.authenticatormobilestage"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_stages_authenticator_mobile.authenticatormobilestage"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
+                                "const": "authentik_stages_authenticator_mobile.mobiledevice"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_stages_authenticator_mobile.mobiledevice_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_stages_authenticator_mobile.mobiledevice"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_stages_authenticator_mobile.mobiledevice"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_stages_authenticator_sms.authenticatorsmsstage"
                             },
                             "id": {
@@ -4278,6 +4358,7 @@
                         "authentik.sources.scim",
                         "authentik.stages.authenticator",
                         "authentik.stages.authenticator_duo",
+                        "authentik.stages.authenticator_mobile",
                         "authentik.stages.authenticator_sms",
                         "authentik.stages.authenticator_static",
                         "authentik.stages.authenticator_totp",
@@ -4361,6 +4442,8 @@
                         "authentik_sources_scim.scimsourcepropertymapping",
                         "authentik_stages_authenticator_duo.authenticatorduostage",
                         "authentik_stages_authenticator_duo.duodevice",
+                        "authentik_stages_authenticator_mobile.authenticatormobilestage",
+                        "authentik_stages_authenticator_mobile.mobiledevice",
                         "authentik_stages_authenticator_sms.authenticatorsmsstage",
                         "authentik_stages_authenticator_sms.smsdevice",
                         "authentik_stages_authenticator_static.authenticatorstaticstage",
@@ -6411,6 +6494,22 @@
                             "authentik_stages_authenticator_duo.delete_duodevice",
                             "authentik_stages_authenticator_duo.view_authenticatorduostage",
                             "authentik_stages_authenticator_duo.view_duodevice",
+                            "authentik_stages_authenticator_mobile.add_authenticatormobilestage",
+                            "authentik_stages_authenticator_mobile.add_mobiledevice",
+                            "authentik_stages_authenticator_mobile.add_mobiledevicetoken",
+                            "authentik_stages_authenticator_mobile.add_mobiletransaction",
+                            "authentik_stages_authenticator_mobile.change_authenticatormobilestage",
+                            "authentik_stages_authenticator_mobile.change_mobiledevice",
+                            "authentik_stages_authenticator_mobile.change_mobiledevicetoken",
+                            "authentik_stages_authenticator_mobile.change_mobiletransaction",
+                            "authentik_stages_authenticator_mobile.delete_authenticatormobilestage",
+                            "authentik_stages_authenticator_mobile.delete_mobiledevice",
+                            "authentik_stages_authenticator_mobile.delete_mobiledevicetoken",
+                            "authentik_stages_authenticator_mobile.delete_mobiletransaction",
+                            "authentik_stages_authenticator_mobile.view_authenticatormobilestage",
+                            "authentik_stages_authenticator_mobile.view_mobiledevice",
+                            "authentik_stages_authenticator_mobile.view_mobiledevicetoken",
+                            "authentik_stages_authenticator_mobile.view_mobiletransaction",
                             "authentik_stages_authenticator_sms.add_authenticatorsmsstage",
                             "authentik_stages_authenticator_sms.add_smsdevice",
                             "authentik_stages_authenticator_sms.change_authenticatorsmsstage",
@@ -8019,7 +8118,6 @@
                         "string",
                         "null"
                     ],
-                    "minLength": 1,
                     "title": "Friendly name"
                 },
                 "client_id": {
@@ -8077,12 +8175,15 @@
         "model_authentik_stages_authenticator_duo.duodevice": {
             "type": "object",
             "properties": {
+                "pk": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Pk"
+                },
                 "name": {
                     "type": "string",
-                    "maxLength": 64,
                     "minLength": 1,
-                    "title": "Name",
-                    "description": "The human-readable name of this device."
+                    "title": "Name"
                 }
             },
             "required": []
@@ -8102,6 +8203,194 @@
                             "change_duodevice",
                             "delete_duodevice",
                             "view_duodevice"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_stages_authenticator_mobile.authenticatormobilestage": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "flow_set": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "minLength": 1,
+                                "title": "Name"
+                            },
+                            "slug": {
+                                "type": "string",
+                                "maxLength": 50,
+                                "minLength": 1,
+                                "pattern": "^[-a-zA-Z0-9_]+$",
+                                "title": "Slug",
+                                "description": "Visible in the URL."
+                            },
+                            "title": {
+                                "type": "string",
+                                "minLength": 1,
+                                "title": "Title",
+                                "description": "Shown as the Title in Flow pages."
+                            },
+                            "designation": {
+                                "type": "string",
+                                "enum": [
+                                    "authentication",
+                                    "authorization",
+                                    "invalidation",
+                                    "enrollment",
+                                    "unenrollment",
+                                    "recovery",
+                                    "stage_configuration"
+                                ],
+                                "title": "Designation",
+                                "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
+                            },
+                            "policy_engine_mode": {
+                                "type": "string",
+                                "enum": [
+                                    "all",
+                                    "any"
+                                ],
+                                "title": "Policy engine mode"
+                            },
+                            "compatibility_mode": {
+                                "type": "boolean",
+                                "title": "Compatibility mode",
+                                "description": "Enable compatibility mode, increases compatibility with password managers on mobile devices."
+                            },
+                            "layout": {
+                                "type": "string",
+                                "enum": [
+                                    "stacked",
+                                    "content_left",
+                                    "content_right",
+                                    "sidebar_left",
+                                    "sidebar_right"
+                                ],
+                                "title": "Layout"
+                            },
+                            "denied_action": {
+                                "type": "string",
+                                "enum": [
+                                    "message_continue",
+                                    "message",
+                                    "continue"
+                                ],
+                                "title": "Denied action",
+                                "description": "Configure what should happen when a flow denies access to a user."
+                            }
+                        },
+                        "required": [
+                            "name",
+                            "slug",
+                            "title",
+                            "designation"
+                        ]
+                    },
+                    "title": "Flow set"
+                },
+                "configure_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Configure flow",
+                    "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
+                },
+                "friendly_name": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "title": "Friendly name"
+                },
+                "item_matching_mode": {
+                    "type": "string",
+                    "enum": [
+                        "accept_deny",
+                        "number_matching_2",
+                        "number_matching_3"
+                    ],
+                    "title": "Item matching mode"
+                },
+                "cgw_endpoint": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Cgw endpoint"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_stages_authenticator_mobile.authenticatormobilestage_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_authenticatormobilestage",
+                            "change_authenticatormobilestage",
+                            "delete_authenticatormobilestage",
+                            "view_authenticatormobilestage"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_stages_authenticator_mobile.mobiledevice": {
+            "type": "object",
+            "properties": {
+                "pk": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Pk"
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_stages_authenticator_mobile.mobiledevice_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_mobiledevice",
+                            "change_mobiledevice",
+                            "delete_mobiledevice",
+                            "view_mobiledevice"
                         ]
                     },
                     "user": {
@@ -8214,7 +8503,6 @@
                         "string",
                         "null"
                     ],
-                    "minLength": 1,
                     "title": "Friendly name"
                 },
                 "provider": {
@@ -8294,12 +8582,15 @@
         "model_authentik_stages_authenticator_sms.smsdevice": {
             "type": "object",
             "properties": {
+                "pk": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Pk"
+                },
                 "name": {
                     "type": "string",
-                    "maxLength": 64,
                     "minLength": 1,
-                    "title": "Name",
-                    "description": "The human-readable name of this device."
+                    "title": "Name"
                 }
             },
             "required": []
@@ -8431,7 +8722,6 @@
                         "string",
                         "null"
                     ],
-                    "minLength": 1,
                     "title": "Friendly name"
                 },
                 "token_count": {
@@ -8478,12 +8768,15 @@
         "model_authentik_stages_authenticator_static.staticdevice": {
             "type": "object",
             "properties": {
+                "pk": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Pk"
+                },
                 "name": {
                     "type": "string",
-                    "maxLength": 64,
                     "minLength": 1,
-                    "title": "Name",
-                    "description": "The human-readable name of this device."
+                    "title": "Name"
                 }
             },
             "required": []
@@ -8615,7 +8908,6 @@
                         "string",
                         "null"
                     ],
-                    "minLength": 1,
                     "title": "Friendly name"
                 },
                 "digits": {
@@ -8658,12 +8950,15 @@
         "model_authentik_stages_authenticator_totp.totpdevice": {
             "type": "object",
             "properties": {
+                "pk": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Pk"
+                },
                 "name": {
                     "type": "string",
-                    "maxLength": 64,
                     "minLength": 1,
-                    "title": "Name",
-                    "description": "The human-readable name of this device."
+                    "title": "Name"
                 }
             },
             "required": []
@@ -8974,7 +9269,6 @@
                         "string",
                         "null"
                     ],
-                    "minLength": 1,
                     "title": "Friendly name"
                 },
                 "user_verification": {
@@ -9047,9 +9341,13 @@
         "model_authentik_stages_authenticator_webauthn.webauthndevice": {
             "type": "object",
             "properties": {
+                "pk": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Pk"
+                },
                 "name": {
                     "type": "string",
-                    "maxLength": 200,
                     "minLength": 1,
                     "title": "Name"
                 }
@@ -12068,6 +12366,22 @@
                             "authentik_stages_authenticator_duo.delete_duodevice",
                             "authentik_stages_authenticator_duo.view_authenticatorduostage",
                             "authentik_stages_authenticator_duo.view_duodevice",
+                            "authentik_stages_authenticator_mobile.add_authenticatormobilestage",
+                            "authentik_stages_authenticator_mobile.add_mobiledevice",
+                            "authentik_stages_authenticator_mobile.add_mobiledevicetoken",
+                            "authentik_stages_authenticator_mobile.add_mobiletransaction",
+                            "authentik_stages_authenticator_mobile.change_authenticatormobilestage",
+                            "authentik_stages_authenticator_mobile.change_mobiledevice",
+                            "authentik_stages_authenticator_mobile.change_mobiledevicetoken",
+                            "authentik_stages_authenticator_mobile.change_mobiletransaction",
+                            "authentik_stages_authenticator_mobile.delete_authenticatormobilestage",
+                            "authentik_stages_authenticator_mobile.delete_mobiledevice",
+                            "authentik_stages_authenticator_mobile.delete_mobiledevicetoken",
+                            "authentik_stages_authenticator_mobile.delete_mobiletransaction",
+                            "authentik_stages_authenticator_mobile.view_authenticatormobilestage",
+                            "authentik_stages_authenticator_mobile.view_mobiledevice",
+                            "authentik_stages_authenticator_mobile.view_mobiledevicetoken",
+                            "authentik_stages_authenticator_mobile.view_mobiletransaction",
                             "authentik_stages_authenticator_sms.add_authenticatorsmsstage",
                             "authentik_stages_authenticator_sms.add_smsdevice",
                             "authentik_stages_authenticator_sms.change_authenticatorsmsstage",

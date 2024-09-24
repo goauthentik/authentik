@@ -1,7 +1,6 @@
 """Mobile authenticator stage"""
 
 from secrets import choice
-from typing import Optional
 from uuid import uuid4
 
 from authentik_cloud_gateway_client.authenticationPush_pb2 import AuthenticationRequest
@@ -81,7 +80,7 @@ class AuthenticatorMobileStage(ConfigurableStage, FriendlyNamedStage, Stage):
         return AuthenticatorMobileStageSerializer
 
     @property
-    def type(self) -> type[View]:
+    def view(self) -> type[View]:
         from authentik.stages.authenticator_mobile.stage import AuthenticatorMobileStageView
 
         return AuthenticatorMobileStageView
@@ -90,7 +89,7 @@ class AuthenticatorMobileStage(ConfigurableStage, FriendlyNamedStage, Stage):
     def component(self) -> str:
         return "ak-stage-authenticator-mobile-form"
 
-    def ui_user_settings(self) -> Optional[UserSettingSerializer]:
+    def ui_user_settings(self) -> UserSettingSerializer | None:
         return UserSettingSerializer(
             data={
                 "title": self.friendly_name or str(self._meta.verbose_name),
@@ -199,11 +198,10 @@ class MobileTransaction(ExpiringModel):
             attributes=AuthenticationRequest.Attributes(
                 title=__("Authentication request"),
                 body=__(
-                    "%(user)s is attempting to log in to %(domain)s"
-                    % {
-                        "user": user.username,  # pylint: disable=no-member
-                        "domain": domain,
-                    }
+                    "{user} is attempting to log in to {domain}".format(
+                        user=user.username,  # pylint: disable=no-member
+                        domain=domain,
+                    )
                 ),
                 client_ip=client_ip,
                 geo=geo,
