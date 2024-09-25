@@ -45,7 +45,6 @@ jobs:
       - working-directory: ${{ matrix.project }}/
         run: |
           npm ci
-          ${{ matrix.extra_setup }}
       - name: Generate API
         run: make gen-client-ts
       - name: Lint

@@ -1,6 +1,9 @@
 ---
-title: Node-RED
+title: Integrate with Node-RED
+sidebar_label: Node-RED
 ---
+
+# Node-RED
 
 <span class="badge badge--secondary">Support level: Community</span>
 

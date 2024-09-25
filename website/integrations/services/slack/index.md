@@ -1,6 +1,9 @@
 ---
-title: Slack
+title: Integrate with Slack
+sidebar_label: Slack
 ---
+
+# Slack
 
 <span class="badge badge--primary">Support level: authentik</span>
 

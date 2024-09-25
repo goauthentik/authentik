@@ -1,6 +1,9 @@
 ---
-title: Service Name
+title: Integrate with Service Name
+sidebar_label: Service Name
 ---
+
+# Service Name
 
 <span class="badge badge--secondary">Support level: Community</span>
 

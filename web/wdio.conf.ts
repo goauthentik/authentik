@@ -1,5 +1,4 @@
 import replace from "@rollup/plugin-replace";
-import type { Options } from "@wdio/types";
 import { cwd } from "process";
 import postcssLit from "rollup-plugin-postcss-lit";
 import type { UserConfig } from "vite";
@@ -50,7 +49,7 @@ const maxInstances =
           ? 10
           : 1;
 
-export const config: Options.Testrunner = {
+export const config: WebdriverIO.Config = {
     //
     // ====================
     // Runner Configuration
@@ -79,13 +78,7 @@ export const config: Options.Testrunner = {
         },
     ],
 
-    autoCompileOpts: {
-        autoCompile: true,
-        tsNodeOpts: {
-            project: "./tsconfig.json",
-            transpileOnly: true,
-        },
-    },
+    tsConfigPath: "./tsconfig.json",
 
     //
     // ==================
