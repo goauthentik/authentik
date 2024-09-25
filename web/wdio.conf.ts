@@ -1,5 +1,4 @@
 import replace from "@rollup/plugin-replace";
-import type { Options } from "@wdio/types";
 import { cwd } from "process";
 import postcssLit from "rollup-plugin-postcss-lit";
 import type { UserConfig } from "vite";
@@ -8,8 +7,14 @@ import tsconfigPaths from "vite-tsconfig-paths";
 const isProdBuild = process.env.NODE_ENV === "production";
 const apiBasePath = process.env.AK_API_BASE_PATH || "";
 const runHeadless = process.env.CI !== undefined;
+const maxInstances =
+    process.env.MAX_INSTANCES !== undefined
+        ? parseInt(process.env.MAX_INSTANCES, 10)
+        : runHeadless
+          ? 10
+          : 1;
 
-export const config: Options.Testrunner = {
+export const config: WebdriverIO.Config = {
     //
     // ====================
     // Runner Configuration
@@ -37,13 +42,7 @@ export const config: Options.Testrunner = {
         },
     ],
 
-    autoCompileOpts: {
-        autoCompile: true,
-        tsNodeOpts: {
-            project: "./tsconfig.json",
-            transpileOnly: true,
-        },
-    },
+    tsConfigPath: "./tsconfig.json",
 
     //
     // ==================
@@ -81,7 +80,7 @@ export const config: Options.Testrunner = {
     // and 30 processes will get spawned. The property handles how many capabilities
     // from the same test should run tests.
     //
-    maxInstances: 10,
+    maxInstances,
     //
     // If you have trouble getting all important capabilities together, check out the
     // Sauce Labs platform configurator - a great tool to configure your capabilities:

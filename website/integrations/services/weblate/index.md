@@ -1,6 +1,9 @@
 ---
-title: Weblate
+title: Integrate with Weblate
+sidebar_label: Weblate
 ---
+
+# Weblate
 
 <span class="badge badge--secondary">Support level: Community</span>
 

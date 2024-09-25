@@ -678,10 +678,10 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         if not request.tenant.impersonation:
             LOGGER.debug("User attempted to impersonate", user=request.user)
             return Response(status=401)
-        if not request.user.has_perm("impersonate"):
+        user_to_be = self.get_object()
+        if not request.user.has_perm("impersonate", user_to_be):
             LOGGER.debug("User attempted to impersonate without permissions", user=request.user)
             return Response(status=401)
-        user_to_be = self.get_object()
         if user_to_be.pk == self.request.user.pk:
             LOGGER.debug("User attempted to impersonate themselves", user=request.user)
             return Response(status=401)
