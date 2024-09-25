@@ -119,6 +119,7 @@ class EventAction(models.TextChoices):
     MODEL_DELETED = "model_deleted"
     EMAIL_SENT = "email_sent"
 
+    ANALYTICS_SENT = "analytics_sent"
     UPDATE_AVAILABLE = "update_available"
 
     CUSTOM_PREFIX = "custom_"
