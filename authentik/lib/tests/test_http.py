@@ -30,6 +30,11 @@ class TestHTTP(TestCase):
         request = self.factory.get("/", HTTP_X_FORWARDED_FOR="127.0.0.2")
         self.assertEqual(ClientIPMiddleware.get_client_ip(request), "127.0.0.2")
 
+    def test_forward_for_invalid(self):
+        """Test invalid forward for"""
+        request = self.factory.get("/", HTTP_X_FORWARDED_FOR="foobar")
+        self.assertEqual(ClientIPMiddleware.get_client_ip(request), ClientIPMiddleware.default_ip)
+
     def test_fake_outpost(self):
         """Test faked IP which is overridden by an outpost"""
         token = Token.objects.create(
@@ -49,6 +54,17 @@ class TestHTTP(TestCase):
             "/",
             **{
                 ClientIPMiddleware.outpost_remote_ip_header: "1.2.3.4",
+                ClientIPMiddleware.outpost_token_header: token.key,
+            },
+        )
+        self.assertEqual(ClientIPMiddleware.get_client_ip(request), "127.0.0.1")
+        # Invalid, not a real IP
+        self.user.type = UserTypes.INTERNAL_SERVICE_ACCOUNT
+        self.user.save()
+        request = self.factory.get(
+            "/",
+            **{
+                ClientIPMiddleware.outpost_remote_ip_header: "foobar",
                 ClientIPMiddleware.outpost_token_header: token.key,
             },
         )
