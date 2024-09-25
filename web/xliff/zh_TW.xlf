@@ -2374,11 +2374,6 @@
         <target>將此動作類型與建立的事件配對。如果為空則將符合所有動作類型。</target>
 
       </trans-unit>
-      <trans-unit id="sfab527528ea64618">
-        <source>Matches Event's Client IP (strict matching, for network matching use an Expression Policy.</source>
-        <target>配對事件的用戶端 IP（嚴格篩選，如要配對網路請使用表示式政策）。</target>
-
-      </trans-unit>
       <trans-unit id="s5a15a8f39c699273">
         <source>Match events created by selected application. When left empty, all applications are matched.</source>
         <target>將選擇的應用程式與建立的事件配對。如果為空則將符合所有應用程式。</target>
@@ -7328,10 +7323,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Saving Application...</source>
   <target>儲存應用程式中……</target>
 </trans-unit>
-<trans-unit id="s823abdb61543a826">
-  <source>Authentik was unable to save this application:</source>
-  <target>authentik 無法儲存這個應用程式：</target>
-</trans-unit>
 <trans-unit id="s848288f8c2265aad">
   <source>Your application has been saved</source>
   <target>已經儲存您的應用程式</target>
@@ -8687,6 +8678,21 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sae72e1569d34fb02">
   <source>External user usage</source>
+</trans-unit>
+<trans-unit id="sa82f8948649d0989">
+  <source>Matches Event's Client IP (strict matching, for network matching use an Expression Policy).</source>
+</trans-unit>
+<trans-unit id="s6506b7c69456b0d6">
+  <source>Invalid update request.</source>
+</trans-unit>
+<trans-unit id="s3819162efec77de1">
+  <source>Sync Group</source>
+</trans-unit>
+<trans-unit id="s2d5f69929bb7221d">
+  <source><x id="0" equiv-text="${prompt.name}"/> ("<x id="1" equiv-text="${prompt.fieldKey}"/>", of type <x id="2" equiv-text="${prompt.type}"/>)</source>
+</trans-unit>
+<trans-unit id="sa38c5a2731be3a46">
+  <source>authentik was unable to save this application:</source>
 </trans-unit>
     </body>
   </file>

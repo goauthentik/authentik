@@ -466,8 +466,6 @@ class ApplicationQuerySet(QuerySet):
     def with_provider(self) -> "QuerySet[Application]":
         qs = self.select_related("provider")
         for subclass in Provider.objects.get_queryset()._get_subclasses_recurse(Provider):
-            if LOOKUP_SEP in subclass:
-                continue
             qs = qs.select_related(f"provider__{subclass}")
         return qs
 
@@ -545,15 +543,24 @@ class Application(SerializerModel, PolicyBindingModel):
         if not self.provider:
             return None
 
-        for subclass in Provider.objects.get_queryset()._get_subclasses_recurse(Provider):
-            # We don't care about recursion, skip nested models
-            if LOOKUP_SEP in subclass:
+        candidates = []
+        base_class = Provider
+        for subclass in base_class.objects.get_queryset()._get_subclasses_recurse(base_class):
+            parent = self.provider
+            for level in subclass.split(LOOKUP_SEP):
+                try:
+                    parent = getattr(parent, level)
+                except AttributeError:
+                    break
+            if parent in candidates:
                 continue
-            try:
-                return getattr(self.provider, subclass)
-            except AttributeError:
-                pass
-        return None
+            idx = subclass.count(LOOKUP_SEP)
+            if type(parent) is not base_class:
+                idx += 1
+            candidates.insert(idx, parent)
+        if not candidates:
+            return None
+        return candidates[-1]
 
     def __str__(self):
         return str(self.name)
@@ -901,7 +908,7 @@ class PropertyMapping(SerializerModel, ManagedModel):
         except ControlFlowException as exc:
             raise exc
         except Exception as exc:
-            raise PropertyMappingExpressionException(self, exc) from exc
+            raise PropertyMappingExpressionException(exc, self) from exc
 
     def __str__(self):
         return f"Property Mapping {self.name}"

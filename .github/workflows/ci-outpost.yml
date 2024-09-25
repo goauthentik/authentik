@@ -115,7 +115,7 @@ jobs:
         id: attest
         if: ${{ steps.ev.outputs.shouldBuild == 'true' }}
         with:
-          subject-name: ${{ steps.ev.outputs.imageNames }}
+          subject-name: ${{ steps.ev.outputs.attestImageNames }}
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
   build-binary:

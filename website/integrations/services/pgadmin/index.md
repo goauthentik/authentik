@@ -1,6 +1,9 @@
 ---
-title: pgAdmin
+title: Integrate with pgAdmin
+sidebar_label: pgAdmin
 ---
+
+# pgAdmin
 
 <span class="badge badge--secondary">Support level: Community</span>
 

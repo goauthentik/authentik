@@ -1799,10 +1799,6 @@
         <source>Match created events with this action type. When left empty, all action types will be matched.</source>
         <target>Haga coincidir los eventos creados con este tipo de acción. Cuando se deja vacío, todos los tipos de acción coincidirán.</target>
       </trans-unit>
-      <trans-unit id="sfab527528ea64618">
-        <source>Matches Event's Client IP (strict matching, for network matching use an Expression Policy.</source>
-        <target>Coincide con la IP del cliente del evento (coincidencia estricta, para la coincidencia de red, use una política de expresión</target>
-      </trans-unit>
       <trans-unit id="s5a15a8f39c699273">
         <source>Match events created by selected application. When left empty, all applications are matched.</source>
         <target>Coincidir con eventos creados por la aplicación seleccionada. Cuando se deja vacío, todas las solicitudes coinciden.</target>
@@ -5540,9 +5536,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s15831fa50a116545">
   <source>Saving Application...</source>
 </trans-unit>
-<trans-unit id="s823abdb61543a826">
-  <source>Authentik was unable to save this application:</source>
-</trans-unit>
 <trans-unit id="s848288f8c2265aad">
   <source>Your application has been saved</source>
 </trans-unit>
@@ -6807,6 +6800,21 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sae72e1569d34fb02">
   <source>External user usage</source>
+</trans-unit>
+<trans-unit id="sa82f8948649d0989">
+  <source>Matches Event's Client IP (strict matching, for network matching use an Expression Policy).</source>
+</trans-unit>
+<trans-unit id="s6506b7c69456b0d6">
+  <source>Invalid update request.</source>
+</trans-unit>
+<trans-unit id="s3819162efec77de1">
+  <source>Sync Group</source>
+</trans-unit>
+<trans-unit id="s2d5f69929bb7221d">
+  <source><x id="0" equiv-text="${prompt.name}"/> ("<x id="1" equiv-text="${prompt.fieldKey}"/>", of type <x id="2" equiv-text="${prompt.type}"/>)</source>
+</trans-unit>
+<trans-unit id="sa38c5a2731be3a46">
+  <source>authentik was unable to save this application:</source>
 </trans-unit>
     </body>
   </file>
