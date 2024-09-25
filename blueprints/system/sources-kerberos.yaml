@@ -22,16 +22,6 @@ entries:
             }
         return attrs
   - identifiers:
-      managed: goauthentik.io/sources/kerberos/user/default/realm-as-group
-    model: authentik_sources_kerberos.kerberossourcepropertymapping
-    attrs:
-      name: "authentik default Kerberos User Mapping: Add realm as group"
-      expression: |
-        localpart, realm = principal.rsplit("@", 1)
-        return {
-            "groups": [realm.upper()]
-        }
-  - identifiers:
       managed: goauthentik.io/sources/kerberos/user/default/ignore-other-realms
     model: authentik_sources_kerberos.kerberossourcepropertymapping
     attrs:
@@ -56,3 +46,13 @@ entries:
                 attrs["username"] = None
                 break
         return attrs
+  - identifiers:
+      managed: goauthentik.io/sources/kerberos/user/realm-as-group
+    model: authentik_sources_kerberos.kerberossourcepropertymapping
+    attrs:
+      name: "authentik default Kerberos User Mapping: Add realm as group"
+      expression: |
+        localpart, realm = principal.rsplit("@", 1)
+        return {
+            "groups": [realm.upper()]
+        }
