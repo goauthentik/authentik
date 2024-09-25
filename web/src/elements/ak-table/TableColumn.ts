@@ -85,14 +85,14 @@ export class TableColumn {
             "pf-m-selected": Boolean(this.host && isSelected),
         };
 
-        return html`<th
+        return html`<td
             part="column-item"
             role="columnheader"
             scope="col"
             class="${classMap(classes)}"
         >
             ${orderBy && this.orderBy ? this.sortButton(orderBy) : html`${this.value}`}
-        </th>`;
+        </td>`;
     }
 }
 

@@ -233,7 +233,7 @@ export class SelectTable extends SimpleTable {
                   this.selected.filter((i) => !values.includes(i));
         };
 
-        return html`<th part="select-all-header" class="pf-c-table__check" role="cell">
+        return html`<td part="select-all-header" class="pf-c-table__check" role="cell">
             <input
                 part="select-all-input"
                 name="select-all-input"
@@ -242,13 +242,13 @@ export class SelectTable extends SimpleTable {
                 .checked=${checked}
                 @input=${onInput}
             />
-        </th>`;
+        </td>`;
     }
 
     // This override makes room for the select checkbox.
     public override renderColumnHeaders() {
         return html`<tr part="column-row" role="row">
-            ${this.multiple ? this.renderAllOnThisPageCheckbox() : html`<th></th>`}
+            ${this.multiple ? this.renderAllOnThisPageCheckbox() : html`<td></td>`}
             ${map(this.icolumns, (col) => col.render(this.order))}
         </tr>`;
     }

@@ -6,6 +6,7 @@
         "paths": {
             "@goauthentik/docs/*": ["../website/docs/*"]
         },
+        "types": ["node", "@wdio/mocha-framework", "@wdio/types", "expect-webdriverio"],
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
         "experimentalDecorators": true,
@@ -57,5 +58,6 @@
                 }
             }
         ]
-    }
+    },
+    "exclude": ["src/**/*.test.ts"]
 }
