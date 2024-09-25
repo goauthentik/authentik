@@ -98,9 +98,12 @@ def get_analytics_data(current_tenant: Tenant | None = None, force: bool = False
         **get_analytics_apps_data(),
         **get_analytics_models_data(),
     }
+    to_remove = []
     for key in data.keys():
         if key not in current_tenant.analytics_sources:
-            del data[key]
+            to_remove.append(key)
+    for key in to_remove:
+        del data[key]
     return {
         **data,
         "install_id_hash": sha256(get_install_id().encode()).hexdigest(),
