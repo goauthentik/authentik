@@ -28,10 +28,9 @@ entries:
       name: "authentik default Kerberos User Mapping: Ignore other realms"
       expression: |
         localpart, realm = principal.rsplit("@", 1)
-        attrs = {}
         if realm.upper() != source.realm.upper():
-            attrs["username"] = None
-        return attrs
+            raise SkipObject
+        return {}
   - identifiers:
       managed: goauthentik.io/sources/kerberos/user/default/ignore-system-principals
     model: authentik_sources_kerberos.kerberossourcepropertymapping
@@ -39,13 +38,11 @@ entries:
       name: "authentik default Kerberos User Mapping: Ignore system principals"
       expression: |
         localpart, realm = principal.rsplit("@", 1)
-        attrs = {}
         denied_prefixes = ["kadmin/", "krbtgt/", "K/M", "WELLKNOWN/"]
         for prefix in denied_prefixes:
             if localpart.lower().startswith(prefix.lower()):
-                attrs["username"] = None
-                break
-        return attrs
+                raise SkipObject
+        return {}
   - identifiers:
       managed: goauthentik.io/sources/kerberos/user/realm-as-group
     model: authentik_sources_kerberos.kerberossourcepropertymapping

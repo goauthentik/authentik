@@ -1,4 +1,4 @@
-import "@goauthentik/admin/common/ak-crypto-certificate-search";
+import "@goauthentik/admin/common/ak-flow-search/ak-source-flow-search";
 import { iconHelperText, placeholderHelperText } from "@goauthentik/admin/helperText";
 import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
 import {
@@ -26,6 +26,7 @@ import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
+    FlowsInstancesListDesignationEnum,
     GroupMatchingModeEnum,
     KerberosSource,
     KerberosSourcePropertyMapping,
@@ -263,7 +264,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                         label=${msg("Sync keytab")}
                         ?writeOnly=${this.instance !== undefined}
                     >
-                        <input type="text" value="" class="pf-c-form-control" />
+                        <textarea class="pf-c-form-control"></textarea>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Keytab used to authenticate to the KDC for syncing. Optional if Sync password or Sync credentials cache is provided. Must be base64 encoded or in the form TYPE:residual.",
@@ -294,7 +295,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                         label=${msg("SPNEGO keytab")}
                         ?writeOnly=${this.instance !== undefined}
                     >
-                        <input type="text" value="" class="pf-c-form-control" />
+                        <textarea class="pf-c-form-control"></textarea>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Keytab used for SPNEGO. Optional if SPNEGO credentials cache is provided. Must be base64 encoded or in the form TYPE:residual.",
@@ -346,6 +347,39 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                         ></ak-dual-select-dynamic-selected>
                         <p class="pf-c-form__helper-text">
                             ${msg("Property mappings for group creation.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+            <ak-form-group>
+                <span slot="header"> ${msg("Flow settings")} </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("Authentication flow")}
+                        name="authenticationFlow"
+                    >
+                        <ak-source-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                            .currentFlow=${this.instance?.authenticationFlow}
+                            .instanceId=${this.instance?.pk}
+                            fallback="default-source-authentication"
+                        ></ak-source-flow-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Flow to use when authenticating existing users.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Enrollment flow")}
+                        name="enrollmentFlow"
+                    >
+                        <ak-source-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.Enrollment}
+                            .currentFlow=${this.instance?.enrollmentFlow}
+                            .instanceId=${this.instance?.pk}
+                            fallback="default-source-enrollment"
+                        ></ak-source-flow-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Flow to use when enrolling new users.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>

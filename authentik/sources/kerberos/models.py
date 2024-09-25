@@ -126,7 +126,7 @@ class KerberosSource(Source):
     def ui_login_button(self, request: HttpRequest) -> UILoginButton:
         return UILoginButton(
             challenge=RedirectChallenge(
-                instance={
+                data={
                     "to": reverse(
                         "authentik_sources_kerberos:spnego-login",
                         kwargs={"source_slug": self.slug},
@@ -138,9 +138,6 @@ class KerberosSource(Source):
         )
 
     def ui_user_settings(self) -> UserSettingSerializer | None:
-        icon = self.icon_url
-        if not icon:
-            icon = static(f"authentik/sources/{self.slug}.svg")
         return UserSettingSerializer(
             data={
                 "title": self.name,
@@ -149,7 +146,7 @@ class KerberosSource(Source):
                     "authentik_sources_kerberos:spnego-login",
                     kwargs={"source_slug": self.slug},
                 ),
-                "icon_url": icon,
+                "icon_url": self.icon_url,
             }
         )
 
@@ -214,7 +211,7 @@ class KerberosSource(Source):
             if ":" not in keytab:
                 keytab_path = self.tempdir / "kadmin_keytab"
                 keytab_path.touch(mode=0o600)
-                keytab_path.write_bytes(b64decode(self.keytab))
+                keytab_path.write_bytes(b64decode(self.sync_keytab))
                 keytab = f"FILE:{keytab_path}"
             return kadmin.init_with_keytab(
                 self.sync_principal,

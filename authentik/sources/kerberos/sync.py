@@ -109,7 +109,7 @@ class KerberosSync:
 
             with transaction.atomic():
                 user.ak_groups.remove(
-                    *user.ak_groups.filter(groupsourceconnection__source=self.source)
+                    *user.ak_groups.filter(groupsourceconnection__source=self._source)
                 )
                 user.ak_groups.add(*groups)
 
@@ -141,7 +141,7 @@ class KerberosSync:
             return group
         if action in (Action.AUTH, Action.LINK):
             group = connection.group
-            group.update_attributes(**defaults)
+            group.update_attributes(defaults)
             connection.save()
             return group
         return None
