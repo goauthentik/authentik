@@ -131,7 +131,8 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
             PatchRequest(
                 Operations=[
                     PatchOperation(
-                        PatchOp.replace, value=group.model_dump(mode="json", exclude_unset=True)
+                        PatchOp.replace,
+                        value=scim_group.model_dump(mode="json", exclude_unset=True),
                     )
                 ]
             ),
