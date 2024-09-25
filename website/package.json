@@ -64,7 +64,7 @@
         "lint:lockfile": {
             "__comment": "The lockfile-lint package does not have an option to ensure resolved hashes are set everywhere",
             "shell": true,
-            "command": "[ -z \"$(jq -r '.packages | to_entries[] | select((.key | startswith(\"node_modules\")) and (.value | has(\"resolved\") | not)) | .key' < package-lock.json)\" ]"
+            "command": "[ -z \"$(jq -r '.packages | to_entries[] | select((.key | contains(\"node_modules\")) and (.value | has(\"resolved\") | not)) | .key' < package-lock.json)\" ]"
         }
     },
     "engines": {
