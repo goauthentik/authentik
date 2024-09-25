@@ -6,6 +6,7 @@ from typing import Any
 
 from structlog import get_logger
 
+from authentik import get_full_version
 from authentik.analytics.models import AnalyticsMixin
 from authentik.lib.utils.reflection import get_apps
 from authentik.root.install_id import get_install_id
@@ -99,9 +100,10 @@ def get_analytics_data(current_tenant: Tenant | None = None, force: bool = False
     }
     for key in data.keys():
         if key not in current_tenant.analytics_sources:
-            data.pop(key)
+            del data[key]
     return {
         **data,
         "install_id_hash": sha256(get_install_id().encode()).hexdigest(),
         "tenant_hash": sha256(current_tenant.tenant_uuid.bytes).hexdigest(),
+        "version": get_full_version(),
     }
