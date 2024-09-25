@@ -90,4 +90,4 @@ These restrictions only apply to WebAuthn devices created with authentik 2024.4 
 
 #### Automatic device selection
 
-If the user has more than one device, a device picker screen is shown. Once the user successfully authenticates with a device, that device is marked as "last used". In subsequent challenges, the last used device will be automatically selected for the user. (Should they wish to use another device, the user can return to the device picker screen.)
+If the user has more than one device, the user is prompted to select which device they want to use for validation. After the user successfully authenticates with a certain device, that device is marked as "last used". In subsequent prompts by the Authenticator validation stage, the last used device is automatically selected for the user. Should they wish to use another device, the user can return to the device selection screen.
