@@ -3,7 +3,7 @@ title: Source stage
 ---
 
 <span class="badge badge--primary">Enterprise</span>
-<span class="badge badge--info">authentik 2024.4+</span>
+<span class="badge badge--version">authentik 2024.4+</span>
 
 ---
 

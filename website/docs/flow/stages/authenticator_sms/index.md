@@ -46,11 +46,7 @@ return {
 }
 ```
 
-## Verify only
-
-:::info
-Requires authentik 2022.6
-:::
+## Verify only <span class="badge badge--version">authentik 2022.6+</span>
 
 To only verify the validity of a users' phone number, without saving it in an easily accessible way, you can enable this option. Phone numbers from devices enrolled through this stage will only have their hashed phone number saved. These devices can also not be used with the [Authenticator validation](../authenticator_validate/) stage.
 
