@@ -18,13 +18,13 @@ module.exports = async function (): Promise<Config> {
         projectName: "authentik",
         themeConfig: {
             announcementBar: {
-                id: 'support_us',
+                id: "support_us",
                 content:
-                  'Change is hard. We hate it too when a familiar site or application gets re-arranged. But we did it anyway. Please let us <a target="_blank" rel="noopener noreferrer" href="https://docs.goauthentik.io/docs/">know what you think!</a>',
-                backgroundColor: '#fafbfc',
-                textColor: '#091E42',
+                    'Change is hard. We hate it too when a familiar site or application gets re-arranged. But we did it anyway. Please let us <a target="_blank" rel="noopener noreferrer" href="https://docs.goauthentik.io/docs/">know what you think of the new Docs structure!</a>',
+                backgroundColor: "#006699",
+                textColor: "#ffffff",
                 isCloseable: false,
-              },
+            },
             image: "img/social.png",
             navbar: {
                 logo: {
