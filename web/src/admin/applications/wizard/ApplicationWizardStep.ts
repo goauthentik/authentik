@@ -11,7 +11,13 @@ import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFor
 import { msg } from "@lit/localize";
 import { property, query } from "lit/decorators.js";
 
-import { type ApplicationWizardStateUpdate } from "./types";
+import { ValidationError } from "@goauthentik/api";
+
+import {
+    type ApplicationWizardState,
+    type ApplicationWizardStateUpdate,
+    ExtendedValidationError,
+} from "./types";
 
 export class ApplicationWizardStep extends WizardStep {
     static get styles() {
@@ -19,7 +25,7 @@ export class ApplicationWizardStep extends WizardStep {
     }
 
     @property({ type: Object, attribute: false })
-    wizard!: ApplicationWizardStateUpdate;
+    wizard!: ApplicationWizardState;
 
     // As recommended in [WizardStep](../../../components/ak-wizard/WizardStep.ts), we override
     // these fields and provide them to all the child classes.
@@ -27,18 +33,37 @@ export class ApplicationWizardStep extends WizardStep {
     wizardDescription = msg("Create a new application");
     canCancel = true;
 
-    // This should be overriden in the children for more precise targeting.
+    // This should be overridden in the children for more precise targeting.
     @query("form")
     form!: HTMLFormElement;
 
     get formValues(): KeyUnknown | undefined {
         const elements = [
             ...Array.from(
-                this.form.querySelectorAll<HorizontalFormElement>("ak-form-element-horizontal")
+                this.form.querySelectorAll<HorizontalFormElement>("ak-form-element-horizontal"),
             ),
             ...Array.from(this.form.querySelectorAll<HTMLElement>("[data-ak-control=true]")),
         ];
         return serializeForm(elements as unknown as NodeListOf<HorizontalFormElement>);
+    }
+
+    protected removeErrors(
+        keyToDelete: keyof ExtendedValidationError,
+    ): ValidationError | undefined {
+        if (!this.wizard.errors) {
+            return undefined;
+        }
+        const empty = {};
+        const errors = Object.entries(this.wizard.errors).reduce(
+            (acc, [key, value]) =>
+                key === keyToDelete ||
+                value === undefined ||
+                (Array.isArray(this.wizard?.errors?.[key]) && this.wizard.errors[key].length === 0)
+                    ? acc
+                    : { ...acc, [key]: value },
+            empty,
+        );
+        return errors;
     }
 
     // This pattern became visible during development, and the order is important: wizard updating
@@ -46,7 +71,7 @@ export class ApplicationWizardStep extends WizardStep {
     public handleUpdate(
         update?: ApplicationWizardStateUpdate,
         destination?: string,
-        enable?: NavigationUpdate
+        enable?: NavigationUpdate,
     ) {
         // Inform ApplicationWizard of content state
         if (update) {

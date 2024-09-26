@@ -57,7 +57,8 @@ export class ApplicationWizardProviderStep extends ApplicationWizardStep {
                 });
                 return;
             }
-            this.handleUpdate({ provider: this.formValues }, button.destination, {
+            const payload = { provider: this.formValues, errors: this.removeErrors("provider") };
+            this.handleUpdate(payload, button.destination, {
                 enable: ["bindings", "submit"],
             });
             return;

@@ -126,7 +126,7 @@ export class SimpleTable extends AKElement implements ISimpleTable {
                 ? hosted(new TableColumn(column))
                 : Array.isArray(column)
                   ? hosted(new TableColumn(...column))
-                  : hosted(column)
+                  : hosted(column),
         );
     }
 
@@ -146,11 +146,10 @@ export class SimpleTable extends AKElement implements ISimpleTable {
     }
 
     public renderRow(row: TableRow, _rownum: number) {
-        console.log(row[4].getHTML());
         return html` <tr part="row">
             ${map(
                 row.content,
-                (col, idx) => html`<td part="cell cell-${idx}" role="cell">${col}</td>`
+                (col, idx) => html`<td part="cell cell-${idx}" role="cell">${col}</td>`,
             )}
         </tr>`;
     }

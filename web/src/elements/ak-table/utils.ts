@@ -44,7 +44,7 @@ export const isTableFlat = (v: unknown): v is TableFlat =>
 
 export function convertContent(
     content: TableInputType,
-    { groupBy, keyBy }: { groupBy?: KeyBy; keyBy?: KeyBy } = {}
+    { groupBy, keyBy }: { groupBy?: KeyBy; keyBy?: KeyBy } = {},
 ): TableType {
     // TableGrouped
     if (isTableGrouped(content)) {
@@ -65,7 +65,7 @@ export function convertContent(
     if (isTableRows(content)) {
         if (groupBy) {
             console.warn(
-                "Passed processor function when content is processed and can't be analyzed for grouping"
+                "Passed processor function when content is processed and can't be analyzed for grouping",
             );
         }
         return {

@@ -53,7 +53,7 @@ export const providerModelsList: LocalTypeCreate[] = [
         formName: "ldapprovider",
         name: msg("LDAP (Lightweight Directory Access Protocol)"),
         description: msg(
-            "Provide an LDAP interface for applications and users to authenticate against."
+            "Provide an LDAP interface for applications and users to authenticate against.",
         ),
         modelName: ProviderModelEnum.LdapLdapprovider,
         converter: (provider: OneOfProvider) => ({

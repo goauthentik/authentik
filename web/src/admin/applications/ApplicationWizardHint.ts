@@ -61,7 +61,7 @@ export class AkApplicationWizardHint extends AKElement implements ShowHintContro
         super();
         this.showHintController = new ShowHintController(
             this,
-            "202310-application-wizard-announcement"
+            "202310-application-wizard-announcement",
         );
     }
 

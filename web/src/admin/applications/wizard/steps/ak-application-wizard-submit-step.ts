@@ -26,11 +26,10 @@ import {
     type TransactionApplicationRequest,
     type TransactionApplicationResponse,
     type TransactionPolicyBindingRequest,
-    type ValidationError,
 } from "@goauthentik/api";
 
 import { ApplicationWizardStep } from "../ApplicationWizardStep.js";
-import { OneOfProvider } from "../types.js";
+import { ExtendedValidationError, OneOfProvider } from "../types.js";
 import { type ProviderModelType, providerModelsList } from "./ProviderChoices.js";
 import { providerRenderers } from "./SubmitStepOverviewRenderers.js";
 
@@ -41,20 +40,12 @@ type NonEmptyArray<T> = [T, ...T[]];
 
 type MaybeTemplateResult = TemplateResult | typeof nothing;
 
-type ExtendedValidationError = ValidationError & {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    app?: any;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    provider?: any;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    detail?: any;
-};
-
 const JSON_INDENT = 2;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const errStr = (o: any) => JSON.stringify(o, null, JSON_INDENT);
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isNotEmpty = (arr: any): arr is NonEmptyArray<any> => Array.isArray(arr) && arr.length > 0;
 
 const cleanApplication = (app: Partial<ApplicationRequest>): ApplicationRequest => ({
@@ -97,9 +88,6 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
     @state()
     state: SubmitStates = "reviewing";
 
-    @state()
-    errors?: ValidationError;
-
     async send() {
         const app = this.wizard.app;
         const provider = this.wizard.provider;
@@ -118,7 +106,6 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
             policyBindings: (this.wizard.bindings ?? []).map(cleanBinding),
         };
 
-        this.errors = undefined;
         this.state = "running";
 
         return (
@@ -133,7 +120,24 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
 
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 .catch(async (resolution: any) => {
-                    this.errors = await parseAPIError(await resolution);
+                    const errors = (await parseAPIError(
+                        await resolution,
+                    )) as ExtendedValidationError;
+
+                    // THIS is a really gross special case; if the user is duplicating the name of
+                    // an existing provider, the error appears on the `app` (!) error object. We
+                    // have to move that to the `provider.name` error field so it shows up in the
+                    // right place.
+                    if (Array.isArray(errors?.app?.provider)) {
+                        const providerError = errors.app.provider;
+                        errors.provider = errors.provider ?? {};
+                        errors.provider.name = providerError;
+                        delete errors.app.provider;
+                        if (Object.keys(errors.app).length === 0) {
+                            delete errors.app;
+                        }
+                    }
+                    this.handleUpdate({ errors });
                     this.state = "reviewing";
                 })
         );
@@ -155,7 +159,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
             })
             .otherwise(() => {
                 throw new Error(
-                    `Submit step received incoherent button/state combination: ${[button.kind, state]}`
+                    `Submit step received incoherent button/state combination: ${[button.kind, state]}`,
                 );
             });
     }
@@ -178,11 +182,11 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
 
     get currentProviderModel() {
         const providerModel = providerModelsList.find(
-            ({ formName }) => formName === this.wizard.providerModel
+            ({ formName }) => formName === this.wizard.providerModel,
         );
         if (!providerModel) {
             throw new Error(
-                `Could not determine provider model from user request: ${errStr(this.wizard)}`
+                `Could not determine provider model from user request: ${errStr(this.wizard)}`,
             );
         }
         return providerModel;
@@ -192,7 +196,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
         state: string,
         label: string,
         icons: string[],
-        extraInfo: MaybeTemplateResult = nothing
+        extraInfo: MaybeTemplateResult = nothing,
     ) {
         const icon = classMap(icons.reduce((acc, icon) => ({ ...acc, [icon]: true }), {}));
 
@@ -210,12 +214,12 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
     }
 
     renderError() {
-        if (!this.errors || this.errors.length === 0) {
+        if (Object.keys(this.wizard.errors).length === 0) {
             return nothing;
         }
 
         const navTo = (step: string) => () => this.dispatchEvent(new WizardNavigationEvent(step));
-        const errors = this.errors;
+        const errors = this.wizard.errors;
         return html` <hr class="pf-c-divider" />
             ${match(errors as ExtendedValidationError)
                 .with(
@@ -226,7 +230,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
                                 <a @click=${navTo("application")}
                                     >${msg("Review the application.")}</a
                                 >
-                            </p>`
+                            </p>`,
                 )
                 .with(
                     { provider: P.nonNullable },
@@ -234,33 +238,33 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
                         html`<p>${msg("There was an error in the provider.")}</p>
                             <p>
                                 <a @click=${navTo("provider")}>${msg("Review the provider.")}</a>
-                            </p>`
+                            </p>`,
                 )
                 .with(
                     { detail: P.nonNullable },
                     () =>
-                        `<p>${msg("There was an error. Please go back and review the application.")}: ${errors.detail}</p>`
+                        `<p>${msg("There was an error. Please go back and review the application.")}: ${errors.detail}</p>`,
                 )
                 .with(
                     {
-                        nonFieldErrors: P.when(isNotEmpty(errors.nonFieldErrors)),
+                        nonFieldErrors: P.when(isNotEmpty),
                     },
                     () =>
                         html`<p>${msg("There was an error:")}:</p>
                             <ul>
                                 ${(errors.nonFieldErrors ?? []).map(
-                                    (e: string) => html`<li>${e}</li>`
+                                    (e: string) => html`<li>${e}</li>`,
                                 )}
                             </ul>
-                            <p>${msg("Please go back and review the application.")}</p>`
+                            <p>${msg("Please go back and review the application.")}</p>`,
                 )
                 .otherwise(
                     () =>
                         html`<p>
                             ${msg(
-                                "There was an error creating the application, but no error message was sent. Please review the server logs."
+                                "There was an error creating the application, but no error message was sent. Please review the server logs.",
                             )}
-                        </p>`
+                        </p>`,
                 )}`;
     }
 
@@ -294,13 +298,6 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
                       ${renderer(provider)}`
                 : nothing}`;
     }
-    renderSuccess() {
-        return;
-    }
-
-    renderRunning() {
-        return;
-    }
 
     renderMain() {
         const app = this.wizard.app;
@@ -308,24 +305,26 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
         if (!(this.wizard && app && provider)) {
             throw new Error("Submit step received uninitialized wizard context");
         }
-        return match([this.state, this.errors])
+        // An empty object is truthy, an empty array is falsey. *WAT Javascript*.
+        const keys = Object.keys(this.wizard.errors);
+        return match([this.state, keys])
             .with(["submitted", P._], () =>
                 this.renderInfo("success", msg("Your application has been saved"), [
                     "fa-check-circle",
                     "pf-m-success",
-                ])
+                ]),
             )
             .with(["running", P._], () =>
-                this.renderInfo("running", msg("Saving application..."), ["fa-cogs", "pf-m-info"])
+                this.renderInfo("running", msg("Saving application..."), ["fa-cogs", "pf-m-info"]),
             )
-            .with(["reviewing", P.when(isNotEmpty)], () => this.renderReview(app, provider))
-            .with(["reviewing", P.not(P.when(isNotEmpty))], () =>
+            .with(["reviewing", []], () => this.renderReview(app, provider))
+            .with(["reviewing", [P.any, ...P.array()]], () =>
                 this.renderInfo(
                     "error",
                     msg("authentik was unable to complete this process."),
                     ["fa-times-circle", "pf-m-danger"],
-                    this.renderError()
-                )
+                    this.renderError(),
+                ),
             )
             .exhaustive();
     }

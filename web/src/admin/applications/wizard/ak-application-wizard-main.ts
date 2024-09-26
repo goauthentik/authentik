@@ -1,7 +1,6 @@
 import "@goauthentik/components/ak-wizard/ak-wizard-steps.js";
 import { WizardUpdateEvent } from "@goauthentik/components/ak-wizard/events";
 import { AKElement } from "@goauthentik/elements/Base.js";
-import { bound } from "@goauthentik/elements/decorators/bound";
 
 import { html } from "lit";
 import { customElement, state } from "lit/decorators.js";

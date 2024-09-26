@@ -69,7 +69,7 @@ export class ApplicationWizardProxyProviderForm extends ApplicationWizardProvide
                 label=${msg("HTTP-Basic Username Key")}
                 value="${ifDefined(provider.basicAuthUserAttribute)}"
                 help=${msg(
-                    "User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used."
+                    "User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used.",
                 )}
             >
             </ak-text-input>
@@ -79,7 +79,7 @@ export class ApplicationWizardProxyProviderForm extends ApplicationWizardProvide
                 label=${msg("HTTP-Basic Password Key")}
                 value="${ifDefined(provider.basicAuthPasswordAttribute)}"
                 help=${msg(
-                    "User/Group Attribute used for the password part of the HTTP-Basic Header."
+                    "User/Group Attribute used for the password part of the HTTP-Basic Header.",
                 )}
             >
             </ak-text-input>`;
@@ -110,7 +110,7 @@ export class ApplicationWizardProxyProviderForm extends ApplicationWizardProvide
                     ></ak-flow-search>
                     <p class="pf-c-form__helper-text">
                         ${msg(
-                            "Flow used when a user access this provider and is not authenticated."
+                            "Flow used when a user access this provider and is not authenticated.",
                         )}
                     </p>
                 </ak-form-element-horizontal>
@@ -160,7 +160,7 @@ export class ApplicationWizardProxyProviderForm extends ApplicationWizardProvide
                             <ak-dual-select-dynamic-selected
                                 .provider=${proxyPropertyMappingsProvider}
                                 .selector=${makeProxyPropertyMappingsSelector(
-                                    provider.propertyMappings
+                                    provider.propertyMappings,
                                 )}
                                 available-label="${msg("Available Scopes")}"
                                 selected-label="${msg("Selected Scopes")}"
@@ -179,12 +179,12 @@ export class ApplicationWizardProxyProviderForm extends ApplicationWizardProvide
                             .errorMessages=${this.errorMessages("skipPathRegex")}
                             .bighelp=${html` <p class="pf-c-form__helper-text">
                                     ${msg(
-                                        "Regular expressions for which authentication is not required. Each new line is interpreted as a new expression."
+                                        "Regular expressions for which authentication is not required. Each new line is interpreted as a new expression.",
                                     )}
                                 </p>
                                 <p class="pf-c-form__helper-text">
                                     ${msg(
-                                        "When using proxy or forward auth (single application) mode, the requested URL Path is checked against the regular expressions. When using forward auth (domain mode), the full requested URL including scheme and host is matched against the regular expressions."
+                                        "When using proxy or forward auth (single application) mode, the requested URL Path is checked against the regular expressions. When using forward auth (domain mode), the full requested URL including scheme and host is matched against the regular expressions.",
                                     )}
                                 </p>`}
                         >
@@ -199,7 +199,7 @@ export class ApplicationWizardProxyProviderForm extends ApplicationWizardProvide
                             ?checked=${first(provider.interceptHeaderAuth, true)}
                             label=${msg("Intercept header authentication")}
                             help=${msg(
-                                "When enabled, authentik will intercept the Authorization header to authenticate the request."
+                                "When enabled, authentik will intercept the Authorization header to authenticate the request.",
                             )}
                         ></ak-switch-input>
 
@@ -212,7 +212,7 @@ export class ApplicationWizardProxyProviderForm extends ApplicationWizardProvide
                             }}
                             label=${msg("Send HTTP-Basic Authentication")}
                             help=${msg(
-                                "Send a custom HTTP-Basic Authentication header based on values from authentik."
+                                "Send a custom HTTP-Basic Authentication header based on values from authentik.",
                             )}
                         ></ak-switch-input>
 
@@ -231,7 +231,7 @@ export class ApplicationWizardProxyProviderForm extends ApplicationWizardProvide
                             ></ak-dual-select-dynamic-selected>
                             <p class="pf-c-form__helper-text">
                                 ${msg(
-                                    "JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider."
+                                    "JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider.",
                                 )}
                             </p>
                         </ak-form-element-horizontal>

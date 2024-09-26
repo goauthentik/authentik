@@ -78,7 +78,6 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
                 ...(this.formValues as unknown as PolicyBinding),
                 [policyKey]: policyObject,
             };
-            console.log(newBinding);
 
             const bindings = [...(this.wizard.bindings ?? [])];
 
@@ -104,7 +103,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
                     const policies = await new PoliciesApi(DEFAULT_CONFIG).policiesAllList(
                         withQuery(query, {
                             ordering: "name",
-                        })
+                        }),
                     );
                     return policies.results;
                 },
@@ -119,7 +118,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
                         withQuery(query, {
                             ordering: "name",
                             includeUsers: false,
-                        })
+                        }),
                     );
                     return groups.results;
                 },
@@ -132,7 +131,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
                     const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList(
                         withQuery(query, {
                             ordering: "username",
-                        })
+                        }),
                     );
                     return users.results;
                 },

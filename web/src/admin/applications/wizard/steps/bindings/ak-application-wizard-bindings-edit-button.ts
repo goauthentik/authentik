@@ -24,7 +24,7 @@ export class ApplicationWizardBindingStepEditButton extends AKElement {
                 bubbles: true,
                 composed: true,
                 detail: this.value,
-            })
+            }),
         );
     }
 
@@ -38,7 +38,7 @@ export class ApplicationWizardBindingStepEditButton extends AKElement {
 export function makeEditButton(
     label: string,
     value: number,
-    handler: (_: CustomEvent<number>) => void
+    handler: (_: CustomEvent<number>) => void,
 ) {
     return html`<ak-application-wizard-binding-step-edit-button
         class="pf-c-button pf-m-secondary"

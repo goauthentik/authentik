@@ -1,4 +1,5 @@
-import { $ } from "@wdio/globals";
+import { $, browser } from "@wdio/globals";
+import { expect } from "expect-webdriverio";
 import { slug } from "github-slugger";
 
 import { html, render } from "lit";

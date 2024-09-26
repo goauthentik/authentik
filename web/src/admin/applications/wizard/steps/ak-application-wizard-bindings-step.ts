@@ -39,7 +39,7 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
     }
 
     @query("ak-select-table")
-    selectTable: SelectTable;
+    selectTable!: SelectTable;
 
     get bindingsAsColumns() {
         return this.wizard.bindings.map((binding, index) => {
@@ -59,7 +59,7 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
                     html`<ak-status-label type="warning" ?good=${enabled}></ak-status-label>`,
                     timeout,
                     makeEditButton(msg("Edit"), index, (ev: CustomEvent<number>) =>
-                        this.onBindingEvent(ev.detail)
+                        this.onBindingEvent(ev.detail),
                     ),
                 ],
             };

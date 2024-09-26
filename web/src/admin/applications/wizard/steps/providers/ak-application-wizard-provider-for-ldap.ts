@@ -24,7 +24,7 @@ import {
 
 @customElement("ak-application-wizard-provider-for-ldap")
 export class ApplicationWizardLdapProviderForm extends WithBrandConfig(
-    ApplicationWizardProviderForm<LDAPProvider>
+    ApplicationWizardProviderForm<LDAPProvider>,
 ) {
     label = msg("Configure LDAP");
 
@@ -44,7 +44,7 @@ export class ApplicationWizardLdapProviderForm extends WithBrandConfig(
                     label=${msg("Bind flow")}
                     ?required=${true}
                     name="authorizationFlow"
-                    .errorMessages=${this.errorMessages("authorizationFlow")}
+                    .errorMessages=${this.errorMessages("authorization_flow")}
                 >
                     <ak-branded-flow-search
                         flowType=${FlowsInstancesListDesignationEnum.Authentication}
@@ -72,7 +72,7 @@ export class ApplicationWizardLdapProviderForm extends WithBrandConfig(
                     .options=${searchModeOptions}
                     .value=${provider.searchMode}
                     help=${msg(
-                        "Configure how the outpost queries the core authentik server's users."
+                        "Configure how the outpost queries the core authentik server's users.",
                     )}
                 >
                 </ak-radio-input>
@@ -95,7 +95,7 @@ export class ApplicationWizardLdapProviderForm extends WithBrandConfig(
                             value="${first(provider.baseDn, "DC=ldap,DC=goauthentik,DC=io")}"
                             .errorMessages=${this.errorMessages("baseDn")}
                             help=${msg(
-                                "LDAP DN under which bind requests and search requests can be made."
+                                "LDAP DN under which bind requests and search requests can be made.",
                             )}
                         >
                         </ak-text-input>

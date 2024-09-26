@@ -6,6 +6,7 @@
         "paths": {
             "@goauthentik/docs/*": ["../website/docs/*"]
         },
+        "types": ["@wdio/types", "grecaptcha"],
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
         "experimentalDecorators": true,

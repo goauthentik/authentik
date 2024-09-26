@@ -1,4 +1,5 @@
 import { $, browser } from "@wdio/globals";
+import { expect } from "expect-webdriverio";
 import { slug } from "github-slugger";
 
 import { html, render } from "lit";
@@ -32,6 +33,7 @@ describe("Select Table", () => {
         );
         // @ts-ignore
         selecttable = await $("ak-select-table");
+        // @ts-ignore
         table = await selecttable.$(">>>table");
     });
 
@@ -82,6 +84,7 @@ describe("Multiselect Table", () => {
         );
         // @ts-ignore
         selecttable = await $("ak-select-table");
+        // @ts-ignore
         table = await selecttable.$(">>>table");
     });
 

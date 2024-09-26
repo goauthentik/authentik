@@ -10,7 +10,6 @@ import { classMap } from "lit/directives/class-map.js";
 import { map } from "lit/directives/map.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFModalBox from "@patternfly/patternfly/components/ModalBox/modal-box.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFWizard from "@patternfly/patternfly/components/Wizard/wizard.css";
 
@@ -241,7 +240,6 @@ export class WizardStep extends AKElement {
     @bound
     renderButton(button: WizardButton) {
         return match(button)
-            .with({ disabled: true }, () => this.renderDisabledButton(button))
             .with({ kind: P.union("close", "cancel") }, () => this.renderCloseButton(button))
             .with({ destination: P.string }, () => this.renderNavigableButton(button))
             .otherwise(() => {
@@ -300,7 +298,7 @@ export class WizardStep extends AKElement {
                                   <ol class="pf-c-wizard__nav-list">
                                       ${map(
                                           this.wizardStepState.stepLabels,
-                                          this.renderSidebarStep
+                                          this.renderSidebarStep,
                                       )}
                                   </ol>
                               </nav>

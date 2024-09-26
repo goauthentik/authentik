@@ -1,3 +1,4 @@
+import { camelToSnake } from "@goauthentik/common/utils.js";
 import "@goauthentik/components/ak-number-input";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-switch-input";
@@ -32,7 +33,7 @@ export class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKEl
     get formValues(): KeyUnknown | undefined {
         const elements = [
             ...Array.from(
-                this.form.querySelectorAll<HorizontalFormElement>("ak-form-element-horizontal")
+                this.form.querySelectorAll<HorizontalFormElement>("ak-form-element-horizontal"),
             ),
             ...Array.from(this.form.querySelectorAll<HTMLElement>("[data-ak-control=true]")),
         ];
@@ -44,11 +45,12 @@ export class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKEl
         return this.form.checkValidity();
     }
 
-    errorMessages(name: keyof T) {
-        if (name in (this.wizard.errors?.provider ?? {})) {
-            return this.wizard.errors?.provider[name];
-        }
-        return this.errors.has(name) ? [this.errors.get(name)] : [];
+    errorMessages(name: string) {
+        return this.errors.has(name)
+            ? [this.errors.get(name)]
+            : (this.wizard.errors?.provider?.[name] ??
+                  this.wizard.errors?.provider?.[camelToSnake(name)] ??
+                  []);
     }
 
     isValid(name: keyof T) {

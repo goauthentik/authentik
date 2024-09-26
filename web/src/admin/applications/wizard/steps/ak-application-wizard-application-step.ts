@@ -1,6 +1,7 @@
 import { policyOptions } from "@goauthentik/admin/applications/PolicyOptions.js";
 import { ApplicationWizardStep } from "@goauthentik/admin/applications/wizard/ApplicationWizardStep.js";
 import { isSlug } from "@goauthentik/common/utils.js";
+import { camelToSnake } from "@goauthentik/common/utils.js";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-slug-input";
 import "@goauthentik/components/ak-switch-input";
@@ -43,8 +44,12 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
         this.enabled = true;
     }
 
-    errorMessage(name: string) {
-        return this.errors.has(name) ? [this.errors.get(name)] : [];
+    errorMessages(name: string) {
+        return this.errors.has(name)
+            ? [this.errors.get(name)]
+            : (this.wizard.errors?.app?.[name] ??
+                  this.wizard.errors?.app?.[camelToSnake(name)] ??
+                  []);
     }
 
     get buttons(): WizardButton[] {
@@ -82,7 +87,10 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
             }
             const app: Partial<ApplicationRequest> = this.formValues as Partial<ApplicationRequest>;
 
-            let payload: ApplicationWizardStateUpdate = { app: this.formValues };
+            let payload: ApplicationWizardStateUpdate = {
+                app: this.formValues,
+                errors: this.removeErrors("app"),
+            };
             if (app.name && (this.wizard.provider?.name ?? "").trim() === "") {
                 payload = {
                     ...payload,
@@ -105,7 +113,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                 label=${msg("Name")}
                 required
                 ?invalid=${this.errors.has("name")}
-                .errorMessages=${errors.app?.name ?? this.errorMessage("name")}
+                .errorMessages=${errors.app?.name ?? this.errorMessages("name")}
                 help=${msg("Application's display Name.")}
                 id="ak-application-wizard-details-name"
             ></ak-text-input>
@@ -116,7 +124,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                 source="#ak-application-wizard-details-name"
                 required
                 ?invalid=${errors.app?.slug ?? this.errors.has("slug")}
-                .errorMessages=${this.errorMessage("slug")}
+                .errorMessages=${this.errorMessages("slug")}
                 help=${msg("Internal application name used in URLs.")}
             ></ak-slug-input>
             <ak-text-input
@@ -125,7 +133,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                 label=${msg("Group")}
                 .errorMessages=${errors.app?.group ?? []}
                 help=${msg(
-                    "Optionally enter a group name. Applications with identical groups are shown grouped together."
+                    "Optionally enter a group name. Applications with identical groups are shown grouped together.",
                 )}
             ></ak-text-input>
             <ak-radio-input
@@ -145,9 +153,9 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                         value=${ifDefined(app.metaLaunchUrl)}
                         ?invalid=${this.errors.has("metaLaunchUrl")}
                         .errorMessages=${errors.app?.metaLaunchUrl ??
-                        this.errorMessage("metaLaunchUrl")}
+                        this.errorMessages("metaLaunchUrl")}
                         help=${msg(
-                            "If left empty, authentik will try to extract the launch URL based on the selected provider."
+                            "If left empty, authentik will try to extract the launch URL based on the selected provider.",
                         )}
                     ></ak-text-input>
                     <ak-switch-input
@@ -155,7 +163,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                         ?checked=${app.openInNewTab ?? false}
                         label=${msg("Open in new tab")}
                         help=${msg(
-                            "If checked, the launch URL will open in a new browser tab or window from the user's application library."
+                            "If checked, the launch URL will open in a new browser tab or window from the user's application library.",
                         )}
                     >
                     </ak-switch-input>

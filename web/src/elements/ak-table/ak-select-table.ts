@@ -211,7 +211,7 @@ export class SelectTable extends SimpleTable {
             ${this.renderCheckbox(row.key)}
             ${map(
                 row.content,
-                (col, idx) => html`<td part="cell cell-${idx}" role="cell">${col}</td>`
+                (col, idx) => html`<td part="cell cell-${idx}" role="cell">${col}</td>`,
             )}
         </tr>`;
     }
