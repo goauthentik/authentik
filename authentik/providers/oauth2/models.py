@@ -376,6 +376,9 @@ class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
     _id_token = models.TextField()
 
     class Meta:
+        indexes = [
+            models.Index(fields=["token"]),
+        ]
         verbose_name = _("OAuth2 Access Token")
         verbose_name_plural = _("OAuth2 Access Tokens")
 
@@ -419,6 +422,9 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
     _id_token = models.TextField(verbose_name=_("ID Token"))
 
     class Meta:
+        indexes = [
+            models.Index(fields=["token"]),
+        ]
         verbose_name = _("OAuth2 Refresh Token")
         verbose_name_plural = _("OAuth2 Refresh Tokens")
 
