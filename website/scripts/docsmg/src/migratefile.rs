@@ -10,6 +10,7 @@ pub fn read_migrate_file(file: PathBuf) -> anyhow::Result<Vec<(PathBuf, PathBuf)
     let migrations = lines
         .iter()
         .filter_map(|x| x.split_once(" -> "))
+        .filter(|x| !(x.0 == x.1))
         .map(|x| {
             (
                 x.0.parse().expect("a valid path"),
