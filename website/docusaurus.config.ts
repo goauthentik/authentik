@@ -17,6 +17,14 @@ module.exports = async function (): Promise<Config> {
         organizationName: "Authentik Security Inc.",
         projectName: "authentik",
         themeConfig: {
+            announcementBar: {
+                id: 'support_us',
+                content:
+                  'Change is hard. We hate it too when a familiar site or application gets re-arranged. But we did it anyway. Please let us <a target="_blank" rel="noopener noreferrer" href="https://docs.goauthentik.io/docs/">know what you think!</a>',
+                backgroundColor: '#fafbfc',
+                textColor: '#091E42',
+                isCloseable: false,
+              },
             image: "img/social.png",
             navbar: {
                 logo: {
