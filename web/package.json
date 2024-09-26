@@ -71,7 +71,7 @@
         "@types/eslint__js": "^8.42.3",
         "@types/grecaptcha": "^3.0.9",
         "@types/guacamole-common-js": "1.5.2",
-        "@types/node": "^22.6.1",
+        "@types/node": "^22.7.0",
         "@types/showdown": "^2.0.6",
         "@typescript-eslint/eslint-plugin": "^8.7.0",
         "@typescript-eslint/parser": "^8.7.0",
