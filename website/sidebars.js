@@ -288,7 +288,7 @@ const docsSidebar = {
         },
         {
             type: "category",
-            label: "Customize your authentik Instance",
+            label: "Customize your instance",
             collapsed: true,
             items: [
                 {
