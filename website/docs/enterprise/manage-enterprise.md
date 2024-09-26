@@ -8,7 +8,7 @@ Your organization defines the members, their roles, the licenses associated with
 
 ### Create an Organization
 
-1. To create a new organization, log in to the [Customer portal](./get-started.md#access-enterprise).
+1. To create a new organization, log in to the [Customer portal](./get-started#access-enterprise).
 
 2. On the **My organizations** page, click **Create an organization**.
 
@@ -27,7 +27,7 @@ In the Customer portal you can remove members and invite new members to the orga
 -   **Member**: can view licenses, including the license key.
 -   **Owner**: can do everything the Member role can do, plus: add and remove members, order and renew licenses, and edit the organization.
 
-1. To manage membership in an organization, log in to the [Customer portal](./get-started.md#access-enterprise).
+1. To manage membership in an organization, log in to the [Customer portal](./get-started#access-enterprise).
 
 2. On the **My organizations** page, click the name of the organization you want to edit membership in.
 
