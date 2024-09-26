@@ -12,16 +12,11 @@ To create a new group, follow these steps:
 1. In the Admin interface, navigate to **Directory > Groups**.
 2. Click **Create** at the top of the Groups page.
 3. In the Create modal, define the following:
-    - **Name** of the group
-    - Whether or not users in that group will all be **super-users** (means anyone in that group has all permissions on everything)
-    - The **Parent** group
-    - Select **Roles** to apply to this group
-    - Any custom attributes
+    - name of the group
+    - whether or not users in that group will all be superusers (means anyone in that group has all permissions on everything)
+    - the parent group
+    - any custom attributes
 4. Click **Create**.
-
-:::info
-To create a super-user, you need to add the user to a group that has super-user permissions. All members of that group are super-users.
-:::
 
 ## Modify a group
 
@@ -43,7 +38,11 @@ To delete a group, follow these steps:
 
 You can assign a role to a group, and then all users in the group inherit the permissions assigned to that role. For instructions and more information, see ["Assign a role to a group"](../roles/manage_roles.md#assign-a-role-to-a-group).
 
-## Delegating group member management <span class="badge badge--version">authentik 2024.4+</span>
+## Delegating group member management
+
+:::info
+Requires authentik 2024.4
+:::
 
 To give a specific Role or User the ability to manage group members, the following permissions need to be granted on the matching Group object:
 

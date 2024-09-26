@@ -4,7 +4,7 @@ title: OAuth2 Provider
 
 This provider supports both generic OAuth2 as well as OpenID Connect
 
-Scopes can be configured using scope mappings, a type of [property mapping](../property-mappings/index.md#scope-mappings).
+Scopes can be configured using Scope Mappings, a type of [Property Mappings](../../property-mappings/#scope-mapping).
 
 | Endpoint             | URL                                                                  |
 | -------------------- | -------------------------------------------------------------------- |
@@ -77,7 +77,11 @@ return True
 
 -   `goauthentik.io/api`: This scope grants the refresh token access to the authentik API on behalf of the user
 
-## Default scopes <span class="badge badge--version">authentik 2022.7+</span>
+## Default scopes
+
+:::info
+Requires authentik 2022.7
+:::
 
 When a client does not request any scopes, authentik will treat the request as if all configured scopes were requested. Depending on the configured authorization flow, consent still needs to be given, and all scopes are listed there.
 

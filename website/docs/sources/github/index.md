@@ -50,7 +50,11 @@ Save, and you now have Github as a source.
 For more details on how-to have the new source display on the Login Page see [here](../index.md#add-sources-to-default-login-page).
 :::
 
-### Checking for membership of a GitHub Organisation <span class="badge badge--version">authentik 2021.12.5.+</span>
+### Checking for membership of a GitHub Organisation
+
+:::info
+Requires authentik 2021.12.5.
+:::
 
 To check if the user is member of an organisation, you can use the following policy on your flows:
 

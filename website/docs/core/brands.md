@@ -21,10 +21,6 @@ This means that if you want to select a default flow based on policy, you can le
 
 The brand configuration controls the branding title (shown in website document title and several other places), the sidebar/header logo that appears in the upper left of the product interface, and the favicon on a browser tab.
 
-:::info
-Starting with authentik 2024.6.2, the placeholder `%(theme)s` can be used in the logo configuration option, which will be replaced with the active theme.
-:::
-
 ## External user settings
 
-You can use the **Default application** configuration on the **System -> Brands** page of the Admin interface to redirect external users to a default application when they successfully authenticate without being sent from a specific application.
+The **Default application** configuration can be used to redirect external users to an application when they successfully authenticate without being sent from a specific application.

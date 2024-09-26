@@ -12,7 +12,7 @@ Select which fields the user can use to identify themselves. Multiple fields can
 -   Email
 -   UPN
 
-    UPN will attempt to identify the user based on the `upn` attribute, which can be imported with an [LDAP Source](../../../sources/ldap/)
+    UPN will attempt to identify the user based on the `upn` attribute, which can be imported with an [LDAP Source](/docs/sources/ldap/)
 
 ## Password stage
 
@@ -22,7 +22,11 @@ To prompt users for their password on the same step as identifying themselves, a
 
 These fields specify if and which flows are linked on the form. The enrollment flow is linked as `Need an account? Sign up.`, and the recovery flow is linked as `Forgot username or password?`.
 
-## Pretend user exists <span class="badge badge--version">authentik 2024.2+</span>
+## Pretend user exists
+
+:::info
+Requires authentik 2024.2
+:::
 
 When enabled, any user identifier will be accepted as valid (as long as they match the correct format, i.e. when [User fields](#user-fields) is set to only allow Emails, then the identifier still needs to be an Email). The stage will succeed and the flow will continue to the next stage. Stages like the [Password stage](../password/index.md) and [Email stage](../email/index.mdx) are aware of this "pretend" user and will behave the same as if the user would exist.
 
@@ -42,7 +46,7 @@ Starting with authentik 2023.5, when no user fields are selected and only one so
 
 ### Passwordless flow
 
-See [Passwordless authentication](../authenticator_validate/index.md#passwordless-authentication-authentik-2021124).
+See [Passwordless authentication](../authenticator_validate/index.md#passwordless-authentication).
 
 ### Enrollment flow
 
