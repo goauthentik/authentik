@@ -92,6 +92,7 @@ module.exports = async function (): Promise<Config> {
                         sidebarPath: "./sidebars.js",
                         editUrl:
                             "https://github.com/goauthentik/authentik/edit/main/website/",
+                        docItemComponent: "@theme/ApiItem",
                         remarkPlugins: [
                             [
                                 remarkGithub,
