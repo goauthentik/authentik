@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-08 00:09+0000\n"
+"POT-Creation-Date: 2024-09-25 00:08+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/authentik/teams/119923/zh_CN/)\n"
@@ -1880,6 +1880,10 @@ msgstr "创建一个密钥，可用于恢复对 authentik 的访问权限。"
 #: authentik/recovery/views.py
 msgid "Used recovery-link to authenticate."
 msgstr "已使用恢复链接进行身份验证。"
+
+#: authentik/sources/ldap/api.py
+msgid "Only a single LDAP Source with password synchronization is allowed"
+msgstr "仅允许使用密码同步的单个 LDAP 源"
 
 #: authentik/sources/ldap/models.py
 msgid "Server URI"

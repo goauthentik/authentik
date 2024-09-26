@@ -27,7 +27,7 @@ import {
 
 async function propertyMappingsProvider(page = 1, search = "") {
     const propertyMappings = await new PropertymappingsApi(
-        DEFAULT_CONFIG,
+        DEFAULT_CONFIG
     ).propertymappingsSourceLdapList({
         ordering: "managed",
         pageSize: 20,
@@ -64,11 +64,11 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                 slug: this.instance.slug,
                 patchedLDAPSourceRequest: data,
             });
-        } else {
-            return new SourcesApi(DEFAULT_CONFIG).sourcesLdapCreate({
-                lDAPSourceRequest: data as unknown as LDAPSourceRequest,
-            });
         }
+
+        return new SourcesApi(DEFAULT_CONFIG).sourcesLdapCreate({
+            lDAPSourceRequest: data as unknown as LDAPSourceRequest,
+        });
     }
 
     renderForm(): TemplateResult {
@@ -121,7 +121,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                 </label>
                 <p class="pf-c-form__helper-text">
                     ${msg(
-                        "When the user logs in to authentik using this source password backend, update their credentials in authentik.",
+                        "When the user logs in to authentik using this source password backend, update their credentials in authentik."
                     )}
                 </p>
             </ak-form-element-horizontal>
@@ -156,7 +156,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                 </label>
                 <p class="pf-c-form__helper-text">
                     ${msg(
-                        "Login password is synced from LDAP into authentik automatically. Enable this option only to write password changes in authentik back to LDAP.",
+                        "Login password is synced from LDAP into authentik automatically. Enable this option only to write password changes in authentik back to LDAP."
                     )}
                 </p>
             </ak-form-element-horizontal>
@@ -242,7 +242,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                         ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "When connecting to an LDAP Server with TLS, certificates are not checked by default. Specify a keypair to validate the remote certificate.",
+                                "When connecting to an LDAP Server with TLS, certificates are not checked by default. Specify a keypair to validate the remote certificate."
                             )}
                         </p>
                     </ak-form-element-horizontal>
@@ -255,7 +255,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                         ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Client certificate keypair to authenticate against the LDAP Server's Certificate.",
+                                "Client certificate keypair to authenticate against the LDAP Server's Certificate."
                             )}
                         </p>
                     </ak-form-element-horizontal>
@@ -297,7 +297,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                         <ak-dual-select-dynamic-selected
                             .provider=${propertyMappingsProvider}
                             .selector=${makePropertyMappingsSelector(
-                                this.instance?.userPropertyMappings,
+                                this.instance?.userPropertyMappings
                             )}
                             available-label="${msg("Available User Property Mappings")}"
                             selected-label="${msg("Selected User Property Mappings")}"
@@ -313,7 +313,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                         <ak-dual-select-dynamic-selected
                             .provider=${propertyMappingsProvider}
                             .selector=${makePropertyMappingsSelector(
-                                this.instance?.groupPropertyMappings,
+                                this.instance?.groupPropertyMappings
                             )}
                             available-label="${msg("Available Group Property Mappings")}"
                             selected-label="${msg("Selected Group Property Mappings")}"
@@ -327,7 +327,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
             <ak-form-group>
                 <span slot="header"> ${msg("Additional settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal label=${msg("Group")} name="syncParentGroup">
+                    <ak-form-element-horizontal label=${msg("Parent Group")} name="syncParentGroup">
                         <ak-search-select
                             .fetchObjects=${async (query?: string): Promise<Group[]> => {
                                 const args: CoreGroupsListRequest = {
@@ -338,7 +338,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                                     args.search = query;
                                 }
                                 const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(
-                                    args,
+                                    args
                                 );
                                 return groups.results;
                             }}
@@ -363,7 +363,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                             type="text"
                             value="${first(
                                 this.instance?.userPathTemplate,
-                                "goauthentik.io/sources/%(slug)s",
+                                "goauthentik.io/sources/%(slug)s"
                             )}"
                             class="pf-c-form-control"
                         />
@@ -438,7 +438,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                         />
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Field which contains members of a group. Note that if using the \"memberUid\" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'",
+                                "Field which contains members of a group. Note that if using the \"memberUid\" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'"
                             )}
                         </p>
                     </ak-form-element-horizontal>

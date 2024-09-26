@@ -16,7 +16,7 @@
         "@swc/cli": "^0.4.0",
         "@swc/core": "^1.7.28",
         "@trivago/prettier-plugin-sort-imports": "^4.3.0",
-        "@types/jquery": "^3.5.30",
+        "@types/jquery": "^3.5.31",
         "lockfile-lint": "^4.14.0",
         "prettier": "^3.3.2",
         "rollup": "^4.22.4",
