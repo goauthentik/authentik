@@ -28,7 +28,7 @@ describe("Select Table", () => {
     beforeEach(async () => {
         await render(
             html`<ak-select-table .content=${content} .columns=${columns}> </ak-select-table>`,
-            document.body,
+            document.body
         );
         // @ts-ignore
         selecttable = await $("ak-select-table");
@@ -78,7 +78,7 @@ describe("Multiselect Table", () => {
         await render(
             html`<ak-select-table multiple .content=${content} .columns=${columns}>
             </ak-select-table>`,
-            document.body,
+            document.body
         );
         // @ts-ignore
         selecttable = await $("ak-select-table");
@@ -86,7 +86,7 @@ describe("Multiselect Table", () => {
     });
 
     it("it should render the select-all control", async () => {
-        const selall = await table.$("thead").$$("tr")[0].$$("th")[0];
+        const selall = await table.$("thead").$$("tr")[0].$$("td")[0];
         if (selall === undefined) {
             throw new Error("Could not find table header");
         }
@@ -101,7 +101,7 @@ describe("Multiselect Table", () => {
     });
 
     it("it should select all when that control is clicked", async () => {
-        const selall = await table.$("thead").$$("tr")[0].$$("th")[0];
+        const selall = await table.$("thead").$$("tr")[0].$$("td")[0];
         if (selall === undefined) {
             throw new Error("Could not find table header");
         }
@@ -114,7 +114,7 @@ describe("Multiselect Table", () => {
     });
 
     it("it should clear all when that control is clicked twice", async () => {
-        const selall = await table.$("thead").$$("tr")[0].$$("th")[0];
+        const selall = await table.$("thead").$$("tr")[0].$$("td")[0];
         if (selall === undefined) {
             throw new Error("Could not find table header");
         }

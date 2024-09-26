@@ -8,7 +8,7 @@ browser.addCommand(
             // @ts-ignore
         }, this);
     },
-    true,
+    true
 );
 
 /**
@@ -25,7 +25,7 @@ browser.addCommand(
 export class AkSearchSelectViewDriver {
     constructor(
         public element: WebdriverIO.Element,
-        public menu: WebdriverIO.Element,
+        public menu: WebdriverIO.Element
     ) {
         /* no op */
     }
@@ -35,11 +35,11 @@ export class AkSearchSelectViewDriver {
         const comptype = await element.getAttribute("data-ouia-component-type");
         if (comptype !== "ak-search-select-view") {
             throw new Error(
-                `SearchSelectView driver passed incorrect component. Expected ak-search-select-view, got ${comptype ? `'${comptype}` : `No test data type, tag name: '${tagname}'`}`,
+                `SearchSelectView driver passed incorrect component. Expected ak-search-select-view, got ${comptype ? `'${comptype}` : `No test data type, tag name: '${tagname}'`}`
             );
         }
         const id = await element.getAttribute("data-ouia-component-id");
-        const menu = await $(`[data-ouia-component-id="menu-${id}"]`).getElement();
+        const menu = await $(`[data-ouia-component-id="menu-${id}"]`);
         return new AkSearchSelectViewDriver(element, menu);
     }
 
@@ -52,7 +52,7 @@ export class AkSearchSelectViewDriver {
     }
 
     async listElements() {
-        return await this.menu.$$(">>>li").getElements();
+        return await this.menu.$$(">>>li");
     }
 
     async focusOnInput() {

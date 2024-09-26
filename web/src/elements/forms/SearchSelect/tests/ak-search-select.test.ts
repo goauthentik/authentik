@@ -1,7 +1,4 @@
 /* eslint-env jest */
-import { AKElement } from "@goauthentik/elements/Base";
-import { bound } from "@goauthentik/elements/decorators/bound.js";
-import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
 import { $, browser, expect } from "@wdio/globals";
 import { slug } from "github-slugger";
 
@@ -9,6 +6,9 @@ import { html, render } from "lit";
 import { customElement } from "lit/decorators.js";
 import { property, query } from "lit/decorators.js";
 
+import { AKElement } from "../../../../elements/Base.js";
+import { bound } from "../../../../elements/decorators/bound.js";
+import { CustomListenerElement } from "../../../../elements/utils/eventEmitter";
 import "../ak-search-select.js";
 import { SearchSelect } from "../ak-search-select.js";
 import { type ViewSample, sampleData } from "../stories/sampleData.js";
@@ -97,9 +97,7 @@ describe("Search select: event driven startup", () => {
             mock?.dispatchEvent(new Event("resolve"));
         });
         expect(await $(">>>ak-search-select-loading-indicator")).not.toBeDisplayed();
-        select = await AkSearchSelectViewDriver.build(
-            await $(">>>ak-search-select-view").getElement(),
-        );
+        select = await AkSearchSelectViewDriver.build(await $(">>>ak-search-select-view"));
         expect(await select).toBeExisting();
     });
 

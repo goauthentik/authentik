@@ -1,11 +1,11 @@
-import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet.js";
 import { $, expect } from "@wdio/globals";
 
 import { TemplateResult, html, render as litRender } from "lit";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
+import AKGlobal from "../../../common/styles/authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+import { ensureCSSStyleSheet } from "../../utils/ensureCSSStyleSheet.js";
 import "../AggregatePromiseCard.js";
 
 const render = (body: TemplateResult) => {
@@ -45,7 +45,7 @@ describe("ak-aggregate-card-promise", () => {
             html`<ak-aggregate-card-promise
                 .promise=${promise}
                 failureMessage=${text}
-            ></ak-aggregate-card-promise>`,
+            ></ak-aggregate-card-promise>`
         );
 
         const component = await $("ak-aggregate-card-promise");
