@@ -48,7 +48,7 @@ to `ldap.searchGroup`.
 
 ## Deployment
 
-Create an outpost deployment for the provider you've created above, as described [here](../../../docs/outposts/). Deploy this Outpost either on the same host or a different host that your
+Create an outpost deployment for the provider you've created above, as described [here](https://docs.goauthentik.io/add-secure-apps/outposts). Deploy this Outpost either on the same host or a different host that your
 host(s) running sssd can access.
 
 The outpost will connect to authentik and configure itself.

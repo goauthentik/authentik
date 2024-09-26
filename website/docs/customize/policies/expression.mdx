@@ -54,7 +54,7 @@ import Objects from "../../expressions/_objects.md";
 
 -   `request`: A PolicyRequest object, which has the following properties:
 
-    -   `request.user`: The current user, against which the policy is applied. See [User](../../users-sources/user/user_ref.md)
+    -   `request.user`: The current user, against which the policy is applied. See [User](../../users-sources/user/index.mdx)
 
         :::caution
         When a policy is executed in the context of a flow, this will be set to the user initiaing request, and will only be changed by a `user_login` stage. For that reason, using this value in authentication flow policies may not return the expected user. Use `context['pending_user']` instead; User Identification and other stages update this value during flow execution.

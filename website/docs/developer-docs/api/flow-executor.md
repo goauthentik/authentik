@@ -2,7 +2,7 @@
 title: Flow executor (backend)
 ---
 
-A big focus of authentik is the flows system, which allows you to combine and build complex conditional processes using stages and policies. Normally, these flows are automatically executed in the browser using authentik's [standard browser-based flow executor (/if/flows)](../../add-secure-apps/flows-stages/flow/executors/if-flow.mdexecutors/if-flow).
+A big focus of authentik is the flows system, which allows you to combine and build complex conditional processes using stages and policies. Normally, these flows are automatically executed in the browser using authentik's [standard browser-based flow executor (/if/flows)](../../add-secure-apps/flows-stages/flow/executors/if-flow.md).
 
 However, any flow can be executed via an API from anywhere, in fact that is what every flow executor does. With a few requests you can execute flows from anywhere, and integrate authentik even better.
 

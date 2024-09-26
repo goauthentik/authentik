@@ -16,8 +16,8 @@ Depending on platform, some native dependencies might be required. On macOS, run
 
 ### Instructions
 
-1. Clone the git repo from https://github.com/goauthentik/authentik
-2. In the cloned repository, follow the docker-compose installation instructions [here](/docs/installation/docker-compose)
+1. Clone the git repo from https://github.com/goauthentik/authentik.
+2. In the cloned repository, follow the docker-compose installation instructions [here](../../install-config/install/docker-compose).
 3. Add the following entry to your `.env` file:
 
     ```
@@ -29,7 +29,7 @@ Depending on platform, some native dependencies might be required. On macOS, run
 
     This will cause authentik to use the beta images.
 
-4. Add this volume mapping to your compose file
+4. Add this volume mapping to your compose file.
 
     ```yaml
     services:
