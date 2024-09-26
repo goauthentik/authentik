@@ -4,7 +4,7 @@ title: Hackathon 2023
 
 ![hackathon-image](./horizontal-brandon-frie-rdHeGGn7rwQ-unsplash.jpg)
 
-**REGISTRATION NOW CLOSED! PLEASE JOIN US FOR A FUTURE AUTHENTIK HACKATHON.**
+**REGISTRATION NOW CLOSED. PLEASE JOIN US FOR A FUTURE AUTHENTIK HACKATHON.**
 
 ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^
 
