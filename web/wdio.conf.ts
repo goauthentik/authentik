@@ -7,11 +7,14 @@ import tsconfigPaths from "vite-tsconfig-paths";
 const isProdBuild = process.env.NODE_ENV === "production";
 const apiBasePath = process.env.AK_API_BASE_PATH || "";
 const runHeadless = process.env.CI !== undefined;
+
+const DEFAULT_MAX_INSTANCES = 10;
+
 const maxInstances =
-    process.env.MAX_INSTANCES !== undefined
+    process.env.MAX_INSTANCES === undefined
         ? parseInt(process.env.MAX_INSTANCES, 10)
         : runHeadless
-          ? 10
+          ? DEFAULT_MAX_INSTANCES
           : 1;
 
 export const config: WebdriverIO.Config = {
