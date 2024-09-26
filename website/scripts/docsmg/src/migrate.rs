@@ -1,12 +1,13 @@
 use std::{
     ffi::OsStr,
-    fs::{read_to_string, write},
+    fs::{create_dir_all, read_to_string, remove_file, write, File},
     path::PathBuf,
 };
 
 use colored::Colorize;
+use regex::{Captures, Regex};
 
-use crate::{migratefile::read_migrate_file, recurse_directory};
+use crate::{links::shorten_all_external_links, migratefile::read_migrate_file, recurse_directory};
 
 pub fn migrate(quiet: bool, migratefile: PathBuf, migrate_path: PathBuf) {
     if !quiet {
@@ -30,6 +31,7 @@ pub fn migrate(quiet: bool, migratefile: PathBuf, migrate_path: PathBuf) {
     replace_links(migrate_path.clone(), files.clone());
     let successful_moves = move_files(quiet, migrate_path.clone(), files);
     add_redirects(successful_moves.clone(), migrate_path.clone());
+    shorten_all_external_links(migrate_path);
 }
 
 pub fn unmigrate(quiet: bool, migratefile: PathBuf, migrate_path: PathBuf) {
@@ -58,7 +60,8 @@ pub fn unmigrate(quiet: bool, migratefile: PathBuf, migrate_path: PathBuf) {
         .iter()
         .map(|x| (x.1.clone(), x.0.clone()))
         .collect(); //switch files to reverse a migration
-    remove_redirects(successful_moves, migrate_path);
+    remove_redirects(successful_moves, migrate_path.clone());
+    shorten_all_external_links(migrate_path);
 }
 
 fn move_files(
@@ -131,6 +134,47 @@ fn replace_links(migrate_path: PathBuf, successful_moves: Vec<(PathBuf, PathBuf)
         }
         write(file, contents).unwrap();
     }
+    for i in successful_moves {
+        fix_internal_links_in_file(migrate_path.clone(), i.0, i.1);
+    }
+}
+
+fn fix_internal_links_in_file(migrate_path: PathBuf, move_from: PathBuf, move_to: PathBuf) {
+    let move_from = migrate_path.join(move_from);
+    let move_to = migrate_path.join(move_to);
+    let contents = read_to_string(&move_from);
+    let mut contents = match contents {
+        Ok(ok) => ok,
+        Err(_) => return,
+    };
+    let re = Regex::new(r"\[(?<name>.*)\]\((?<link>.*)\)").unwrap();
+    let captures: Vec<Captures> = re.captures_iter(&contents).collect();
+    let mut changes = vec![];
+    for capture in captures {
+        //let name = &capture["name"];
+        let link = &capture["link"];
+        if link.starts_with('#') || link.starts_with("http") {
+            continue;
+        }
+        let link = PathBuf::from(link);
+        //println!("{} {}", move_from.display(), link.display());
+        let absolute_link = move_from.parent().unwrap().canonicalize().unwrap().join(&link);
+        if move_to.components().collect::<Vec<_>>().len() > 1 {
+            let _ = create_dir_all(move_to.parent().unwrap());
+        }
+        File::create(move_to.clone()).unwrap();
+        //println!("{} {} {} {}", name, link.display(), absolute_link.display(), make_path_relative(absolute_link.clone(), move_to.canonicalize().unwrap().clone()).display());
+        let new_link = make_path_relative(absolute_link.clone(), move_to.canonicalize().unwrap().clone());
+        remove_file(move_to.clone()).unwrap();
+        changes.push((link.clone(), new_link.clone()));
+    }
+    for i in changes {
+        contents = contents.replace(
+            &format!("({})", i.0.display()),
+            &format!("({})", i.1.display())
+        );
+    }
+    write(move_from, contents).unwrap();
 }
 
 fn make_path_relative(path: PathBuf, relative_to: PathBuf) -> PathBuf {
