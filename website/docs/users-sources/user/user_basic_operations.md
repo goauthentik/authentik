@@ -8,7 +8,7 @@ The following topics are for the basic management of users: how to create, modif
 
 ### Create a user
 
-> If you want to automate user creation, you can do that either by [invitations](./invitations.md), [`user_write` stage](../../add-secure-apps/flows-stages/stages/user_write.md), or [using the API](/developer-docs/api/reference/core-users-create).
+> If you want to automate user creation, you can do that either by [invitations](./invitations.md), [`user_write` stage](../../add-secure-apps/flows-stages/stages/user_write.md), or [using the API](/docs/developer-docs/api/reference/core-users-create).
 
 1. In the Admin interface of your authentik instance, select **Directory > Users** in the left side menu.
 2. Select the folder where you want to create a user.

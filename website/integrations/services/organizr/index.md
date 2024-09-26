@@ -13,7 +13,7 @@ sidebar_label: organizr
 >
 > -- https://github.com/causefx/Organizr
 
-This integration leverages authentik's LDAP for the identity provider to achieve an SSO experience. See [ldap provider generic setup](../../../docs/providers/ldap/generic_setup) for setting up the LDAP provider.
+This integration leverages authentik's LDAP for the identity provider to achieve an SSO experience. See [ldap provider generic setup](https://docs.goauthentik.io/add-secure-apps/providers/ldap/generic_setup) for setting up the LDAP provider.
 
 ## Preparation
 
@@ -77,5 +77,5 @@ LDAP Backend Type: `OpenLDAP`
 Access for authentik users is managed locally within organizr under _User Management_. By default, new users are assigned the `User` group.
 :::
 :::tip
-Consider front-ending your application with a [forward auth provider](../../../docs/providers/proxy/forward_auth) for an SSO experience.
+Consider front-ending your application with a [forward auth provider](https://docs.goauthentik.io/docs/add-secure-apps/providers/proxy/forward_auth) for an SSO experience.
 :::

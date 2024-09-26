@@ -37,7 +37,7 @@ The following placeholders will be used:
 Create an LDAP Provider if you don't already have one setup.
 This guide assumes you will be running with TLS and that you've
 correctly setup certificates both in authentik and on the host
-running sssd. See the [ldap provider docs](../../../docs/providers/ldap) for setting up SSL on the authentik side.
+running sssd. See the [ldap provider docs](https://docs.goauthentik.io/docs/add-secure-apps/providers/ldap) for setting up SSL on the authentik side.
 
 Remember the Base DN you have configured for the provider as you'll
 need it in the sssd configuration.
