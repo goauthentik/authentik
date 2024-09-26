@@ -66,4 +66,3 @@ To test the internal links, navigate up a level to `authentik` and then run `mak
     -   the `docsmg.env` exists
     -   that it is in `/website`
     -   the content is `MIGRATE_PATH=./docs`
-
