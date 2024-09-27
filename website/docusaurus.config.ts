@@ -20,7 +20,7 @@ module.exports = async function (): Promise<Config> {
             announcementBar: {
                 id: "new_docs_structure",
                 content:
-                    'Change is hard, especially when a familiar site gets re-arranged. But we think the new layout is easier to navigate. Take a preview peek at the upcoming new <a target="_blank" rel="noopener noreferrer" href="https://docs.goauthentik.io/docs/"> Docs structure!</a>',
+                    'Change is hard, especially when a familiar site gets re-arranged. But we think the new layout is easier to navigate. Take a preview peek at the upcoming new <a target="_blank" rel="noopener noreferrer" href="https://deploy-preview-11522--authentik-docs.netlify.app/docs"> Docs structure!</a>',
                 backgroundColor: "#cc0099",
                 textColor: "#ffffff",
                 isCloseable: false,
