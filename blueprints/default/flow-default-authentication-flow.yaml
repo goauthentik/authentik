@@ -82,3 +82,5 @@ entries:
     order: 10
     target: !KeyOf default-authentication-flow-password-binding
     policy: !KeyOf default-authentication-flow-password-optional
+  attrs:
+    failure_result: true

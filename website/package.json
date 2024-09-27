@@ -8,7 +8,7 @@
         "build-bundled": "cp ../schema.yml static/schema.yaml && docusaurus gen-api-docs all && cross-env NODE_OPTIONS='--max_old_space_size=65536' docusaurus build",
         "deploy": "docusaurus deploy",
         "docusaurus": "docusaurus",
-        "lint:lockfile": "lockfile-lint --path package.json --type npm --allowed-hosts npm --validate-https",
+        "lint:lockfile": "wireit",
         "prettier": "prettier --write .",
         "prettier-check": "prettier --check .",
         "serve": "docusaurus serve",
@@ -56,9 +56,16 @@
         "@docusaurus/types": "^3.3.2",
         "@types/react": "^18.3.9",
         "cross-env": "^7.0.3",
-        "lockfile-lint": "^4.14.0",
         "prettier": "3.3.3",
-        "typescript": "~5.6.2"
+        "typescript": "~5.6.2",
+        "wireit": "^0.14.9"
+    },
+    "wireit": {
+        "lint:lockfile": {
+            "__comment": "The lockfile-lint package does not have an option to ensure resolved hashes are set everywhere",
+            "shell": true,
+            "command": "[ -z \"$(jq -r '.packages | to_entries[] | select((.key | contains(\"node_modules\")) and (.value | has(\"resolved\") | not)) | .key' < package-lock.json)\" ]"
+        }
     },
     "engines": {
         "node": ">=20"
