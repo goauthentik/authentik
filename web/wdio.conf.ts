@@ -1,4 +1,5 @@
 import replace from "@rollup/plugin-replace";
+import type { Options } from "@wdio/types";
 import { cwd } from "process";
 import postcssLit from "rollup-plugin-postcss-lit";
 import type { UserConfig } from "vite";
@@ -49,7 +50,7 @@ const maxInstances =
           ? 10
           : 1;
 
-export const config: WebdriverIO.Config = {
+export const config: Options.Testrunner = {
     //
     // ====================
     // Runner Configuration
@@ -78,7 +79,13 @@ export const config: WebdriverIO.Config = {
         },
     ],
 
-    tsConfigPath: "./tsconfig.json",
+    autoCompileOpts: {
+        autoCompile: true,
+        tsNodeOpts: {
+            project: "./tsconfig.json",
+            transpileOnly: true,
+        },
+    },
 
     //
     // ==================
@@ -157,11 +164,11 @@ export const config: WebdriverIO.Config = {
     // baseUrl: 'http://localhost:8080',
     //
     // Default timeout for all waitFor* commands.
-    waitforTimeout: 10000,
+    waitforTimeout: 12000,
     //
     // Default timeout in milliseconds for request
     // if browser driver or grid doesn't send response
-    connectionRetryTimeout: 120000,
+    connectionRetryTimeout: 12000,
     //
     // Default request retries count
     connectionRetryCount: 3,

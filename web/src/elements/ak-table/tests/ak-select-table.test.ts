@@ -82,6 +82,7 @@ describe("Multiselect Table", () => {
         );
         // @ts-ignore
         selecttable = await $("ak-select-table");
+        // @ts-ignore
         table = await selecttable.$(">>>table");
     });
 
