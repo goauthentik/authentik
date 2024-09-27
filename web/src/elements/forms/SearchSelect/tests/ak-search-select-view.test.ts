@@ -19,11 +19,9 @@ describe("Search select: Test Input Field", () => {
     beforeEach(async () => {
         render(
             html`<ak-search-select-view .options=${longGoodForYouPairs}> </ak-search-select-view>`,
-            document.body,
+            document.body
         );
-        select = await AkSearchSelectViewDriver.build(
-            await $("ak-search-select-view").getElement(),
-        );
+        select = await AkSearchSelectViewDriver.build(await $("ak-search-select-view"));
     });
 
     it("should open the menu when the input is clicked", async () => {
@@ -58,9 +56,7 @@ describe("Search select: Test Input Field", () => {
         expect(await select.open).toBe(false);
         expect(await select.menuIsVisible()).toBe(false);
         await browser.keys("A");
-        select = await AkSearchSelectViewDriver.build(
-            await $("ak-search-select-view").getElement(),
-        );
+        select = await AkSearchSelectViewDriver.build(await $("ak-search-select-view"));
         expect(await select.open).toBe(true);
         expect(await select.menuIsVisible()).toBe(true);
     });
@@ -86,7 +82,7 @@ describe("Search select: Test Input Field", () => {
     it("should close the menu when the user clicks away", async () => {
         document.body.insertAdjacentHTML(
             "afterbegin",
-            '<input id="a-separate-component" type="text" />',
+            '<input id="a-separate-component" type="text" />'
         );
         const input = await browser.$("#a-separate-component");
 

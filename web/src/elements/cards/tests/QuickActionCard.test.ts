@@ -32,13 +32,13 @@ describe("ak-quick-actions-card", () => {
             html`<ak-quick-actions-card
                 title="Alt Title"
                 .actions=${ACTIONS}
-            ></ak-quick-actions-card>`,
+            ></ak-quick-actions-card>`
         );
         const component = await $("ak-quick-actions-card");
-        const items = await component.$$(">>>.pf-c-list li").getElements();
+        const items = await component.$$(">>>.pf-c-list li");
         await expect(Array.from(items).length).toEqual(5);
         await expect(await component.$(">>>.pf-c-list li:nth-of-type(4)")).toHaveText(
-            "Manage users",
+            "Manage users"
         );
     });
 });

@@ -75,8 +75,8 @@
         "@types/showdown": "^2.0.6",
         "@typescript-eslint/eslint-plugin": "^8.7.0",
         "@typescript-eslint/parser": "^8.7.0",
-        "@wdio/browser-runner": "^9.1.1",
-        "@wdio/cli": "^9.1.1",
+        "@wdio/browser-runner": "^8.40.5",
+        "@wdio/cli": "^8.40.5",
         "@wdio/mocha-framework": "^9.1.0",
         "@wdio/spec-reporter": "^9.1.0",
         "babel-plugin-macros": "^3.1.0",
@@ -329,14 +329,14 @@
             "command": "node scripts/build-storybook-import-maps.mjs"
         },
         "test": {
-            "command": "wdio run ./wdio.conf.ts --logLevel=warn",
+            "command": "wdio ./wdio.conf.ts --logLevel=info",
             "env": {
                 "CI": "true",
                 "TS_NODE_PROJECT": "tsconfig.test.json"
             }
         },
         "test-watch": {
-            "command": "wdio run ./wdio.conf.ts",
+            "command": "wdio ./wdio.conf.ts",
             "env": {
                 "TS_NODE_PROJECT": "tsconfig.test.json"
             }

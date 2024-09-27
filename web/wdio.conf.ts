@@ -1,4 +1,5 @@
 import replace from "@rollup/plugin-replace";
+import type { Options } from "@wdio/types";
 import { cwd } from "process";
 import postcssLit from "rollup-plugin-postcss-lit";
 import type { UserConfig } from "vite";
@@ -7,17 +8,14 @@ import tsconfigPaths from "vite-tsconfig-paths";
 const isProdBuild = process.env.NODE_ENV === "production";
 const apiBasePath = process.env.AK_API_BASE_PATH || "";
 const runHeadless = process.env.CI !== undefined;
-
-const DEFAULT_MAX_INSTANCES = 10;
-
 const maxInstances =
-    process.env.MAX_INSTANCES === undefined
+    process.env.MAX_INSTANCES !== undefined
         ? parseInt(process.env.MAX_INSTANCES, 10)
         : runHeadless
-          ? DEFAULT_MAX_INSTANCES
+          ? 10
           : 1;
 
-export const config: WebdriverIO.Config = {
+export const config: Options.Testrunner = {
     //
     // ====================
     // Runner Configuration
@@ -31,7 +29,7 @@ export const config: WebdriverIO.Config = {
                 plugins: [
                     replace({
                         "process.env.NODE_ENV": JSON.stringify(
-                            isProdBuild ? "production" : "development",
+                            isProdBuild ? "production" : "development"
                         ),
                         "process.env.CWD": JSON.stringify(cwd()),
                         "process.env.AK_API_BASE_PATH": JSON.stringify(apiBasePath),
@@ -45,7 +43,13 @@ export const config: WebdriverIO.Config = {
         },
     ],
 
-    tsConfigPath: "./tsconfig.json",
+    autoCompileOpts: {
+        autoCompile: true,
+        tsNodeOpts: {
+            project: "./tsconfig.json",
+            transpileOnly: true,
+        },
+    },
 
     //
     // ==================
@@ -136,11 +140,11 @@ export const config: WebdriverIO.Config = {
     // baseUrl: 'http://localhost:8080',
     //
     // Default timeout for all waitFor* commands.
-    waitforTimeout: 10000,
+    waitforTimeout: 12000,
     //
     // Default timeout in milliseconds for request
     // if browser driver or grid doesn't send response
-    connectionRetryTimeout: 120000,
+    connectionRetryTimeout: 12000,
     //
     // Default request retries count
     connectionRetryCount: 3,
