@@ -19,7 +19,7 @@ describe("Search select: Test Input Field", () => {
     beforeEach(async () => {
         render(
             html`<ak-search-select-view .options=${longGoodForYouPairs}> </ak-search-select-view>`,
-            document.body
+            document.body,
         );
         select = await AkSearchSelectViewDriver.build(await $("ak-search-select-view"));
     });
@@ -82,7 +82,7 @@ describe("Search select: Test Input Field", () => {
     it("should close the menu when the user clicks away", async () => {
         document.body.insertAdjacentHTML(
             "afterbegin",
-            '<input id="a-separate-component" type="text" />'
+            '<input id="a-separate-component" type="text" />',
         );
         const input = await browser.$("#a-separate-component");
 

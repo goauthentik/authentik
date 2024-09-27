@@ -44,22 +44,22 @@ describe("ak-enterprise-status-card", () => {
         };
         render(
             html`<ak-enterprise-status-card .forecast=${forecast} .summary=${summary}>
-            </ak-enterprise-status-card>`
+            </ak-enterprise-status-card>`,
         );
 
         const status = await $("ak-enterprise-status-card").$(
-            ">>>.pf-c-description-list__description > .pf-c-description-list__text"
+            ">>>.pf-c-description-list__description > .pf-c-description-list__text",
         );
         await expect(status).toExist();
         await expect(status).toHaveText(msg("Unlicensed"));
 
         const internalUserProgress = await $("ak-enterprise-status-card").$(
-            ">>>#internalUsers > .pf-c-progress__bar"
+            ">>>#internalUsers > .pf-c-progress__bar",
         );
         await expect(internalUserProgress).toExist();
         await expect(internalUserProgress).toHaveAttr("aria-valuenow", "0");
         const externalUserProgress = await $("ak-enterprise-status-card").$(
-            ">>>#externalUsers > .pf-c-progress__bar"
+            ">>>#externalUsers > .pf-c-progress__bar",
         );
         await expect(externalUserProgress).toExist();
         await expect(externalUserProgress).toHaveAttr("aria-valuenow", "0");
@@ -81,36 +81,36 @@ describe("ak-enterprise-status-card", () => {
         };
         render(
             html`<ak-enterprise-status-card .forecast=${forecast} .summary=${summary}>
-            </ak-enterprise-status-card>`
+            </ak-enterprise-status-card>`,
         );
 
         const status = await $("ak-enterprise-status-card").$(
-            ">>>.pf-c-description-list__description > .pf-c-description-list__text"
+            ">>>.pf-c-description-list__description > .pf-c-description-list__text",
         );
         await expect(status).toExist();
         await expect(status).toHaveText(msg("Valid"));
 
         const internalUserProgress = await $("ak-enterprise-status-card").$(
-            ">>>#internalUsers > .pf-c-progress__bar"
+            ">>>#internalUsers > .pf-c-progress__bar",
         );
         await expect(internalUserProgress).toExist();
         await expect(internalUserProgress).toHaveAttr("aria-valuenow", "100");
 
         await expect(
-            await $("ak-enterprise-status-card").$(">>>#internalUsers")
+            await $("ak-enterprise-status-card").$(">>>#internalUsers"),
         ).toHaveElementClass("pf-m-warning");
 
         const externalUserProgress = await $("ak-enterprise-status-card").$(
-            ">>>#externalUsers > .pf-c-progress__bar"
+            ">>>#externalUsers > .pf-c-progress__bar",
         );
         await expect(externalUserProgress).toExist();
         await expect(externalUserProgress).toHaveAttr("aria-valuenow", "100");
 
         await expect(
-            await $("ak-enterprise-status-card").$(">>>#internalUsers")
+            await $("ak-enterprise-status-card").$(">>>#internalUsers"),
         ).toHaveElementClass("pf-m-warning");
         await expect(
-            await $("ak-enterprise-status-card").$(">>>#externalUsers")
+            await $("ak-enterprise-status-card").$(">>>#externalUsers"),
         ).toHaveElementClass("pf-m-warning");
     });
 
@@ -130,36 +130,36 @@ describe("ak-enterprise-status-card", () => {
         };
         render(
             html`<ak-enterprise-status-card .forecast=${forecast} .summary=${summary}>
-            </ak-enterprise-status-card>`
+            </ak-enterprise-status-card>`,
         );
 
         const status = await $("ak-enterprise-status-card").$(
-            ">>>.pf-c-description-list__description > .pf-c-description-list__text"
+            ">>>.pf-c-description-list__description > .pf-c-description-list__text",
         );
         await expect(status).toExist();
         await expect(status).toHaveText(msg("Valid"));
 
         const internalUserProgress = await $("ak-enterprise-status-card").$(
-            ">>>#internalUsers > .pf-c-progress__bar"
+            ">>>#internalUsers > .pf-c-progress__bar",
         );
         await expect(internalUserProgress).toExist();
         await expect(internalUserProgress).toHaveAttr("aria-valuenow", "100");
 
         await expect(
-            await $("ak-enterprise-status-card").$(">>>#internalUsers")
+            await $("ak-enterprise-status-card").$(">>>#internalUsers"),
         ).toHaveElementClass("pf-m-warning");
 
         const externalUserProgress = await $("ak-enterprise-status-card").$(
-            ">>>#externalUsers > .pf-c-progress__bar"
+            ">>>#externalUsers > .pf-c-progress__bar",
         );
         await expect(externalUserProgress).toExist();
         await expect(externalUserProgress).toHaveAttr("aria-valuenow", "∞");
 
         await expect(
-            await $("ak-enterprise-status-card").$(">>>#internalUsers")
+            await $("ak-enterprise-status-card").$(">>>#internalUsers"),
         ).toHaveElementClass("pf-m-warning");
         await expect(
-            await $("ak-enterprise-status-card").$(">>>#externalUsers")
+            await $("ak-enterprise-status-card").$(">>>#externalUsers"),
         ).toHaveElementClass("pf-m-danger");
     });
 });

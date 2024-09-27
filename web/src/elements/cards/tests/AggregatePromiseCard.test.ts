@@ -45,7 +45,7 @@ describe("ak-aggregate-card-promise", () => {
             html`<ak-aggregate-card-promise
                 .promise=${promise}
                 failureMessage=${text}
-            ></ak-aggregate-card-promise>`
+            ></ak-aggregate-card-promise>`,
         );
 
         const component = await $("ak-aggregate-card-promise");

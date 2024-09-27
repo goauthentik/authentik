@@ -22,14 +22,14 @@ describe("ak-aggregate-card", () => {
         render(
             html`<ak-aggregate-card header="Loading"
                 ><p>This is the main content</p></ak-aggregate-card
-            >`
+            >`,
         );
         const component = await $("ak-aggregate-card");
         await expect(await component.$(">>>.pf-c-card__header a")).not.toExist();
         await expect(await component.$(">>>.pf-c-card__title i")).not.toExist();
         await expect(await component.$(">>>.pf-c-card__title")).toHaveText("Loading");
         await expect(await component.$(">>>.pf-c-card__body")).toHaveText(
-            "This is the main content"
+            "This is the main content",
         );
         await expect(await component.$(">>>.subtext")).not.toExist();
     });
@@ -38,13 +38,13 @@ describe("ak-aggregate-card", () => {
         render(
             html`<ak-aggregate-card icon="fa fa-bath" header="Loading"
                 ><p>This is the main content</p></ak-aggregate-card
-            >`
+            >`,
         );
         const component = await $("ak-aggregate-card");
         await expect(await component.$(">>>.pf-c-card__title i")).toExist();
         await expect(await component.$(">>>.pf-c-card__title")).toHaveText("Loading");
         await expect(await component.$(">>>.pf-c-card__body")).toHaveText(
-            "This is the main content"
+            "This is the main content",
         );
     });
 
@@ -52,14 +52,14 @@ describe("ak-aggregate-card", () => {
         render(
             html`<ak-aggregate-card icon="fa fa-bath" header="Loading" headerLink="http://localhost"
                 ><p>This is the main content</p></ak-aggregate-card
-            >`
+            >`,
         );
         const component = await $("ak-aggregate-card");
         await expect(await component.$(">>>.pf-c-card__header a")).toExist();
         await expect(await component.$(">>>.pf-c-card__title i")).toExist();
         await expect(await component.$(">>>.pf-c-card__title")).toHaveText("Loading");
         await expect(await component.$(">>>.pf-c-card__body")).toHaveText(
-            "This is the main content"
+            "This is the main content",
         );
     });
 
@@ -71,7 +71,7 @@ describe("ak-aggregate-card", () => {
                 headerLink="http://localhost"
                 subtext="Xena had subtext"
                 ><p>This is the main content</p></ak-aggregate-card
-            >`
+            >`,
         );
         const component = await $("ak-aggregate-card");
         await expect(await component.$(">>>.pf-c-card__header a")).toExist();

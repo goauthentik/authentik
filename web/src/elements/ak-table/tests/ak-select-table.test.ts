@@ -28,7 +28,7 @@ describe("Select Table", () => {
     beforeEach(async () => {
         await render(
             html`<ak-select-table .content=${content} .columns=${columns}> </ak-select-table>`,
-            document.body
+            document.body,
         );
         // @ts-ignore
         selecttable = await $("ak-select-table");
@@ -78,7 +78,7 @@ describe("Multiselect Table", () => {
         await render(
             html`<ak-select-table multiple .content=${content} .columns=${columns}>
             </ak-select-table>`,
-            document.body
+            document.body,
         );
         // @ts-ignore
         selecttable = await $("ak-select-table");
