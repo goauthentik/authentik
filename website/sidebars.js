@@ -511,6 +511,7 @@ const docsSidebar = {
             items: [
                 "security/security-hardening",
                 "security/policy",
+                "security/CVE-2024-47077",
                 "security/CVE-2024-42490",
                 "security/CVE-2024-38371",
                 "security/CVE-2024-37905",
