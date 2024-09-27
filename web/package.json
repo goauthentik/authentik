@@ -20,6 +20,7 @@
         "@patternfly/elements": "^4.0.2",
         "@patternfly/patternfly": "^4.224.2",
         "@sentry/browser": "^8.32.0",
+        "@wdio/types": "^8.40.3",
         "@webcomponents/webcomponentsjs": "^2.8.0",
         "base64-js": "^1.5.1",
         "chart.js": "^4.4.4",
