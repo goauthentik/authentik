@@ -18,10 +18,10 @@ module.exports = async function (): Promise<Config> {
         projectName: "authentik",
         themeConfig: {
             announcementBar: {
-                id: "support_us",
+                id: "new_docs_structure",
                 content:
-                    'Change is hard. We hate it too when a familiar site or application gets re-arranged. But we did it anyway. Please let us <a target="_blank" rel="noopener noreferrer" href="https://docs.goauthentik.io/docs/">know what you think of the new Docs structure!</a>',
-                backgroundColor: "#006699",
+                    'Change is hard, especially when a familiar site gets re-arranged. But we think the new layout is easier to navigate. Take a preview peek at the upcoming new <a target="_blank" rel="noopener noreferrer" href="https://docs.goauthentik.io/docs/"> Docs structure!</a>',
+                backgroundColor: "#cc0099",
                 textColor: "#ffffff",
                 isCloseable: false,
             },
