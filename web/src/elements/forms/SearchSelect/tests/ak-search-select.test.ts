@@ -97,9 +97,7 @@ describe("Search select: event driven startup", () => {
             mock?.dispatchEvent(new Event("resolve"));
         });
         expect(await $(">>>ak-search-select-loading-indicator")).not.toBeDisplayed();
-        select = await AkSearchSelectViewDriver.build(
-            await $(">>>ak-search-select-view").getElement(),
-        );
+        select = await AkSearchSelectViewDriver.build(await $(">>>ak-search-select-view"));
         expect(await select).toBeExisting();
     });
 

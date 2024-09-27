@@ -39,7 +39,7 @@ export class AkSearchSelectViewDriver {
             );
         }
         const id = await element.getAttribute("data-ouia-component-id");
-        const menu = await $(`[data-ouia-component-id="menu-${id}"]`).getElement();
+        const menu = await $(`[data-ouia-component-id="menu-${id}"]`);
         return new AkSearchSelectViewDriver(element, menu);
     }
 
@@ -52,7 +52,7 @@ export class AkSearchSelectViewDriver {
     }
 
     async listElements() {
-        return await this.menu.$$(">>>li").getElements();
+        return await this.menu.$$(">>>li");
     }
 
     async focusOnInput() {

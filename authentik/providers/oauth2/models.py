@@ -377,7 +377,7 @@ class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
 
     class Meta:
         indexes = [
-            models.Index(fields=["token"]),
+            models.Index(fields=["token", "provider"]),
         ]
         verbose_name = _("OAuth2 Access Token")
         verbose_name_plural = _("OAuth2 Access Tokens")
@@ -423,7 +423,7 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
 
     class Meta:
         indexes = [
-            models.Index(fields=["token"]),
+            models.Index(fields=["token", "provider"]),
         ]
         verbose_name = _("OAuth2 Refresh Token")
         verbose_name_plural = _("OAuth2 Refresh Tokens")
