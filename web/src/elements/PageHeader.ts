@@ -13,7 +13,7 @@ import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -39,6 +39,9 @@ export class PageHeader extends WithBrandConfig(AKElement) {
 
     @property()
     description?: string;
+
+    @property({ type: Boolean })
+    hasIcon = false;
 
     static get styles(): CSSResult[] {
         return [
@@ -155,7 +158,9 @@ export class PageHeader extends WithBrandConfig(AKElement) {
             <section class="pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
                     <h1>
-                        <slot name="icon">${this.renderIcon()}</slot>&nbsp;
+                        ${this.hasIcon
+                            ? html`<slot name="icon">${this.renderIcon()}</slot>&nbsp;`
+                            : nothing}
                         <slot name="header">${this.header}</slot>
                     </h1>
                     ${this.description ? html`<p>${this.description}</p>` : html``}
