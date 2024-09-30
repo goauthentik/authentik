@@ -31,3 +31,18 @@ reverse_proxy /outpost.goauthentik.io/* https://outpost.company {
     header_up Host {http.reverse_proxy.upstream.hostport}
 }
 ```
+
+## Additional Configuration for Reverse Proxies
+
+When configuring reverse proxies, it may be necessary to forward additional custom headers or include basic authentication details depending on your security requirements and the specific setup of your upstream services. 
+
+### Sending Basic Authentication
+
+If your upstream service requires basic authentication, ensure to configure your reverse proxy to send the appropriate `Authorization` header. Here's an example of how to add custom headers in a Caddy setup:
+
+```plaintext
+forward_auth http://outpost.company:9000 {
+    copy_headers  authorization
+    # Add other headers as needed
+}
+```
