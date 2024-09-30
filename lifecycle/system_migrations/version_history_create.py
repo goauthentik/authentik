@@ -10,7 +10,8 @@ class Migration(BaseMigration):
         return not bool(self.cur.rowcount)
 
     def run(self):
-        self.cur.execute("""
+        self.cur.execute(
+            """
             BEGIN TRANSACTION;
                 CREATE TABLE IF NOT EXISTS authentik_version_history (
                     id BIGSERIAL PRIMARY KEY,
@@ -19,4 +20,5 @@ class Migration(BaseMigration):
                     build text NOT NULL
                 );
             COMMIT;
-        """)
+        """
+        )
