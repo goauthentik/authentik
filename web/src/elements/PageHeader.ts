@@ -51,6 +51,11 @@ export class PageHeader extends WithBrandConfig(AKElement) {
             PFContent,
             css`
                 .bar {
+                    border-bottom: var(--pf-global--BorderWidth--sm);
+                    border-bottom-style: solid;
+                    border-bottom-color: var(--pf-global--BorderColor--100);
+                }
+                .bar {
                     display: flex;
                     flex-direction: row;
                     min-height: 114px;
