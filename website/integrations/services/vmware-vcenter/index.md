@@ -14,11 +14,7 @@ sidebar_label: VMware vCenter
 > -- https://en.wikipedia.org/wiki/VCenter
 
 :::caution
-This requires authentik 0.10.3 or newer.
-:::
-
-:::caution
-This requires VMware vCenter 7.0.0 or newer.
+This requires VMware vCenter 8.03 or newer.
 :::
 
 :::note
@@ -33,6 +29,8 @@ The following placeholders will be used:
 -   `authentik.company` is the FQDN of the authentik install.
 
 Since vCenter only allows OpenID-Connect in combination with Active Directory/LDAP, it is recommended to have authentik sync with the same Active Directory. You also have the option of connecting to an authentik managed LDAP outpost for user management.
+
+## authentik configuration
 
 ### Step 1
 
@@ -73,7 +71,27 @@ Under _Sources_, click _Edit_ and ensure that "authentik default Active Director
 
 ### Step 3
 
-Under _Providers_, create an OAuth2/OpenID provider with these settings:
+Create an application and an OAuth2/OpenID provider, using the authetntik Wizard.
+
+1. Log into authentik as an admin, and navigate to Applications --> Applications, and then click **Create with Wizard**.
+
+2. In the Wizard, follow the prompts to create an applcation and its provider, with these specific points"
+
+- Select OIDC as the provider type.
+- Ensure that the signing key is provided (or you accet the default to authentik's Self-signed Certificate).
+- Ensure that redirect URI Setting is left empty.
+
+3. Click **Submit** to create the application and provider, and then click **Close** to close the Wizard.
+
+Set the Launch URL to `https://vcenter.company/ui/login/oauth2`. This will skip vCenter's User Prompt and directly log you in.
+
+:::caution
+This Launch URL only works for vCenter < 7.0u2. If you're running 7.0u2 or later, set the launch URL to `https://vcenter.company/ui/login`
+:::
+
+Optionally apply access restrictions to the application.
+
+Create the provider with these settings:
 
 -   Redirect URI: `https://vcenter.company/ui/login/oauth2/authcode`
 -   Sub Mode: If your Email address Schema matches your UPN, select "Based on the User's Email...", otherwise select "Based on the User's UPN...". If you are using authentik's managed LDAP outpost, chose "Based on the User's username"
@@ -81,16 +99,6 @@ Under _Providers_, create an OAuth2/OpenID provider with these settings:
 -   Signing Key: Select any available key
 
 ![](./authentik_setup.png)
-
-### Step 4
-
-Create an application which uses this provider. Optionally apply access restrictions to the application.
-
-Set the Launch URL to `https://vcenter.company/ui/login/oauth2`. This will skip vCenter's User Prompt and directly log you in.
-
-:::caution
-This Launch URL only works for vCenter < 7.0u2. If you're running 7.0u2 or later, set the launch URL to `https://vcenter.company/ui/login`
-:::
 
 ## vCenter Setup
 
