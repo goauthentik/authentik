@@ -95,7 +95,7 @@ The **Enterprise -> Licenses** page shows your current licenses' **Cumulative li
 
 ### License violation notifications
 
-The following events occur when a license expeires and is not renewed within two weeks.
+The following events occur when a license expires or the internal/external user count is over the licensed user count for the time period below.
 
 -   After 2 weeks of the expiry date administrators see a warning banner on the Admin interface
 

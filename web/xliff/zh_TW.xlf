@@ -8694,6 +8694,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sa38c5a2731be3a46">
   <source>authentik was unable to save this application:</source>
 </trans-unit>
+<trans-unit id="s25bacc19d98b444e">
+  <source>Parent Group</source>
+</trans-unit>
     </body>
   </file>
 </xliff>

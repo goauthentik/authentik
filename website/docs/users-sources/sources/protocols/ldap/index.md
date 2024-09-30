@@ -18,13 +18,13 @@ To create or edit a source in authentik, open the Admin interface and navigate t
 
 -   **Update internal password on login**: When the user logs in to authentik using the LDAP password backend, the password is stored as a hashed value in authentik. Toggle off (default setting) if you do not want to store the hashed passwords in authentik.
 
--   **Synch User**: Enable or disable user synchronization between authentik and the LDAP source.
+-   **Sync users**: Enable or disable user synchronization between authentik and the LDAP source.
 
 -   **User password writeback**: Enable this option if you want to write password changes that are made in authentik back to LDAP.
 
--   **Synch groups**: Enable/disable group synchronization. Groups are synced in the background every 5 minutes.
+-   **Sync groups**: Enable/disable group synchronization. Groups are synced in the background every 5 minutes.
 
--   **Sync parent group**: Optionally set this group as the parent group for all synced groups. An example use case of this would be to import Active Directory groups under a root `imported-from-ad` group.
+-   **Parent group**: Optionally set this group as the parent group for all synced groups. An example use case of this would be to import Active Directory groups under a root `imported-from-ad` group.
 
 #### Connection settings
 
@@ -45,7 +45,11 @@ To create or edit a source in authentik, open the Admin interface and navigate t
 
 #### LDAP Attribute mapping
 
--   **User Property mappings** and **Group Property Mappings**: Define which LDAP properties map to which authentik properties. The default set of property mappings is generated for Active Directory. See also our documentation on [property mappings](#ldap-source-property-mappings).
+-   **User Property Mappings** and **Group Property Mappings**: Define which LDAP properties map to which authentik properties. The default set of property mappings is generated for Active Directory. See also our documentation on [property mappings](#ldap-source-property-mappings).
+
+    :::warning
+    When the **Sync users** and or the **Sync groups** options are enabled, their respective property mapping options must have at least one mapping selected, otherwise the sync will not start.
+    :::
 
 #### Additional Settings
 

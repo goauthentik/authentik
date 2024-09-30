@@ -9091,6 +9091,10 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>authentik was unable to save this application:</source>
   <target>authentik 无法保存此应用程序：</target>
 </trans-unit>
+<trans-unit id="s25bacc19d98b444e">
+  <source>Parent Group</source>
+  <target>父组</target>
+</trans-unit>
     </body>
   </file>
 </xliff>
