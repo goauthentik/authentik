@@ -6,7 +6,6 @@ from authentik.admin.api.meta import AppsViewSet, ModelViewSet
 from authentik.admin.api.metrics import AdministrationMetricsViewSet
 from authentik.admin.api.system import SystemView
 from authentik.admin.api.version import VersionView
-from authentik.admin.api.version_history import VersionHistoryViewSet
 from authentik.admin.api.workers import WorkerView
 
 api_urlpatterns = [
@@ -18,7 +17,6 @@ api_urlpatterns = [
         name="admin_metrics",
     ),
     path("admin/version/", VersionView.as_view(), name="admin_version"),
-    ("admin/version/history", VersionHistoryViewSet, "version_history"),
     path("admin/workers/", WorkerView.as_view(), name="admin_workers"),
     path("admin/system/", SystemView.as_view(), name="admin_system"),
 ]
