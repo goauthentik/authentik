@@ -585,6 +585,8 @@ const docsSidebar = {
                     type: "category",
                     label: "CVEs",
                     items: [
+                        "security/cves/CVE-2024-47077",
+                        "security/cves/CVE-2024-47070",
                         "security/cves/CVE-2024-38371",
                         "security/cves/CVE-2024-37905",
                         "security/cves/CVE-2024-23647",
