@@ -52,6 +52,7 @@ jobs:
         psql:
           - 15-alpine
           - 16-alpine
+          - 17-alpine
     steps:
       - uses: actions/checkout@v4
         with:
@@ -105,6 +106,7 @@ jobs:
         psql:
           - 15-alpine
           - 16-alpine
+          - 17-alpine
     steps:
       - uses: actions/checkout@v4
       - name: Setup authentik env
