@@ -1,0 +1,20 @@
+name: Secret Scanning
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+# Typically here will come the jobs that build a docker image and push it to DockerHub
+
+  secret-scanning:  
+    name: Trigger Secret Scanning Workflow
+    uses: scribe-public/reusable-workflows/.github/workflows/secret-scanning.yaml@main
+    with:
+      scribe_product_name: "scribe-platform"
+      scribe_product_version: "dev"
+      exit_code: 0 # Modify if you want the check to fail before the attestation
+    secrets: 
+      SCRIBE_TOKEN: ${{ secrets.SCRIBE_DOGFOODING }}
+      DOGFOODING_POLICY_ACCESS: ${{ secrets.DOGFOODING_POLICY_ACCESS }}
+      
