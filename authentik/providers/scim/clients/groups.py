@@ -128,13 +128,18 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
         self._request(
             "PATCH",
             f"/Groups/{connection.scim_id}",
-            PatchRequest(
+            json=PatchRequest(
                 Operations=[
                     PatchOperation(
-                        PatchOp.replace,
+                        op=PatchOp.replace,
+                        path=None,
                         value=scim_group.model_dump(mode="json", exclude_unset=True),
                     )
                 ]
+            ).model_dump(
+                mode="json",
+                exclude_unset=True,
+                exclude_none=True,
             ),
         )
         return self.patch_compare_users(group)
@@ -220,7 +225,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                 user__pk__in=raw_users_should, provider=self.provider
             ).values_list("scim_id", flat=True)
         )
-        if raw_users_should.count() != len(users_should):
+        if len(raw_users_should) != len(users_should):
             self.logger.warning(
                 "User count mismatch, not all users in the group are synced to SCIM yet.",
                 group=group,
@@ -259,7 +264,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
             ],
         )
 
-    def _patch_add_users(self, scim_group: SCIMGroupSchema, users_set: set[int]):
+    def _patch_add_users(self, scim_group: SCIMProviderGroup, users_set: set[int]):
         """Add users in users_set to group"""
         if len(users_set) < 1:
             return
@@ -282,7 +287,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
             ],
         )
 
-    def _patch_remove_users(self, scim_group: SCIMGroupSchema, users_set: set[int]):
+    def _patch_remove_users(self, scim_group: SCIMProviderGroup, users_set: set[int]):
         """Remove users in users_set from group"""
         if len(users_set) < 1:
             return
