@@ -1,6 +1,9 @@
 ---
-title: MinIO
+title: Integrate with MinIO
+sidebar_label: MinIO
 ---
+
+# MinIO
 
 <span class="badge badge--primary">Support level: authentik</span>
 
@@ -43,7 +46,7 @@ elif ak_is_group_member(request.user, name="Minio users"):
 return None
 ```
 
-Note that you can assign multiple policies to a user by returning a list, and returning `None` will map no policies to the user, resulting in no access to the MinIO instance. For more information on writing expressions, see [Expressions](../../../docs/property-mappings/expression) and [User](../../../docs/user-group-role/user/user_ref#object-properties) docs.
+Note that you can assign multiple policies to a user by returning a list, and returning `None` will map no policies to the user, resulting in no access to the MinIO instance. For more information on writing expressions, see [Expressions](../../../docs/providers/property-mappings/expression) and [User](../../../docs/user-group-role/user/user_ref#object-properties) docs.
 
 ### Creating application and provider
 
@@ -67,7 +70,7 @@ You can set up OpenID in two different ways: via the web interface or the comman
 From the sidebar of the main page, go to **Identity -> OpenID**, click **Create**, and then define the configuration as follows:
 
 -   Name: MinIO
--   Config URL: `https://minio.company/application/o/<minio slug>/.well-known/openid-configuration`
+-   Config URL: `https://authentik.company/application/o/<minio slug>/.well-known/openid-configuration`
 -   Client ID: Your client ID from the previous step
 -   Client Secret: Your client secret from the previous step
 -   Scopes: `openid, email, profile, minio`

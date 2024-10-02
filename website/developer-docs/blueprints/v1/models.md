@@ -2,11 +2,9 @@
 
 Some models behave differently and allow for access to different API fields when created via blueprint.
 
-### `authentik_core.token`
+## `authentik_core.token`
 
-:::info
-Requires authentik 2023.4
-:::
+### `key` <span class="badge badge--version">authentik 2023.4+</span>
 
 Via the standard API, a token's key cannot be changed, it can only be rotated. This is to ensure a high entropy in it's key, and to prevent insecure data from being used. However, when provisioning tokens via a blueprint, it may be required to set a token to an existing value.
 
@@ -26,11 +24,9 @@ For example:
       intent: api
 ```
 
-### `authentik_core.user`
+## `authentik_core.user`
 
-:::info
-Requires authentik 2023.6
-:::
+### `password` <span class="badge badge--version">authentik 2023.6+</span>
 
 Via the standard API, a user's password can only be set via the separate `/api/v3/core/users/<id>/set_password/` endpoint. In blueprints, the password of a user can be set using the `password` field.
 
@@ -49,11 +45,25 @@ For example:
       password: this-should-be-a-long-value
 ```
 
-### `authentik_core.application`
+### `permissions` <span class="badge badge--version">authentik 2024.8+</span>
 
-:::info
-Requires authentik 2023.5
-:::
+The `permissions` field can be used to set global permissions for a user. A full list of possible permissions is included in the JSON schema for blueprints.
+
+For example:
+
+```yaml
+# [...]
+- model: authentik_core.user
+  identifiers:
+      username: test-user
+  attrs:
+      permissions:
+          - authentik_blueprints.view_blueprintinstance
+```
+
+## `authentik_core.application`
+
+### `icon` <span class="badge badge--version">authentik 2023.5+</span>
 
 Application icons can be directly set to URLs with the `icon` field.
 
@@ -69,11 +79,9 @@ For example:
       icon: https://goauthentik.io/img/icon.png
 ```
 
-### `authentik_sources_oauth.oauthsource`, `authentik_sources_saml.samlsource`, `authentik_sources_plex.plexsource`
+## `authentik_sources_oauth.oauthsource`, `authentik_sources_saml.samlsource`, `authentik_sources_plex.plexsource`
 
-:::info
-Requires authentik 2023.5
-:::
+### `icon` <span class="badge badge--version">authentik 2023.5+</span>
 
 Source icons can be directly set to URLs with the `icon` field.
 
@@ -89,11 +97,9 @@ For example:
       icon: https://goauthentik.io/img/icon.png
 ```
 
-### `authentik_flows.flow`
+## `authentik_flows.flow`
 
-:::info
-Requires authentik 2023.5
-:::
+### `icon` <span class="badge badge--version">authentik 2023.5+</span>
 
 Flow backgrounds can be directly set to URLs with the `background` field.
 
@@ -109,4 +115,22 @@ For example:
       title: My flow
       designation: authentication
       background: https://goauthentik.io/img/icon.png
+```
+
+## `authentik_rbac.role`
+
+### `permissions` <span class="badge badge--version">authentik 2024.8+</span>
+
+The `permissions` field can be used to set global permissions for a role. A full list of possible permissions is included in the JSON schema for blueprints.
+
+For example:
+
+```yaml
+# [...]
+- model: authentik_rbac.role
+  identifiers:
+      name: test-role
+  attrs:
+      permissions:
+          - authentik_blueprints.view_blueprintinstance
 ```

@@ -8,7 +8,7 @@ from rest_framework.test import APITestCase
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
 from authentik.flows.models import FlowDesignation
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
@@ -29,11 +29,51 @@ class TestSAMLProviderAPI(APITestCase):
             name=generate_id(),
             authorization_flow=create_test_flow(),
         )
+        response = self.client.get(
+            reverse("authentik_api:samlprovider-detail", kwargs={"pk": provider.pk}),
+        )
+        self.assertEqual(200, response.status_code)
         Application.objects.create(name=generate_id(), provider=provider, slug=generate_id())
         response = self.client.get(
             reverse("authentik_api:samlprovider-detail", kwargs={"pk": provider.pk}),
         )
         self.assertEqual(200, response.status_code)
+
+    def test_create_validate_signing_kp(self):
+        """Test create"""
+        cert = create_test_cert()
+        response = self.client.post(
+            reverse("authentik_api:samlprovider-list"),
+            data={
+                "name": generate_id(),
+                "authorization_flow": create_test_flow().pk,
+                "acs_url": "http://localhost",
+                "signing_kp": cert.pk,
+            },
+        )
+        self.assertEqual(400, response.status_code)
+        self.assertJSONEqual(
+            response.content,
+            {
+                "non_field_errors": [
+                    (
+                        "With a signing keypair selected, at least one "
+                        "of 'Sign assertion' and 'Sign Response' must be selected."
+                    )
+                ]
+            },
+        )
+        response = self.client.post(
+            reverse("authentik_api:samlprovider-list"),
+            data={
+                "name": generate_id(),
+                "authorization_flow": create_test_flow().pk,
+                "acs_url": "http://localhost",
+                "signing_kp": cert.pk,
+                "sign_assertion": True,
+            },
+        )
+        self.assertEqual(201, response.status_code)
 
     def test_metadata(self):
         """Test metadata export (normal)"""

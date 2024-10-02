@@ -88,3 +88,9 @@ export class UserAssignedObjectPermissionsTable extends Table<ExtraUserObjectPer
         ];
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-assigned-object-permissions-table": UserAssignedObjectPermissionsTable;
+    }
+}

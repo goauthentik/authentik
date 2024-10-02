@@ -214,7 +214,7 @@ def outpost_post_save(model_class: str, model_pk: Any):
         if not hasattr(instance, field_name):
             continue
 
-        LOGGER.debug("triggering outpost update from from field", field=field.name)
+        LOGGER.debug("triggering outpost update from field", field=field.name)
         # Because the Outpost Model has an M2M to Provider,
         # we have to iterate over the entire QS
         for reverse in getattr(instance, field_name).all():

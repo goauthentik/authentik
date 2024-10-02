@@ -6,6 +6,7 @@ import (
 	"errors"
 	"net"
 	"net/http"
+	"strings"
 	"sync"
 
 	sentryhttp "github.com/getsentry/sentry-go/http"
@@ -70,12 +71,20 @@ func NewProxyServer(ac *ak.APIController) *ProxyServer {
 }
 
 func (ps *ProxyServer) HandleHost(rw http.ResponseWriter, r *http.Request) bool {
+	// Always handle requests for outpost paths that should answer regardless of hostname
+	if strings.HasPrefix(r.URL.Path, "/outpost.goauthentik.io/ping") ||
+		strings.HasPrefix(r.URL.Path, "/outpost.goauthentik.io/static") {
+		ps.mux.ServeHTTP(rw, r)
+		return true
+	}
+	// lookup app by hostname
 	a, _ := ps.lookupApp(r)
 	if a == nil {
 		return false
 	}
+	// check if the app should handle this URL, or is setup in proxy mode
 	if a.ShouldHandleURL(r) || a.Mode() == api.PROXYMODE_PROXY {
-		a.ServeHTTP(rw, r)
+		ps.mux.ServeHTTP(rw, r)
 		return true
 	}
 	return false

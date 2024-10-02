@@ -1,6 +1,9 @@
 ---
-title: DokuWiki
+title: Integrate with DokuWiki
+sidebar_label: DokuWiki
 ---
+
+# DokuWiki
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -38,7 +41,7 @@ For _Oauthgeneric_:
 -   plugin»oauthgeneric»tokenurl: https://authentik.company/application/o/token/
 -   plugin»oauthgeneric»userurl: https://authentik.company/application/o/userinfo/
 -   plugin»oauthgeneric»authmethod: Bearer Header
--   plugin»oauthgeneric»scopes: email, openid, profile
+-   plugin»oauthgeneric»scopes: email, openid, profile, offline_access
 -   plugin»oauthgeneric»needs-state: checked
 -   plugin»oauthgeneric»json-user: preferred_username
 -   plugin»oauthgeneric»json-name: name
@@ -59,6 +62,8 @@ In authentik, under _Providers_, create an _OAuth2/OpenID Provider_ with these s
 -   Signing Key: Select any available key
 
 Note the _client ID_ and _client secret_, then save the provider. If you need to retrieve these values, you can do so by editing the provider.
+
+To prevent users from needing to log in again as soon as the access token expires, include the _offline_access_ scope in both authentik and DokuWiki. This scope allows DokuWiki to use refresh tokens.
 
 ### Application
 

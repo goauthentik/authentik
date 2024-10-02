@@ -612,7 +612,7 @@
         
       </trans-unit>
       <trans-unit id="s6dfd15978586d05f">
-        <source>Welcome, <x id="0" equiv-text="${name}"/>.</source>
+        <source>Welcome, <x id="0" equiv-text="${name || &quot;&quot;}"/>.</source>
         <target>Bienvenue,
         <x id="0" equiv-text="${name}"/>.</target>
         
@@ -842,16 +842,6 @@
       <trans-unit id="s319040353f479853">
         <source>Flow used for users to authenticate.</source>
         <target>Flux utilisé pour que les utilisateurs s'authentifient</target>
-        
-      </trans-unit>
-      <trans-unit id="sbc80eab557fbf782">
-        <source>Search group</source>
-        <target>Rechercher un groupe</target>
-        
-      </trans-unit>
-      <trans-unit id="s04b7f8d6aaef3756">
-        <source>Users in the selected group can do search queries. If no group is selected, no LDAP Searches are allowed.</source>
-        <target>Les utilisateurs de ce groupe peuvent effectuer des recherches. Si aucun groupe n'est sélectionné, aucune recherche LDAP n'est autorisée.</target>
         
       </trans-unit>
       <trans-unit id="se5973e7c8ba0fc71">
@@ -1097,11 +1087,6 @@
       <trans-unit id="s3a3fae99373ce56b">
         <source>Select which scopes can be used by the client. The client still has to specify the scope to access the data.</source>
         <target>Sélectionnez les portées utilisables par le client. Le client doit toujours spécifier la portée pour accéder aux données.</target>
-        
-      </trans-unit>
-      <trans-unit id="sffd2e553143d1b0e">
-        <source>Hold control/command to select multiple items.</source>
-        <target>Garder ctrl/command enfoncé pour sélectionner de multiples éléments</target>
         
       </trans-unit>
       <trans-unit id="s26bf2730430efbea">
@@ -2405,11 +2390,6 @@
         <target>Inclure les événements créés avec ce type d'action. S'il est laissé vide, tous les types d'action seront inclus.</target>
         
       </trans-unit>
-      <trans-unit id="sfab527528ea64618">
-        <source>Matches Event's Client IP (strict matching, for network matching use an Expression Policy.</source>
-        <target>Inclure l'adresse IP du client de l'évènement (correspondante stricte, pour un correspondance sur le réseau utiliser une politique d'expression)</target>
-        
-      </trans-unit>
       <trans-unit id="s5a15a8f39c699273">
         <source>Match events created by selected application. When left empty, all applications are matched.</source>
         <target>Inclure les évènements créés par cette application. S'il est laissé vide, toutes les applications seront incluses.</target>
@@ -2743,11 +2723,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>Aucune politique n'est actuellement lié à cet objet.</target>
         
       </trans-unit>
-      <trans-unit id="sddb040c47daae56b">
-        <source>Bind existing policy</source>
-        <target>Lier une politique existante</target>
-        
-      </trans-unit>
       <trans-unit id="saa855c61e0403fe6">
         <source>Warning: Application is not used by any Outpost.</source>
         <target>Attention : cette application n’est utilisée par aucun avant-poste.</target>
@@ -2876,11 +2851,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s3de6db803012016a">
         <source>LDAP Attribute mapping</source>
         <target>Mappage des attributs LDAP</target>
-        
-      </trans-unit>
-      <trans-unit id="s7c05ee41d634aa45">
-        <source>Property mappings used to user creation.</source>
-        <target>Mappages de propriété utilisés lors de la création d'utilisateurs</target>
         
       </trans-unit>
       <trans-unit id="s94333971a07803b9">
@@ -3365,16 +3335,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>Mappage créé avec succès</target>
         
       </trans-unit>
-      <trans-unit id="s1c33d22492029aba">
-        <source>Object field</source>
-        <target>Champ d'objet</target>
-        
-      </trans-unit>
-      <trans-unit id="s06df3c3b6a503da8">
-        <source>Field of the user object this value is written to.</source>
-        <target>Champ de l'objet utilisateur dans lequel cette valeur est écrite.</target>
-        
-      </trans-unit>
       <trans-unit id="sd39c5e998efecf93">
         <source>SAML Attribute Name</source>
         <target>Nom d'attribut SAML</target>
@@ -3648,11 +3608,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="sfeb779d4ccbc5a0e">
         <source>Recovery flow</source>
         <target>Flux de récupération</target>
-        
-      </trans-unit>
-      <trans-unit id="s1c2fd8097e14a608">
-        <source>Recovery flow. If left empty, the first applicable flow sorted by the slug is used.</source>
-        <target>Flux de récupération. Si laissé vide, le premier flux applicable trié par slug sera utilisé.</target>
         
       </trans-unit>
       <trans-unit id="s836aa192b30c21da">
@@ -5296,14 +5251,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>Champs</target>
         
       </trans-unit>
-      <trans-unit id="s2d5f69929bb7221d">
-        <source><x id="0" equiv-text="${prompt.name}"/> ("<x id="1" equiv-text="${prompt.fieldKey}"/>", of type <x id="2" equiv-text="${prompt.type}"/>)</source>
-        <target>
-        <x id="0" equiv-text="${prompt.name}"/>("
-        <x id="1" equiv-text="${prompt.fieldKey}"/>", de type
-        <x id="2" equiv-text="${prompt.type}"/>)</target>
-        
-      </trans-unit>
       <trans-unit id="s3b7b519444181264">
         <source>Validation Policies</source>
         <target>Politiques de validation</target>
@@ -5726,11 +5673,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>Créer une liaison d'étap</target>
         
       </trans-unit>
-      <trans-unit id="s207e8b106806d7e4">
-        <source>Bind stage</source>
-        <target>Lier une étape</target>
-        
-      </trans-unit>
       <trans-unit id="scc2e420c54dc8089">
         <source>Bind existing stage</source>
         <target>Lier une étape existante</target>
@@ -6033,12 +5975,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
       <trans-unit id="s322e34cfcba47155">
         <source>Not available</source>
         <target>Indisponible</target>
-        
-      </trans-unit>
-      <trans-unit id="s02b632a9ac24a824">
-        <source>Last seen: <x id="0" equiv-text="${this.outpostHealth.lastSeen?.toLocaleTimeString()}"/></source>
-        <target>Vu pour la dernière fois :
-        <x id="0" equiv-text="${this.outpostHealth.lastSeen?.toLocaleTimeString()}"/></target>
         
       </trans-unit>
       <trans-unit id="sa43153d53ae65063">
@@ -7441,10 +7377,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Saving Application...</source>
   <target>Enregistrement de l'application...</target>
 </trans-unit>
-<trans-unit id="s823abdb61543a826">
-  <source>Authentik was unable to save this application:</source>
-  <target>authentik n'a pas pu sauvegarder cette application :</target>
-</trans-unit>
 <trans-unit id="s848288f8c2265aad">
   <source>Your application has been saved</source>
   <target>L'application a été sauvegardée</target>
@@ -7835,10 +7767,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Configure Proxy Provider</source>
   <target>Configurer le fournisseur Proxy</target>
 </trans-unit>
-<trans-unit id="sf6d46bb442b77e91">
-  <source>AdditionalScopes</source>
-  <target>Scopes additionels</target>
-</trans-unit>
 <trans-unit id="s2c8c6f89089b31d4">
   <source>Configure Radius Provider</source>
   <target>Configurer le fournisseur Radius</target>
@@ -8046,10 +7974,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="s95d56e58f816d211">
   <source>Dutch</source>
   <target>Néerlandais</target>
-</trans-unit>
-<trans-unit id="s16a15af46bc9aeef">
-  <source>Failed to fetch objects: <x id="0" equiv-text="${this.error.detail}"/></source>
-  <target>Erreur lors de la récupération des objets: <x id="0" equiv-text="${this.error.detail}"/></target>
 </trans-unit>
 <trans-unit id="s744401846fea6e76">
   <source>Brand</source>
@@ -8819,36 +8743,353 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="se166e95fe447ebcd">
   <source>Close dialog</source>
+  <target>Fermer le dialogue</target>
 </trans-unit>
 <trans-unit id="s3dc14a4b8129f989">
   <source>Pagination</source>
+  <target>Pagination</target>
 </trans-unit>
 <trans-unit id="s6d46b842e227be57">
   <source>Application Details</source>
+  <target>Détails de l'application</target>
 </trans-unit>
 <trans-unit id="s76415a60e548cafe">
   <source>Provider Configuration</source>
+  <target>Configuration du fournisseur</target>
 </trans-unit>
 <trans-unit id="sde59c64619570b57">
   <source>Submit Application</source>
+  <target>Soumettre l'application</target>
 </trans-unit>
 <trans-unit id="sf2da0e95c78f2cb7">
   <source>Restore Application Wizard Hint</source>
+  <target>Restaurer l'indice de l'assistant de création d'application</target>
 </trans-unit>
 <trans-unit id="s76dc6d0d1a7db8e2">
   <source>Your authentik password</source>
+  <target>Votre mot de passe authentik</target>
 </trans-unit>
 <trans-unit id="se3a34af2a05c5c98">
   <source>Internal Service account</source>
+  <target>Compte de service interne</target>
 </trans-unit>
 <trans-unit id="s681c086b8f7afcae">
   <source>Global</source>
+  <target>Global</target>
 </trans-unit>
 <trans-unit id="s1b85e6ac2978a2c0">
   <source>Outpost integrations</source>
+  <target>Intégrations d’avant-postes</target>
 </trans-unit>
 <trans-unit id="sec55a3a7f18615ec">
   <source>Outpost integrations define how authentik connects to external platforms to manage and deploy Outposts.</source>
+  <target>Les intégrations d'avant-postes définissent comment authentik se connecte à des plateformes externes pour déployer les avants-postes.</target>
+</trans-unit>
+<trans-unit id="s74d86eb7e5a10fdf">
+  <source>Operation failed to complete</source>
+  <target>L'opération n'a pas réussi.</target>
+</trans-unit>
+<trans-unit id="sc0448bc8a76227cb">
+  <source>Failed to fetch objects: </source>
+  <target>Impossible de récupérer les objets :</target>
+</trans-unit>
+<trans-unit id="s233a0201fde4a38d">
+  <source>Available Scopes</source>
+  <target>Scopes disponibles</target>
+</trans-unit>
+<trans-unit id="s631b3419f6dfd031">
+  <source>Selected Scopes</source>
+  <target>Scopes sélectionnés</target>
+</trans-unit>
+<trans-unit id="s81d76cccf339a43c">
+  <source>Available Property Mappings</source>
+  <target>Mappages de propriété disponibles</target>
+</trans-unit>
+<trans-unit id="se9195c05c61d8ef8">
+  <source>Selected Property Mappings</source>
+  <target>Mappages de propriété sélectionnés</target>
+</trans-unit>
+<trans-unit id="s0619413371f33083">
+  <source>Available User Property Mappings</source>
+  <target>Mappages de propriété utilisateur disponibles</target>
+</trans-unit>
+<trans-unit id="sbb46aed99e712337">
+  <source>Selected User Property Mappings</source>
+  <target>Mappages de propriété utilisateur sélectionnés</target>
+</trans-unit>
+<trans-unit id="se84ebf32648e6a63">
+  <source>Available Group Property Mappings</source>
+  <target>Mappages de propriété groupe disponibles</target>
+</trans-unit>
+<trans-unit id="seaf9f9ecb99568c7">
+  <source>Selected Group Property Mappings</source>
+  <target>Mappages de propriété groupe sélectionnés</target>
+</trans-unit>
+<trans-unit id="sc362f1f1e4044878">
+  <source>Ensure the user satisfies requirements of geography or network topology, based on IP address. If any of the configured values match, the policy passes.</source>
+  <target>S'assure que l'utilisateur répond aux exigences de géographie ou de topologie du réseau, en fonction de l'adresse IP. Si l'une des valeurs configurées correspond, la politique est validée. </target>
+</trans-unit>
+<trans-unit id="s26c2828bf8db525e">
+  <source>ASNs</source>
+  <target>ASNs</target>
+</trans-unit>
+<trans-unit id="s72ee4dd6cfa6e10d">
+  <source>List of autonomous system numbers. Comma separated. E.g. 13335, 15169, 20940</source>
+  <target>Liste d'autonomous system numbers. Séparée par des virgules. Par exemple : 13335, 15169, 20940</target>
+</trans-unit>
+<trans-unit id="s77fbb0a6d145442d">
+  <source>Countries</source>
+  <target>Pays</target>
+</trans-unit>
+<trans-unit id="sdd277e10884a7272">
+  <source>Available Countries</source>
+  <target>Pays disponibles</target>
+</trans-unit>
+<trans-unit id="s7a93139fb12ebf96">
+  <source>Selected Countries</source>
+  <target>Pays sélectionnés</target>
+</trans-unit>
+<trans-unit id="s375a13497266db93">
+  <source>Bind existing policy/group/user</source>
+  <target>Lier une politique/un group/un utilisateur existant</target>
+</trans-unit>
+<trans-unit id="s8e2de27afeb78e5a">
+  <source>Property mappings for user creation.</source>
+  <target>Mappages de propriété utilisés lors de la création d'utilisateurs</target>
+</trans-unit>
+<trans-unit id="s045cf2d851164d5a">
+  <source>Property mappings for group creation.</source>
+  <target>Mappages de propriétés utilisés lors de la création des groupes</target>
+</trans-unit>
+<trans-unit id="s9642f1d8ee6e787d">
+  <source>Link to a group with identical name. Can have security implications when a group is used with another source</source>
+  <target>Lien vers un groupe ayant un nom identique. Peut poser des problèmes de sécurité si ce nom est partagé avec une autre source.</target>
+</trans-unit>
+<trans-unit id="s485964f83b5ed044">
+  <source>Use the group's name, but deny enrollment when the name already exists</source>
+  <target>Utiliser le nom du groupe, mais refuser la création si celui-ci existe déjà.</target>
+</trans-unit>
+<trans-unit id="s2b1b532c5271b296">
+  <source>Group matching mode</source>
+  <target>Mode de correspondance groupe</target>
+</trans-unit>
+<trans-unit id="s704381cea57e5a12">
+  <source>OAuth Attribute mapping</source>
+  <target>Mappage des attributs OAuth</target>
+</trans-unit>
+<trans-unit id="s4b9501c321dc4922">
+  <source>Plex Attribute mapping</source>
+  <target>Mappage des attributs Plex</target>
+</trans-unit>
+<trans-unit id="s6135938c50ad8a4b">
+  <source>Encryption Certificate</source>
+  <target>Certificat de chiffrement</target>
+</trans-unit>
+<trans-unit id="s37b8d48b9416fc25">
+  <source>When selected, encrypted assertions will be decrypted using this keypair.</source>
+  <target>Si activé, les assertions chiffrées seront déchiffrées en utilisant cette paire de clés.</target>
+</trans-unit>
+<trans-unit id="s924a87f37bc0201e">
+  <source>SAML Attribute mapping</source>
+  <target>Mappage d'attributs SAML</target>
+</trans-unit>
+<trans-unit id="sf0532ddee3b4e977">
+  <source>SCIM Attribute mapping</source>
+  <target>Mappage d'attributs SCIM</target>
+</trans-unit>
+<trans-unit id="sd61a4f736ac0a98e">
+  <source>External user settings</source>
+  <target>Paramètres des utilisateurs externes</target>
+</trans-unit>
+<trans-unit id="sdc4f72f6a46ae2c8">
+  <source>Default application</source>
+  <target>Application par défaut</target>
+</trans-unit>
+<trans-unit id="sac85801a25b7bb27">
+  <source>When configured, external users will automatically be redirected to this application when not attempting to access a different application</source>
+  <target>Si configuré, les utilisateurs externes seront redirigés vers cette application lorsqu'ils ne tentent pas d'accéder à une application différente.</target>
+</trans-unit>
+<trans-unit id="s9f4d6296b906d591">
+  <source>Warning: One or more license(s) have expired.</source>
+  <target>Attention : une ou plusieurs licence(s) ont expirées.</target>
+</trans-unit>
+<trans-unit id="s3b016caea59af3ef">
+  <source>Warning: One or more license(s) will expire within the next 2 weeks.</source>
+  <target>Attention : une ou plusieurs licence(s) expireront dans les prochaines 2 semaines.</target>
+</trans-unit>
+<trans-unit id="sd8a5f7269b7ac7a3">
+  <source>Caution: This authentik instance has entered read-only mode due to expired/exceeded licenses.</source>
+  <target>Attention : cette instance d'authentik est entrée en mode lecture seule du fait de licences expirées ou dépassées.</target>
+</trans-unit>
+<trans-unit id="se8c58e65674b6847">
+  <source>This authentik instance uses a Trial license.</source>
+  <target>Cette instance d'authentik utilise une licence d'essai.</target>
+</trans-unit>
+<trans-unit id="s6ee52309e586eb18">
+  <source>This authentik instance uses a Non-production license.</source>
+  <target>Cette instance d'authentik utilise une licence de non-production.</target>
+</trans-unit>
+<trans-unit id="s4a799b4562ab2051">
+  <source>Access Tokens(s)</source>
+  <target>Jeton(s) d'accès</target>
+</trans-unit>
+<trans-unit id="s4ae42fa672dd72bc">
+  <source>Created at</source>
+  <target>Créé à</target>
+</trans-unit>
+<trans-unit id="see1f8a5c8e11c5ab">
+  <source>Last updated at</source>
+  <target>Mis à jour pour la dernière fois à</target>
+</trans-unit>
+<trans-unit id="s82dd7087cd1471ab">
+  <source>Last used at</source>
+  <target>Utilisé pour la dernière fois à</target>
+</trans-unit>
+<trans-unit id="s9dda0789d278f5c5">
+  <source>Provide users with a 'show password' button.</source>
+  <target>Fourni un bouton « Montrer le mot de passe » aux utilisateurs.</target>
+</trans-unit>
+<trans-unit id="s2f7f35f6a5b733f5">
+  <source>Show password</source>
+  <target>Montrer le mot de passe</target>
+</trans-unit>
+<trans-unit id="s452f791e0ff6a13e">
+  <source>Hide password</source>
+  <target>Cacher le mot de passe</target>
+</trans-unit>
+<trans-unit id="s08272eeeddfd244e">
+  <source>An outpost is on an incorrect version!</source>
+  <target>Un avant-poste est sur une version incorrecte !</target>
+</trans-unit>
+<trans-unit id="sa30c12014e955946">
+  <source>Russian</source>
+  <target>Russe</target>
+</trans-unit>
+<trans-unit id="s354405ae02cb262d">
+  <source>Last seen: <x id="0" equiv-text="${getRelativeTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</source>
+  <target>Vu pour la dernière fois : <x id="0" equiv-text="${getRelativeTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</target>
+</trans-unit>
+<trans-unit id="s5aebe06e3ddf6ca9">
+  <source>Sign assertions</source>
+  <target>Signer les assertions</target>
+</trans-unit>
+<trans-unit id="s4e2329ffa0ef6b74">
+  <source>When enabled, the assertion element of the SAML response will be signed.</source>
+  <target>Si activé, l'assertion de la réponse SAML sera signée.</target>
+</trans-unit>
+<trans-unit id="s2ad1b968b37ded68">
+  <source>Sign responses</source>
+  <target>Signer les réponses</target>
+</trans-unit>
+<trans-unit id="sb416d07987093cd5">
+  <source>When selected, assertions will be encrypted using this keypair.</source>
+  <target>Si sélectionné, les assertions seront chiffrées avec cette paire de clés.</target>
+</trans-unit>
+<trans-unit id="sa42be520242dec2a">
+  <source>Available Sources</source>
+  <target>Sources disponibles</target>
+</trans-unit>
+<trans-unit id="s876e75cf2c07b38e">
+  <source>Selected Sources</source>
+  <target>Sources sélectionnées</target>
+</trans-unit>
+<trans-unit id="s3b579c4bb6b447ae">
+  <source>Successfully triggered sync.</source>
+  <target>Synchronisation lancée avec succès.</target>
+</trans-unit>
+<trans-unit id="s05073d2537b45d1a">
+  <source>Sync</source>
+  <target>Synchroniser</target>
+</trans-unit>
+<trans-unit id="se9da93aa2e6cce21">
+  <source>Sync User</source>
+  <target>Synchroniser l'utilisateur</target>
+</trans-unit>
+<trans-unit id="s7bd456df0becbbff">
+  <source>Available Stages</source>
+  <target>Étapes disponibles</target>
+</trans-unit>
+<trans-unit id="sf80798d2f56b540b">
+  <source>Selected Stages</source>
+  <target>Étapes sélectionnées</target>
+</trans-unit>
+<trans-unit id="sf651943c3ddff635">
+  <source>Available Fields</source>
+  <target>Champs disponibles</target>
+</trans-unit>
+<trans-unit id="s80ba9c5ebb7826a9">
+  <source>Selected Fields</source>
+  <target>Champs sélectionnés</target>
+</trans-unit>
+<trans-unit id="s26733a6289ca6f1a">
+  <source>Available Transports</source>
+  <target>Transports disponibles</target>
+</trans-unit>
+<trans-unit id="sa65f772cfc5aa67e">
+  <source>Selected Transports</source>
+  <target>Transports sélectionnés</target>
+</trans-unit>
+<trans-unit id="sd923f95605fed7b2">
+  <source>Expired</source>
+  <target>Expiré</target>
+</trans-unit>
+<trans-unit id="s86959994f28077dc">
+  <source>Expiring soon</source>
+  <target>Expire bientôt</target>
+</trans-unit>
+<trans-unit id="sc60a5fba70bf5a53">
+  <source>Unlicensed</source>
+  <target>Pas sous licence</target>
+</trans-unit>
+<trans-unit id="s4f9880ce82953741">
+  <source>Read Only</source>
+  <target>Lecture seule</target>
+</trans-unit>
+<trans-unit id="s4220dda46d622211">
+  <source>Valid</source>
+  <target>Valide</target>
+</trans-unit>
+<trans-unit id="sdc94711a2eb66a45">
+  <source>Current license status</source>
+  <target>Statut actuel des licences</target>
+</trans-unit>
+<trans-unit id="se10fb73c1f1039c5">
+  <source>Overall license status</source>
+  <target>Statut complet des licences</target>
+</trans-unit>
+<trans-unit id="sc4804358f202968c">
+  <source>Internal user usage</source>
+  <target>Utilisation des utilisateurs internes</target>
+</trans-unit>
+<trans-unit id="s087d6f07b52b30ec">
+  <source><x id="0" equiv-text="${internalUserPercentage &lt; Infinity ? internalUserPercentage : &quot;∞&quot;}"/>%</source>
+  <target><x id="0" equiv-text="${internalUserPercentage &lt; Infinity ? internalUserPercentage : &quot;∞&quot;}"/>%</target>
+</trans-unit>
+<trans-unit id="sae72e1569d34fb02">
+  <source>External user usage</source>
+  <target>Utilisation des utilisateurs externes</target>
+</trans-unit>
+<trans-unit id="sa82f8948649d0989">
+  <source>Matches Event's Client IP (strict matching, for network matching use an Expression Policy).</source>
+  <target>Correspondance de l'adresse IP du client de l'évènement (correspondante stricte, pour un correspondance sur le réseau utiliser une politique d'expression).</target>
+</trans-unit>
+<trans-unit id="s6506b7c69456b0d6">
+  <source>Invalid update request.</source>
+  <target>Requête de mise à jour invalide.</target>
+</trans-unit>
+<trans-unit id="s3819162efec77de1">
+  <source>Sync Group</source>
+  <target>Synchroniser le groupe</target>
+</trans-unit>
+<trans-unit id="s2d5f69929bb7221d">
+  <source><x id="0" equiv-text="${prompt.name}"/> ("<x id="1" equiv-text="${prompt.fieldKey}"/>", of type <x id="2" equiv-text="${prompt.type}"/>)</source>
+  <target><x id="0" equiv-text="${prompt.name}"/> (&amp;quot;<x id="1" equiv-text="${prompt.fieldKey}"/>&amp;quot;, de type <x id="2" equiv-text="${prompt.type}"/>)</target>
+</trans-unit>
+<trans-unit id="sa38c5a2731be3a46">
+  <source>authentik was unable to save this application:</source>
+</trans-unit>
+<trans-unit id="s25bacc19d98b444e">
+  <source>Parent Group</source>
 </trans-unit>
     </body>
   </file>

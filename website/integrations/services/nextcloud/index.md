@@ -1,6 +1,9 @@
 ---
-title: Nextcloud
+title: Integrate with Nextcloud
+sidebar_label: Nextcloud
 ---
+
+# Nextcloud
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -137,7 +140,7 @@ Add a new provider using the `+` button and set the following values:
     :::tip
     If you are running both your authentik and Nextcloud instances behind a reverse proxy, you can go ahead and use your internal FQDN here (i.e. `http://authentik.local`, however, note that if you do so there is [extra configuration required](#extra-configuration-when-running-behind-a-reverse-proxy)).
     :::
--   Scope: `email`, `profile` (you can safely omit `openid` if you prefer)
+-   Scope: `email profile` (you can safely omit `openid` if you prefer)
 -   Attribute mappings:
     -   User ID mapping: sub (or `user_id` if you need to connect to an already existing Nextcloud user)
     -   Display name mapping: name
@@ -251,7 +254,7 @@ Set the following values:
 -   Optional display name of the identity provider (default: "SSO & SAML log in"): `authentik`
 -   Identifier of the IdP entity (must be a URI): `https://authentik.company`
 -   URL Target of the IdP where the SP will send the Authentication Request Message: `https://authentik.company/application/saml/<application-slug>/sso/binding/redirect/`
--   URL Location of IdP where the SP will send the SLO Request: `https://authentik.company/application/saml/<application-slug>/slo/binding/redirect`
+-   URL Location of IdP where the SP will send the SLO Request: `https://authentik.company/application/saml/<application-slug>/slo/binding/redirect/`
 -   Public X.509 certificate of the IdP: Copy the PEM of the Selected Signing Certificate
 
 Under Attribute mapping, set these values:

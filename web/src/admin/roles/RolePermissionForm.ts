@@ -37,7 +37,7 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
     }
 
     async send(data: RolePermissionAssign) {
-        await new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByRolesAssignCreate({
+        await new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByRolesAssign({
             uuid: this.roleUuid || "",
             permissionAssignRequest: {
                 permissions: data.permissions,
@@ -83,5 +83,11 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
                 </div>
             </ak-form-element-horizontal>
         </form>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-role-permission-form": RolePermissionForm;
     }
 }

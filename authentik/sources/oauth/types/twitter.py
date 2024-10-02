@@ -49,17 +49,6 @@ class TwitterOAuthCallback(OAuthCallback):
     def get_user_id(self, info: dict[str, str]) -> str:
         return info.get("data", {}).get("id", "")
 
-    def get_user_enroll_context(
-        self,
-        info: dict[str, Any],
-    ) -> dict[str, Any]:
-        data = info.get("data", {})
-        return {
-            "username": data.get("username"),
-            "email": None,
-            "name": data.get("name"),
-        }
-
 
 @registry.register()
 class TwitterType(SourceType):
@@ -73,3 +62,11 @@ class TwitterType(SourceType):
     authorization_url = "https://twitter.com/i/oauth2/authorize"
     access_token_url = "https://api.twitter.com/2/oauth2/token"  # nosec
     profile_url = "https://api.twitter.com/2/users/me"
+
+    def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
+        data = info.get("data", {})
+        return {
+            "username": data.get("username"),
+            "email": None,
+            "name": data.get("name"),
+        }

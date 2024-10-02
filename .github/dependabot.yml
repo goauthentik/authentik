@@ -44,9 +44,11 @@ updates:
           - "babel-*"
       eslint:
         patterns:
+          - "@eslint/*"
           - "@typescript-eslint/*"
-          - "eslint"
           - "eslint-*"
+          - "eslint"
+          - "typescript-eslint"
       storybook:
         patterns:
           - "@storybook/*"
@@ -54,10 +56,16 @@ updates:
       esbuild:
         patterns:
           - "@esbuild/*"
+          - "esbuild*"
       rollup:
         patterns:
           - "@rollup/*"
           - "rollup-*"
+          - "rollup*"
+      swc:
+        patterns:
+          - "@swc/*"
+          - "swc-*"
       wdio:
         patterns:
           - "@wdio/*"

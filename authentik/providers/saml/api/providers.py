@@ -133,6 +133,17 @@ class SAMLProviderSerializer(ProviderSerializer):
         except Provider.application.RelatedObjectDoesNotExist:
             return "-"
 
+    def validate(self, attrs: dict):
+        if attrs.get("signing_kp"):
+            if not attrs.get("sign_assertion") and not attrs.get("sign_response"):
+                raise ValidationError(
+                    _(
+                        "With a signing keypair selected, at least one of 'Sign assertion' "
+                        "and 'Sign Response' must be selected."
+                    )
+                )
+        return super().validate(attrs)
+
     class Meta:
         model = SAMLProvider
         fields = ProviderSerializer.Meta.fields + [
@@ -148,6 +159,9 @@ class SAMLProviderSerializer(ProviderSerializer):
             "signature_algorithm",
             "signing_kp",
             "verification_kp",
+            "encryption_kp",
+            "sign_assertion",
+            "sign_response",
             "sp_binding",
             "default_relay_state",
             "url_download_metadata",

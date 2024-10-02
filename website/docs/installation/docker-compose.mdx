@@ -37,7 +37,7 @@ import TabItem from "@theme/TabItem";
         wget https://goauthentik.io/docker-compose.yml
         ```
     </TabItem>
-    <TabItem value="MacOS" label="MacOS">
+    <TabItem value="macOS" label="macOS">
         ```shell
         curl -O https://goauthentik.io/docker-compose.yml
         ```
@@ -50,8 +50,8 @@ Run the following commands to generate a password and secret key and write them 
 
 {/* prettier-ignore */}
 ```shell
-echo "PG_PASS=$(openssl rand 36 | base64 -w 0)" >> .env
-echo "AUTHENTIK_SECRET_KEY=$(openssl rand 60 | base64 -w 0)" >> .env
+echo "PG_PASS=$(openssl rand -base64 36 | tr -d '\n')" >> .env
+echo "AUTHENTIK_SECRET_KEY=$(openssl rand -base64 60 | tr -d '\n')" >> .env
 ```
 
 :::info

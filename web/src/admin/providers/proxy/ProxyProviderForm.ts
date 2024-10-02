@@ -1,9 +1,14 @@
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
+import {
+    makeSourceSelector,
+    oauth2SourcesProvider,
+} from "@goauthentik/admin/providers/oauth2/OAuth2Sources.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-toggle-group";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -20,14 +25,15 @@ import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 import {
     FlowsInstancesListDesignationEnum,
-    PaginatedOAuthSourceList,
-    PaginatedScopeMappingList,
-    PropertymappingsApi,
     ProvidersApi,
     ProxyMode,
     ProxyProvider,
-    SourcesApi,
 } from "@goauthentik/api";
+
+import {
+    makeProxyPropertyMappingsSelector,
+    proxyPropertyMappingsProvider,
+} from "./ProxyProviderPropertyMappings.js";
 
 @customElement("ak-provider-proxy-form")
 export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
@@ -43,21 +49,6 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
         this.mode = first(provider.mode, ProxyMode.Proxy);
         return provider;
     }
-
-    async load(): Promise<void> {
-        this.propertyMappings = await new PropertymappingsApi(
-            DEFAULT_CONFIG,
-        ).propertymappingsScopeList({
-            ordering: "scope_name",
-        });
-        this.oauthSources = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthList({
-            ordering: "name",
-            hasJwks: true,
-        });
-    }
-
-    propertyMappings?: PaginatedScopeMappingList;
-    oauthSources?: PaginatedOAuthSourceList;
 
     @state()
     showHttpBasic = true;
@@ -296,30 +287,16 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
                         label=${msg("Additional scopes")}
                         name="propertyMappings"
                     >
-                        <select class="pf-c-form-control" multiple>
-                            ${this.propertyMappings?.results
-                                .filter((scope) => {
-                                    return !scope.managed?.startsWith("goauthentik.io/providers");
-                                })
-                                .map((scope) => {
-                                    const selected = (this.instance?.propertyMappings || []).some(
-                                        (su) => {
-                                            return su == scope.pk;
-                                        },
-                                    );
-                                    return html`<option
-                                        value=${ifDefined(scope.pk)}
-                                        ?selected=${selected}
-                                    >
-                                        ${scope.name}
-                                    </option>`;
-                                })}
-                        </select>
+                        <ak-dual-select-dynamic-selected
+                            .provider=${proxyPropertyMappingsProvider}
+                            .selector=${makeProxyPropertyMappingsSelector(
+                                this.instance?.propertyMappings,
+                            )}
+                            available-label="${msg("Available Scopes")}"
+                            selected-label="${msg("Selected Scopes")}"
+                        ></ak-dual-select-dynamic-selected>
                         <p class="pf-c-form__helper-text">
                             ${msg("Additional scope mappings, which are passed to the proxy.")}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Hold control/command to select multiple items.")}
                         </p>
                     </ak-form-element-horizontal>
 
@@ -401,23 +378,16 @@ ${this.instance?.skipPathRegex}</textarea
                         label=${msg("Trusted OIDC Sources")}
                         name="jwksSources"
                     >
-                        <select class="pf-c-form-control" multiple>
-                            ${this.oauthSources?.results.map((source) => {
-                                const selected = (this.instance?.jwksSources || []).some((su) => {
-                                    return su == source.pk;
-                                });
-                                return html`<option value=${source.pk} ?selected=${selected}>
-                                    ${source.name} (${source.slug})
-                                </option>`;
-                            })}
-                        </select>
+                        <ak-dual-select-dynamic-selected
+                            .provider=${oauth2SourcesProvider}
+                            .selector=${makeSourceSelector(this.instance?.jwksSources)}
+                            available-label=${msg("Available Sources")}
+                            selected-label=${msg("Selected Sources")}
+                        ></ak-dual-select-dynamic-selected>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider.",
                             )}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Hold control/command to select multiple items.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>
@@ -471,5 +441,11 @@ ${this.instance?.skipPathRegex}</textarea
                 </div>
             </ak-form-group>
         `;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-proxy-form": ProxyProviderFormPage;
     }
 }

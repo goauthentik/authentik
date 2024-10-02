@@ -21,6 +21,7 @@ const docsSidebar = {
             items: [
                 "installation/docker-compose",
                 "installation/kubernetes",
+                "installation/upgrade",
                 "installation/beta",
                 "installation/configuration",
                 "installation/reverse-proxy",
@@ -76,6 +77,19 @@ const docsSidebar = {
             items: [
                 {
                     type: "category",
+                    label: "OAuth2 Provider",
+                    link: {
+                        type: "doc",
+                        id: "providers/oauth2/index",
+                    },
+                    items: [
+                        "providers/oauth2/client_credentials",
+                        "providers/oauth2/device_code",
+                    ],
+                },
+                "providers/saml/index",
+                {
+                    type: "category",
                     label: "Google Workspace Provider",
                     link: {
                         type: "doc",
@@ -107,19 +121,6 @@ const docsSidebar = {
                         "providers/entra/add-entra-provider",
                     ],
                 },
-                {
-                    type: "category",
-                    label: "OAuth2 Provider",
-                    link: {
-                        type: "doc",
-                        id: "providers/oauth2/index",
-                    },
-                    items: [
-                        "providers/oauth2/client_credentials",
-                        "providers/oauth2/device_code",
-                    ],
-                },
-                "providers/saml/index",
                 "providers/radius/index",
                 {
                     type: "category",
@@ -157,6 +158,15 @@ const docsSidebar = {
                     },
                     items: ["providers/rac/how-to-rac"],
                 },
+                {
+                    type: "category",
+                    label: "Property Mappings",
+                    link: {
+                        type: "doc",
+                        id: "providers/property-mappings/index",
+                    },
+                    items: ["providers/property-mappings/expression"],
+                },
             ],
         },
         {
@@ -170,20 +180,29 @@ const docsSidebar = {
             items: [
                 {
                     type: "category",
-                    label: "Directory synchronization",
-                    items: [
-                        "sources/active-directory/index",
-                        "sources/freeipa/index",
-                    ],
-                },
-                {
-                    type: "category",
                     label: "Protocols",
                     items: [
                         "sources/ldap/index",
                         "sources/oauth/index",
                         "sources/saml/index",
                         "sources/scim/index",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "Property Mappings",
+                    link: {
+                        type: "doc",
+                        id: "sources/property-mappings/index",
+                    },
+                    items: ["sources/property-mappings/expressions"],
+                },
+                {
+                    type: "category",
+                    label: "Directory synchronization",
+                    items: [
+                        "sources/active-directory/index",
+                        "sources/freeipa/index",
                     ],
                 },
                 {
@@ -264,10 +283,8 @@ const docsSidebar = {
             type: "category",
             label: "Stages",
             link: {
-                type: "generated-index",
-                title: "Stages",
-                slug: "flow/stages",
-                description: "Overview of all available stages",
+                type: "doc",
+                id: "flow/stages/index",
             },
             items: [
                 "flow/stages/authenticator_duo/index",
@@ -302,10 +319,8 @@ const docsSidebar = {
                     type: "category",
                     label: "Working with policies",
                     link: {
-                        type: "generated-index",
-                        title: "Working with policies",
-                        slug: "policies/working_with_policies",
-                        description: "Overview of policies configuration",
+                        type: "doc",
+                        id: "policies/working_with_policies/working_with_policies",
                     },
                     items: [
                         "policies/working_with_policies/whitelist_email",
@@ -314,15 +329,6 @@ const docsSidebar = {
                 },
                 "policies/expression",
             ],
-        },
-        {
-            type: "category",
-            label: "Property Mappings",
-            link: {
-                type: "doc",
-                id: "property-mappings/index",
-            },
-            items: ["property-mappings/expression"],
         },
         {
             type: "category",
@@ -378,7 +384,10 @@ const docsSidebar = {
                         type: "doc",
                         id: "user-group-role/groups/index",
                     },
-                    items: ["user-group-role/groups/manage_groups"],
+                    items: [
+                        "user-group-role/groups/manage_groups",
+                        "user-group-role/groups/group_ref",
+                    ],
                 },
                 {
                     type: "category",
@@ -413,13 +422,14 @@ const docsSidebar = {
                 description: "Release Notes for recent authentik versions",
             },
             items: [
+                "releases/2024/v2024.8",
                 "releases/2024/v2024.6",
                 "releases/2024/v2024.4",
-                "releases/2024/v2024.2",
                 {
                     type: "category",
                     label: "Previous versions",
                     items: [
+                        "releases/2024/v2024.2",
                         "releases/2023/v2023.10",
                         "releases/2023/v2023.8",
                         "releases/2023/v2023.6",
@@ -511,6 +521,9 @@ const docsSidebar = {
             items: [
                 "security/security-hardening",
                 "security/policy",
+                "security/CVE-2024-47077",
+                "security/CVE-2024-47070",
+                "security/CVE-2024-42490",
                 "security/CVE-2024-38371",
                 "security/CVE-2024-37905",
                 "security/CVE-2024-23647",

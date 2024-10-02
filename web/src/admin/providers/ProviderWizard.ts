@@ -83,3 +83,9 @@ export class ProviderWizard extends AKElement {
         `;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-wizard": ProviderWizard;
+    }
+}

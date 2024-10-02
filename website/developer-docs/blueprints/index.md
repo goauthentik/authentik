@@ -2,9 +2,9 @@
 title: Blueprints
 ---
 
-:::info
-Requires authentik 2022.8
-:::
+<span class="badge badge--version">authentik 2022.8+</span>
+
+---
 
 Blueprints offer a new way to template, automate and distribute authentik configuration. Blueprints can be used to automatically configure instances, manage config as code without any external tools, and to distribute application configs.
 
@@ -36,6 +36,12 @@ To disable existing blueprints, an empty file can be mounted over the existing b
 
 File-based blueprints are automatically removed once they become unavailable, however none of the objects created by those blueprints afre affected by this.
 
+:::info
+Please note that, by default, blueprint discovery and evaluation is not guaranteed to follow any specific order.
+
+If you have dependencies between blueprints, you should use [meta models](./v1/meta#authentik_blueprintsmetaapplyblueprint) to make sure that objects are created in the correct order.
+:::
+
 ## Storage - OCI
 
 Blueprints can also be stored in remote [OCI](https://opencontainers.org/) compliant registries. This includes GitHub Container Registry, Docker hub and many other registries.
@@ -52,11 +58,7 @@ To push a blueprint to an OCI-compatible registry, [ORAS](https://oras.land/) ca
 oras push ghcr.io/<username>/blueprint/<blueprint name>:latest <yaml file>:application/vnd.goauthentik.blueprint.v1+yaml
 ```
 
-## Storage - Internal
-
-:::info
-Requires authentik 2023.1
-:::
+## Storage - Internal <span class="badge badge--version">authentik 2023.1+</span>
 
 Blueprints can be stored in authentik's database, which allows blueprints to be managed via external configuration management tools like Terraform.
 

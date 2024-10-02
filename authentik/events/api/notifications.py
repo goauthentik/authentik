@@ -69,8 +69,5 @@ class NotificationViewSet(
     @action(detail=False, methods=["post"])
     def mark_all_seen(self, request: Request) -> Response:
         """Mark all the user's notifications as seen"""
-        notifications = Notification.objects.filter(user=request.user)
-        for notification in notifications:
-            notification.seen = True
-        Notification.objects.bulk_update(notifications, ["seen"])
+        Notification.objects.filter(user=request.user, seen=False).update(seen=True)
         return Response({}, status=204)

@@ -10,6 +10,7 @@ const projectRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
 process.chdir(path.join(projectRoot, "./web"));
 
 const eslintConfig = {
+    fix: true,
     overrideConfig: {
         env: {
             browser: true,
@@ -27,17 +28,29 @@ const eslintConfig = {
         parserOptions: {
             ecmaVersion: 12,
             sourceType: "module",
+            project: true,
         },
         plugins: ["@typescript-eslint", "lit", "custom-elements", "sonarjs"],
+        ignorePatterns: ["authentik-live-tests/**", "./.storybook/**/*.ts"],
         rules: {
             "indent": "off",
             "linebreak-style": ["error", "unix"],
             "quotes": ["error", "double", { avoidEscape: true }],
             "semi": ["error", "always"],
             "@typescript-eslint/ban-ts-comment": "off",
-            "sonarjs/cognitive-complexity": ["error", 9],
+            "no-unused-vars": "off",
+            "sonarjs/cognitive-complexity": ["warn", 9],
             "sonarjs/no-duplicate-string": "off",
             "sonarjs/no-nested-template-literals": "off",
+            "@typescript-eslint/no-unused-vars": [
+                "error",
+                {
+                    argsIgnorePattern: "^_",
+                    varsIgnorePattern: "^_",
+                    caughtErrorsIgnorePattern: "^_",
+                },
+            ],
+            "no-console": ["error", { allow: ["debug", "warn", "error"] }],
         },
     },
 };
@@ -60,9 +73,14 @@ const modified = (s) => isModified.test(s);
 const isCheckable = /\.(ts|js|mjs)$/;
 const checkable = (s) => isCheckable.test(s);
 
+const ignored = /\/\.storybook\//;
+const notIgnored = (s) => !ignored.test(s);
+
 const updated = statuses.reduce(
     (acc, [status, filename]) =>
-        modified(status) && checkable(filename) ? [...acc, path.join(projectRoot, filename)] : acc,
+        modified(status) && checkable(filename) && notIgnored(filename)
+            ? [...acc, path.join(projectRoot, filename)]
+            : acc,
     [],
 );
 

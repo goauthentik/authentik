@@ -31,9 +31,9 @@ def set_default_group_mappings(apps: Apps, schema_editor):
     db_alias = schema_editor.connection.alias
 
     for source in LDAPSource.objects.using(db_alias).all():
-        if source.property_mappings_group.exists():
+        if source.property_mappings_group.using(db_alias).exists():
             continue
-        source.property_mappings_group.set(
+        source.property_mappings_group.using(db_alias).set(
             LDAPPropertyMapping.objects.using(db_alias).filter(
                 managed="goauthentik.io/sources/ldap/default-name"
             )
