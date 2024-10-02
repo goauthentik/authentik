@@ -11,7 +11,7 @@
         "@floating-ui/dom": "^1.6.11",
         "@formatjs/intl-listformat": "^7.5.7",
         "@fortawesome/fontawesome-free": "^6.6.0",
-        "@goauthentik/api": "^2024.8.3-1727449099",
+        "@goauthentik/api": "^2024.8.3-1727731656",
         "@lit/context": "^1.1.2",
         "@lit/localize": "^0.12.2",
         "@lit/reactive-element": "^2.0.4",
@@ -63,11 +63,13 @@
         "@types/mocha": "^10.0.8",
         "@types/node": "^22.7.4",
         "@types/showdown": "^2.0.6",
+        "@typescript-eslint/eslint-plugin": "^8.8.0",
         "@typescript-eslint/parser": "^8.8.0",
         "@wdio/browser-runner": "^9.1.2",
         "@wdio/cli": "^9.1.2",
         "@wdio/spec-reporter": "^9.1.2",
         "chokidar": "^4.0.1",
+        "chromedriver": "^129.0.2",
         "esbuild": "^0.24.0",
         "eslint": "^9.11.1",
         "eslint-plugin-lit": "^1.15.0",
@@ -100,9 +102,9 @@
         "@esbuild/darwin-arm64": "^0.24.0",
         "@esbuild/linux-amd64": "^0.18.11",
         "@esbuild/linux-arm64": "^0.24.0",
-        "@rollup/rollup-darwin-arm64": "4.22.5",
-        "@rollup/rollup-linux-arm64-gnu": "4.22.5",
-        "@rollup/rollup-linux-x64-gnu": "4.22.5"
+        "@rollup/rollup-darwin-arm64": "4.23.0",
+        "@rollup/rollup-linux-arm64-gnu": "4.23.0",
+        "@rollup/rollup-linux-x64-gnu": "4.23.0"
     },
     "private": true,
     "scripts": {
@@ -130,7 +132,8 @@
         "storybook:build": "wireit",
         "storybook:build-import-map": "wireit",
         "test": "wireit",
-        "test-watch": "wireit",
+        "test:watch": "wireit",
+        "test:e2e:watch": "wireit",
         "tsc": "wireit",
         "watch": "run-s build-locales esbuild:watch"
     },
@@ -315,7 +318,13 @@
                 "TS_NODE_PROJECT": "tsconfig.test.json"
             }
         },
-        "test-watch": {
+        "test:e2e:watch": {
+            "command": "wdio run ./tests/wdio.conf.ts",
+            "env": {
+                "TS_NODE_PROJECT": "./tests/tsconfig.test.json"
+            }
+        },
+        "test:watch": {
             "command": "wdio run ./wdio.conf.ts",
             "env": {
                 "TS_NODE_PROJECT": "tsconfig.test.json"

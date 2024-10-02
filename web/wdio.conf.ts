@@ -29,7 +29,7 @@ export const config: WebdriverIO.Config = {
                     litCss(),
                     replace({
                         "process.env.NODE_ENV": JSON.stringify(
-                            isProdBuild ? "production" : "development"
+                            isProdBuild ? "production" : "development",
                         ),
                         "process.env.CWD": JSON.stringify(cwd()),
                         "process.env.AK_API_BASE_PATH": JSON.stringify(apiBasePath),
@@ -93,7 +93,15 @@ export const config: WebdriverIO.Config = {
             "goog:chromeOptions": {
                 args: [
                     "disable-search-engine-choice-screen",
-                    ...(runHeadless ? ["headless", "disable-gpu", "no-sandbox"] : []),
+                    ...(runHeadless
+                        ? [
+                              "headless",
+                              "disable-gpu",
+                              "no-sandbox",
+                              "window-size=1280,672",
+                              "browser-test",
+                          ]
+                        : []),
                 ],
             },
         },

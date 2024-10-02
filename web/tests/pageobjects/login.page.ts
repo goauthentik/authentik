@@ -1,6 +1,7 @@
+import { $ } from "@wdio/globals";
+
 import Page from "./page.js";
 import UserLibraryPage from "./user-library.page.js";
-import { $ } from "@wdio/globals";
 
 /**
  * sub page containing specific selectors and methods for a specific page
@@ -13,12 +14,16 @@ class LoginPage extends Page {
         return await $('input[name="uidField"]');
     }
 
-    async inputPassword() {
-        return await $('input[name="password"]');
+    async usernameBtnSubmit() {
+        return await $('button[type="submit"]');
     }
 
-    async btnSubmit() {
-        return await $('button[type="submit"]');
+    async inputPassword() {
+        return await $("input#ak-stage-password-input");
+    }
+
+    async passwordBtnSubmit() {
+        return await $("ak-stage-password").$('button[type="submit"]');
     }
 
     async authFailure() {
@@ -31,14 +36,16 @@ class LoginPage extends Page {
 
     async username(username: string) {
         await (await this.inputUsername()).setValue(username);
-        await (await this.btnSubmit()).waitForEnabled();
-        await (await this.btnSubmit()).click();
+        const submitBtn = await this.usernameBtnSubmit();
+        await submitBtn.waitForEnabled();
+        await submitBtn.click();
     }
 
     async password(password: string) {
         await (await this.inputPassword()).setValue(password);
-        await (await this.btnSubmit()).waitForEnabled();
-        await (await this.btnSubmit()).click();
+        const submitBtn = await this.passwordBtnSubmit();
+        await submitBtn.waitForEnabled();
+        await submitBtn.click();
     }
 
     async login(username: string, password: string) {
