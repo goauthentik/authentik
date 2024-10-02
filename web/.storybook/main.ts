@@ -16,7 +16,6 @@ const config: StorybookConfig = {
         "@storybook/addon-controls",
         "@storybook/addon-links",
         "@storybook/addon-essentials",
-        "@jeysal/storybook-addon-css-user-preferences",
         "storybook-addon-mock",
     ],
     staticDirs: [
