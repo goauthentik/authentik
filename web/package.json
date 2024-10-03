@@ -132,8 +132,8 @@
         "storybook:build": "wireit",
         "storybook:build-import-map": "wireit",
         "test": "wireit",
-        "test:watch": "wireit",
         "test:e2e:watch": "wireit",
+        "test:watch": "wireit",
         "tsc": "wireit",
         "watch": "run-s build-locales esbuild:watch"
     },

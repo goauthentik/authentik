@@ -1,6 +1,7 @@
+import { expect } from "@wdio/globals";
+
 import LoginPage from "../pageobjects/login.page.js";
 import { BAD_PASSWORD, GOOD_USERNAME } from "../utils/constants.js";
-import { expect } from "@wdio/globals";
 
 describe("Log into authentik", () => {
     it("should fail on a bad password", async () => {

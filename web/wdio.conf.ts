@@ -29,7 +29,7 @@ export const config: WebdriverIO.Config = {
                     litCss(),
                     replace({
                         "process.env.NODE_ENV": JSON.stringify(
-                            isProdBuild ? "production" : "development"
+                            isProdBuild ? "production" : "development",
                         ),
                         "process.env.CWD": JSON.stringify(cwd()),
                         "process.env.AK_API_BASE_PATH": JSON.stringify(apiBasePath),

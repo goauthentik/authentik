@@ -1,8 +1,9 @@
+import { expect } from "@wdio/globals";
+
 import ApplicationWizardView from "../pageobjects/application-wizard.page.js";
 import ApplicationsListPage from "../pageobjects/applications-list.page.js";
 import { randomId } from "../utils/index.js";
 import { login } from "../utils/login.js";
-import { expect } from "@wdio/globals";
 
 async function reachTheProvider(title: string) {
     const newPrefix = randomId();
