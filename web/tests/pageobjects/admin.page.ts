@@ -1,3 +1,5 @@
+import { $ } from "@wdio/globals";
+
 import Page from "../pageobjects/page.js";
 
 export default class AdminPage extends Page {

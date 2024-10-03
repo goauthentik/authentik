@@ -93,7 +93,15 @@ export const config: WebdriverIO.Config = {
             "goog:chromeOptions": {
                 args: [
                     "disable-search-engine-choice-screen",
-                    ...(runHeadless ? ["headless", "disable-gpu", "no-sandbox"] : []),
+                    ...(runHeadless
+                        ? [
+                              "headless",
+                              "disable-gpu",
+                              "no-sandbox",
+                              "window-size=1280,672",
+                              "browser-test",
+                          ]
+                        : []),
                 ],
             },
         },

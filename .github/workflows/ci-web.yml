@@ -24,17 +24,11 @@ jobs:
           - prettier-check
         project:
           - web
-          - tests/wdio
         include:
           - command: tsc
             project: web
           - command: lit-analyse
             project: web
-        exclude:
-          - command: lint:lockfile
-            project: tests/wdio
-          - command: tsc
-            project: tests/wdio
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

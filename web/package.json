@@ -63,11 +63,13 @@
         "@types/mocha": "^10.0.8",
         "@types/node": "^22.7.4",
         "@types/showdown": "^2.0.6",
+        "@typescript-eslint/eslint-plugin": "^8.8.0",
         "@typescript-eslint/parser": "^8.8.0",
         "@wdio/browser-runner": "^9.1.2",
         "@wdio/cli": "^9.1.2",
         "@wdio/spec-reporter": "^9.1.2",
         "chokidar": "^4.0.1",
+        "chromedriver": "^129.0.2",
         "esbuild": "^0.24.0",
         "eslint": "^9.11.1",
         "eslint-plugin-lit": "^1.15.0",
@@ -130,7 +132,8 @@
         "storybook:build": "wireit",
         "storybook:build-import-map": "wireit",
         "test": "wireit",
-        "test-watch": "wireit",
+        "test:e2e:watch": "wireit",
+        "test:watch": "wireit",
         "tsc": "wireit",
         "watch": "run-s build-locales esbuild:watch"
     },
@@ -233,10 +236,14 @@
         "lint:imports": {
             "command": "knip --config scripts/knip.config.ts"
         },
+        "lint:types:tests": {
+            "command": "tsc --noEmit -p ./tests"
+        },
         "lint:types": {
             "command": "tsc --noEmit -p .",
             "dependencies": [
-                "build-locales"
+                "build-locales",
+                "lint:types:tests"
             ]
         },
         "lint:lockfile": {
@@ -315,7 +322,13 @@
                 "TS_NODE_PROJECT": "tsconfig.test.json"
             }
         },
-        "test-watch": {
+        "test:e2e:watch": {
+            "command": "wdio run ./tests/wdio.conf.ts",
+            "env": {
+                "TS_NODE_PROJECT": "./tests/tsconfig.test.json"
+            }
+        },
+        "test:watch": {
             "command": "wdio run ./wdio.conf.ts",
             "env": {
                 "TS_NODE_PROJECT": "tsconfig.test.json"

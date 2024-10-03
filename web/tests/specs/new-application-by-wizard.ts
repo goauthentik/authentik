@@ -1,8 +1,14 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
+// ^^^^^^^^^^^ Because TSC cannot handle metaprogramming, and metaprogramming
+// via `defineProperties` is how we installed the OUID finders for the various
+// wizard types.
+import { expect } from "@wdio/globals";
+
 import ApplicationWizardView from "../pageobjects/application-wizard.page.js";
 import ApplicationsListPage from "../pageobjects/applications-list.page.js";
 import { randomId } from "../utils/index.js";
 import { login } from "../utils/login.js";
-import { expect } from "@wdio/globals";
 
 async function reachTheProvider(title: string) {
     const newPrefix = randomId();
@@ -43,7 +49,6 @@ describe("Configure Applications with the Application Wizard", () => {
         await (await ApplicationWizardView.providerList()).waitForDisplayed();
         await (await ApplicationWizardView.ldapProvider).scrollIntoView();
         await (await ApplicationWizardView.ldapProvider).click();
-
         await (await ApplicationWizardView.nextButton()).click();
         await ApplicationWizardView.pause();
 
