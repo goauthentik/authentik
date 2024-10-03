@@ -1,7 +1,7 @@
 import replace from "@rollup/plugin-replace";
 import { cwd } from "process";
-import postcssLit from "rollup-plugin-postcss-lit";
 import type { UserConfig } from "vite";
+import litCss from "vite-plugin-lit-css";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 const isProdBuild = process.env.NODE_ENV === "production";
@@ -26,6 +26,7 @@ export const config: WebdriverIO.Config = {
             viteConfig: (config: UserConfig = { plugins: [] }) => ({
                 ...config,
                 plugins: [
+                    litCss(),
                     replace({
                         "process.env.NODE_ENV": JSON.stringify(
                             isProdBuild ? "production" : "development",
@@ -35,7 +36,6 @@ export const config: WebdriverIO.Config = {
                         "preventAssignment": true,
                     }),
                     ...(config?.plugins ?? []),
-                    postcssLit(),
                     tsconfigPaths(),
                 ],
             }),
@@ -93,7 +93,7 @@ export const config: WebdriverIO.Config = {
             "goog:chromeOptions": {
                 args: [
                     "disable-search-engine-choice-screen",
-                    ...(runHeadless ? ["headless", "disable-gpu"] : []),
+                    ...(runHeadless ? ["headless", "disable-gpu", "no-sandbox"] : []),
                 ],
             },
         },
