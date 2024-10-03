@@ -1,0 +1,56 @@
+---
+title: Scaling
+---
+
+authentik can be scaled to several thousands of users. This page aims to provide some guidance on installation sizing and tuning for those large installations.
+
+:::note
+The numbers indicated on this page are meant as general guidelines and starting points. Usage patterns vary from one installation to another, and we are constantly optimizing authentik to improve its performance.
+
+The data used to build this page has been collected from benchmarks run on version 2024.6, and from real-world customer feedback.
+:::
+
+## How does authentik scale?
+
+### authentik server
+
+The authentik server is a stateless component that serves HTTP requests. As such, it is completely stateless and scales linearly. That means that if a single authentik server with X resources (CPU and RAM) can serve N requests, two authentik server with each X resources can serve 2N requests.
+
+### authentik worker
+
+The authentik worker is a stateless component that processes background tasks for authentik. This includes:
+
+-   maintenance tasks, such as removing outdated resources
+-   synchronization tasks for sources and providers such as SCIM, Google Workspace, LDAP, etc.
+-   one-off tasks that are triggered by some action by a user or an administrator, such as sending notifications.
+
+Scaling the worker thus greatly depends on the usage made of authentik. If not synchronization is configured and there are few one-off tasks, then the worker will use almost no resources. However, if the worker has to process lengthy synchronization tasks and is then backlogged with other tasks, then it needs to be scaled up.
+
+As such, we recommend setting up some [monitoring](./monitoring.md) and observing how the worker behaves, then scaling it up accordingly. You should aim to have as few tasks as possible in the worker queue.
+
+### PostgreSQL & Redis
+
+We recommend looking into both tools' respective documentation to get pointers on how to monitor them.
+
+The specific usage that authentik makes of PostgreSQL and Redis doesn't scale linearly, but rather logarithmically.
+
+## Calculator
+
+We provide a calculator to size your deployments of the authentik server based on benchmarks and real-world data we have observed.
+
+The calculator takes two inputs:
+
+-   the number of active users on the instance. This is used to calculate how much database storage will be required, and how many concurrent logins should be expected.
+-   the number of concurrent logins expected. For N thousands users, we don't expect those N thousands users to log in at the exact same time. As such, we estimate that all of the users will log in over a period of 15 minutes, greatly reducing the load on the instance. Furthermore, as login uses [flows](../flow/index.md), a single login process may take several seconds for the user to complete it (entering their password, their MFA method, etc.). We estimate that number at 10 seconds. If you know what usage pattern to expect, you can override that value from the computed one.
+
+import ScalingCalculator from "../../src/components/ScalingCalculator";
+
+<ScalingCalculator></ScalingCalculator>
+
+#### Known issues
+
+The database recommendations given by the calculator are scaled linearly to the number of concurrent logins. This is not the pattern we observe in reality. As such, if the calculator returns ludicrous values for the database sizing, expect those to not be representative of the actual resources needed.
+
+## Feedback
+
+We welcome feedback on this calculator. [Contact us!](mailto:hello@goauthentik.io)
