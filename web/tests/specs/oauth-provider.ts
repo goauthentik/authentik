@@ -33,7 +33,7 @@ describe("Configure Oauth2 Providers", () => {
         // @ts-expect-error "TSC does not ChainablePromiseElement"
         await ProviderWizardView.oauth.providerName.setValue(newProviderName);
         await ProviderWizardView.oauth.setAuthorizationFlow(
-            "default-provider-authorization-explicit-consent"
+            "default-provider-authorization-explicit-consent",
         );
         await ProviderWizardView.nextButton.click();
         await ProviderWizardView.pause();

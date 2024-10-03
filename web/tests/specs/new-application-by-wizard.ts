@@ -140,10 +140,10 @@ describe("Configure Applications with the Application Wizard", () => {
 
         await ApplicationWizardView.transparentProxy.setAuthorizationFlow(EXPLICIT_CONSENT);
         await ApplicationWizardView.transparentProxy.externalHost.setValue(
-            "http://external.example.com"
+            "http://external.example.com",
         );
         await ApplicationWizardView.transparentProxy.internalHost.setValue(
-            "http://internal.example.com"
+            "http://internal.example.com",
         );
 
         await (await ApplicationWizardView.nextButton()).click();
@@ -163,7 +163,7 @@ describe("Configure Applications with the Application Wizard", () => {
 
         await ApplicationWizardView.forwardProxy.setAuthorizationFlow(EXPLICIT_CONSENT);
         await ApplicationWizardView.forwardProxy.externalHost.setValue(
-            "http://external.example.com"
+            "http://external.example.com",
         );
 
         await (await ApplicationWizardView.nextButton()).click();
