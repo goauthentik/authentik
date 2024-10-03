@@ -23,14 +23,17 @@ describe("Configure Oauth2 Providers", () => {
         await reachTheProvider();
 
         await ProviderWizardView.providerList.waitForDisplayed();
+        // @ts-expect-error "TSC does not understand metaprogramming."
         await ProviderWizardView.oauth2Provider.scrollIntoView();
+        // @ts-expect-error "TSC does not understand metaprogramming."
         await ProviderWizardView.oauth2Provider.click();
         await ProviderWizardView.nextButton.click();
         await ProviderWizardView.pause();
 
+        // @ts-expect-error "TSC does not ChainablePromiseElement"
         await ProviderWizardView.oauth.providerName.setValue(newProviderName);
         await ProviderWizardView.oauth.setAuthorizationFlow(
-            "default-provider-authorization-explicit-consent",
+            "default-provider-authorization-explicit-consent"
         );
         await ProviderWizardView.nextButton.click();
         await ProviderWizardView.pause();
@@ -39,7 +42,7 @@ describe("Configure Oauth2 Providers", () => {
         await ProvidersListPage.clickSearchButton();
         await ProvidersListPage.pause();
 
-        const newProvider = await ProvidersListPage.findProviderRow(newProviderName);
+        const newProvider = await ProvidersListPage.findProviderRow();
         await newProvider.waitForDisplayed();
         expect(newProvider).toExist();
         expect(await newProvider.getText()).toHaveText(newProviderName);

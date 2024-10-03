@@ -1,3 +1,8 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
+// ^^^^^^^^^^^ Because TSC cannot handle metaprogramming, and metaprogramming
+// via `defineProperties` is how we installed the OUID finders for the various
+// wizard types.
 import { expect } from "@wdio/globals";
 
 import ApplicationWizardView from "../pageobjects/application-wizard.page.js";
@@ -44,7 +49,6 @@ describe("Configure Applications with the Application Wizard", () => {
         await (await ApplicationWizardView.providerList()).waitForDisplayed();
         await (await ApplicationWizardView.ldapProvider).scrollIntoView();
         await (await ApplicationWizardView.ldapProvider).click();
-
         await (await ApplicationWizardView.nextButton()).click();
         await ApplicationWizardView.pause();
 
@@ -136,10 +140,10 @@ describe("Configure Applications with the Application Wizard", () => {
 
         await ApplicationWizardView.transparentProxy.setAuthorizationFlow(EXPLICIT_CONSENT);
         await ApplicationWizardView.transparentProxy.externalHost.setValue(
-            "http://external.example.com",
+            "http://external.example.com"
         );
         await ApplicationWizardView.transparentProxy.internalHost.setValue(
-            "http://internal.example.com",
+            "http://internal.example.com"
         );
 
         await (await ApplicationWizardView.nextButton()).click();
@@ -159,7 +163,7 @@ describe("Configure Applications with the Application Wizard", () => {
 
         await ApplicationWizardView.forwardProxy.setAuthorizationFlow(EXPLICIT_CONSENT);
         await ApplicationWizardView.forwardProxy.externalHost.setValue(
-            "http://external.example.com",
+            "http://external.example.com"
         );
 
         await (await ApplicationWizardView.nextButton()).click();

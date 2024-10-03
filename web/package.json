@@ -236,10 +236,14 @@
         "lint:imports": {
             "command": "knip --config scripts/knip.config.ts"
         },
+        "lint:types:tests": {
+            "command": "tsc --noEmit -p ./tests"
+        },
         "lint:types": {
             "command": "tsc --noEmit -p .",
             "dependencies": [
-                "build-locales"
+                "build-locales",
+                "lint:types:tests"
             ]
         },
         "lint:lockfile": {

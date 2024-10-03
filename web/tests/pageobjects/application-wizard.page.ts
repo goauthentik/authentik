@@ -41,6 +41,7 @@ class ApplicationWizardView extends AdminPage {
     }
 
     async getProviderType(type: string) {
+        // @ts-expect-error "TSC does not understand the ChainablePromiseElement type at all."
         return await this.providerList().$(`input[value="${type}"]`);
     }
 
