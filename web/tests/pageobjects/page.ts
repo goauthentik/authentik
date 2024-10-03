@@ -40,11 +40,16 @@ export default class Page {
             await $(`div[data-managed-for="${managedSelector}"]`).$("ak-list-select")
         ).shadow$$("button");
         let target: WebdriverIO.Element;
+        // @ts-expect-error "Types break on shadow$$"
         for (const button of searchBlock) {
             if ((await button.getText()).includes(buttonSelector)) {
                 target = button;
                 break;
             }
+        }
+        // @ts-expect-error "TSC cannot tell if the `for` loop actually performs the assignment."
+        if (!target) {
+            throw new Error(`Expected to find an entry matching the spec ${buttonSelector}`);
         }
         await (await target).click();
         await browser.keys(Key.Tab);

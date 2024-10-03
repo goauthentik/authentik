@@ -1,8 +1,7 @@
 import replace from "@rollup/plugin-replace";
-import type { Options } from "@wdio/types";
 import { cwd } from "process";
-import postcssLit from "rollup-plugin-postcss-lit";
 import type { UserConfig } from "vite";
+import litCss from "vite-plugin-lit-css";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 const isProdBuild = process.env.NODE_ENV === "production";
@@ -20,14 +19,21 @@ const DEFAULT_MAX_INSTANCES = 10;
 if (!skipChrome) {
     capabilities.push({
         // capabilities for local browser web tests
-        browserName: "chrome", // or "firefox", "microsoftedge", "safari"
-        ...(runHeadless
-            ? {
-                  "goog:chromeOptions": {
-                      args: ["headless", "disable-gpu"],
-                  },
-              }
-            : {}),
+        "browserName": "chrome", // or "firefox", "microsoftedge", "safari"
+        "goog:chromeOptions": {
+            args: [
+                "disable-search-engine-choice-screen",
+                ...(runHeadless
+                    ? [
+                          "headless",
+                          "disable-gpu",
+                          "no-sandbox",
+                          "window-size=1280,672",
+                          "browser-test",
+                      ]
+                    : []),
+            ],
+        },
     });
 }
 
@@ -50,7 +56,7 @@ const maxInstances =
           ? 10
           : 1;
 
-export const config: Options.Testrunner = {
+export const config: WebdriverIO.Config = {
     //
     // ====================
     // Runner Configuration
@@ -62,6 +68,7 @@ export const config: Options.Testrunner = {
             viteConfig: (userConfig: UserConfig = { plugins: [] }) => ({
                 ...userConfig,
                 plugins: [
+                    litCss(),
                     replace({
                         "process.env.NODE_ENV": JSON.stringify(
                             isProdBuild ? "production" : "development",
@@ -71,14 +78,13 @@ export const config: Options.Testrunner = {
                         "preventAssignment": true,
                     }),
                     ...(userConfig?.plugins ?? []),
-                    // @ts-ignore
-                    postcssLit(),
                     tsconfigPaths(),
                 ],
             }),
         },
     ],
 
+    // @ts-expect-error TS2353: The types are not up-to-date with Wdio9.
     autoCompileOpts: {
         autoCompile: true,
         tsNodeOpts: {

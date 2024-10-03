@@ -67,6 +67,7 @@ export default [
             },
             globals: {
                 ...globals.nodeBuiltin,
+                ...globals.node,
             },
         },
         files: ["scripts/*.mjs", "*.ts", "*.mjs"],
