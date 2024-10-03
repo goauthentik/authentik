@@ -68,7 +68,7 @@ export const config: WebdriverIO.Config = {
                                   "--disable-dev-shm-usage",
                               ]
                             : [];
-                    })()
+                    })(),
                 ),
             },
         },
