@@ -19,9 +19,10 @@ from authentik.core.models import (
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.flows.challenge import Challenge, ChallengeResponse
 from authentik.lib.generators import generate_id
+from authentik.stages.identification.stage import LoginChallengeMixin
 
 
-class PlexAuthenticationChallenge(Challenge):
+class PlexAuthenticationChallenge(LoginChallengeMixin, Challenge):
     """Challenge shown to the user in identification stage"""
 
     client_id = CharField()

@@ -15,12 +15,13 @@ from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.registry import SourceType, registry
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
+from authentik.stages.identification.stage import LoginChallengeMixin
 
 LOGGER = get_logger()
 APPLE_CLIENT_ID_PARTS = 3
 
 
-class AppleLoginChallenge(Challenge):
+class AppleLoginChallenge(LoginChallengeMixin, Challenge):
     """Special challenge for apple-native authentication flow, which happens on the client."""
 
     client_id = CharField()
