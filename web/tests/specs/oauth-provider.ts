@@ -30,7 +30,7 @@ describe("Configure Oauth2 Providers", () => {
         await ProviderWizardView.nextButton.click();
         await ProviderWizardView.pause();
 
-        // @ts-expect-error "TSC does not ChainablePromiseElement"
+        // @ts-expect-error "TSC does not understand ChainablePromiseElement"
         await ProviderWizardView.oauth.providerName.setValue(newProviderName);
         await ProviderWizardView.oauth.setAuthorizationFlow(
             "default-provider-authorization-explicit-consent",
