@@ -42,7 +42,14 @@ export const config: WebdriverIO.Config = {
         },
     ],
 
-    tsConfigPath: "./tsconfig.json",
+    // @ts-expect-error TS2353: The types are not up-to-date with Wdio9.
+    autoCompileOpts: {
+        autoCompile: true,
+        tsNodeOpts: {
+            project: "./tsconfig.json",
+            transpileOnly: true,
+        },
+    },
 
     //
     // ==================
@@ -141,11 +148,11 @@ export const config: WebdriverIO.Config = {
     // baseUrl: 'http://localhost:8080',
     //
     // Default timeout for all waitFor* commands.
-    waitforTimeout: 10000,
+    waitforTimeout: 12000,
     //
     // Default timeout in milliseconds for request
     // if browser driver or grid doesn't send response
-    connectionRetryTimeout: 120000,
+    connectionRetryTimeout: 12000,
     //
     // Default request retries count
     connectionRetryCount: 3,
