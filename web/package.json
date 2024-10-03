@@ -316,7 +316,7 @@
             "command": "node scripts/build-storybook-import-maps.mjs"
         },
         "test": {
-            "command": "wdio run ./wdio.conf.ts --logLevel=info",
+            "command": "wdio run ./wdio.conf.ts --logLevel=warn",
             "env": {
                 "CI": "true",
                 "TS_NODE_PROJECT": "tsconfig.test.json"
