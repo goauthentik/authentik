@@ -19,7 +19,7 @@
         "@types/jquery": "^3.5.31",
         "lockfile-lint": "^4.14.0",
         "prettier": "^3.3.2",
-        "rollup": "^4.22.5",
+        "rollup": "^4.23.0",
         "rollup-plugin-copy": "^3.5.0",
         "wireit": "^0.14.9"
     },
