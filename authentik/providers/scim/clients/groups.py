@@ -105,7 +105,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
             provider=self.provider, group=group, scim_id=scim_id
         )
         users = list(group.users.order_by("id").values_list("id", flat=True))
-        self._patch_add_users(group, users)
+        self._patch_add_users(connection, users)
         return connection
 
     def update(self, group: Group, connection: SCIMProviderGroup):
@@ -232,7 +232,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
             )
         # Get current group status
         current_group = SCIMGroupSchema.model_validate(
-            self._request("GET", f"/Groups/{scim_group.group_id}")
+            self._request("GET", f"/Groups/{scim_group.scim_id}")
         )
         users_to_add = []
         users_to_remove = []
