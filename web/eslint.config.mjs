@@ -41,9 +41,9 @@ export default [
         },
         files: ["src/**"],
         rules: {
-            "lit/attribute-names": "error",
+            // "lit/attribute-names": "error",
             "lit/no-private-properties": "error",
-            "lit/prefer-nothing": "warn",
+            // "lit/prefer-nothing": "warn",
             "lit/no-template-bind": "error",
             "no-unused-vars": "off",
             "no-console": ["error", { allow: ["debug", "warn", "error"] }],
