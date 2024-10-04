@@ -1,4 +1,4 @@
-import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderFormPage";
+import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderForm";
 import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderGroupList";
 import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderUserList";
 import "@goauthentik/admin/rbac/ObjectPermissionsPage";
@@ -220,5 +220,11 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
                     ></ak-sync-status-card>
                 </div>
             </div>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-microsoft-entra-view": MicrosoftEntraProviderViewPage;
     }
 }

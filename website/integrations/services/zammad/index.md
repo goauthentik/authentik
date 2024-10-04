@@ -1,6 +1,9 @@
 ---
-title: Zammad
+title: Integrate with Zammad
+sidebar_label: Zammad
 ---
+
+# Zammad
 
 <span class="badge badge--secondary">Support level: Community</span>
 

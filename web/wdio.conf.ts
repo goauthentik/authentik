@@ -1,19 +1,20 @@
 import replace from "@rollup/plugin-replace";
-import type { Options } from "@wdio/types";
 import { cwd } from "process";
-// @ts-ignore
-import * as modify from "rollup-plugin-modify";
-import * as postcssLit from "rollup-plugin-postcss-lit";
 import type { UserConfig } from "vite";
+import litCss from "vite-plugin-lit-css";
 import tsconfigPaths from "vite-tsconfig-paths";
-
-import { cssImportMaps } from "./.storybook/css-import-maps";
 
 const isProdBuild = process.env.NODE_ENV === "production";
 const apiBasePath = process.env.AK_API_BASE_PATH || "";
 const runHeadless = process.env.CI !== undefined;
+const maxInstances =
+    process.env.MAX_INSTANCES !== undefined
+        ? parseInt(process.env.MAX_INSTANCES, 10)
+        : runHeadless
+          ? 10
+          : 1;
 
-export const config: Options.Testrunner = {
+export const config: WebdriverIO.Config = {
     //
     // ====================
     // Runner Configuration
@@ -25,7 +26,7 @@ export const config: Options.Testrunner = {
             viteConfig: (config: UserConfig = { plugins: [] }) => ({
                 ...config,
                 plugins: [
-                    modify(cssImportMaps),
+                    litCss(),
                     replace({
                         "process.env.NODE_ENV": JSON.stringify(
                             isProdBuild ? "production" : "development",
@@ -35,14 +36,13 @@ export const config: Options.Testrunner = {
                         "preventAssignment": true,
                     }),
                     ...(config?.plugins ?? []),
-                    // @ts-ignore
-                    postcssLit(),
                     tsconfigPaths(),
                 ],
             }),
         },
     ],
 
+    // @ts-expect-error TS2353: The types are not up-to-date with Wdio9.
     autoCompileOpts: {
         autoCompile: true,
         tsNodeOpts: {
@@ -87,7 +87,7 @@ export const config: Options.Testrunner = {
     // and 30 processes will get spawned. The property handles how many capabilities
     // from the same test should run tests.
     //
-    maxInstances: 10,
+    maxInstances,
     //
     // If you have trouble getting all important capabilities together, check out the
     // Sauce Labs platform configurator - a great tool to configure your capabilities:
@@ -96,14 +96,21 @@ export const config: Options.Testrunner = {
     capabilities: [
         {
             // capabilities for local browser web tests
-            browserName: "chrome", // or "firefox", "microsoftedge", "safari"
-            ...(runHeadless
-                ? {
-                      "goog:chromeOptions": {
-                          args: ["headless", "disable-gpu"],
-                      },
-                  }
-                : {}),
+            "browserName": "chrome", // or "firefox", "microsoftedge", "safari"
+            "goog:chromeOptions": {
+                args: [
+                    "disable-search-engine-choice-screen",
+                    ...(runHeadless
+                        ? [
+                              "headless",
+                              "disable-gpu",
+                              "no-sandbox",
+                              "window-size=1280,672",
+                              "browser-test",
+                          ]
+                        : []),
+                ],
+            },
         },
     ],
 
@@ -141,11 +148,11 @@ export const config: Options.Testrunner = {
     // baseUrl: 'http://localhost:8080',
     //
     // Default timeout for all waitFor* commands.
-    waitforTimeout: 10000,
+    waitforTimeout: 12000,
     //
     // Default timeout in milliseconds for request
     // if browser driver or grid doesn't send response
-    connectionRetryTimeout: 120000,
+    connectionRetryTimeout: 12000,
     //
     // Default request retries count
     connectionRetryCount: 3,

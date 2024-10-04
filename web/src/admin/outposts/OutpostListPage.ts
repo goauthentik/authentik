@@ -70,7 +70,7 @@ export class OutpostListPage extends TablePage<Outpost> {
         const outposts = await new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesList(
             await this.defaultEndpointConfig(),
         );
-        Promise.all(
+        await Promise.all(
             outposts.results.map((outpost) => {
                 return new OutpostsApi(DEFAULT_CONFIG)
                     .outpostsInstancesHealthList({
@@ -216,5 +216,11 @@ export class OutpostListPage extends TablePage<Outpost> {
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>
         `;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-outpost-list": OutpostListPage;
     }
 }

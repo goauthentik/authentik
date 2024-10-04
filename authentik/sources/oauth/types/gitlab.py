@@ -25,16 +25,6 @@ class GitLabOAuthRedirect(OAuthRedirect):
 class GitLabOAuthCallback(OAuthCallback):
     """GitLab OAuth2 Callback"""
 
-    def get_user_enroll_context(
-        self,
-        info: dict[str, Any],
-    ) -> dict[str, Any]:
-        return {
-            "username": info.get("preferred_username"),
-            "email": info.get("email"),
-            "name": info.get("name"),
-        }
-
 
 @registry.register()
 class GitLabType(SourceType):
@@ -52,3 +42,10 @@ class GitLabType(SourceType):
     profile_url = "https://gitlab.com/oauth/userinfo"
     oidc_well_known_url = "https://gitlab.com/.well-known/openid-configuration"
     oidc_jwks_url = "https://gitlab.com/oauth/discovery/keys"
+
+    def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
+        return {
+            "username": info.get("preferred_username"),
+            "email": info.get("email"),
+            "name": info.get("name"),
+        }

@@ -2,9 +2,11 @@
 title: API
 ---
 
-Starting with 2021.3.5, every authentik instance has a built-in API browser, which can be accessed at https://authentik.company/api/v3/.
+Our API reference documentation is generated, and is included [here](../api/reference/authentik.info.mdx) in our regular documentation Table of Contents, under **API -> Reference**.
 
-To generate an API client, you can use the OpenAPI v3 schema at https://authentik.company/api/v3/schema/.
+You can also access your installation's own, instance-specific API Browser. Starting with 2021.3.5, every authentik instance has a built-in API browser, which can be accessed at <code>https://<em>authentik.company</em>/api/v3/</code>.
+
+To generate an API client you can use the OpenAPI v3 schema at <code>https://<em>authentik.company</em>/api/v3/schema/</code>.
 
 While testing, the API requests are authenticated by your browser session.
 

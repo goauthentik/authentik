@@ -1,0 +1,24 @@
+version: 1
+entries:
+  - model: authentik_core.user
+    id: user
+    identifiers:
+      username: "%(id)s"
+    attrs:
+      name: "%(id)s"
+  - model: authentik_rbac.role
+    id: role
+    identifiers:
+      name: "%(id)s"
+  - model: authentik_flows.flow
+    identifiers:
+      slug: "%(id)s"
+    attrs:
+      designation: authentication
+      name: foo
+      title: foo
+    permissions:
+      - permission: view_flow
+        user: !KeyOf user
+      - permission: view_flow
+        role: !KeyOf role

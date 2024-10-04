@@ -215,3 +215,9 @@ export class NotificationDrawer extends AKElement {
         </div>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-notification-drawer": NotificationDrawer;
+    }
+}

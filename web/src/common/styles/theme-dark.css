@@ -42,6 +42,9 @@ body {
     --pf-c-card--BackgroundColor: var(--ak-dark-background-light);
     color: var(--ak-dark-foreground);
 }
+.pf-c-card.pf-m-non-selectable-raised {
+    --pf-c-card--BackgroundColor: var(--ak-dark-background-lighter);
+}
 .pf-c-card__title,
 .pf-c-card__body {
     color: var(--ak-dark-foreground);
@@ -152,7 +155,7 @@ select[multiple] option:checked {
     background-color: var(--ak-dark-background-light);
 }
 .pf-c-form-control[readonly] {
-    background-color: var(--ak-dark-background-light);
+    background-color: var(--ak-dark-background-light) !important;
 }
 .pf-c-switch__input:checked ~ .pf-c-switch__label {
     --pf-c-switch__input--checked__label--Color: var(--ak-dark-foreground);

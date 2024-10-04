@@ -37,7 +37,7 @@ export class UserPermissionForm extends ModelForm<UserPermissionAssign, number> 
     }
 
     async send(data: UserPermissionAssign) {
-        await new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByUsersAssignCreate({
+        await new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByUsersAssign({
             id: this.userId || 0,
             permissionAssignRequest: {
                 permissions: data.permissions,
@@ -83,5 +83,11 @@ export class UserPermissionForm extends ModelForm<UserPermissionAssign, number> 
                 </div>
             </ak-form-element-horizontal>
         </form>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-permission-form": UserPermissionForm;
     }
 }

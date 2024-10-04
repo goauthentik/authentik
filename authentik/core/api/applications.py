@@ -103,7 +103,12 @@ class ApplicationSerializer(ModelSerializer):
 class ApplicationViewSet(UsedByMixin, ModelViewSet):
     """Application Viewset"""
 
-    queryset = Application.objects.all().prefetch_related("provider").prefetch_related("policies")
+    queryset = (
+        Application.objects.all()
+        .with_provider()
+        .prefetch_related("policies")
+        .prefetch_related("backchannel_providers")
+    )
     serializer_class = ApplicationSerializer
     search_fields = [
         "name",
@@ -145,6 +150,15 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
             engine.build()
             if engine.passing:
                 applications.append(application)
+        return applications
+
+    def _filter_applications_with_launch_url(
+        self, pagined_apps: Iterator[Application]
+    ) -> list[Application]:
+        applications = []
+        for app in pagined_apps:
+            if app.get_launch_url():
+                applications.append(app)
         return applications
 
     @extend_schema(
@@ -204,6 +218,11 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
                 location=OpenApiParameter.QUERY,
                 type=OpenApiTypes.INT,
             ),
+            OpenApiParameter(
+                name="only_with_launch_url",
+                location=OpenApiParameter.QUERY,
+                type=OpenApiTypes.BOOL,
+            ),
         ]
     )
     def list(self, request: Request) -> Response:
@@ -215,6 +234,10 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         )
         if superuser_full_list and request.user.is_superuser:
             return super().list(request)
+
+        only_with_launch_url = str(
+            request.query_params.get("only_with_launch_url", "false")
+        ).lower()
 
         queryset = self._filter_queryset_for_list(self.get_queryset())
         paginator: Pagination = self.paginator
@@ -251,6 +274,10 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
                     allowed_applications,
                     timeout=86400,
                 )
+
+        if only_with_launch_url == "true":
+            allowed_applications = self._filter_applications_with_launch_url(allowed_applications)
+
         serializer = self.get_serializer(allowed_applications, many=True)
         return self.get_paginated_response(serializer.data)
 

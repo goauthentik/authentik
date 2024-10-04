@@ -13,5 +13,5 @@ docker compose run --rm server create_admin_group username
 or, for Kubernetes, run
 
 ```shell
-kubectl exec -it deployment/authentik-worker -c authentik -- ak create_admin_group username
+kubectl exec -it deployment/authentik-worker -c worker -- ak create_admin_group username
 ```

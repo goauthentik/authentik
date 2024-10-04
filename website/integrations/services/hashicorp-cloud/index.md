@@ -1,6 +1,9 @@
 ---
-title: HashiCorp Cloud Platform
+title: Integrate with HashiCorp Cloud Platform
+sidebar_label: HashiCorp Cloud Platform
 ---
+
+# HashiCorp Cloud Platform
 
 <span class="badge badge--secondary">Support level: Community</span>
 

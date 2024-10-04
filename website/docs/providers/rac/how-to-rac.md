@@ -54,7 +54,7 @@ Next, you need to add a property mapping for each of the remote machines you wan
             - **Enable font smoothing**: optional
             - **Enable full window dragging**: optional
         - Advanced settings:
-            - **Expressions**: optional, using Python you can define custom [expressions](../../property-mappings/expression.mdx).
+            - **Expressions**: optional, using Python you can define custom [expressions](../property-mappings/expression.mdx).
 
 4. Click **Finish** to save your settings and close the modal.
 

@@ -80,3 +80,9 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
         ];
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-session-list": AuthenticatedSessionList;
+    }
+}

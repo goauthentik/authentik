@@ -62,7 +62,7 @@ urlpatterns = [
 
 api_urlpatterns = [
     ("providers/oauth2", OAuth2ProviderViewSet),
-    ("propertymappings/scope", ScopeMappingViewSet),
+    ("propertymappings/provider/scope", ScopeMappingViewSet),
     ("oauth2/authorization_codes", AuthorizationCodeViewSet),
     ("oauth2/refresh_tokens", RefreshTokenViewSet),
     ("oauth2/access_tokens", AccessTokenViewSet),

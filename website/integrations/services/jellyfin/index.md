@@ -1,6 +1,9 @@
 ---
-title: Jellyfin
+title: Integrate with Jellyfin
+sidebar_label: Jellyfin
 ---
+
+# Jellyfin
 
 <span class="badge badge--secondary">Support level: Community</span>
 

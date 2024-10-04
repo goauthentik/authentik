@@ -1,17 +1,15 @@
 ---
-title: Generic Setup
+title: Create an LDAP provider
 ---
 
-### Create User/Group
+### Create Service account
 
 1. Create a new user account to bind with under _Directory_ -> _Users_ -> _Create_, in this example called `ldapservice`.
 
     Note the DN of this user will be `cn=ldapservice,ou=users,dc=ldap,dc=goauthentik,dc=io`
 
-2. Create a new group for LDAP searches. In this example `ldapsearch`. Add the `ldapservice` user to this new group.
-
 :::info
-Note: The `default-authentication-flow` validates MFA by default, and currently everything but SMS-based devices are supported by LDAP. If you plan to use only dedicated service accounts to bind to LDAP, or don't use SMS-based authenticators, then you can use the default flow and skip the extra steps below and continue at [Create LDAP Provider](#create-ldap-provider)
+Note: The `default-authentication-flow` validates MFA by default, and currently everything but SMS-based devices and WebAuthn devices are supported by LDAP. If you plan to use only dedicated service accounts to bind to LDAP, or don't use SMS-based authenticators, then you can use the default flow and skip the extra steps below and continue at [Create LDAP Application & Provider](#create-ldap-application--provider)
 :::
 
 ### LDAP Flow
@@ -20,20 +18,20 @@ Note: The `default-authentication-flow` validates MFA by default, and currently 
 
 1. Create a new identification stage. _Flows & Stage_ -> _Stages_ -> _Create_
    ![](./general_setup1.png)
-2. Name it something meaningful like `ldap-identification-stage`. Select User fields Username and Email (and UPN if it is relevant to your setup).
+2. Name it `ldap-identification-stage`. Select User fields Username and Email (and UPN if it is relevant to your setup).
    ![](./general_setup2.png)
 3. Create a new password stage. _Flows & Stage_ -> _Stages_ -> _Create_
    ![](./general_setup3.png)
-4. Name it something meaningful like `ldap-authentication-password`. Leave the defaults for Backends.
+4. Name it `ldap-authentication-password`. Leave the defaults for Backends.
    ![](./general_setup4.png)
 5. Create a new user login stage. _Flows & Stage_ -> _Stages_ -> _Create_
    ![](./general_setup5.png)
-6. Name it something meaningful like `ldap-authentication-login`.
+6. Name it `ldap-authentication-login`.
    ![](./general_setup6.png)
 
 #### Create Custom Flow
 
-1. Create a new authentication flow under _Flows & Stage_ -> _Flows_ -> _Create_, and name it something meaningful like `ldap-authentication-flow`
+1. Create a new authentication flow under _Flows & Stage_ -> _Flows_ -> _Create_, and name it `ldap-authentication-flow`
    ![](./general_setup7.png)
 2. Click the newly created flow and choose _Stage Bindings_.
    ![](./general_setup8.png)
@@ -46,22 +44,23 @@ Note: The `default-authentication-flow` validates MFA by default, and currently 
 6. Change the Password stage to `ldap-authentication-password`.
    ![](./general_setup13.png)
 
-### Create LDAP Provider
+### Create LDAP Application & Provider
 
-1. Create the LDAP Provider under _Applications_ -> _Providers_ -> _Create_.
+1. Create the LDAP Application under _Applications_ -> _Applications_ -> _Create With Wizard_ and name it `LDAP`.
    ![](./general_setup14.png)
-2. Name is something meaningful like `LDAP`, bind the custom flow created previously (or the default flow, depending on setup) and specify the search group created earlier.
    ![](./general_setup15.png)
 
-### Create LDAP Application
+### Assign LDAP permissions
 
-1. Create the LDAP Application under _Applications_ -> _Applications_ -> _Create_ and name it something meaningful like `LDAP`. Choose the provider created in the previous step.
-   ![](./general_setup16.png)
+1. Navigate to the LDAP Provider under _Applications_ -> _Providers_ -> `Provider for LDAP`.
+2. Switch to the _Permissions_ tab.
+3. Click the _Assign to new user_ button to select a user to assign the full directory search permission to.
+4. Select the `ldapservice` user in the modal by typing in its username. Select the _Search full LDAP directory_ permission and click _Assign_
 
 ### Create LDAP Outpost
 
 1. Create (or update) the LDAP Outpost under _Applications_ -> _Outposts_ -> _Create_. Set the Type to `LDAP` and choose the `LDAP` application created in the previous step.
-   ![](./general_setup17.png)
+   ![](./general_setup16.png)
 
 :::info
 The LDAP Outpost selects different providers based on their Base DN. Adding multiple providers with the same Base DN will result in inconsistent access

@@ -120,6 +120,12 @@ jobs:
         with:
           flags: unit
           token: ${{ secrets.CODECOV_TOKEN }}
+      - if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          flags: unit
+          file: unittest.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
   test-integration:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -137,6 +143,12 @@ jobs:
         uses: codecov/codecov-action@v4
         with:
           flags: integration
+          token: ${{ secrets.CODECOV_TOKEN }}
+      - if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          flags: integration
+          file: unittest.xml
           token: ${{ secrets.CODECOV_TOKEN }}
   test-e2e:
     name: test-e2e (${{ matrix.job.name }})
@@ -190,6 +202,12 @@ jobs:
         with:
           flags: e2e
           token: ${{ secrets.CODECOV_TOKEN }}
+      - if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          flags: e2e
+          file: unittest.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
   ci-core-mark:
     needs:
       - lint
@@ -213,13 +231,16 @@ jobs:
     permissions:
       # Needed to upload contianer images to ghcr.io
       packages: write
+      # Needed for attestation
+      id-token: write
+      attestations: write
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3.1.0
+        uses: docker/setup-qemu-action@v3.2.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: prepare variables
@@ -241,6 +262,7 @@ jobs:
         run: make gen-client-ts
       - name: Build Docker Image
         uses: docker/build-push-action@v6
+        id: push
         with:
           context: .
           secrets: |
@@ -251,8 +273,15 @@ jobs:
           build-args: |
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
           cache-from: type=registry,ref=ghcr.io/goauthentik/dev-server:buildcache
-          cache-to: type=registry,ref=ghcr.io/goauthentik/dev-server:buildcache,mode=max
+          cache-to: ${{ steps.ev.outputs.shouldBuild == 'true' && 'type=registry,ref=ghcr.io/goauthentik/dev-server:buildcache,mode=max' || '' }}
           platforms: linux/${{ matrix.arch }}
+      - uses: actions/attest-build-provenance@v1
+        id: attest
+        if: ${{ steps.ev.outputs.shouldBuild == 'true' }}
+        with:
+          subject-name: ${{ steps.ev.outputs.attestImageNames }}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
   pr-comment:
     needs:
       - build
@@ -274,6 +303,7 @@ jobs:
         with:
           image-name: ghcr.io/goauthentik/dev-server
       - name: Comment on PR
+        if: ${{ steps.ev.outputs.shouldBuild == 'true' }}
         uses: ./.github/actions/comment-pr-instructions
         with:
-          tag: gh-${{ steps.ev.outputs.imageMainTag }}
+          tag: ${{ steps.ev.outputs.imageMainTag }}

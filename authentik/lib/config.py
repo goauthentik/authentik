@@ -19,6 +19,8 @@ from urllib.parse import quote_plus, urlparse
 import yaml
 from django.conf import ImproperlyConfigured
 
+from authentik.lib.utils.dict import get_path_from_dict, set_path_in_dict
+
 SEARCH_PATHS = ["authentik/lib/default.yml", "/etc/authentik/config.yml", ""] + glob(
     "/etc/authentik/config.d/*.yml", recursive=True
 )
@@ -45,29 +47,6 @@ DEPRECATIONS = {
     "redis.cache_timeout_policies": "cache.timeout_policies",
     "redis.cache_timeout_reputation": "cache.timeout_reputation",
 }
-
-
-def get_path_from_dict(root: dict, path: str, sep=".", default=None) -> Any:
-    """Recursively walk through `root`, checking each part of `path` separated by `sep`.
-    If at any point a dict does not exist, return default"""
-    for comp in path.split(sep):
-        if root and comp in root:
-            root = root.get(comp)
-        else:
-            return default
-    return root
-
-
-def set_path_in_dict(root: dict, path: str, value: Any, sep="."):
-    """Recursively walk through `root`, checking each part of `path` separated by `sep`
-    and setting the last value to `value`"""
-    # Walk each component of the path
-    path_parts = path.split(sep)
-    for comp in path_parts[:-1]:
-        if comp not in root:
-            root[comp] = {}
-        root = root.get(comp, {})
-    root[path_parts[-1]] = value
 
 
 @dataclass(slots=True)

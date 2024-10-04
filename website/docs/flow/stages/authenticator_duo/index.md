@@ -10,25 +10,17 @@ Copy all of the integration key, secret key and API hostname, and paste them in 
 
 Devices created reference the stage they were created with, since the API credentials are needed to authenticate. This also means when the stage is deleted, all devices are removed.
 
-## Importing users
+## Importing users <span class="badge badge--version">authentik 2022.9+</span>
 
 :::info
 Due to the way the Duo API works, authentik can only automatically import existing Duo users when a Duo MFA or higher license is active.
-:::
-
-:::info
-This requires authentik 2022.9
 :::
 
 To import a device, open the Stages list in the authentik Admin interface. On the right next to the import button you'll see an import button, with which you can import Duo devices to authentik users.
 
 The Duo username can be found by navigating to your Duo Admin dashboard and selecting _Users_ in the sidebar. Optionally if you have multiple users with the same username, you can click on a User and copy their ID from the URL, and use that to import the device.
 
-### Older versions
-
-:::info
-This API requires authentik 2021.9.1 or later
-:::
+### Older versions <span class="badge badge--version">authentik 2021.9.1+</span>
 
 You can call the `/api/v3/stages/authenticator/duo/{stage_uuid}/import_devices/` endpoint ([see here](https://goauthentik.io/api/#post-/stages/authenticator/duo/-stage_uuid-/import_devices/)) using the following parameters:
 
