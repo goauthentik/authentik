@@ -66,6 +66,10 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                 name: BackendsEnum.SourcesLdapAuthLdapBackend,
                 label: msg("User database + LDAP password"),
             },
+            {
+                name: BackendsEnum.SourcesKerberosAuthKerberosBackend,
+                label: msg("User database + Kerberos password"),
+            },
         ];
 
         return html` <span>

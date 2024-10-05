@@ -43,7 +43,7 @@ class LDAPBackend(InbuiltBackend):
             if source.password_login_update_internal_password:
                 # Password given successfully binds to LDAP, so we save it in our Database
                 LOGGER.debug("Updating user's password in DB", user=user)
-                user.set_password(password, signal=False)
+                user.set_password(password, sender=source)
                 user.save()
             return user
         # Password doesn't match
