@@ -54,10 +54,10 @@ Note the `Client ID` and `Client Secret` values.
     _The following values I listed as slugs for clarity. I included an example for the first variable.
 The full URLs can also be found on the provider's page in authentik's UI._
 
-- **Authorization Endpoint**: `/application/o/authorize`
-    - (e.g. `https://_crm.company_/application/o/authorize`)
+- **Authorization Endpoint**: `/application/o/authorize/`
+    - (e.g. `https://_crm.company_/application/o/authorize/`)
 - **Token Endpoint**: `/application/o/token/`
-- **JSON Web Key Set Endpoint**: `/application/o/_SLUG_/jwks`
+- **JSON Web Key Set Endpoint**: `/application/o/_SLUG_/jwks/`
 - **Logout URL**: `application/o/_SLUG_/end-session/`
 
 ### Confirm the configuration 
