@@ -36,7 +36,6 @@ In the Admin Interface, go to **Applications** -> **Providers**. Create a **OAut
 - **Signing Key**: Select any available key
 
 Note the `Client ID` and `Client Secret` values. 
-Create an application, using the provider you've created above.
 
 ## espoCRM configuration
 ### Access the OIDC auth
