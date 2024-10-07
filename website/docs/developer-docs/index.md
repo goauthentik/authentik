@@ -116,7 +116,7 @@ When you are creating an enhancement suggestion, please fill in [the template](h
 
 authentik can be run locally, all though depending on which part you want to work on, different pre-requisites are required.
 
-This is documented in the [developer docs](./setup/frontend-dev-environment.md)
+This is documented in the [developer docs](./setup/frontend-dev-environment.md).
 
 ### Help with the Docs
 
