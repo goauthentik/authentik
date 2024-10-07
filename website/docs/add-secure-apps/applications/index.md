@@ -22,7 +22,7 @@ Applications are displayed to users when:
 -   The user has access defined via policies (or the application has no policies bound)
 -   A valid Launch URL is configured/could be guessed, this consists of URLs starting with http:// and https://
 
-The following aspects can be configured:
+The following options can be configured:
 
 -   _Name_: This is the name shown for the application card
 -   _Launch URL_: The URL that is opened when a user clicks on the application. When left empty, authentik tries to guess it based on the provider
