@@ -26,7 +26,6 @@ CODESPELL_ARGS = -D - -D .github/codespell-dictionary.txt \
 		web/src \
 		website/src \
 		website/blog \
-		website/docs/developer-docs \
 		website/docs \
 		website/integrations \
 		website/src
