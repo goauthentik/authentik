@@ -1444,91 +1444,109 @@
   force = true
 
 # Manual redirects, moved Dev Docs into regular docs Sept 2024
+[[redirects]]
   from = "/developer-docs/index.md"
   to = "/docs/developer-docs/index.md"
   status = 302
   force = true
 
+[[redirects]]
   from = "/developer-docs/setup/full-dev-environment"
   to = "/docs/developer-docs/setup/full-dev-environment"
   status = 302
   force = true
 
+[[redirects]]
   from = "/developer-docs/setup/frontend-dev-environment"
   to = "/docs/developer-docs/setup/frontend-dev-environment"
   status = 302
   force = true
 
+[[redirects]]
   from = "/developer-docs/setup/website-dev-environment"
   to = "/docs/developer-docs/setup/website-dev-environment"
   status = 302
   force = true
 
+[[redirects]]
   from = "/developer-docs/api/api"
   to = "/docs/developer-docs/api/api"
   status = 302
   force = true
 
+[[redirects]]
   from = "/developer-docs/api/flow-executor"
   to = "/docs/developer-docs/api/flow-executor"
   status = 302
   force = true
 
+[[redirects]]
   from = "/developer-docs/api/making-schema-changes"
   to = "/docs/developer-docs/api/making-schema-changes"
   status = 302
   force = true
 
+[[redirects]]
   from = "/developer-docsapi/websocket"
   to = "/docs/developer-docs/api/websocket"
   status = 302
   force = true
 
+[[redirects]]
   from = "/developer-docs/api/clients"
   to = "/docs/developer-docs/api/clients"
   status = 302
   force = true
 
+[[redirects]]
   from = "/developer-docs/docs/writing-documentation"
   to = "/docs/developer-docs/docs/writing-documentation"
   status = 302
   force = true
 
+[[redirects]]
   from = "/developer-docs/docs/style-guide"
   to = "/docs/developer-docs/docs/style-guide"
   status = 302
   force = true
 
+[[redirects]]
   from = "/developer-docs/docs/templates/index"
   to = "/docs/developer-docs/docs/templates/index"
   status = 302
   force = true
 
+[[redirects]]
   from = "/developer-docs/docs/templates/procedural"
   to = "/docs/developer-docs/docs/templates/procedural"
   status = 302
   force = true
 
+[[redirects]]
   from = "/developer-docs/docs/templates/conceptual"
   to = "/docs/developer-docs/docs/templates/conceptual"
   status = 302
   force = true
 
+[[redirects]]
   from = "/developer-docs/docs/templates/reference"
   to = "/docs/developer-docs/docs/templates/reference"
   status = 302
   force = true
 
+[[redirects]]
   from = "/developer-docs/docs/templates/combo"
   to = "/docs/developer-docs/docs/templates/combo"
   status = 302
   force = true
 
+[[redirects]]
   from = "/developer-docs/releases/index"
   to = "/docs/developer-docs/releases/index"
   status = 302
   force = true
 
+[[redirects]]
   from = "/developer-docs/translation"
   to = "/docs/developer-docs/translation"
   status = 302
