@@ -28,7 +28,7 @@ When enabled, any user identifier will be accepted as valid (as long as they mat
 
 ## Enable "Remember me on this device" <span class="badge badge--version">authentik 2024.10+</span>
 
-When enabled, users will be given the option at login of having their username stored on the device. If selected, on future logins this stage will automatically fill in the username and fast-forward to the password field.  Users will still have the options of clicking "Not you?" and going back to provide a different username or disable this feature.
+When enabled, users will be given the option at login of having their username stored on the device. If selected, on future logins this stage will automatically fill in the username and fast-forward to the password field. Users will still have the options of clicking "Not you?" and going back to provide a different username or disable this feature.
 
 ## Source settings
 
