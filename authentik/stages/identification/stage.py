@@ -212,7 +212,6 @@ class IdentificationStageView(ChallengeStageView):
                 "show_source_labels": current_stage.show_source_labels,
                 "flow_designation": self.executor.flow.designation,
                 "enable_remember_me": current_stage.enable_remember_me,
-                
             }
         )
         # If the user has been redirected to us whilst trying to access an
