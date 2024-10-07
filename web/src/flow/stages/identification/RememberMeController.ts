@@ -100,6 +100,7 @@ export class AkRememberMeController implements ReactiveController {
 
         try {
             this.username = localStorage.getItem("authentik-remember-me-user") || undefined;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (_e: any) {
             this.username = undefined;
         }
