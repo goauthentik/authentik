@@ -28,7 +28,6 @@ describe("Configure Oauth2 Providers", () => {
         await ProviderWizardView.nextButton.click();
         await ProviderWizardView.pause();
 
-        // @ts-expect-error "TSC does not understand ChainablePromiseElement"
         return await $('ak-form-element-horizontal[name="name"]').$("input");
         await ProviderWizardView.oauth.setAuthorizationFlow(
             "default-provider-authorization-explicit-consent"
