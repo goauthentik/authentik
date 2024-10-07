@@ -1,8 +1,13 @@
 import replace from "@rollup/plugin-replace";
+import { browser } from "@wdio/globals";
+import path from "path";
 import { cwd } from "process";
+import { fileURLToPath } from "url";
 import type { UserConfig } from "vite";
 import litCss from "vite-plugin-lit-css";
 import tsconfigPaths from "vite-tsconfig-paths";
+
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 const isProdBuild = process.env.NODE_ENV === "production";
 const apiBasePath = process.env.AK_API_BASE_PATH || "";
@@ -11,6 +16,7 @@ const runHeadless = process.env.CI !== undefined;
 const testSafari = process.env.WDIO_TEST_SAFARI !== undefined;
 const testFirefox = process.env.WDIO_TEST_FIREFOX !== undefined;
 const skipChrome = process.env.WDIO_SKIP_CHROME !== undefined;
+const lemmeSee = process.env.WDIO_LEMME_SEE !== undefined;
 
 const capabilities = [];
 
@@ -80,6 +86,20 @@ export const config: WebdriverIO.Config = {
                     ...(userConfig?.plugins ?? []),
                     tsconfigPaths(),
                 ],
+                resolve: {
+                    alias: {
+                        "@goauthentik/admin": path.resolve(__dirname, "src/admin"),
+                        "@goauthentik/common": path.resolve(__dirname, "src/common"),
+                        "@goauthentik/components": path.resolve(__dirname, "src/components"),
+                        "@goauthentik/docs": path.resolve(__dirname, "../website/docs"),
+                        "@goauthentik/elements": path.resolve(__dirname, "src/elements"),
+                        "@goauthentik/flow": path.resolve(__dirname, "src/flow"),
+                        "@goauthentik/locales": path.resolve(__dirname, "src/locales"),
+                        "@goauthentik/polyfill": path.resolve(__dirname, "src/polyfill"),
+                        "@goauthentik/standalone": path.resolve(__dirname, "src/standalone"),
+                        "@goauthentik/user": path.resolve(__dirname, "src/user"),
+                    },
+                },
             }),
         },
     ],
@@ -143,7 +163,7 @@ export const config: WebdriverIO.Config = {
     // Define all options that are relevant for the WebdriverIO instance here
     //
     // Level of logging verbosity: trace | debug | info | warn | error | silent
-    logLevel: "info",
+    logLevel: "warn",
     //
     // Set specific log levels per logger
     // loggers:
@@ -309,8 +329,15 @@ export const config: WebdriverIO.Config = {
      * @param {boolean} result.passed    true if test has passed, otherwise false
      * @param {object}  result.retries   information about spec related retries, e.g. `{ attempts: 0, limit: 0 }`
      */
-    // afterTest: function(test, context, { error, result, duration, passed, retries }) {
-    // },
+    afterTest: async function (
+        _test,
+        _context,
+        { error: _error, result: _result, duration: _duration, passed: _passed, retries: _retries },
+    ) {
+        if (lemmeSee) {
+            await browser.pause(500);
+        }
+    },
 
     /**
      * Hook that gets executed after the suite has ended
