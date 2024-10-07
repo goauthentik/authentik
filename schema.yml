@@ -41620,14 +41620,14 @@ components:
     LoginChallengeTypes:
       oneOf:
       - $ref: '#/components/schemas/RedirectChallenge'
-      - $ref: '#/components/schemas/PlexAuthenticationChallenge'
       - $ref: '#/components/schemas/AppleLoginChallenge'
+      - $ref: '#/components/schemas/PlexAuthenticationChallenge'
       discriminator:
         propertyName: component
         mapping:
           xak-flow-redirect: '#/components/schemas/RedirectChallenge'
-          ak-source-plex: '#/components/schemas/PlexAuthenticationChallenge'
           ak-source-oauth-apple: '#/components/schemas/AppleLoginChallenge'
+          ak-source-plex: '#/components/schemas/PlexAuthenticationChallenge'
     LoginMetrics:
       type: object
       description: Login Metrics per 1h

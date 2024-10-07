@@ -21,6 +21,7 @@ describe("Search select: Test Input Field", () => {
             html`<ak-search-select-view .options=${longGoodForYouPairs}> </ak-search-select-view>`,
             document.body,
         );
+        // @ts-expect-error "Another ChainablePromise mistake"
         select = await AkSearchSelectViewDriver.build(await $("ak-search-select-view"));
     });
 
@@ -56,6 +57,7 @@ describe("Search select: Test Input Field", () => {
         expect(await select.open).toBe(false);
         expect(await select.menuIsVisible()).toBe(false);
         await browser.keys("A");
+        // @ts-expect-error "Another ChainablePromise mistake"
         select = await AkSearchSelectViewDriver.build(await $("ak-search-select-view"));
         expect(await select.open).toBe(true);
         expect(await select.menuIsVisible()).toBe(true);
@@ -65,6 +67,7 @@ describe("Search select: Test Input Field", () => {
         await select.focusOnInput();
         await browser.keys("Ap");
         await expect(await select.menuIsVisible()).toBe(true);
+        // @ts-expect-error "Another ChainablePromise mistake"
         const elements = Array.from(await select.listElements());
         await expect(elements.length).toBe(2);
     });
@@ -73,6 +76,7 @@ describe("Search select: Test Input Field", () => {
         await select.focusOnInput();
         await browser.keys("Ap");
         await expect(await select.menuIsVisible()).toBe(true);
+        // @ts-expect-error "Another ChainablePromise mistake"
         const elements = Array.from(await select.listElements());
         await expect(elements.length).toBe(2);
         await browser.keys(Key.Tab);

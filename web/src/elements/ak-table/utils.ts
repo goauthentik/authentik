@@ -82,12 +82,11 @@ export function convertContent(
         };
     }
 
-    const templatizeAsNeeded = (rows: RawType[][]): TableRow[] => {
-        return rows.map((row) => ({
+    const templatizeAsNeeded = (rows: RawType[][]): TableRow[] =>
+        rows.map((row) => ({
             ...(keyBy ? { key: keyBy(row) } : {}),
             content: row.map((item) => (typeof item === "object" ? item : html`${item}`)),
         }));
-    };
 
     if (groupBy) {
         const groupedContent = groupByProcessor(content, groupBy);

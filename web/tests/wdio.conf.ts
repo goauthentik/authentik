@@ -1,98 +1,11 @@
-import replace from "@rollup/plugin-replace";
-import type { Options } from "@wdio/types";
-import { cwd } from "process";
-import type { UserConfig } from "vite";
-import litCss from "vite-plugin-lit-css";
-import tsconfigPaths from "vite-tsconfig-paths";
-
-const isProdBuild = process.env.NODE_ENV === "production";
-const apiBasePath = process.env.AK_API_BASE_PATH || "";
-const runHeadless = process.env.CI !== undefined;
-
-const testSafari = process.env.WDIO_TEST_SAFARI !== undefined;
-const testFirefox = process.env.WDIO_TEST_FIREFOX !== undefined;
-const skipChrome = process.env.WDIO_SKIP_CHROME !== undefined;
-
-const capabilities = [];
-
-const DEFAULT_MAX_INSTANCES = 10;
-
-if (!skipChrome) {
-    capabilities.push({
-        // capabilities for local browser web tests
-        "browserName": "chrome", // or "firefox", "microsoftedge", "safari"
-        "goog:chromeOptions": {
-            args: [
-                "disable-search-engine-choice-screen",
-                ...(runHeadless
-                    ? [
-                          "headless",
-                          "disable-gpu",
-                          "no-sandbox",
-                          "window-size=1280,672",
-                          "browser-test",
-                      ]
-                    : []),
-            ],
-        },
-    });
-}
-
-if (testSafari) {
-    capabilities.push({
-        browserName: "safari", // or "firefox", "microsoftedge", "safari"
-    });
-}
-
-if (testFirefox) {
-    capabilities.push({
-        browserName: "firefox", // or "firefox", "microsoftedge", "safari"
-    });
-}
-
-const maxInstances =
-    process.env.MAX_INSTANCES !== undefined
-        ? parseInt(process.env.MAX_INSTANCES, DEFAULT_MAX_INSTANCES)
-        : runHeadless
-          ? 10
-          : 1;
-
-export const config: Options.Testrunner = {
+export const config: WebdriverIO.Config = {
     //
     // ====================
     // Runner Configuration
     // ====================
     // WebdriverIO supports running e2e tests as well as unit and component tests.
-    runner: [
-        "browser",
-        {
-            viteConfig: (userConfig: UserConfig = { plugins: [] }) => ({
-                ...userConfig,
-                plugins: [
-                    litCss(),
-                    replace({
-                        "process.env.NODE_ENV": JSON.stringify(
-                            isProdBuild ? "production" : "development",
-                        ),
-                        "process.env.CWD": JSON.stringify(cwd()),
-                        "process.env.AK_API_BASE_PATH": JSON.stringify(apiBasePath),
-                        "preventAssignment": true,
-                    }),
-                    ...(userConfig?.plugins ?? []),
-                    tsconfigPaths(),
-                ],
-            }),
-        },
-    ],
-
-    // @ts-expect-error TS2353: The types are not up-to-date with Wdio9.
-    autoCompileOpts: {
-        autoCompile: true,
-        tsNodeOpts: {
-            project: "./tsconfig.json",
-            transpileOnly: true,
-        },
-    },
+    runner: "local",
+    tsConfigPath: "./tsconfig.json",
 
     //
     // ==================
@@ -106,10 +19,11 @@ export const config: Options.Testrunner = {
     // worker process. In order to have a group of spec files run in the same worker
     // process simply enclose them in an array within the specs array.
     //
-    // The path of the spec files will be resolved relative from the directory of
-    // of the config file unless it's absolute.
+    // If you are calling `wdio` from an NPM script (see https://docs.npmjs.com/cli/run-script),
+    // then the current working directory is where your `package.json` resides, so `wdio`
+    // will be called from there.
     //
-    specs: ["./src/**/*.test.ts"],
+    specs: ["./specs/**/*.ts"],
     // Patterns to exclude.
     exclude: [
         // 'path/to/excluded/files'
@@ -130,13 +44,36 @@ export const config: Options.Testrunner = {
     // and 30 processes will get spawned. The property handles how many capabilities
     // from the same test should run tests.
     //
-    maxInstances,
+    maxInstances: 1,
     //
     // If you have trouble getting all important capabilities together, check out the
     // Sauce Labs platform configurator - a great tool to configure your capabilities:
     // https://saucelabs.com/platform/platform-configurator
     //
-    capabilities,
+    capabilities: [
+        {
+            "browserName": "chrome",
+            "wdio:chromedriverOptions": {
+                binary: "./node_modules/.bin/chromedriver",
+            },
+            "goog:chromeOptions": {
+                args: ["--disable-infobars", "--window-size=1280,800"].concat(
+                    (function () {
+                        return process.env.HEADLESS_CHROME === "1"
+                            ? [
+                                  "--headless",
+                                  "--no-sandbox",
+                                  "--disable-gpu",
+                                  "--disable-setuid-sandbox",
+                                  "--disable-dev-shm-usage",
+                              ]
+                            : [];
+                    })(),
+                ),
+            },
+        },
+    ],
+
     //
     // ===================
     // Test Configurations
@@ -144,7 +81,7 @@ export const config: Options.Testrunner = {
     // Define all options that are relevant for the WebdriverIO instance here
     //
     // Level of logging verbosity: trace | debug | info | warn | error | silent
-    logLevel: "info",
+    logLevel: "warn",
     //
     // Set specific log levels per logger
     // loggers:
@@ -168,14 +105,14 @@ export const config: Options.Testrunner = {
     // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
     // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
     // gets prepended directly.
-    // baseUrl: 'http://localhost:8080',
+    baseUrl: "http://localhost",
     //
     // Default timeout for all waitFor* commands.
-    waitforTimeout: 12000,
+    waitforTimeout: 10000,
     //
     // Default timeout in milliseconds for request
     // if browser driver or grid doesn't send response
-    connectionRetryTimeout: 12000,
+    connectionRetryTimeout: 120000,
     //
     // Default request retries count
     connectionRetryCount: 3,
@@ -193,7 +130,6 @@ export const config: Options.Testrunner = {
     // Make sure you have the wdio adapter package for the specific framework installed
     // before running any tests.
     framework: "mocha",
-
     //
     // The number of times to retry the entire specfile when it fails as a whole
     // specFileRetries: 1,
@@ -209,13 +145,13 @@ export const config: Options.Testrunner = {
     // see also: https://webdriver.io/docs/dot-reporter
     reporters: ["spec"],
 
+    //
     // Options to be passed to Mocha.
     // See the full list at http://mochajs.org/
     mochaOpts: {
         ui: "bdd",
         timeout: 60000,
     },
-
     //
     // =====
     // Hooks
@@ -232,7 +168,7 @@ export const config: Options.Testrunner = {
     // onPrepare: function (config, capabilities) {
     // },
     /**
-     * Gets executed before a worker process is spawned and can be used to initialize specific service
+     * Gets executed before a worker process is spawned and can be used to initialise specific service
      * for that worker as well as modify runtime environments in an async fashion.
      * @param  {string} cid      capability id (e.g 0-0)
      * @param  {object} caps     object containing capabilities for session that will be spawn in the worker
@@ -268,8 +204,8 @@ export const config: Options.Testrunner = {
      * @param {Array.<String>} specs        List of spec file paths that are to be run
      * @param {object}         browser      instance of created browser/device session
      */
-    // before: function (capabilities, specs) {
-    // },
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    before: function (_capabilities, _specs) {},
     /**
      * Runs before a WebdriverIO command gets executed.
      * @param {string} commandName hook command name
@@ -292,13 +228,13 @@ export const config: Options.Testrunner = {
      * Hook that gets executed _before_ a hook within the suite starts (e.g. runs before calling
      * beforeEach in Mocha)
      */
-    // beforeHook: function (test, context, hookName) {
+    // beforeHook: function (test, context) {
     // },
     /**
      * Hook that gets executed _after_ a hook within the suite starts (e.g. runs after calling
      * afterEach in Mocha)
      */
-    // afterHook: function (test, context, { error, result, duration, passed, retries }, hookName) {
+    // afterHook: function (test, context, { error, result, duration, passed, retries }) {
     // },
     /**
      * Function to be executed after a test (in Mocha/Jasmine only)
@@ -361,17 +297,5 @@ export const config: Options.Testrunner = {
      * @param {string} newSessionId session ID of the new session
      */
     // onReload: function(oldSessionId, newSessionId) {
-    // }
-    /**
-     * Hook that gets executed before a WebdriverIO assertion happens.
-     * @param {object} params information about the assertion to be executed
-     */
-    // beforeAssertion: function(params) {
-    // }
-    /**
-     * Hook that gets executed after a WebdriverIO assertion happened.
-     * @param {object} params information about the assertion that was executed, including its results
-     */
-    // afterAssertion: function(params) {
     // }
 };
