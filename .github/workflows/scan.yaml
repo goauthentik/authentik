@@ -2,6 +2,7 @@ name: Secret Scanning
 
 on:
   workflow_dispatch:
+  push:
 
 jobs:
 
