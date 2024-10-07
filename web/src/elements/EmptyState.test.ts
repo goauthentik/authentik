@@ -1,13 +1,13 @@
-import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet.js";
 import { $, expect } from "@wdio/globals";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html, render as litRender } from "lit";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
+import AKGlobal from "../common/styles/authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import "./EmptyState.js";
+import { ensureCSSStyleSheet } from "./utils/ensureCSSStyleSheet.js";
 
 const render = (body: TemplateResult) => {
     document.adoptedStyleSheets = [

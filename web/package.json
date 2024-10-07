@@ -289,6 +289,7 @@
                 "lint:types",
                 "lint:components",
                 "lint:spelling",
+                "lint:package",
                 "lint:lockfile",
                 "lint:lockfiles",
                 "lint:precommit",
@@ -316,7 +317,7 @@
             "command": "node scripts/build-storybook-import-maps.mjs"
         },
         "test": {
-            "command": "wdio run ./wdio.conf.ts --logLevel=warn",
+            "command": "wdio ./wdio.conf.ts --logLevel=warn",
             "env": {
                 "CI": "true",
                 "TS_NODE_PROJECT": "tsconfig.test.json"

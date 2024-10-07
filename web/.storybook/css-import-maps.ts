@@ -8,6 +8,9 @@
 // and we'll have one unified way of doing this.  I can only hope.
 
 const rawCssImportMaps = [
+    'import AKGlobal from "../../../common/styles/authentik.css";',
+    'import AKGlobal from "../../common/styles/authentik.css";',
+    'import AKGlobal from "../common/styles/authentik.css";',
     'import AKGlobal from "@goauthentik/common/styles/authentik.css";',
     'import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";',
     'import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";',

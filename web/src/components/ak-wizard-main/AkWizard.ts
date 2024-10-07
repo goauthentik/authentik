@@ -104,6 +104,8 @@ export class AkWizard<D, Step extends WizardStep = WizardStep>
     }
 
     render() {
+        const step = this.step.render.bind(this.step);
+
         return html`
             <ak-wizard-frame
                 ${ref(this.frame)}
@@ -112,7 +114,7 @@ export class AkWizard<D, Step extends WizardStep = WizardStep>
                 prompt=${this.prompt}
                 .buttons=${this.step.buttons}
                 .stepLabels=${this.stepLabels}
-                .form=${this.step.render.bind(this.step)}
+                .form=${step}
             >
                 <button slot="trigger" class="pf-c-button pf-m-primary">${this.prompt}</button>
             </ak-wizard-frame>

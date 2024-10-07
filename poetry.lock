@@ -2859,13 +2859,13 @@ dev = ["bumpver", "isort", "mypy", "pylint", "pytest", "yapf"]
 
 [[package]]
 name = "msgraph-sdk"
-version = "1.8.0"
+version = "1.9.0"
 description = "The Microsoft Graph Python SDK"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "msgraph_sdk-1.8.0-py3-none-any.whl", hash = "sha256:22a8e4a63f989865228f66a54501bef8105909c7156fe0a079ca9b5296339cc2"},
-    {file = "msgraph_sdk-1.8.0.tar.gz", hash = "sha256:1ac84bd47ea288a84f46f6c6d0c89d164ee3453b917615632652344538098314"},
+    {file = "msgraph_sdk-1.9.0-py3-none-any.whl", hash = "sha256:4db5e18951cee41ae81c59da2f3512e10711635564617a2d1790c1ec02576a92"},
+    {file = "msgraph_sdk-1.9.0.tar.gz", hash = "sha256:ff375e54fbc0ce51df252fa9b23f1f630cab8aa312882a270c0139a7f643ff8e"},
 ]
 
 [package.dependencies]
@@ -4667,13 +4667,13 @@ wsproto = ">=0.14"
 
 [[package]]
 name = "twilio"
-version = "9.3.2"
+version = "9.3.3"
 description = "Twilio API client and TwiML generator"
 optional = false
 python-versions = ">=3.7.0"
 files = [
-    {file = "twilio-9.3.2-py2.py3-none-any.whl", hash = "sha256:7fcb2da241d2264b17fbab9ac0ca829c0f0abe23ce6db15d4bb0d4d2d583f953"},
-    {file = "twilio-9.3.2.tar.gz", hash = "sha256:250fc6ce6960aa97a2e2ee7e718e3bc0e73d69731b97fe160ed2097f3cbeb5a8"},
+    {file = "twilio-9.3.3-py2.py3-none-any.whl", hash = "sha256:716a38a96867d4e233cf540ee9b79eb8b2f839ee72ccbec0331829d20beccdcd"},
+    {file = "twilio-9.3.3.tar.gz", hash = "sha256:4750f7b512258fa1cf61f6666f3f93ddbf850449745cbbc3beec6ea59a813153"},
 ]
 
 [package.dependencies]
