@@ -141,7 +141,7 @@ Please follow these steps to have your contribution considered by the maintainer
 
 While the prerequisites above must be satisfied prior to having your pull request reviewed, the reviewer(s) may ask you to complete additional design work, tests, or other changes before your pull request can be ultimately accepted.
 
-## Styleguides
+## Style guides
 
 ### PR naming
 
