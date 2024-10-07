@@ -1,11 +1,11 @@
-import {
-    digestAlgorithmOptions,
-    signatureAlgorithmOptions,
-} from "@goauthentik/admin/applications/wizard/methods/saml/SamlProviderOptions";
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import AkCryptoCertificateSearch from "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
+import {
+    digestAlgorithmOptions,
+    signatureAlgorithmOptions,
+} from "@goauthentik/admin/providers/saml/SAMLProviderOptions";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";

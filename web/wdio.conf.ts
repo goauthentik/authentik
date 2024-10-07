@@ -1,4 +1,5 @@
 import replace from "@rollup/plugin-replace";
+import type { Options } from "@wdio/types";
 import { cwd } from "process";
 import type { UserConfig } from "vite";
 import litCss from "vite-plugin-lit-css";
@@ -56,7 +57,7 @@ const maxInstances =
           ? 10
           : 1;
 
-export const config: WebdriverIO.Config = {
+export const config: Options.Testrunner = {
     //
     // ====================
     // Runner Configuration
