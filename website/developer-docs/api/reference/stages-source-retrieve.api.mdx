@@ -1,0 +1,692 @@
+---
+id: stages-source-retrieve
+title: "stages_source_retrieve"
+description: "SourceStage Viewset"
+sidebar_label: "stages_source_retrieve"
+hide_title: true
+hide_table_of_contents: true
+api: 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
+sidebar_class_name: "get api-method"
+info_path: developer-docs/api/reference/authentik
+custom_edit_url: null
+hide_send_button: true
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import Heading from "@theme/Heading";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+
+<Heading
+    as={"h1"}
+    className={"openapi__heading"}
+    children={"stages_source_retrieve"}
+></Heading>
+
+<MethodEndpoint
+    method={"get"}
+    path={"/stages/source/{stage_uuid}/"}
+></MethodEndpoint>
+
+SourceStage Viewset
+
+<Heading
+    id={"request"}
+    as={"h2"}
+    className={"openapi-tabs__heading"}
+    children={"Request"}
+></Heading>
+
+<details
+    style={{ marginBottom: "1rem" }}
+    className={"openapi-markdown__details"}
+    data-collapsed={false}
+    open={true}
+>
+    <summary style={{}}>
+        <h3 className={"openapi-markdown__details-summary-header-params"}>
+            Path Parameters
+        </h3>
+    </summary>
+    <div>
+        <ul>
+            <ParamsItem
+                className={"paramsItem"}
+                param={{
+                    in: "path",
+                    name: "stage_uuid",
+                    schema: { type: "string", format: "uuid" },
+                    description: "A UUID string identifying this Source Stage.",
+                    required: true,
+                }}
+            ></ParamsItem>
+        </ul>
+    </div>
+</details>
+<div>
+    <div>
+        <ApiTabs label={undefined} id={undefined}>
+            <TabItem label={"200"} value={"200"}>
+                <div></div>
+                <div>
+                    <MimeTabs
+                        className={"openapi-tabs__mime"}
+                        schemaType={"response"}
+                    >
+                        <TabItem
+                            label={"application/json"}
+                            value={"application/json"}
+                        >
+                            <SchemaTabs className={"openapi-tabs__schema"}>
+                                <TabItem label={"Schema"} value={"Schema"}>
+                                    <details
+                                        style={{}}
+                                        className={
+                                            "openapi-markdown__details response"
+                                        }
+                                        data-collapsed={false}
+                                        open={true}
+                                    >
+                                        <summary
+                                            style={{}}
+                                            className={
+                                                "openapi-markdown__details-summary-response"
+                                            }
+                                        >
+                                            <strong>Schema</strong>
+                                        </summary>
+                                        <div
+                                            style={{
+                                                textAlign: "left",
+                                                marginLeft: "1rem",
+                                            }}
+                                        ></div>
+                                        <ul style={{ marginLeft: "1rem" }}>
+                                            <SchemaItem
+                                                collapsible={false}
+                                                name={"pk"}
+                                                required={true}
+                                                schemaName={"uuid"}
+                                                qualifierMessage={undefined}
+                                                schema={{
+                                                    type: "string",
+                                                    format: "uuid",
+                                                    readOnly: true,
+                                                    title: "Stage uuid",
+                                                }}
+                                            ></SchemaItem>
+                                            <SchemaItem
+                                                collapsible={false}
+                                                name={"name"}
+                                                required={true}
+                                                schemaName={"string"}
+                                                qualifierMessage={undefined}
+                                                schema={{ type: "string" }}
+                                            ></SchemaItem>
+                                            <SchemaItem
+                                                collapsible={false}
+                                                name={"component"}
+                                                required={true}
+                                                schemaName={"string"}
+                                                qualifierMessage={undefined}
+                                                schema={{
+                                                    type: "string",
+                                                    description:
+                                                        "Get object type so that we know how to edit the object",
+                                                    readOnly: true,
+                                                }}
+                                            ></SchemaItem>
+                                            <SchemaItem
+                                                collapsible={false}
+                                                name={"verbose_name"}
+                                                required={true}
+                                                schemaName={"string"}
+                                                qualifierMessage={undefined}
+                                                schema={{
+                                                    type: "string",
+                                                    description:
+                                                        "Return object's verbose_name",
+                                                    readOnly: true,
+                                                }}
+                                            ></SchemaItem>
+                                            <SchemaItem
+                                                collapsible={false}
+                                                name={"verbose_name_plural"}
+                                                required={true}
+                                                schemaName={"string"}
+                                                qualifierMessage={undefined}
+                                                schema={{
+                                                    type: "string",
+                                                    description:
+                                                        "Return object's plural verbose_name",
+                                                    readOnly: true,
+                                                }}
+                                            ></SchemaItem>
+                                            <SchemaItem
+                                                collapsible={false}
+                                                name={"meta_model_name"}
+                                                required={true}
+                                                schemaName={"string"}
+                                                qualifierMessage={undefined}
+                                                schema={{
+                                                    type: "string",
+                                                    description:
+                                                        "Return internal model name",
+                                                    readOnly: true,
+                                                }}
+                                            ></SchemaItem>
+                                            <SchemaItem
+                                                collapsible={true}
+                                                className={"schemaItem"}
+                                            >
+                                                <details
+                                                    style={{}}
+                                                    className={
+                                                        "openapi-markdown__details"
+                                                    }
+                                                >
+                                                    <summary style={{}}>
+                                                        <span
+                                                            className={
+                                                                "openapi-schema__container"
+                                                            }
+                                                        >
+                                                            <strong
+                                                                className={
+                                                                    "openapi-schema__property"
+                                                                }
+                                                            >
+                                                                flow_set
+                                                            </strong>
+                                                            <span
+                                                                className={
+                                                                    "openapi-schema__name"
+                                                                }
+                                                            >
+                                                                object[]
+                                                            </span>
+                                                        </span>
+                                                    </summary>
+                                                    <div
+                                                        style={{
+                                                            marginLeft: "1rem",
+                                                        }}
+                                                    >
+                                                        <li>
+                                                            <div
+                                                                style={{
+                                                                    fontSize:
+                                                                        "var(--ifm-code-font-size)",
+                                                                    opacity:
+                                                                        "0.6",
+                                                                    marginLeft:
+                                                                        "-.5rem",
+                                                                    paddingBottom:
+                                                                        ".5rem",
+                                                                }}
+                                                            >
+                                                                Array [
+                                                            </div>
+                                                        </li>
+                                                        <SchemaItem
+                                                            collapsible={false}
+                                                            name={"pk"}
+                                                            required={true}
+                                                            schemaName={"uuid"}
+                                                            qualifierMessage={
+                                                                undefined
+                                                            }
+                                                            schema={{
+                                                                type: "string",
+                                                                format: "uuid",
+                                                                readOnly: true,
+                                                                title: "Flow uuid",
+                                                            }}
+                                                        ></SchemaItem>
+                                                        <SchemaItem
+                                                            collapsible={false}
+                                                            name={
+                                                                "policybindingmodel_ptr_id"
+                                                            }
+                                                            required={true}
+                                                            schemaName={"uuid"}
+                                                            qualifierMessage={
+                                                                undefined
+                                                            }
+                                                            schema={{
+                                                                type: "string",
+                                                                format: "uuid",
+                                                                readOnly: true,
+                                                            }}
+                                                        ></SchemaItem>
+                                                        <SchemaItem
+                                                            collapsible={false}
+                                                            name={"name"}
+                                                            required={true}
+                                                            schemaName={
+                                                                "string"
+                                                            }
+                                                            qualifierMessage={
+                                                                undefined
+                                                            }
+                                                            schema={{
+                                                                type: "string",
+                                                            }}
+                                                        ></SchemaItem>
+                                                        <SchemaItem
+                                                            collapsible={false}
+                                                            name={"slug"}
+                                                            required={true}
+                                                            schemaName={
+                                                                "string"
+                                                            }
+                                                            qualifierMessage={
+                                                                "**Possible values:** `<= 50 characters`, Value must match regular expression `^[-a-zA-Z0-9_]+$`"
+                                                            }
+                                                            schema={{
+                                                                type: "string",
+                                                                description:
+                                                                    "Visible in the URL.",
+                                                                maxLength: 50,
+                                                                pattern:
+                                                                    "^[-a-zA-Z0-9_]+$",
+                                                            }}
+                                                        ></SchemaItem>
+                                                        <SchemaItem
+                                                            collapsible={false}
+                                                            name={"title"}
+                                                            required={true}
+                                                            schemaName={
+                                                                "string"
+                                                            }
+                                                            qualifierMessage={
+                                                                undefined
+                                                            }
+                                                            schema={{
+                                                                type: "string",
+                                                                description:
+                                                                    "Shown as the Title in Flow pages.",
+                                                            }}
+                                                        ></SchemaItem>
+                                                        <SchemaItem
+                                                            collapsible={false}
+                                                            name={"designation"}
+                                                            required={true}
+                                                            schemaName={
+                                                                "FlowDesignationEnum (string)"
+                                                            }
+                                                            qualifierMessage={
+                                                                "**Possible values:** [`authentication`, `authorization`, `invalidation`, `enrollment`, `unenrollment`, `recovery`, `stage_configuration`]"
+                                                            }
+                                                            schema={{
+                                                                enum: [
+                                                                    "authentication",
+                                                                    "authorization",
+                                                                    "invalidation",
+                                                                    "enrollment",
+                                                                    "unenrollment",
+                                                                    "recovery",
+                                                                    "stage_configuration",
+                                                                ],
+                                                                type: "string",
+                                                                title: "FlowDesignationEnum",
+                                                            }}
+                                                        ></SchemaItem>
+                                                        <SchemaItem
+                                                            collapsible={false}
+                                                            name={"background"}
+                                                            required={true}
+                                                            schemaName={
+                                                                "string"
+                                                            }
+                                                            qualifierMessage={
+                                                                undefined
+                                                            }
+                                                            schema={{
+                                                                type: "string",
+                                                                description:
+                                                                    "Get the URL to the background image. If the name is /static or starts with http\nit is returned as-is",
+                                                                readOnly: true,
+                                                            }}
+                                                        ></SchemaItem>
+                                                        <SchemaItem
+                                                            collapsible={false}
+                                                            name={
+                                                                "policy_engine_mode"
+                                                            }
+                                                            required={false}
+                                                            schemaName={
+                                                                "PolicyEngineMode (string)"
+                                                            }
+                                                            qualifierMessage={
+                                                                "**Possible values:** [`all`, `any`]"
+                                                            }
+                                                            schema={{
+                                                                enum: [
+                                                                    "all",
+                                                                    "any",
+                                                                ],
+                                                                type: "string",
+                                                                title: "PolicyEngineMode",
+                                                            }}
+                                                        ></SchemaItem>
+                                                        <SchemaItem
+                                                            collapsible={false}
+                                                            name={
+                                                                "compatibility_mode"
+                                                            }
+                                                            required={false}
+                                                            schemaName={
+                                                                "boolean"
+                                                            }
+                                                            qualifierMessage={
+                                                                undefined
+                                                            }
+                                                            schema={{
+                                                                type: "boolean",
+                                                                description:
+                                                                    "Enable compatibility mode, increases compatibility with password managers on mobile devices.",
+                                                            }}
+                                                        ></SchemaItem>
+                                                        <SchemaItem
+                                                            collapsible={false}
+                                                            name={"export_url"}
+                                                            required={true}
+                                                            schemaName={
+                                                                "string"
+                                                            }
+                                                            qualifierMessage={
+                                                                undefined
+                                                            }
+                                                            schema={{
+                                                                type: "string",
+                                                                description:
+                                                                    "Get export URL for flow",
+                                                                readOnly: true,
+                                                            }}
+                                                        ></SchemaItem>
+                                                        <SchemaItem
+                                                            collapsible={false}
+                                                            name={"layout"}
+                                                            required={false}
+                                                            schemaName={
+                                                                "FlowLayoutEnum (string)"
+                                                            }
+                                                            qualifierMessage={
+                                                                "**Possible values:** [`stacked`, `content_left`, `content_right`, `sidebar_left`, `sidebar_right`]"
+                                                            }
+                                                            schema={{
+                                                                enum: [
+                                                                    "stacked",
+                                                                    "content_left",
+                                                                    "content_right",
+                                                                    "sidebar_left",
+                                                                    "sidebar_right",
+                                                                ],
+                                                                type: "string",
+                                                                title: "FlowLayoutEnum",
+                                                            }}
+                                                        ></SchemaItem>
+                                                        <SchemaItem
+                                                            collapsible={false}
+                                                            name={
+                                                                "denied_action"
+                                                            }
+                                                            required={false}
+                                                            schemaName={
+                                                                "DeniedActionEnum (string)"
+                                                            }
+                                                            qualifierMessage={
+                                                                "**Possible values:** [`message_continue`, `message`, `continue`]"
+                                                            }
+                                                            schema={{
+                                                                enum: [
+                                                                    "message_continue",
+                                                                    "message",
+                                                                    "continue",
+                                                                ],
+                                                                type: "string",
+                                                                title: "DeniedActionEnum",
+                                                            }}
+                                                        ></SchemaItem>
+                                                        <li>
+                                                            <div
+                                                                style={{
+                                                                    fontSize:
+                                                                        "var(--ifm-code-font-size)",
+                                                                    opacity:
+                                                                        "0.6",
+                                                                    marginLeft:
+                                                                        "-.5rem",
+                                                                }}
+                                                            >
+                                                                ]
+                                                            </div>
+                                                        </li>
+                                                    </div>
+                                                </details>
+                                            </SchemaItem>
+                                            <SchemaItem
+                                                collapsible={false}
+                                                name={"source"}
+                                                required={true}
+                                                schemaName={"uuid"}
+                                                qualifierMessage={undefined}
+                                                schema={{
+                                                    type: "string",
+                                                    format: "uuid",
+                                                }}
+                                            ></SchemaItem>
+                                            <SchemaItem
+                                                collapsible={false}
+                                                name={"resume_timeout"}
+                                                required={false}
+                                                schemaName={"string"}
+                                                qualifierMessage={undefined}
+                                                schema={{
+                                                    type: "string",
+                                                    description:
+                                                        "Amount of time a user can take to return from the source to continue the flow (Format: hours=-1;minutes=-2;seconds=-3)",
+                                                }}
+                                            ></SchemaItem>
+                                        </ul>
+                                    </details>
+                                </TabItem>
+                                <TabItem
+                                    label={"Example (from schema)"}
+                                    value={"Example (from schema)"}
+                                >
+                                    <ResponseSamples
+                                        responseExample={
+                                            '{\n  "pk": "3fa85f64-5717-4562-b3fc-2c963f66afa6",\n  "name": "string",\n  "component": "string",\n  "verbose_name": "string",\n  "verbose_name_plural": "string",\n  "meta_model_name": "string",\n  "flow_set": [\n    {\n      "pk": "3fa85f64-5717-4562-b3fc-2c963f66afa6",\n      "policybindingmodel_ptr_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",\n      "name": "string",\n      "slug": "string",\n      "title": "string",\n      "designation": "authentication",\n      "background": "string",\n      "policy_engine_mode": "all",\n      "compatibility_mode": true,\n      "export_url": "string",\n      "layout": "stacked",\n      "denied_action": "message_continue"\n    }\n  ],\n  "source": "3fa85f64-5717-4562-b3fc-2c963f66afa6",\n  "resume_timeout": "string"\n}'
+                                        }
+                                        language={"json"}
+                                    ></ResponseSamples>
+                                </TabItem>
+                            </SchemaTabs>
+                        </TabItem>
+                    </MimeTabs>
+                </div>
+            </TabItem>
+            <TabItem label={"400"} value={"400"}>
+                <div></div>
+                <div>
+                    <MimeTabs
+                        className={"openapi-tabs__mime"}
+                        schemaType={"response"}
+                    >
+                        <TabItem
+                            label={"application/json"}
+                            value={"application/json"}
+                        >
+                            <SchemaTabs className={"openapi-tabs__schema"}>
+                                <TabItem label={"Schema"} value={"Schema"}>
+                                    <details
+                                        style={{}}
+                                        className={
+                                            "openapi-markdown__details response"
+                                        }
+                                        data-collapsed={false}
+                                        open={true}
+                                    >
+                                        <summary
+                                            style={{}}
+                                            className={
+                                                "openapi-markdown__details-summary-response"
+                                            }
+                                        >
+                                            <strong>Schema</strong>
+                                        </summary>
+                                        <div
+                                            style={{
+                                                textAlign: "left",
+                                                marginLeft: "1rem",
+                                            }}
+                                        ></div>
+                                        <ul style={{ marginLeft: "1rem" }}>
+                                            <SchemaItem
+                                                collapsible={false}
+                                                name={"non_field_errors"}
+                                                required={false}
+                                                schemaName={"string[]"}
+                                                qualifierMessage={undefined}
+                                                schema={{
+                                                    type: "array",
+                                                    items: { type: "string" },
+                                                }}
+                                            ></SchemaItem>
+                                            <SchemaItem
+                                                collapsible={false}
+                                                name={"code"}
+                                                required={false}
+                                                schemaName={"string"}
+                                                qualifierMessage={undefined}
+                                                schema={{ type: "string" }}
+                                            ></SchemaItem>
+                                            <SchemaItem
+                                                name={"property name*"}
+                                                required={false}
+                                                schemaName={"any"}
+                                                qualifierMessage={undefined}
+                                                schema={{
+                                                    type: "object",
+                                                    description:
+                                                        "Validation Error",
+                                                    properties: {
+                                                        non_field_errors: {
+                                                            type: "array",
+                                                            items: {
+                                                                type: "string",
+                                                            },
+                                                        },
+                                                        code: {
+                                                            type: "string",
+                                                        },
+                                                    },
+                                                    additionalProperties: {},
+                                                    title: "ValidationError",
+                                                }}
+                                                collapsible={false}
+                                                discriminator={false}
+                                            ></SchemaItem>
+                                        </ul>
+                                    </details>
+                                </TabItem>
+                                <TabItem
+                                    label={"Example (from schema)"}
+                                    value={"Example (from schema)"}
+                                >
+                                    <ResponseSamples
+                                        responseExample={
+                                            '{\n  "non_field_errors": [\n    "string"\n  ],\n  "code": "string"\n}'
+                                        }
+                                        language={"json"}
+                                    ></ResponseSamples>
+                                </TabItem>
+                            </SchemaTabs>
+                        </TabItem>
+                    </MimeTabs>
+                </div>
+            </TabItem>
+            <TabItem label={"403"} value={"403"}>
+                <div></div>
+                <div>
+                    <MimeTabs
+                        className={"openapi-tabs__mime"}
+                        schemaType={"response"}
+                    >
+                        <TabItem
+                            label={"application/json"}
+                            value={"application/json"}
+                        >
+                            <SchemaTabs className={"openapi-tabs__schema"}>
+                                <TabItem label={"Schema"} value={"Schema"}>
+                                    <details
+                                        style={{}}
+                                        className={
+                                            "openapi-markdown__details response"
+                                        }
+                                        data-collapsed={false}
+                                        open={true}
+                                    >
+                                        <summary
+                                            style={{}}
+                                            className={
+                                                "openapi-markdown__details-summary-response"
+                                            }
+                                        >
+                                            <strong>Schema</strong>
+                                        </summary>
+                                        <div
+                                            style={{
+                                                textAlign: "left",
+                                                marginLeft: "1rem",
+                                            }}
+                                        ></div>
+                                        <ul style={{ marginLeft: "1rem" }}>
+                                            <SchemaItem
+                                                collapsible={false}
+                                                name={"detail"}
+                                                required={true}
+                                                schemaName={"string"}
+                                                qualifierMessage={undefined}
+                                                schema={{ type: "string" }}
+                                            ></SchemaItem>
+                                            <SchemaItem
+                                                collapsible={false}
+                                                name={"code"}
+                                                required={false}
+                                                schemaName={"string"}
+                                                qualifierMessage={undefined}
+                                                schema={{ type: "string" }}
+                                            ></SchemaItem>
+                                        </ul>
+                                    </details>
+                                </TabItem>
+                                <TabItem
+                                    label={"Example (from schema)"}
+                                    value={"Example (from schema)"}
+                                >
+                                    <ResponseSamples
+                                        responseExample={
+                                            '{\n  "detail": "string",\n  "code": "string"\n}'
+                                        }
+                                        language={"json"}
+                                    ></ResponseSamples>
+                                </TabItem>
+                            </SchemaTabs>
+                        </TabItem>
+                    </MimeTabs>
+                </div>
+            </TabItem>
+        </ApiTabs>
+    </div>
+</div>

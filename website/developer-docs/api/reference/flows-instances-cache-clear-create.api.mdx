@@ -1,0 +1,125 @@
+---
+id: flows-instances-cache-clear-create
+title: "flows_instances_cache_clear_create"
+description: "Clear flow cache"
+sidebar_label: "flows_instances_cache_clear_create"
+hide_title: true
+hide_table_of_contents: true
+api: eJxtU0tv2zAM/iuGzkYUpD0MPa0riiHAuhVIdxqKQJbZWI0iqRKdLTD830fKbuI2OVmy+PgeZCd8gKjQeLesxY14sf5vWhuXUDkNaa2VbmCtLai41hEUgihFDUlHEziJUu74seDEIkdTAKpNEjd/hmriuRQJdBsNHuhnJ1SLDTg0W7o99/QaIQXvElBOJxbza/587LFqNaFJL621hyKjgXrs1pfiej4/T/mm6iLCWwsJh5grjtHeIfXmowrBGp2py9fEOZ1IVHGn+ISHAFTFV6+g8Yzzd3AQjS5uH5fFfYw+UkSILCWagUYNqIydVEoYjdswFO1ruPDQsxBvrSFqrN1YgORBgxZOTYd+Pcd/BJVL7AAbz04Gnxh3UNjQTWYr5NFYOTFWCjYo7iGm7E8bLWeoYOT+Sop+4t+K9RkITlw8UmkQAxfLUXSv2KiYcRn34nPkSOaUXgruPFBYzBfXsy+zxZngD2pLIhXvWYNtRTK7YGEmyuyr0tlXMpCFFw1Y679u/LHTzHiWn0wHGjYOdSrDfFg+UYmBNlNIN1JuDDZtNdN+Jycl5OlUWV9JauXkj+Xd/c/VfabJqu+UmxTPwhdH4YepHWa4uLxRkym9uFyD1gj/UAZLAJhUBt+Nbr8vHqs+tmWJTo7TjQer4RGh6K6rVILf0fY9/6adibypdNyraFTFhtGmUgKomvzkIdkChYhbWsvAY7ZXts22fl4qnp7jTD7+WrHSLOJkasYpKd8PXH58Uu4wKU44c8ST34IjrOWIAvlOnWgn/gOn3Kdj
+sidebar_class_name: "post api-method"
+info_path: developer-docs/api/reference/authentik
+custom_edit_url: null
+hide_send_button: true
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import Heading from "@theme/Heading";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+
+<Heading
+    as={"h1"}
+    className={"openapi__heading"}
+    children={"flows_instances_cache_clear_create"}
+></Heading>
+
+<MethodEndpoint
+    method={"post"}
+    path={"/flows/instances/cache_clear/"}
+></MethodEndpoint>
+
+Clear flow cache
+
+<div>
+    <div>
+        <ApiTabs label={undefined} id={undefined}>
+            <TabItem label={"204"} value={"204"}>
+                <div>Successfully cleared cache</div>
+                <div></div>
+            </TabItem>
+            <TabItem label={"400"} value={"400"}>
+                <div>Bad request</div>
+                <div></div>
+            </TabItem>
+            <TabItem label={"403"} value={"403"}>
+                <div></div>
+                <div>
+                    <MimeTabs
+                        className={"openapi-tabs__mime"}
+                        schemaType={"response"}
+                    >
+                        <TabItem
+                            label={"application/json"}
+                            value={"application/json"}
+                        >
+                            <SchemaTabs className={"openapi-tabs__schema"}>
+                                <TabItem label={"Schema"} value={"Schema"}>
+                                    <details
+                                        style={{}}
+                                        className={
+                                            "openapi-markdown__details response"
+                                        }
+                                        data-collapsed={false}
+                                        open={true}
+                                    >
+                                        <summary
+                                            style={{}}
+                                            className={
+                                                "openapi-markdown__details-summary-response"
+                                            }
+                                        >
+                                            <strong>Schema</strong>
+                                        </summary>
+                                        <div
+                                            style={{
+                                                textAlign: "left",
+                                                marginLeft: "1rem",
+                                            }}
+                                        ></div>
+                                        <ul style={{ marginLeft: "1rem" }}>
+                                            <SchemaItem
+                                                collapsible={false}
+                                                name={"detail"}
+                                                required={true}
+                                                schemaName={"string"}
+                                                qualifierMessage={undefined}
+                                                schema={{ type: "string" }}
+                                            ></SchemaItem>
+                                            <SchemaItem
+                                                collapsible={false}
+                                                name={"code"}
+                                                required={false}
+                                                schemaName={"string"}
+                                                qualifierMessage={undefined}
+                                                schema={{ type: "string" }}
+                                            ></SchemaItem>
+                                        </ul>
+                                    </details>
+                                </TabItem>
+                                <TabItem
+                                    label={"Example (from schema)"}
+                                    value={"Example (from schema)"}
+                                >
+                                    <ResponseSamples
+                                        responseExample={
+                                            '{\n  "detail": "string",\n  "code": "string"\n}'
+                                        }
+                                        language={"json"}
+                                    ></ResponseSamples>
+                                </TabItem>
+                            </SchemaTabs>
+                        </TabItem>
+                    </MimeTabs>
+                </div>
+            </TabItem>
+        </ApiTabs>
+    </div>
+</div>
