@@ -1,5 +1,6 @@
 ---
 title: Applications
+slug: /applications
 ---
 
 Applications, as defined in authentik, are used to configure and separate the authorization/access control and the appearance of a specific software application in the **My applications** page.
