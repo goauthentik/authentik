@@ -1,4 +1,5 @@
 import { AKElement } from "@goauthentik/elements/Base";
+import { spread } from "@open-wc/lit-helpers";
 
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -11,6 +12,12 @@ export enum PFColor {
     Orange = "pf-m-orange",
     Red = "pf-m-red",
     Grey = "",
+}
+
+export interface ILabel {
+    color?: PFColor;
+    icon?: boolean;
+    compact?: boolan;
 }
 
 @customElement("ak-label")
@@ -56,6 +63,12 @@ export class Label extends AKElement {
             </span>
         </span>`;
     }
+}
+
+export function akLabel(properties: IEmptyState, content?: SlottedTemplateResult = nothing) {
+    const message =
+        typeof content === "string" ? html`<span slot="body">${content}</span>` : content;
+    return html`<ak-label ${spread(properties)}>${message}</ak-label>`;
 }
 
 declare global {

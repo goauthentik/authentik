@@ -1,21 +1,10 @@
-import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet.js";
+import { render } from "@goauthentik/elements/tests/utils.js";
 import { $, expect } from "@wdio/globals";
 
-import { TemplateResult, html, render as litRender } from "lit";
-
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import { html } from "lit";
 
 import "../Divider.js";
-
-const render = (body: TemplateResult) => {
-    document.adoptedStyleSheets = [
-        ...document.adoptedStyleSheets,
-        ensureCSSStyleSheet(PFBase),
-        ensureCSSStyleSheet(AKGlobal),
-    ];
-    return litRender(body, document.body);
-};
+import { akDivider } from "../Divider.js";
 
 describe("ak-divider", () => {
     it("should render the divider", async () => {
@@ -29,5 +18,18 @@ describe("ak-divider", () => {
         const span = await $("ak-divider").$("span");
         await expect(span).toExist();
         await expect(span).toHaveText("Your Message Here");
+    });
+
+    it("should render the divider as a function with the specified text", async () => {
+        render(akDivider("Your Message As A Function"));
+        const divider = await $("ak-divider");
+        await expect(divider).toExist();
+        await expect(divider).toHaveText("Your Message As A Function");
+    });
+
+    it("should render the divider as a function", async () => {
+        render(akDivider());
+        const empty = await $("ak-divider");
+        await expect(empty).toExist();
     });
 });

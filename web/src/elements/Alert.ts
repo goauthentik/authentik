@@ -1,8 +1,8 @@
 import { AKElement } from "@goauthentik/elements/Base";
+import { type SlottedTemplateResult } from "@goauthentik/elements/types";
 import { spread } from "@open-wc/lit-helpers";
 
-import { PropertyValues } from "@lit/reactive-element/reactive-element";
-import { html } from "lit";
+import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
@@ -24,7 +24,6 @@ export interface IAlert {
     plain?: boolean;
     icon?: string;
     level?: string;
-    message?: string;
 }
 
 /**
@@ -64,9 +63,6 @@ export class Alert extends AKElement implements IAlert {
     @property()
     icon = "fa-exclamation-circle";
 
-    @property()
-    message?: string;
-
     static get styles() {
         return [PFBase, PFAlert];
     }
@@ -88,13 +84,14 @@ export class Alert extends AKElement implements IAlert {
             <div class="pf-c-alert__icon">
                 <i class="fas ${this.icon}"></i>
             </div>
-            <h4 class="pf-c-alert__title">${this.message ? this.message : html`<slot></slot>`}</h4>
+            <h4 class="pf-c-alert__title"><slot></slot></h4>
         </div>`;
     }
 }
 
-export function akAlert(properties: IAlert) {
-    return html`<ak-alert ${spread(properties)}></ak-alert>`;
+export function akAlert(properties: IAlert, content?: SlottedTemplateResult = nothing) {
+    const message = typeof content === "string" ? html`<span>${content}</span>` : content;
+    return html`<ak-alert ${spread(properties)}>${message}</ak-alert>`;
 }
 
 declare global {

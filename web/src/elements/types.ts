@@ -1,6 +1,6 @@
 import { AKElement } from "@goauthentik/elements/Base";
 
-import { TemplateResult } from "lit";
+import { TemplateResult, nothing } from "lit";
 import { ReactiveControllerHost } from "lit";
 
 export type ReactiveElementHost<T = AKElement> = Partial<ReactiveControllerHost> & T;
@@ -73,3 +73,5 @@ export type SelectGrouped<T = never> = {
  */
 export type GroupedOptions<T = never> = SelectGrouped<T> | SelectFlat<T>;
 export type SelectOptions<T = never> = SelectOption<T>[] | GroupedOptions<T>;
+
+export type SlotTemplate = string | TemplateResult | typeof nothing;

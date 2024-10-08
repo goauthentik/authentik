@@ -30,7 +30,7 @@ describe("ak-alert", () => {
     });
 
     it("should render an alert as a function call", async () => {
-        render(akAlert({ level: "info", message: "This is an alert" }));
+        render(akAlert({ level: "info" }, "This is an alert"));
         await expect(await $("ak-alert").$("div")).toHaveElementClass("pf-m-info");
         await expect(await $("ak-alert").$(".pf-c-alert__title")).toHaveText("This is an alert");
     });
