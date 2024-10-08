@@ -61,7 +61,9 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
                   </ak-codemirror>`
                 : html` <div class="pf-c-form__group-label">
                       <div class="c-form__horizontal-group">
-                          <span class="pf-c-form__label-text">${this.result?.result}</span>
+                          <span class="pf-c-form__label-text">
+                              <pre>${this.result?.result}</pre>
+                          </span>
                       </div>
                   </div>`}
         </ak-form-element-horizontal>`;

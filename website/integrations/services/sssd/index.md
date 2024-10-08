@@ -1,6 +1,9 @@
 ---
-title: sssd
+title: Integrate with sssd
+sidebar_label: sssd
 ---
+
+# sssd
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -75,7 +78,6 @@ reconnection_retries = 3
 [sssd]
 config_file_version = 2
 reconnection_retries = 3
-sbus_timeout = 30
 domains = ${ldap.domain}
 services = nss, pam, ssh
 

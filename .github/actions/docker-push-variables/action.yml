@@ -29,9 +29,9 @@ outputs:
   imageTags:
     description: "Docker image tags"
     value: ${{ steps.ev.outputs.imageTags }}
-  imageNames:
-    description: "Docker image names"
-    value: ${{ steps.ev.outputs.imageNames }}
+  attestImageNames:
+    description: "Docker image names used for attestation"
+    value: ${{ steps.ev.outputs.attestImageNames }}
   imageMainTag:
     description: "Docker image main tag"
     value: ${{ steps.ev.outputs.imageMainTag }}

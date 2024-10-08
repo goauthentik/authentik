@@ -44,7 +44,7 @@ websocket_urlpatterns = [
 
 api_urlpatterns = [
     ("providers/rac", RACProviderViewSet),
-    ("propertymappings/rac", RACPropertyMappingViewSet),
+    ("propertymappings/provider/rac", RACPropertyMappingViewSet),
     ("rac/endpoints", EndpointViewSet),
     ("rac/connection_tokens", ConnectionTokenViewSet),
 ]

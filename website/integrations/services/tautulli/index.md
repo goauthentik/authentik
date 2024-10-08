@@ -1,6 +1,9 @@
 ---
-title: Tautulli
+title: Integrate with Tautulli
+sidebar_label: Tautulli
 ---
+
+# Tautulli
 
 <span class="badge badge--secondary">Support level: Community</span>
 

@@ -1,6 +1,9 @@
 ---
-title: Linkwarden
+title: Integrate with Linkwarden
+sidebar_label: Linkwarden
 ---
+
+# Linkwarden
 
 <span class="badge badge--secondary">Support level: Community</span>
 

@@ -80,3 +80,14 @@ This will depend heavily on what software you are using for your IDP. On the Met
     </md:ContactPerson>
 </md:EntityDescriptor>
 ```
+
+## SAML source property mappings
+
+See the [overview](../property-mappings/index.md) for information on how property mappings work.
+
+### Expression data
+
+The following variables are available to SAML source property mappings:
+
+-   `root`: An XML `ETree` object containing data from the source.
+-   `name_id`: An XML `Element` object identifying the user.

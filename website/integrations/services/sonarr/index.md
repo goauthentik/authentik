@@ -1,6 +1,9 @@
 ---
-title: Sonarr
+title: Integrate with Sonarr
+sidebar_label: Sonarr
 ---
+
+# Sonarr
 
 <span class="badge badge--secondary">Support level: Community</span>
 

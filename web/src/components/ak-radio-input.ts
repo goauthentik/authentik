@@ -7,7 +7,7 @@ import { customElement, property } from "lit/decorators.js";
 import { HorizontalLightComponent } from "./HorizontalLightComponent";
 
 @customElement("ak-radio-input")
-export class AkRadioInput<T> extends HorizontalLightComponent {
+export class AkRadioInput<T> extends HorizontalLightComponent<T> {
     @property({ type: Object })
     value!: T;
 

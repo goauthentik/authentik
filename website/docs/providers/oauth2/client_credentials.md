@@ -18,7 +18,8 @@ Content-Type: application/x-www-form-urlencoded
 grant_type=client_credentials&
 client_id=application_client_id&
 username=my-service-account&
-password=my-token
+password=my-token&
+scope=profile
 ```
 
 This will return a JSON response with an `access_token`, which is a signed JWT token. This token can be sent along requests to other hosts, which can then validate the JWT based on the signing key configured in authentik.

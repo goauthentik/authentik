@@ -1,5 +1,9 @@
 import "@goauthentik/admin/applications/wizard/ak-wizard-title";
 import {
+    makeSourceSelector,
+    oauth2SourcesProvider,
+} from "@goauthentik/admin/providers/oauth2/OAuth2Sources.js";
+import {
     makeProxyPropertyMappingsSelector,
     proxyPropertyMappingsProvider,
 } from "@goauthentik/admin/providers/proxy/ProxyProviderPropertyMappings.js";
@@ -226,25 +230,16 @@ export class AkTypeProxyApplicationWizardPage extends BaseProviderPanel {
                             name="jwksSources"
                             .errorMessages=${errors?.jwksSources ?? []}
                         >
-                            <select class="pf-c-form-control" multiple>
-                                ${this.oauthSources?.results.map((source) => {
-                                    const selected = (this.instance?.jwksSources || []).some(
-                                        (su) => {
-                                            return su == source.pk;
-                                        },
-                                    );
-                                    return html`<option value=${source.pk} ?selected=${selected}>
-                                        ${source.name} (${source.slug})
-                                    </option>`;
-                                })}
-                            </select>
+                            <ak-dual-select-dynamic-selected
+                                .provider=${oauth2SourcesProvider}
+                                .selector=${makeSourceSelector(this.instance?.jwksSources)}
+                                available-label=${msg("Available Sources")}
+                                selected-label=${msg("Selected Sources")}
+                            ></ak-dual-select-dynamic-selected>
                             <p class="pf-c-form__helper-text">
                                 ${msg(
                                     "JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider.",
                                 )}
-                            </p>
-                            <p class="pf-c-form__helper-text">
-                                ${msg("Hold control/command to select multiple items.")}
                             </p>
                         </ak-form-element-horizontal>
                     </div>

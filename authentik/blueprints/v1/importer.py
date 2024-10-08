@@ -33,6 +33,7 @@ from authentik.blueprints.v1.common import (
 from authentik.blueprints.v1.meta.registry import BaseMetaModel, registry
 from authentik.core.models import (
     AuthenticatedSession,
+    GroupSourceConnection,
     PropertyMapping,
     Provider,
     Source,
@@ -91,6 +92,7 @@ def excluded_models() -> list[type[Model]]:
         Source,
         PropertyMapping,
         UserSourceConnection,
+        GroupSourceConnection,
         Stage,
         OutpostServiceConnection,
         Policy,
@@ -169,7 +171,7 @@ class Importer:
     def default_context(self):
         """Default context"""
         return {
-            "goauthentik.io/enterprise/licensed": LicenseKey.get_total().is_valid(),
+            "goauthentik.io/enterprise/licensed": LicenseKey.get_total().status().is_valid,
             "goauthentik.io/rbac/models": rbac_models(),
         }
 

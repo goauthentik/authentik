@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-05 00:07+0000\n"
+"POT-Creation-Date: 2024-09-08 00:09+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Marc Schmitt, 2024\n"
 "Language-Team: French (https://app.transifex.com/authentik/teams/119923/fr/)\n"
@@ -28,6 +28,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
 "Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+
+#: authentik/admin/tasks.py
+#, python-brace-format
+msgid "New version {version} available!"
+msgstr "Une nouvelle version {version} est disponible !"
 
 #: authentik/api/schema.py
 msgid "Generic API Error"
@@ -92,6 +97,14 @@ msgid ""
 msgstr ""
 "Domain qui active cette marque. Peut être un super-ensemble, c'est-à-dire "
 "`a.b` pour `aa.b` et `ba.b`"
+
+#: authentik/brands/models.py
+msgid ""
+"When set, external users will be redirected to this application after "
+"authenticating."
+msgstr ""
+"Si activé, les utilisateurs externes seront redirigés vers cette application"
+" après s'être authentifiés."
 
 #: authentik/brands/models.py
 msgid "Web Certificate used by the authentik Core webserver."
@@ -265,6 +278,19 @@ msgstr ""
 " déjà."
 
 #: authentik/core/models.py
+msgid ""
+"Link to a group with identical name. Can have security implications when a "
+"group name is used with another source."
+msgstr ""
+"Lien vers un groupe ayant un nom identique. Peut poser des problèmes de "
+"sécurité si ce nom est partagé avec une autre source."
+
+#: authentik/core/models.py
+msgid "Use the group name, but deny enrollment when the name already exists."
+msgstr ""
+"Utiliser le nom du groupe, mais refuser la création si celui-ci existe déjà."
+
+#: authentik/core/models.py
 msgid "Source's display Name."
 msgstr "Nom d'affichage de la source."
 
@@ -287,6 +313,14 @@ msgid ""
 msgstr ""
 "Comment la source détermine si un utilisateur existant doit être authentifié"
 " ou un nouvelle utilisateur doit être inscrit."
+
+#: authentik/core/models.py
+msgid ""
+"How the source determines if an existing group should be used or a new group"
+" created."
+msgstr ""
+"Comment la source détermine si un groupe existant doit être utilisé ou un "
+"nouveau groupe doit être créé."
 
 #: authentik/core/models.py
 msgid "Token"
@@ -398,6 +432,7 @@ msgid "Go home"
 msgstr "Retourner à l'accueil"
 
 #: authentik/core/templates/login/base_full.html
+#: authentik/flows/templates/if/flow-sfe.html
 msgid "Powered by authentik"
 msgstr "Propulsé par authentik"
 
@@ -407,6 +442,10 @@ msgstr "Propulsé par authentik"
 #, python-format
 msgid "You're about to sign into %(application)s."
 msgstr "Vous êtes sur le point de vous connecter à %(application)s."
+
+#: authentik/core/views/interface.py
+msgid "Interface can only be accessed by internal users."
+msgstr "L'interface est accessible uniquement aux utilisateurs internes."
 
 #: authentik/crypto/api.py
 msgid "Subject-alt name"
@@ -469,8 +508,24 @@ msgid "Feature only accessible for internal users."
 msgstr "Fonctionnalité accessible aux utilisateurs internes uniquement."
 
 #: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider User"
+msgstr "Utilisateur du fournisseur Google Workspace"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Users"
+msgstr "Utilisateurs du fournisseur Google Workspace"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Group"
+msgstr "Groupe du fournisseur Google Workspace"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Groups"
+msgstr "Groupes du fournisseur Google Workspace"
+
+#: authentik/enterprise/providers/google_workspace/models.py
 #: authentik/enterprise/providers/microsoft_entra/models.py
-#: authentik/providers/scim/models.py authentik/sources/ldap/models.py
+#: authentik/providers/scim/models.py
 msgid "Property mappings used for group creation/updating."
 msgstr ""
 "Mappages de propriétés utilisés lors de la création et de la mise à jour des"
@@ -492,21 +547,17 @@ msgstr "Mappage de propriété Google Workspace"
 msgid "Google Workspace Provider Mappings"
 msgstr "Mappages de propriété Google Workspace"
 
-#: authentik/enterprise/providers/google_workspace/models.py
-msgid "Google Workspace Provider User"
-msgstr "Utilisateur du fournisseur Google Workspace"
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider User"
+msgstr "Utilisateur du fournisseur Microsoft Entra"
 
-#: authentik/enterprise/providers/google_workspace/models.py
-msgid "Google Workspace Provider Users"
-msgstr "Utilisateurs du fournisseur Google Workspace"
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Group"
+msgstr "Groupe du fournisseur Microsoft Entra"
 
-#: authentik/enterprise/providers/google_workspace/models.py
-msgid "Google Workspace Provider Group"
-msgstr "Groupe du fournisseur Google Workspace"
-
-#: authentik/enterprise/providers/google_workspace/models.py
-msgid "Google Workspace Provider Groups"
-msgstr "Groupes du fournisseur Google Workspace"
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Groups"
+msgstr "Groupes du fournisseur Microsoft Entra"
 
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Provider"
@@ -523,18 +574,6 @@ msgstr "Mappage de propriété Microsoft Entra"
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Provider Mappings"
 msgstr "Mappages de propriété Microsoft Entra"
-
-#: authentik/enterprise/providers/microsoft_entra/models.py
-msgid "Microsoft Entra Provider User"
-msgstr "Utilisateur du fournisseur Microsoft Entra"
-
-#: authentik/enterprise/providers/microsoft_entra/models.py
-msgid "Microsoft Entra Provider Group"
-msgstr "Groupe du fournisseur Microsoft Entra"
-
-#: authentik/enterprise/providers/microsoft_entra/models.py
-msgid "Microsoft Entra Provider Groups"
-msgstr "Groupes du fournisseur Microsoft Entra"
 
 #: authentik/enterprise/providers/rac/models.py
 #: authentik/stages/user_login/models.py
@@ -568,12 +607,12 @@ msgid "RAC Endpoints"
 msgstr "Points de terminaison RAC"
 
 #: authentik/enterprise/providers/rac/models.py
-msgid "RAC Property Mapping"
-msgstr "Mappage de propriété RAC"
+msgid "RAC Provider Property Mapping"
+msgstr "Mappage de propriété fournisseur RAC"
 
 #: authentik/enterprise/providers/rac/models.py
-msgid "RAC Property Mappings"
-msgstr "Mappages de propriété RAC"
+msgid "RAC Provider Property Mappings"
+msgstr "Mappages de propriété fournisseur RAC"
 
 #: authentik/enterprise/providers/rac/models.py
 msgid "RAC Connection token"
@@ -1119,6 +1158,32 @@ msgstr "Politique d'Expression"
 msgid "Expression Policies"
 msgstr "Politiques d'expression"
 
+#: authentik/policies/geoip/models.py
+msgid "GeoIP: client IP not found in ASN database."
+msgstr ""
+"GeoIP : l'IP du client n'a pas été trouvée dans la base de données ASN."
+
+#: authentik/policies/geoip/models.py
+msgid "Client IP is not part of an allowed autonomous system."
+msgstr "L'IP du client ne fait pas partie d'un autonomous system autorisé."
+
+#: authentik/policies/geoip/models.py
+msgid "GeoIP: client IP address not found in City database."
+msgstr ""
+"GeoIP : l'IP du client n'a pas été trouvée dans la base de données Ville."
+
+#: authentik/policies/geoip/models.py
+msgid "Client IP is not in an allowed country."
+msgstr "L'IP du client ne fait pas partie d'un pays autorisé."
+
+#: authentik/policies/geoip/models.py
+msgid "GeoIP Policy"
+msgstr "Politique GeoIP"
+
+#: authentik/policies/geoip/models.py
+msgid "GeoIP Policies"
+msgstr "Politiques GeoIP"
+
 #: authentik/policies/models.py
 msgid "all, all policies must pass"
 msgstr "toutes, toutes les politiques doivent réussir"
@@ -1284,14 +1349,6 @@ msgstr "DN sous lequel les objets sont accessibles."
 
 #: authentik/providers/ldap/models.py
 msgid ""
-"Users in this group can do search queries. If not set, every user can "
-"execute search queries."
-msgstr ""
-"Les utilisateurs dans ce groupe peuvent faire des requêtes de recherche. Si "
-"laissé vide, tous les utilisateurs peuvent faire des requêtes de recherche."
-
-#: authentik/providers/ldap/models.py
-msgid ""
 "The start for uidNumbers, this number is added to the user.pk to make sure "
 "that the numbers aren't too low for POSIX users. Default is 2000 to ensure "
 "that we don't collide with local users uidNumber"
@@ -1335,6 +1392,10 @@ msgstr "Fournisseur LDAP"
 #: authentik/providers/ldap/models.py
 msgid "LDAP Providers"
 msgstr "Fournisseurs LDAP"
+
+#: authentik/providers/ldap/models.py
+msgid "Search full LDAP directory"
+msgstr "Rechercher dans l'annuaire LDAP complet"
 
 #: authentik/providers/oauth2/id_token.py
 msgid "Based on the Hashed User ID"
@@ -1728,6 +1789,22 @@ msgstr "Fournisseur Radius"
 msgid "Radius Providers"
 msgstr "Fournisseurs Radius"
 
+#: authentik/providers/radius/models.py
+msgid "Radius Provider Property Mapping"
+msgstr "Mappage de propriété fournisseur Radius"
+
+#: authentik/providers/radius/models.py
+msgid "Radius Provider Property Mappings"
+msgstr "Mappages de propriété fournisseur Radius"
+
+#: authentik/providers/saml/api/providers.py
+msgid ""
+"With a signing keypair selected, at least one of 'Sign assertion' and 'Sign "
+"Response' must be selected."
+msgstr ""
+"Quand une clé de signature est sélectionnée, au moins l'un de « Signer les "
+"assertions » et « Signer les réponses » doit être sélectionné."
+
 #: authentik/providers/saml/api/providers.py
 msgid "Invalid XML Syntax"
 msgstr "Syntaxe XML Invalide"
@@ -1876,6 +1953,20 @@ msgstr ""
 msgid "Signing Keypair"
 msgstr "Paire de clés de Signature"
 
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid ""
+"When selected, incoming assertions are encrypted by the IdP using the public"
+" key of the encryption keypair. The assertion is decrypted by the SP using "
+"the the private key."
+msgstr ""
+"Si activé, les assertions entrantes seront chiffrées par l'IdP avec la clé "
+"publique de la paire de clé de chiffrement. L'assertion est déchiffrée par "
+"le SP en utilisant la clé privée."
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "Encryption Keypair"
+msgstr "Paire de clés de chiffrement"
+
 #: authentik/providers/saml/models.py
 msgid "Default relay_state value for IDP-initiated logins"
 msgstr "Valeur par défaut de relay_state des connexions initiées par l'IdP"
@@ -1889,12 +1980,12 @@ msgid "SAML Providers"
 msgstr "Fournisseurs SAML"
 
 #: authentik/providers/saml/models.py
-msgid "SAML Property Mapping"
-msgstr "Mappages de propriétés SAML"
+msgid "SAML Provider Property Mapping"
+msgstr "Mappage de propriété fournisseur SAML"
 
 #: authentik/providers/saml/models.py
-msgid "SAML Property Mappings"
-msgstr "Mappages de propriétés SAML"
+msgid "SAML Provider Property Mappings"
+msgstr "Mappages de propriété fournisseur SAML"
 
 #: authentik/providers/saml/models.py
 msgid "SAML Provider from Metadata"
@@ -1921,12 +2012,12 @@ msgid "SCIM Providers"
 msgstr "Fournisseurs SCIM"
 
 #: authentik/providers/scim/models.py
-msgid "SCIM Mapping"
-msgstr "Mappage SCIM"
+msgid "SCIM Provider Mapping"
+msgstr "Mappage fournisseur SCIM"
 
 #: authentik/providers/scim/models.py
-msgid "SCIM Mappings"
-msgstr "Mappages SCIM"
+msgid "SCIM Provider Mappings"
+msgstr "Mappages fournisseur SCIM"
 
 #: authentik/rbac/models.py
 msgid "Role"
@@ -2061,12 +2152,12 @@ msgid "LDAP Sources"
 msgstr "Sources LDAP"
 
 #: authentik/sources/ldap/models.py
-msgid "LDAP Property Mapping"
-msgstr "Mappage de propriété LDAP"
+msgid "LDAP Source Property Mapping"
+msgstr "Mappage de propriété source LDAP"
 
 #: authentik/sources/ldap/models.py
-msgid "LDAP Property Mappings"
-msgstr "Mappages de propriété LDAP"
+msgid "LDAP Source Property Mappings"
+msgstr "Mappages de propriété source LDAP"
 
 #: authentik/sources/ldap/signals.py
 msgid "Password does not match Active Directory Complexity."
@@ -2238,12 +2329,28 @@ msgid "Reddit OAuth Sources"
 msgstr "Sources d'OAuth Reddit"
 
 #: authentik/sources/oauth/models.py
+msgid "OAuth Source Property Mapping"
+msgstr "Mappage de propriété source OAuth"
+
+#: authentik/sources/oauth/models.py
+msgid "OAuth Source Property Mappings"
+msgstr "Mappages de propriété source OAuth"
+
+#: authentik/sources/oauth/models.py
 msgid "User OAuth Source Connection"
 msgstr "Connexion de l'utilisateur à la source OAuth"
 
 #: authentik/sources/oauth/models.py
 msgid "User OAuth Source Connections"
 msgstr "Connexion de l'utilisateur aux sources OAuth"
+
+#: authentik/sources/oauth/models.py
+msgid "Group OAuth Source Connection"
+msgstr "Connexion du groupe à la source OAuth"
+
+#: authentik/sources/oauth/models.py
+msgid "Group OAuth Source Connections"
+msgstr "Connexions du groupe à la source OAuth"
 
 #: authentik/sources/oauth/views/callback.py
 #, python-brace-format
@@ -2280,12 +2387,28 @@ msgid "Plex Sources"
 msgstr "Sources Plex"
 
 #: authentik/sources/plex/models.py
+msgid "Plex Source Property Mapping"
+msgstr "Mappage de propriété source Plex"
+
+#: authentik/sources/plex/models.py
+msgid "Plex Source Property Mappings"
+msgstr "Mappages de propriété source Plex"
+
+#: authentik/sources/plex/models.py
 msgid "User Plex Source Connection"
 msgstr "Connexion de l'utilisateur à la source Plex"
 
 #: authentik/sources/plex/models.py
 msgid "User Plex Source Connections"
 msgstr "Connexion de l'utilisateur aux sources Plex"
+
+#: authentik/sources/plex/models.py
+msgid "Group Plex Source Connection"
+msgstr "Connexion du groupe à la source Plex"
+
+#: authentik/sources/plex/models.py
+msgid "Group Plex Source Connections"
+msgstr "Connexions du groupe à la source OAuth"
 
 #: authentik/sources/saml/models.py
 msgid "Redirect Binding"
@@ -2375,12 +2498,28 @@ msgid "SAML Sources"
 msgstr "Sources SAML"
 
 #: authentik/sources/saml/models.py
+msgid "SAML Source Property Mapping"
+msgstr "Mappage de propriété source SAML"
+
+#: authentik/sources/saml/models.py
+msgid "SAML Source Property Mappings"
+msgstr "Mappages de propriété source SAML"
+
+#: authentik/sources/saml/models.py
 msgid "User SAML Source Connection"
 msgstr "Connexion de l'utilisateur à la source SAML"
 
 #: authentik/sources/saml/models.py
 msgid "User SAML Source Connections"
 msgstr "Connexion de l'utilisateur aux sources SAML"
+
+#: authentik/sources/saml/models.py
+msgid "Group SAML Source Connection"
+msgstr "Connexion du groupe à la source SAML"
+
+#: authentik/sources/saml/models.py
+msgid "Group SAML Source Connections"
+msgstr "Connexions du groupe à la source SAML"
 
 #: authentik/sources/scim/models.py
 msgid "SCIM Source"
@@ -2389,6 +2528,14 @@ msgstr "Source SCIM"
 #: authentik/sources/scim/models.py
 msgid "SCIM Sources"
 msgstr "Sources SCIM"
+
+#: authentik/sources/scim/models.py
+msgid "SCIM Source Property Mapping"
+msgstr "Mappage de propriété source SCIM"
+
+#: authentik/sources/scim/models.py
+msgid "SCIM Source Property Mappings"
+msgstr "Mappages de propriété source SCIM"
 
 #: authentik/stages/authenticator_duo/models.py
 msgid "Duo Authenticator Setup Stage"
@@ -3016,6 +3163,14 @@ msgstr ""
 "Nombre de tentatives dont dispose un utilisateur avant que le flux ne soit "
 "annulé. Pour verrouiller l'utilisateur, utilisez une politique de réputation"
 " et une étape user_write."
+
+#: authentik/stages/password/models.py
+msgid ""
+"When enabled, provides a 'show password' button with the password input "
+"field."
+msgstr ""
+"Si activé, fourni un bouton « Montrer le mot de passe » avec le champ "
+"d'entrée mot de passe."
 
 #: authentik/stages/password/models.py
 msgid "Password Stage"

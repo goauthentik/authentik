@@ -2,6 +2,7 @@ import { PFSize } from "@goauthentik/common/enums.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Spinner";
 
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -68,7 +69,7 @@ export class EmptyState extends AKElement implements IEmptyState {
      * @attr
      */
     @property()
-    header = "";
+    header?: string;
 
     static get styles(): CSSResult[] {
         return [
@@ -95,7 +96,9 @@ export class EmptyState extends AKElement implements IEmptyState {
                           class="pf-icon fa ${this.icon} pf-c-empty-state__icon"
                           aria-hidden="true"
                       ></i>`}
-                <h1 class="pf-c-title pf-m-lg">${this.header}</h1>
+                <h1 class="pf-c-title pf-m-lg">
+                    ${this.loading && this.header === undefined ? msg("Loading") : this.header}
+                </h1>
                 <div class="pf-c-empty-state__body">
                     <slot name="body"></slot>
                 </div>

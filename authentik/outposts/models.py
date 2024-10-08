@@ -451,7 +451,7 @@ class OutpostState:
             return False
         if self.build_hash != get_build_hash():
             return False
-        return parse(self.version) < OUR_VERSION
+        return parse(self.version) != OUR_VERSION
 
     @staticmethod
     def for_outpost(outpost: Outpost) -> list["OutpostState"]:

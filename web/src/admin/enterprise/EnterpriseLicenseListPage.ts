@@ -1,4 +1,5 @@
 import "@goauthentik/admin/enterprise/EnterpriseLicenseForm";
+import "@goauthentik/admin/enterprise/EnterpriseStatusCard";
 import "@goauthentik/admin/rbac/ObjectPermissionModal";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { getRelativeTime } from "@goauthentik/common/utils";
@@ -20,7 +21,6 @@ import { customElement, property, state } from "lit/decorators.js";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
@@ -29,6 +29,7 @@ import {
     License,
     LicenseForecast,
     LicenseSummary,
+    LicenseSummaryStatusEnum,
     RbacPermissionsAssignedByUsersListModelEnum,
 } from "@goauthentik/api";
 
@@ -64,7 +65,6 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
 
     static get styles(): CSSResult[] {
         return super.styles.concat(
-            PFDescriptionList,
             PFGrid,
             PFBanner,
             PFFormControl,
@@ -83,9 +83,11 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
 
     async apiEndpoint(): Promise<PaginatedResponse<License>> {
         this.forecast = await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseForecastRetrieve();
-        this.summary = await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseSummaryRetrieve();
+        this.summary = await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseSummaryRetrieve({
+            cached: false,
+        });
         this.installID = (
-            await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseGetInstallIdRetrieve()
+            await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseInstallIdRetrieve()
         ).installId;
         return new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseList(
             await this.defaultEndpointConfig(),
@@ -182,12 +184,19 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                         header=${msg("Expiry")}
                         subtext=${msg("Cumulative license expiry")}
                     >
-                        ${this.summary?.hasLicense
+                        ${this.summary &&
+                        this.summary?.status !== LicenseSummaryStatusEnum.Unlicensed
                             ? html`<div>${getRelativeTime(this.summary.latestValid)}</div>
                                   <small>${this.summary.latestValid.toLocaleString()}</small>`
                             : "-"}
                     </ak-aggregate-card>
                 </div>
+            </section>
+            <section class="pf-c-page__main-section pf-m-no-padding-bottom">
+                <ak-enterprise-status-card
+                    .summary=${this.summary}
+                    .forecast=${this.forecast}
+                ></ak-enterprise-status-card>
             </section>
         `;
     }

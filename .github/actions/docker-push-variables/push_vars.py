@@ -51,15 +51,24 @@ else:
         ]
 
 image_main_tag = image_tags[0].split(":")[-1]
-image_tags_rendered = ",".join(image_tags)
-image_names_rendered = ",".join(set(name.split(":")[0] for name in image_tags))
+
+
+def get_attest_image_names(image_with_tags: list[str]):
+    """Attestation only for GHCR"""
+    image_tags = []
+    for image_name in set(name.split(":")[0] for name in image_with_tags):
+        if not image_name.startswith("ghcr.io"):
+            continue
+        image_tags.append(image_name)
+    return ",".join(set(image_tags))
+
 
 with open(os.environ["GITHUB_OUTPUT"], "a+", encoding="utf-8") as _output:
     print(f"shouldBuild={should_build}", file=_output)
     print(f"sha={sha}", file=_output)
     print(f"version={version}", file=_output)
     print(f"prerelease={prerelease}", file=_output)
-    print(f"imageTags={image_tags_rendered}", file=_output)
-    print(f"imageNames={image_names_rendered}", file=_output)
+    print(f"imageTags={','.join(image_tags)}", file=_output)
+    print(f"attestImageNames={get_attest_image_names(image_tags)}", file=_output)
     print(f"imageMainTag={image_main_tag}", file=_output)
     print(f"imageMainName={image_tags[0]}", file=_output)

@@ -26,16 +26,6 @@ class OktaOAuth2Callback(OpenIDConnectOAuth2Callback):
     # see https://github.com/goauthentik/authentik/issues/1910
     client_class = UserprofileHeaderAuthClient
 
-    def get_user_enroll_context(
-        self,
-        info: dict[str, Any],
-    ) -> dict[str, Any]:
-        return {
-            "username": info.get("nickname"),
-            "email": info.get("email"),
-            "name": info.get("name"),
-        }
-
 
 @registry.register()
 class OktaType(SourceType):
@@ -47,3 +37,11 @@ class OktaType(SourceType):
     name = "okta"
 
     urls_customizable = True
+
+    def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
+        return {
+            "username": info.get("nickname"),
+            "email": info.get("email"),
+            "name": info.get("name"),
+            "groups": info.get("groups", []),
+        }

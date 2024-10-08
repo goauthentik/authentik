@@ -15,12 +15,13 @@ from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.registry import SourceType, registry
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
+from authentik.stages.identification.stage import LoginChallengeMixin
 
 LOGGER = get_logger()
 APPLE_CLIENT_ID_PARTS = 3
 
 
-class AppleLoginChallenge(Challenge):
+class AppleLoginChallenge(LoginChallengeMixin, Challenge):
     """Special challenge for apple-native authentication flow, which happens on the client."""
 
     client_id = CharField()
@@ -90,15 +91,6 @@ class AppleOAuth2Callback(OAuthCallback):
     def get_user_id(self, info: dict[str, Any]) -> str | None:
         return info["sub"]
 
-    def get_user_enroll_context(
-        self,
-        info: dict[str, Any],
-    ) -> dict[str, Any]:
-        return {
-            "email": info.get("email"),
-            "name": info.get("name"),
-        }
-
 
 @registry.register()
 class AppleType(SourceType):
@@ -132,3 +124,9 @@ class AppleType(SourceType):
                 "state": args["state"],
             }
         )
+
+    def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
+        return {
+            "email": info.get("email"),
+            "name": info.get("name"),
+        }

@@ -97,7 +97,8 @@ export class OutpostForm extends ModelForm<Outpost, string> {
     embedded = false;
 
     @state()
-    providers?: DataProvider;
+    providers: DataProvider = providerProvider(this.type);
+
     defaultConfig?: OutpostDefaultConfig;
 
     async loadInstance(pk: string): Promise<Outpost> {
@@ -105,6 +106,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
             uuid: pk,
         });
         this.type = o.type || OutpostTypeEnum.Proxy;
+        this.providers = providerProvider(o.type);
         return o;
     }
 

@@ -181,7 +181,7 @@ class GoogleWorkspaceProviderMapping(PropertyMapping):
 
     @property
     def component(self) -> str:
-        return "ak-property-mapping-google-workspace-form"
+        return "ak-property-mapping-provider-google-workspace-form"
 
     @property
     def serializer(self) -> type[Serializer]:
