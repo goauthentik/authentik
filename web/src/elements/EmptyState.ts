@@ -1,6 +1,7 @@
 import { PFSize } from "@goauthentik/common/enums.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Spinner";
+import { spread } from "@open-wc/lit-helpers";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -10,8 +11,15 @@ import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-sta
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+export interface IEmptyState {
+    icon?: boolean;
+    loading?: boolean;
+    fullHeight?: boolan;
+    header?: string;
+}
+
 @customElement("ak-empty-state")
-export class EmptyState extends AKElement {
+export class EmptyState extends AKElement implements IEmptyState {
     @property({ type: String })
     icon = "";
 
@@ -62,6 +70,10 @@ export class EmptyState extends AKElement {
             </div>
         </div>`;
     }
+}
+
+export function akEmptyState(properties: IEmptyState) {
+    return html`<ak-empty-state ${spread(properties)}></ak-empty-state>`;
 }
 
 declare global {

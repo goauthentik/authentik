@@ -1,10 +1,11 @@
+import { render } from "@goauthentik/elements/tests/utils.js";
 import { $, expect } from "@wdio/globals";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
 
-import "./EmptyState.js";
-import { render } from "./tests/utils.js";
+import "../EmptyState.js";
+import { akEmptyState } from "../EmptyState.js";
 
 describe("ak-empty-state", () => {
     it("should render the default loader", async () => {
@@ -42,10 +43,20 @@ describe("ak-empty-state", () => {
         render(
             html`<ak-empty-state header=${msg("No messages found")}>
                 <p slot="body">Try again with a different filter</p>
-            </ak-empty-state>`,
+            </ak-empty-state>`
         );
 
         const message = await $("ak-empty-state").$(">>>.pf-c-empty-state__body").$(">>>p");
         await expect(message).toHaveText("Try again with a different filter");
+    });
+
+    it("should render as a function call", async () => {
+        render(akEmptyState({ loading: true, header: msg("Loading") }));
+
+        const empty = await $("ak-empty-state").$(">>>.pf-c-empty-state__icon");
+        await expect(empty).toExist();
+
+        const header = await $("ak-empty-state").$(">>>.pf-c-title");
+        await expect(header).toHaveText("Loading");
     });
 });
