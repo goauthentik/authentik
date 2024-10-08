@@ -1,6 +1,5 @@
 import { AKElement } from "@goauthentik/elements/Base";
 import { type SlottedTemplateResult } from "@goauthentik/elements/types";
-import { spread } from "@open-wc/lit-helpers";
 
 import { css, html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
@@ -39,7 +38,7 @@ export class Divider extends AKElement {
 
     render() {
         return html`<div class="separator">
-            ${this.message ? this.message : html`<slot></slot>`}
+            <slot></slot>
         </div>`;
     }
 }

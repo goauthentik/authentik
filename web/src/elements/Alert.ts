@@ -1,5 +1,5 @@
 import { AKElement } from "@goauthentik/elements/Base";
-import { type SlottedTemplateResult } from "@goauthentik/elements/types";
+import { type SlottedTemplateResult, type Spread } from "@goauthentik/elements/types";
 import { spread } from "@open-wc/lit-helpers";
 
 import { html, nothing } from "lit";
@@ -89,9 +89,9 @@ export class Alert extends AKElement implements IAlert {
     }
 }
 
-export function akAlert(properties: IAlert, content?: SlottedTemplateResult = nothing) {
+export function akAlert(properties: IAlert, content: SlottedTemplateResult = nothing) {
     const message = typeof content === "string" ? html`<span>${content}</span>` : content;
-    return html`<ak-alert ${spread(properties)}>${message}</ak-alert>`;
+    return html`<ak-alert ${spread(properties as Spread)}>${message}</ak-alert>`;
 }
 
 declare global {

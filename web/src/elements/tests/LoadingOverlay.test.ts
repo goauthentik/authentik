@@ -1,21 +1,10 @@
-import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet.js";
+import { render } from "@goauthentik/elements/tests/utils.js";
 import { $, expect } from "@wdio/globals";
 
-import { TemplateResult, html, render as litRender } from "lit";
-
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import { html } from "lit";
 
 import "../LoadingOverlay.js";
-
-const render = (body: TemplateResult) => {
-    document.adoptedStyleSheets = [
-        ...document.adoptedStyleSheets,
-        ensureCSSStyleSheet(PFBase),
-        ensureCSSStyleSheet(AKGlobal),
-    ];
-    return litRender(body, document.body);
-};
+import { akLoadingOverlay } from "../LoadingOverlay.js";
 
 describe("ak-loading-overlay", () => {
     it("should render the default loader", async () => {
@@ -28,11 +17,17 @@ describe("ak-loading-overlay", () => {
     it("should render a slotted message", async () => {
         render(
             html`<ak-loading-overlay>
-                <p slot="body">Try again with a different filter</p>
+                <p>Try again with a different filter</p>
             </ak-loading-overlay>`,
         );
 
         const message = await $("ak-loading-overlay").$(">>>p");
         await expect(message).toHaveText("Try again with a different filter");
+    });
+
+    it("as a function should render a slotted message", async () => {
+        render(akLoadingOverlay({}, "Try again with another filter"));
+        const overlay = await $("ak-loading-overlay");
+        await expect(overlay).toHaveText("Try again with another filter");
     });
 });

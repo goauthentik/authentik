@@ -77,7 +77,7 @@ export const config: WebdriverIO.Config = {
                     litCss(),
                     replace({
                         "process.env.NODE_ENV": JSON.stringify(
-                            isProdBuild ? "production" : "development"
+                            isProdBuild ? "production" : "development",
                         ),
                         "process.env.CWD": JSON.stringify(cwd()),
                         "process.env.AK_API_BASE_PATH": JSON.stringify(apiBasePath),
@@ -332,7 +332,7 @@ export const config: WebdriverIO.Config = {
     afterTest: async function (
         _test,
         _context,
-        { error: _error, result: _result, duration: _duration, passed: _passed, retries: _retries }
+        { error: _error, result: _result, duration: _duration, passed: _passed, retries: _retries },
     ) {
         if (lemmeSee) {
             await browser.pause(500);

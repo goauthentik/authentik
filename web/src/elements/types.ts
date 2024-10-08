@@ -74,4 +74,5 @@ export type SelectGrouped<T = never> = {
 export type GroupedOptions<T = never> = SelectGrouped<T> | SelectFlat<T>;
 export type SelectOptions<T = never> = SelectOption<T>[] | GroupedOptions<T>;
 
-export type SlotTemplate = string | TemplateResult | typeof nothing;
+export type SlottedTemplateResult = string | TemplateResult | typeof nothing;
+export type Spread = { [key: string]: unknown };

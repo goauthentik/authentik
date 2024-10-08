@@ -1,11 +1,11 @@
 import { PFSize } from "@goauthentik/common/enums.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Spinner";
-import { type SlottedTemplateResult } from "@goauthentik/elements/types";
+import { type SlottedTemplateResult, type Spread } from "@goauthentik/elements/types";
 import { spread } from "@open-wc/lit-helpers";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
@@ -13,9 +13,9 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export interface IEmptyState {
-    icon?: boolean;
+    icon?: string;
     loading?: boolean;
-    fullHeight?: boolan;
+    fullHeight?: boolean;
     header?: string;
 }
 
@@ -33,7 +33,7 @@ export class EmptyState extends AKElement implements IEmptyState {
     @property()
     header?: string;
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [
             PFBase,
             PFEmptyState,
@@ -47,7 +47,7 @@ export class EmptyState extends AKElement implements IEmptyState {
         ];
     }
 
-    render(): TemplateResult {
+    render() {
         return html`<div class="pf-c-empty-state ${this.fullHeight && "pf-m-full-height"}">
             <div class="pf-c-empty-state__content">
                 ${this.loading
@@ -73,10 +73,10 @@ export class EmptyState extends AKElement implements IEmptyState {
     }
 }
 
-export function akEmptyState(properties?: IEmptyState, content?: SlottedTemplateResult = nothing) {
+export function akEmptyState(properties: IEmptyState, content: SlottedTemplateResult = nothing) {
     const message =
         typeof content === "string" ? html`<span slot="body">${content}</span>` : content;
-    return html`<ak-empty-state ${spread(properties)}>${message}</ak-empty-state>`;
+    return html`<ak-empty-state ${spread(properties as Spread)}>${message}</ak-empty-state>`;
 }
 
 declare global {

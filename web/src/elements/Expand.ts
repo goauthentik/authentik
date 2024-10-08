@@ -1,8 +1,9 @@
 import { AKElement } from "@goauthentik/elements/Base";
+import { type SlottedTemplateResult, type Spread } from "@goauthentik/elements/types";
 import { spread } from "@open-wc/lit-helpers";
 
 import { msg } from "@lit/localize";
-import { css, html } from "lit";
+import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFExpandableSection from "@patternfly/patternfly/components/ExpandableSection/expandable-section.css";
@@ -65,9 +66,9 @@ export class Expand extends AKElement implements IExpand {
     }
 }
 
-export function akExpand(properties: IExpand, content?: SlottedTemplateResult = nothing) {
+export function akExpand(properties: IExpand, content: SlottedTemplateResult = nothing) {
     const message = typeof content === "string" ? html`<span>${content}</span>` : content;
-    return html`<ak-expand ${spread(properties)}>${message}</ak-expand>`;
+    return html`<ak-expand ${spread(properties as Spread)}>${message}</ak-expand>`;
 }
 
 declare global {

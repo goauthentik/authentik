@@ -53,20 +53,20 @@ describe("ak-expand", () => {
         render(
             html`<ak-expand text-open="Close it" text-closed="Open it" expanded
                 ><p>This is the expanded text</p></ak-expand
-            >`
+            >`,
         );
         const paragraph = await $("ak-expand").$(">>>p");
         await expect(paragraph).toExist();
         await expect(paragraph).toBeDisplayed();
         await expect(paragraph).toHaveText("This is the expanded text");
         await expect(await $("ak-expand").$(".pf-c-expandable-section__toggle-text")).toHaveText(
-            "Close it"
+            "Close it",
         );
 
         const control = await $("ak-expand").$(">>>button");
         await control.click();
         await expect(await $("ak-expand").$(".pf-c-expandable-section__toggle-text")).toHaveText(
-            "Open it"
+            "Open it",
         );
     });
 
@@ -74,20 +74,20 @@ describe("ak-expand", () => {
         render(
             akExpand(
                 { "expanded": true, "text-open": "Close it now", "text-closed": "Open it now" },
-                html`<p>This is the new text.</p>`
-            )
+                html`<p>This is the new text.</p>`,
+            ),
         );
         const paragraph = await $("ak-expand").$(">>>p");
         await expect(paragraph).toExist();
         await expect(paragraph).toBeDisplayed();
         await expect(paragraph).toHaveText("This is the new text.");
         await expect(await $("ak-expand").$(".pf-c-expandable-section__toggle-text")).toHaveText(
-            "Close it now"
+            "Close it now",
         );
         const control = await $("ak-expand").$(">>>button");
         await control.click();
         await expect(await $("ak-expand").$(".pf-c-expandable-section__toggle-text")).toHaveText(
-            "Open it now"
+            "Open it now",
         );
     });
 });

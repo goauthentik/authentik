@@ -53,7 +53,7 @@ describe("ak-empty-state", () => {
         render(
             html`<ak-empty-state header=${msg("No messages found")}>
                 <p slot="body">Try again with a different filter</p>
-            </ak-empty-state>`
+            </ak-empty-state>`,
         );
 
         const message = await $("ak-empty-state").$(">>>.pf-c-empty-state__body").$(">>>p");
@@ -75,8 +75,8 @@ describe("ak-empty-state", () => {
             akEmptyState(
                 { loading: true },
                 html` <span slot="body">Introspecting</span>
-                    <span slot="primary">... carefully</span>`
-            )
+                    <span slot="primary">... carefully</span>`,
+            ),
         );
 
         const empty = await $("ak-empty-state").$(">>>.pf-c-empty-state__icon");
