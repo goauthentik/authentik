@@ -28,7 +28,7 @@ describe("ak-label", () => {
         );
     });
 
-    it("should render a compart label with the default level", async () => {
+    it("should render a compact label with the default level", async () => {
         render(html`<ak-label compact>This is a label</ak-label>`);
         await expect(await $("ak-label").$(">>>span.pf-c-label")).toHaveElementClass("pf-m-grey");
         await expect(await $("ak-label").$(">>>span.pf-c-label")).toHaveElementClass(
