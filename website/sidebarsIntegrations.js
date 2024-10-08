@@ -1,13 +1,5 @@
-const docsSidebar = require("./sidebars.js");
-const generateVersionDropdown =
-    require("./src/utils.js").generateVersionDropdown;
-
 module.exports = {
     integrations: [
-        {
-            type: "html",
-            value: generateVersionDropdown(docsSidebar),
-        },
         {
             type: "doc",
             id: "index",

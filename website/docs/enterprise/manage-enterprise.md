@@ -8,7 +8,7 @@ Your organization defines the members, their roles, the licenses associated with
 
 ### Create an Organization
 
-1. To create a new organization, log in to the [Customer portal](./get-started#access-enterprise).
+1. To create a new organization, log in to the [Customer portal](./get-started.md#access-enterprise).
 
 2. On the **My organizations** page, click **Create an organization**.
 
@@ -27,7 +27,7 @@ In the Customer portal you can remove members and invite new members to the orga
 -   **Member**: can view licenses, including the license key.
 -   **Owner**: can do everything the Member role can do, plus: add and remove members, order and renew licenses, and edit the organization.
 
-1. To manage membership in an organization, log in to the [Customer portal](./get-started#access-enterprise).
+1. To manage membership in an organization, log in to the [Customer portal](./get-started.md#access-enterprise).
 
 2. On the **My organizations** page, click the name of the organization you want to edit membership in.
 
@@ -107,7 +107,7 @@ The following events occur when a license expires or the internal/external user 
 
 License usage is calculated based on total user counts that authentik regularly captures. This data is checked against all valid licenses, and the sum total of all users. Internal and external users are counted based on the number of active users of the respective type saved in authentik. Service account users are not counted towards the license.
 
-An **internal** user is typically a team member, such as a company employee, who has access to the full Enterprise feature set. An **external** user might be an external consultant, a volunteer in a charitable site, or a B2C customer who logged onto your website to shop. External users don't get access to Enterprise features, nor to the **My applications** page in authentik. Instead, external users are authenticated and then redirected to log directly into their [default application](../core/brands.md#external-user-settings).
+An **internal** user is typically a team member, such as a company employee, who has access to the full Enterprise feature set. An **external** user might be an external consultant, a volunteer in a charitable site, or a B2C customer who logged onto your website to shop. External users don't get access to Enterprise features, nor to the **My applications** page in authentik. Instead, external users are authenticated and then redirected to log directly into their [default application](../customize/brands.md#external-user-settings).
 
 ### Upgrade the number of users in a license
 
