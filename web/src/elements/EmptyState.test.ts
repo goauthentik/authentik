@@ -1,22 +1,10 @@
 import { $, expect } from "@wdio/globals";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html, render as litRender } from "lit";
-
-import AKGlobal from "../common/styles/authentik.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import { html } from "lit";
 
 import "./EmptyState.js";
-import { ensureCSSStyleSheet } from "./utils/ensureCSSStyleSheet.js";
-
-const render = (body: TemplateResult) => {
-    document.adoptedStyleSheets = [
-        ...document.adoptedStyleSheets,
-        ensureCSSStyleSheet(PFBase),
-        ensureCSSStyleSheet(AKGlobal),
-    ];
-    return litRender(body, document.body);
-};
+import { render } from "./tests/utils.js";
 
 describe("ak-empty-state", () => {
     it("should render the default loader", async () => {
