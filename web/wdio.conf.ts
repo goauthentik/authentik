@@ -1,15 +1,57 @@
 import replace from "@rollup/plugin-replace";
 import { cwd } from "process";
-import postcssLit from "rollup-plugin-postcss-lit";
 import type { UserConfig } from "vite";
+import litCss from "vite-plugin-lit-css";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 const isProdBuild = process.env.NODE_ENV === "production";
 const apiBasePath = process.env.AK_API_BASE_PATH || "";
 const runHeadless = process.env.CI !== undefined;
+
+const testSafari = process.env.WDIO_TEST_SAFARI !== undefined;
+const testFirefox = process.env.WDIO_TEST_FIREFOX !== undefined;
+const skipChrome = process.env.WDIO_SKIP_CHROME !== undefined;
+
+const capabilities = [];
+
+const DEFAULT_MAX_INSTANCES = 10;
+
+if (!skipChrome) {
+    capabilities.push({
+        // capabilities for local browser web tests
+        "browserName": "chrome", // or "firefox", "microsoftedge", "safari"
+        "goog:chromeOptions": {
+            args: [
+                "disable-search-engine-choice-screen",
+                ...(runHeadless
+                    ? [
+                          "headless",
+                          "disable-gpu",
+                          "no-sandbox",
+                          "window-size=1280,672",
+                          "browser-test",
+                      ]
+                    : []),
+            ],
+        },
+    });
+}
+
+if (testSafari) {
+    capabilities.push({
+        browserName: "safari", // or "firefox", "microsoftedge", "safari"
+    });
+}
+
+if (testFirefox) {
+    capabilities.push({
+        browserName: "firefox", // or "firefox", "microsoftedge", "safari"
+    });
+}
+
 const maxInstances =
     process.env.MAX_INSTANCES !== undefined
-        ? parseInt(process.env.MAX_INSTANCES, 10)
+        ? parseInt(process.env.MAX_INSTANCES, DEFAULT_MAX_INSTANCES)
         : runHeadless
           ? 10
           : 1;
@@ -23,9 +65,10 @@ export const config: WebdriverIO.Config = {
     runner: [
         "browser",
         {
-            viteConfig: (config: UserConfig = { plugins: [] }) => ({
-                ...config,
+            viteConfig: (userConfig: UserConfig = { plugins: [] }) => ({
+                ...userConfig,
                 plugins: [
+                    litCss(),
                     replace({
                         "process.env.NODE_ENV": JSON.stringify(
                             isProdBuild ? "production" : "development",
@@ -34,15 +77,21 @@ export const config: WebdriverIO.Config = {
                         "process.env.AK_API_BASE_PATH": JSON.stringify(apiBasePath),
                         "preventAssignment": true,
                     }),
-                    ...(config?.plugins ?? []),
-                    postcssLit(),
+                    ...(userConfig?.plugins ?? []),
                     tsconfigPaths(),
                 ],
             }),
         },
     ],
 
-    tsConfigPath: "./tsconfig.json",
+    // @ts-expect-error TS2353: The types are not up-to-date with Wdio9.
+    autoCompileOpts: {
+        autoCompile: true,
+        tsNodeOpts: {
+            project: "./tsconfig.json",
+            transpileOnly: true,
+        },
+    },
 
     //
     // ==================
@@ -86,19 +135,7 @@ export const config: WebdriverIO.Config = {
     // Sauce Labs platform configurator - a great tool to configure your capabilities:
     // https://saucelabs.com/platform/platform-configurator
     //
-    capabilities: [
-        {
-            // capabilities for local browser web tests
-            "browserName": "chrome", // or "firefox", "microsoftedge", "safari"
-            "goog:chromeOptions": {
-                args: [
-                    "disable-search-engine-choice-screen",
-                    ...(runHeadless ? ["headless", "disable-gpu"] : []),
-                ],
-            },
-        },
-    ],
-
+    capabilities,
     //
     // ===================
     // Test Configurations
@@ -133,11 +170,11 @@ export const config: WebdriverIO.Config = {
     // baseUrl: 'http://localhost:8080',
     //
     // Default timeout for all waitFor* commands.
-    waitforTimeout: 10000,
+    waitforTimeout: 12000,
     //
     // Default timeout in milliseconds for request
     // if browser driver or grid doesn't send response
-    connectionRetryTimeout: 120000,
+    connectionRetryTimeout: 12000,
     //
     // Default request retries count
     connectionRetryCount: 3,

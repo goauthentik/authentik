@@ -1,11 +1,11 @@
-import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet.js";
 import { $, expect } from "@wdio/globals";
 
 import { TemplateResult, html, render as litRender } from "lit";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
+import AKGlobal from "../../../common/styles/authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+import { ensureCSSStyleSheet } from "../../utils/ensureCSSStyleSheet.js";
 import { QuickAction } from "../QuickActionsCard.js";
 import "../QuickActionsCard.js";
 
@@ -35,7 +35,8 @@ describe("ak-quick-actions-card", () => {
             ></ak-quick-actions-card>`,
         );
         const component = await $("ak-quick-actions-card");
-        const items = await component.$$(">>>.pf-c-list li").getElements();
+        const items = await component.$$(">>>.pf-c-list li");
+        // @ts-expect-error "Another ChainablePromise mistake"
         await expect(Array.from(items).length).toEqual(5);
         await expect(await component.$(">>>.pf-c-list li:nth-of-type(4)")).toHaveText(
             "Manage users",
