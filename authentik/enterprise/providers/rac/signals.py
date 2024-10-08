@@ -21,6 +21,8 @@ from authentik.enterprise.providers.rac.models import ConnectionToken, Endpoint
 @receiver(user_logged_out)
 def user_logged_out_session(sender, request: HttpRequest, user: User, **_):
     """Disconnect any open RAC connections"""
+    if not request.session or not request.session.session_key:
+        return
     layer = get_channel_layer()
     async_to_sync(layer.group_send)(
         RAC_CLIENT_GROUP_SESSION

@@ -34,6 +34,7 @@ async function propertyMappingsProvider(page = 1, search = "") {
         search: search.trim(),
         page,
     });
+
     return {
         pagination: propertyMappings.pagination,
         options: propertyMappings.results.map((m) => [m.pk, m.name, m.name, m]),
@@ -326,7 +327,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
             <ak-form-group>
                 <span slot="header"> ${msg("Additional settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal label=${msg("Group")} name="syncParentGroup">
+                    <ak-form-element-horizontal label=${msg("Parent Group")} name="syncParentGroup">
                         <ak-search-select
                             .fetchObjects=${async (query?: string): Promise<Group[]> => {
                                 const args: CoreGroupsListRequest = {

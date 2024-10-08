@@ -173,7 +173,7 @@ class Group(SerializerModel, AttributesMixin):
 
     group_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
-    name = models.CharField(_("name"), max_length=80)
+    name = models.TextField(_("name"))
     is_superuser = models.BooleanField(
         default=False, help_text=_("Users added to this group will be superusers.")
     )
@@ -466,8 +466,6 @@ class ApplicationQuerySet(QuerySet):
     def with_provider(self) -> "QuerySet[Application]":
         qs = self.select_related("provider")
         for subclass in Provider.objects.get_queryset()._get_subclasses_recurse(Provider):
-            if LOOKUP_SEP in subclass:
-                continue
             qs = qs.select_related(f"provider__{subclass}")
         return qs
 
@@ -545,15 +543,24 @@ class Application(SerializerModel, PolicyBindingModel):
         if not self.provider:
             return None
 
-        for subclass in Provider.objects.get_queryset()._get_subclasses_recurse(Provider):
-            # We don't care about recursion, skip nested models
-            if LOOKUP_SEP in subclass:
+        candidates = []
+        base_class = Provider
+        for subclass in base_class.objects.get_queryset()._get_subclasses_recurse(base_class):
+            parent = self.provider
+            for level in subclass.split(LOOKUP_SEP):
+                try:
+                    parent = getattr(parent, level)
+                except AttributeError:
+                    break
+            if parent in candidates:
                 continue
-            try:
-                return getattr(self.provider, subclass)
-            except AttributeError:
-                pass
-        return None
+            idx = subclass.count(LOOKUP_SEP)
+            if type(parent) is not base_class:
+                idx += 1
+            candidates.insert(idx, parent)
+        if not candidates:
+            return None
+        return candidates[-1]
 
     def __str__(self):
         return str(self.name)
@@ -580,6 +587,19 @@ class SourceUserMatchingModes(models.TextChoices):
     )
     USERNAME_DENY = "username_deny", _(
         "Use the user's username, but deny enrollment when the username already exists."
+    )
+
+
+class SourceGroupMatchingModes(models.TextChoices):
+    """Different modes a source can handle new/returning groups"""
+
+    IDENTIFIER = "identifier", _("Use the source-specific identifier")
+    NAME_LINK = "name_link", _(
+        "Link to a group with identical name. Can have security implications "
+        "when a group name is used with another source."
+    )
+    NAME_DENY = "name_deny", _(
+        "Use the group name, but deny enrollment when the name already exists."
     )
 
 
@@ -630,6 +650,14 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         help_text=_(
             "How the source determines if an existing user should be authenticated or "
             "a new user enrolled."
+        ),
+    )
+    group_matching_mode = models.TextField(
+        choices=SourceGroupMatchingModes.choices,
+        default=SourceGroupMatchingModes.IDENTIFIER,
+        help_text=_(
+            "How the source determines if an existing group should be used or "
+            "a new group created."
         ),
     )
 
@@ -725,6 +753,27 @@ class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
 
     class Meta:
         unique_together = (("user", "source"),)
+
+
+class GroupSourceConnection(SerializerModel, CreatedUpdatedModel):
+    """Connection between Group and Source."""
+
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    source = models.ForeignKey(Source, on_delete=models.CASCADE)
+    identifier = models.TextField()
+
+    objects = InheritanceManager()
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        """Get serializer for this model"""
+        raise NotImplementedError
+
+    def __str__(self) -> str:
+        return f"Group-source connection (group={self.group_id}, source={self.source_id})"
+
+    class Meta:
+        unique_together = (("group", "source"),)
 
 
 class ExpiringModel(models.Model):
@@ -859,7 +908,7 @@ class PropertyMapping(SerializerModel, ManagedModel):
         except ControlFlowException as exc:
             raise exc
         except Exception as exc:
-            raise PropertyMappingExpressionException(self, exc) from exc
+            raise PropertyMappingExpressionException(exc, self) from exc
 
     def __str__(self):
         return f"Property Mapping {self.name}"

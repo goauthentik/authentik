@@ -1,6 +1,10 @@
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
+import {
+    makeSourceSelector,
+    oauth2SourcesProvider,
+} from "@goauthentik/admin/providers/oauth2/OAuth2Sources.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-toggle-group";
@@ -21,11 +25,9 @@ import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 import {
     FlowsInstancesListDesignationEnum,
-    PaginatedOAuthSourceList,
     ProvidersApi,
     ProxyMode,
     ProxyProvider,
-    SourcesApi,
 } from "@goauthentik/api";
 
 import {
@@ -47,15 +49,6 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
         this.mode = first(provider.mode, ProxyMode.Proxy);
         return provider;
     }
-
-    async load(): Promise<void> {
-        this.oauthSources = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthList({
-            ordering: "name",
-            hasJwks: true,
-        });
-    }
-
-    oauthSources?: PaginatedOAuthSourceList;
 
     @state()
     showHttpBasic = true;
@@ -412,23 +405,16 @@ ${this.instance?.skipPathRegex}</textarea
                         label=${msg("Trusted OIDC Sources")}
                         name="jwksSources"
                     >
-                        <select class="pf-c-form-control" multiple>
-                            ${this.oauthSources?.results.map((source) => {
-                                const selected = (this.instance?.jwksSources || []).some((su) => {
-                                    return su == source.pk;
-                                });
-                                return html`<option value=${source.pk} ?selected=${selected}>
-                                    ${source.name} (${source.slug})
-                                </option>`;
-                            })}
-                        </select>
+                        <ak-dual-select-dynamic-selected
+                            .provider=${oauth2SourcesProvider}
+                            .selector=${makeSourceSelector(this.instance?.jwksSources)}
+                            available-label=${msg("Available Sources")}
+                            selected-label=${msg("Selected Sources")}
+                        ></ak-dual-select-dynamic-selected>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider.",
                             )}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Hold control/command to select multiple items.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>

@@ -41,7 +41,7 @@ export class Diagram extends AKElement {
             // The type definition for this says number
             // but the example use strings
             // and numbers don't work
-            logLevel: "fatal" as unknown as number,
+            logLevel: "fatal",
             startOnLoad: false,
             flowchart: {
                 curve: "linear",

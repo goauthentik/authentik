@@ -50,3 +50,9 @@ export class AkDualSelectDynamic extends AkDualSelectProvider {
         ></ak-dual-select>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-dual-select-dynamic-selected": AkDualSelectDynamic;
+    }
+}

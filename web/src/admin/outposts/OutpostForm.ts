@@ -97,7 +97,8 @@ export class OutpostForm extends ModelForm<Outpost, string> {
     embedded = false;
 
     @state()
-    providers?: DataProvider;
+    providers: DataProvider = providerProvider(this.type);
+
     defaultConfig?: OutpostDefaultConfig;
 
     async loadInstance(pk: string): Promise<Outpost> {
@@ -105,6 +106,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
             uuid: pk,
         });
         this.type = o.type || OutpostTypeEnum.Proxy;
+        this.providers = providerProvider(o.type);
         return o;
     }
 
@@ -213,7 +215,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     <a
                         target="_blank"
                         rel="noopener noreferrer"
-                        href="${docLink("/docs/outposts?utm_source=authentik")}"
+                        href="${docLink("/docs/add-secure-apps/outposts?utm_source=authentik")}"
                         >${msg("See documentation")}</a
                     >.
                 </p>
@@ -249,7 +251,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 href="${docLink(
-                                    "/docs/outposts?utm_source=authentik#configuration",
+                                    "/docs/add-secure-apps/outposts?utm_source=authentik#configuration",
                                 )}"
                                 >${msg("Documentation")}</a
                             >

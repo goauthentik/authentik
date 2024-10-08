@@ -4,7 +4,7 @@ import { customElement, property } from "lit/decorators.js";
 import { HorizontalLightComponent } from "./HorizontalLightComponent";
 
 @customElement("ak-textarea-input")
-export class AkTextareaInput extends HorizontalLightComponent {
+export class AkTextareaInput extends HorizontalLightComponent<string> {
     @property({ type: String, reflect: true })
     value = "";
 

@@ -9,6 +9,7 @@ import orjson
 from celery.schedules import crontab
 from django.conf import ImproperlyConfigured
 from sentry_sdk import set_tag
+from xmlsec import enable_debug_trace
 
 from authentik import __version__
 from authentik.lib.config import CONFIG, redis_url
@@ -520,6 +521,7 @@ if DEBUG:
         "rest_framework.renderers.BrowsableAPIRenderer"
     )
     SHARED_APPS.insert(SHARED_APPS.index("django.contrib.staticfiles"), "daphne")
+    enable_debug_trace(True)
 
 TENANT_APPS.append("authentik.core")
 

@@ -3,6 +3,8 @@ import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first, groupBy } from "@goauthentik/common/utils";
 import "@goauthentik/elements/ak-checkbox-group/ak-checkbox-group.js";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
+import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -15,13 +17,39 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import {
     FlowsInstancesListDesignationEnum,
     IdentificationStage,
-    PaginatedSourceList,
+    Source,
     SourcesApi,
     Stage,
     StagesApi,
     StagesPasswordListRequest,
     UserFieldsEnum,
 } from "@goauthentik/api";
+
+async function sourcesProvider(page = 1, search = "") {
+    const sources = await new SourcesApi(DEFAULT_CONFIG).sourcesAllList({
+        ordering: "slug",
+        pageSize: 20,
+        search: search.trim(),
+        page,
+    });
+
+    return {
+        pagination: sources.pagination,
+        options: sources.results
+            .filter((source) => source.component !== "")
+            .map((source) => [source.pk, source.name, source.name, source]),
+    };
+}
+
+function makeSourcesSelector(instanceSources: string[] | undefined) {
+    const localSources = instanceSources ? new Set(instanceSources) : undefined;
+
+    return localSources
+        ? ([pk, _]: DualSelectPair) => localSources.has(pk)
+        : // Creating a new instance, auto-select built-in source only when no other sources exist
+          ([_0, _1, _2, source]: DualSelectPair<Source>) =>
+              source !== undefined && source.component === "";
+}
 
 @customElement("ak-stage-identification-form")
 export class IdentificationStageForm extends BaseStageForm<IdentificationStage> {
@@ -42,25 +70,17 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
         });
     }
 
-    async load(): Promise<void> {
-        this.sources = await new SourcesApi(DEFAULT_CONFIG).sourcesAllList({
-            ordering: "slug",
-        });
-    }
-
-    sources?: PaginatedSourceList;
-
     async send(data: IdentificationStage): Promise<IdentificationStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesIdentificationUpdate({
                 stageUuid: this.instance.pk || "",
                 identificationStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesIdentificationCreate({
-                identificationStageRequest: data,
-            });
         }
+
+        return new StagesApi(DEFAULT_CONFIG).stagesIdentificationCreate({
+            identificationStageRequest: data,
+        });
     }
 
     isUserFieldSelected(field: UserFieldsEnum): boolean {
@@ -213,32 +233,16 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                         ?required=${true}
                         name="sources"
                     >
-                        <select class="pf-c-form-control" multiple>
-                            ${this.sources?.results
-                                .filter((source) => {
-                                    return source.component !== "";
-                                })
-                                .map((source) => {
-                                    const selected = Array.from(this.instance?.sources || []).some(
-                                        (su) => {
-                                            return su == source.pk;
-                                        },
-                                    );
-                                    return html`<option
-                                        value=${ifDefined(source.pk)}
-                                        ?selected=${selected}
-                                    >
-                                        ${source.name}
-                                    </option>`;
-                                })}
-                        </select>
+                        <ak-dual-select-dynamic-selected
+                            .provider=${sourcesProvider}
+                            .selector=${makeSourcesSelector(this.instance?.sources)}
+                            available-label="${msg("Available Stages")}"
+                            selected-label="${msg("Selected Stages")}"
+                        ></ak-dual-select-dynamic-selected>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Select sources should be shown for users to authenticate with. This only affects web-based sources, not LDAP.",
                             )}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Hold control/command to select multiple items.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="showSourceLabels">

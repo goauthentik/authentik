@@ -5,6 +5,7 @@ from typing import Any
 from requests.exceptions import RequestException
 
 from authentik.sources.oauth.clients.oauth2 import OAuth2Client
+from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.registry import SourceType, registry
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
@@ -42,26 +43,6 @@ class GitHubOAuth2Callback(OAuthCallback):
 
     client_class = GitHubOAuth2Client
 
-    def get_user_enroll_context(
-        self,
-        info: dict[str, Any],
-    ) -> dict[str, Any]:
-        chosen_email = info.get("email")
-        if not chosen_email:
-            # The GitHub Userprofile API only returns an email address if the profile
-            # has a public email address set (despite us asking for user:email, this behaviour
-            # doesn't change.). So we fetch all the user's email addresses
-            client: GitHubOAuth2Client = self.get_client(self.source)
-            emails = client.get_github_emails(self.token)
-            for email in emails:
-                if email.get("primary", False):
-                    chosen_email = email.get("email", None)
-        return {
-            "username": info.get("login"),
-            "email": chosen_email,
-            "name": info.get("name"),
-        }
-
 
 @registry.register()
 class GitHubType(SourceType):
@@ -81,3 +62,26 @@ class GitHubType(SourceType):
         "https://token.actions.githubusercontent.com/.well-known/openid-configuration"
     )
     oidc_jwks_url = "https://token.actions.githubusercontent.com/.well-known/jwks"
+
+    def get_base_user_properties(
+        self,
+        source: OAuthSource,
+        client: GitHubOAuth2Client,
+        token: dict[str, str],
+        info: dict[str, Any],
+        **kwargs,
+    ) -> dict[str, Any]:
+        chosen_email = info.get("email")
+        if not chosen_email:
+            # The GitHub Userprofile API only returns an email address if the profile
+            # has a public email address set (despite us asking for user:email, this behaviour
+            # doesn't change.). So we fetch all the user's email addresses
+            emails = client.get_github_emails(token)
+            for email in emails:
+                if email.get("primary", False):
+                    chosen_email = email.get("email", None)
+        return {
+            "username": info.get("login"),
+            "email": chosen_email,
+            "name": info.get("name"),
+        }

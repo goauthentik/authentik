@@ -1,6 +1,9 @@
 ---
-title: SonarQube
+title: Integrate with SonarQube
+sidebar_label: SonarQube
 ---
+
+# SonarQube
 
 <span class="badge badge--primary">Support level: Community</span>
 

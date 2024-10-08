@@ -19,14 +19,13 @@ pg_name := $(shell python -m authentik.lib.config postgresql.name 2>/dev/null)
 CODESPELL_ARGS = -D - -D .github/codespell-dictionary.txt \
 		-I .github/codespell-words.txt \
 		-S 'web/src/locales/**' \
-		-S 'website/developer-docs/api/reference/**' \
+		-S 'website/docs/developer-docs/api/reference/**' \
 		authentik \
 		internal \
 		cmd \
 		web/src \
 		website/src \
 		website/blog \
-		website/developer-docs \
 		website/docs \
 		website/integrations \
 		website/src
@@ -43,7 +42,7 @@ help:  ## Show this help
 		sort
 	@echo ""
 
-test-go:
+go-test:
 	go test -timeout 0 -v -race -cover ./...
 
 test-docker:  ## Run all tests in a docker-compose
@@ -209,6 +208,9 @@ web: web-lint-fix web-lint web-check-compile  ## Automatically fix formatting is
 
 web-install:  ## Install the necessary libraries to build the Authentik UI
 	cd web && npm ci
+
+web-test: ## Run tests for the Authentik UI
+	cd web && npm run test
 
 web-watch:  ## Build and watch the Authentik UI for changes, updating automatically
 	rm -rf web/dist/

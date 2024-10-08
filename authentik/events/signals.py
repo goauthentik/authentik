@@ -13,7 +13,7 @@ from authentik.events.apps import SYSTEM_TASK_STATUS
 from authentik.events.models import Event, EventAction, SystemTask
 from authentik.events.tasks import event_notification_handler, gdpr_cleanup
 from authentik.flows.models import Stage
-from authentik.flows.planner import PLAN_CONTEXT_SOURCE, FlowPlan
+from authentik.flows.planner import PLAN_CONTEXT_OUTPOST, PLAN_CONTEXT_SOURCE, FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.root.monitoring import monitoring_set
 from authentik.stages.invitation.models import Invitation
@@ -38,6 +38,9 @@ def on_user_logged_in(sender, request: HttpRequest, user: User, **_):
             # Save the login method used
             kwargs[PLAN_CONTEXT_METHOD] = flow_plan.context[PLAN_CONTEXT_METHOD]
             kwargs[PLAN_CONTEXT_METHOD_ARGS] = flow_plan.context.get(PLAN_CONTEXT_METHOD_ARGS, {})
+        if PLAN_CONTEXT_OUTPOST in flow_plan.context:
+            # Save outpost context
+            kwargs[PLAN_CONTEXT_OUTPOST] = flow_plan.context[PLAN_CONTEXT_OUTPOST]
     event = Event.new(EventAction.LOGIN, **kwargs).from_http(request, user=user)
     request.session[SESSION_LOGIN_EVENT] = event
 

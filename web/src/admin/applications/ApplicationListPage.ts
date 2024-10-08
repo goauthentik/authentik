@@ -2,7 +2,7 @@ import "@goauthentik/admin/applications/ApplicationForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { PFSize } from "@goauthentik/common/enums.js";
 import "@goauthentik/components/ak-app-icon";
-import MDApplication from "@goauthentik/docs/applications/index.md";
+import MDApplication from "@goauthentik/docs/add-secure-apps/applications/index.md";
 import "@goauthentik/elements/Markdown";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
