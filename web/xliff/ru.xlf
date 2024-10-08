@@ -8732,10 +8732,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Search returned no results.</source>
   <target>Поиск не дал никаких результатов.</target>
 </trans-unit>
-<trans-unit id="s11ec812e25ceef8a">
-  <source>No messages found</source>
-  <target>Сообщения не найдены</target>
-</trans-unit>
 <trans-unit id="s23446284b56ca0cc">
   <source>Reputation score(s)</source>
   <target>Оценка(и) репутации</target>
