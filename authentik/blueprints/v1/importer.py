@@ -69,7 +69,7 @@ from authentik.stages.authenticator_webauthn.models import WebAuthnDeviceType
 from authentik.tenants.models import Tenant
 
 # Context set when the serializer is created in a blueprint context
-# Update website/developer-docs/blueprints/v1/models.md when used
+# Update website/docs/customize/blueprints/v1/models.md when used
 SERIALIZER_CONTEXT_BLUEPRINT = "blueprint_entry"
 
 

@@ -1,7 +1,8 @@
+import { render } from "@goauthentik/elements/tests/utils.js";
 import { $ } from "@wdio/globals";
 import { slug } from "github-slugger";
 
-import { html, render } from "lit";
+import { html } from "lit";
 
 import "../ak-simple-table.js";
 import { nutritionDbUSDA } from "../stories/sample_nutrition_db.js";
