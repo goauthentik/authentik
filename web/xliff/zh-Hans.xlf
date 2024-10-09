@@ -8731,10 +8731,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Search returned no results.</source>
   <target>搜索未返回结果。</target>
 </trans-unit>
-<trans-unit id="s11ec812e25ceef8a">
-  <source>No messages found</source>
-  <target>未找到消息</target>
-</trans-unit>
 <trans-unit id="s23446284b56ca0cc">
   <source>Reputation score(s)</source>
   <target>信誉分数</target>
