@@ -8,7 +8,7 @@ from django.http.response import Http404
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
-from rest_framework.fields import CharField
+from rest_framework.fields import CharField, DateTimeField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 from webauthn import options_to_json
@@ -45,6 +45,7 @@ class DeviceChallenge(PassiveSerializer):
     device_class = CharField()
     device_uid = CharField()
     challenge = JSONDictField()
+    last_used = DateTimeField(allow_null=True)
 
 
 def get_challenge_for_device(

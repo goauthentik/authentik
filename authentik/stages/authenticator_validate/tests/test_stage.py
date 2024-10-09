@@ -169,6 +169,7 @@ class AuthenticatorValidateStageTests(FlowTestCase):
                     "device_class": "baz",
                     "device_uid": "quox",
                     "challenge": {},
+                    "last_used": None,
                 }
             },
         )
@@ -188,6 +189,7 @@ class AuthenticatorValidateStageTests(FlowTestCase):
                     "device_class": "static",
                     "device_uid": "1",
                     "challenge": {},
+                    "last_used": None,
                 },
             },
         )
