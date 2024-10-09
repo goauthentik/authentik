@@ -4,6 +4,7 @@ import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/forms/FormElement";
 import "@goauthentik/flow/components/ak-flow-password-input.js";
 import { BaseStage } from "@goauthentik/flow/stages/base";
+import { AkRememberMeController } from "@goauthentik/flow/stages/identification/RememberMeController.js";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, css, html, nothing } from "lit";
@@ -46,6 +47,8 @@ export class IdentificationStage extends BaseStage<
 > {
     form?: HTMLFormElement;
 
+    rememberMe: AkRememberMeController;
+
     static get styles(): CSSResult[] {
         return [
             PFBase,
@@ -56,8 +59,9 @@ export class IdentificationStage extends BaseStage<
             PFFormControl,
             PFTitle,
             PFButton,
-            /* login page's icons */
+            AkRememberMeController.styles,
             css`
+                /* login page's icons */
                 .pf-c-login__main-footer-links-item button {
                     background-color: transparent;
                     border: 0;
@@ -73,6 +77,11 @@ export class IdentificationStage extends BaseStage<
                 }
             `,
         ];
+    }
+
+    constructor() {
+        super();
+        this.rememberMe = new AkRememberMeController(this);
     }
 
     updated(changedProperties: PropertyValues<this>) {
@@ -257,8 +266,10 @@ export class IdentificationStage extends BaseStage<
                     autofocus=""
                     autocomplete="username"
                     class="pf-c-form-control"
+                    value=${this.rememberMe?.username ?? ""}
                     required
                 />
+                ${this.rememberMe.render()}
             </ak-form-element>
             ${this.challenge.passwordFields
                 ? html`
