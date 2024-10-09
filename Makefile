@@ -19,14 +19,13 @@ pg_name := $(shell python -m authentik.lib.config postgresql.name 2>/dev/null)
 CODESPELL_ARGS = -D - -D .github/codespell-dictionary.txt \
 		-I .github/codespell-words.txt \
 		-S 'web/src/locales/**' \
-		-S 'website/developer-docs/api/reference/**' \
+		-S 'website/docs/developer-docs/api/reference/**' \
 		authentik \
 		internal \
 		cmd \
 		web/src \
 		website/src \
 		website/blog \
-		website/developer-docs \
 		website/docs \
 		website/integrations \
 		website/src

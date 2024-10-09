@@ -8729,10 +8729,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Search returned no results.</source>
   <target>La recherche n'a pas retourné de résultat.</target>
 </trans-unit>
-<trans-unit id="s11ec812e25ceef8a">
-  <source>No messages found</source>
-  <target>Pas de message trouvé</target>
-</trans-unit>
 <trans-unit id="s23446284b56ca0cc">
   <source>Reputation score(s)</source>
   <target>Score(s) de réputation</target>

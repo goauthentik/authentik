@@ -29,7 +29,6 @@ class TesOAuth2Introspection(OAuthTestCase):
         self.app = Application.objects.create(
             name=generate_id(), slug=generate_id(), provider=self.provider
         )
-        self.app.save()
         self.user = create_test_admin_user()
         self.auth = b64encode(
             f"{self.provider.client_id}:{self.provider.client_secret}".encode()
@@ -105,6 +104,41 @@ class TesOAuth2Introspection(OAuthTestCase):
             reverse("authentik_providers_oauth2:token-introspection"),
             HTTP_AUTHORIZATION=f"Basic {self.auth}",
             data={"token": generate_id(), "token_type_hint": "refresh_token"},
+        )
+        self.assertEqual(res.status_code, 200)
+        self.assertJSONEqual(
+            res.content.decode(),
+            {
+                "active": False,
+            },
+        )
+
+    def test_introspect_invalid_provider(self):
+        """Test introspection (mismatched provider and token)"""
+        provider: OAuth2Provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            authorization_flow=create_test_flow(),
+            redirect_uris="",
+            signing_key=create_test_cert(),
+        )
+        auth = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
+
+        token: AccessToken = AccessToken.objects.create(
+            provider=self.provider,
+            user=self.user,
+            token=generate_id(),
+            auth_time=timezone.now(),
+            _scope="openid user profile",
+            _id_token=json.dumps(
+                asdict(
+                    IDToken("foo", "bar"),
+                )
+            ),
+        )
+        res = self.client.post(
+            reverse("authentik_providers_oauth2:token-introspection"),
+            HTTP_AUTHORIZATION=f"Basic {auth}",
+            data={"token": token.token},
         )
         self.assertEqual(res.status_code, 200)
         self.assertJSONEqual(
