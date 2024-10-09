@@ -1,7 +1,7 @@
 import { AKElement } from "@goauthentik/elements/Base";
 
 import { html } from "lit";
-import { property, query } from "lit/decorators.js";
+import { customElement, property, query } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -45,6 +45,7 @@ export class FormAwareControl extends AKElement {
     }
 }
 
+@customElement("ak-input-text")
 export class InputField extends FormAwareControl {
     public static override get styles() {
         return [PFBase, PFFormControl];
