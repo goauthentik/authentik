@@ -64,8 +64,8 @@
 
 # Migration to new structure with script Sept 2025
 [[redirects]]
-  from = "advanced/tenancy.md"
-  to = "sys-mgmt/tenancy.md"
+  from = "advanced/tenancy"
+  to = "sys-mgmt/tenancy"
   status = 302
   force = true
 
@@ -76,20 +76,20 @@
   force = true
 
 [[redirects]]
-  from = "applications/manage_apps.md"
-  to = "add-secure-apps/applications/manage_apps.md"
+  from = "applications/manage_apps"
+  to = "add-secure-apps/applications/manage_apps"
   status = 302
   force = true
 
 [[redirects]]
-  from = "core/brands.md"
-  to = "customize/brands.md"
+  from = "core/brands"
+  to = "customize/brands"
   status = 302
   force = true
 
 [[redirects]]
-  from = "core/certificates.md"
-  to = "sys-mgmt/certificates.md"
+  from = "core/certificates"
+  to = "sys-mgmt/certificates"
   status = 302
   force = true
 
@@ -100,8 +100,8 @@
   force = true
 
 [[redirects]]
-  from = "core/settings.md"
-  to = "sys-mgmt/settings.md"
+  from = "core/settings"
+  to = "sys-mgmt/settings"
   status = 302
   force = true
 
@@ -112,14 +112,14 @@
   force = true
 
 [[redirects]]
-  from = "events/notifications.md"
-  to = "sys-mgmt/events/notifications.md"
+  from = "events/notifications"
+  to = "sys-mgmt/events/notifications"
   status = 302
   force = true
 
 [[redirects]]
-  from = "events/transports.md"
-  to = "sys-mgmt/events/transports.md"
+  from = "events/transports"
+  to = "sys-mgmt/events/transports"
   status = 302
   force = true
 
@@ -130,38 +130,38 @@
   force = true
 
 [[redirects]]
-  from = "flow/examples/flows.md"
-  to = "add-secure-apps/flows-stages/flow/examples/flows.md"
+  from = "flow/examples/flows"
+  to = "add-secure-apps/flows-stages/flow/examples/flows"
   status = 302
   force = true
 
 [[redirects]]
-  from = "flow/examples/snippets.md"
-  to = "add-secure-apps/flows-stages/flow/examples/snippets.md"
+  from = "flow/examples/snippets"
+  to = "add-secure-apps/flows-stages/flow/examples/snippets"
   status = 302
   force = true
 
 [[redirects]]
-  from = "flow/executors/headless.md"
-  to = "add-secure-apps/flows-stages/flow/executors/headless.md"
+  from = "flow/executors/headless"
+  to = "add-secure-apps/flows-stages/flow/executors/headless"
   status = 302
   force = true
 
 [[redirects]]
-  from = "flow/executors/if-flow.md"
-  to = "add-secure-apps/flows-stages/flow/executors/if-flow.md"
+  from = "flow/executors/if-flow"
+  to = "add-secure-apps/flows-stages/flow/executors/if-flow"
   status = 302
   force = true
 
 [[redirects]]
-  from = "flow/executors/sfe.md"
-  to = "add-secure-apps/flows-stages/flow/executors/sfe.md"
+  from = "flow/executors/sfe"
+  to = "add-secure-apps/flows-stages/flow/executors/sfe"
   status = 302
   force = true
 
 [[redirects]]
-  from = "flow/executors/user-settings.md"
-  to = "add-secure-apps/flows-stages/flow/executors/user-settings.md"
+  from = "flow/executors/user-settings"
+  to = "add-secure-apps/flows-stages/flow/executors/user-settings"
   status = 302
   force = true
 
@@ -172,14 +172,14 @@
   force = true
 
 [[redirects]]
-  from = "flow/inspector.md"
-  to = "add-secure-apps/flows-stages/flow/inspector.md"
+  from = "flow/inspector"
+  to = "add-secure-apps/flows-stages/flow/inspector"
   status = 302
   force = true
 
 [[redirects]]
-  from = "flow/layouts.md"
-  to = "add-secure-apps/flows-stages/flow/layouts.md"
+  from = "flow/layouts"
+  to = "add-secure-apps/flows-stages/flow/layouts"
   status = 302
   force = true
 
@@ -226,8 +226,8 @@
   force = true
 
 [[redirects]]
-  from = "flow/stages/deny.md"
-  to = "add-secure-apps/flows-stages/stages/deny.md"
+  from = "flow/stages/deny"
+  to = "add-secure-apps/flows-stages/stages/deny"
   status = 302
   force = true
 
@@ -274,8 +274,8 @@
   force = true
 
 [[redirects]]
-  from = "flow/stages/user_delete.md"
-  to = "add-secure-apps/flows-stages/stages/user_delete.md"
+  from = "flow/stages/user_delete"
+  to = "add-secure-apps/flows-stages/stages/user_delete"
   status = 302
   force = true
 
@@ -286,14 +286,14 @@
   force = true
 
 [[redirects]]
-  from = "flow/stages/user_logout.md"
-  to = "add-secure-apps/flows-stages/stages/user_logout.md"
+  from = "flow/stages/user_logout"
+  to = "add-secure-apps/flows-stages/stages/user_logout"
   status = 302
   force = true
 
 [[redirects]]
-  from = "flow/stages/user_write.md"
-  to = "add-secure-apps/flows-stages/stages/user_write.md"
+  from = "flow/stages/user_write"
+  to = "add-secure-apps/flows-stages/stages/user_write"
   status = 302
   force = true
 
@@ -304,8 +304,8 @@
   force = true
 
 [[redirects]]
-  from = "installation/automated-install.md"
-  to = "install-config/automated-install.md"
+  from = "installation/automated-install"
+  to = "install-config/automated-install"
   status = 302
   force = true
 
@@ -334,26 +334,26 @@
   force = true
 
 [[redirects]]
-  from = "installation/kubernetes.md"
-  to = "install-config/install/kubernetes.md"
+  from = "installation/kubernetes"
+  to = "install-config/install/kubernetes"
   status = 302
   force = true
 
 [[redirects]]
-  from = "installation/monitoring.md"
-  to = "sys-mgmt/ops/monitoring.md"
+  from = "installation/monitoring"
+  to = "sys-mgmt/ops/monitoring"
   status = 302
   force = true
 
 [[redirects]]
-  from = "installation/reverse-proxy.md"
-  to = "install-config/reverse-proxy.md"
+  from = "installation/reverse-proxy"
+  to = "install-config/reverse-proxy"
   status = 302
   force = true
 
 [[redirects]]
-  from = "installation/storage-s3.md"
-  to = "install-config/storage-s3.md"
+  from = "installation/storage-s3"
+  to = "install-config/storage-s3"
   status = 302
   force = true
 
@@ -394,8 +394,8 @@
   force = true
 
 [[redirects]]
-  from = "outposts/_config.md"
-  to = "add-secure-apps/outposts/_config.md"
+  from = "outposts/_config"
+  to = "add-secure-apps/outposts/_config"
   status = 302
   force = true
 
@@ -412,32 +412,32 @@
   force = true
 
 [[redirects]]
-  from = "outposts/integrations/docker.md"
-  to = "add-secure-apps/outposts/integrations/docker.md"
+  from = "outposts/integrations/docker"
+  to = "add-secure-apps/outposts/integrations/docker"
   status = 302
   force = true
 
 [[redirects]]
-  from = "outposts/integrations/kubernetes.md"
-  to = "add-secure-apps/outposts/integrations/kubernetes.md"
+  from = "outposts/integrations/kubernetes"
+  to = "add-secure-apps/outposts/integrations/kubernetes"
   status = 302
   force = true
 
 [[redirects]]
-  from = "outposts/manual-deploy-docker-compose.md"
-  to = "add-secure-apps/outposts/manual-deploy-docker-compose.md"
+  from = "outposts/manual-deploy-docker-compose"
+  to = "add-secure-apps/outposts/manual-deploy-docker-compose"
   status = 302
   force = true
 
 [[redirects]]
-  from = "outposts/manual-deploy-kubernetes.md"
-  to = "add-secure-apps/outposts/manual-deploy-kubernetes.md"
+  from = "outposts/manual-deploy-kubernetes"
+  to = "add-secure-apps/outposts/manual-deploy-kubernetes"
   status = 302
   force = true
 
 [[redirects]]
-  from = "outposts/upgrading.md"
-  to = "add-secure-apps/outposts/upgrading.md"
+  from = "outposts/upgrading"
+  to = "add-secure-apps/outposts/upgrading"
   status = 302
   force = true
 
@@ -454,26 +454,26 @@
   force = true
 
 [[redirects]]
-  from = "policies/working_with_policies/unique_email.md"
-  to = "customize/policies/working_with_policies/unique_email.md"
+  from = "policies/working_with_policies/unique_email"
+  to = "customize/policies/working_with_policies/unique_email"
   status = 302
   force = true
 
 [[redirects]]
-  from = "policies/working_with_policies/whitelist_email.md"
-  to = "customize/policies/working_with_policies/whitelist_email.md"
+  from = "policies/working_with_policies/whitelist_email"
+  to = "customize/policies/working_with_policies/whitelist_email"
   status = 302
   force = true
 
 [[redirects]]
-  from = "policies/working_with_policies/working_with_policies.md"
-  to = "customize/policies/working_with_policies/working_with_policies.md"
+  from = "policies/working_with_policies/working_with_policies"
+  to = "customize/policies/working_with_policies/working_with_policies"
   status = 302
   force = true
 
 [[redirects]]
-  from = "providers/entra/add-entra-provider.md"
-  to = "add-secure-apps/providers/entra/add-entra-provider.md"
+  from = "providers/entra/add-entra-provider"
+  to = "add-secure-apps/providers/entra/add-entra-provider"
   status = 302
   force = true
 
@@ -484,14 +484,14 @@
   force = true
 
 [[redirects]]
-  from = "providers/entra/setup-entra.md"
-  to = "add-secure-apps/providers/entra/setup-entra.md"
+  from = "providers/entra/setup-entra"
+  to = "add-secure-apps/providers/entra/setup-entra"
   status = 302
   force = true
 
 [[redirects]]
-  from = "providers/gws/add-gws-provider.md"
-  to = "add-secure-apps/providers/gws/add-gws-provider.md"
+  from = "providers/gws/add-gws-provider"
+  to = "add-secure-apps/providers/gws/add-gws-provider"
   status = 302
   force = true
 
@@ -502,8 +502,8 @@
   force = true
 
 [[redirects]]
-  from = "providers/gws/setup-gws.md"
-  to = "add-secure-apps/providers/gws/setup-gws.md"
+  from = "providers/gws/setup-gws"
+  to = "add-secure-apps/providers/gws/setup-gws"
   status = 302
   force = true
 
@@ -514,8 +514,8 @@
   force = true
 
 [[redirects]]
-  from = "providers/ldap/generic_setup.md"
-  to = "add-secure-apps/providers/ldap/generic_setup.md"
+  from = "providers/ldap/generic_setup"
+  to = "add-secure-apps/providers/ldap/generic_setup"
   status = 302
   force = true
 
@@ -526,14 +526,14 @@
   force = true
 
 [[redirects]]
-  from = "providers/oauth2/client_credentials.md"
-  to = "add-secure-apps/providers/oauth2/client_credentials.md"
+  from = "providers/oauth2/client_credentials"
+  to = "add-secure-apps/providers/oauth2/client_credentials"
   status = 302
   force = true
 
 [[redirects]]
-  from = "providers/oauth2/device_code.md"
-  to = "add-secure-apps/providers/oauth2/device_code.md"
+  from = "providers/oauth2/device_code"
+  to = "add-secure-apps/providers/oauth2/device_code"
   status = 302
   force = true
 
@@ -556,62 +556,62 @@
   force = true
 
 [[redirects]]
-  from = "providers/proxy/__placeholders.md"
-  to = "add-secure-apps/providers/proxy/__placeholders.md"
+  from = "providers/proxy/__placeholders"
+  to = "add-secure-apps/providers/proxy/__placeholders"
   status = 302
   force = true
 
 [[redirects]]
-  from = "providers/proxy/_caddy_standalone.md"
-  to = "add-secure-apps/providers/proxy/_caddy_standalone.md"
+  from = "providers/proxy/_caddy_standalone"
+  to = "add-secure-apps/providers/proxy/_caddy_standalone"
   status = 302
   force = true
 
 [[redirects]]
-  from = "providers/proxy/_envoy_istio.md"
-  to = "add-secure-apps/providers/proxy/_envoy_istio.md"
+  from = "providers/proxy/_envoy_istio"
+  to = "add-secure-apps/providers/proxy/_envoy_istio"
   status = 302
   force = true
 
 [[redirects]]
-  from = "providers/proxy/_nginx_ingress.md"
-  to = "add-secure-apps/providers/proxy/_nginx_ingress.md"
+  from = "providers/proxy/_nginx_ingress"
+  to = "add-secure-apps/providers/proxy/_nginx_ingress"
   status = 302
   force = true
 
 [[redirects]]
-  from = "providers/proxy/_nginx_proxy_manager.md"
-  to = "add-secure-apps/providers/proxy/_nginx_proxy_manager.md"
+  from = "providers/proxy/_nginx_proxy_manager"
+  to = "add-secure-apps/providers/proxy/_nginx_proxy_manager"
   status = 302
   force = true
 
 [[redirects]]
-  from = "providers/proxy/_nginx_standalone.md"
-  to = "add-secure-apps/providers/proxy/_nginx_standalone.md"
+  from = "providers/proxy/_nginx_standalone"
+  to = "add-secure-apps/providers/proxy/_nginx_standalone"
   status = 302
   force = true
 
 [[redirects]]
-  from = "providers/proxy/_traefik_compose.md"
-  to = "add-secure-apps/providers/proxy/_traefik_compose.md"
+  from = "providers/proxy/_traefik_compose"
+  to = "add-secure-apps/providers/proxy/_traefik_compose"
   status = 302
   force = true
 
 [[redirects]]
-  from = "providers/proxy/_traefik_ingress.md"
-  to = "add-secure-apps/providers/proxy/_traefik_ingress.md"
+  from = "providers/proxy/_traefik_ingress"
+  to = "add-secure-apps/providers/proxy/_traefik_ingress"
   status = 302
   force = true
 
 [[redirects]]
-  from = "providers/proxy/_traefik_standalone.md"
-  to = "add-secure-apps/providers/proxy/_traefik_standalone.md"
+  from = "providers/proxy/_traefik_standalone"
+  to = "add-secure-apps/providers/proxy/_traefik_standalone"
   status = 302
   force = true
 
 [[redirects]]
-  from = "providers/proxy/custom_headers.md"
-  to = "add-secure-apps/providers/proxy/custom_headers.md"
+  from = "providers/proxy/custom_headers"
+  to = "add-secure-apps/providers/proxy/custom_headers"
   status = 302
   force = true
 
@@ -622,8 +622,8 @@
   force = true
 
 [[redirects]]
-  from = "providers/proxy/header_authentication.md"
-  to = "add-secure-apps/providers/proxy/header_authentication.md"
+  from = "providers/proxy/header_authentication"
+  to = "add-secure-apps/providers/proxy/header_authentication"
   status = 302
   force = true
 
@@ -658,8 +658,8 @@
   force = true
 
 [[redirects]]
-  from = "providers/rac/how-to-rac.md"
-  to = "add-secure-apps/providers/rac/how-to-rac.md"
+  from = "providers/rac/how-to-rac"
+  to = "add-secure-apps/providers/rac/how-to-rac"
   status = 302
   force = true
 
@@ -688,80 +688,80 @@
   force = true
 
 [[redirects]]
-  from = "security/2023-06-cure53.md"
-  to = "security/audits-and-certs/2023-06-cure53.md"
+  from = "security/2023-06-cure53"
+  to = "security/audits-and-certs/2023-06-cure53"
   status = 302
   force = true
 
 [[redirects]]
-  from = "security/CVE-2022-23555.md"
-  to = "security/cves/CVE-2022-23555.md"
+  from = "security/CVE-2022-23555"
+  to = "security/cves/CVE-2022-23555"
   status = 302
   force = true
 
 [[redirects]]
-  from = "security/CVE-2022-46145.md"
-  to = "security/cves/CVE-2022-46145.md"
+  from = "security/CVE-2022-46145"
+  to = "security/cves/CVE-2022-46145"
   status = 302
   force = true
 
 [[redirects]]
-  from = "security/CVE-2022-46172.md"
-  to = "security/cves/CVE-2022-46172.md"
+  from = "security/CVE-2022-46172"
+  to = "security/cves/CVE-2022-46172"
   status = 302
   force = true
 
 [[redirects]]
-  from = "security/CVE-2023-26481.md"
-  to = "security/cves/CVE-2023-26481.md"
+  from = "security/CVE-2023-26481"
+  to = "security/cves/CVE-2023-26481"
   status = 302
   force = true
 
 [[redirects]]
-  from = "security/CVE-2023-36456.md"
-  to = "security/cves/CVE-2023-36456.md"
+  from = "security/CVE-2023-36456"
+  to = "security/cves/CVE-2023-36456"
   status = 302
   force = true
 
 [[redirects]]
-  from = "security/CVE-2023-39522.md"
-  to = "security/cves/CVE-2023-39522.md"
+  from = "security/CVE-2023-39522"
+  to = "security/cves/CVE-2023-39522"
   status = 302
   force = true
 
 [[redirects]]
-  from = "security/CVE-2023-48228.md"
-  to = "security/cves/CVE-2023-48228.md"
+  from = "security/CVE-2023-48228"
+  to = "security/cves/CVE-2023-48228"
   status = 302
   force = true
 
 [[redirects]]
-  from = "security/CVE-2024-21637.md"
-  to = "security/cves/CVE-2024-21637.md"
+  from = "security/CVE-2024-21637"
+  to = "security/cves/CVE-2024-21637"
   status = 302
   force = true
 
 [[redirects]]
-  from = "security/CVE-2024-23647.md"
-  to = "security/cves/CVE-2024-23647.md"
+  from = "security/CVE-2024-23647"
+  to = "security/cves/CVE-2024-23647"
   status = 302
   force = true
 
 [[redirects]]
-  from = "security/CVE-2024-37905.md"
-  to = "security/cves/CVE-2024-37905.md"
+  from = "security/CVE-2024-37905"
+  to = "security/cves/CVE-2024-37905"
   status = 302
   force = true
 
 [[redirects]]
-  from = "security/CVE-2024-38371.md"
-  to = "security/cves/CVE-2024-38371.md"
+  from = "security/CVE-2024-38371"
+  to = "security/cves/CVE-2024-38371"
   status = 302
   force = true
 
 [[redirects]]
-  from = "security/GHSA-rjvp-29xq-f62w.md"
-  to = "security/cves/GHSA-rjvp-29xq-f62w.md"
+  from = "security/GHSA-rjvp-29xq-f62w"
+  to = "security/cves/GHSA-rjvp-29xq-f62w"
   status = 302
   force = true
 
@@ -844,8 +844,8 @@
   force = true
 
 [[redirects]]
-  from = "sources/property-mappings/expressions.md"
-  to = "users-sources/sources/property-mappings/expressions.md"
+  from = "sources/property-mappings/expressions"
+  to = "users-sources/sources/property-mappings/expressions"
   status = 302
   force = true
 
@@ -886,20 +886,20 @@
   force = true
 
 [[redirects]]
-  from = "user-group-role/access-control/manage_permissions.md"
-  to = "users-sources/access-control/manage_permissions.md"
+  from = "user-group-role/access-control/manage_permissions"
+  to = "users-sources/access-control/manage_permissions"
   status = 302
   force = true
 
 [[redirects]]
-  from = "user-group-role/access-control/permissions.md"
-  to = "users-sources/access-control/permissions.md"
+  from = "user-group-role/access-control/permissions"
+  to = "users-sources/access-control/permissions"
   status = 302
   force = true
 
 [[redirects]]
-  from = "user-group-role/groups/group_ref.md"
-  to = "users-sources/groups/group_ref.md"
+  from = "user-group-role/groups/group_ref"
+  to = "users-sources/groups/group_ref"
   status = 302
   force = true
 
@@ -910,8 +910,8 @@
   force = true
 
 [[redirects]]
-  from = "user-group-role/groups/manage_groups.md"
-  to = "users-sources/groups/manage_groups.md"
+  from = "user-group-role/groups/manage_groups"
+  to = "users-sources/groups/manage_groups"
   status = 302
   force = true
 
@@ -922,8 +922,8 @@
   force = true
 
 [[redirects]]
-  from = "user-group-role/roles/manage_roles.md"
-  to = "users-sources/roles/manage_roles.md"
+  from = "user-group-role/roles/manage_roles"
+  to = "users-sources/roles/manage_roles"
   status = 302
   force = true
 
@@ -934,20 +934,20 @@
   force = true
 
 [[redirects]]
-  from = "user-group-role/user/invitations.md"
-  to = "users-sources/user/invitations.md"
+  from = "user-group-role/user/invitations"
+  to = "users-sources/user/invitations"
   status = 302
   force = true
 
 [[redirects]]
-  from = "user-group-role/user/user_basic_operations.md"
-  to = "users-sources/user/user_basic_operations.md"
+  from = "user-group-role/user/user_basic_operations"
+  to = "users-sources/user/user_basic_operations"
   status = 302
   force = true
 
 [[redirects]]
-  from = "user-group-role/user/user_ref.md"
-  to = "users-sources/user/user_ref.md"
+  from = "user-group-role/user/user_ref"
+  to = "users-sources/user/user_ref"
   status = 302
   force = true
 
