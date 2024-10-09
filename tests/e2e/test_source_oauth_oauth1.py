@@ -56,14 +56,10 @@ class TestSourceOAuth1(SeleniumTestCase):
         self.client_secret = generate_key()
         self.source_slug = generate_id()
         super().setUp()
-
-    def get_container_specs(self) -> dict[str, Any] | None:
-        return {
-            "image": "ghcr.io/beryju/oauth1-test-server:v1.1",
-            "detach": True,
-            "ports": {"5000": "5001"},
-            "auto_remove": True,
-            "environment": {
+        self.run_container(
+            image="ghcr.io/beryju/oauth1-test-server:v1.1",
+            ports={"5000": "5001"},
+            environment={
                 "OAUTH1_CLIENT_ID": self.client_id,
                 "OAUTH1_CLIENT_SECRET": self.client_secret,
                 "OAUTH1_REDIRECT_URI": self.url(
@@ -71,7 +67,7 @@ class TestSourceOAuth1(SeleniumTestCase):
                     source_slug=self.source_slug,
                 ),
             },
-        }
+        )
 
     def create_objects(self):
         """Create required objects"""

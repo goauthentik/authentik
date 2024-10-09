@@ -1,7 +1,6 @@
 """test OAuth2 OpenID Provider flow"""
 
 from time import sleep
-from typing import Any
 
 from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
@@ -32,21 +31,17 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         self.client_secret = generate_key()
         self.app_slug = generate_id(20)
         super().setUp()
-
-    def get_container_specs(self) -> dict[str, Any] | None:
-        return {
-            "image": "grafana/grafana:7.1.0",
-            "detach": True,
-            "auto_remove": True,
-            "healthcheck": Healthcheck(
+        self.run_container(
+            image="grafana/grafana:7.1.0",
+            ports={
+                "3000": "3000",
+            },
+            healthcheck=Healthcheck(
                 test=["CMD", "wget", "--spider", "http://localhost:3000"],
                 interval=5 * 1_000 * 1_000_000,
                 start_period=1 * 1_000 * 1_000_000,
             ),
-            "ports": {
-                "3000": "3000",
-            },
-            "environment": {
+            environment={
                 "GF_AUTH_GENERIC_OAUTH_ENABLED": "true",
                 "GF_AUTH_GENERIC_OAUTH_CLIENT_ID": self.client_id,
                 "GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET": self.client_secret,
@@ -60,7 +55,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
                 ),
                 "GF_LOG_LEVEL": "debug",
             },
-        }
+        )
 
     @retry()
     @apply_blueprint(
