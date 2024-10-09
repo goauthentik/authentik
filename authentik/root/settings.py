@@ -309,27 +309,35 @@ DATABASES = {
         "TEST": {
             "NAME": CONFIG.get("postgresql.test.name"),
         },
+        # https://docs.djangoproject.com/en/4.0/ref/databases/#transaction-pooling-server-side-cursors
+        "DISABLE_SERVER_SIDE_CURSORS": CONFIG.get_bool(
+            "postgresql.disable_server_side_cursors", False
+        ),
+        # https://docs.djangoproject.com/en/4.0/ref/databases/#persistent-connections
+        # Not a PostgreSQL-specific setting, but a database-specific setting.
+        # However, only PostgreSQL is supported as a database, so we place this setting
+        # in the 'postgresql' path.
+        "CONN_MAX_AGE": CONFIG.get_optional_int("postgresql.conn_max_age", 0),
     }
 }
-
-if CONFIG.get_bool("postgresql.use_pgpool", False):
-    DATABASES["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
-
-if CONFIG.get_bool("postgresql.use_pgbouncer", False):
-    # https://docs.djangoproject.com/en/4.0/ref/databases/#transaction-pooling-server-side-cursors
-    DATABASES["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
-    # https://docs.djangoproject.com/en/4.0/ref/databases/#persistent-connections
-    DATABASES["default"]["CONN_MAX_AGE"] = None  # persistent
 
 for replica in CONFIG.get_keys("postgresql.read_replicas"):
     _database = DATABASES["default"].copy()
     for setting in DATABASES["default"].keys():
         default = object()
+
         if setting in ("TEST",):
             continue
-        override = CONFIG.get(
-            f"postgresql.read_replicas.{replica}.{setting.lower()}", default=default
-        )
+
+        if setting in ("CONN_MAX_AGE",):
+            override = CONFIG.get_optional_int(
+                f"postgresql.read_replicas.{replica}.{setting.lower()}",
+            )
+        else:
+            override = CONFIG.get(
+                f"postgresql.read_replicas.{replica}.{setting.lower()}", default=default
+            )
+
         if override is not default:
             _database[setting] = override
     DATABASES[f"replica_{replica}"] = _database

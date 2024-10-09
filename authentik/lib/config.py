@@ -279,6 +279,19 @@ class ConfigLoader:
             self.log("warning", "Failed to parse config as int", path=path, exc=str(exc))
             return default
 
+    def get_optional_int(self, path: str, default=0) -> int | None:
+        """Wrapper for get that converts value into int or None if set"""
+        value = self.get(path, default)
+
+        try:
+            return int(value)
+        except (ValueError, TypeError) as exc:
+            if default is None or (isinstance(value, str) and value.lower() == "none"):
+                return None
+
+            self.log("warning", "Failed to parse config as int", path=path, exc=str(exc))
+            return default
+
     def get_bool(self, path: str, default=False) -> bool:
         """Wrapper for get that converts value into boolean"""
         return str(self.get(path, default)).lower() == "true"
