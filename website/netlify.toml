@@ -94,8 +94,8 @@
   force = true
 
 [[redirects]]
-  from = "core/geoip.mdx"
-  to = "install-config/geoip.mdx"
+  from = "core/geoip"
+  to = "install-config/geoip"
   status = 302
   force = true
 
@@ -298,8 +298,8 @@
   force = true
 
 [[redirects]]
-  from = "installation/air-gapped.mdx"
-  to = "install-config/air-gapped.mdx"
+  from = "installation/air-gapped"
+  to = "install-config/air-gapped"
   status = 302
   force = true
 
@@ -310,20 +310,20 @@
   force = true
 
 [[redirects]]
-  from = "installation/beta.mdx"
-  to = "install-config/beta.mdx"
+  from = "installation/beta"
+  to = "install-config/beta"
   status = 302
   force = true
 
 [[redirects]]
-  from = "installation/configuration.mdx"
-  to = "install-config/configuration/configuration.mdx"
+  from = "installation/configuration"
+  to = "install-config/configuration/configuration"
   status = 302
   force = true
 
 [[redirects]]
-  from = "installation/docker-compose.mdx"
-  to = "install-config/install/docker-compose.mdx"
+  from = "installation/docker-compose"
+  to = "install-config/install/docker-compose"
   status = 302
   force = true
 
@@ -358,38 +358,38 @@
   force = true
 
 [[redirects]]
-  from = "installation/upgrade.mdx"
-  to = "install-config/upgrade.mdx"
+  from = "installation/upgrade"
+  to = "install-config/upgrade"
   status = 302
   force = true
 
 [[redirects]]
-  from = "interfaces/_global/customcss.mdx"
-  to = "customize/interfaces/_global/customcss.mdx"
+  from = "interfaces/_global/customcss"
+  to = "customize/interfaces/_global/customcss"
   status = 302
   force = true
 
 [[redirects]]
-  from = "interfaces/_global/global.mdx"
-  to = "customize/interfaces/_global/global.mdx"
+  from = "interfaces/_global/global"
+  to = "customize/interfaces/_global/global"
   status = 302
   force = true
 
 [[redirects]]
-  from = "interfaces/admin/customization.mdx"
-  to = "customize/interfaces/admin/customization.mdx"
+  from = "interfaces/admin/customization"
+  to = "customize/interfaces/admin/customization"
   status = 302
   force = true
 
 [[redirects]]
-  from = "interfaces/flow/customization.mdx"
-  to = "customize/interfaces/flow/customization.mdx"
+  from = "interfaces/flow/customization"
+  to = "customize/interfaces/flow/customization"
   status = 302
   force = true
 
 [[redirects]]
-  from = "interfaces/user/customization.mdx"
-  to = "customize/interfaces/user/customization.mdx"
+  from = "interfaces/user/customization"
+  to = "customize/interfaces/user/customization"
   status = 302
   force = true
 
@@ -400,8 +400,8 @@
   force = true
 
 [[redirects]]
-  from = "outposts/embedded/embedded.mdx"
-  to = "add-secure-apps/outposts/embedded/embedded.mdx"
+  from = "outposts/embedded/embedded"
+  to = "add-secure-apps/outposts/embedded/embedded"
   status = 302
   force = true
 
@@ -442,8 +442,8 @@
   force = true
 
 [[redirects]]
-  from = "policies/expression.mdx"
-  to = "customize/policies/expression.mdx"
+  from = "policies/expression"
+  to = "customize/policies/expression"
   status = 302
   force = true
 
@@ -544,8 +544,8 @@
   force = true
 
 [[redirects]]
-  from = "providers/property-mappings/expression.mdx"
-  to = "add-secure-apps/providers/property-mappings/expression.mdx"
+  from = "providers/property-mappings/expression"
+  to = "add-secure-apps/providers/property-mappings/expression"
   status = 302
   force = true
 
@@ -616,8 +616,8 @@
   force = true
 
 [[redirects]]
-  from = "providers/proxy/forward_auth.mdx"
-  to = "add-secure-apps/providers/proxy/forward_auth.mdx"
+  from = "providers/proxy/forward_auth"
+  to = "add-secure-apps/providers/proxy/forward_auth"
   status = 302
   force = true
 
@@ -634,26 +634,26 @@
   force = true
 
 [[redirects]]
-  from = "providers/proxy/server_caddy.mdx"
-  to = "add-secure-apps/providers/proxy/server_caddy.mdx"
+  from = "providers/proxy/server_caddy"
+  to = "add-secure-apps/providers/proxy/server_caddy"
   status = 302
   force = true
 
 [[redirects]]
-  from = "providers/proxy/server_envoy.mdx"
-  to = "add-secure-apps/providers/proxy/server_envoy.mdx"
+  from = "providers/proxy/server_envoy"
+  to = "add-secure-apps/providers/proxy/server_envoy"
   status = 302
   force = true
 
 [[redirects]]
-  from = "providers/proxy/server_nginx.mdx"
-  to = "add-secure-apps/providers/proxy/server_nginx.mdx"
+  from = "providers/proxy/server_nginx"
+  to = "add-secure-apps/providers/proxy/server_nginx"
   status = 302
   force = true
 
 [[redirects]]
-  from = "providers/proxy/server_traefik.mdx"
-  to = "add-secure-apps/providers/proxy/server_traefik.mdx"
+  from = "providers/proxy/server_traefik"
+  to = "add-secure-apps/providers/proxy/server_traefik"
   status = 302
   force = true
 
