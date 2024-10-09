@@ -70,8 +70,8 @@
   force = true
 
 [[redirects]]
-  from = "applications/index.md"
-  to = "add-secure-apps/applications/index.md"
+  from = "applications/"
+  to = "add-secure-apps/applications/"
   status = 302
   force = true
 
@@ -106,8 +106,8 @@
   force = true
 
 [[redirects]]
-  from = "events/index.md"
-  to = "sys-mgmt/events/index.md"
+  from = "events/"
+  to = "sys-mgmt/events/"
   status = 302
   force = true
 
@@ -124,8 +124,8 @@
   force = true
 
 [[redirects]]
-  from = "flow/context/index.md"
-  to = "add-secure-apps/flows-stages/flow/context/index.md"
+  from = "flow/context/"
+  to = "add-secure-apps/flows-stages/flow/context/"
   status = 302
   force = true
 
@@ -166,8 +166,8 @@
   force = true
 
 [[redirects]]
-  from = "flow/index.md"
-  to = "add-secure-apps/flows-stages/flow/index.md"
+  from = "flow/"
+  to = "add-secure-apps/flows-stages/flow/"
   status = 302
   force = true
 
@@ -184,44 +184,44 @@
   force = true
 
 [[redirects]]
-  from = "flow/stages/authenticator_duo/index.md"
-  to = "add-secure-apps/flows-stages/stages//authenticator_duo/index.md"
+  from = "flow/stages/authenticator_duo/"
+  to = "add-secure-apps/flows-stages/stages//authenticator_duo/"
   status = 302
   force = true
 
 [[redirects]]
-  from = "flow/stages/authenticator_sms/index.md"
-  to = "add-secure-apps/flows-stages/stages/authenticator_sms/index.md"
+  from = "flow/stages/authenticator_sms/"
+  to = "add-secure-apps/flows-stages/stages/authenticator_sms/"
   status = 302
   force = true
 
 [[redirects]]
-  from = "flow/stages/authenticator_static/index.md"
-  to = "add-secure-apps/flows-stages/stages/authenticator_static/index.md"
+  from = "flow/stages/authenticator_static/"
+  to = "add-secure-apps/flows-stages/stages/authenticator_static/"
   status = 302
   force = true
 
 [[redirects]]
-  from = "flow/stages/authenticator_totp/index.md"
-  to = "add-secure-apps/flows-stages/stages/authenticator_totp/index.md"
+  from = "flow/stages/authenticator_totp/"
+  to = "add-secure-apps/flows-stages/stages/authenticator_totp/"
   status = 302
   force = true
 
 [[redirects]]
-  from = "flow/stages/authenticator_validate/index.md"
-  to = "add-secure-apps/flows-stages/stages/authenticator_validate/index.md"
+  from = "flow/stages/authenticator_validate/"
+  to = "add-secure-apps/flows-stages/stages/authenticator_validate/"
   status = 302
   force = true
 
 [[redirects]]
-  from = "flow/stages/authenticator_webauthn/index.md"
-  to = "add-secure-apps/flows-stages/stages/authenticator_webauthn/index.md"
+  from = "flow/stages/authenticator_webauthn/"
+  to = "add-secure-apps/flows-stages/stages/authenticator_webauthn/"
   status = 302
   force = true
 
 [[redirects]]
-  from = "flow/stages/captcha/index.md"
-  to = "add-secure-apps/flows-stages/stages/captcha/index.md"
+  from = "flow/stages/captcha/"
+  to = "add-secure-apps/flows-stages/stages/captcha/"
   status = 302
   force = true
 
@@ -232,44 +232,44 @@
   force = true
 
 [[redirects]]
-  from = "flow/stages/email/index.mdx"
-  to = "add-secure-apps/flows-stages/stages/email/index.mdx"
+  from = "flow/stages/email/x"
+  to = "add-secure-apps/flows-stages/stages/email/x"
   status = 302
   force = true
 
 [[redirects]]
-  from = "flow/stages/identification/index.md"
-  to = "add-secure-apps/flows-stages/stages/identification/index.md"
+  from = "flow/stages/identification/"
+  to = "add-secure-apps/flows-stages/stages/identification/"
   status = 302
   force = true
 
 [[redirects]]
-  from = "flow/stages/index.md"
-  to = "add-secure-apps/flows-stages/stages/index.md"
+  from = "flow/stages/"
+  to = "add-secure-apps/flows-stages/stages/"
   status = 302
   force = true
 
 [[redirects]]
-  from = "flow/stages/invitation/index.md"
-  to = "add-secure-apps/flows-stages/stages/invitation/index.md"
+  from = "flow/stages/invitation/"
+  to = "add-secure-apps/flows-stages/stages/invitation/"
   status = 302
   force = true
 
 [[redirects]]
-  from = "flow/stages/password/index.md"
-  to = "add-secure-apps/flows-stages/stages/password/index.md"
+  from = "flow/stages/password/"
+  to = "add-secure-apps/flows-stages/stages/password/"
   status = 302
   force = true
 
 [[redirects]]
-  from = "flow/stages/prompt/index.md"
-  to = "add-secure-apps/flows-stages/stages/prompt/index.md"
+  from = "flow/stages/prompt/"
+  to = "add-secure-apps/flows-stages/stages/prompt/"
   status = 302
   force = true
 
 [[redirects]]
-  from = "flow/stages/source/index.md"
-  to = "add-secure-apps/flows-stages/stages/source/index.md"
+  from = "flow/stages/source/"
+  to = "add-secure-apps/flows-stages/stages/source/"
   status = 302
   force = true
 
@@ -280,8 +280,8 @@
   force = true
 
 [[redirects]]
-  from = "flow/stages/user_login/index.md"
-  to = "add-secure-apps/flows-stages/stages/user_login/index.md"
+  from = "flow/stages/user_login/"
+  to = "add-secure-apps/flows-stages/stages/user_login/"
   status = 302
   force = true
 
@@ -328,8 +328,8 @@
   force = true
 
 [[redirects]]
-  from = "installation/index.mdx"
-  to = "install-config/index.mdx"
+  from = "installation/x"
+  to = "install-config/x"
   status = 302
   force = true
 
@@ -406,8 +406,8 @@
   force = true
 
 [[redirects]]
-  from = "outposts/index.mdx"
-  to = "add-secure-apps/outposts/index.mdx"
+  from = "outposts/x"
+  to = "add-secure-apps/outposts/x"
   status = 302
   force = true
 
@@ -448,8 +448,8 @@
   force = true
 
 [[redirects]]
-  from = "policies/index.md"
-  to = "customize/policies/index.md"
+  from = "policies/"
+  to = "customize/policies/"
   status = 302
   force = true
 
@@ -478,8 +478,8 @@
   force = true
 
 [[redirects]]
-  from = "providers/entra/index.md"
-  to = "add-secure-apps/providers/entra/index.md"
+  from = "providers/entra/"
+  to = "add-secure-apps/providers/entra/"
   status = 302
   force = true
 
@@ -496,8 +496,8 @@
   force = true
 
 [[redirects]]
-  from = "providers/gws/index.md"
-  to = "add-secure-apps/providers/gws/index.md"
+  from = "providers/gws/"
+  to = "add-secure-apps/providers/gws/"
   status = 302
   force = true
 
@@ -508,8 +508,8 @@
   force = true
 
 [[redirects]]
-  from = "providers/index.mdx"
-  to = "add-secure-apps/providers/index.mdx"
+  from = "providers/x"
+  to = "add-secure-apps/providers/x"
   status = 302
   force = true
 
@@ -520,8 +520,8 @@
   force = true
 
 [[redirects]]
-  from = "providers/ldap/index.md"
-  to = "add-secure-apps/providers/ldap/index.md"
+  from = "providers/ldap/"
+  to = "add-secure-apps/providers/ldap/"
   status = 302
   force = true
 
@@ -538,8 +538,8 @@
   force = true
 
 [[redirects]]
-  from = "providers/oauth2/index.md"
-  to = "add-secure-apps/providers/oauth2/index.md"
+  from = "providers/oauth2/"
+  to = "add-secure-apps/providers/oauth2/"
   status = 302
   force = true
 
@@ -550,8 +550,8 @@
   force = true
 
 [[redirects]]
-  from = "providers/property-mappings/index.md"
-  to = "add-secure-apps/providers/property-mappings/index.md"
+  from = "providers/property-mappings/"
+  to = "add-secure-apps/providers/property-mappings/"
   status = 302
   force = true
 
@@ -628,8 +628,8 @@
   force = true
 
 [[redirects]]
-  from = "providers/proxy/index.md"
-  to = "add-secure-apps/providers/proxy/index.md"
+  from = "providers/proxy/"
+  to = "add-secure-apps/providers/proxy/"
   status = 302
   force = true
 
@@ -664,26 +664,26 @@
   force = true
 
 [[redirects]]
-  from = "providers/rac/index.md"
-  to = "add-secure-apps/providers/rac/index.md"
+  from = "providers/rac/"
+  to = "add-secure-apps/providers/rac/"
   status = 302
   force = true
 
 [[redirects]]
-  from = "providers/radius/index.mdx"
-  to = "add-secure-apps/providers/radius/index.mdx"
+  from = "providers/radius/x"
+  to = "add-secure-apps/providers/radius/x"
   status = 302
   force = true
 
 [[redirects]]
-  from = "providers/saml/index.md"
-  to = "add-secure-apps/providers/saml/index.md"
+  from = "providers/saml/"
+  to = "add-secure-apps/providers/saml/"
   status = 302
   force = true
 
 [[redirects]]
-  from = "providers/scim/index.md"
-  to = "add-secure-apps/providers/scim/index.md"
+  from = "providers/scim/"
+  to = "add-secure-apps/providers/scim/"
   status = 302
   force = true
 
@@ -766,80 +766,80 @@
   force = true
 
 [[redirects]]
-  from = "sources/active-directory/index.md"
-  to = "users-sources/sources/directory-sync/active-directory/index.md"
+  from = "sources/active-directory/"
+  to = "users-sources/sources/directory-sync/active-directory/"
   status = 302
   force = true
 
 [[redirects]]
-  from = "sources/apple/index.md"
-  to = "users-sources/sources/social-logins/apple/index.md"
+  from = "sources/apple/"
+  to = "users-sources/sources/social-logins/apple/"
   status = 302
   force = true
 
 [[redirects]]
-  from = "sources/azure-ad/index.md"
-  to = "users-sources/sources/social-logins/azure-ad/index.md"
+  from = "sources/azure-ad/"
+  to = "users-sources/sources/social-logins/azure-ad/"
   status = 302
   force = true
 
 [[redirects]]
-  from = "sources/discord/index.md"
-  to = "users-sources/sources/social-logins/discord/index.md"
+  from = "sources/discord/"
+  to = "users-sources/sources/social-logins/discord/"
   status = 302
   force = true
 
 [[redirects]]
-  from = "sources/facebook/index.md"
-  to = "users-sources/sources/social-logins/facebook/index.md"
+  from = "sources/facebook/"
+  to = "users-sources/sources/social-logins/facebook/"
   status = 302
   force = true
 
 [[redirects]]
-  from = "sources/freeipa/index.md"
-  to = "users-sources/sources/directory-sync/freeipa/index.md"
+  from = "sources/freeipa/"
+  to = "users-sources/sources/directory-sync/freeipa/"
   status = 302
   force = true
 
 [[redirects]]
-  from = "sources/github/index.md"
-  to = "users-sources/sources/social-logins/github/index.md"
+  from = "sources/github/"
+  to = "users-sources/sources/social-logins/github/"
   status = 302
   force = true
 
 [[redirects]]
-  from = "sources/google/index.md"
-  to = "users-sources/sources/social-logins/google/index.md"
+  from = "sources/google/"
+  to = "users-sources/sources/social-logins/google/"
   status = 302
   force = true
 
 [[redirects]]
-  from = "sources/index.md"
-  to = "users-sources/sources/index.md"
+  from = "sources/"
+  to = "users-sources/sources/"
   status = 302
   force = true
 
 [[redirects]]
-  from = "sources/ldap/index.md"
-  to = "users-sources/sources/protocols/ldap/index.md"
+  from = "sources/ldap/"
+  to = "users-sources/sources/protocols/ldap/"
   status = 302
   force = true
 
 [[redirects]]
-  from = "sources/mailcow/index.md"
-  to = "users-sources/sources/social-logins/mailcow/index.md"
+  from = "sources/mailcow/"
+  to = "users-sources/sources/social-logins/mailcow/"
   status = 302
   force = true
 
 [[redirects]]
-  from = "sources/oauth/index.md"
-  to = "users-sources/sources/protocols/oauth/index.md"
+  from = "sources/oauth/"
+  to = "users-sources/sources/protocols/oauth/"
   status = 302
   force = true
 
 [[redirects]]
-  from = "sources/plex/index.md"
-  to = "users-sources/sources/social-logins/plex/index.md"
+  from = "sources/plex/"
+  to = "users-sources/sources/social-logins/plex/"
   status = 302
   force = true
 
@@ -850,38 +850,38 @@
   force = true
 
 [[redirects]]
-  from = "sources/property-mappings/index.md"
-  to = "users-sources/sources/property-mappings/index.md"
+  from = "sources/property-mappings/"
+  to = "users-sources/sources/property-mappings/"
   status = 302
   force = true
 
 [[redirects]]
-  from = "sources/saml/index.md"
-  to = "users-sources/sources/protocols/saml/index.md"
+  from = "sources/saml/"
+  to = "users-sources/sources/protocols/saml/"
   status = 302
   force = true
 
 [[redirects]]
-  from = "sources/scim/index.md"
-  to = "users-sources/sources/protocols/scim/index.md"
+  from = "sources/scim/"
+  to = "users-sources/sources/protocols/scim/"
   status = 302
   force = true
 
 [[redirects]]
-  from = "sources/twitch/index.md"
-  to = "users-sources/sources/social-logins/twitch/index.md"
+  from = "sources/twitch/"
+  to = "users-sources/sources/social-logins/twitch/"
   status = 302
   force = true
 
 [[redirects]]
-  from = "sources/twitter/index.md"
-  to = "users-sources/sources/social-logins/twitter/index.md"
+  from = "sources/twitter/"
+  to = "users-sources/sources/social-logins/twitter/"
   status = 302
   force = true
 
 [[redirects]]
-  from = "user-group-role/access-control/index.mdx"
-  to = "users-sources/access-control/index.mdx"
+  from = "user-group-role/access-control/x"
+  to = "users-sources/access-control/x"
   status = 302
   force = true
 
@@ -904,8 +904,8 @@
   force = true
 
 [[redirects]]
-  from = "user-group-role/groups/index.mdx"
-  to = "users-sources/groups/index.mdx"
+  from = "user-group-role/groups/x"
+  to = "users-sources/groups/x"
   status = 302
   force = true
 
@@ -916,8 +916,8 @@
   force = true
 
 [[redirects]]
-  from = "user-group-role/roles/index.mdx"
-  to = "users-sources/roles/index.md"
+  from = "user-group-role/roles/x"
+  to = "users-sources/roles/"
   status = 302
   force = true
 
@@ -928,8 +928,8 @@
   force = true
 
 [[redirects]]
-  from = "user-group-role/user/index.mdx"
-  to = "users-sources/user/index.mdx"
+  from = "user-group-role/user/x"
+  to = "users-sources/user/x"
   status = 302
   force = true
 
@@ -953,8 +953,8 @@
 
 # Manual redirects, moved Dev Docs into regular docs Sept 2024
 [[redirects]]
-  from = "/developer-docs/index.md"
-  to = "/docs/developer-docs/index.md"
+  from = "/developer-docs/"
+  to = "/docs/developer-docs/"
   status = 302
   force = true
 
