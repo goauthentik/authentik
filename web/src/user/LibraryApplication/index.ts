@@ -68,7 +68,7 @@ export class LibraryApplication extends AKElement {
     renderExpansion(application: Application) {
         const me = rootInterface<UserInterface>()?.me;
 
-        return html`<ak-expand textOpen=${msg("Less details")} textClosed=${msg("More details")}>
+        return html`<ak-expand text-open=${msg("Less details")} text-closed=${msg("More details")}>
             <div class="pf-c-content">
                 <small>${application.metaPublisher}</small>
             </div>
