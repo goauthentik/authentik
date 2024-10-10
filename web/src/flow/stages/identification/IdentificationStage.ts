@@ -99,6 +99,7 @@ export class IdentificationStage extends BaseStage<
     createHelperForm(): void {
         const compatMode = "ShadyDOM" in window;
         this.form = document.createElement("form");
+        this.form.style.display = "none";
         document.documentElement.appendChild(this.form);
         // Only add the additional username input if we're in a shadow dom
         // otherwise it just confuses browsers
