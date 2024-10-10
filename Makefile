@@ -115,6 +115,12 @@ gen-build:  ## Extract the schema from the database
 		AUTHENTIK_TENANTS__ENABLED=true \
 		AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true \
 		ak spectacular --file schema.yml
+	AUTHENTIK_DEBUG=true \
+		AUTHENTIK_TENANTS__ENABLED=true \
+		AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true \
+		ak spectacular \
+			--urlconf=authentik.stages.authenticator_mobile.urls \
+			--file schemas/authentik-cloud-gateway.yml
 
 gen-changelog:  ## (Release) generate the changelog based from the commits since the last tag
 	git log --pretty=format:" - %s" $(shell git describe --tags $(shell git rev-list --tags --max-count=1))...$(shell git branch --show-current) | sort > changelog.md

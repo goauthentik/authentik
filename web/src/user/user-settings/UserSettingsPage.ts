@@ -90,7 +90,12 @@ export class UserSettingsPage extends AKElement {
             [];
         return html`<div class="pf-c-page">
             <main role="main" class="pf-c-page__main" tabindex="-1">
-                <ak-tabs ?vertical="${true}">
+                <ak-tabs
+                    ?autoVertical="${true}"
+                    .verticalEnabled=${() => {
+                        return document.body.getBoundingClientRect().width >= 780;
+                    }}
+                >
                     <section
                         slot="page-details"
                         data-tab-title="${msg("User details")}"
