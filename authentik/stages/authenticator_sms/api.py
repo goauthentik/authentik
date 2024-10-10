@@ -3,7 +3,6 @@
 from django_filters.rest_framework.backends import DjangoFilterBackend
 from rest_framework import mixins
 from rest_framework.filters import OrderingFilter, SearchFilter
-from rest_framework.permissions import IsAdminUser
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from authentik.api.authorization import OwnerFilter, OwnerPermissions
@@ -76,7 +75,6 @@ class SMSDeviceViewSet(
 class SMSAdminDeviceViewSet(ModelViewSet):
     """Viewset for sms authenticator devices (for admins)"""
 
-    permission_classes = [IsAdminUser]
     queryset = SMSDevice.objects.all()
     serializer_class = SMSDeviceSerializer
     search_fields = ["name"]
