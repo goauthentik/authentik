@@ -1,7 +1,7 @@
 import "@goauthentik/admin/applications/ApplicationForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import MDApplication from "@goauthentik/docs/applications/index.md";
-import "@goauthentik/elements/AppIcon";
+import MDApplication from "@goauthentik/docs/add-secure-apps/applications/index.md";
+import "@goauthentik/elements/AppIcon.js";
 import "@goauthentik/elements/Markdown";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
