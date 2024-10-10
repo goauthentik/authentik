@@ -84,7 +84,9 @@ def run_migrations():
     curr = conn.cursor()
     try:
         wait_for_lock(curr)
-        for migration_path in Path(__file__).parent.absolute().glob("system_migrations/*.py"):
+        for migration_path in sorted(
+            Path(__file__).parent.absolute().glob("system_migrations/*.py")
+        ):
             spec = spec_from_file_location("lifecycle.system_migrations", migration_path)
             if not spec:
                 continue
