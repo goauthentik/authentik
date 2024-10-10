@@ -672,7 +672,7 @@ msgstr ""
 "Evaluierung der Richtlinien während des Planungsprozesses für den Ablauf."
 
 #: authentik/flows/models.py:220
-msgid "Evaluate policies when the Stage is present to the user."
+msgid "Evaluate policies when the Stage is presented to the user."
 msgstr ""
 "Bewerten Sie die Richtlinien, wenn die Stufe für den Benutzer sichtbar ist."
 
