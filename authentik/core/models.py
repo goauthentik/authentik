@@ -23,6 +23,7 @@ from model_utils.managers import InheritanceManager
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
+from authentik.analytics.models import AnalyticsMixin
 from authentik.blueprints.models import ManagedModel
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.types import UILoginButton, UserSettingSerializer
@@ -168,7 +169,7 @@ class GroupQuerySet(CTEQuerySet):
         return cte.join(Group, group_uuid=cte.col.group_uuid).with_cte(cte)
 
 
-class Group(SerializerModel, AttributesMixin):
+class Group(SerializerModel, AttributesMixin, AnalyticsMixin):
     """Group model which supports a basic hierarchy and has attributes"""
 
     group_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
@@ -258,7 +259,7 @@ class UserManager(DjangoUserManager):
         return self.get_queryset().exclude_anonymous()
 
 
-class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
+class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser, AnalyticsMixin):
     """authentik User model, based on django's contrib auth user model."""
 
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
@@ -376,7 +377,7 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
         return get_avatar(self)
 
 
-class Provider(SerializerModel):
+class Provider(SerializerModel, AnalyticsMixin):
     """Application-independent Provider instance. For example SAML2 Remote, OAuth2 Application"""
 
     name = models.TextField(unique=True)
@@ -470,7 +471,7 @@ class ApplicationQuerySet(QuerySet):
         return qs
 
 
-class Application(SerializerModel, PolicyBindingModel):
+class Application(SerializerModel, PolicyBindingModel, AnalyticsMixin):
     """Every Application which uses authentik for authentication/identification/authorization
     needs an Application record. Other authentication types can subclass this Model to
     add custom fields and other properties"""
@@ -603,7 +604,7 @@ class SourceGroupMatchingModes(models.TextChoices):
     )
 
 
-class Source(ManagedModel, SerializerModel, PolicyBindingModel):
+class Source(ManagedModel, SerializerModel, PolicyBindingModel, AnalyticsMixin):
     """Base Authentication source, i.e. an OAuth Provider, SAML Remote or LDAP Server"""
 
     name = models.TextField(help_text=_("Source's display Name."))
@@ -735,7 +736,7 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         ]
 
 
-class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
+class UserSourceConnection(SerializerModel, CreatedUpdatedModel, AnalyticsMixin):
     """Connection between User and Source."""
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -755,7 +756,7 @@ class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
         unique_together = (("user", "source"),)
 
 
-class GroupSourceConnection(SerializerModel, CreatedUpdatedModel):
+class GroupSourceConnection(SerializerModel, CreatedUpdatedModel, AnalyticsMixin):
     """Connection between Group and Source."""
 
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
@@ -879,7 +880,7 @@ class Token(SerializerModel, ManagedModel, ExpiringModel):
         ).save()
 
 
-class PropertyMapping(SerializerModel, ManagedModel):
+class PropertyMapping(SerializerModel, ManagedModel, AnalyticsMixin):
     """User-defined key -> x mapping which can be used by providers to expose extra data."""
 
     pm_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)

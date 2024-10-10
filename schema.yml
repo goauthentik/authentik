@@ -290,6 +290,64 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /analytics/data/:
+    get:
+      operationId: analytics_data_list
+      description: Read-only view of analytics descriptions
+      tags:
+      - analytics
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AnalyticsData'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /analytics/description/:
+    get:
+      operationId: analytics_description_list
+      description: Read-only view of analytics descriptions
+      tags:
+      - analytics
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AnalyticsDescription'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /authenticators/admin/all/:
     get:
       operationId: authenticators_admin_all_list
@@ -11502,6 +11560,7 @@ paths:
           type: string
           nullable: true
           enum:
+          - analytics_sent
           - authorize_application
           - configuration_error
           - custom_
@@ -35758,6 +35817,25 @@ components:
       - rsa
       - ecdsa
       type: string
+    AnalyticsData:
+      type: object
+      properties:
+        data:
+          type: object
+          additionalProperties: {}
+      required:
+      - data
+    AnalyticsDescription:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        label:
+          type: string
+        desc:
+          type: string
+      required:
+      - desc
+      - label
     App:
       type: object
       description: Serialize Application info
@@ -35773,6 +35851,7 @@ components:
       enum:
       - authentik.tenants
       - authentik.admin
+      - authentik.analytics
       - authentik.api
       - authentik.crypto
       - authentik.flows
@@ -38960,6 +39039,7 @@ components:
       - model_updated
       - model_deleted
       - email_sent
+      - analytics_sent
       - update_available
       - custom_
       type: string
@@ -47361,6 +47441,13 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Default token length
+        analytics_enabled:
+          type: boolean
+        analytics_sources:
+          type: array
+          items:
+            type: string
+            minLength: 1
     PatchedSourceStageRequest:
       type: object
       description: SourceStage Serializer
@@ -51001,6 +51088,23 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Default token length
+        analytics_enabled:
+          type: boolean
+        analytics_sources:
+          type: array
+          items:
+            type: string
+        analytics_sources_obj:
+          type: array
+          items:
+            type: array
+            items:
+              type: string
+            minLength: 2
+            maxLength: 2
+          readOnly: true
+      required:
+      - analytics_sources_obj
     SettingsRequest:
       type: object
       description: Settings Serializer
@@ -51041,6 +51145,13 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Default token length
+        analytics_enabled:
+          type: boolean
+        analytics_sources:
+          type: array
+          items:
+            type: string
+            minLength: 1
     SeverityEnum:
       enum:
       - notice
