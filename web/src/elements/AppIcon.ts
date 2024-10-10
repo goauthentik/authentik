@@ -46,6 +46,10 @@ export class AppIcon extends AKElement implements IAppIcon {
                     --icon-height: 1rem;
                     --icon-border: 0.125rem;
                 }
+                :host([size="pf-m-xl"]) {
+                    --icon-height: 6rem;
+                    --icon-border: 0.25rem;
+                }
                 .pf-c-avatar {
                     --pf-c-avatar--BorderRadius: 0;
                     --pf-c-avatar--Height: calc(
@@ -73,17 +77,13 @@ export class AppIcon extends AKElement implements IAppIcon {
     render(): TemplateResult {
         // prettier-ignore
         return match([this.name, this.icon])
-            .with(
-                [undefined, undefined],
+            .with([undefined, undefined],
                 () => html`<div><i class="icon fas fa-question-circle"></i></div>`)
-            .with(
-                [P._, P.string.startsWith("fa://")],
+            .with([P._, P.string.startsWith("fa://")],
                 ([_name, icon]) => html`<div><i class="icon fas ${icon.replaceAll("fa://", "")}"></i></div>`)
-            .with(
-                [P._, P.string],
+            .with([P._, P.string],
                 ([_name, icon]) => html`<img class="icon pf-c-avatar" src="${icon}" alt="${msg("Application Icon")}" />`)
-            .with(
-                [P.string, undefined],
+            .with([P.string, undefined],
                 ([name]) => html`<span class="icon">${name.charAt(0).toUpperCase()}</span>`)
             .exhaustive();
     }

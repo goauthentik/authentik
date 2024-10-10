@@ -1,3 +1,4 @@
+import { PFSize } from "@goauthentik/common/enums.js";
 import type { Meta, StoryObj } from "@storybook/web-components";
 
 import { TemplateResult, html } from "lit";
@@ -5,6 +6,8 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import "../AppIcon";
 import { AppIcon } from "../AppIcon";
+
+const sizeOptions = Array.from(Object.values(PFSize));
 
 const metadata: Meta<AppIcon> = {
     title: "Elements / <ak-app-icon>",
@@ -19,7 +22,7 @@ const metadata: Meta<AppIcon> = {
     argTypes: {
         name: { control: "text" },
         icon: { control: "text" },
-        size: { control: "text" },
+        size: { options: sizeOptions, control: "select" },
     },
 };
 
@@ -45,7 +48,7 @@ export const DefaultStory: StoryObj = {
     render: ({ name, icon, size }) =>
         container(
             html`<ak-app-icon
-                .size=${size}
+                size=${size}
                 name=${ifDefined(name)}
                 icon=${ifDefined(icon)}
             ></ak-app-icon>`,
@@ -60,7 +63,7 @@ export const WithIcon: StoryObj = {
     render: ({ name, icon, size }) =>
         container(
             html`<ak-app-icon
-                .size=${size}
+                size=${size}
                 name=${ifDefined(name)}
                 icon=${ifDefined(icon || undefined)}
             ></ak-app-icon>`,
@@ -72,7 +75,7 @@ export const AllDataUndefined: StoryObj = {
     render: ({ name, icon, size }) =>
         container(
             html`<ak-app-icon
-                .size=${size}
+                size=${size}
                 name=${ifDefined(name)}
                 icon=${ifDefined(icon)}
             ></ak-app-icon>`,
