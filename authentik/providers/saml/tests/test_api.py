@@ -131,6 +131,7 @@ class TestSAMLProviderAPI(APITestCase):
                     "file": metadata,
                     "name": generate_id(),
                     "authorization_flow": create_test_flow(FlowDesignation.AUTHORIZATION).pk,
+                    "invalidation_flow": create_test_flow(FlowDesignation.INVALIDATION).pk,
                 },
                 format="multipart",
             )
