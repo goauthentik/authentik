@@ -17,6 +17,7 @@ TENANT_APPS = [
     "authentik.enterprise.providers.google_workspace",
     "authentik.enterprise.providers.microsoft_entra",
     "authentik.enterprise.providers.rac",
+    "authentik.enterprise.stages.authenticator_endpoint",
     "authentik.enterprise.stages.source",
 ]
 

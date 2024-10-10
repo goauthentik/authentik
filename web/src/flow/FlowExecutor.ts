@@ -42,6 +42,7 @@ import {
     FlowErrorChallenge,
     FlowLayoutEnum,
     FlowsApi,
+    FrameChallenge,
     ResponseError,
     ShellChallenge,
     UiThemeEnum,
@@ -169,6 +170,19 @@ export class FlowExecutor extends Interface implements StageHost {
         }
         this.addEventListener(EVENT_FLOW_INSPECTOR_TOGGLE, () => {
             this.inspectorOpen = !this.inspectorOpen;
+        });
+        window.addEventListener("message", (event) => {
+            const msg: {
+                source?: string;
+                context?: string;
+                message: string;
+            } = event.data;
+            if (msg.source !== "goauthentik.io" || msg.context !== "flow-executor") {
+                return;
+            }
+            if (msg.message === "submit") {
+                this.submit({} as FlowChallengeResponseRequest);
+            }
         });
     }
 
@@ -423,6 +437,8 @@ export class FlowExecutor extends Interface implements StageHost {
                 </ak-stage-redirect>`;
             case "xak-flow-shell":
                 return html`${unsafeHTML((this.challenge as ShellChallenge).body)}`;
+            case "xak-flow-frame":
+                return html`<iframe src=${(this.challenge as FrameChallenge).url}></iframe>`
             default:
                 return html`Invalid native challenge element`;
         }
