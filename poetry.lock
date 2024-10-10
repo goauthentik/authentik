@@ -2859,13 +2859,13 @@ dev = ["bumpver", "isort", "mypy", "pylint", "pytest", "yapf"]
 
 [[package]]
 name = "msgraph-sdk"
-version = "1.9.0"
+version = "1.10.0"
 description = "The Microsoft Graph Python SDK"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "msgraph_sdk-1.9.0-py3-none-any.whl", hash = "sha256:4db5e18951cee41ae81c59da2f3512e10711635564617a2d1790c1ec02576a92"},
-    {file = "msgraph_sdk-1.9.0.tar.gz", hash = "sha256:ff375e54fbc0ce51df252fa9b23f1f630cab8aa312882a270c0139a7f643ff8e"},
+    {file = "msgraph_sdk-1.10.0-py3-none-any.whl", hash = "sha256:b346013f978d2e23255d044d38751e2715e1eed3159b1b1c3d7cbe831dd121e8"},
+    {file = "msgraph_sdk-1.10.0.tar.gz", hash = "sha256:7b94646fea833d85ad2f793643ff72946de23bc2cc253cfdb694798ae7a60229"},
 ]
 
 [package.dependencies]
