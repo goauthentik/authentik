@@ -34,7 +34,7 @@ class TestTokenClientCredentialsJWTSource(OAuthTestCase):
         self.factory = RequestFactory()
         self.cert = create_test_cert()
 
-        jwk = JWKSView().get_jwk_for_key(self.cert)
+        jwk = JWKSView().get_jwk_for_key(self.cert, "sig")
         self.source: OAuthSource = OAuthSource.objects.create(
             name=generate_id(),
             slug=generate_id(),

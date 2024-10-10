@@ -39,6 +39,7 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             "refresh_token_validity",
             "include_claims_in_id_token",
             "signing_key",
+            "encryption_key",
             "redirect_uris",
             "sub_mode",
             "property_mappings",

@@ -113,6 +113,8 @@ class ProviderInfoView(View):
             "claims_supported": self.get_claims(provider),
             "claims_parameter_supported": False,
             "code_challenge_methods_supported": [PKCE_METHOD_PLAIN, PKCE_METHOD_S256],
+            "id_token_encryption_alg_values_supported": ["RSA-OAEP-256"],
+            "id_token_encryption_enc_values_supported": ["A256CBC-HS512"],
         }
 
     def get_claims(self, provider: OAuth2Provider) -> list[str]:
