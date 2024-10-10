@@ -26,6 +26,7 @@ class SCIMProviderSerializer(ProviderSerializer):
             "verbose_name_plural",
             "meta_model_name",
             "url",
+            "verify_certificates",
             "token",
             "exclude_users_service_account",
             "filter_group",
