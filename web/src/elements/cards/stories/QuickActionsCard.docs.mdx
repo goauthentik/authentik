@@ -1,0 +1,25 @@
+import { Canvas, Description, Meta, Story, Title } from "@storybook/blocks";
+
+import * as QuickActionsCardStories from "./QuickActionsCard.stories";
+
+<Meta of={QuickActionsCardStories} />
+
+# Quick Action Cards
+
+A Quick Action Card displays a list of navigation links. It is used on our dashboards to provide
+easy access to basic operations implied by the dashboard. The example here is from the home page
+dashboard.
+
+## Usage
+
+```Typescript
+import "@goauthentik/elements/cards/QuickActionsCard.js";
+```
+
+```html
+<ak-aggregate-card header="Some title"><p>This is the content of your card!</p></ak-aggregate-card>
+```
+
+## Demo
+
+<Story of={QuickActionsCardStories.DefaultStory} />

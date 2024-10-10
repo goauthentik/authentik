@@ -1,9 +1,9 @@
 import { html } from "lit";
 
-import "./ak-library-application-empty-list";
+import "../ak-library-application-empty-list";
 
 export default {
-    title: "Elements / Application Empty State",
+    title: "Users / <ak-library-application-empty-list>",
 };
 
 export const OrdinaryUser = () =>
