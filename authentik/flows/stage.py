@@ -125,7 +125,7 @@ class ChallengeStageView(StageView):
             with (
                 start_span(
                     op="authentik.flow.stage.challenge_invalid",
-                    description=self.__class__.__name__,
+                    name=self.__class__.__name__,
                 ),
                 HIST_FLOWS_STAGE_TIME.labels(
                     stage_type=self.__class__.__name__, method="challenge_invalid"
@@ -135,7 +135,7 @@ class ChallengeStageView(StageView):
         with (
             start_span(
                 op="authentik.flow.stage.challenge_valid",
-                description=self.__class__.__name__,
+                name=self.__class__.__name__,
             ),
             HIST_FLOWS_STAGE_TIME.labels(
                 stage_type=self.__class__.__name__, method="challenge_valid"
@@ -161,7 +161,7 @@ class ChallengeStageView(StageView):
         with (
             start_span(
                 op="authentik.flow.stage.get_challenge",
-                description=self.__class__.__name__,
+                name=self.__class__.__name__,
             ),
             HIST_FLOWS_STAGE_TIME.labels(
                 stage_type=self.__class__.__name__, method="get_challenge"
@@ -174,7 +174,7 @@ class ChallengeStageView(StageView):
                 return self.executor.stage_invalid()
         with start_span(
             op="authentik.flow.stage._get_challenge",
-            description=self.__class__.__name__,
+            name=self.__class__.__name__,
         ):
             if not hasattr(challenge, "initial_data"):
                 challenge.initial_data = {}
