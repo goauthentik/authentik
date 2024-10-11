@@ -1,8 +1,10 @@
+import "@goauthentik/flow/FormStatic";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -29,22 +31,34 @@ export class SessionEnd extends BaseStage<SessionEndChallenge, unknown> {
             </header>
             <div class="pf-c-login__main-body">
                 <form class="pf-c-form">
+                    <ak-form-static
+                        class="pf-c-form__group"
+                        userAvatar="${this.challenge.pendingUserAvatar}"
+                        user=${this.challenge.pendingUser}
+                    >
+                        <div slot="link">
+                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
+                                >${msg("Not you?")}</a
+                            >
+                        </div>
+                    </ak-form-static>
                     <p>
                         ${msg(
                             str`You've logged out of ${this.challenge.applicationName}. You can go back to the overview to launch another application, or log out of your authentik account.`,
                         )}
                     </p>
                     <a href="/" class="pf-c-button pf-m-primary"> ${msg("Go back to overview")} </a>
-                    ${this.host.brand && this.challenge.invalidationFlowUrl
+                    ${this.challenge.invalidationFlowUrl
                         ? html`
                               <a
                                   href="${this.challenge.invalidationFlowUrl}"
                                   class="pf-c-button pf-m-secondary"
+                                  id="logout"
                               >
-                                  ${msg(str`Log out of ${this.host.brand.brandingTitle}`)}
+                                  ${msg(str`Log out of ${this.challenge.brandName}`)}
                               </a>
                           `
-                        : html``}
+                        : nothing}
                     ${this.challenge.applicationLaunchUrl && this.challenge.applicationName
                         ? html`
                               <a
@@ -54,7 +68,7 @@ export class SessionEnd extends BaseStage<SessionEndChallenge, unknown> {
                                   ${msg(str`Log back into ${this.challenge.applicationName}`)}
                               </a>
                           `
-                        : html``}
+                        : nothing}
                 </form>
             </div>
             <footer class="pf-c-login__main-footer">

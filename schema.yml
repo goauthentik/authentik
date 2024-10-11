@@ -51094,7 +51094,10 @@ components:
           type: string
         invalidation_flow_url:
           type: string
+        brand_name:
+          type: string
       required:
+      - brand_name
       - pending_user
       - pending_user_avatar
     SessionUser:

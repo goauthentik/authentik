@@ -279,6 +279,7 @@ class SessionEndStage(ChallengeStageView):
         application: Application | None = self.executor.plan.context.get(PLAN_CONTEXT_APPLICATION)
         data = {
             "component": "ak-stage-session-end",
+            "brand_name": self.request.brand.branding_title,
         }
         if application:
             data["application_name"] = application.name
