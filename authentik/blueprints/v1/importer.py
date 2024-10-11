@@ -429,7 +429,7 @@ class Importer:
         orig_import = deepcopy(self._import)
         if self._import.version != 1:
             self.logger.warning("Invalid blueprint version")
-            return False, [{"event": "Invalid blueprint version"}]
+            return False, [LogEvent("Invalid blueprint version", log_level="warning", logger=None)]
         with (
             transaction_rollback(),
             capture_logs() as logs,
