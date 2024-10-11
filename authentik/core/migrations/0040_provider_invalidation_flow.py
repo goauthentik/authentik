@@ -3,6 +3,33 @@
 import django.db.models.deletion
 from django.db import migrations, models
 
+from django.apps.registry import Apps
+from django.db import migrations, models
+from django.db.backends.base.schema import BaseDatabaseSchemaEditor
+
+
+def migrate_invalidation_flow_default(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
+    from authentik.flows.models import FlowDesignation, FlowAuthenticationRequirement
+
+    db_alias = schema_editor.connection.alias
+
+    Flow = apps.get_model("authentik_flows", "Flow")
+    Provider = apps.get_model("authentik_core", "Provider")
+
+    # So this flow is managed via a blueprint, bue we're in a migration so we don't want to rely on that
+    # since the blueprint is just an empty flow we can just create it here
+    # and let it be managed by the blueprint later
+    flow, _ = Flow.objects.using(db_alias).update_or_create(
+        slug="default-provider-invalidation-flow",
+        defaults={
+            "name": "Logged out of application",
+            "title": "You've logged out of %(app)s.",
+            "authentication": FlowAuthenticationRequirement.NONE,
+            "designation": FlowDesignation.INVALIDATION,
+        },
+    )
+    Provider.objects.using(db_alias).filter(invalidation_flow=None).update(invalidation_flow=flow)
+
 
 class Migration(migrations.Migration):
 
@@ -24,4 +51,5 @@ class Migration(migrations.Migration):
                 to="authentik_flows.flow",
             ),
         ),
+        migrations.RunPython(migrate_invalidation_flow_default),
     ]
