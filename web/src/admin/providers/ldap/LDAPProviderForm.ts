@@ -57,19 +57,6 @@ export class LDAPProviderFormPage extends WithBrandConfig(BaseProviderForm<LDAPP
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Bind flow")}
-                ?required=${true}
-                name="authorizationFlow"
-            >
-                <ak-branded-flow-search
-                    flowType=${FlowsInstancesListDesignationEnum.Authentication}
-                    .currentFlow=${this.instance?.authorizationFlow}
-                    .brandFlow=${this.brand?.flowAuthentication}
-                    required
-                ></ak-branded-flow-search>
-                <p class="pf-c-form__helper-text">${msg("Flow used for users to authenticate.")}</p>
-            </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Bind mode")} name="bindMode">
                 <ak-radio
                     .options=${[
