@@ -1,6 +1,5 @@
 """SAML Service Provider Metadata Processor"""
 
-from collections.abc import Iterator
 from typing import Optional
 
 from django.http import HttpRequest
@@ -13,11 +12,6 @@ from authentik.sources.saml.processors.constants import (
     NS_SAML_METADATA,
     NS_SIGNATURE,
     SAML_BINDING_POST,
-    SAML_NAME_ID_FORMAT_EMAIL,
-    SAML_NAME_ID_FORMAT_PERSISTENT,
-    SAML_NAME_ID_FORMAT_TRANSIENT,
-    SAML_NAME_ID_FORMAT_WINDOWS,
-    SAML_NAME_ID_FORMAT_X509,
 )
 
 
