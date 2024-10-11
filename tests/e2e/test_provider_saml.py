@@ -450,9 +450,11 @@ class TestProviderSAML(SeleniumTestCase):
         self.wait_for_url("http://localhost:9009/")
 
         self.driver.get("http://localhost:9009/saml/logout")
-        self.wait_for_url(
-            self.url(
-                "authentik_core:if-flow",
-                flow_slug=invalidation_flow.slug,
-            )
+        should_url = self.url(
+            "authentik_core:if-flow",
+            flow_slug=invalidation_flow.slug,
+        )
+        self.wait.until(
+            lambda driver: driver.current_url.startswith(should_url),
+            f"URL {self.driver.current_url} doesn't match expected URL {should_url}",
         )

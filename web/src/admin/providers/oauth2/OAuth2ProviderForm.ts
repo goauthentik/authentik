@@ -155,7 +155,7 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
                 required
             ></ak-text-input>
 
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-radio-input
@@ -218,7 +218,6 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
                         <ak-flow-search
                             flowType=${FlowsInstancesListDesignationEnum.Authentication}
                             .currentFlow=${provider?.authenticationFlow}
-                            required
                         ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(
