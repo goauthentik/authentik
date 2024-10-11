@@ -23,7 +23,6 @@ updates:
   - package-ecosystem: npm
     directories:
       - "/web"
-      - "/tests/wdio"
       - "/web/sfe"
     schedule:
       interval: daily

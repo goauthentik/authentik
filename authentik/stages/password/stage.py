@@ -49,7 +49,7 @@ def authenticate(
         LOGGER.debug("Attempting authentication...", backend=backend_path)
         with start_span(
             op="authentik.stages.password.authenticate",
-            description=backend_path,
+            name=backend_path,
         ):
             user = backend.authenticate(request, **credentials)
         if user is None:

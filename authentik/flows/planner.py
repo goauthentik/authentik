@@ -166,7 +166,7 @@ class FlowPlanner:
     def plan(self, request: HttpRequest, default_context: dict[str, Any] | None = None) -> FlowPlan:
         """Check each of the flows' policies, check policies for each stage with PolicyBinding
         and return ordered list"""
-        with start_span(op="authentik.flow.planner.plan", description=self.flow.slug) as span:
+        with start_span(op="authentik.flow.planner.plan", name=self.flow.slug) as span:
             span: Span
             span.set_data("flow", self.flow)
             span.set_data("request", request)
@@ -233,7 +233,7 @@ class FlowPlanner:
         with (
             start_span(
                 op="authentik.flow.planner.build_plan",
-                description=self.flow.slug,
+                name=self.flow.slug,
             ) as span,
             HIST_FLOWS_PLAN_TIME.labels(flow_slug=self.flow.slug).time(),
         ):

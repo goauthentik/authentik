@@ -9,7 +9,7 @@ export interface ISearchSelectApi<T> {
     renderDescription?: (element: T) => string | TemplateResult;
     value: (element: T | undefined) => unknown;
     selected?: (element: T, elements: T[]) => boolean;
-    groupBy: (items: T[]) => [string, T[]][];
+    groupBy?: (items: T[]) => [string, T[]][];
 }
 
 export interface ISearchSelectEz<T> extends ISearchSelectBase<T> {
@@ -58,7 +58,9 @@ export class SearchSelectEz<T> extends SearchSelectBase<T> implements ISearchSel
         this.renderDescription = this.config.renderDescription;
         this.value = this.config.value;
         this.selected = this.config.selected;
-        this.groupBy = this.config.groupBy;
+        if (this.config.groupBy !== undefined) {
+            this.groupBy = this.config.groupBy;
+        }
         super.connectedCallback();
     }
 }

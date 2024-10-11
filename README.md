@@ -34,7 +34,7 @@ For bigger setups, there is a Helm Chart [here](https://github.com/goauthentik/h
 
 ## Development
 
-See [Developer Documentation](https://goauthentik.io/developer-docs/?utm_source=github)
+See [Developer Documentation](https://docs.goauthentik.io/docs/developer-docs/?utm_source=github)
 
 ## Security
 

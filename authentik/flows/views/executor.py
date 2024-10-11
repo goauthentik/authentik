@@ -153,7 +153,7 @@ class FlowExecutorView(APIView):
         return plan
 
     def dispatch(self, request: HttpRequest, flow_slug: str) -> HttpResponse:
-        with start_span(op="authentik.flow.executor.dispatch", description=self.flow.slug) as span:
+        with start_span(op="authentik.flow.executor.dispatch", name=self.flow.slug) as span:
             span.set_data("authentik Flow", self.flow.slug)
             get_params = QueryDict(request.GET.get(QS_QUERY, ""))
             if QS_KEY_TOKEN in get_params:
@@ -273,7 +273,7 @@ class FlowExecutorView(APIView):
             with (
                 start_span(
                     op="authentik.flow.executor.stage",
-                    description=class_path,
+                    name=class_path,
                 ) as span,
                 HIST_FLOW_EXECUTION_STAGE_TIME.labels(
                     method=request.method.upper(),
@@ -324,7 +324,7 @@ class FlowExecutorView(APIView):
             with (
                 start_span(
                     op="authentik.flow.executor.stage",
-                    description=class_path,
+                    name=class_path,
                 ) as span,
                 HIST_FLOW_EXECUTION_STAGE_TIME.labels(
                     method=request.method.upper(),

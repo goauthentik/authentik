@@ -1,21 +1,9 @@
-import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet.js";
+import { render } from "@goauthentik/elements/tests/utils.js";
 import { $, expect } from "@wdio/globals";
 
-import { TemplateResult, html, render as litRender } from "lit";
-
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import { html } from "lit";
 
 import "../AggregateCard.js";
-
-const render = (body: TemplateResult) => {
-    document.adoptedStyleSheets = [
-        ...document.adoptedStyleSheets,
-        ensureCSSStyleSheet(PFBase),
-        ensureCSSStyleSheet(AKGlobal),
-    ];
-    return litRender(body, document.body);
-};
 
 describe("ak-aggregate-card", () => {
     it("should render the standard card without an icon, link, or subtext", async () => {

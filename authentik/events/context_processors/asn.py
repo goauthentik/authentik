@@ -50,7 +50,7 @@ class ASNContextProcessor(MMDBContextProcessor):
         """Wrapper for Reader.asn"""
         with start_span(
             op="authentik.events.asn.asn",
-            description=ip_address,
+            name=ip_address,
         ):
             if not self.configured():
                 return None
