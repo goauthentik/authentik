@@ -104,7 +104,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
         if not pre_user:
             with start_span(
                 op="authentik.stages.identification.validate_invalid_wait",
-                description="Sleep random time on invalid user identifier",
+                name="Sleep random time on invalid user identifier",
             ):
                 # Sleep a random time (between 90 and 210ms) to "prevent" user enumeration attacks
                 sleep(0.030 * SystemRandom().randint(3, 7))
@@ -146,7 +146,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
         try:
             with start_span(
                 op="authentik.stages.identification.authenticate",
-                description="User authenticate call (combo stage)",
+                name="User authenticate call (combo stage)",
             ):
                 user = authenticate(
                     self.stage.request,
