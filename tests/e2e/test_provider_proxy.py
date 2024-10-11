@@ -65,6 +65,7 @@ class TestProviderProxy(SeleniumTestCase):
     )
     @apply_blueprint(
         "default/flow-default-provider-authorization-implicit-consent.yaml",
+        "default/flow-default-provider-invalidation.yaml",
     )
     @apply_blueprint(
         "system/providers-oauth2.yaml",
@@ -82,6 +83,7 @@ class TestProviderProxy(SeleniumTestCase):
             authorization_flow=Flow.objects.get(
                 slug="default-provider-authorization-implicit-consent"
             ),
+            invalidation_flow=Flow.objects.get(slug="default-provider-invalidation-flow"),
             internal_host=f"http://{self.host}",
             external_host="http://localhost:9000",
         )
@@ -120,8 +122,10 @@ class TestProviderProxy(SeleniumTestCase):
 
         self.driver.get("http://localhost:9000/outpost.goauthentik.io/sign_out")
         sleep(2)
-        full_body_text = self.driver.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
-        self.assertIn("You've logged out of", full_body_text)
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        session_end_stage = self.get_shadow_root("ak-stage-session-end", flow_executor)
+        title = session_end_stage.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
+        self.assertIn("You've logged out of", title)
 
     @retry()
     @apply_blueprint(
@@ -130,6 +134,7 @@ class TestProviderProxy(SeleniumTestCase):
     )
     @apply_blueprint(
         "default/flow-default-provider-authorization-implicit-consent.yaml",
+        "default/flow-default-provider-invalidation.yaml",
     )
     @apply_blueprint(
         "system/providers-oauth2.yaml",
@@ -149,6 +154,7 @@ class TestProviderProxy(SeleniumTestCase):
             authorization_flow=Flow.objects.get(
                 slug="default-provider-authorization-implicit-consent"
             ),
+            invalidation_flow=Flow.objects.get(slug="default-provider-invalidation-flow"),
             internal_host=f"http://{self.host}",
             external_host="http://localhost:9000",
             basic_auth_enabled=True,
@@ -191,8 +197,10 @@ class TestProviderProxy(SeleniumTestCase):
 
         self.driver.get("http://localhost:9000/outpost.goauthentik.io/sign_out")
         sleep(2)
-        full_body_text = self.driver.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
-        self.assertIn("You've logged out of", full_body_text)
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        session_end_stage = self.get_shadow_root("ak-stage-session-end", flow_executor)
+        title = session_end_stage.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
+        self.assertIn("You've logged out of", title)
 
 
 # TODO: Fix flaky test
