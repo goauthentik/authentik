@@ -181,6 +181,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
     @apply_blueprint(
         "default/flow-default-authentication-flow.yaml",
         "default/flow-default-invalidation-flow.yaml",
+        "default/default-brand.yaml",
     )
     @apply_blueprint(
         "default/flow-default-provider-authorization-implicit-consent.yaml",
@@ -253,7 +254,9 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
                 flow_slug=invalidation_flow.slug,
             )
         )
-        self.driver.find_element(By.ID, "logout").click()
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        session_end_stage = self.get_shadow_root("ak-stage-session-end", flow_executor)
+        session_end_stage.find_element(By.ID, "logout").click()
 
     @retry()
     @apply_blueprint(
