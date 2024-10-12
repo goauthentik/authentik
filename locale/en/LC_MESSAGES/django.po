@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-25 00:08+0000\n"
+"POT-Creation-Date: 2024-10-12 00:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -36,8 +36,7 @@ msgid "Blueprint file does not exist"
 msgstr ""
 
 #: authentik/blueprints/api.py
-#, python-brace-format
-msgid "Failed to validate blueprint: {logs}"
+msgid "Failed to validate blueprint"
 msgstr ""
 
 #: authentik/blueprints/api.py
