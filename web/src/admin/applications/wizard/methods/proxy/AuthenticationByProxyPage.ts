@@ -121,10 +121,9 @@ export class AkTypeProxyApplicationWizardPage extends BaseProviderPanel {
                         )}
                     </p>
                 </ak-form-element-horizontal>
-
                 <ak-form-element-horizontal
                     label=${msg("Authorization flow")}
-                    ?required=${true}
+                    required
                     name="authorizationFlow"
                     .errorMessages=${errors?.authorizationFlow ?? []}
                 >
@@ -135,6 +134,21 @@ export class AkTypeProxyApplicationWizardPage extends BaseProviderPanel {
                     ></ak-flow-search>
                     <p class="pf-c-form__helper-text">
                         ${msg("Flow used when authorizing this provider.")}
+                    </p>
+                </ak-form-element-horizontal>
+                <ak-form-element-horizontal
+                    name="invalidationFlow"
+                    label=${msg("Authorization flow")}
+                    .errorMessages=${errors?.invalidationFlow ?? []}
+                    ?required=${true}
+                >
+                    <ak-flow-search
+                        flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                        .currentFlow=${this.instance?.invalidationFlow}
+                        required
+                    ></ak-flow-search>
+                    <p class="pf-c-form__helper-text">
+                        ${msg("Flow used when logging out of this provider.")}
                     </p>
                 </ak-form-element-horizontal>
 

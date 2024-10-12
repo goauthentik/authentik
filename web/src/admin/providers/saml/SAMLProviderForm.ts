@@ -165,7 +165,6 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                         <ak-flow-search
                             flowType=${FlowsInstancesListDesignationEnum.Authentication}
                             .currentFlow=${this.instance?.authenticationFlow}
-                            required
                         ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(
@@ -175,7 +174,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Authorization flow")}
-                        ?required=${true}
+                        required
                         name="authorizationFlow"
                     >
                         <ak-flow-search
@@ -190,10 +189,12 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                     <ak-form-element-horizontal
                         label=${msg("Invalidation flow")}
                         name="invalidationFlow"
+                        required
                     >
                         <ak-flow-search
                             flowType=${FlowsInstancesListDesignationEnum.Invalidation}
                             .currentFlow=${this.instance?.invalidationFlow}
+                            required
                         ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
                             ${msg("Flow used when logging out of this provider.")}

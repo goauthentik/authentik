@@ -242,10 +242,12 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
                     <ak-form-element-horizontal
                         label=${msg("Invalidation flow")}
                         name="invalidationFlow"
+                        required
                     >
                         <ak-flow-search
                             flowType=${FlowsInstancesListDesignationEnum.Invalidation}
                             .currentFlow=${provider?.invalidationFlow}
+                            required
                         ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
                             ${msg("Flow used when logging out of this provider.")}
