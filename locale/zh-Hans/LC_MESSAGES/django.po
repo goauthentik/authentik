@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-25 00:08+0000\n"
+"POT-Creation-Date: 2024-10-12 00:08+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2024\n"
 "Language-Team: Chinese Simplified (https://app.transifex.com/authentik/teams/119923/zh-Hans/)\n"
@@ -43,9 +43,8 @@ msgid "Blueprint file does not exist"
 msgstr "蓝图文件不存在"
 
 #: authentik/blueprints/api.py
-#, python-brace-format
-msgid "Failed to validate blueprint: {logs}"
-msgstr "验证蓝图失败：{logs}"
+msgid "Failed to validate blueprint"
+msgstr "验证蓝图失败"
 
 #: authentik/blueprints/api.py
 msgid "Either path or content must be set."
