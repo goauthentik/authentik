@@ -155,34 +155,7 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
                 required
             ></ak-text-input>
 
-            <ak-form-element-horizontal
-                name="authenticationFlow"
-                label=${msg("Authentication flow")}
-            >
-                <ak-flow-search
-                    flowType=${FlowsInstancesListDesignationEnum.Authentication}
-                    .currentFlow=${provider?.authenticationFlow}
-                ></ak-flow-search>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Flow used when a user access this provider and is not authenticated.")}
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                name="authorizationFlow"
-                label=${msg("Authorization flow")}
-                required
-            >
-                <ak-flow-search
-                    flowType=${FlowsInstancesListDesignationEnum.Authorization}
-                    .currentFlow=${provider?.authorizationFlow}
-                    required
-                ></ak-flow-search>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Flow used when authorizing this provider.")}
-                </p>
-            </ak-form-element-horizontal>
-
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-radio-input
@@ -231,6 +204,54 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
                             singleton
                         ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">${msg("Key used to sign the tokens.")}</p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+
+            <ak-form-group>
+                <span slot="header"> ${msg("Flow settings")} </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal
+                        name="authenticationFlow"
+                        label=${msg("Authentication flow")}
+                    >
+                        <ak-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                            .currentFlow=${provider?.authenticationFlow}
+                        ></ak-flow-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Flow used when a user access this provider and is not authenticated.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        name="authorizationFlow"
+                        label=${msg("Authorization flow")}
+                        ?required=${true}
+                    >
+                        <ak-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                            .currentFlow=${provider?.authorizationFlow}
+                            required
+                        ></ak-flow-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Flow used when authorizing this provider.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Invalidation flow")}
+                        name="invalidationFlow"
+                        required
+                    >
+                        <ak-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                            .currentFlow=${provider?.invalidationFlow}
+                            required
+                        ></ak-flow-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Flow used when logging out of this provider.")}
+                        </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

@@ -66,17 +66,17 @@ When creating or editing a flow in the UI of the Admin interface, you can set th
 
 -   **Authentication**: this option designates a flow to be used for authentication. The authentication flow should always contain a [**User Login**](../stages/user_login/index.md) stage, which attaches the staged user to the current session.
 
--   **Authorization**: designates a flow to be used for authorization. The authorization flow `default-provider-authorization-explicit-consent` should always contain a consent stage.
+-   **Authorization**: designates a flow to be used for authorization of an application. Can be used to add additional verification steps before the user is allowed to access an application.
 
--   **Invalidation**: designates a flow to be used to invalidate a session. This flow should always contain a [**User Logout**](../stages/user_logout.md) stage, which resets the current session.
+-   **Invalidation**: designates a flow to be used to invalidate a session. Both used to invalidate a session from authentik and when the session of an application ends. When used as a global invalidation flow should contain a [**User Logout**](../stages/user_logout.md) stage.
 
--   **Enrollment**: designates a flow for enrollment. This flow can contain any amount of verification stages, such as [**email**](../stages/email/index.mdx) or [**captcha**](../stages/captcha/index.md). At the end, to create the user, you can use the [**user_write**](../stages/user_write.md) stage, which either updates the currently staged user, or if none exists, creates a new one.
+-   **Enrollment**: designates a flow for enrollment. This flow can contain any amount of verification stages, such as [**Email**](../stages/email/index.mdx) or [**Captcha**](../stages/captcha/index.md). At the end, to create the user, you can use the [**User Write**](../stages/user_write.md) stage, which either updates the currently staged user, or if none exists, creates a new one.
 
--   **Unenrollment**: designates a flow for unenrollment. This flow can contain any amount of verification stages, such as [**email**](../stages/email/index.mdx) or [**captcha**](../stages/captcha/index.md). As a final stage, to delete the account, use the [**user_delete**](../stages/user_delete.md) stage.
+-   **Unenrollment**: designates a flow for unenrollment. This flow can contain any amount of verification stages, such as [**email**](../stages/email/index.mdx) or [**Captcha**](../stages/captcha/index.md). As a final stage, to delete the account, use the [**user_delete**](../stages/user_delete.md) stage.
 
--   **Recovery**: designates a flow for recovery. This flow normally contains an [**identification**](../stages/identification/index.md) stage to find the user. It can also contain any amount of verification stages, such as [**email**](../stages/email/index.mdx) or [**captcha**](../stages/captcha/index.md). Afterwards, use the [**prompt**](../stages/prompt/index.md) stage to ask the user for a new password and the [**user_write**](../stages/user_write.md) stage to update the password.
+-   **Recovery**: designates a flow for recovery. This flow normally contains an [**Identification**](../stages/identification/index.md) stage to find the user. It can also contain any amount of verification stages, such as [**Email**](../stages/email/index.mdx) or [**captcha**](../stages/captcha/index.md). Afterwards, use the [**Prompt**](../stages/prompt/index.md) stage to ask the user for a new password and the [**User Write**](../stages/user_write.md) stage to update the password.
 
--   **Stage configuration**: designates a flow for general setup. This designation doesn't have any constraints in what you can do. For example, by default this designation is used to configure Factors, like change a password and setup TOTP.
+-   **Stage configuration**: designates a flow for general setup. This designation doesn't have any constraints in what you can do. For example, by default this designation is used to configure authenticators, like change a password and setup TOTP.
 
 **Authentication**: Using this option, you can configure whether the the flow requires initial authentication or not, whether the user must be a superuser, or if the flow requires an outpost.
 

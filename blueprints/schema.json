@@ -5117,6 +5117,12 @@
                     "title": "Authorization flow",
                     "description": "Flow used when authorizing this provider."
                 },
+                "invalidation_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Invalidation flow",
+                    "description": "Flow used ending the session from a provider."
+                },
                 "property_mappings": {
                     "type": "array",
                     "items": {
@@ -5287,6 +5293,12 @@
                     "title": "Authorization flow",
                     "description": "Flow used when authorizing this provider."
                 },
+                "invalidation_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Invalidation flow",
+                    "description": "Flow used ending the session from a provider."
+                },
                 "property_mappings": {
                     "type": "array",
                     "items": {
@@ -5428,6 +5440,12 @@
                     "title": "Authorization flow",
                     "description": "Flow used when authorizing this provider."
                 },
+                "invalidation_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Invalidation flow",
+                    "description": "Flow used ending the session from a provider."
+                },
                 "property_mappings": {
                     "type": "array",
                     "items": {
@@ -5563,6 +5581,12 @@
                     "title": "Authorization flow",
                     "description": "Flow used when authorizing this provider."
                 },
+                "invalidation_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Invalidation flow",
+                    "description": "Flow used ending the session from a provider."
+                },
                 "property_mappings": {
                     "type": "array",
                     "items": {
@@ -5687,6 +5711,12 @@
                     "format": "uuid",
                     "title": "Authorization flow",
                     "description": "Flow used when authorizing this provider."
+                },
+                "invalidation_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Invalidation flow",
+                    "description": "Flow used ending the session from a provider."
                 },
                 "property_mappings": {
                     "type": "array",
@@ -5925,6 +5955,10 @@
                     "minLength": 1,
                     "title": "Url",
                     "description": "Base URL to SCIM requests, usually ends in /v2"
+                },
+                "verify_certificates": {
+                    "type": "boolean",
+                    "title": "Verify certificates"
                 },
                 "token": {
                     "type": "string",
@@ -12760,6 +12794,12 @@
                     "format": "uuid",
                     "title": "Authorization flow",
                     "description": "Flow used when authorizing this provider."
+                },
+                "invalidation_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Invalidation flow",
+                    "description": "Flow used ending the session from a provider."
                 },
                 "property_mappings": {
                     "type": "array",

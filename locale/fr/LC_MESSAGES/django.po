@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-08 00:09+0000\n"
+"POT-Creation-Date: 2024-10-12 00:08+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Marc Schmitt, 2024\n"
 "Language-Team: French (https://app.transifex.com/authentik/teams/119923/fr/)\n"
@@ -47,9 +47,8 @@ msgid "Blueprint file does not exist"
 msgstr "Le fichier de plan n'existe pas"
 
 #: authentik/blueprints/api.py
-#, python-brace-format
-msgid "Failed to validate blueprint: {logs}"
-msgstr "Échec de validation du plan : {logs}"
+msgid "Failed to validate blueprint"
+msgstr "Échec de validation du plan"
 
 #: authentik/blueprints/api.py
 msgid "Either path or content must be set."
@@ -2063,6 +2062,11 @@ msgstr ""
 #: authentik/recovery/views.py
 msgid "Used recovery-link to authenticate."
 msgstr "Utiliser un lien de récupération pour se connecter."
+
+#: authentik/sources/ldap/api.py
+msgid "Only a single LDAP Source with password synchronization is allowed"
+msgstr ""
+"Une seule source LDAP avec synchronisation de mot de passe est autorisée"
 
 #: authentik/sources/ldap/models.py
 msgid "Server URI"
