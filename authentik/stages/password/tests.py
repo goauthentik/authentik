@@ -133,7 +133,7 @@ class TestPasswordStage(FlowTestCase):
         self.assertEqual(response.status_code, 200)
         # To ensure the plan has been cancelled, check SESSION_KEY_PLAN
         self.assertNotIn(SESSION_KEY_PLAN, self.client.session)
-        self.assertStageResponse(response, flow=self.flow, error_message="Unknown error")
+        self.assertStageResponse(response, flow=self.flow, error_message="Invalid password")
 
     @patch(
         "authentik.flows.views.executor.to_stage_response",
