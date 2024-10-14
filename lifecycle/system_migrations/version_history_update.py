@@ -26,3 +26,4 @@ class Migration(BaseMigration):
         """,
             (datetime.now(), __version__, get_build_hash()),
         )
+        self.con.commit()
