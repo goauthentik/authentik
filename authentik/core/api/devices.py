@@ -17,7 +17,7 @@ from rest_framework.viewsets import ViewSet
 from authentik.core.api.utils import MetaNameSerializer
 from authentik.stages.authenticator import device_classes, devices_for_user
 from authentik.stages.authenticator.models import Device
-from authentik.stages.authenticator_webauthn.models import WebAuthnDevice, WebAuthnDeviceType
+from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 
 
 class DeviceSerializer(MetaNameSerializer):
