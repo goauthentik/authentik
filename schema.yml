@@ -38254,9 +38254,14 @@ components:
           format: date-time
           readOnly: true
           nullable: true
+        extra_description:
+          type: string
+          description: Get extra description
+          readOnly: true
       required:
       - confirmed
       - created
+      - extra_description
       - last_updated
       - last_used
       - meta_model_name
