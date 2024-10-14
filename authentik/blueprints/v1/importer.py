@@ -65,6 +65,7 @@ from authentik.providers.oauth2.models import AccessToken, AuthorizationCode, Re
 from authentik.providers.scim.models import SCIMProviderGroup, SCIMProviderUser
 from authentik.rbac.models import Role
 from authentik.sources.scim.models import SCIMSourceGroup, SCIMSourceUser
+from authentik.stages.authenticator_mobile.models import MobileDeviceToken, MobileTransaction
 from authentik.stages.authenticator_webauthn.models import WebAuthnDeviceType
 from authentik.tenants.models import Tenant
 
@@ -119,6 +120,8 @@ def excluded_models() -> list[type[Model]]:
         GoogleWorkspaceProviderGroup,
         MicrosoftEntraProviderUser,
         MicrosoftEntraProviderGroup,
+        MobileTransaction,
+        MobileDeviceToken,
     )
 
 

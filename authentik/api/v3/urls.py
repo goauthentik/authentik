@@ -2,6 +2,7 @@
 
 from importlib import import_module
 
+from django.conf import settings
 from django.urls import path
 from django.urls.resolvers import URLPattern
 from django.views.decorators.cache import cache_page
@@ -53,6 +54,10 @@ urlpatterns = (
     + _other_urls
     + [
         path("root/config/", ConfigView.as_view(), name="config"),
-        path("schema/", cache_page(86400)(SpectacularAPIView.as_view()), name="schema"),
+        path(
+            "schema/",
+            cache_page(0 if settings.DEBUG else 86400)(SpectacularAPIView.as_view()),
+            name="schema",
+        ),
     ]
 )

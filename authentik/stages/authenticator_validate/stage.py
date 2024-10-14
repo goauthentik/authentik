@@ -23,6 +23,7 @@ from authentik.flows.stage import ChallengeStageView
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.stages.authenticator import devices_for_user
 from authentik.stages.authenticator.models import Device
+from authentik.stages.authenticator_mobile.models import MobileDevice
 from authentik.stages.authenticator_sms.models import SMSDevice
 from authentik.stages.authenticator_validate.challenge import (
     DeviceChallenge,
@@ -31,6 +32,7 @@ from authentik.stages.authenticator_validate.challenge import (
     select_challenge,
     validate_challenge_code,
     validate_challenge_duo,
+    validate_challenge_mobile,
     validate_challenge_webauthn,
 )
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
@@ -73,6 +75,7 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
     code = CharField(required=False)
     webauthn = JSONDictField(required=False)
     duo = IntegerField(required=False)
+    mobile = CharField(required=False)
     component = CharField(default="ak-stage-authenticator-validate")
 
     def _challenge_allowed(self, classes: list):
@@ -103,6 +106,12 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
         self.device = validate_challenge_duo(duo, self.stage, self.stage.get_pending_user())
         return duo
 
+    def validate_mobile(self, mobile: str) -> str:
+        """Initiate mobile authentication"""
+        self._challenge_allowed([DeviceClasses.MOBILE])
+        self.device = validate_challenge_mobile(mobile, self.stage, self.stage.get_pending_user())
+        return mobile
+
     def validate_selected_challenge(self, challenge: dict) -> dict:
         """Check which challenge the user has selected. Actual logic only used for SMS stage."""
         # First check if the challenge is valid
@@ -117,12 +126,15 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
         if not allowed:
             raise ValidationError("invalid challenge selected")
 
-        if challenge.get("device_class", "") != "sms":
-            return challenge
-        devices = SMSDevice.objects.filter(pk=int(challenge.get("device_uid", "0")))
-        if not devices.exists():
-            raise ValidationError("invalid challenge selected")
-        select_challenge(self.stage.request, devices.first())
+        device = None
+        match challenge.get("device_class", ""):
+            # This is a bit unclean and hardcoded, but alas
+            case "mobile":
+                device = MobileDevice.objects.filter(pk=challenge.get("device_uid")).first()
+            case "sms":
+                device = SMSDevice.objects.filter(pk=int(challenge.get("device_uid"))).first()
+        if device:
+            select_challenge(self.stage.request, self.stage, device)
         return challenge
 
     def validate_selected_stage(self, stage_pk: str) -> str:
@@ -137,7 +149,12 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
     def validate(self, attrs: dict):
         # Checking if the given data is from a valid device class is done above
         # Here we only check if the any data was sent at all
-        if "code" not in attrs and "webauthn" not in attrs and "duo" not in attrs:
+        if (
+            "code" not in attrs
+            and "webauthn" not in attrs
+            and "duo" not in attrs
+            and "mobile" not in attrs
+        ):
             raise ValidationError("Empty response")
         self.stage.executor.plan.context.setdefault(PLAN_CONTEXT_METHOD, "auth_mfa")
         self.stage.executor.plan.context.setdefault(PLAN_CONTEXT_METHOD_ARGS, {})
@@ -215,7 +232,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
             challenge = DeviceChallenge(
                 data={
                     "device_class": device_class,
-                    "device_uid": device.pk,
+                    "device_uid": str(device.pk),
                     "challenge": get_challenge_for_device(self.request, stage, device),
                 }
             )
