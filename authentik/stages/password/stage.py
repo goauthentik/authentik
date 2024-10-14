@@ -101,7 +101,7 @@ class PasswordChallengeResponse(ChallengeResponse):
         try:
             with start_span(
                 op="authentik.stages.password.authenticate",
-                description="User authenticate call",
+                name="User authenticate call",
             ):
                 user = authenticate(
                     self.stage.request,
