@@ -41000,7 +41000,6 @@ components:
         invalidation_flow:
           type: string
           format: uuid
-          nullable: true
           description: Flow used ending the session from a provider.
         property_mappings:
           type: array
@@ -41086,6 +41085,7 @@ components:
       - assigned_backchannel_application_slug
       - authorization_flow
       - component
+      - invalidation_flow
       - meta_model_name
       - name
       - outpost_set
@@ -41112,7 +41112,6 @@ components:
         invalidation_flow:
           type: string
           format: uuid
-          nullable: true
           description: Flow used ending the session from a provider.
         property_mappings:
           type: array
@@ -41157,6 +41156,7 @@ components:
             if it contains a semicolon.
       required:
       - authorization_flow
+      - invalidation_flow
       - name
     LDAPSource:
       type: object
@@ -42308,7 +42308,6 @@ components:
         invalidation_flow:
           type: string
           format: uuid
-          nullable: true
           description: Flow used ending the session from a provider.
         property_mappings:
           type: array
@@ -42407,6 +42406,7 @@ components:
       - assigned_backchannel_application_slug
       - authorization_flow
       - component
+      - invalidation_flow
       - meta_model_name
       - name
       - pk
@@ -42432,7 +42432,6 @@ components:
         invalidation_flow:
           type: string
           format: uuid
-          nullable: true
           description: Flow used ending the session from a provider.
         property_mappings:
           type: array
@@ -42498,6 +42497,7 @@ components:
           title: Any JWT signed by the JWK of the selected source can be used to authenticate.
       required:
       - authorization_flow
+      - invalidation_flow
       - name
     OAuth2ProviderSetupURLs:
       type: object
@@ -45893,7 +45893,6 @@ components:
         invalidation_flow:
           type: string
           format: uuid
-          nullable: true
           description: Flow used ending the session from a provider.
         property_mappings:
           type: array
@@ -46218,7 +46217,6 @@ components:
         invalidation_flow:
           type: string
           format: uuid
-          nullable: true
           description: Flow used ending the session from a provider.
         property_mappings:
           type: array
@@ -46747,7 +46745,6 @@ components:
         invalidation_flow:
           type: string
           format: uuid
-          nullable: true
           description: Flow used ending the session from a provider.
         property_mappings:
           type: array
@@ -46857,7 +46854,6 @@ components:
         invalidation_flow:
           type: string
           format: uuid
-          nullable: true
           description: Flow used ending the session from a provider.
         property_mappings:
           type: array
@@ -46912,7 +46908,6 @@ components:
         invalidation_flow:
           type: string
           format: uuid
-          nullable: true
           description: Flow used ending the session from a provider.
         property_mappings:
           type: array
@@ -47008,7 +47003,6 @@ components:
         invalidation_flow:
           type: string
           format: uuid
-          nullable: true
           description: Flow used ending the session from a provider.
         property_mappings:
           type: array
@@ -48531,7 +48525,6 @@ components:
         invalidation_flow:
           type: string
           format: uuid
-          nullable: true
           description: Flow used ending the session from a provider.
         property_mappings:
           type: array
@@ -48577,6 +48570,7 @@ components:
       - assigned_backchannel_application_slug
       - authorization_flow
       - component
+      - invalidation_flow
       - meta_model_name
       - name
       - pk
@@ -48619,7 +48613,6 @@ components:
         invalidation_flow:
           type: string
           format: uuid
-          nullable: true
           description: Flow used ending the session from a provider.
         property_mappings:
           type: array
@@ -48628,6 +48621,7 @@ components:
             format: uuid
       required:
       - authorization_flow
+      - invalidation_flow
       - name
     ProviderTypeEnum:
       enum:
@@ -48771,7 +48765,6 @@ components:
         invalidation_flow:
           type: string
           format: uuid
-          nullable: true
           description: Flow used ending the session from a provider.
         property_mappings:
           type: array
@@ -48889,6 +48882,7 @@ components:
       - client_id
       - component
       - external_host
+      - invalidation_flow
       - meta_model_name
       - name
       - outpost_set
@@ -48916,7 +48910,6 @@ components:
         invalidation_flow:
           type: string
           format: uuid
-          nullable: true
           description: Flow used ending the session from a provider.
         property_mappings:
           type: array
@@ -48988,6 +48981,7 @@ components:
       required:
       - authorization_flow
       - external_host
+      - invalidation_flow
       - name
     RACPropertyMapping:
       type: object
@@ -49084,7 +49078,6 @@ components:
         invalidation_flow:
           type: string
           format: uuid
-          nullable: true
           description: Flow used ending the session from a provider.
         property_mappings:
           type: array
@@ -49143,6 +49136,7 @@ components:
       - assigned_backchannel_application_slug
       - authorization_flow
       - component
+      - invalidation_flow
       - meta_model_name
       - name
       - outpost_set
@@ -49169,7 +49163,6 @@ components:
         invalidation_flow:
           type: string
           format: uuid
-          nullable: true
           description: Flow used ending the session from a provider.
         property_mappings:
           type: array
@@ -49187,6 +49180,7 @@ components:
           description: When set to true, connection tokens will be deleted upon disconnect.
       required:
       - authorization_flow
+      - invalidation_flow
       - name
     RadiusCheckAccess:
       type: object
@@ -49255,7 +49249,6 @@ components:
         invalidation_flow:
           type: string
           format: uuid
-          nullable: true
           description: Flow used ending the session from a provider.
         property_mappings:
           type: array
@@ -49321,6 +49314,7 @@ components:
       - assigned_backchannel_application_slug
       - authorization_flow
       - component
+      - invalidation_flow
       - meta_model_name
       - name
       - outpost_set
@@ -49414,7 +49408,6 @@ components:
         invalidation_flow:
           type: string
           format: uuid
-          nullable: true
           description: Flow used ending the session from a provider.
         property_mappings:
           type: array
@@ -49440,6 +49433,7 @@ components:
             if it contains a semicolon.
       required:
       - authorization_flow
+      - invalidation_flow
       - name
     RedirectChallenge:
       type: object
@@ -49753,7 +49747,6 @@ components:
         invalidation_flow:
           type: string
           format: uuid
-          nullable: true
           description: Flow used ending the session from a provider.
         property_mappings:
           type: array
@@ -49893,6 +49886,7 @@ components:
       - assigned_backchannel_application_slug
       - authorization_flow
       - component
+      - invalidation_flow
       - meta_model_name
       - name
       - pk
@@ -49945,7 +49939,6 @@ components:
         invalidation_flow:
           type: string
           format: uuid
-          nullable: true
           description: Flow used ending the session from a provider.
         property_mappings:
           type: array
@@ -50029,6 +50022,7 @@ components:
       required:
       - acs_url
       - authorization_flow
+      - invalidation_flow
       - name
     SAMLSource:
       type: object

@@ -51,6 +51,7 @@ class ProviderSerializer(ModelSerializer, MetaNameSerializer):
         ]
         extra_kwargs = {
             "authorization_flow": {"required": True, "allow_null": False},
+            "invalidation_flow": {"required": True, "allow_null": False},
         }
 
 
