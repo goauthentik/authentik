@@ -76,46 +76,16 @@ You will now be prompted to save your SAML recovery codes, these will be necessa
 Before we create a SCIM provider, we also have to create a new Property Mapping. In authentik, go to _Customization_, then _Property Mappings_. Here, click _Create_, select _SCIM Provider Mapping_. Name the mapping something memorable and paste the following code in the _Expression_ field:
 
 ```python
-# Some implementations require givenName and familyName to be set
-givenName, familyName = request.user.name, " "
-formatted = request.user.name + " "
-# This default sets givenName to the name before the first space
-# and the remainder as family name
-# if the user's name has no space the givenName is the entire name
-# (this might cause issues with some SCIM implementations)
-if " " in request.user.name:
-    givenName, _, familyName = request.user.name.partition(" ")
-    formatted = request.user.name
-
 roles = []
 # Edit this if statement if you need to add more GitHub roles.
 # Valid roles include:
 # user, guest_collaborator, enterprise_owner, billing_manager
 if ak_is_group_member(request.user, name='GitHub Admins'):
-  role = {'value': 'enterprise_owner', 'primary': True}
-  roles.append(role)
+    roles.append({'value': 'enterprise_owner', 'primary': True})
 else:
-  role = {'value': 'User', 'primary': True}
-  roles.append(role)
-
-emails = []
-if request.user.email != "":
-    emails = [{
-        "value": request.user.email,
-        "type": "work",
-        "primary": True,
-    }]
+    roles.append({'value': 'user', 'primary': True})
 return {
-    "userName": request.user.email,
-    "name": {
-        "formatted": formatted,
-        "givenName": givenName,
-        "familyName": familyName,
-    },
-    "displayName": request.user.name,
     "roles": roles,
-    "active": request.user.is_active,
-    "emails": emails,
 }
 ```
 
