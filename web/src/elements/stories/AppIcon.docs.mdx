@@ -11,12 +11,15 @@ an API "Application" object and a size, with a default size of "medium."
 
 ## Usage
 
+Note that the variables passed in are how they are used in authentik. Any string and any FontAwesome
+icon supported by the current theme can be referenced.
+
 ```Typescript
 import "@goauthentik/components/ak-app-icon.js";
 ```
 
 ```html
-<ak-app-icon .app=${someAuthentikApp}></ak-ak-app-icon>
+<ak-app-icon name=${app.name} icon=${app.metaIcon}></ak-ak-app-icon>
 ```
 
 ## Demo

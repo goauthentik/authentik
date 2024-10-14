@@ -10,14 +10,25 @@ A Quick Action Card displays a list of navigation links. It is used on our dashb
 easy access to basic operations implied by the dashboard. The example here is from the home page
 dashboard.
 
+The QuickAction type has three fields: the string to display, the URL to navigate to, and a flag
+indicating if the browser should open the link in a new tab.
+
 ## Usage
 
 ```Typescript
 import "@goauthentik/elements/cards/QuickActionsCard.js";
+
+const ACTIONS: QuickAction[] = [
+    ["Create a new application", "/core/applications"],
+    ["Check the logs", "/events/log"],
+    ["Explore integrations", "https://goauthentik.io/integrations/", true],
+    ["Manage users", "/identity/users"],
+    ["Check the release notes", "https://goauthentik.io/docs/releases/", true],
+];
 ```
 
 ```html
-<ak-aggregate-card header="Some title"><p>This is the content of your card!</p></ak-aggregate-card>
+<ak-quick-actions-card title="Some title" .actions=${ACTIONS}></ak-aggregate-card>
 ```
 
 ## Demo
