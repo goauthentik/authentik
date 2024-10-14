@@ -1,0 +1,36 @@
+import { Canvas, Description, Meta, Story, Title } from "@storybook/blocks";
+
+import * as LoadingOverlayStories from "./LoadingOverlay.stories";
+
+<Meta of={LoadingOverlayStories} />
+
+# LoadingOverlay
+
+The LoadingOverlay is meant to cover the container element completely, hiding the content behind a
+dimming filter, while content loads.
+
+It has a single named slot, "body" into which messages about the loading process can be included.
+
+## Usage
+
+```Typescript
+import "@goauthentik/elements/LoadingOverlay.js";
+```
+
+Note that the content of an alert _must_ be a valid HTML component; plain text does not work here.
+
+```html
+<ak-loading-overlay topmost>
+    <span>This would display below the loading spinner</span>
+</ak-loading-overlay>
+```
+
+## Demo
+
+### Default
+
+<Story of={LoadingOverlayStories.DefaultStory} />
+
+### With a message
+
+<Story of={LoadingOverlayStories.WithAMessage} />

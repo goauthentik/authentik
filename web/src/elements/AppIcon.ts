@@ -1,23 +1,30 @@
 import { PFSize } from "@goauthentik/common/enums.js";
 import { AKElement } from "@goauthentik/elements/Base";
+import { P, match } from "ts-pattern";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFFAIcons from "@patternfly/patternfly/base/patternfly-fa-icons.css";
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 
-import { Application } from "@goauthentik/api";
+export interface IAppIcon {
+    name?: string;
+    icon?: string;
+    size?: PFSize;
+}
 
 @customElement("ak-app-icon")
-export class AppIcon extends AKElement {
-    @property({ type: Object, attribute: false })
-    app?: Application;
+export class AppIcon extends AKElement implements IAppIcon {
+    @property({ type: String })
+    name?: string;
+
+    @property({ type: String })
+    icon?: string;
 
     @property()
-    size?: PFSize;
+    size: PFSize = PFSize.Medium;
 
     static get styles(): CSSResult[] {
         return [
@@ -38,6 +45,10 @@ export class AppIcon extends AKElement {
                 :host([size="pf-m-sm"]) {
                     --icon-height: 1rem;
                     --icon-border: 0.125rem;
+                }
+                :host([size="pf-m-xl"]) {
+                    --icon-height: 6rem;
+                    --icon-border: 0.25rem;
                 }
                 .pf-c-avatar {
                     --pf-c-avatar--BorderRadius: 0;
@@ -64,21 +75,17 @@ export class AppIcon extends AKElement {
     }
 
     render(): TemplateResult {
-        if (!this.app) {
-            return html`<div><i class="icon fas fa-question-circle"></i></div>`;
-        }
-        if (this.app?.metaIcon) {
-            if (this.app.metaIcon.startsWith("fa://")) {
-                const icon = this.app.metaIcon.replaceAll("fa://", "");
-                return html`<div><i class="icon fas ${icon}"></i></div>`;
-            }
-            return html`<img
-                class="icon pf-c-avatar"
-                src="${ifDefined(this.app.metaIcon)}"
-                alt="${msg("Application Icon")}"
-            />`;
-        }
-        return html`<span class="icon">${this.app?.name.charAt(0).toUpperCase()}</span>`;
+        // prettier-ignore
+        return match([this.name, this.icon])
+            .with([undefined, undefined],
+                () => html`<div><i class="icon fas fa-question-circle"></i></div>`)
+            .with([P._, P.string.startsWith("fa://")],
+                ([_name, icon]) => html`<div><i class="icon fas ${icon.replaceAll("fa://", "")}"></i></div>`)
+            .with([P._, P.string],
+                ([_name, icon]) => html`<img class="icon pf-c-avatar" src="${icon}" alt="${msg("Application Icon")}" />`)
+            .with([P.string, undefined],
+                ([name]) => html`<span class="icon">${name.charAt(0).toUpperCase()}</span>`)
+            .exhaustive();
     }
 }
 

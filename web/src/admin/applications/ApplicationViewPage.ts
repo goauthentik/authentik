@@ -5,8 +5,8 @@ import "@goauthentik/admin/policies/BoundPoliciesList";
 import "@goauthentik/admin/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { PFSize } from "@goauthentik/common/enums.js";
-import "@goauthentik/components/ak-app-icon";
 import "@goauthentik/components/events/ObjectChangelog";
+import "@goauthentik/elements/AppIcon";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/PageHeader";
@@ -102,8 +102,9 @@ export class ApplicationViewPage extends AKElement {
             >
                 <ak-app-icon
                     size=${PFSize.Medium}
+                    name=${ifDefined(this.application?.name || undefined)}
+                    icon=${ifDefined(this.application?.metaIcon || undefined)}
                     slot="icon"
-                    .app=${this.application}
                 ></ak-app-icon>
             </ak-page-header>
             ${this.renderApp()}`;

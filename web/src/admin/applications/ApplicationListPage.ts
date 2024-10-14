@@ -1,8 +1,7 @@
 import "@goauthentik/admin/applications/ApplicationForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { PFSize } from "@goauthentik/common/enums.js";
-import "@goauthentik/components/ak-app-icon";
 import MDApplication from "@goauthentik/docs/add-secure-apps/applications/index.md";
+import "@goauthentik/elements/AppIcon.js";
 import "@goauthentik/elements/Markdown";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
@@ -16,6 +15,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
@@ -122,7 +122,10 @@ export class ApplicationListPage extends TablePage<Application> {
 
     row(item: Application): TemplateResult[] {
         return [
-            html`<ak-app-icon size=${PFSize.Medium} .app=${item}></ak-app-icon>`,
+            html`<ak-app-icon
+                name=${item.name}
+                icon=${ifDefined(item.metaIcon || undefined)}
+            ></ak-app-icon>`,
             html`<a href="#/core/applications/${item.slug}">
                 <div>${item.name}</div>
                 ${item.metaPublisher ? html`<small>${item.metaPublisher}</small>` : html``}

@@ -8,7 +8,7 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-interface ILoadingOverlay {
+export interface ILoadingOverlay {
     topmost?: boolean;
 }
 
@@ -41,7 +41,7 @@ export class LoadingOverlay extends AKElement implements ILoadingOverlay {
 
     render() {
         return html`<ak-empty-state loading header="">
-            <slot></slot>
+            <span slot="body"><slot></slot></span>
         </ak-empty-state>`;
     }
 }
