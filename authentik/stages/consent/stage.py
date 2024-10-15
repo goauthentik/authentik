@@ -97,9 +97,8 @@ class ConsentStageView(ChallengeStageView):
             user = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
 
         # Remove expired consents to prevent database unique constraints errors
-        UserConsent.delete_expired()
         consent: UserConsent | None = UserConsent.filter_not_expired(
-            user=user, application=application
+            delete_expired=True, user=user, application=application
         ).first()
         self.executor.plan.context[PLAN_CONTEXT_CONSENT] = consent
 

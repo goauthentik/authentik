@@ -10,7 +10,7 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.db import models
-from django.db.models import QuerySet, options
+from django.db.models import Q, QuerySet, options
 from django.db.models.constants import LOOKUP_SEP
 from django.http import HttpRequest
 from django.utils.functional import SimpleLazyObject, cached_property
@@ -802,19 +802,24 @@ class ExpiringModel(models.Model):
         return self.delete(*args, **kwargs)
 
     @classmethod
-    def filter_not_expired(cls, **kwargs) -> QuerySet["Token"]:
-        """Filer for tokens which are not expired yet or are not expiring,
-        and match filters in `kwargs`"""
-        return cls.objects.filter(expires__gt=now(), expiring=True).filter(**kwargs)
+    def _not_expired_filter(cls):
+        return Q(expires__gt=now(), expiring=True) | Q(expiring=False)
 
     @classmethod
-    def delete_expired(cls) -> int:
-        objects = (
-            cls.objects.all().exclude(expiring=False).exclude(expiring=True, expires__gt=now())
-        )
-        amount = objects.count()
+    def filter_not_expired(cls, delete_expired=False, **kwargs) -> QuerySet["ExpiringModel"]:
+        """Filer for tokens which are not expired yet or are not expiring,
+        and match filters in `kwargs`"""
+        if delete_expired:
+            cls.delete_expired(**kwargs)
+        return cls.objects.filter(cls._not_expired_filter()).filter(**kwargs)
+
+    @classmethod
+    def delete_expired(cls, **kwargs) -> int:
+        objects = cls.objects.all().exclude(cls._not_expired_filter()).filter(**kwargs)
+        amount = 0
         for obj in objects:
             obj.expire_action()
+            amount += 1
         return amount
 
     @property
