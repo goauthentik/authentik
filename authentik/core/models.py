@@ -10,7 +10,7 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.db import models
-from django.db.models import Q, QuerySet, options
+from django.db.models import QuerySet, options
 from django.db.models.constants import LOOKUP_SEP
 from django.http import HttpRequest
 from django.utils.functional import SimpleLazyObject, cached_property
@@ -805,9 +805,7 @@ class ExpiringModel(models.Model):
     def filter_not_expired(cls, **kwargs) -> QuerySet["Token"]:
         """Filer for tokens which are not expired yet or are not expiring,
         and match filters in `kwargs`"""
-        for obj in cls.objects.filter(**kwargs).filter(Q(expires__lt=now(), expiring=True)):
-            obj.delete()
-        return cls.objects.filter(**kwargs)
+        return cls.objects.filter(expires__gte=now(), expiring=True).filter(**kwargs)
 
     @property
     def is_expired(self) -> bool:
