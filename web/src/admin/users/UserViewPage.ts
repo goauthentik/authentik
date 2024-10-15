@@ -8,7 +8,7 @@ import "@goauthentik/admin/users/UserForm";
 import "@goauthentik/admin/users/UserImpersonateForm";
 import {
     renderRecoveryEmailRequest,
-    requestRecoveryLink,
+    renderRecoveryLinkRequest,
 } from "@goauthentik/admin/users/UserListPage";
 import "@goauthentik/admin/users/UserPasswordForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
@@ -110,11 +110,8 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                 .ak-button-collection > * {
                     flex: 1 0 100%;
                 }
-                #reset-password-button {
-                    margin-right: 0;
-                }
 
-                #ak-email-recovery-request,
+                #ak-link-recovery-request .pf-c-button,
                 #update-password-request .pf-c-button,
                 #ak-email-recovery-request .pf-c-button {
                     margin: 0;
@@ -248,18 +245,7 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                     </pf-tooltip>
                 </button>
             </ak-forms-modal>
-            <ak-action-button
-                id="reset-password-button"
-                class="pf-m-secondary pf-m-block"
-                .apiRequest=${() => requestRecoveryLink(user)}
-            >
-                <pf-tooltip
-                    position="top"
-                    content=${msg("Create a link for this user to reset their password")}
-                >
-                    ${msg("Create Recovery Link")}
-                </pf-tooltip>
-            </ak-action-button>
+            ${renderRecoveryLinkRequest(user)}
             ${user.email ? renderRecoveryEmailRequest(user) : nothing}
         </div> `;
     }

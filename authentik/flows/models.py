@@ -36,6 +36,15 @@ class FlowAuthenticationRequirement(models.TextChoices):
     REQUIRE_REDIRECT = "require_redirect"
     REQUIRE_OUTPOST = "require_outpost"
 
+    @property
+    def possibly_unauthenticated(self) -> bool:
+        """Check if unauthenticated users can run this flow. Flows like this may require additional
+        hardening."""
+        return self in [
+            FlowAuthenticationRequirement.NONE,
+            FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED,
+        ]
+
 
 class NotConfiguredAction(models.TextChoices):
     """Decides how the FlowExecutor should proceed when a stage isn't configured"""

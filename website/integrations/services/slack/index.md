@@ -15,7 +15,7 @@ sidebar_label: Slack
 
 The following placeholder will be used:
 
-- You can use <kbd>slack.<em>company</em>></kbd> or <kbd><em>my-workspace</em>.slack.com</kbd> as the FQDN of your Slack instance.
+- You can use <kbd>slack.<em>company</em></kbd> or <kbd><em>my-workspace</em>.slack.com</kbd> as the FQDN of your Slack instance.
 - You can use <kbd>authentik.company</kbd> as the FQDN of the authentik installation.
 
 :::note

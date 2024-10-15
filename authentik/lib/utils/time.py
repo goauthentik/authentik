@@ -31,7 +31,7 @@ def timedelta_string_validator(value: str):
 
 
 def timedelta_from_string(expr: str) -> datetime.timedelta:
-    """Convert a string with the format of 'hours=1;minute=3;seconds=5' to a
+    """Convert a string with the format of 'hours=1;minutes=3;seconds=5' to a
     `datetime.timedelta` Object with hours = 1, minutes = 3, seconds = 5"""
     kwargs = {}
     for duration_pair in expr.split(";"):

@@ -4,11 +4,10 @@ import "@goauthentik/admin/users/UserActiveForm";
 import "@goauthentik/admin/users/UserForm";
 import "@goauthentik/admin/users/UserImpersonateForm";
 import "@goauthentik/admin/users/UserPasswordForm";
-import "@goauthentik/admin/users/UserResetEmailForm";
+import "@goauthentik/admin/users/UserRecoveryLinkForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { PFSize } from "@goauthentik/common/enums.js";
 import { userTypeToLabel } from "@goauthentik/common/labels";
-import { MessageLevel } from "@goauthentik/common/messages";
 import { DefaultUIConfig, uiConfig } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
 import { getRelativeTime } from "@goauthentik/common/utils";
@@ -23,12 +22,10 @@ import "@goauthentik/elements/TreeView";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
-import { writeToClipboard } from "@goauthentik/elements/utils/writeToClipboard";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg, str } from "@lit/localize";
@@ -39,40 +36,24 @@ import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { CoreApi, ResponseError, SessionUser, User, UserPath } from "@goauthentik/api";
+import { CoreApi, SessionUser, User, UserPath } from "@goauthentik/api";
 
-export const requestRecoveryLink = (user: User) =>
-    new CoreApi(DEFAULT_CONFIG)
-        .coreUsersRecoveryCreate({
-            id: user.pk,
-        })
-        .then((rec) =>
-            writeToClipboard(rec.link).then((wroteToClipboard) =>
-                showMessage({
-                    level: MessageLevel.success,
-                    message: rec.link,
-                    description: wroteToClipboard
-                        ? msg("A copy of this recovery link has been placed in your clipboard")
-                        : "",
-                }),
-            ),
-        )
-        .catch((ex: ResponseError) =>
-            ex.response.json().then(() =>
-                showMessage({
-                    level: MessageLevel.error,
-                    message: msg(
-                        "The current brand must have a recovery flow configured to use a recovery link",
-                    ),
-                }),
-            ),
-        );
+export const renderRecoveryLinkRequest = (user: User) =>
+    html`<ak-forms-modal .closeAfterSuccessfulSubmit=${false} id="ak-link-recovery-request">
+        <span slot="submit"> ${msg("Create link")} </span>
+        <span slot="header"> ${msg("Create recovery link")} </span>
+        <ak-user-recovery-link-form slot="form" .user=${user}> </ak-user-recovery-link-form>
+        <button slot="trigger" class="pf-c-button pf-m-secondary">
+            ${msg("Create recovery link")}
+        </button>
+    </ak-forms-modal>`;
 
 export const renderRecoveryEmailRequest = (user: User) =>
     html`<ak-forms-modal .closeAfterSuccessfulSubmit=${false} id="ak-email-recovery-request">
         <span slot="submit"> ${msg("Send link")} </span>
         <span slot="header"> ${msg("Send recovery link to user")} </span>
-        <ak-user-reset-email-form slot="form" .user=${user}> </ak-user-reset-email-form>
+        <ak-user-recovery-link-form slot="form" .user=${user} .withEmailStage=${true}>
+        </ak-user-recovery-link-form>
         <button slot="trigger" class="pf-c-button pf-m-secondary">
             ${msg("Email recovery link")}
         </button>
@@ -362,12 +343,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                                     </ak-forms-modal>
                                     ${this.brand.flowRecovery
                                         ? html`
-                                              <ak-action-button
-                                                  class="pf-m-secondary"
-                                                  .apiRequest=${() => requestRecoveryLink(item)}
-                                              >
-                                                  ${msg("Create recovery link")}
-                                              </ak-action-button>
+                                              ${renderRecoveryLinkRequest(item)}
                                               ${item.email
                                                   ? renderRecoveryEmailRequest(item)
                                                   : html`<span
