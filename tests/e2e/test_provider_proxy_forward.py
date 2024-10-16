@@ -118,8 +118,10 @@ class TestProviderProxyForward(SeleniumTestCase):
 
         self.driver.get("http://localhost/outpost.goauthentik.io/sign_out")
         sleep(2)
-        full_body_text = self.driver.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
-        self.assertIn("You've logged out of", full_body_text)
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        session_end_stage = self.get_shadow_root("ak-stage-session-end", flow_executor)
+        title = session_end_stage.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
+        self.assertIn("You've logged out of", title)
 
     @retry()
     def test_nginx(self):
@@ -150,8 +152,10 @@ class TestProviderProxyForward(SeleniumTestCase):
 
         self.driver.get("http://localhost/outpost.goauthentik.io/sign_out")
         sleep(2)
-        full_body_text = self.driver.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
-        self.assertIn("You've logged out of", full_body_text)
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        session_end_stage = self.get_shadow_root("ak-stage-session-end", flow_executor)
+        title = session_end_stage.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
+        self.assertIn("You've logged out of", title)
 
     @retry()
     def test_envoy(self):
@@ -181,8 +185,10 @@ class TestProviderProxyForward(SeleniumTestCase):
 
         self.driver.get("http://localhost/outpost.goauthentik.io/sign_out")
         sleep(2)
-        full_body_text = self.driver.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
-        self.assertIn("You've logged out of", full_body_text)
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        session_end_stage = self.get_shadow_root("ak-stage-session-end", flow_executor)
+        title = session_end_stage.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
+        self.assertIn("You've logged out of", title)
 
     @retry()
     def test_caddy(self):
@@ -215,5 +221,7 @@ class TestProviderProxyForward(SeleniumTestCase):
 
         self.driver.get("http://localhost/outpost.goauthentik.io/sign_out")
         sleep(2)
-        full_body_text = self.driver.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
-        self.assertIn("You've logged out of", full_body_text)
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        session_end_stage = self.get_shadow_root("ak-stage-session-end", flow_executor)
+        title = session_end_stage.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
+        self.assertIn("You've logged out of", title)
