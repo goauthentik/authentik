@@ -90,6 +90,23 @@ export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
                             ${msg("SCIM base url, usually ends in /v2.")}
                         </p>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal name="verifyCertificates">
+                        <label class="pf-c-switch">
+                            <input
+                                class="pf-c-switch__input"
+                                type="checkbox"
+                                ?checked=${first(this.instance?.verifyCertificates, true)}
+                            />
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label"
+                                >${msg("Verify SCIM server's certificates")}</span
+                            >
+                        </label>
+                    </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Token")}
                         ?required=${true}

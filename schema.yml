@@ -20756,6 +20756,11 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: invalidation_flow
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: is_backchannel
         schema:
           type: boolean
@@ -26141,9 +26146,9 @@ paths:
         schema:
           type: string
           enum:
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
           - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
           - urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName
           - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
           - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
         description: |+
@@ -37547,6 +37552,7 @@ components:
       - $ref: '#/components/schemas/PlexAuthenticationChallenge'
       - $ref: '#/components/schemas/PromptChallenge'
       - $ref: '#/components/schemas/RedirectChallenge'
+      - $ref: '#/components/schemas/SessionEndChallenge'
       - $ref: '#/components/schemas/ShellChallenge'
       - $ref: '#/components/schemas/UserLoginChallenge'
       discriminator:
@@ -37573,6 +37579,7 @@ components:
           ak-source-plex: '#/components/schemas/PlexAuthenticationChallenge'
           ak-stage-prompt: '#/components/schemas/PromptChallenge'
           xak-flow-redirect: '#/components/schemas/RedirectChallenge'
+          ak-stage-session-end: '#/components/schemas/SessionEndChallenge'
           xak-flow-shell: '#/components/schemas/ShellChallenge'
           ak-stage-user-login: '#/components/schemas/UserLoginChallenge'
     ClientTypeEnum:
@@ -38247,9 +38254,14 @@ components:
           format: date-time
           readOnly: true
           nullable: true
+        extra_description:
+          type: string
+          description: Get extra description
+          readOnly: true
       required:
       - confirmed
       - created
+      - extra_description
       - last_updated
       - last_used
       - meta_model_name
@@ -40923,6 +40935,11 @@ components:
           description: DN under which objects are accessible.
         bind_flow_slug:
           type: string
+        unbind_flow_slug:
+          type: string
+          nullable: true
+          description: Get slug for unbind flow, defaulting to brand's default flow.
+          readOnly: true
         application_slug:
           type: string
           description: Prioritise backchannel slug over direct application slug
@@ -40964,6 +40981,7 @@ components:
       - bind_flow_slug
       - name
       - pk
+      - unbind_flow_slug
     LDAPProvider:
       type: object
       description: LDAPProvider Serializer
@@ -40984,6 +41002,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -41068,6 +41090,7 @@ components:
       - assigned_backchannel_application_slug
       - authorization_flow
       - component
+      - invalidation_flow
       - meta_model_name
       - name
       - outpost_set
@@ -41091,6 +41114,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -41134,6 +41161,7 @@ components:
             if it contains a semicolon.
       required:
       - authorization_flow
+      - invalidation_flow
       - name
     LDAPSource:
       type: object
@@ -42041,7 +42069,7 @@ components:
       enum:
       - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
       - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
-      - urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName
+      - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
       - urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName
       - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
       type: string
@@ -42282,6 +42310,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -42379,6 +42411,7 @@ components:
       - assigned_backchannel_application_slug
       - authorization_flow
       - component
+      - invalidation_flow
       - meta_model_name
       - name
       - pk
@@ -42401,6 +42434,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -42465,6 +42502,7 @@ components:
           title: Any JWT signed by the JWK of the selected source can be used to authenticate.
       required:
       - authorization_flow
+      - invalidation_flow
       - name
     OAuth2ProviderSetupURLs:
       type: object
@@ -45857,6 +45895,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -46177,6 +46219,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -46701,6 +46747,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -46806,6 +46856,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -46856,6 +46910,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -46947,6 +47005,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -47200,6 +47262,8 @@ components:
           type: string
           minLength: 1
           description: Base URL to SCIM requests, usually ends in /v2
+        verify_certificates:
+          type: boolean
         token:
           type: string
           minLength: 1
@@ -48465,6 +48529,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -48509,6 +48577,7 @@ components:
       - assigned_backchannel_application_slug
       - authorization_flow
       - component
+      - invalidation_flow
       - meta_model_name
       - name
       - pk
@@ -48548,6 +48617,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -48555,6 +48628,7 @@ components:
             format: uuid
       required:
       - authorization_flow
+      - invalidation_flow
       - name
     ProviderTypeEnum:
       enum:
@@ -48695,6 +48769,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -48811,6 +48889,7 @@ components:
       - client_id
       - component
       - external_host
+      - invalidation_flow
       - meta_model_name
       - name
       - outpost_set
@@ -48835,6 +48914,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -48905,6 +48988,7 @@ components:
       required:
       - authorization_flow
       - external_host
+      - invalidation_flow
       - name
     RACPropertyMapping:
       type: object
@@ -48998,6 +49082,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -49055,6 +49143,7 @@ components:
       - assigned_backchannel_application_slug
       - authorization_flow
       - component
+      - invalidation_flow
       - meta_model_name
       - name
       - outpost_set
@@ -49078,6 +49167,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -49094,6 +49187,7 @@ components:
           description: When set to true, connection tokens will be deleted upon disconnect.
       required:
       - authorization_flow
+      - invalidation_flow
       - name
     RadiusCheckAccess:
       type: object
@@ -49159,6 +49253,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -49223,6 +49321,7 @@ components:
       - assigned_backchannel_application_slug
       - authorization_flow
       - component
+      - invalidation_flow
       - meta_model_name
       - name
       - outpost_set
@@ -49313,6 +49412,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -49337,6 +49440,7 @@ components:
             if it contains a semicolon.
       required:
       - authorization_flow
+      - invalidation_flow
       - name
     RedirectChallenge:
       type: object
@@ -49647,6 +49751,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -49785,6 +49893,7 @@ components:
       - assigned_backchannel_application_slug
       - authorization_flow
       - component
+      - invalidation_flow
       - meta_model_name
       - name
       - pk
@@ -49806,12 +49915,16 @@ components:
         authorization_flow:
           type: string
           format: uuid
+        invalidation_flow:
+          type: string
+          format: uuid
         file:
           type: string
           format: binary
       required:
       - authorization_flow
       - file
+      - invalidation_flow
       - name
     SAMLProviderRequest:
       type: object
@@ -49830,6 +49943,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -49912,6 +50029,7 @@ components:
       required:
       - acs_url
       - authorization_flow
+      - invalidation_flow
       - name
     SAMLSource:
       type: object
@@ -50368,6 +50486,8 @@ components:
         url:
           type: string
           description: Base URL to SCIM requests, usually ends in /v2
+        verify_certificates:
+          type: boolean
         token:
           type: string
           description: Authentication token
@@ -50451,6 +50571,8 @@ components:
           type: string
           minLength: 1
           description: Base URL to SCIM requests, usually ends in /v2
+        verify_certificates:
+          type: boolean
         token:
           type: string
           minLength: 1
@@ -50952,6 +51074,37 @@ components:
       required:
       - healthy
       - version
+    SessionEndChallenge:
+      type: object
+      description: Challenge for ending a session
+      properties:
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
+        component:
+          type: string
+          default: ak-stage-session-end
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        pending_user:
+          type: string
+        pending_user_avatar:
+          type: string
+        application_name:
+          type: string
+        application_launch_url:
+          type: string
+        invalidation_flow_url:
+          type: string
+        brand_name:
+          type: string
+      required:
+      - brand_name
+      - pending_user
+      - pending_user_avatar
     SessionUser:
       type: object
       description: |-

@@ -316,7 +316,7 @@ export class RacInterface extends Interface {
             ${this.clientState !== GuacClientState.CONNECTED
                 ? html`
                       <ak-loading-overlay>
-                          <span slot="body">
+                          <span>
                               ${this.hasConnected
                                   ? html`${this.reconnectingMessage}`
                                   : html`${msg("Connecting...")}`}

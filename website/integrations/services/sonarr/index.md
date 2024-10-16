@@ -40,7 +40,7 @@ Create an application in authentik and select the provider you've created above.
 
 ## Deployment
 
-Create an outpost deployment for the provider you've created above, as described [here](../../../docs/outposts/). Deploy this Outpost either on the same host or a different host that can access Sonarr.
+Create an outpost deployment for the provider you've created above, as described [here](https://docs.goauthentik.io/docs/add-secure-apps/outposts/). Deploy this Outpost either on the same host or a different host that can access Sonarr.
 
 The outpost will connect to authentik and configure itself.
 

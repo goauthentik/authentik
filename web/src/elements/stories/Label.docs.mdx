@@ -1,0 +1,53 @@
+import { Canvas, Description, Meta, Story, Title } from "@storybook/blocks";
+
+import * as LabelStories from "./Label.stories";
+
+<Meta of={LabelStories} />
+
+# Labels
+
+Labels are in-page elements that provide pointers or guidance. Frequently called "chips" in other
+design systems. Labels are used alongside other elements to warn users of conditions or status that
+they might want to be aware of
+
+## Usage
+
+```Typescript
+import "@goauthentik/elements/Label.js";
+```
+
+Note that the content of a label _must_ be a valid HTML component; plain text does not work here. The
+default label is informational:
+
+```html
+<ak-label><p>This is the content of your alert!</p></ak-label>
+```
+
+## Demo
+
+### Default: Info
+
+The default state of an alert is _info_.
+
+<Story of={LabelStories.DefaultStory} />
+
+### Warning
+
+The icon can be changed via the `icon` attribute. It takes the name of a valid `fas`-class Font
+Awesome icon. Changing the icon can be helpful, as not everyone can see the color changes. It has
+also been set "compact" to show the difference.
+
+<Story of={LabelStories.CompactWarningLabel} />
+
+### Success
+
+This label is illustrated using the PFColor enum, rather than the attribute name. Note that the content
+is _slotted_, and can be styled.
+
+<Story of={LabelStories.SuccessLabel} />
+
+### Danger
+
+This label is illustrated using the PFColor enum, rather than the attribute name.
+
+<Story of={LabelStories.DangerLabel} />

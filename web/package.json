@@ -11,7 +11,7 @@
         "@floating-ui/dom": "^1.6.11",
         "@formatjs/intl-listformat": "^7.5.7",
         "@fortawesome/fontawesome-free": "^6.6.0",
-        "@goauthentik/api": "^2024.8.3-1727731656",
+        "@goauthentik/api": "^2024.8.3-1728939481",
         "@lit/context": "^1.1.2",
         "@lit/localize": "^0.12.2",
         "@lit/reactive-element": "^2.0.4",
@@ -289,6 +289,7 @@
                 "lint:types",
                 "lint:components",
                 "lint:spelling",
+                "lint:package",
                 "lint:lockfile",
                 "lint:lockfiles",
                 "lint:precommit",
@@ -316,7 +317,7 @@
             "command": "node scripts/build-storybook-import-maps.mjs"
         },
         "test": {
-            "command": "wdio run ./wdio.conf.ts --logLevel=warn",
+            "command": "wdio ./wdio.conf.ts --logLevel=warn",
             "env": {
                 "CI": "true",
                 "TS_NODE_PROJECT": "tsconfig.test.json"

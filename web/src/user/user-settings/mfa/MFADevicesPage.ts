@@ -124,7 +124,8 @@ export class MFADevicesPage extends Table<Device> {
     row(item: Device): TemplateResult[] {
         return [
             html`${item.name}`,
-            html`${deviceTypeName(item)}`,
+            html`${deviceTypeName(item)}
+            ${item.extraDescription ? ` - ${item.extraDescription}` : ""}`,
             html`${item.created.getTime() > 0
                 ? html`<div>${getRelativeTime(item.created)}</div>
                       <small>${item.created.toLocaleString()}</small>`

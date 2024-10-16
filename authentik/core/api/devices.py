@@ -17,6 +17,7 @@ from rest_framework.viewsets import ViewSet
 from authentik.core.api.utils import MetaNameSerializer
 from authentik.stages.authenticator import device_classes, devices_for_user
 from authentik.stages.authenticator.models import Device
+from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 
 
 class DeviceSerializer(MetaNameSerializer):
@@ -29,10 +30,17 @@ class DeviceSerializer(MetaNameSerializer):
     created = DateTimeField(read_only=True)
     last_updated = DateTimeField(read_only=True)
     last_used = DateTimeField(read_only=True, allow_null=True)
+    extra_description = SerializerMethodField()
 
     def get_type(self, instance: Device) -> str:
         """Get type of device"""
         return instance._meta.label
+
+    def get_extra_description(self, instance: Device) -> str:
+        """Get extra description"""
+        if isinstance(instance, WebAuthnDevice):
+            return instance.device_type.description
+        return ""
 
 
 class DeviceViewSet(ViewSet):

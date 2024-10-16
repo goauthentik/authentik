@@ -17,14 +17,6 @@ module.exports = async function (): Promise<Config> {
         organizationName: "Authentik Security Inc.",
         projectName: "authentik",
         themeConfig: {
-            announcementBar: {
-                id: "new_docs_structure",
-                content:
-                    'Change is hard, especially when a familiar site gets re-arranged. But we think the new layout is easier to navigate. Take a preview peek at the upcoming new <a target="_blank" rel="noopener noreferrer" href="https://deploy-preview-11522--authentik-docs.netlify.app/docs"> Docs structure!</a>',
-                backgroundColor: "#cc0099",
-                textColor: "#ffffff",
-                isCloseable: false,
-            },
             image: "img/social.png",
             navbar: {
                 logo: {
@@ -42,17 +34,12 @@ module.exports = async function (): Promise<Config> {
                     },
                     {
                         to: "docs/",
-                        label: "Docs",
+                        label: "Documentation",
                         position: "left",
                     },
                     {
                         to: "integrations/",
                         label: "Integrations",
-                        position: "left",
-                    },
-                    {
-                        to: "developer-docs/",
-                        label: "Developer",
                         position: "left",
                     },
                     {
@@ -105,6 +92,7 @@ module.exports = async function (): Promise<Config> {
                         sidebarPath: "./sidebars.js",
                         editUrl:
                             "https://github.com/goauthentik/authentik/edit/main/website/",
+                        docItemComponent: "@theme/ApiItem",
                         remarkPlugins: [
                             [
                                 remarkGithub,
@@ -140,26 +128,14 @@ module.exports = async function (): Promise<Config> {
                 },
             ],
             [
-                "@docusaurus/plugin-content-docs",
-                {
-                    id: "docsDevelopers",
-                    path: "developer-docs",
-                    routeBasePath: "developer-docs",
-                    sidebarPath: "./sidebarsDev.js",
-                    docItemComponent: "@theme/ApiItem",
-                    editUrl:
-                        "https://github.com/goauthentik/authentik/edit/main/website/",
-                },
-            ],
-            [
                 "docusaurus-plugin-openapi-docs",
                 {
                     id: "api",
-                    docsPluginId: "docsDevelopers",
+                    docsPluginId: "docs",
                     config: {
                         authentik: {
                             specPath: "static/schema.yaml",
-                            outputDir: "developer-docs/api/reference/",
+                            outputDir: "docs/developer-docs/api/reference/",
                             hideSendButton: true,
                             sidebarOptions: {
                                 groupPathsBy: "tag",
