@@ -101,6 +101,21 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                         ${msg("Flow used when authorizing this provider.")}
                     </p>
                 </ak-form-element-horizontal>
+                <ak-form-element-horizontal
+                    name="invalidationFlow"
+                    label=${msg("Authorization flow")}
+                    .errorMessages=${errors?.invalidationFlow ?? []}
+                    ?required=${true}
+                >
+                    <ak-flow-search
+                        flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                        .currentFlow=${provider?.invalidationFlow}
+                        required
+                    ></ak-flow-search>
+                    <p class="pf-c-form__helper-text">
+                        ${msg("Flow used when logging out of this provider.")}
+                    </p>
+                </ak-form-element-horizontal>
 
                 <ak-form-group .expanded=${true}>
                     <span slot="header"> ${msg("Protocol settings")} </span>

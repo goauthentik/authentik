@@ -54,7 +54,7 @@ from authentik.flows.planner import (
     FlowPlan,
     FlowPlanner,
 )
-from authentik.flows.stage import AccessDeniedChallengeView, StageView
+from authentik.flows.stage import AccessDeniedStage, StageView
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.errors import exception_to_string
 from authentik.lib.utils.reflection import all_subclasses, class_to_path
@@ -153,7 +153,7 @@ class FlowExecutorView(APIView):
         return plan
 
     def dispatch(self, request: HttpRequest, flow_slug: str) -> HttpResponse:
-        with start_span(op="authentik.flow.executor.dispatch", description=self.flow.slug) as span:
+        with start_span(op="authentik.flow.executor.dispatch", name=self.flow.slug) as span:
             span.set_data("authentik Flow", self.flow.slug)
             get_params = QueryDict(request.GET.get(QS_QUERY, ""))
             if QS_KEY_TOKEN in get_params:
@@ -273,7 +273,7 @@ class FlowExecutorView(APIView):
             with (
                 start_span(
                     op="authentik.flow.executor.stage",
-                    description=class_path,
+                    name=class_path,
                 ) as span,
                 HIST_FLOW_EXECUTION_STAGE_TIME.labels(
                     method=request.method.upper(),
@@ -324,7 +324,7 @@ class FlowExecutorView(APIView):
             with (
                 start_span(
                     op="authentik.flow.executor.stage",
-                    description=class_path,
+                    name=class_path,
                 ) as span,
                 HIST_FLOW_EXECUTION_STAGE_TIME.labels(
                     method=request.method.upper(),
@@ -441,7 +441,7 @@ class FlowExecutorView(APIView):
             )
             return self.restart_flow(keep_context)
         self.cancel()
-        challenge_view = AccessDeniedChallengeView(self, error_message)
+        challenge_view = AccessDeniedStage(self, error_message)
         challenge_view.request = self.request
         return to_stage_response(self.request, challenge_view.get(self.request))
 
