@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-12 00:08+0000\n"
+"POT-Creation-Date: 2024-10-15 00:08+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Marc Schmitt, 2024\n"
 "Language-Team: French (https://app.transifex.com/authentik/teams/119923/fr/)\n"
@@ -211,6 +211,10 @@ msgid "Flow used when authorizing this provider."
 msgstr "Flux utilisé lors de l'autorisation de ce fournisseur."
 
 #: authentik/core/models.py
+msgid "Flow used ending the session from a provider."
+msgstr "Flux utilisé lorsque la session est terminée depuis un fournisseur."
+
+#: authentik/core/models.py
 msgid ""
 "Accessed from applications; optional backchannel providers for protocols "
 "like LDAP and SCIM."
@@ -375,56 +379,6 @@ msgstr "{source} liée avec succès !"
 #: authentik/core/sources/flow_manager.py
 msgid "Source is not configured for enrollment."
 msgstr "La source n'est pas configurée pour l'inscription."
-
-#: authentik/core/templates/if/end_session.html
-msgid "End session"
-msgstr "Terminer la Session"
-
-#: authentik/core/templates/if/end_session.html
-#, python-format
-msgid ""
-"\n"
-"You've logged out of %(application)s.\n"
-msgstr ""
-"\n"
-"Vous vous êtes déconnecté de %(application)s.\n"
-
-#: authentik/core/templates/if/end_session.html
-#, python-format
-msgid ""
-"\n"
-"            You've logged out of %(application)s. You can go back to the overview to launch another application, or log out of your %(branding_title)s account.\n"
-"        "
-msgstr ""
-"\n"
-"            Vous vous êtes déconnecté de %(application)s. Vous pouvez retourner à la vue d'ensemble pour lancer une autre application, ou vous déconnecter de votre compte %(branding_title)s .\n"
-"        "
-
-#: authentik/core/templates/if/end_session.html
-msgid "Go back to overview"
-msgstr "Retourner à la vue d'ensemble"
-
-#: authentik/core/templates/if/end_session.html
-#, python-format
-msgid ""
-"\n"
-"            Log out of %(branding_title)s\n"
-"        "
-msgstr ""
-"\n"
-"            Déconnexion de %(branding_title)s\n"
-"        "
-
-#: authentik/core/templates/if/end_session.html
-#, python-format
-msgid ""
-"\n"
-"            Log back into %(application)s\n"
-"        "
-msgstr ""
-"\n"
-"            Reconnexion à %(application)s\n"
-"        "
 
 #: authentik/core/templates/if/error.html
 msgid "Go home"
