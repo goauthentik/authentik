@@ -14,19 +14,28 @@ sidebar_label: EspoCRM
 > -- https://www.espocrm.com/
 
 :::warning
-This guide does _not_ cover Team Mapping. Please refer to espoCRM's [documentation](https://docs.espocrm.com/administration/oidc/#team-mapping).
+This guide does _not_ cover Team Mapping. Please refer to EspoCRM's [documentation](https://docs.espocrm.com/administration/oidc/#team-mapping).
 :::
 
 ## Preparation
 
 The following placeholders will be used:
 
--   `crm.company` is the FQDN of the espoCRM install. 
+-   `crm.company` is the FQDN of the EspoCRM install. 
 -   `authentik.company` is the FQDN of the authentik install.
 - `_SLUG_` is the slug you choose upon application create in authentik.
 
-Create an application in authentik and note the slug you choose, as this will be used later (`_SLUG_`).
-In the Admin Interface, go to **Applications** -> **Providers**. Create a **OAuth2/OpenID** provider with the following parameters:
+## authentik configuration
+1. Log into authentik as an admin, and navigate to **Applications** --> **Applications**.
+2. Click **Create with Wizard**.
+
+:::info
+Alternatively, use our legacy process and click **Create**. The legacy process requires that the application and its configuration provider be configured separately.
+:::
+
+3. In the _New Application_ wizard, define the application details, and then define the provider details with the following parameters:
+
+- **Provider Type**: `OAuth2/OIDC (Open Authorization/OpenID Connect)`
 
 - **Authorization Flow**: `default-provider-authorization-explicit-consent (Authorize Application)`
 - **Client Type**: `Confidential`
@@ -66,4 +75,4 @@ The full URLs can also be found on the provider's page in authentik's UI._
 2. Access `crm.company` in a private browser, and select `Sign In.`
 - You will be presented with your authentik log-in screen.
 
-- Enter your credentials to proceed to espoCRM!
+- Enter your authentik credentials to proceed to EspoCRM!
