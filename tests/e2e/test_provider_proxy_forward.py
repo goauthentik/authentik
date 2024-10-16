@@ -44,6 +44,7 @@ class TestProviderProxyForward(SeleniumTestCase):
     )
     @apply_blueprint(
         "default/flow-default-provider-authorization-implicit-consent.yaml",
+        "default/flow-default-provider-invalidation.yaml",
     )
     @apply_blueprint(
         "system/providers-oauth2.yaml",
@@ -57,6 +58,7 @@ class TestProviderProxyForward(SeleniumTestCase):
             authorization_flow=Flow.objects.get(
                 slug="default-provider-authorization-implicit-consent"
             ),
+            invalidation_flow=Flow.objects.get(slug="default-provider-invalidation-flow"),
             internal_host=f"http://{self.host}",
             external_host="http://localhost",
         )
