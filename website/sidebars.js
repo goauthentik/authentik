@@ -361,6 +361,7 @@ export default {
                                 "customize/policies/working_with_policies/whitelist_email",
                             ],
                         },
+                        "customize/policies/expression",
                     ],
                 },
                 {
