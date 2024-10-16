@@ -49,7 +49,7 @@ Note the `Client ID` and `Client Secret` values.
 - **Client Secret**: enter the `Client Secret` from authentik 
 - **Authorization Redirect URI**: `https://_crm.company_/oauth-callback.php`
 - **Fallback Login**: _Select this option if you want espoCRM's login as fallback._
-- **Allow OIDC login for admin users**: _Select this option if you want espoCRM's admin users to be able to log in via OIDC._
+- **Allow OIDC login for admin users**: _Select this option if you want EspoCRM's admin users to be able to log in via OIDC._
 
     _The following values I listed as slugs for clarity. I included an example for the first variable.
 The full URLs can also be found on the provider's page in authentik's UI._
