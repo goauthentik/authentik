@@ -1,7 +1,4 @@
-from requests.sessions import Request
-from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser
-from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from authentik.admin.models import VersionHistory
@@ -34,13 +31,3 @@ class VersionHistoryViewSet(ReadOnlyModelViewSet):
     search_fields = ["version", "build"]
     ordering = ["-timestamp"]
     pagination_class = None
-
-    @action(
-        methods=["POST"],
-        detail=False,
-        pagination_class=None,
-    )
-    def clear(self, request: Request) -> Response:
-        """Get source's sync status"""
-        VersionHistory.objects.all().delete()
-        return Response()

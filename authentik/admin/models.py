@@ -16,6 +16,7 @@ class VersionHistory(models.Model):
         ordering = ("-timestamp",)
         verbose_name = _("Version history")
         verbose_name_plural = _("Version history")
+        default_permissions = []
 
     def __str__(self):
         return f"{self.version}.{self.build} ({self.timestamp})"
