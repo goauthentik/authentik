@@ -2,14 +2,12 @@
 
 from base64 import b64encode
 from dataclasses import asdict
+from json import loads
 from sys import platform
 from time import sleep
-from typing import Any
 from unittest.case import skip, skipUnless
 
 from channels.testing import ChannelsLiveServerTestCase
-from docker.client import DockerClient, from_env
-from docker.models.containers import Container
 from selenium.webdriver.common.by import By
 
 from authentik.blueprints.tests import apply_blueprint, reconcile_app
@@ -25,38 +23,26 @@ from tests.e2e.utils import SeleniumTestCase, retry
 class TestProviderProxy(SeleniumTestCase):
     """Proxy and Outpost e2e tests"""
 
-    proxy_container: Container
-
-    def tearDown(self) -> None:
-        super().tearDown()
-        self.output_container_logs(self.proxy_container)
-        self.proxy_container.kill()
-
-    def get_container_specs(self) -> dict[str, Any] | None:
-        return {
-            "image": "traefik/whoami:latest",
-            "detach": True,
-            "ports": {
+    def setUp(self):
+        super().setUp()
+        self.run_container(
+            image="traefik/whoami:latest",
+            ports={
                 "80": "80",
             },
-            "auto_remove": True,
-        }
+        )
 
-    def start_proxy(self, outpost: Outpost) -> Container:
+    def start_proxy(self, outpost: Outpost):
         """Start proxy container based on outpost created"""
-        client: DockerClient = from_env()
-        container = client.containers.run(
+        self.run_container(
             image=self.get_container_image("ghcr.io/goauthentik/dev-proxy"),
-            detach=True,
             ports={
                 "9000": "9000",
             },
             environment={
-                "AUTHENTIK_HOST": self.live_server_url,
                 "AUTHENTIK_TOKEN": outpost.token.key,
             },
         )
-        return container
 
     @retry()
     @apply_blueprint(
@@ -99,7 +85,7 @@ class TestProviderProxy(SeleniumTestCase):
         outpost.providers.add(proxy)
         outpost.build_user_permissions(outpost.user)
 
-        self.proxy_container = self.start_proxy(outpost)
+        self.start_proxy(outpost)
 
         # Wait until outpost healthcheck succeeds
         healthcheck_retries = 0
@@ -112,13 +98,15 @@ class TestProviderProxy(SeleniumTestCase):
             sleep(0.5)
         sleep(5)
 
-        self.driver.get("http://localhost:9000")
+        self.driver.get("http://localhost:9000/api")
         self.login()
         sleep(1)
 
         full_body_text = self.driver.find_element(By.CSS_SELECTOR, "pre").text
-        self.assertIn(f"X-Authentik-Username: {self.user.username}", full_body_text)
-        self.assertIn("X-Foo: bar", full_body_text)
+        body = loads(full_body_text)
+
+        self.assertEqual(body["headers"]["X-Authentik-Username"], [self.user.username])
+        self.assertEqual(body["headers"]["X-Foo"], ["bar"])
 
         self.driver.get("http://localhost:9000/outpost.goauthentik.io/sign_out")
         sleep(2)
@@ -173,7 +161,7 @@ class TestProviderProxy(SeleniumTestCase):
         outpost.providers.add(proxy)
         outpost.build_user_permissions(outpost.user)
 
-        self.proxy_container = self.start_proxy(outpost)
+        self.start_proxy(outpost)
 
         # Wait until outpost healthcheck succeeds
         healthcheck_retries = 0
@@ -186,14 +174,16 @@ class TestProviderProxy(SeleniumTestCase):
             sleep(0.5)
         sleep(5)
 
-        self.driver.get("http://localhost:9000")
+        self.driver.get("http://localhost:9000/api")
         self.login()
         sleep(1)
 
         full_body_text = self.driver.find_element(By.CSS_SELECTOR, "pre").text
-        self.assertIn(f"X-Authentik-Username: {self.user.username}", full_body_text)
+        body = loads(full_body_text)
+
+        self.assertEqual(body["headers"]["X-Authentik-Username"], [self.user.username])
         auth_header = b64encode(f"{cred}:{cred}".encode()).decode()
-        self.assertIn(f"Authorization: Basic {auth_header}", full_body_text)
+        self.assertEqual(body["headers"]["Authorization"], [f"Basic {auth_header}"])
 
         self.driver.get("http://localhost:9000/outpost.goauthentik.io/sign_out")
         sleep(2)

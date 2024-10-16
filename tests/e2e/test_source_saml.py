@@ -2,7 +2,6 @@
 
 from pathlib import Path
 from time import sleep
-from typing import Any
 
 from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
@@ -77,19 +76,15 @@ class TestSourceSAML(SeleniumTestCase):
     def setUp(self):
         self.slug = generate_id()
         super().setUp()
-
-    def get_container_specs(self) -> dict[str, Any] | None:
-        return {
-            "image": "kristophjunge/test-saml-idp:1.15",
-            "detach": True,
-            "ports": {"8080": "8080"},
-            "auto_remove": True,
-            "healthcheck": Healthcheck(
+        self.run_container(
+            image="kristophjunge/test-saml-idp:1.15",
+            ports={"8080": "8080"},
+            healthcheck=Healthcheck(
                 test=["CMD", "curl", "http://localhost:8080"],
                 interval=5 * 1_000 * 1_000_000,
                 start_period=1 * 1_000 * 1_000_000,
             ),
-            "volumes": {
+            volumes={
                 str(
                     (Path(__file__).parent / Path("test-saml-idp/saml20-sp-remote.php")).absolute()
                 ): {
@@ -97,7 +92,7 @@ class TestSourceSAML(SeleniumTestCase):
                     "mode": "ro",
                 }
             },
-            "environment": {
+            environment={
                 "SIMPLESAMLPHP_SP_ENTITY_ID": "entity-id",
                 "SIMPLESAMLPHP_SP_NAME_ID_FORMAT": (
                     "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
@@ -107,7 +102,7 @@ class TestSourceSAML(SeleniumTestCase):
                     self.url("authentik_sources_saml:acs", source_slug=self.slug)
                 ),
             },
-        }
+        )
 
     @retry()
     @apply_blueprint(

@@ -3,8 +3,6 @@
 from json import loads
 from time import sleep
 
-from docker import DockerClient, from_env
-from docker.models.containers import Container
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
@@ -22,11 +20,8 @@ from tests.e2e.utils import SeleniumTestCase, retry
 class TestProviderSAML(SeleniumTestCase):
     """test SAML Provider flow"""
 
-    container: Container
-
-    def setup_client(self, provider: SAMLProvider, force_post: bool = False) -> Container:
+    def setup_client(self, provider: SAMLProvider, force_post: bool = False):
         """Setup client saml-sp container which we test SAML against"""
-        client: DockerClient = from_env()
         metadata_url = (
             self.url(
                 "authentik_api:samlprovider-metadata",
@@ -36,9 +31,8 @@ class TestProviderSAML(SeleniumTestCase):
         )
         if force_post:
             metadata_url += f"&force_binding={SAML_BINDING_POST}"
-        container = client.containers.run(
+        self.run_container(
             image="ghcr.io/beryju/saml-test-sp:1.1",
-            detach=True,
             ports={
                 "9009": "9009",
             },
@@ -48,8 +42,6 @@ class TestProviderSAML(SeleniumTestCase):
                 "SP_METADATA_URL": metadata_url,
             },
         )
-        self.wait_for_container(container)
-        return container
 
     @retry()
     @apply_blueprint(
@@ -85,7 +77,7 @@ class TestProviderSAML(SeleniumTestCase):
             slug="authentik-saml",
             provider=provider,
         )
-        self.container = self.setup_client(provider)
+        self.setup_client(provider)
         self.driver.get("http://localhost:9009")
         self.login()
         self.wait_for_url("http://localhost:9009/")
@@ -153,7 +145,7 @@ class TestProviderSAML(SeleniumTestCase):
             slug="authentik-saml",
             provider=provider,
         )
-        self.container = self.setup_client(provider)
+        self.setup_client(provider)
         self.driver.get("http://localhost:9009")
         self.login()
 
@@ -236,7 +228,7 @@ class TestProviderSAML(SeleniumTestCase):
             slug="authentik-saml",
             provider=provider,
         )
-        self.container = self.setup_client(provider, True)
+        self.setup_client(provider, True)
         self.driver.get("http://localhost:9009")
         self.login()
 
@@ -319,7 +311,7 @@ class TestProviderSAML(SeleniumTestCase):
             slug="authentik-saml",
             provider=provider,
         )
-        self.container = self.setup_client(provider)
+        self.setup_client(provider)
         self.driver.get(
             self.url(
                 "authentik_providers_saml:sso-init",
@@ -397,7 +389,7 @@ class TestProviderSAML(SeleniumTestCase):
             provider=provider,
         )
         PolicyBinding.objects.create(target=app, policy=negative_policy, order=0)
-        self.container = self.setup_client(provider)
+        self.setup_client(provider)
         self.driver.get("http://localhost:9009/")
         self.login()
 
@@ -444,7 +436,7 @@ class TestProviderSAML(SeleniumTestCase):
             slug="authentik-saml",
             provider=provider,
         )
-        self.container = self.setup_client(provider)
+        self.setup_client(provider)
         self.driver.get("http://localhost:9009")
         self.login()
         self.wait_for_url("http://localhost:9009/")
