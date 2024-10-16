@@ -1,15 +1,15 @@
 ---
-title: Integrate with espoCRM
-sidebar_label: espoCRM
+title: Integrate with EspoCRM
+sidebar_label: EspoCRM
 ---
 
-# espoCRM
+# EspoCRM
 
 <span class="badge badge--secondary">Support level: Community</span>
 
-## What is espoCRM?
+## What is EspoCRM?
 
-> EspoCRM is a web application that allows users to see, enter and evaluate all your company relationships regardless of the type. People, companies, projects or opportunities — all in an easy and intuitive interface.
+> EspoCRM is a CRM (customer relationship management) web application that allows users to store, visualize, and analyze their company's business-related relationships such as opportunities, people, businesses, and projects. 
 >
 > -- https://www.espocrm.com/
 
@@ -32,12 +32,12 @@ In the Admin Interface, go to **Applications** -> **Providers**. Create a **OAut
 - **Client Type**: `Confidential`
 - **Redirect URIs/Origins**: `https://_crm.company_/oauth-callback.php`
 - **Scopes**: OpenID, Email, Profile, Proxy outpost
-- **Subject Mode**: `Based on the User's username` (**OR** your preferred method; I personally use the same username in authentik and espoCRM)
+- **Subject Mode**: `Based on the User's username` (**OR** your preferred method; you can use the same username in authentik and EspoCRM)
 - **Signing Key**: Select any available key
 
 Note the `Client ID` and `Client Secret` values. 
 
-## espoCRM configuration
+## EspoCRM configuration
 ### Access the OIDC auth
 1. Login to your admin user at `crm.company`.
 
