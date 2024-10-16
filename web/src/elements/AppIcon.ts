@@ -23,7 +23,7 @@ export class AppIcon extends AKElement implements IAppIcon {
     @property({ type: String })
     icon?: string;
 
-    @property()
+    @property({ reflect: true })
     size: PFSize = PFSize.Medium;
 
     static get styles(): CSSResult[] {

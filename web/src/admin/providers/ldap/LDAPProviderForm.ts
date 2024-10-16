@@ -135,8 +135,8 @@ export class LDAPProviderFormPage extends WithBrandConfig(BaseProviderForm<LDAPP
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Bind flow")}
-                        ?required=${true}
                         name="authorizationFlow"
+                        required
                     >
                         <ak-branded-flow-search
                             flowType=${FlowsInstancesListDesignationEnum.Authentication}
@@ -148,10 +148,15 @@ export class LDAPProviderFormPage extends WithBrandConfig(BaseProviderForm<LDAPP
                             ${msg("Flow used for users to authenticate.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${msg("Unbind flow")} name="invalidationFlow">
+                    <ak-form-element-horizontal
+                        label=${msg("Unbind flow")}
+                        name="invalidationFlow"
+                        required
+                    >
                         <ak-flow-search
                             flowType=${FlowsInstancesListDesignationEnum.Invalidation}
                             .currentFlow=${this.instance?.invalidationFlow}
+                            required
                         ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
                             ${msg("Flow used for unbinding users.")}
