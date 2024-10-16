@@ -46,7 +46,7 @@ class ProviderInfoView(View):
         if SCOPE_OPENID not in scopes:
             scopes.append(SCOPE_OPENID)
         _, supported_alg = provider.jwt_key
-        return {
+        config = {
             "issuer": provider.get_issuer(self.request),
             "authorization_endpoint": self.request.build_absolute_uri(
                 reverse("authentik_providers_oauth2:authorize")
@@ -113,9 +113,11 @@ class ProviderInfoView(View):
             "claims_supported": self.get_claims(provider),
             "claims_parameter_supported": False,
             "code_challenge_methods_supported": [PKCE_METHOD_PLAIN, PKCE_METHOD_S256],
-            "id_token_encryption_alg_values_supported": ["RSA-OAEP-256"],
-            "id_token_encryption_enc_values_supported": ["A256CBC-HS512"],
         }
+        if provider.encryption_key:
+            config["id_token_encryption_alg_values_supported"] = ["RSA-OAEP-256"]
+            config["id_token_encryption_enc_values_supported"] = ["A256CBC-HS512"]
+        return config
 
     def get_claims(self, provider: OAuth2Provider) -> list[str]:
         """Get a list of supported claims based on configured scope mappings"""
