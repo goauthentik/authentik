@@ -2,6 +2,7 @@ import "@goauthentik/admin/rbac/ObjectPermissionModal";
 import "@goauthentik/admin/stages/StageWizard";
 import "@goauthentik/admin/stages/authenticator_duo/AuthenticatorDuoStageForm";
 import "@goauthentik/admin/stages/authenticator_duo/DuoDeviceImportForm";
+import "@goauthentik/admin/stages/authenticator_endpoint_gdtc/AuthenticatorEndpointGDTCStageForm";
 import "@goauthentik/admin/stages/authenticator_sms/AuthenticatorSMSStageForm";
 import "@goauthentik/admin/stages/authenticator_static/AuthenticatorStaticStageForm";
 import "@goauthentik/admin/stages/authenticator_totp/AuthenticatorTOTPStageForm";
@@ -25,8 +26,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import "@goauthentik/elements/forms/ProxyForm";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
+import { PaginatedResponse, TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
