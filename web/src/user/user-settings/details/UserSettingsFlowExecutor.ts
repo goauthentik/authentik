@@ -21,6 +21,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
     ChallengeTypes,
+    CoreApi,
     FlowChallengeResponseRequest,
     FlowErrorChallenge,
     FlowsApi,
@@ -82,8 +83,11 @@ export class UserSettingsFlowExecutor
             });
     }
 
-    firstUpdated(): void {
-        this.flowSlug = this.brand?.flowUserSettings;
+    async firstUpdated(): Promise<void> {
+        if (!this.brand) {
+            this.brand = await new CoreApi(DEFAULT_CONFIG).coreBrandsCurrentRetrieve();
+        }
+        this.flowSlug = this.brand.flowUserSettings;
         if (!this.flowSlug) {
             return;
         }

@@ -13,6 +13,7 @@
         <link rel="shortcut icon" href="{{ brand.branding_favicon }}">
         {% block head_before %}
         {% endblock %}
+        <link rel="stylesheet" type="text/css" href="{% static 'dist/patternfly-base.css' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'dist/authentik.css' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'dist/custom.css' %}" data-inject>
         {% versioned_script "dist/poly-%v.js" %}
