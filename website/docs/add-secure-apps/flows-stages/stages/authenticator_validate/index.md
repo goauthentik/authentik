@@ -5,10 +5,10 @@ title: Authenticator validation stage
 This stage validates an already configured Authenticator Device. This device has to be configured using any of the other authenticator stages:
 
 -   [Duo authenticator stage](../authenticator_duo/index.md)
--   [SMS authenticator stage](../authenticator_sms/index.md).
--   [Static authenticator stage](../authenticator_static/index.md).
+-   [SMS authenticator stage](../authenticator_sms/index.md)
+-   [Static authenticator stage](../authenticator_static/index.md)
 -   [TOTP authenticator stage](../authenticator_totp/index.md)
--   [WebAuth authenticator stage](../authenticator_webauthn/index.md).
+-   [WebAuthn authenticator stage](../authenticator_webauthn/index.md)
 
 You can select which type of device classes are allowed.
 
@@ -75,3 +75,7 @@ Optionally restrict which WebAuthn device types can be used to authenticate.
 When no restriction is set, all WebAuthn devices a user has registered are allowed.
 
 These restrictions only apply to WebAuthn devices created with authentik 2024.4 or later.
+
+#### Automatic device selection
+
+If the user has more than one device, the user is prompted to select which device they want to use for validation. After the user successfully authenticates with a certain device, that device is marked as "last used". In subsequent prompts by the Authenticator validation stage, the last used device is automatically selected for the user. Should they wish to use another device, the user can return to the device selection screen.

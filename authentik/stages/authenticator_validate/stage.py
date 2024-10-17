@@ -217,6 +217,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
                     "device_class": device_class,
                     "device_uid": device.pk,
                     "challenge": get_challenge_for_device(self.request, stage, device),
+                    "last_used": device.last_used,
                 }
             )
             challenge.is_valid()
@@ -237,6 +238,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
                     self.request,
                     self.executor.current_stage,
                 ),
+                "last_used": None,
             }
         )
         challenge.is_valid()
