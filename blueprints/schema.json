@@ -4227,6 +4227,7 @@
                         "model_updated",
                         "model_deleted",
                         "email_sent",
+                        "analytics_sent",
                         "update_available",
                         "custom_"
                     ],
@@ -4251,6 +4252,7 @@
                         null,
                         "authentik.tenants",
                         "authentik.admin",
+                        "authentik.analytics",
                         "authentik.api",
                         "authentik.crypto",
                         "authentik.flows",
@@ -13162,6 +13164,7 @@
                         "model_updated",
                         "model_deleted",
                         "email_sent",
+                        "analytics_sent",
                         "update_available",
                         "custom_"
                     ],
@@ -13323,6 +13326,7 @@
                                 "model_updated",
                                 "model_deleted",
                                 "email_sent",
+                                "analytics_sent",
                                 "update_available",
                                 "custom_"
                             ],
