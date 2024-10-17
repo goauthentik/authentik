@@ -284,3 +284,20 @@ ci-bandit: ci--meta-debug
 
 ci-pending-migrations: ci--meta-debug
 	ak makemigrations --check
+
+#########################
+## Benchmark
+#########################
+
+benchmark-fixtures-create:
+	tests/benchmark/fixtures.py create
+
+benchmark-run:
+	docker compose -f tests/benchmark/docker-compose.yml up -d
+	sleep 5
+	tests/benchmark/run.sh
+
+benchmark-fixtures-delete:
+	tests/benchmark/fixtures.py delete
+
+benchmark: benchmark-fixtures-create benchmark-run benchmark-fixtures-delete
