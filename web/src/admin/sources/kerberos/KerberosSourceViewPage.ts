@@ -4,8 +4,10 @@ import "@goauthentik/admin/sources/kerberos/KerberosSourceForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/events/ObjectChangelog";
+import MDSourceKerberosBrowser from "@goauthentik/docs/users-sources/providers/kerberos/browser.md";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
+import "@goauthentik/elements/Markdown";
 import "@goauthentik/elements/SyncStatusCard";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
@@ -165,6 +167,15 @@ export class KerberosSourceViewPage extends AKElement {
                         </div>
                     </div>
                     ${this.renderSyncCards()}
+                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                        <div class="pf-c-card__body">
+                            <ak-markdown
+                                .md=${MDSourceKerberosBrowser}
+                                meta="users-sources/protocols/kerberos/browser.md"
+                                ;
+                            ></ak-markdown>
+                        </div>
+                    </div>
                 </div>
             </section>
             <section

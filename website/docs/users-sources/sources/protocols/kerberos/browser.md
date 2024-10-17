@@ -2,6 +2,8 @@
 title: SPNEGO browser configuration
 ---
 
+You may need to configure your web browser to allow SPNEGO. Here are instructions for major browsers.
+
 ## Firefox
 
 1.  In the address bar of Firefox, type `about:config` to display the list of current configuration options.
@@ -9,14 +11,18 @@ title: SPNEGO browser configuration
 3.  Double-click the `network.negotiate-auth.trusted-uris` entry to display the `Enter string value` dialog box.
 4.  Enter the name of the domain against which you want to authenticate, for example, `.example.com`.
 
+On Windows environments, you can automate the deployment of this configuration using [Group policy](https://support.mozilla.org/en-US/kb/customizing-firefox-using-group-policy-windows). On Linux or macOS systems, you can do so using [policies.json](https://support.mozilla.org/en-US/kb/customizing-firefox-using-policiesjson).
+
 ## Chrome
 
-This applies only for users on MacOS and Linux machines. For Windows, checkout the instructions below.
+This applies only for users on macOS and Linux machines. For Windows, checkout the instructions below.
 
 1. Make sure you have the necessary directory created by running: `mkdir -p /etc/opt/chrome/policies/managed/`
 2. Create a new `/etc/opt/chrome/policies/managed/mydomain.json` file with write privileges limited to the system administrator or root, and include the following line: `{ "AuthServerWhitelist": "*.example.com" }`.
 
 Note: if using Chromium, use `/etc/chromium/policies/managed/` instead of `/etc/opt/chrome/policies/managed/`.
+
+You can automate the deployment of this configuration using [Group policy](https://support.google.com/chrome/a/answer/187202).
 
 ## Windows / Internet Explorer
 
@@ -34,3 +40,5 @@ Open Internet Explorer, click **Tools** and then click **Internet Options**. You
 7. Click **Local intranet**
 8. Click **Custom Level**
 9. Select **Automatic login only in Intranet zone**
+
+You can automate the deployment of this configuration using [Group policy](https://learn.microsoft.com/en-us/previous-versions/troubleshoot/browsers/administration/how-to-configure-group-policy-preference-settings).

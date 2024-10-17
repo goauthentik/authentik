@@ -47,7 +47,7 @@ class SPNEGOView(View):
                     """
                     Make sure you have valid tickets (obtainable via kinit)
                     and configured the browser correctly.
-                    You can find out more at https://goauthentik.io/integrations/sources/kerberos/browser
+                    Please contact your administrator.
                 """
                 ),
             },

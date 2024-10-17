@@ -31,7 +31,7 @@ In the Admin interface, under **Directory** -> **Federation and Social login**, 
 -   Kerberos 5 configuration: If you need to override the default Kerberos configuration, you can do it here. See [man krb5.conf(5)](https://web.mit.edu/kerberos/krb5-latest/doc/admin/conf_files/krb5_conf.html) for the expected format.
 -   User matching mode: how Kerberos users get matched to authentik users.
 -   Group matching mode: how Kerberos groups (specified via property mappings) get matched to authentik groups.
--   User property mappings and group property mappings: see [Source property mappings](../property-mappings/index.md) and the section below for details.
+-   User property mappings and group property mappings: see [Source property mappings](../../property-mappings/index.md) and the section below for details.
 
 ## Password backend
 
@@ -100,7 +100,7 @@ There are some extra settings you can configure:
 
 ## Kerberos source property mappings
 
-See the [overview](../property-mappings/index.md) for information on how property mappings work.
+See the [overview](../../property-mappings/index.md) for information on how property mappings work.
 
 By default, authentik ships with [pre-configured mappings](#built-in-property-mappings) for the most common Kerberos setups. These mappings can be found on the Kerberos Source Configuration page in the Admin interface.
 
