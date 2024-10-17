@@ -205,6 +205,15 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
                         ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">${msg("Key used to sign the tokens.")}</p>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${msg("Encryption Key")} name="encryptionKey">
+                        <!-- NOTE: 'null' cast to 'undefined' on encryptionKey to satisfy Lit requirements -->
+                        <ak-crypto-certificate-search
+                            certificate=${ifDefined(this.instance?.encryptionKey ?? undefined)}
+                        ></ak-crypto-certificate-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Key used to encrypt the tokens.")}
+                        </p>
+                    </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
 

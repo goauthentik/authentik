@@ -42382,8 +42382,13 @@ components:
           type: string
           format: uuid
           nullable: true
-          description: Key used to sign the tokens. Only required when JWT Algorithm
-            is set to RS256.
+          description: Key used to sign the tokens.
+        encryption_key:
+          type: string
+          format: uuid
+          nullable: true
+          description: Key used to encrypt the tokens. When set, tokens will be encrypted
+            and returned as JWEs.
         redirect_uris:
           type: string
           description: Enter each URI on a new line.
@@ -42478,8 +42483,13 @@ components:
           type: string
           format: uuid
           nullable: true
-          description: Key used to sign the tokens. Only required when JWT Algorithm
-            is set to RS256.
+          description: Key used to sign the tokens.
+        encryption_key:
+          type: string
+          format: uuid
+          nullable: true
+          description: Key used to encrypt the tokens. When set, tokens will be encrypted
+            and returned as JWEs.
         redirect_uris:
           type: string
           description: Enter each URI on a new line.
@@ -46263,8 +46273,13 @@ components:
           type: string
           format: uuid
           nullable: true
-          description: Key used to sign the tokens. Only required when JWT Algorithm
-            is set to RS256.
+          description: Key used to sign the tokens.
+        encryption_key:
+          type: string
+          format: uuid
+          nullable: true
+          description: Key used to encrypt the tokens. When set, tokens will be encrypted
+            and returned as JWEs.
         redirect_uris:
           type: string
           description: Enter each URI on a new line.

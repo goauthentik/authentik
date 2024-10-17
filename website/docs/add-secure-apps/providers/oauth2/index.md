@@ -82,3 +82,15 @@ return True
 When a client does not request any scopes, authentik will treat the request as if all configured scopes were requested. Depending on the configured authorization flow, consent still needs to be given, and all scopes are listed there.
 
 This does _not_ apply to special scopes, as those are not configurable in the provider.
+
+## Signing & Encryption
+
+[JWT](https://jwt.io/introduction)s created by authentik will always be signed.
+
+When a _Signing Key_ is selected in the provider, the JWT will be signed asymmetrically with the private key of the selected certificate, and can be verified using the public key of the certificate. The public key data of the signing key can be retrieved via the JWKS endpoint listed on the provider page.
+
+When no _Signing Key_ is selected, the JWT will be signed symmetrically with the _Client secret_ of the provider, which can be seen in the provider settings.
+
+### Encryption <span class="badge badge--version">authentik 2024.10+</span>
+
+authentik can also encrypt JWTs (turning them into JWEs) it issues by selecting an _Encryption Key_ in the provider. When selected, all JWTs will be encrypted symmetrically using the selected certificate. authentik uses the `RSA-OAEP-256` algorithm with the `A256CBC-HS512` encryption method.
