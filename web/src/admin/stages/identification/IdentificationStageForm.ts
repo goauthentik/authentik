@@ -21,6 +21,7 @@ import {
     SourcesApi,
     Stage,
     StagesApi,
+    StagesCaptchaListRequest,
     StagesPasswordListRequest,
     UserFieldsEnum,
 } from "@goauthentik/api";
@@ -158,6 +159,41 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "When selected, a password field is shown on the same page instead of a separate page. This prevents username enumeration attacks.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${msg("Captcha stage")} name="captchaStage">
+                        <ak-search-select
+                            .fetchObjects=${async (query?: string): Promise<Stage[]> => {
+                                const args: StagesCaptchaListRequest = {
+                                    ordering: "name",
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const stages = await new StagesApi(
+                                    DEFAULT_CONFIG,
+                                ).stagesCaptchaList(args);
+                                return stages.results;
+                            }}
+                            .groupBy=${(items: Stage[]) => {
+                                return groupBy(items, (stage) => stage.verboseNamePlural);
+                            }}
+                            .renderElement=${(stage: Stage): string => {
+                                return stage.name;
+                            }}
+                            .value=${(stage: Stage | undefined): string | undefined => {
+                                return stage?.pk;
+                            }}
+                            .selected=${(stage: Stage): boolean => {
+                                return stage.pk === this.instance?.captchaStage;
+                            }}
+                            ?blankable=${true}
+                        >
+                        </ak-search-select>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "When set, adds functionality exactly like a Captcha stage, but baked into the Identification stage.",
                             )}
                         </p>
                     </ak-form-element-horizontal>
