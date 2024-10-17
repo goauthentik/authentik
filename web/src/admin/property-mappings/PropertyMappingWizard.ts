@@ -6,6 +6,7 @@ import "@goauthentik/admin/property-mappings/PropertyMappingProviderRadiusForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingProviderSAMLForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingProviderSCIMForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingProviderScopeForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingSourceKerberosForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingSourceLDAPForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingSourceOAuthForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingSourcePlexForm";

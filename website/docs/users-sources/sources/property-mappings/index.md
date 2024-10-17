@@ -6,6 +6,7 @@ Source property mappings allow you to modify or gather extra information from so
 
 This page is an overview of how property mappings work. For information about specific protocol, please refer to each protocol page:
 
+-   [Kerberos](../protocols/kerberos/#kerberos-source-property-mappings)
 -   [LDAP](../protocols/ldap/index.md#ldap-source-property-mappings)
 -   [OAuth](../protocols/oauth/index.md#oauth-source-property-mappings)
 -   [SAML](../protocols/saml/index.md#saml-source-property-mappings)
