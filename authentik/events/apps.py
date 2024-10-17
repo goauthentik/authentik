@@ -1,9 +1,12 @@
 """authentik events app"""
 
+from threading import Thread
+
 from celery.schedules import crontab
 from prometheus_client import Gauge, Histogram
 
 from authentik.blueprints.apps import ManagedAppConfig
+from authentik.events.celery import EventsWatcher
 from authentik.lib.config import CONFIG, ENV_PREFIX
 from authentik.lib.utils.reflection import path_to_class
 from authentik.root.celery import CELERY_APP
@@ -34,6 +37,13 @@ class AuthentikEventsConfig(ManagedAppConfig):
     label = "authentik_events"
     verbose_name = "authentik Events"
     default = True
+
+    @ManagedAppConfig.reconcile_global
+    def start_celery_events_watcher(self):
+        self.events_watcher = EventsWatcher()
+        self.events_watcher_thread = Thread(target=self.events_watcher.run)
+        self.events_watcher_thread.daemon = True
+        self.events_watcher_thread.start()
 
     @ManagedAppConfig.reconcile_global
     def check_deprecations(self):
