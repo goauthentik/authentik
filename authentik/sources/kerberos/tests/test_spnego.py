@@ -53,7 +53,8 @@ class TestSPNEGOSource(KerberosTestCase):
         self.assertEqual(response.headers["WWW-Authenticate"], "Negotiate")
 
         server_name = gssapi.names.Name("HTTP/testserver@")
-        client_ctx = gssapi.sec_contexts.SecurityContext(name=server_name, usage="initiate")
+        client_creds = gssapi.creds.Credentials(usage="initiate", store={"ccache": self.realm.ccache})
+        client_ctx = gssapi.sec_contexts.SecurityContext(name=server_name, usage="initiate", creds=client_creds)
 
         status = 401
         server_token = None
