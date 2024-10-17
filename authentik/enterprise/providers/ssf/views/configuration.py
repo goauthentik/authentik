@@ -20,6 +20,7 @@ class ConfigurationView(SSFView):
         application = get_object_or_404(Application, slug=application_slug)
         provider = get_object_or_404(SSFProvider, pk=provider)
         data = {
+            "spec_version": "1_0-ID2",
             "issuer": self.request.build_absolute_uri(
                 reverse(
                     "authentik_providers_ssf:configuration",
@@ -53,5 +54,6 @@ class ConfigurationView(SSFView):
             "delivery_methods_supported": [
                 DeliveryMethods.RISC_PUSH,
             ],
+            "authorization_schemes": [{"spec_urn": "urn:ietf:rfc:6749"}],
         }
         return JsonResponse(data)
