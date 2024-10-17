@@ -124,3 +124,7 @@ These are configured with the most common Kerberos setups.
 The following variables are available to Kerberos source property mappings:
 
 -   `principal`: a Python string containing the Kerberos principal. For example `alice@REALM.COMPANY` or `HTTP/authentik.company@REALM.COMPANY`.
+
+## Troubleshooting
+
+You can start authentik with the `KRB5_TRACE=/dev/stderr` environment variable for Kerberos to print errors in the logs.
