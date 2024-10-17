@@ -263,6 +263,90 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /admin/version/history/:
+    get:
+      operationId: admin_version_history_list
+      description: VersionHistory Viewset
+      parameters:
+      - in: query
+        name: build
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: version
+        schema:
+          type: string
+      tags:
+      - admin
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VersionHistory'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /admin/version/history/{id}/:
+    get:
+      operationId: admin_version_history_retrieve
+      description: VersionHistory Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Version history.
+        required: true
+      tags:
+      - admin
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionHistory'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /admin/workers/:
     get:
       operationId: admin_workers_retrieve
@@ -53109,6 +53193,25 @@ components:
       - version_current
       - version_latest
       - version_latest_valid
+    VersionHistory:
+      type: object
+      description: VersionHistory Serializer
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        timestamp:
+          type: string
+          format: date-time
+        version:
+          type: string
+        build:
+          type: string
+      required:
+      - build
+      - id
+      - timestamp
+      - version
     WebAuthnDevice:
       type: object
       description: Serializer for WebAuthn authenticator devices
