@@ -2,6 +2,7 @@
 
 from pydantic import Field
 from pydanticscim.group import Group as BaseGroup
+from pydanticscim.responses import PatchOperation as BasePatchOperation
 from pydanticscim.responses import PatchRequest as BasePatchRequest
 from pydanticscim.responses import SCIMError as BaseSCIMError
 from pydanticscim.service_provider import Bulk as BaseBulk
@@ -66,6 +67,12 @@ class PatchRequest(BasePatchRequest):
     """PatchRequest which correctly sets schemas"""
 
     schemas: tuple[str] = ("urn:ietf:params:scim:api:messages:2.0:PatchOp",)
+
+
+class PatchOperation(BasePatchOperation):
+    """PatchOperation with optional path"""
+
+    path: str | None
 
 
 class SCIMError(BaseSCIMError):
