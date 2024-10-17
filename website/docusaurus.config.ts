@@ -34,17 +34,12 @@ module.exports = async function (): Promise<Config> {
                     },
                     {
                         to: "docs/",
-                        label: "Docs",
+                        label: "Documentation",
                         position: "left",
                     },
                     {
                         to: "integrations/",
                         label: "Integrations",
-                        position: "left",
-                    },
-                    {
-                        to: "developer-docs/",
-                        label: "Developer",
                         position: "left",
                     },
                     {
@@ -97,6 +92,7 @@ module.exports = async function (): Promise<Config> {
                         sidebarPath: "./sidebars.js",
                         editUrl:
                             "https://github.com/goauthentik/authentik/edit/main/website/",
+                        docItemComponent: "@theme/ApiItem",
                         remarkPlugins: [
                             [
                                 remarkGithub,
@@ -132,26 +128,14 @@ module.exports = async function (): Promise<Config> {
                 },
             ],
             [
-                "@docusaurus/plugin-content-docs",
-                {
-                    id: "docsDevelopers",
-                    path: "developer-docs",
-                    routeBasePath: "developer-docs",
-                    sidebarPath: "./sidebarsDev.js",
-                    docItemComponent: "@theme/ApiItem",
-                    editUrl:
-                        "https://github.com/goauthentik/authentik/edit/main/website/",
-                },
-            ],
-            [
                 "docusaurus-plugin-openapi-docs",
                 {
                     id: "api",
-                    docsPluginId: "docsDevelopers",
+                    docsPluginId: "docs",
                     config: {
                         authentik: {
                             specPath: "static/schema.yaml",
-                            outputDir: "developer-docs/api/reference/",
+                            outputDir: "docs/developer-docs/api/reference/",
                             hideSendButton: true,
                             sidebarOptions: {
                                 groupPathsBy: "tag",

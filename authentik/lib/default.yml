@@ -1,4 +1,4 @@
-# update website/docs/installation/configuration.mdx
+# update website/docs/install-config/configuration/configuration.mdx
 # This is the default configuration file
 postgresql:
   host: localhost

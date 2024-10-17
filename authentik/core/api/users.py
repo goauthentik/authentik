@@ -679,7 +679,10 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             LOGGER.debug("User attempted to impersonate", user=request.user)
             return Response(status=401)
         user_to_be = self.get_object()
-        if not request.user.has_perm("impersonate", user_to_be):
+        # Check both object-level perms and global perms
+        if not request.user.has_perm(
+            "authentik_core.impersonate", user_to_be
+        ) and not request.user.has_perm("authentik_core.impersonate"):
             LOGGER.debug("User attempted to impersonate without permissions", user=request.user)
             return Response(status=401)
         if user_to_be.pk == self.request.user.pk:

@@ -100,7 +100,8 @@ export class UserDeviceTable extends Table<Device> {
     row(item: Device): TemplateResult[] {
         return [
             html`${item.name}`,
-            html`${deviceTypeName(item)}`,
+            html`${deviceTypeName(item)}
+            ${item.extraDescription ? ` - ${item.extraDescription}` : ""}`,
             html`${item.confirmed ? msg("Yes") : msg("No")}`,
             html`<div>${getRelativeTime(item.created)}</div>
                 <small>${item.created.toLocaleString()}</small>`,

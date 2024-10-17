@@ -1,0 +1,31 @@
+import { Canvas, Description, Meta, Story, Title } from "@storybook/blocks";
+
+import * as ApplicationEmptyStateStories from "./ApplicationEmptyState.stories";
+
+<Meta of={ApplicationEmptyStateStories} />
+
+# Application List Empty State Indicator
+
+A custom component for informing the user that they have no applications. If the user is
+an administrator (set via an attribute), a link to the "Create a new application" button
+will be provided
+
+## Usage
+
+```Typescript
+import "@goauthentik/user/LibraryPage/ApplicationEmptyState.js";
+```
+
+```html
+<ak-library-application-empty-list></ak-library-application-empty-list>
+```
+
+## Demo
+
+### What an ordinary user sees
+
+<Story of={ApplicationEmptyStateStories.OrdinaryUser} />
+
+### What an Admin sees
+
+<Story of={ApplicationEmptyStateStories.AdminUser} />

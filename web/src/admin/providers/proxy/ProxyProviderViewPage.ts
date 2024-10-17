@@ -6,14 +6,14 @@ import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { convertToSlug } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/components/events/ObjectChangelog";
-import MDCaddyStandalone from "@goauthentik/docs/providers/proxy/_caddy_standalone.md";
-import MDNginxIngress from "@goauthentik/docs/providers/proxy/_nginx_ingress.md";
-import MDNginxPM from "@goauthentik/docs/providers/proxy/_nginx_proxy_manager.md";
-import MDNginxStandalone from "@goauthentik/docs/providers/proxy/_nginx_standalone.md";
-import MDTraefikCompose from "@goauthentik/docs/providers/proxy/_traefik_compose.md";
-import MDTraefikIngress from "@goauthentik/docs/providers/proxy/_traefik_ingress.md";
-import MDTraefikStandalone from "@goauthentik/docs/providers/proxy/_traefik_standalone.md";
-import MDHeaderAuthentication from "@goauthentik/docs/providers/proxy/header_authentication.md";
+import MDCaddyStandalone from "@goauthentik/docs/add-secure-apps/providers/proxy/_caddy_standalone.md";
+import MDNginxIngress from "@goauthentik/docs/add-secure-apps/providers/proxy/_nginx_ingress.md";
+import MDNginxPM from "@goauthentik/docs/add-secure-apps/providers/proxy/_nginx_proxy_manager.md";
+import MDNginxStandalone from "@goauthentik/docs/add-secure-apps/providers/proxy/_nginx_standalone.md";
+import MDTraefikCompose from "@goauthentik/docs/add-secure-apps/providers/proxy/_traefik_compose.md";
+import MDTraefikIngress from "@goauthentik/docs/add-secure-apps/providers/proxy/_traefik_ingress.md";
+import MDTraefikStandalone from "@goauthentik/docs/add-secure-apps/providers/proxy/_traefik_standalone.md";
+import MDHeaderAuthentication from "@goauthentik/docs/add-secure-apps/providers/proxy/header_authentication.md";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/Markdown";
@@ -166,7 +166,7 @@ export class ProxyProviderViewPage extends AKElement {
                     return input;
                 }
                 const extHost = new URL(this.provider.externalHost);
-                // See website/docs/providers/proxy/forward_auth.mdx
+                // See website/docs/add-secure-apps/providers/proxy/forward_auth.mdx
                 if (this.provider?.mode === ProxyMode.ForwardSingle) {
                     return input
                         .replaceAll("authentik.company", window.location.hostname)

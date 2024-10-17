@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://goauthentik.io/blueprints/schema.json",
     "type": "object",
-    "title": "authentik 2024.8.2 Blueprint schema",
+    "title": "authentik 2024.8.3 Blueprint schema",
     "required": [
         "version",
         "entries"
@@ -5282,6 +5282,12 @@
                     "title": "Authorization flow",
                     "description": "Flow used when authorizing this provider."
                 },
+                "invalidation_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Invalidation flow",
+                    "description": "Flow used ending the session from a provider."
+                },
                 "property_mappings": {
                     "type": "array",
                     "items": {
@@ -5452,6 +5458,12 @@
                     "title": "Authorization flow",
                     "description": "Flow used when authorizing this provider."
                 },
+                "invalidation_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Invalidation flow",
+                    "description": "Flow used ending the session from a provider."
+                },
                 "property_mappings": {
                     "type": "array",
                     "items": {
@@ -5593,6 +5605,12 @@
                     "title": "Authorization flow",
                     "description": "Flow used when authorizing this provider."
                 },
+                "invalidation_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Invalidation flow",
+                    "description": "Flow used ending the session from a provider."
+                },
                 "property_mappings": {
                     "type": "array",
                     "items": {
@@ -5728,6 +5746,12 @@
                     "title": "Authorization flow",
                     "description": "Flow used when authorizing this provider."
                 },
+                "invalidation_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Invalidation flow",
+                    "description": "Flow used ending the session from a provider."
+                },
                 "property_mappings": {
                     "type": "array",
                     "items": {
@@ -5852,6 +5876,12 @@
                     "format": "uuid",
                     "title": "Authorization flow",
                     "description": "Flow used when authorizing this provider."
+                },
+                "invalidation_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Invalidation flow",
+                    "description": "Flow used ending the session from a provider."
                 },
                 "property_mappings": {
                     "type": "array",
@@ -6090,6 +6120,10 @@
                     "minLength": 1,
                     "title": "Url",
                     "description": "Base URL to SCIM requests, usually ends in /v2"
+                },
+                "verify_certificates": {
+                    "type": "boolean",
+                    "title": "Verify certificates"
                 },
                 "token": {
                     "type": "string",
@@ -8061,7 +8095,7 @@
                     "enum": [
                         "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
                         "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
-                        "urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName",
+                        "urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName",
                         "urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName",
                         "urn:oasis:names:tc:SAML:2.0:nameid-format:transient"
                     ],
@@ -13271,6 +13305,12 @@
                     "format": "uuid",
                     "title": "Authorization flow",
                     "description": "Flow used when authorizing this provider."
+                },
+                "invalidation_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Invalidation flow",
+                    "description": "Flow used ending the session from a provider."
                 },
                 "property_mappings": {
                     "type": "array",

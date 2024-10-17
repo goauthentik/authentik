@@ -50,6 +50,7 @@ class AssertionProcessor:
 
     _issue_instant: str
     _assertion_id: str
+    _response_id: str
 
     _valid_not_before: str
     _session_not_on_or_after: str
@@ -62,6 +63,7 @@ class AssertionProcessor:
 
         self._issue_instant = get_time_string()
         self._assertion_id = get_random_id()
+        self._response_id = get_random_id()
 
         self._valid_not_before = get_time_string(
             timedelta_from_string(self.provider.assertion_valid_not_before)
@@ -130,7 +132,9 @@ class AssertionProcessor:
         """Generate AuthnStatement with AuthnContext and ContextClassRef Elements."""
         auth_n_statement = Element(f"{{{NS_SAML_ASSERTION}}}AuthnStatement")
         auth_n_statement.attrib["AuthnInstant"] = self._valid_not_before
-        auth_n_statement.attrib["SessionIndex"] = self._assertion_id
+        auth_n_statement.attrib["SessionIndex"] = sha256(
+            self.http_request.session.session_key.encode("ascii")
+        ).hexdigest()
         auth_n_statement.attrib["SessionNotOnOrAfter"] = self._session_not_on_or_after
 
         auth_n_context = SubElement(auth_n_statement, f"{{{NS_SAML_ASSERTION}}}AuthnContext")
@@ -285,7 +289,7 @@ class AssertionProcessor:
         response.attrib["Version"] = "2.0"
         response.attrib["IssueInstant"] = self._issue_instant
         response.attrib["Destination"] = self.provider.acs_url
-        response.attrib["ID"] = get_random_id()
+        response.attrib["ID"] = self._response_id
         if self.auth_n_request.id:
             response.attrib["InResponseTo"] = self.auth_n_request.id
 
@@ -308,7 +312,7 @@ class AssertionProcessor:
         ref = xmlsec.template.add_reference(
             signature_node,
             digest_algorithm_transform,
-            uri="#" + self._assertion_id,
+            uri="#" + element.attrib["ID"],
         )
         xmlsec.template.add_transform(ref, xmlsec.constants.TransformEnveloped)
         xmlsec.template.add_transform(ref, xmlsec.constants.TransformExclC14N)

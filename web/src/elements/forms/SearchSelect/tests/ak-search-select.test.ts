@@ -1,11 +1,12 @@
 /* eslint-env jest */
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "@goauthentik/elements/Base.js";
 import { bound } from "@goauthentik/elements/decorators/bound.js";
+import { render } from "@goauthentik/elements/tests/utils.js";
 import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
 import { $, browser, expect } from "@wdio/globals";
 import { slug } from "github-slugger";
 
-import { html, render } from "lit";
+import { html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { property, query } from "lit/decorators.js";
 
@@ -97,18 +98,19 @@ describe("Search select: event driven startup", () => {
             mock?.dispatchEvent(new Event("resolve"));
         });
         expect(await $(">>>ak-search-select-loading-indicator")).not.toBeDisplayed();
-        select = await AkSearchSelectViewDriver.build(
-            await $(">>>ak-search-select-view").getElement(),
-        );
+        // @ts-expect-error "Another ChainablePromise mistake"
+        select = await AkSearchSelectViewDriver.build(await $(">>>ak-search-select-view"));
         expect(await select).toBeExisting();
     });
 
     afterEach(async () => {
-        await document.body.querySelector("ak-mock-search-group")?.remove();
-        // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-        if (document.body["_$litPart$"]) {
+        await browser.execute(() => {
+            document.body.querySelector("ak-mock-search-group")?.remove();
             // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-            delete document.body["_$litPart$"];
-        }
+            if (document.body["_$litPart$"]) {
+                // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
+                delete document.body["_$litPart$"];
+            }
+        });
     });
 });

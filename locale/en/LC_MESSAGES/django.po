@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-08 00:09+0000\n"
+"POT-Creation-Date: 2024-10-15 00:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -36,8 +36,7 @@ msgid "Blueprint file does not exist"
 msgstr ""
 
 #: authentik/blueprints/api.py
-#, python-brace-format
-msgid "Failed to validate blueprint: {logs}"
+msgid "Failed to validate blueprint"
 msgstr ""
 
 #: authentik/blueprints/api.py
@@ -184,6 +183,10 @@ msgid "Flow used when authorizing this provider."
 msgstr ""
 
 #: authentik/core/models.py
+msgid "Flow used ending the session from a provider."
+msgstr ""
+
+#: authentik/core/models.py
 msgid ""
 "Accessed from applications; optional backchannel providers for protocols "
 "like LDAP and SCIM."
@@ -326,47 +329,6 @@ msgstr ""
 
 #: authentik/core/sources/flow_manager.py
 msgid "Source is not configured for enrollment."
-msgstr ""
-
-#: authentik/core/templates/if/end_session.html
-msgid "End session"
-msgstr ""
-
-#: authentik/core/templates/if/end_session.html
-#, python-format
-msgid ""
-"\n"
-"You've logged out of %(application)s.\n"
-msgstr ""
-
-#: authentik/core/templates/if/end_session.html
-#, python-format
-msgid ""
-"\n"
-"            You've logged out of %(application)s. You can go back to the "
-"overview to launch another application, or log out of your "
-"%(branding_title)s account.\n"
-"        "
-msgstr ""
-
-#: authentik/core/templates/if/end_session.html
-msgid "Go back to overview"
-msgstr ""
-
-#: authentik/core/templates/if/end_session.html
-#, python-format
-msgid ""
-"\n"
-"            Log out of %(branding_title)s\n"
-"        "
-msgstr ""
-
-#: authentik/core/templates/if/end_session.html
-#, python-format
-msgid ""
-"\n"
-"            Log back into %(application)s\n"
-"        "
 msgstr ""
 
 #: authentik/core/templates/if/error.html
@@ -1847,6 +1809,10 @@ msgstr ""
 
 #: authentik/recovery/views.py
 msgid "Used recovery-link to authenticate."
+msgstr ""
+
+#: authentik/sources/ldap/api.py
+msgid "Only a single LDAP Source with password synchronization is allowed"
 msgstr ""
 
 #: authentik/sources/ldap/models.py

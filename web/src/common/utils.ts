@@ -25,6 +25,12 @@ export function convertToSlug(text: string): string {
         .replace(/[^\w-]+/g, "");
 }
 
+export function isSlug(text: string): boolean {
+    const lowered = text.toLowerCase();
+    const forbidden = /([^\w-]|\s)/.test(lowered);
+    return lowered === text && !forbidden;
+}
+
 /**
  * Truncate a string based on maximum word count
  */

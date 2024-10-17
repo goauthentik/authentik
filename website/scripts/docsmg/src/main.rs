@@ -3,9 +3,11 @@ use std::{fs, path::PathBuf};
 use clap::{Parser, Subcommand};
 
 mod generate;
+mod links;
 mod migrate;
 mod migratefile;
 mod r#move;
+mod hackyfixes;
 
 #[derive(Parser)]
 struct Cli {

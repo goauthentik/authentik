@@ -19,7 +19,6 @@ class TestTransactionalApplicationsAPI(APITestCase):
         """Test transactional Application + provider creation"""
         self.client.force_login(self.user)
         uid = generate_id()
-        authorization_flow = create_test_flow()
         response = self.client.put(
             reverse("authentik_api:core-transactional-application"),
             data={
@@ -30,7 +29,8 @@ class TestTransactionalApplicationsAPI(APITestCase):
                 "provider_model": "authentik_providers_oauth2.oauth2provider",
                 "provider": {
                     "name": uid,
-                    "authorization_flow": str(authorization_flow.pk),
+                    "authorization_flow": str(create_test_flow().pk),
+                    "invalidation_flow": str(create_test_flow().pk),
                 },
             },
         )
@@ -56,10 +56,16 @@ class TestTransactionalApplicationsAPI(APITestCase):
                 "provider": {
                     "name": uid,
                     "authorization_flow": "",
+                    "invalidation_flow": "",
                 },
             },
         )
         self.assertJSONEqual(
             response.content.decode(),
-            {"provider": {"authorization_flow": ["This field may not be null."]}},
+            {
+                "provider": {
+                    "authorization_flow": ["This field may not be null."],
+                    "invalidation_flow": ["This field may not be null."],
+                }
+            },
         )
