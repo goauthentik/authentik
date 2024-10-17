@@ -242,7 +242,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                 users_to_remove.append(user.value)
         # Check users that should be in the group and add them
         for user in users_should:
-            if len([x.value == user for x in current_group.members]) < 1:
+            if len([x for x in current_group.members if x.value == user]) < 1:
                 users_to_add.append(user)
         return self._patch_chunked(
             scim_group.scim_id,
