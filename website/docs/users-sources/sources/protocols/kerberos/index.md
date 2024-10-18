@@ -30,7 +30,7 @@ In the authentik Admin interface, under **Directory** -> **Federation and Social
 -   Realm: `REALM.COMPANY`
 -   Kerberos 5 configuration: If you need to override the default Kerberos configuration, you can do it here. See [man krb5.conf(5)](https://web.mit.edu/kerberos/krb5-latest/doc/admin/conf_files/krb5_conf.html) for the expected format.
 -   User matching mode: define how Kerberos users get matched to authentik users.
--   Group matching mode: how Kerberos groups (specified via property mappings) get matched to authentik groups.
+-   Group matching mode: define how Kerberos groups (specified via property mappings) get matched to authentik groups.
 -   User property mappings and group property mappings: see [Source property mappings](../../property-mappings/index.md) and the section below for details.
 
 ## Password backend
