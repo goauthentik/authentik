@@ -155,7 +155,7 @@ class TestIdentificationStage(FlowTestCase):
         self.stage.captcha_stage = captcha_stage
         self.stage.save()
 
-        form_data = {"uid_field": self.user.email, "token": "PASSED"}
+        form_data = {"uid_field": self.user.email, "captcha_token": "PASSED"}
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         response = self.client.post(url, form_data)
         self.assertEqual(response.status_code, 200)
@@ -183,7 +183,7 @@ class TestIdentificationStage(FlowTestCase):
 
         form_data = {
             "uid_field": self.user.email,
-            "token": "FAILED",
+            "captcha_token": "FAILED",
         }
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         response = self.client.post(url, form_data)

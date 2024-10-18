@@ -48,7 +48,7 @@ export class IdentificationStage extends BaseStage<
     form?: HTMLFormElement;
 
     @state()
-    token = "";
+    captchaToken = "";
 
     static get styles(): CSSResult[] {
         return [
@@ -280,12 +280,12 @@ export class IdentificationStage extends BaseStage<
             ${this.renderNonFieldErrors()}
             ${this.challenge.captchaStage
                 ? html`
-                      <input name="token" type="hidden" .value="${this.token}" />
+                      <input name="captchaToken" type="hidden" .value="${this.captchaToken}" />
                       <ak-stage-captcha
                           embedded
                           .challenge=${this.challenge.captchaStage}
                           .onTokenChange=${(token: string) => {
-                              this.token = token;
+                              this.captchaToken = token;
                           }}
                       ></ak-stage-captcha>
                   `

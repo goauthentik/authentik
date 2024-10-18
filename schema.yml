@@ -40603,7 +40603,7 @@ components:
         password:
           type: string
           nullable: true
-        token:
+        captcha_token:
           type: string
           nullable: true
       required:

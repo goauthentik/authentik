@@ -93,7 +93,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
 
     uid_field = CharField()
     password = CharField(required=False, allow_blank=True, allow_null=True)
-    token = CharField(required=False, allow_blank=True, allow_null=True)
+    captcha_token = CharField(required=False, allow_blank=True, allow_null=True)
     component = CharField(default="ak-stage-identification")
 
     pre_user: User | None = None
@@ -143,10 +143,10 @@ class IdentificationChallengeResponse(ChallengeResponse):
 
         # Captcha check
         if captcha_stage := current_stage.captcha_stage:
-            token = attrs.get("token", None)
-            if not token:
+            captcha_token = attrs.get("captcha_token", None)
+            if not captcha_token:
                 self.stage.logger.warning("Token not set for captcha attempt")
-            verify_captcha_token(captcha_stage, token, client_ip)
+            verify_captcha_token(captcha_stage, captcha_token, client_ip)
 
         # Password check
         if not current_stage.password_stage:
