@@ -2,19 +2,10 @@
 
 from json import loads
 
-from django.core.files.base import ContentFile
-from django.test.client import BOUNDARY, MULTIPART_CONTENT, encode_multipart
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
-from authentik.core.models import Application
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_user
-from authentik.lib.generators import generate_id
-from authentik.policies.dummy.models import DummyPolicy
-from authentik.policies.models import PolicyBinding
-from authentik.providers.oauth2.models import OAuth2Provider
-from authentik.providers.proxy.models import ProxyProvider
-from authentik.providers.saml.models import SAMLProvider
+from authentik.core.tests.utils import create_test_admin_user, create_test_user
 
 
 class TestApplicationsAPI(APITestCase):
