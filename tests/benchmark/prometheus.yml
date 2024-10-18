@@ -1,0 +1,13 @@
+---
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: benchmarks
+    prometheus: benchmarks
+    prometheus_replica: "0"
+
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets: ["localhost:9090"]
