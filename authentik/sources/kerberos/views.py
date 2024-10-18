@@ -142,12 +142,13 @@ class SPNEGOView(View):
                 self.set_server_ctx(state, server_ctx)
                 return self.challenge(request, out_token)
 
-            identifier = server_ctx.initiator_name.display_as(gssapi.raw.types.NameType.kerberos_principal)
+            name_to_str = lambda n: n.display_as(n.name_type)
+            identifier = name_to_str(server_ctx.initiator_name)
             context = {
                 "spnego_info": {
-                    "initiator_name": server_ctx.initiator_name,
-                    "target_name": server_ctx.target_name,
-                    "mech": server_ctx.mech,
+                    "initiator_name": name_to_str(server_ctx.initiator_name),
+                    "target_name": name_to_str(server_ctx.target_name),
+                    "mech": str(server_ctx.mech),
                     "actual_flags": server_ctx.actual_flags,
                 },
             }
