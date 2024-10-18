@@ -101,7 +101,8 @@ class Migration(migrations.Migration):
                 (
                     "spnego_server_name",
                     models.TextField(
-                        blank=True, help_text="Force the use of a specific server name for SPNEGO"
+                        blank=True,
+                        help_text="Force the use of a specific server name for SPNEGO. Must be in the form HTTP@hostname",
                     ),
                 ),
                 (

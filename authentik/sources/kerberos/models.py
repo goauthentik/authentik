@@ -75,7 +75,7 @@ class KerberosSource(Source):
     )
 
     spnego_server_name = models.TextField(
-        help_text=_("Force the use of a specific server name for SPNEGO"),
+        help_text=_("Force the use of a specific server name for SPNEGO. Must be in the form HTTP@hostname"),
         blank=True,
     )
     spnego_keytab = models.TextField(

@@ -288,7 +288,9 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                         name="spnegoServerName"
                         label=${msg("SPNEGO server name")}
                         value=${ifDefined(this.instance?.spnegoServerName)}
-                        help=${msg("Force the use of a specific server name for SPNEGO")}
+                        help=${msg(
+                            "Force the use of a specific server name for SPNEGO. Must be in the form HTTP@domain",
+                        )}
                     ></ak-text-input>
                     <ak-form-element-horizontal
                         name="spnegoKeytab"
