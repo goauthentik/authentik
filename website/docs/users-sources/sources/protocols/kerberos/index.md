@@ -117,7 +117,7 @@ Kerberos property mappings are used when you define a Kerberos source. These map
 -   authentik default Kerberos User Mapping: Multipart principals as service accounts
     Multipart principals (for example: `HTTP/authentik.company`) have their user type set to service account.
 
-These are configured with the most common Kerberos setups.
+These property mappings are configured with the most common Kerberos setups.
 
 ### Expression data
 
