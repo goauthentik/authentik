@@ -330,11 +330,13 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
         """superuser == staff user"""
         return self.is_superuser  # type: ignore
 
-    def set_password(self, raw_password, signal=True):
+    def set_password(self, raw_password, signal=True, sender=None):
         if self.pk and signal:
             from authentik.core.signals import password_changed
 
-            password_changed.send(sender=self, user=self, password=raw_password)
+            if not sender:
+                sender = self
+            password_changed.send(sender=sender, user=self, password=raw_password)
         self.password_change_date = now()
         return super().set_password(raw_password)
 

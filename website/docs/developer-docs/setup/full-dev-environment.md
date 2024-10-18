@@ -23,7 +23,7 @@ If you use locally installed databases, the PostgreSQL credentials given to auth
 ## Backend Setup
 
 :::info
-Depending on your platform, some native dependencies might be required. On macOS, run `brew install libxmlsec1 libpq`, and for the CLI tools `brew install postgresql redis node@20`
+Depending on your platform, some native dependencies might be required. On macOS, run `brew install libxmlsec1 libpq krb5`, and for the CLI tools `brew install postgresql redis node@20`.
 :::
 
 1. Create an isolated Python environment. To create the environment and install dependencies, run the following commands in the same directory as your local authentik git repository:
