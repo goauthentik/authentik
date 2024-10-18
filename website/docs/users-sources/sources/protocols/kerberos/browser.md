@@ -1,5 +1,5 @@
 ---
-title: SPNEGO browser configuration
+title: Browser configuration for SPNEGO
 ---
 
 You might need to configure your web browser to allow SPNEGO. Following are the instructions for major browsers.
