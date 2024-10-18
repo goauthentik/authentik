@@ -16,6 +16,7 @@ import { themeImage } from "@goauthentik/elements/utils/images";
 import "@goauthentik/flow/sources/apple/AppleLoginInit";
 import "@goauthentik/flow/sources/plex/PlexLoginInit";
 import "@goauthentik/flow/stages/FlowErrorStage";
+import "@goauthentik/flow/stages/FlowFrameStage";
 import "@goauthentik/flow/stages/RedirectStage";
 import { StageHost, SubmitOptions } from "@goauthentik/flow/stages/base";
 
@@ -169,6 +170,19 @@ export class FlowExecutor extends Interface implements StageHost {
         }
         this.addEventListener(EVENT_FLOW_INSPECTOR_TOGGLE, () => {
             this.inspectorOpen = !this.inspectorOpen;
+        });
+        window.addEventListener("message", (event) => {
+            const msg: {
+                source?: string;
+                context?: string;
+                message: string;
+            } = event.data;
+            if (msg.source !== "goauthentik.io" || msg.context !== "flow-executor") {
+                return;
+            }
+            if (msg.message === "submit") {
+                this.submit({} as FlowChallengeResponseRequest);
+            }
         });
     }
 
@@ -429,6 +443,11 @@ export class FlowExecutor extends Interface implements StageHost {
                 </ak-stage-redirect>`;
             case "xak-flow-shell":
                 return html`${unsafeHTML((this.challenge as ShellChallenge).body)}`;
+            case "xak-flow-frame":
+                return html`<xak-flow-frame
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></xak-flow-frame>`;
             default:
                 return html`Invalid native challenge element`;
         }
