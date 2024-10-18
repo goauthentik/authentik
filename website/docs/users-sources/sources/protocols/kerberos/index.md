@@ -13,7 +13,7 @@ The following placeholders will be used:
 
 Examples are shown for an MIT Krb5 KDC system; you might need to adapt them for you Kerberos installation.
 
-There are 3 ways to use the Kerberos source:
+There are three ways to use the Kerberos source:
 
 -   As a password backend, where users can log in to authentik with their Kerberos password.
 -   As a directory source, where users are synced from the KDC.
