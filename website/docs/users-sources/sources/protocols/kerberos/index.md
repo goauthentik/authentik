@@ -87,7 +87,7 @@ You might need to configure your web browser to allow SPNEGO. Check out [our doc
 
 ### Custom server name
 
-If your authentik instance is accessed from multiple domains, you may want to force the use of a specific server name. You can do so with this option. It must be in the form of `HTTP@authentik.company`.
+If your authentik instance is accessed from multiple domains, you might want to force the use of a specific server name. You can do so with the **Custom server name** option. The value must be in the form of `HTTP@authentik.company`.
 
 If not specified, this defaults to trying out all entries in the keytab/credentials cache until a valid server name is found.
 
