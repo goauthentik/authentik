@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://goauthentik.io/blueprints/schema.json",
     "type": "object",
-    "title": "authentik 2024.8.2 Blueprint schema",
+    "title": "authentik 2024.8.3 Blueprint schema",
     "required": [
         "version",
         "entries"
@@ -5117,6 +5117,12 @@
                     "title": "Authorization flow",
                     "description": "Flow used when authorizing this provider."
                 },
+                "invalidation_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Invalidation flow",
+                    "description": "Flow used ending the session from a provider."
+                },
                 "property_mappings": {
                     "type": "array",
                     "items": {
@@ -5287,6 +5293,12 @@
                     "title": "Authorization flow",
                     "description": "Flow used when authorizing this provider."
                 },
+                "invalidation_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Invalidation flow",
+                    "description": "Flow used ending the session from a provider."
+                },
                 "property_mappings": {
                     "type": "array",
                     "items": {
@@ -5342,7 +5354,13 @@
                     "type": "string",
                     "format": "uuid",
                     "title": "Signing Key",
-                    "description": "Key used to sign the tokens. Only required when JWT Algorithm is set to RS256."
+                    "description": "Key used to sign the tokens."
+                },
+                "encryption_key": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Encryption Key",
+                    "description": "Key used to encrypt the tokens. When set, tokens will be encrypted and returned as JWEs."
                 },
                 "redirect_uris": {
                     "type": "string",
@@ -5427,6 +5445,12 @@
                     "format": "uuid",
                     "title": "Authorization flow",
                     "description": "Flow used when authorizing this provider."
+                },
+                "invalidation_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Invalidation flow",
+                    "description": "Flow used ending the session from a provider."
                 },
                 "property_mappings": {
                     "type": "array",
@@ -5563,6 +5587,12 @@
                     "title": "Authorization flow",
                     "description": "Flow used when authorizing this provider."
                 },
+                "invalidation_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Invalidation flow",
+                    "description": "Flow used ending the session from a provider."
+                },
                 "property_mappings": {
                     "type": "array",
                     "items": {
@@ -5687,6 +5717,12 @@
                     "format": "uuid",
                     "title": "Authorization flow",
                     "description": "Flow used when authorizing this provider."
+                },
+                "invalidation_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Invalidation flow",
+                    "description": "Flow used ending the session from a provider."
                 },
                 "property_mappings": {
                     "type": "array",
@@ -5925,6 +5961,10 @@
                     "minLength": 1,
                     "title": "Url",
                     "description": "Base URL to SCIM requests, usually ends in /v2"
+                },
+                "verify_certificates": {
+                    "type": "boolean",
+                    "title": "Verify certificates"
                 },
                 "token": {
                     "type": "string",
@@ -7567,7 +7607,7 @@
                     "enum": [
                         "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
                         "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
-                        "urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName",
+                        "urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName",
                         "urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName",
                         "urn:oasis:names:tc:SAML:2.0:nameid-format:transient"
                     ],
@@ -12760,6 +12800,12 @@
                     "format": "uuid",
                     "title": "Authorization flow",
                     "description": "Flow used when authorizing this provider."
+                },
+                "invalidation_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Invalidation flow",
+                    "description": "Flow used ending the session from a provider."
                 },
                 "property_mappings": {
                     "type": "array",

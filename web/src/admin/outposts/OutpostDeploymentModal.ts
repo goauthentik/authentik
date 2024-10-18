@@ -22,7 +22,9 @@ export class OutpostDeploymentModal extends ModalButton {
                 <p>
                     <a
                         target="_blank"
-                        href="${docLink("/docs/outposts?utm_source=authentik#deploy")}"
+                        href="${docLink(
+                            "/docs/add-secure-apps/outposts?utm_source=authentik#deploy",
+                        )}"
                         rel="noopener noreferrer"
                         >${msg("View deployment documentation")}</a
                     >
