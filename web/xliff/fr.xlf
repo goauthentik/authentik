@@ -8729,10 +8729,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Search returned no results.</source>
   <target>La recherche n'a pas retourné de résultat.</target>
 </trans-unit>
-<trans-unit id="s11ec812e25ceef8a">
-  <source>No messages found</source>
-  <target>Pas de message trouvé</target>
-</trans-unit>
 <trans-unit id="s23446284b56ca0cc">
   <source>Reputation score(s)</source>
   <target>Score(s) de réputation</target>
@@ -9087,9 +9083,43 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="sa38c5a2731be3a46">
   <source>authentik was unable to save this application:</source>
+  <target>authentik n'a pas pu sauvegarder cette application :</target>
 </trans-unit>
 <trans-unit id="s25bacc19d98b444e">
   <source>Parent Group</source>
+  <target>Groupe parent</target>
+</trans-unit>
+<trans-unit id="s0159c800f16ee1a5">
+  <source>Flow used when logging out of this provider.</source>
+  <target>Flux utilisé lors de la déconnexion de ce fournisseur.</target>
+</trans-unit>
+<trans-unit id="s821d70ef9496e6f7">
+  <source>Unbind flow</source>
+  <target>Flux de déconnexion</target>
+</trans-unit>
+<trans-unit id="s6773ec2a233bbf41">
+  <source>Flow used for unbinding users.</source>
+  <target>Flux utilisé pour déconnecter les utilisateurs.</target>
+</trans-unit>
+<trans-unit id="s99060120f626df5b">
+  <source>Verify SCIM server's certificates</source>
+  <target>Vérifier les certificats du serveur SCIM</target>
+</trans-unit>
+<trans-unit id="sac88482c48453fc8">
+  <source>You've logged out of <x id="0" equiv-text="${this.challenge.applicationName}"/>. You can go back to the overview to launch another application, or log out of your authentik account.</source>
+  <target>Vous vous êtes déconnecté de <x id="0" equiv-text="${this.challenge.applicationName}"/>. Vous pouvez retourner à la vue d'ensemble pour lancer une autre application, ou vous déconnecter de votre compte authentik.</target>
+</trans-unit>
+<trans-unit id="s3108167b562674e2">
+  <source>Go back to overview</source>
+  <target>Retourner à la vue d'ensemble</target>
+</trans-unit>
+<trans-unit id="sdb749e793de55478">
+  <source>Log out of <x id="0" equiv-text="${this.challenge.brandName}"/></source>
+  <target>Se déconnecter de <x id="0" equiv-text="${this.challenge.brandName}"/></target>
+</trans-unit>
+<trans-unit id="s521681ed1d5ff814">
+  <source>Log back into <x id="0" equiv-text="${this.challenge.applicationName}"/></source>
+  <target>Se reconnecter à <x id="0" equiv-text="${this.challenge.applicationName}"/></target>
 </trans-unit>
     </body>
   </file>

@@ -1,13 +1,5 @@
-const docsSidebar = require("./sidebars.js");
-const generateVersionDropdown =
-    require("./src/utils.js").generateVersionDropdown;
-
 module.exports = {
     integrations: [
-        {
-            type: "html",
-            value: generateVersionDropdown(docsSidebar),
-        },
         {
             type: "doc",
             id: "index",
@@ -165,9 +157,10 @@ module.exports = {
                     label: "Version Control Systems",
                     items: [
                         "services/gitea/index",
-                        "services/github-enterprise-cloud/index",
-                        "services/github-enterprise-server/index",
                         "services/github-organization/index",
+                        "services/github-enterprise-cloud/index",
+                        "services/github-enterprise-emu/index",
+                        "services/github-enterprise-server/index",
                         "services/gitlab/index",
                     ],
                 },

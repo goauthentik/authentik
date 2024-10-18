@@ -22,7 +22,7 @@ def create_admin_group(user: User) -> Group:
     return group
 
 
-def create_recovery_token(user: User, expiry: datetime, generated_from: str) -> (Token, str):
+def create_recovery_token(user: User, expiry: datetime, generated_from: str) -> tuple[Token, str]:
     """Create recovery token and associated link"""
     _now = now()
     token = Token.objects.create(

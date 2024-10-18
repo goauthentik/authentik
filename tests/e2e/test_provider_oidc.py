@@ -3,8 +3,6 @@
 from json import loads
 from time import sleep
 
-from docker import DockerClient, from_env
-from docker.models.containers import Container
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
@@ -34,13 +32,11 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         self.application_slug = generate_id()
         super().setUp()
 
-    def setup_client(self) -> Container:
+    def setup_client(self):
         """Setup client oidc-test-client container which we test OIDC against"""
         sleep(1)
-        client: DockerClient = from_env()
-        container = client.containers.run(
+        self.run_container(
             image="ghcr.io/beryju/oidc-test-client:2.1",
-            detach=True,
             ports={
                 "9009": "9009",
             },
@@ -50,8 +46,6 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
                 "OIDC_PROVIDER": f"{self.live_server_url}/application/o/{self.application_slug}/",
             },
         )
-        self.wait_for_container(container)
-        return container
 
     @retry()
     @apply_blueprint(
@@ -91,7 +85,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
             slug=self.application_slug,
             provider=provider,
         )
-        self.container = self.setup_client()
+        self.setup_client()
 
         self.driver.get("http://localhost:9009")
         sleep(2)
@@ -140,7 +134,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
             slug=self.application_slug,
             provider=provider,
         )
-        self.container = self.setup_client()
+        self.setup_client()
 
         self.driver.get("http://localhost:9009")
         self.login()
@@ -210,7 +204,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
             slug=self.application_slug,
             provider=provider,
         )
-        self.container = self.setup_client()
+        self.setup_client()
 
         self.driver.get("http://localhost:9009")
         self.login()
@@ -287,7 +281,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         )
         PolicyBinding.objects.create(target=app, policy=negative_policy, order=0)
 
-        self.container = self.setup_client()
+        self.setup_client()
         self.driver.get("http://localhost:9009")
         self.login()
         self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "header > h1")))

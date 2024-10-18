@@ -1,8 +1,9 @@
+import { render } from "@goauthentik/elements/tests/utils.js";
 import { $, browser } from "@wdio/globals";
 import { expect } from "expect-webdriverio";
 import { slug } from "github-slugger";
 
-import { html, render } from "lit";
+import { html } from "lit";
 
 import "../ak-select-table.js";
 import { nutritionDbUSDA as unsortedNutritionDbUSDA } from "../stories/sample_nutrition_db.js";

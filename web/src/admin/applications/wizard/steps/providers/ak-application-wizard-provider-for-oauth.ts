@@ -77,22 +77,6 @@ export class ApplicationWizardOauth2ProviderForm extends ApplicationWizardProvid
                 ></ak-text-input>
 
                 <ak-form-element-horizontal
-                    name="authenticationFlow"
-                    label=${msg("Authentication flow")}
-                    .errorMessages=${this.errorMessages("authenticationFlow")}
-                >
-                    <ak-flow-search
-                        flowType=${FlowsInstancesListDesignationEnum.Authentication}
-                        .currentFlow=${provider.authenticationFlow}
-                        required
-                    ></ak-flow-search>
-                    <p class="pf-c-form__helper-text">
-                        ${msg(
-                            "Flow used when a user access this provider and is not authenticated.",
-                        )}
-                    </p>
-                </ak-form-element-horizontal>
-                <ak-form-element-horizontal
                     name="authorizationFlow"
                     label=${msg("Authorization flow")}
                     .errorMessages=${this.errorMessages("authorizationFlow")}
@@ -105,6 +89,21 @@ export class ApplicationWizardOauth2ProviderForm extends ApplicationWizardProvid
                     ></ak-flow-search>
                     <p class="pf-c-form__helper-text">
                         ${msg("Flow used when authorizing this provider.")}
+                    </p>
+                </ak-form-element-horizontal>
+                <ak-form-element-horizontal
+                    name="invalidationFlow"
+                    label=${msg("Invalidation flow")}
+                    .errorMessages=${errors?.invalidationFlow ?? []}
+                    ?required=${true}
+                >
+                    <ak-flow-search
+                        flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                        .currentFlow=${provider?.invalidationFlow}
+                        required
+                    ></ak-flow-search>
+                    <p class="pf-c-form__helper-text">
+                        ${msg("Flow used when logging out of this provider.")}
                     </p>
                 </ak-form-element-horizontal>
 

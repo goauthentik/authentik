@@ -391,13 +391,22 @@ class Provider(SerializerModel):
         ),
         related_name="provider_authentication",
     )
-
     authorization_flow = models.ForeignKey(
         "authentik_flows.Flow",
+        # Set to cascade even though null is allowed, since most providers
+        # still require an authorization flow set
         on_delete=models.CASCADE,
         null=True,
         help_text=_("Flow used when authorizing this provider."),
         related_name="provider_authorization",
+    )
+    invalidation_flow = models.ForeignKey(
+        "authentik_flows.Flow",
+        on_delete=models.SET_DEFAULT,
+        default=None,
+        null=True,
+        help_text=_("Flow used ending the session from a provider."),
+        related_name="provider_invalidation",
     )
 
     property_mappings = models.ManyToManyField("PropertyMapping", default=None, blank=True)
