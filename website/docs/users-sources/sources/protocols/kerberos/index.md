@@ -43,7 +43,7 @@ Note that this only works on users that have been linked to this source, i.e. th
 
 The sync process uses the [Kerberos V5 administration system](https://web.mit.edu/kerberos/krb5-latest/doc/admin/database.html) to list users. Your KDC must support it to sync users with this source.
 
-You need to create a principal for authentik and a keytab:
+You need to create both a principal (a unique identity that represents a user or service in a Kerberos network) for authentik and a keytab file:
 
 ```bash
 $ kadmin
