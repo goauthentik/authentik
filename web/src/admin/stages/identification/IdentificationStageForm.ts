@@ -141,19 +141,13 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                                 ).stagesPasswordList(args);
                                 return stages.results;
                             }}
-                            .groupBy=${(items: Stage[]) => {
-                                return groupBy(items, (stage) => stage.verboseNamePlural);
-                            }}
-                            .renderElement=${(stage: Stage): string => {
-                                return stage.name;
-                            }}
-                            .value=${(stage: Stage | undefined): string | undefined => {
-                                return stage?.pk;
-                            }}
-                            .selected=${(stage: Stage): boolean => {
-                                return stage.pk === this.instance?.passwordStage;
-                            }}
-                            ?blankable=${true}
+                            .groupBy=${(items: Stage[]) =>
+                                groupBy(items, (stage) => stage.verboseNamePlural)}
+                            .renderElement=${(stage: Stage): string => stage.name}
+                            .value=${(stage: Stage | undefined): string | undefined => stage?.pk}
+                            .selected=${(stage: Stage): boolean =>
+                                stage.pk === this.instance?.passwordStage}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
@@ -176,19 +170,13 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                                 ).stagesCaptchaList(args);
                                 return stages.results;
                             }}
-                            .groupBy=${(items: Stage[]) => {
-                                return groupBy(items, (stage) => stage.verboseNamePlural);
-                            }}
-                            .renderElement=${(stage: Stage): string => {
-                                return stage.name;
-                            }}
-                            .value=${(stage: Stage | undefined): string | undefined => {
-                                return stage?.pk;
-                            }}
-                            .selected=${(stage: Stage): boolean => {
-                                return stage.pk === this.instance?.captchaStage;
-                            }}
-                            ?blankable=${true}
+                            .groupBy=${(items: Stage[]) =>
+                                groupBy(items, (stage) => stage.verboseNamePlural)}
+                            .renderElement=${(stage: Stage): string => stage.name}
+                            .value=${(stage: Stage | undefined): string | undefined => stage?.pk}
+                            .selected=${(stage: Stage): boolean =>
+                                stage.pk === this.instance?.captchaStage}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
