@@ -100,7 +100,7 @@ There are some extra settings you can configure:
 
 ## Kerberos source property mappings
 
-See the [overview](../../property-mappings/index.md) for information on how property mappings work.
+See the [overview](../../property-mappings/index.md) for information on how property mappings work with external sources.
 
 By default, authentik ships with [pre-configured mappings](#built-in-property-mappings) for the most common Kerberos setups. These mappings can be found on the Kerberos Source Configuration page in the Admin interface.
 
