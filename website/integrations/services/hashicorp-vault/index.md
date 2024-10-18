@@ -87,6 +87,7 @@ vault write auth/oidc/role/reader \
       user_claim="sub" \
       policies="reader"
 ```
+
 :::note
 If you intend to create [external groups](https://developer.hashicorp.com/vault/tutorials/auth-methods/oidc-auth#create-an-external-vault-group) in Vault to manage user access the OIDC role will need to specifically request a custom scope using the `oidc_scopes` option when creating the OIDC role.
 :::
