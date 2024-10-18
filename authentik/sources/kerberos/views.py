@@ -30,13 +30,14 @@ NEGOTIATE = "Negotiate"
 SPNEGO_STATE_CACHE_PREFIX = "goauthentik.io/sources/spnego"
 SPNEGO_STATE_CACHE_TIMEOUT = 60 * 5  # 5 minutes
 
-def add_negotiate_to_response(response: HttpResponse, token: str | bytes | None = None) -> HttpResponse:
+
+def add_negotiate_to_response(
+    response: HttpResponse, token: str | bytes | None = None
+) -> HttpResponse:
     if isinstance(token, str):
         token = token.encode()
     response[WWW_AUTHENTICATE] = (
-        NEGOTIATE
-        if token is None
-        else f"{NEGOTIATE} {b64encode(token).decode('ascii')}"
+        NEGOTIATE if token is None else f"{NEGOTIATE} {b64encode(token).decode('ascii')}"
     )
     return response
 
@@ -147,7 +148,9 @@ class SPNEGOView(View):
                 self.set_server_ctx(state, server_ctx)
                 return self.challenge(request, out_token)
 
-            name_to_str = lambda n: n.display_as(n.name_type)
+            def name_to_str(n: gssapi.names.Name) -> str:
+                return n.display_as(n.name_type)
+
             identifier = name_to_str(server_ctx.initiator_name)
             context = {
                 "spnego_info": {
