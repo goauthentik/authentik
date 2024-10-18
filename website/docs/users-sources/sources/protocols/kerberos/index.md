@@ -37,7 +37,7 @@ In the authentik Admin interface, under **Directory** -> **Federation and Social
 
 No extra configuration is required. Simply select the Kerberos backend in the password stage of your flow.
 
-This only works on users that have been linked to this source, i.e. they must have been created via sync or via SPNEGO.
+Note that this only works on users that have been linked to this source, i.e. they must have been created via sync or via SPNEGO.
 
 ## Sync
 
