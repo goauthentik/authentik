@@ -11,7 +11,7 @@ The following placeholders will be used:
 -   `REALM.COMPANY` is the Kerberos realm.
 -   `authentik.company` is the FQDN of the authentik install.
 
-Examples are shown for an MIT Krb5 KDC, you may need to adapt them for you Kerberos installation.
+Examples are shown for an MIT Krb5 KDC system; you might need to adapt them for you Kerberos installation.
 
 There are 3 ways to use the Kerberos source:
 
