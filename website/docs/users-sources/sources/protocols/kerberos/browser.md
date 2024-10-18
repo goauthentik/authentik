@@ -41,4 +41,4 @@ Open Internet Explorer, click **Tools** and then click **Internet Options**. You
 8. Click **Custom Level**
 9. Select **Automatic login only in Intranet zone**
 
-You can automate the deployment of this configuration using [Group policy](https://learn.microsoft.com/en-us/previous-versions/troubleshoot/browsers/administration/how-to-configure-group-policy-preference-settings).
+To automate the deployment of this configuration use a [Group policy](https://learn.microsoft.com/en-us/previous-versions/troubleshoot/browsers/administration/how-to-configure-group-policy-preference-settings).
