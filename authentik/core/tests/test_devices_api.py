@@ -8,7 +8,7 @@ from rest_framework.test import APITestCase
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
 
 
-class TestApplicationsAPI(APITestCase):
+class TestDevicesAPI(APITestCase):
     """Test applications API"""
 
     def setUp(self) -> None:
