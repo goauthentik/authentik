@@ -83,7 +83,7 @@ If you do not wish to use a keytab, you can also configure authentik to use an e
 
 You can also override the SPNEGO server name if needed.
 
-You may need to configure your web browser to allow SPNEGO. Check out [our documentation](./browser.md) on how to do so. You can now login to authentik using SPNEGO.
+You might need to configure your web browser to allow SPNEGO. Check out [our documentation](./browser.md) on how to do so. You can now login to authentik using SPNEGO.
 
 ### Custom server name
 
