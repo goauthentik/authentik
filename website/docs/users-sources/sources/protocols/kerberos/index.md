@@ -111,7 +111,7 @@ Kerberos property mappings are used when you define a Kerberos source. These map
 -   authentik default Kerberos User Mapping: Add realm as group
     The realm of the user will be added as a group for that user.
 -   authentik default Kerberos User Mapping: Ignore other realms
-    Other realms than the one configured on the source will be ignored, and not be allowed to log in.
+    Realms other than the one configured on the source are ignored, and log in is not allowed.
 -   authentik default Kerberos User Mapping: Ignore system principals
     System principals such as `K/M` or `kadmin/admin` are ignored.
 -   authentik default Kerberos User Mapping: Multipart principals as service accounts
