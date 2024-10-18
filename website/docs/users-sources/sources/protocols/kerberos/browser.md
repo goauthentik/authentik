@@ -9,7 +9,7 @@ You might need to configure your web browser to allow SPNEGO. Following are the 
 1.  In the address bar of Firefox, type `about:config` to display the list of current configuration options.
 2.  In the **Filter** field, type `negotiate` to restrict the list of options.
 3.  Double-click the `network.negotiate-auth.trusted-uris` entry to display the **Enter string value** dialog box.
-4.  Enter the name of the domain against which you want to authenticate, for example, `.example.com`.
+4.  Enter the name of the domain against which you want to authenticate. For example, `.example.com`.
 
 On Windows environments, you can automate the deployment of this configuration using [Group policy](https://support.mozilla.org/en-US/kb/customizing-firefox-using-group-policy-windows). On Linux or macOS systems, you can do so using [policies.json](https://support.mozilla.org/en-US/kb/customizing-firefox-using-policiesjson).
 
