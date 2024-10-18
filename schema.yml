@@ -40778,7 +40778,13 @@ components:
               $ref: '#/components/schemas/ErrorDetail'
         url:
           type: string
+        loading_overlay:
+          type: boolean
+          default: false
+        loading_text:
+          type: string
       required:
+      - loading_text
       - url
     FrameChallengeResponseRequest:
       type: object

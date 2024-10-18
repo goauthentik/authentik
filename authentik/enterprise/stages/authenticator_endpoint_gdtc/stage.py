@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 
 from authentik.flows.challenge import (
     Challenge,
@@ -22,6 +23,8 @@ class AuthenticatorEndpointStageView(ChallengeStageView):
                 "url": self.request.build_absolute_uri(
                     reverse("authentik_stages_authenticator_endpoint_gdtc:chrome")
                 ),
+                "loading_overlay": True,
+                "loading_text": _("Verifying your browser..."),
             }
         )
 

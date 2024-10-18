@@ -16,6 +16,7 @@ import { themeImage } from "@goauthentik/elements/utils/images";
 import "@goauthentik/flow/sources/apple/AppleLoginInit";
 import "@goauthentik/flow/sources/plex/PlexLoginInit";
 import "@goauthentik/flow/stages/FlowErrorStage";
+import "@goauthentik/flow/stages/FlowFrameStage";
 import "@goauthentik/flow/stages/RedirectStage";
 import { StageHost, SubmitOptions } from "@goauthentik/flow/stages/base";
 
@@ -42,7 +43,6 @@ import {
     FlowErrorChallenge,
     FlowLayoutEnum,
     FlowsApi,
-    FrameChallenge,
     ResponseError,
     ShellChallenge,
     UiThemeEnum,
@@ -444,7 +444,10 @@ export class FlowExecutor extends Interface implements StageHost {
             case "xak-flow-shell":
                 return html`${unsafeHTML((this.challenge as ShellChallenge).body)}`;
             case "xak-flow-frame":
-                return html`<iframe src=${(this.challenge as FrameChallenge).url}></iframe>`;
+                return html`<xak-flow-frame
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></xak-flow-frame>`;
             default:
                 return html`Invalid native challenge element`;
         }
