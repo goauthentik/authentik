@@ -34,7 +34,7 @@ Open Internet Explorer, click **Tools** and then click **Internet Options**. You
 2. Click **Local intranet**
 3. Click **Sites**
 4. Click **Advanced**
-5. Add your domain to the list
+5. Add your domain to the list.
 
 6. Click the **Security tab**
 7. Click **Local intranet**
