@@ -64,7 +64,7 @@ If you do not wish to use a keytab, you can also configure authentik to authenti
 
 ## SPNEGO
 
-You need to create a principal for authentik and a keytab:
+You need to create both a principal (a unique identity that represents a user or service in a Kerberos network) for authentik and a keytab file:
 
 ```bash
 $ kadmin
