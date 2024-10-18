@@ -6,7 +6,7 @@ import { BaseStage } from "@goauthentik/flow/stages/base";
 import type { TurnstileObject } from "turnstile-types";
 
 import { msg } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
+import { CSSResult, PropertyValues, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -147,7 +147,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         return true;
     }
 
-    renderBody(): TemplateResult {
+    renderBody() {
         if (this.error) {
             return html`<ak-empty-state icon="fa-times" header=${this.error}> </ak-empty-state>`;
         }
@@ -155,12 +155,12 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
             return html`${this.captchaContainer}`;
         }
         if (this.embedded) {
-            return html``;
+            return nothing;
         }
         return html`<ak-empty-state loading header=${msg("Verifying...")}></ak-empty-state>`;
     }
 
-    render(): TemplateResult {
+    render() {
         if (this.embedded) {
             return this.renderBody();
         }
