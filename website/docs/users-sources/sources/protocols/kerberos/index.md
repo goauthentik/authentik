@@ -17,7 +17,7 @@ There are three ways to use the Kerberos source:
 
 -   As a password backend, where users can log in to authentik with their Kerberos password.
 -   As a directory source, where users are synced from the KDC.
--   With SPNEGO, where users can log in to authentik with their browser and their Kerberos credentials.
+-   With SPNEGO, where users can log in to authentik with their [browser](./browser.md) and their Kerberos credentials.
 
 You can choose to use one or several of those methods.
 
