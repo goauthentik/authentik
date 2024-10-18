@@ -22,6 +22,7 @@ import { CaptchaChallenge, CaptchaChallengeResponseRequest } from "@goauthentik/
 interface TurnstileWindow extends Window {
     turnstile: TurnstileObject;
 }
+type TokenHandler = (token: string) => void;
 
 const captchaContainerID = "captcha-container";
 
@@ -49,10 +50,8 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
     embedded = false;
 
     @property()
-    onTokenChange: (token: string) => void = (token) => {
-        this.host?.submit({
-            token: token,
-        });
+    onTokenChange: TokenHandler = (_token: string) => {
+        throw new Error("Client failed to supply a handling function to CaptchaStage");
     };
 
     constructor() {
