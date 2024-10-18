@@ -96,7 +96,7 @@ If not specified, the server name defaults to trying out all entries in the keyt
 There are some extra settings you can configure:
 
 -   Update internal password on login: when a user logs in to authentik using the Kerberos source as a password backend, their internal authentik password will be updated to match the one from Kerberos.
--   Use password writeback: when a user changes their password in authentik, their Kerberos password will be updated to match the one from authentik. This is only available if synchronization is configured.
+-   Use password writeback: when a user changes their password in authentik, their Kerberos password is automatically updated to match the one from authentik. This is only available if synchronization is configured.
 
 ## Kerberos source property mappings
 
