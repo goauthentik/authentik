@@ -70,6 +70,7 @@ TENANT_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "authentik.admin",
+    "authentik.analytics",
     "authentik.api",
     "authentik.crypto",
     "authentik.flows",

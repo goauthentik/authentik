@@ -5,6 +5,8 @@ import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
+import { DataProvision, DualSelectPair } from "@goauthentik/elements/ak-dual-select/types";
 import { Form } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -19,7 +21,17 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFList from "@patternfly/patternfly/components/List/list.css";
 
-import { AdminApi, Settings, SettingsRequest } from "@goauthentik/api";
+import {
+    AdminApi,
+    AnalyticsApi,
+    AnalyticsDescription,
+    Settings,
+    SettingsRequest,
+} from "@goauthentik/api";
+
+function analyticsSourceToPair(analyticsSource: AnalyticsDescription): DualSelectPair {
+    return [analyticsSource.label, analyticsSource.desc];
+}
 
 @customElement("ak-admin-settings-form")
 export class AdminSettingsForm extends Form<SettingsRequest> {
@@ -211,6 +223,42 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 value="${first(this._settings?.defaultTokenLength, 60)}"
                 help=${msg("Default length of generated tokens")}
             ></ak-number-input>
+            <ak-form-group ?expanded=${false}>
+                <span slot="header"> ${msg("Analytics")} </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-switch-input
+                        name="analyticsEnabled"
+                        label=${msg("Enable analytics")}
+                        ?checked="${this._settings?.analyticsEnabled}"
+                        help=${msg("Enable sending analytics to the authentik team")}
+                    >
+                    </ak-switch-input>
+                    <ak-form-element-horizontal
+                        label=${msg("Analytics sources")}
+                        name="analyticsSources"
+                    >
+                        <ak-dual-select-provider
+                            .provider=${async (
+                                _page: number,
+                                _search?: string,
+                            ): Promise<DataProvision> => {
+                                return new AnalyticsApi(DEFAULT_CONFIG)
+                                    .analyticsDescriptionList()
+                                    .then((results) => {
+                                        return {
+                                            options: results.map(analyticsSourceToPair),
+                                        };
+                                    });
+                            }}
+                            .selected=${this._settings?.analyticsSourcesObj ?? []}
+                            available-label="${msg("Available sources")}"
+                            selected-label="${msg("Selected sources")}"
+                        >
+                        </ak-dual-select-provider>
+                        <p class="pf-c-form__helper-text">${msg("Choose what data to send")}</p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
         `;
     }
 }
