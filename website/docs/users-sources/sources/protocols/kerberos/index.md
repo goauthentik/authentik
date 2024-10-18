@@ -54,7 +54,7 @@ $ cat /tmp/authentik.keytab | base64
 $ rm /tmp/authentik.keytab
 ```
 
-In authentik, you need to configure these extra options:
+In authentik, configure these extra options:
 
 -   Sync users: enable it
 -   Sync principal: `authentik/admin@REALM.COMPANY`
