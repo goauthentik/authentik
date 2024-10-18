@@ -22,7 +22,7 @@ This section applies only for Chrome users on macOS and Linux machines. For Wind
 
 **Note**: if using Chromium, use `/etc/chromium/policies/managed/` instead of `/etc/opt/chrome/policies/managed/`.
 
-You can automate the deployment of this configuration using [Group policy](https://support.google.com/chrome/a/answer/187202).
+To automate the deployment of this configuration use a [Group policy](https://support.google.com/chrome/a/answer/187202).
 
 ## Windows / Internet Explorer
 
