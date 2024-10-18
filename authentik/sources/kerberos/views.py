@@ -30,13 +30,23 @@ NEGOTIATE = "Negotiate"
 SPNEGO_STATE_CACHE_PREFIX = "goauthentik.io/sources/spnego"
 SPNEGO_STATE_CACHE_TIMEOUT = 60 * 5  # 5 minutes
 
+def add_negotiate_to_response(response: HttpResponse, token: str | bytes | None = None) -> HttpResponse:
+    if isinstance(token, str):
+        token = token.encode()
+    response[WWW_AUTHENTICATE] = (
+        NEGOTIATE
+        if token is None
+        else f"{NEGOTIATE} {b64encode(token).decode('ascii')}"
+    )
+    return response
+
 
 class SPNEGOView(View):
     """SPNEGO login"""
 
     source: KerberosSource
 
-    def challenge(self, request, token: str | None = None) -> HttpResponse:
+    def challenge(self, request, token: str | bytes | None = None) -> HttpResponse:
         """Get SNPEGO challenge response"""
         response = render(
             request,
@@ -53,12 +63,7 @@ class SPNEGOView(View):
             },
             status=401,
         )
-        response[WWW_AUTHENTICATE] = (
-            NEGOTIATE
-            if token is None
-            else f"{NEGOTIATE} {b64encode(token.encode()).decode('ascii')}"
-        )
-        return response
+        return add_negotiate_to_response(response, token)
 
     def get_authstr(self, request) -> str | None:
         """Get SPNEGO authentication string from headers"""
@@ -153,7 +158,7 @@ class SPNEGOView(View):
                 },
             }
 
-        return SPNEGOSourceFlowManager(
+        response = SPNEGOSourceFlowManager(
             source=self.source,
             request=request,
             identifier=identifier,
@@ -163,6 +168,7 @@ class SPNEGOView(View):
             },
             policy_context=context,
         ).get_flow()
+        return add_negotiate_to_response(response, out_token)
 
 
 class SPNEGOSourceFlowManager(SourceFlowManager):
