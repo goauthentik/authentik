@@ -56,6 +56,11 @@ describe("Configure Applications with the Application Wizard", () => {
         await (await ApplicationWizardView.nextButton()).click();
         await ApplicationWizardView.pause();
 
+        await (await ApplicationWizardView.nextButton()).click();
+        await ApplicationWizardView.pause();
+
+        await (await ApplicationWizardView.submitPage()).waitForDisplayed();
+        await (await ApplicationWizardView.nextButton()).click();
         await expect(await getCommitMessage()).toHaveText(SUCCESS_MESSAGE);
     });
 
@@ -73,6 +78,11 @@ describe("Configure Applications with the Application Wizard", () => {
         await (await ApplicationWizardView.nextButton()).click();
         await ApplicationWizardView.pause();
 
+        await (await ApplicationWizardView.nextButton()).click();
+        await ApplicationWizardView.pause();
+
+        await (await ApplicationWizardView.submitPage()).waitForDisplayed();
+        await (await ApplicationWizardView.nextButton()).click();
         await expect(await getCommitMessage()).toHaveText(SUCCESS_MESSAGE);
     });
 
@@ -91,6 +101,11 @@ describe("Configure Applications with the Application Wizard", () => {
         await (await ApplicationWizardView.nextButton()).click();
         await ApplicationWizardView.pause();
 
+        await (await ApplicationWizardView.nextButton()).click();
+        await ApplicationWizardView.pause();
+
+        await (await ApplicationWizardView.submitPage()).waitForDisplayed();
+        await (await ApplicationWizardView.nextButton()).click();
         await expect(await getCommitMessage()).toHaveText(SUCCESS_MESSAGE);
     });
 
@@ -109,6 +124,11 @@ describe("Configure Applications with the Application Wizard", () => {
         await (await ApplicationWizardView.nextButton()).click();
         await ApplicationWizardView.pause();
 
+        await (await ApplicationWizardView.nextButton()).click();
+        await ApplicationWizardView.pause();
+
+        await (await ApplicationWizardView.submitPage()).waitForDisplayed();
+        await (await ApplicationWizardView.nextButton()).click();
         await expect(await getCommitMessage()).toHaveText(SUCCESS_MESSAGE);
     });
 
@@ -126,6 +146,11 @@ describe("Configure Applications with the Application Wizard", () => {
         await (await ApplicationWizardView.nextButton()).click();
         await ApplicationWizardView.pause();
 
+        await (await ApplicationWizardView.nextButton()).click();
+        await ApplicationWizardView.pause();
+
+        await (await ApplicationWizardView.submitPage()).waitForDisplayed();
+        await (await ApplicationWizardView.nextButton()).click();
         await expect(await getCommitMessage()).toHaveText(SUCCESS_MESSAGE);
     });
 
@@ -149,6 +174,11 @@ describe("Configure Applications with the Application Wizard", () => {
         await (await ApplicationWizardView.nextButton()).click();
         await ApplicationWizardView.pause();
 
+        await (await ApplicationWizardView.nextButton()).click();
+        await ApplicationWizardView.pause();
+
+        await (await ApplicationWizardView.submitPage()).waitForDisplayed();
+        await (await ApplicationWizardView.nextButton()).click();
         await expect(await getCommitMessage()).toHaveText(SUCCESS_MESSAGE);
     });
 
@@ -169,6 +199,11 @@ describe("Configure Applications with the Application Wizard", () => {
         await (await ApplicationWizardView.nextButton()).click();
         await ApplicationWizardView.pause();
 
+        await (await ApplicationWizardView.nextButton()).click();
+        await ApplicationWizardView.pause();
+
+        await (await ApplicationWizardView.submitPage()).waitForDisplayed();
+        await (await ApplicationWizardView.nextButton()).click();
         await expect(await getCommitMessage()).toHaveText(SUCCESS_MESSAGE);
     });
 });

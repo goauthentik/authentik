@@ -1,9 +1,8 @@
-import { type WizardStep } from "@goauthentik/components/ak-wizard-main/types";
-
 import {
     type ApplicationRequest,
     type LDAPProviderRequest,
     type OAuth2ProviderRequest,
+    type PolicyBinding,
     type ProvidersSamlImportMetadataCreateRequest,
     type ProxyProviderRequest,
     type RACProviderRequest,
@@ -23,21 +22,35 @@ export type OneOfProvider =
     | Partial<OAuth2ProviderRequest>
     | Partial<LDAPProviderRequest>;
 
+export type ExtendedValidationError = ValidationError & {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    app?: any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    provider?: any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    detail?: any;
+};
+
+// We use the PolicyBinding instead of the PolicyBindingRequest here, because that gives us a slot
+// in which to preserve the retrieved policy, group, or user object from the SearchSelect used to
+// find it, which in turn allows us to create a user-friendly display of bindings on the "List of
+// configured bindings" page in the wizard. The PolicyBinding is converted into a
+// PolicyBindingRequest during the submission phase.
+
 export interface ApplicationWizardState {
     providerModel: string;
     app: Partial<ApplicationRequest>;
     provider: OneOfProvider;
-    errors: ValidationError;
+    errors: ExtendedValidationError;
+    bindings: PolicyBinding[];
+    currentBinding: number;
 }
 
-type StatusType = "invalid" | "valid" | "submitted" | "failed";
-
-export type ApplicationWizardStateUpdate = {
-    update?: ApplicationWizardState;
-    status?: StatusType;
-};
-
-export type ApplicationStep = WizardStep & {
-    id: string;
-    valid: boolean;
-};
+export interface ApplicationWizardStateUpdate {
+    providerModel?: string;
+    app?: Partial<ApplicationRequest>;
+    provider?: OneOfProvider;
+    errors?: ValidationError;
+    bindings?: PolicyBinding[];
+    currentBinding?: number;
+}

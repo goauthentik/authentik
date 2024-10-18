@@ -1,6 +1,7 @@
 {
     "extends": "./tsconfig.base.json",
     "compilerOptions": {
+        "types": ["@wdio/types", "grecaptcha", "node", "@wdio/mocha-framework", "expect-webdriverio"],
         "paths": {
             "@goauthentik/admin/*": ["./src/admin/*"],
             "@goauthentik/common/*": ["./src/common/*"],
@@ -13,5 +14,5 @@
             "@goauthentik/standalone/*": ["./src/standalone/*"],
             "@goauthentik/user/*": ["./src/user/*"]
         }
-    }
+    },
 }

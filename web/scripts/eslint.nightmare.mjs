@@ -9,6 +9,9 @@ const MAX_DEPTH = 4;
 const MAX_NESTED_CALLBACKS = 4;
 const MAX_PARAMS = 5;
 
+// Waiting for SonarJS to be compatible
+// const MAX_COGNITIVE_COMPLEXITY = 9;
+
 const rules = {
     "accessor-pairs": "error",
     "array-callback-return": "error",
@@ -126,6 +129,11 @@ const rules = {
 
     "no-unused-vars": "off",
     "no-console": ["error", { allow: ["debug", "warn", "error"] }],
+    // SonarJS is not yet compatible with ESLint 9.  Commenting these out
+    // until it is.
+    //    "sonarjs/cognitive-complexity": ["off", MAX_COGNITIVE_COMPLEXITY],
+    //    "sonarjs/no-duplicate-string": "off",
+    //    "sonarjs/no-nested-template-literals": "off",
     "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/no-unused-vars": [
         "error",
@@ -162,6 +170,7 @@ export default [
     wcconf.configs["flat/recommended"],
     litconf.configs["flat/recommended"],
     ...tseslint.configs.recommended,
+    //     sonar.configs.recommended,
     {
         languageOptions: {
             parser: tsparser,
