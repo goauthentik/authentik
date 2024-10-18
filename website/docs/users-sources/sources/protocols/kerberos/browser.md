@@ -2,7 +2,7 @@
 title: SPNEGO browser configuration
 ---
 
-You may need to configure your web browser to allow SPNEGO. Here are instructions for major browsers.
+You might need to configure your web browser to allow SPNEGO. Following are the instructions for major browsers.
 
 ## Firefox
 
