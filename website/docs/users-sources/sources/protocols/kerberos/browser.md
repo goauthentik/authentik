@@ -28,7 +28,7 @@ To automate the deployment of this configuration use a [Group policy](https://su
 
 Log into the Windows machine using an account of your Kerberos realm (or administrative domain).
 
-Open Internet Explorer, click **Tools** and then click **Internet Options**. You may also be able to find **Internet Options** using the system search.
+Open Internet Explorer, click **Tools** and then click **Internet Options**. You can also find **Internet Options** using the system search.
 
 1. Click the **Security** tab
 2. Click **Local intranet**
