@@ -15,7 +15,7 @@ On Windows environments, to automate the deployment of this configuration use a 
 
 ## Chrome
 
-This applies only for users on macOS and Linux machines. For Windows, checkout the instructions below.
+This section applies only for Chrome users on macOS and Linux machines. For Windows, see the instructions below.
 
 1. Make sure you have the necessary directory created by running: `mkdir -p /etc/opt/chrome/policies/managed/`
 2. Create a new `/etc/opt/chrome/policies/managed/mydomain.json` file with write privileges limited to the system administrator or root, and include the following line: `{ "AuthServerWhitelist": "*.example.com" }`.
