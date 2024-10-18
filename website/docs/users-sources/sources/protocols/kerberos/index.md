@@ -75,7 +75,7 @@ $ cat /tmp/authentik.keytab | base64
 $ rm /tmp/authentik.keytab
 ```
 
-In authentik, you need to configure these extra options:
+In authentik, configure these extra options:
 
 -   SPNEGO keytab: the base64-encoded keytab created above.
 
