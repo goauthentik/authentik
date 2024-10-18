@@ -308,6 +308,8 @@ export class FlowExecutor extends Interface implements StageHost {
                 return html`<ak-stage-captcha
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
+                    .onTokenChange=${(token: string) =>
+                        this.submit({ component: "ak-stage-captcha", token })}
                 ></ak-stage-captcha>`;
             case "ak-stage-consent":
                 await import("@goauthentik/flow/stages/consent/ConsentStage");

@@ -27,6 +27,43 @@ class CaptchaChallenge(WithUserInfoChallenge):
     component = CharField(default="ak-stage-captcha")
 
 
+def verify_captcha_token(stage: CaptchaStage, token: str, remote_ip: str):
+    """Validate captcha token"""
+    try:
+        response = get_http_session().post(
+            stage.api_url,
+            headers={
+                "Content-type": "application/x-www-form-urlencoded",
+            },
+            data={
+                "secret": stage.private_key,
+                "response": token,
+                "remoteip": remote_ip,
+            },
+        )
+        response.raise_for_status()
+        data = response.json()
+        if stage.error_on_invalid_score:
+            if not data.get("success", False):
+                raise ValidationError(
+                    _(
+                        "Failed to validate token: {error}".format(
+                            error=data.get("error-codes", _("Unknown error"))
+                        )
+                    )
+                )
+            if "score" in data:
+                score = float(data.get("score"))
+                if stage.score_max_threshold > -1 and score > stage.score_max_threshold:
+                    raise ValidationError(_("Invalid captcha response"))
+                if stage.score_min_threshold > -1 and score < stage.score_min_threshold:
+                    raise ValidationError(_("Invalid captcha response"))
+    except (RequestException, TypeError) as exc:
+        raise ValidationError(_("Failed to validate token")) from exc
+
+    return data
+
+
 class CaptchaChallengeResponse(ChallengeResponse):
     """Validate captcha token"""
 
@@ -36,38 +73,9 @@ class CaptchaChallengeResponse(ChallengeResponse):
     def validate_token(self, token: str) -> str:
         """Validate captcha token"""
         stage: CaptchaStage = self.stage.executor.current_stage
-        try:
-            response = get_http_session().post(
-                stage.api_url,
-                headers={
-                    "Content-type": "application/x-www-form-urlencoded",
-                },
-                data={
-                    "secret": stage.private_key,
-                    "response": token,
-                    "remoteip": ClientIPMiddleware.get_client_ip(self.stage.request),
-                },
-            )
-            response.raise_for_status()
-            data = response.json()
-            if stage.error_on_invalid_score:
-                if not data.get("success", False):
-                    raise ValidationError(
-                        _(
-                            "Failed to validate token: {error}".format(
-                                error=data.get("error-codes", _("Unknown error"))
-                            )
-                        )
-                    )
-                if "score" in data:
-                    score = float(data.get("score"))
-                    if stage.score_max_threshold > -1 and score > stage.score_max_threshold:
-                        raise ValidationError(_("Invalid captcha response"))
-                    if stage.score_min_threshold > -1 and score < stage.score_min_threshold:
-                        raise ValidationError(_("Invalid captcha response"))
-        except (RequestException, TypeError) as exc:
-            raise ValidationError(_("Failed to validate token")) from exc
-        return data
+        client_ip = ClientIPMiddleware.get_client_ip(self.stage.request)
+
+        return verify_captcha_token(stage, token, client_ip)
 
 
 class CaptchaStageView(ChallengeStageView):
