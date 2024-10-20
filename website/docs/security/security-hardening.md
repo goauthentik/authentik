@@ -23,6 +23,7 @@ Blueprints allow for templating and managing the authentik configuration as code
 To prevent any user from creating/editing blueprints, block API requests to this endpoint:
 
 -   `/api/v3/managed/blueprints*`
+
 With these restrictions in place, Blueprints can only be edited via [the file system](https://docs.goauthentik.io/docs/customize/blueprints/#storage---file).
 
 ### CAPTCHA Stage
