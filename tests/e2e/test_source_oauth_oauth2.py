@@ -13,7 +13,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import User
 from authentik.flows.models import Flow
-from authentik.lib.generators import generate_id, generate_key
+from authentik.lib.generators import generate_id
 from authentik.sources.oauth.models import OAuthSource
 from authentik.stages.identification.models import IdentificationStage
 from tests.e2e.utils import SeleniumTestCase, retry
@@ -23,7 +23,7 @@ class TestSourceOAuth2(SeleniumTestCase):
     """test OAuth Source flow"""
 
     def setUp(self):
-        self.client_secret = generate_key()
+        self.client_secret = generate_id()
         self.slug = generate_id()
         super().setUp()
         self.run_container(
