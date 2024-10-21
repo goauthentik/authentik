@@ -6,12 +6,12 @@
 # Translators:
 # Bastien Germond, 2022
 # Phorcys, 2022
-# Titouan Petit, 2023
 # Kyllian Delaye-Maillot, 2023
 # Manuel Viens, 2023
 # Mordecai, 2023
 # Charles Leclerc, 2024
 # nerdinator <florian.dupret@gmail.com>, 2024
+# Titouan Petit, 2024
 # Marc Schmitt, 2024
 # 
 #, fuzzy
@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-15 00:08+0000\n"
+"POT-Creation-Date: 2024-10-18 00:09+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Marc Schmitt, 2024\n"
 "Language-Team: French (https://app.transifex.com/authentik/teams/119923/fr/)\n"
@@ -28,6 +28,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
 "Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+
+#: authentik/admin/models.py
+msgid "Version history"
+msgstr "Historique des versions"
 
 #: authentik/admin/tasks.py
 #, python-brace-format
@@ -1528,12 +1532,20 @@ msgid "Signing Key"
 msgstr "Clé de signature"
 
 #: authentik/providers/oauth2/models.py
+msgid "Key used to sign the tokens."
+msgstr "Clé utilisée pour signer les jetons."
+
+#: authentik/providers/oauth2/models.py
+msgid "Encryption Key"
+msgstr "Clé de chiffrement"
+
+#: authentik/providers/oauth2/models.py
 msgid ""
-"Key used to sign the tokens. Only required when JWT Algorithm is set to "
-"RS256."
+"Key used to encrypt the tokens. When set, tokens will be encrypted and "
+"returned as JWEs."
 msgstr ""
-"Clé utilisée pour signer les jetons. Nécessaire uniquement lorsque "
-"l'algorithme JWT est réglé sur RS256."
+"Clé utilisée pour chiffrer les jetons. Si sélectionné, les jetons seront "
+"chiffrés et retournés sous forme de JWE."
 
 #: authentik/providers/oauth2/models.py
 msgid ""
