@@ -41,7 +41,9 @@ class SessionMiddleware(UpstreamSessionMiddleware):
             # Since go does not consider localhost with http a secure origin
             # we can't set the secure flag.
             user_agent = request.META.get("HTTP_USER_AGENT", "")
-            if user_agent.startswith("goauthentik.io/outpost/") or "safari" in user_agent.lower():
+            if user_agent.startswith("goauthentik.io/outpost/") or (
+                "safari" in user_agent.lower() and "chrome" not in user_agent.lower()
+            ):
                 return False
             return True
         return False
