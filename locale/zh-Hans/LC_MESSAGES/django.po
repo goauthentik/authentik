@@ -6,8 +6,8 @@
 # Translators:
 # Chen Zhikai, 2022
 # 刘松, 2022
-# Jens L. <jens@goauthentik.io>, 2024
 # Tianhao Chai <cth451@gmail.com>, 2024
+# Jens L. <jens@goauthentik.io>, 2024
 # deluxghost, 2024
 # 
 #, fuzzy
@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-12 00:08+0000\n"
+"POT-Creation-Date: 2024-10-18 00:09+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2024\n"
 "Language-Team: Chinese Simplified (https://app.transifex.com/authentik/teams/119923/zh-Hans/)\n"
@@ -24,6 +24,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh-Hans\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+
+#: authentik/admin/models.py
+msgid "Version history"
+msgstr "版本历史"
 
 #: authentik/admin/tasks.py
 #, python-brace-format
@@ -193,6 +197,10 @@ msgid "Flow used when authorizing this provider."
 msgstr "授权此提供程序时使用的流程。"
 
 #: authentik/core/models.py
+msgid "Flow used ending the session from a provider."
+msgstr "从提供程序结束会话使用的流程。"
+
+#: authentik/core/models.py
 msgid ""
 "Accessed from applications; optional backchannel providers for protocols "
 "like LDAP and SCIM."
@@ -336,55 +344,6 @@ msgstr "成功链接 {source}！"
 #: authentik/core/sources/flow_manager.py
 msgid "Source is not configured for enrollment."
 msgstr "源未被配置用于注册。"
-
-#: authentik/core/templates/if/end_session.html
-msgid "End session"
-msgstr "结束会话"
-
-#: authentik/core/templates/if/end_session.html
-#, python-format
-msgid ""
-"\n"
-"You've logged out of %(application)s.\n"
-msgstr ""
-"\n"
-"您已登出 %(application)s。\n"
-
-#: authentik/core/templates/if/end_session.html
-#, python-format
-msgid ""
-"\n"
-"            You've logged out of %(application)s. You can go back to the overview to launch another application, or log out of your %(branding_title)s account.\n"
-"        "
-msgstr ""
-"\n"
-"           您已成功登出 %(application)s 。现在您可以返回总览页来启动其他应用，或者登出您的 %(branding_title)s 账户。"
-
-#: authentik/core/templates/if/end_session.html
-msgid "Go back to overview"
-msgstr "返回总览"
-
-#: authentik/core/templates/if/end_session.html
-#, python-format
-msgid ""
-"\n"
-"            Log out of %(branding_title)s\n"
-"        "
-msgstr ""
-"\n"
-"            登出 %(branding_title)s\n"
-"        "
-
-#: authentik/core/templates/if/end_session.html
-#, python-format
-msgid ""
-"\n"
-"            Log back into %(application)s\n"
-"        "
-msgstr ""
-"\n"
-"            重新登录 %(application)s\n"
-"        "
 
 #: authentik/core/templates/if/error.html
 msgid "Go home"
@@ -1442,10 +1401,18 @@ msgid "Signing Key"
 msgstr "签名密钥"
 
 #: authentik/providers/oauth2/models.py
+msgid "Key used to sign the tokens."
+msgstr "用于签名令牌的密钥。"
+
+#: authentik/providers/oauth2/models.py
+msgid "Encryption Key"
+msgstr "加密密钥"
+
+#: authentik/providers/oauth2/models.py
 msgid ""
-"Key used to sign the tokens. Only required when JWT Algorithm is set to "
-"RS256."
-msgstr "用于签名令牌的密钥。仅当 JWT 算法设置为 RS256 时才需要。"
+"Key used to encrypt the tokens. When set, tokens will be encrypted and "
+"returned as JWEs."
+msgstr "用于加密令牌的密钥。如果设置，则令牌会被加密，并以 JWE 形式返回。"
 
 #: authentik/providers/oauth2/models.py
 msgid ""
