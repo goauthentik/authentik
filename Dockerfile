@@ -141,7 +141,7 @@ WORKDIR /
 # We cannot cache this layer otherwise we'll end up with a bigger image
 RUN apt-get update && \
     # Required for runtime
-    apt-get install -y --no-install-recommends libpq5 libmaxminddb0 ca-certificates libkrb5-3 libkadm5clnt-mit12 && \
+    apt-get install -y --no-install-recommends libpq5 libmaxminddb0 ca-certificates libkrb5-3 libkadm5clnt-mit12 libkdb5-10 && \
     # Required for bootstrap & healtcheck
     apt-get install -y --no-install-recommends runit && \
     apt-get clean && \
