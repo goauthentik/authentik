@@ -282,6 +282,7 @@ export default {
                             },
                             items: [
                                 "add-secure-apps/flows-stages/stages/authenticator_duo/index",
+                                "add-secure-apps/flows-stages/stages/authenticator_endpoint_gdtc/index",
                                 "add-secure-apps/flows-stages/stages/authenticator_sms/index",
                                 "add-secure-apps/flows-stages/stages/authenticator_static/index",
                                 "add-secure-apps/flows-stages/stages/authenticator_totp/index",
