@@ -9121,6 +9121,12 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Log back into <x id="0" equiv-text="${this.challenge.applicationName}"/></source>
   <target>Se reconnecter à <x id="0" equiv-text="${this.challenge.applicationName}"/></target>
 </trans-unit>
+<trans-unit id="sc991a35f5e88d1d3">
+  <source>Encryption Key</source>
+</trans-unit>
+<trans-unit id="s8a598f7aef81c3bc">
+  <source>Key used to encrypt the tokens.</source>
+</trans-unit>
     </body>
   </file>
 </xliff>

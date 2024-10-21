@@ -103,10 +103,14 @@ export class UserDeviceTable extends Table<Device> {
             html`${deviceTypeName(item)}
             ${item.extraDescription ? ` - ${item.extraDescription}` : ""}`,
             html`${item.confirmed ? msg("Yes") : msg("No")}`,
-            html`<div>${getRelativeTime(item.created)}</div>
-                <small>${item.created.toLocaleString()}</small>`,
-            html`<div>${getRelativeTime(item.lastUpdated)}</div>
-                <small>${item.lastUpdated.toLocaleString()}</small>`,
+            html`${item.created.getTime() > 0
+                ? html`<div>${getRelativeTime(item.created)}</div>
+                      <small>${item.created.toLocaleString()}</small>`
+                : html`-`}`,
+            html`${item.lastUpdated
+                ? html`<div>${getRelativeTime(item.lastUpdated)}</div>
+                      <small>${item.lastUpdated.toLocaleString()}</small>`
+                : html`-`}`,
             html`${item.lastUsed
                 ? html`<div>${getRelativeTime(item.lastUsed)}</div>
                       <small>${item.lastUsed.toLocaleString()}</small>`

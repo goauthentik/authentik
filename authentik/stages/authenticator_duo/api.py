@@ -9,7 +9,6 @@ from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, ChoiceField, IntegerField
 from rest_framework.filters import OrderingFilter, SearchFilter
-from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
@@ -197,7 +196,6 @@ class DuoDeviceViewSet(
 class DuoAdminDeviceViewSet(ModelViewSet):
     """Viewset for Duo authenticator devices (for admins)"""
 
-    permission_classes = [IsAdminUser]
     queryset = DuoDevice.objects.all()
     serializer_class = DuoDeviceSerializer
     search_fields = ["name"]
