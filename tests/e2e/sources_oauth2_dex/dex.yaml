@@ -7,8 +7,8 @@ staticClients:
   - id: example-app
     name: Example App
     redirectURIs:
-      - {{ .Env.AK_REDIRECT_URL }}
-    secret: {{ .Env.AK_CLIENT_SECRET }}
+      - "{{ .Env.AK_REDIRECT_URL }}"
+    secret: "{{ .Env.AK_CLIENT_SECRET }}"
 staticPasswords:
   - email: admin@example.com
     # hash for 'password', for testing
