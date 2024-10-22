@@ -17,7 +17,7 @@ async function reachTheProvider() {
 }
 
 describe("Configure Oauth2 Providers", () => {
-    it("Should configure a simple LDAP Application", async () => {
+    it("Should configure a simple Oauth2 Provider", async () => {
         const newProviderName = `New OAuth2 Provider - ${randomId()}`;
 
         await reachTheProvider();
@@ -30,7 +30,7 @@ describe("Configure Oauth2 Providers", () => {
 
         return await $('ak-form-element-horizontal[name="name"]').$("input");
         await ProviderWizardView.oauth.setAuthorizationFlow(
-            "default-provider-authorization-explicit-consent",
+            "default-provider-authorization-explicit-consent"
         );
         await ProviderWizardView.nextButton.click();
         await ProviderWizardView.pause();
