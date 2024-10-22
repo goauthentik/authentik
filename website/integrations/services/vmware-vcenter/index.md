@@ -79,13 +79,13 @@ Create an application and an OAuth2/OpenID provider, using the authentik Wizard.
 
 Create the application with these settings:
 
-- Select OIDC as the provider type.
-- Ensure that the **Redirect URI Setting** is left empty.
+-   Select OIDC as the provider type.
+-   Ensure that the **Redirect URI Setting** is left empty.
 
 Create the provider with these settings:
 
-- Redirect URI: `https://vcenter.company/ui/login/oauth2/authcode`
-- Ensure that the signing key is provided (or you accept the default to authentik's Self-signed Certificate).
+-   Redirect URI: `https://vcenter.company/ui/login/oauth2/authcode`
+-   Ensure that the signing key is provided (or you accept the default to authentik's Self-signed Certificate).
 
 3. Click **Submit** to create the application and provider, and then click **Close** to close the Wizard.
 
@@ -109,12 +109,14 @@ Optionally, you can use a policy to apply access restrictions to the application
 
     - Set `Identity Provider Name` to `authentik`.
         - Set `Client Identifier` to the client ID from authentik.
-- Set `Shared secret` to the client secret from authentik.
-    - Set `OpenID Address` to the *OpenID Configuration URL* from authentik.
+
+-   Set `Shared secret` to the client secret from authentik.
+    -   Set `OpenID Address` to the _OpenID Configuration URL_ from authentik.
 
 6. Click **Next**, and then **Finish**.
 
 7. On the **Single Sign On -> Configuration** page, in the `User Provisioning` area, take the following steps:
+
     - Copy the **Tenant URL** and save to a safe place.
     - Click on `Generate` to generate a SCIM token.
     - Click **Generate** in the newly opened modal box.
