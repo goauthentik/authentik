@@ -32,7 +32,8 @@ class KerberosSync:
     _logger: BoundLogger
     _connection: "kadmin.KAdmin"
     mapper: SourceMapper
-    manager: PropertyMappingManager
+    user_manager: PropertyMappingManager
+    group_manager: PropertyMappingManager
     matcher: SourceMatcher
 
     def __init__(self, source: KerberosSource):
@@ -42,7 +43,8 @@ class KerberosSync:
         self._messages = []
         self._logger = get_logger().bind(source=self._source, syncer=self.__class__.__name__)
         self.mapper = SourceMapper(self._source)
-        self.manager = self.mapper.get_manager(User, ["principal"])
+        self.user_manager = self.mapper.get_manager(User, ["principal"])
+        self.group_manager = self.mapper.get_manager(Group, ["group_id", "principal"])
         self.matcher = SourceMatcher(
             self._source, UserKerberosSourceConnection, GroupKerberosSourceConnection
         )
