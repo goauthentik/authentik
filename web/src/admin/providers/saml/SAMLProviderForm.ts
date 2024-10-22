@@ -89,6 +89,20 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                     required
                 />
             </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${msg("Authorization flow")}
+                required
+                name="authorizationFlow"
+            >
+                <ak-flow-search
+                    flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                    .currentFlow=${this.instance?.authorizationFlow}
+                    required
+                ></ak-flow-search>
+                <p class="pf-c-form__helper-text">
+                    ${msg("Flow used when authorizing this provider.")}
+                </p>
+            </ak-form-element-horizontal>
 
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${msg("Protocol settings")} </span>
@@ -155,7 +169,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
             </ak-form-group>
 
             <ak-form-group>
-                <span slot="header"> ${msg("Flow settings")} </span>
+                <span slot="header"> ${msg("Advanced flow settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Authentication flow")}
@@ -170,20 +184,6 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                             ${msg(
                                 "Flow used when a user access this provider and is not authenticated.",
                             )}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Authorization flow")}
-                        required
-                        name="authorizationFlow"
-                    >
-                        <ak-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.Authorization}
-                            .currentFlow=${this.instance?.authorizationFlow}
-                            required
-                        ></ak-flow-search>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Flow used when authorizing this provider.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
