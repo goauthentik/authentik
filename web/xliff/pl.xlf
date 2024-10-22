@@ -9022,6 +9022,12 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 <trans-unit id="s521681ed1d5ff814">
   <source>Log back into <x id="0" equiv-text="${this.challenge.applicationName}"/></source>
 </trans-unit>
+<trans-unit id="sc991a35f5e88d1d3">
+  <source>Encryption Key</source>
+</trans-unit>
+<trans-unit id="s8a598f7aef81c3bc">
+  <source>Key used to encrypt the tokens.</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
