@@ -1,0 +1,256 @@
+---
+id: flows-instances-execute-retrieve
+title: "flows_instances_execute_retrieve"
+description: "Execute flow for current user"
+sidebar_label: "flows_instances_execute_retrieve"
+hide_title: true
+hide_table_of_contents: true
+api: eJytVE1v2zAM/SuCThsQREXaw5DThiErArTD0I9diqJQHCZWo0iuRGcNDP/3kbKSunC7XnYyJZPie49PaqSvIGg03s2XcipX1v+JD8ZF1K6A+ADPUNQIDwEwGNiBHMklxCKYikuoYNYlCC4UKx9EUYcADkUdIVB2pYPeAkKIcnrXSMM1lcaSfjn6Qato6zWtYlHCVstpI3FfpX3q6NaDhr9NNAsLwjiBJYjbq4uxbEcywFNtAhAHDDW09yOJes09O0qSNiIhDQb3CYiuqdqh2dDqntMDxMq7CJEhTE5O+FN4h5TEoa4qa4oklHqMjKQZQvaLRyhwAPkKsA4uCi0iMSLs1rgNaxNYfDRdz7Q5oN++4nbXZTE7g5bTLnjdctbrnqzJWcfi9Y8fPCjnUWRGpGWXe/ofGZ+Dg2AK8e3XXMxC8GHAdgmojX2D74gwLOFjIfIBPSly067fm5LQFnmx9Oz0NWCyJ1lxKlUyiTr6XjXsylZl+yv2J4TdwcV1sFykK6N2p0q2PXNds0IdxZ7FjmRKxOpgdl4vQAcICZlxK58yM52X8pHkzh2JycnkbPxlPBlIfqk3JJM4VHWDI8NtKwtjOUqT1UWaLI2QpZclWOu/rv2x09h4HgCNHegmcGq+o5fzGzqio80U4lSptcGyXowLv1W9I9RLtLB+oaiVUxfz77Of17NEs/IRt9r1Dk/ai6P2Iosu3ntzei798PnJsiM8o6osYWF+iUeTZ394IHgAGQHF0/wqZSwUsdNKws4VTbPQEW6DbVvefqoh8KtC4U4Hk64U22RpIsfktpW2Ef5B49NVdvZn8R7ovKndnv2gbc0rCjewPzyi7T3llaCXRJ37d7++FQVU2CsaXGz27/FenM941DzFnm2zTUeHgE9/ExApkzJu/AYcqXPAh7xmgG37F2cqN2M=
+sidebar_class_name: "get api-method"
+info_path: docs/developer-docs/api/reference/authentik
+custom_edit_url: null
+hide_send_button: true
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import Heading from "@theme/Heading";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"flows_instances_execute_retrieve"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/flows/instances/{slug}/execute/"}
+>
+  
+</MethodEndpoint>
+
+
+
+Execute flow for current user
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<details
+  style={{"marginBottom":"1rem"}}
+  className={"openapi-markdown__details"}
+  data-collapsed={false}
+  open={true}
+>
+  <summary
+    style={{}}
+  >
+    <h3
+      className={"openapi-markdown__details-summary-header-params"}
+    >
+      Path Parameters
+    </h3>
+  </summary><div>
+    <ul>
+      <ParamsItem
+        className={"paramsItem"}
+        param={{"in":"path","name":"slug","schema":{"type":"string","description":"Visible in the URL."},"required":true}}
+      >
+        
+      </ParamsItem>
+    </ul>
+  </div>
+</details><div>
+  <div>
+    <ApiTabs
+      label={undefined}
+      id={undefined}
+    >
+      <TabItem
+        label={"200"}
+        value={"200"}
+      >
+        <div>
+          
+          
+          
+          
+          
+        </div><div>
+          <MimeTabs
+            className={"openapi-tabs__mime"}
+            schemaType={"response"}
+          >
+            <TabItem
+              label={"application/json"}
+              value={"application/json"}
+            >
+              <SchemaTabs
+                className={"openapi-tabs__schema"}
+              >
+                <TabItem
+                  label={"Schema"}
+                  value={"Schema"}
+                >
+                  <details
+                    style={{}}
+                    className={"openapi-markdown__details response"}
+                    data-collapsed={false}
+                    open={true}
+                  >
+                    <summary
+                      style={{}}
+                      className={"openapi-markdown__details-summary-response"}
+                    >
+                      <strong>
+                        Schema
+                      </strong>
+                    </summary><div
+                      style={{"textAlign":"left","marginLeft":"1rem"}}
+                    >
+                      
+                    </div><ul
+                      style={{"marginLeft":"1rem"}}
+                    >
+                      <SchemaItem
+                        collapsible={false}
+                        name={"link"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string"}}
+                      >
+                        
+                      </SchemaItem>
+                    </ul>
+                  </details>
+                </TabItem><TabItem
+                  label={"Example (from schema)"}
+                  value={"Example (from schema)"}
+                >
+                  <ResponseSamples
+                    responseExample={"{\n  \"link\": \"string\"\n}"}
+                    language={"json"}
+                  >
+                    
+                  </ResponseSamples>
+                </TabItem>
+              </SchemaTabs>
+            </TabItem>
+          </MimeTabs>
+        </div>
+      </TabItem><TabItem
+        label={"400"}
+        value={"400"}
+      >
+        <div>
+          
+          
+          Flow not applicable
+          
+          
+        </div><div>
+          
+        </div>
+      </TabItem><TabItem
+        label={"403"}
+        value={"403"}
+      >
+        <div>
+          
+          
+          
+          
+          
+        </div><div>
+          <MimeTabs
+            className={"openapi-tabs__mime"}
+            schemaType={"response"}
+          >
+            <TabItem
+              label={"application/json"}
+              value={"application/json"}
+            >
+              <SchemaTabs
+                className={"openapi-tabs__schema"}
+              >
+                <TabItem
+                  label={"Schema"}
+                  value={"Schema"}
+                >
+                  <details
+                    style={{}}
+                    className={"openapi-markdown__details response"}
+                    data-collapsed={false}
+                    open={true}
+                  >
+                    <summary
+                      style={{}}
+                      className={"openapi-markdown__details-summary-response"}
+                    >
+                      <strong>
+                        Schema
+                      </strong>
+                    </summary><div
+                      style={{"textAlign":"left","marginLeft":"1rem"}}
+                    >
+                      
+                    </div><ul
+                      style={{"marginLeft":"1rem"}}
+                    >
+                      <SchemaItem
+                        collapsible={false}
+                        name={"detail"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"code"}
+                        required={false}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string"}}
+                      >
+                        
+                      </SchemaItem>
+                    </ul>
+                  </details>
+                </TabItem><TabItem
+                  label={"Example (from schema)"}
+                  value={"Example (from schema)"}
+                >
+                  <ResponseSamples
+                    responseExample={"{\n  \"detail\": \"string\",\n  \"code\": \"string\"\n}"}
+                    language={"json"}
+                  >
+                    
+                  </ResponseSamples>
+                </TabItem>
+              </SchemaTabs>
+            </TabItem>
+          </MimeTabs>
+        </div>
+      </TabItem>
+    </ApiTabs>
+  </div>
+</div>
+      

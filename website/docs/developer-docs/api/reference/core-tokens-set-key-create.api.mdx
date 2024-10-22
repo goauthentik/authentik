@@ -1,0 +1,256 @@
+---
+id: core-tokens-set-key-create
+title: "core_tokens_set_key_create"
+description: "Set token key. Action is logged as event. `authentik_core.set_token_key` permission"
+sidebar_label: "core_tokens_set_key_create"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9VV1v0zAU/SuWn0AqSen2gPrEmCpUsQFax9OoOie5TbwmdrCdsirKf+deJ2nTtewFiZfNse/nOefe1lyXYISTWs0TPuWxNrByegPKriy41QZ2q9iAcMBHPAEbG1mSMZouwDFvydAoYFcx3TNpWa7TFBImLIMtKBewR1G5DE9ys6L4AQX2nhT+kWEBhbQWvX8qdDfwq5IGkgAzlsKIAhwYy6cPNZeUtxQuwyeFD/glEwq8lmDwzsYZFIJPa+52Jb1aZ6RKeTPifVQ+daaCZjniTqQU1bfMl60FWPdJJzuKEGvlMDQdRVnmMvYghU+Wmq9PU+noCWJHNRuC1Emw9IodntYz4oVUN6BS7GT6vjkq78G7UH3S5eRzT0gh2F9gd9eWyJvmtCPsHuLKSLfzUO0hx69l49uzpVa2rWoyvqR/Lwit4hisXVd5vmNxJhSxSMVg7Mvx+NThllhT6cHm4p+AOw7+GRQYGbOr73M2M0abE2gTcELmZ9mOdQJnHl4A3QUYYN0lbfN5lI+Lats8g50niSnt2FpXKmHaMHgufSKKghrONM1Xqa3XCGl4ykPSXtiOW1gfpNyE3eyFJGow234AKpOTmyhluL0IOfHas74gXFtgBtzvIcicK/sJoe8IhAHjiyNm7g7inz2LosxhL94BrFKttY/ZwXVINOJUY4vFZDy5DD4EkxNKb8WG5NJ7tcJgVlI6mnZSjoi9clAiRC3PIM/1x1TvMwVSUyUoK8TMF9ktgtv5PYZoAaJm7TQMU+myKgpiXYSDEOHhFOU6CjGVCm/m17Ovi5kHhEgqhBoEJ57aZWcZUkOKZ+fX4kD//2VDdvQ6eHZhmWMnhI5Hoe5U1m04NPX142F6vDRbqeGJJiEjgaJPXUfCwg+TNw1dozoMLRY8boWRIiL+UZCJtHRGaa9FbuEVMN7cdVW/ZX8ru7sUiorZiryiLzy2MhwU3SzROgOR4JmqaA2u21zv7inMIcDJEmpGvccVLrzSvWq7HAzv928L0ljU/UIUfslwI37jJf31xWrfu59Df1fzHDdpJVKybWOSxojwwXh24zjqD9TVWTiQF2/hFw5y06PjySVgmuYP94e2Aw==
+sidebar_class_name: "post api-method"
+info_path: docs/developer-docs/api/reference/authentik
+custom_edit_url: null
+hide_send_button: true
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import Heading from "@theme/Heading";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"core_tokens_set_key_create"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/core/tokens/{identifier}/set_key/"}
+>
+  
+</MethodEndpoint>
+
+
+
+Set token key. Action is logged as event. `authentik_core.set_token_key` permission
+is required.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<details
+  style={{"marginBottom":"1rem"}}
+  className={"openapi-markdown__details"}
+  data-collapsed={false}
+  open={true}
+>
+  <summary
+    style={{}}
+  >
+    <h3
+      className={"openapi-markdown__details-summary-header-params"}
+    >
+      Path Parameters
+    </h3>
+  </summary><div>
+    <ul>
+      <ParamsItem
+        className={"paramsItem"}
+        param={{"in":"path","name":"identifier","schema":{"type":"string"},"required":true}}
+      >
+        
+      </ParamsItem>
+    </ul>
+  </div>
+</details><MimeTabs
+  className={"openapi-tabs__mime"}
+>
+  <TabItem
+    label={"application/json"}
+    value={"application/json-schema"}
+  >
+    <details
+      style={{}}
+      className={"openapi-markdown__details mime"}
+      data-collapsed={false}
+      open={true}
+    >
+      <summary
+        style={{}}
+        className={"openapi-markdown__details-summary-mime"}
+      >
+        <h3
+          className={"openapi-markdown__details-summary-header-body"}
+        >
+          Body
+        </h3><strong
+          className={"openapi-schema__required"}
+        >
+          required
+        </strong>
+      </summary><div
+        style={{"textAlign":"left","marginLeft":"1rem"}}
+      >
+        
+      </div><ul
+        style={{"marginLeft":"1rem"}}
+      >
+        <SchemaItem
+          collapsible={false}
+          name={"key"}
+          required={true}
+          schemaName={"string"}
+          qualifierMessage={"**Possible values:** `non-empty`"}
+          schema={{"type":"string","minLength":1}}
+        >
+          
+        </SchemaItem>
+      </ul>
+    </details>
+  </TabItem>
+</MimeTabs><div>
+  <div>
+    <ApiTabs
+      label={undefined}
+      id={undefined}
+    >
+      <TabItem
+        label={"204"}
+        value={"204"}
+      >
+        <div>
+          
+          
+          Successfully changed key
+          
+          
+        </div><div>
+          
+        </div>
+      </TabItem><TabItem
+        label={"400"}
+        value={"400"}
+      >
+        <div>
+          
+          
+          Missing key
+          
+          
+        </div><div>
+          
+        </div>
+      </TabItem><TabItem
+        label={"403"}
+        value={"403"}
+      >
+        <div>
+          
+          
+          
+          
+          
+        </div><div>
+          <MimeTabs
+            className={"openapi-tabs__mime"}
+            schemaType={"response"}
+          >
+            <TabItem
+              label={"application/json"}
+              value={"application/json"}
+            >
+              <SchemaTabs
+                className={"openapi-tabs__schema"}
+              >
+                <TabItem
+                  label={"Schema"}
+                  value={"Schema"}
+                >
+                  <details
+                    style={{}}
+                    className={"openapi-markdown__details response"}
+                    data-collapsed={false}
+                    open={true}
+                  >
+                    <summary
+                      style={{}}
+                      className={"openapi-markdown__details-summary-response"}
+                    >
+                      <strong>
+                        Schema
+                      </strong>
+                    </summary><div
+                      style={{"textAlign":"left","marginLeft":"1rem"}}
+                    >
+                      
+                    </div><ul
+                      style={{"marginLeft":"1rem"}}
+                    >
+                      <SchemaItem
+                        collapsible={false}
+                        name={"detail"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"code"}
+                        required={false}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string"}}
+                      >
+                        
+                      </SchemaItem>
+                    </ul>
+                  </details>
+                </TabItem><TabItem
+                  label={"Example (from schema)"}
+                  value={"Example (from schema)"}
+                >
+                  <ResponseSamples
+                    responseExample={"{\n  \"detail\": \"string\",\n  \"code\": \"string\"\n}"}
+                    language={"json"}
+                  >
+                    
+                  </ResponseSamples>
+                </TabItem>
+              </SchemaTabs>
+            </TabItem>
+          </MimeTabs>
+        </div>
+      </TabItem><TabItem
+        label={"404"}
+        value={"404"}
+      >
+        <div>
+          
+          
+          Token not found or expired
+          
+          
+        </div><div>
+          
+        </div>
+      </TabItem>
+    </ApiTabs>
+  </div>
+</div>
+      
