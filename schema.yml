@@ -39143,7 +39143,7 @@ components:
           description: Return internal model name
           readOnly: true
         pk:
-          type: integer
+          type: string
         name:
           type: string
         type:

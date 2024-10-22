@@ -6,7 +6,6 @@ from rest_framework.fields import (
     BooleanField,
     CharField,
     DateTimeField,
-    IntegerField,
     SerializerMethodField,
 )
 from rest_framework.permissions import IsAuthenticated
@@ -24,7 +23,7 @@ from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 class DeviceSerializer(MetaNameSerializer):
     """Serializer for Duo authenticator devices"""
 
-    pk = IntegerField()
+    pk = CharField()
     name = CharField()
     type = SerializerMethodField()
     confirmed = BooleanField()

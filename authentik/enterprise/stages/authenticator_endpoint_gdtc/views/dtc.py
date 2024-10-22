@@ -67,7 +67,7 @@ class GoogleChromeDeviceTrustConnector(View):
             device, _ = EndpointDevice.objects.update_or_create(
                 host_identifier=response["deviceSignals"]["serialNumber"],
                 user=flow_plan.context.get(PLAN_CONTEXT_PENDING_USER),
-                defaults={"hostname": response["deviceSignals"]["hostname"]},
+                defaults={"name": response["deviceSignals"]["hostname"], "data": response},
             )
             EndpointDeviceConnection.objects.update_or_create(
                 device=device,

@@ -72,9 +72,8 @@ class EndpointDevice(SerializerModel, Device):
         help_text="A unique identifier for the endpoint device, usually the device serial number",
     )
 
-    hostname = models.TextField()
-
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    data = models.JSONField()
 
     @property
     def serializer(self) -> Serializer:

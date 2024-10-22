@@ -7,7 +7,7 @@ from authentik.enterprise.stages.authenticator_endpoint_gdtc.api import (
     EndpointAdminDeviceViewSet,
     EndpointDeviceViewSet,
 )
-from authentik.enterprise.stages.authenticator_endpoint_gdtc.views.google_chrome.dtc import (
+from authentik.enterprise.stages.authenticator_endpoint_gdtc.views.dtc import (
     GoogleChromeDeviceTrustConnector,
 )
 
