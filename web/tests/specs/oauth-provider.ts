@@ -1,4 +1,11 @@
 import { expect } from "@wdio/globals";
+import {
+    clickButton,
+    setFormGroup,
+    setSearchSelect,
+    setTextInput,
+    setTypeCreate,
+} from "pageobjects/controls.js";
 
 import ProviderWizardView from "../pageobjects/provider-wizard.page.js";
 import ProvidersListPage from "../pageobjects/providers-list.page.js";
@@ -16,6 +23,14 @@ async function reachTheProvider() {
     await expect(await ProviderWizardView.wizardTitle).toHaveText("New provider");
 }
 
+async function fillOutFields(fields: FieldDesc[]) {
+    for (const field of fields) {
+        const thefunc = field[0];
+        const args = field.slice(1);
+        await thefunc.apply($, args);
+    }
+}
+
 describe("Configure Oauth2 Providers", () => {
     it("Should configure a simple LDAP Application", async () => {
         const newProviderName = `New OAuth2 Provider - ${randomId()}`;
@@ -23,25 +38,19 @@ describe("Configure Oauth2 Providers", () => {
         await reachTheProvider();
 
         await $("ak-wizard-page-type-create").waitForDisplayed();
-        await $('div[data-ouid-component-name="oauth2provider"]').scrollIntoView();
-        await $('div[data-ouid-component-name="oauth2provider"]').click();
-        await ProviderWizardView.nextButton.click();
+        await setTypeCreate("selectProviderType", "OAuth2/OpenID Provider");
+        await clickButton("Next");
+
+        // prettier-ignore
+        await fillOutFields([
+            [setTextInput, "name", newProviderName],
+            [setFormGroup, "Flow settings", "open"],
+            [setSearchSelect, "authenticationFlow", "default-authentication-flow"],
+            [setSearchSelect, "authorizationFlow", "default-provider-authorization-explicit-consent"],
+            [setSearchSelect, "invalidationFlow", "default-invalidation-flow"],
+        ]);
+
         await ProviderWizardView.pause();
-
-        return await $('ak-form-element-horizontal[name="name"]').$("input");
-        await ProviderWizardView.oauth.setAuthorizationFlow(
-            "default-provider-authorization-explicit-consent",
-        );
         await ProviderWizardView.nextButton.click();
-        await ProviderWizardView.pause();
-
-        await ProvidersListPage.searchInput.setValue(newProviderName);
-        await ProvidersListPage.clickSearchButton();
-        await ProvidersListPage.pause();
-
-        const newProvider = await ProvidersListPage.findProviderRow();
-        await newProvider.waitForDisplayed();
-        expect(newProvider).toExist();
-        expect(await newProvider.getText()).toHaveText(newProviderName);
     });
 });
