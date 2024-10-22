@@ -36,10 +36,10 @@ export class AuthenticatorEndpointGDTCStageForm extends BaseStageForm<Authentica
     renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
-                    "Stage used to configure a duo-based authenticator. This stage should be used for configuration flows.",
+                    "Stage used to verify users' browsers using Google Chrome Device Trust. This stage can be used in authentication/authorization flows.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${first(this.instance?.name, "")}"
@@ -47,12 +47,12 @@ export class AuthenticatorEndpointGDTCStageForm extends BaseStageForm<Authentica
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Google Verified Access API")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Credentials")}
-                        ?required=${true}
+                        required
                         name="credentials"
                     >
                         <ak-codemirror

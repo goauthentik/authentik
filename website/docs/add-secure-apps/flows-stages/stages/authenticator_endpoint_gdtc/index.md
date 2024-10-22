@@ -50,7 +50,7 @@ For detailed instructions, refer to Google documentation.
 2. Click the **Keys** tab at top of the page, the click **Add Key -> Create new key**.
 3. In the Create modal box, select JSON as the key type, and then click **Create**.
    A pop-up displays with the private key, and the key is saved to your computer as a JSON file.
-   Later, when you create your authentik provider for Google Workspace, you will add this key in the **Credentials** field.
+   Later, when you create the stage in authentik, you will add this key in the **Credentials** field.
 4. On the service account page, click the **Details** tab, and expand the **Advanced settings** area.
 5. Log in to the Admin Console, and then navigate to **Chrome browser -> Connectors**.
 6. Click on **New Provider Configuration**.
