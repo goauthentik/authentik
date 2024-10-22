@@ -1,11 +1,12 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { SentryIgnoredError } from "@goauthentik/common/errors";
 import { deviceTypeName } from "@goauthentik/common/labels";
 import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -54,20 +55,21 @@ export class UserDeviceTable extends Table<Device> {
 
     async deleteWrapper(device: Device) {
         const api = new AuthenticatorsApi(DEFAULT_CONFIG);
-        const id = { id: device.pk };
         switch (device.type) {
             case "authentik_stages_authenticator_duo.DuoDevice":
-                return api.authenticatorsAdminDuoDestroy(id);
+                return api.authenticatorsAdminDuoDestroy({ id: parseInt(device.pk, 10) });
             case "authentik_stages_authenticator_sms.SMSDevice":
-                return api.authenticatorsAdminSmsDestroy(id);
+                return api.authenticatorsAdminSmsDestroy({ id: parseInt(device.pk, 10) });
             case "authentik_stages_authenticator_totp.TOTPDevice":
-                return api.authenticatorsAdminTotpDestroy(id);
+                return api.authenticatorsAdminTotpDestroy({ id: parseInt(device.pk, 10) });
             case "authentik_stages_authenticator_static.StaticDevice":
-                return api.authenticatorsAdminStaticDestroy(id);
+                return api.authenticatorsAdminStaticDestroy({ id: parseInt(device.pk, 10) });
             case "authentik_stages_authenticator_webauthn.WebAuthnDevice":
-                return api.authenticatorsAdminWebauthnDestroy(id);
+                return api.authenticatorsAdminWebauthnDestroy({ id: parseInt(device.pk, 10) });
             default:
-                break;
+                throw new SentryIgnoredError(
+                    msg(str`Device type ${device.verboseName} cannot be deleted`),
+                );
         }
     }
 
