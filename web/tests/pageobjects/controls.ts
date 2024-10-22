@@ -2,18 +2,6 @@ import { browser } from "@wdio/globals";
 import { match } from "ts-pattern";
 import { ChainablePromiseArray, Key } from "webdriverio";
 
-browser.addCommand('findByText', async function(items: ChainablePromiseArray, text: string) {
-    let item: WebdriverIO.Element | undefined = undefined;
-    for (const i of items) {
-        const label = await i.getText();
-        if (label.indexOf(text) !== -1) {
-            item = i;
-            break;
-        }
-    }
-    return item;
-}, true);
-
 export async function setSearchSelect(name: string, value: string) {
     const control = await (async () => {
         try {
@@ -67,11 +55,26 @@ export async function setRadio(name: string, value: string) {
     await item.click();
 }
 
+browser.addCommand(
+    "findInside$",
+    async function (these: WebdriverIO.ElementArray, selector: string) {
+        // prettier-ignore
+        console.log("HERE!!!!!!!!!");
+        for await (const item of these) {
+            const wanted = item.$(selector);
+            if (wanted.isExisting()) {
+                return wanted;
+            }
+        }
+        return undefined;
+    },
+    true,
+);
+
 export async function setTypeCreate(name: string, value: string) {
     const control = await $(`ak-wizard-page-type-create[name="${name}"]`);
     await control.scrollIntoView();
-    const cards = ;
-    const selection = await findByText(await control.$$("div.pf-c-card__title"), value);
+    const selection = await $$("ak-type-create-grid-card").findInside$(`div*=${value}`);
     await selection.scrollIntoView();
     await selection.click();
 }
