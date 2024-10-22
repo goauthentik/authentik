@@ -14,6 +14,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
 from authentik.core.api.utils import MetaNameSerializer
+from authentik.enterprise.stages.authenticator_endpoint_gdtc.models import EndpointDevice
 from authentik.rbac.decorators import permission_required
 from authentik.stages.authenticator import device_classes, devices_for_user
 from authentik.stages.authenticator.models import Device
@@ -40,6 +41,8 @@ class DeviceSerializer(MetaNameSerializer):
         """Get extra description"""
         if isinstance(instance, WebAuthnDevice):
             return instance.device_type.description
+        if isinstance(instance, EndpointDevice):
+            return instance.data.get("deviceSignals", {}).get("deviceModel")
         return ""
 
 

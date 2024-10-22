@@ -56,10 +56,8 @@ class EndpointDeviceSerializer(ModelSerializer):
 
 class EndpointDeviceViewSet(
     mixins.RetrieveModelMixin,
-    mixins.UpdateModelMixin,
-    mixins.DestroyModelMixin,
-    UsedByMixin,
     mixins.ListModelMixin,
+    UsedByMixin,
     GenericViewSet,
 ):
     """Viewset for Endpoint authenticator devices"""

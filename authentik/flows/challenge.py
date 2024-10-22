@@ -8,7 +8,7 @@ from uuid import UUID
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.http import JsonResponse
-from rest_framework.fields import CharField, ChoiceField, DictField, BooleanField
+from rest_framework.fields import BooleanField, CharField, ChoiceField, DictField
 from rest_framework.request import Request
 
 from authentik.core.api.utils import PassiveSerializer

@@ -60,7 +60,7 @@ export class MFADeviceForm extends ModelForm<Device, string> {
                 break;
             default:
                 throw new SentryIgnoredError(
-                    msg(str`Device type ${device.verboseName} cannot be eddited`),
+                    msg(str`Device type ${device.verboseName} cannot be edited`),
                 );
         }
         return device;
