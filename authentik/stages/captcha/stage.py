@@ -1,7 +1,7 @@
 """authentik captcha stage"""
 
 from django.http.response import HttpResponse
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext as _
 from requests import RequestException
 from rest_framework.fields import CharField
 from rest_framework.serializers import ValidationError
@@ -27,6 +27,22 @@ class CaptchaChallenge(WithUserInfoChallenge):
     component = CharField(default="ak-stage-captcha")
 
 
+def get_friendly_captcha_error(error: str) -> str:
+    match error:
+        case "missing-input-secret":
+            return _("Secret was not provided. This is likely a misconfiguration error.")
+        case "invalid-input-secret":
+            return _("Secret was invalid. This is likely a misconfiguration error.")
+        case "missing-input-response":
+            return _("Client response was not provided. Try again.")
+        case "invalid-input-response":
+            return _("Client response was invalid. Try again.")
+        case "timeout-or-duplicate":
+            return _("Client response has timed out or was already used. Try again.")
+
+    return _("Unknown error")
+
+
 def verify_captcha_token(stage: CaptchaStage, token: str, remote_ip: str):
     """Validate captcha token"""
     try:
@@ -45,10 +61,11 @@ def verify_captcha_token(stage: CaptchaStage, token: str, remote_ip: str):
         data = response.json()
         if stage.error_on_invalid_score:
             if not data.get("success", False):
+                error_codes = data.get("error-codes")
                 raise ValidationError(
                     _(
-                        "Failed to validate token: {error}".format(
-                            error=data.get("error-codes", _("Unknown error"))
+                        "Invalid captcha response: {error}".format(
+                            error="".join(map(get_friendly_captcha_error, error_codes))
                         )
                     )
                 )
