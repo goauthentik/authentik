@@ -195,7 +195,7 @@ class TestIdentificationStage(FlowTestCase):
             primary_action="Log in",
             response_errors={
                 "non_field_errors": [
-                    {"code": "invalid", "string": "Failed to validate token: Unknown error"}
+                    {"code": "invalid", "string": "Invalid captcha response: Unknown error"}
                 ]
             },
             sources=[

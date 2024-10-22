@@ -61,7 +61,7 @@ def verify_captcha_token(stage: CaptchaStage, token: str, remote_ip: str):
         data = response.json()
         if stage.error_on_invalid_score:
             if not data.get("success", False):
-                error_codes = data.get("error-codes")
+                error_codes = data.get("error-codes", ["Unknown error"])
                 raise ValidationError(
                     _(
                         "Invalid captcha response: {error}".format(
