@@ -37,7 +37,8 @@ class KerberosSync:
 
     def __init__(self, source: KerberosSource):
         self._source = source
-        self._connection = self._source.connection()
+        with Krb5ConfContext(self._source):
+            self._connection = self._source.connection()
         self._messages = []
         self._logger = get_logger().bind(source=self._source, syncer=self.__class__.__name__)
         self.mapper = SourceMapper(self._source)
