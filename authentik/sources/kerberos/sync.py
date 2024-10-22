@@ -68,7 +68,11 @@ class KerberosSync:
     def _handle_principal(self, principal: str) -> bool:
         try:
             defaults = self.mapper.build_object_properties(
-                object_type=User, manager=self.manager, user=None, request=None, principal=principal
+                object_type=User,
+                manager=self.user_manager,
+                user=None,
+                request=None,
+                principal=principal,
             )
             self._logger.debug("Writing user with attributes", **defaults)
             if "username" not in defaults:
@@ -82,7 +86,7 @@ class KerberosSync:
             group_properties = {
                 group_id: self.mapper.build_object_properties(
                     object_type=Group,
-                    manager=self.manager,
+                    manager=self.group_manager,
                     user=None,
                     request=None,
                     group_id=group_id,
