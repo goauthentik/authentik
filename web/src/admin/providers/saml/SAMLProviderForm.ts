@@ -194,6 +194,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                         <ak-flow-search
                             flowType=${FlowsInstancesListDesignationEnum.Invalidation}
                             .currentFlow=${this.instance?.invalidationFlow}
+                            defaultFlowSlug="default-provider-invalidation-flow"
                             required
                         ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
