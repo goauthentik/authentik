@@ -9123,9 +9123,11 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="sc991a35f5e88d1d3">
   <source>Encryption Key</source>
+  <target>Clé de chiffrement</target>
 </trans-unit>
 <trans-unit id="s8a598f7aef81c3bc">
   <source>Key used to encrypt the tokens.</source>
+  <target>Clé utilisée pour chiffrer les jetons.</target>
 </trans-unit>
     </body>
   </file>
