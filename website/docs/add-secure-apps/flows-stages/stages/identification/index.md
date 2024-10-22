@@ -18,13 +18,13 @@ Select which fields the user can use to identify themselves. Multiple fields can
 
 To prompt users for their password on the same step as identifying themselves, a Password stage can be selected here. If a Password stage is selected in the Identification stage, the Password stage should not be bound to the flow.
 
-## Captcha stage
+## CAPTCHA stage
 
 :::warning
-The Captcha stage you use must be configured to use the "Invisible" mode, otherwise the widget will be rendered incorrectly.
+The CAPTCHA stage you use must be configured to use the "Invisible" mode, otherwise the widget will be rendered incorrectly.
 :::
 
-To run a captcha in the background while the user is entering their identification, a Captcha stage can be selected here. If a Captcha stage is selected in the Identification stage, the Captcha stage should not be bound to the flow.
+To run a CAPTCHA process in the background while the user is entering their identification, a CAPTCHA stage can be selected here. If a CAPTCHA stage is selected in the Identification stage, the CAPTCHA stage should not be bound to the flow.
 
 ## Enrollment/Recovery Flow
 
