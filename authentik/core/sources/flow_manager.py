@@ -272,7 +272,6 @@ class SourceFlowManager:
         connection: UserSourceConnection,
     ) -> HttpResponse:
         """Login user and redirect."""
-        flow_kwargs = {PLAN_CONTEXT_PENDING_USER: connection.user}
         return self._prepare_flow(
             self.source.authentication_flow,
             connection,
@@ -286,7 +285,11 @@ class SourceFlowManager:
                     ),
                 )
             ],
-            **flow_kwargs,
+            **{
+                PLAN_CONTEXT_PENDING_USER: connection.user,
+                PLAN_CONTEXT_PROMPT: delete_none_values(self.user_properties),
+                PLAN_CONTEXT_USER_PATH: self.source.get_user_path(),
+            },
         )
 
     def handle_existing_link(
