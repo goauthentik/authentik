@@ -20,6 +20,10 @@ To prompt users for their password on the same step as identifying themselves, a
 
 ## Captcha stage
 
+:::warning
+The Captcha stage you use must be configured to use the "Invisible" mode, otherwise the widget will be rendered incorrectly.
+:::
+
 To run a captcha in the background while the user is entering their identification, a Captcha stage can be selected here. If a Captcha stage is selected in the Identification stage, the Captcha stage should not be bound to the flow.
 
 ## Enrollment/Recovery Flow
