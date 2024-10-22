@@ -3369,6 +3369,46 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_stages_source.sourcestage"
                             },
                             "id": {
@@ -4304,6 +4344,7 @@
                         "authentik.enterprise.providers.google_workspace",
                         "authentik.enterprise.providers.microsoft_entra",
                         "authentik.enterprise.providers.rac",
+                        "authentik.enterprise.stages.authenticator_endpoint_gdtc",
                         "authentik.enterprise.stages.source",
                         "authentik.events"
                     ],
@@ -4400,6 +4441,7 @@
                         "authentik_providers_rac.racprovider",
                         "authentik_providers_rac.endpoint",
                         "authentik_providers_rac.racpropertymapping",
+                        "authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage",
                         "authentik_stages_source.sourcestage",
                         "authentik_events.event",
                         "authentik_events.notificationtransport",
@@ -6451,6 +6493,18 @@
                             "authentik_stages_authenticator_duo.delete_duodevice",
                             "authentik_stages_authenticator_duo.view_authenticatorduostage",
                             "authentik_stages_authenticator_duo.view_duodevice",
+                            "authentik_stages_authenticator_endpoint_gdtc.add_authenticatorendpointgdtcstage",
+                            "authentik_stages_authenticator_endpoint_gdtc.add_endpointdevice",
+                            "authentik_stages_authenticator_endpoint_gdtc.add_endpointdeviceconnection",
+                            "authentik_stages_authenticator_endpoint_gdtc.change_authenticatorendpointgdtcstage",
+                            "authentik_stages_authenticator_endpoint_gdtc.change_endpointdevice",
+                            "authentik_stages_authenticator_endpoint_gdtc.change_endpointdeviceconnection",
+                            "authentik_stages_authenticator_endpoint_gdtc.delete_authenticatorendpointgdtcstage",
+                            "authentik_stages_authenticator_endpoint_gdtc.delete_endpointdevice",
+                            "authentik_stages_authenticator_endpoint_gdtc.delete_endpointdeviceconnection",
+                            "authentik_stages_authenticator_endpoint_gdtc.view_authenticatorendpointgdtcstage",
+                            "authentik_stages_authenticator_endpoint_gdtc.view_endpointdevice",
+                            "authentik_stages_authenticator_endpoint_gdtc.view_endpointdeviceconnection",
                             "authentik_stages_authenticator_sms.add_authenticatorsmsstage",
                             "authentik_stages_authenticator_sms.add_smsdevice",
                             "authentik_stages_authenticator_sms.change_authenticatorsmsstage",
@@ -12107,6 +12161,18 @@
                             "authentik_stages_authenticator_duo.delete_duodevice",
                             "authentik_stages_authenticator_duo.view_authenticatorduostage",
                             "authentik_stages_authenticator_duo.view_duodevice",
+                            "authentik_stages_authenticator_endpoint_gdtc.add_authenticatorendpointgdtcstage",
+                            "authentik_stages_authenticator_endpoint_gdtc.add_endpointdevice",
+                            "authentik_stages_authenticator_endpoint_gdtc.add_endpointdeviceconnection",
+                            "authentik_stages_authenticator_endpoint_gdtc.change_authenticatorendpointgdtcstage",
+                            "authentik_stages_authenticator_endpoint_gdtc.change_endpointdevice",
+                            "authentik_stages_authenticator_endpoint_gdtc.change_endpointdeviceconnection",
+                            "authentik_stages_authenticator_endpoint_gdtc.delete_authenticatorendpointgdtcstage",
+                            "authentik_stages_authenticator_endpoint_gdtc.delete_endpointdevice",
+                            "authentik_stages_authenticator_endpoint_gdtc.delete_endpointdeviceconnection",
+                            "authentik_stages_authenticator_endpoint_gdtc.view_authenticatorendpointgdtcstage",
+                            "authentik_stages_authenticator_endpoint_gdtc.view_endpointdevice",
+                            "authentik_stages_authenticator_endpoint_gdtc.view_endpointdeviceconnection",
                             "authentik_stages_authenticator_sms.add_authenticatorsmsstage",
                             "authentik_stages_authenticator_sms.add_smsdevice",
                             "authentik_stages_authenticator_sms.change_authenticatorsmsstage",
@@ -12986,6 +13052,144 @@
                             "change_racpropertymapping",
                             "delete_racpropertymapping",
                             "view_racpropertymapping"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "flow_set": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "minLength": 1,
+                                "title": "Name"
+                            },
+                            "slug": {
+                                "type": "string",
+                                "maxLength": 50,
+                                "minLength": 1,
+                                "pattern": "^[-a-zA-Z0-9_]+$",
+                                "title": "Slug",
+                                "description": "Visible in the URL."
+                            },
+                            "title": {
+                                "type": "string",
+                                "minLength": 1,
+                                "title": "Title",
+                                "description": "Shown as the Title in Flow pages."
+                            },
+                            "designation": {
+                                "type": "string",
+                                "enum": [
+                                    "authentication",
+                                    "authorization",
+                                    "invalidation",
+                                    "enrollment",
+                                    "unenrollment",
+                                    "recovery",
+                                    "stage_configuration"
+                                ],
+                                "title": "Designation",
+                                "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
+                            },
+                            "policy_engine_mode": {
+                                "type": "string",
+                                "enum": [
+                                    "all",
+                                    "any"
+                                ],
+                                "title": "Policy engine mode"
+                            },
+                            "compatibility_mode": {
+                                "type": "boolean",
+                                "title": "Compatibility mode",
+                                "description": "Enable compatibility mode, increases compatibility with password managers on mobile devices."
+                            },
+                            "layout": {
+                                "type": "string",
+                                "enum": [
+                                    "stacked",
+                                    "content_left",
+                                    "content_right",
+                                    "sidebar_left",
+                                    "sidebar_right"
+                                ],
+                                "title": "Layout"
+                            },
+                            "denied_action": {
+                                "type": "string",
+                                "enum": [
+                                    "message_continue",
+                                    "message",
+                                    "continue"
+                                ],
+                                "title": "Denied action",
+                                "description": "Configure what should happen when a flow denies access to a user."
+                            }
+                        },
+                        "required": [
+                            "name",
+                            "slug",
+                            "title",
+                            "designation"
+                        ]
+                    },
+                    "title": "Flow set"
+                },
+                "configure_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Configure flow",
+                    "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
+                },
+                "friendly_name": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "minLength": 1,
+                    "title": "Friendly name"
+                },
+                "credentials": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "Credentials"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_authenticatorendpointgdtcstage",
+                            "change_authenticatorendpointgdtcstage",
+                            "delete_authenticatorendpointgdtcstage",
+                            "view_authenticatorendpointgdtcstage"
                         ]
                     },
                     "user": {

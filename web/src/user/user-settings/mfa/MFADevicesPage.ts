@@ -1,4 +1,5 @@
 import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { SentryIgnoredError } from "@goauthentik/common/errors";
 import { deviceTypeName } from "@goauthentik/common/labels";
 import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/elements/buttons/Dropdown";
@@ -10,7 +11,7 @@ import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/tab
 import "@goauthentik/user/user-settings/mfa/MFADeviceForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -89,7 +90,7 @@ export class MFADevicesPage extends Table<Device> {
 
     async deleteWrapper(device: Device) {
         const api = new AuthenticatorsApi(DEFAULT_CONFIG);
-        const id = { id: device.pk };
+        const id = { id: parseInt(device.pk, 10) };
         switch (device.type) {
             case "authentik_stages_authenticator_duo.DuoDevice":
                 return api.authenticatorsDuoDestroy(id);
@@ -102,7 +103,9 @@ export class MFADevicesPage extends Table<Device> {
             case "authentik_stages_authenticator_webauthn.WebAuthnDevice":
                 return api.authenticatorsWebauthnDestroy(id);
             default:
-                break;
+                throw new SentryIgnoredError(
+                    msg(str`Device type ${device.verboseName} cannot be deleted`),
+                );
         }
     }
 
