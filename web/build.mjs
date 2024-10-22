@@ -41,6 +41,7 @@ const definitions = {
 
 const otherFiles = [
     ["node_modules/@patternfly/patternfly/patternfly.min.css", "."],
+    ["node_modules/@patternfly/patternfly/patternfly-base.css", "."],
     ["node_modules/@patternfly/patternfly/assets/**", ".", "node_modules/@patternfly/patternfly/"],
     ["src/custom.css", "."],
     ["src/common/styles/**", "."],
@@ -79,6 +80,12 @@ const interfaces = [
     ["polyfill/poly.ts", "."],
 ];
 
+const extraTargets = [
+    ["sdk/index.ts", "sdk", { entryNames: "[dir]/[name]" }],
+    ["sdk/user-settings.ts", "sdk/user-settings", { entryNames: "[dir]/[name]" }],
+    ["sdk/flow.ts", "sdk/flow", { entryNames: "[dir]/[name]" }],
+];
+
 const baseArgs = {
     bundle: true,
     write: true,
@@ -101,7 +108,11 @@ function getVersion() {
     return version;
 }
 
-async function buildOneSource(source, dest) {
+function getAllTargets() {
+    return [...interfaces, ...extraTargets];
+}
+
+async function buildSingleTarget(source, dest, options) {
     const DIST = path.join(__dirname, "./dist", dest);
     console.log(`[${new Date(Date.now()).toISOString()}] Starting build for target ${source}`);
 
@@ -112,6 +123,7 @@ async function buildOneSource(source, dest) {
             entryPoints: [`./src/${source}`],
             entryNames: `[dir]/[name]-${getVersion()}`,
             outdir: DIST,
+            ...options,
         });
         const end = Date.now();
         console.log(
@@ -124,8 +136,10 @@ async function buildOneSource(source, dest) {
     }
 }
 
-async function buildAuthentik(interfaces) {
-    await Promise.allSettled(interfaces.map(([source, dest]) => buildOneSource(source, dest)));
+async function buildTargets(targets) {
+    await Promise.allSettled(
+        targets.map(([source, dest, options]) => buildSingleTarget(source, dest, options)),
+    );
 }
 
 let timeoutId = null;
@@ -135,7 +149,7 @@ function debouncedBuild() {
     }
     timeoutId = setTimeout(() => {
         console.clear();
-        buildAuthentik(interfaces);
+        buildTargets(getAllTargets());
     }, 250);
 }
 
@@ -143,7 +157,7 @@ if (process.argv.length > 2 && (process.argv[2] === "-h" || process.argv[2] === 
     console.log(`Build the authentikUI
 
 options:
-  -w, --watch: Build all ${interfaces.length} interfaces
+  -w, --watch: Build all ${getAllTargets().length} interfaces
   -p, --proxy: Build only the polyfills and the loading application
   -h, --help: This help message
 `);
@@ -163,11 +177,11 @@ if (process.argv.length > 2 && (process.argv[2] === "-w" || process.argv[2] === 
     });
 } else if (process.argv.length > 2 && (process.argv[2] === "-p" || process.argv[2] === "--proxy")) {
     // There's no watch-for-proxy, sorry.
-    await buildAuthentik(
+    await buildTargets(
         interfaces.filter(([_, dest]) => ["standalone/loading", "."].includes(dest)),
     );
     process.exit(0);
 } else {
     // And the fallback: just build it.
-    await buildAuthentik(interfaces);
+    await buildTargets(interfaces);
 }
