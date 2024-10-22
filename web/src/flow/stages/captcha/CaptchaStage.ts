@@ -6,7 +6,7 @@ import { BaseStage } from "@goauthentik/flow/stages/base";
 import type { TurnstileObject } from "turnstile-types";
 
 import { msg } from "@lit/localize";
-import { CSSResult, PropertyValues, html, nothing } from "lit";
+import { CSSResult, PropertyValues, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -45,9 +45,6 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
 
     @state()
     scriptElement?: HTMLScriptElement;
-
-    @property({ type: Boolean })
-    embedded = false;
 
     @property()
     onTokenChange: TokenHandler = (_token: string) => {
@@ -154,16 +151,10 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         if (this.captchaInteractive) {
             return html`${this.captchaContainer}`;
         }
-        if (this.embedded) {
-            return nothing;
-        }
         return html`<ak-empty-state loading header=${msg("Verifying...")}></ak-empty-state>`;
     }
 
     render() {
-        if (this.embedded) {
-            return this.renderBody();
-        }
         if (!this.challenge) {
             return html`<ak-empty-state loading> </ak-empty-state>`;
         }
