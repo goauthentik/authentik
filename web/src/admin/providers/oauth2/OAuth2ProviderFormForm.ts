@@ -122,10 +122,23 @@ export function renderForm(
             name="name"
             label=${msg("Name")}
             value=${ifDefined(provider?.name)}
-            .errorMessages=${errors?.name ?? []}
             required
         ></ak-text-input>
 
+        <ak-form-element-horizontal
+            name="authorizationFlow"
+            label=${msg("Authorization flow")}
+            ?required=${true}
+        >
+            <ak-flow-search
+                flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                .currentFlow=${provider?.authorizationFlow}
+                required
+            ></ak-flow-search>
+            <p class="pf-c-form__helper-text">
+                ${msg("Flow used when authorizing this provider.")}
+            </p>
+        </ak-form-element-horizontal>
         <ak-form-group expanded>
             <span slot="header"> ${msg("Protocol settings")} </span>
             <div slot="body" class="pf-c-form">
@@ -144,7 +157,6 @@ export function renderForm(
                     name="clientId"
                     label=${msg("Client ID")}
                     value="${first(provider?.clientId, randomString(40, ascii_letters + digits))}"
-                    .errorMessages=${errors?.clientId ?? []}
                     required
                 >
                 </ak-text-input>
@@ -156,26 +168,20 @@ export function renderForm(
                         randomString(128, ascii_letters + digits),
                     )}"
                     ?hidden=${!showClientSecret}
-                    .errorMessages=${errors?.clientSecret ?? []}
                 >
                 </ak-text-input>
                 <ak-textarea-input
                     name="redirectUris"
                     label=${msg("Redirect URIs/Origins (RegEx)")}
                     .value=${provider?.redirectUris}
-                    .errorMessages=${errors?.redirectUriHelp ?? []}
                     .bighelp=${redirectUriHelp}
                 >
                 </ak-textarea-input>
 
-                <ak-form-element-horizontal
-                    label=${msg("Signing Key")}
-                    name="signingKey"
-                    .errorMessages=${errors?.signingKey ?? []}
-                >
+                <ak-form-element-horizontal label=${msg("Signing Key")} name="signingKey">
                     <!-- NOTE: 'null' cast to 'undefined' on signingKey to satisfy Lit requirements -->
                     <ak-crypto-certificate-search
-                        certificate=${ifDefined(provider.signingKey ?? undefined)}
+                        certificate=${ifDefined(provider?.signingKey ?? undefined)}
                         singleton
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">${msg("Key used to sign the tokens.")}</p>
@@ -183,7 +189,7 @@ export function renderForm(
                 <ak-form-element-horizontal label=${msg("Encryption Key")} name="encryptionKey">
                     <!-- NOTE: 'null' cast to 'undefined' on encryptionKey to satisfy Lit requirements -->
                     <ak-crypto-certificate-search
-                        certificate=${ifDefined(provider.encryptionKey ?? undefined)}
+                        certificate=${ifDefined(provider?.encryptionKey ?? undefined)}
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">${msg("Key used to encrypt the tokens.")}</p>
                 </ak-form-element-horizontal>
@@ -191,7 +197,7 @@ export function renderForm(
         </ak-form-group>
 
         <ak-form-group>
-            <span slot="header"> ${msg("Flow settings")} </span>
+            <span slot="header"> ${msg("Advanced flow settings")} </span>
             <div slot="body" class="pf-c-form">
                 <ak-form-element-horizontal
                     name="authenticationFlow"
@@ -208,29 +214,14 @@ export function renderForm(
                     </p>
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
-                    name="authorizationFlow"
-                    label=${msg("Authorization flow")}
-                    .errorMessages=${errors?.authorizationFlow ?? []}
-                    ?required=${true}
-                >
-                    <ak-flow-search
-                        flowType=${FlowsInstancesListDesignationEnum.Authorization}
-                        .currentFlow=${provider?.authorizationFlow}
-                        required
-                    ></ak-flow-search>
-                    <p class="pf-c-form__helper-text">
-                        ${msg("Flow used when authorizing this provider.")}
-                    </p>
-                </ak-form-element-horizontal>
-                <ak-form-element-horizontal
                     label=${msg("Invalidation flow")}
                     name="invalidationFlow"
-                    .errorMessages=${errors?.invalidationFlow ?? []}
                     required
                 >
                     <ak-flow-search
                         flowType=${FlowsInstancesListDesignationEnum.Invalidation}
                         .currentFlow=${provider?.invalidationFlow}
+                        defaultFlowSlug="default-provider-invalidation-flow"
                         required
                     ></ak-flow-search>
                     <p class="pf-c-form__helper-text">
@@ -248,7 +239,6 @@ export function renderForm(
                     label=${msg("Access code validity")}
                     required
                     value="${first(provider?.accessCodeValidity, "minutes=1")}"
-                    .errorMessages=${errors?.accessCodeValidity ?? []}
                     .bighelp=${html`<p class="pf-c-form__helper-text">
                             ${msg("Configure how long access codes are valid for.")}
                         </p>
@@ -260,7 +250,6 @@ export function renderForm(
                     label=${msg("Access Token validity")}
                     value="${first(provider?.accessTokenValidity, "minutes=5")}"
                     required
-                    .errorMessages=${errors?.accessTokenValidity ?? []}
                     .bighelp=${html` <p class="pf-c-form__helper-text">
                             ${msg("Configure how long access tokens are valid for.")}
                         </p>
@@ -272,19 +261,14 @@ export function renderForm(
                     name="refreshTokenValidity"
                     label=${msg("Refresh Token validity")}
                     value="${first(provider?.refreshTokenValidity, "days=30")}"
-                    required
-                    .errorMessages=${errors?.refreshTokenValidity ?? []}
+                    ?required=${true}
                     .bighelp=${html` <p class="pf-c-form__helper-text">
                             ${msg("Configure how long refresh tokens are valid for.")}
                         </p>
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
                 >
                 </ak-text-input>
-                <ak-form-element-horizontal
-                    label=${msg("Scopes")}
-                    name="propertyMappings"
-                    .errorMessages=${errors?.propertyMappings ?? []}
-                >
+                <ak-form-element-horizontal label=${msg("Scopes")} name="propertyMappings">
                     <ak-dual-select-dynamic-selected
                         .provider=${oauth2PropertyMappingsProvider}
                         .selector=${makeOAuth2PropertyMappingsSelector(provider?.propertyMappings)}
@@ -332,11 +316,7 @@ export function renderForm(
         <ak-form-group>
             <span slot="header">${msg("Machine-to-Machine authentication settings")}</span>
             <div slot="body" class="pf-c-form">
-                <ak-form-element-horizontal
-                    label=${msg("Trusted OIDC Sources")}
-                    name="jwksSources"
-                    .errorMessages=${errors?.jwksSources ?? []}
-                >
+                <ak-form-element-horizontal label=${msg("Trusted OIDC Sources")} name="jwksSources">
                     <ak-dual-select-dynamic-selected
                         .provider=${oauth2SourcesProvider}
                         .selector=${makeSourceSelector(provider?.jwksSources)}

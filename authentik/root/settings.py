@@ -38,6 +38,7 @@ LANGUAGE_COOKIE_NAME = "authentik_language"
 SESSION_COOKIE_NAME = "authentik_session"
 SESSION_COOKIE_DOMAIN = CONFIG.get("cookie_domain", None)
 APPEND_SLASH = False
+X_FRAME_OPTIONS = "SAMEORIGIN"
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
@@ -90,6 +91,7 @@ TENANT_APPS = [
     "authentik.providers.scim",
     "authentik.rbac",
     "authentik.recovery",
+    "authentik.sources.kerberos",
     "authentik.sources.ldap",
     "authentik.sources.oauth",
     "authentik.sources.plex",

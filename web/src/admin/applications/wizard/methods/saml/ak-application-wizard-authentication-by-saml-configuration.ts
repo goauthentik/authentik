@@ -103,21 +103,6 @@ export class ApplicationWizardProviderSamlConfiguration extends BaseProviderPane
                         ${msg("Flow used when authorizing this provider.")}
                     </p>
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    name="invalidationFlow"
-                    label=${msg("Invalidation flow")}
-                    .errorMessages=${errors?.invalidationFlow ?? []}
-                    ?required=${true}
-                >
-                    <ak-flow-search
-                        flowType=${FlowsInstancesListDesignationEnum.Invalidation}
-                        .currentFlow=${provider?.invalidationFlow}
-                        required
-                    ></ak-flow-search>
-                    <p class="pf-c-form__helper-text">
-                        ${msg("Flow used when logging out of this provider.")}
-                    </p>
-                </ak-form-element-horizontal>
 
                 <ak-form-group .expanded=${true}>
                     <span slot="header"> ${msg("Protocol settings")} </span>
@@ -161,6 +146,39 @@ export class ApplicationWizardProviderSamlConfiguration extends BaseProviderPane
                 </ak-form-group>
 
                 <ak-form-group>
+                    <span slot="header"> ${msg("Advanced flow settings")} </span>
+                    <ak-form-element-horizontal
+                        name="authenticationFlow"
+                        label=${msg("Authentication flow")}
+                    >
+                        <ak-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                            .currentFlow=${provider?.authenticationFlow}
+                        ></ak-flow-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Flow used when a user access this provider and is not authenticated.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Invalidation flow")}
+                        name="invalidationFlow"
+                        required
+                    >
+                        <ak-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                            .currentFlow=${provider?.invalidationFlow}
+                            defaultFlowSlug="default-provider-invalidation-flow"
+                            required
+                        ></ak-flow-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Flow used when logging out of this provider.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                    </div>
+                </ak-form-group>
+                <ak-form-group>
                     <span slot="header"> ${msg("Advanced protocol settings")} </span>
                     <div slot="body" class="pf-c-form">
                         <ak-form-element-horizontal
@@ -181,52 +199,60 @@ export class ApplicationWizardProviderSamlConfiguration extends BaseProviderPane
                                 )}
                             </p>
                         </ak-form-element-horizontal>
-                        ${this.hasSigningKp
-                            ? html` <ak-form-element-horizontal name="signAssertion">
-                                      <label class="pf-c-switch">
-                                          <input
-                                              class="pf-c-switch__input"
-                                              type="checkbox"
-                                              ?checked=${first(provider?.signAssertion, true)}
-                                          />
-                                          <span class="pf-c-switch__toggle">
-                                              <span class="pf-c-switch__toggle-icon">
-                                                  <i class="fas fa-check" aria-hidden="true"></i>
+                        ${
+                            this.hasSigningKp
+                                ? html` <ak-form-element-horizontal name="signAssertion">
+                                          <label class="pf-c-switch">
+                                              <input
+                                                  class="pf-c-switch__input"
+                                                  type="checkbox"
+                                                  ?checked=${first(provider?.signAssertion, true)}
+                                              />
+                                              <span class="pf-c-switch__toggle">
+                                                  <span class="pf-c-switch__toggle-icon">
+                                                      <i
+                                                          class="fas fa-check"
+                                                          aria-hidden="true"
+                                                      ></i>
+                                                  </span>
                                               </span>
-                                          </span>
-                                          <span class="pf-c-switch__label"
-                                              >${msg("Sign assertions")}</span
-                                          >
-                                      </label>
-                                      <p class="pf-c-form__helper-text">
-                                          ${msg(
-                                              "When enabled, the assertion element of the SAML response will be signed.",
-                                          )}
-                                      </p>
-                                  </ak-form-element-horizontal>
-                                  <ak-form-element-horizontal name="signResponse">
-                                      <label class="pf-c-switch">
-                                          <input
-                                              class="pf-c-switch__input"
-                                              type="checkbox"
-                                              ?checked=${first(provider?.signResponse, false)}
-                                          />
-                                          <span class="pf-c-switch__toggle">
-                                              <span class="pf-c-switch__toggle-icon">
-                                                  <i class="fas fa-check" aria-hidden="true"></i>
+                                              <span class="pf-c-switch__label"
+                                                  >${msg("Sign assertions")}</span
+                                              >
+                                          </label>
+                                          <p class="pf-c-form__helper-text">
+                                              ${msg(
+                                                  "When enabled, the assertion element of the SAML response will be signed.",
+                                              )}
+                                          </p>
+                                      </ak-form-element-horizontal>
+                                      <ak-form-element-horizontal name="signResponse">
+                                          <label class="pf-c-switch">
+                                              <input
+                                                  class="pf-c-switch__input"
+                                                  type="checkbox"
+                                                  ?checked=${first(provider?.signResponse, false)}
+                                              />
+                                              <span class="pf-c-switch__toggle">
+                                                  <span class="pf-c-switch__toggle-icon">
+                                                      <i
+                                                          class="fas fa-check"
+                                                          aria-hidden="true"
+                                                      ></i>
+                                                  </span>
                                               </span>
-                                          </span>
-                                          <span class="pf-c-switch__label"
-                                              >${msg("Sign responses")}</span
-                                          >
-                                      </label>
-                                      <p class="pf-c-form__helper-text">
-                                          ${msg(
-                                              "When enabled, the assertion element of the SAML response will be signed.",
-                                          )}
-                                      </p>
-                                  </ak-form-element-horizontal>`
-                            : nothing}
+                                              <span class="pf-c-switch__label"
+                                                  >${msg("Sign responses")}</span
+                                              >
+                                          </label>
+                                          <p class="pf-c-form__helper-text">
+                                              ${msg(
+                                                  "When enabled, the assertion element of the SAML response will be signed.",
+                                              )}
+                                          </p>
+                                      </ak-form-element-horizontal>`
+                                : nothing
+                        }
 
                         <ak-form-element-horizontal
                             label=${msg("Verification Certificate")}

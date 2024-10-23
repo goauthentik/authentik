@@ -44,10 +44,7 @@ describe("Configure Oauth2 Providers", () => {
             [setTypeCreate, "selectProviderType", "OAuth2/OpenID Provider"],
             [clickButton, "Next"],
             [setTextInput, "name", newProviderName],
-            [setFormGroup, /Flow settings/, "open"],
-            [setSearchSelect, "authenticationFlow", "default-authentication-flow"],
             [setSearchSelect, "authorizationFlow", "default-provider-authorization-explicit-consent"],
-            [setSearchSelect, "invalidationFlow", "default-invalidation-flow"],
         ]);
 
         await ProviderWizardView.pause();
@@ -71,6 +68,26 @@ describe("Configure LDAP Providers", () => {
             // This will never not weird me out.
             [setSearchSelect, "authorizationFlow", "default-authentication-flow"],
             [setSearchSelect, "invalidationFlow", "default-invalidation-flow"],
+        ]);
+
+        await ProviderWizardView.pause();
+        await ProviderWizardView.nextButton.click();
+    });
+});
+
+describe("Configure Radius Providers", () => {
+    it("Should configure a simple Radius Provider", async () => {
+        const newProviderName = `New Radius Provider - ${randomId()}`;
+
+        await reachTheProvider();
+        await $("ak-wizard-page-type-create").waitForDisplayed();
+
+        // prettier-ignore
+        await fillOutFields([
+            [setTypeCreate, "selectProviderType", "Radius Provider"],
+            [clickButton, "Next"],
+            [setTextInput, "name", newProviderName],
+            [setSearchSelect, "authorizationFlow", "default-authentication-flow"],
         ]);
 
         await ProviderWizardView.pause();

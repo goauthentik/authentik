@@ -9022,6 +9022,24 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 <trans-unit id="s521681ed1d5ff814">
   <source>Log back into <x id="0" equiv-text="${this.challenge.applicationName}"/></source>
 </trans-unit>
+<trans-unit id="sc991a35f5e88d1d3">
+  <source>Encryption Key</source>
+</trans-unit>
+<trans-unit id="s8a598f7aef81c3bc">
+  <source>Key used to encrypt the tokens.</source>
+</trans-unit>
+<trans-unit id="sbfee780fa0a2c83e">
+  <source>Device type <x id="0" equiv-text="${device.verboseName}"/> cannot be deleted</source>
+</trans-unit>
+<trans-unit id="s336936629cdeb3e5">
+  <source>Stage used to verify users' browsers using Google Chrome Device Trust. This stage can be used in authentication/authorization flows.</source>
+</trans-unit>
+<trans-unit id="s85fe794c71b4ace8">
+  <source>Google Verified Access API</source>
+</trans-unit>
+<trans-unit id="s013620384af7c8b4">
+  <source>Device type <x id="0" equiv-text="${device.verboseName}"/> cannot be edited</source>
+</trans-unit>
     </body>
   </file>
 </xliff>

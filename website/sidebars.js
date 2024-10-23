@@ -282,6 +282,7 @@ export default {
                             },
                             items: [
                                 "add-secure-apps/flows-stages/stages/authenticator_duo/index",
+                                "add-secure-apps/flows-stages/stages/authenticator_endpoint_gdtc/index",
                                 "add-secure-apps/flows-stages/stages/authenticator_sms/index",
                                 "add-secure-apps/flows-stages/stages/authenticator_static/index",
                                 "add-secure-apps/flows-stages/stages/authenticator_totp/index",
@@ -476,6 +477,17 @@ export default {
                             label: "Protocols",
                             collapsed: true,
                             items: [
+                                {
+                                    type: "category",
+                                    label: "Kerberos",
+                                    link: {
+                                        type: "doc",
+                                        id: "users-sources/sources/protocols/kerberos/index",
+                                    },
+                                    items: [
+                                        "users-sources/sources/protocols/kerberos/browser",
+                                    ],
+                                },
                                 "users-sources/sources/protocols/ldap/index",
                                 "users-sources/sources/protocols/oauth/index",
                                 "users-sources/sources/protocols/saml/index",

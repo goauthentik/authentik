@@ -51,6 +51,10 @@ from authentik.enterprise.providers.microsoft_entra.models import (
     MicrosoftEntraProviderUser,
 )
 from authentik.enterprise.providers.rac.models import ConnectionToken
+from authentik.enterprise.stages.authenticator_endpoint_gdtc.models import (
+    EndpointDevice,
+    EndpointDeviceConnection,
+)
 from authentik.events.logs import LogEvent, capture_logs
 from authentik.events.models import SystemTask
 from authentik.events.utils import cleanse_dict
@@ -119,6 +123,8 @@ def excluded_models() -> list[type[Model]]:
         GoogleWorkspaceProviderGroup,
         MicrosoftEntraProviderUser,
         MicrosoftEntraProviderGroup,
+        EndpointDevice,
+        EndpointDeviceConnection,
     )
 
 

@@ -54,6 +54,7 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
             >
                 <ak-flow-search-no-default
                     flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                    defaultFlowSlug="default-provider-invalidation-flow"
                     required
                 ></ak-flow-search-no-default>
                 <p class="pf-c-form__helper-text">
