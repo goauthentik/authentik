@@ -236,8 +236,8 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                         <ak-dual-select-dynamic-selected
                             .provider=${sourcesProvider}
                             .selector=${makeSourcesSelector(this.instance?.sources)}
-                            available-label="${msg("Available Stages")}"
-                            selected-label="${msg("Selected Stages")}"
+                            available-label="${msg("Available Sources")}"
+                            selected-label="${msg("Selected Sources")}"
                         ></ak-dual-select-dynamic-selected>
                         <p class="pf-c-form__helper-text">
                             ${msg(

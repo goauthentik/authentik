@@ -550,7 +550,7 @@ class TokenView(View):
             # Keep same scopes as previous token
             scope=self.params.authorization_code.scope,
             auth_time=self.params.authorization_code.auth_time,
-            session_id=self.params.authorization_code.session_id,
+            session=self.params.authorization_code.session,
         )
         access_id_token = IDToken.new(
             self.provider,
@@ -578,7 +578,7 @@ class TokenView(View):
                 expires=refresh_token_expiry,
                 provider=self.provider,
                 auth_time=self.params.authorization_code.auth_time,
-                session_id=self.params.authorization_code.session_id,
+                session=self.params.authorization_code.session,
             )
             id_token = IDToken.new(
                 self.provider,
@@ -611,7 +611,7 @@ class TokenView(View):
             # Keep same scopes as previous token
             scope=self.params.refresh_token.scope,
             auth_time=self.params.refresh_token.auth_time,
-            session_id=self.params.refresh_token.session_id,
+            session=self.params.refresh_token.session,
         )
         access_token.id_token = IDToken.new(
             self.provider,
@@ -627,7 +627,7 @@ class TokenView(View):
             expires=refresh_token_expiry,
             provider=self.provider,
             auth_time=self.params.refresh_token.auth_time,
-            session_id=self.params.refresh_token.session_id,
+            session=self.params.refresh_token.session,
         )
         id_token = IDToken.new(
             self.provider,
@@ -685,13 +685,14 @@ class TokenView(View):
             raise DeviceCodeError("authorization_pending")
         now = timezone.now()
         access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
-        auth_event = get_login_event(self.request)
+        auth_event = get_login_event(self.params.device_code.session)
         access_token = AccessToken(
             provider=self.provider,
             user=self.params.device_code.user,
             expires=access_token_expiry,
             scope=self.params.device_code.scope,
             auth_time=auth_event.created if auth_event else now,
+            session=self.params.device_code.session,
         )
         access_token.id_token = IDToken.new(
             self.provider,

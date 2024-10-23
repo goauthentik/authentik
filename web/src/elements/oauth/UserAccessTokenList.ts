@@ -34,7 +34,7 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
     }
 
     checkbox = true;
-    order = "expires";
+    order = "-expires";
 
     columns(): TableColumn[] {
         return [
