@@ -1,13 +1,16 @@
 """authentik events signal listener"""
 
+from importlib import import_module
 from typing import Any
 
+from django.conf import settings
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from django.http import HttpRequest
+from rest_framework.request import Request
 
-from authentik.core.models import User
+from authentik.core.models import AuthenticatedSession, User
 from authentik.core.signals import login_failed, password_changed
 from authentik.events.apps import SYSTEM_TASK_STATUS
 from authentik.events.models import Event, EventAction, SystemTask
@@ -43,11 +46,19 @@ def on_user_logged_in(sender, request: HttpRequest, user: User, **_):
             kwargs[PLAN_CONTEXT_OUTPOST] = flow_plan.context[PLAN_CONTEXT_OUTPOST]
     event = Event.new(EventAction.LOGIN, **kwargs).from_http(request, user=user)
     request.session[SESSION_LOGIN_EVENT] = event
+    request.session.save()
 
 
-def get_login_event(request: HttpRequest) -> Event | None:
+def get_login_event(request_or_session: HttpRequest | AuthenticatedSession) -> Event | None:
     """Wrapper to get login event that can be mocked in tests"""
-    return request.session.get(SESSION_LOGIN_EVENT, None)
+    session = None
+    if isinstance(request_or_session, HttpRequest | Request):
+        session = request_or_session.session
+    if isinstance(request_or_session, AuthenticatedSession):
+        engine = import_module(settings.SESSION_ENGINE)
+        SessionStore = engine.SessionStore
+        session = SessionStore(request_or_session.session_key)
+    return session.get(SESSION_LOGIN_EVENT, None)
 
 
 @receiver(user_logged_out)

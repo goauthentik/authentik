@@ -118,7 +118,7 @@ class IDToken:
         id_token.auth_time = int(token.auth_time.timestamp())
 
         # We use the timestamp of the user's last successful login (EventAction.LOGIN) for auth_time
-        auth_event = get_login_event(request)
+        auth_event = get_login_event(token.session)
         if auth_event:
             # Also check which method was used for authentication
             method = auth_event.context.get(PLAN_CONTEXT_METHOD, "")
