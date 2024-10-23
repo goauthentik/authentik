@@ -50,9 +50,11 @@ def on_user_logged_in(sender, request: HttpRequest, user: User, **_):
     request.session.save()
 
 
-def get_login_event(request_or_session: HttpRequest | AuthenticatedSession) -> Event | None:
+def get_login_event(request_or_session: HttpRequest | AuthenticatedSession | None) -> Event | None:
     """Wrapper to get login event that can be mocked in tests"""
     session = None
+    if not request_or_session:
+        return None
     if isinstance(request_or_session, HttpRequest | Request):
         session = request_or_session.session
     if isinstance(request_or_session, AuthenticatedSession):
