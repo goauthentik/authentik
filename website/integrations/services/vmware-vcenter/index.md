@@ -14,7 +14,7 @@ sidebar_label: VMware vCenter
 > -- https://en.wikipedia.org/wiki/VCenter
 
 :::caution
-This requires VMware vCenter 8.03 or newer.
+Integration with authentik requires VMware vCenter 8.03 or newer.
 :::
 
 :::note
