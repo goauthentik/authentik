@@ -24,8 +24,13 @@ if TYPE_CHECKING:
     from authentik.providers.oauth2.models import BaseGrantModel, OAuth2Provider
 
 
+def hash_session_key(session_key: str) -> str:
+    """Hash the session key for inclusion in JWTs as `sid`"""
+    return sha256(session_key.encode("ascii")).hexdigest()
+
+
 class SubModes(models.TextChoices):
-    """Mode after which 'sub' attribute is generateed, for compatibility reasons"""
+    """Mode after which 'sub' attribute is generated, for compatibility reasons"""
 
     HASHED_USER_ID = "hashed_user_id", _("Based on the Hashed User ID")
     USER_ID = "user_id", _("Based on user ID")
@@ -120,7 +125,8 @@ class IDToken:
         now = timezone.now()
         id_token.iat = int(now.timestamp())
         id_token.auth_time = int(token.auth_time.timestamp())
-        id_token.sid = sha256(token.session.session_key.encode("ascii")).hexdigest()
+        if token.session:
+            id_token.sid = hash_session_key(token.session.session_key)
 
         # We use the timestamp of the user's last successful login (EventAction.LOGIN) for auth_time
         auth_event = get_login_event(token.session)
