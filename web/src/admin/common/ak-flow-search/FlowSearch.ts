@@ -60,6 +60,14 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
     @query("ak-search-select")
     search!: SearchSelect<T>;
 
+    /**
+     * When specified and the object instance does not have a flow selected, auto-select the flow with the given slug.
+     *
+     * @attr
+     */
+    @property()
+    defaultFlowSlug?: string;
+
     @property({ type: String })
     name: string | null | undefined;
 
@@ -96,9 +104,12 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
      * use this method, but several have more complex needs, such as relating to the brand, or just
      * returning false.
      */
-
     selected(flow: Flow): boolean {
-        return this.currentFlow === flow.pk;
+        let selected = this.currentFlow === flow.pk;
+        if (!this.currentFlow && this.defaultFlowSlug && flow.slug === this.defaultFlowSlug) {
+            selected = true;
+        }
+        return selected;
     }
 
     connectedCallback() {
