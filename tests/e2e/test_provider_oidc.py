@@ -157,6 +157,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         body = loads(self.driver.find_element(By.CSS_SELECTOR, "pre").text)
 
         self.assertEqual(body["IDTokenClaims"]["nickname"], self.user.username)
+        self.assertEqual(body["IDTokenClaims"]["amr"], ["pwd"])
         self.assertEqual(body["UserInfo"]["nickname"], self.user.username)
 
         self.assertEqual(body["IDTokenClaims"]["name"], self.user.name)

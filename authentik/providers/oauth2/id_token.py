@@ -1,6 +1,7 @@
 """id_token utils"""
 
 from dataclasses import asdict, dataclass, field
+from hashlib import sha256
 from typing import TYPE_CHECKING, Any
 
 from django.db import models
@@ -51,7 +52,8 @@ class IDToken:
     and potentially other requested Claims. The ID Token is represented as a
     JSON Web Token (JWT) [JWT].
 
-    https://openid.net/specs/openid-connect-core-1_0.html#IDToken"""
+    https://openid.net/specs/openid-connect-core-1_0.html#IDToken
+    https://www.iana.org/assignments/jwt/jwt.xhtml"""
 
     # Issuer, https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.1
     iss: str | None = None
@@ -79,6 +81,8 @@ class IDToken:
     nonce: str | None = None
     # Access Token hash value, http://openid.net/specs/openid-connect-core-1_0.html
     at_hash: str | None = None
+    # Session ID, https://openid.net/specs/openid-connect-frontchannel-1_0.html#ClaimsContents
+    sid: str | None = None
 
     claims: dict[str, Any] = field(default_factory=dict)
 
@@ -116,6 +120,7 @@ class IDToken:
         now = timezone.now()
         id_token.iat = int(now.timestamp())
         id_token.auth_time = int(token.auth_time.timestamp())
+        id_token.sid = sha256(token.session.session_key.encode("ascii")).hexdigest()
 
         # We use the timestamp of the user's last successful login (EventAction.LOGIN) for auth_time
         auth_event = get_login_event(token.session)

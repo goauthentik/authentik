@@ -7,6 +7,7 @@ from django.apps.registry import Apps
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 from authentik.lib.migrations import progress_bar
 
+
 def migrate_session(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     AuthenticatedSession = apps.get_model("authentik_core", "authenticatedsession")
     AuthorizationCode = apps.get_model("authentik_providers_oauth2", "authorizationcode")
@@ -19,12 +20,19 @@ def migrate_session(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     for session in progress_bar(AuthenticatedSession.objects.using(db_alias).all()):
         session_ids[sha256(session.session_key.encode("ascii")).hexdigest()] = session.session_key
     for model in [AuthorizationCode, AccessToken, RefreshToken]:
-        print(f"\nAdding session to {model._meta.verbose_name}, this might take a couple of minutes...")
+        print(
+            f"\nAdding session to {model._meta.verbose_name}, this might take a couple of minutes..."
+        )
         for code in progress_bar(model.objects.using(db_alias).all()):
             if code.session_id_old not in session_ids:
                 continue
-            code.session = AuthenticatedSession.objects.using(db_alias).filter(session_key=session_ids[code.session_id_old]).first()
+            code.session = (
+                AuthenticatedSession.objects.using(db_alias)
+                .filter(session_key=session_ids[code.session_id_old])
+                .first()
+            )
             code.save()
+
 
 class Migration(migrations.Migration):
 
