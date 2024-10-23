@@ -309,9 +309,7 @@ export default {
                                 type: "doc",
                                 id: "add-secure-apps/flows-stages/bindings/index",
                             },
-                            items: [
-                                "work_with_bindings",
-                            ],
+                            items: ["work_with_bindings"],
                         },
                     ],
                 },
