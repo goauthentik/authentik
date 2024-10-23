@@ -6,6 +6,10 @@ import { TemplateResult, html } from "lit";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
 
+export const DOM_PURIFY_STRICT: DOMPurify.Config = {
+    ALLOWED_TAGS: ["#text"],
+};
+
 export function purify(input: TemplateResult): TemplateResult {
     return html`${until(
         (async () => {
