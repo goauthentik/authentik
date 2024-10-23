@@ -233,15 +233,19 @@ func (a *APIController) AddWSHandler(handler WSHandler) {
 	a.wsHandlers = append(a.wsHandlers, handler)
 }
 
+func (a *APIController) SendWS(inst WebsocketInstruction, args map[string]interface{}) error {
+	msg := websocketMessage{
+		Instruction: inst,
+		Args:        args,
+	}
+	err := a.wsConn.WriteJSON(msg)
+	return err
+}
+
 func (a *APIController) SendWSHello(args map[string]interface{}) error {
 	allArgs := a.getWebsocketPingArgs()
 	for key, value := range args {
 		allArgs[key] = value
 	}
-	aliveMsg := websocketMessage{
-		Instruction: WebsocketInstructionHello,
-		Args:        allArgs,
-	}
-	err := a.wsConn.WriteJSON(aliveMsg)
-	return err
+	return a.SendWS(WebsocketInstructionHello, args)
 }

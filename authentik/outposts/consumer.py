@@ -37,7 +37,6 @@ class WebsocketMessageInstruction(IntEnum):
     # Provider specific message
     PROVIDER_SPECIFIC = 3
 
-
 @dataclass(slots=True)
 class WebsocketMessage:
     """Complete Websocket Message that is being sent"""
@@ -127,6 +126,12 @@ class OutpostConsumer(JsonWebsocketConsumer):
             state.fips_enabled = msg.args.pop("fipsEnabled", False)
             state.args.update(msg.args)
         elif msg.instruction == WebsocketMessageInstruction.ACK:
+            return
+        elif msg.instruction == WebsocketMessageInstruction.PROVIDER_SPECIFIC:
+            if "response_channel" not in msg.args:
+                return
+            self.logger.debug("Posted response to channel", msg=msg)
+            async_to_sync(self.channel_layer.send)(msg.args.get("response_channel"), content)
             return
         GAUGE_OUTPOSTS_LAST_UPDATE.labels(
             tenant=connection.schema_name,
