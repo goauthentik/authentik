@@ -1,3 +1,5 @@
+import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
+import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
@@ -70,7 +72,8 @@ export class RadiusProviderFormPage extends WithBrandConfig(BaseProviderForm<Rad
     // weird-- we're looking up Authentication flows, but we're storing them in the Authorization
     // field of the target Provider.
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html`
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -80,7 +83,7 @@ export class RadiusProviderFormPage extends WithBrandConfig(BaseProviderForm<Rad
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Authentication flow")}
-                ?required=${true}
+                required
                 name="authorizationFlow"
             >
                 <ak-branded-flow-search
@@ -112,12 +115,12 @@ export class RadiusProviderFormPage extends WithBrandConfig(BaseProviderForm<Rad
                 </p>
             </ak-form-element-horizontal>
 
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Shared secret")}
-                        ?required=${true}
+                        required
                         name="sharedSecret"
                     >
                         <input
@@ -132,7 +135,7 @@ export class RadiusProviderFormPage extends WithBrandConfig(BaseProviderForm<Rad
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Client Networks")}
-                        ?required=${true}
+                        required
                         name="clientNetworks"
                     >
                         <input
@@ -161,7 +164,28 @@ export class RadiusProviderFormPage extends WithBrandConfig(BaseProviderForm<Rad
                         ></ak-dual-select-dynamic-selected>
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>`;
+            </ak-form-group>
+            <ak-form-group>
+                <span slot="header"> ${msg("Advanced flow settings")} </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("Invalidation flow")}
+                        name="invalidationFlow"
+                        required
+                    >
+                        <ak-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                            .currentFlow=${this.instance?.invalidationFlow}
+                            defaultFlowSlug="default-provider-invalidation-flow"
+                            required
+                        ></ak-flow-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Flow used when logging out of this provider.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                </div></ak-form-group
+            >
+        `;
     }
 }
 

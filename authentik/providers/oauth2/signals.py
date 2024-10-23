@@ -1,5 +1,3 @@
-from hashlib import sha256
-
 from django.contrib.auth.signals import user_logged_out
 from django.dispatch import receiver
 from django.http import HttpRequest
@@ -13,5 +11,4 @@ def user_logged_out_oauth_access_token(sender, request: HttpRequest, user: User,
     """Revoke access tokens upon user logout"""
     if not request.session or not request.session.session_key:
         return
-    hashed_session_key = sha256(request.session.session_key.encode("ascii")).hexdigest()
-    AccessToken.objects.filter(user=user, session_id=hashed_session_key).delete()
+    AccessToken.objects.filter(user=user, session__session_key=request.session.session_key).delete()

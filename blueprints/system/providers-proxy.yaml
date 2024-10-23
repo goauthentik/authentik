@@ -14,11 +14,7 @@ entries:
       expression: |
         # This mapping is used by the authentik proxy. It passes extra user attributes,
         # which are used for example for the HTTP-Basic Authentication mapping.
-        session_id = None
-        if "token" in request.context:
-            session_id = request.context.get("token").session_id
         return {
-            "sid": session_id,
             "ak_proxy": {
                 "user_attributes": request.user.group_attributes(request),
                 "is_superuser": request.user.is_superuser,
