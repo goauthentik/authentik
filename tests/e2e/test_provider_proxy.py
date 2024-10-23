@@ -2,6 +2,7 @@
 
 from base64 import b64encode
 from dataclasses import asdict
+from json import loads
 from sys import platform
 from time import sleep
 from typing import Any
@@ -10,6 +11,7 @@ from unittest.case import skip, skipUnless
 from channels.testing import ChannelsLiveServerTestCase
 from docker.client import DockerClient, from_env
 from docker.models.containers import Container
+from jwt import decode
 from selenium.webdriver.common.by import By
 
 from authentik.blueprints.tests import apply_blueprint, reconcile_app
@@ -115,8 +117,15 @@ class TestProviderProxy(SeleniumTestCase):
         sleep(1)
 
         full_body_text = self.driver.find_element(By.CSS_SELECTOR, "pre").text
-        self.assertIn(f"X-Authentik-Username: {self.user.username}", full_body_text)
-        self.assertIn("X-Foo: bar", full_body_text)
+        body = loads(full_body_text)
+
+        self.assertEqual(body["headers"]["X-Authentik-Username"], [self.user.username])
+        self.assertEqual(body["headers"]["X-Foo"], ["bar"])
+        raw_jwt: str = body["headers"]["X-Authentik-Jwt"][0]
+        jwt = decode(raw_jwt, options={"verify_signature": False})
+
+        self.assertIsNotNone(jwt["sid"])
+        self.assertIsNotNone(jwt["ak_proxy"])
 
         self.driver.get("http://localhost:9000/outpost.goauthentik.io/sign_out")
         sleep(2)
