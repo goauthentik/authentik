@@ -5,6 +5,7 @@ import {
     TITLE_DEFAULT,
 } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
+import { purify } from "@goauthentik/common/purify";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { first } from "@goauthentik/common/utils";
 import { WebsocketClient } from "@goauthentik/common/ws";
@@ -518,9 +519,13 @@ export class FlowExecutor extends Interface implements StageHost {
                                             <ul class="pf-c-list pf-m-inline">
                                                 ${this.brand?.uiFooterLinks?.map((link) => {
                                                     if (link.href) {
-                                                        return html`<li>
-                                                            <a href="${link.href}">${link.name}</a>
-                                                        </li>`;
+                                                        return html`${purify(
+                                                            html`<li>
+                                                                <a href="${link.href}"
+                                                                    >${link.name}</a
+                                                                >
+                                                            </li>`,
+                                                        )}`;
                                                     }
                                                     return html`<li>
                                                         <span>${link.name}</span>
