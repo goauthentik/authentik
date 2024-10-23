@@ -91,7 +91,7 @@ Create the provider with these settings:
 
 Optionally, you can use a policy to apply access restrictions to the application.
 
-## vCenter Setup
+## vCenter configuration
 
 1. Log in to VCenter with your local Administrator account. Using the menu in the left navigation bar, navigate to _Administration -> Single Sing-on -> Configuration_.
 
