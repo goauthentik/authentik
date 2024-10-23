@@ -2,9 +2,9 @@
 title: Bindings
 ---
 
-A binding is, simply put, a connection between two components (a flow, stage, policy, user, or group)_that adds additional content_ to one or more of those existing components.
+A binding is, simply put, a connection between two components (a flow, stage, policy, user, or group)_that adds additional content_ to one those existing components.
 
-Take the example of a stage binding. A stage binding connects a stage to a flow. The "additional content" contained in the stage is now added to the flow.
+Take the example of a *stage binding*. A stage binding connects a stage to a flow. The "additional content" contained in the stage is now added to the flow.
 
 Similarly, a policy binding connects a specific policy to a flow or to a stage. With the binding, the flow (or stage) will now have additional content (i.e. the policy rules).
 
@@ -12,6 +12,6 @@ You can also bind groups and users to another component (a policy, a stage, a fl
 
 Bindings are an important part of authentik; the majority of configuration options are set in bindings.
 
-Bindings are analyzed by the Flow Plan.
+Bindings are analyzed by the Flow Plan, which starts with the flow, then assesses all of the bound policies, and then runs them in order to build out the plan.
 
 It's important to remember that bindings are instantiated objects themselves, and conceptually can be considered as the "connector" between two components. This is why you might read about "binding a binding", because technically, a binding is "spliced" into another binding, in order to intercept and enforce the criteria defined in the second binding.
