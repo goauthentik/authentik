@@ -37,6 +37,7 @@ class WebsocketMessageInstruction(IntEnum):
     # Provider specific message
     PROVIDER_SPECIFIC = 3
 
+
 @dataclass(slots=True)
 class WebsocketMessage:
     """Complete Websocket Message that is being sent"""

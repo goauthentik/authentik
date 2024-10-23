@@ -9,8 +9,9 @@ from channels.layers import get_channel_layer
 from channels_redis.pubsub import RedisPubSubChannelLayer
 from requests.adapters import BaseAdapter
 from requests.models import PreparedRequest, Response
-from structlog.stdlib import get_logger
 from requests.utils import CaseInsensitiveDict
+from structlog.stdlib import get_logger
+
 from authentik.outposts.models import Outpost
 
 
@@ -39,6 +40,7 @@ class OutpostPreparedRequest:
     @property
     def response_channel(self) -> str:
         return f"authentik_outpost_http_response_{self.uid}"
+
 
 class OutpostHTTPAdapter(BaseAdapter):
     """Requests Adapter that sends HTTP requests via a specified Outpost"""
@@ -76,9 +78,9 @@ class OutpostHTTPAdapter(BaseAdapter):
                 "request": asdict(converted),
             },
         )
-        self.__logger.debug("receiving HTTP response from outpost",uid=converted.uid)
+        self.__logger.debug("receiving HTTP response from outpost", uid=converted.uid)
         raw_response = async_to_sync(self.__layer.receive)(
             converted.response_channel,
         )
-        self.__logger.debug("received HTTP response from outpost",uid=converted.uid)
+        self.__logger.debug("received HTTP response from outpost", uid=converted.uid)
         return self.parse_response(raw_response.get("args", {}).get("response", {}), request)
