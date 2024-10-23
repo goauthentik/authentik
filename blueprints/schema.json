@@ -1089,6 +1089,166 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_sources_kerberos.kerberossource"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_sources_kerberos.kerberossource_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_sources_kerberos.kerberossource"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_sources_kerberos.kerberossource"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
+                                "const": "authentik_sources_kerberos.kerberossourcepropertymapping"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_sources_kerberos.kerberossourcepropertymapping_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_sources_kerberos.kerberossourcepropertymapping"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_sources_kerberos.kerberossourcepropertymapping"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
+                                "const": "authentik_sources_kerberos.userkerberossourceconnection"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_sources_kerberos.userkerberossourceconnection_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_sources_kerberos.userkerberossourceconnection"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_sources_kerberos.userkerberossourceconnection"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
+                                "const": "authentik_sources_kerberos.groupkerberossourceconnection"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_sources_kerberos.groupkerberossourceconnection_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_sources_kerberos.groupkerberossourceconnection"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_sources_kerberos.groupkerberossourceconnection"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_sources_ldap.ldapsource"
                             },
                             "id": {
@@ -4311,6 +4471,7 @@
                         "authentik.providers.scim",
                         "authentik.rbac",
                         "authentik.recovery",
+                        "authentik.sources.kerberos",
                         "authentik.sources.ldap",
                         "authentik.sources.oauth",
                         "authentik.sources.plex",
@@ -4384,6 +4545,10 @@
                         "authentik_providers_scim.scimprovider",
                         "authentik_providers_scim.scimmapping",
                         "authentik_rbac.role",
+                        "authentik_sources_kerberos.kerberossource",
+                        "authentik_sources_kerberos.kerberossourcepropertymapping",
+                        "authentik_sources_kerberos.userkerberossourceconnection",
+                        "authentik_sources_kerberos.groupkerberossourceconnection",
                         "authentik_sources_ldap.ldapsource",
                         "authentik_sources_ldap.ldapsourcepropertymapping",
                         "authentik_sources_oauth.oauthsource",
@@ -6413,6 +6578,22 @@
                             "authentik_rbac.view_role",
                             "authentik_rbac.view_system_info",
                             "authentik_rbac.view_system_settings",
+                            "authentik_sources_kerberos.add_groupkerberossourceconnection",
+                            "authentik_sources_kerberos.add_kerberossource",
+                            "authentik_sources_kerberos.add_kerberossourcepropertymapping",
+                            "authentik_sources_kerberos.add_userkerberossourceconnection",
+                            "authentik_sources_kerberos.change_groupkerberossourceconnection",
+                            "authentik_sources_kerberos.change_kerberossource",
+                            "authentik_sources_kerberos.change_kerberossourcepropertymapping",
+                            "authentik_sources_kerberos.change_userkerberossourceconnection",
+                            "authentik_sources_kerberos.delete_groupkerberossourceconnection",
+                            "authentik_sources_kerberos.delete_kerberossource",
+                            "authentik_sources_kerberos.delete_kerberossourcepropertymapping",
+                            "authentik_sources_kerberos.delete_userkerberossourceconnection",
+                            "authentik_sources_kerberos.view_groupkerberossourceconnection",
+                            "authentik_sources_kerberos.view_kerberossource",
+                            "authentik_sources_kerberos.view_kerberossourcepropertymapping",
+                            "authentik_sources_kerberos.view_userkerberossourceconnection",
                             "authentik_sources_ldap.add_ldapsource",
                             "authentik_sources_ldap.add_ldapsourcepropertymapping",
                             "authentik_sources_ldap.change_ldapsource",
@@ -6649,6 +6830,319 @@
                             "change_role",
                             "delete_role",
                             "view_role"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_sources_kerberos.kerberossource": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name",
+                    "description": "Source's display Name."
+                },
+                "slug": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "minLength": 1,
+                    "pattern": "^[-a-zA-Z0-9_]+$",
+                    "title": "Slug",
+                    "description": "Internal source name, used in URLs."
+                },
+                "enabled": {
+                    "type": "boolean",
+                    "title": "Enabled"
+                },
+                "authentication_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Authentication flow",
+                    "description": "Flow to use when authenticating existing users."
+                },
+                "enrollment_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Enrollment flow",
+                    "description": "Flow to use when enrolling new users."
+                },
+                "user_property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "User property mappings"
+                },
+                "group_property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Group property mappings"
+                },
+                "policy_engine_mode": {
+                    "type": "string",
+                    "enum": [
+                        "all",
+                        "any"
+                    ],
+                    "title": "Policy engine mode"
+                },
+                "user_matching_mode": {
+                    "type": "string",
+                    "enum": [
+                        "identifier",
+                        "email_link",
+                        "email_deny",
+                        "username_link",
+                        "username_deny"
+                    ],
+                    "title": "User matching mode",
+                    "description": "How the source determines if an existing user should be authenticated or a new user enrolled."
+                },
+                "user_path_template": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "User path template"
+                },
+                "icon": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Icon"
+                },
+                "group_matching_mode": {
+                    "type": "string",
+                    "enum": [
+                        "identifier",
+                        "name_link",
+                        "name_deny"
+                    ],
+                    "title": "Group matching mode",
+                    "description": "How the source determines if an existing group should be used or a new group created."
+                },
+                "realm": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Realm",
+                    "description": "Kerberos realm"
+                },
+                "krb5_conf": {
+                    "type": "string",
+                    "title": "Krb5 conf",
+                    "description": "Custom krb5.conf to use. Uses the system one by default"
+                },
+                "sync_users": {
+                    "type": "boolean",
+                    "title": "Sync users",
+                    "description": "Sync users from Kerberos into authentik"
+                },
+                "sync_users_password": {
+                    "type": "boolean",
+                    "title": "Sync users password",
+                    "description": "When a user changes their password, sync it back to Kerberos"
+                },
+                "sync_principal": {
+                    "type": "string",
+                    "title": "Sync principal",
+                    "description": "Principal to authenticate to kadmin for sync."
+                },
+                "sync_password": {
+                    "type": "string",
+                    "title": "Sync password",
+                    "description": "Password to authenticate to kadmin for sync"
+                },
+                "sync_keytab": {
+                    "type": "string",
+                    "title": "Sync keytab",
+                    "description": "Keytab to authenticate to kadmin for sync. Must be base64-encoded or in the form TYPE:residual"
+                },
+                "sync_ccache": {
+                    "type": "string",
+                    "title": "Sync ccache",
+                    "description": "Credentials cache to authenticate to kadmin for sync. Must be in the form TYPE:residual"
+                },
+                "spnego_server_name": {
+                    "type": "string",
+                    "title": "Spnego server name",
+                    "description": "Force the use of a specific server name for SPNEGO"
+                },
+                "spnego_keytab": {
+                    "type": "string",
+                    "title": "Spnego keytab",
+                    "description": "SPNEGO keytab base64-encoded or path to keytab in the form FILE:path"
+                },
+                "spnego_ccache": {
+                    "type": "string",
+                    "title": "Spnego ccache",
+                    "description": "Credential cache to use for SPNEGO in form type:residual"
+                },
+                "password_login_update_internal_password": {
+                    "type": "boolean",
+                    "title": "Password login update internal password",
+                    "description": "If enabled, the authentik-stored password will be updated upon login with the Kerberos password backend"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_sources_kerberos.kerberossource_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_kerberossource",
+                            "change_kerberossource",
+                            "delete_kerberossource",
+                            "view_kerberossource"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_sources_kerberos.kerberossourcepropertymapping": {
+            "type": "object",
+            "properties": {
+                "managed": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "minLength": 1,
+                    "title": "Managed by authentik",
+                    "description": "Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update."
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "expression": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Expression"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_sources_kerberos.kerberossourcepropertymapping_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_kerberossourcepropertymapping",
+                            "change_kerberossourcepropertymapping",
+                            "delete_kerberossourcepropertymapping",
+                            "view_kerberossourcepropertymapping"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_sources_kerberos.userkerberossourceconnection": {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "type": "integer",
+                    "title": "User"
+                },
+                "identifier": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Identifier"
+                },
+                "icon": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Icon"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_sources_kerberos.userkerberossourceconnection_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_userkerberossourceconnection",
+                            "change_userkerberossourceconnection",
+                            "delete_userkerberossourceconnection",
+                            "view_userkerberossourceconnection"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_sources_kerberos.groupkerberossourceconnection": {
+            "type": "object",
+            "properties": {
+                "icon": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Icon"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_sources_kerberos.groupkerberossourceconnection_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_groupkerberossourceconnection",
+                            "change_groupkerberossourceconnection",
+                            "delete_groupkerberossourceconnection",
+                            "view_groupkerberossourceconnection"
                         ]
                     },
                     "user": {
@@ -10544,7 +11038,8 @@
                         "enum": [
                             "authentik.core.auth.InbuiltBackend",
                             "authentik.core.auth.TokenBackend",
-                            "authentik.sources.ldap.auth.LDAPBackend"
+                            "authentik.sources.ldap.auth.LDAPBackend",
+                            "authentik.sources.kerberos.auth.KerberosBackend"
                         ],
                         "title": "Backends"
                     },
@@ -12081,6 +12576,22 @@
                             "authentik_rbac.view_role",
                             "authentik_rbac.view_system_info",
                             "authentik_rbac.view_system_settings",
+                            "authentik_sources_kerberos.add_groupkerberossourceconnection",
+                            "authentik_sources_kerberos.add_kerberossource",
+                            "authentik_sources_kerberos.add_kerberossourcepropertymapping",
+                            "authentik_sources_kerberos.add_userkerberossourceconnection",
+                            "authentik_sources_kerberos.change_groupkerberossourceconnection",
+                            "authentik_sources_kerberos.change_kerberossource",
+                            "authentik_sources_kerberos.change_kerberossourcepropertymapping",
+                            "authentik_sources_kerberos.change_userkerberossourceconnection",
+                            "authentik_sources_kerberos.delete_groupkerberossourceconnection",
+                            "authentik_sources_kerberos.delete_kerberossource",
+                            "authentik_sources_kerberos.delete_kerberossourcepropertymapping",
+                            "authentik_sources_kerberos.delete_userkerberossourceconnection",
+                            "authentik_sources_kerberos.view_groupkerberossourceconnection",
+                            "authentik_sources_kerberos.view_kerberossource",
+                            "authentik_sources_kerberos.view_kerberossourcepropertymapping",
+                            "authentik_sources_kerberos.view_userkerberossourceconnection",
                             "authentik_sources_ldap.add_ldapsource",
                             "authentik_sources_ldap.add_ldapsourcepropertymapping",
                             "authentik_sources_ldap.change_ldapsource",

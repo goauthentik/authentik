@@ -477,6 +477,17 @@ export default {
                             label: "Protocols",
                             collapsed: true,
                             items: [
+                                {
+                                    type: "category",
+                                    label: "Kerberos",
+                                    link: {
+                                        type: "doc",
+                                        id: "users-sources/sources/protocols/kerberos/index",
+                                    },
+                                    items: [
+                                        "users-sources/sources/protocols/kerberos/browser",
+                                    ],
+                                },
                                 "users-sources/sources/protocols/ldap/index",
                                 "users-sources/sources/protocols/oauth/index",
                                 "users-sources/sources/protocols/saml/index",
