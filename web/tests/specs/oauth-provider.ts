@@ -32,21 +32,44 @@ async function fillOutFields(fields: FieldDesc[]) {
 }
 
 describe("Configure Oauth2 Providers", () => {
-    it("Should configure a simple LDAP Application", async () => {
+    it("Should configure a simple OAuth2 Provider", async () => {
         const newProviderName = `New OAuth2 Provider - ${randomId()}`;
 
         await reachTheProvider();
 
         await $("ak-wizard-page-type-create").waitForDisplayed();
-        await setTypeCreate("selectProviderType", "OAuth2/OpenID Provider");
-        await clickButton("Next");
 
         // prettier-ignore
         await fillOutFields([
+            [setTypeCreate, "selectProviderType", "OAuth2/OpenID Provider"],
+            [clickButton, "Next"],
             [setTextInput, "name", newProviderName],
-            [setFormGroup, "Flow settings", "open"],
+            [setFormGroup, /Flow settings/, "open"],
             [setSearchSelect, "authenticationFlow", "default-authentication-flow"],
             [setSearchSelect, "authorizationFlow", "default-provider-authorization-explicit-consent"],
+            [setSearchSelect, "invalidationFlow", "default-invalidation-flow"],
+        ]);
+
+        await ProviderWizardView.pause();
+        await ProviderWizardView.nextButton.click();
+    });
+});
+
+describe("Configure LDAP Providers", () => {
+    it("Should configure a simple LDAP Provider", async () => {
+        const newProviderName = `New LDAP Provider - ${randomId()}`;
+
+        await reachTheProvider();
+        await $("ak-wizard-page-type-create").waitForDisplayed();
+
+        // prettier-ignore
+        await fillOutFields([
+            [setTypeCreate, "selectProviderType", "LDAP Provider"],
+            [clickButton, "Next"],
+            [setTextInput, "name", newProviderName],
+            [setFormGroup, /Flow settings/, "open"],
+            // This will never not weird me out.
+            [setSearchSelect, "authorizationFlow", "default-authentication-flow"],
             [setSearchSelect, "invalidationFlow", "default-invalidation-flow"],
         ]);
 

@@ -1,6 +1,6 @@
 import { browser } from "@wdio/globals";
 import { match } from "ts-pattern";
-import { ChainablePromiseArray, Key } from "webdriverio";
+import { Key } from "webdriverio";
 
 export async function setSearchSelect(name: string, value: string) {
     const control = await (async () => {
@@ -21,23 +21,22 @@ export async function setSearchSelect(name: string, value: string) {
     await input.scrollIntoView();
     await input.click();
 
-    // Weirdly necessary because it's portals!
-    const searchBlock = await (
-        await $(`div[data-managed-for*="${name}"]`).$("ak-list-select")
-    ).shadow$$("button");
-
     // @ts-expect-error "Types break on shadow$$"
-    for (const button of searchBlock) {
-        if ((await button.getText()).includes(value)) {
-            target = button;
-            break;
+    const button = await (async () => {
+        for await (const button of $(`div[data-managed-for*="${name}"]`)
+            .$("ak-list-select")
+            .$$("button")) {
+            if ((await button.getText()).includes(value)) {
+                return button;
+            }
         }
-    }
+    })();
+
     // @ts-expect-error "TSC cannot tell if the `for` loop actually performs the assignment."
-    if (!target) {
+    if (!button.isExisting()) {
         throw new Error(`Expected to find an entry matching the spec ${value}`);
     }
-    await (await target).click();
+    await (await button).click();
     await browser.keys(Key.Tab);
 }
 
@@ -55,35 +54,44 @@ export async function setRadio(name: string, value: string) {
     await item.click();
 }
 
-browser.addCommand(
-    "findInside$",
-    async function (these: WebdriverIO.ElementArray, selector: string) {
-        // prettier-ignore
-        console.log("HERE!!!!!!!!!");
-        for await (const item of these) {
-            const wanted = item.$(selector);
-            if (wanted.isExisting()) {
-                return wanted;
-            }
-        }
-        return undefined;
-    },
-    true,
-);
-
-export async function setTypeCreate(name: string, value: string) {
+export async function setTypeCreate(name: string, value: string | RegExp) {
     const control = await $(`ak-wizard-page-type-create[name="${name}"]`);
     await control.scrollIntoView();
-    const selection = await $$("ak-type-create-grid-card").findInside$(`div*=${value}`);
-    await selection.scrollIntoView();
-    await selection.click();
+
+    const comparator =
+        typeof value === "string" ? (sample) => sample === value : (sample) => value.test(sample);
+
+    const card = await (async () => {
+        for await (const card of $("ak-wizard-page-type-create").$$(
+            '[data-ouid-component-type="ak-type-create-grid-card"]',
+        )) {
+            if (comparator(await card.$(".pf-c-card__title").getText())) {
+                return card;
+            }
+        }
+    })();
+
+    await card.scrollIntoView();
+    await card.click();
 }
 
-export async function setFormGroup(name: string, setting: "open" | "closed") {
-    const formGroup = await $(`.//span[contains(., "${name}")]`);
+export async function setFormGroup(name: string | RegExp, setting: "open" | "closed") {
+    const comparator =
+        typeof name === "string" ? (sample) => sample === name : (sample) => name.test(sample);
+
+    const formGroup = await (async () => {
+        for await (const group of $$("ak-form-group")) {
+            if (
+                comparator(await group.$("div.pf-c-form__field-group-header-title-text").getText())
+            ) {
+                return group;
+            }
+        }
+    })();
+
     await formGroup.scrollIntoView();
     const toggle = await formGroup.$("div.pf-c-form__field-group-toggle-button button");
-    await match([toggle.getAttribute("expanded"), setting])
+    await match([await toggle.getAttribute("aria-expanded"), setting])
         .with(["false", "open"], async () => await toggle.click())
         .with(["true", "closed"], async () => await toggle.click())
         .otherwise(async () => {});
