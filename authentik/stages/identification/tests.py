@@ -194,9 +194,7 @@ class TestIdentificationStage(FlowTestCase):
             password_fields=False,
             primary_action="Log in",
             response_errors={
-                "non_field_errors": [
-                    {"code": "invalid", "string": "Invalid captcha response: Unknown error"}
-                ]
+                "non_field_errors": [{"code": "invalid", "string": "Invalid captcha response"}]
             },
             sources=[
                 {
