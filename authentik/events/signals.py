@@ -26,6 +26,7 @@ from authentik.stages.user_write.signals import user_write
 from authentik.tenants.utils import get_current_tenant
 
 SESSION_LOGIN_EVENT = "login_event"
+_session_engine = import_module(settings.SESSION_ENGINE)
 
 
 @receiver(user_logged_in)
@@ -55,8 +56,7 @@ def get_login_event(request_or_session: HttpRequest | AuthenticatedSession) -> E
     if isinstance(request_or_session, HttpRequest | Request):
         session = request_or_session.session
     if isinstance(request_or_session, AuthenticatedSession):
-        engine = import_module(settings.SESSION_ENGINE)
-        SessionStore = engine.SessionStore
+        SessionStore = _session_engine.SessionStore
         session = SessionStore(request_or_session.session_key)
     return session.get(SESSION_LOGIN_EVENT, None)
 
