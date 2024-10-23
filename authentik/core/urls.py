@@ -5,7 +5,6 @@ from channels.sessions import CookieMiddleware
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.urls import path
-from django.views.decorators.csrf import ensure_csrf_cookie
 
 from authentik.core.api.applications import ApplicationViewSet
 from authentik.core.api.authenticated_sessions import AuthenticatedSessionViewSet
@@ -44,19 +43,19 @@ urlpatterns = [
     # Interfaces
     path(
         "if/admin/",
-        ensure_csrf_cookie(BrandDefaultRedirectView.as_view(template_name="if/admin.html")),
+        BrandDefaultRedirectView.as_view(template_name="if/admin.html"),
         name="if-admin",
     ),
     path(
         "if/user/",
-        ensure_csrf_cookie(BrandDefaultRedirectView.as_view(template_name="if/user.html")),
+        BrandDefaultRedirectView.as_view(template_name="if/user.html"),
         name="if-user",
     ),
     path(
         "if/flow/<slug:flow_slug>/",
         # FIXME: move this url to the flows app...also will cause all
         # of the reverse calls to be adjusted
-        ensure_csrf_cookie(FlowInterfaceView.as_view()),
+        FlowInterfaceView.as_view(),
         name="if-flow",
     ),
     # Fallback for WS
