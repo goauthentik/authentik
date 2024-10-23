@@ -210,6 +210,61 @@ class TestIdentificationStage(FlowTestCase):
             user_fields=["email"],
         )
 
+    @Mocker()
+    def test_invalid_with_captcha_retriable(self, mock: Mocker):
+        """Test with valid email and invalid captcha token in single step"""
+        mock.post(
+            "https://www.recaptcha.net/recaptcha/api/siteverify",
+            json={
+                "success": False,
+                "score": 0.5,
+                "error-codes": ["timeout-or-duplicate"],
+            },
+        )
+
+        captcha_stage = CaptchaStage.objects.create(
+            name="captcha",
+            public_key=RECAPTCHA_PUBLIC_KEY,
+            private_key=RECAPTCHA_PRIVATE_KEY,
+        )
+
+        self.stage.captcha_stage = captcha_stage
+        self.stage.save()
+
+        form_data = {
+            "uid_field": self.user.email,
+            "captcha_token": "FAILED",
+        }
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        response = self.client.post(url, form_data)
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-identification",
+            password_fields=False,
+            primary_action="Log in",
+            response_errors={
+                "non_field_errors": [
+                    {
+                        "code": "invalid",
+                        "string": "Invalid captcha response. Retrying may solve this issue.",
+                    }
+                ]
+            },
+            sources=[
+                {
+                    "challenge": {
+                        "component": "xak-flow-redirect",
+                        "to": "/source/oauth/login/test/",
+                    },
+                    "icon_url": "/static/authentik/sources/default.svg",
+                    "name": "test",
+                }
+            ],
+            show_source_labels=False,
+            user_fields=["email"],
+        )
+
     def test_invalid_with_username(self):
         """Test invalid with username (user exists but stage only allows email)"""
         form_data = {"uid_field": self.user.username}
