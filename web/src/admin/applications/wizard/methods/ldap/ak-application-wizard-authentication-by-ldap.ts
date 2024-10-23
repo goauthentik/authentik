@@ -62,6 +62,19 @@ export class ApplicationWizardApplicationDetails extends WithBrandConfig(BasePro
                         ${msg("Flow used for users to authenticate.")}
                     </p>
                 </ak-form-element-horizontal>
+                <ak-form-element-horizontal
+                    label=${msg("Unbind flow")}
+                    name="invalidationFlow"
+                    required
+                >
+                    <ak-branded-flow-search
+                        flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                        .currentFlow=${provider?.invalidationFlow}
+                        .brandFlow=${this.brand.flowInvalidation}
+                        required
+                    ></ak-branded-flow-search>
+                    <p class="pf-c-form__helper-text">${msg("Flow used for unbinding users.")}</p>
+                </ak-form-element-horizontal>
 
                 <ak-radio-input
                     label=${msg("Bind mode")}

@@ -130,7 +130,7 @@ export class LDAPProviderFormPage extends WithBrandConfig(BaseProviderForm<LDAPP
                 </p>
             </ak-form-element-horizontal>
 
-            <ak-form-group>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Flow settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
@@ -153,11 +153,12 @@ export class LDAPProviderFormPage extends WithBrandConfig(BaseProviderForm<LDAPP
                         name="invalidationFlow"
                         required
                     >
-                        <ak-flow-search
+                        <ak-branded-flow-search
                             flowType=${FlowsInstancesListDesignationEnum.Invalidation}
                             .currentFlow=${this.instance?.invalidationFlow}
+                            .brandFlow=${this.brand.flowInvalidation}
                             required
-                        ></ak-flow-search>
+                        ></ak-branded-flow-search>
                         <p class="pf-c-form__helper-text">
                             ${msg("Flow used for unbinding users.")}
                         </p>
