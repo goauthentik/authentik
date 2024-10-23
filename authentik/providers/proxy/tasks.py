@@ -1,6 +1,5 @@
 """proxy provider tasks"""
 
-
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.db import DatabaseError, InternalError, ProgrammingError
