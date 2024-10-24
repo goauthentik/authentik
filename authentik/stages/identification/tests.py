@@ -1,6 +1,7 @@
 """identification tests"""
 
 from django.urls import reverse
+from requests_mock import Mocker
 from rest_framework.exceptions import ValidationError
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
@@ -8,6 +9,8 @@ from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.sources.oauth.models import OAuthSource
+from authentik.stages.captcha.models import CaptchaStage
+from authentik.stages.captcha.tests import RECAPTCHA_PRIVATE_KEY, RECAPTCHA_PUBLIC_KEY
 from authentik.stages.identification.api import IdentificationStageSerializer
 from authentik.stages.identification.models import IdentificationStage, UserFields
 from authentik.stages.password import BACKEND_INBUILT
@@ -118,6 +121,135 @@ class TestIdentificationStage(FlowTestCase):
             primary_action="Log in",
             response_errors={
                 "non_field_errors": [{"code": "invalid", "string": "Failed to authenticate."}]
+            },
+            sources=[
+                {
+                    "challenge": {
+                        "component": "xak-flow-redirect",
+                        "to": "/source/oauth/login/test/",
+                    },
+                    "icon_url": "/static/authentik/sources/default.svg",
+                    "name": "test",
+                }
+            ],
+            show_source_labels=False,
+            user_fields=["email"],
+        )
+
+    @Mocker()
+    def test_valid_with_captcha(self, mock: Mocker):
+        """Test with valid email and captcha token in single step"""
+        mock.post(
+            "https://www.recaptcha.net/recaptcha/api/siteverify",
+            json={
+                "success": True,
+                "score": 0.5,
+            },
+        )
+
+        captcha_stage = CaptchaStage.objects.create(
+            name="captcha",
+            public_key=RECAPTCHA_PUBLIC_KEY,
+            private_key=RECAPTCHA_PRIVATE_KEY,
+        )
+        self.stage.captcha_stage = captcha_stage
+        self.stage.save()
+
+        form_data = {"uid_field": self.user.email, "captcha_token": "PASSED"}
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        response = self.client.post(url, form_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+
+    @Mocker()
+    def test_invalid_with_captcha(self, mock: Mocker):
+        """Test with valid email and invalid captcha token in single step"""
+        mock.post(
+            "https://www.recaptcha.net/recaptcha/api/siteverify",
+            json={
+                "success": False,
+                "score": 0.5,
+            },
+        )
+
+        captcha_stage = CaptchaStage.objects.create(
+            name="captcha",
+            public_key=RECAPTCHA_PUBLIC_KEY,
+            private_key=RECAPTCHA_PRIVATE_KEY,
+        )
+
+        self.stage.captcha_stage = captcha_stage
+        self.stage.save()
+
+        form_data = {
+            "uid_field": self.user.email,
+            "captcha_token": "FAILED",
+        }
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        response = self.client.post(url, form_data)
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-identification",
+            password_fields=False,
+            primary_action="Log in",
+            response_errors={
+                "non_field_errors": [{"code": "invalid", "string": "Invalid captcha response"}]
+            },
+            sources=[
+                {
+                    "challenge": {
+                        "component": "xak-flow-redirect",
+                        "to": "/source/oauth/login/test/",
+                    },
+                    "icon_url": "/static/authentik/sources/default.svg",
+                    "name": "test",
+                }
+            ],
+            show_source_labels=False,
+            user_fields=["email"],
+        )
+
+    @Mocker()
+    def test_invalid_with_captcha_retriable(self, mock: Mocker):
+        """Test with valid email and invalid captcha token in single step"""
+        mock.post(
+            "https://www.recaptcha.net/recaptcha/api/siteverify",
+            json={
+                "success": False,
+                "score": 0.5,
+                "error-codes": ["timeout-or-duplicate"],
+            },
+        )
+
+        captcha_stage = CaptchaStage.objects.create(
+            name="captcha",
+            public_key=RECAPTCHA_PUBLIC_KEY,
+            private_key=RECAPTCHA_PRIVATE_KEY,
+        )
+
+        self.stage.captcha_stage = captcha_stage
+        self.stage.save()
+
+        form_data = {
+            "uid_field": self.user.email,
+            "captcha_token": "FAILED",
+        }
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        response = self.client.post(url, form_data)
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-identification",
+            password_fields=False,
+            primary_action="Log in",
+            response_errors={
+                "non_field_errors": [
+                    {
+                        "code": "invalid",
+                        "string": "Invalid captcha response. Retrying may solve this issue.",
+                    }
+                ]
             },
             sources=[
                 {
