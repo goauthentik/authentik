@@ -32,6 +32,10 @@ This policy can enforce regular password rotation by expiring set passwords afte
 
 ### Password Policy
 
+:::warning
+This policy enables options that violate [NIST's recommendations](https://pages.nist.gov/800-63-4/sp800-63b.html#password) for passwords. To comply with the recommendations, use authentik's default Password policy. See [Hardening authentik](../../security/security-hardening.md#password-policy) for additional hardening.
+:::
+
 This policy allows you to specify password rules, such as length and required characters.
 The following rules can be set:
 

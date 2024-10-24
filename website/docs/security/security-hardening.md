@@ -4,6 +4,12 @@ title: Hardening authentik
 
 While authentik is secure out of the box, you can take steps to further increase the security of an authentik instance. As everyone knows, there is a consequential tradeoff between security and convenience. All of these hardening practices have an impact on the user experience and should only be applied knowing this tradeoff.
 
+### Password policy
+
+authentik's default Password policy complies with the [NIST SP 800-63 Digital Identity Guidelines](https://pages.nist.gov/800-63-4/sp800-63b.html#password).
+
+However, for further hardening, the NIST Guidelines recommend setting the length of the password to a minimum of 15 characters. For further options, see [Password policy](../customize/policies/index.md#password-policy).
+
 ### Expressions
 
 [Expressions](../customize/policies/expression.mdx) allow super-users and other highly privileged users to create custom logic within authentik to modify its behaviour. Editing/creating these expressions is, by default, limited to super-users and any related events are fully logged.
