@@ -33,7 +33,7 @@ To determine which flow should be used, authentik will first check if there is a
 - **User settings flow**:
 - **Device code flow**:
 
-A commonly used flow that is not defined by the instance's Brand is the **Invalidation flow**. This flow is required for IODC, SAML, Proxy, and RAC providers. Admins can configure this flow to present users log-off options such as "log out of the app but remain logged in to authentik" or "return to the **My Applications** page", or "log out completely".
+A commonly used flow that is not defined by the instance's Brand is the **Invalidation flow**. This flow is required for OIDC, SAML, Proxy, and RAC providers. Admins can configure this flow to present users log-off options such as "log out of the app but remain logged in to authentik" or "return to the **My Applications** page", or "log out completely".
 
 ## Permissions
 
