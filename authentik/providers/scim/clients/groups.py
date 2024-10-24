@@ -195,9 +195,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
         This is not strictly according to specs but there's nothing in the schema that allows the
         us to know what the maximum patch operations per request should be."""
         chunk_size = self._config.bulk.maxOperations
-        if chunk_size < 1:
-            chunk_size = len(ops)
-        for chunk in batched(ops, chunk_size):
+        for chunk in batched(ops, max(chunk_size, len(ops), 1)):
             req = PatchRequest(Operations=list(chunk))
             self._request(
                 "PATCH",
