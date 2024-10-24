@@ -197,6 +197,8 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
         chunk_size = self._config.bulk.maxOperations
         if chunk_size < 1:
             chunk_size = len(ops)
+        if len(ops) < 1:
+            return
         for chunk in batched(ops, chunk_size):
             req = PatchRequest(Operations=list(chunk))
             self._request(
@@ -244,6 +246,9 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
         for user in users_should:
             if len([x for x in current_group.members if x.value == user]) < 1:
                 users_to_add.append(user)
+        # Only send request if we need to make changes
+        if len(users_to_add) < 1 and len(users_to_remove) < 1:
+            return
         return self._patch_chunked(
             scim_group.scim_id,
             *[
