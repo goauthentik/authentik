@@ -113,9 +113,8 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                         <ak-text-input
                             name="clientSecret"
                             label=${msg("Client Secret")}
-                            value=${
-                                provider?.clientSecret ?? randomString(128, ascii_letters + digits)
-                            }
+                            value=${provider?.clientSecret ??
+                            randomString(128, ascii_letters + digits)}
                             .errorMessages=${errors?.clientSecret ?? []}
                             ?hidden=${!this.showClientSecret}
                         >
@@ -150,35 +149,36 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
 
                 <ak-form-group>
                     <span slot="header"> ${msg("Advanced flow settings")} </span>
-                    <ak-form-element-horizontal
-                        name="authenticationFlow"
-                        label=${msg("Authentication flow")}
-                    >
-                        <ak-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.Authentication}
-                            .currentFlow=${provider?.authenticationFlow}
-                        ></ak-flow-search>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "Flow used when a user access this provider and is not authenticated.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Invalidation flow")}
-                        name="invalidationFlow"
-                        required
-                    >
-                        <ak-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.Invalidation}
-                            .currentFlow=${provider?.invalidationFlow}
-                            defaultFlowSlug="default-provider-invalidation-flow"
+                    <div slot="body" class="pf-c-form">
+                        <ak-form-element-horizontal
+                            name="authenticationFlow"
+                            label=${msg("Authentication flow")}
+                        >
+                            <ak-flow-search
+                                flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                                .currentFlow=${provider?.authenticationFlow}
+                            ></ak-flow-search>
+                            <p class="pf-c-form__helper-text">
+                                ${msg(
+                                    "Flow used when a user access this provider and is not authenticated.",
+                                )}
+                            </p>
+                        </ak-form-element-horizontal>
+                        <ak-form-element-horizontal
+                            label=${msg("Invalidation flow")}
+                            name="invalidationFlow"
                             required
-                        ></ak-flow-search>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Flow used when logging out of this provider.")}
-                        </p>
-                    </ak-form-element-horizontal>
+                        >
+                            <ak-flow-search
+                                flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                                .currentFlow=${provider?.invalidationFlow}
+                                defaultFlowSlug="default-provider-invalidation-flow"
+                                required
+                            ></ak-flow-search>
+                            <p class="pf-c-form__helper-text">
+                                ${msg("Flow used when logging out of this provider.")}
+                            </p>
+                        </ak-form-element-horizontal>
                     </div>
                 </ak-form-group>
                 <ak-form-group>
