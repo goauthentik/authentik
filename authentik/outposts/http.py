@@ -67,7 +67,7 @@ class OutpostHTTPAdapter(BaseAdapter):
         converted.ssl_verify = verify
         converted.timeout = timeout if timeout else self.default_timeout
         # Pick one of the outpost instances
-        state = choice(self.__outpost.state)
+        state = choice(self.__outpost.state)  # nosec
         self.__logger.debug("sending HTTP request to outpost", uid=converted.uid)
         async_to_sync(self.__layer.send)(
             state.uid,

@@ -151,7 +151,7 @@ func (s *SCIMOutpost) Start() error {
 			return
 		}
 		s.log.WithField("res", res.StatusCode).Debug("sending HTTP response")
-		s.ac.SendWS(ak.WebsocketInstructionProviderSpecific, map[string]interface{}{
+		err = s.ac.SendWS(ak.WebsocketInstructionProviderSpecific, map[string]interface{}{
 			"sub_type":         "http_response",
 			"response_channel": rd.ResponseChannel,
 			"response": map[string]interface{}{
@@ -161,6 +161,10 @@ func (s *SCIMOutpost) Start() error {
 				"body":      base64.StdEncoding.EncodeToString(body),
 			},
 		})
+		if err != nil {
+			s.log.WithError(err).Warning("failed to send http response")
+			return
+		}
 	})
 	return nil
 }
