@@ -1,5 +1,5 @@
 """Crypto tests"""
-
+from datetime import datetime
 from json import loads
 from os import makedirs
 from tempfile import TemporaryDirectory
@@ -68,9 +68,9 @@ class TestCrypto(APITestCase):
             validity_days=3,
         )
         instance = builder.save()
-        _now = now()
+        now = datetime.now(tz=UTC)
         self.assertEqual(instance.name, name)
-        self.assertEqual((instance.certificate.not_valid_after_utc - _now).days, 2)
+        self.assertEqual((instance.certificate.not_valid_after_utc - now).days, 2)
 
     def test_builder_api(self):
         """Test Builder (via API)"""
