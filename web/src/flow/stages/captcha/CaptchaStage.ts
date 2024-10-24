@@ -47,8 +47,8 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
     scriptElement?: HTMLScriptElement;
 
     @property()
-    onTokenChange: TokenHandler = (_token: string) => {
-        throw new Error("Client failed to supply a handling function to CaptchaStage");
+    onTokenChange: TokenHandler = (token: string) => {
+        this.host.submit({ component: "ak-stage-captcha", token });
     };
 
     constructor() {
