@@ -128,6 +128,12 @@ class OutpostConsumer(JsonWebsocketConsumer):
             state.args.update(msg.args)
         elif msg.instruction == WebsocketMessageInstruction.ACK:
             return
+        elif msg.instruction == WebsocketMessageInstruction.PROVIDER_SPECIFIC:
+            if "response_channel" not in msg.args:
+                return
+            self.logger.debug("Posted response to channel", msg=msg)
+            async_to_sync(self.channel_layer.send)(msg.args.get("response_channel"), content)
+            return
         GAUGE_OUTPOSTS_LAST_UPDATE.labels(
             tenant=connection.schema_name,
             outpost=self.outpost.name,

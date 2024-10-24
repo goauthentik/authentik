@@ -4264,7 +4264,8 @@
                         "proxy",
                         "ldap",
                         "radius",
-                        "rac"
+                        "rac",
+                        "scim"
                     ],
                     "title": "Type"
                 },
@@ -6974,7 +6975,7 @@
                 "spnego_server_name": {
                     "type": "string",
                     "title": "Spnego server name",
-                    "description": "Force the use of a specific server name for SPNEGO"
+                    "description": "Force the use of a specific server name for SPNEGO. Must be in the form HTTP@hostname"
                 },
                 "spnego_keytab": {
                     "type": "string",

@@ -98,6 +98,7 @@ class OutpostType(models.TextChoices):
     LDAP = "ldap"
     RADIUS = "radius"
     RAC = "rac"
+    SCIM = "scim"
 
 
 def default_outpost_config(host: str | None = None):

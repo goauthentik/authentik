@@ -42953,7 +42953,8 @@ components:
           readOnly: true
         spnego_server_name:
           type: string
-          description: Force the use of a specific server name for SPNEGO
+          description: Force the use of a specific server name for SPNEGO. Must be
+            in the form HTTP@hostname
         spnego_ccache:
           type: string
           description: Credential cache to use for SPNEGO in form type:residual
@@ -43122,7 +43123,8 @@ components:
             be in the form TYPE:residual
         spnego_server_name:
           type: string
-          description: Force the use of a specific server name for SPNEGO
+          description: Force the use of a specific server name for SPNEGO. Must be
+            in the form HTTP@hostname
         spnego_keytab:
           type: string
           writeOnly: true
@@ -45455,6 +45457,7 @@ components:
       - ldap
       - radius
       - rac
+      - scim
       type: string
     PaginatedApplicationList:
       type: object
@@ -48420,7 +48423,8 @@ components:
             be in the form TYPE:residual
         spnego_server_name:
           type: string
-          description: Force the use of a specific server name for SPNEGO
+          description: Force the use of a specific server name for SPNEGO. Must be
+            in the form HTTP@hostname
         spnego_keytab:
           type: string
           writeOnly: true
