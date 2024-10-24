@@ -4,7 +4,7 @@ title: Bindings
 
 A binding is, simply put, a connection between two components (a flow, stage, policy, user, or group) _that adds additional content_ to one those existing components.
 
-Take the example of a _stage binding_. A stage binding connects a stage to a flow. The "additional content" contained in the stage is now added to the flow.
+Take the example of a _stage binding_. A stage binding connects a stage to a flow. The "additional content" (i.e. the content in the stage) is now added to the flow.
 
 Similarly, a policy binding connects a specific policy to a flow or to a stage. With the binding, the flow (or stage) will now have additional content (i.e. the policy rules).
 
