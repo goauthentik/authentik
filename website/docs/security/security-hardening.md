@@ -8,7 +8,12 @@ While authentik is secure out of the box, you can take steps to further increase
 
 authentik's default Password policy complies with the [NIST SP 800-63 Digital Identity Guidelines](https://pages.nist.gov/800-63-4/sp800-63b.html#password).
 
-However, for further hardening, the NIST Guidelines recommend setting the length of the password to a minimum of 15 characters. For further options, see [Password policy](../customize/policies/index.md#password-policy).
+However, for further hardening compliant to the NIST Guidelines, consider
+
+-   setting the length of the password to a minimum of 15 characters, and
+-   enabling the "Check haveibeenpwned.com" blocklist comparison
+
+For further options, see [Password policy](../customize/policies/index.md#password-policy).
 
 ### Expressions
 
