@@ -33863,6 +33863,11 @@ paths:
       description: IdentificationStage Viewset
       parameters:
       - in: query
+        name: captcha_stage
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: case_insensitive_matching
         schema:
           type: boolean
@@ -42504,6 +42509,8 @@ components:
           type: string
         flow_designation:
           $ref: '#/components/schemas/FlowDesignationEnum'
+        captcha_stage:
+          $ref: '#/components/schemas/CaptchaChallenge'
         enroll_url:
           type: string
         recovery_url:
@@ -42536,6 +42543,9 @@ components:
           type: string
           minLength: 1
         password:
+          type: string
+          nullable: true
+        captcha_token:
           type: string
           nullable: true
       required:
@@ -42583,6 +42593,12 @@ components:
           nullable: true
           description: When set, shows a password field, instead of showing the password
             field as separate step.
+        captcha_stage:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, adds functionality exactly like a Captcha stage,
+            but baked into the Identification stage.
         case_insensitive_matching:
           type: boolean
           description: When enabled, user fields are matched regardless of their casing.
@@ -42651,6 +42667,12 @@ components:
           nullable: true
           description: When set, shows a password field, instead of showing the password
             field as separate step.
+        captcha_stage:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, adds functionality exactly like a Captcha stage,
+            but baked into the Identification stage.
         case_insensitive_matching:
           type: boolean
           description: When enabled, user fields are matched regardless of their casing.
@@ -48241,6 +48263,12 @@ components:
           nullable: true
           description: When set, shows a password field, instead of showing the password
             field as separate step.
+        captcha_stage:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, adds functionality exactly like a Captcha stage,
+            but baked into the Identification stage.
         case_insensitive_matching:
           type: boolean
           description: When enabled, user fields are matched regardless of their casing.
