@@ -2,17 +2,13 @@
 title: Create a Remote Access Control (RAC) provider
 ---
 
-:::info
-This feature is in technical preview, so please report any bugs on [GitHub](https://github.com/goauthentik/authentik/issues).
-:::
-
 The RAC provider is a highly flexible feature for accessing remote machines. This document provides instructions for the basic creation and configuration of a RAC provider within a defined scenario.
 
 Fow more information about using a RAC provider, see the [Overview](./index.md) documentation. You can also view our video on YouTube for setting up RAC.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/9wahIBRV6Ts;start=22" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
-## Prereqisites
+## Prerequisites
 
 The RAC provider requires the deployment of the [RAC Outpost](../../outposts/index.mdx).
 
