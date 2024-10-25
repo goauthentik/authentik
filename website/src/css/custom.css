@@ -125,3 +125,11 @@ body {
     font-size: 0.75rem;
     vertical-align: middle;
 }
+
+.badge--preview {
+    --ifm-badge-background-color: rgb(115, 188, 247);
+    color: var(--ifm-color-primary-contrast-foreground);
+    --ifm-badge-border-color: var(--ifm-badge-background-color);
+    font-size: 0.75rem;
+    vertical-align: middle;
+}
