@@ -11,7 +11,6 @@ import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
@@ -31,16 +30,11 @@ export class ObjectPermissionPage extends AKElement {
     embedded = false;
 
     static get styles() {
-        return [PFBase, PFGrid, PFPage, PFCard, PFBanner];
+        return [PFBase, PFGrid, PFPage, PFCard];
     }
 
     render() {
-        return html`${!this.embedded
-                ? html`<div class="pf-c-banner pf-m-info">
-                      ${msg("RBAC is in preview.")}
-                      <a href="mailto:hello@goauthentik.io">${msg("Send us feedback!")}</a>
-                  </div>`
-                : nothing}
+        return html`
             <ak-tabs pageIdentifier="permissionPage" ?vertical=${!this.embedded}>
                 ${this.model === RbacPermissionsAssignedByUsersListModelEnum.CoreUser
                     ? this.renderCoreUser()
