@@ -3,6 +3,7 @@ title: Endpoint Authenticator Google Device Trust Connector Stage
 ---
 
 <span class="badge badge--primary">Enterprise</span>
+<span class="badge badge--preview">Preview</span>
 <span class="badge badge--version">authentik 2024.10+</span>
 
 ---

@@ -34,57 +34,56 @@ export class ObjectPermissionPage extends AKElement {
     }
 
     render() {
-        return html`
-            <ak-tabs pageIdentifier="permissionPage" ?vertical=${!this.embedded}>
-                ${this.model === RbacPermissionsAssignedByUsersListModelEnum.CoreUser
-                    ? this.renderCoreUser()
-                    : nothing}
-                ${this.model === RbacPermissionsAssignedByUsersListModelEnum.RbacRole
-                    ? this.renderRbacRole()
-                    : nothing}
-                <section
-                    slot="page-object-user"
-                    data-tab-title="${msg("User Object Permissions")}"
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
-                >
-                    <div class="pf-l-grid pf-m-gutter">
-                        <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                            <div class="pf-c-card__title">${msg("User Object Permissions")}</div>
-                            <div class="pf-c-card__body">
-                                ${msg("Permissions set on users which affect this object.")}
-                            </div>
-                            <div class="pf-c-card__body">
-                                <ak-rbac-user-object-permission-table
-                                    .model=${this.model}
-                                    .objectPk=${this.objectPk}
-                                >
-                                </ak-rbac-user-object-permission-table>
-                            </div>
+        return html` <ak-tabs pageIdentifier="permissionPage" ?vertical=${!this.embedded}>
+            ${this.model === RbacPermissionsAssignedByUsersListModelEnum.CoreUser
+                ? this.renderCoreUser()
+                : nothing}
+            ${this.model === RbacPermissionsAssignedByUsersListModelEnum.RbacRole
+                ? this.renderRbacRole()
+                : nothing}
+            <section
+                slot="page-object-user"
+                data-tab-title="${msg("User Object Permissions")}"
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-l-grid pf-m-gutter">
+                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                        <div class="pf-c-card__title">${msg("User Object Permissions")}</div>
+                        <div class="pf-c-card__body">
+                            ${msg("Permissions set on users which affect this object.")}
+                        </div>
+                        <div class="pf-c-card__body">
+                            <ak-rbac-user-object-permission-table
+                                .model=${this.model}
+                                .objectPk=${this.objectPk}
+                            >
+                            </ak-rbac-user-object-permission-table>
                         </div>
                     </div>
-                </section>
-                <section
-                    slot="page-object-role"
-                    data-tab-title="${msg("Role Object Permissions")}"
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
-                >
-                    <div class="pf-l-grid pf-m-gutter">
-                        <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                            <div class="pf-c-card__title">${msg("Role Object Permissions")}</div>
-                            <div class="pf-c-card__body">
-                                ${msg("Permissions set on roles which affect this object.")}
-                            </div>
-                            <div class="pf-c-card__body">
-                                <ak-rbac-role-object-permission-table
-                                    .model=${this.model}
-                                    .objectPk=${this.objectPk}
-                                >
-                                </ak-rbac-role-object-permission-table>
-                            </div>
+                </div>
+            </section>
+            <section
+                slot="page-object-role"
+                data-tab-title="${msg("Role Object Permissions")}"
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-l-grid pf-m-gutter">
+                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                        <div class="pf-c-card__title">${msg("Role Object Permissions")}</div>
+                        <div class="pf-c-card__body">
+                            ${msg("Permissions set on roles which affect this object.")}
+                        </div>
+                        <div class="pf-c-card__body">
+                            <ak-rbac-role-object-permission-table
+                                .model=${this.model}
+                                .objectPk=${this.objectPk}
+                            >
+                            </ak-rbac-role-object-permission-table>
                         </div>
                     </div>
-                </section>
-            </ak-tabs>`;
+                </div>
+            </section>
+        </ak-tabs>`;
     }
 
     renderCoreUser() {
