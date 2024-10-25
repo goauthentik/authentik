@@ -35,6 +35,7 @@ export class ApplicationWizardAuthenticationMethodChoice extends WithLicenseSumm
             ? html`<form class="pf-c-form pf-m-horizontal">
                   <ak-wizard-page-type-create
                       .types=${typesForWizard}
+                      name="selectProviderType"
                       layout=${TypeCreateWizardPageLayouts.grid}
                       .selectedType=${selectedTypes.length > 0 ? selectedTypes[0] : undefined}
                       @select=${(ev: CustomEvent<LocalTypeCreate>) => {

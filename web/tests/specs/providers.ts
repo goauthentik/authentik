@@ -3,10 +3,16 @@ import { expect } from "@wdio/globals";
 import ProviderWizardView from "../pageobjects/provider-wizard.page.js";
 import ProvidersListPage from "../pageobjects/providers-list.page.js";
 import { login } from "../utils/login.js";
+import { type TestSequence } from "./shared-sequences";
 import {
+    simpleForwardAuthDomainProxyProviderForm,
+    simpleForwardAuthProxyProviderForm,
     simpleLDAPProviderForm,
     simpleOAuth2ProviderForm,
+    simpleProxyProviderForm,
     simpleRadiusProviderForm,
+    simpleSAMLProviderForm,
+    simpleSCIMProviderForm,
 } from "./shared-sequences.js";
 
 async function reachTheProvider() {
@@ -36,56 +42,39 @@ const hasProviderSuccessMessage = async () =>
         { timeout: 1000, timeoutMsg: "Expected to see provider success message." },
     );
 
-type FieldDesc = [(..._: unknown) => Promise<void>, ...unknown];
-
-async function fillOutFields(fields: FieldDesc[]) {
+async function fillOutFields(fields: TestSequence) {
     for (const field of fields) {
         const thefunc = field[0];
         const args = field.slice(1);
+        // @ts-expect-error "This is a pretty alien call; I'm not surprised Typescript hates it."
         await thefunc.apply($, args);
     }
 }
 
-describe("Configure Oauth2 Providers", () => {
-    it("Should configure a simple OAuth2 Provider", async () => {
+async function itShouldConfigureASimpleProvider(name: string, provider: TestSequence) {
+    it(`Should successfully configure a ${name} provider`, async () => {
         await reachTheProvider();
         await $("ak-wizard-page-type-create").waitForDisplayed();
-        await fillOutFields(simpleOAuth2ProviderForm());
+        await fillOutFields(provider);
         await ProviderWizardView.pause();
         await ProviderWizardView.nextButton.click();
         await hasProviderSuccessMessage();
     });
-});
+}
 
-describe("Configure LDAP Providers", () => {
-    it("Should configure a simple LDAP Provider", async () => {
-        await reachTheProvider();
-        await $("ak-wizard-page-type-create").waitForDisplayed();
-        await fillOutFields(simpleLDAPProviderForm());
-        await ProviderWizardView.pause();
-        await ProviderWizardView.nextButton.click();
-        await hasProviderSuccessMessage();
-    });
-});
+describe("Configuring Providers", () => {
+    const providers = [
+        ["LDAP", simpleLDAPProviderForm],
+        ["OAuth2", simpleOAuth2ProviderForm],
+        ["Radius", simpleRadiusProviderForm],
+        ["SAML", simpleSAMLProviderForm],
+        ["SCIM", simpleSCIMProviderForm],
+        ["Proxy", simpleProxyProviderForm],
+        ["Forward Auth (single application)", simpleForwardAuthProxyProviderForm],
+        ["Forward Auth (domain level)", simpleForwardAuthDomainProxyProviderForm],
+    ];
 
-describe("Configure Radius Providers", () => {
-    it("Should configure a simple Radius Provider", async () => {
-        await reachTheProvider();
-        await $("ak-wizard-page-type-create").waitForDisplayed();
-        await fillOutFields(simpleRadiusProviderForm());
-        await ProviderWizardView.pause();
-        await ProviderWizardView.nextButton.click();
-        await hasProviderSuccessMessage();
-    });
-});
-
-describe("Configure SAML Providers", () => {
-    it("Should configure a simple Radius Provider", async () => {
-        await reachTheProvider();
-        await $("ak-wizard-page-type-create").waitForDisplayed();
-        await fillOutFields(simpleRadiusProviderForm());
-        await ProviderWizardView.pause();
-        await ProviderWizardView.nextButton.click();
-        await hasProviderSuccessMessage();
-    });
+    for (const [name, provider] of providers) {
+        itShouldConfigureASimpleProvider(name, provider());
+    }
 });

@@ -36,7 +36,7 @@ export type LocalTypeCreate = TypeCreate & {
 export const providerModelsList: LocalTypeCreate[] = [
     {
         formName: "oauth2provider",
-        name: msg("OAuth2/OIDC (Open Authorization/OpenID Connect)"),
+        name: msg("OAuth2/OpenID Provider"),
         description: msg("Modern applications, APIs and Single-page applications."),
         renderer: () =>
             html`<ak-application-wizard-authentication-by-oauth></ak-application-wizard-authentication-by-oauth>`,
@@ -50,7 +50,7 @@ export const providerModelsList: LocalTypeCreate[] = [
     },
     {
         formName: "ldapprovider",
-        name: msg("LDAP (Lightweight Directory Access Protocol)"),
+        name: msg("LDAP Provider"),
         description: msg(
             "Provide an LDAP interface for applications and users to authenticate against.",
         ),
@@ -127,7 +127,7 @@ export const providerModelsList: LocalTypeCreate[] = [
     },
     {
         formName: "samlprovider",
-        name: msg("SAML (Security Assertion Markup Language)"),
+        name: msg("SAML Provider"),
         description: msg("Configure SAML provider manually"),
         renderer: () =>
             html`<ak-application-wizard-authentication-by-saml-configuration></ak-application-wizard-authentication-by-saml-configuration>`,
@@ -141,7 +141,7 @@ export const providerModelsList: LocalTypeCreate[] = [
     },
     {
         formName: "radiusprovider",
-        name: msg("RADIUS (Remote Authentication Dial-In User Service)"),
+        name: msg("Radius Provider"),
         description: msg("Configure RADIUS provider manually"),
         renderer: () =>
             html`<ak-application-wizard-authentication-by-radius></ak-application-wizard-authentication-by-radius>`,
@@ -155,7 +155,7 @@ export const providerModelsList: LocalTypeCreate[] = [
     },
     {
         formName: "scimprovider",
-        name: msg("SCIM (System for Cross-domain Identity Management)"),
+        name: msg("SCIM Provider"),
         description: msg("Configure SCIM provider manually"),
         renderer: () =>
             html`<ak-application-wizard-authentication-by-scim></ak-application-wizard-authentication-by-scim>`,

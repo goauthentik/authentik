@@ -1,7 +1,9 @@
 import { renderForm } from "@goauthentik/admin/providers/oauth2/OAuth2ProviderFormForm.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 
+import { msg } from "@lit/localize";
 import { customElement, state } from "@lit/reactive-element/decorators.js";
+import { html } from "lit";
 
 import { SourcesApi } from "@goauthentik/api";
 import { type OAuth2Provider, type PaginatedOAuthSourceList } from "@goauthentik/api";
@@ -34,7 +36,15 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
         const showClientSecretCallback = (show: boolean) => {
             this.showClientSecret = show;
         };
-        return renderForm(provider ?? {}, errors, this.showClientSecret, showClientSecretCallback);
+        return html` <ak-wizard-title>${msg("Configure LDAP Provider")}</ak-wizard-title>
+            <form class="pf-c-form pf-m-horizontal" @input=${this.handleChange}>
+                ${renderForm(
+                    provider ?? {},
+                    errors,
+                    this.showClientSecret,
+                    showClientSecretCallback,
+                )}
+            </form>`;
     }
 }
 

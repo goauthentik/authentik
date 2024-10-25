@@ -2,6 +2,11 @@ import { browser } from "@wdio/globals";
 import { match } from "ts-pattern";
 import { Key } from "webdriverio";
 
+export async function doBlur(el: WebdriverIO.Element | ChainablePromiseElement) {
+    const element = await el;
+    browser.execute((element) => element.blur());
+}
+
 export async function setSearchSelect(name: string, value: string) {
     const control = await (async () => {
         try {
@@ -38,12 +43,14 @@ export async function setSearchSelect(name: string, value: string) {
     }
     await (await button).click();
     await browser.keys(Key.Tab);
+    await doBlur(control);
 }
 
 export async function setTextInput(name: string, value: string) {
     const control = await $(`input[name="${name}"]`);
     await control.scrollIntoView();
     await control.setValue(value);
+    await doBlur(control);
 }
 
 export async function setRadio(name: string, value: string) {
@@ -52,6 +59,7 @@ export async function setRadio(name: string, value: string) {
     const item = await control.$(`label.*=${value}`).parentElement();
     await item.scrollIntoView();
     await item.click();
+    await doBlur(control);
 }
 
 export async function setTypeCreate(name: string, value: string | RegExp) {
@@ -73,6 +81,7 @@ export async function setTypeCreate(name: string, value: string | RegExp) {
 
     await card.scrollIntoView();
     await card.click();
+    await doBlur(control);
 }
 
 export async function setFormGroup(name: string | RegExp, setting: "open" | "closed") {
@@ -95,6 +104,7 @@ export async function setFormGroup(name: string | RegExp, setting: "open" | "clo
         .with(["false", "open"], async () => await toggle.click())
         .with(["true", "closed"], async () => await toggle.click())
         .otherwise(async () => {});
+    await doBlur(formGroup);
 }
 
 export async function clickButton(name: string, ctx?: WebdriverIO.Element) {
@@ -110,4 +120,30 @@ export async function clickButton(name: string, ctx?: WebdriverIO.Element) {
     }
     await button.scrollIntoView();
     await button.click();
+    await doBlur(button);
+}
+
+const tap = <T>(a: T): T => {
+    console.log(a);
+    return a;
+};
+
+export async function clickToggleGroup(name: string, value: string | RegExp) {
+    const comparator =
+        typeof name === "string"
+            ? (sample) => tap(sample) === tap(value)
+            : (sample) => value.test(sample);
+
+    const button = await (async () => {
+        for await (const button of $(`[data-ouid-component-name=${name}]`).$$(
+            ".pf-c-toggle-group__button",
+        )) {
+            if (comparator(await button.$(".pf-c-toggle-group__text").getText())) {
+                return button;
+            }
+        }
+    })();
+    await button.scrollIntoView();
+    await button.click();
+    await doBlur(button);
 }

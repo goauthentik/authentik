@@ -102,7 +102,7 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
 
         // prettier-ignore
         return html`
-            <ak-toggle-group value=${this.mode} @ak-toggle=${setMode}>
+            <ak-toggle-group value=${this.mode} @ak-toggle=${setMode} data-ouid-component-name="proxy-type-toggle">
                 <option value=${ProxyMode.Proxy}>${msg("Proxy")}</option>
                 <option value=${ProxyMode.ForwardSingle}>${msg("Forward auth (single application)")}</option>
                 <option value=${ProxyMode.ForwardDomain}>${msg("Forward auth (domain level)")}</option>
