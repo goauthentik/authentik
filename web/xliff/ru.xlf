@@ -6620,11 +6620,6 @@ Bindings to groups/users are checked against the user of the event.</source>
         <target>Пожалуйста, введите ваш код</target>
         
       </trans-unit>
-      <trans-unit id="s18b910437b73e8e8">
-        <source>Return to device picker</source>
-        <target>Вернуться к выбору устройства</target>
-        
-      </trans-unit>
       <trans-unit id="se409d01b52c4e12f">
         <source>Retry authentication</source>
         <target>Повторить аутентификацию</target>
@@ -9177,6 +9172,15 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s03e4044abe0b556c">
   <source>User database + Kerberos password</source>
+</trans-unit>
+<trans-unit id="s98bb2ae796f1ceef">
+  <source>Select another authentication method</source>
+</trans-unit>
+<trans-unit id="s21d95b4651ad7a1e">
+  <source>Enter a one-time recovery code for this user.</source>
+</trans-unit>
+<trans-unit id="s2e1d5a7d320c25ef">
+  <source>Enter the code from your authenticator device.</source>
 </trans-unit>
     </body>
   </file>
