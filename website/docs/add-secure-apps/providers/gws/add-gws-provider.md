@@ -3,12 +3,9 @@ title: Create a Google Workspace provider
 ---
 
 <span class="badge badge--primary">Enterprise</span>
+<span class="badge badge--preview">Preview</span>
 
 ---
-
-:::info
-This feature is in technical preview, so please report any bugs on [GitHub](https://github.com/goauthentik/authentik/issues).
-:::
 
 For more information about using a Google Workspace provider, see the [Overview](./index.md) documentation.
 

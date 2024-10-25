@@ -10,6 +10,8 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
+
 import { AuthenticatorEndpointGDTCStage, StagesApi } from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-endpoint-gdtc-form")
@@ -33,8 +35,16 @@ export class AuthenticatorEndpointGDTCStageForm extends BaseStageForm<Authentica
         }
     }
 
+    static get styles() {
+        return super.styles.concat(PFBanner);
+    }
+
     renderForm(): TemplateResult {
-        return html` <span>
+        return html`<div class="pf-c-banner pf-m-info">
+                ${msg("Endpoint Google Chrome Device Trust is in preview.")}
+                <a href="mailto:hello+feature/gdtc@goauthentik.io">${msg("Send us feedback!")}</a>
+            </div>
+            <span>
                 ${msg(
                     "Stage used to verify users' browsers using Google Chrome Device Trust. This stage can be used in authentication/authorization flows.",
                 )}
