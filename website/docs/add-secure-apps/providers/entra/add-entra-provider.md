@@ -3,14 +3,11 @@ title: Add an Entra ID provider
 ---
 
 <span class="badge badge--primary">Enterprise</span>
+<span class="badge badge--preview">Preview</span>
 
 ---
 
 For more information about using an Entra ID provider, see the [Overview](./index.md) documentation.
-
-:::info
-This feature is in technical preview, so please report any bugs on [GitHub](https://github.com/goauthentik/authentik/issues).
-:::
 
 ## Prerequisites
 

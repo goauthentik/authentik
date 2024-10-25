@@ -18,6 +18,7 @@ import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -54,7 +55,17 @@ export class KerberosSourceViewPage extends AKElement {
     syncState?: SyncStatus;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFButton, PFGrid, PFContent, PFCard, PFDescriptionList, PFList];
+        return [
+            PFBase,
+            PFPage,
+            PFButton,
+            PFGrid,
+            PFContent,
+            PFCard,
+            PFDescriptionList,
+            PFBanner,
+            PFList,
+        ];
     }
 
     constructor() {
@@ -121,6 +132,12 @@ export class KerberosSourceViewPage extends AKElement {
                     this.load();
                 }}
             >
+                <div slot="header" class="pf-c-banner pf-m-info">
+                    ${msg("Kerberos Source is in preview.")}
+                    <a href="mailto:hello+feature/kerberos-source@goauthentik.io"
+                        >${msg("Send us feedback!")}</a
+                    >
+                </div>
                 <div class="pf-l-grid pf-m-gutter">
                     <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                         <div class="pf-c-card__body">
