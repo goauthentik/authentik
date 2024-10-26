@@ -2,7 +2,7 @@
 title: Blueprints
 ---
 
-<span class="badge badge--version">authentik 2022.8+</span>
+<span class="badge badge--version">authentik 2022.8+</span>
 
 ---
 
