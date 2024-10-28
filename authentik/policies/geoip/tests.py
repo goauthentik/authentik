@@ -1,8 +1,10 @@
 """geoip policy tests"""
 
 from django.test import TestCase
-from guardian.shortcuts import get_anonymous_user
 
+from authentik.core.tests.utils import create_test_user
+from authentik.events.models import Event, EventAction
+from authentik.events.utils import get_user
 from authentik.policies.engine import PolicyRequest, PolicyResult
 from authentik.policies.exceptions import PolicyException
 from authentik.policies.geoip.exceptions import GeoIPNotFoundException
@@ -14,8 +16,8 @@ class TestGeoIPPolicy(TestCase):
 
     def setUp(self):
         super().setUp()
-
-        self.request = PolicyRequest(get_anonymous_user())
+        self.user = create_test_user()
+        self.request = PolicyRequest(self.user)
 
         self.context_disabled_geoip = {}
         self.context_unknown_ip = {"asn": None, "geoip": None}
@@ -126,3 +128,23 @@ class TestGeoIPPolicy(TestCase):
         result: PolicyResult = policy.passes(self.request)
 
         self.assertTrue(result.passing)
+
+    def test_history(self):
+        """Test history checks"""
+        Event.objects.create(
+            action=EventAction.LOGIN,
+            user=get_user(self.user),
+            context={
+                # Random location in Canada
+                "geoip": {"lat": 55.868351, "long": -104.441011},
+            },
+        )
+        # Random location in Poland
+        self.request.context["geoip"] = {"lat": 50.950613, "long": 20.363679}
+
+        self.enrich_context()
+        policy = GeoIPPolicy.objects.create(check_history=True)
+
+        result: PolicyResult = policy.passes(self.request)
+
+        self.assertFalse(result.passing)

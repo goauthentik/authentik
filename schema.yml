@@ -44006,6 +44006,21 @@ components:
           items:
             $ref: '#/components/schemas/DetailedCountryField'
           readOnly: true
+        check_history:
+          type: boolean
+        history_max_distance_km:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        history_distance_tolerance_km:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        history_login_count:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
       required:
       - bound_to
       - component
@@ -44038,6 +44053,21 @@ components:
           items:
             $ref: '#/components/schemas/CountryCodeEnum'
           maxItems: 249
+        check_history:
+          type: boolean
+        history_max_distance_km:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        history_distance_tolerance_km:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        history_login_count:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
       required:
       - countries
       - name
@@ -50557,6 +50587,21 @@ components:
           items:
             $ref: '#/components/schemas/CountryCodeEnum'
           maxItems: 249
+        check_history:
+          type: boolean
+        history_max_distance_km:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        history_distance_tolerance_km:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        history_login_count:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
     PatchedGoogleWorkspaceProviderMappingRequest:
       type: object
       description: GoogleWorkspaceProviderMapping Serializer
