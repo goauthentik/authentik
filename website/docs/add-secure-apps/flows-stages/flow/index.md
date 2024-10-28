@@ -26,14 +26,14 @@ This default behaviour can be altered by enabling the **Evaluate when flow is pl
 
 To determine which flow should be used, authentik will first check if there is a default flow configured in the active [**Brand**](../../../customize/brands.md). If no default is configured there, the policies in all flows with the matching designation are checked, and the first flow with matching policies sorted by `slug` will be used.
 
--   **Authentication flow**:
+-   **Authentication flow**: the flow used to authenticate users.
 -   **Authorization flow**: this is defined per provider, when the provider is created, to state whether implicit or explicit authorization is required.
--   **Recovery flow**:
--   **Unenrollment flow**:
--   **User settings flow**:
+-   **Recovery flow**: If set, allows users to recover their credentials.
+-   **Unenrollment flow**: If set, users are able to unenroll themselves. If no flow is set, option is not shown.
+-   **User settings flow**: If set, users are able to configure details of their profile.
 -   **Device code flow**:
 
-A commonly used flow that is not defined by the instance's Brand is the **Invalidation flow**. This flow is required for OIDC, SAML, Proxy, and RAC providers. Admins can configure this flow to present users log-off options such as "log out of the app but remain logged in to authentik" or "return to the **My Applications** page", or "log out completely".
+The **Invalidation flow** is a commonly used flow that is not defined by the instance's Brand. This flow is required for OIDC, SAML, Proxy, and RAC providers. Admins can configure this flow to present users log-off options such as "log out of the app but remain logged in to authentik" or "return to the **My Applications** page", or "log out completely". Additionally, admins can apply a custom background image to the prompt box.
 
 ## Permissions
 
