@@ -1,4 +1,4 @@
-<?xml version="1.0" ?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<?xml version="1.0"?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
   <file target-language="zh-Hans" source-language="en" original="lit-localize-inputs" datatype="plaintext">
     <body>
       <trans-unit id="s4caed5b7a7e5d89b">
@@ -596,9 +596,9 @@
         
       </trans-unit>
       <trans-unit id="saa0e2675da69651b">
-        <source>The URL &quot;<x id="0" equiv-text="${this.url}"/>&quot; was not found.</source>
-        <target>未找到 URL &quot;
-        <x id="0" equiv-text="${this.url}"/>&quot;。</target>
+        <source>The URL "<x id="0" equiv-text="${this.url}"/>" was not found.</source>
+        <target>未找到 URL "
+        <x id="0" equiv-text="${this.url}"/>"。</target>
         
       </trans-unit>
       <trans-unit id="s58cd9c2fe836d9c6">
@@ -1030,8 +1030,8 @@
         
       </trans-unit>
       <trans-unit id="sa8384c9c26731f83">
-        <source>To allow any redirect URI, set this value to &quot;.*&quot;. Be aware of the possible security implications this can have.</source>
-        <target>要允许任何重定向 URI，请将此值设置为 &quot;.*&quot;。请注意这可能带来的安全影响。</target>
+        <source>To allow any redirect URI, set this value to ".*". Be aware of the possible security implications this can have.</source>
+        <target>要允许任何重定向 URI，请将此值设置为 ".*"。请注意这可能带来的安全影响。</target>
         
       </trans-unit>
       <trans-unit id="s55787f4dfcdce52b">
@@ -1752,8 +1752,8 @@
         
       </trans-unit>
       <trans-unit id="sa90b7809586c35ce">
-        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon &quot;fa-test&quot;.</source>
-        <target>输入完整 URL、相对路径，或者使用 'fa://fa-test' 来使用 Font Awesome 图标 &quot;fa-test&quot;。</target>
+        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".</source>
+        <target>输入完整 URL、相对路径，或者使用 'fa://fa-test' 来使用 Font Awesome 图标 "fa-test"。</target>
         
       </trans-unit>
       <trans-unit id="s0410779cb47de312">
@@ -2916,8 +2916,8 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="s76768bebabb7d543">
-        <source>Field which contains members of a group. Note that if using the &quot;memberUid&quot; field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'</source>
-        <target>包含组成员的字段。请注意，如果使用 &quot;memberUid&quot; 字段，则假定该值包含相对可分辨名称。例如，'memberUid=some-user' 而不是 'memberUid=cn=some-user,ou=groups,...'</target>
+        <source>Field which contains members of a group. Note that if using the "memberUid" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'</source>
+        <target>包含组成员的字段。请注意，如果使用 "memberUid" 字段，则假定该值包含相对可分辨名称。例如，'memberUid=some-user' 而不是 'memberUid=cn=some-user,ou=groups,...'</target>
         
       </trans-unit>
       <trans-unit id="s026555347e589f0e">
@@ -3663,8 +3663,8 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="s7b1fba26d245cb1c">
-        <source>When using an external logging solution for archiving, this can be set to &quot;minutes=5&quot;.</source>
-        <target>使用外部日志记录解决方案进行存档时，可以将其设置为 &quot;minutes=5&quot;。</target>
+        <source>When using an external logging solution for archiving, this can be set to "minutes=5".</source>
+        <target>使用外部日志记录解决方案进行存档时，可以将其设置为 "minutes=5"。</target>
         
       </trans-unit>
       <trans-unit id="s44536d20bb5c8257">
@@ -3840,10 +3840,10 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="sa95a538bfbb86111">
-        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> &quot;<x id="1" equiv-text="${this.obj?.name}"/>&quot;?</source>
+        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> "<x id="1" equiv-text="${this.obj?.name}"/>"?</source>
         <target>您确定要更新
-        <x id="0" equiv-text="${this.objectLabel}"/>&quot;
-        <x id="1" equiv-text="${this.obj?.name}"/>&quot; 吗？</target>
+        <x id="0" equiv-text="${this.objectLabel}"/>"
+        <x id="1" equiv-text="${this.obj?.name}"/>" 吗？</target>
         
       </trans-unit>
       <trans-unit id="sc92d7cfb6ee1fec6">
@@ -4919,7 +4919,7 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="sdf1d8edef27236f0">
-        <source>A &quot;roaming&quot; authenticator, like a YubiKey</source>
+        <source>A "roaming" authenticator, like a YubiKey</source>
         <target>像 YubiKey 这样的“漫游”身份验证器</target>
         
       </trans-unit>
@@ -5298,7 +5298,7 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="s1608b2f94fa0dbd4">
-        <source>If set to a duration above 0, the user will have the option to choose to &quot;stay signed in&quot;, which will extend their session by the time specified here.</source>
+        <source>If set to a duration above 0, the user will have the option to choose to "stay signed in", which will extend their session by the time specified here.</source>
         <target>如果设置时长大于 0，用户可以选择“保持登录”选项，这将使用户的会话延长此处设置的时间。</target>
         
       </trans-unit>
@@ -7648,10 +7648,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>For nginx's auth_request or traefik's forwardAuth per root domain</source>
   <target>适用于按根域名配置的 nginx 的 auth_request 或 traefik 的 forwardAuth</target>
 </trans-unit>
-<trans-unit id="sc615309d10a9228c">
-  <source>RBAC is in preview.</source>
-  <target>RBAC 目前处于预览状态。</target>
-</trans-unit>
 <trans-unit id="s32babfed740fd3c1">
   <source>User type used for newly created users.</source>
   <target>新创建用户使用的用户类型。</target>
@@ -7717,7 +7713,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>成功创建用户并添加到组 <x id="0" equiv-text="${this.group.name}"/></target>
 </trans-unit>
 <trans-unit id="s824e0943a7104668">
-  <source>This user will be added to the group &quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&quot;.</source>
+  <source>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</source>
   <target>此用户将会被添加到组 &amp;quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&amp;quot;。</target>
 </trans-unit>
 <trans-unit id="s62e7f6ed7d9cb3ca">
@@ -7843,10 +7839,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s38e7cd1a24e70faa">
   <source>Create Endpoint</source>
   <target>创建端点</target>
-</trans-unit>
-<trans-unit id="s4770c10e5b1c028c">
-  <source>RAC is in preview.</source>
-  <target>RAC 目前处于预览状态。</target>
 </trans-unit>
 <trans-unit id="s168565f5ac74a89f">
   <source>Update RAC Provider</source>
@@ -9075,7 +9067,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>同步组</target>
 </trans-unit>
 <trans-unit id="s2d5f69929bb7221d">
-  <source><x id="0" equiv-text="${prompt.name}"/> (&quot;<x id="1" equiv-text="${prompt.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${prompt.type}"/>)</source>
+  <source><x id="0" equiv-text="${prompt.name}"/> ("<x id="1" equiv-text="${prompt.fieldKey}"/>", of type <x id="2" equiv-text="${prompt.type}"/>)</source>
   <target><x id="0" equiv-text="${prompt.name}"/>（&amp;quot;<x id="1" equiv-text="${prompt.fieldKey}"/>&amp;quot;，类型为 <x id="2" equiv-text="${prompt.type}"/>）</target>
 </trans-unit>
 <trans-unit id="sa38c5a2731be3a46">
@@ -9128,131 +9120,111 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sbfee780fa0a2c83e">
   <source>Device type <x id="0" equiv-text="${device.verboseName}"/> cannot be deleted</source>
-  <target>设备类型 <x id="0" equiv-text="${device.verboseName}"/> 无法被删除</target>
 </trans-unit>
 <trans-unit id="s336936629cdeb3e5">
   <source>Stage used to verify users' browsers using Google Chrome Device Trust. This stage can be used in authentication/authorization flows.</source>
-  <target>通过 Google Chrome 设备信任来验证用户浏览器的阶段。此阶段可在身份验证/授权流程中使用。</target>
 </trans-unit>
 <trans-unit id="s85fe794c71b4ace8">
   <source>Google Verified Access API</source>
-  <target>Google Verified Access API</target>
 </trans-unit>
 <trans-unit id="s013620384af7c8b4">
   <source>Device type <x id="0" equiv-text="${device.verboseName}"/> cannot be edited</source>
-  <target>设备类型 <x id="0" equiv-text="${device.verboseName}"/> 无法被编辑</target>
 </trans-unit>
 <trans-unit id="s4347135696fc7cde">
   <source>Advanced flow settings</source>
-  <target>高级流程设置</target>
 </trans-unit>
 <trans-unit id="sf52ff57fd136cc2f">
   <source>Enable this option to write password changes made in authentik back to Kerberos. Ignored if sync is disabled.</source>
-  <target>启用此选项会将 authentik 作出的密码修改写入回 Kerberos。如果未启用同步则忽略。</target>
 </trans-unit>
 <trans-unit id="s14a16542f956e11d">
   <source>Realm settings</source>
-  <target>领域设置</target>
 </trans-unit>
 <trans-unit id="s9c2eae548d3c1c30">
   <source>Realm</source>
-  <target>领域</target>
 </trans-unit>
 <trans-unit id="s6b032212997e2491">
   <source>Kerberos 5 configuration</source>
-  <target>Kerberos 5 配置</target>
 </trans-unit>
 <trans-unit id="sbf50181022f47de3">
   <source>Kerberos 5 configuration. See man krb5.conf(5) for configuration format. If left empty, a default krb5.conf will be used.</source>
-  <target>Kerberos 5 配置。请阅读 man krb5.conf(5) 了解配置格式。如果留空，则使用默认的 krb5.conf。</target>
 </trans-unit>
 <trans-unit id="s2386539a0bd62fab">
   <source>Sync connection settings</source>
-  <target>同步连接设置</target>
 </trans-unit>
 <trans-unit id="s0d1a6f3fe81351f8">
   <source>Sync principal</source>
-  <target>同步主体</target>
 </trans-unit>
 <trans-unit id="sa691d6e1974295fa">
   <source>Principal used to authenticate to the KDC for syncing.</source>
-  <target>向 KDC 进行身份验证以进行同步的主体。</target>
 </trans-unit>
 <trans-unit id="s977b9c629eed3d33">
   <source>Sync password</source>
-  <target>同步密码</target>
 </trans-unit>
 <trans-unit id="s77772860385de948">
   <source>Password used to authenticate to the KDC for syncing. Optional if Sync keytab or Sync credentials cache is provided.</source>
-  <target>向 KDC 进行身份验证以进行同步的密码。如果提供了同步 Keytab 或同步凭据缓存，则此选项是可选的。</target>
 </trans-unit>
 <trans-unit id="sc59ec59c3d5e74dc">
   <source>Sync keytab</source>
-  <target>同步 Keytab</target>
 </trans-unit>
 <trans-unit id="scd42997958453f05">
   <source>Keytab used to authenticate to the KDC for syncing. Optional if Sync password or Sync credentials cache is provided. Must be base64 encoded or in the form TYPE:residual.</source>
-  <target>向 KDC 进行身份验证以进行同步的 Keytab。如果提供了同步密码或同步凭据缓存，则此选项是可选的。必须以 Base64 编码，或者形式为 TYPE:residual。</target>
 </trans-unit>
 <trans-unit id="s60eaf439ccdca1f2">
   <source>Sync credentials cache</source>
-  <target>同步凭据缓存</target>
 </trans-unit>
 <trans-unit id="s95722900b0c9026f">
   <source>Credentials cache used to authenticate to the KDC for syncing. Optional if Sync password or Sync keytab is provided. Must be in the form TYPE:residual.</source>
-  <target>向 KDC 进行身份验证以进行同步的凭据缓存。如果提供了同步密码或同步 Keytab，则此选项是可选的。形式必须为 TYPE:residual。</target>
 </trans-unit>
 <trans-unit id="sf9c055db98d7994a">
   <source>SPNEGO settings</source>
-  <target>SPNEGO 设置</target>
 </trans-unit>
 <trans-unit id="sab580a45dc46937f">
   <source>SPNEGO server name</source>
-  <target>SPNEGO 服务器名称</target>
 </trans-unit>
 <trans-unit id="s7a79d6174d17ab2d">
   <source>Force the use of a specific server name for SPNEGO. Must be in the form HTTP@domain</source>
-  <target>强制为 SPNEGO 使用特定服务器名称。形式必须为 HTTP@域名</target>
 </trans-unit>
 <trans-unit id="sa4ba2b2081472ccd">
   <source>SPNEGO keytab</source>
-  <target>SPNEGO Keytab</target>
 </trans-unit>
 <trans-unit id="s64adda975c1106c0">
   <source>Keytab used for SPNEGO. Optional if SPNEGO credentials cache is provided. Must be base64 encoded or in the form TYPE:residual.</source>
-  <target>SPNEGO 使用的 Keytab。如果提供了 SPNEGO 凭据缓存，则此选项是可选的。必须以 Base64 编码，或者形式为 TYPE:residual。</target>
 </trans-unit>
 <trans-unit id="s92247825b92587b5">
   <source>SPNEGO credentials cache</source>
-  <target>SPNEGO 凭据缓存</target>
 </trans-unit>
 <trans-unit id="sd9757c345e4062f8">
   <source>Credentials cache used for SPNEGO. Optional if SPNEGO keytab is provided. Must be in the form TYPE:residual.</source>
-  <target>SPNEGO 使用的凭据缓存。如果提供了 SPNEGO Keytab，则此选项是可选的。形式必须为 TYPE:residual。</target>
 </trans-unit>
 <trans-unit id="s734ab8fbcae0b69e">
   <source>Kerberos Attribute mapping</source>
-  <target>Kerberos 属性映射</target>
 </trans-unit>
 <trans-unit id="s2c378e86e025fdb2">
   <source>Update Kerberos Source</source>
-  <target>更新 Kerberos 源</target>
 </trans-unit>
 <trans-unit id="s03e4044abe0b556c">
   <source>User database + Kerberos password</source>
-  <target>用户数据库 + Kerberos 密码</target>
 </trans-unit>
 <trans-unit id="s98bb2ae796f1ceef">
   <source>Select another authentication method</source>
-  <target>选择另一种身份验证方法</target>
 </trans-unit>
 <trans-unit id="s21d95b4651ad7a1e">
   <source>Enter a one-time recovery code for this user.</source>
-  <target>为此用户输入一次性恢复代码。</target>
 </trans-unit>
 <trans-unit id="s2e1d5a7d320c25ef">
   <source>Enter the code from your authenticator device.</source>
-  <target>请输入来自您身份验证设备的代码。</target>
+</trans-unit>
+<trans-unit id="scc1a17d28912e974">
+  <source>Kerberos Source is in preview.</source>
+</trans-unit>
+<trans-unit id="s54154a8d64a3597b">
+  <source>Captcha stage</source>
+</trans-unit>
+<trans-unit id="s0c250af62ddbf801">
+  <source>When set, adds functionality exactly like a Captcha stage, but baked into the Identification stage.</source>
+</trans-unit>
+<trans-unit id="sabf8a430d504f8c8">
+  <source>Endpoint Google Chrome Device Trust is in preview.</source>
 </trans-unit>
     </body>
   </file>
