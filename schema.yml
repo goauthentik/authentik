@@ -33863,6 +33863,11 @@ paths:
       description: IdentificationStage Viewset
       parameters:
       - in: query
+        name: captcha_stage
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: case_insensitive_matching
         schema:
           type: boolean
@@ -40204,10 +40209,15 @@ components:
         challenge:
           type: object
           additionalProperties: {}
+        last_used:
+          type: string
+          format: date-time
+          nullable: true
       required:
       - challenge
       - device_class
       - device_uid
+      - last_used
     DeviceChallengeRequest:
       type: object
       description: Single device challenge
@@ -40221,10 +40231,15 @@ components:
         challenge:
           type: object
           additionalProperties: {}
+        last_used:
+          type: string
+          format: date-time
+          nullable: true
       required:
       - challenge
       - device_class
       - device_uid
+      - last_used
     DeviceClassesEnum:
       enum:
       - static
@@ -42494,6 +42509,8 @@ components:
           type: string
         flow_designation:
           $ref: '#/components/schemas/FlowDesignationEnum'
+        captcha_stage:
+          $ref: '#/components/schemas/CaptchaChallenge'
         enroll_url:
           type: string
         recovery_url:
@@ -42526,6 +42543,9 @@ components:
           type: string
           minLength: 1
         password:
+          type: string
+          nullable: true
+        captcha_token:
           type: string
           nullable: true
       required:
@@ -42573,6 +42593,12 @@ components:
           nullable: true
           description: When set, shows a password field, instead of showing the password
             field as separate step.
+        captcha_stage:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, adds functionality exactly like a Captcha stage,
+            but baked into the Identification stage.
         case_insensitive_matching:
           type: boolean
           description: When enabled, user fields are matched regardless of their casing.
@@ -42641,6 +42667,12 @@ components:
           nullable: true
           description: When set, shows a password field, instead of showing the password
             field as separate step.
+        captcha_stage:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, adds functionality exactly like a Captcha stage,
+            but baked into the Identification stage.
         case_insensitive_matching:
           type: boolean
           description: When enabled, user fields are matched regardless of their casing.
@@ -42943,7 +42975,8 @@ components:
           readOnly: true
         spnego_server_name:
           type: string
-          description: Force the use of a specific server name for SPNEGO
+          description: Force the use of a specific server name for SPNEGO. Must be
+            in the form HTTP@hostname
         spnego_ccache:
           type: string
           description: Credential cache to use for SPNEGO in form type:residual
@@ -43112,7 +43145,8 @@ components:
             be in the form TYPE:residual
         spnego_server_name:
           type: string
-          description: Force the use of a specific server name for SPNEGO
+          description: Force the use of a specific server name for SPNEGO. Must be
+            in the form HTTP@hostname
         spnego_keytab:
           type: string
           writeOnly: true
@@ -48231,6 +48265,12 @@ components:
           nullable: true
           description: When set, shows a password field, instead of showing the password
             field as separate step.
+        captcha_stage:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, adds functionality exactly like a Captcha stage,
+            but baked into the Identification stage.
         case_insensitive_matching:
           type: boolean
           description: When enabled, user fields are matched regardless of their casing.
@@ -48410,7 +48450,8 @@ components:
             be in the form TYPE:residual
         spnego_server_name:
           type: string
-          description: Force the use of a specific server name for SPNEGO
+          description: Force the use of a specific server name for SPNEGO. Must be
+            in the form HTTP@hostname
         spnego_keytab:
           type: string
           writeOnly: true

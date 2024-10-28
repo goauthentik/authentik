@@ -89,7 +89,12 @@ export async function setFormGroup(name: string | RegExp, setting: "open" | "clo
         typeof name === "string" ? (sample) => sample === name : (sample) => name.test(sample);
 
     const formGroup = await (async () => {
-        for await (const group of $$("ak-form-group")) {
+        for await (const group of browser.$$("ak-form-group")) {
+            // Delightfully, wizards may have slotted elements that *exist* but are not *attached*,
+            // and this can break the damn tests.
+            if (!(await group.isDisplayed())) {
+                continue;
+            }
             if (
                 comparator(await group.$("div.pf-c-form__field-group-header-title-text").getText())
             ) {
@@ -112,8 +117,7 @@ export async function clickButton(name: string, ctx?: WebdriverIO.Element) {
     const buttons = await context.$$("button");
     let button: WebdriverIO.Element;
     for (const b of buttons) {
-        const label = await b.getText();
-        if (label.indexOf(name) !== -1) {
+        if (b.isDisplayed() && (await b.getText()).indexOf(name) !== -1) {
             button = b;
             break;
         }
@@ -123,16 +127,9 @@ export async function clickButton(name: string, ctx?: WebdriverIO.Element) {
     await doBlur(button);
 }
 
-const tap = <T>(a: T): T => {
-    console.log(a);
-    return a;
-};
-
 export async function clickToggleGroup(name: string, value: string | RegExp) {
     const comparator =
-        typeof name === "string"
-            ? (sample) => tap(sample) === tap(value)
-            : (sample) => value.test(sample);
+        typeof name === "string" ? (sample) => sample === value : (sample) => value.test(sample);
 
     const button = await (async () => {
         for await (const button of $(`[data-ouid-component-name=${name}]`).$$(

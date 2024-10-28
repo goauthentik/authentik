@@ -29,6 +29,7 @@ from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE, SESSION_
 from authentik.lib.utils.reflection import all_subclasses
 from authentik.lib.utils.urls import reverse_with_qs
 from authentik.root.middleware import ClientIPMiddleware
+from authentik.stages.captcha.stage import CaptchaChallenge, verify_captcha_token
 from authentik.stages.identification.models import IdentificationStage
 from authentik.stages.identification.signals import identification_failed
 from authentik.stages.password.stage import authenticate
@@ -75,6 +76,7 @@ class IdentificationChallenge(Challenge):
     allow_show_password = BooleanField(default=False)
     application_pre = CharField(required=False)
     flow_designation = ChoiceField(FlowDesignation.choices)
+    captcha_stage = CaptchaChallenge(required=False)
 
     enroll_url = CharField(required=False)
     recovery_url = CharField(required=False)
@@ -91,14 +93,16 @@ class IdentificationChallengeResponse(ChallengeResponse):
 
     uid_field = CharField()
     password = CharField(required=False, allow_blank=True, allow_null=True)
+    captcha_token = CharField(required=False, allow_blank=True, allow_null=True)
     component = CharField(default="ak-stage-identification")
 
     pre_user: User | None = None
 
     def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
-        """Validate that user exists, and optionally their password"""
+        """Validate that user exists, and optionally their password and captcha token"""
         uid_field = attrs["uid_field"]
         current_stage: IdentificationStage = self.stage.executor.current_stage
+        client_ip = ClientIPMiddleware.get_client_ip(self.stage.request)
 
         pre_user = self.stage.get_user(uid_field)
         if not pre_user:
@@ -113,7 +117,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
             self.stage.logger.info(
                 "invalid_login",
                 identifier=uid_field,
-                client_ip=ClientIPMiddleware.get_client_ip(self.stage.request),
+                client_ip=client_ip,
                 action="invalid_identifier",
                 context={
                     "stage": sanitize_item(self.stage),
@@ -136,6 +140,15 @@ class IdentificationChallengeResponse(ChallengeResponse):
                 return attrs
             raise ValidationError("Failed to authenticate.")
         self.pre_user = pre_user
+
+        # Captcha check
+        if captcha_stage := current_stage.captcha_stage:
+            captcha_token = attrs.get("captcha_token", None)
+            if not captcha_token:
+                self.stage.logger.warning("Token not set for captcha attempt")
+            verify_captcha_token(captcha_stage, captcha_token, client_ip)
+
+        # Password check
         if not current_stage.password_stage:
             # No password stage select, don't validate the password
             return attrs
@@ -206,6 +219,14 @@ class IdentificationStageView(ChallengeStageView):
                 "primary_action": self.get_primary_action(),
                 "user_fields": current_stage.user_fields,
                 "password_fields": bool(current_stage.password_stage),
+                "captcha_stage": (
+                    {
+                        "js_url": current_stage.captcha_stage.js_url,
+                        "site_key": current_stage.captcha_stage.public_key,
+                    }
+                    if current_stage.captcha_stage
+                    else None
+                ),
                 "allow_show_password": bool(current_stage.password_stage)
                 and current_stage.password_stage.allow_show_password,
                 "show_source_labels": current_stage.show_source_labels,

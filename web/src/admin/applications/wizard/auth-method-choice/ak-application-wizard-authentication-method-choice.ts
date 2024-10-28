@@ -7,34 +7,29 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/wizard/TypeCreateWizardPage";
 import { TypeCreateWizardPageLayouts } from "@goauthentik/elements/wizard/TypeCreateWizardPage";
 
+import { consume } from "@lit/context";
 import { msg } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { html } from "lit";
 
 import BasePanel from "../BasePanel";
+import { applicationWizardProvidersContext } from "../ContextIdentity";
 import type { LocalTypeCreate } from "./ak-application-wizard-authentication-method-choice.choices";
-import providerModelsList from "./ak-application-wizard-authentication-method-choice.choices";
 
 @customElement("ak-application-wizard-authentication-method-choice")
 export class ApplicationWizardAuthenticationMethodChoice extends WithLicenseSummary(BasePanel) {
+    @consume({ context: applicationWizardProvidersContext })
+    public providerModelsList: LocalTypeCreate[];
+
     render() {
-        const selectedTypes = providerModelsList.filter(
-            (t) => t.formName === this.wizard.providerModel,
+        const selectedTypes = this.providerModelsList.filter(
+            (t) => t.modelName === this.wizard.providerModel,
         );
 
-        // As a hack, the Application wizard has separate provider paths for our three types of
-        // proxy providers. This patch swaps the form we want to be directed to on page 3 from the
-        // modelName to the formName, so we get the right one.  This information isn't modified
-        // or forwarded, so the proxy-plus-subtype is correctly mapped on submission.
-        const typesForWizard = providerModelsList.map((provider) => ({
-            ...provider,
-            modelName: provider.formName,
-        }));
-
-        return providerModelsList.length > 0
+        return this.providerModelsList.length > 0
             ? html`<form class="pf-c-form pf-m-horizontal">
                   <ak-wizard-page-type-create
-                      .types=${typesForWizard}
+                      .types=${this.providerModelsList}
                       name="selectProviderType"
                       layout=${TypeCreateWizardPageLayouts.grid}
                       .selectedType=${selectedTypes.length > 0 ? selectedTypes[0] : undefined}
@@ -42,7 +37,7 @@ export class ApplicationWizardAuthenticationMethodChoice extends WithLicenseSumm
                           this.dispatchWizardUpdate({
                               update: {
                                   ...this.wizard,
-                                  providerModel: ev.detail.formName,
+                                  providerModel: ev.detail.modelName,
                                   errors: {},
                               },
                               status: this.valid ? "valid" : "invalid",

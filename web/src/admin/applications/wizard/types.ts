@@ -5,6 +5,7 @@ import {
     type LDAPProviderRequest,
     type OAuth2ProviderRequest,
     type ProvidersSamlImportMetadataCreateRequest,
+    ProxyMode,
     type ProxyProviderRequest,
     type RACProviderRequest,
     type RadiusProviderRequest,
@@ -27,6 +28,7 @@ export interface ApplicationWizardState {
     providerModel: string;
     app: Partial<ApplicationRequest>;
     provider: OneOfProvider;
+    proxyMode?: ProxyMode;
     errors: ValidationError;
 }
 

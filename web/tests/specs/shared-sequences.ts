@@ -35,8 +35,8 @@ export const simpleLDAPProviderForm: TestProvider = () => [
     [clickButton, "Next"],
     [setTextInput, "name", newObjectName("New LDAP Provider")],
     // This will never not weird me out.
-    [setSearchSelect, "authorizationFlow", "default-authentication-flow"],
     [setFormGroup, /Flow settings/, "open"],
+    [setSearchSelect, "authorizationFlow", "default-authentication-flow"],
     [setSearchSelect, "invalidationFlow", "default-invalidation-flow"],
 ];
 

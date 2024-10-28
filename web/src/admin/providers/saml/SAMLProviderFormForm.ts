@@ -350,14 +350,12 @@ export function renderForm(
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
                     label=${msg("Default relay state")}
-                    ?required=${true}
                     name="defaultRelayState"
                 >
                     <input
                         type="text"
                         value="${provider?.defaultRelayState || ""}"
                         class="pf-c-form-control"
-                        required
                     />
                     <p class="pf-c-form__helper-text">
                         ${msg(
