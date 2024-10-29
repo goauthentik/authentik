@@ -7616,10 +7616,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>For nginx's auth_request or traefik's forwardAuth per root domain</source>
   <target>루트 도메인 당 Nginx의 auth_request 또는 Traefik의 forwardAuth 경우</target>
 </trans-unit>
-<trans-unit id="sc615309d10a9228c">
-  <source>RBAC is in preview.</source>
-  <target>RBAC 는 현재 프리뷰입니다.</target>
-</trans-unit>
 <trans-unit id="s32babfed740fd3c1">
   <source>User type used for newly created users.</source>
   <target>새로 생성된 사용자에 사용되는 사용자 유형입니다.</target>
@@ -7813,9 +7809,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s38e7cd1a24e70faa">
   <source>Create Endpoint</source>
-</trans-unit>
-<trans-unit id="s4770c10e5b1c028c">
-  <source>RAC is in preview.</source>
 </trans-unit>
 <trans-unit id="s168565f5ac74a89f">
   <source>Update RAC Provider</source>
@@ -8853,6 +8846,18 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s2e1d5a7d320c25ef">
   <source>Enter the code from your authenticator device.</source>
+</trans-unit>
+<trans-unit id="scc1a17d28912e974">
+  <source>Kerberos Source is in preview.</source>
+</trans-unit>
+<trans-unit id="s54154a8d64a3597b">
+  <source>Captcha stage</source>
+</trans-unit>
+<trans-unit id="s0c250af62ddbf801">
+  <source>When set, adds functionality exactly like a Captcha stage, but baked into the Identification stage.</source>
+</trans-unit>
+<trans-unit id="sabf8a430d504f8c8">
+  <source>Endpoint Google Chrome Device Trust is in preview.</source>
 </trans-unit>
     </body>
   </file>

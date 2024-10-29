@@ -3896,13 +3896,13 @@ pytest = ">=4.0.0"
 
 [[package]]
 name = "pytest-randomly"
-version = "3.15.0"
+version = "3.16.0"
 description = "Pytest plugin to randomly order tests and control random.seed."
 optional = false
-python-versions = ">=3.8"
+python-versions = ">=3.9"
 files = [
-    {file = "pytest_randomly-3.15.0-py3-none-any.whl", hash = "sha256:0516f4344b29f4e9cdae8bce31c4aeebf59d0b9ef05927c33354ff3859eeeca6"},
-    {file = "pytest_randomly-3.15.0.tar.gz", hash = "sha256:b908529648667ba5e54723088edd6f82252f540cc340d748d1fa985539687047"},
+    {file = "pytest_randomly-3.16.0-py3-none-any.whl", hash = "sha256:8633d332635a1a0983d3bba19342196807f6afb17c3eef78e02c2f85dade45d6"},
+    {file = "pytest_randomly-3.16.0.tar.gz", hash = "sha256:11bf4d23a26484de7860d82f726c0629837cf4064b79157bd18ec9d41d7feb26"},
 ]
 
 [package.dependencies]
@@ -4425,13 +4425,13 @@ tornado = ["tornado (>=6)"]
 
 [[package]]
 name = "service-identity"
-version = "24.1.0"
+version = "24.2.0"
 description = "Service identity verification for pyOpenSSL & cryptography."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "service_identity-24.1.0-py3-none-any.whl", hash = "sha256:a28caf8130c8a5c1c7a6f5293faaf239bbfb7751e4862436920ee6f2616f568a"},
-    {file = "service_identity-24.1.0.tar.gz", hash = "sha256:6829c9d62fb832c2e1c435629b0a8c476e1929881f28bee4d20bc24161009221"},
+    {file = "service_identity-24.2.0-py3-none-any.whl", hash = "sha256:6b047fbd8a84fd0bb0d55ebce4031e400562b9196e1e0d3e0fe2b8a59f6d4a85"},
+    {file = "service_identity-24.2.0.tar.gz", hash = "sha256:b8683ba13f0d39c6cd5d625d2c5f65421d6d707b013b375c355751557cbe8e09"},
 ]
 
 [package.dependencies]
@@ -4441,7 +4441,7 @@ pyasn1 = "*"
 pyasn1-modules = "*"
 
 [package.extras]
-dev = ["pyopenssl", "service-identity[idna,mypy,tests]"]
+dev = ["coverage[toml] (>=5.0.2)", "idna", "mypy", "pyopenssl", "pytest", "types-pyopenssl"]
 docs = ["furo", "myst-parser", "pyopenssl", "sphinx", "sphinx-notfound-page"]
 idna = ["idna"]
 mypy = ["idna", "mypy", "types-pyopenssl"]
@@ -4751,13 +4751,13 @@ wsproto = ">=0.14"
 
 [[package]]
 name = "twilio"
-version = "9.3.5"
+version = "9.3.6"
 description = "Twilio API client and TwiML generator"
 optional = false
 python-versions = ">=3.7.0"
 files = [
-    {file = "twilio-9.3.5-py2.py3-none-any.whl", hash = "sha256:d6a97a77b98cc176a61c960f11894af385bc1c11b93e2e8b79fdfb9601788fb0"},
-    {file = "twilio-9.3.5.tar.gz", hash = "sha256:608d78a903d403465aac1840c58a6546a090b7e222d2bf539a93c3831072880c"},
+    {file = "twilio-9.3.6-py2.py3-none-any.whl", hash = "sha256:c5d7f4cfeb50a7928397b8f819c8f7fb2bb956a1a2cabbda1df1d7a40f9ce1d7"},
+    {file = "twilio-9.3.6.tar.gz", hash = "sha256:d42691f7fe1faaa5ba82942f169bfea4d7f01a0a542a456d82018fb49bd1f5b2"},
 ]
 
 [package.dependencies]

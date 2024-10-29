@@ -2,6 +2,11 @@
 title: Kerberos
 ---
 
+<span class="badge badge--preview">Preview</span>
+<span class="badge badge--version">authentik 2024.10+</span>
+
+---
+
 This source allows users to enroll themselves with an existing Kerberos identity.
 
 ## Preparation

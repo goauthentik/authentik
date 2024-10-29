@@ -26,7 +26,7 @@ For example:
 
 ## `authentik_core.user`
 
-### `password` <span class="badge badge--version">authentik 2023.6+</span>
+### `password` <span class="badge badge--version">authentik 2023.6+</span>
 
 Via the standard API, a user's password can only be set via the separate `/api/v3/core/users/<id>/set_password/` endpoint. In blueprints, the password of a user can be set using the `password` field.
 
@@ -45,7 +45,7 @@ For example:
       password: this-should-be-a-long-value
 ```
 
-### `permissions` <span class="badge badge--version">authentik 2024.8+</span>
+### `permissions` <span class="badge badge--version">authentik 2024.8+</span>
 
 The `permissions` field can be used to set global permissions for a user. A full list of possible permissions is included in the JSON schema for blueprints.
 
@@ -63,7 +63,7 @@ For example:
 
 ## `authentik_core.application`
 
-### `icon` <span class="badge badge--version">authentik 2023.5+</span>
+### `icon` <span class="badge badge--version">authentik 2023.5+</span>
 
 Application icons can be directly set to URLs with the `icon` field.
 
@@ -81,7 +81,7 @@ For example:
 
 ## `authentik_sources_oauth.oauthsource`, `authentik_sources_saml.samlsource`, `authentik_sources_plex.plexsource`
 
-### `icon` <span class="badge badge--version">authentik 2023.5+</span>
+### `icon` <span class="badge badge--version">authentik 2023.5+</span>
 
 Source icons can be directly set to URLs with the `icon` field.
 
@@ -99,7 +99,7 @@ For example:
 
 ## `authentik_flows.flow`
 
-### `icon` <span class="badge badge--version">authentik 2023.5+</span>
+### `icon` <span class="badge badge--version">authentik 2023.5+</span>
 
 Flow backgrounds can be directly set to URLs with the `background` field.
 
@@ -119,7 +119,7 @@ For example:
 
 ## `authentik_rbac.role`
 
-### `permissions` <span class="badge badge--version">authentik 2024.8+</span>
+### `permissions` <span class="badge badge--version">authentik 2024.8+</span>
 
 The `permissions` field can be used to set global permissions for a role. A full list of possible permissions is included in the JSON schema for blueprints.
 
