@@ -39220,7 +39220,10 @@ components:
           type: string
         js_url:
           type: string
+        interactive:
+          type: boolean
       required:
+      - interactive
       - js_url
       - pending_user
       - pending_user_avatar
@@ -39276,6 +39279,8 @@ components:
           type: string
         api_url:
           type: string
+        interactive:
+          type: boolean
         score_min_threshold:
           type: number
           format: double
@@ -39322,6 +39327,8 @@ components:
         api_url:
           type: string
           minLength: 1
+        interactive:
+          type: boolean
         score_min_threshold:
           type: number
           format: double
@@ -47732,6 +47739,8 @@ components:
         api_url:
           type: string
           minLength: 1
+        interactive:
+          type: boolean
         score_min_threshold:
           type: number
           format: double

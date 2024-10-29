@@ -9781,6 +9781,10 @@
                     "minLength": 1,
                     "title": "Api url"
                 },
+                "interactive": {
+                    "type": "boolean",
+                    "title": "Interactive"
+                },
                 "score_min_threshold": {
                     "type": "number",
                     "title": "Score min threshold"
