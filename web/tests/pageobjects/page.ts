@@ -80,6 +80,7 @@ export default class Page {
             await $(`div[data-managed-for="${name}"]`).$("ak-list-select")
         ).shadow$$("button");
 
+        let target: WebdriverIO.Element;
         // @ts-expect-error "Types break on shadow$$"
         for (const button of searchBlock) {
             if ((await button.getText()).includes(value)) {
@@ -91,6 +92,7 @@ export default class Page {
         if (!target) {
             throw new Error(`Expected to find an entry matching the spec ${value}`);
         }
+
         await (await target).click();
         await browser.keys(Key.Tab);
     }
@@ -121,7 +123,7 @@ export default class Page {
         const formGroup = await $(`ak-form-group span[slot="header"].*=${name}`).parentElement();
         await formGroup.scrollIntoView();
         const toggle = await formGroup.$("div.pf-c-form__field-group-toggle-button button");
-        await match([toggle.getAttribute("expanded"), setting])
+        await match([await toggle.getAttribute("expanded"), setting])
             .with(["false", "open"], async () => await toggle.click())
             .with(["true", "closed"], async () => await toggle.click())
             .otherwise(async () => {});

@@ -4,90 +4,65 @@ import { Key } from "webdriverio";
 
 export async function doBlur(el: WebdriverIO.Element | ChainablePromiseElement) {
     const element = await el;
-    browser.execute((element) => element.blur());
+    browser.execute((element) => element.blur(), element);
 }
 
-export async function setSearchSelect(name: string, value: string) {
-    const control = await (async () => {
-        try {
-            const control = await $(`ak-search-select[name="${name}"]`);
-            await control.waitForExist({ timeout: 500 });
-            return control;
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
-        } catch (_e: any) {
-            const control = await $(`ak-search-selects-ez[name="${name}"]`);
-            return control;
-        }
-    })();
+export function tap<A>(a: A) {
+    console.log("TAP:", a);
+    return a;
+}
 
-    // Find the search select input control and activate it.
-    const view = await control.$("ak-search-select-view");
-    const input = await view.$('input[type="text"]');
-    await input.scrollIntoView();
-    await input.click();
+const makeComparator = (value: string | RegExp) =>
+    typeof value === "string"
+        ? (sample: string) => sample === value
+        : (sample: string) => value.test(sample);
 
-    // @ts-expect-error "Types break on shadow$$"
+export async function checkIsPresent(name: string) {
+    await expect(await $(name)).toBeDisplayed();
+}
+
+export async function clickButton(name: string, ctx?: WebdriverIO.Element) {
+    const context = ctx ?? browser;
     const button = await (async () => {
-        for await (const button of $(`div[data-managed-for*="${name}"]`)
-            .$("ak-list-select")
-            .$$("button")) {
-            if ((await button.getText()).includes(value)) {
+        for await (const button of context.$$("button")) {
+            if ((await button.isDisplayed()) && (await button.getText()).indexOf(name) !== -1) {
                 return button;
             }
         }
     })();
 
-    // @ts-expect-error "TSC cannot tell if the `for` loop actually performs the assignment."
-    if (!button.isExisting()) {
-        throw new Error(`Expected to find an entry matching the spec ${value}`);
+    if (!(button && (await button.isDisplayed()))) {
+        throw new Error(`Unable to find button '${name}'`);
     }
-    await (await button).click();
-    await browser.keys(Key.Tab);
-    await doBlur(control);
+
+    await button.scrollIntoView();
+    await button.click();
+    await doBlur(button);
 }
 
-export async function setTextInput(name: string, value: string) {
-    const control = await $(`input[name="${name}"]`);
-    await control.scrollIntoView();
-    await control.setValue(value);
-    await doBlur(control);
-}
-
-export async function setRadio(name: string, value: string) {
-    const control = await $(`ak-radio[name="${name}"]`);
-    await control.scrollIntoView();
-    const item = await control.$(`label.*=${value}`).parentElement();
-    await item.scrollIntoView();
-    await item.click();
-    await doBlur(control);
-}
-
-export async function setTypeCreate(name: string, value: string | RegExp) {
-    const control = await $(`ak-wizard-page-type-create[name="${name}"]`);
-    await control.scrollIntoView();
-
-    const comparator =
-        typeof value === "string" ? (sample) => sample === value : (sample) => value.test(sample);
-
-    const card = await (async () => {
-        for await (const card of $("ak-wizard-page-type-create").$$(
-            '[data-ouid-component-type="ak-type-create-grid-card"]',
+export async function clickToggleGroup(name: string, value: string | RegExp) {
+    const comparator = makeComparator(value);
+    const button = await (async () => {
+        for await (const button of $(`[data-ouid-component-name=${name}]`).$$(
+            ".pf-c-toggle-group__button",
         )) {
-            if (comparator(await card.$(".pf-c-card__title").getText())) {
-                return card;
+            if (comparator(await button.$(".pf-c-toggle-group__text").getText())) {
+                return button;
             }
         }
     })();
 
-    await card.scrollIntoView();
-    await card.click();
-    await doBlur(control);
+    if (!(button && (await button?.isDisplayed()))) {
+        throw new Error(`Unable to locate toggle button ${name}:${value.toString()}`);
+    }
+
+    await button.scrollIntoView();
+    await button.click();
+    await doBlur(button);
 }
 
 export async function setFormGroup(name: string | RegExp, setting: "open" | "closed") {
-    const comparator =
-        typeof name === "string" ? (sample) => sample === name : (sample) => name.test(sample);
-
+    const comparator = makeComparator(name);
     const formGroup = await (async () => {
         for await (const group of browser.$$("ak-form-group")) {
             // Delightfully, wizards may have slotted elements that *exist* but are not *attached*,
@@ -103,6 +78,10 @@ export async function setFormGroup(name: string | RegExp, setting: "open" | "clo
         }
     })();
 
+    if (!(formGroup && (await formGroup.isDisplayed()))) {
+        throw new Error(`Unable to find ak-form-group[name="${name}"]`);
+    }
+
     await formGroup.scrollIntoView();
     const toggle = await formGroup.$("div.pf-c-form__field-group-toggle-button button");
     await match([await toggle.getAttribute("aria-expanded"), setting])
@@ -112,35 +91,135 @@ export async function setFormGroup(name: string | RegExp, setting: "open" | "clo
     await doBlur(formGroup);
 }
 
-export async function clickButton(name: string, ctx?: WebdriverIO.Element) {
-    const context = ctx ?? browser;
-    const buttons = await context.$$("button");
-    let button: WebdriverIO.Element;
-    for (const b of buttons) {
-        if (b.isDisplayed() && (await b.getText()).indexOf(name) !== -1) {
-            button = b;
-            break;
+export async function setRadio(name: string, value: string | RegExp) {
+    const control = await $(`ak-radio[name="${name}"]`);
+    await control.scrollIntoView();
+
+    const comparator = makeComparator(value);
+    const item = await (async () => {
+        for await (const item of control.$$("div.pf-c-radio")) {
+            if (comparator(await item.$(".pf-c-radio__label").getText())) {
+                return item;
+            }
         }
+    })();
+
+    if (!(item && (await item.isDisplayed()))) {
+        throw new Error(`Unable to find a radio that matches ${name}:${value.toString()}`);
     }
-    await button.scrollIntoView();
-    await button.click();
-    await doBlur(button);
+
+    await item.scrollIntoView();
+    await item.click();
+    await doBlur(control);
 }
 
-export async function clickToggleGroup(name: string, value: string | RegExp) {
-    const comparator =
-        typeof name === "string" ? (sample) => sample === value : (sample) => value.test(sample);
+export async function setSearchSelect(name: string, value: string | RegExp) {
+    const control = await (async () => {
+        try {
+            const control = await $(`ak-search-select[name="${name}"]`);
+            await control.waitForExist({ timeout: 500 });
+            return control;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+        } catch (_e: any) {
+            const control = await $(`ak-search-selects-ez[name="${name}"]`);
+            return control;
+        }
+    })();
 
+    if (!(control && (await control.isExisting()))) {
+        throw new Error(`Unable to find an ak-search-select variant matching ${name}}`);
+    }
+
+    // Find the search select input control and activate it.
+    const view = await control.$("ak-search-select-view");
+    const input = await view.$('input[type="text"]');
+    await input.scrollIntoView();
+    await input.click();
+
+    const comparator = makeComparator(value);
     const button = await (async () => {
-        for await (const button of $(`[data-ouid-component-name=${name}]`).$$(
-            ".pf-c-toggle-group__button",
-        )) {
-            if (comparator(await button.$(".pf-c-toggle-group__text").getText())) {
+        for await (const button of $(`div[data-managed-for*="${name}"]`)
+            .$("ak-list-select")
+            .$$("button")) {
+            if (comparator(await button.getText())) {
                 return button;
             }
         }
     })();
-    await button.scrollIntoView();
-    await button.click();
-    await doBlur(button);
+
+    if (!(button && (await button.isDisplayed()))) {
+        throw new Error(
+            `Unable to find an ak-search-select entry matching ${name}:${value.toString()}`,
+        );
+    }
+
+    await (await button).click();
+    await browser.keys(Key.Tab);
+    await doBlur(control);
 }
+
+export async function setTextInput(name: string, value: string) {
+    const control = await $(`input[name="${name}"]`);
+    await control.scrollIntoView();
+    await control.setValue(value);
+    await doBlur(control);
+}
+
+export async function setTextareaInput(name: string, value: string) {
+    const control = await $(`textarea[name="${name}"]`);
+    await control.scrollIntoView();
+    await control.setValue(value);
+    await doBlur(control);
+}
+
+export async function setToggle(name: string, set: boolean) {
+    const toggle = await $(`input[name="${name}"]`);
+    await toggle.scrollIntoView();
+    await expect(await toggle.getAttribute("type")).toBe("checkbox");
+    const state = await toggle.isSelected();
+    if (set !== state) {
+        const control = await (await toggle.parentElement()).$(".pf-c-switch__toggle");
+        await control.click();
+        await doBlur(control);
+    }
+}
+
+export async function setTypeCreate(name: string, value: string | RegExp) {
+    const control = await $(`ak-wizard-page-type-create[name="${name}"]`);
+    await control.scrollIntoView();
+
+    const comparator = makeComparator(value);
+    const card = await (async () => {
+        for await (const card of $("ak-wizard-page-type-create").$$(
+            '[data-ouid-component-type="ak-type-create-grid-card"]',
+        )) {
+            if (comparator(await card.$(".pf-c-card__title").getText())) {
+                return card;
+            }
+        }
+    })();
+
+    if (!(card && (await card.isDisplayed()))) {
+        throw new Error(`Unable to locate radio card ${name}:${value.toString()}`);
+    }
+
+    await card.scrollIntoView();
+    await card.click();
+    await doBlur(control);
+}
+
+export type TestInteraction =
+    | [typeof checkIsPresent, ...Parameters<typeof checkIsPresent>]
+    | [typeof clickButton, ...Parameters<typeof clickButton>]
+    | [typeof clickToggleGroup, ...Parameters<typeof clickToggleGroup>]
+    | [typeof setFormGroup, ...Parameters<typeof setFormGroup>]
+    | [typeof setRadio, ...Parameters<typeof setRadio>]
+    | [typeof setSearchSelect, ...Parameters<typeof setSearchSelect>]
+    | [typeof setTextInput, ...Parameters<typeof setTextInput>]
+    | [typeof setTextareaInput, ...Parameters<typeof setTextareaInput>]
+    | [typeof setToggle, ...Parameters<typeof setToggle>]
+    | [typeof setTypeCreate, ...Parameters<typeof setTypeCreate>];
+
+export type TestSequence = TestInteraction[];
+
+export type TestProvider = () => TestSequence;

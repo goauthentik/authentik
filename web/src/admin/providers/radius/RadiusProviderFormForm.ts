@@ -12,8 +12,10 @@ import { html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
+    CurrentBrand,
     FlowsInstancesListDesignationEnum,
     PropertymappingsApi,
+    RadiusProvider,
     RadiusProviderPropertyMapping,
     ValidationError,
 } from "@goauthentik/api";
@@ -40,7 +42,7 @@ export function makeRadiusPropertyMappingsSelector(instanceMappings?: string[]) 
         : ([_0, _1, _2, _]: DualSelectPair<RadiusProviderPropertyMapping>) => [];
 }
 
-const mfaHelp = msg(
+const mfaSupportHelp = msg(
     "When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.",
 );
 
@@ -85,22 +87,13 @@ export function renderForm(
             <p class="pf-c-form__helper-text">${msg("Flow used for users to authenticate.")}</p>
         </ak-form-element-horizontal>
 
-        <ak-form-element-horizontal name="mfaSupport">
-            <label class="pf-c-switch">
-                <input
-                    class="pf-c-switch__input"
-                    type="checkbox"
-                    ?checked=${provider?.mfaSupport ?? true}
-                />
-                <span class="pf-c-switch__toggle">
-                    <span class="pf-c-switch__toggle-icon">
-                        <i class="fas fa-check" aria-hidden="true"></i>
-                    </span>
-                </span>
-                <span class="pf-c-switch__label">${msg("Code-based MFA Support")}</span>
-            </label>
-            <p class="pf-c-form__helper-text">${mfaHelp}</p>
-        </ak-form-element-horizontal>
+        <ak-switch-input
+            name="mfaSupport"
+            label=${msg("Code-based MFA Support")}
+            ?checked=${provider?.mfaSupport ?? true}
+            help=${mfaSupportHelp}
+        >
+        </ak-switch-input>
 
         <ak-form-group expanded>
             <span slot="header"> ${msg("Protocol settings")} </span>

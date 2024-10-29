@@ -10,7 +10,7 @@ export type LocalTypeCreate = TypeCreate & {
     renderer: ProviderRenderer;
 };
 
-export const providerTypeRenderers = {
+export const providerTypeRenderers: Record<string, () => TemplateResult> = {
     oauth2provider: () =>
         html`<ak-application-wizard-authentication-by-oauth></ak-application-wizard-authentication-by-oauth>`,
     ldapprovider: () =>

@@ -9,8 +9,15 @@ import ApplicationWizardView from "../pageobjects/application-wizard.page.js";
 import ApplicationsListPage from "../pageobjects/applications-list.page.js";
 import { randomId } from "../utils/index.js";
 import { login } from "../utils/login.js";
-import { type TestSequence } from "./shared-sequences";
 import {
+    completeForwardAuthDomainProxyProviderForm,
+    completeForwardAuthProxyProviderForm,
+    completeLDAPProviderForm,
+    completeOAuth2ProviderForm,
+    completeProxyProviderForm,
+    completeRadiusProviderForm,
+    completeSAMLProviderForm,
+    completeSCIMProviderForm,
     simpleForwardAuthDomainProxyProviderForm,
     simpleForwardAuthProxyProviderForm,
     simpleLDAPProviderForm,
@@ -19,7 +26,8 @@ import {
     simpleRadiusProviderForm,
     simpleSAMLProviderForm,
     simpleSCIMProviderForm,
-} from "./shared-sequences.js";
+} from "./provider-shared-sequences.js";
+import { type TestSequence } from "./shared-sequences";
 
 const SUCCESS_MESSAGE = "Your application has been saved";
 
@@ -62,7 +70,6 @@ async function fillOutTheProviderAndCommit(provider: TestSequence) {
         console.log(`Running ${args.join(", ")}`);
         // @ts-expect-error "This is a pretty alien call; I'm not surprised Typescript hates it."
         await thefunc.apply($, args);
-        await browser.pause(1000);
     }
 
     await $("ak-wizard-frame").$("footer button.pf-m-primary").click();
@@ -79,14 +86,22 @@ async function itShouldConfigureApplicationsViaTheWizard(name: string, provider:
 }
 
 const providers = [
-    ["LDAP", simpleLDAPProviderForm],
-    ["OAuth2", simpleOAuth2ProviderForm],
-    ["Radius", simpleRadiusProviderForm],
-    ["SAML", simpleSAMLProviderForm],
-    ["SCIM", simpleSCIMProviderForm],
-    ["Proxy", simpleProxyProviderForm],
-    ["Forward Auth (single application)", simpleForwardAuthProxyProviderForm],
-    ["Forward Auth (domain level)", simpleForwardAuthDomainProxyProviderForm],
+    ["Simple LDAP", simpleLDAPProviderForm],
+    ["Simple OAuth2", simpleOAuth2ProviderForm],
+    ["Simple Radius", simpleRadiusProviderForm],
+    ["Simple SAML", simpleSAMLProviderForm],
+    ["Simple SCIM", simpleSCIMProviderForm],
+    ["Simple Proxy", simpleProxyProviderForm],
+    ["Simple Forward Auth (single)", simpleForwardAuthProxyProviderForm],
+    ["Simple Forward Auth (domain)", simpleForwardAuthDomainProxyProviderForm],
+    ["Complete OAuth2", completeOAuth2ProviderForm],
+    ["Complete LDAP", completeLDAPProviderForm],
+    ["Complete Radius", completeRadiusProviderForm],
+    ["Complete SAML", completeSAMLProviderForm],
+    ["Complete SCIM", completeSCIMProviderForm],
+    ["Complete Proxy", completeProxyProviderForm],
+    ["Complete Forward Auth (single)", completeForwardAuthProxyProviderForm],
+    ["Complete Forward Auth (domain)", completeForwardAuthDomainProxyProviderForm],
 ];
 
 describe("Configuring Applications Via the Wizard", () => {

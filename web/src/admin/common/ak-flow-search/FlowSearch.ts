@@ -134,7 +134,7 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
                 .renderElement=${renderElement}
                 .renderDescription=${renderDescription}
                 .value=${getFlowValue}
-                name=${ifDefined(this.name)}
+                name=${ifDefined(this.name ?? undefined)}
                 @ak-change=${this.handleSearchUpdate}
                 ?blankable=${!this.required}
             >

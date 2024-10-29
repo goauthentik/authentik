@@ -21,8 +21,10 @@ import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 import {
     type ApplicationRequest,
     CoreApi,
+    type ModelRequest,
     ProviderModelEnum,
     ProxyMode,
+    type ProxyProviderRequest,
     type TransactionApplicationRequest,
     type TransactionApplicationResponse,
     ValidationError,
@@ -74,6 +76,8 @@ const successState: State = {
     icon: ["fa-check-circle", "pf-m-success"],
 };
 
+type StrictProviderModelEnum = Exclude<ProviderModelEnum, "11184809">;
+
 @customElement("ak-application-wizard-commit-application")
 export class ApplicationWizardCommitApplication extends BasePanel {
     static get styles() {
@@ -106,15 +110,18 @@ export class ApplicationWizardCommitApplication extends BasePanel {
 
             // Stringly-based API. Not the best, but it works. Just be aware that it is
             // stringly-based.
-            const providerModel = providerMap.get(this.wizard.providerModel);
-            const provider = this.wizard.provider;
+
+            const providerModel = providerMap.get(
+                this.wizard.providerModel,
+            ) as StrictProviderModelEnum;
+            const provider = this.wizard.provider as ModelRequest;
             provider.providerModel = providerModel;
 
-            // Special case for providers.
+            // Special case for the Proxy provider.
             if (this.wizard.providerModel === "proxyprovider") {
-                provider.mode = this.wizard.proxyMode;
-                if (provider.model !== ProxyMode.ForwardDomain) {
-                    provider.cookieDomain = "";
+                (provider as ProxyProviderRequest).mode = this.wizard.proxyMode;
+                if ((provider as ProxyProviderRequest).mode !== ProxyMode.ForwardDomain) {
+                    (provider as ProxyProviderRequest).cookieDomain = "";
                 }
             }
 
@@ -132,6 +139,7 @@ export class ApplicationWizardCommitApplication extends BasePanel {
         data: TransactionApplicationRequest,
     ): Promise<TransactionApplicationResponse | void> {
         this.errors = undefined;
+        this.commitState = idleState;
         new CoreApi(DEFAULT_CONFIG)
             .coreTransactionalApplicationsUpdate({
                 transactionApplicationRequest: data,
@@ -144,11 +152,11 @@ export class ApplicationWizardCommitApplication extends BasePanel {
             })
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .catch(async (resolution: any) => {
-                const errors = await parseAPIError(resolution);
+                this.errors = await parseAPIError(resolution);
                 this.dispatchWizardUpdate({
                     update: {
                         ...this.wizard,
-                        errors,
+                        errors: this.errors,
                     },
                     status: "failed",
                 });
@@ -156,11 +164,7 @@ export class ApplicationWizardCommitApplication extends BasePanel {
             });
     }
 
-    renderErrors(errors?: ValidationError) {
-        if (!errors) {
-            return nothing;
-        }
-
+    renderErrors(errors: ValidationError) {
         const navTo = (step: number) => () =>
             this.dispatchCustomEvent("ak-wizard-nav", {
                 command: "goto",
@@ -211,7 +215,9 @@ export class ApplicationWizardCommitApplication extends BasePanel {
                             >
                                 ${this.commitState.label}
                             </h1>
-                            ${this.renderErrors(this.errors)}
+                            ${this.commitState === errorState
+                                ? this.renderErrors(this.errors ?? {})
+                                : nothing}
                         </div>
                     </div>
                 </div>

@@ -19,7 +19,7 @@ import type { LocalTypeCreate } from "./ak-application-wizard-authentication-met
 @customElement("ak-application-wizard-authentication-method-choice")
 export class ApplicationWizardAuthenticationMethodChoice extends WithLicenseSummary(BasePanel) {
     @consume({ context: applicationWizardProvidersContext })
-    public providerModelsList: LocalTypeCreate[];
+    public providerModelsList!: LocalTypeCreate[];
 
     render() {
         const selectedTypes = this.providerModelsList.filter(

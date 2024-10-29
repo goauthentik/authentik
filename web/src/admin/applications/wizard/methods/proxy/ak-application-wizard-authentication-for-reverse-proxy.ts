@@ -1,11 +1,15 @@
 import {
     ProxyModeValue,
+    type SetMode,
+    type SetShowHttpBasic,
     renderForm,
 } from "@goauthentik/admin/providers/proxy/ProxyProviderFormForm.js";
 
 import { msg } from "@lit/localize";
 import { customElement, state } from "@lit/reactive-element/decorators.js";
 import { html } from "lit";
+
+import { ProxyMode } from "@goauthentik/api";
 
 import BaseProviderPanel from "../BaseProviderPanel.js";
 
@@ -35,7 +39,7 @@ export class AkReverseProxyApplicationWizardPage extends BaseProviderPanel {
         return html` <ak-wizard-title>${msg("Configure Proxy Provider")}</ak-wizard-title>
             <form class="pf-c-form pf-m-horizontal" @input=${this.handleChange}>
                 ${renderForm(this.wizard.provider ?? {}, this.wizard.errors.provider ?? [], {
-                    mode: this.wizard.proxyMode,
+                    mode: this.wizard.proxyMode ?? ProxyMode.Proxy,
                     onSetMode,
                     showHttpBasic: this.showHttpBasic,
                     onSetShowHttpBasic,

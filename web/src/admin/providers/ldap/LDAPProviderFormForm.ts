@@ -1,6 +1,7 @@
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
+import "@goauthentik/components/ak-number-input";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";
@@ -72,7 +73,7 @@ export function renderForm(
         </ak-radio-input>
 
         <ak-switch-input
-            name="openInNewTab"
+            name="mfaSupport"
             label=${msg("Code-based MFA Support")}
             ?checked=${provider?.mfaSupport ?? true}
             help=${mfaSupportHelp}
@@ -108,7 +109,7 @@ export function renderForm(
                     <ak-branded-flow-search
                         flowType=${FlowsInstancesListDesignationEnum.Invalidation}
                         .currentFlow=${provider?.invalidationFlow}
-                        .brandFlow=${brand.flowInvalidation}
+                        .brandFlow=${brand?.flowInvalidation}
                         .errorMessages=${errors?.invalidationFlow ?? []}
                         required
                     ></ak-branded-flow-search>

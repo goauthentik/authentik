@@ -1,10 +1,18 @@
 import { expect } from "@wdio/globals";
 
+import { type TestProvider, type TestSequence } from "../pageobjects/controls";
 import ProviderWizardView from "../pageobjects/provider-wizard.page.js";
 import ProvidersListPage from "../pageobjects/providers-list.page.js";
 import { login } from "../utils/login.js";
-import { type TestSequence } from "./shared-sequences";
 import {
+    completeForwardAuthDomainProxyProviderForm,
+    completeForwardAuthProxyProviderForm,
+    completeLDAPProviderForm,
+    completeOAuth2ProviderForm,
+    completeProxyProviderForm,
+    completeRadiusProviderForm,
+    completeSAMLProviderForm,
+    completeSCIMProviderForm,
     simpleForwardAuthDomainProxyProviderForm,
     simpleForwardAuthProxyProviderForm,
     simpleLDAPProviderForm,
@@ -13,7 +21,7 @@ import {
     simpleRadiusProviderForm,
     simpleSAMLProviderForm,
     simpleSCIMProviderForm,
-} from "./shared-sequences.js";
+} from "./provider-shared-sequences.js";
 
 async function reachTheProvider() {
     await ProvidersListPage.logout();
@@ -46,7 +54,7 @@ async function fillOutFields(fields: TestSequence) {
     for (const field of fields) {
         const thefunc = field[0];
         const args = field.slice(1);
-        // @ts-expect-error "This is a pretty alien call; I'm not surprised Typescript hates it."
+        // @ts-expect-error "This is a pretty alien call, so I'm not surprised Typescript doesn't like it."
         await thefunc.apply($, args);
     }
 }
@@ -62,16 +70,26 @@ async function itShouldConfigureASimpleProvider(name: string, provider: TestSequ
     });
 }
 
+type ProviderTest = [string, TestProvider];
+
 describe("Configuring Providers", () => {
-    const providers = [
-        ["LDAP", simpleLDAPProviderForm],
-        ["OAuth2", simpleOAuth2ProviderForm],
-        ["Radius", simpleRadiusProviderForm],
-        ["SAML", simpleSAMLProviderForm],
-        ["SCIM", simpleSCIMProviderForm],
-        ["Proxy", simpleProxyProviderForm],
-        ["Forward Auth (single application)", simpleForwardAuthProxyProviderForm],
-        ["Forward Auth (domain level)", simpleForwardAuthDomainProxyProviderForm],
+    const providers: ProviderTest[] = [
+        ["Simple LDAP", simpleLDAPProviderForm],
+        ["Simple OAuth2", simpleOAuth2ProviderForm],
+        ["Simple Radius", simpleRadiusProviderForm],
+        ["Simple SAML", simpleSAMLProviderForm],
+        ["Simple SCIM", simpleSCIMProviderForm],
+        ["Simple Proxy", simpleProxyProviderForm],
+        ["Simple Forward Auth (single application)", simpleForwardAuthProxyProviderForm],
+        ["Simple Forward Auth (domain level)", simpleForwardAuthDomainProxyProviderForm],
+        ["Complete OAuth2", completeOAuth2ProviderForm],
+        ["Complete LDAP", completeLDAPProviderForm],
+        ["Complete Radius", completeRadiusProviderForm],
+        ["Complete SAML", completeSAMLProviderForm],
+        ["Complete SCIM", completeSCIMProviderForm],
+        ["Complete Proxy", completeProxyProviderForm],
+        ["Complete Forward Auth (single application)", completeForwardAuthProxyProviderForm],
+        ["Complete Forward Auth (domain level)", completeForwardAuthDomainProxyProviderForm],
     ];
 
     for (const [name, provider] of providers) {

@@ -5,7 +5,6 @@ import {
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types.js";
 import "@goauthentik/elements/forms/FormGroup";
@@ -51,29 +50,59 @@ export function makeSAMLPropertyMappingsSelector(instanceMappings?: string[]) {
               mapping?.managed?.startsWith("goauthentik.io/providers/saml");
 }
 
+const serviceProviderBindingOptions = [
+    {
+        label: msg("Redirect"),
+        value: SpBindingEnum.Redirect,
+        default: true,
+    },
+    {
+        label: msg("Post"),
+        value: SpBindingEnum.Post,
+    },
+];
+
+function renderHasSigningKp(provider?: Partial<SAMLProvider>) {
+    return html` <ak-switch-input
+            name="signAssertion"
+            label=${msg("Sign assertions")}
+            ?checked=${provider?.signAssertion ?? true}
+            help=${msg("When enabled, the assertion element of the SAML response will be signed.")}
+        >
+        </ak-switch-input>
+
+        <ak-switch-input
+            name="signResponse"
+            label=${msg("Sign responses")}
+            ?checked=${provider?.signResponse ?? false}
+            help=${msg("When enabled, the assertion element of the SAML response will be signed.")}
+        >
+        </ak-switch-input>`;
+}
+
 export function renderForm(
-    provider?: Partial<SAMLProvider>,
+    provider: Partial<SAMLProvider> = {},
     errors: ValidationError,
     setHasSigningKp: (ev: InputEvent) => void,
     hasSigningKp: boolean,
 ) {
-    return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
-            <input
-                type="text"
-                value="${ifDefined(provider?.name)}"
-                class="pf-c-form-control"
-                required
-            />
-        </ak-form-element-horizontal>
+    return html` <ak-text-input
+            name="name"
+            value=${ifDefined(provider?.name)}
+            label=${msg("Name")}
+            required
+            .errorMessages=${errors?.name ?? []}
+        ></ak-text-input>
         <ak-form-element-horizontal
+            name="authorizationFlow"
             label=${msg("Authorization flow")}
             required
-            name="authorizationFlow"
         >
             <ak-flow-search
                 flowType=${FlowsInstancesListDesignationEnum.Authorization}
                 .currentFlow=${provider?.authorizationFlow}
                 required
+                .errorMessages=${errors?.authorizationFlow ?? []}
             ></ak-flow-search>
             <p class="pf-c-form__helper-text">
                 ${msg("Flow used when authorizing this provider.")}
@@ -83,56 +112,38 @@ export function renderForm(
         <ak-form-group .expanded=${true}>
             <span slot="header"> ${msg("Protocol settings")} </span>
             <div slot="body" class="pf-c-form">
-                <ak-form-element-horizontal label=${msg("ACS URL")} ?required=${true} name="acsUrl">
-                    <input
-                        type="text"
-                        value="${ifDefined(provider?.acsUrl)}"
-                        class="pf-c-form-control"
-                        required
-                    />
-                </ak-form-element-horizontal>
-                <ak-form-element-horizontal label=${msg("Issuer")} ?required=${true} name="issuer">
-                    <input
-                        type="text"
-                        value="${provider?.issuer || "authentik"}"
-                        class="pf-c-form-control"
-                        required
-                    />
-                    <p class="pf-c-form__helper-text">${msg("Also known as EntityID.")}</p>
-                </ak-form-element-horizontal>
-                <ak-form-element-horizontal
+                <ak-text-input
+                    name="acsUrl"
+                    label=${msg("ACS URL")}
+                    value="${ifDefined(provider?.acsUrl)}"
+                    required
+                    .errorMessages=${errors?.acsUrl ?? []}
+                ></ak-text-input>
+                <ak-text-input
+                    label=${msg("Issuer")}
+                    name="issuer"
+                    value="${provider?.issuer || "authentik"}"
+                    required
+                    .errorMessages=${errors?.issuer ?? []}
+                    help=${msg("Also known as EntityID.")}
+                ></ak-text-input>
+                <ak-radio-input
                     label=${msg("Service Provider Binding")}
-                    ?required=${true}
                     name="spBinding"
+                    required
+                    .options=${serviceProviderBindingOptions}
+                    .value=${provider?.spBinding}
+                    help=${msg(
+                        "Determines how authentik sends the response back to the Service Provider.",
+                    )}
                 >
-                    <ak-radio
-                        .options=${[
-                            {
-                                label: msg("Redirect"),
-                                value: SpBindingEnum.Redirect,
-                                default: true,
-                            },
-                            {
-                                label: msg("Post"),
-                                value: SpBindingEnum.Post,
-                            },
-                        ]}
-                        .value=${provider?.spBinding}
-                    >
-                    </ak-radio>
-                    <p class="pf-c-form__helper-text">
-                        ${msg(
-                            "Determines how authentik sends the response back to the Service Provider.",
-                        )}
-                    </p>
-                </ak-form-element-horizontal>
-                <ak-form-element-horizontal label=${msg("Audience")} name="audience">
-                    <input
-                        type="text"
-                        value="${ifDefined(provider?.audience)}"
-                        class="pf-c-form-control"
-                    />
-                </ak-form-element-horizontal>
+                </ak-radio-input>
+                <ak-text-input
+                    name="audience"
+                    label=${msg("Audience")}
+                    value="${ifDefined(provider?.audience)}"
+                    .errorMessages=${errors?.audience ?? []}
+                ></ak-text-input>
             </div>
         </ak-form-group>
 
@@ -186,48 +197,8 @@ export function renderForm(
                         )}
                     </p>
                 </ak-form-element-horizontal>
-                ${hasSigningKp
-                    ? html` <ak-form-element-horizontal name="signAssertion">
-                              <label class="pf-c-switch">
-                                  <input
-                                      class="pf-c-switch__input"
-                                      type="checkbox"
-                                      ?checked=${first(provider?.signAssertion, true)}
-                                  />
-                                  <span class="pf-c-switch__toggle">
-                                      <span class="pf-c-switch__toggle-icon">
-                                          <i class="fas fa-check" aria-hidden="true"></i>
-                                      </span>
-                                  </span>
-                                  <span class="pf-c-switch__label">${msg("Sign assertions")}</span>
-                              </label>
-                              <p class="pf-c-form__helper-text">
-                                  ${msg(
-                                      "When enabled, the assertion element of the SAML response will be signed.",
-                                  )}
-                              </p>
-                          </ak-form-element-horizontal>
-                          <ak-form-element-horizontal name="signResponse">
-                              <label class="pf-c-switch">
-                                  <input
-                                      class="pf-c-switch__input"
-                                      type="checkbox"
-                                      ?checked=${first(provider?.signResponse, false)}
-                                  />
-                                  <span class="pf-c-switch__toggle">
-                                      <span class="pf-c-switch__toggle-icon">
-                                          <i class="fas fa-check" aria-hidden="true"></i>
-                                      </span>
-                                  </span>
-                                  <span class="pf-c-switch__label">${msg("Sign responses")}</span>
-                              </label>
-                              <p class="pf-c-form__helper-text">
-                                  ${msg(
-                                      "When enabled, the assertion element of the SAML response will be signed.",
-                                  )}
-                              </p>
-                          </ak-form-element-horizontal>`
-                    : nothing}
+                ${hasSigningKp ? renderHasSigningKp(provider) : nothing}
+
                 <ak-form-element-horizontal
                     label=${msg("Verification Certificate")}
                     name="verificationKp"
@@ -300,93 +271,60 @@ export function renderForm(
                     </p>
                 </ak-form-element-horizontal>
 
-                <ak-form-element-horizontal
-                    label=${msg("Assertion valid not before")}
-                    ?required=${true}
+                <ak-text-input
                     name="assertionValidNotBefore"
-                >
-                    <input
-                        type="text"
-                        value="${provider?.assertionValidNotBefore || "minutes=-5"}"
-                        class="pf-c-form-control"
-                        required
-                    />
-                    <p class="pf-c-form__helper-text">
-                        ${msg("Configure the maximum allowed time drift for an assertion.")}
-                    </p>
-                    <ak-utils-time-delta-help></ak-utils-time-delta-help>
-                </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("Assertion valid not on or after")}
-                    ?required=${true}
-                    name="assertionValidNotOnOrAfter"
-                >
-                    <input
-                        type="text"
-                        value="${provider?.assertionValidNotOnOrAfter || "minutes=5"}"
-                        class="pf-c-form-control"
-                        required
-                    />
-                    <p class="pf-c-form__helper-text">
-                        ${msg("Assertion not valid on or after current time + this value.")}
-                    </p>
-                    <ak-utils-time-delta-help></ak-utils-time-delta-help>
-                </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("Session valid not on or after")}
-                    ?required=${true}
-                    name="sessionValidNotOnOrAfter"
-                >
-                    <input
-                        type="text"
-                        value="${provider?.sessionValidNotOnOrAfter || "minutes=86400"}"
-                        class="pf-c-form-control"
-                        required
-                    />
-                    <p class="pf-c-form__helper-text">
-                        ${msg("Session not valid on or after current time + this value.")}
-                    </p>
-                    <ak-utils-time-delta-help></ak-utils-time-delta-help>
-                </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("Default relay state")}
-                    name="defaultRelayState"
-                >
-                    <input
-                        type="text"
-                        value="${provider?.defaultRelayState || ""}"
-                        class="pf-c-form-control"
-                    />
-                    <p class="pf-c-form__helper-text">
-                        ${msg(
-                            "When using IDP-initiated logins, the relay state will be set to this value.",
-                        )}
-                    </p>
-                    <ak-utils-time-delta-help></ak-utils-time-delta-help>
-                </ak-form-element-horizontal>
+                    label=${msg("Assertion valid not before")}
+                    value="${provider?.assertionValidNotBefore || "minutes=-5"}"
+                    required
+                    .errorMessages=${errors?.assertionValidNotBefore ?? []}
+                    help=${msg("Configure the maximum allowed time drift for an assertion.")}
+                ></ak-text-input>
 
-                <ak-form-element-horizontal
-                    label=${msg("Digest algorithm")}
-                    ?required=${true}
+                <ak-text-input
+                    name="assertionValidNotOnOrAfter"
+                    label=${msg("Assertion valid not on or after")}
+                    value="${provider?.assertionValidNotOnOrAfter || "minutes=5"}"
+                    required
+                    .errorMessages=${errors?.assertionValidNotBefore ?? []}
+                    help=${msg("Assertion not valid on or after current time + this value.")}
+                ></ak-text-input>
+
+                <ak-text-input
+                    name="sessionValidNotOnOrAfter"
+                    label=${msg("Session valid not on or after")}
+                    value="${provider?.sessionValidNotOnOrAfter || "minutes=86400"}"
+                    required
+                    .errorMessages=${errors?.sessionValidNotOnOrAfter ?? []}
+                    help=${msg("Session not valid on or after current time + this value.")}
+                ></ak-text-input>
+
+                <ak-text-input
+                    name="defaultRelayState"
+                    label=${msg("Default relay state")}
+                    value="${provider?.defaultRelayState || ""}"
+                    .errorMessages=${errors?.sessionValidNotOnOrAfter ?? []}
+                    help=${msg(
+                        "When using IDP-initiated logins, the relay state will be set to this value.",
+                    )}
+                ></ak-text-input>
+
+                <ak-radio-input
                     name="digestAlgorithm"
+                    label=${msg("Digest algorithm")}
+                    .options=${digestAlgorithmOptions}
+                    .value=${provider?.digestAlgorithm}
+                    required
                 >
-                    <ak-radio
-                        .options=${digestAlgorithmOptions}
-                        .value=${provider?.digestAlgorithm}
-                    >
-                    </ak-radio>
-                </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("Signature algorithm")}
-                    ?required=${true}
+                </ak-radio-input>
+
+                <ak-radio-input
                     name="signatureAlgorithm"
+                    label=${msg("Signature algorithm")}
+                    .options=${signatureAlgorithmOptions}
+                    .value=${provider?.signatureAlgorithm}
+                    required
                 >
-                    <ak-radio
-                        .options=${signatureAlgorithmOptions}
-                        .value=${provider?.signatureAlgorithm}
-                    >
-                    </ak-radio>
-                </ak-form-element-horizontal>
+                </ak-radio-input>
             </div>
         </ak-form-group>`;
 }
