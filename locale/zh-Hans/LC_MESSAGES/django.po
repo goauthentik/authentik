@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-23 16:39+0000\n"
+"POT-Creation-Date: 2024-10-28 00:09+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2024\n"
 "Language-Team: Chinese Simplified (https://app.transifex.com/authentik/teams/119923/zh-Hans/)\n"
@@ -2649,13 +2649,8 @@ msgid "Captcha Stages"
 msgstr "验证码阶段"
 
 #: authentik/stages/captcha/stage.py
-msgid "Unknown error"
-msgstr "未知错误"
-
-#: authentik/stages/captcha/stage.py
-#, python-brace-format
-msgid "Failed to validate token: {error}"
-msgstr "验证令牌失败：{error}"
+msgid "Invalid captcha response. Retrying may solve this issue."
+msgstr "无效的验证码响应。重试可能会解决此问题。"
 
 #: authentik/stages/captcha/stage.py
 msgid "Invalid captcha response"
