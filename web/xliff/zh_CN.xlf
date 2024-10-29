@@ -6619,11 +6619,6 @@ Bindings to groups/users are checked against the user of the event.</source>
         <target>请输入您的代码</target>
         
       </trans-unit>
-      <trans-unit id="s18b910437b73e8e8">
-        <source>Return to device picker</source>
-        <target>返回设备选择器</target>
-        
-      </trans-unit>
       <trans-unit id="se409d01b52c4e12f">
         <source>Retry authentication</source>
         <target>重试身份验证</target>
@@ -7653,10 +7648,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>For nginx's auth_request or traefik's forwardAuth per root domain</source>
   <target>适用于按根域名配置的 nginx 的 auth_request 或 traefik 的 forwardAuth</target>
 </trans-unit>
-<trans-unit id="sc615309d10a9228c">
-  <source>RBAC is in preview.</source>
-  <target>RBAC 目前处于预览状态。</target>
-</trans-unit>
 <trans-unit id="s32babfed740fd3c1">
   <source>User type used for newly created users.</source>
   <target>新创建用户使用的用户类型。</target>
@@ -7848,10 +7839,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s38e7cd1a24e70faa">
   <source>Create Endpoint</source>
   <target>创建端点</target>
-</trans-unit>
-<trans-unit id="s4770c10e5b1c028c">
-  <source>RAC is in preview.</source>
-  <target>RAC 目前处于预览状态。</target>
 </trans-unit>
 <trans-unit id="s168565f5ac74a89f">
   <source>Update RAC Provider</source>
@@ -9130,6 +9117,150 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s8a598f7aef81c3bc">
   <source>Key used to encrypt the tokens.</source>
   <target>用于加密令牌的密钥。</target>
+</trans-unit>
+<trans-unit id="sbfee780fa0a2c83e">
+  <source>Device type <x id="0" equiv-text="${device.verboseName}"/> cannot be deleted</source>
+  <target>设备类型 <x id="0" equiv-text="${device.verboseName}"/> 无法被删除</target>
+</trans-unit>
+<trans-unit id="s336936629cdeb3e5">
+  <source>Stage used to verify users' browsers using Google Chrome Device Trust. This stage can be used in authentication/authorization flows.</source>
+  <target>通过 Google Chrome 设备信任来验证用户浏览器的阶段。此阶段可在身份验证/授权流程中使用。</target>
+</trans-unit>
+<trans-unit id="s85fe794c71b4ace8">
+  <source>Google Verified Access API</source>
+  <target>Google Verified Access API</target>
+</trans-unit>
+<trans-unit id="s013620384af7c8b4">
+  <source>Device type <x id="0" equiv-text="${device.verboseName}"/> cannot be edited</source>
+  <target>设备类型 <x id="0" equiv-text="${device.verboseName}"/> 无法被编辑</target>
+</trans-unit>
+<trans-unit id="s4347135696fc7cde">
+  <source>Advanced flow settings</source>
+  <target>高级流程设置</target>
+</trans-unit>
+<trans-unit id="sf52ff57fd136cc2f">
+  <source>Enable this option to write password changes made in authentik back to Kerberos. Ignored if sync is disabled.</source>
+  <target>启用此选项会将 authentik 作出的密码修改写入回 Kerberos。如果未启用同步则忽略。</target>
+</trans-unit>
+<trans-unit id="s14a16542f956e11d">
+  <source>Realm settings</source>
+  <target>领域设置</target>
+</trans-unit>
+<trans-unit id="s9c2eae548d3c1c30">
+  <source>Realm</source>
+  <target>领域</target>
+</trans-unit>
+<trans-unit id="s6b032212997e2491">
+  <source>Kerberos 5 configuration</source>
+  <target>Kerberos 5 配置</target>
+</trans-unit>
+<trans-unit id="sbf50181022f47de3">
+  <source>Kerberos 5 configuration. See man krb5.conf(5) for configuration format. If left empty, a default krb5.conf will be used.</source>
+  <target>Kerberos 5 配置。请阅读 man krb5.conf(5) 了解配置格式。如果留空，则使用默认的 krb5.conf。</target>
+</trans-unit>
+<trans-unit id="s2386539a0bd62fab">
+  <source>Sync connection settings</source>
+  <target>同步连接设置</target>
+</trans-unit>
+<trans-unit id="s0d1a6f3fe81351f8">
+  <source>Sync principal</source>
+  <target>同步主体</target>
+</trans-unit>
+<trans-unit id="sa691d6e1974295fa">
+  <source>Principal used to authenticate to the KDC for syncing.</source>
+  <target>向 KDC 进行身份验证以进行同步的主体。</target>
+</trans-unit>
+<trans-unit id="s977b9c629eed3d33">
+  <source>Sync password</source>
+  <target>同步密码</target>
+</trans-unit>
+<trans-unit id="s77772860385de948">
+  <source>Password used to authenticate to the KDC for syncing. Optional if Sync keytab or Sync credentials cache is provided.</source>
+  <target>向 KDC 进行身份验证以进行同步的密码。如果提供了同步 Keytab 或同步凭据缓存，则此选项是可选的。</target>
+</trans-unit>
+<trans-unit id="sc59ec59c3d5e74dc">
+  <source>Sync keytab</source>
+  <target>同步 Keytab</target>
+</trans-unit>
+<trans-unit id="scd42997958453f05">
+  <source>Keytab used to authenticate to the KDC for syncing. Optional if Sync password or Sync credentials cache is provided. Must be base64 encoded or in the form TYPE:residual.</source>
+  <target>向 KDC 进行身份验证以进行同步的 Keytab。如果提供了同步密码或同步凭据缓存，则此选项是可选的。必须以 Base64 编码，或者形式为 TYPE:residual。</target>
+</trans-unit>
+<trans-unit id="s60eaf439ccdca1f2">
+  <source>Sync credentials cache</source>
+  <target>同步凭据缓存</target>
+</trans-unit>
+<trans-unit id="s95722900b0c9026f">
+  <source>Credentials cache used to authenticate to the KDC for syncing. Optional if Sync password or Sync keytab is provided. Must be in the form TYPE:residual.</source>
+  <target>向 KDC 进行身份验证以进行同步的凭据缓存。如果提供了同步密码或同步 Keytab，则此选项是可选的。形式必须为 TYPE:residual。</target>
+</trans-unit>
+<trans-unit id="sf9c055db98d7994a">
+  <source>SPNEGO settings</source>
+  <target>SPNEGO 设置</target>
+</trans-unit>
+<trans-unit id="sab580a45dc46937f">
+  <source>SPNEGO server name</source>
+  <target>SPNEGO 服务器名称</target>
+</trans-unit>
+<trans-unit id="s7a79d6174d17ab2d">
+  <source>Force the use of a specific server name for SPNEGO. Must be in the form HTTP@domain</source>
+  <target>强制为 SPNEGO 使用特定服务器名称。形式必须为 HTTP@域名</target>
+</trans-unit>
+<trans-unit id="sa4ba2b2081472ccd">
+  <source>SPNEGO keytab</source>
+  <target>SPNEGO Keytab</target>
+</trans-unit>
+<trans-unit id="s64adda975c1106c0">
+  <source>Keytab used for SPNEGO. Optional if SPNEGO credentials cache is provided. Must be base64 encoded or in the form TYPE:residual.</source>
+  <target>SPNEGO 使用的 Keytab。如果提供了 SPNEGO 凭据缓存，则此选项是可选的。必须以 Base64 编码，或者形式为 TYPE:residual。</target>
+</trans-unit>
+<trans-unit id="s92247825b92587b5">
+  <source>SPNEGO credentials cache</source>
+  <target>SPNEGO 凭据缓存</target>
+</trans-unit>
+<trans-unit id="sd9757c345e4062f8">
+  <source>Credentials cache used for SPNEGO. Optional if SPNEGO keytab is provided. Must be in the form TYPE:residual.</source>
+  <target>SPNEGO 使用的凭据缓存。如果提供了 SPNEGO Keytab，则此选项是可选的。形式必须为 TYPE:residual。</target>
+</trans-unit>
+<trans-unit id="s734ab8fbcae0b69e">
+  <source>Kerberos Attribute mapping</source>
+  <target>Kerberos 属性映射</target>
+</trans-unit>
+<trans-unit id="s2c378e86e025fdb2">
+  <source>Update Kerberos Source</source>
+  <target>更新 Kerberos 源</target>
+</trans-unit>
+<trans-unit id="s03e4044abe0b556c">
+  <source>User database + Kerberos password</source>
+  <target>用户数据库 + Kerberos 密码</target>
+</trans-unit>
+<trans-unit id="s98bb2ae796f1ceef">
+  <source>Select another authentication method</source>
+  <target>选择另一种身份验证方法</target>
+</trans-unit>
+<trans-unit id="s21d95b4651ad7a1e">
+  <source>Enter a one-time recovery code for this user.</source>
+  <target>为此用户输入一次性恢复代码。</target>
+</trans-unit>
+<trans-unit id="s2e1d5a7d320c25ef">
+  <source>Enter the code from your authenticator device.</source>
+  <target>请输入来自您身份验证设备的代码。</target>
+</trans-unit>
+<trans-unit id="scc1a17d28912e974">
+  <source>Kerberos Source is in preview.</source>
+  <target>Kerberos 源目前处于预览状态。</target>
+</trans-unit>
+<trans-unit id="s54154a8d64a3597b">
+  <source>Captcha stage</source>
+  <target>验证码阶段</target>
+</trans-unit>
+<trans-unit id="s0c250af62ddbf801">
+  <source>When set, adds functionality exactly like a Captcha stage, but baked into the Identification stage.</source>
+  <target>设置后，添加与验证码阶段完全相同的功能，但融入识别阶段。</target>
+</trans-unit>
+<trans-unit id="sabf8a430d504f8c8">
+  <source>Endpoint Google Chrome Device Trust is in preview.</source>
+  <target>端点 Google Chrome 设备信任处于预览状态。</target>
 </trans-unit>
     </body>
   </file>
