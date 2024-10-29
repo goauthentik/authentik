@@ -38,7 +38,7 @@ entries:
       name: "authentik default Kerberos User Mapping: Ignore system principals"
       expression: |
         localpart, realm = principal.rsplit("@", 1)
-        denied_prefixes = ["kadmin/", "krbtgt/", "K/M", "WELLKNOWN/"]
+        denied_prefixes = ["kadmin/", "krbtgt/", "K/M", "WELLKNOWN/", "kiprop/", "changepw/"]
         for prefix in denied_prefixes:
             if localpart.lower().startswith(prefix.lower()):
                 raise SkipObject
