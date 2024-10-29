@@ -11,15 +11,17 @@
 # Marco Vitale, 2024
 # Kowalski Dragon (kowalski7cc) <kowalski.7cc@gmail.com>, 2024
 # albanobattistella <albanobattistella@gmail.com>, 2024
+# Nicola Mersi, 2024
+# tom max, 2024
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-18 00:09+0000\n"
+"POT-Creation-Date: 2024-10-28 00:09+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
-"Last-Translator: albanobattistella <albanobattistella@gmail.com>, 2024\n"
+"Last-Translator: tom max, 2024\n"
 "Language-Team: Italian (https://app.transifex.com/authentik/teams/119923/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -582,6 +584,28 @@ msgstr "Limite massimo di connessioni raggiunto."
 #: authentik/enterprise/providers/rac/views.py
 msgid "(You are already connected in another tab/window)"
 msgstr "(Sei già connesso in un'altra scheda/finestra)"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Authenticator Google Device Trust Connector Stage"
+msgstr ""
+"Fase di autenticazione per la verifica dispositivo Google tramite endpoint"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Authenticator Google Device Trust Connector Stages"
+msgstr ""
+"Fasi di autenticazione per la verifica dispositivo Google tramite endpoint"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Device"
+msgstr "Dispositivo di Accesso"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Devices"
+msgstr "Dispositivi di Accesso"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/stage.py
+msgid "Verifying your browser..."
+msgstr "Verifica del tuo browser..."
 
 #: authentik/enterprise/stages/source/models.py
 msgid ""
@@ -2017,6 +2041,124 @@ msgstr ""
 msgid "Used recovery-link to authenticate."
 msgstr "Utilizzato il link di recupero per autenticarsi."
 
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos realm"
+msgstr "Dominio Kerberos"
+
+#: authentik/sources/kerberos/models.py
+msgid "Custom krb5.conf to use. Uses the system one by default"
+msgstr ""
+"krb5.conf personalizzato da usare. Usa la configurazione di sistema per "
+"default"
+
+#: authentik/sources/kerberos/models.py
+msgid "Sync users from Kerberos into authentik"
+msgstr "Sincronizza utenti da Kerberos a authentik"
+
+#: authentik/sources/kerberos/models.py
+msgid "When a user changes their password, sync it back to Kerberos"
+msgstr "Quando un utente cambia la sua password, sincronizzala in Kerberos"
+
+#: authentik/sources/kerberos/models.py
+msgid "Principal to authenticate to kadmin for sync."
+msgstr "Entità da autenticare su kadmin per la sincronizzazione."
+
+#: authentik/sources/kerberos/models.py
+msgid "Password to authenticate to kadmin for sync"
+msgstr "Password per autenticarsi in kadmin per sincronizzare"
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"Keytab to authenticate to kadmin for sync. Must be base64-encoded or in the "
+"form TYPE:residual"
+msgstr ""
+"Keytab per autenticarsi su kadmin per la sincronizzazione. Deve essere con "
+"codifica base64 o nel formato TYPE:residual"
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"Credentials cache to authenticate to kadmin for sync. Must be in the form "
+"TYPE:residual"
+msgstr ""
+"Credenziali memorizzate nella cache per autenticarsi su kadmin per la "
+"sincronizzazione. Devono essere nel formato TYPE:residual"
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"Force the use of a specific server name for SPNEGO. Must be in the form "
+"HTTP@hostname"
+msgstr ""
+"Forza l'uso di un nome server specifico per SPNEGO. Deve essere nel formato "
+"HTTP@nomehost"
+
+#: authentik/sources/kerberos/models.py
+msgid "SPNEGO keytab base64-encoded or path to keytab in the form FILE:path"
+msgstr ""
+"keytab SPNEGO con codifica base64 o percorso del keytab nel formato "
+"FILE:percorso"
+
+#: authentik/sources/kerberos/models.py
+msgid "Credential cache to use for SPNEGO in form type:residual"
+msgstr ""
+"Cache delle credenziali da utilizzare per SPNEGO nella forma  type:residual"
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"If enabled, the authentik-stored password will be updated upon login with "
+"the Kerberos password backend"
+msgstr ""
+"Se abilitato, la password memorizzata in authentik verrà aggiornata al login"
+" nel backend Kerberos"
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Source"
+msgstr "Sorgente Kerberos"
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Sources"
+msgstr "Sorgenti Kerberos"
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Source Property Mapping"
+msgstr "Mappa delle proprietà della sorgente kerberos"
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Source Property Mappings"
+msgstr "Mappe delle proprietà della sorgente kerberos"
+
+#: authentik/sources/kerberos/models.py
+msgid "User Kerberos Source Connection"
+msgstr "Connessione sorgente dell'utente kerberos"
+
+#: authentik/sources/kerberos/models.py
+msgid "User Kerberos Source Connections"
+msgstr " Connessioni alle sorgente dell'utente kerberos"
+
+#: authentik/sources/kerberos/models.py
+msgid "Group Kerberos Source Connection"
+msgstr " Connessione sorgente del gruppo kerberos"
+
+#: authentik/sources/kerberos/models.py
+msgid "Group Kerberos Source Connections"
+msgstr "Connessioni alle sorgenti del gruppo kerberos"
+
+#: authentik/sources/kerberos/views.py
+msgid "SPNEGO authentication required"
+msgstr "autenticazione  SPNEGO necessaria"
+
+#: authentik/sources/kerberos/views.py
+msgid ""
+"\n"
+"                    Make sure you have valid tickets (obtainable via kinit)\n"
+"                    and configured the browser correctly.\n"
+"                    Please contact your administrator.\n"
+"                "
+msgstr ""
+"\n"
+"Assicurati di avere un ticket valido (ottenibile tramite kinit)\n"
+" e di aver configurato correttamente il browser. \n"
+"Contatta il tuo amministratore."
+
 #: authentik/sources/ldap/api.py
 msgid "Only a single LDAP Source with password synchronization is allowed"
 msgstr ""
@@ -2735,13 +2877,10 @@ msgid "Captcha Stages"
 msgstr "Fasi Captcha"
 
 #: authentik/stages/captcha/stage.py
-msgid "Unknown error"
-msgstr "Errore sconosciuto"
-
-#: authentik/stages/captcha/stage.py
-#, python-brace-format
-msgid "Failed to validate token: {error}"
-msgstr "Impossibile convalidare il token: {error}"
+msgid "Invalid captcha response. Retrying may solve this issue."
+msgstr ""
+"Risposta captcha non valida. Un nuovo tentativo potrebbe risolvere il "
+"problema."
 
 #: authentik/stages/captcha/stage.py
 msgid "Invalid captcha response"
@@ -3113,6 +3252,10 @@ msgstr "Database utente + password app"
 #: authentik/stages/password/models.py
 msgid "User database + LDAP password"
 msgstr "Database utenti + password LDAP"
+
+#: authentik/stages/password/models.py
+msgid "User database + Kerberos password"
+msgstr "Database utenti + password Kerberos"
 
 #: authentik/stages/password/models.py
 msgid "Selection of backends to test the password against."
