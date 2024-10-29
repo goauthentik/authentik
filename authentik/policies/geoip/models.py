@@ -17,6 +17,8 @@ from authentik.policies.geoip.exceptions import GeoIPNotFoundException
 from authentik.policies.models import Policy
 from authentik.policies.types import PolicyRequest, PolicyResult
 
+MAX_DISTANCE_HOUR_KM = 1000
+
 
 class GeoIPPolicy(Policy):
     """Ensure the user satisfies requirements of geography or network topology, based on IP
@@ -29,6 +31,9 @@ class GeoIPPolicy(Policy):
     history_max_distance_km = models.PositiveBigIntegerField(default=0)
     history_distance_tolerance_km = models.PositiveIntegerField(default=50)
     history_login_count = models.PositiveIntegerField(default=5)
+
+    check_impossible_travel = models.BooleanField(default=False)
+    impossible_tolerance_km = models.PositiveIntegerField(default=100)
 
     @property
     def serializer(self) -> type[BaseSerializer]:
@@ -46,23 +51,29 @@ class GeoIPPolicy(Policy):
         - the client IP is advertised by an autonomous system with ASN in the `asns`
         - the client IP is geolocated in a country of `countries`
         """
-        results: list[PolicyResult] = []
+        static_results: list[PolicyResult] = []
+        dynamic_results: list[PolicyResult] = []
 
         if self.asns:
-            results.append(self.passes_asn(request))
+            static_results.append(self.passes_asn(request))
         if self.countries:
-            results.append(self.passes_country(request))
-        if self.check_history:
-            results.append(self.passes_distance(request))
+            static_results.append(self.passes_country(request))
 
-        if not results:
+        if self.check_history:
+            dynamic_results.append(self.passes_distance(request))
+        if self.check_impossible_travel:
+            dynamic_results.append(self.passed_impossible(request))
+
+        if not static_results:
             return PolicyResult(True)
 
-        passing = any(r.passing for r in results)
-        messages = chain(*[r.messages for r in results])
+        passing = any(r.passing for r in static_results) and all(r.passing for r in dynamic_results)
+        messages = chain(
+            *[r.messages for r in static_results], *[r.messages for r in dynamic_results]
+        )
 
         result = PolicyResult(passing, *messages)
-        result.source_results = results
+        result.source_results = static_results
 
         return result
 
@@ -121,6 +132,9 @@ class GeoIPPolicy(Policy):
             ):
                 return PolicyResult(False)
         return PolicyResult(True)
+
+    def passed_impossible(self, request: PolicyRequest) -> PolicyResult:
+        pass
 
     class Meta(Policy.PolicyMeta):
         verbose_name = _("GeoIP Policy")
