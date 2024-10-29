@@ -1,16 +1,16 @@
 ///<reference types="@hcaptcha/types"/>
+import { renderStatic } from "@goauthentik/common/purify";
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/forms/FormElement";
+import { randomId } from "@goauthentik/elements/utils/randomId";
 import "@goauthentik/flow/FormStatic";
 import { BaseStage } from "@goauthentik/flow/stages/base";
-import type { TurnstileObject } from "turnstile-types";
 
 import { msg } from "@lit/localize";
-import { CSSResult, PropertyValues, html } from "lit";
+import { CSSResult, PropertyValues, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
@@ -19,17 +19,23 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { CaptchaChallenge, CaptchaChallengeResponseRequest } from "@goauthentik/api";
 
-interface TurnstileWindow extends Window {
-    turnstile: TurnstileObject;
-}
 type TokenHandler = (token: string) => void;
-
-const captchaContainerID = "captcha-container";
 
 @customElement("ak-stage-captcha")
 export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeResponseRequest> {
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
+        return [
+            PFBase,
+            PFLogin,
+            PFForm,
+            PFFormControl,
+            PFTitle,
+            css`
+                iframe {
+                    width: 100%;
+                }
+            `,
+        ];
     }
 
     handlers = [this.handleGReCaptcha, this.handleHCaptcha, this.handleTurnstile];
@@ -41,7 +47,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
     captchaInteractive: boolean = true;
 
     @state()
-    captchaContainer: HTMLDivElement;
+    captchaContainer: HTMLIFrameElement;
 
     @state()
     scriptElement?: HTMLScriptElement;
@@ -53,8 +59,9 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
 
     constructor() {
         super();
-        this.captchaContainer = document.createElement("div");
-        this.captchaContainer.id = captchaContainerID;
+        this.captchaContainer = document.createElement("iframe");
+        this.captchaContainer.src = "about:blank";
+        this.captchaContainer.id = `ak-captcha-${randomId()}`;
     }
 
     updated(changedProperties: PropertyValues<this>) {
@@ -64,15 +71,15 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
             this.scriptElement.async = true;
             this.scriptElement.defer = true;
             this.scriptElement.dataset.akCaptchaScript = "true";
-            this.scriptElement.onload = () => {
+            this.scriptElement.onload = async () => {
                 console.debug("authentik/stages/captcha: script loaded");
                 let found = false;
                 let lastError = undefined;
-                this.handlers.forEach((handler) => {
+                this.handlers.forEach(async (handler) => {
                     let handlerFound = false;
                     try {
                         console.debug(`authentik/stages/captcha[${handler.name}]: trying handler`);
-                        handlerFound = handler.apply(this);
+                        handlerFound = await handler.apply(this);
                         if (handlerFound) {
                             console.debug(
                                 `authentik/stages/captcha[${handler.name}]: handler succeeded`,
@@ -99,7 +106,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         }
     }
 
-    handleGReCaptcha(): boolean {
+    async handleGReCaptcha(): Promise<boolean> {
         if (!Object.hasOwn(window, "grecaptcha")) {
             return false;
         }
@@ -116,7 +123,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         return true;
     }
 
-    handleHCaptcha(): boolean {
+    async handleHCaptcha(): Promise<boolean> {
         if (!Object.hasOwn(window, "hcaptcha")) {
             return false;
         }
@@ -131,16 +138,53 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         return true;
     }
 
-    handleTurnstile(): boolean {
+    async handleTurnstile(): Promise<boolean> {
         if (!Object.hasOwn(window, "turnstile")) {
             return false;
         }
-        this.captchaInteractive = false;
-        document.body.appendChild(this.captchaContainer);
-        (window as unknown as TurnstileWindow).turnstile.render(`#${captchaContainerID}`, {
-            sitekey: this.challenge.siteKey,
-            callback: this.onTokenChange,
+        this.captchaInteractive = true;
+        window.addEventListener("message", (event) => {
+            const msg: {
+                source?: string;
+                context?: string;
+                message: string;
+                token: string;
+            } = event.data;
+            if (msg.source !== "goauthentik.io" || msg.context !== "flow-executor") {
+                return;
+            }
+            if (msg.message !== "captcha") {
+                return;
+            }
+            this.onTokenChange(msg.token);
         });
+        this.captchaContainer.contentWindow?.document.open();
+        this.captchaContainer.contentWindow?.document.write(
+            await renderStatic(
+                html`<!doctype html>
+                    <html>
+                        <body style="display:flex;flex-direction:row;justify-content:center;">
+                            <div
+                                class="cf-turnstile"
+                                data-sitekey="${this.challenge.siteKey}"
+                                data-callback="callback"
+                            ></div>
+                            <script src="https://challenges.cloudflare.com/turnstile/v0/api.js"></script>
+                            <script>
+                                function callback(token) {
+                                    window.parent.postMessage({
+                                        message: "captcha",
+                                        source: "goauthentik.io",
+                                        context: "flow-executor",
+                                        token: token,
+                                    });
+                                }
+                            </script>
+                        </body>
+                    </html>`,
+            ),
+        );
+        this.captchaContainer.contentWindow?.document.close();
         return true;
     }
 
