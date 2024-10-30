@@ -11,7 +11,7 @@ authentik's default Password policy complies with the [NIST SP 800-63 Digital Id
 However, for further hardening compliant to the NIST Guidelines, consider
 
 -   setting the length of the password to a minimum of 15 characters, and
--   enabling the "Check haveibeenpwned.com" blocklist comparison
+-   enabling the "Check haveibeenpwned.com" blocklist comparison (note that this cannot be used on Air-gapped instances)
 
 For further options, see [Password policy](../customize/policies/index.md#password-policy).
 
