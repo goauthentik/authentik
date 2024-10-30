@@ -157,6 +157,7 @@ export class LDAPProviderFormPage extends WithBrandConfig(BaseProviderForm<LDAPP
                             flowType=${FlowsInstancesListDesignationEnum.Invalidation}
                             .currentFlow=${this.instance?.invalidationFlow}
                             .brandFlow=${this.brand.flowInvalidation}
+                            defaultFlowSlug="default-invalidation-flow"
                             required
                         ></ak-branded-flow-search>
                         <p class="pf-c-form__helper-text">

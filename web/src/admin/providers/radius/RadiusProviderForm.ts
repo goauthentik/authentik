@@ -176,7 +176,7 @@ export class RadiusProviderFormPage extends WithBrandConfig(BaseProviderForm<Rad
                         <ak-flow-search
                             flowType=${FlowsInstancesListDesignationEnum.Invalidation}
                             .currentFlow=${this.instance?.invalidationFlow}
-                            defaultFlowSlug="default-provider-invalidation-flow"
+                            defaultFlowSlug="default-invalidation-flow"
                             required
                         ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
