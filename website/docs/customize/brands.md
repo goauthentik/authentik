@@ -15,7 +15,7 @@ authentik picks a default flow by selecting the flow that is configured in the c
     - comes first sorted by slug
     - is allowed by policies
 
-This means that if you want to select a default flow based on policy, you can leave the brand default empty. To learn more about default flows, refer to our [flow documentation](../add-secure-apps/flows-stages/flow/index.md#default-and-commonly-used-flows).
+This means that if you want to select a default flow based on policy, you can leave the brand default empty. To learn more about default flows, refer to our [flow documentation](../add-secure-apps/flows-stages/flow/examples/default_flows.md).
 
 ## Branding
 

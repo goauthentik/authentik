@@ -4,7 +4,7 @@ title: Flows
 
 Flows are a major component in authentik. In conjunction with stages and [policies](../../../customize/policies/index.md), flows are at the heart of our system of building blocks, used to define and execute the workflows of authentication, authorization, enrollment, and user settings.
 
-There are over a dozen default, out-of-the box flows available in authentik. Users can decide if they already have everything they need with the [default flows](#default-and-commonly-used-flows) or if they want to [create](#create-a-custom-flow) their own custom flow, using the Admin interface.
+There are over a dozen default, out-of-the box flows available in authentik. Users can decide if they already have everything they need with the [default flows](../flow/examples/default_flows.md) or if they want to [create](#create-a-custom-flow) their own custom flow, using the Admin interface.
 
 A flow is a method of describing a sequence of stages. A stage represents a single verification or logic step. By connecting a series of stages within a flow (and optionally attaching policies as needed) you can build a highly flexible process for authenticating users, enrolling them, and more.
 
@@ -21,19 +21,6 @@ When these stages are successfully completed, authentik logs in the user.
 By default, policies are evaluated dynamically, right before the stage (to which a policy is bound) is presented to the user. This flexibility allows the login process to continue, change, or stop, based on the success or failure of each policy.
 
 This default behaviour can be altered by enabling the **Evaluate when flow is planned** option on the stage binding. With this setting a _flow plan_ containing all stages is generated upon flow execution. This means that all attached policies are evaluated upon execution. For more information about flow plans, read our [flow context documentation](./context/index.md).
-
-## Default and commonly used flows
-
-To determine which flow should be used, authentik will first check if there is a default flow configured in the active [**Brand**](../../../customize/brands.md). If no default is configured there, the policies in all flows with the matching designation are checked, and the first flow with matching policies sorted by `slug` will be used.
-
--   **Authentication flow**: the flow used to authenticate users.
--   **Authorization flow**: this is defined per provider, when the provider is created, to state whether implicit or explicit authorization is required.
--   **Recovery flow**: If set, allows users to recover their credentials.
--   **Unenrollment flow**: If set, users are able to unenroll themselves. If no flow is set, option is not shown.
--   **User settings flow**: If set, users are able to configure details of their profile.
--   **Device code flow**:
-
-The **Invalidation flow** is a commonly used flow that is not defined by the instance's Brand. This flow is required for OIDC, SAML, Proxy, and RAC providers. Admins can configure this flow to present users log-off options such as "log out of the app but remain logged in to authentik" or "return to the **My Applications** page", or "log out completely". Additionally, admins can apply a custom background image to the prompt box.
 
 ## Permissions
 
