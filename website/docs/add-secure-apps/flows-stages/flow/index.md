@@ -8,7 +8,7 @@ There are over a dozen default, out-of-the box flows available in authentik. Use
 
 A flow is a method of describing a sequence of stages. A stage represents a single verification or logic step. By connecting a series of stages within a flow (and optionally attaching policies as needed) you can build a highly flexible process for authenticating users, enrolling them, and more.
 
-For example, a standard login flow would consist of the following stages:
+For example a standard login flow would consist of the following stages:
 
 -   **Identification stage**: user identifies themselves via a username or email address
 -   **Password stage**: the user's password is checked against the hash in the database
