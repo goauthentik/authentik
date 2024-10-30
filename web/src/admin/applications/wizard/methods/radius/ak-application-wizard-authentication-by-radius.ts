@@ -86,7 +86,7 @@ export class ApplicationWizardAuthenticationByRadius extends WithBrandConfig(Bas
                             <ak-flow-search
                                 flowType=${FlowsInstancesListDesignationEnum.Invalidation}
                                 .currentFlow=${provider?.invalidationFlow}
-                                defaultFlowSlug="default-provider-invalidation-flow"
+                                defaultFlowSlug="default-invalidation-flow"
                                 required
                             ></ak-flow-search>
                             <p class="pf-c-form__helper-text">

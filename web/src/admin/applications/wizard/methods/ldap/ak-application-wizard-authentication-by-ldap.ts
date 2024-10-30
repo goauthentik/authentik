@@ -71,7 +71,7 @@ export class ApplicationWizardApplicationDetails extends WithBrandConfig(BasePro
                         flowType=${FlowsInstancesListDesignationEnum.Invalidation}
                         .currentFlow=${provider?.invalidationFlow}
                         .brandFlow=${this.brand.flowInvalidation}
-                        defaultFlowSlug="default-provider-invalidation-flow"
+                        defaultFlowSlug="default-invalidation-flow"
                         required
                     ></ak-branded-flow-search>
                     <p class="pf-c-form__helper-text">${msg("Flow used for unbinding users.")}</p>
