@@ -62,7 +62,7 @@ When creating or editing a flow in the UI of the Admin interface, you can set th
 
 **Designation**: Flows are designated for a single purpose. This designation changes when a flow is used. The following designations are available:
 
-import Defaultflowlist from "../../flow/flow_list/\_defaultflowlist.mdx";
+import Defaultflowlist from "../flow/flow_list/\_defaultflowlist.mdx";
 
 <Defaultflowlist />
 
