@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-23 16:39+0000\n"
+"POT-Creation-Date: 2024-10-28 00:09+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2614,12 +2614,7 @@ msgid "Captcha Stages"
 msgstr ""
 
 #: authentik/stages/captcha/stage.py
-msgid "Unknown error"
-msgstr ""
-
-#: authentik/stages/captcha/stage.py
-#, python-brace-format
-msgid "Failed to validate token: {error}"
+msgid "Invalid captcha response. Retrying may solve this issue."
 msgstr ""
 
 #: authentik/stages/captcha/stage.py

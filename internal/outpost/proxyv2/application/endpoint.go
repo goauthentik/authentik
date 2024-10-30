@@ -82,6 +82,9 @@ func GetOIDCEndpoint(p api.ProxyOutpostConfig, authentikHost string, embedded bo
 	if embedded {
 		ep.Issuer = updateURL(ep.Issuer, newHost.Scheme, newHost.Host)
 		ep.JwksUri = updateURL(jwksUri, newHost.Scheme, newHost.Host)
+	} else {
+		// Fixes: https://github.com/goauthentik/authentik/issues/9622 / ep.Issuer must be the HostBrowser URL
+		ep.Issuer = updateURL(ep.Issuer, newBrowserHost.Scheme, newBrowserHost.Host)
 	}
 	return ep
 }

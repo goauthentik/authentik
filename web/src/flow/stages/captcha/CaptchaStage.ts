@@ -6,8 +6,8 @@ import { BaseStage } from "@goauthentik/flow/stages/base";
 import type { TurnstileObject } from "turnstile-types";
 
 import { msg } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { CSSResult, PropertyValues, html } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -22,6 +22,7 @@ import { CaptchaChallenge, CaptchaChallengeResponseRequest } from "@goauthentik/
 interface TurnstileWindow extends Window {
     turnstile: TurnstileObject;
 }
+type TokenHandler = (token: string) => void;
 
 const captchaContainerID = "captcha-container";
 
@@ -44,6 +45,11 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
 
     @state()
     scriptElement?: HTMLScriptElement;
+
+    @property()
+    onTokenChange: TokenHandler = (token: string) => {
+        this.host.submit({ component: "ak-stage-captcha", token });
+    };
 
     constructor() {
         super();
@@ -102,11 +108,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         grecaptcha.ready(() => {
             const captchaId = grecaptcha.render(this.captchaContainer, {
                 sitekey: this.challenge.siteKey,
-                callback: (token) => {
-                    this.host?.submit({
-                        token: token,
-                    });
-                },
+                callback: this.onTokenChange,
                 size: "invisible",
             });
             grecaptcha.execute(captchaId);
@@ -122,12 +124,8 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         document.body.appendChild(this.captchaContainer);
         const captchaId = hcaptcha.render(this.captchaContainer, {
             sitekey: this.challenge.siteKey,
+            callback: this.onTokenChange,
             size: "invisible",
-            callback: (token) => {
-                this.host?.submit({
-                    token: token,
-                });
-            },
         });
         hcaptcha.execute(captchaId);
         return true;
@@ -141,16 +139,12 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         document.body.appendChild(this.captchaContainer);
         (window as unknown as TurnstileWindow).turnstile.render(`#${captchaContainerID}`, {
             sitekey: this.challenge.siteKey,
-            callback: (token) => {
-                this.host?.submit({
-                    token: token,
-                });
-            },
+            callback: this.onTokenChange,
         });
         return true;
     }
 
-    renderBody(): TemplateResult {
+    renderBody() {
         if (this.error) {
             return html`<ak-empty-state icon="fa-times" header=${this.error}> </ak-empty-state>`;
         }
@@ -160,7 +154,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         return html`<ak-empty-state loading header=${msg("Verifying...")}></ak-empty-state>`;
     }
 
-    render(): TemplateResult {
+    render() {
         if (!this.challenge) {
             return html`<ak-empty-state loading> </ak-empty-state>`;
         }

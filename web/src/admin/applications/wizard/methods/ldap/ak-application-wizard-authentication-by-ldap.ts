@@ -97,7 +97,7 @@ export class ApplicationWizardApplicationDetails extends WithBrandConfig(BasePro
                 </ak-radio-input>
 
                 <ak-switch-input
-                    name="openInNewTab"
+                    name="mfaSupport"
                     label=${msg("Code-based MFA Support")}
                     ?checked=${provider?.mfaSupport ?? true}
                     help=${mfaSupportHelp}
