@@ -9,16 +9,16 @@ The main settings that brands influence are flows and branding.
 
 ## Flows
 
-You can explicitly select, in your instance's Brand settings, the default flow to use for the following configuratins:
+You can explicitly select, in your instance's Brand settings, the default flow to use for the following configurations:
 
-- Authentication flow
-- Invalidation flow
-- Recovery flow
-- Unenrollment flow
-- User settings flow
-- Device code flow
+-   Authentication flow
+-   Invalidation flow
+-   Recovery flow
+-   Unenrollment flow
+-   User settings flow
+-   Device code flow
 
-If a default flow is *not* set in the brand, then authentik selects any flow that:
+If a default flow is _not_ set in the brand, then authentik selects any flow that:
 
     - matches the required designation
     - comes first sorted by slug
