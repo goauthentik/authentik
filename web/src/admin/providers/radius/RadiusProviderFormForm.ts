@@ -141,7 +141,7 @@ export function renderForm(
                         flowType=${FlowsInstancesListDesignationEnum.Invalidation}
                         .currentFlow=${provider?.invalidationFlow}
                         .errorMessages=${errors?.invalidationFlow ?? []}
-                        defaultFlowSlug="default-provider-invalidation-flow"
+                        defaultFlowSlug="default-invalidation-flow"
                         required
                     ></ak-flow-search>
                     <p class="pf-c-form__helper-text">

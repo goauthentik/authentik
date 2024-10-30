@@ -110,6 +110,7 @@ export function renderForm(
                         flowType=${FlowsInstancesListDesignationEnum.Invalidation}
                         .currentFlow=${provider?.invalidationFlow}
                         .brandFlow=${brand?.flowInvalidation}
+                        defaultFlowSlug="default-invalidation-flow"
                         .errorMessages=${errors?.invalidationFlow ?? []}
                         required
                     ></ak-branded-flow-search>
