@@ -31,4 +31,3 @@ Starting with authentik 2022.5, the layout of the default flow executor can be c
 ### Sidebar (right)
 
 ![](../layouts/sidebar_right.png)
-

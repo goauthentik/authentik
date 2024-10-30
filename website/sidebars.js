@@ -265,7 +265,6 @@ export default {
                                     type: "category",
                                     label: "Executors",
                                     items: [
-                                        "add-secure-apps/flows-stages/flow/layouts",
                                         "add-secure-apps/flows-stages/flow/executors/if-flow",
                                         "add-secure-apps/flows-stages/flow/executors/sfe",
                                         "add-secure-apps/flows-stages/flow/executors/user-settings",
