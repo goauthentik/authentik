@@ -36,7 +36,7 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
         const showClientSecretCallback = (show: boolean) => {
             this.showClientSecret = show;
         };
-        return html` <ak-wizard-title>${msg("Configure LDAP Provider")}</ak-wizard-title>
+        return html` <ak-wizard-title>${msg("Configure OAuth2 Provider")}</ak-wizard-title>
             <form class="pf-c-form pf-m-horizontal" @input=${this.handleChange}>
                 ${renderForm(
                     provider ?? {},
