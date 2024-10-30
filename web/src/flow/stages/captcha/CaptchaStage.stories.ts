@@ -10,7 +10,7 @@ import "../../../stories/flow-interface";
 import "./CaptchaStage";
 
 export default {
-    title: "Flow / Stages / CaptchaStage",
+    title: "Flow / Stages / Captcha",
 };
 
 export const LoadingNoChallenge = () => {

@@ -1,10 +1,10 @@
+///<reference types="@hcaptcha/types"/>
 import { renderStatic } from "@goauthentik/common/purify";
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/forms/FormElement";
 import { randomId } from "@goauthentik/elements/utils/randomId";
 import "@goauthentik/flow/FormStatic";
 import { BaseStage } from "@goauthentik/flow/stages/base";
-import "@hcaptcha/types";
 import type { TurnstileObject } from "turnstile-types";
 
 import { msg } from "@lit/localize";

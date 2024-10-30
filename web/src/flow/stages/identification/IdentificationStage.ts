@@ -75,6 +75,10 @@ export class IdentificationStage extends BaseStage<
                     height: 100%;
                     max-height: var(--pf-c-login__main-footer-links-item-link-svg--Height);
                 }
+                .hidden {
+                    visibility: hidden;
+                    position: absolute;
+                }
             `,
         ];
     }
@@ -282,7 +286,7 @@ export class IdentificationStage extends BaseStage<
                 ? html`
                       <input name="captchaToken" type="hidden" .value="${this.captchaToken}" />
                       <ak-stage-captcha
-                          style="visibility: hidden; position:absolute;"
+                          class=${this.challenge.captchaStage.interactive ? "" : "hidden"}
                           .challenge=${this.challenge.captchaStage}
                           .onTokenChange=${(token: string) => {
                               this.captchaToken = token;
