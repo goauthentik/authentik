@@ -112,21 +112,6 @@ export class ApplicationWizardProxyProviderForm extends ApplicationWizardProvide
                         ${msg("Flow used when authorizing this provider.")}
                     </p>
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    name="invalidationFlow"
-                    label=${msg("Invalidation flow")}
-                    .errorMessages=${errors?.invalidationFlow ?? []}
-                    ?required=${true}
-                >
-                    <ak-flow-search
-                        flowType=${FlowsInstancesListDesignationEnum.Invalidation}
-                        .currentFlow=${this.instance?.invalidationFlow}
-                        required
-                    ></ak-flow-search>
-                    <p class="pf-c-form__helper-text">
-                        ${msg("Flow used when logging out of this provider.")}
-                    </p>
-                </ak-form-element-horizontal>
 
                 ${this.renderProxyMode(provider)}
 
@@ -186,6 +171,40 @@ export class ApplicationWizardProxyProviderForm extends ApplicationWizardProvide
                                 </p>`}
                         >
                         </ak-textarea-input>
+                    </div>
+                </ak-form-group>
+                <ak-form-group>
+                    <span slot="header"> ${msg("Advanced flow settings")} </span>
+                    <div slot="body" class="pf-c-form">
+                        <ak-form-element-horizontal
+                            name="authenticationFlow"
+                            label=${msg("Authentication flow")}
+                        >
+                            <ak-flow-search
+                                flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                                .currentFlow=${this.instance?.authenticationFlow}
+                            ></ak-flow-search>
+                            <p class="pf-c-form__helper-text">
+                                ${msg(
+                                    "Flow used when a user access this provider and is not authenticated.",
+                                )}
+                            </p>
+                        </ak-form-element-horizontal>
+                        <ak-form-element-horizontal
+                            label=${msg("Invalidation flow")}
+                            name="invalidationFlow"
+                            required
+                        >
+                            <ak-flow-search
+                                flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                                .currentFlow=${this.instance?.invalidationFlow}
+                                defaultFlowSlug="default-provider-invalidation-flow"
+                                required
+                            ></ak-flow-search>
+                            <p class="pf-c-form__helper-text">
+                                ${msg("Flow used when logging out of this provider.")}
+                            </p>
+                        </ak-form-element-horizontal>
                     </div>
                 </ak-form-group>
                 <ak-form-group>

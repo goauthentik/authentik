@@ -1000,7 +1000,7 @@
   force = true
 
 [[redirects]]
-  from = "/developer-docsapi/websocket"
+  from = "/developer-docs/api/websocket"
   to = "/docs/developer-docs/api/websocket"
   status = 302
   force = true
@@ -1008,6 +1008,12 @@
 [[redirects]]
   from = "/developer-docs/api/clients"
   to = "/docs/developer-docs/api/clients"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/developer-docs/blueprints"
+  to = "/docs/customize/blueprints"
   status = 302
   force = true
 

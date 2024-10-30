@@ -155,6 +155,20 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
                 required
             ></ak-text-input>
 
+            <ak-form-element-horizontal
+                name="authorizationFlow"
+                label=${msg("Authorization flow")}
+                ?required=${true}
+            >
+                <ak-flow-search
+                    flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                    .currentFlow=${provider?.authorizationFlow}
+                    required
+                ></ak-flow-search>
+                <p class="pf-c-form__helper-text">
+                    ${msg("Flow used when authorizing this provider.")}
+                </p>
+            </ak-form-element-horizontal>
             <ak-form-group expanded>
                 <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
@@ -218,7 +232,7 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
             </ak-form-group>
 
             <ak-form-group>
-                <span slot="header"> ${msg("Flow settings")} </span>
+                <span slot="header"> ${msg("Advanced flow settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         name="authenticationFlow"
@@ -235,20 +249,6 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        name="authorizationFlow"
-                        label=${msg("Authorization flow")}
-                        ?required=${true}
-                    >
-                        <ak-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.Authorization}
-                            .currentFlow=${provider?.authorizationFlow}
-                            required
-                        ></ak-flow-search>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Flow used when authorizing this provider.")}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
                         label=${msg("Invalidation flow")}
                         name="invalidationFlow"
                         required
@@ -256,6 +256,7 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
                         <ak-flow-search
                             flowType=${FlowsInstancesListDesignationEnum.Invalidation}
                             .currentFlow=${provider?.invalidationFlow}
+                            defaultFlowSlug="default-provider-invalidation-flow"
                             required
                         ></ak-flow-search>
                         <p class="pf-c-form__helper-text">

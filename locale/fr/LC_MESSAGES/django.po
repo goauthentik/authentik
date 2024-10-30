@@ -6,12 +6,12 @@
 # Translators:
 # Bastien Germond, 2022
 # Phorcys, 2022
-# Titouan Petit, 2023
 # Kyllian Delaye-Maillot, 2023
 # Manuel Viens, 2023
 # Mordecai, 2023
 # Charles Leclerc, 2024
 # nerdinator <florian.dupret@gmail.com>, 2024
+# Titouan Petit, 2024
 # Marc Schmitt, 2024
 # 
 #, fuzzy
@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-15 00:08+0000\n"
+"POT-Creation-Date: 2024-10-23 16:39+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Marc Schmitt, 2024\n"
 "Language-Team: French (https://app.transifex.com/authentik/teams/119923/fr/)\n"
@@ -28,6 +28,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
 "Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+
+#: authentik/admin/models.py
+msgid "Version history"
+msgstr "Historique des versions"
 
 #: authentik/admin/tasks.py
 #, python-brace-format
@@ -582,6 +586,30 @@ msgstr "Limite maximum de connection atteinte."
 #: authentik/enterprise/providers/rac/views.py
 msgid "(You are already connected in another tab/window)"
 msgstr "(Vous êtes déjà connecté dans un autre onglet/une autre fenêtre)"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Authenticator Google Device Trust Connector Stage"
+msgstr ""
+"Étape d'authentificateur d'appareil du connecteur de confiance des appareils"
+" Google"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Authenticator Google Device Trust Connector Stages"
+msgstr ""
+"Étapes d'authentificateur d'appareil du connecteur de confiance des "
+"appareils Google"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Device"
+msgstr "Appareil point de terminaison"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Devices"
+msgstr "Appareils point de terminaison"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/stage.py
+msgid "Verifying your browser..."
+msgstr "Vérification de votre navigateur..."
 
 #: authentik/enterprise/stages/source/models.py
 msgid ""
@@ -1528,12 +1556,20 @@ msgid "Signing Key"
 msgstr "Clé de signature"
 
 #: authentik/providers/oauth2/models.py
+msgid "Key used to sign the tokens."
+msgstr "Clé utilisée pour signer les jetons."
+
+#: authentik/providers/oauth2/models.py
+msgid "Encryption Key"
+msgstr "Clé de chiffrement"
+
+#: authentik/providers/oauth2/models.py
 msgid ""
-"Key used to sign the tokens. Only required when JWT Algorithm is set to "
-"RS256."
+"Key used to encrypt the tokens. When set, tokens will be encrypted and "
+"returned as JWEs."
 msgstr ""
-"Clé utilisée pour signer les jetons. Nécessaire uniquement lorsque "
-"l'algorithme JWT est réglé sur RS256."
+"Clé utilisée pour chiffrer les jetons. Si sélectionné, les jetons seront "
+"chiffrés et retournés sous forme de JWE."
 
 #: authentik/providers/oauth2/models.py
 msgid ""
@@ -2016,6 +2052,125 @@ msgstr ""
 #: authentik/recovery/views.py
 msgid "Used recovery-link to authenticate."
 msgstr "Utiliser un lien de récupération pour se connecter."
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos realm"
+msgstr "Realm Kerberos"
+
+#: authentik/sources/kerberos/models.py
+msgid "Custom krb5.conf to use. Uses the system one by default"
+msgstr ""
+"krb5.conf personnalisé à utiliser. Utilise celui du système par défault"
+
+#: authentik/sources/kerberos/models.py
+msgid "Sync users from Kerberos into authentik"
+msgstr "Synchroniser les utilisateurs Kerberos dans authentik"
+
+#: authentik/sources/kerberos/models.py
+msgid "When a user changes their password, sync it back to Kerberos"
+msgstr ""
+"Lorsqu'un utilisateur change son mot de passe, le synchroniser à nouveau "
+"vers Kerberos."
+
+#: authentik/sources/kerberos/models.py
+msgid "Principal to authenticate to kadmin for sync."
+msgstr "Principal pour s'authentifier à kadmin pour la synchronisation."
+
+#: authentik/sources/kerberos/models.py
+msgid "Password to authenticate to kadmin for sync"
+msgstr "Mot de passe pour s'authentifier à kadmin pour la synchronisation."
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"Keytab to authenticate to kadmin for sync. Must be base64-encoded or in the "
+"form TYPE:residual"
+msgstr ""
+"Keytab pour s'authentifier à kadmin pour la synchronisation. Doit être "
+"encodé en base64 ou de la forme TYPE:residual"
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"Credentials cache to authenticate to kadmin for sync. Must be in the form "
+"TYPE:residual"
+msgstr ""
+"Credentials cache pour s'authentifier à kadmin pour la synchronisation. Doit"
+" être de la forme TYPE:residual"
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"Force the use of a specific server name for SPNEGO. Must be in the form "
+"HTTP@hostname"
+msgstr ""
+"Force l'utilisation d'un nom de serveur spécifique pour SPNEGO. Doit être de"
+" la forme HTTP@hostname"
+
+#: authentik/sources/kerberos/models.py
+msgid "SPNEGO keytab base64-encoded or path to keytab in the form FILE:path"
+msgstr ""
+"Keytab SPNEGO encodée en base64 ou chemin vers la keytab de la forme "
+"FILE:path"
+
+#: authentik/sources/kerberos/models.py
+msgid "Credential cache to use for SPNEGO in form type:residual"
+msgstr "Credentials cache pour SPNEGO de la forme TYPE:residual"
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"If enabled, the authentik-stored password will be updated upon login with "
+"the Kerberos password backend"
+msgstr ""
+"Si activé, le mot de passe stocké par authentik sera mis à jour à la "
+"connexion avec le backend de mot de passe Kerberos"
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Source"
+msgstr "Source Kerberos"
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Sources"
+msgstr "Sources Kerberos"
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Source Property Mapping"
+msgstr "Mappage de propriété source Kerberos"
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Source Property Mappings"
+msgstr "Mappages de propriété source Kerberos"
+
+#: authentik/sources/kerberos/models.py
+msgid "User Kerberos Source Connection"
+msgstr "Connexion de l'utilisateur à la source Kerberos"
+
+#: authentik/sources/kerberos/models.py
+msgid "User Kerberos Source Connections"
+msgstr "Connexions de l'utilisateur à la source Kerberos"
+
+#: authentik/sources/kerberos/models.py
+msgid "Group Kerberos Source Connection"
+msgstr "Connexion du groupe à la source Kerberos"
+
+#: authentik/sources/kerberos/models.py
+msgid "Group Kerberos Source Connections"
+msgstr "Connexions du groupe à la source Kerberos"
+
+#: authentik/sources/kerberos/views.py
+msgid "SPNEGO authentication required"
+msgstr "Authentification SPNEGO requise"
+
+#: authentik/sources/kerberos/views.py
+msgid ""
+"\n"
+"                    Make sure you have valid tickets (obtainable via kinit)\n"
+"                    and configured the browser correctly.\n"
+"                    Please contact your administrator.\n"
+"                "
+msgstr ""
+"\n"
+"                    Vérifiez que vous avez des tickets valides (qu'on peut obtenir via kinit)\n"
+"                    et que le navigateur est configuré correctement.\n"
+"                    Veuillez contacter votre administrateur.\n"
+"                "
 
 #: authentik/sources/ldap/api.py
 msgid "Only a single LDAP Source with password synchronization is allowed"
@@ -3108,6 +3263,10 @@ msgstr "Base de données utilisateurs + mots de passes applicatifs"
 #: authentik/stages/password/models.py
 msgid "User database + LDAP password"
 msgstr "Base de données utilisateurs + mot de passe LDAP"
+
+#: authentik/stages/password/models.py
+msgid "User database + Kerberos password"
+msgstr "Base de données utilisateurs + mot de passe Kerberos"
 
 #: authentik/stages/password/models.py
 msgid "Selection of backends to test the password against."

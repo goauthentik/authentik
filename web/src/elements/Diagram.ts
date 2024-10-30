@@ -1,4 +1,5 @@
 import { EVENT_REFRESH, EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
+import { DOM_PURIFY_STRICT } from "@goauthentik/common/purify";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
 import mermaid, { MermaidConfig } from "mermaid";
@@ -47,6 +48,8 @@ export class Diagram extends AKElement {
                 curve: "linear",
             },
             htmlLabels: false,
+            securityLevel: "strict",
+            dompurifyConfig: DOM_PURIFY_STRICT,
         };
         mermaid.initialize(this.config);
     }

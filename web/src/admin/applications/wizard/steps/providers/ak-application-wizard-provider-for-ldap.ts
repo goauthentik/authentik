@@ -56,6 +56,20 @@ export class ApplicationWizardLdapProviderForm extends WithBrandConfig(
                         ${msg("Flow used for users to authenticate.")}
                     </p>
                 </ak-form-element-horizontal>
+                <ak-form-element-horizontal
+                    label=${msg("Unbind flow")}
+                    name="invalidationFlow"
+                    required
+                >
+                    <ak-branded-flow-search
+                        flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                        .currentFlow=${provider?.invalidationFlow}
+                        .brandFlow=${this.brand.flowInvalidation}
+                        defaultFlowSlug="default-invalidation-flow"
+                        required
+                    ></ak-branded-flow-search>
+                    <p class="pf-c-form__helper-text">${msg("Flow used for unbinding users.")}</p>
+                </ak-form-element-horizontal>
 
                 <ak-radio-input
                     label=${msg("Bind mode")}
@@ -78,7 +92,7 @@ export class ApplicationWizardLdapProviderForm extends WithBrandConfig(
                 </ak-radio-input>
 
                 <ak-switch-input
-                    name="openInNewTab"
+                    name="mfaSupport"
                     label=${msg("Code-based MFA Support")}
                     ?checked=${provider.mfaSupport ?? true}
                     help=${mfaSupportHelp}

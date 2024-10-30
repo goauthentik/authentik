@@ -72,6 +72,26 @@ export class ApplicationWizardRadiusProviderForm extends WithBrandConfig(
                     ></ak-text-input>
                 </div>
             </ak-form-group>
+            <ak-form-group>
+                <span slot="header"> ${msg("Advanced flow settings")} </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("Invalidation flow")}
+                        name="invalidationFlow"
+                        required
+                    >
+                        <ak-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                            .currentFlow=${provider?.invalidationFlow}
+                            defaultFlowSlug="default-invalidation-flow"
+                            required
+                        ></ak-flow-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Flow used when logging out of this provider.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                </div></ak-form-group
+            >
         </form>`;
     }
 
