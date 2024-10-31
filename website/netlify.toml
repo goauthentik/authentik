@@ -675,8 +675,8 @@
   force = true
 
 [[redirects]]
-  from = "/docs/providers/radius/x"
-  to = "/docs/add-secure-apps/providers/radius/x"
+  from = "/docs/providers/radius/"
+  to = "/docs/add-secure-apps/providers/radius/"
   status = 302
   force = true
 
