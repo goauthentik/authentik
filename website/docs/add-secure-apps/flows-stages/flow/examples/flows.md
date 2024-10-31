@@ -1,5 +1,5 @@
 ---
-title: Example Flows
+title: Example flows
 ---
 
 :::info
