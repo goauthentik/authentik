@@ -66,7 +66,6 @@ describe("Configure Applications with the Application Wizard", () => {
 
     it("Should configure a simple Oauth2 Application", async () => {
         await reachTheProvider("New Oauth2 Application");
-
         await (await ApplicationWizardView.providerList()).waitForDisplayed();
         await (await ApplicationWizardView.oauth2Provider).scrollIntoView();
         await (await ApplicationWizardView.oauth2Provider).click();
