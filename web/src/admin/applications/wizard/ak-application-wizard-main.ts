@@ -1,10 +1,16 @@
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/components/ak-wizard/ak-wizard-steps.js";
 import { WizardUpdateEvent } from "@goauthentik/components/ak-wizard/events";
 import { AKElement } from "@goauthentik/elements/Base.js";
 
+import { ContextProvider } from "@lit/context";
 import { html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
+import { ProvidersApi, ProxyMode } from "@goauthentik/api";
+
+import { applicationWizardProvidersContext } from "./ContextIdentity";
+import { providerTypeRenderers } from "./steps/ProviderChoices.js";
 import "./steps/ak-application-wizard-application-step.js";
 import "./steps/ak-application-wizard-bindings-step.js";
 import "./steps/ak-application-wizard-edit-binding-step.js";
@@ -18,20 +24,39 @@ const freshWizardState = (): ApplicationWizardState => ({
     currentBinding: -1,
     app: {},
     provider: {},
-    errors: {},
+    proxyMode: ProxyMode.Proxy,
     bindings: [],
+    errors: {},
 });
-
-//
 
 @customElement("ak-application-wizard-main")
 export class AkApplicationWizardMain extends AKElement {
     @state()
     wizard: ApplicationWizardState = freshWizardState();
 
+    wizardProviderProvider = new ContextProvider(this, {
+        context: applicationWizardProvidersContext,
+        initialValue: [],
+    });
+
     constructor() {
         super();
         this.addEventListener(WizardUpdateEvent.eventName, this.handleUpdate);
+    }
+
+    connectedCallback() {
+        super.connectedCallback();
+        new ProvidersApi(DEFAULT_CONFIG).providersAllTypesList().then((providerTypes) => {
+            const wizardReadyProviders = Object.keys(providerTypeRenderers);
+            this.wizardProviderProvider.setValue(
+                providerTypes
+                    .filter((providerType) => wizardReadyProviders.includes(providerType.modelName))
+                    .map((providerType) => ({
+                        ...providerType,
+                        renderer: providerTypeRenderers[providerType.modelName],
+                    })),
+            );
+        });
     }
 
     // This is the actual top of the Wizard; so this is where we accept the update information and

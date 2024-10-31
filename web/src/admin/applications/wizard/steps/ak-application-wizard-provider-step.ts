@@ -8,22 +8,18 @@ import { html, unsafeStatic } from "lit/static-html.js";
 import { ApplicationWizardStep } from "../ApplicationWizardStep.js";
 import { OneOfProvider } from "../types.js";
 import { ApplicationWizardProviderForm } from "./providers/ApplicationWizardProviderForm.js";
-import "./providers/ak-application-wizard-provider-for-forward-domain-proxy.js";
 import "./providers/ak-application-wizard-provider-for-ldap.js";
 import "./providers/ak-application-wizard-provider-for-oauth.js";
+import "./providers/ak-application-wizard-provider-for-proxy.js";
 import "./providers/ak-application-wizard-provider-for-rac.js";
 import "./providers/ak-application-wizard-provider-for-radius.js";
-import "./providers/ak-application-wizard-provider-for-reverse-proxy.js";
 import "./providers/ak-application-wizard-provider-for-saml.js";
 import "./providers/ak-application-wizard-provider-for-scim.js";
-import "./providers/ak-application-wizard-provider-for-single-forward-proxy.js";
 
 const providerToTag = new Map([
     ["ldapprovider", "ak-application-wizard-provider-for-ldap"],
     ["oauth2provider", "ak-application-wizard-provider-for-oauth"],
-    ["proxyprovider-forwarddomain", "ak-application-wizard-provider-for-forward-domain-proxy"],
-    ["proxyprovider-forwardsingle", "ak-application-wizard-provider-for-single-forward-proxy"],
-    ["proxyprovider-proxy", "ak-application-wizard-provider-for-reverse-proxy"],
+    ["proxyprovider", "ak-application-wizard-provider-for-proxy"],
     ["racprovider", "ak-application-wizard-provider-for-rac"],
     ["radiusprovider", "ak-application-wizard-provider-for-radius"],
     ["samlprovider", "ak-application-wizard-provider-for-saml"],

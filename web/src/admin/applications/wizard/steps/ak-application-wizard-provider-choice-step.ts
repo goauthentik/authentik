@@ -1,4 +1,5 @@
 import { ApplicationWizardStep } from "@goauthentik/admin/applications/wizard/ApplicationWizardStep.js";
+import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
 import type { NavigableButton, WizardButton } from "@goauthentik/components/ak-wizard/types";
 import "@goauthentik/elements/EmptyState.js";
 import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider.js";
@@ -8,13 +9,15 @@ import "@goauthentik/elements/forms/HorizontalFormElement.js";
 import { TypeCreateWizardPageLayouts } from "@goauthentik/elements/wizard/TypeCreateWizardPage.js";
 import "@goauthentik/elements/wizard/TypeCreateWizardPage.js";
 
+import { consume } from "@lit/context";
 import { msg } from "@lit/localize";
-import { html, nothing } from "lit";
+import { html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 import { TypeCreate } from "@goauthentik/api";
 
-import { type LocalTypeCreate, providerModelsList } from "./ProviderChoices.js";
+import { applicationWizardProvidersContext } from "../ContextIdentity";
+import { type LocalTypeCreate } from "./ProviderChoices.js";
 
 @customElement("ak-application-wizard-provider-choice-step")
 export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(ApplicationWizardStep) {
@@ -22,6 +25,9 @@ export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(Appl
 
     @state()
     failureMessage = "";
+
+    @consume({ context: applicationWizardProvidersContext, subscribe: true })
+    public providerModelsList!: LocalTypeCreate[];
 
     get buttons(): WizardButton[] {
         return [
@@ -52,41 +58,32 @@ export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(Appl
         this.handleUpdate({ providerModel: detail.modelName });
     }
 
-    renderForm(model: string) {
-        const selectedType = providerModelsList.find((t) => t.formName === model);
-
-        // As a hack, the Application wizard has separate provider paths for our three types of
-        // proxy providers. This patch swaps the form we want to be directed to on page 3 from the
-        // modelName to the formName, so we get the right one.  This information isn't modified
-        // or forwarded, so the proxy-plus-subtype is correctly mapped on submission.
-        const typesForWizard = providerModelsList.map((provider) => ({
-            ...provider,
-            modelName: provider.formName,
-        }));
-
-        return providerModelsList.length > 0
-            ? html`<form class="pf-c-form pf-m-horizontal" slot="form">
-                  ${this.failureMessage !== ""
-                      ? html`<p class="pf-c-form__helper-text pf-m-error" aria-live="polite">
-                            ${this.failureMessage}
-                        </p>`
-                      : nothing}
-
-                  <ak-wizard-page-type-create
-                      .types=${typesForWizard}
-                      layout=${TypeCreateWizardPageLayouts.grid}
-                      .selectedType=${selectedType}
-                      @select=${this.onSelect}
-                  ></ak-wizard-page-type-create>
-              </form> `
-            : html`<ak-empty-state loading header=${msg("Loading")} slot="form"></ak-empty-state>`;
-    }
-
     renderMain() {
-        if (this.wizard.providerModel === undefined) {
-            throw new Error("Application Step received uninitialized wizard context.");
-        }
-        return this.renderForm(this.wizard.providerModel);
+        const selectedTypes = this.providerModelsList.filter(
+            (t) => t.modelName === this.wizard.providerModel,
+        );
+
+        return this.providerModelsList.length > 0
+            ? html` <ak-wizard-title>${msg("Choose a Provider Type")}</ak-wizard-title>
+                  <form class="pf-c-form pf-m-horizontal">
+                      <ak-wizard-page-type-create
+                          .types=${this.providerModelsList}
+                          name="selectProviderType"
+                          layout=${TypeCreateWizardPageLayouts.grid}
+                          .selectedType=${selectedTypes.length > 0 ? selectedTypes[0] : undefined}
+                          @select=${(ev: CustomEvent<LocalTypeCreate>) => {
+                              this.handleUpdate(
+                                  {
+                                      ...this.wizard,
+                                      providerModel: ev.detail.modelName,
+                                  },
+                                  undefined,
+                                  { enable: "provider" },
+                              );
+                          }}
+                      ></ak-wizard-page-type-create>
+                  </form>`
+            : html`<ak-empty-state loading header=${msg("Loading")}></ak-empty-state>`;
     }
 }
 

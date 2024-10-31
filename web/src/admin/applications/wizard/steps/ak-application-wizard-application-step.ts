@@ -1,5 +1,6 @@
 import { policyOptions } from "@goauthentik/admin/applications/PolicyOptions.js";
 import { ApplicationWizardStep } from "@goauthentik/admin/applications/wizard/ApplicationWizardStep.js";
+import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
 import { isSlug } from "@goauthentik/common/utils.js";
 import { camelToSnake } from "@goauthentik/common/utils.js";
 import "@goauthentik/components/ak-radio-input";
@@ -106,70 +107,71 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
     }
 
     renderForm(app: Partial<ApplicationRequest>, errors: ValidationError) {
-        return html` <form id="applicationform" class="pf-c-form pf-m-horizontal" slot="form">
-            <ak-text-input
-                name="name"
-                value=${ifDefined(app.name)}
-                label=${msg("Name")}
-                required
-                ?invalid=${this.errors.has("name")}
-                .errorMessages=${errors.app?.name ?? this.errorMessages("name")}
-                help=${msg("Application's display Name.")}
-                id="ak-application-wizard-details-name"
-            ></ak-text-input>
-            <ak-slug-input
-                name="slug"
-                value=${ifDefined(app.slug)}
-                label=${msg("Slug")}
-                source="#ak-application-wizard-details-name"
-                required
-                ?invalid=${errors.app?.slug ?? this.errors.has("slug")}
-                .errorMessages=${this.errorMessages("slug")}
-                help=${msg("Internal application name used in URLs.")}
-            ></ak-slug-input>
-            <ak-text-input
-                name="group"
-                value=${ifDefined(app.group)}
-                label=${msg("Group")}
-                .errorMessages=${errors.app?.group ?? []}
-                help=${msg(
-                    "Optionally enter a group name. Applications with identical groups are shown grouped together.",
-                )}
-            ></ak-text-input>
-            <ak-radio-input
-                label=${msg("Policy engine mode")}
-                required
-                name="policyEngineMode"
-                .options=${policyOptions}
-                .value=${app.policyEngineMode}
-                .errorMessages=${errors.app?.policyEngineMode ?? []}
-            ></ak-radio-input>
-            <ak-form-group aria-label=${msg("UI Settings")}>
-                <span slot="header"> ${msg("UI Settings")} </span>
-                <div slot="body" class="pf-c-form">
-                    <ak-text-input
-                        name="metaLaunchUrl"
-                        label=${msg("Launch URL")}
-                        value=${ifDefined(app.metaLaunchUrl)}
-                        ?invalid=${this.errors.has("metaLaunchUrl")}
-                        .errorMessages=${errors.app?.metaLaunchUrl ??
-                        this.errorMessages("metaLaunchUrl")}
-                        help=${msg(
-                            "If left empty, authentik will try to extract the launch URL based on the selected provider.",
-                        )}
-                    ></ak-text-input>
-                    <ak-switch-input
-                        name="openInNewTab"
-                        ?checked=${app.openInNewTab ?? false}
-                        label=${msg("Open in new tab")}
-                        help=${msg(
-                            "If checked, the launch URL will open in a new browser tab or window from the user's application library.",
-                        )}
-                    >
-                    </ak-switch-input>
-                </div>
-            </ak-form-group>
-        </form>`;
+        return html` <ak-wizard-title>${msg("Configure The Application")}</ak-wizard-title>
+            <form id="applicationform" class="pf-c-form pf-m-horizontal" slot="form">
+                <ak-text-input
+                    name="name"
+                    value=${ifDefined(app.name)}
+                    label=${msg("Name")}
+                    required
+                    ?invalid=${this.errors.has("name")}
+                    .errorMessages=${errors.app?.name ?? this.errorMessages("name")}
+                    help=${msg("Application's display Name.")}
+                    id="ak-application-wizard-details-name"
+                ></ak-text-input>
+                <ak-slug-input
+                    name="slug"
+                    value=${ifDefined(app.slug)}
+                    label=${msg("Slug")}
+                    source="#ak-application-wizard-details-name"
+                    required
+                    ?invalid=${errors.app?.slug ?? this.errors.has("slug")}
+                    .errorMessages=${this.errorMessages("slug")}
+                    help=${msg("Internal application name used in URLs.")}
+                ></ak-slug-input>
+                <ak-text-input
+                    name="group"
+                    value=${ifDefined(app.group)}
+                    label=${msg("Group")}
+                    .errorMessages=${errors.app?.group ?? []}
+                    help=${msg(
+                        "Optionally enter a group name. Applications with identical groups are shown grouped together.",
+                    )}
+                ></ak-text-input>
+                <ak-radio-input
+                    label=${msg("Policy engine mode")}
+                    required
+                    name="policyEngineMode"
+                    .options=${policyOptions}
+                    .value=${app.policyEngineMode}
+                    .errorMessages=${errors.app?.policyEngineMode ?? []}
+                ></ak-radio-input>
+                <ak-form-group aria-label=${msg("UI Settings")}>
+                    <span slot="header"> ${msg("UI Settings")} </span>
+                    <div slot="body" class="pf-c-form">
+                        <ak-text-input
+                            name="metaLaunchUrl"
+                            label=${msg("Launch URL")}
+                            value=${ifDefined(app.metaLaunchUrl)}
+                            ?invalid=${this.errors.has("metaLaunchUrl")}
+                            .errorMessages=${errors.app?.metaLaunchUrl ??
+                            this.errorMessages("metaLaunchUrl")}
+                            help=${msg(
+                                "If left empty, authentik will try to extract the launch URL based on the selected provider.",
+                            )}
+                        ></ak-text-input>
+                        <ak-switch-input
+                            name="openInNewTab"
+                            ?checked=${app.openInNewTab ?? false}
+                            label=${msg("Open in new tab")}
+                            help=${msg(
+                                "If checked, the launch URL will open in a new browser tab or window from the user's application library.",
+                            )}
+                        >
+                        </ak-switch-input>
+                    </div>
+                </ak-form-group>
+            </form>`;
     }
 
     renderMain() {

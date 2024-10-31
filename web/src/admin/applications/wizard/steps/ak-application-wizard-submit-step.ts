@@ -21,8 +21,12 @@ import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 import {
     type ApplicationRequest,
     CoreApi,
+    type ModelRequest,
     type PolicyBinding,
     PolicyEngineMode,
+    ProviderModelEnum,
+    ProxyMode,
+    type ProxyProviderRequest,
     type TransactionApplicationRequest,
     type TransactionApplicationResponse,
     type TransactionPolicyBindingRequest,
@@ -30,11 +34,19 @@ import {
 
 import { ApplicationWizardStep } from "../ApplicationWizardStep.js";
 import { ExtendedValidationError, OneOfProvider } from "../types.js";
-import { type ProviderModelType, providerModelsList } from "./ProviderChoices.js";
 import { providerRenderers } from "./SubmitStepOverviewRenderers.js";
 
 const _submitStates = ["reviewing", "running", "submitted"] as const;
 type SubmitStates = (typeof _submitStates)[number];
+
+type StrictProviderModelEnum = Exclude<ProviderModelEnum, "11184809">;
+
+const providerMap: Map<string, string> = Object.values(ProviderModelEnum)
+    .filter((value) => /^authentik_providers_/.test(value) && /provider$/.test(value))
+    .reduce((acc: Map<string, string>, value) => {
+        acc.set(value.split(".")[1], value);
+        return acc;
+    }, new Map());
 
 type NonEmptyArray<T> = [T, ...T[]];
 
@@ -90,7 +102,8 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
 
     async send() {
         const app = this.wizard.app;
-        const provider = this.wizard.provider;
+        const provider = this.wizard.provider as ModelRequest;
+
         if (app === undefined) {
             throw new Error("Reached the submit state with the app undefined");
         }
@@ -99,10 +112,24 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
             throw new Error("Reached the submit state with the provider undefined");
         }
 
+        // Stringly-based API. Not the best, but it works. Just be aware that it is
+        // stringly-based.
+
+        const providerModel = providerMap.get(this.wizard.providerModel) as StrictProviderModelEnum;
+        provider.providerModel = providerModel;
+
+        // Special case for the Proxy provider.
+        if (this.wizard.providerModel === "proxyprovider") {
+            (provider as ProxyProviderRequest).mode = this.wizard.proxyMode;
+            if ((provider as ProxyProviderRequest).mode !== ProxyMode.ForwardDomain) {
+                (provider as ProxyProviderRequest).cookieDomain = "";
+            }
+        }
+
         const request: TransactionApplicationRequest = {
-            providerModel: this.currentProviderModel.modelName as ProviderModelType,
-            app: cleanApplication(app),
-            provider: this.currentProviderModel.converter(provider),
+            app: cleanApplication(this.wizard.app),
+            providerModel,
+            provider,
             policyBindings: (this.wizard.bindings ?? []).map(cleanBinding),
         };
 
@@ -120,9 +147,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
 
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 .catch(async (resolution: any) => {
-                    const errors = (await parseAPIError(
-                        await resolution,
-                    )) as ExtendedValidationError;
+                    errors = (await parseAPIError(await resolution)) as ExtendedValidationError;
 
                     // THIS is a really gross special case; if the user is duplicating the name of
                     // an existing provider, the error appears on the `app` (!) error object. We
