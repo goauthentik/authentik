@@ -1,6 +1,9 @@
 ---
-title: Rancher
+title: Integrate with Rancher
+sidebar_label: Rancher
 ---
+
+# Rancher
 
 <span class="badge badge--primary">Support level: authentik</span>
 

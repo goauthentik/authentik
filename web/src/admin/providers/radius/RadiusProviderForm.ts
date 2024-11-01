@@ -1,7 +1,10 @@
+import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
+import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
+import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -11,7 +14,35 @@ import { TemplateResult, html } from "lit";
 import { ifDefined } from "lit-html/directives/if-defined.js";
 import { customElement } from "lit/decorators.js";
 
-import { FlowsInstancesListDesignationEnum, ProvidersApi, RadiusProvider } from "@goauthentik/api";
+import {
+    FlowsInstancesListDesignationEnum,
+    PropertymappingsApi,
+    ProvidersApi,
+    RadiusProvider,
+    RadiusProviderPropertyMapping,
+} from "@goauthentik/api";
+
+export async function radiusPropertyMappingsProvider(page = 1, search = "") {
+    const propertyMappings = await new PropertymappingsApi(
+        DEFAULT_CONFIG,
+    ).propertymappingsProviderRadiusList({
+        ordering: "name",
+        pageSize: 20,
+        search: search.trim(),
+        page,
+    });
+    return {
+        pagination: propertyMappings.pagination,
+        options: propertyMappings.results.map((m) => [m.pk, m.name, m.name, m]),
+    };
+}
+
+export function makeRadiusPropertyMappingsSelector(instanceMappings?: string[]) {
+    const localMappings = instanceMappings ? new Set(instanceMappings) : undefined;
+    return localMappings
+        ? ([pk, _]: DualSelectPair) => localMappings.has(pk)
+        : ([_0, _1, _2, _]: DualSelectPair<RadiusProviderPropertyMapping>) => [];
+}
 
 @customElement("ak-provider-radius-form")
 export class RadiusProviderFormPage extends WithBrandConfig(BaseProviderForm<RadiusProvider>) {
@@ -41,7 +72,8 @@ export class RadiusProviderFormPage extends WithBrandConfig(BaseProviderForm<Rad
     // weird-- we're looking up Authentication flows, but we're storing them in the Authorization
     // field of the target Provider.
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html`
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -51,7 +83,7 @@ export class RadiusProviderFormPage extends WithBrandConfig(BaseProviderForm<Rad
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Authentication flow")}
-                ?required=${true}
+                required
                 name="authorizationFlow"
             >
                 <ak-branded-flow-search
@@ -83,12 +115,12 @@ export class RadiusProviderFormPage extends WithBrandConfig(BaseProviderForm<Rad
                 </p>
             </ak-form-element-horizontal>
 
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Shared secret")}
-                        ?required=${true}
+                        required
                         name="sharedSecret"
                     >
                         <input
@@ -103,7 +135,7 @@ export class RadiusProviderFormPage extends WithBrandConfig(BaseProviderForm<Rad
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Client Networks")}
-                        ?required=${true}
+                        required
                         name="clientNetworks"
                     >
                         <input
@@ -118,7 +150,47 @@ export class RadiusProviderFormPage extends WithBrandConfig(BaseProviderForm<Rad
                             will be dropped.`)}
                         </p>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Property mappings")}
+                        name="propertyMappings"
+                    >
+                        <ak-dual-select-dynamic-selected
+                            .provider=${radiusPropertyMappingsProvider}
+                            .selector=${makeRadiusPropertyMappingsSelector(
+                                this.instance?.propertyMappings,
+                            )}
+                            available-label=${msg("Available Property Mappings")}
+                            selected-label=${msg("Selected Property Mappings")}
+                        ></ak-dual-select-dynamic-selected>
+                    </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>`;
+            </ak-form-group>
+            <ak-form-group>
+                <span slot="header"> ${msg("Advanced flow settings")} </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("Invalidation flow")}
+                        name="invalidationFlow"
+                        required
+                    >
+                        <ak-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                            .currentFlow=${this.instance?.invalidationFlow}
+                            defaultFlowSlug="default-invalidation-flow"
+                            required
+                        ></ak-flow-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Flow used when logging out of this provider.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                </div></ak-form-group
+            >
+        `;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-radius-form": RadiusProviderFormPage;
     }
 }

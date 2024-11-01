@@ -90,3 +90,9 @@ export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
         ];
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-role-assigned-global-permissions-table": RoleAssignedGlobalPermissionsTable;
+    }
+}

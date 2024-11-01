@@ -6,6 +6,8 @@ import { ascii_letters, digits, first, randomString } from "@goauthentik/common/
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
@@ -22,13 +24,15 @@ import {
     FlowsInstancesListDesignationEnum,
     IssuerModeEnum,
     OAuth2Provider,
-    PaginatedOAuthSourceList,
-    PaginatedScopeMappingList,
-    PropertymappingsApi,
     ProvidersApi,
-    SourcesApi,
     SubModeEnum,
 } from "@goauthentik/api";
+
+import {
+    makeOAuth2PropertyMappingsSelector,
+    oauth2PropertyMappingsProvider,
+} from "./OAuth2PropertyMappings.js";
+import { makeSourceSelector, oauth2SourcesProvider } from "./OAuth2Sources.js";
 
 export const clientTypeOptions = [
     {
@@ -46,12 +50,6 @@ export const clientTypeOptions = [
             "Public clients are incapable of maintaining the confidentiality and should use methods like PKCE. ",
         )}`,
     },
-];
-
-export const defaultScopes = [
-    "goauthentik.io/providers/oauth2/scope-openid",
-    "goauthentik.io/providers/oauth2/scope-email",
-    "goauthentik.io/providers/oauth2/scope-profile",
 ];
 
 export const subjectModeOptions = [
@@ -123,9 +121,6 @@ export const redirectUriHelp = html`${redirectUriHelpMessages.map(
 
 @customElement("ak-provider-oauth2-form")
 export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
-    propertyMappings?: PaginatedScopeMappingList;
-    oauthSources?: PaginatedOAuthSourceList;
-
     @state()
     showClientSecret = true;
 
@@ -135,18 +130,6 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
         });
         this.showClientSecret = provider.clientType === ClientTypeEnum.Confidential;
         return provider;
-    }
-
-    async load(): Promise<void> {
-        this.propertyMappings = await new PropertymappingsApi(
-            DEFAULT_CONFIG,
-        ).propertymappingsScopeList({
-            ordering: "scope_name",
-        });
-        this.oauthSources = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthList({
-            ordering: "name",
-            hasJwks: true,
-        });
     }
 
     async send(data: OAuth2Provider): Promise<OAuth2Provider> {
@@ -173,19 +156,6 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
             ></ak-text-input>
 
             <ak-form-element-horizontal
-                name="authenticationFlow"
-                label=${msg("Authentication flow")}
-            >
-                <ak-flow-search
-                    flowType=${FlowsInstancesListDesignationEnum.Authentication}
-                    .currentFlow=${provider?.authenticationFlow}
-                    required
-                ></ak-flow-search>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Flow used when a user access this provider and is not authenticated.")}
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal
                 name="authorizationFlow"
                 label=${msg("Authorization flow")}
                 ?required=${true}
@@ -199,8 +169,7 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
                     ${msg("Flow used when authorizing this provider.")}
                 </p>
             </ak-form-element-horizontal>
-
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-radio-input
@@ -250,6 +219,50 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
                         ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">${msg("Key used to sign the tokens.")}</p>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${msg("Encryption Key")} name="encryptionKey">
+                        <!-- NOTE: 'null' cast to 'undefined' on encryptionKey to satisfy Lit requirements -->
+                        <ak-crypto-certificate-search
+                            certificate=${ifDefined(this.instance?.encryptionKey ?? undefined)}
+                        ></ak-crypto-certificate-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Key used to encrypt the tokens.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+
+            <ak-form-group>
+                <span slot="header"> ${msg("Advanced flow settings")} </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal
+                        name="authenticationFlow"
+                        label=${msg("Authentication flow")}
+                    >
+                        <ak-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                            .currentFlow=${provider?.authenticationFlow}
+                        ></ak-flow-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Flow used when a user access this provider and is not authenticated.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Invalidation flow")}
+                        name="invalidationFlow"
+                        required
+                    >
+                        <ak-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                            .currentFlow=${provider?.invalidationFlow}
+                            defaultFlowSlug="default-provider-invalidation-flow"
+                            required
+                        ></ak-flow-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Flow used when logging out of this provider.")}
+                        </p>
+                    </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
 
@@ -291,33 +304,19 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
                     >
                     </ak-text-input>
                     <ak-form-element-horizontal label=${msg("Scopes")} name="propertyMappings">
-                        <select class="pf-c-form-control" multiple>
-                            ${this.propertyMappings?.results.map((scope) => {
-                                let selected = false;
-                                if (!provider?.propertyMappings) {
-                                    selected = scope.managed
-                                        ? defaultScopes.includes(scope.managed)
-                                        : false;
-                                } else {
-                                    selected = Array.from(provider?.propertyMappings).some((su) => {
-                                        return su == scope.pk;
-                                    });
-                                }
-                                return html`<option
-                                    value=${ifDefined(scope.pk)}
-                                    ?selected=${selected}
-                                >
-                                    ${scope.name}
-                                </option>`;
-                            })}
-                        </select>
+                        <ak-dual-select-dynamic-selected
+                            .provider=${oauth2PropertyMappingsProvider}
+                            .selector=${makeOAuth2PropertyMappingsSelector(
+                                provider?.propertyMappings,
+                            )}
+                            available-label=${msg("Available Scopes")}
+                            selected-label=${msg("Selected Scopes")}
+                        ></ak-dual-select-dynamic-selected>
+
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Select which scopes can be used by the client. The client still has to specify the scope to access the data.",
                             )}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Hold control/command to select multiple items.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-radio-input
@@ -360,26 +359,25 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
                         label=${msg("Trusted OIDC Sources")}
                         name="jwksSources"
                     >
-                        <select class="pf-c-form-control" multiple>
-                            ${this.oauthSources?.results.map((source) => {
-                                const selected = (provider?.jwksSources || []).some((su) => {
-                                    return su == source.pk;
-                                });
-                                return html`<option value=${source.pk} ?selected=${selected}>
-                                    ${source.name} (${source.slug})
-                                </option>`;
-                            })}
-                        </select>
+                        <ak-dual-select-dynamic-selected
+                            .provider=${oauth2SourcesProvider}
+                            .selector=${makeSourceSelector(provider?.jwksSources)}
+                            available-label=${msg("Available Sources")}
+                            selected-label=${msg("Selected Sources")}
+                        ></ak-dual-select-dynamic-selected>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider.",
                             )}
                         </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Hold control/command to select multiple items.")}
-                        </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-oauth2-form": OAuth2ProviderFormPage;
     }
 }

@@ -6,7 +6,7 @@ While authentik is secure out of the box, you can take steps to further increase
 
 ### Expressions
 
-[Expressions](../property-mappings/expression.mdx) allow super-users and other highly privileged users to create custom logic within authentik to modify its behaviour. Editing/creating these expressions is, by default, limited to super-users and any related events are fully logged.
+[Expressions](../customize/policies/expression.mdx) allow super-users and other highly privileged users to create custom logic within authentik to modify its behaviour. Editing/creating these expressions is, by default, limited to super-users and any related events are fully logged.
 
 However, for further hardening, it is possible to prevent any user (even super-users) from using expressions to create or edit any objects. To do so, configure your deployment to block API requests to these endpoints:
 
@@ -14,7 +14,7 @@ However, for further hardening, it is possible to prevent any user (even super-u
 -   `/api/v3/propertymappings*`
 -   `/api/v3/managed/blueprints*`
 
-With these restrictions in place, expressions can only be edited using [Blueprints on the file system](https://docs.goauthentik.io/developer-docs/blueprints/#storage---file). Take care to restrict access to the file system itself.
+With these restrictions in place, expressions can only be edited using [Blueprints on the file system](../customize/blueprints/index.md#storage---file). Take care to restrict access to the file system itself.
 
 ### Blueprints
 
@@ -24,7 +24,7 @@ To prevent any user from creating/editing blueprints, block API requests to this
 
 -   `/api/v3/managed/blueprints*`
 
-With these restrictions in place, Blueprints can only be edited via [the file system](https://docs.goauthentik.io/developer-docs/blueprints/#storage---file).
+With these restrictions in place, Blueprints can only be edited via [the file system](../customize/blueprints/index.md#storage---file).
 
 ### CAPTCHA Stage
 
@@ -35,4 +35,4 @@ To prevent any user from creating/editing CAPTCHA stages block API requests to t
 -   `/api/v3/stages/captcha*`
 -   `/api/v3/managed/blueprints*`
 
-With these restrictions in place, CAPTCHA stages can only be edited using [Blueprints on the file system](https://docs.goauthentik.io/developer-docs/blueprints/#storage---file).
+With these restrictions in place, CAPTCHA stages can only be edited using [Blueprints on the file system](../customize/blueprints/index.md#storage---file).

@@ -70,3 +70,9 @@ export class AkHint extends AKElement {
 }
 
 export default AkHint;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-hint": AkHint;
+    }
+}

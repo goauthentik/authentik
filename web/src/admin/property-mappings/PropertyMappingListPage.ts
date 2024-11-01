@@ -1,11 +1,17 @@
-import "@goauthentik/admin/property-mappings/PropertyMappingGoogleWorkspaceForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingLDAPForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingMicrosoftEntraForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingNotification";
-import "@goauthentik/admin/property-mappings/PropertyMappingRACForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingSAMLForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingSCIMForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingScopeForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingProviderGoogleWorkspaceForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingProviderMicrosoftEntraForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingProviderRACForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingProviderRadiusForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingProviderSAMLForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingProviderSCIMForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingProviderScopeForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingSourceKerberosForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingSourceLDAPForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingSourceOAuthForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingSourcePlexForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingSourceSAMLForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingSourceSCIMForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingTestForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingWizard";
 import "@goauthentik/admin/rbac/ObjectPermissionModal";
@@ -157,5 +163,11 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                     </div>
                 </div>
             </div>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-property-mapping-list": PropertyMappingListPage;
     }
 }

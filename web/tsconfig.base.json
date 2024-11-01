@@ -6,6 +6,13 @@
         "paths": {
             "@goauthentik/docs/*": ["../website/docs/*"]
         },
+        "types": [
+            "node",
+            "@wdio/mocha-framework",
+            "@wdio/types",
+            "expect-webdriverio",
+            "grecaptcha"
+        ],
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
         "experimentalDecorators": true,
@@ -48,7 +55,15 @@
                     "no-unknown-property": "off",
                     "no-unknown-attribute": "off"
                 }
+            },
+            {
+                "name": "@genesiscommunitysuccess/custom-elements-lsp",
+                "designSystemPrefix": "ak-",
+                "parser": {
+                    "timeout": 2000
+                }
             }
         ]
-    }
+    },
+    "exclude": ["src/**/*.test.ts", "./tests"]
 }

@@ -21,7 +21,14 @@ class DebugSession(Session):
 
     def send(self, req: PreparedRequest, *args, **kwargs):
         request_id = str(uuid4())
-        LOGGER.debug("HTTP request sent", uid=request_id, path=req.path_url, headers=req.headers)
+        LOGGER.debug(
+            "HTTP request sent",
+            uid=request_id,
+            url=req.url,
+            method=req.method,
+            headers=req.headers,
+            body=req.body,
+        )
         resp = super().send(req, *args, **kwargs)
         LOGGER.debug(
             "HTTP response received",

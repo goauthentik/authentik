@@ -1,4 +1,4 @@
-# update website/docs/installation/configuration.mdx
+# update website/docs/install-config/configuration/configuration.mdx
 # This is the default configuration file
 postgresql:
   host: localhost
@@ -104,6 +104,10 @@ ldap:
   page_size: 50
   tls:
     ciphers: null
+
+sources:
+  kerberos:
+    task_timeout_hours: 2
 
 reputation:
   expiry: 86400

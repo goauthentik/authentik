@@ -9,6 +9,7 @@ import orjson
 from celery.schedules import crontab
 from django.conf import ImproperlyConfigured
 from sentry_sdk import set_tag
+from xmlsec import enable_debug_trace
 
 from authentik import __version__
 from authentik.lib.config import CONFIG, redis_url
@@ -37,6 +38,7 @@ LANGUAGE_COOKIE_NAME = "authentik_language"
 SESSION_COOKIE_NAME = "authentik_session"
 SESSION_COOKIE_DOMAIN = CONFIG.get("cookie_domain", None)
 APPEND_SLASH = False
+X_FRAME_OPTIONS = "SAMEORIGIN"
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
@@ -52,7 +54,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 SHARED_APPS = [
     "django_tenants",
     "authentik.tenants",
-    "daphne",
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.humanize",
@@ -60,6 +61,7 @@ SHARED_APPS = [
     "django_filters",
     "drf_spectacular",
     "django_prometheus",
+    "django_countries",
     "pgactivity",
     "pglock",
     "channels",
@@ -77,6 +79,7 @@ TENANT_APPS = [
     "authentik.policies.event_matcher",
     "authentik.policies.expiry",
     "authentik.policies.expression",
+    "authentik.policies.geoip",
     "authentik.policies.password",
     "authentik.policies.reputation",
     "authentik.policies",
@@ -88,6 +91,7 @@ TENANT_APPS = [
     "authentik.providers.scim",
     "authentik.rbac",
     "authentik.recovery",
+    "authentik.sources.kerberos",
     "authentik.sources.ldap",
     "authentik.sources.oauth",
     "authentik.sources.plex",
@@ -147,8 +151,8 @@ SPECTACULAR_SETTINGS = {
         "url": "https://github.com/goauthentik/authentik/blob/main/LICENSE",
     },
     "ENUM_NAME_OVERRIDES": {
+        "CountryCodeEnum": "django_countries.countries",
         "EventActions": "authentik.events.models.EventAction",
-        "ChallengeChoices": "authentik.flows.challenge.ChallengeTypes",
         "FlowDesignationEnum": "authentik.flows.models.FlowDesignation",
         "FlowLayoutEnum": "authentik.flows.models.FlowLayout",
         "PolicyEngineMode": "authentik.policies.models.PolicyEngineMode",
@@ -518,6 +522,8 @@ if DEBUG:
     REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"].append(
         "rest_framework.renderers.BrowsableAPIRenderer"
     )
+    SHARED_APPS.insert(SHARED_APPS.index("django.contrib.staticfiles"), "daphne")
+    enable_debug_trace(True)
 
 TENANT_APPS.append("authentik.core")
 

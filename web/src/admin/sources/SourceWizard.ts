@@ -1,3 +1,4 @@
+import "@goauthentik/admin/sources/kerberos/KerberosSourceForm";
 import "@goauthentik/admin/sources/ldap/LDAPSourceForm";
 import "@goauthentik/admin/sources/oauth/OAuthSourceForm";
 import "@goauthentik/admin/sources/plex/PlexSourceForm";
@@ -78,5 +79,11 @@ export class SourceWizard extends AKElement {
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-wizard>
         `;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-source-wizard": SourceWizard;
     }
 }

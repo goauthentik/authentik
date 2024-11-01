@@ -5,7 +5,7 @@ import "@goauthentik/admin/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/events/ObjectChangelog";
-import MDSCIMProvider from "@goauthentik/docs/providers/scim/index.md";
+import MDSCIMProvider from "@goauthentik/docs/add-secure-apps/providers/scim/index.md";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Markdown";
 import "@goauthentik/elements/SyncStatusCard";
@@ -216,5 +216,11 @@ export class SCIMProviderViewPage extends AKElement {
                     </div>
                 </div>
             </div>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-scim-view": SCIMProviderViewPage;
     }
 }

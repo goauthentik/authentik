@@ -11,7 +11,7 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.flows.api.stages import StageSerializer
-from authentik.flows.challenge import ChallengeTypes, HttpChallengeResponse
+from authentik.flows.challenge import HttpChallengeResponse
 from authentik.flows.planner import FlowPlan
 from authentik.flows.views.executor import FlowExecutorView
 from authentik.lib.generators import generate_id
@@ -108,14 +108,13 @@ class PromptViewSet(UsedByMixin, ModelViewSet):
             return Response(
                 {
                     "non_field_errors": [
-                        exception_to_string(exc),
+                        exception_to_string(exc.exc),
                     ]
                 },
                 status=400,
             )
         challenge = PromptChallenge(
             data={
-                "type": ChallengeTypes.NATIVE.value,
                 "fields": fields,
             },
         )

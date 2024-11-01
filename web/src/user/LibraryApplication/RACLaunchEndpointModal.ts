@@ -68,3 +68,9 @@ export class RACLaunchEndpointModal extends TableModal<Endpoint> {
             </footer>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-library-rac-endpoint-launch": RACLaunchEndpointModal;
+    }
+}

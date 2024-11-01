@@ -59,6 +59,12 @@ class PermissionSerializer(ModelSerializer):
         ]
 
 
+class PermissionAssignResultSerializer(PassiveSerializer):
+    """Result from assigning permissions to a user/role"""
+
+    id = CharField()
+
+
 class PermissionFilter(FilterSet):
     """Filter permissions"""
 

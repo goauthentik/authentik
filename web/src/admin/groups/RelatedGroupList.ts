@@ -183,3 +183,10 @@ export class RelatedGroupList extends Table<Group> {
         `;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-group-related-list": RelatedGroupList;
+        "ak-group-related-add": RelatedGroupAdd;
+    }
+}

@@ -145,7 +145,7 @@ func (ac *APIController) startWSHandler() {
 					"outpost_type": ac.Server.Type(),
 					"uuid":         ac.instanceUUID.String(),
 					"version":      constants.VERSION,
-					"build":        constants.BUILD("tagged"),
+					"build":        constants.BUILD(""),
 				}).SetToCurrentTime()
 			}
 		} else if wsMsg.Instruction == WebsocketInstructionProviderSpecific {
@@ -183,7 +183,19 @@ func (ac *APIController) startWSHealth() {
 
 func (ac *APIController) startIntervalUpdater() {
 	logger := ac.logger.WithField("loop", "interval-updater")
-	ticker := time.NewTicker(time.Duration(ac.Outpost.RefreshIntervalS) * time.Second)
+	getInterval := func() time.Duration {
+		// Ensure timer interval is not negative or 0
+		// for 0 we assume migration or unconfigured, so default to 5 minutes
+		if ac.Outpost.RefreshIntervalS <= 0 {
+			return 5 * time.Minute
+		}
+		// Clamp interval to be at least 30 seconds
+		if ac.Outpost.RefreshIntervalS < 30 {
+			return 30 * time.Second
+		}
+		return time.Duration(ac.Outpost.RefreshIntervalS) * time.Second
+	}
+	ticker := time.NewTicker(getInterval())
 	for ; true; <-ticker.C {
 		logger.Debug("Running interval update")
 		err := ac.OnRefresh()
@@ -195,10 +207,10 @@ func (ac *APIController) startIntervalUpdater() {
 				"outpost_type": ac.Server.Type(),
 				"uuid":         ac.instanceUUID.String(),
 				"version":      constants.VERSION,
-				"build":        constants.BUILD("tagged"),
+				"build":        constants.BUILD(""),
 			}).SetToCurrentTime()
 		}
-		ticker.Reset(time.Duration(ac.Outpost.RefreshIntervalS) * time.Second)
+		ticker.Reset(getInterval())
 	}
 }
 

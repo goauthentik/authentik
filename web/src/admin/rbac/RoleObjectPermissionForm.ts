@@ -53,7 +53,7 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
     }
 
     send(data: RoleAssignData): Promise<unknown> {
-        return new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByRolesAssignCreate({
+        return new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByRolesAssign({
             uuid: data.role,
             permissionAssignRequest: {
                 permissions: Object.keys(data.permissions).filter((key) => data.permissions[key]),
@@ -103,5 +103,11 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
                 </ak-form-element-horizontal>`;
             })}
         </form>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-rbac-role-object-permission-form": RoleObjectPermissionForm;
     }
 }

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "authentik"
-version = "2024.6.1"
+version = "2024.10.0"
 description = ""
 authors = ["authentik Team <hello@goauthentik.io>"]
 
@@ -85,15 +85,14 @@ filterwarnings = [
 [tool.poetry.dependencies]
 argon2-cffi = "*"
 celery = "*"
-channels = { version = "*", extras = ["daphne"] }
+channels = "*"
 channels-redis = "*"
-codespell = "*"
-colorama = "*"
 cryptography = "*"
 dacite = "*"
 deepmerge = "*"
 defusedxml = "*"
 django = "*"
+django-countries = "*"
 django-cte = "*"
 django-filter = "*"
 django-guardian = "*"
@@ -111,25 +110,29 @@ drf-orjson-renderer = "*"
 drf-spectacular = "*"
 dumb-init = "*"
 duo-client = "*"
-facebook-sdk = "*"
 fido2 = "*"
 flower = "*"
 geoip2 = "*"
 google-api-python-client = "*"
 gunicorn = "*"
+gssapi = "*"
 jsonpatch = "*"
+jwcrypto = "*"
 kubernetes = "*"
 ldap3 = "*"
 lxml = "*"
 msgraph-sdk = "*"
-opencontainers = { extras = ["reggie"], version = "*" }
+opencontainers = { git = "https://github.com/vsoch/oci-python", rev = "20d69d9cc50a0fef31605b46f06da0c94f1ec3cf", extras = ["reggie"] }
 packaging = "*"
 paramiko = "*"
 psycopg = { extras = ["c"], version = "*" }
 pydantic = "*"
 pydantic-scim = "*"
 pyjwt = "*"
+pyrad = "*"
 python = "~3.12"
+# Fork of python-kadmin with compilation fixes as it's unmaintained
+python-kadmin = { git = "https://github.com/authentik-community/python-kadmin.git", tag = "v0.2.0" }
 pyyaml = "*"
 requests-oauthlib = "*"
 scim2-filter-parser = "*"
@@ -140,7 +143,6 @@ structlog = "*"
 swagger-spec-validator = "*"
 tenant-schemas-celery = "*"
 twilio = "*"
-twisted = "*"
 ua-parser = "*"
 # Pinned because of botocore https://github.com/orgs/python-poetry/discussions/7937
 urllib3 = { extras = ["secure"], version = "<3" }
@@ -155,14 +157,16 @@ zxcvbn = "*"
 bandit = "*"
 black = "*"
 bump2version = "*"
+channels = { version = "*", extras = ["daphne"] }
+codespell = "*"
 colorama = "*"
 coverage = { extras = ["toml"], version = "*" }
 debugpy = "*"
 drf-jsonschema-serializer = "*"
 freezegun = "*"
 importlib-metadata = "*"
+k5test = "*"
 pdoc = "*"
-pyrad = "*"
 pytest = "*"
 pytest-django = "*"
 pytest-github-actions-annotate-failures = "*"

@@ -1,4 +1,5 @@
 import "@goauthentik/admin/sources/SourceWizard";
+import "@goauthentik/admin/sources/kerberos/KerberosSourceForm";
 import "@goauthentik/admin/sources/ldap/LDAPSourceForm";
 import "@goauthentik/admin/sources/oauth/OAuthSourceForm";
 import "@goauthentik/admin/sources/plex/PlexSourceForm";
@@ -124,5 +125,11 @@ export class SourceListPage extends TablePage<Source> {
 
     renderObjectCreate(): TemplateResult {
         return html`<ak-source-wizard> </ak-source-wizard> `;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-source-list": SourceListPage;
     }
 }

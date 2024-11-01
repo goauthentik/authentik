@@ -1,6 +1,9 @@
 ---
-title: Nextcloud
+title: Integrate with Nextcloud
+sidebar_label: Nextcloud
 ---
+
+# Nextcloud
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -108,7 +111,7 @@ Create a provider for Nextcloud. In the Admin Interface, go to _Applications_ ->
         -   `Nextcloud Profile` (or `authentik default Oauth Mapping profile` if you skipped the [custom profile scope](#custom-profile-scope) section)
     -   Subject mode: Based on the User's UUID
         :::danger
-        Nextcloud will use the UUID as username. However, mapping the subject mode to authentik usernames is **not recommended** due to their mutable nature. This can lead to security issues such as user impersonation. If you still wish to map the subject mode to an username, [disable username changing](../../../docs/core/settings#allow-users-to-change-username) in authentik and set this to `Based on the User's username`.
+        Nextcloud will use the UUID as username. However, mapping the subject mode to authentik usernames is **not recommended** due to their mutable nature. This can lead to security issues such as user impersonation. If you still wish to map the subject mode to an username, [disable username changing](https://docs.goauthentik.io/sys-mgmt/settings.md#allow-users-to-change-username) in authentik and set this to `Based on the User's username`.
         :::
     -   Include claims in ID token: ✔️
 
@@ -137,7 +140,7 @@ Add a new provider using the `+` button and set the following values:
     :::tip
     If you are running both your authentik and Nextcloud instances behind a reverse proxy, you can go ahead and use your internal FQDN here (i.e. `http://authentik.local`, however, note that if you do so there is [extra configuration required](#extra-configuration-when-running-behind-a-reverse-proxy)).
     :::
--   Scope: `email`, `profile` (you can safely omit `openid` if you prefer)
+-   Scope: `email profile` (you can safely omit `openid` if you prefer)
 -   Attribute mappings:
     -   User ID mapping: sub (or `user_id` if you need to connect to an already existing Nextcloud user)
     -   Display name mapping: name
@@ -246,12 +249,12 @@ Set the following values:
 
 -   Attribute to map the UID to: `http://schemas.goauthentik.io/2021/02/saml/uid`
     :::danger
-    Nextcloud uses the UID attribute as username. However, mapping it to authentik usernames is **not recommended** due to their mutable nature. This can lead to security issues such as user impersonation. If you still wish to map the UID to an username, [disable username changing](../../../docs/core/settings#allow-users-to-change-username) in authentik and set the UID attribute to "http://schemas.goauthentik.io/2021/02/saml/username".
+    Nextcloud uses the UID attribute as username. However, mapping it to authentik usernames is **not recommended** due to their mutable nature. This can lead to security issues such as user impersonation. If you still wish to map the UID to an username, [disable username changing](https://docs.goauthentik.io/sys-mgmt/settings.md#allow-users-to-change-username) in authentik and set the UID attribute to "http://schemas.goauthentik.io/2021/02/saml/username".
     :::
 -   Optional display name of the identity provider (default: "SSO & SAML log in"): `authentik`
 -   Identifier of the IdP entity (must be a URI): `https://authentik.company`
 -   URL Target of the IdP where the SP will send the Authentication Request Message: `https://authentik.company/application/saml/<application-slug>/sso/binding/redirect/`
--   URL Location of IdP where the SP will send the SLO Request: `https://authentik.company/application/saml/<application-slug>/slo/binding/redirect`
+-   URL Location of IdP where the SP will send the SLO Request: `https://authentik.company/application/saml/<application-slug>/slo/binding/redirect/`
 -   Public X.509 certificate of the IdP: Copy the PEM of the Selected Signing Certificate
 
 Under Attribute mapping, set these values:

@@ -1,6 +1,9 @@
 ---
-title: Hashicorp Vault
+title: Integrate with Hashicorp Vault
+sidebar_label: Hashicorp Vault
 ---
+
+# Hashicorp Vault
 
 <span class="badge badge--primary">Support level: authentik</span>
 
@@ -85,5 +88,8 @@ vault write auth/oidc/role/reader \
       policies="reader"
 ```
 
+:::note
+If you intend to create [external groups](https://developer.hashicorp.com/vault/tutorials/auth-methods/oidc-auth#create-an-external-vault-group) in Vault to manage user access the OIDC role will need to specifically request a custom scope using the `oidc_scopes` option when creating the OIDC role.
+:::
 You should then be able to sign in via OIDC
 `vault login -method=oidc role="reader"`

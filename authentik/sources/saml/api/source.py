@@ -20,6 +20,7 @@ class SAMLSourceSerializer(SourceSerializer):
     class Meta:
         model = SAMLSource
         fields = SourceSerializer.Meta.fields + [
+            "group_matching_mode",
             "pre_authentication_flow",
             "issuer",
             "sso_url",
@@ -32,6 +33,7 @@ class SAMLSourceSerializer(SourceSerializer):
             "digest_algorithm",
             "signature_algorithm",
             "temporary_user_delete_after",
+            "encryption_kp",
         ]
 
 

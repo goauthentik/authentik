@@ -1,5 +1,4 @@
 import "@goauthentik/admin/applications/wizard/ak-wizard-title";
-import "@goauthentik/admin/common/ak-core-group-search";
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
 import { first } from "@goauthentik/common/utils";
@@ -24,7 +23,6 @@ import {
     bindModeOptions,
     cryptoCertificateHelp,
     gidStartNumberHelp,
-    groupHelp,
     mfaSupportHelp,
     searchModeOptions,
     tlsServerNameHelp,
@@ -64,17 +62,19 @@ export class ApplicationWizardApplicationDetails extends WithBrandConfig(BasePro
                         ${msg("Flow used for users to authenticate.")}
                     </p>
                 </ak-form-element-horizontal>
-
                 <ak-form-element-horizontal
-                    label=${msg("Search group")}
-                    name="searchGroup"
-                    .errorMessages=${errors?.searchGroup ?? []}
+                    label=${msg("Unbind flow")}
+                    name="invalidationFlow"
+                    required
                 >
-                    <ak-core-group-search
-                        name="searchGroup"
-                        group=${ifDefined(provider?.searchGroup ?? nothing)}
-                    ></ak-core-group-search>
-                    <p class="pf-c-form__helper-text">${groupHelp}</p>
+                    <ak-branded-flow-search
+                        flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                        .currentFlow=${provider?.invalidationFlow}
+                        .brandFlow=${this.brand.flowInvalidation}
+                        defaultFlowSlug="default-invalidation-flow"
+                        required
+                    ></ak-branded-flow-search>
+                    <p class="pf-c-form__helper-text">${msg("Flow used for unbinding users.")}</p>
                 </ak-form-element-horizontal>
 
                 <ak-radio-input
@@ -98,7 +98,7 @@ export class ApplicationWizardApplicationDetails extends WithBrandConfig(BasePro
                 </ak-radio-input>
 
                 <ak-switch-input
-                    name="openInNewTab"
+                    name="mfaSupport"
                     label=${msg("Code-based MFA Support")}
                     ?checked=${provider?.mfaSupport ?? true}
                     help=${mfaSupportHelp}
@@ -165,3 +165,9 @@ export class ApplicationWizardApplicationDetails extends WithBrandConfig(BasePro
 }
 
 export default ApplicationWizardApplicationDetails;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-wizard-authentication-by-ldap": ApplicationWizardApplicationDetails;
+    }
+}

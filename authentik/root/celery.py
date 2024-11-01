@@ -87,7 +87,11 @@ def task_error_hook(task_id: str, exception: Exception, traceback, *args, **kwar
 
 def _get_startup_tasks_default_tenant() -> list[Callable]:
     """Get all tasks to be run on startup for the default tenant"""
-    return []
+    from authentik.outposts.tasks import outpost_connection_discovery
+
+    return [
+        outpost_connection_discovery,
+    ]
 
 
 def _get_startup_tasks_all_tenants() -> list[Callable]:

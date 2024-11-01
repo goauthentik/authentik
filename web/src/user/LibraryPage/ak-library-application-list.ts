@@ -100,3 +100,9 @@ export class LibraryPageApplicationList extends AKElement {
         </div>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-library-application-list": LibraryPageApplicationList;
+    }
+}

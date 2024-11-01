@@ -50,3 +50,35 @@ class LDAPAPITests(APITestCase):
             }
         )
         self.assertFalse(serializer.is_valid())
+
+    def test_sync_users_mapping_empty(self):
+        """Check that when sync_users is enabled, property mappings must be set"""
+        serializer = LDAPSourceSerializer(
+            data={
+                "name": "foo",
+                "slug": " foo",
+                "server_uri": "ldaps://1.2.3.4",
+                "bind_cn": "",
+                "bind_password": LDAP_PASSWORD,
+                "base_dn": "dc=foo",
+                "sync_users": True,
+                "user_property_mappings": [],
+            }
+        )
+        self.assertFalse(serializer.is_valid())
+
+    def test_sync_groups_mapping_empty(self):
+        """Check that when sync_groups is enabled, property mappings must be set"""
+        serializer = LDAPSourceSerializer(
+            data={
+                "name": "foo",
+                "slug": " foo",
+                "server_uri": "ldaps://1.2.3.4",
+                "bind_cn": "",
+                "bind_password": LDAP_PASSWORD,
+                "base_dn": "dc=foo",
+                "sync_groups": True,
+                "group_property_mappings": [],
+            }
+        )
+        self.assertFalse(serializer.is_valid())

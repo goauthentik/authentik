@@ -3,6 +3,7 @@
 from uuid import uuid4
 
 from django.db import models
+from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
@@ -51,6 +52,16 @@ class Brand(SerializerModel):
         Flow, null=True, on_delete=models.SET_NULL, related_name="brand_device_code"
     )
 
+    default_application = models.ForeignKey(
+        "authentik_core.Application",
+        null=True,
+        default=None,
+        on_delete=models.SET_DEFAULT,
+        help_text=_(
+            "When set, external users will be redirected to this application after authenticating."
+        ),
+    )
+
     web_certificate = models.ForeignKey(
         CertificateKeyPair,
         null=True,
@@ -88,3 +99,13 @@ class Brand(SerializerModel):
             models.Index(fields=["domain"]),
             models.Index(fields=["default"]),
         ]
+
+
+class WebfingerProvider(models.Model):
+    """Provider which supports webfinger discovery"""
+
+    class Meta:
+        abstract = True
+
+    def webfinger(self, resource: str, request: HttpRequest) -> dict:
+        raise NotImplementedError()

@@ -1,5 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { parseAPIError } from "@goauthentik/common/errors";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
@@ -24,7 +25,6 @@ import {
     type TransactionApplicationRequest,
     type TransactionApplicationResponse,
     ValidationError,
-    ValidationErrorFromJSON,
 } from "@goauthentik/api";
 
 import BasePanel from "../BasePanel";
@@ -59,7 +59,7 @@ const runningState: State = {
 };
 const errorState: State = {
     state: "error",
-    label: msg("Authentik was unable to save this application:"),
+    label: msg("authentik was unable to save this application:"),
     icon: ["fa-times-circle", "pf-m-danger"],
 };
 
@@ -103,11 +103,7 @@ export class ApplicationWizardCommitApplication extends BasePanel {
             );
             if (!providerModel) {
                 throw new Error(
-                    `Could not determine provider model from user request: ${JSON.stringify(
-                        this.wizard,
-                        null,
-                        2,
-                    )}`,
+                    `Could not determine provider model from user request: ${JSON.stringify(this.wizard, null, 2)}`,
                 );
             }
 
@@ -118,7 +114,6 @@ export class ApplicationWizardCommitApplication extends BasePanel {
             };
 
             this.send(request);
-            return;
         }
     }
 
@@ -138,9 +133,7 @@ export class ApplicationWizardCommitApplication extends BasePanel {
             })
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .catch(async (resolution: any) => {
-                const errors = (this.errors = ValidationErrorFromJSON(
-                    await resolution.response.json(),
-                ));
+                const errors = await parseAPIError(resolution);
                 this.dispatchWizardUpdate({
                     update: {
                         ...this.wizard,
@@ -217,3 +210,9 @@ export class ApplicationWizardCommitApplication extends BasePanel {
 }
 
 export default ApplicationWizardCommitApplication;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-wizard-commit-application": ApplicationWizardCommitApplication;
+    }
+}

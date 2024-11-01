@@ -66,6 +66,9 @@ export class ModalButton extends AKElement {
                 .locked {
                     overflow-y: hidden !important;
                 }
+                .pf-c-modal-box.pf-m-xl {
+                    --pf-c-modal-box--Width: calc(1.5 * var(--pf-c-modal-box--m-lg--lg--MaxWidth));
+                }
             `,
         ];
     }
@@ -129,5 +132,11 @@ export class ModalButton extends AKElement {
     render(): TemplateResult {
         return html` <slot name="trigger" @click=${() => this.onClick()}></slot>
             ${this.open ? this.renderModal() : nothing}`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-modal-button": ModalButton;
     }
 }

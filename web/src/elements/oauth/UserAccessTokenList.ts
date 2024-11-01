@@ -34,7 +34,7 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
     }
 
     checkbox = true;
-    order = "expires";
+    order = "-expires";
 
     columns(): TableColumn[] {
         return [
@@ -101,5 +101,11 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
                 })}
             </ak-chip-group>`,
         ];
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-oauth-access-token-list": UserOAuthAccessTokenList;
     }
 }
