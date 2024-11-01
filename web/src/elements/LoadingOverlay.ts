@@ -19,7 +19,7 @@ export interface ILoadingOverlay {
  * The LoadingOverlay is meant to cover the container element completely, hiding the content behind
  * a dimming filter, while content loads.
  *
- * @slot "body" - [Optional] message content to display while the overlay is visible.
+ * @slot - [Optional] message content to display while the overlay is visible.
  */
 @customElement("ak-loading-overlay")
 export class LoadingOverlay extends AKElement implements ILoadingOverlay {
