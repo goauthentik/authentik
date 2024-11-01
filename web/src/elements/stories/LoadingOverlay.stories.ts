@@ -70,5 +70,5 @@ export const DefaultStory: StoryObj = {
 
 export const WithAMessage: StoryObj = {
     ...DefaultStory,
-    args: { ...DefaultStory.args, message: html`<p slot="body">Overlay with a message</p>` },
+    args: { ...DefaultStory.args, message: html`<p>Overlay with a message</p>` },
 };
