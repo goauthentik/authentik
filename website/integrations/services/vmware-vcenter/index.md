@@ -17,10 +17,6 @@ sidebar_label: VMware vCenter
 Integration with authentik requires VMware vCenter 8.03 or newer.
 :::
 
-:::note
-The vCenter still needs to be joined to the Active Directory Domain, otherwise group membership does not work correctly. We're working on a fix for this, for the meantime your vCenter should be part of your Domain.
-:::
-
 ## Preparation
 
 The following placeholders will be used:
@@ -28,48 +24,7 @@ The following placeholders will be used:
 -   `vcenter.company` is the FQDN of the vCenter server.
 -   `authentik.company` is the FQDN of the authentik install.
 
-Since vCenter only allows OpenID-Connect in combination with Active Directory/LDAP, it is recommended to have authentik sync with the same Active Directory. You also have the option of connecting to an authentik-managed LDAP outpost for user management.
-
 ## authentik configuration
-
-### Step 1
-
-Under _Customization_ -> _Property Mappings_, create a _Scope Mapping_. Give it a name like "OIDC-Scope-VMware-vCenter". Set the scope name to `openid` and the expression to the following
-
-```python
-return {
-  "domain": "<your active directory domain>",
-}
-```
-
-If you are using an authentik-managed LDAP outpost you can use the following expression in your property mapping. This will correctly return the `groups` claim as a list of LDAP DNs instead of their names.
-
-```python
-ldap_base_dn = "DC=ldap,DC=goauthentik,DC=io"
-groups = []
-for group in request.user.ak_groups.all():
-    group_dn = f"CN={group.name},dc=groups,{ldap_base_dn}"
-    groups.append(group_dn)
-return {
-    "name": request.user.name,
-    "email": request.user.email,
-    "given_name": request.user.name,
-    "preferred_username": request.user.username,
-    "nickname": request.user.username,
-    "groups": groups,
-    "domain": "ldap.goauthentik.io"
-}
-```
-
-### Step 2
-
-:::note
-If your Active Directory Schema is the same as your Email address schema, skip to Step 3.
-:::
-
-Under _Sources_, click _Edit_ and ensure that `authentik default Active Directory Mapping: userPrincipalName` has been added to your source.
-
-### Step 3
 
 Create an application and an OAuth2/OpenID provider, using the authentik Wizard.
 
@@ -125,12 +80,12 @@ Optionally, you can use a policy to apply access restrictions to the application
 8. Return to the authentik Admin interface.
 
     - Create a SCIM provider with the name `vcenter-scim`.
-    - Paste the Tenant URL into URL field for the provider.
-    - Paste the token you saved into the Token field.
-    - Check verify certificate setting (note: not merged yet)
+    - Paste the Tenant URL into **URL** field for the provider.
+    - Paste the token you saved into the **Token** field.
+    - Toggle **Verify SCIM server's certificates** to be "on".
     - Configure options under `User filtering` to your needs.
     - Save the provider.
-    - Edit the application that you created earlier and select this newly created SCIM provider as backchannel provider.
+    - Edit the application that you created earlier and select this newly created SCIM provider as the backchannel provider.
     - Navigate to the provider and trigger a sync.
 
 9. Return to VCenter.
