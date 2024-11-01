@@ -1,11 +1,61 @@
-const generateVersionDropdown =
-    require("./src/utils.js").generateVersionDropdown;
-const apiReference = require("./docs/developer-docs/api/reference/sidebar");
+import { generateVersionDropdown } from "./src/utils.js";
+import apiReference from "./docs/developer-docs/api/reference/sidebar";
 
-const docsSidebar = {
+const releases = [
+    "releases/2024/v2024.10",
+    "releases/2024/v2024.8",
+    "releases/2024/v2024.6",
+    {
+        type: "category",
+        label: "Previous versions",
+        items: [
+            "releases/2024/v2024.4",
+            "releases/2024/v2024.2",
+            "releases/2023/v2023.10",
+            "releases/2023/v2023.8",
+            "releases/2023/v2023.6",
+            "releases/2023/v2023.5",
+            "releases/2023/v2023.4",
+            "releases/2023/v2023.3",
+            "releases/2023/v2023.2",
+            "releases/2023/v2023.1",
+            "releases/2022/v2022.12",
+            "releases/2022/v2022.11",
+            "releases/2022/v2022.10",
+            "releases/2022/v2022.9",
+            "releases/2022/v2022.8",
+            "releases/2022/v2022.7",
+            "releases/2022/v2022.6",
+            "releases/2022/v2022.5",
+            "releases/2022/v2022.4",
+            "releases/2022/v2022.2",
+            "releases/2022/v2022.1",
+            "releases/2021/v2021.12",
+            "releases/2021/v2021.10",
+            "releases/2021/v2021.9",
+            "releases/2021/v2021.8",
+            "releases/2021/v2021.7",
+            "releases/2021/v2021.6",
+            "releases/2021/v2021.5",
+            "releases/2021/v2021.4",
+            "releases/2021/v2021.3",
+            "releases/2021/v2021.2",
+            "releases/2021/v2021.1",
+            "releases/old/v0.14",
+            "releases/old/v0.13",
+            "releases/old/v0.12",
+            "releases/old/v0.11",
+            "releases/old/v0.10",
+            "releases/old/v0.9",
+        ],
+    },
+];
+
+export default {
     docs: [
         {
             type: "html",
+            value: generateVersionDropdown(releases),
         },
         {
             type: "doc",
@@ -201,14 +251,14 @@ const docsSidebar = {
                                 id: "add-secure-apps/flows-stages/flow/index",
                             },
                             items: [
-                                "add-secure-apps/flows-stages/flow/layouts",
                                 "add-secure-apps/flows-stages/flow/inspector",
                                 "add-secure-apps/flows-stages/flow/context/index",
                                 {
                                     type: "category",
-                                    label: "Examples",
+                                    label: "Defaults and Examples",
                                     items: [
                                         "add-secure-apps/flows-stages/flow/examples/flows",
+                                        "add-secure-apps/flows-stages/flow/examples/default_flows",
                                         "add-secure-apps/flows-stages/flow/examples/snippets",
                                     ],
                                 },
@@ -233,6 +283,7 @@ const docsSidebar = {
                             },
                             items: [
                                 "add-secure-apps/flows-stages/stages/authenticator_duo/index",
+                                "add-secure-apps/flows-stages/stages/authenticator_endpoint_gdtc/index",
                                 "add-secure-apps/flows-stages/stages/authenticator_sms/index",
                                 "add-secure-apps/flows-stages/stages/authenticator_static/index",
                                 "add-secure-apps/flows-stages/stages/authenticator_totp/index",
@@ -312,6 +363,7 @@ const docsSidebar = {
                                 "customize/policies/working_with_policies/whitelist_email",
                             ],
                         },
+                        "customize/policies/expression",
                     ],
                 },
                 {
@@ -426,6 +478,17 @@ const docsSidebar = {
                             label: "Protocols",
                             collapsed: true,
                             items: [
+                                {
+                                    type: "category",
+                                    label: "Kerberos",
+                                    link: {
+                                        type: "doc",
+                                        id: "users-sources/sources/protocols/kerberos/index",
+                                    },
+                                    items: [
+                                        "users-sources/sources/protocols/kerberos/browser",
+                                    ],
+                                },
                                 "users-sources/sources/protocols/ldap/index",
                                 "users-sources/sources/protocols/oauth/index",
                                 "users-sources/sources/protocols/saml/index",
@@ -656,55 +719,7 @@ const docsSidebar = {
                 slug: "releases",
                 description: "Release Notes for recent authentik versions",
             },
-            items: [
-                "releases/2024/v2024.6",
-                "releases/2024/v2024.4",
-                "releases/2024/v2024.2",
-                {
-                    type: "category",
-                    label: "Previous versions",
-                    items: [
-                        "releases/2023/v2023.10",
-                        "releases/2023/v2023.8",
-                        "releases/2023/v2023.6",
-                        "releases/2023/v2023.5",
-                        "releases/2023/v2023.4",
-                        "releases/2023/v2023.3",
-                        "releases/2023/v2023.2",
-                        "releases/2023/v2023.1",
-                        "releases/2022/v2022.12",
-                        "releases/2022/v2022.11",
-                        "releases/2022/v2022.10",
-                        "releases/2022/v2022.9",
-                        "releases/2022/v2022.8",
-                        "releases/2022/v2022.7",
-                        "releases/2022/v2022.6",
-                        "releases/2022/v2022.5",
-                        "releases/2022/v2022.4",
-                        "releases/2022/v2022.2",
-                        "releases/2022/v2022.1",
-                        "releases/2021/v2021.12",
-                        "releases/2021/v2021.10",
-                        "releases/2021/v2021.9",
-                        "releases/2021/v2021.8",
-                        "releases/2021/v2021.7",
-                        "releases/2021/v2021.6",
-                        "releases/2021/v2021.5",
-                        "releases/2021/v2021.4",
-                        "releases/2021/v2021.3",
-                        "releases/2021/v2021.2",
-                        "releases/2021/v2021.1",
-                        "releases/old/v0.14",
-                        "releases/old/v0.13",
-                        "releases/old/v0.12",
-                        "releases/old/v0.11",
-                        "releases/old/v0.10",
-                        "releases/old/v0.9",
-                    ],
-                },
-            ],
+            items: releases,
         },
     ],
 };
-docsSidebar.docs[0].value = generateVersionDropdown(docsSidebar);
-module.exports = docsSidebar;

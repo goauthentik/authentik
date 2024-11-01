@@ -1,13 +1,15 @@
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
+import { type SlottedTemplateResult, type Spread } from "@goauthentik/elements/types";
+import { spread } from "@open-wc/lit-helpers";
 
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export interface ILoadingOverlay {
-    topMost?: boolean;
+    topmost?: boolean;
 }
 
 /**
@@ -23,13 +25,14 @@ export interface ILoadingOverlay {
 export class LoadingOverlay extends AKElement implements ILoadingOverlay {
     /**
      * When true, forces the overlay onto the top layer of the display stack.
+     * Do not camelize: https://www.merriam-webster.com/dictionary/topmost
      *
      * @attr
      */
-    @property({ type: Boolean })
-    topMost = false;
+    @property({ type: Boolean, attribute: "topmost" })
+    topmost = false;
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [
             PFBase,
             css`
@@ -43,18 +46,28 @@ export class LoadingOverlay extends AKElement implements ILoadingOverlay {
                     background-color: var(--pf-global--BackgroundColor--dark-transparent-200);
                     z-index: 1;
                 }
-                :host([topMost]) {
+                :host([topmost]) {
                     z-index: 999;
                 }
             `,
         ];
     }
 
-    render(): TemplateResult {
+    render() {
         return html`<ak-empty-state loading header="">
-            <slot name="body" slot="body"></slot>
+            <span slot="body"><slot></slot></span>
         </ak-empty-state>`;
     }
+}
+
+export function akLoadingOverlay(
+    properties: ILoadingOverlay,
+    content: SlottedTemplateResult = nothing,
+) {
+    const message = typeof content === "string" ? html`<span>${content}</span>` : content;
+    return html`<ak-loading-overlay ${spread(properties as Spread)}
+        >${message}</ak-loading-overlay
+    >`;
 }
 
 declare global {

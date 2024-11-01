@@ -1,6 +1,7 @@
 import { AKElement } from "@goauthentik/elements/Base";
+import { type SlottedTemplateResult } from "@goauthentik/elements/types";
 
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -15,7 +16,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
  */
 @customElement("ak-divider")
 export class Divider extends AKElement {
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [
             PFBase,
             css`
@@ -43,9 +44,16 @@ export class Divider extends AKElement {
         ];
     }
 
-    render(): TemplateResult {
-        return html`<div class="separator"><slot></slot></div>`;
+    render() {
+        return html`<div class="separator">
+            <slot></slot>
+        </div>`;
     }
+}
+
+export function akDivider(content: SlottedTemplateResult = nothing) {
+    const message = typeof content === "string" ? html`<span>${content}</span>` : content;
+    return html`<ak-divider>${message}</ak-divider>`;
 }
 
 declare global {

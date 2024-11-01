@@ -38,12 +38,15 @@ export async function scimPropertyMappingsProvider(page = 1, search = "") {
     };
 }
 
-export function makeSCIMPropertyMappingsSelector(instanceMappings: string[] | undefined) {
+export function makeSCIMPropertyMappingsSelector(
+    instanceMappings: string[] | undefined,
+    defaultSelected: string,
+) {
     const localMappings = instanceMappings ? new Set(instanceMappings) : undefined;
     return localMappings
         ? ([pk, _]: DualSelectPair) => localMappings.has(pk)
         : ([_0, _1, _2, mapping]: DualSelectPair<SCIMMapping>) =>
-              mapping?.managed === "goauthentik.io/providers/scim/user";
+              mapping?.managed === defaultSelected;
 }
 
 @customElement("ak-provider-scim-form")
@@ -89,6 +92,23 @@ export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
                         <p class="pf-c-form__helper-text">
                             ${msg("SCIM base url, usually ends in /v2.")}
                         </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal name="verifyCertificates">
+                        <label class="pf-c-switch">
+                            <input
+                                class="pf-c-switch__input"
+                                type="checkbox"
+                                ?checked=${first(this.instance?.verifyCertificates, true)}
+                            />
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label"
+                                >${msg("Verify SCIM server's certificates")}</span
+                            >
+                        </label>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Token")}
@@ -172,6 +192,7 @@ export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
                             .provider=${scimPropertyMappingsProvider}
                             .selector=${makeSCIMPropertyMappingsSelector(
                                 this.instance?.propertyMappings,
+                                "goauthentik.io/providers/scim/user",
                             )}
                             available-label=${msg("Available User Property Mappings")}
                             selected-label=${msg("Selected User Property Mappings")}
@@ -188,6 +209,7 @@ export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
                             .provider=${scimPropertyMappingsProvider}
                             .selector=${makeSCIMPropertyMappingsSelector(
                                 this.instance?.propertyMappingsGroup,
+                                "goauthentik.io/providers/scim/group",
                             )}
                             available-label=${msg("Available Group Property Mappings")}
                             selected-label=${msg("Selected Group Property Mappings")}

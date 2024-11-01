@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2024.8.3
+  version: 2024.10.0
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -250,6 +250,90 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Version'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /admin/version/history/:
+    get:
+      operationId: admin_version_history_list
+      description: VersionHistory Viewset
+      parameters:
+      - in: query
+        name: build
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: version
+        schema:
+          type: string
+      tags:
+      - admin
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VersionHistory'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /admin/version/history/{id}/:
+    get:
+      operationId: admin_version_history_retrieve
+      description: VersionHistory Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Version history.
+        required: true
+      tags:
+      - admin
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionHistory'
           description: ''
         '400':
           content:
@@ -532,6 +616,238 @@ paths:
         schema:
           type: integer
         description: A unique integer value identifying this Duo Device.
+        required: true
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /authenticators/admin/endpoint/:
+    get:
+      operationId: authenticators_admin_endpoint_list
+      description: Viewset for Endpoint authenticator devices (for admins)
+      parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEndpointDeviceList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: authenticators_admin_endpoint_create
+      description: Viewset for Endpoint authenticator devices (for admins)
+      tags:
+      - authenticators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EndpointDeviceRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointDevice'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /authenticators/admin/endpoint/{uuid}/:
+    get:
+      operationId: authenticators_admin_endpoint_retrieve
+      description: Viewset for Endpoint authenticator devices (for admins)
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Endpoint Device.
+        required: true
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointDevice'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: authenticators_admin_endpoint_update
+      description: Viewset for Endpoint authenticator devices (for admins)
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Endpoint Device.
+        required: true
+      tags:
+      - authenticators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EndpointDeviceRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointDevice'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: authenticators_admin_endpoint_partial_update
+      description: Viewset for Endpoint authenticator devices (for admins)
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Endpoint Device.
+        required: true
+      tags:
+      - authenticators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEndpointDeviceRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointDevice'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: authenticators_admin_endpoint_destroy
+      description: Viewset for Endpoint authenticator devices (for admins)
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Endpoint Device.
         required: true
       tags:
       - authenticators
@@ -1699,6 +2015,134 @@ paths:
         schema:
           type: integer
         description: A unique integer value identifying this Duo Device.
+        required: true
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /authenticators/endpoint/:
+    get:
+      operationId: authenticators_endpoint_list
+      description: Viewset for Endpoint authenticator devices
+      parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEndpointDeviceList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /authenticators/endpoint/{uuid}/:
+    get:
+      operationId: authenticators_endpoint_retrieve
+      description: Viewset for Endpoint authenticator devices
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Endpoint Device.
+        required: true
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointDevice'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /authenticators/endpoint/{uuid}/used_by/:
+    get:
+      operationId: authenticators_endpoint_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Endpoint Device.
         required: true
       tags:
       - authenticators
@@ -16022,6 +16466,287 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /propertymappings/source/kerberos/:
+    get:
+      operationId: propertymappings_source_kerberos_list
+      description: KerberosSource PropertyMapping Viewset
+      parameters:
+      - in: query
+        name: managed
+        schema:
+          type: array
+          items:
+            type: string
+        explode: true
+        style: form
+      - in: query
+        name: managed__isnull
+        schema:
+          type: boolean
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedKerberosSourcePropertyMappingList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: propertymappings_source_kerberos_create
+      description: KerberosSource PropertyMapping Viewset
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KerberosSourcePropertyMappingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KerberosSourcePropertyMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /propertymappings/source/kerberos/{pm_uuid}/:
+    get:
+      operationId: propertymappings_source_kerberos_retrieve
+      description: KerberosSource PropertyMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Kerberos Source Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KerberosSourcePropertyMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: propertymappings_source_kerberos_update
+      description: KerberosSource PropertyMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Kerberos Source Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KerberosSourcePropertyMappingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KerberosSourcePropertyMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: propertymappings_source_kerberos_partial_update
+      description: KerberosSource PropertyMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Kerberos Source Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedKerberosSourcePropertyMappingRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KerberosSourcePropertyMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: propertymappings_source_kerberos_destroy
+      description: KerberosSource PropertyMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Kerberos Source Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /propertymappings/source/kerberos/{pm_uuid}/used_by/:
+    get:
+      operationId: propertymappings_source_kerberos_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Kerberos Source Property Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /propertymappings/source/ldap/:
     get:
       operationId: propertymappings_source_ldap_list
@@ -20756,6 +21481,11 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: invalidation_flow
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: is_backchannel
         schema:
           type: boolean
@@ -22618,6 +23348,10 @@ paths:
           - authentik_providers_scim.scimmapping
           - authentik_providers_scim.scimprovider
           - authentik_rbac.role
+          - authentik_sources_kerberos.groupkerberossourceconnection
+          - authentik_sources_kerberos.kerberossource
+          - authentik_sources_kerberos.kerberossourcepropertymapping
+          - authentik_sources_kerberos.userkerberossourceconnection
           - authentik_sources_ldap.ldapsource
           - authentik_sources_ldap.ldapsourcepropertymapping
           - authentik_sources_oauth.groupoauthsourceconnection
@@ -22636,6 +23370,7 @@ paths:
           - authentik_sources_scim.scimsourcepropertymapping
           - authentik_stages_authenticator_duo.authenticatorduostage
           - authentik_stages_authenticator_duo.duodevice
+          - authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage
           - authentik_stages_authenticator_sms.authenticatorsmsstage
           - authentik_stages_authenticator_sms.smsdevice
           - authentik_stages_authenticator_static.authenticatorstaticstage
@@ -22852,6 +23587,10 @@ paths:
           - authentik_providers_scim.scimmapping
           - authentik_providers_scim.scimprovider
           - authentik_rbac.role
+          - authentik_sources_kerberos.groupkerberossourceconnection
+          - authentik_sources_kerberos.kerberossource
+          - authentik_sources_kerberos.kerberossourcepropertymapping
+          - authentik_sources_kerberos.userkerberossourceconnection
           - authentik_sources_ldap.ldapsource
           - authentik_sources_ldap.ldapsourcepropertymapping
           - authentik_sources_oauth.groupoauthsourceconnection
@@ -22870,6 +23609,7 @@ paths:
           - authentik_sources_scim.scimsourcepropertymapping
           - authentik_stages_authenticator_duo.authenticatorduostage
           - authentik_stages_authenticator_duo.duodevice
+          - authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage
           - authentik_stages_authenticator_sms.authenticatorsmsstage
           - authentik_stages_authenticator_sms.smsdevice
           - authentik_stages_authenticator_static.authenticatorstaticstage
@@ -24159,6 +24899,237 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /sources/group_connections/kerberos/:
+    get:
+      operationId: sources_group_connections_kerberos_list
+      description: Group-source connection Viewset
+      parameters:
+      - in: query
+        name: group
+        schema:
+          type: string
+          format: uuid
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: source__slug
+        schema:
+          type: string
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedGroupKerberosSourceConnectionList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /sources/group_connections/kerberos/{id}/:
+    get:
+      operationId: sources_group_connections_kerberos_retrieve
+      description: Group-source connection Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Group Kerberos Source
+          Connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupKerberosSourceConnection'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: sources_group_connections_kerberos_update
+      description: Group-source connection Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Group Kerberos Source
+          Connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupKerberosSourceConnection'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: sources_group_connections_kerberos_partial_update
+      description: Group-source connection Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Group Kerberos Source
+          Connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupKerberosSourceConnection'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: sources_group_connections_kerberos_destroy
+      description: Group-source connection Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Group Kerberos Source
+          Connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /sources/group_connections/kerberos/{id}/used_by/:
+    get:
+      operationId: sources_group_connections_kerberos_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Group Kerberos Source
+          Connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /sources/group_connections/oauth/:
     get:
       operationId: sources_group_connections_oauth_list
@@ -24863,6 +25834,336 @@ paths:
         schema:
           type: integer
         description: A unique integer value identifying this Group SAML Source Connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /sources/kerberos/:
+    get:
+      operationId: sources_kerberos_list
+      description: Kerberos Source Viewset
+      parameters:
+      - in: query
+        name: enabled
+        schema:
+          type: boolean
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: password_login_update_internal_password
+        schema:
+          type: boolean
+      - in: query
+        name: realm
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: slug
+        schema:
+          type: string
+      - in: query
+        name: spnego_server_name
+        schema:
+          type: string
+      - in: query
+        name: sync_principal
+        schema:
+          type: string
+      - in: query
+        name: sync_users
+        schema:
+          type: boolean
+      - in: query
+        name: sync_users_password
+        schema:
+          type: boolean
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedKerberosSourceList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: sources_kerberos_create
+      description: Kerberos Source Viewset
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KerberosSourceRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KerberosSource'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /sources/kerberos/{slug}/:
+    get:
+      operationId: sources_kerberos_retrieve
+      description: Kerberos Source Viewset
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+          description: Internal source name, used in URLs.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KerberosSource'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: sources_kerberos_update
+      description: Kerberos Source Viewset
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+          description: Internal source name, used in URLs.
+        required: true
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KerberosSourceRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KerberosSource'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: sources_kerberos_partial_update
+      description: Kerberos Source Viewset
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+          description: Internal source name, used in URLs.
+        required: true
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedKerberosSourceRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KerberosSource'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: sources_kerberos_destroy
+      description: Kerberos Source Viewset
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+          description: Internal source name, used in URLs.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /sources/kerberos/{slug}/sync/status/:
+    get:
+      operationId: sources_kerberos_sync_status_retrieve
+      description: Get source's sync status
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+          description: Internal source name, used in URLs.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KerberosSyncStatus'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /sources/kerberos/{slug}/used_by/:
+    get:
+      operationId: sources_kerberos_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+          description: Internal source name, used in URLs.
         required: true
       tags:
       - sources
@@ -26141,9 +27442,9 @@ paths:
         schema:
           type: string
           enum:
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
           - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
           - urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName
-          - urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName
           - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
           - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
         description: |+
@@ -27515,6 +28816,275 @@ paths:
         schema:
           type: integer
         description: A unique integer value identifying this user source connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /sources/user_connections/kerberos/:
+    get:
+      operationId: sources_user_connections_kerberos_list
+      description: Source Viewset
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: source__slug
+        schema:
+          type: string
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUserKerberosSourceConnectionList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: sources_user_connections_kerberos_create
+      description: Source Viewset
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserKerberosSourceConnectionRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserKerberosSourceConnection'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /sources/user_connections/kerberos/{id}/:
+    get:
+      operationId: sources_user_connections_kerberos_retrieve
+      description: Source Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User Kerberos Source
+          Connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserKerberosSourceConnection'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: sources_user_connections_kerberos_update
+      description: Source Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User Kerberos Source
+          Connection.
+        required: true
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserKerberosSourceConnectionRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserKerberosSourceConnection'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: sources_user_connections_kerberos_partial_update
+      description: Source Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User Kerberos Source
+          Connection.
+        required: true
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserKerberosSourceConnectionRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserKerberosSourceConnection'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: sources_user_connections_kerberos_destroy
+      description: Source Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User Kerberos Source
+          Connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /sources/user_connections/kerberos/{id}/used_by/:
+    get:
+      operationId: sources_user_connections_kerberos_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User Kerberos Source
+          Connection.
         required: true
       tags:
       - sources
@@ -28916,6 +30486,285 @@ paths:
           type: string
           format: uuid
         description: A UUID string identifying this Duo Authenticator Setup Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /stages/authenticator/endpoint_gdtc/:
+    get:
+      operationId: stages_authenticator_endpoint_gdtc_list
+      description: AuthenticatorEndpointGDTCStage Viewset
+      parameters:
+      - in: query
+        name: configure_flow
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAuthenticatorEndpointGDTCStageList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: stages_authenticator_endpoint_gdtc_create
+      description: AuthenticatorEndpointGDTCStage Viewset
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticatorEndpointGDTCStageRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticatorEndpointGDTCStage'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /stages/authenticator/endpoint_gdtc/{stage_uuid}/:
+    get:
+      operationId: stages_authenticator_endpoint_gdtc_retrieve
+      description: AuthenticatorEndpointGDTCStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Endpoint Authenticator Google
+          Device Trust Connector Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticatorEndpointGDTCStage'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: stages_authenticator_endpoint_gdtc_update
+      description: AuthenticatorEndpointGDTCStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Endpoint Authenticator Google
+          Device Trust Connector Stage.
+        required: true
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticatorEndpointGDTCStageRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticatorEndpointGDTCStage'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: stages_authenticator_endpoint_gdtc_partial_update
+      description: AuthenticatorEndpointGDTCStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Endpoint Authenticator Google
+          Device Trust Connector Stage.
+        required: true
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAuthenticatorEndpointGDTCStageRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticatorEndpointGDTCStage'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: stages_authenticator_endpoint_gdtc_destroy
+      description: AuthenticatorEndpointGDTCStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Endpoint Authenticator Google
+          Device Trust Connector Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /stages/authenticator/endpoint_gdtc/{stage_uuid}/used_by/:
+    get:
+      operationId: stages_authenticator_endpoint_gdtc_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Endpoint Authenticator Google
+          Device Trust Connector Stage.
         required: true
       tags:
       - stages
@@ -32013,6 +33862,11 @@ paths:
       operationId: stages_identification_list
       description: IdentificationStage Viewset
       parameters:
+      - in: query
+        name: captcha_stage
+        schema:
+          type: string
+          format: uuid
       - in: query
         name: case_insensitive_matching
         schema:
@@ -35793,6 +37647,7 @@ components:
       - authentik.providers.scim
       - authentik.rbac
       - authentik.recovery
+      - authentik.sources.kerberos
       - authentik.sources.ldap
       - authentik.sources.oauth
       - authentik.sources.plex
@@ -35826,6 +37681,7 @@ components:
       - authentik.enterprise.providers.google_workspace
       - authentik.enterprise.providers.microsoft_entra
       - authentik.enterprise.providers.rac
+      - authentik.enterprise.stages.authenticator_endpoint_gdtc
       - authentik.enterprise.stages.source
       - authentik.events
       type: string
@@ -36290,6 +38146,80 @@ components:
       - api_hostname
       - client_id
       - client_secret
+      - name
+    AuthenticatorEndpointGDTCStage:
+      type: object
+      description: AuthenticatorEndpointGDTCStage Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Stage uuid
+        name:
+          type: string
+        component:
+          type: string
+          description: Get object type so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSet'
+        configure_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used by an authenticated user to configure this Stage.
+            If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+          nullable: true
+        credentials: {}
+      required:
+      - component
+      - credentials
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    AuthenticatorEndpointGDTCStageRequest:
+      type: object
+      description: AuthenticatorEndpointGDTCStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSetRequest'
+        configure_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used by an authenticated user to configure this Stage.
+            If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+          nullable: true
+          minLength: 1
+        credentials: {}
+      required:
+      - credentials
       - name
     AuthenticatorSMSChallenge:
       type: object
@@ -37035,6 +38965,7 @@ components:
       - authentik.core.auth.InbuiltBackend
       - authentik.core.auth.TokenBackend
       - authentik.sources.ldap.auth.LDAPBackend
+      - authentik.sources.kerberos.auth.KerberosBackend
       type: string
     BindingTypeEnum:
       enum:
@@ -37540,6 +39471,7 @@ components:
       - $ref: '#/components/schemas/DummyChallenge'
       - $ref: '#/components/schemas/EmailChallenge'
       - $ref: '#/components/schemas/FlowErrorChallenge'
+      - $ref: '#/components/schemas/FrameChallenge'
       - $ref: '#/components/schemas/IdentificationChallenge'
       - $ref: '#/components/schemas/OAuthDeviceCodeChallenge'
       - $ref: '#/components/schemas/OAuthDeviceCodeFinishChallenge'
@@ -37547,6 +39479,7 @@ components:
       - $ref: '#/components/schemas/PlexAuthenticationChallenge'
       - $ref: '#/components/schemas/PromptChallenge'
       - $ref: '#/components/schemas/RedirectChallenge'
+      - $ref: '#/components/schemas/SessionEndChallenge'
       - $ref: '#/components/schemas/ShellChallenge'
       - $ref: '#/components/schemas/UserLoginChallenge'
       discriminator:
@@ -37566,6 +39499,7 @@ components:
           ak-stage-dummy: '#/components/schemas/DummyChallenge'
           ak-stage-email: '#/components/schemas/EmailChallenge'
           ak-stage-flow-error: '#/components/schemas/FlowErrorChallenge'
+          xak-flow-frame: '#/components/schemas/FrameChallenge'
           ak-stage-identification: '#/components/schemas/IdentificationChallenge'
           ak-provider-oauth2-device-code: '#/components/schemas/OAuthDeviceCodeChallenge'
           ak-provider-oauth2-device-code-finish: '#/components/schemas/OAuthDeviceCodeFinishChallenge'
@@ -37573,6 +39507,7 @@ components:
           ak-source-plex: '#/components/schemas/PlexAuthenticationChallenge'
           ak-stage-prompt: '#/components/schemas/PromptChallenge'
           xak-flow-redirect: '#/components/schemas/RedirectChallenge'
+          ak-stage-session-end: '#/components/schemas/SessionEndChallenge'
           xak-flow-shell: '#/components/schemas/ShellChallenge'
           ak-stage-user-login: '#/components/schemas/UserLoginChallenge'
     ClientTypeEnum:
@@ -38225,7 +40160,7 @@ components:
           description: Return internal model name
           readOnly: true
         pk:
-          type: integer
+          type: string
         name:
           type: string
         type:
@@ -38247,9 +40182,14 @@ components:
           format: date-time
           readOnly: true
           nullable: true
+        extra_description:
+          type: string
+          description: Get extra description
+          readOnly: true
       required:
       - confirmed
       - created
+      - extra_description
       - last_updated
       - last_used
       - meta_model_name
@@ -38269,10 +40209,15 @@ components:
         challenge:
           type: object
           additionalProperties: {}
+        last_used:
+          type: string
+          format: date-time
+          nullable: true
       required:
       - challenge
       - device_class
       - device_uid
+      - last_used
     DeviceChallengeRequest:
       type: object
       description: Single device challenge
@@ -38286,10 +40231,15 @@ components:
         challenge:
           type: object
           additionalProperties: {}
+        last_used:
+          type: string
+          format: date-time
+          nullable: true
       required:
       - challenge
       - device_class
       - device_uid
+      - last_used
     DeviceClassesEnum:
       enum:
       - static
@@ -38833,6 +40783,35 @@ components:
       - protocol
       - provider
       - provider_obj
+    EndpointDevice:
+      type: object
+      description: Serializer for Endpoint authenticator devices
+      properties:
+        pk:
+          type: string
+          format: uuid
+          title: Uuid
+        name:
+          type: string
+          description: The human-readable name of this device.
+          maxLength: 64
+      required:
+      - name
+    EndpointDeviceRequest:
+      type: object
+      description: Serializer for Endpoint authenticator devices
+      properties:
+        pk:
+          type: string
+          format: uuid
+          title: Uuid
+        name:
+          type: string
+          minLength: 1
+          description: The human-readable name of this device.
+          maxLength: 64
+      required:
+      - name
     EndpointRequest:
       type: object
       description: Endpoint Serializer
@@ -39429,6 +41408,7 @@ components:
       - $ref: '#/components/schemas/ConsentChallengeResponseRequest'
       - $ref: '#/components/schemas/DummyChallengeResponseRequest'
       - $ref: '#/components/schemas/EmailChallengeResponseRequest'
+      - $ref: '#/components/schemas/FrameChallengeResponseRequest'
       - $ref: '#/components/schemas/IdentificationChallengeResponseRequest'
       - $ref: '#/components/schemas/OAuthDeviceCodeChallengeResponseRequest'
       - $ref: '#/components/schemas/OAuthDeviceCodeFinishChallengeResponseRequest'
@@ -39451,6 +41431,7 @@ components:
           ak-stage-consent: '#/components/schemas/ConsentChallengeResponseRequest'
           ak-stage-dummy: '#/components/schemas/DummyChallengeResponseRequest'
           ak-stage-email: '#/components/schemas/EmailChallengeResponseRequest'
+          xak-flow-frame: '#/components/schemas/FrameChallengeResponseRequest'
           ak-stage-identification: '#/components/schemas/IdentificationChallengeResponseRequest'
           ak-provider-oauth2-device-code: '#/components/schemas/OAuthDeviceCodeChallengeResponseRequest'
           ak-provider-oauth2-device-code-finish: '#/components/schemas/OAuthDeviceCodeFinishChallengeResponseRequest'
@@ -39807,6 +41788,39 @@ components:
       required:
       - href
       - name
+    FrameChallenge:
+      type: object
+      description: Challenge type to render a frame
+      properties:
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
+        component:
+          type: string
+          default: xak-flow-frame
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        url:
+          type: string
+        loading_overlay:
+          type: boolean
+          default: false
+        loading_text:
+          type: string
+      required:
+      - loading_text
+      - url
+    FrameChallengeResponseRequest:
+      type: object
+      description: Base class for all challenge responses
+      properties:
+        component:
+          type: string
+          minLength: 1
+          default: xak-flow-frame
     GenericError:
       type: object
       description: Generic API Error
@@ -40239,6 +42253,35 @@ components:
       - pk
       - roles_obj
       - users_obj
+    GroupKerberosSourceConnection:
+      type: object
+      description: OAuth Group-Source connection Serializer
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        group:
+          type: string
+          format: uuid
+          readOnly: true
+        source:
+          allOf:
+          - $ref: '#/components/schemas/Source'
+          readOnly: true
+        identifier:
+          type: string
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created
+      - group
+      - identifier
+      - pk
+      - source
     GroupMatchingModeEnum:
       enum:
       - identifier
@@ -40466,6 +42509,8 @@ components:
           type: string
         flow_designation:
           $ref: '#/components/schemas/FlowDesignationEnum'
+        captcha_stage:
+          $ref: '#/components/schemas/CaptchaChallenge'
         enroll_url:
           type: string
         recovery_url:
@@ -40498,6 +42543,9 @@ components:
           type: string
           minLength: 1
         password:
+          type: string
+          nullable: true
+        captcha_token:
           type: string
           nullable: true
       required:
@@ -40545,6 +42593,12 @@ components:
           nullable: true
           description: When set, shows a password field, instead of showing the password
             field as separate step.
+        captcha_stage:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, adds functionality exactly like a Captcha stage,
+            but baked into the Identification stage.
         case_insensitive_matching:
           type: boolean
           description: When enabled, user fields are matched regardless of their casing.
@@ -40613,6 +42667,12 @@ components:
           nullable: true
           description: When set, shows a password field, instead of showing the password
             field as separate step.
+        captcha_stage:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, adds functionality exactly like a Captcha stage,
+            but baked into the Identification stage.
         case_insensitive_matching:
           type: boolean
           description: When enabled, user fields are matched regardless of their casing.
@@ -40806,6 +42866,316 @@ components:
       - global
       - per_provider
       type: string
+    KerberosSource:
+      type: object
+      description: Kerberos Source Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pbm uuid
+        name:
+          type: string
+          description: Source's display Name.
+        slug:
+          type: string
+          description: Internal source name, used in URLs.
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
+        enabled:
+          type: boolean
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow to use when authenticating existing users.
+        enrollment_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        user_matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/UserMatchingModeEnum'
+          description: How the source determines if an existing user should be authenticated
+            or a new user enrolled.
+        managed:
+          type: string
+          nullable: true
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+          readOnly: true
+        user_path_template:
+          type: string
+        icon:
+          type: string
+          readOnly: true
+        group_matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/GroupMatchingModeEnum'
+          description: How the source determines if an existing group should be used
+            or a new group created.
+        realm:
+          type: string
+          description: Kerberos realm
+        krb5_conf:
+          type: string
+          description: Custom krb5.conf to use. Uses the system one by default
+        sync_users:
+          type: boolean
+          description: Sync users from Kerberos into authentik
+        sync_users_password:
+          type: boolean
+          description: When a user changes their password, sync it back to Kerberos
+        sync_principal:
+          type: string
+          description: Principal to authenticate to kadmin for sync.
+        sync_ccache:
+          type: string
+          description: Credentials cache to authenticate to kadmin for sync. Must
+            be in the form TYPE:residual
+        connectivity:
+          type: object
+          additionalProperties:
+            type: string
+          nullable: true
+          description: Get cached source connectivity
+          readOnly: true
+        spnego_server_name:
+          type: string
+          description: Force the use of a specific server name for SPNEGO
+        spnego_ccache:
+          type: string
+          description: Credential cache to use for SPNEGO in form type:residual
+        password_login_update_internal_password:
+          type: boolean
+          description: If enabled, the authentik-stored password will be updated upon
+            login with the Kerberos password backend
+      required:
+      - component
+      - connectivity
+      - icon
+      - managed
+      - meta_model_name
+      - name
+      - pk
+      - realm
+      - slug
+      - verbose_name
+      - verbose_name_plural
+    KerberosSourcePropertyMapping:
+      type: object
+      description: Kerberos PropertyMapping Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pm uuid
+        managed:
+          type: string
+          nullable: true
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+        expression:
+          type: string
+        component:
+          type: string
+          description: Get object's component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+      required:
+      - component
+      - expression
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    KerberosSourcePropertyMappingRequest:
+      type: object
+      description: Kerberos PropertyMapping Serializer
+      properties:
+        managed:
+          type: string
+          nullable: true
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+      required:
+      - expression
+      - name
+    KerberosSourceRequest:
+      type: object
+      description: Kerberos Source Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: Source's display Name.
+        slug:
+          type: string
+          minLength: 1
+          description: Internal source name, used in URLs.
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
+        enabled:
+          type: boolean
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow to use when authenticating existing users.
+        enrollment_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        user_matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/UserMatchingModeEnum'
+          description: How the source determines if an existing user should be authenticated
+            or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
+        group_matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/GroupMatchingModeEnum'
+          description: How the source determines if an existing group should be used
+            or a new group created.
+        realm:
+          type: string
+          minLength: 1
+          description: Kerberos realm
+        krb5_conf:
+          type: string
+          description: Custom krb5.conf to use. Uses the system one by default
+        sync_users:
+          type: boolean
+          description: Sync users from Kerberos into authentik
+        sync_users_password:
+          type: boolean
+          description: When a user changes their password, sync it back to Kerberos
+        sync_principal:
+          type: string
+          description: Principal to authenticate to kadmin for sync.
+        sync_password:
+          type: string
+          writeOnly: true
+          description: Password to authenticate to kadmin for sync
+        sync_keytab:
+          type: string
+          writeOnly: true
+          description: Keytab to authenticate to kadmin for sync. Must be base64-encoded
+            or in the form TYPE:residual
+        sync_ccache:
+          type: string
+          description: Credentials cache to authenticate to kadmin for sync. Must
+            be in the form TYPE:residual
+        spnego_server_name:
+          type: string
+          description: Force the use of a specific server name for SPNEGO
+        spnego_keytab:
+          type: string
+          writeOnly: true
+          description: SPNEGO keytab base64-encoded or path to keytab in the form
+            FILE:path
+        spnego_ccache:
+          type: string
+          description: Credential cache to use for SPNEGO in form type:residual
+        password_login_update_internal_password:
+          type: boolean
+          description: If enabled, the authentik-stored password will be updated upon
+            login with the Kerberos password backend
+      required:
+      - name
+      - realm
+      - slug
+    KerberosSyncStatus:
+      type: object
+      description: Kerberos Source sync status
+      properties:
+        is_running:
+          type: boolean
+          readOnly: true
+        tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/SystemTask'
+          readOnly: true
+      required:
+      - is_running
+      - tasks
     KubernetesServiceConnection:
       type: object
       description: KubernetesServiceConnection Serializer
@@ -40923,6 +43293,11 @@ components:
           description: DN under which objects are accessible.
         bind_flow_slug:
           type: string
+        unbind_flow_slug:
+          type: string
+          nullable: true
+          description: Get slug for unbind flow, defaulting to brand's default flow.
+          readOnly: true
         application_slug:
           type: string
           description: Prioritise backchannel slug over direct application slug
@@ -40964,6 +43339,7 @@ components:
       - bind_flow_slug
       - name
       - pk
+      - unbind_flow_slug
     LDAPProvider:
       type: object
       description: LDAPProvider Serializer
@@ -40984,6 +43360,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -41068,6 +43448,7 @@ components:
       - assigned_backchannel_application_slug
       - authorization_flow
       - component
+      - invalidation_flow
       - meta_model_name
       - name
       - outpost_set
@@ -41091,6 +43472,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -41134,6 +43519,7 @@ components:
             if it contains a semicolon.
       required:
       - authorization_flow
+      - invalidation_flow
       - name
     LDAPSource:
       type: object
@@ -41973,6 +44359,10 @@ components:
       - authentik_providers_scim.scimprovider
       - authentik_providers_scim.scimmapping
       - authentik_rbac.role
+      - authentik_sources_kerberos.kerberossource
+      - authentik_sources_kerberos.kerberossourcepropertymapping
+      - authentik_sources_kerberos.userkerberossourceconnection
+      - authentik_sources_kerberos.groupkerberossourceconnection
       - authentik_sources_ldap.ldapsource
       - authentik_sources_ldap.ldapsourcepropertymapping
       - authentik_sources_oauth.oauthsource
@@ -42030,6 +44420,7 @@ components:
       - authentik_providers_rac.racprovider
       - authentik_providers_rac.endpoint
       - authentik_providers_rac.racpropertymapping
+      - authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage
       - authentik_stages_source.sourcestage
       - authentik_events.event
       - authentik_events.notificationtransport
@@ -42041,7 +44432,7 @@ components:
       enum:
       - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
       - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
-      - urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName
+      - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
       - urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName
       - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
       type: string
@@ -42282,6 +44673,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -42350,8 +44745,13 @@ components:
           type: string
           format: uuid
           nullable: true
-          description: Key used to sign the tokens. Only required when JWT Algorithm
-            is set to RS256.
+          description: Key used to sign the tokens.
+        encryption_key:
+          type: string
+          format: uuid
+          nullable: true
+          description: Key used to encrypt the tokens. When set, tokens will be encrypted
+            and returned as JWEs.
         redirect_uris:
           type: string
           description: Enter each URI on a new line.
@@ -42379,6 +44779,7 @@ components:
       - assigned_backchannel_application_slug
       - authorization_flow
       - component
+      - invalidation_flow
       - meta_model_name
       - name
       - pk
@@ -42401,6 +44802,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -42441,8 +44846,13 @@ components:
           type: string
           format: uuid
           nullable: true
-          description: Key used to sign the tokens. Only required when JWT Algorithm
-            is set to RS256.
+          description: Key used to sign the tokens.
+        encryption_key:
+          type: string
+          format: uuid
+          nullable: true
+          description: Key used to encrypt the tokens. When set, tokens will be encrypted
+            and returned as JWEs.
         redirect_uris:
           type: string
           description: Enter each URI on a new line.
@@ -42465,6 +44875,7 @@ components:
           title: Any JWT signed by the JWK of the selected source can be used to authenticate.
       required:
       - authorization_flow
+      - invalidation_flow
       - name
     OAuth2ProviderSetupURLs:
       type: object
@@ -43103,6 +45514,18 @@ components:
       required:
       - pagination
       - results
+    PaginatedAuthenticatorEndpointGDTCStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthenticatorEndpointGDTCStage'
+      required:
+      - pagination
+      - results
     PaginatedAuthenticatorSMSStageList:
       type: object
       properties:
@@ -43319,6 +45742,18 @@ components:
       required:
       - pagination
       - results
+    PaginatedEndpointDeviceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/EndpointDevice'
+      required:
+      - pagination
+      - results
     PaginatedEndpointList:
       type: object
       properties:
@@ -43487,6 +45922,18 @@ components:
       required:
       - pagination
       - results
+    PaginatedGroupKerberosSourceConnectionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupKerberosSourceConnection'
+      required:
+      - pagination
+      - results
     PaginatedGroupList:
       type: object
       properties:
@@ -43568,6 +46015,30 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/InvitationStage'
+      required:
+      - pagination
+      - results
+    PaginatedKerberosSourceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/KerberosSource'
+      required:
+      - pagination
+      - results
+    PaginatedKerberosSourcePropertyMappingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/KerberosSourcePropertyMapping'
       required:
       - pagination
       - results
@@ -44387,6 +46858,18 @@ components:
       required:
       - pagination
       - results
+    PaginatedUserKerberosSourceConnectionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserKerberosSourceConnection'
+      required:
+      - pagination
+      - results
     PaginatedUserList:
       type: object
       properties:
@@ -44956,6 +47439,28 @@ components:
         admin_secret_key:
           type: string
           writeOnly: true
+    PatchedAuthenticatorEndpointGDTCStageRequest:
+      type: object
+      description: AuthenticatorEndpointGDTCStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSetRequest'
+        configure_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used by an authenticated user to configure this Stage.
+            If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+          nullable: true
+          minLength: 1
+        credentials: {}
     PatchedAuthenticatorSMSStageRequest:
       type: object
       description: AuthenticatorSMSStage Serializer
@@ -45437,6 +47942,19 @@ components:
         activate_user_on_success:
           type: boolean
           description: Activate users upon completion of stage.
+    PatchedEndpointDeviceRequest:
+      type: object
+      description: Serializer for Endpoint authenticator devices
+      properties:
+        pk:
+          type: string
+          format: uuid
+          title: Uuid
+        name:
+          type: string
+          minLength: 1
+          description: The human-readable name of this device.
+          maxLength: 64
     PatchedEndpointRequest:
       type: object
       description: Endpoint Serializer
@@ -45745,6 +48263,12 @@ components:
           nullable: true
           description: When set, shows a password field, instead of showing the password
             field as separate step.
+        captcha_stage:
+          type: string
+          format: uuid
+          nullable: true
+          description: When set, adds functionality exactly like a Captcha stage,
+            but baked into the Identification stage.
         case_insensitive_matching:
           type: boolean
           description: When enabled, user fields are matched regardless of their casing.
@@ -45823,6 +48347,120 @@ components:
           description: If this flag is set, this Stage will jump to the next Stage
             when no Invitation is given. By default this Stage will cancel the Flow
             when no invitation is given.
+    PatchedKerberosSourcePropertyMappingRequest:
+      type: object
+      description: Kerberos PropertyMapping Serializer
+      properties:
+        managed:
+          type: string
+          nullable: true
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+    PatchedKerberosSourceRequest:
+      type: object
+      description: Kerberos Source Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: Source's display Name.
+        slug:
+          type: string
+          minLength: 1
+          description: Internal source name, used in URLs.
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
+        enabled:
+          type: boolean
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow to use when authenticating existing users.
+        enrollment_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        user_matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/UserMatchingModeEnum'
+          description: How the source determines if an existing user should be authenticated
+            or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
+        group_matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/GroupMatchingModeEnum'
+          description: How the source determines if an existing group should be used
+            or a new group created.
+        realm:
+          type: string
+          minLength: 1
+          description: Kerberos realm
+        krb5_conf:
+          type: string
+          description: Custom krb5.conf to use. Uses the system one by default
+        sync_users:
+          type: boolean
+          description: Sync users from Kerberos into authentik
+        sync_users_password:
+          type: boolean
+          description: When a user changes their password, sync it back to Kerberos
+        sync_principal:
+          type: string
+          description: Principal to authenticate to kadmin for sync.
+        sync_password:
+          type: string
+          writeOnly: true
+          description: Password to authenticate to kadmin for sync
+        sync_keytab:
+          type: string
+          writeOnly: true
+          description: Keytab to authenticate to kadmin for sync. Must be base64-encoded
+            or in the form TYPE:residual
+        sync_ccache:
+          type: string
+          description: Credentials cache to authenticate to kadmin for sync. Must
+            be in the form TYPE:residual
+        spnego_server_name:
+          type: string
+          description: Force the use of a specific server name for SPNEGO
+        spnego_keytab:
+          type: string
+          writeOnly: true
+          description: SPNEGO keytab base64-encoded or path to keytab in the form
+            FILE:path
+        spnego_ccache:
+          type: string
+          description: Credential cache to use for SPNEGO in form type:residual
+        password_login_update_internal_password:
+          type: boolean
+          description: If enabled, the authentik-stored password will be updated upon
+            login with the Kerberos password backend
     PatchedKubernetesServiceConnectionRequest:
       type: object
       description: KubernetesServiceConnection Serializer
@@ -45857,6 +48495,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -46177,6 +48819,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -46217,8 +48863,13 @@ components:
           type: string
           format: uuid
           nullable: true
-          description: Key used to sign the tokens. Only required when JWT Algorithm
-            is set to RS256.
+          description: Key used to sign the tokens.
+        encryption_key:
+          type: string
+          format: uuid
+          nullable: true
+          description: Key used to encrypt the tokens. When set, tokens will be encrypted
+            and returned as JWEs.
         redirect_uris:
           type: string
           description: Enter each URI on a new line.
@@ -46701,6 +49352,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -46806,6 +49461,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -46856,6 +49515,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -46947,6 +49610,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -47200,6 +49867,8 @@ components:
           type: string
           minLength: 1
           description: Base URL to SCIM requests, usually ends in /v2
+        verify_certificates:
+          type: boolean
         token:
           type: string
           minLength: 1
@@ -47452,6 +50121,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSetRequest'
+    PatchedUserKerberosSourceConnectionRequest:
+      type: object
+      description: Kerberos Source Serializer
+      properties:
+        user:
+          type: integer
+        identifier:
+          type: string
+          minLength: 1
     PatchedUserLoginStageRequest:
       type: object
       description: UserLoginStage Serializer
@@ -48465,6 +51143,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -48509,6 +51191,7 @@ components:
       - assigned_backchannel_application_slug
       - authorization_flow
       - component
+      - invalidation_flow
       - meta_model_name
       - name
       - pk
@@ -48548,6 +51231,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -48555,6 +51242,7 @@ components:
             format: uuid
       required:
       - authorization_flow
+      - invalidation_flow
       - name
     ProviderTypeEnum:
       enum:
@@ -48695,6 +51383,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -48811,6 +51503,7 @@ components:
       - client_id
       - component
       - external_host
+      - invalidation_flow
       - meta_model_name
       - name
       - outpost_set
@@ -48835,6 +51528,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -48905,6 +51602,7 @@ components:
       required:
       - authorization_flow
       - external_host
+      - invalidation_flow
       - name
     RACPropertyMapping:
       type: object
@@ -48998,6 +51696,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -49055,6 +51757,7 @@ components:
       - assigned_backchannel_application_slug
       - authorization_flow
       - component
+      - invalidation_flow
       - meta_model_name
       - name
       - outpost_set
@@ -49078,6 +51781,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -49094,6 +51801,7 @@ components:
           description: When set to true, connection tokens will be deleted upon disconnect.
       required:
       - authorization_flow
+      - invalidation_flow
       - name
     RadiusCheckAccess:
       type: object
@@ -49159,6 +51867,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -49223,6 +51935,7 @@ components:
       - assigned_backchannel_application_slug
       - authorization_flow
       - component
+      - invalidation_flow
       - meta_model_name
       - name
       - outpost_set
@@ -49313,6 +52026,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -49337,6 +52054,7 @@ components:
             if it contains a semicolon.
       required:
       - authorization_flow
+      - invalidation_flow
       - name
     RedirectChallenge:
       type: object
@@ -49647,6 +52365,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -49785,6 +52507,7 @@ components:
       - assigned_backchannel_application_slug
       - authorization_flow
       - component
+      - invalidation_flow
       - meta_model_name
       - name
       - pk
@@ -49806,12 +52529,16 @@ components:
         authorization_flow:
           type: string
           format: uuid
+        invalidation_flow:
+          type: string
+          format: uuid
         file:
           type: string
           format: binary
       required:
       - authorization_flow
       - file
+      - invalidation_flow
       - name
     SAMLProviderRequest:
       type: object
@@ -49830,6 +52557,10 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -49912,6 +52643,7 @@ components:
       required:
       - acs_url
       - authorization_flow
+      - invalidation_flow
       - name
     SAMLSource:
       type: object
@@ -50368,6 +53100,8 @@ components:
         url:
           type: string
           description: Base URL to SCIM requests, usually ends in /v2
+        verify_certificates:
+          type: boolean
         token:
           type: string
           description: Authentication token
@@ -50451,6 +53185,8 @@ components:
           type: string
           minLength: 1
           description: Base URL to SCIM requests, usually ends in /v2
+        verify_certificates:
+          type: boolean
         token:
           type: string
           minLength: 1
@@ -50952,6 +53688,37 @@ components:
       required:
       - healthy
       - version
+    SessionEndChallenge:
+      type: object
+      description: Challenge for ending a session
+      properties:
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
+        component:
+          type: string
+          default: ak-stage-session-end
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        pending_user:
+          type: string
+        pending_user_avatar:
+          type: string
+        application_name:
+          type: string
+        application_launch_url:
+          type: string
+        invalidation_flow_url:
+          type: string
+        brand_name:
+          type: string
+      required:
+      - brand_name
+      - pending_user
+      - pending_user_avatar
     SessionUser:
       type: object
       description: |-
@@ -52228,6 +54995,44 @@ components:
           additionalProperties: {}
       required:
       - name
+    UserKerberosSourceConnection:
+      type: object
+      description: Kerberos Source Serializer
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        user:
+          type: integer
+        source:
+          allOf:
+          - $ref: '#/components/schemas/Source'
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        identifier:
+          type: string
+      required:
+      - created
+      - identifier
+      - pk
+      - source
+      - user
+    UserKerberosSourceConnectionRequest:
+      type: object
+      description: Kerberos Source Serializer
+      properties:
+        user:
+          type: integer
+        identifier:
+          type: string
+          minLength: 1
+      required:
+      - identifier
+      - user
     UserLoginChallenge:
       type: object
       description: Empty challenge
@@ -52941,6 +55746,25 @@ components:
       - version_current
       - version_latest
       - version_latest_valid
+    VersionHistory:
+      type: object
+      description: VersionHistory Serializer
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        timestamp:
+          type: string
+          format: date-time
+        version:
+          type: string
+        build:
+          type: string
+      required:
+      - build
+      - id
+      - timestamp
+      - version
     WebAuthnDevice:
       type: object
       description: Serializer for WebAuthn authenticator devices

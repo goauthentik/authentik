@@ -15,7 +15,7 @@ const metadata: Meta<LoadingOverlay> = {
         },
     },
     argTypes: {
-        topMost: { control: "boolean" },
+        topmost: { control: "boolean" },
         // @ts-ignore
         message: { control: "text" },
     },
@@ -51,15 +51,15 @@ export class Container extends LitElement {
 
 export const DefaultStory: StoryObj = {
     args: {
-        topMost: undefined,
+        topmost: undefined,
         // @ts-ignore
         message: undefined,
     },
 
     // @ts-ignore
-    render: ({ topMost, message }: ILoadingOverlay) => {
-        message = typeof message === "string" ? html`<span slot="body">${message}</span>` : message;
-        const content = html` <ak-loading-overlay ?topMost=${topMost}
+    render: ({ topmost, message }: ILoadingOverlay) => {
+        message = typeof message === "string" ? html`<span>${message}</span>` : message;
+        const content = html` <ak-loading-overlay ?topmost=${topmost}
             >${message ?? ""}
         </ak-loading-overlay>`;
         return html`<ak-storybook-demo-container

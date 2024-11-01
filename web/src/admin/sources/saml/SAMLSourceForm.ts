@@ -402,9 +402,9 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                                 ${msg("Windows")}
                             </option>
                             <option
-                                value=${NameIdPolicyEnum._20nameidFormatX509SubjectName}
+                                value=${NameIdPolicyEnum._11nameidFormatX509SubjectName}
                                 ?selected=${this.instance?.nameIdPolicy ===
-                                NameIdPolicyEnum._20nameidFormatX509SubjectName}
+                                NameIdPolicyEnum._11nameidFormatX509SubjectName}
                             >
                                 ${msg("X509 Subject")}
                             </option>

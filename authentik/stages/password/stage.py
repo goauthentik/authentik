@@ -49,7 +49,7 @@ def authenticate(
         LOGGER.debug("Attempting authentication...", backend=backend_path)
         with start_span(
             op="authentik.stages.password.authenticate",
-            description=backend_path,
+            name=backend_path,
         ):
             user = backend.authenticate(request, **credentials)
         if user is None:
@@ -101,7 +101,7 @@ class PasswordChallengeResponse(ChallengeResponse):
         try:
             with start_span(
                 op="authentik.stages.password.authenticate",
-                description="User authenticate call",
+                name="User authenticate call",
             ):
                 user = authenticate(
                     self.stage.request,
@@ -161,7 +161,7 @@ class PasswordStageView(ChallengeStageView):
         ):
             self.logger.debug("User has exceeded maximum tries")
             del self.request.session[SESSION_KEY_INVALID_TRIES]
-            return self.executor.stage_invalid()
+            return self.executor.stage_invalid(_("Invalid password"))
         return super().challenge_invalid(response)
 
     def challenge_valid(self, response: PasswordChallengeResponse) -> HttpResponse:

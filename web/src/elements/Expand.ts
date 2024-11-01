@@ -1,7 +1,9 @@
 import { AKElement } from "@goauthentik/elements/Base";
+import { type SlottedTemplateResult, type Spread } from "@goauthentik/elements/types";
+import { spread } from "@open-wc/lit-helpers";
 
 import { msg } from "@lit/localize";
-import { css, html } from "lit";
+import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFExpandableSection from "@patternfly/patternfly/components/ExpandableSection/expandable-section.css";
@@ -12,6 +14,7 @@ export interface IExpand {
     textOpen?: string;
     textClosed?: string;
 }
+
 /**
  * @class Expand
  * @element ak-expand
@@ -22,7 +25,7 @@ export interface IExpand {
  * slot - The contents to be hidden or displayed.
  */
 @customElement("ak-expand")
-export class Expand extends AKElement {
+export class Expand extends AKElement implements IExpand {
     /**
      * The state of the expanded content
      *
@@ -32,19 +35,19 @@ export class Expand extends AKElement {
     expanded = false;
 
     /**
+     * The text to display next to the open/close control when the accordion is open.
+     *
+     * @attr
+     */
+    @property({ type: String, attribute: "text-open" })
+    textOpen = msg("Show less");
+
+    /**
      * The text to display next to the open/close control when the accordion is closed.
      *
      * @attr
      */
-    @property()
-    textOpen = msg("Show less");
-
-    /**
-     * The text to display next to the open/close control when the accordion is .
-     *
-     * @attr
-     */
-    @property()
+    @property({ type: String, attribute: "text-closed" })
     textClosed = msg("Show more");
 
     static get styles() {
@@ -85,6 +88,11 @@ export class Expand extends AKElement {
             </div>
         </div>`;
     }
+}
+
+export function akExpand(properties: IExpand, content: SlottedTemplateResult = nothing) {
+    const message = typeof content === "string" ? html`<span>${content}</span>` : content;
+    return html`<ak-expand ${spread(properties as Spread)}>${message}</ak-expand>`;
 }
 
 declare global {

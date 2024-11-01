@@ -6,8 +6,8 @@
 # Translators:
 # Chen Zhikai, 2022
 # 刘松, 2022
-# Jens L. <jens@goauthentik.io>, 2024
 # Tianhao Chai <cth451@gmail.com>, 2024
+# Jens L. <jens@goauthentik.io>, 2024
 # deluxghost, 2024
 # 
 #, fuzzy
@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-25 00:08+0000\n"
+"POT-Creation-Date: 2024-10-28 00:09+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2024\n"
 "Language-Team: Chinese Simplified (https://app.transifex.com/authentik/teams/119923/zh-Hans/)\n"
@@ -24,6 +24,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh-Hans\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+
+#: authentik/admin/models.py
+msgid "Version history"
+msgstr "版本历史"
 
 #: authentik/admin/tasks.py
 #, python-brace-format
@@ -43,9 +47,8 @@ msgid "Blueprint file does not exist"
 msgstr "蓝图文件不存在"
 
 #: authentik/blueprints/api.py
-#, python-brace-format
-msgid "Failed to validate blueprint: {logs}"
-msgstr "验证蓝图失败：{logs}"
+msgid "Failed to validate blueprint"
+msgstr "验证蓝图失败"
 
 #: authentik/blueprints/api.py
 msgid "Either path or content must be set."
@@ -194,6 +197,10 @@ msgid "Flow used when authorizing this provider."
 msgstr "授权此提供程序时使用的流程。"
 
 #: authentik/core/models.py
+msgid "Flow used ending the session from a provider."
+msgstr "从提供程序结束会话使用的流程。"
+
+#: authentik/core/models.py
 msgid ""
 "Accessed from applications; optional backchannel providers for protocols "
 "like LDAP and SCIM."
@@ -337,55 +344,6 @@ msgstr "成功链接 {source}！"
 #: authentik/core/sources/flow_manager.py
 msgid "Source is not configured for enrollment."
 msgstr "源未被配置用于注册。"
-
-#: authentik/core/templates/if/end_session.html
-msgid "End session"
-msgstr "结束会话"
-
-#: authentik/core/templates/if/end_session.html
-#, python-format
-msgid ""
-"\n"
-"You've logged out of %(application)s.\n"
-msgstr ""
-"\n"
-"您已登出 %(application)s。\n"
-
-#: authentik/core/templates/if/end_session.html
-#, python-format
-msgid ""
-"\n"
-"            You've logged out of %(application)s. You can go back to the overview to launch another application, or log out of your %(branding_title)s account.\n"
-"        "
-msgstr ""
-"\n"
-"           您已成功登出 %(application)s 。现在您可以返回总览页来启动其他应用，或者登出您的 %(branding_title)s 账户。"
-
-#: authentik/core/templates/if/end_session.html
-msgid "Go back to overview"
-msgstr "返回总览"
-
-#: authentik/core/templates/if/end_session.html
-#, python-format
-msgid ""
-"\n"
-"            Log out of %(branding_title)s\n"
-"        "
-msgstr ""
-"\n"
-"            登出 %(branding_title)s\n"
-"        "
-
-#: authentik/core/templates/if/end_session.html
-#, python-format
-msgid ""
-"\n"
-"            Log back into %(application)s\n"
-"        "
-msgstr ""
-"\n"
-"            重新登录 %(application)s\n"
-"        "
 
 #: authentik/core/templates/if/error.html
 msgid "Go home"
@@ -581,6 +539,26 @@ msgstr "已达到最大连接数。"
 #: authentik/enterprise/providers/rac/views.py
 msgid "(You are already connected in another tab/window)"
 msgstr "（您已经在另一个标签页/窗口连接了）"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Authenticator Google Device Trust Connector Stage"
+msgstr "端点身份验证器 Google 设备信任连接器阶段"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Authenticator Google Device Trust Connector Stages"
+msgstr "端点身份验证器 Google 设备信任连接器阶段"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Device"
+msgstr "端点设备"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Devices"
+msgstr "端点设备"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/stage.py
+msgid "Verifying your browser..."
+msgstr "正在验证您的浏览器…"
 
 #: authentik/enterprise/stages/source/models.py
 msgid ""
@@ -1443,10 +1421,18 @@ msgid "Signing Key"
 msgstr "签名密钥"
 
 #: authentik/providers/oauth2/models.py
+msgid "Key used to sign the tokens."
+msgstr "用于签名令牌的密钥。"
+
+#: authentik/providers/oauth2/models.py
+msgid "Encryption Key"
+msgstr "加密密钥"
+
+#: authentik/providers/oauth2/models.py
 msgid ""
-"Key used to sign the tokens. Only required when JWT Algorithm is set to "
-"RS256."
-msgstr "用于签名令牌的密钥。仅当 JWT 算法设置为 RS256 时才需要。"
+"Key used to encrypt the tokens. When set, tokens will be encrypted and "
+"returned as JWEs."
+msgstr "用于加密令牌的密钥。如果设置，则令牌会被加密，并以 JWE 形式返回。"
 
 #: authentik/providers/oauth2/models.py
 msgid ""
@@ -1881,6 +1867,112 @@ msgstr "创建一个密钥，可用于恢复对 authentik 的访问权限。"
 #: authentik/recovery/views.py
 msgid "Used recovery-link to authenticate."
 msgstr "已使用恢复链接进行身份验证。"
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos realm"
+msgstr "Kerberos 领域"
+
+#: authentik/sources/kerberos/models.py
+msgid "Custom krb5.conf to use. Uses the system one by default"
+msgstr "要使用的自定义 krb5.conf。默认使用系统自带"
+
+#: authentik/sources/kerberos/models.py
+msgid "Sync users from Kerberos into authentik"
+msgstr "从 Kerberos 同步用户到 authentik"
+
+#: authentik/sources/kerberos/models.py
+msgid "When a user changes their password, sync it back to Kerberos"
+msgstr "当用户修改密码时，将其同步回 Kerberos"
+
+#: authentik/sources/kerberos/models.py
+msgid "Principal to authenticate to kadmin for sync."
+msgstr "向 kadmin 进行身份验证以进行同步的主体。"
+
+#: authentik/sources/kerberos/models.py
+msgid "Password to authenticate to kadmin for sync"
+msgstr "向 kadmin 进行身份验证以进行同步的密码"
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"Keytab to authenticate to kadmin for sync. Must be base64-encoded or in the "
+"form TYPE:residual"
+msgstr "向 kadmin 进行身份验证以进行同步的 Keytab。必须以 Base64 编码，或者形式为 TYPE:residual"
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"Credentials cache to authenticate to kadmin for sync. Must be in the form "
+"TYPE:residual"
+msgstr "向 kadmin 进行身份验证以进行同步的凭据缓存。形式必须为 TYPE:residual"
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"Force the use of a specific server name for SPNEGO. Must be in the form "
+"HTTP@hostname"
+msgstr "强制为 SPNEGO 使用特定服务器名称。形式必须为 HTTP@主机名"
+
+#: authentik/sources/kerberos/models.py
+msgid "SPNEGO keytab base64-encoded or path to keytab in the form FILE:path"
+msgstr "以 Base64 编码的 SPNEGO Keytab 或 FILE:path 形式的 Keytab 路径"
+
+#: authentik/sources/kerberos/models.py
+msgid "Credential cache to use for SPNEGO in form type:residual"
+msgstr "SPNEGO 使用的凭据缓存，形式为 type:residual"
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"If enabled, the authentik-stored password will be updated upon login with "
+"the Kerberos password backend"
+msgstr "启用时，authentik 存储的密码将会在使用 Kerberos 密码后端登录时更新"
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Source"
+msgstr "Kerberos 源"
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Sources"
+msgstr "Kerberos 源"
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Source Property Mapping"
+msgstr "Kerberos 源属性映射"
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Source Property Mappings"
+msgstr "Kerberos 源属性映射"
+
+#: authentik/sources/kerberos/models.py
+msgid "User Kerberos Source Connection"
+msgstr "用户 Kerberos 源连接"
+
+#: authentik/sources/kerberos/models.py
+msgid "User Kerberos Source Connections"
+msgstr "用户 Kerberos 源连接"
+
+#: authentik/sources/kerberos/models.py
+msgid "Group Kerberos Source Connection"
+msgstr "组 Kerberos 源连接"
+
+#: authentik/sources/kerberos/models.py
+msgid "Group Kerberos Source Connections"
+msgstr "组 Kerberos 源连接"
+
+#: authentik/sources/kerberos/views.py
+msgid "SPNEGO authentication required"
+msgstr "需要 SPNEGO 身份验证"
+
+#: authentik/sources/kerberos/views.py
+msgid ""
+"\n"
+"                    Make sure you have valid tickets (obtainable via kinit)\n"
+"                    and configured the browser correctly.\n"
+"                    Please contact your administrator.\n"
+"                "
+msgstr ""
+"\n"
+"                    请确认您拥有有效票据（通过 kinit 获得）\n"
+"                    并且已正确配置浏览器。\n"
+"                    请联系您的管理员。\n"
+"                "
 
 #: authentik/sources/ldap/api.py
 msgid "Only a single LDAP Source with password synchronization is allowed"
@@ -2557,13 +2649,8 @@ msgid "Captcha Stages"
 msgstr "验证码阶段"
 
 #: authentik/stages/captcha/stage.py
-msgid "Unknown error"
-msgstr "未知错误"
-
-#: authentik/stages/captcha/stage.py
-#, python-brace-format
-msgid "Failed to validate token: {error}"
-msgstr "验证令牌失败：{error}"
+msgid "Invalid captcha response. Retrying may solve this issue."
+msgstr "无效的验证码响应。重试可能会解决此问题。"
 
 #: authentik/stages/captcha/stage.py
 msgid "Invalid captcha response"
@@ -2909,6 +2996,10 @@ msgstr "用户数据库 + 应用程序密码"
 #: authentik/stages/password/models.py
 msgid "User database + LDAP password"
 msgstr "用户数据库 + LDAP 密码"
+
+#: authentik/stages/password/models.py
+msgid "User database + Kerberos password"
+msgstr "用户数据库 + Kerberos 密码"
 
 #: authentik/stages/password/models.py
 msgid "Selection of backends to test the password against."

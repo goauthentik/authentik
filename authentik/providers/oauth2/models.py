@@ -18,12 +18,21 @@ from django.http import HttpRequest
 from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from jwcrypto.common import json_encode
+from jwcrypto.jwe import JWE
+from jwcrypto.jwk import JWK
 from jwt import encode
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.brands.models import WebfingerProvider
-from authentik.core.models import ExpiringModel, PropertyMapping, Provider, User
+from authentik.core.models import (
+    AuthenticatedSession,
+    ExpiringModel,
+    PropertyMapping,
+    Provider,
+    User,
+)
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_code_fixed_length, generate_id, generate_key
 from authentik.lib.models import SerializerModel
@@ -206,9 +215,19 @@ class OAuth2Provider(WebfingerProvider, Provider):
         verbose_name=_("Signing Key"),
         on_delete=models.SET_NULL,
         null=True,
+        help_text=_("Key used to sign the tokens."),
+        related_name="oauth2provider_signing_key_set",
+    )
+    encryption_key = models.ForeignKey(
+        CertificateKeyPair,
+        verbose_name=_("Encryption Key"),
+        on_delete=models.SET_NULL,
+        null=True,
         help_text=_(
-            "Key used to sign the tokens. Only required when JWT Algorithm is set to RS256."
+            "Key used to encrypt the tokens. When set, "
+            "tokens will be encrypted and returned as JWEs."
         ),
+        related_name="oauth2provider_encryption_key_set",
     )
 
     jwks_sources = models.ManyToManyField(
@@ -287,7 +306,27 @@ class OAuth2Provider(WebfingerProvider, Provider):
         if self.signing_key:
             headers["kid"] = self.signing_key.kid
         key, alg = self.jwt_key
-        return encode(payload, key, algorithm=alg, headers=headers)
+        encoded = encode(payload, key, algorithm=alg, headers=headers)
+        if self.encryption_key:
+            return self.encrypt(encoded)
+        return encoded
+
+    def encrypt(self, raw: str) -> str:
+        """Encrypt JWT"""
+        key = JWK.from_pem(self.encryption_key.certificate_data.encode())
+        jwe = JWE(
+            raw,
+            json_encode(
+                {
+                    "alg": "RSA-OAEP-256",
+                    "enc": "A256CBC-HS512",
+                    "typ": "JWE",
+                    "kid": self.encryption_key.kid,
+                }
+            ),
+        )
+        jwe.add_recipient(key)
+        return jwe.serialize(compact=True)
 
     def webfinger(self, resource: str, request: HttpRequest):
         return {
@@ -320,7 +359,9 @@ class BaseGrantModel(models.Model):
     revoked = models.BooleanField(default=False)
     _scope = models.TextField(default="", verbose_name=_("Scopes"))
     auth_time = models.DateTimeField(verbose_name="Authentication time")
-    session_id = models.CharField(default="", blank=True)
+    session = models.ForeignKey(
+        AuthenticatedSession, null=True, on_delete=models.SET_DEFAULT, default=None
+    )
 
     class Meta:
         abstract = True
@@ -458,6 +499,9 @@ class DeviceToken(ExpiringModel):
     device_code = models.TextField(default=generate_key)
     user_code = models.TextField(default=generate_code_fixed_length)
     _scope = models.TextField(default="", verbose_name=_("Scopes"))
+    session = models.ForeignKey(
+        AuthenticatedSession, null=True, on_delete=models.SET_DEFAULT, default=None
+    )
 
     @property
     def scope(self) -> list[str]:

@@ -29,7 +29,7 @@ user = list_flatten(["foo"])
 # user = "foo"
 ```
 
-### `ak_call_policy(name: str, **kwargs) -> PolicyResult` <span class="badge badge--version">authentik 2021.12+</span>
+### `ak_call_policy(name: str, **kwargs) -> PolicyResult` <span class="badge badge--version">authentik 2021.12+</span>
 
 Call another policy with the name _name_. Current request is passed to policy. Key-word arguments
 can be used to modify the request's context.
@@ -70,7 +70,7 @@ Example:
 other_user = ak_user_by(username="other_user")
 ```
 
-### `ak_user_has_authenticator(user: User, device_type: Optional[str] = None) -> bool` <span class="badge badge--version">authentik 2022.9+</span>
+### `ak_user_has_authenticator(user: User, device_type: Optional[str] = None) -> bool` <span class="badge badge--version">authentik 2022.9+</span>
 
 Check if a user has any authenticator devices. Only fully validated devices are counted.
 
@@ -87,7 +87,7 @@ Example:
 return ak_user_has_authenticator(request.user)
 ```
 
-### `ak_create_event(action: str, **kwargs) -> None` <span class="badge badge--version">authentik 2022.9+</span>
+### `ak_create_event(action: str, **kwargs) -> None` <span class="badge badge--version">authentik 2022.9+</span>
 
 Create a new event with the action set to `action`. Any additional key-word parameters will be saved in the event context. Additionally, `context` will be set to the context in which this function is called.
 
@@ -112,7 +112,7 @@ ip_address('192.0.2.1') in ip_network('192.0.2.0/24')
 # evaluates to True
 ```
 
-## DNS resolution and reverse DNS lookups <span class="badge badge--version">authentik 2023.3+</span>
+## DNS resolution and reverse DNS lookups <span class="badge badge--version">authentik 2023.3+</span>
 
 To resolve a hostname to a list of IP addresses, use the functions `resolve_dns(hostname)` and `resolve_dns(hostname, ip_version)`.
 

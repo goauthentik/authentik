@@ -1,6 +1,8 @@
 import { AKElement } from "@goauthentik/elements/Base";
+import { type SlottedTemplateResult, type Spread } from "@goauthentik/elements/types";
+import { spread } from "@open-wc/lit-helpers";
 
-import { html } from "lit";
+import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
@@ -19,6 +21,7 @@ export type Levels = (typeof levelNames)[number];
 
 export interface IAlert {
     inline?: boolean;
+    plain?: boolean;
     icon?: string;
     level?: string;
 }
@@ -40,6 +43,13 @@ export class Alert extends AKElement implements IAlert {
      */
     @property({ type: Boolean })
     inline = false;
+
+    /**
+     * When true, removes the background color and status line; the text and icon are retained and
+     * colored.
+     *
+     * @attr
+     */
     @property({ type: Boolean })
     plain = false;
 
@@ -70,6 +80,7 @@ export class Alert extends AKElement implements IAlert {
         return {
             "pf-c-alert": true,
             "pf-m-inline": this.inline,
+            "pf-m-plain": this.plain,
             [level]: true,
         };
     }
@@ -79,11 +90,14 @@ export class Alert extends AKElement implements IAlert {
             <div class="pf-c-alert__icon">
                 <i class="fas ${this.icon}"></i>
             </div>
-            <h4 class="pf-c-alert__title">
-                <slot></slot>
-            </h4>
+            <h4 class="pf-c-alert__title"><slot></slot></h4>
         </div>`;
     }
+}
+
+export function akAlert(properties: IAlert, content: SlottedTemplateResult = nothing) {
+    const message = typeof content === "string" ? html`<span>${content}</span>` : content;
+    return html`<ak-alert ${spread(properties as Spread)}>${message}</ak-alert>`;
 }
 
 declare global {

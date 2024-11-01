@@ -1,6 +1,8 @@
 import { AKElement } from "@goauthentik/elements/Base";
+import { type SlottedTemplateResult, type Spread } from "@goauthentik/elements/types";
+import { spread } from "@open-wc/lit-helpers";
 
-import { CSSResult, TemplateResult, html } from "lit";
+import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
@@ -8,10 +10,10 @@ import PFLabel from "@patternfly/patternfly/components/Label/label.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export enum PFColor {
-    Green = "success",
-    Orange = "warning",
-    Red = "danger",
-    Grey = "info",
+    Green = "pf-m-green",
+    Orange = "pf-m-orange",
+    Red = "pf-m-red",
+    Grey = "",
 }
 
 export const levelNames = ["warning", "info", "success", "danger"];
@@ -31,41 +33,18 @@ export interface ILabel {
     color?: string;
 }
 
-/**
- * @class Label
- * @element ak-label
- *
- * Labels are in-page elements for labeling visual elements.
- *
- * @slot - Content of the label
- */
 @customElement("ak-label")
 export class Label extends AKElement implements ILabel {
-    /**
-     * The icon to show next to the label
-     *
-     * @attr
-     */
+    @property()
+    color: PFColor = PFColor.Grey;
+
     @property()
     icon?: string;
 
-    /**
-     * When true, creates a smaller label with tighter layout
-     *
-     * @attr
-     */
     @property({ type: Boolean })
     compact = false;
 
-    /**
-     * Severity level
-     *
-     * @attr
-     */
-    @property()
-    color: PFColor | Level = PFColor.Grey;
-
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [PFBase, PFLabel];
     }
 
@@ -84,7 +63,7 @@ export class Label extends AKElement implements ILabel {
         };
     }
 
-    render(): TemplateResult {
+    render() {
         const { classes, icon } = this.classesAndIcon;
         return html`<span class=${classMap(classes)}>
             <span class="pf-c-label__content">
@@ -95,6 +74,11 @@ export class Label extends AKElement implements ILabel {
             </span>
         </span>`;
     }
+}
+
+export function akLabel(properties: ILabel, content: SlottedTemplateResult = nothing) {
+    const message = typeof content === "string" ? html`<span>${content}</span>` : content;
+    return html`<ak-label ${spread(properties as Spread)}>${message}</ak-label>`;
 }
 
 declare global {

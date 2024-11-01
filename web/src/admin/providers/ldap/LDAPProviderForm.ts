@@ -57,19 +57,6 @@ export class LDAPProviderFormPage extends WithBrandConfig(BaseProviderForm<LDAPP
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Bind flow")}
-                ?required=${true}
-                name="authorizationFlow"
-            >
-                <ak-branded-flow-search
-                    flowType=${FlowsInstancesListDesignationEnum.Authentication}
-                    .currentFlow=${this.instance?.authorizationFlow}
-                    .brandFlow=${this.brand?.flowAuthentication}
-                    required
-                ></ak-branded-flow-search>
-                <p class="pf-c-form__helper-text">${msg("Flow used for users to authenticate.")}</p>
-            </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Bind mode")} name="bindMode">
                 <ak-radio
                     .options=${[
@@ -143,6 +130,42 @@ export class LDAPProviderFormPage extends WithBrandConfig(BaseProviderForm<LDAPP
                 </p>
             </ak-form-element-horizontal>
 
+            <ak-form-group expanded>
+                <span slot="header"> ${msg("Flow settings")} </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("Bind flow")}
+                        name="authorizationFlow"
+                        required
+                    >
+                        <ak-branded-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                            .currentFlow=${this.instance?.authorizationFlow}
+                            .brandFlow=${this.brand?.flowAuthentication}
+                            required
+                        ></ak-branded-flow-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Flow used for users to authenticate.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Unbind flow")}
+                        name="invalidationFlow"
+                        required
+                    >
+                        <ak-branded-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                            .currentFlow=${this.instance?.invalidationFlow}
+                            .brandFlow=${this.brand.flowInvalidation}
+                            defaultFlowSlug="default-invalidation-flow"
+                            required
+                        ></ak-branded-flow-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Flow used for unbinding users.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">

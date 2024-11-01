@@ -62,6 +62,8 @@ def ldap_sync_password(sender, user: User, password: str, **_):
     if not sources.exists():
         return
     source = sources.first()
+    if source.pk == getattr(sender, "pk", None):
+        return
     if not LDAPPasswordChanger.should_check_user(user):
         return
     try:

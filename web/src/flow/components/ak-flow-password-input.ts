@@ -114,7 +114,7 @@ export class InputPassword extends AKElement {
         this.input.type = "password";
         this.input.name = this.name;
         this.input.placeholder = this.placeholder;
-        this.input.autofocus = true;
+        this.input.autofocus = this.grabFocus;
         this.input.autocomplete = "current-password";
         this.input.classList.add("pf-c-form-control");
         this.input.required = true;
