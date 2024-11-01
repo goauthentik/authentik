@@ -35,7 +35,7 @@ Note the Client ID value. Create an application, using the provider you've creat
 
 ## Guacamole
 
-It is recommended you configure an admin account in Guacamole before setting up SSO to make things easier. Create a user in Guacamole using the email address of your user in authentik and give them admin permissions. Without this, you might lose access to the Guacamole admin settings and have to revert the settings below.
+It is recommended you configure an admin account in Guacamole before setting up SSO to make things easier. Create a user in Guacamole using the username of your user in authentik and give them admin permissions. Without this, you might lose access to the Guacamole admin settings and have to revert the settings below.
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
@@ -55,6 +55,7 @@ OPENID_CLIENT_ID: # client ID from above
 OPENID_ISSUER: https://authentik.company/application/o/*Slug of the application from above*/
 OPENID_JWKS_ENDPOINT: https://authentik.company/application/o/*Slug of the application from above*/jwks/
 OPENID_REDIRECT_URI: https://guacamole.company/ # This must match the redirect URI above
+OPENID_USERNAME_CLAIM_TYPE: preferred_username
 ```
 
   </TabItem>
@@ -67,6 +68,7 @@ openid-client-id=# client ID from above
 openid-issuer=https://authentik.company/application/o/*Slug of the application from above*/
 openid-jwks-endpoint=https://authentik.company/application/o/*Slug of the application from above*/jwks/
 openid-redirect-uri=https://guacamole.company/ # This must match the redirect URI above
+openid-username-claim-type=preferred_username
 ```
 
   </TabItem>

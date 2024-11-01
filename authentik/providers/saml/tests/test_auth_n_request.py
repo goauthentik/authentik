@@ -180,6 +180,10 @@ class TestAuthNRequest(TestCase):
         # Now create a response and convert it to string (provider)
         response_proc = AssertionProcessor(self.provider, http_request, parsed_request)
         response = response_proc.build_response()
+        # Ensure both response and assertion ID are in the response twice (once as ID attribute,
+        # once as ds:Reference URI)
+        self.assertEqual(response.count(response_proc._assertion_id), 2)
+        self.assertEqual(response.count(response_proc._response_id), 2)
 
         # Now parse the response (source)
         http_request.POST = QueryDict(mutable=True)

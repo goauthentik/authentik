@@ -299,47 +299,47 @@ Disable the inbuilt update-checker. Defaults to `false`.
     -   Kubeconfig
     -   Existence of a docker socket
 
-### `AUTHENTIK_LDAP__TASK_TIMEOUT_HOURS` <span class="badge badge--version">authentik 2023.1+</span>
+### `AUTHENTIK_LDAP__TASK_TIMEOUT_HOURS` <span class="badge badge--version">authentik 2023.1+</span>
 
 Timeout in hours for LDAP synchronization tasks.
 
 Defaults to `2`.
 
-### `AUTHENTIK_LDAP__PAGE_SIZE` <span class="badge badge--version">authentik 2023.6.1+</span>
+### `AUTHENTIK_LDAP__PAGE_SIZE` <span class="badge badge--version">authentik 2023.6.1+</span>
 
 Page size for LDAP synchronization. Controls the number of objects created in a single task.
 
 Defaults to `50`.
 
-### `AUTHENTIK_LDAP__TLS__CIPHERS` <span class="badge badge--version">authentik 2022.7+</span>
+### `AUTHENTIK_LDAP__TLS__CIPHERS` <span class="badge badge--version">authentik 2022.7+</span>
 
 Allows configuration of TLS Cliphers for LDAP connections used by LDAP sources. Setting applies to all sources.
 
 Defaults to `null`.
 
-### `AUTHENTIK_REPUTATION__EXPIRY` <span class="badge badge--version">authentik 2023.8.2+</span>
+### `AUTHENTIK_REPUTATION__EXPIRY` <span class="badge badge--version">authentik 2023.8.2+</span>
 
 Configure how long reputation scores should be saved for in seconds. Note that this is different than [`AUTHENTIK_REDIS__CACHE_TIMEOUT_REPUTATION`](#redis-settings), as reputation is saved to the database every 5 minutes.
 
 Defaults to `86400`.
 
-### `AUTHENTIK_SESSION_STORAGE` <span class="badge badge--version">authentik 2024.4+</span>
+### `AUTHENTIK_SESSION_STORAGE` <span class="badge badge--version">authentik 2024.4+</span>
 
 Configure if the sessions are stored in the cache or the database. Defaults to `cache`. Allowed values are `cache` and `db`. Note that changing this value will invalidate all previous sessions.
 
-### `AUTHENTIK_WEB__WORKERS` <span class="badge badge--version">authentik 2022.9+</span>
+### `AUTHENTIK_WEB__WORKERS` <span class="badge badge--version">authentik 2022.9+</span>
 
 Configure how many gunicorn worker processes should be started (see https://docs.gunicorn.org/en/stable/design.html).
 
 Defaults to 2. A value below 2 workers is not recommended. In environments where scaling with multiple replicas of the authentik server is not possible, this number can be increased to handle higher loads.
 
-### `AUTHENTIK_WEB__THREADS` <span class="badge badge--version">authentik 2022.9+</span>
+### `AUTHENTIK_WEB__THREADS` <span class="badge badge--version">authentik 2022.9+</span>
 
 Configure how many gunicorn threads a worker processes should have (see https://docs.gunicorn.org/en/stable/design.html).
 
 Defaults to 4.
 
-### `AUTHENTIK_WORKER__CONCURRENCY` <span class="badge badge--version">authentik 2023.9+</span>
+### `AUTHENTIK_WORKER__CONCURRENCY` <span class="badge badge--version">authentik 2023.9+</span>
 
 Configure Celery worker concurrency for authentik worker (see https://docs.celeryq.dev/en/latest/userguide/configuration.html#worker-concurrency). This essentially defines the number of worker processes spawned for a single worker.
 

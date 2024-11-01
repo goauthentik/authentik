@@ -77,10 +77,23 @@ class TestEventMatcherPolicy(TestCase):
         request = PolicyRequest(get_anonymous_user())
         request.context["event"] = event
         policy: EventMatcherPolicy = EventMatcherPolicy.objects.create(
-            client_ip="1.2.3.5", app="bar"
+            client_ip="1.2.3.5", app="foo"
         )
         response = policy.passes(request)
         self.assertFalse(response.passing)
+
+    def test_multiple(self):
+        """Test multiple"""
+        event = Event.new(EventAction.LOGIN)
+        event.app = "foo"
+        event.client_ip = "1.2.3.4"
+        request = PolicyRequest(get_anonymous_user())
+        request.context["event"] = event
+        policy: EventMatcherPolicy = EventMatcherPolicy.objects.create(
+            client_ip="1.2.3.4", app="foo"
+        )
+        response = policy.passes(request)
+        self.assertTrue(response.passing)
 
     def test_invalid(self):
         """Test passing event"""

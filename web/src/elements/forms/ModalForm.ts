@@ -56,7 +56,7 @@ export class ModalForm extends ModalButton {
 
     renderModalInner(): TemplateResult {
         return html`${this.loading
-                ? html`<ak-loading-overlay ?topMost=${true}></ak-loading-overlay>`
+                ? html`<ak-loading-overlay topmost></ak-loading-overlay>`
                 : html``}
             <section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">

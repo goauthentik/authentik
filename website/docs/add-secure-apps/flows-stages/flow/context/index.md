@@ -112,7 +112,7 @@ An optional list of all permissions that will be given to the application by gra
 
 #### Deny stage
 
-##### `deny_message` (string) <span class="badge badge--version">authentik 2023.10+</span>
+##### `deny_message` (string) <span class="badge badge--version">authentik 2023.10+</span>
 
 Optionally overwrite the deny message shown, has a higher priority than the message configured in the stage.
 
@@ -128,7 +128,7 @@ If set, this must be a list of group objects and not group names.
 
 Path the `pending_user` will be written to. If not set in the flow, falls back to the value set in the user_write stage, and otherwise to the `users` path.
 
-##### `user_type` (string) <span class="badge badge--version">authentik 2023.10+</span>
+##### `user_type` (string) <span class="badge badge--version">authentik 2023.10+</span>
 
 Type the `pending_user` will be created as. Must be one of `internal`, `external` or `service_account`.
 

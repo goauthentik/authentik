@@ -7,10 +7,6 @@ title: Remote Access Control (RAC) Provider
 ---
 
 :::info
-This feature is in technical preview, so please report any bugs on [GitHub](https://github.com/goauthentik/authentik/issues).
-:::
-
-:::info
 This provider requires the deployment of the [RAC Outpost](../../outposts/index.mdx).
 :::
 

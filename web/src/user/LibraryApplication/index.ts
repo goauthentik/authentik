@@ -1,6 +1,6 @@
 import { PFSize } from "@goauthentik/common/enums.js";
 import { truncateWords } from "@goauthentik/common/utils";
-import "@goauthentik/components/ak-app-icon";
+import "@goauthentik/elements/AppIcon";
 import { AKElement, rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Expand";
 import "@goauthentik/user/LibraryApplication/RACLaunchEndpointModal";
@@ -115,7 +115,6 @@ export class LibraryApplication extends AKElement {
 
         const classes = { "pf-m-selectable": this.selected, "pf-m-selected": this.selected };
         const styles = this.background ? { background: this.background } : {};
-
         return html` <div
             class="pf-c-card pf-m-hoverable pf-m-compact ${classMap(classes)}"
             style=${styleMap(styles)}
@@ -125,7 +124,11 @@ export class LibraryApplication extends AKElement {
                     href="${ifDefined(this.application.launchUrl ?? "")}"
                     target="${ifDefined(this.application.openInNewTab ? "_blank" : undefined)}"
                 >
-                    <ak-app-icon size=${PFSize.Large} .app=${this.application}></ak-app-icon>
+                    <ak-app-icon
+                        size=${PFSize.Large}
+                        name=${this.application.name}
+                        icon=${ifDefined(this.application.metaIcon || undefined)}
+                    ></ak-app-icon>
                 </a>
             </div>
             <div class="pf-c-card__title">${this.renderLaunch()}</div>

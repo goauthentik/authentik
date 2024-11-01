@@ -12,7 +12,7 @@ type LDAPServerInstance interface {
 	GetOutpostName() string
 
 	GetAuthenticationFlowSlug() string
-	GetInvalidationFlowSlug() string
+	GetInvalidationFlowSlug() *string
 	GetAppSlug() string
 	GetProviderID() int32
 
