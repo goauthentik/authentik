@@ -135,6 +135,7 @@
         "storybook:build": "wireit",
         "storybook:build-import-map": "wireit",
         "test": "wireit",
+        "test:e2e": "wireit",
         "test:e2e:watch": "wireit",
         "test:watch": "wireit",
         "tsc": "wireit",
@@ -320,19 +321,30 @@
             "command": "node scripts/build-storybook-import-maps.mjs"
         },
         "test": {
+            "dependencies": ["build"],
             "command": "wdio ./wdio.conf.ts --logLevel=warn",
             "env": {
                 "CI": "true",
                 "TS_NODE_PROJECT": "tsconfig.test.json"
             }
         },
+        "test:e2e": {
+            "dependencies": ["build"],
+            "command": "wdio run ./tests/wdio.conf.ts",
+            "env": {
+                "CI": "true",
+                "TS_NODE_PROJECT": "./tests/tsconfig.test.json"
+            }
+        },
         "test:e2e:watch": {
+            "dependencies": ["build"],
             "command": "wdio run ./tests/wdio.conf.ts",
             "env": {
                 "TS_NODE_PROJECT": "./tests/tsconfig.test.json"
             }
         },
         "test:watch": {
+            "dependencies": ["build"],
             "command": "wdio run ./wdio.conf.ts",
             "env": {
                 "TS_NODE_PROJECT": "tsconfig.test.json"
