@@ -67,7 +67,6 @@ async function fillOutTheProviderAndCommit(provider: TestSequence) {
     for await (const field of wizardProvider) {
         const thefunc = field[0];
         const args = field.slice(1);
-        console.log(`Running ${args.join(", ")}`);
         // @ts-expect-error "This is a pretty alien call; I'm not surprised Typescript hates it."
         await thefunc.apply($, args);
     }
