@@ -31,12 +31,6 @@ export class SpinnerButton extends BaseTaskButton implements ISpinnerButton {
     callAction!: () => Promise<unknown>;
 }
 
-declare global {
-    interface HTMLElementTagNameMap {
-        "ak-spinner-button": SpinnerButton;
-    }
-}
-
 export default SpinnerButton;
 
 declare global {
