@@ -54,6 +54,9 @@ export class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKEl
     }
 
     isValid(name: keyof T) {
-        return !((this.wizard.errors.provider[name] ?? []).length > 0 || this.errors.has(name));
+        return !(
+            (this.wizard.errors?.provider?.[name as string] ?? []).length > 0 ||
+            this.errors.has(name)
+        );
     }
 }

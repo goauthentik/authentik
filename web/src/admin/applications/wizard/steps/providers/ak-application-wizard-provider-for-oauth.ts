@@ -14,7 +14,7 @@ import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.j
 
 @customElement("ak-application-wizard-provider-for-oauth")
 export class ApplicationWizardOauth2ProviderForm extends ApplicationWizardProviderForm<OAuth2ProviderRequest> {
-    label = msg("Configure Oauth2");
+    label = msg("Configure Oauth2 Provider");
 
     @state()
     showClientSecret = true;
@@ -38,8 +38,8 @@ export class ApplicationWizardOauth2ProviderForm extends ApplicationWizardProvid
         const showClientSecretCallback = (show: boolean) => {
             this.showClientSecret = show;
         };
-        return html` <ak-wizard-title>${msg("Configure OAuth2 Provider")}</ak-wizard-title>
-            <form class="pf-c-form pf-m-horizontal" slot="form">
+        return html` <ak-wizard-title>${this.label}</ak-wizard-title>
+            <form id="providerform" class="pf-c-form pf-m-horizontal" slot="form">
                 ${renderForm(
                     provider ?? {},
                     errors,

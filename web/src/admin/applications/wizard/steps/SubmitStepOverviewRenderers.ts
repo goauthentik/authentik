@@ -1,5 +1,11 @@
+import {
+    type DescriptionPair,
+    renderDescriptionList,
+} from "@goauthentik/components/DescriptionList.js";
+import { match } from "ts-pattern";
+
 import { msg } from "@lit/localize";
-import { html, nothing } from "lit";
+import { html } from "lit";
 
 import {
     ClientTypeEnum,
@@ -16,104 +22,36 @@ import {
 
 import { OneOfProvider } from "../types.js";
 
+const renderSummary = (type: string, name: string, fields: DescriptionPair[]) =>
+    renderDescriptionList([[msg("Type"), type], [msg("Name"), name], ...fields], {
+        threecolumn: true,
+    });
+
 function renderSAMLOverview(rawProvider: OneOfProvider) {
     const provider = rawProvider as SAMLProvider;
-    return html` <dl>
-        <div class="pf-c-description-list__group">
-            <dt class="pf-c-description-list__term">
-                <span class="pf-c-description-list__text">${msg("Name")}</span>
-            </dt>
-            <dd class="pf-c-description-list__description">
-                <div class="pf-c-description-list__text">${provider.name}</div>
-            </dd>
-        </div>
-        <div class="pf-c-description-list__group">
-            <dt class="pf-c-description-list__term">
-                <span class="pf-c-description-list__text">${msg("ACS URL")}</span>
-            </dt>
-            <dd class="pf-c-description-list__description">
-                <div class="pf-c-description-list__text">${provider.acsUrl}</div>
-            </dd>
-        </div>
-        <div class="pf-c-description-list__group">
-            <dt class="pf-c-description-list__term">
-                <span class="pf-c-description-list__text">${msg("Audience")}</span>
-            </dt>
-            <dd class="pf-c-description-list__description">
-                <div class="pf-c-description-list__text">${provider.audience || "-"}</div>
-            </dd>
-        </div>
-        <div class="pf-c-description-list__group">
-            <dt class="pf-c-description-list__term">
-                <span class="pf-c-description-list__text">${msg("Issuer")}</span>
-            </dt>
-            <dd class="pf-c-description-list__description">
-                <div class="pf-c-description-list__text">${provider.issuer}</div>
-            </dd>
-        </div>
-    </dl>`;
+
+    return renderSummary("SAML", provider.name, [
+        [msg("ACS URL"), provider.acsUrl],
+        [msg("Audience"), provider.audience || "-"],
+        [msg("Issuer"), provider.issuer],
+    ]);
 }
 
 function renderSCIMOverview(rawProvider: OneOfProvider) {
     const provider = rawProvider as SCIMProvider;
-    return html` <dl class="pf-c-description-list pf-m-3-col-on-lg">
-        <div class="pf-c-description-list__group">
-            <dt class="pf-c-description-list__term">
-                <span class="pf-c-description-list__text">${msg("Name")}</span>
-            </dt>
-            <dd class="pf-c-description-list__description">
-                <div class="pf-c-description-list__text">${provider.name}</div>
-            </dd>
-        </div>
-        <div class="pf-c-description-list__group">
-            <dt class="pf-c-description-list__term">
-                <span class="pf-c-description-list__text">${msg("URL")}</span>
-            </dt>
-            <dd class="pf-c-description-list__description">
-                <div class="pf-c-description-list__text">${provider.url}</div>
-            </dd>
-        </div>
-    </dl>`;
+    return renderSummary("SCIM", provider.name, [[msg("URL"), provider.url]]);
 }
 
 function renderRadiusOverview(rawProvider: OneOfProvider) {
     const provider = rawProvider as RadiusProvider;
-    return html`
-        <dl class="pf-c-description-list pf-m-3-col-on-lg">
-            <div class="pf-c-description-list__group">
-                <dt class="pf-c-description-list__term">
-                    <span class="pf-c-description-list__text">${msg("Name")}</span>
-                </dt>
-                <dd class="pf-c-description-list__description">
-                    <div class="pf-c-description-list__text">${provider.name}</div>
-                </dd>
-            </div>
-            <div class="pf-c-description-list__group">
-                <dt class="pf-c-description-list__term">
-                    <span class="pf-c-description-list__text">${msg("Client Networks")}</span>
-                </dt>
-                <dd class="pf-c-description-list__description">
-                    <div class="pf-c-description-list__text">${provider.clientNetworks}</div>
-                </dd>
-            </div>
-        </dl>
-    `;
+    return renderSummary("Radius", provider.name, [
+        [msg("Client Networks"), provider.clientNetworks],
+    ]);
 }
 
 function renderRACOverview(rawProvider: OneOfProvider) {
-    const provider = rawProvider as RACProvider;
-    return html`
-        <dl class="pf-c-description-list pf-m-3-col-on-lg">
-            <div class="pf-c-description-list__group">
-                <dt class="pf-c-description-list__term">
-                    <span class="pf-c-description-list__text">${msg("Name")}</span>
-                </dt>
-                <dd class="pf-c-description-list__description">
-                    <div class="pf-c-description-list__text">${provider.name}</div>
-                </dd>
-            </div>
-        </dl>
-    `;
+    // @ts-expect-error TS6133
+    const _provider = rawProvider as RACProvider;
 }
 
 const proxyModeToLabel = new Map([
@@ -125,91 +63,42 @@ const proxyModeToLabel = new Map([
 
 function renderProxyOverview(rawProvider: OneOfProvider) {
     const provider = rawProvider as ProxyProvider;
-    return html` <dl class="pf-c-description-list pf-m-3-col-on-lg">
-        <div class="pf-c-description-list__group">
-            <dt class="pf-c-description-list__term">
-                <span class="pf-c-description-list__text">${msg("Name")}</span>
-            </dt>
-            <dd class="pf-c-description-list__description">
-                <div class="pf-c-description-list__text">${provider.name}</div>
-            </dd>
-        </div>
-        <div class="pf-c-description-list__group">
-            <dt class="pf-c-description-list__term">
-                <span class="pf-c-description-list__text">${msg("Mode")}</span>
-            </dt>
-            <dd class="pf-c-description-list__description">
-                <div class="pf-c-description-list__text">
-                    ${proxyModeToLabel.get(provider.mode ?? ProxyMode.Proxy)}
-                </div>
-            </dd>
-        </div>
-        ${provider.mode === ProxyMode.Proxy
-            ? html` <div class="pf-c-description-list__group">
-                  <dt class="pf-c-description-list__term">
-                      <span class="pf-c-description-list__text">${msg("Internal Host")}</span>
-                  </dt>
-                  <dd class="pf-c-description-list__description">
-                      <div class="pf-c-description-list__text">${provider.internalHost}</div>
-                  </dd>
-              </div>`
-            : nothing}
-        ${provider.mode === ProxyMode.Proxy || provider.mode === ProxyMode.ForwardSingle
-            ? html` <div class="pf-c-description-list__group">
-                  <dt class="pf-c-description-list__term">
-                      <span class="pf-c-description-list__text">${msg("External Host")}</span>
-                  </dt>
-                  <dd class="pf-c-description-list__description">
-                      <div class="pf-c-description-list__text">
-                          <a target="_blank" href="${provider.externalHost}"
-                              >${provider.externalHost}</a
-                          >
-                      </div>
-                  </dd>
-              </div>`
-            : nothing}
-        ${provider.mode === ProxyMode.ForwardDomain
-            ? html` <div class="pf-c-description-list__group">
-                      <dt class="pf-c-description-list__term">
-                          <span class="pf-c-description-list__text"
-                              >${msg("Authentication URL")}</span
-                          >
-                      </dt>
-                      <dd class="pf-c-description-list__description">
-                          <div class="pf-c-description-list__text">
-                              <div class="pf-c-description-list__text">
-                                  ${provider.externalHost}
-                              </div>
-                          </div>
-                      </dd>
-                  </div>
-                  <div class="pf-c-description-list__group">
-                      <dt class="pf-c-description-list__term">
-                          <span class="pf-c-description-list__text">${msg("Cookie domain")}</span>
-                      </dt>
-                      <dd class="pf-c-description-list__description">
-                          <div class="pf-c-description-list__text">
-                              <div class="pf-c-description-list__text">
-                                  ${provider.cookieDomain}
-                              </div>
-                          </div>
-                      </dd>
-                  </div>`
-            : nothing}
-        <div class="pf-c-description-list__group">
-            <dt class="pf-c-description-list__term">
-                <span class="pf-c-description-list__text">${msg("Basic-Auth")}</span>
-            </dt>
-            <dd class="pf-c-description-list__description">
-                <div class="pf-c-description-list__text">
-                    <ak-status-label
-                        type="info"
-                        ?good=${provider.basicAuthEnabled}
-                    ></ak-status-label>
-                </div>
-            </dd>
-        </div>
-    </dl>`;
+    return renderSummary("Proxy", provider.name, [
+        [msg("Mode"), proxyModeToLabel.get(provider.mode ?? ProxyMode.Proxy)],
+        ...match(provider.mode)
+            .with(
+                ProxyMode.Proxy,
+                () =>
+                    [
+                        [msg("Internal Host"), provider.internalHost],
+                        [msg("External Host"), provider.externalHost],
+                    ] as DescriptionPair[],
+            )
+            .with(
+                ProxyMode.ForwardSingle,
+                () => [[msg("External Host"), provider.externalHost]] as DescriptionPair[],
+            )
+            .with(
+                ProxyMode.ForwardDomain,
+                () =>
+                    [
+                        [msg("Authentication URL"), provider.externalHost],
+                        [msg("Cookie domain"), provider.cookieDomain],
+                    ] as DescriptionPair[],
+            )
+            .otherwise(() => {
+                throw new Error(
+                    `Unrecognized proxy mode: ${provider.mode?.toString() ?? "-- undefined __"}`,
+                );
+            }),
+        [
+            msg("Basic-Auth"),
+            html` <ak-status-label
+                type="info"
+                ?good=${provider.basicAuthEnabled}
+            ></ak-status-label>`,
+        ],
+    ]);
 }
 
 const clientTypeToLabel = new Map<ClientTypeEnum, string>([
@@ -220,74 +109,26 @@ const clientTypeToLabel = new Map<ClientTypeEnum, string>([
 
 function renderOAuth2Overview(rawProvider: OneOfProvider) {
     const provider = rawProvider as OAuth2Provider;
-    return html`
-        <dl class="pf-c-description-list">
-            <div class="pf-c-description-list__group">
-                <dt class="pf-c-description-list__term">
-                    <span class="pf-c-description-list__text">${msg("Name")}</span>
-                </dt>
-                <dd class="pf-c-description-list__description">
-                    <div class="pf-c-description-list__text">${provider.name}</div>
-                </dd>
-            </div>
-            <div class="pf-c-description-list__group">
-                <dt class="pf-c-description-list__term">
-                    <span class="pf-c-description-list__text">${msg("Client type")}</span>
-                </dt>
-                <dd class="pf-c-description-list__description">
-                    <div class="pf-c-description-list__text">
-                        ${provider.clientType ? clientTypeToLabel.get(provider.clientType) : ""}
-                    </div>
-                </dd>
-            </div>
-            <div class="pf-c-description-list__group">
-                <dt class="pf-c-description-list__term">
-                    <span class="pf-c-description-list__text">${msg("Client ID")}</span>
-                </dt>
-                <dd class="pf-c-description-list__description">
-                    <div class="pf-c-description-list__text">${provider.clientId}</div>
-                </dd>
-            </div>
-            <div class="pf-c-description-list__group">
-                <dt class="pf-c-description-list__term">
-                    <span class="pf-c-description-list__text">${msg("Redirect URIs")}</span>
-                </dt>
-                <dd class="pf-c-description-list__description">
-                    <div class="pf-c-description-list__text">${provider.redirectUris}</div>
-                </dd>
-            </div>
-        </dl>
-    `;
+    return renderSummary("Proxy", provider.name, [
+        [msg("Client type"), provider.clientType ? clientTypeToLabel.get(provider.clientType) : ""],
+        [msg("Client ID"), provider.clientId],
+        [msg("Redirect URIs"), provider.redirectUris],
+    ]);
 }
 
 function renderLDAPOverview(rawProvider: OneOfProvider) {
     const provider = rawProvider as LDAPProvider;
-    return html` <dl class="pf-c-description-list pf-m-3-col-on-lg">
-        <div class="pf-c-description-list__group">
-            <dt class="pf-c-description-list__term">
-                <span class="pf-c-description-list__text">${msg("Name")}</span>
-            </dt>
-            <dd class="pf-c-description-list__description">
-                <div class="pf-c-description-list__text">${provider.name}</div>
-            </dd>
-        </div>
-        <div class="pf-c-description-list__group">
-            <dt class="pf-c-description-list__term">
-                <span class="pf-c-description-list__text">${msg("Base DN")}</span>
-            </dt>
-            <dd class="pf-c-description-list__description">
-                <div class="pf-c-description-list__text">${provider.baseDn}</div>
-            </dd>
-        </div>
-    </dl>`;
+    return renderSummary("Proxy", provider.name, [[msg("Base DN"), provider.baseDn]]);
 }
 
+const providerName = (p: ProviderModelEnum): string => p.toString().split(".")[1];
+
 export const providerRenderers = new Map([
-    [ProviderModelEnum.SamlSamlprovider, renderSAMLOverview],
-    [ProviderModelEnum.ScimScimprovider, renderSCIMOverview],
-    [ProviderModelEnum.RadiusRadiusprovider, renderRadiusOverview],
-    [ProviderModelEnum.RacRacprovider, renderRACOverview],
-    [ProviderModelEnum.ProxyProxyprovider, renderProxyOverview],
-    [ProviderModelEnum.Oauth2Oauth2provider, renderOAuth2Overview],
-    [ProviderModelEnum.LdapLdapprovider, renderLDAPOverview],
+    [providerName(ProviderModelEnum.SamlSamlprovider), renderSAMLOverview],
+    [providerName(ProviderModelEnum.ScimScimprovider), renderSCIMOverview],
+    [providerName(ProviderModelEnum.RadiusRadiusprovider), renderRadiusOverview],
+    [providerName(ProviderModelEnum.RacRacprovider), renderRACOverview],
+    [providerName(ProviderModelEnum.ProxyProxyprovider), renderProxyOverview],
+    [providerName(ProviderModelEnum.Oauth2Oauth2provider), renderOAuth2Overview],
+    [providerName(ProviderModelEnum.LdapLdapprovider), renderLDAPOverview],
 ]);

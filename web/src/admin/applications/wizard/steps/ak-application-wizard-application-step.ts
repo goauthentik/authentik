@@ -17,9 +17,9 @@ import { html } from "lit";
 import { customElement, query, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { type ApplicationRequest, type ValidationError } from "@goauthentik/api";
+import { type ApplicationRequest } from "@goauthentik/api";
 
-import { ApplicationWizardStateUpdate } from "../types";
+import { ApplicationWizardStateUpdate, ValidationRecord } from "../types";
 
 const autoTrim = (v: unknown) => (typeof v === "string" ? v.trim() : v);
 
@@ -106,7 +106,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
         super.handleButton(button);
     }
 
-    renderForm(app: Partial<ApplicationRequest>, errors: ValidationError) {
+    renderForm(app: Partial<ApplicationRequest>, errors: ValidationRecord) {
         return html` <ak-wizard-title>${msg("Configure The Application")}</ak-wizard-title>
             <form id="applicationform" class="pf-c-form pf-m-horizontal" slot="form">
                 <ak-text-input
@@ -115,7 +115,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                     label=${msg("Name")}
                     required
                     ?invalid=${this.errors.has("name")}
-                    .errorMessages=${errors.app?.name ?? this.errorMessages("name")}
+                    .errorMessages=${errors.name ?? this.errorMessages("name")}
                     help=${msg("Application's display Name.")}
                     id="ak-application-wizard-details-name"
                 ></ak-text-input>
@@ -125,7 +125,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                     label=${msg("Slug")}
                     source="#ak-application-wizard-details-name"
                     required
-                    ?invalid=${errors.app?.slug ?? this.errors.has("slug")}
+                    ?invalid=${errors.slug ?? this.errors.has("slug")}
                     .errorMessages=${this.errorMessages("slug")}
                     help=${msg("Internal application name used in URLs.")}
                 ></ak-slug-input>
@@ -133,7 +133,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                     name="group"
                     value=${ifDefined(app.group)}
                     label=${msg("Group")}
-                    .errorMessages=${errors.app?.group ?? []}
+                    .errorMessages=${errors.group ?? []}
                     help=${msg(
                         "Optionally enter a group name. Applications with identical groups are shown grouped together.",
                     )}
@@ -144,7 +144,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                     name="policyEngineMode"
                     .options=${policyOptions}
                     .value=${app.policyEngineMode}
-                    .errorMessages=${errors.app?.policyEngineMode ?? []}
+                    .errorMessages=${errors.policyEngineMode ?? []}
                 ></ak-radio-input>
                 <ak-form-group aria-label=${msg("UI Settings")}>
                     <span slot="header"> ${msg("UI Settings")} </span>
@@ -154,7 +154,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                             label=${msg("Launch URL")}
                             value=${ifDefined(app.metaLaunchUrl)}
                             ?invalid=${this.errors.has("metaLaunchUrl")}
-                            .errorMessages=${errors.app?.metaLaunchUrl ??
+                            .errorMessages=${errors.metaLaunchUrl ??
                             this.errorMessages("metaLaunchUrl")}
                             help=${msg(
                                 "If left empty, authentik will try to extract the launch URL based on the selected provider.",
@@ -178,7 +178,10 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
         if (!(this.wizard.app && this.wizard.errors)) {
             throw new Error("Application Step received uninitialized wizard context.");
         }
-        return this.renderForm(this.wizard.app as ApplicationRequest, this.wizard.errors);
+        return this.renderForm(
+            this.wizard.app as ApplicationRequest,
+            this.wizard.errors?.app ?? {},
+        );
     }
 }
 

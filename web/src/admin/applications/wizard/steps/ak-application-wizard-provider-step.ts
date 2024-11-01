@@ -31,9 +31,6 @@ export class ApplicationWizardProviderStep extends ApplicationWizardStep {
     @state()
     label = msg("Configure Provider");
 
-    @state()
-    errors = new Map<string, string>();
-
     @query("#providerform")
     element!: ApplicationWizardProviderForm<OneOfProvider>;
 
@@ -53,7 +50,13 @@ export class ApplicationWizardProviderStep extends ApplicationWizardStep {
                 });
                 return;
             }
-            const payload = { provider: this.formValues, errors: this.removeErrors("provider") };
+            const payload = {
+                provider: {
+                    ...this.formValues,
+                    mode: this.wizard.proxyMode,
+                },
+                errors: this.removeErrors("provider"),
+            };
             this.handleUpdate(payload, button.destination, {
                 enable: ["bindings", "submit"],
             });
@@ -84,7 +87,7 @@ export class ApplicationWizardProviderStep extends ApplicationWizardStep {
               html`<${unsafeStatic(tag)}
                 id="providerform"
             .wizard=${this.wizard}
-            .errors=${this.errors}
+            .errors=${this.wizard.errors?.provider ?? {}}
 
             ></${
                 /* eslint-disable-next-line lit/binding-positions,lit/no-invalid-html */

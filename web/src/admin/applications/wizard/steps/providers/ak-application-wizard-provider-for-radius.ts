@@ -1,4 +1,5 @@
 import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
+import { ValidationRecord } from "@goauthentik/admin/applications/wizard/types";
 import { renderForm } from "@goauthentik/admin/providers/radius/RadiusProviderFormForm.js";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 
@@ -16,9 +17,9 @@ export class ApplicationWizardRadiusProviderForm extends WithBrandConfig(
 ) {
     label = msg("Configure Radius Provider");
 
-    renderForm(provider: RadiusProvider, errors: ExtendedValidationError) {
-        return html` <ak-wizard-title>${msg("Configure Radius Provider")}</ak-wizard-title>
-            <form class="pf-c-form pf-m-horizontal" slot="form">
+    renderForm(provider: RadiusProvider, errors: ValidationRecord) {
+        return html` <ak-wizard-title>${this.label}</ak-wizard-title>
+            <form id="providerform" class="pf-c-form pf-m-horizontal" slot="form">
                 ${renderForm(provider ?? {}, errors, this.brand)}
             </form>`;
     }
@@ -27,7 +28,10 @@ export class ApplicationWizardRadiusProviderForm extends WithBrandConfig(
         if (!(this.wizard.provider && this.wizard.errors)) {
             throw new Error("RAC Provider Step received uninitialized wizard context.");
         }
-        return this.renderForm(this.wizard.provider as RadiusProvider);
+        return this.renderForm(
+            this.wizard.provider as RadiusProvider,
+            this.wizard.errors?.provider ?? {},
+        );
     }
 }
 

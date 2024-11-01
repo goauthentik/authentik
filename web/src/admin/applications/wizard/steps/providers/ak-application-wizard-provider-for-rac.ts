@@ -1,3 +1,4 @@
+import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
 import "@goauthentik/admin/common/ak-crypto-certificate-search.js";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import {
@@ -21,6 +22,7 @@ export class ApplicationWizardRACProviderForm extends ApplicationWizardProviderF
 
     renderForm(provider: RACProvider) {
         return html`
+            <ak-wizard-title>${this.label}</ak-wizard-title>
             <form id="providerform" class="pf-c-form pf-m-horizontal" slot="form">
                 <ak-text-input
                     name="name"

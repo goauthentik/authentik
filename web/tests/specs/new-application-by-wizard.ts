@@ -60,7 +60,7 @@ async function getCommitMessage() {
     return await ApplicationWizardView.successMessage();
 }
 
-async function fillOutTheProviderAndCommit(provider: TestSequence) {
+async function fillOutTheProviderAndProceed(provider: TestSequence) {
     // The wizard automagically provides a name.  If it doesn't, that's a bug.
     const wizardProvider = provider.filter((p) => p.length < 2 || p[1] !== "name");
     await $("ak-wizard-page-type-create").waitForDisplayed();
@@ -72,8 +72,28 @@ async function fillOutTheProviderAndCommit(provider: TestSequence) {
         await thefunc.apply($, args);
     }
 
-    await $("ak-wizard-frame").$("footer button.pf-m-primary").click();
+    await (await ApplicationWizardView.nextButton()).click();
     await ApplicationWizardView.pause();
+}
+
+export async function findWizardTitle() {
+    return await (async () => {
+        for await (const item of $$("ak-wizard-title")) {
+            if ((await item.isExisting()) && (await item.isDisplayed())) {
+                return item;
+            }
+        }
+    })();
+}
+
+async function passByPoliciesAndCommit() {
+    const title = await findWizardTitle();
+    // Expect to be on the Bindings panel
+    await expect(await title.getText()).toEqual("Configure Policy Bindings");
+    await (await ApplicationWizardView.nextButton()).click();
+    await ApplicationWizardView.pause();
+    await (await ApplicationWizardView.submitPage()).waitForDisplayed();
+    await (await ApplicationWizardView.nextButton()).click();
     await expect(await getCommitMessage()).toHaveText(SUCCESS_MESSAGE);
 }
 
@@ -81,7 +101,8 @@ async function itShouldConfigureApplicationsViaTheWizard(name: string, provider:
     it(`Should successfully configure an application with a ${name} provider`, async () => {
         await reachTheApplicationsPage();
         await fillOutTheApplication(name);
-        await fillOutTheProviderAndCommit(provider);
+        await fillOutTheProviderAndProceed(provider);
+        await passByPoliciesAndCommit();
     });
 }
 

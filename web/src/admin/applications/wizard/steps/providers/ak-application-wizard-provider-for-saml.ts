@@ -1,4 +1,5 @@
 import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
+import { type AkCryptoCertificateSearch } from "@goauthentik/admin/common/ak-crypto-certificate-search";
 import { renderForm } from "@goauthentik/admin/providers/saml/SAMLProviderFormForm.js";
 import "@goauthentik/elements/forms/FormGroup";
 
@@ -6,10 +7,14 @@ import { msg } from "@lit/localize";
 import { customElement, state } from "@lit/reactive-element/decorators.js";
 import { html } from "lit";
 
+import { SAMLProvider } from "@goauthentik/api";
+
 import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm";
 
 @customElement("ak-application-wizard-provider-for-saml")
 export class ApplicationWizardProviderSamlForm extends ApplicationWizardProviderForm<SAMLProvider> {
+    label = msg("Configure SAML Provider");
+
     @state()
     hasSigningKp = false;
 
@@ -20,11 +25,11 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
             this.hasSigningKp = !!target.selectedKeypair;
         };
 
-        return html` <ak-wizard-title>${msg("Configure SAML Provider")}</ak-wizard-title>
-            <form class="pf-c-form pf-m-horizontal" slot="form">
+        return html` <ak-wizard-title>${this.label}</ak-wizard-title>
+            <form id="providerform" class="pf-c-form pf-m-horizontal" slot="form">
                 ${renderForm(
                     (this.wizard.provider as SAMLProvider) ?? {},
-                    this.wizard.errors.provider,
+                    this.wizard.errors?.provider ?? {},
                     setHasSigningKp,
                     this.hasSigningKp,
                 )}

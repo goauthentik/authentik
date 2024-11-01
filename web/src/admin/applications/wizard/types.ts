@@ -4,6 +4,7 @@ import {
     type OAuth2ProviderRequest,
     type PolicyBinding,
     type ProvidersSamlImportMetadataCreateRequest,
+    type ProxyMode,
     type ProxyProviderRequest,
     type RACProviderRequest,
     type RadiusProviderRequest,
@@ -22,11 +23,15 @@ export type OneOfProvider =
     | Partial<OAuth2ProviderRequest>
     | Partial<LDAPProviderRequest>;
 
+export type ValidationRecord = { [key: string]: string[] };
+
+// TODO: Elf, extend this type and apply it to every object in the wizard.  Then run
+// the type-checker again.
+
 export type ExtendedValidationError = ValidationError & {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    app?: any;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    provider?: any;
+    app?: ValidationRecord;
+    provider?: ValidationRecord;
+    bindings?: ValidationRecord;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     detail?: any;
 };
@@ -38,19 +43,21 @@ export type ExtendedValidationError = ValidationError & {
 // PolicyBindingRequest during the submission phase.
 
 export interface ApplicationWizardState {
-    providerModel: string;
     app: Partial<ApplicationRequest>;
+    providerModel: string;
     provider: OneOfProvider;
-    errors: ExtendedValidationError;
+    proxyMode: ProxyMode;
     bindings: PolicyBinding[];
     currentBinding: number;
+    errors: ExtendedValidationError;
 }
 
 export interface ApplicationWizardStateUpdate {
-    providerModel?: string;
     app?: Partial<ApplicationRequest>;
+    providerModel?: string;
     provider?: OneOfProvider;
-    errors?: ValidationError;
+    proxyMode?: ProxyMode;
     bindings?: PolicyBinding[];
     currentBinding?: number;
+    errors?: ValidationError;
 }

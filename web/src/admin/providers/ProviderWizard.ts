@@ -46,7 +46,6 @@ export class ProviderWizard extends AKElement {
     connectedCallback() {
         super.connectedCallback();
         new ProvidersApi(DEFAULT_CONFIG).providersAllTypesList().then((providerTypes) => {
-            console.log(providerTypes);
             this.providerTypes = providerTypes;
         });
     }

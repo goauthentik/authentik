@@ -1,4 +1,5 @@
 import { ApplicationWizardStep } from "@goauthentik/admin/applications/wizard/ApplicationWizardStep.js";
+import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { groupBy } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-radio-input";
@@ -162,53 +163,54 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
     renderForm(instance?: PolicyBinding) {
         const { policySelect, groupSelect, userSelect } = this.searchSelectConfigs;
 
-        return html` <form id="bindingform" class="pf-c-form pf-m-horizontal" slot="form">
-            <div class="pf-c-card__body">
-                <ak-toggle-group
-                    value=${this.policyGroupUser}
-                    @ak-toggle=${(ev: CustomEvent<{ value: target }>) => {
-                        this.policyGroupUser = ev.detail.value;
-                    }}
-                >
-                    <option value=${target.policy}>${msg("Policy")}</option>
-                    <option value=${target.group}>${msg("Group")}</option>
-                    <option value=${target.user}>${msg("User")}</option>
-                </ak-toggle-group>
-            </div>
-            <div class="pf-c-card__footer">
-                ${this.renderSearch(msg("Policy"), policySelect, target.policy)}
-                ${this.renderSearch(msg("Group"), groupSelect, target.group)}
-                ${this.renderSearch(msg("User"), userSelect, target.user)}
-            </div>
-            <ak-switch-input
-                name="enabled"
-                ?checked=${instance?.enabled ?? true}
-                label=${msg("Enabled")}
-            ></ak-switch-input>
-            <ak-switch-input
-                name="negate"
-                ?checked=${instance?.negate ?? false}
-                label=${msg("Negate result")}
-                help=${msg("Negates the outcome of the binding. Messages are unaffected.")}
-            ></ak-switch-input>
-            <ak-number-input
-                label=${msg("Order")}
-                name="order"
-                value="${instance?.order ?? 0}"
-                required
-            ></ak-number-input>
-            <ak-number-input
-                label=${msg("Timeout")}
-                name="timeout"
-                value="${instance?.timeout ?? 30}"
-                required
-            ></ak-number-input>
-            <ak-radio-input
-                name="failureResult"
-                label=${msg("Failure result")}
-                .options=${PASS_FAIL}
-            ></ak-radio-input>
-        </form>`;
+        return html` <ak-wizard-title>${msg("Select A Policy Binding")}</ak-wizard-title>
+            <form id="bindingform" class="pf-c-form pf-m-horizontal" slot="form">
+                <div class="pf-c-card__body">
+                    <ak-toggle-group
+                        value=${this.policyGroupUser}
+                        @ak-toggle=${(ev: CustomEvent<{ value: target }>) => {
+                            this.policyGroupUser = ev.detail.value;
+                        }}
+                    >
+                        <option value=${target.policy}>${msg("Policy")}</option>
+                        <option value=${target.group}>${msg("Group")}</option>
+                        <option value=${target.user}>${msg("User")}</option>
+                    </ak-toggle-group>
+                </div>
+                <div class="pf-c-card__footer">
+                    ${this.renderSearch(msg("Policy"), policySelect, target.policy)}
+                    ${this.renderSearch(msg("Group"), groupSelect, target.group)}
+                    ${this.renderSearch(msg("User"), userSelect, target.user)}
+                </div>
+                <ak-switch-input
+                    name="enabled"
+                    ?checked=${instance?.enabled ?? true}
+                    label=${msg("Enabled")}
+                ></ak-switch-input>
+                <ak-switch-input
+                    name="negate"
+                    ?checked=${instance?.negate ?? false}
+                    label=${msg("Negate result")}
+                    help=${msg("Negates the outcome of the binding. Messages are unaffected.")}
+                ></ak-switch-input>
+                <ak-number-input
+                    label=${msg("Order")}
+                    name="order"
+                    value="${instance?.order ?? 0}"
+                    required
+                ></ak-number-input>
+                <ak-number-input
+                    label=${msg("Timeout")}
+                    name="timeout"
+                    value="${instance?.timeout ?? 30}"
+                    required
+                ></ak-number-input>
+                <ak-radio-input
+                    name="failureResult"
+                    label=${msg("Failure result")}
+                    .options=${PASS_FAIL}
+                ></ak-radio-input>
+            </form>`;
     }
 
     renderMain() {

@@ -1,3 +1,4 @@
+import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { parseAPIError } from "@goauthentik/common/errors";
@@ -51,11 +52,6 @@ const providerMap: Map<string, string> = Object.values(ProviderModelEnum)
 type NonEmptyArray<T> = [T, ...T[]];
 
 type MaybeTemplateResult = TemplateResult | typeof nothing;
-
-const JSON_INDENT = 2;
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const errStr = (o: any) => JSON.stringify(o, null, JSON_INDENT);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isNotEmpty = (arr: any): arr is NonEmptyArray<any> => Array.isArray(arr) && arr.length > 0;
@@ -147,7 +143,9 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
 
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 .catch(async (resolution: any) => {
-                    errors = (await parseAPIError(await resolution)) as ExtendedValidationError;
+                    const errors = (await parseAPIError(
+                        await resolution,
+                    )) as ExtendedValidationError;
 
                     // THIS is a really gross special case; if the user is duplicating the name of
                     // an existing provider, the error appears on the `app` (!) error object. We
@@ -203,18 +201,6 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
             .with("running", () => [])
             .with("reviewing", () => forReview)
             .exhaustive();
-    }
-
-    get currentProviderModel() {
-        const providerModel = providerModelsList.find(
-            ({ formName }) => formName === this.wizard.providerModel,
-        );
-        if (!providerModel) {
-            throw new Error(
-                `Could not determine provider model from user request: ${errStr(this.wizard)}`,
-            );
-        }
-        return providerModel;
     }
 
     renderInfo(
@@ -294,8 +280,16 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
     }
 
     renderReview(app: Partial<ApplicationRequest>, provider: OneOfProvider) {
-        const renderer = providerRenderers.get(this.currentProviderModel.modelName);
-        return html`<h2 class="pf-c-title pf-m-xl">${msg("Application")}</h2>
+        const renderer = providerRenderers.get(this.wizard.providerModel);
+        if (!renderer) {
+            throw new Error(
+                `Provider ${this.wizard.providerModel ?? "-- undefined --"} has no summary renderer.`,
+            );
+        }
+        return html` <ak-wizard-title
+                >${msg("Review The Application and Provider")}</ak-wizard-title
+            >
+            <h2 class="pf-c-title pf-m-xl">${msg("Application")}</h2>
             <dl class="pf-c-description-list">
                 <div class="pf-c-description-list__group">
                     <dt class="pf-c-description-list__term">Name</dt>

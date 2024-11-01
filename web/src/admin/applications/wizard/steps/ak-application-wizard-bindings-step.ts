@@ -1,4 +1,5 @@
 import { ApplicationWizardStep } from "@goauthentik/admin/applications/wizard/ApplicationWizardStep.js";
+import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-slug-input";
 import "@goauthentik/components/ak-status-label";
@@ -83,7 +84,8 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
     }
 
     renderEmptyCollection() {
-        return html` <h6 class="pf-c-title pf-m-md">
+        return html` <ak-wizard-title>${msg("Configure Policy Bindings")}</ak-wizard-title>
+            <h6 class="pf-c-title pf-m-md">
                 ${msg("These policies control which users can access this application.")}
             </h6>
             <ak-application-wizard-bindings-toolbar
@@ -108,7 +110,8 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
     }
 
     renderCollection() {
-        return html`<h6 class="pf-c-title pf-m-md">
+        return html` <ak-wizard-title>${msg("Configure Policy Bindings")}</ak-wizard-title>
+            <h6 class="pf-c-title pf-m-md">
                 ${msg("These policies control which users can access this application.")}
             </h6>
             <ak-application-wizard-bindings-toolbar
