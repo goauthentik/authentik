@@ -24,29 +24,58 @@ The following placeholders will be used:
 -   `proxmox.company` is the FQDN of the Proxmox VE server.
 -   `authentik.company` is the FQDN of the authentik install.
 
-### Step 1
+## authentik Setup
 
-Under the _Datacenter_ section in the Proxmox web interface, navigate to _Permissions_ and then select _Realms_ to create an OAuth2/OpenID provider with these settings:
+1. **Navigate to the Admin Interface, then click Providers to create an OAuth2/OpenID provider with these settings:**
+   - **Name:** proxmox
+   - **Redirect URI:** `https://proxmox.company:8006` (Note the absence of the trailing slash, and the inclusion of the web interface port)
+   - **Signing Key:** Select any available key
 
--   Name: proxmox
--   Redirect URI: `https://proxmox.company:8006` (Note the absence of the trailing slash, and the inclusion of the webinterface port)
--   Signing Key: Select any available key
+2. **Create an Application Using This Provider**
+   - In authentik, create an application and set it to use the provider you just configured.
+   - Optionally, apply access restrictions to the application.
+   - Set the **Launch URL** to `https://proxmox.company:8006`.
 
-### Step 2
+## Proxmox VE Setup (Web interface)
 
-Create an application which uses this provider. Optionally apply access restrictions to the application.
+1. **Log in to the Proxmox Web Interface**
+   - Access the Proxmox VE web interface and log in with an administrative account.
 
-Set the Launch URL to `https://proxmox.company:8006`.
+2. **Navigate to Authentication Source Settings**
+   - Go to **Datacenter** > **Permissions** > **Realms**.
+   - Click **Add** and select **Realm** to open the Add Realm dialog.
 
-## Proxmox VE Setup
+3. **Fill Out the OpenID Connect Settings**
+   - In the dialog that appears, fill in the following details:
+     - **Issuer URL**: Enter the Issuer URL from authentik (found under *Provider Metadata*), e.g., `https://authentik.company/application/o/proxmox/`.
+     - **Realm**: Enter a name for this authentication source, such as `authentik`.
+     - **Client ID**: Enter the Client ID found on the provider overview page.
+     - **Client Key**: Enter the Client Secret found by clicking *Edit* on the Provider overview page.
+     - **Username Claim**: Set this to `username`.
+     - **Autocreate Users**: Check this box if you want Proxmox to automatically create users upon first login. If checked, users will appear in Proxmox with the format `<authentik username>@authentik`.
+     - **Default**: Check this if you want OpenID Connect to be pre-selected as the default on the login screen.
 
-Proxmox VE allows configuration of authentication sources using the web interface (under Datacenter -> Permissions -> Realms).
+   Here’s an example configuration:
 
-![](proxmox-source.png)
+   ![Proxmox Add OpenID Connect Server Dialog](proxmox-source.png)
 
-Another way is to use the CLI. SSH into any Proxmox cluster node, and issue the following command:
+4. **Save the Configuration**
+   - Click **Add** to save the settings.
 
-`pveum realm add authentik --type openid --issuer-url https://authentik.company/application/o/proxmox/ --client-id xxx --client-key xxx --username-claim username --autocreate 1`
+5. **Assign Permissions**
+   - After setting up the authentication source, go to **Permissions** to assign roles and permissions for each user as needed. 
+
+6. **Logging In**
+   - Users can select this authentication method from the Proxmox login screen, or if set as default, it will be automatically selected.
+
+
+## Proxmox VE Setup (CLI)
+
+To configure OpenID Connect authentication via the CLI, SSH into any Proxmox cluster node and use the following command:
+
+```bash
+pveum realm add authentik --type openid --issuer-url https://authentik.company/application/o/proxmox/ --client-id xxx --client-key xxx --username-claim username --autocreate 1
+```
 
 You can find the Issuer URL on the Provider Metadata tab in authentik. You can find the Client ID and Key on the Provider Edit dialog in authentik.
 
