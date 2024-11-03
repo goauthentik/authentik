@@ -26,7 +26,7 @@ The following placeholders will be used:
 
 ### Step 1
 
-Under _Providers_, create an OAuth2/OpenID provider with these settings:
+Under the _Datacenter_ section in the Proxmox web interface, navigate to _Permissions_ and then select _Realms_ to create an OAuth2/OpenID provider with these settings:
 
 -   Name: proxmox
 -   Redirect URI: `https://proxmox.company:8006` (Note the absence of the trailing slash, and the inclusion of the webinterface port)
