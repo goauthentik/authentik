@@ -32,7 +32,7 @@ The following placeholders will be used:
    - **Signing Key:** Select any available key
 
 2. **Create an Application Using This Provider**
-   - In authentik, create an application and set it to use the provider you just configured.
+   - Under *Applications* >  *Applications* of the Admin interface, create a new application and configure it to use the provider created in the previous step.
    - Optionally, apply access restrictions to the application.
    - Set the **Launch URL** to `https://proxmox.company:8006`.
 
