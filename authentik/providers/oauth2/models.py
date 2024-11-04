@@ -13,6 +13,7 @@ from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePrivateKey
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
 from dacite.core import from_dict
+from django.contrib.postgres.indexes import HashIndex
 from django.db import models
 from django.http import HttpRequest
 from django.templatetags.static import static
@@ -418,7 +419,7 @@ class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
 
     class Meta:
         indexes = [
-            models.Index(fields=["token", "provider"]),
+            HashIndex(fields=["token"]),
         ]
         verbose_name = _("OAuth2 Access Token")
         verbose_name_plural = _("OAuth2 Access Tokens")
@@ -464,7 +465,7 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
 
     class Meta:
         indexes = [
-            models.Index(fields=["token", "provider"]),
+            HashIndex(fields=["token"]),
         ]
         verbose_name = _("OAuth2 Refresh Token")
         verbose_name_plural = _("OAuth2 Refresh Tokens")
