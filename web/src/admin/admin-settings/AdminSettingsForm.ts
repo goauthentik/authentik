@@ -5,6 +5,7 @@ import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
+import "@goauthentik/elements/ak-array-input/ak-array-input";
 import { Form } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -19,7 +20,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFList from "@patternfly/patternfly/components/List/list.css";
 
-import { AdminApi, Settings, SettingsRequest } from "@goauthentik/api";
+import { AdminApi, FooterLink, Settings, SettingsRequest } from "@goauthentik/api";
 
 @customElement("ak-admin-settings-form")
 export class AdminSettingsForm extends Form<SettingsRequest> {
@@ -166,15 +167,31 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
             >
             </ak-text-input>
             <ak-form-element-horizontal label=${msg("Footer links")} name="footerLinks">
-                <ak-codemirror
-                    mode=${CodeMirrorMode.YAML}
-                    .value="${first(this._settings?.footerLinks, [])}"
-                ></ak-codemirror>
+                <ak-array-input
+                    .elements=${this._settings?.footerLinks || []}
+                    .elementRenderer=${(entry: FooterLink) => {
+                        return html`<input
+                                type="text"
+                                value="${entry.name}"
+                                class="pf-c-form-control"
+                                required
+                                name="name"
+                                placeholder=${msg("Name")}
+                                />
+                                <input
+                                type="text"
+                                value="${entry.href || ""}"
+                                class="pf-c-form-control"
+                                required
+                                name="href"
+                                placeholder=${msg("URL")}
+                            />`;
+                    }}
+                ></ak-array-input>
                 <p class="pf-c-form__helper-text">
                     ${msg(
-                        "This option configures the footer links on the flow executor pages. It must be a valid YAML or JSON list and can be used as follows:",
+                        "This option configures the footer links on the flow executor pages.",
                     )}
-                    <code>[{"name": "Link Name","href":"https://goauthentik.io"}]</code>
                 </p>
             </ak-form-element-horizontal>
             <ak-switch-input
