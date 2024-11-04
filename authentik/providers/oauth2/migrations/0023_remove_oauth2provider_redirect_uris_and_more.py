@@ -21,6 +21,7 @@ def migrate_redirect_uris(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
             uris.append(RedirectURI(mode, url=old))
         provider.redirect_uris = uris
 
+
 class Migration(migrations.Migration):
 
     dependencies = [

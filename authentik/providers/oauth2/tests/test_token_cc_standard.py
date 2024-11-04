@@ -19,7 +19,13 @@ from authentik.providers.oauth2.constants import (
     TOKEN_TYPE,
 )
 from authentik.providers.oauth2.errors import TokenError
-from authentik.providers.oauth2.models import AccessToken, OAuth2Provider, ScopeMapping
+from authentik.providers.oauth2.models import (
+    AccessToken,
+    OAuth2Provider,
+    RedirectURI,
+    RedirectURIMatchingMode,
+    ScopeMapping,
+)
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 
 
@@ -33,7 +39,7 @@ class TestTokenClientCredentialsStandard(OAuthTestCase):
         self.provider = OAuth2Provider.objects.create(
             name="test",
             authorization_flow=create_test_flow(),
-            redirect_uris="http://testserver",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://testserver")],
             signing_key=create_test_cert(),
         )
         self.provider.property_mappings.set(ScopeMapping.objects.all())

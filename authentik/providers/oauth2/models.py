@@ -4,7 +4,6 @@ import base64
 import binascii
 import json
 from dataclasses import asdict, dataclass
-from enum import Enum
 from functools import cached_property
 from hashlib import sha256
 from typing import Any
