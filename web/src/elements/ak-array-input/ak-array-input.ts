@@ -19,6 +19,9 @@ export class AkArrayInput<T> extends AkControlElement {
     @property({ type: Array })
     elements: T[] = [];
 
+    @property({ type: Boolean })
+    allowEmpty = false;
+
     static get styles() {
         return [
             PFBase,
@@ -52,7 +55,7 @@ export class AkArrayInput<T> extends AkControlElement {
     }
 
     renderButtons(el: T) {
-        return html`${this.elements.length > 1
+        return html`${this.elements.length > 1 || this.allowEmpty
             ? html`<button
                   class="pf-c-button pf-m-control"
                   type="button"

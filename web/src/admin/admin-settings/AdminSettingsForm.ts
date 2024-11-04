@@ -3,8 +3,6 @@ import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-number-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
-import "@goauthentik/elements/CodeMirror";
-import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/ak-array-input/ak-array-input";
 import { Form } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/FormGroup";
@@ -169,6 +167,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
             <ak-form-element-horizontal label=${msg("Footer links")} name="footerLinks">
                 <ak-array-input
                     .elements=${this._settings?.footerLinks || []}
+                    allowEmpty
                     .elementRenderer=${(entry: FooterLink) => {
                         return html`<input
                                 type="text"
@@ -177,21 +176,18 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                                 required
                                 name="name"
                                 placeholder=${msg("Name")}
-                                />
-                                <input
+                            />
+                            <input
                                 type="text"
                                 value="${entry.href || ""}"
                                 class="pf-c-form-control"
-                                required
                                 name="href"
                                 placeholder=${msg("URL")}
                             />`;
                     }}
                 ></ak-array-input>
                 <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "This option configures the footer links on the flow executor pages.",
-                    )}
+                    ${msg("This option configures the footer links on the flow executor pages.")}
                 </p>
             </ak-form-element-horizontal>
             <ak-switch-input
