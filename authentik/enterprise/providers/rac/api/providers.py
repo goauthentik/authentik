@@ -16,13 +16,28 @@ class RACProviderSerializer(EnterpriseRequiredMixin, ProviderSerializer):
 
     class Meta:
         model = RACProvider
-        fields = ProviderSerializer.Meta.fields + [
+        fields = [
+            "pk",
+            "name",
+            "authentication_flow",
+            "authorization_flow",
+            "property_mappings",
+            "component",
+            "assigned_application_slug",
+            "assigned_application_name",
+            "assigned_backchannel_application_slug",
+            "assigned_backchannel_application_name",
+            "verbose_name",
+            "verbose_name_plural",
+            "meta_model_name",
             "settings",
             "outpost_set",
             "connection_expiry",
             "delete_token_on_disconnect",
         ]
-        extra_kwargs = ProviderSerializer.Meta.extra_kwargs
+        extra_kwargs = {
+            "authorization_flow": {"required": True, "allow_null": False},
+        }
 
 
 class RACProviderViewSet(UsedByMixin, ModelViewSet):

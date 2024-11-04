@@ -6974,7 +6974,7 @@
                 "spnego_server_name": {
                     "type": "string",
                     "title": "Spnego server name",
-                    "description": "Force the use of a specific server name for SPNEGO"
+                    "description": "Force the use of a specific server name for SPNEGO. Must be in the form HTTP@hostname"
                 },
                 "spnego_keytab": {
                     "type": "string",
@@ -13382,12 +13382,6 @@
                     "format": "uuid",
                     "title": "Authorization flow",
                     "description": "Flow used when authorizing this provider."
-                },
-                "invalidation_flow": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Invalidation flow",
-                    "description": "Flow used ending the session from a provider."
                 },
                 "property_mappings": {
                     "type": "array",
