@@ -10,7 +10,12 @@ from rest_framework.test import APITestCase
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
-from authentik.providers.oauth2.models import OAuth2Provider, ScopeMapping
+from authentik.providers.oauth2.models import (
+    OAuth2Provider,
+    RedirectURI,
+    RedirectURIMatchingMode,
+    ScopeMapping,
+)
 
 
 class TestAPI(APITestCase):
@@ -50,9 +55,12 @@ class TestAPI(APITestCase):
     @skipUnless(version_info >= (3, 11, 4), "This behaviour is only Python 3.11.4 and up")
     def test_launch_url(self):
         """Test launch_url"""
-        self.provider.redirect_uris = (
-            "https://[\\d\\w]+.pr.test.goauthentik.io/source/oauth/callback/authentik/\n"
-        )
+        self.provider.redirect_uris = [
+            RedirectURI(
+                RedirectURIMatchingMode.regex,
+                "https://[\\d\\w]+.pr.test.goauthentik.io/source/oauth/callback/authentik/",
+            ),
+        ]
         self.provider.save()
         self.provider.refresh_from_db()
         self.assertIsNone(self.provider.launch_url)

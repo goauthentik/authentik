@@ -58,6 +58,7 @@ from authentik.providers.oauth2.models import (
     ClientTypes,
     DeviceToken,
     OAuth2Provider,
+    RedirectURIMatchingMode,
     RefreshToken,
     ScopeMapping,
 )
@@ -195,42 +196,7 @@ class TokenParams:
             LOGGER.warning("Missing authorization code")
             raise TokenError("invalid_grant")
 
-        allowed_redirect_urls = self.provider.redirect_uris.split()
-        # At this point, no provider should have a blank redirect_uri, in case they do
-        # this will check an empty array and raise an error
-        try:
-            if not any(fullmatch(x, self.redirect_uri) for x in allowed_redirect_urls):
-                LOGGER.warning(
-                    "Invalid redirect uri (regex comparison)",
-                    redirect_uri=self.redirect_uri,
-                    expected=allowed_redirect_urls,
-                )
-                Event.new(
-                    EventAction.CONFIGURATION_ERROR,
-                    message="Invalid redirect URI used by provider",
-                    provider=self.provider,
-                    redirect_uri=self.redirect_uri,
-                    expected=allowed_redirect_urls,
-                ).from_http(request)
-                raise TokenError("invalid_client")
-        except RegexError as exc:
-            LOGGER.info("Failed to parse regular expression, checking directly", exc=exc)
-            if not any(x == self.redirect_uri for x in allowed_redirect_urls):
-                LOGGER.warning(
-                    "Invalid redirect uri (strict comparison)",
-                    redirect_uri=self.redirect_uri,
-                    expected=allowed_redirect_urls,
-                )
-                Event.new(
-                    EventAction.CONFIGURATION_ERROR,
-                    message="Invalid redirect_uri configured",
-                    provider=self.provider,
-                ).from_http(request)
-                raise TokenError("invalid_client") from None
-
-        # Check against forbidden schemes
-        if urlparse(self.redirect_uri).scheme in FORBIDDEN_URI_SCHEMES:
-            raise TokenError("invalid_request")
+        self.__check_redirect_uri(request)
 
         self.authorization_code = AuthorizationCode.objects.filter(code=raw_code).first()
         if not self.authorization_code:
@@ -269,6 +235,48 @@ class TokenParams:
         # Prevent downgrade
         if not self.authorization_code.code_challenge and self.code_verifier:
             raise TokenError("invalid_grant")
+
+    def __check_redirect_uri(self, request: HttpRequest):
+        allowed_redirect_urls = self.provider.redirect_uris
+        # At this point, no provider should have a blank redirect_uri, in case they do
+        # this will check an empty array and raise an error
+
+        match_found = False
+        for allowed in allowed_redirect_urls:
+            if allowed.matching_mode == RedirectURIMatchingMode.STRICT:
+                if self.redirect_uri == allowed.url:
+                    match_found = True
+                    break
+            if allowed.matching_mode == RedirectURIMatchingMode.REGEX:
+                try:
+                    if fullmatch(allowed.url, self.redirect_uri):
+                        match_found = True
+                        break
+                except RegexError as exc:
+                    LOGGER.warning(
+                        "Failed to parse regular expression",
+                        exc=exc,
+                        url=allowed.url,
+                        provider=self.provider,
+                    )
+                    Event.new(
+                        EventAction.CONFIGURATION_ERROR,
+                        message="Invalid redirect_uri configured",
+                        provider=self.provider,
+                    ).from_http(request)
+        if not match_found:
+            Event.new(
+                EventAction.CONFIGURATION_ERROR,
+                message="Invalid redirect URI used by provider",
+                provider=self.provider,
+                redirect_uri=self.redirect_uri,
+                expected=allowed_redirect_urls,
+            ).from_http(request)
+            raise TokenError("invalid_client")
+
+        # Check against forbidden schemes
+        if urlparse(self.redirect_uri).scheme in FORBIDDEN_URI_SCHEMES:
+            raise TokenError("invalid_request")
 
     def __post_init_refresh(self, raw_token: str, request: HttpRequest):
         if not raw_token:

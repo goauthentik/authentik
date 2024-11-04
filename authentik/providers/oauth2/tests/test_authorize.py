@@ -19,6 +19,8 @@ from authentik.providers.oauth2.models import (
     AuthorizationCode,
     GrantTypes,
     OAuth2Provider,
+    RedirectURI,
+    RedirectURIMatchingMode,
     ScopeMapping,
 )
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
@@ -140,7 +142,7 @@ class TestAuthorize(OAuthTestCase):
         )
         OAuthAuthorizationParams.from_request(request)
         provider.refresh_from_db()
-        self.assertEqual(provider.redirect_uris, "+")
+        self.assertEqual(provider.redirect_uris, [RedirectURI(RedirectURIMatchingMode.STRICT, "+")])
 
     def test_invalid_redirect_uri_regex(self):
         """test missing/invalid redirect URI"""

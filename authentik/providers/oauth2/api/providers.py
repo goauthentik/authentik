@@ -9,7 +9,7 @@ from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_sche
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField
+from rest_framework.fields import CharField, ChoiceField
 from rest_framework.generics import get_object_or_404
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -24,8 +24,17 @@ from authentik.providers.oauth2.models import AccessToken, OAuth2Provider, Scope
 from authentik.rbac.decorators import permission_required
 
 
+class RedirectURISerializer(PassiveSerializer):
+    """A single allowed redirect URI entry"""
+
+    matching_mode = ChoiceField(choices=("strict", "regex"))
+    url = CharField()
+
+
 class OAuth2ProviderSerializer(ProviderSerializer):
     """OAuth2Provider Serializer"""
+
+    redirect_uris = RedirectURISerializer(many=True, source="_redirect_uris")
 
     class Meta:
         model = OAuth2Provider
@@ -79,7 +88,6 @@ class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
         "refresh_token_validity",
         "include_claims_in_id_token",
         "signing_key",
-        "redirect_uris",
         "sub_mode",
         "property_mappings",
         "issuer_mode",

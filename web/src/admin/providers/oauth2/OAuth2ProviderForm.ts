@@ -6,6 +6,7 @@ import { ascii_letters, digits, first, randomString } from "@goauthentik/common/
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";
+import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
@@ -13,6 +14,7 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
+import YAML from "yaml";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -203,13 +205,20 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
                         ?hidden=${!this.showClientSecret}
                     >
                     </ak-text-input>
-                    <ak-textarea-input
+                    <ak-form-element-horizontal
+                        label=${msg("Redirect URIs/Origins")}
+                        required
                         name="redirectUris"
-                        label=${msg("Redirect URIs/Origins (RegEx)")}
-                        .value=${provider?.redirectUris}
-                        .bighelp=${redirectUriHelp}
                     >
-                    </ak-textarea-input>
+                        <ak-codemirror
+                            mode=${CodeMirrorMode.YAML}
+                            .value="${YAML.stringify(
+                                this.instance ? this.instance.redirectUris : [],
+                            )}"
+                        >
+                        </ak-codemirror>
+                        ${redirectUriHelp}
+                    </ak-form-element-horizontal>
 
                     <ak-form-element-horizontal label=${msg("Signing Key")} name="signingKey">
                         <!-- NOTE: 'null' cast to 'undefined' on signingKey to satisfy Lit requirements -->
