@@ -19,7 +19,13 @@ from authentik.providers.oauth2.constants import (
     SCOPE_OPENID_EMAIL,
     SCOPE_OPENID_PROFILE,
 )
-from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider, ScopeMapping
+from authentik.providers.oauth2.models import (
+    ClientTypes,
+    OAuth2Provider,
+    RedirectURI,
+    RedirectURIMatchingMode,
+    ScopeMapping,
+)
 from tests.e2e.utils import SeleniumTestCase, retry
 
 

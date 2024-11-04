@@ -10,6 +10,7 @@ from rest_framework.test import APITestCase
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.models import (
     OAuth2Provider,
     RedirectURI,
@@ -64,3 +65,20 @@ class TestAPI(APITestCase):
         self.provider.save()
         self.provider.refresh_from_db()
         self.assertIsNone(self.provider.launch_url)
+
+    def test_validate_redirect_uris(self):
+        """Test redirect_uris API"""
+        response = self.client.post(
+            reverse("authentik_api:oauth2provider-list"),
+            data={
+                "name": generate_id(),
+                "authorization_flow": create_test_flow().pk,
+                "invalidation_flow": create_test_flow().pk,
+                "redirect_uris": [
+                    {"matching_mode": "strict", "url": "http://goauthentik.io"},
+                    {"matching_mode": "regex", "url": "**"},
+                ],
+            },
+        )
+        self.assertJSONEqual(response.content, {"redirect_uris": ["Invalid Regex Pattern: **"]})
+        self.assertEqual(response.status_code, 400)

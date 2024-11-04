@@ -12,7 +12,12 @@ from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id, generate_key
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
-from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider
+from authentik.providers.oauth2.models import (
+    ClientTypes,
+    OAuth2Provider,
+    RedirectURI,
+    RedirectURIMatchingMode,
+)
 from tests.e2e.utils import SeleniumTestCase, retry
 
 
