@@ -37,6 +37,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
             css`
                 iframe {
                     width: 100%;
+                    height: 73px; /* tmp */
                 }
             `,
         ];
@@ -56,6 +57,9 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
     @state()
     scriptElement?: HTMLScriptElement;
 
+    @property({ type: Boolean })
+    embedded = false;
+
     @property()
     onTokenChange: TokenHandler = (token: string) => {
         this.host.submit({ component: "ak-stage-captcha", token });
@@ -73,10 +77,12 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
     }
 
     connectedCallback(): void {
+        super.connectedCallback();
         window.addEventListener("message", this.messageCallback);
     }
 
     disconnectedCallback(): void {
+        super.disconnectedCallback();
         window.removeEventListener("message", this.messageCallback);
         if (!this.challenge.interactive) {
             document.removeChild(this.captchaDocumentContainer);
@@ -255,6 +261,9 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
     render() {
         if (!this.challenge) {
             return html`<ak-empty-state loading> </ak-empty-state>`;
+        }
+        if (this.embedded) {
+            return this.renderBody();
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>

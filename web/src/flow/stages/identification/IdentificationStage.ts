@@ -291,6 +291,7 @@ export class IdentificationStage extends BaseStage<
                           .onTokenChange=${(token: string) => {
                               this.captchaToken = token;
                           }}
+                          embedded
                       ></ak-stage-captcha>
                   `
                 : nothing}
