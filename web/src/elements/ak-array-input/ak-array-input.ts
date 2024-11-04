@@ -1,4 +1,4 @@
-import { AKElement } from "@goauthentik/elements/Base";
+import { AkControlElement } from "@goauthentik/elements/AkControlElement";
 
 import { TemplateResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -9,7 +9,7 @@ import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-gro
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-array-input")
-export class AkArrayInput<T> extends AKElement {
+export class AkArrayInput<T> extends AkControlElement {
     @property()
     elementRenderer: (el: T, idx: number) => TemplateResult = () => {
         return html``;
@@ -33,6 +33,21 @@ export class AkArrayInput<T> extends AKElement {
                 }
             `,
         ];
+    }
+
+    json() {
+        const serializedEntries: { [key: string]: unknown }[] = [];
+        // TODO: This should probably use `serializeForm`, however that is built around
+        // a) having multiple HorizontalFormElements, and
+        // b) having one input element in each
+        this.shadowRoot?.querySelectorAll<HTMLDivElement>(".pf-c-input-group").forEach((group) => {
+            const entry: { [key: string]: unknown } = {};
+            group.querySelectorAll<HTMLInputElement>("[name]").forEach((el) => {
+                entry[el.name] = el.value;
+            });
+            serializedEntries.push(entry);
+        });
+        return serializedEntries;
     }
 
     renderButtons(el: T, idx: number) {
