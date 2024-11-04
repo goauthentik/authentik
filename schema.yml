@@ -42975,7 +42975,8 @@ components:
           readOnly: true
         spnego_server_name:
           type: string
-          description: Force the use of a specific server name for SPNEGO
+          description: Force the use of a specific server name for SPNEGO. Must be
+            in the form HTTP@hostname
         spnego_ccache:
           type: string
           description: Credential cache to use for SPNEGO in form type:residual
@@ -43144,7 +43145,8 @@ components:
             be in the form TYPE:residual
         spnego_server_name:
           type: string
-          description: Force the use of a specific server name for SPNEGO
+          description: Force the use of a specific server name for SPNEGO. Must be
+            in the form HTTP@hostname
         spnego_keytab:
           type: string
           writeOnly: true
@@ -48448,7 +48450,8 @@ components:
             be in the form TYPE:residual
         spnego_server_name:
           type: string
-          description: Force the use of a specific server name for SPNEGO
+          description: Force the use of a specific server name for SPNEGO. Must be
+            in the form HTTP@hostname
         spnego_keytab:
           type: string
           writeOnly: true
@@ -49461,10 +49464,6 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
-        invalidation_flow:
-          type: string
-          format: uuid
-          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -51696,10 +51695,6 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
-        invalidation_flow:
-          type: string
-          format: uuid
-          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -51757,7 +51752,6 @@ components:
       - assigned_backchannel_application_slug
       - authorization_flow
       - component
-      - invalidation_flow
       - meta_model_name
       - name
       - outpost_set
@@ -51781,10 +51775,6 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
-        invalidation_flow:
-          type: string
-          format: uuid
-          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -51801,7 +51791,6 @@ components:
           description: When set to true, connection tokens will be deleted upon disconnect.
       required:
       - authorization_flow
-      - invalidation_flow
       - name
     RadiusCheckAccess:
       type: object
