@@ -1,5 +1,6 @@
 import { AkControlElement } from "@goauthentik/elements/AkControlElement";
 
+import { msg } from "@lit/localize";
 import { TemplateResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -50,7 +51,7 @@ export class AkArrayInput<T> extends AkControlElement {
         return serializedEntries;
     }
 
-    renderButtons(el: T, idx: number) {
+    renderButtons(el: T) {
         return html`${this.elements.length > 1
             ? html`<button
                   class="pf-c-button pf-m-control"
@@ -65,28 +66,24 @@ export class AkArrayInput<T> extends AkControlElement {
               >
                   <i class="fas fa-minus" aria-hidden="true"></i>
               </button>`
-            : nothing}
-        ${idx === this.elements.length - 1
-            ? html`
-                  <button
-                      class="pf-c-button pf-m-control"
-                      type="button"
-                      @click=${() => {
-                          this.elements.push({} as unknown as T);
-                          this.requestUpdate();
-                      }}
-                  >
-                      <i class="fas fa-plus" aria-hidden="true"></i>
-                  </button>
-              `
-            : nothing} `;
+            : nothing}`;
     }
 
     render() {
         return html`${this.elements.map((el, idx) => {
-            return html`<div class="pf-c-input-group">
-                ${this.elementRenderer(el, idx)}${this.renderButtons(el, idx)}
-            </div>`;
-        })}`;
+                return html`<div class="pf-c-input-group">
+                    ${this.elementRenderer(el, idx)}${this.renderButtons(el)}
+                </div>`;
+            })}
+            <button
+                class="pf-c-button pf-m-link"
+                type="button"
+                @click=${() => {
+                    this.elements.push({} as unknown as T);
+                    this.requestUpdate();
+                }}
+            >
+                <i class="fas fa-plus" aria-hidden="true"></i>&nbsp; ${msg("Add entry")}
+            </button>`;
     }
 }
