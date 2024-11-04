@@ -6,7 +6,6 @@ import { ascii_letters, digits, first, randomString } from "@goauthentik/common/
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";
-import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
@@ -14,27 +13,23 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
-import YAML from "yaml";
+
+
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import {
-    ClientTypeEnum,
-    FlowsInstancesListDesignationEnum,
-    IssuerModeEnum,
-    OAuth2Provider,
-    ProvidersApi,
-    SubModeEnum,
-} from "@goauthentik/api";
 
-import {
-    makeOAuth2PropertyMappingsSelector,
-    oauth2PropertyMappingsProvider,
-} from "./OAuth2PropertyMappings.js";
+
+import { ClientTypeEnum, FlowsInstancesListDesignationEnum, IssuerModeEnum, MatchingModeEnum, OAuth2Provider, ProvidersApi, RedirectURI, SubModeEnum } from "@goauthentik/api";
+
+
+
+import { makeOAuth2PropertyMappingsSelector, oauth2PropertyMappingsProvider } from "./OAuth2PropertyMappings.js";
 import { makeSourceSelector, oauth2SourcesProvider } from "./OAuth2Sources.js";
+
 
 export const clientTypeOptions = [
     {
@@ -126,11 +121,23 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
     @state()
     showClientSecret = true;
 
+    @state()
+    redirectUris: RedirectURI[] = [];
+
+    static get styles() {
+        return super.styles.concat(css`
+            select.pf-c-form-control {
+                width: 100px;
+            }
+        `);
+    }
+
     async loadInstance(pk: number): Promise<OAuth2Provider> {
         const provider = await new ProvidersApi(DEFAULT_CONFIG).providersOauth2Retrieve({
             id: pk,
         });
         this.showClientSecret = provider.clientType === ClientTypeEnum.Confidential;
+        this.redirectUris = provider.redirectUris;
         return provider;
     }
 
@@ -210,13 +217,39 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
                         required
                         name="redirectUris"
                     >
-                        <ak-codemirror
-                            mode=${CodeMirrorMode.YAML}
-                            .value="${YAML.stringify(
-                                this.instance ? this.instance.redirectUris : [],
-                            )}"
-                        >
-                        </ak-codemirror>
+                        ${this.redirectUris.map((ru) => {
+                            return html`<div class="pf-c-input-group">
+                                <select name="matchingMode" class="pf-c-form-control">
+                                    <option
+                                        value="${MatchingModeEnum.Strict}"
+                                        ?selected=${ru.matchingMode === MatchingModeEnum.Strict}
+                                    >
+                                        ${msg("Strict")}
+                                    </option>
+                                    <option
+                                        value="${MatchingModeEnum.Regex}"
+                                        ?selected=${ru.matchingMode === MatchingModeEnum.Regex}
+                                    >
+                                        ${msg("Regex")}
+                                    </option>
+                                </select>
+                                <input
+                                    type="text"
+                                    value="${ru.url}"
+                                    class="pf-c-form-control"
+                                    required
+                                />
+                                <button class="pf-c-button pf-m-control" type="button" @click=${() => {
+                                    this.redirectUris.push({
+                                        matchingMode: MatchingModeEnum.Strict,
+                                        url: "",
+                                    });
+                                    this.requestUpdate();
+                                }}>
+                                    <i class="fas fa-plus" aria-hidden="true"></i>
+                                </button>
+                            </div>`;
+                        })}
                         ${redirectUriHelp}
                     </ak-form-element-horizontal>
 
