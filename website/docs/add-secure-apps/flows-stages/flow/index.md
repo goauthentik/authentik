@@ -4,11 +4,11 @@ title: Flows
 
 Flows are a major component in authentik. In conjunction with stages and [policies](../../../customize/policies/index.md), flows are at the heart of our system of building blocks, used to define and execute the workflows of authentication, authorization, enrollment, and user settings.
 
-There are over a dozen default, out-of-the box flows available in authentik. Users can decide if they already have everything they need with the default flows or if they want to [create](#create-a-custom-flow) their own custom flow, using the Admin interface.
+There are over a dozen default, out-of-the box flows available in authentik. Users can decide if they already have everything they need with the [default flows](../flow/examples/default_flows.md) or if they want to [create](#create-a-custom-flow) their own custom flow, using the Admin interface, Terraform, or via the API.
 
 A flow is a method of describing a sequence of stages. A stage represents a single verification or logic step. By connecting a series of stages within a flow (and optionally attaching policies as needed) you can build a highly flexible process for authenticating users, enrolling them, and more.
 
-For example, a standard login flow would consist of the following stages:
+For example a standard login flow would consist of the following stages:
 
 -   **Identification stage**: user identifies themselves via a username or email address
 -   **Password stage**: the user's password is checked against the hash in the database
@@ -21,8 +21,6 @@ When these stages are successfully completed, authentik logs in the user.
 By default, policies are evaluated dynamically, right before the stage (to which a policy is bound) is presented to the user. This flexibility allows the login process to continue, change, or stop, based on the success or failure of each policy.
 
 This default behaviour can be altered by enabling the **Evaluate when flow is planned** option on the stage binding. With this setting a _flow plan_ containing all stages is generated upon flow execution. This means that all attached policies are evaluated upon execution. For more information about flow plans, read our [flow context documentation](./context/index.md).
-
-To determine which flow should be used, authentik will first check which default authentication flow is configured in the active [**Brand**](../../../customize/brands.md). If no default is configured there, the policies in all flows with the matching designation are checked, and the first flow with matching policies sorted by `slug` will be used.
 
 ## Permissions
 
@@ -64,19 +62,9 @@ When creating or editing a flow in the UI of the Admin interface, you can set th
 
 **Designation**: Flows are designated for a single purpose. This designation changes when a flow is used. The following designations are available:
 
--   **Authentication**: this option designates a flow to be used for authentication. The authentication flow should always contain a [**User Login**](../stages/user_login/index.md) stage, which attaches the staged user to the current session.
+import Defaultflowlist from "../flow/flow_list/\_defaultflowlist.mdx";
 
--   **Authorization**: designates a flow to be used for authorization of an application. Can be used to add additional verification steps before the user is allowed to access an application.
-
--   **Invalidation**: designates a flow to be used to invalidate a session. Both used to invalidate a session from authentik and when the session of an application ends. When used as a global invalidation flow should contain a [**User Logout**](../stages/user_logout.md) stage.
-
--   **Enrollment**: designates a flow for enrollment. This flow can contain any amount of verification stages, such as [**Email**](../stages/email/index.mdx) or [**Captcha**](../stages/captcha/index.md). At the end, to create the user, you can use the [**User Write**](../stages/user_write.md) stage, which either updates the currently staged user, or if none exists, creates a new one.
-
--   **Unenrollment**: designates a flow for unenrollment. This flow can contain any amount of verification stages, such as [**email**](../stages/email/index.mdx) or [**Captcha**](../stages/captcha/index.md). As a final stage, to delete the account, use the [**user_delete**](../stages/user_delete.md) stage.
-
--   **Recovery**: designates a flow for recovery. This flow normally contains an [**Identification**](../stages/identification/index.md) stage to find the user. It can also contain any amount of verification stages, such as [**Email**](../stages/email/index.mdx) or [**captcha**](../stages/captcha/index.md). Afterwards, use the [**Prompt**](../stages/prompt/index.md) stage to ask the user for a new password and the [**User Write**](../stages/user_write.md) stage to update the password.
-
--   **Stage configuration**: designates a flow for general setup. This designation doesn't have any constraints in what you can do. For example, by default this designation is used to configure authenticators, like change a password and setup TOTP.
+<Defaultflowlist />
 
 **Authentication**: Using this option, you can configure whether the the flow requires initial authentication or not, whether the user must be a superuser, or if the flow requires an outpost.
 
