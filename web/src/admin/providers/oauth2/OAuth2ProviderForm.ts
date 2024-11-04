@@ -15,23 +15,27 @@ import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
 
-
-
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
+import {
+    ClientTypeEnum,
+    FlowsInstancesListDesignationEnum,
+    IssuerModeEnum,
+    MatchingModeEnum,
+    OAuth2Provider,
+    ProvidersApi,
+    RedirectURI,
+    SubModeEnum,
+} from "@goauthentik/api";
 
-
-import { ClientTypeEnum, FlowsInstancesListDesignationEnum, IssuerModeEnum, MatchingModeEnum, OAuth2Provider, ProvidersApi, RedirectURI, SubModeEnum } from "@goauthentik/api";
-
-
-
-import { makeOAuth2PropertyMappingsSelector, oauth2PropertyMappingsProvider } from "./OAuth2PropertyMappings.js";
+import {
+    makeOAuth2PropertyMappingsSelector,
+    oauth2PropertyMappingsProvider,
+} from "./OAuth2PropertyMappings.js";
 import { makeSourceSelector, oauth2SourcesProvider } from "./OAuth2Sources.js";
-import { AkArrayInput } from "@goauthentik/elements/ak-array-input/ak-array-input";
-
 
 export const clientTypeOptions = [
     {
@@ -213,27 +217,28 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
                     >
                         <ak-array-input
                             .elements=${this.instance?.redirectUris || []}
-                            .elementRenderer=${(ru: RedirectURI, iel: AkArrayInput<RedirectURI>) => {
+                            .elementRenderer=${(ru: RedirectURI) => {
                                 return html`<select name="matchingMode" class="pf-c-form-control">
-                                    <option
-                                        value="${MatchingModeEnum.Strict}"
-                                        ?selected=${ru.matchingMode === MatchingModeEnum.Strict}
-                                    >
-                                        ${msg("Strict")}
-                                    </option>
-                                    <option
-                                        value="${MatchingModeEnum.Regex}"
-                                        ?selected=${ru.matchingMode === MatchingModeEnum.Regex}
-                                    >
-                                        ${msg("Regex")}
-                                    </option>
-                                </select>
-                                <input
-                                    type="text"
-                                    value="${ru.url}"
-                                    class="pf-c-form-control"
-                                    required
-                                />`;
+                                        <option
+                                            value="${MatchingModeEnum.Strict}"
+                                            ?selected=${ru.matchingMode === MatchingModeEnum.Strict}
+                                        >
+                                            ${msg("Strict")}
+                                        </option>
+                                        <option
+                                            value="${MatchingModeEnum.Regex}"
+                                            ?selected=${ru.matchingMode === MatchingModeEnum.Regex}
+                                        >
+                                            ${msg("Regex")}
+                                        </option>
+                                    </select>
+                                    <input
+                                        type="text"
+                                        value="${ru.url}"
+                                        class="pf-c-form-control"
+                                        required
+                                        name="url"
+                                    />`;
                             }}
                         ></ak-array-input>
                         ${redirectUriHelp}
