@@ -59,7 +59,7 @@ class MicrosoftActiveDirectory(BaseLDAPSynchronizer):
             return
         pwd_last_set: datetime = attributes.get("pwdLastSet", datetime.now())
         pwd_last_set = pwd_last_set.replace(tzinfo=UTC)
-        if created or pwd_last_set >= user.password_change_date:
+        if created or pwd_last_set > user.password_change_date:
             self.message(f"'{user.username}': Reset user's password")
             self._logger.debug(
                 "Reset user's password",
@@ -68,6 +68,7 @@ class MicrosoftActiveDirectory(BaseLDAPSynchronizer):
                 pwd_last_set=pwd_last_set,
             )
             user.set_unusable_password()
+            user.password_change_date = pwd_last_set
             user.save()
 
     def ms_check_uac(self, attributes: dict[str, Any], user: User):
