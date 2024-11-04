@@ -127,8 +127,10 @@ async function buildOneSource(source, dest) {
 }
 
 async function buildAuthentik(interfaces) {
-    const code = await Promise.allSettled(interfaces.map(([source, dest]) => buildOneSource(source, dest)));
-    const finalCode = code.reduce((a, res) => a + res.value, 0)
+    const code = await Promise.allSettled(
+        interfaces.map(([source, dest]) => buildOneSource(source, dest)),
+    );
+    const finalCode = code.reduce((a, res) => a + res.value, 0);
     if (finalCode > 0) {
         return 1;
     }
@@ -170,9 +172,11 @@ if (process.argv.length > 2 && (process.argv[2] === "-w" || process.argv[2] === 
     });
 } else if (process.argv.length > 2 && (process.argv[2] === "-p" || process.argv[2] === "--proxy")) {
     // There's no watch-for-proxy, sorry.
-    process.exit(await buildAuthentik(
-        interfaces.filter(([_, dest]) => ["standalone/loading", "."].includes(dest)),
-    ));
+    process.exit(
+        await buildAuthentik(
+            interfaces.filter(([_, dest]) => ["standalone/loading", "."].includes(dest)),
+        ),
+    );
 } else {
     // And the fallback: just build it.
     process.exit(await buildAuthentik(interfaces));
