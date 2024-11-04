@@ -12,6 +12,7 @@ from urllib.parse import urlparse, urlunparse
 from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePrivateKey
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
+from dacite import Config
 from dacite.core import from_dict
 from django.contrib.postgres.indexes import HashIndex
 from django.db import models
@@ -287,7 +288,13 @@ class OAuth2Provider(WebfingerProvider, Provider):
     def redirect_uris(self) -> list[RedirectURI]:
         uris = []
         for entry in self._redirect_uris:
-            uris.append(from_dict(RedirectURI, entry))
+            uris.append(
+                from_dict(
+                    RedirectURI,
+                    entry,
+                    config=Config(type_hooks={RedirectURIMatchingMode: RedirectURIMatchingMode}),
+                )
+            )
         return uris
 
     @redirect_uris.setter
