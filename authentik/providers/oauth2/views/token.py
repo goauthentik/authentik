@@ -521,7 +521,7 @@ class TokenView(View):
         response = super().dispatch(request, *args, **kwargs)
         allowed_origins = []
         if self.provider:
-            allowed_origins = self.provider.redirect_uris.split("\n")
+            allowed_origins = [x.url for x in self.provider.redirect_uris]
         cors_allow(self.request, response, *allowed_origins)
         return response
 
