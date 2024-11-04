@@ -6,6 +6,7 @@ import { ascii_letters, digits, first, randomString } from "@goauthentik/common/
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";
+import "@goauthentik/elements/ak-array-input/ak-array-input";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
@@ -17,7 +18,7 @@ import "@goauthentik/elements/utils/TimeDeltaHelp";
 
 
 import { msg } from "@lit/localize";
-import { TemplateResult, css, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -29,6 +30,7 @@ import { ClientTypeEnum, FlowsInstancesListDesignationEnum, IssuerModeEnum, Matc
 
 import { makeOAuth2PropertyMappingsSelector, oauth2PropertyMappingsProvider } from "./OAuth2PropertyMappings.js";
 import { makeSourceSelector, oauth2SourcesProvider } from "./OAuth2Sources.js";
+import { AkArrayInput } from "@goauthentik/elements/ak-array-input/ak-array-input";
 
 
 export const clientTypeOptions = [
@@ -95,13 +97,13 @@ export const issuerModeOptions = [
 
 const redirectUriHelpMessages = [
     msg(
-        "Valid redirect URLs after a successful authorization flow. Also specify any origins here for Implicit flows.",
+        "Valid redirect URIs after a successful authorization flow. Also specify any origins here for Implicit flows.",
     ),
     msg(
         "If no explicit redirect URIs are specified, the first successfully used redirect URI will be saved.",
     ),
     msg(
-        'To allow any redirect URI, set this value to ".*". Be aware of the possible security implications this can have.',
+        'To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.',
     ),
 ];
 
@@ -123,14 +125,6 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
 
     @state()
     redirectUris: RedirectURI[] = [];
-
-    static get styles() {
-        return super.styles.concat(css`
-            select.pf-c-form-control {
-                width: 100px;
-            }
-        `);
-    }
 
     async loadInstance(pk: number): Promise<OAuth2Provider> {
         const provider = await new ProvidersApi(DEFAULT_CONFIG).providersOauth2Retrieve({
@@ -217,9 +211,10 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
                         required
                         name="redirectUris"
                     >
-                        ${this.redirectUris.map((ru) => {
-                            return html`<div class="pf-c-input-group">
-                                <select name="matchingMode" class="pf-c-form-control">
+                        <ak-array-input
+                            .elements=${this.instance?.redirectUris || []}
+                            .elementRenderer=${(ru: RedirectURI, iel: AkArrayInput<RedirectURI>) => {
+                                return html`<select name="matchingMode" class="pf-c-form-control">
                                     <option
                                         value="${MatchingModeEnum.Strict}"
                                         ?selected=${ru.matchingMode === MatchingModeEnum.Strict}
@@ -238,18 +233,9 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
                                     value="${ru.url}"
                                     class="pf-c-form-control"
                                     required
-                                />
-                                <button class="pf-c-button pf-m-control" type="button" @click=${() => {
-                                    this.redirectUris.push({
-                                        matchingMode: MatchingModeEnum.Strict,
-                                        url: "",
-                                    });
-                                    this.requestUpdate();
-                                }}>
-                                    <i class="fas fa-plus" aria-hidden="true"></i>
-                                </button>
-                            </div>`;
-                        })}
+                                />`;
+                            }}
+                        ></ak-array-input>
                         ${redirectUriHelp}
                     </ak-form-element-horizontal>
 
