@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-28 00:09+0000\n"
+"POT-Creation-Date: 2024-11-05 00:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -99,6 +99,10 @@ msgstr ""
 
 #: authentik/brands/models.py
 msgid "Brands"
+msgstr ""
+
+#: authentik/core/api/devices.py
+msgid "Extra description not available"
 msgstr ""
 
 #: authentik/core/api/providers.py
