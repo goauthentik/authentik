@@ -10,7 +10,7 @@ It's important to understand how authentik works with and supports the OAuth2 pr
 
 authentik can act either as the OP, (OpenID Provider, with authentik as the IdP), or as the RP (Relying Party, or the application that uses OAuth2 to authenticate). If you want to configure authentik to use [sources](../../../users-sources/sources/index.md) then authentik acts as the RP where the OP is the source configure.
 
-OAuth supports multiple grant types; for more information see [below](#grant-types).
+OAuth supports multiple grant types; for more information see [below](#OAuth2-flows-and-grant-types).
 
 All standard OAuth flows (implicit flow, hybrid flow, device code flow) are supported in authentik, and we follow the [OIDC spec](https://openid.net/specs/openid-connect-core-1_0.html). OAuth2 in authentik supports OAuth, PKCE, [Github compatibility](./github-compatibility.md) and the RP receives data from our mapping system.
 
@@ -53,6 +53,7 @@ sequenceDiagram
 ## OAuth2 flows and grant types
 
 words here about the three main categories of OAuth2 flows and grants...
+
 -   Web-based application authorization (Authorization and Implicit)
 -   Client_credentials (M2M)
 -   Device_code
@@ -60,9 +61,10 @@ words here about the three main categories of OAuth2 flows and grants...
 ### Category 1: Web-based application authorization
 
 The flows and grant types used in the category are those used for a typical authorization process, with a user and an application:
--   the *Authorization code* flow and grant type
--   the *Implicit* flow and grant type
--   the *Refresh token* flow and grant type
+
+-   the _Authorization code_ flow and grant type
+-   the _Implicit_ flow and grant type
+-   the _Refresh token_ flow and grant type
 
 #### Authorization code flow
 
