@@ -10,9 +10,7 @@ It's important to understand how authentik works with and supports the OAuth2 pr
 
 authentik can act either as the OP, (OpenID Provider, with authentik as the IdP), or as the RP (Relying Party, or the application that uses OAuth2 to authenticate). If you want to configure authentik to use [sources](../../../users-sources/sources/index.md) then authentik acts as the RP where the OP is the source configure.
 
-OAuth supports multiple grant types; for more information see [below](#OAuth2-flows-and-grant-types).
-
-All standard OAuth flows (implicit flow, hybrid flow, device code flow) are supported in authentik, and we follow the [OIDC spec](https://openid.net/specs/openid-connect-core-1_0.html). OAuth2 in authentik supports OAuth, PKCE, [Github compatibility](./github-compatibility.md) and the RP receives data from our mapping system.
+All standard OAuth flows (implicit flow, hybrid flow, device code flow) and grant types are supported in authentik, and we follow the [OIDC spec](https://openid.net/specs/openid-connect-core-1_0.html). OAuth2 in authentik supports OAuth, PKCE, [Github compatibility](./github-compatibility.md) and the RP receives data from our mapping system.
 
 The authentik OAuth2 provider comes with all the standard functionality and features of OAuth2, including the OAuth2 security principles such as no cleartext storage of credentials, configurable encryption, configurable short expiration times, and the configuration of automatic rotation of refresh tokens. In short, our OAuth2 protocol support does not cut any corners.
 
