@@ -9,13 +9,22 @@ The main settings that brands influence are flows and branding.
 
 ## Flows
 
-authentik picks a default flow by selecting the flow that is configured in the current brand, otherwise any flow that:
+You can explicitly select, in your instance's Brand settings, the default flow to use for the following configurations:
+
+-   Authentication flow: the flow used to authenticate users. If left empty, the first applicable flow sorted by the slug is used.
+-   Invalidation flow: for typical use cases, select the `default-invalidation-flow` (Logout) flow. This flow logs the user out of authentik when the application session ends (user logs out of the app).
+-   Recovery flow: if set, the user can access an option to recover their login credentials.
+-   Unenrollment flow: if set, users are able to unenroll themselves using this flow. If no flow is set, option is not shown.
+-   User settings flow: if set, users are able to configure details of their profile.
+-   Device code flow: if set, the OAuth Device Code profile can be used, and the selected flow will be used to enter the code.
+
+If a default flow is _not_ set in the brand, then authentik selects any flow that:
 
     - matches the required designation
     - comes first sorted by slug
     - is allowed by policies
 
-This means that if you want to select a default flow based on policy, you can leave the brand default empty.
+This means that if you want to select a default flow based on policy, you can leave the brand default empty. To learn more about default flows, refer to our [documentation](../add-secure-apps/flows-stages/flow/examples/default_flows.md).
 
 ## Branding
 

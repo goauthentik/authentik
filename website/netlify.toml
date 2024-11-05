@@ -62,7 +62,10 @@
   to = "/docs/providers/property-mappings/expression"
   status = 302
 
-
+[[redirects]]
+  from = "/docs/add-secure-apps/flows-stages/flow/layouts.md"
+  to = "/docs/add-secure-apps/flows-stages/flow/executors/if-flow.md"
+  status = 302
 
 
 

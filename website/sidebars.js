@@ -251,14 +251,14 @@ export default {
                                 id: "add-secure-apps/flows-stages/flow/index",
                             },
                             items: [
-                                "add-secure-apps/flows-stages/flow/layouts",
                                 "add-secure-apps/flows-stages/flow/inspector",
                                 "add-secure-apps/flows-stages/flow/context/index",
                                 {
                                     type: "category",
-                                    label: "Examples",
+                                    label: "Defaults and Examples",
                                     items: [
                                         "add-secure-apps/flows-stages/flow/examples/flows",
+                                        "add-secure-apps/flows-stages/flow/examples/default_flows",
                                         "add-secure-apps/flows-stages/flow/examples/snippets",
                                     ],
                                 },
