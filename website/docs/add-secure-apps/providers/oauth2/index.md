@@ -2,7 +2,7 @@
 title: OAuth2 provider
 ---
 
-In authentik, you can create an OAuth provider that authentik uses to authenticate the user to the associated application. This provider supports both generic OAuth2 as well as OpenID Connect (OIDC).
+In authentik, you can [create](./create-oauth2-provider.md) an OAuth provider that authentik uses to authenticate the user to the associated application. This provider supports both generic OAuth2 as well as OpenID Connect (OIDC).
 
 ## authentik and OAuth2
 
@@ -52,7 +52,7 @@ sequenceDiagram
 
 words here about the three main categories of OAuth2 flows and grants...
 
--   Web-based application authorization (Authorization and Implicit)
+-   Web-based application authorization (Authorization, Implicit, Refresh token)
 -   Client_credentials (M2M)
 -   Device_code
 
