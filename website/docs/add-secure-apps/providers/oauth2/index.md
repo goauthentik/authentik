@@ -12,7 +12,7 @@ Authentik can act either as the OP, (OpenID Provider, with authentik as the IdP)
 
 OAuth supports multiple grant types; for more information see [below](#grant-types).
 
-All standard OAuth flows (implicit flow, hybrid flow, device code flow) are supported in authentik, and we follow the [OIDC spec](https://openid.net/specs/openid-connect-core-1_0.html). OAuth supports generic OAuth, PKCE, [Github compatibility](./github-compatibilty.md) and the RP uses our mapping system to relay info to app.
+All standard OAuth flows (implicit flow, hybrid flow, device code flow) are supported in authentik, and we follow the [OIDC spec](https://openid.net/specs/openid-connect-core-1_0.html). OAuth supports generic OAuth, PKCE, [Github compatibility](./github-compatibility.md) and the RP uses our mapping system to relay info to app.
 
 The authentik OAuth2 provider comes with all the standard functionality and features of OAuth2, including the OAuth2 security principles such as no cleartext storage of credentials, encryption, short expiration times, and automatic rotation of refresh tokens. In short, our OAuth2 protocol support does not cut any corners.
 
@@ -23,6 +23,7 @@ The authentik OAuth2 provider comes with all the standard functionality and feat
 OAuth2 is an authentication protocol that allows an application (RP) to delegate authorization to an OP. OIDC is an authentication protocol built on top of OAuth2, which proves IdP and authorization (ssh) capabilities.
 
 **Oauth2** typically requires two requests (unlike the previous "three-legged OAuth). The two "legs", or steps, for OAuth2 are:
+
 1. user's request to the OpenID Provider, which triggers authorization, and
 2. the Client request for an Identity token and an access token and optionally, a refresh token).
 
@@ -107,7 +108,7 @@ return True
 
 #### GitHub compatibility
 
-For these scopes, refer to [GitHub Compatibility](./github-compatibilty.md).
+For these scopes, refer to [GitHub Compatibility](./github-compatibility.md).
 
 #### authentik
 
