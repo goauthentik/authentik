@@ -6,30 +6,48 @@ In authentik, you can create an OAuth provider that authentik uses to authentica
 
 ## authentik and OAuth2
 
-It's important to understand how authentik works with and supports the OAuth2 protocol, so before taking a [closer look at OAuth protocol](#about-oauth2) itself, let's cover a bit about authentik.
+It's important to understand how authentik works with and supports the OAuth2 protocol, so before taking a [closer look at OAuth protocol](#about-oauth2-and-oidc) itself, let's cover a bit about authentik.
 
-Authentik can act either as the OP, (OpenID Provider, with authentik as the IdP), or as the RP (Relying Party, or the application that uses authentik to authenticate). If you want to configure authentik to use [sources](../../../users-sources/sources/index.md) then authentik acts as the RP, because the app uses the source’s credential to authenticate.
+authentik can act either as the OP, (OpenID Provider, with authentik as the IdP), or as the RP (Relying Party, or the application that uses OAuth2 to authenticate). If you want to configure authentik to use [sources](../../../users-sources/sources/index.md) then authentik acts as the RP where the OP is the source configure.
 
 OAuth supports multiple grant types; for more information see [below](#grant-types).
 
-All standard OAuth flows (implicit flow, hybrid flow, device code flow) are supported in authentik, and we follow the [OIDC spec](https://openid.net/specs/openid-connect-core-1_0.html). OAuth supports generic OAuth, PKCE, [Github compatibility](./github-compatibility.md) and the RP uses our mapping system to relay info to app.
+All standard OAuth flows (implicit flow, hybrid flow, device code flow) are supported in authentik, and we follow the [OIDC spec](https://openid.net/specs/openid-connect-core-1_0.html). OAuth2 in authentik supports OAuth, PKCE, [Github compatibility](./github-compatibility.md) and the RP receives data from our mapping system.
 
-The authentik OAuth2 provider comes with all the standard functionality and features of OAuth2, including the OAuth2 security principles such as no cleartext storage of credentials, encryption, short expiration times, and automatic rotation of refresh tokens. In short, our OAuth2 protocol support does not cut any corners.
+The authentik OAuth2 provider comes with all the standard functionality and features of OAuth2, including the OAuth2 security principles such as no cleartext storage of credentials, configurable encryption, configurable short expiration times, and the configuration of automatic rotation of refresh tokens. In short, our OAuth2 protocol support does not cut any corners.
 
-## About OAuth2
+## About OAuth2 and OIDC
 
-> "OAuth 2.0, which stands for “Open Authorization”, is a standard designed to allow a website or application to access resources hosted by other web apps on behalf of a user." ([source](https://auth0.com/intro-to-iam/what-is-oauth-2))
+> todo quote from https://oauth.net/2/
 
-OAuth2 is an authentication protocol that allows an application (RP) to delegate authorization to an OP. OIDC is an authentication protocol built on top of OAuth2, which proves IdP and authorization (ssh) capabilities.
+OAuth2 is an authorization protocol that allows an application (RP) to delegate authorization to an OP. OIDC is an authentication protocol built on top of OAuth2, which provides Identity and other data on top of OAuth2.
 
-**Oauth2** typically requires two requests (unlike the previous "three-legged OAuth). The two "legs", or steps, for OAuth2 are:
+**OAuth2** typically requires two requests (unlike the previous "three-legged" OAuth 1). The two "legs" or requests, for OAuth2 are:
 
-1. user's request to the OpenID Provider, which triggers authorization, and
-2. the Client request for an Identity token and an access token and optionally, a refresh token).
+1. An authorization request is prepared by the RP and contains parameters for its implementation of OAuth and which data it requires, and the User's browser is redirected to that URL.
+2. The RP sends a request to authentik in the background to exchange the access code for a token (and optionally a refresh token).
 
-With OAuth2, when a user on the Client machine (known as the RP or Relying Party) logs in, the RP then sends an authentication request to the OpenID Provider (OP). The OP authenticates the User and generates an authorization code. The OP then redirects the Client back to the RP, along with that authorization code. The RP then sends that same authorization cade, the client_id, and the client_secret to the OP. Finally, the OP responds by sending an Identity Token saying this user has been authorised (the RP validates this token using cryptography) and an Access Token.
+In detail, with OAuth2, when a user accesses the application (known as the RP or Relying Party) via their browser, the RP then prepares a URL with parameters for the OpenID Provider (OP), which the users's browser is redirected to. The OP authenticates the User and generates an authorization code. The OP then redirects the Client back to the RP, along with that authorization code. In the background, the RP then sends that same authorization code in a request authenticated by the `client_id` and `client_secret` to the OP. Finally, the OP responds by sending an Access Token saying this user has been authorised (the RP is recommended to validates this token using cryptography) and optionally a Refresh Token.
 
-![](./OAuth2-diagram.png)
+```mermaid
+sequenceDiagram
+    participant user as User
+    participant rp as RP (Relying Party)
+    participant op as OP (OpenID Provider)
+
+    user->>rp: User goes to access application
+    rp->>user: Prepares & redirects user to OP
+
+    user->>op: User authentication & authorization happens
+    op->>rp: Redirect back with authorization code
+
+    alt Background
+        rp->>op: Exchange authorization code
+        op->>rp: RP receives Access token (optionally Refresh Token)
+    end
+
+    rp->>user: User is logged in
+```
 
 ## OAuth2 flows
 
@@ -43,7 +61,7 @@ If you configure authentik to use "Offline access" then during the initial auth 
 
 ### Implicit flow
 
-This is for more modern single page-applicatinss, or ones you download, that are all client-side (all JS, no backend logic, etc) and have no server to make tokens. Because the secret cannot be stored on the client machine, the implicit flow is required in these architectures. With the implicit flow, the flow skips the second part of the two requests seen in the authorization flow; after the initial author request, the implicit flow receives a token, and then with cryptocracy and with PKCE, it can validate that it is the correct client, and that is safe to send a token. The RP (still called that with this implicit flow) can use cryptography to validate the token.
+This is for more modern single page-applications, or ones you download, that are all client-side (all JS, no backend logic, etc) and have no server to make tokens. Because the secret cannot be stored on the client machine, the implicit flow is required in these architectures. With the implicit flow, the flow skips the second part of the two requests seen in the authorization flow; after the initial author request, the implicit flow receives a token, and then with cryptography and with PKCE, it can validate that it is the correct client, and that is safe to send a token. The RP (still called that with this implicit flow) can use cryptography to validate the token.
 
 An OAuth grant type is the same as the implicit flow...
 
@@ -92,6 +110,10 @@ Starting with authentik 2024.2, this grant requires the `offline_access` scope.
 ### `client_credentials`:
 
 See [Machine-to-machine authentication](./client_credentials.md)
+
+### device code flow
+
+See [Device code flow](./device_code.md)
 
 ## Scope authorization
 
