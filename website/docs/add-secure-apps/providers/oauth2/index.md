@@ -35,7 +35,7 @@ With OAuth2, when a user on the Client machine (known as the RP or Relying Party
 
 words here about OAuth2 flows
 
-## Authorization code flow
+### Authorization code flow
 
 The authorization code flow is for environments with both a Client and a application server, where the back and forth happens between the client and an app server (the logic lives on app server). The RP needs to authorise itself to the OP. Clint ID (public, identifies which app is talking to it) and client secret (the password) that the RP uses to authenticate.
 
