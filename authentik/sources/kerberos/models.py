@@ -6,7 +6,6 @@ from tempfile import gettempdir
 from typing import Any
 
 import gssapi
-import kadmin
 import pglock
 from django.db import connection, models
 from django.db.models.fields import b64decode
@@ -14,6 +13,8 @@ from django.http import HttpRequest
 from django.shortcuts import reverse
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
+from kadmin import KAdmin
+from kadmin.exceptions import PyKAdminException
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
@@ -30,9 +31,8 @@ from authentik.flows.challenge import RedirectChallenge
 LOGGER = get_logger()
 
 
-# python-kadmin leaks file descriptors. As such, this global is used to reuse
-# existing kadmin connections instead of creating new ones, which results in less to no file
-# descriptors leaks
+# Creating kadmin connections is expensive. As such, this global is used to reuse
+# existing kadmin connections instead of creating new ones
 _kadmin_connections: dict[str, Any] = {}
 
 
@@ -198,13 +198,13 @@ class KerberosSource(Source):
         conf_path.write_text(self.krb5_conf)
         return str(conf_path)
 
-    def _kadmin_init(self) -> "kadmin.KAdmin | None":
+    def _kadmin_init(self) -> KAdmin | None:
         # kadmin doesn't use a ccache for its connection
         # as such, we don't need to create a separate ccache for each source
         if not self.sync_principal:
             return None
         if self.sync_password:
-            return kadmin.init_with_password(
+            return KAdmin.with_password(
                 self.sync_principal,
                 self.sync_password,
             )
@@ -215,18 +215,18 @@ class KerberosSource(Source):
                 keytab_path.touch(mode=0o600)
                 keytab_path.write_bytes(b64decode(self.sync_keytab))
                 keytab = f"FILE:{keytab_path}"
-            return kadmin.init_with_keytab(
+            return KAdmin.with_keytab(
                 self.sync_principal,
                 keytab,
             )
         if self.sync_ccache:
-            return kadmin.init_with_ccache(
+            return KAdmin.with_ccache(
                 self.sync_principal,
                 self.sync_ccache,
             )
         return None
 
-    def connection(self) -> "kadmin.KAdmin | None":
+    def connection(self) -> KAdmin | None:
         """Get kadmin connection"""
         if str(self.pk) not in _kadmin_connections:
             kadm = self._kadmin_init()
@@ -246,7 +246,7 @@ class KerberosSource(Source):
                     status["status"] = "no connection"
                     return status
                 status["principal_exists"] = kadm.principal_exists(self.sync_principal)
-            except kadmin.KAdminError as exc:
+            except PyKAdminException as exc:
                 status["status"] = str(exc)
         return status
 

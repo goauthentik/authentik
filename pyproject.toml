@@ -131,8 +131,7 @@ pydantic-scim = "*"
 pyjwt = "*"
 pyrad = "*"
 python = "~3.12"
-# Fork of python-kadmin with compilation fixes as it's unmaintained
-python-kadmin = { git = "https://github.com/authentik-community/python-kadmin.git", tag = "v0.2.0" }
+python-kadmin-rs = "0.2.0"
 pyyaml = "*"
 requests-oauthlib = "*"
 scim2-filter-parser = "*"
