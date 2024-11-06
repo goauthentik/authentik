@@ -61,7 +61,7 @@ words here about the three main categories of OAuth2 flows and grants...
 The flows and grant types used in the category are those used for a typical authorization process, with a user and an application:
 
 -   the _Authorization code_ flow and grant type
--   the _Implicit_ flow and grant type
+-   the _Implicit_ flow and grant type (legacy)
 -   the _Refresh token_ flow and grant type
 
 #### Authorization code flow
@@ -74,28 +74,31 @@ If you configure authentik to use "Offline access" then during the initial auth 
 Starting with authentik 2024.2, applications only receive an access token. To receive a refresh token, both applications and authentik must be configured to request the `offline_access` scope. In authentik this can be done by selecting the `offline_access` Scope mapping in the provider settings.
 :::
 
-### `authorization_code` grant type:
+#### `authorization_code` grant type:
 
 This grant is used to convert an authorization code to an access token (and optionally refresh token). The authorization code is retrieved through the Authorization flow, and can only be used once, and expires quickly.
 
-#### Implicit
+#### Implicit flow
 
-This is for more modern single page-applications, or ones you download, that are all client-side (all JS, no backend logic, etc) and have no server to make tokens. Because the secret cannot be stored on the client machine, the implicit flow is required in these architectures. With the implicit flow, the flow skips the second part of the two requests seen in the authorization flow; after the initial author request, the implicit flow receives a token, and then with cryptography and with PKCE, it can validate that it is the correct client, and that is safe to send a token. The RP (still called that with this implicit flow) can use cryptography to validate the token.
-This is for more modern single page-applications, or ones you download, that are all client-side (all JS, no backend logic, etc) and have no server to make tokens. Because the secret cannot be stored on the client machine, the implicit flow is required in these architectures. With the implicit flow, the flow skips the second part of the two requests seen in the authorization flow; after the initial author request, the implicit flow receives a token, and then with cryptocracy and with PKCE, it can validate that it is the correct client, and that is safe to send a token. The RP (still called that with this implicit flow) can use cryptography to validate the token.
+:::info
+The OAuth 2.0 [Security Best Current Practice document](https://tools.ietf.org/html/draft-ietf-oauth-security-topics) recommends against using the Implicit flow entirely, and OAuth 2.0 for Browser-Based Apps describes the technique of using the authorization code flow with PKCE instead. ([source](https://oauth.net/2/grant-types/implicit/))
+:::
 
-An OAuth grant type is the same as the implicit flow...
+This flow is for more modern single page-applications, or ones you download, that are all client-side (all JS, no backend logic, etc) and have no server to make tokens. Because the secret cannot be stored on the client machine, the implicit flow is required in these architectures. With the implicit flow, the flow skips the second part of the two requests seen in the authorization flow; after the initial author request, the implicit flow receives a token, and then with cryptocracy and with PKCE, it can validate that it is the correct client, and that is safe to send a token. The RP (still called that with this implicit flow) can use cryptography to validate the token.
 
-Downside of implicit is that there is no client secret.
+#### Implicit grant types
 
 Note here that they should use a standard library (one appropriate for their language, etc).
 
 It's important with OAuth, there are a lot of validation steps. There is a third step (past the credentials and the client secret)... the redirect of the authorisations step, the rp redirects to OP gives parts, this is what I want.... One thing is the URL to redirect back to the app (the URL of the RP that does the checks)... this is is a scary attack vector. Sooooo the OP much validate against an allow list... th authentik admin configures this redirect field in the Provider... there are some things that authentik does: 1. When you create a new OAuth provider and app, if you leave the redirect field empty, the first time someone uses that app to, authentik uses that Url as the saved redirect URL. 2) you can also in authentik for advanced use cases, you can use regular expressions instead of a redirect Url... if you want to list 10 diff apps, instead of listing all ten you create an expression with wildcards.. this will work. 3) possible gotcha.. in URL, we have a dot as a separator,, but in regex a dot means "one of any character". So you should escape the dot to say No I mean really exactly this Url not wildcards. Also when we do 1) above, we escape the dot in that URL.
 
-#### Refresh token grant
+#### Refresh token flow
 
 // TODO: Copied from below
 
 Refresh tokens can be used as long-lived tokens to access user data, and further renew the refresh token down the road.
+
+#### Refresh token grant types
 
 :::info
 Starting with authentik 2024.2, this grant requires the `offline_access` scope.
