@@ -1,6 +1,6 @@
 import { execSync } from "child_process";
 import { fileURLToPath } from "url";
-import { readFileSync } from "fs";
+import { readFileSync, writeFileSync } from "fs";
 import path from "path";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
@@ -61,7 +61,8 @@ const structurefile = readFileSync(structureFilePath, "utf-8");
 const schemablock =
     /<Collapse title="Available Older Blueprint Schemas">.*?<\/Collapse>/m;
 
-console.log(
+writeFileSync(
+    structureFilePath,
     structurefile.replace(
         schemablock,
         `<Collapse title="Available Older Blueprint Schemas">
