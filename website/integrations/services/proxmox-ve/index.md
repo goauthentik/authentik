@@ -27,48 +27,55 @@ The following placeholders will be used:
 ## authentik setup
 
 1. **Navigate to the Admin interface, then click Providers to create an OAuth2/OpenID provider with these settings:**
-   - **Name:** proxmox
-   - **Redirect URI:** `https://proxmox.company:8006` (No trailing slash, include the web interface port)
-   - **Signing Key:** Select any available key
+
+    - **Name:** proxmox
+    - **Redirect URI:** `https://proxmox.company:8006` (No trailing slash, include the web interface port)
+    - **Signing Key:** Select any available key
 
 2. **Create an application using this provider**
-   - Under **Applications** > **Applications** in the Admin interface, create a new application and configure it to use the provider created in the previous step.
-   - Optionally, apply access restrictions to the application.
-   - Set the **Launch URL** to `https://proxmox.company:8006`.
+    - Under **Applications** > **Applications** in the Admin interface, create a new application and configure it to use the provider created in the previous step.
+    - Optionally, apply access restrictions to the application.
+    - Set the **Launch URL** to `https://proxmox.company:8006`.
 
 ## Proxmox VE setup (web interface)
 
 1. **Log in to the Proxmox web interface**
-   - Access the Proxmox VE web interface and log in with an administrative account.
+
+    - Access the Proxmox VE web interface and log in with an administrative account.
 
 2. **Navigate to authentication source settings**
-   - Go to **Datacenter** > **Permissions** > **Realms**.
-   - Click **Add** and select **Realm** to open the Add Realm dialog.
+
+    - Go to **Datacenter** > **Permissions** > **Realms**.
+    - Click **Add** and select **Realm** to open the Add Realm dialog.
 
 3. **Fill out the OpenID Connect settings**
-   - In the dialog that appears, fill in the following details:
-     - **Issuer URL**: Enter the Issuer URL from authentik (found under *Provider Metadata*), e.g., `https://authentik.company/application/o/proxmox/`.
-     - **Realm**: Enter a name for this authentication source, such as `authentik`.
-     - **Client ID**: Enter the Client ID found on the provider overview page.
-     - **Client Key**: Enter the Client Secret found by clicking *Edit* on the Provider overview page.
-     - **Username claim**: Set this to `username`.
-     - **Autocreate users**: Check this box if you want Proxmox to automatically create users upon first login. If checked, users will appear in Proxmox with the format `<authentik username>@authentik`.
-     - **Default**: Check this if you want OpenID Connect to be pre-selected as the default on the login screen.
 
-   **Example configuration**:
+    - In the dialog that appears, fill in the following details:
+        - **Issuer URL**: Enter the Issuer URL from authentik (found under _Provider Metadata_), e.g., `https://authentik.company/application/o/proxmox/`.
+        - **Realm**: Enter a name for this authentication source, such as `authentik`.
+        - **Client ID**: Enter the Client ID found on the provider overview page.
+        - **Client Key**: Enter the Client Secret found by clicking _Edit_ on the Provider overview page.
+        - **Username claim**: Set this to `username`.
+        - **Autocreate users**: Check this box if you want Proxmox to automatically create users upon first login. If checked, users will appear in Proxmox with the format `<authentik username>@authentik`.
+        - **Default**: Check this if you want OpenID Connect to be pre-selected as the default on the login screen.
 
-   ![Proxmox Add OpenID Connect Server Dialog](proxmox-source.png)
+    **Example configuration**:
+
+    ![Proxmox Add OpenID Connect Server Dialog](proxmox-source.png)
 
 4. **Save the configuration**
-   - Click **Add** to save the settings.
+
+    - Click **Add** to save the settings.
 
 5. **Assign permissions**
-   - After setting up the authentication source, go to **Permissions** to assign roles and permissions for each user as needed. 
+
+    - After setting up the authentication source, go to **Permissions** to assign roles and permissions for each user as needed.
 
 6. **Logging in**
-   - Users can select this authentication method from the Proxmox login screen, or if set as default, it will be automatically selected.
-  
-   ![Proxmox login page with authentik marked as default login method](proxmox-login.png)
+
+    - Users can select this authentication method from the Proxmox login screen, or if set as default, it will be automatically selected.
+
+    ![Proxmox login page with authentik marked as default login method](proxmox-login.png)
 
 ## Proxmox VE setup (CLI)
 
