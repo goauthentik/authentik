@@ -69,9 +69,8 @@ def release_lock(cursor: Cursor):
     cursor.execute("SELECT pg_advisory_unlock(%s)", (ADV_LOCK_UID,))
     LOCKED = False
 
-
-def run_migrations():
-    conn = connect(
+def get_postgres():
+    return connect(
         dbname=CONFIG.get("postgresql.name"),
         user=CONFIG.get("postgresql.user"),
         password=CONFIG.get("postgresql.password"),
@@ -82,6 +81,9 @@ def run_migrations():
         sslcert=CONFIG.get("postgresql.sslcert"),
         sslkey=CONFIG.get("postgresql.sslkey"),
     )
+
+def run_migrations():
+    conn = get_postgres()
     curr = conn.cursor()
     try:
         wait_for_lock(curr)
