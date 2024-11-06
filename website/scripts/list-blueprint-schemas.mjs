@@ -43,7 +43,7 @@ const valid = results
     .map((result) => result.value.url)
     .map((url) => {
         const thedate = version.exec(url)[1];
-        return `- [Version ${thedate}](${url})`;
+        return `- [Version ${thedate.replace("-", ".")}](${url})`;
     });
 
 const structurefile = readFileSync(structureFilePath, "utf-8");
