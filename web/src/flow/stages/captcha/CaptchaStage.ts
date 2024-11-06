@@ -259,11 +259,14 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
     }
 
     render() {
+        if (this.embedded) {
+            if (!this.challenge.interactive) {
+                return html``;
+            }
+            return this.renderBody();
+        }
         if (!this.challenge) {
             return html`<ak-empty-state loading> </ak-empty-state>`;
-        }
-        if (this.embedded) {
-            return this.renderBody();
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
