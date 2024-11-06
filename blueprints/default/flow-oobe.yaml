@@ -2,6 +2,11 @@ metadata:
   name: Default - Out-of-box-experience flow
 version: 1
 entries:
+- model: authentik_blueprints.metaapplyblueprint
+  attrs:
+    identifiers:
+      name: Default - Password policy
+    required: false
 - attrs:
     denied_action: message_continue
     designation: stage_configuration
@@ -101,7 +106,8 @@ entries:
     - !KeyOf prompt-field-email
     - !KeyOf prompt-field-password
     - !KeyOf prompt-field-password-repeat
-    validation_policies: []
+    validation_policies:
+    - !Find [authentik_policies_password.passwordpolicy, [name, default-password-change-password-policy]]
   id: stage-default-oobe-password
   identifiers:
     name: stage-default-oobe-password
