@@ -8,6 +8,7 @@ from django.apps.registry import Apps
 from django.conf import settings
 from django.db import migrations, models
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
+from django.utils.timezone import now
 
 import authentik.events.models
 import authentik.lib.models
@@ -292,7 +293,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="event",
             name="expires",
-            field=models.DateTimeField(default=authentik.events.models.default_event_duration),
+            field=models.DateTimeField(default=now),
         ),
         migrations.AddField(
             model_name="event",

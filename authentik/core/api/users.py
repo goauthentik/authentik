@@ -666,7 +666,12 @@ class UserViewSet(UsedByMixin, ModelViewSet):
 
     @permission_required("authentik_core.impersonate")
     @extend_schema(
-        request=OpenApiTypes.NONE,
+        request=inline_serializer(
+            "ImpersonationSerializer",
+            {
+                "reason": CharField(required=True),
+            },
+        ),
         responses={
             "204": OpenApiResponse(description="Successfully started impersonation"),
             "401": OpenApiResponse(description="Access denied"),
@@ -679,6 +684,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             LOGGER.debug("User attempted to impersonate", user=request.user)
             return Response(status=401)
         user_to_be = self.get_object()
+        reason = request.data.get("reason", "")
         # Check both object-level perms and global perms
         if not request.user.has_perm(
             "authentik_core.impersonate", user_to_be
@@ -688,11 +694,16 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         if user_to_be.pk == self.request.user.pk:
             LOGGER.debug("User attempted to impersonate themselves", user=request.user)
             return Response(status=401)
+        if not reason and request.tenant.impersonation_require_reason:
+            LOGGER.debug(
+                "User attempted to impersonate without providing a reason", user=request.user
+            )
+            return Response(status=401)
 
         request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER] = request.user
         request.session[SESSION_KEY_IMPERSONATE_USER] = user_to_be
 
-        Event.new(EventAction.IMPERSONATION_STARTED).from_http(request, user_to_be)
+        Event.new(EventAction.IMPERSONATION_STARTED, reason=reason).from_http(request, user_to_be)
 
         return Response(status=201)
 
