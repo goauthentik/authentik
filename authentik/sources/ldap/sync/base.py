@@ -78,7 +78,7 @@ class BaseLDAPSynchronizer:
         @param attribute_name: The name of the ldap attribute holding the information when the password was changed
         @param attributes: All ldap attributes
         @param user: The user object we are currently syncing
-        @param created: True if the user is newly created
+        @param created: True, if the user is newly created
         @return:
         """
         if attribute_name not in attributes:
@@ -100,7 +100,7 @@ class BaseLDAPSynchronizer:
                 created=created,
                 pwd_last_set=pwd_last_set,
             )
-            user.set_unusable_password()
+            user.set_unusable_password(change_datetime=pwd_last_set)
             user.save()
 
     def message(self, *args, **kwargs):

@@ -356,6 +356,17 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
 
         return check_password(raw_password, self.password, setter)
 
+    def set_unusable_password(self, change_datetime: datetime = None):
+        """
+        In addition to the base version this also updates the password change date.
+        @param change_datetime: Use this value for the change time instead of now()
+        """
+        if change_datetime is None:
+            change_datetime = now()
+        self.password_change_date = change_datetime
+        super().set_unusable_password()
+
+
     @property
     def uid(self) -> str:
         """Generate a globally unique UID, based on the user ID and the hashed secret key"""
