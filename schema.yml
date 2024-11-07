@@ -42786,7 +42786,9 @@ components:
         flow_designation:
           $ref: '#/components/schemas/FlowDesignationEnum'
         captcha_stage:
-          $ref: '#/components/schemas/CaptchaChallenge'
+          allOf:
+          - $ref: '#/components/schemas/CaptchaChallenge'
+          nullable: true
         enroll_url:
           type: string
         recovery_url:
@@ -50301,6 +50303,10 @@ components:
           nullable: true
           description: Key used to sign the tokens. Only required when JWT Algorithm
             is set to RS256.
+        oidc_auth_providers:
+          type: array
+          items:
+            type: integer
     PatchedScopeMappingRequest:
       type: object
       description: ScopeMapping Serializer
@@ -53924,8 +53930,13 @@ components:
           allOf:
           - $ref: '#/components/schemas/Token'
           readOnly: true
+        oidc_auth_providers:
+          type: array
+          items:
+            type: integer
         ssf_url:
           type: string
+          nullable: true
           readOnly: true
       required:
       - component
@@ -53949,6 +53960,10 @@ components:
           nullable: true
           description: Key used to sign the tokens. Only required when JWT Algorithm
             is set to RS256.
+        oidc_auth_providers:
+          type: array
+          items:
+            type: integer
       required:
       - name
     ScopeMapping:
