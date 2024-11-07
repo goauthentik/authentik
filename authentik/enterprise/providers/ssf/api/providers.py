@@ -18,8 +18,10 @@ class SSFProviderSerializer(EnterpriseRequiredMixin, ProviderSerializer):
     ssf_url = SerializerMethodField()
     token_obj = TokenSerializer(source="token", required=False, read_only=True)
 
-    def get_ssf_url(self, instance: SSFProvider) -> str:
+    def get_ssf_url(self, instance: SSFProvider) -> str | None:
         request: Request = self._context["request"]
+        if not instance.application:
+            return None
         return request.build_absolute_uri(
             reverse(
                 "authentik_providers_ssf:configuration",
@@ -41,6 +43,7 @@ class SSFProviderSerializer(EnterpriseRequiredMixin, ProviderSerializer):
             "meta_model_name",
             "signing_key",
             "token_obj",
+            "oidc_auth_providers",
             "ssf_url",
         ]
         extra_kwargs = {}

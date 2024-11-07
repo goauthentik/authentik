@@ -2,17 +2,21 @@ from uuid import uuid4
 
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from django.http import HttpRequest
 from django.templatetags.static import static
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from authentik.core.models import BackchannelProvider, Token, User
 from authentik.crypto.models import CertificateKeyPair
+from authentik.providers.oauth2.models import OAuth2Provider
 
 
 class EventTypes(models.TextChoices):
     """SSF Event types supported by authentik"""
 
     CAEP_SESSION_REVOKED = "https://schemas.openid.net/secevent/caep/event-type/session-revoked"
+    CAEP_CREDENTIAL_CHANGE = "https://schemas.openid.net/secevent/caep/event-type/credential-change"
 
 
 class DeliveryMethods(models.TextChoices):
@@ -34,6 +38,8 @@ class SSFProvider(BackchannelProvider):
             "Key used to sign the tokens. Only required when JWT Algorithm is set to RS256."
         ),
     )
+
+    oidc_auth_providers = models.ManyToManyField(OAuth2Provider, blank=True, default=None)
 
     token = models.ForeignKey(Token, on_delete=models.CASCADE, null=True, default=None)
 
@@ -70,6 +76,8 @@ class Stream(models.Model):
     endpoint_url = models.TextField(null=True)
 
     events_requested = ArrayField(models.TextField(choices=EventTypes.choices), default=list)
+    format = models.TextField()
+    aud = ArrayField(models.TextField(), default=list)
 
     user_subjects = models.ManyToManyField(User, "UserStreamSubject")
 
@@ -78,7 +86,6 @@ class Stream(models.Model):
 
 
 class UserStreamSubject(models.Model):
-
     stream = models.ForeignKey(Stream, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 

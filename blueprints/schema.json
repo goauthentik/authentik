@@ -14067,6 +14067,13 @@
                     "format": "uuid",
                     "title": "Signing Key",
                     "description": "Key used to sign the tokens. Only required when JWT Algorithm is set to RS256."
+                },
+                "oidc_auth_providers": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "title": "Oidc auth providers"
                 }
             },
             "required": []
