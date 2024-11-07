@@ -46,6 +46,7 @@ const LOCALE_TABLE: LocaleRow[] = [
     ["es",      /^es([_-]|$)/i,      () => msg("Spanish"),               async () => await import("@goauthentik/locales/es")],
     ["de",      /^de([_-]|$)/i,      () => msg("German"),                async () => await import("@goauthentik/locales/de")],
     ["fr",      /^fr([_-]|$)/i,      () => msg("French"),                async () => await import("@goauthentik/locales/fr")],
+    ["it",      /^it([_-]|$)/i,      () => msg("Italian"),               async () => await import("@goauthentik/locales/it")],
     ["ko",      /^ko([_-]|$)/i,      () => msg("Korean"),                async () => await import("@goauthentik/locales/ko")],
     ["nl",      /^nl([_-]|$)/i,      () => msg("Dutch"),                 async () => await import("@goauthentik/locales/nl")],
     ["pl",      /^pl([_-]|$)/i,      () => msg("Polish"),                async () => await import("@goauthentik/locales/pl")],
