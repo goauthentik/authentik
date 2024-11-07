@@ -5,6 +5,7 @@ import "@goauthentik/admin/users/UserImpersonateForm";
 import "@goauthentik/admin/users/UserPasswordForm";
 import "@goauthentik/admin/users/UserResetEmailForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { PFSize } from "@goauthentik/common/enums.js";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { me } from "@goauthentik/common/users";
 import { getRelativeTime } from "@goauthentik/common/utils";
@@ -226,7 +227,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                                       position="top"
                                       content=${msg("Temporarily assume the identity of this user")}
                                   >
-                                      ${msg("Impersonate")}
+                                      <span>${msg("Impersonate")}</span>
                                   </pf-tooltip>
                               </button>
                           </ak-forms-modal>

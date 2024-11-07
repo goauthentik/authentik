@@ -221,7 +221,7 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                                   position="top"
                                   content=${msg("Temporarily assume the identity of this user")}
                               >
-                                  ${msg("Impersonate")}
+                                  <span>${msg("Impersonate")}</span>
                               </pf-tooltip>
                           </button>
                       </ak-forms-modal>
