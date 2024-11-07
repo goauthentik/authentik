@@ -44785,7 +44785,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/IssuerModeEnum'
           description: Configure how the issuer field of the ID Token should be filled.
-        jwks_sources:
+        jwt_federation_sources:
           type: array
           items:
             type: string
@@ -44793,6 +44793,10 @@ components:
             title: Any JWT signed by the JWK of the selected source can be used to
               authenticate.
           title: Any JWT signed by the JWK of the selected source can be used to authenticate.
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -44888,7 +44892,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/IssuerModeEnum'
           description: Configure how the issuer field of the ID Token should be filled.
-        jwks_sources:
+        jwt_federation_sources:
           type: array
           items:
             type: string
@@ -44896,6 +44900,10 @@ components:
             title: Any JWT signed by the JWK of the selected source can be used to
               authenticate.
           title: Any JWT signed by the JWK of the selected source can be used to authenticate.
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
       required:
       - authorization_flow
       - invalidation_flow
@@ -48911,7 +48919,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/IssuerModeEnum'
           description: Configure how the issuer field of the ID Token should be filled.
-        jwks_sources:
+        jwt_federation_sources:
           type: array
           items:
             type: string
@@ -48919,6 +48927,10 @@ components:
             title: Any JWT signed by the JWK of the selected source can be used to
               authenticate.
           title: Any JWT signed by the JWK of the selected source can be used to authenticate.
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
     PatchedOAuthSourcePropertyMappingRequest:
       type: object
       description: OAuthSourcePropertyMapping Serializer
@@ -49434,7 +49446,7 @@ components:
             header and authenticate requests based on its value.
         cookie_domain:
           type: string
-        jwks_sources:
+        jwt_federation_sources:
           type: array
           items:
             type: string
@@ -51504,7 +51516,7 @@ components:
           readOnly: true
         cookie_domain:
           type: string
-        jwks_sources:
+        jwt_federation_sources:
           type: array
           items:
             type: string
@@ -51612,7 +51624,7 @@ components:
             header and authenticate requests based on its value.
         cookie_domain:
           type: string
-        jwks_sources:
+        jwt_federation_sources:
           type: array
           items:
             type: string

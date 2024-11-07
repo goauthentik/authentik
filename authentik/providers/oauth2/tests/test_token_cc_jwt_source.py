@@ -62,7 +62,7 @@ class TestTokenClientCredentialsJWTSource(OAuthTestCase):
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://testserver")],
             signing_key=self.cert,
         )
-        self.provider.jwks_sources.add(self.source)
+        self.provider.jwt_federation_sources.add(self.source)
         self.provider.property_mappings.set(ScopeMapping.objects.all())
         self.app = Application.objects.create(name="test", slug="test", provider=self.provider)
 

@@ -243,12 +243,12 @@ export class AkTypeProxyApplicationWizardPage extends BaseProviderPanel {
 
                         <ak-form-element-horizontal
                             label=${msg("Trusted OIDC Sources")}
-                            name="jwksSources"
-                            .errorMessages=${errors?.jwksSources ?? []}
+                            name="jwtFederationSources"
+                            .errorMessages=${errors?.jwtFederationSources ?? []}
                         >
                             <ak-dual-select-dynamic-selected
                                 .provider=${oauth2SourcesProvider}
-                                .selector=${makeSourceSelector(this.instance?.jwksSources)}
+                                .selector=${makeSourceSelector(this.instance?.jwtFederationSources)}
                                 available-label=${msg("Available Sources")}
                                 selected-label=${msg("Selected Sources")}
                             ></ak-dual-select-dynamic-selected>

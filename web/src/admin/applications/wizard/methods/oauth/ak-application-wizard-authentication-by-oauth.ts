@@ -304,12 +304,12 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                     <div slot="body" class="pf-c-form">
                         <ak-form-element-horizontal
                             label=${msg("Trusted OIDC Sources")}
-                            name="jwksSources"
-                            .errorMessages=${errors?.jwksSources ?? []}
+                            name="jwtFederationSources"
+                            .errorMessages=${errors?.jwtFederationSources ?? []}
                         >
                             <ak-dual-select-dynamic-selected
                                 .provider=${oauth2SourcesProvider}
-                                .selector=${makeSourceSelector(provider?.jwksSources)}
+                                .selector=${makeSourceSelector(provider?.jwtFederationSources)}
                                 available-label=${msg("Available Sources")}
                                 selected-label=${msg("Selected Sources")}
                             ></ak-dual-select-dynamic-selected>

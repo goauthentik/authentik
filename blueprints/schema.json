@@ -5617,13 +5617,20 @@
                     "title": "Issuer mode",
                     "description": "Configure how the issuer field of the ID Token should be filled."
                 },
-                "jwks_sources": {
+                "jwt_federation_sources": {
                     "type": "array",
                     "items": {
                         "type": "integer",
                         "title": "Any JWT signed by the JWK of the selected source can be used to authenticate."
                     },
                     "title": "Any JWT signed by the JWK of the selected source can be used to authenticate."
+                },
+                "jwt_federation_providers": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "title": "Jwt federation providers"
                 }
             },
             "required": []
@@ -5746,7 +5753,7 @@
                     "type": "string",
                     "title": "Cookie domain"
                 },
-                "jwks_sources": {
+                "jwt_federation_sources": {
                     "type": "array",
                     "items": {
                         "type": "integer",

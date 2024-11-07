@@ -13,6 +13,7 @@ import "@goauthentik/components/ak-textarea-input";
 import "@goauthentik/elements/ak-array-input.js";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
+import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
@@ -118,6 +119,28 @@ const redirectUriHelpMessages = [
 export const redirectUriHelp = html`${redirectUriHelpMessages.map(
     (m) => html`<p class="pf-c-form__helper-text">${m}</p>`,
 )}`;
+
+export async function oauth2ProvidersProvider(page = 1, search = "") {
+    const oauthProviders = await new ProvidersApi(DEFAULT_CONFIG).providersOauth2List({
+        ordering: "name",
+        pageSize: 20,
+        search: search.trim(),
+        page,
+    });
+
+    return {
+        pagination: oauthProviders.pagination,
+        options: oauthProviders.results.map((provider) => [provider.pk, provider.name]),
+    };
+}
+
+export function makeProviderSelector(instanceSources: number[] | undefined) {
+    const localSources = instanceSources ? new Set(instanceSources) : undefined;
+
+    return localSources
+        ? ([pk, _]: DualSelectPair) => localSources.has(parseInt(pk, 10))
+        : ([_0, _1, _2, prompt]: DualSelectPair<OAuth2Provider>) => prompt !== undefined;
+}
 
 /**
  * Form page for OAuth2 Authentication Method
@@ -386,18 +409,34 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
                 <span slot="header">${msg("Machine-to-Machine authentication settings")}</span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${msg("Trusted OIDC Sources")}
-                        name="jwksSources"
+                        label=${msg("Federated OIDC Sources")}
+                        name="jwtFederationSources"
                     >
                         <ak-dual-select-dynamic-selected
                             .provider=${oauth2SourcesProvider}
-                            .selector=${makeSourceSelector(provider?.jwksSources)}
+                            .selector=${makeSourceSelector(provider?.jwtFederationSources)}
                             available-label=${msg("Available Sources")}
                             selected-label=${msg("Selected Sources")}
                         ></ak-dual-select-dynamic-selected>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Federated OIDC Providers")}
+                        name="jwtFederationProviders"
+                    >
+                        <ak-dual-select-dynamic-selected
+                            .provider=${oauth2ProvidersProvider}
+                            .selector=${makeProviderSelector(provider?.jwtFederationProviders)}
+                            available-label=${msg("Available Providers")}
+                            selected-label=${msg("Selected Providers")}
+                        ></ak-dual-select-dynamic-selected>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "JWTs signed by the selected providers can be used to authenticate to this provider.",
                             )}
                         </p>
                     </ak-form-element-horizontal>

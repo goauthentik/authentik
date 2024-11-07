@@ -394,7 +394,7 @@ class TokenParams:
             raise TokenError("invalid_grant") from None
         expected_kid = decode_unvalidated["header"]["kid"]
         fallback_alg = decode_unvalidated["header"]["alg"]
-        for source in self.provider.jwks_sources.filter(
+        for source in self.provider.jwt_federation_sources.filter(
             oidc_jwks__keys__contains=[{"kid": expected_kid}]
         ):
             LOGGER.debug("verifying JWT with source", source=source.slug)

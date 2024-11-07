@@ -390,11 +390,11 @@ ${this.instance?.skipPathRegex}</textarea
                     ${this.showHttpBasic ? this.renderHttpBasic() : html``}
                     <ak-form-element-horizontal
                         label=${msg("Trusted OIDC Sources")}
-                        name="jwksSources"
+                        name="jwtFederationSources"
                     >
                         <ak-dual-select-dynamic-selected
                             .provider=${oauth2SourcesProvider}
-                            .selector=${makeSourceSelector(this.instance?.jwksSources)}
+                            .selector=${makeSourceSelector(this.instance?.jwtFederationSources)}
                             available-label=${msg("Available Sources")}
                             selected-label=${msg("Selected Sources")}
                         ></ak-dual-select-dynamic-selected>
