@@ -14,13 +14,14 @@ export class UserImpersonateForm extends Form<ImpersonationRequest> {
     instancePk?: number;
 
     async send(data: ImpersonationRequest): Promise<void> {
-        return new CoreApi(DEFAULT_CONFIG).coreUsersImpersonateCreate({
-            id: this.instancePk || 0,
-            impersonationRequest: data,
-        });
-        // .then(() => {
-        //     window.location.href = "/";
-        // });
+        return new CoreApi(DEFAULT_CONFIG)
+            .coreUsersImpersonateCreate({
+                id: this.instancePk || 0,
+                impersonationRequest: data,
+            })
+            .then(() => {
+                window.location.href = "/";
+            });
     }
 
     renderForm(): TemplateResult {

@@ -1,6 +1,5 @@
 """Tenant utils"""
 
-from typing import Tuple
 from django.db import connection
 from django_tenants.utils import get_public_schema_name
 
@@ -9,8 +8,10 @@ from authentik.root.install_id import get_install_id
 from authentik.tenants.models import Tenant
 
 
-def get_current_tenant(only: list[str] = []) -> Tenant:
+def get_current_tenant(only: list[str] | None = None) -> Tenant:
     """Get tenant for current request"""
+    if only is None:
+        only = []
     return Tenant.objects.only(*only).get(schema_name=connection.schema_name)
 
 
