@@ -50,26 +50,8 @@ class MicrosoftActiveDirectory(BaseLDAPSynchronizer):
         yield None
 
     def sync(self, attributes: dict[str, Any], user: User, created: bool):
-        self.ms_check_pwd_last_set(attributes, user, created)
+        self.check_pwd_last_set("pwdLastSet", attributes, user, created)
         self.ms_check_uac(attributes, user)
-
-    def ms_check_pwd_last_set(self, attributes: dict[str, Any], user: User, created: bool):
-        """Check pwdLastSet"""
-        if "pwdLastSet" not in attributes:
-            return
-        pwd_last_set: datetime = attributes.get("pwdLastSet", datetime.now())
-        pwd_last_set = pwd_last_set.replace(tzinfo=UTC)
-        if created or pwd_last_set > user.password_change_date:
-            self.message(f"'{user.username}': Reset user's password")
-            self._logger.debug(
-                "Reset user's password",
-                user=user.username,
-                created=created,
-                pwd_last_set=pwd_last_set,
-            )
-            user.set_unusable_password()
-            user.password_change_date = pwd_last_set
-            user.save()
 
     def ms_check_uac(self, attributes: dict[str, Any], user: User):
         """Check userAccountControl"""

@@ -1,11 +1,14 @@
 """Sync LDAP Users and groups into authentik"""
 
 from collections.abc import Generator
+from datetime import datetime, UTC
+from typing import Any
 
 from django.conf import settings
 from ldap3 import DEREF_ALWAYS, SUBTREE, Connection
 from structlog.stdlib import BoundLogger, get_logger
 
+from authentik.core.models import User
 from authentik.core.sources.mapper import SourceMapper
 from authentik.lib.config import CONFIG
 from authentik.lib.sync.mapper import PropertyMappingManager
@@ -64,6 +67,41 @@ class BaseLDAPSynchronizer:
         if self._source.additional_group_dn:
             return f"{self._source.additional_group_dn},{self._source.base_dn}"
         return self._source.base_dn
+
+    def check_pwd_last_set(self, attribute_name: str, attributes: dict[str, Any], user: User, created: bool):
+        """
+        Test if the ldap password is newer than the authentik password.
+        If the ldap password is newer set the user password to an unusable password.
+        This ends all users sessions and forces the user to relogin.
+        During next user login the used authentication backend MAY choose to write a new usable user password.
+
+        @param attribute_name: The name of the ldap attribute holding the information when the password was changed
+        @param attributes: All ldap attributes
+        @param user: The user object we are currently syncing
+        @param created: True if the user is newly created
+        @return:
+        """
+        if attribute_name not in attributes:
+            self._logger.debug(
+                f"Missing attribute {attribute_name}. Can not test if a newer ldap password is set."
+                f"Ldap and authentik passwords may be out of sync.",
+                user=user.username,
+                created=created
+            )
+            return
+
+        pwd_last_set: datetime = attributes.get(attribute_name, datetime.now())
+        pwd_last_set = pwd_last_set.replace(tzinfo=UTC)
+        if created or pwd_last_set > user.password_change_date:
+            self.message(f"'{user.username}': Reset user's password")
+            self._logger.debug(
+                "Reset user's password",
+                user=user.username,
+                created=created,
+                pwd_last_set=pwd_last_set,
+            )
+            user.set_unusable_password()
+            user.save()
 
     def message(self, *args, **kwargs):
         """Add message that is later added to the System Task and shown to the user"""
