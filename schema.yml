@@ -50034,6 +50034,10 @@ components:
         impersonation:
           type: boolean
           description: Globally enable/disable impersonation.
+        impersonation_require_reason:
+          type: boolean
+          description: Require administrators to provide a reason for impersonating
+            a user.
         default_token_duration:
           type: string
           minLength: 1
@@ -53763,6 +53767,10 @@ components:
         impersonation:
           type: boolean
           description: Globally enable/disable impersonation.
+        impersonation_require_reason:
+          type: boolean
+          description: Require administrators to provide a reason for impersonating
+            a user.
         default_token_duration:
           type: string
           description: Default token duration
@@ -53802,6 +53810,10 @@ components:
         impersonation:
           type: boolean
           description: Globally enable/disable impersonation.
+        impersonation_require_reason:
+          type: boolean
+          description: Require administrators to provide a reason for impersonating
+            a user.
         default_token_duration:
           type: string
           minLength: 1
