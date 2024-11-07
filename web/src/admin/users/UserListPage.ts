@@ -279,7 +279,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                                       position="top"
                                       content=${msg("Temporarily assume the identity of this user")}
                                   >
-                                      ${msg("Impersonate")}
+                                      <span>${msg("Impersonate")}</span>
                                   </pf-tooltip>
                               </button>
                           </ak-forms-modal>
