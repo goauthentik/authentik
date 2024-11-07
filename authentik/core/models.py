@@ -366,7 +366,6 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
         self.password_change_date = change_datetime
         super().set_unusable_password()
 
-
     @property
     def uid(self) -> str:
         """Generate a globally unique UID, based on the user ID and the hashed secret key"""

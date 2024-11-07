@@ -1,7 +1,7 @@
 """Sync LDAP Users and groups into authentik"""
 
 from collections.abc import Generator
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from typing import Any
 
 from django.conf import settings
@@ -68,14 +68,18 @@ class BaseLDAPSynchronizer:
             return f"{self._source.additional_group_dn},{self._source.base_dn}"
         return self._source.base_dn
 
-    def check_pwd_last_set(self, attribute_name: str, attributes: dict[str, Any], user: User, created: bool):
+    def check_pwd_last_set(
+        self, attribute_name: str, attributes: dict[str, Any], user: User, created: bool
+    ):
         """
         Test if the ldap password is newer than the authentik password.
         If the ldap password is newer set the user password to an unusable password.
         This ends all users sessions and forces the user to relogin.
-        During next user login the used authentication backend MAY choose to write a new usable user password.
+        During next user login the used authentication backend MAY choose to write a new usable user
+        password.
 
-        @param attribute_name: The name of the ldap attribute holding the information when the password was changed
+        @param attribute_name: The name of the ldap attribute holding the information when
+                               the password was changed
         @param attributes: All ldap attributes
         @param user: The user object we are currently syncing
         @param created: True, if the user is newly created
@@ -86,7 +90,7 @@ class BaseLDAPSynchronizer:
                 f"Missing attribute {attribute_name}. Can not test if a newer ldap password is set."
                 f"Ldap and authentik passwords may be out of sync.",
                 user=user.username,
-                created=created
+                created=created,
             )
             return
 
