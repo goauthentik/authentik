@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-28 00:09+0000\n"
+"POT-Creation-Date: 2024-11-05 00:08+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2024\n"
 "Language-Team: Chinese Simplified (https://app.transifex.com/authentik/teams/119923/zh-Hans/)\n"
@@ -109,6 +109,10 @@ msgstr "品牌"
 #: authentik/brands/models.py
 msgid "Brands"
 msgstr "品牌"
+
+#: authentik/core/api/devices.py
+msgid "Extra description not available"
+msgstr "额外描述不可用"
 
 #: authentik/core/api/providers.py
 msgid ""
