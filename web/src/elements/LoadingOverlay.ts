@@ -12,9 +12,23 @@ export interface ILoadingOverlay {
     topmost?: boolean;
 }
 
+/**
+ * @class LoadingOverlay
+ * @element ak-loading-overlay
+ *
+ * The LoadingOverlay is meant to cover the container element completely, hiding the content behind
+ * a dimming filter, while content loads.
+ *
+ * @slot - [Optional] message content to display while the overlay is visible.
+ */
 @customElement("ak-loading-overlay")
 export class LoadingOverlay extends AKElement implements ILoadingOverlay {
-    // Do not camelize: https://www.merriam-webster.com/dictionary/topmost
+    /**
+     * When true, forces the overlay onto the top layer of the display stack.
+     * Do not camelize: https://www.merriam-webster.com/dictionary/topmost
+     *
+     * @attr
+     */
     @property({ type: Boolean, attribute: "topmost" })
     topmost = false;
 

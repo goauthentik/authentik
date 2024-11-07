@@ -36,6 +36,10 @@ const StatusMap = new Map<TaskStatus, string>([
 
 const SPINNER_TIMEOUT = 1000 * 1.5; // milliseconds
 
+export interface IBaseTaskButton {
+    disabled?: boolean;
+}
+
 /**
  * BaseTaskButton
  *
@@ -46,7 +50,6 @@ const SPINNER_TIMEOUT = 1000 * 1.5; // milliseconds
  * `onFailure` call their `super.` equivalents.
  *
  */
-
 export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
     eventPrefix = "ak-button";
 

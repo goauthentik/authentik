@@ -44,6 +44,12 @@ export class Alert extends AKElement implements IAlert {
     @property({ type: Boolean })
     inline = false;
 
+    /**
+     * When true, removes the background color and status line; the text and icon are retained and
+     * colored.
+     *
+     * @attr
+     */
     @property({ type: Boolean })
     plain = false;
 

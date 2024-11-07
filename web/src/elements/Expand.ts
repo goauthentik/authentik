@@ -15,14 +15,38 @@ export interface IExpand {
     textClosed?: string;
 }
 
+/**
+ * @class Expand
+ * @element ak-expand
+ *
+ * An `ak-expand` is used to hide cluttering details that a user may wish to reveal, such as the raw
+ * details of an alert or event.
+ *
+ * slot - The contents to be hidden or displayed.
+ */
 @customElement("ak-expand")
 export class Expand extends AKElement implements IExpand {
-    @property({ type: Boolean })
+    /**
+     * The state of the expanded content
+     *
+     * @attr
+     */
+    @property({ type: Boolean, reflect: true })
     expanded = false;
 
+    /**
+     * The text to display next to the open/close control when the accordion is open.
+     *
+     * @attr
+     */
     @property({ type: String, attribute: "text-open" })
     textOpen = msg("Show less");
 
+    /**
+     * The text to display next to the open/close control when the accordion is closed.
+     *
+     * @attr
+     */
     @property({ type: String, attribute: "text-closed" })
     textClosed = msg("Show more");
 
