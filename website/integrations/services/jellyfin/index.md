@@ -121,9 +121,9 @@ Set the launch URL to `https://jellyfin.company/sso/OID/start/authentik`
 
 ### Jellyfin Configuration
 
-1. Navigate to your Jellyfin installation and log in with the admin account or currently configured local admin.
-2. Open the **Administrator dashboard** and go to the **Plugins** section.
-3. Then click the **Repositories** section at the top and add the below repository with the name of SSO-Auth
+1. Log in to Jellyfin with an admin account and navigate to the **Admin Dashboard** by selecting your profile icon in the top right, then clicking **Dashboard**.
+2. Go to **Dashboard > Plugins > Catalog**.
+3. Click the gear icon in the top left, then click **+** to add a new repository. Use the following URL and name it "SSO-Auth":
 
 ```
 https://raw.githubusercontent.com/9p4/jellyfin-plugin-sso/manifest-release/manifest.json
