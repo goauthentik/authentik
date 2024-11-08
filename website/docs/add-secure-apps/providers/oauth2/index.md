@@ -6,22 +6,22 @@ In authentik, you can [create](./create-oauth2-provider.md) an [OAuth 2.0](https
 
 ## authentik and OAuth 2.0
 
-It's important to understand how authentik works with and supports the OAuth 2.0 protocol, so before taking a [closer look at OAuth protocol](#about-oauth-20-and-oidc) itself, let's cover a bit about authentik.
+It's important to understand how authentik works with and supports the OAuth 2.0 protocol, so before taking a [closer look at OAuth 2.0 protocol](#about-oauth-20-and-oidc) itself, let's cover a bit about authentik.
 
-authentik can act either as the OP, (OpenID Provider, with authentik as the IdP), or as the RP (Relying Party, or the application that uses OAuth 2.0 to authenticate). If you want to configure authentik to use [sources](../../../users-sources/sources/index.md) then authentik acts as the RP where the OP is the source configure.
+authentik can act either as the OP, (OpenID Provider, with authentik as the IdP), or as the RP (Relying Party, or the application that uses OAuth 2.0 to authenticate). If you want to configure authentik to use [sources](../../../users-sources/sources/index.md) then authentik acts as the RP where the OP is the configured source.
 
-All standard OAuth 2.0 flows (implicit flow, hybrid flow, device code flow) and grant types are supported in authentik, and we follow the [OIDC spec](https://openid.net/specs/openid-connect-core-1_0.html). OAuth 2.0 in authentik supports OAuth, PKCE, [Github compatibility](./github-compatibility.md) and the RP receives data from our mapping system.
+All standard OAuth 2.0 flows (authorization code, client_credentials, implicit, hybrid, device code) and grant types are supported in authentik, and we follow the [OIDC spec](https://openid.net/specs/openid-connect-core-1_0.html). OAuth 2.0 in authentik supports OAuth, PKCE, [Github compatibility](./github-compatibility.md) and the RP receives data from our mapping system.
 
-The authentik OAuth 2.0 provider comes with all the standard functionality and features of OAuth 2.0, including the OAuth 2.0 security principles such as no cleartext storage of credentials, configurable encryption, configurable short expiration times, and the configuration of automatic rotation of refresh tokens. In short, our OAuth 2.0 protocol support does not cut any corners.
+The authentik OAuth 2.0 provider comes with all the standard functionality and features of OAuth 2.0, including the OAuth 2.0 security principles such as no cleartext storage of credentials, configurable encryption, configurable short expiration times, and the configuration of automatic rotation of refresh tokens. In short, our OAuth 2.0 protocol support provides full coverage.
 
 ## About OAuth 2.0 and OIDC
 
-OAuth 2.0 is an authorization protocol that allows an application (RP) to delegate authorization to an OP. OIDC is an authentication protocol built on top of OAuth2, which provides Identity and other data on top of OAuth2.
+OAuth 2.0 is an authorization protocol that allows an application (RP) to delegate authorization to an OP. OIDC is an authentication protocol built on top of OAuth2, which provides identity credentials and other data on top of OAuth2.
 
-**OAuth 2.0** typically requires two requests (unlike the previous "three-legged" OAuth 1.0). The two "legs" or requests, for OAuth 2.0 are:
+**OAuth 2.0** typically requires two requests (unlike the previous "three-legged" OAuth 1.0). The two "legs", or requests, for OAuth 2.0 are:
 
-1. An authorization request is prepared by the RP and contains parameters for its implementation of OAuth and which data it requires, and the User's browser is redirected to that URL.
-2. The RP sends a request to authentik in the background to exchange the access code for a token (and optionally a refresh token).
+1. An authorization request is prepared by the RP and contains parameters for its implementation of OAuth and which data it requires, and then the User's browser is redirected to that URL.
+2. The RP sends a request to authentik in the background to exchange the access code for an access token (and optionally a refresh token).
 
 In detail, with OAuth2 when a user accesses the application (known as the RP or Relying Party) via their browser, the RP then prepares a URL with parameters for the OpenID Provider (OP), which the users's browser is redirected to. The OP authenticates the user and generates an authorization code. The OP then redirects the client (the user's browser) back to the RP, along with that authorization code. In the background, the RP then sends that same authorization code in a request authenticated by the `client_id` and `client_secret` to the OP. Finally, the OP responds by sending an Access Token saying this user has been authorised (the RP is recommended to validate this token using cryptography) and optionally a Refresh Token.
 
