@@ -377,6 +377,7 @@ class TokenParams:
         token = None
 
         source: OAuthSource | None = None
+        provider: OAuth2Provider | None = None
         parsed_key: PyJWK | None = None
 
         # Fully decode the JWT without verifying the signature, so we can get access to
@@ -418,11 +419,34 @@ class TokenParams:
                 except (PyJWTError, ValueError, TypeError, AttributeError) as exc:
                     LOGGER.warning("failed to verify JWT", exc=exc, source=source.slug)
 
+        if token:
+            LOGGER.info("successfully verified JWT with source", source=source.slug)
+
+        federated_token = AccessToken.objects.filter(
+            token=assertion, provider__in=[self.provider.jwt_federation_providers]
+        ).first()
+        if federated_token:
+            _key, _alg = federated_token.provider.jwt_key
+            try:
+                token = decode(
+                    assertion,
+                    _key,
+                    algorithms=[_alg],
+                    options={
+                        "verify_aud": False,
+                    },
+                )
+                provider = federated_token.provider
+                self.user = federated_token.user
+            except (PyJWTError, ValueError, TypeError, AttributeError) as exc:
+                LOGGER.warning("failed to verify JWT", exc=exc, provider=provider.name)
+
+        if token:
+            LOGGER.info("successfully verified JWT with provider", provider=provider.name)
+
         if not token:
             LOGGER.warning("No token could be verified")
             raise TokenError("invalid_grant")
-
-        LOGGER.info("successfully verified JWT with source", source=source.slug)
 
         if "exp" in token:
             exp = datetime.fromtimestamp(token["exp"])
@@ -437,13 +461,16 @@ class TokenParams:
             raise TokenError("invalid_grant")
 
         self.__check_policy_access(app, request, oauth_jwt=token)
-        self.__create_user_from_jwt(token, app, source)
+        if not provider:
+            self.__create_user_from_jwt(token, app, source)
 
         method_args = {
             "jwt": token,
         }
         if source:
             method_args["source"] = source
+        if provider:
+            method_args["provider"] = provider
         if parsed_key:
             method_args["jwk_id"] = parsed_key.key_id
         Event.new(
