@@ -36,3 +36,28 @@ To prevent any user from creating/editing CAPTCHA stages block API requests to t
 -   `/api/v3/managed/blueprints*`
 
 With these restrictions in place, CAPTCHA stages can only be edited using [Blueprints on the file system](../customize/blueprints/index.md#storage---file).
+
+### Content Security Policy (CSP)
+
+:::caution
+Setting up CSP incorrectly may result in the client not loading necessary third party code.
+:::
+
+Content Security Policy (CSP) is a security standard that mitigates the risk of content injection vulnerabilities. authentik doesn't currently support CSP natively, so setting it up depends on your installation. We recommend using a [reverse proxy](../install-config/reverse-proxy.md) to set a CSP header.
+
+authentik will require at least the following origins:
+
+```
+default-src 'self';
+style-src 'self' 'unsafe-inline';
+script-src 'self' 'unsafe-inline';
+img-src 'https:' 'http:' 'data:';
+object-src 'none';
+```
+
+Your use case may require more origins on various directives, e.g.
+
+-   when using a CAPTCHA service
+-   when using Sentry
+-   when using any custom Javascript in a prompt stage
+-   when using spotlight sidecar for development
