@@ -21,7 +21,7 @@ from authentik.flows.challenge import (
     WithUserInfoChallenge,
 )
 from authentik.flows.exceptions import StageInvalidException
-from authentik.flows.models import Flow, FlowDesignation, Stage
+from authentik.flows.models import Flow, Stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.lib.utils.reflection import path_to_class
@@ -141,11 +141,11 @@ class PasswordStageView(ChallengeStageView):
                 "allow_show_password": self.executor.current_stage.allow_show_password,
             }
         )
-        recovery_flow = Flow.objects.filter(designation=FlowDesignation.RECOVERY)
-        if recovery_flow.exists():
+        recovery_flow: Flow | None = self.request.brand.flow_recovery
+        if recovery_flow:
             recover_url = reverse(
                 "authentik_core:if-flow",
-                kwargs={"flow_slug": recovery_flow.first().slug},
+                kwargs={"flow_slug": recovery_flow.slug},
             )
             challenge.initial_data["recovery_url"] = self.request.build_absolute_uri(recover_url)
         return challenge
