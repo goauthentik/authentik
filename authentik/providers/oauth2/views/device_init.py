@@ -137,7 +137,7 @@ class OAuthDeviceCodeChallengeResponse(ChallengeResponse):
 
 
 class OAuthDeviceCodeStage(ChallengeStageView):
-    """Flow challenge for users to enter device codes"""
+    """Flow challenge for users to enter device code"""
 
     response_class = OAuthDeviceCodeChallengeResponse
 
