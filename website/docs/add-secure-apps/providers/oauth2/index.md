@@ -8,9 +8,9 @@ In authentik, you can [create](./create-oauth2-provider.md) an [OAuth 2.0](https
 
 It's important to understand how authentik works with and supports the OAuth 2.0 protocol, so before taking a [closer look at OAuth 2.0 protocol](#about-oauth-20-and-oidc) itself, let's cover a bit about authentik.
 
-authentik can act either as the OP, (OpenID Provider, with authentik as the IdP), or as the RP (Relying Party, or the application that uses OAuth 2.0 to authenticate). If you want to configure authentik to use [sources](../../../users-sources/sources/index.md) then authentik acts as the RP where the OP is the configured source.
+authentik can act either as the OP, (OpenID Provider, with authentik as the IdP), or as the RP (Relying Party, or the application that uses OAuth 2.0 to authenticate). If you want to configure authentik as an OP, then you create a provider, then use the OAuth 2.0 provider. If you want authentik to serve as the RP, then configure a [source](../../../users-sources/sources/index.md). Of course, authentik can serve as both the RP and OP, if you want to use the authentik OAuth provider and also use sources.
 
-All standard OAuth 2.0 flows (authorization code, client_credentials, implicit, hybrid, device code) and grant types are supported in authentik, and we follow the [OIDC spec](https://openid.net/specs/openid-connect-core-1_0.html). OAuth 2.0 in authentik supports OAuth, PKCE, [Github compatibility](./github-compatibility.md) and the RP receives data from our mapping system.
+All standard OAuth 2.0 flows (authorization code, client_credentials, implicit, hybrid, device code) and grant types are supported in authentik, and we follow the [OIDC spec](https://openid.net/specs/openid-connect-core-1_0.html). OAuth 2.0 in authentik supports OAuth, PKCE, [Github compatibility](./github-compatibility.md) and the RP receives data from our scope mapping system.
 
 The authentik OAuth 2.0 provider comes with all the standard functionality and features of OAuth 2.0, including the OAuth 2.0 security principles such as no cleartext storage of credentials, configurable encryption, configurable short expiration times, and the configuration of automatic rotation of refresh tokens. In short, our OAuth 2.0 protocol support provides full coverage.
 
@@ -25,6 +25,8 @@ OAuth 2.0 is an authorization protocol that allows an application (RP) to delega
 
 In detail, with OAuth2 when a user accesses the application (known as the RP or Relying Party) via their browser, the RP then prepares a URL with parameters for the OpenID Provider (OP), which the users's browser is redirected to. The OP authenticates the user and generates an authorization code. The OP then redirects the client (the user's browser) back to the RP, along with that authorization code. In the background, the RP then sends that same authorization code in a request authenticated by the `client_id` and `client_secret` to the OP. Finally, the OP responds by sending an Access Token saying this user has been authorised (the RP is recommended to validate this token using cryptography) and optionally a Refresh Token.
 
+The image below shows a typical authorization code flow.
+
 ```mermaid
 sequenceDiagram
     participant user as User
@@ -35,9 +37,10 @@ sequenceDiagram
     rp->>user: RP prepares authorization request & redirects user to OP
 
     user->>op: User authentication & authorization occurs
+    op->>rp: Redirect back to the RP with an authorization code
 
     rect rgb(255, 255, 191)
-        op->>rp: Redirect back to the RP with an authorization code
+
         rp->>op: Exchange authorization code
         op->>rp: RP receives Access token (optionally Refresh Token)
     end
@@ -47,31 +50,33 @@ sequenceDiagram
 
 ### Additional configuration options with Redirect URIs
 
-When using an OAuth 2.0 provider in authentik, the OP must validate against an allow list. An authentik admin can configure this allow list in the **Redirect URI** field on the Provider.
+When using an OAuth 2.0 provider in authentik, the OP must validate the provided redirect URI by the RP. An authentik admin can configure a list in the **Redirect URI** field on the Provider.
 
 When you create a new OAuth 2.0 provider and app in authentik and you leave the **Redirect URI** field empty, then the first time a user opens that app, authentik uses that URL as the saved redirect URL.
 
 For advanced use cases, an authentik admin can use regular expressions (regex) instead of a redirect URL. For example, if you want to list 10 diff applications, instead of listing all ten you can create an expression with wildcards. Be aware, when using regex, that authetnik uses a dot as a separator in the URL, but in regex a dot means "one of any character", a wildcard. So you should escape the dot to prevent its interpration as a wildcard.
 
-## OAuth2 flows and grant types
+## OAuth 2.0 flows and grant types
 
-There are three general "use case" categories of OAuth2 flows and grants:
+There are three general flows of OAuth 2.0:
 
--   Web-based application authorization (Authorization, Implicit, Refresh token)
--   Client_credentials (M2M)
--   Device_code
+1. Web-based application authorization (Authorization code, Implicit, Refresh token)
+2. Client credentials (Machine-to-machine)
+3. Device code
 
-### Category 1: Web-based application authorization
+Additionally, the [Refresh token](#refresh-token-grant) (grant type) is optionally used with any of the above flows, as well as the client credentials and device code flows.
 
-The flows and grant types used in the category are those used for a typical authorization process, with a user and an application:
+### 1: Web-based application authorization
 
--   the _Authorization code_ flow and grant type
--   the _Implicit_ flow and grant type (legacy)
--   the _Refresh token_ flow and grant type
+The flows and grant types used in this case are those used for a typical authorization process, with a user and an application:
 
-#### Authorization code flow
+-   _Authorization code_ grant type
+-   _Implicit_ grant type (legacy)
+-   _Hybrid_ grant type
 
-The authorization code flow is for environments with both a Client and a application server, where the back and forth happens between the client and an app server (the logic lives on app server). The RP needs to authorise itself to the OP. Clint ID (public, identifies which app is talking to it) and client secret (the password) that the RP uses to authenticate.
+#### Authorization code
+
+The authorization code is for environments with both a Client and a application server, where the back and forth happens between the client and an app server (the logic lives on app server). The RP needs to authorise itself to the OP. Clint ID (public, identifies which app is talking to it) and client secret (the password) that the RP uses to authenticate.
 
 If you configure authentik to use "Offline access" then during the initial auth the OP sends two tokens, an access token (short-lived, hours, can be customised) and a refresh token (typically longer validity, days or infinite). The RP (the app) saves both tokens. When the access token is about to expire, the RP sends the saved refresh token back to the OP, and requests a new access token. When the refresh token itself is about to expire, the RP can also ask for a new refresh token. This can all happen without user interaction if you configured the offline access.
 
@@ -81,7 +86,7 @@ Starting with authentik 2024.2, applications only receive an access token. To re
 
 The authorization code grant type is used to convert an authorization code to an access token (and optionally a refresh token). The authorization code is retrieved through the authentik [Authorization flow](../../flows-stages/flow/index.md), can only be used once, and expires quickly.
 
-#### Implicit flow
+#### Implicit
 
 :::info
 The OAuth 2.0 [Security Best Current Practice document](https://tools.ietf.org/html/draft-ietf-oauth-security-topics) recommends against using the Implicit flow entirely, and OAuth 2.0 for Browser-Based Apps describes the technique of using the authorization code flow with PKCE instead. ([source](https://oauth.net/2/grant-types/implicit/))
@@ -89,25 +94,29 @@ The OAuth 2.0 [Security Best Current Practice document](https://tools.ietf.org/h
 
 This flow is for more modern single page-applications, or ones you download, that are all client-side (all JS, no backend logic, etc) and have no server to make tokens. Because the secret cannot be stored on the client machine, the implicit flow is required in these architectures. With the implicit flow, the flow skips the second part of the two requests seen in the authorization flow; after the initial author request, the implicit flow receives a token, and then with cryptocracy and with PKCE, it can validate that it is the correct client, and that is safe to send a token. The RP (still called that with this implicit flow) can use cryptography to validate the token.
 
-#### Refresh token flow
+#### Hybrid
+
+The Hybrid Flow is an OpenID Connect flow that incorporates traits of both the Implicit flow and the Authorization Code flow. It provides an application instant access to an ID token while ensuring secure and safe retrieval of access tokens and refresh tokens. This can be useful in situations where the application needs to quickly access information about the user, while in the background doing further processing to get additional tokens before gaining access to additional resources.
+
+### 2. Client credentials
+
+The client credentials flow and grant types are typically implemented for server-to-server scenarios, when code in a web application invokes a web API.
+
+For more information, see [Machine-to-machine authentication](./client_credentials.md).
+
+### 3. Device code
+
+The device code flow is used in situations where there is no browser and limited options for text or data input from a client ("input-constrained devices"). For example, using a subscription TV program on a television, where you use a website on your mobile device to input a code displayed on the TV, authenticate, and then you are logged in to the TV.
+
+For more information, see [Device code flow](./device_code.md).
+
+#### Refresh token grant
 
 Refresh tokens can be used as long-lived tokens to access user data, and further renew the refresh token down the road.
 
 :::info
 Starting with authentik 2024.2, the refresh token grant type requires the `offline_access` scope.
 :::
-
-### Category 2: Client credentials flow
-
-The client credentials flow and grant types are typically implemented for server-to-server scenarios, when code in a web application invokes a web API.
-
-For more information, see [Machine-to-machine authentication](./client_credentials.md).
-
-### Category 3: Device code
-
-The device code flow is used in situations where there is no browser and limited options for text or data input from a client ("input-constrained devices"). For example, using a subscription TV program on a television in a hotel room, where you use your mobile app to input a code displayed on the TV, and thus get authorized.
-
-For more iformation, see [Device code flow](./device_code.md).
 
 ## Scope mappings
 
