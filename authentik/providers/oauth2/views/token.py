@@ -423,14 +423,14 @@ class TokenParams:
             LOGGER.info("successfully verified JWT with source", source=source.slug)
 
         federated_token = AccessToken.objects.filter(
-            token=assertion, provider__in=[self.provider.jwt_federation_providers]
+            token=assertion, provider__in=self.provider.jwt_federation_providers.all()
         ).first()
         if federated_token:
             _key, _alg = federated_token.provider.jwt_key
             try:
                 token = decode(
                     assertion,
-                    _key,
+                    _key.public_key(),
                     algorithms=[_alg],
                     options={
                         "verify_aud": False,
@@ -439,7 +439,9 @@ class TokenParams:
                 provider = federated_token.provider
                 self.user = federated_token.user
             except (PyJWTError, ValueError, TypeError, AttributeError) as exc:
-                LOGGER.warning("failed to verify JWT", exc=exc, provider=provider.name)
+                LOGGER.warning(
+                    "failed to verify JWT", exc=exc, provider=federated_token.provider.name
+                )
 
         if token:
             LOGGER.info("successfully verified JWT with provider", provider=provider.name)
