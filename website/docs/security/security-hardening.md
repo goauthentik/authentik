@@ -59,5 +59,5 @@ Your use case might require more origins on various directives, e.g.
 
 -   when using a CAPTCHA service
 -   when using Sentry
--   when using any custom Javascript in a prompt stage
+-   when using any custom JavaScript in a prompt stage
 -   when using Spotlight Sidecar for development
