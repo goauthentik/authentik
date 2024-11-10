@@ -336,3 +336,12 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
             # 3 data points per day, so 8 hour spans
             .get_events_per(timedelta(days=7), ExtractHour, 7 * 3)
         )
+
+    def perform_update(self, serializer):
+        """Override perform_update to handle redirection after slug change"""
+        instance = self.get_object()
+        old_slug = instance.slug
+        super().perform_update(serializer)
+        new_slug = serializer.instance.slug
+        if old_slug != new_slug:
+            self.request.session['redirect_to'] = f'/applications/{new_slug}/'
