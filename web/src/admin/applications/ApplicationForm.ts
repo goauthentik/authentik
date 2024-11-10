@@ -107,6 +107,11 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                 },
             });
         }
+
+        if (this.instance && this.instance.slug !== app.slug) {
+            window.location.href = `#/core/applications/${app.slug}`;
+        }
+        
         return app;
     }
 
