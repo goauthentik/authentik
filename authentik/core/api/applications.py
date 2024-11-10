@@ -344,4 +344,4 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         super().perform_update(serializer)
         new_slug = serializer.instance.slug
         if old_slug != new_slug:
-            self.request.session['redirect_to'] = f'/applications/{new_slug}/'
+            self.request.session["redirect_to"] = f"/applications/{new_slug}/"
