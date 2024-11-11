@@ -26,7 +26,7 @@ The following placeholders will be used:
 
 ## authentik setup
 
-1. **Navigate to the Admin interface, then click Providers to create an OAuth2/OpenID provider with these settings:**
+1. Navigate to the Admin interface, then click **Providers** to create an OAuth2/OpenID provider with these settings:
 
     - **Name:** proxmox
     - **Redirect URI:** `https://proxmox.company:8006` (No trailing slash, include the web interface port)
