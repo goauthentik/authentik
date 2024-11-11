@@ -77,7 +77,7 @@ The following placeholders will be used:
 
     ![Proxmox login page with authentik marked as default login method](proxmox-login.png)
 
-## Proxmox VE setup (CLI)
+## Proxmox VE configuration (using CLI)
 
 To configure OpenID Connect authentication via the CLI, SSH into any Proxmox cluster node and use the following command:
 
