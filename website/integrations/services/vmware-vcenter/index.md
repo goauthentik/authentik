@@ -40,7 +40,7 @@ Create the application with these settings:
 Create the provider with these settings:
 
 -   Redirect URI: `https://vcenter.company/ui/login/oauth2/authcode`
--   Ensure that the signing key is provided (or you accept the default to authentik's Self-signed Certificate).
+-   Ensure that a signing key is selected, for example the Self-signed Certificate.
 
 3. Click **Submit** to create the application and provider, and then click **Close** to close the Wizard.
 
