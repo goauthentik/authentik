@@ -45,7 +45,7 @@ Setting up CSP incorrectly may result in the client not loading necessary third-
 
 Content Security Policy (CSP) is a security standard that mitigates the risk of content injection vulnerabilities. authentik doesn't currently support CSP natively, so setting it up depends on your installation. We recommend using a [reverse proxy](../install-config/reverse-proxy.md) to set a CSP header.
 
-authentik will require at least the following origins:
+authentik will require at least the following allowed locations:
 
 ```
 default-src 'self';
@@ -55,7 +55,7 @@ img-src 'https:' 'http:' 'data:';
 object-src 'none';
 ```
 
-Your use case might require more origins on various directives, e.g.
+Your use case might require more allowed locations for various directives, e.g.
 
 -   when using a CAPTCHA service
 -   when using Sentry
