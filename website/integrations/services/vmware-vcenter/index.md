@@ -50,7 +50,7 @@ Optionally, you can use a policy to apply access restrictions to the application
 
 1. Log in to vCenter with your local Administrator account. Using the menu in the left navigation bar, navigate to **Administration -> Single Sign-on -> Configuration**.
 
-2. Click _Change Provider_ in the top-right corner, and then select **Okta** from the drop-down list.
+2. Click **Change Provider** in the top-right corner, and then select **Okta** from the drop-down list.
 
 3. In the wizard, click **RUN PRECHECKS**, select the confirmation box, and then click **Next**.
 
