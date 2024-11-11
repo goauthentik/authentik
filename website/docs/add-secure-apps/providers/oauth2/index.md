@@ -147,7 +147,7 @@ return True
 
 #### GitHub compatibility
 
-For these scopes, refer to [GitHub Compatibility](./github-compatibility.md).
+Refer to [GitHub Compatibility](./github-compatibility.md).
 
 #### authentik
 

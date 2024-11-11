@@ -1,4 +1,4 @@
-# Machine-to-machine authentication
+## Machine-to-machine authentication
 
 Client credentials can be used for machine-to-machine communication authentication. Clients can authenticate themselves using service-accounts; standard client_id + client_secret is not sufficient. This behavior is due to providers only being able to have a single secret at any given time.
 
