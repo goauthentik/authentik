@@ -81,7 +81,7 @@ Optionally, you can use a policy to apply access restrictions to the application
     - Create a SCIM provider with the name `vcenter-scim`.
     - Paste the Tenant URL into **URL** field for the provider.
     - Paste the token you saved into the **Token** field.
-    - Toggle **Verify SCIM server's certificates** to be "on".
+    - If your vCenter certificate is self-signed (which is the default), toggle **Verify SCIM server's certificates** to be off.
     - Configure options under `User filtering` to your needs.
     - Save the provider.
     - Edit the application that you created earlier and select this newly created SCIM provider as the backchannel provider.
