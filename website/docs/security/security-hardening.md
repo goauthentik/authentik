@@ -40,12 +40,12 @@ With these restrictions in place, CAPTCHA stages can only be edited using [Bluep
 ### Content Security Policy (CSP)
 
 :::caution
-Setting up CSP incorrectly may result in the client not loading necessary third-party code.
+Setting up CSP incorrectly might result in the client not loading necessary third-party code.
 :::
 
 Content Security Policy (CSP) is a security standard that mitigates the risk of content injection vulnerabilities. authentik doesn't currently support CSP natively, so setting it up depends on your installation. We recommend using a [reverse proxy](../install-config/reverse-proxy.md) to set a CSP header.
 
-authentik will require at least the following allowed locations:
+authentik requires at least the following allowed locations:
 
 ```
 default-src 'self';
