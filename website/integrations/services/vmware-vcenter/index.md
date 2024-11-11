@@ -48,7 +48,7 @@ Optionally, you can use a policy to apply access restrictions to the application
 
 ## vCenter configuration
 
-1. Log in to VCenter with your local Administrator account. Using the menu in the left navigation bar, navigate to _Administration -> Single Sing-on -> Configuration_.
+1. Log in to vCenter with your local Administrator account. Using the menu in the left navigation bar, navigate to **Administration -> Single Sign-on -> Configuration**.
 
 2. Click _Change Provider_ in the top-right corner, and then select **Okta** from the drop-down list.
 
