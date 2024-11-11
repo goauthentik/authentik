@@ -43,7 +43,7 @@ The following placeholders will be used:
 
     - Access the Proxmox VE web interface and log in with an administrative account.
 
-2. **Navigate to authentication source settings**
+2. Navigate to authentication source settings.
 
     - Go to **Datacenter** > **Permissions** > **Realms**.
     - Click **Add** and select **Realm** to open the Add Realm dialog.
