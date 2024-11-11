@@ -48,7 +48,7 @@ The following placeholders will be used:
     - Go to **Datacenter** > **Permissions** > **Realms**.
     - Click **Add** and select **Realm** to open the Add Realm dialog.
 
-3. **Fill out the OpenID Connect settings**
+3. Fill out the OpenID Connect settings.
 
     - In the dialog that appears, fill in the following details:
         - **Issuer URL**: Enter the Issuer URL from authentik (found under _Provider Metadata_), e.g., `https://authentik.company/application/o/proxmox/`.
