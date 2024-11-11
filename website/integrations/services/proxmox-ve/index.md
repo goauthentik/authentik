@@ -39,7 +39,7 @@ The following placeholders will be used:
 
 ## Proxmox VE setup (web interface)
 
-1. **Log in to the Proxmox web interface**
+1. Log in to the Proxmox web interface.
 
     - Access the Proxmox VE web interface and log in with an administrative account.
 
