@@ -1,16 +1,17 @@
 ///<reference types="@hcaptcha/types"/>
+import { renderStatic } from "@goauthentik/common/purify";
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/forms/FormElement";
+import { randomId } from "@goauthentik/elements/utils/randomId";
 import "@goauthentik/flow/FormStatic";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 import type { TurnstileObject } from "turnstile-types";
 
 import { msg } from "@lit/localize";
-import { CSSResult, PropertyValues, html } from "lit";
+import { CSSResult, PropertyValues, TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
@@ -24,12 +25,22 @@ interface TurnstileWindow extends Window {
 }
 type TokenHandler = (token: string) => void;
 
-const captchaContainerID = "captcha-container";
-
 @customElement("ak-stage-captcha")
 export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeResponseRequest> {
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
+        return [
+            PFBase,
+            PFLogin,
+            PFForm,
+            PFFormControl,
+            PFTitle,
+            css`
+                iframe {
+                    width: 100%;
+                    height: 73px; /* tmp */
+                }
+            `,
+        ];
     }
 
     handlers = [this.handleGReCaptcha, this.handleHCaptcha, this.handleTurnstile];
@@ -38,13 +49,16 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
     error?: string;
 
     @state()
-    captchaInteractive: boolean = true;
+    captchaFrame: HTMLIFrameElement;
 
     @state()
-    captchaContainer: HTMLDivElement;
+    captchaDocumentContainer: HTMLDivElement;
 
     @state()
     scriptElement?: HTMLScriptElement;
+
+    @property({ type: Boolean })
+    embedded = false;
 
     @property()
     onTokenChange: TokenHandler = (token: string) => {
@@ -53,8 +67,70 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
 
     constructor() {
         super();
-        this.captchaContainer = document.createElement("div");
-        this.captchaContainer.id = captchaContainerID;
+        this.captchaFrame = document.createElement("iframe");
+        this.captchaFrame.src = "about:blank";
+        this.captchaFrame.id = `ak-captcha-${randomId()}`;
+
+        this.captchaDocumentContainer = document.createElement("div");
+        this.captchaDocumentContainer.id = `ak-captcha-${randomId()}`;
+        this.messageCallback = this.messageCallback.bind(this);
+    }
+
+    connectedCallback(): void {
+        super.connectedCallback();
+        window.addEventListener("message", this.messageCallback);
+    }
+
+    disconnectedCallback(): void {
+        super.disconnectedCallback();
+        window.removeEventListener("message", this.messageCallback);
+        if (!this.challenge.interactive) {
+            document.removeChild(this.captchaDocumentContainer);
+        }
+    }
+
+    messageCallback(
+        ev: MessageEvent<{
+            source?: string;
+            context?: string;
+            message: string;
+            token: string;
+        }>,
+    ) {
+        const msg = ev.data;
+        if (msg.source !== "goauthentik.io" || msg.context !== "flow-executor") {
+            return;
+        }
+        if (msg.message !== "captcha") {
+            return;
+        }
+        this.onTokenChange(msg.token);
+    }
+
+    async renderFrame(captchaElement: TemplateResult) {
+        this.captchaFrame.contentWindow?.document.open();
+        this.captchaFrame.contentWindow?.document.write(
+            await renderStatic(
+                html`<!doctype html>
+                    <html>
+                        <body style="display:flex;flex-direction:row;justify-content:center;">
+                            ${captchaElement}
+                            <script src=${this.challenge.jsUrl}></script>
+                            <script>
+                                function callback(token) {
+                                    window.parent.postMessage({
+                                        message: "captcha",
+                                        source: "goauthentik.io",
+                                        context: "flow-executor",
+                                        token: token,
+                                    });
+                                }
+                            </script>
+                        </body>
+                    </html>`,
+            ),
+        );
+        this.captchaFrame.contentWindow?.document.close();
     }
 
     updated(changedProperties: PropertyValues<this>) {
@@ -64,15 +140,15 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
             this.scriptElement.async = true;
             this.scriptElement.defer = true;
             this.scriptElement.dataset.akCaptchaScript = "true";
-            this.scriptElement.onload = () => {
+            this.scriptElement.onload = async () => {
                 console.debug("authentik/stages/captcha: script loaded");
                 let found = false;
                 let lastError = undefined;
-                this.handlers.forEach((handler) => {
+                this.handlers.forEach(async (handler) => {
                     let handlerFound = false;
                     try {
                         console.debug(`authentik/stages/captcha[${handler.name}]: trying handler`);
-                        handlerFound = handler.apply(this);
+                        handlerFound = await handler.apply(this);
                         if (handlerFound) {
                             console.debug(
                                 `authentik/stages/captcha[${handler.name}]: handler succeeded`,
@@ -96,51 +172,79 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
                 .querySelectorAll("[data-ak-captcha-script=true]")
                 .forEach((el) => el.remove());
             document.head.appendChild(this.scriptElement);
+            if (!this.challenge.interactive) {
+                document.appendChild(this.captchaDocumentContainer);
+            }
         }
     }
 
-    handleGReCaptcha(): boolean {
+    async handleGReCaptcha(): Promise<boolean> {
         if (!Object.hasOwn(window, "grecaptcha")) {
             return false;
         }
-        this.captchaInteractive = false;
-        document.body.appendChild(this.captchaContainer);
-        grecaptcha.ready(() => {
-            const captchaId = grecaptcha.render(this.captchaContainer, {
+        if (this.challenge.interactive) {
+            this.renderFrame(
+                html`<div
+                    class="g-recaptcha"
+                    data-sitekey="${this.challenge.siteKey}"
+                    data-callback="callback"
+                ></div>`,
+            );
+        } else {
+            grecaptcha.ready(() => {
+                const captchaId = grecaptcha.render(this.captchaDocumentContainer, {
+                    sitekey: this.challenge.siteKey,
+                    callback: this.onTokenChange,
+                    size: "invisible",
+                });
+                grecaptcha.execute(captchaId);
+            });
+        }
+        return true;
+    }
+
+    async handleHCaptcha(): Promise<boolean> {
+        if (!Object.hasOwn(window, "hcaptcha")) {
+            return false;
+        }
+        if (this.challenge.interactive) {
+            this.renderFrame(
+                html`<div
+                    class="h-captcha"
+                    data-sitekey="${this.challenge.siteKey}"
+                    data-theme="${this.activeTheme ? this.activeTheme : "light"}"
+                    data-callback="callback"
+                ></div> `,
+            );
+        } else {
+            const captchaId = hcaptcha.render(this.captchaDocumentContainer, {
                 sitekey: this.challenge.siteKey,
                 callback: this.onTokenChange,
                 size: "invisible",
             });
-            grecaptcha.execute(captchaId);
-        });
-        return true;
-    }
-
-    handleHCaptcha(): boolean {
-        if (!Object.hasOwn(window, "hcaptcha")) {
-            return false;
+            hcaptcha.execute(captchaId);
         }
-        this.captchaInteractive = false;
-        document.body.appendChild(this.captchaContainer);
-        const captchaId = hcaptcha.render(this.captchaContainer, {
-            sitekey: this.challenge.siteKey,
-            callback: this.onTokenChange,
-            size: "invisible",
-        });
-        hcaptcha.execute(captchaId);
         return true;
     }
 
-    handleTurnstile(): boolean {
+    async handleTurnstile(): Promise<boolean> {
         if (!Object.hasOwn(window, "turnstile")) {
             return false;
         }
-        this.captchaInteractive = false;
-        document.body.appendChild(this.captchaContainer);
-        (window as unknown as TurnstileWindow).turnstile.render(`#${captchaContainerID}`, {
-            sitekey: this.challenge.siteKey,
-            callback: this.onTokenChange,
-        });
+        if (this.challenge.interactive) {
+            this.renderFrame(
+                html`<div
+                    class="cf-turnstile"
+                    data-sitekey="${this.challenge.siteKey}"
+                    data-callback="callback"
+                ></div>`,
+            );
+        } else {
+            (window as unknown as TurnstileWindow).turnstile.render(this.captchaDocumentContainer, {
+                sitekey: this.challenge.siteKey,
+                callback: this.onTokenChange,
+            });
+        }
         return true;
     }
 
@@ -148,13 +252,19 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         if (this.error) {
             return html`<ak-empty-state icon="fa-times" header=${this.error}> </ak-empty-state>`;
         }
-        if (this.captchaInteractive) {
-            return html`${this.captchaContainer}`;
+        if (this.challenge.interactive) {
+            return html`${this.captchaFrame}`;
         }
         return html`<ak-empty-state loading header=${msg("Verifying...")}></ak-empty-state>`;
     }
 
     render() {
+        if (this.embedded) {
+            if (!this.challenge.interactive) {
+                return html``;
+            }
+            return this.renderBody();
+        }
         if (!this.challenge) {
             return html`<ak-empty-state loading> </ak-empty-state>`;
         }
