@@ -37,7 +37,7 @@ The following placeholders will be used:
     - Optionally, apply access restrictions to the application.
     - Set the **Launch URL** to `https://proxmox.company:8006`.
 
-## Proxmox VE setup (web interface)
+## Proxmox VE configuration (using the web interface) 
 
 1. Log in to the Proxmox web interface.
 
