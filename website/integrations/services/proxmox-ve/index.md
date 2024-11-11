@@ -51,7 +51,7 @@ The following placeholders will be used:
 3. Fill out the OpenID Connect settings.
 
     - In the dialog that appears, fill in the following details:
-        - **Issuer URL**: Enter the Issuer URL from authentik (found under _Provider Metadata_), e.g., `https://authentik.company/application/o/proxmox/`.
+        - **Issuer URL**: Enter the Issuer URL from authentik (found in your provider's overview tab), e.g., `https://authentik.company/application/o/proxmox/`.
         - **Realm**: Enter a name for this authentication source, such as `authentik`.
         - **Client ID**: Enter the Client ID found on the provider overview page.
         - **Client Key**: Enter the Client Secret. (To find this value click **Edit** on the Provider overview page.)
