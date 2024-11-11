@@ -54,7 +54,7 @@ The following placeholders will be used:
         - **Issuer URL**: Enter the Issuer URL from authentik (found under _Provider Metadata_), e.g., `https://authentik.company/application/o/proxmox/`.
         - **Realm**: Enter a name for this authentication source, such as `authentik`.
         - **Client ID**: Enter the Client ID found on the provider overview page.
-        - **Client Key**: Enter the Client Secret found by clicking _Edit_ on the Provider overview page.
+        - **Client Key**: Enter the Client Secret. (To find this value click **Edit** on the Provider overview page.)
         - **Username claim**: Set this to `username`.
         - **Autocreate users**: Check this box if you want Proxmox to automatically create users upon first login. If checked, users will appear in Proxmox with the format `<authentik username>@authentik`.
         - **Default**: Check this if you want OpenID Connect to be pre-selected as the default on the login screen.
