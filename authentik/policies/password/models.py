@@ -89,6 +89,10 @@ class PasswordPolicy(Policy):
 
     def passes_static(self, password: str, request: PolicyRequest) -> PolicyResult:
         """Check static rules"""
+        error_message = self.error_message
+        if error_message == "":
+            error_message = _("Invalid password.")
+
         if len(password) < self.length_min:
             LOGGER.debug("password failed", check="static", reason="length")
             return PolicyResult(False, self.error_message)
