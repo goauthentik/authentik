@@ -32,7 +32,7 @@ The following placeholders will be used:
     - **Redirect URI:** `https://proxmox.company:8006` (No trailing slash, include the web interface port)
     - **Signing Key:** Select any available key
 
-2. **Create an application using this provider**
+2. Create an application using the provider.
     - Under **Applications** > **Applications** in the Admin interface, create a new application and configure it to use the provider created in the previous step.
     - Optionally, apply access restrictions to the application.
     - Set the **Launch URL** to `https://proxmox.company:8006`.
