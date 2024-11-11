@@ -3,7 +3,7 @@
 from django.http.response import HttpResponse
 from django.utils.translation import gettext as _
 from requests import RequestException
-from rest_framework.fields import CharField
+from rest_framework.fields import BooleanField, CharField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 
@@ -24,9 +24,11 @@ PLAN_CONTEXT_CAPTCHA = "captcha"
 class CaptchaChallenge(WithUserInfoChallenge):
     """Site public key"""
 
-    site_key = CharField()
-    js_url = CharField()
     component = CharField(default="ak-stage-captcha")
+
+    site_key = CharField(required=True)
+    js_url = CharField(required=True)
+    interactive = BooleanField(required=True)
 
 
 def verify_captcha_token(stage: CaptchaStage, token: str, remote_ip: str):
@@ -103,6 +105,7 @@ class CaptchaStageView(ChallengeStageView):
             data={
                 "js_url": self.executor.current_stage.js_url,
                 "site_key": self.executor.current_stage.public_key,
+                "interactive": self.executor.current_stage.interactive,
             }
         )
 
