@@ -54,7 +54,7 @@ Optionally, you can use a policy to apply access restrictions to the application
 
 3. In the wizard, click **RUN PRECHECKS**, select the confirmation box, and then click **Next**.
 
-    - Enter the **Directory Name**. For example `authentik.company` or any other name.
+    - Enter the **Directory Name**. For example `authentik` or any other name.
     - Add a **Domain Name**. For example `authentik.company`.
     - Click on the Plus (+) sign to show the default domain name.
 
