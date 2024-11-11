@@ -17,9 +17,7 @@ sidebar_label: VMware vCenter
 Integration with authentik requires VMware vCenter 8.03 or newer.
 :::
 
-## Preparation
-
-The following placeholders will be used:
+The following placeholders will be used in the examples below:
 
 -   `vcenter.company` is the FQDN of the vCenter server.
 -   `authentik.company` is the FQDN of the authentik install.
@@ -32,15 +30,15 @@ Create an application and an OAuth2/OpenID provider, using the authentik Wizard.
 
 2. In the Wizard, follow the prompts to create an application and its provider.
 
-Create the application with these settings:
+    Create the application with these settings:
 
--   Select OIDC as the provider type.
--   Ensure that the **Redirect URI Setting** is left empty.
+    -   Select OIDC as the provider type.
+    -   Ensure that the **Redirect URI Setting** is left empty.
 
-Create the provider with these settings:
+    Create the provider with these settings:
 
--   Redirect URI: `https://vcenter.company/ui/login/oauth2/authcode`
--   Ensure that a signing key is selected, for example the Self-signed Certificate.
+        -   Redirect URI: `https://vcenter.company/ui/login/oauth2/authcode`
+        -   Ensure that a signing key is selected, for example the Self-signed Certificate.
 
 3. Click **Submit** to create the application and provider, and then click **Close** to close the Wizard.
 
