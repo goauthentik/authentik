@@ -88,8 +88,64 @@ vault write auth/oidc/role/reader \
       policies="reader"
 ```
 
+## External Groups
+
+If you wish to manage group membership in vault via Authentik you have to use [external groups](https://developer.hashicorp.com/vault/tutorials/auth-methods/oidc-auth#create-an-external-vault-group).
+
 :::note
-If you intend to create [external groups](https://developer.hashicorp.com/vault/tutorials/auth-methods/oidc-auth#create-an-external-vault-group) in Vault to manage user access the OIDC role will need to specifically request a custom scope using the `oidc_scopes` option when creating the OIDC role.
+This assumes that the steps above have already been completed and tested.
 :::
+
+### Step 1
+
+In authentik, edit the oidc provider created above. Unser "Advanced protocol settings" add "authentik default OAuth Mapping: OpenID 'profile'". This includes the "groups" mapping.
+
+### Step 2
+
+In hashicorp vault, change the reader role
+
+```
+vault write auth/oidc/role/reader \
+      bound_audiences="Client ID" \
+      allowed_redirect_uris="https://vault.company/ui/vault/auth/oidc/oidc/callback" \
+      allowed_redirect_uris="https://vault.company/oidc/callback" \
+      allowed_redirect_uris="http://localhost:8250/oidc/callback" \
+      user_claim="sub" \
+      policies="reader" \
+      groups_claim="groups" \
+      oidc_scopes=[ "openid profile email" ]
+```
+
+Add a group
+
+```
+vault write identity/group/reader \
+    name="reader" \
+    policies=["reader"] \
+    type="external"
+```
+
+Get the canonical id of the group
+
+```
+vault list identity/group/id
+```
+
+Get the id of the oidc accessor
+
+```
+vault auth list
+```
+
+
+Add a group alias, this maps the group to the oidc backend
+
+```
+vault write identity/group-alias \
+    mount_accessor="auth_oidc_xxxxxx" \
+    canonical_id="group_id" \
+    name="group name in authentik"
+```
+
 You should then be able to sign in via OIDC
 `vault login -method=oidc role="reader"`
