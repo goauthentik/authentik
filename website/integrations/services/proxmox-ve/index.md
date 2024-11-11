@@ -24,7 +24,7 @@ The following placeholders will be used:
 -   `proxmox.company` is the FQDN of the Proxmox VE server.
 -   `authentik.company` is the FQDN of the authentik install.
 
-## authentik setup
+## authentik configuration
 
 1. Navigate to the Admin interface, then click **Providers** to create an OAuth2/OpenID provider with these settings:
 
