@@ -26,21 +26,21 @@ The following placeholders will be used in the examples below:
 
 Create an application and an OAuth2/OpenID provider, using the authentik Wizard.
 
-1. Log into authentik as an admin, and navigate to **Applications --> Applications**, and then click **Create with Wizard**.
+1.  Log into authentik as an admin, and navigate to **Applications --> Applications**, and then click **Create with Wizard**.
 
-2. In the Wizard, follow the prompts to create an application and its provider.
+2.  In the Wizard, follow the prompts to create an application and its provider.
 
     Create the application with these settings:
 
-    -   Select OIDC as the provider type.
-    -   Ensure that the **Redirect URI Setting** is left empty.
+    - Select OIDC as the provider type.
+    - Ensure that the **Redirect URI Setting** is left empty.
 
     Create the provider with these settings:
 
         -   Redirect URI: `https://vcenter.company/ui/login/oauth2/authcode`
         -   Ensure that a signing key is selected, for example the Self-signed Certificate.
 
-3. Click **Submit** to create the application and provider, and then click **Close** to close the Wizard.
+3.  Click **Submit** to create the application and provider, and then click **Close** to close the Wizard.
 
 Optionally, you can use a policy to apply access restrictions to the application.
 
