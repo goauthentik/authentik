@@ -87,7 +87,7 @@ Optionally, you can use a policy to apply access restrictions to the application
     - Edit the application that you created earlier and select this newly created SCIM provider as the backchannel provider.
     - Navigate to the provider and trigger a sync.
 
-9. Return to VCenter.
+9. Return to vCenter.
 
     - Navigate to **Administration -> Access Control -> Global Permissions**.
     - Click **Add**.
