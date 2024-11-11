@@ -32,8 +32,8 @@ Create an application and an OAuth2/OpenID provider, using the authentik Wizard.
 
     Create the application with these settings:
 
-    - Select OIDC as the provider type.
-    - Ensure that the **Redirect URI Setting** is left empty.
+    -   Select OIDC as the provider type.
+    -   Ensure that the **Redirect URI Setting** is left empty.
 
     Create the provider with these settings:
 
