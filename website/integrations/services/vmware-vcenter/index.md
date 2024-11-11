@@ -62,11 +62,10 @@ Optionally, you can use a policy to apply access restrictions to the application
 
 5. On the OpenID Connect page, enter the following values:
 
-    - Set `Identity Provider Name` to `authentik`.
-        - Set `Client Identifier` to the client ID from authentik.
-
--   Set `Shared secret` to the client secret from authentik.
-    -   Set `OpenID Address` to the _OpenID Configuration URL_ from authentik.
+    - Set **Identity Provider Name** to `authentik`.
+    - Set **Client Identifier** to the client ID from authentik.
+    - Set **Shared secret** to the client secret from authentik.
+    - Set **OpenID Address** to the _OpenID Configuration URL_ from authentik.
 
 6. Click **Next**, and then **Finish**.
 
