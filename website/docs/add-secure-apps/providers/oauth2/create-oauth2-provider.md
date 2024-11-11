@@ -10,11 +10,10 @@ To add a provider (and the application that uses the provider for authentication
 
 3. In the **New application** wizard, define the application details, and then click **Next**.
 
-4. Select the **Provider Type** of **OAuth2/OIDC***, and then click **Next**.
+4. Select the **Provider Type** of **OAuth2/OIDC\***, and then click **Next**.
 
 5. On the **Configure OAuth2/OpenId Provider** page,
 
 **Submit**.
-
 
 -   Configure Offline access (though Jens says it is diff for each app, the only thing we do in authentik is to add a scope mapping (a default one that you select when you create the provider).
