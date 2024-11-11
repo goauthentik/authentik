@@ -52,7 +52,7 @@ Optionally, you can use a policy to apply access restrictions to the application
 
 2. Click **Change Provider** in the top-right corner, and then select **Okta** from the drop-down list.
 
-3. In the wizard, click **RUN PRECHECKS**, select the confirmation box, and then click **Next**.
+3. In the wizard, click **Run Prechecks**, select the confirmation box, and then click **Next**
 
     - Enter the **Directory Name**. For example `authentik` or any other name.
     - Add a **Domain Name**. For example `authentik.company`.
