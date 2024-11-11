@@ -223,6 +223,7 @@ class IdentificationStageView(ChallengeStageView):
                     {
                         "js_url": current_stage.captcha_stage.js_url,
                         "site_key": current_stage.captcha_stage.public_key,
+                        "interactive": current_stage.captcha_stage.interactive,
                     }
                     if current_stage.captcha_stage
                     else None
