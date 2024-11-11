@@ -72,7 +72,7 @@ Optionally, you can use a policy to apply access restrictions to the application
 7. On the **Single Sign On -> Configuration** page, in the **User Provisioning** area, take the following steps:
 
     - Copy the **Tenant URL** and save to a safe place.
-    - Click on `Generate` to generate a SCIM token.
+    - Click on **Generate** to generate a SCIM token.
     - Click **Generate** in the newly opened modal box.
     - Copy the token and save to a safe place.
 
