@@ -86,6 +86,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
             css`
                 .pf-c-title {
                     padding-bottom: var(--pf-global--spacer--md);
+                    padding-top: var(--pf-global--spacer--md);
                 }
             `,
         ];
@@ -294,6 +295,10 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
                 <div class="pf-c-description-list__group">
                     <dt class="pf-c-description-list__term">${msg("Name")}</dt>
                     <dt class="pf-c-description-list__description">${app.name}</dt>
+                </div>
+                <div class="pf-c-description-list__group">
+                    <dt class="pf-c-description-list__term">${msg("Group")}</dt>
+                    <dt class="pf-c-description-list__description">${app.group || msg("-")}</dt>
                 </div>
                 <div class="pf-c-description-list__group">
                     <dt class="pf-c-description-list__term">${msg("Policy engine mode")}</dt>
