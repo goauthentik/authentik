@@ -9262,6 +9262,12 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Endpoint Google Chrome Device Trust is in preview.</source>
   <target>端点 Google Chrome 设备信任处于预览状态。</target>
 </trans-unit>
+<trans-unit id="s6f4f35a5a4b9b3cb">
+  <source>Interactive</source>
+</trans-unit>
+<trans-unit id="sd020240e41e4c207">
+  <source>Enable this flag if the configured captcha requires User-interaction. Required for reCAPTCHA v2, hCaptcha and Cloudflare Turnstile.</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
