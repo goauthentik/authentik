@@ -101,3 +101,9 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
             </ak-form-element-horizontal>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-service-connection-kubernetes-form": ServiceConnectionKubernetesForm;
+    }
+}

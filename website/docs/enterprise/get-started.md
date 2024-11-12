@@ -6,10 +6,12 @@ Installing authentik is exactly the same process for both Enterprise version and
 
 ## Install Enterprise
 
-To get started working with Enterprise authentik, upgrade to the [2023.8.x](../releases) version or later. For installation steps, refer to our [technical documentation](../installation/index.mdx) for instructions to install and configure authentik.
+To get started working with Enterprise authentik, [upgrade](../install-config/upgrade.mdx) to the [2023.8.x](../releases) version or later.
 
--   [Docker Compose installation](../installation/docker-compose.mdx)
--   [Kubernetes installation](../installation/kubernetes.md)
+If this is a fresh install, refer to our [technical documentation](../install-config/index.mdx) for instructions to install and configure authentik.
+
+-   [Docker Compose installation](../install-config/install/docker-compose.mdx)
+-   [Kubernetes installation](../install-config/install/kubernetes.md)
 
 ## Access Enterprise
 

@@ -1,9 +1,10 @@
 import "@goauthentik/admin/applications/wizard/ak-wizard-title";
 import "@goauthentik/admin/applications/wizard/ak-wizard-title";
-import "@goauthentik/admin/common/ak-core-group-search";
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
+import AkCryptoCertificateSearch from "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-multi-select";
 import "@goauthentik/components/ak-number-input";
 import "@goauthentik/components/ak-radio-input";
@@ -14,7 +15,7 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 
 import { msg } from "@lit/localize";
 import { customElement, state } from "@lit/reactive-element/decorators.js";
-import { html } from "lit";
+import { html, nothing } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
@@ -37,10 +38,13 @@ export class ApplicationWizardProviderSamlConfiguration extends BaseProviderPane
     @state()
     propertyMappings?: PaginatedSAMLPropertyMappingList;
 
+    @state()
+    hasSigningKp = false;
+
     constructor() {
         super();
         new PropertymappingsApi(DEFAULT_CONFIG)
-            .propertymappingsSamlList({
+            .propertymappingsProviderSamlList({
                 ordering: "saml_name",
             })
             .then((propertyMappings: PaginatedSAMLPropertyMappingList) => {
@@ -83,24 +87,6 @@ export class ApplicationWizardProviderSamlConfiguration extends BaseProviderPane
                     label=${msg("Name")}
                     .errorMessages=${errors?.name ?? []}
                 ></ak-text-input>
-
-                <ak-form-element-horizontal
-                    label=${msg("Authentication flow")}
-                    ?required=${false}
-                    name="authenticationFlow"
-                    .errorMessages=${errors?.authenticationFlow ?? []}
-                >
-                    <ak-flow-search
-                        flowType=${FlowsInstancesListDesignationEnum.Authentication}
-                        .currentFlow=${provider?.authenticationFlow}
-                        required
-                    ></ak-flow-search>
-                    <p class="pf-c-form__helper-text">
-                        ${msg(
-                            "Flow used when a user access this provider and is not authenticated.",
-                        )}
-                    </p>
-                </ak-form-element-horizontal>
 
                 <ak-form-element-horizontal
                     label=${msg("Authorization flow")}
@@ -160,6 +146,40 @@ export class ApplicationWizardProviderSamlConfiguration extends BaseProviderPane
                 </ak-form-group>
 
                 <ak-form-group>
+                    <span slot="header"> ${msg("Advanced flow settings")}</span>
+                    <div slot="body" class="pf-c-form">
+                        <ak-form-element-horizontal
+                            name="authenticationFlow"
+                            label=${msg("Authentication flow")}
+                        >
+                            <ak-flow-search
+                                flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                                .currentFlow=${provider?.authenticationFlow}
+                            ></ak-flow-search>
+                            <p class="pf-c-form__helper-text">
+                                ${msg(
+                                    "Flow used when a user access this provider and is not authenticated.",
+                                )}
+                            </p>
+                        </ak-form-element-horizontal>
+                        <ak-form-element-horizontal
+                            label=${msg("Invalidation flow")}
+                            name="invalidationFlow"
+                            required
+                        >
+                            <ak-flow-search
+                                flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                                .currentFlow=${provider?.invalidationFlow}
+                                defaultFlowSlug="default-provider-invalidation-flow"
+                                required
+                            ></ak-flow-search>
+                            <p class="pf-c-form__helper-text">
+                                ${msg("Flow used when logging out of this provider.")}
+                            </p>
+                        </ak-form-element-horizontal>
+                    </div>
+                </ak-form-group>
+                <ak-form-group>
                     <span slot="header"> ${msg("Advanced protocol settings")} </span>
                     <div slot="body" class="pf-c-form">
                         <ak-form-element-horizontal
@@ -168,6 +188,11 @@ export class ApplicationWizardProviderSamlConfiguration extends BaseProviderPane
                         >
                             <ak-crypto-certificate-search
                                 certificate=${ifDefined(provider?.signingKp ?? undefined)}
+                                @input=${(ev: InputEvent) => {
+                                    const target = ev.target as AkCryptoCertificateSearch;
+                                    if (!target) return;
+                                    this.hasSigningKp = !!target.selectedKeypair;
+                                }}
                             ></ak-crypto-certificate-search>
                             <p class="pf-c-form__helper-text">
                                 ${msg(
@@ -175,6 +200,52 @@ export class ApplicationWizardProviderSamlConfiguration extends BaseProviderPane
                                 )}
                             </p>
                         </ak-form-element-horizontal>
+                        ${this.hasSigningKp
+                            ? html` <ak-form-element-horizontal name="signAssertion">
+                                      <label class="pf-c-switch">
+                                          <input
+                                              class="pf-c-switch__input"
+                                              type="checkbox"
+                                              ?checked=${first(provider?.signAssertion, true)}
+                                          />
+                                          <span class="pf-c-switch__toggle">
+                                              <span class="pf-c-switch__toggle-icon">
+                                                  <i class="fas fa-check" aria-hidden="true"></i>
+                                              </span>
+                                          </span>
+                                          <span class="pf-c-switch__label"
+                                              >${msg("Sign assertions")}</span
+                                          >
+                                      </label>
+                                      <p class="pf-c-form__helper-text">
+                                          ${msg(
+                                              "When enabled, the assertion element of the SAML response will be signed.",
+                                          )}
+                                      </p>
+                                  </ak-form-element-horizontal>
+                                  <ak-form-element-horizontal name="signResponse">
+                                      <label class="pf-c-switch">
+                                          <input
+                                              class="pf-c-switch__input"
+                                              type="checkbox"
+                                              ?checked=${first(provider?.signResponse, false)}
+                                          />
+                                          <span class="pf-c-switch__toggle">
+                                              <span class="pf-c-switch__toggle-icon">
+                                                  <i class="fas fa-check" aria-hidden="true"></i>
+                                              </span>
+                                          </span>
+                                          <span class="pf-c-switch__label"
+                                              >${msg("Sign responses")}</span
+                                          >
+                                      </label>
+                                      <p class="pf-c-form__helper-text">
+                                          ${msg(
+                                              "When enabled, the assertion element of the SAML response will be signed.",
+                                          )}
+                                      </p>
+                                  </ak-form-element-horizontal>`
+                            : nothing}
 
                         <ak-form-element-horizontal
                             label=${msg("Verification Certificate")}
@@ -191,17 +262,28 @@ export class ApplicationWizardProviderSamlConfiguration extends BaseProviderPane
                             </p>
                         </ak-form-element-horizontal>
 
+                        <ak-form-element-horizontal
+                            label=${msg("Encryption Certificate")}
+                            name="encryptionKp"
+                        >
+                            <ak-crypto-certificate-search
+                                certificate=${ifDefined(provider?.encryptionKp ?? undefined)}
+                            ></ak-crypto-certificate-search>
+                            <p class="pf-c-form__helper-text">
+                                ${msg(
+                                    "When selected, encrypted assertions will be decrypted using this keypair.",
+                                )}
+                            </p>
+                        </ak-form-element-horizontal>
+
                         <ak-multi-select
                             label=${msg("Property Mappings")}
                             name="propertyMappings"
                             .options=${propertyPairs}
                             .values=${pmValues}
                             .richhelp=${html` <p class="pf-c-form__helper-text">
-                                    ${msg("Property mappings used for user mapping.")}
-                                </p>
-                                <p class="pf-c-form__helper-text">
-                                    ${msg("Hold control/command to select multiple items.")}
-                                </p>`}
+                                ${msg("Property mappings used for user mapping.")}
+                            </p>`}
                         ></ak-multi-select>
 
                         <ak-form-element-horizontal
@@ -274,3 +356,9 @@ export class ApplicationWizardProviderSamlConfiguration extends BaseProviderPane
 }
 
 export default ApplicationWizardProviderSamlConfiguration;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-wizard-authentication-by-saml-configuration": ApplicationWizardProviderSamlConfiguration;
+    }
+}

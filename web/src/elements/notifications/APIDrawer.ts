@@ -120,3 +120,9 @@ export class APIDrawer extends AKElement {
         </div>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-api-drawer": APIDrawer;
+    }
+}

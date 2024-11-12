@@ -8,6 +8,7 @@ from rest_framework.serializers import BaseSerializer
 
 from authentik.core.models import Source
 from authentik.flows.models import Flow, Stage
+from authentik.stages.captcha.models import CaptchaStage
 from authentik.stages.password.models import PasswordStage
 
 
@@ -38,10 +39,24 @@ class IdentificationStage(Stage):
         help_text=_(
             (
                 "When set, shows a password field, instead of showing the "
-                "password field as seaprate step."
+                "password field as separate step."
             ),
         ),
     )
+
+    captcha_stage = models.ForeignKey(
+        CaptchaStage,
+        null=True,
+        default=None,
+        on_delete=models.SET_NULL,
+        help_text=_(
+            (
+                "When set, adds functionality exactly like a Captcha stage, but baked into the "
+                "Identification stage."
+            ),
+        ),
+    )
+
     case_insensitive_matching = models.BooleanField(
         default=True,
         help_text=_("When enabled, user fields are matched regardless of their casing."),

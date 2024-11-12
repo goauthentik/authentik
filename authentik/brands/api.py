@@ -55,6 +55,7 @@ class BrandSerializer(ModelSerializer):
             "flow_unenrollment",
             "flow_user_settings",
             "flow_device_code",
+            "default_application",
             "web_certificate",
             "attributes",
         ]

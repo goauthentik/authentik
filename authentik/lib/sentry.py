@@ -69,7 +69,7 @@ def sentry_init(**sentry_init_kwargs):
         integrations=[
             ArgvIntegration(),
             StdlibIntegration(),
-            DjangoIntegration(transaction_style="function_name"),
+            DjangoIntegration(transaction_style="function_name", cache_spans=True),
             CeleryIntegration(),
             RedisIntegration(),
             ThreadingIntegration(propagate_hub=True),

@@ -148,3 +148,9 @@ export class TokenListPage extends TablePage<Token> {
         ];
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-token-list": TokenListPage;
+    }
+}

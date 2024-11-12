@@ -66,6 +66,7 @@ func newTestApplication() *Application {
 		},
 		http.DefaultClient,
 		ts,
+		nil,
 	)
 	ts.apps = append(ts.apps, a)
 	return a

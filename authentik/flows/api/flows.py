@@ -37,6 +37,7 @@ from authentik.lib.utils.file import (
 )
 from authentik.lib.views import bad_request_message
 from authentik.rbac.decorators import permission_required
+from authentik.rbac.filters import ObjectFilter
 
 LOGGER = get_logger()
 
@@ -281,7 +282,7 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
             400: OpenApiResponse(description="Flow not applicable"),
         },
     )
-    @action(detail=True, pagination_class=None, filter_backends=[])
+    @action(detail=True, pagination_class=None, filter_backends=[ObjectFilter])
     def execute(self, request: Request, slug: str):
         """Execute flow for current user"""
         # Because we pre-plan the flow here, and not in the planner, we need to manually clear

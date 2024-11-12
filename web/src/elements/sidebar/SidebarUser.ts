@@ -62,3 +62,9 @@ export class SidebarUser extends AKElement {
         `;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-sidebar-user": SidebarUser;
+    }
+}

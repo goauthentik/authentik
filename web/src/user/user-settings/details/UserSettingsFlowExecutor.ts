@@ -71,10 +71,7 @@ export class UserSettingsFlowExecutor
             })
             .then((data) => {
                 this.challenge = data;
-                if (this.challenge.responseErrors) {
-                    return false;
-                }
-                return true;
+                return !this.challenge.responseErrors;
             })
             .catch((e: Error | ResponseError) => {
                 this.errorMessage(e);
@@ -203,5 +200,11 @@ export class UserSettingsFlowExecutor
             <div class="pf-c-card__title">${msg("Update details")}</div>
             <div class="pf-c-card__body">${this.renderChallengeWrapper()}</div>
         </div>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-settings-flow-executor": UserSettingsFlowExecutor;
     }
 }

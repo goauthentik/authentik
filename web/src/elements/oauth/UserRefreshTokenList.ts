@@ -35,7 +35,7 @@ export class UserOAuthRefreshTokenList extends Table<TokenModel> {
 
     checkbox = true;
     clearOnRefresh = true;
-    order = "expires";
+    order = "-expires";
 
     columns(): TableColumn[] {
         return [
@@ -102,5 +102,11 @@ export class UserOAuthRefreshTokenList extends Table<TokenModel> {
                 })}
             </ak-chip-group>`,
         ];
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-oauth-refresh-token-list": UserOAuthRefreshTokenList;
     }
 }

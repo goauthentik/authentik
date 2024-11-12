@@ -42,7 +42,6 @@ export class Sidebar extends AKElement {
                 nav {
                     display: flex;
                     flex-direction: column;
-                    max-height: 100vh;
                     height: 100%;
                     overflow-y: hidden;
                 }
@@ -77,5 +76,11 @@ export class Sidebar extends AKElement {
             </ul>
             <ak-sidebar-user></ak-sidebar-user>
         </nav>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-sidebar": Sidebar;
     }
 }

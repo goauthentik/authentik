@@ -87,7 +87,9 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
                             <a
                                 rel="noopener noreferrer"
                                 target="_blank"
-                                href="${docLink("/docs/policies/expression?utm_source=authentik")}"
+                                href="${docLink(
+                                    "/docs/customize/policies/expression?utm_source=authentik",
+                                )}"
                             >
                                 ${msg("See documentation for a list of all variables.")}
                             </a>
@@ -95,5 +97,11 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-policy-expression-form": ExpressionPolicyForm;
     }
 }

@@ -2,7 +2,6 @@
 
 import re
 import socket
-from collections.abc import Iterable
 from ipaddress import ip_address, ip_network
 from textwrap import indent
 from types import CodeType
@@ -13,7 +12,7 @@ from django.core.exceptions import FieldError
 from django.utils.text import slugify
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.serializers import ValidationError
-from sentry_sdk.hub import Hub
+from sentry_sdk import start_span
 from sentry_sdk.tracing import Span
 from structlog.stdlib import get_logger
 
@@ -27,6 +26,12 @@ from authentik.policies.types import PolicyRequest, PolicyResult
 from authentik.stages.authenticator import devices_for_user
 
 LOGGER = get_logger()
+
+ARG_SANITIZE = re.compile(r"[:.-]")
+
+
+def sanitize_arg(arg_name: str) -> str:
+    return re.sub(ARG_SANITIZE, "_", arg_name)
 
 
 class BaseEvaluator:
@@ -177,9 +182,9 @@ class BaseEvaluator:
         proc = PolicyProcess(PolicyBinding(policy=policy), request=req, connection=None)
         return proc.profiling_wrapper()
 
-    def wrap_expression(self, expression: str, params: Iterable[str]) -> str:
+    def wrap_expression(self, expression: str) -> str:
         """Wrap expression in a function, call it, and save the result as `result`"""
-        handler_signature = ",".join(params)
+        handler_signature = ",".join(sanitize_arg(x) for x in self._context.keys())
         full_expression = ""
         full_expression += f"def handler({handler_signature}):\n"
         full_expression += indent(expression, "    ")
@@ -188,14 +193,14 @@ class BaseEvaluator:
 
     def compile(self, expression: str) -> CodeType:
         """Parse expression. Raises SyntaxError or ValueError if the syntax is incorrect."""
-        param_keys = self._context.keys()
-        return compile(self.wrap_expression(expression, param_keys), self._filename, "exec")
+        expression = self.wrap_expression(expression)
+        return compile(expression, self._filename, "exec")
 
     def evaluate(self, expression_source: str) -> Any:
         """Parse and evaluate expression. If the syntax is incorrect, a SyntaxError is raised.
         If any exception is raised during execution, it is raised.
         The result is returned without any type-checking."""
-        with Hub.current.start_span(op="authentik.lib.evaluator.evaluate") as span:
+        with start_span(op="authentik.lib.evaluator.evaluate") as span:
             span: Span
             span.description = self._filename
             span.set_data("expression", expression_source)
@@ -205,7 +210,7 @@ class BaseEvaluator:
                 self.handle_error(exc, expression_source)
                 raise exc
             try:
-                _locals = self._context
+                _locals = {sanitize_arg(x): y for x, y in self._context.items()}
                 # Yes this is an exec, yes it is potentially bad. Since we limit what variables are
                 # available here, and these policies can only be edited by admins, this is a risk
                 # we're willing to take.

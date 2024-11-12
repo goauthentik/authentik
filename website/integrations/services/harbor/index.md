@@ -1,6 +1,9 @@
 ---
-title: Harbor
+title: Integrate with Harbor
+sidebar_label: Harbor
 ---
+
+# Harbor
 
 <span class="badge badge--secondary">Support level: Community</span>
 

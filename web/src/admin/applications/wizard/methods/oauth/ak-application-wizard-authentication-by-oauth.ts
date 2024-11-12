@@ -2,12 +2,19 @@ import "@goauthentik/admin/applications/wizard/ak-wizard-title";
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
 import {
+    makeOAuth2PropertyMappingsSelector,
+    oauth2PropertyMappingsProvider,
+} from "@goauthentik/admin/providers/oauth2/OAuth2PropertyMappings.js";
+import {
     clientTypeOptions,
-    defaultScopes,
     issuerModeOptions,
     redirectUriHelp,
     subjectModeOptions,
 } from "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
+import {
+    makeSourceSelector,
+    oauth2SourcesProvider,
+} from "@goauthentik/admin/providers/oauth2/OAuth2Sources.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-number-input";
@@ -15,6 +22,7 @@ import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
@@ -23,17 +31,8 @@ import { customElement, state } from "@lit/reactive-element/decorators.js";
 import { html, nothing } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import {
-    ClientTypeEnum,
-    FlowsInstancesListDesignationEnum,
-    PropertymappingsApi,
-    SourcesApi,
-} from "@goauthentik/api";
-import {
-    type OAuth2Provider,
-    type PaginatedOAuthSourceList,
-    type PaginatedScopeMappingList,
-} from "@goauthentik/api";
+import { ClientTypeEnum, FlowsInstancesListDesignationEnum, SourcesApi } from "@goauthentik/api";
+import { type OAuth2Provider, type PaginatedOAuthSourceList } from "@goauthentik/api";
 
 import BaseProviderPanel from "../BaseProviderPanel";
 
@@ -43,21 +42,10 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
     showClientSecret = true;
 
     @state()
-    propertyMappings?: PaginatedScopeMappingList;
-
-    @state()
     oauthSources?: PaginatedOAuthSourceList;
 
     constructor() {
         super();
-        new PropertymappingsApi(DEFAULT_CONFIG)
-            .propertymappingsScopeList({
-                ordering: "scope_name",
-            })
-            .then((propertyMappings: PaginatedScopeMappingList) => {
-                this.propertyMappings = propertyMappings;
-            });
-
         new SourcesApi(DEFAULT_CONFIG)
             .sourcesOauthList({
                 ordering: "name",
@@ -82,22 +70,6 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                     required
                 ></ak-text-input>
 
-                <ak-form-element-horizontal
-                    name="authenticationFlow"
-                    label=${msg("Authentication flow")}
-                    .errorMessages=${errors?.authenticationFlow ?? []}
-                >
-                    <ak-flow-search
-                        flowType=${FlowsInstancesListDesignationEnum.Authentication}
-                        .currentFlow=${provider?.authenticationFlow}
-                        required
-                    ></ak-flow-search>
-                    <p class="pf-c-form__helper-text">
-                        ${msg(
-                            "Flow used when a user access this provider and is not authenticated.",
-                        )}
-                    </p>
-                </ak-form-element-horizontal>
                 <ak-form-element-horizontal
                     name="authorizationFlow"
                     label=${msg("Authorization flow")}
@@ -176,6 +148,40 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                 </ak-form-group>
 
                 <ak-form-group>
+                    <span slot="header"> ${msg("Advanced flow settings")} </span>
+                    <div slot="body" class="pf-c-form">
+                        <ak-form-element-horizontal
+                            name="authenticationFlow"
+                            label=${msg("Authentication flow")}
+                        >
+                            <ak-flow-search
+                                flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                                .currentFlow=${provider?.authenticationFlow}
+                            ></ak-flow-search>
+                            <p class="pf-c-form__helper-text">
+                                ${msg(
+                                    "Flow used when a user access this provider and is not authenticated.",
+                                )}
+                            </p>
+                        </ak-form-element-horizontal>
+                        <ak-form-element-horizontal
+                            label=${msg("Invalidation flow")}
+                            name="invalidationFlow"
+                            required
+                        >
+                            <ak-flow-search
+                                flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                                .currentFlow=${provider?.invalidationFlow}
+                                defaultFlowSlug="default-provider-invalidation-flow"
+                                required
+                            ></ak-flow-search>
+                            <p class="pf-c-form__helper-text">
+                                ${msg("Flow used when logging out of this provider.")}
+                            </p>
+                        </ak-form-element-horizontal>
+                    </div>
+                </ak-form-group>
+                <ak-form-group>
                     <span slot="header"> ${msg("Advanced protocol settings")} </span>
                     <div slot="body" class="pf-c-form">
                         <ak-text-input
@@ -222,35 +228,18 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                             name="propertyMappings"
                             .errorMessages=${errors?.propertyMappings ?? []}
                         >
-                            <select class="pf-c-form-control" multiple>
-                                ${this.propertyMappings?.results.map((scope) => {
-                                    let selected = false;
-                                    if (!provider?.propertyMappings) {
-                                        selected = scope.managed
-                                            ? defaultScopes.includes(scope.managed)
-                                            : false;
-                                    } else {
-                                        selected = Array.from(provider?.propertyMappings).some(
-                                            (su) => {
-                                                return su == scope.pk;
-                                            },
-                                        );
-                                    }
-                                    return html`<option
-                                        value=${ifDefined(scope.pk)}
-                                        ?selected=${selected}
-                                    >
-                                        ${scope.name}
-                                    </option>`;
-                                })}
-                            </select>
+                            <ak-dual-select-dynamic-selected
+                                .provider=${oauth2PropertyMappingsProvider}
+                                .selector=${makeOAuth2PropertyMappingsSelector(
+                                    provider?.propertyMappings,
+                                )}
+                                available-label=${msg("Available Scopes")}
+                                selected-label=${msg("Selected Scopes")}
+                            ></ak-dual-select-dynamic-selected>
                             <p class="pf-c-form__helper-text">
                                 ${msg(
                                     "Select which scopes can be used by the client. The client still has to specify the scope to access the data.",
                                 )}
-                            </p>
-                            <p class="pf-c-form__helper-text">
-                                ${msg("Hold control/command to select multiple items.")}
                             </p>
                         </ak-form-element-horizontal>
 
@@ -295,23 +284,16 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                             name="jwksSources"
                             .errorMessages=${errors?.jwksSources ?? []}
                         >
-                            <select class="pf-c-form-control" multiple>
-                                ${this.oauthSources?.results.map((source) => {
-                                    const selected = (provider?.jwksSources || []).some((su) => {
-                                        return su == source.pk;
-                                    });
-                                    return html`<option value=${source.pk} ?selected=${selected}>
-                                        ${source.name} (${source.slug})
-                                    </option>`;
-                                })}
-                            </select>
+                            <ak-dual-select-dynamic-selected
+                                .provider=${oauth2SourcesProvider}
+                                .selector=${makeSourceSelector(provider?.jwksSources)}
+                                available-label=${msg("Available Sources")}
+                                selected-label=${msg("Selected Sources")}
+                            ></ak-dual-select-dynamic-selected>
                             <p class="pf-c-form__helper-text">
                                 ${msg(
                                     "JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider.",
                                 )}
-                            </p>
-                            <p class="pf-c-form__helper-text">
-                                ${msg("Hold control/command to select multiple items.")}
                             </p>
                         </ak-form-element-horizontal>
                     </div>
@@ -321,3 +303,9 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
 }
 
 export default ApplicationWizardAuthenticationByOauth;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-wizard-authentication-by-oauth": ApplicationWizardAuthenticationByOauth;
+    }
+}

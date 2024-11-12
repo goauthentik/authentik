@@ -68,6 +68,7 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
 
     url = models.TextField(help_text=_("Base URL to SCIM requests, usually ends in /v2"))
     token = models.TextField(help_text=_("Authentication token"))
+    verify_certificates = models.BooleanField(default=True)
 
     property_mappings_group = models.ManyToManyField(
         PropertyMapping,
@@ -133,7 +134,7 @@ class SCIMMapping(PropertyMapping):
 
     @property
     def component(self) -> str:
-        return "ak-property-mapping-scim-form"
+        return "ak-property-mapping-provider-scim-form"
 
     @property
     def serializer(self) -> type[Serializer]:
@@ -142,8 +143,8 @@ class SCIMMapping(PropertyMapping):
         return SCIMMappingSerializer
 
     def __str__(self):
-        return f"SCIM Mapping {self.name}"
+        return f"SCIM Provider Mapping {self.name}"
 
     class Meta:
-        verbose_name = _("SCIM Mapping")
-        verbose_name_plural = _("SCIM Mappings")
+        verbose_name = _("SCIM Provider Mapping")
+        verbose_name_plural = _("SCIM Provider Mappings")

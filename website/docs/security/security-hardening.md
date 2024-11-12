@@ -4,9 +4,20 @@ title: Hardening authentik
 
 While authentik is secure out of the box, you can take steps to further increase the security of an authentik instance. As everyone knows, there is a consequential tradeoff between security and convenience. All of these hardening practices have an impact on the user experience and should only be applied knowing this tradeoff.
 
+### Password policy
+
+authentik's default Password policy complies with the [NIST SP 800-63 Digital Identity Guidelines](https://pages.nist.gov/800-63-4/sp800-63b.html#password).
+
+However, for further hardening compliant to the NIST Guidelines, consider
+
+-   setting the length of the password to a minimum of 15 characters, and
+-   enabling the "Check haveibeenpwned.com" blocklist comparison (note that this cannot be used on Air-gapped instances)
+
+For further options, see [Password policy](../customize/policies/index.md#password-policy).
+
 ### Expressions
 
-[Expressions](../property-mappings/expression.mdx) allow super-users and other highly privileged users to create custom logic within authentik to modify its behaviour. Editing/creating these expressions is, by default, limited to super-users and any related events are fully logged.
+[Expressions](../customize/policies/expression.mdx) allow super-users and other highly privileged users to create custom logic within authentik to modify its behaviour. Editing/creating these expressions is, by default, limited to super-users and any related events are fully logged.
 
 However, for further hardening, it is possible to prevent any user (even super-users) from using expressions to create or edit any objects. To do so, configure your deployment to block API requests to these endpoints:
 
@@ -14,7 +25,7 @@ However, for further hardening, it is possible to prevent any user (even super-u
 -   `/api/v3/propertymappings*`
 -   `/api/v3/managed/blueprints*`
 
-With these restrictions in place, expressions can only be edited using [Blueprints on the file system](https://docs.goauthentik.io/developer-docs/blueprints/#storage---file). Take care to restrict access to the file system itself.
+With these restrictions in place, expressions can only be edited using [Blueprints on the file system](../customize/blueprints/index.md#storage---file). Take care to restrict access to the file system itself.
 
 ### Blueprints
 
@@ -24,7 +35,7 @@ To prevent any user from creating/editing blueprints, block API requests to this
 
 -   `/api/v3/managed/blueprints*`
 
-With these restrictions in place, Blueprints can only be edited via [the file system](https://docs.goauthentik.io/developer-docs/blueprints/#storage---file).
+With these restrictions in place, Blueprints can only be edited via [the file system](../customize/blueprints/index.md#storage---file).
 
 ### CAPTCHA Stage
 
@@ -35,4 +46,4 @@ To prevent any user from creating/editing CAPTCHA stages block API requests to t
 -   `/api/v3/stages/captcha*`
 -   `/api/v3/managed/blueprints*`
 
-With these restrictions in place, CAPTCHA stages can only be edited using [Blueprints on the file system](https://docs.goauthentik.io/developer-docs/blueprints/#storage---file).
+With these restrictions in place, CAPTCHA stages can only be edited using [Blueprints on the file system](../customize/blueprints/index.md#storage---file).

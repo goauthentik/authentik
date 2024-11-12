@@ -1,6 +1,9 @@
 ---
-title: Gatus
+title: Integrate with Gatus
+sidebar_label: Gatus
 ---
+
+# Gatus
 
 <span class="badge badge--secondary">Support level: Community</span>
 

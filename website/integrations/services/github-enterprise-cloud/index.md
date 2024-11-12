@@ -1,6 +1,9 @@
 ---
-title: GitHub Enterprise Cloud
+title: Integrate with GitHub Enterprise Cloud
+sidebar_label: GitHub Enterprise Cloud
 ---
+
+# GitHub Enterprise Cloud
 
 <span class="badge badge--secondary">Support level: Community</span>
 

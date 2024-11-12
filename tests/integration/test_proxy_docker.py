@@ -6,8 +6,6 @@ from tempfile import mkdtemp
 import pytest
 import yaml
 from channels.testing.live import ChannelsLiveServerTestCase
-from docker import DockerClient, from_env
-from docker.models.containers import Container
 from docker.types.healthcheck import Healthcheck
 
 from authentik.core.tests.utils import create_test_flow
@@ -27,11 +25,11 @@ from tests.e2e.utils import DockerTestCase, get_docker_tag
 class TestProxyDocker(DockerTestCase, ChannelsLiveServerTestCase):
     """Test Docker Controllers"""
 
-    def _start_container(self, ssl_folder: str) -> Container:
-        client: DockerClient = from_env()
-        container = client.containers.run(
+    def setUp(self):
+        super().setUp()
+        self.ssl_folder = mkdtemp()
+        self.run_container(
             image="library/docker:dind",
-            detach=True,
             network_mode="host",
             privileged=True,
             healthcheck=Healthcheck(
@@ -41,18 +39,11 @@ class TestProxyDocker(DockerTestCase, ChannelsLiveServerTestCase):
             ),
             environment={"DOCKER_TLS_CERTDIR": "/ssl"},
             volumes={
-                f"{ssl_folder}/": {
+                f"{self.ssl_folder}/": {
                     "bind": "/ssl",
                 }
             },
         )
-        self.wait_for_container(container)
-        return container
-
-    def setUp(self):
-        super().setUp()
-        self.ssl_folder = mkdtemp()
-        self.container = self._start_container(self.ssl_folder)
         # Ensure that local connection have been created
         outpost_connection_discovery()
         self.provider: ProxyProvider = ProxyProvider.objects.create(
@@ -91,7 +82,6 @@ class TestProxyDocker(DockerTestCase, ChannelsLiveServerTestCase):
 
     def tearDown(self) -> None:
         super().tearDown()
-        self.container.kill()
         try:
             rmtree(self.ssl_folder)
         except PermissionError:

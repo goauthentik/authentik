@@ -4,6 +4,7 @@ import code
 import platform
 import sys
 import traceback
+from pprint import pprint
 
 from django.apps import apps
 from django.core.management.base import BaseCommand
@@ -34,7 +35,9 @@ class Command(BaseCommand):
 
     def get_namespace(self):
         """Prepare namespace with all models"""
-        namespace = {}
+        namespace = {
+            "pprint": pprint,
+        }
 
         # Gather Django models and constants from each app
         for app in apps.get_app_configs():
