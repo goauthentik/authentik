@@ -14,7 +14,7 @@ sidebar_label: Nextcloud
 > -- https://en.wikipedia.org/wiki/Nextcloud
 
 :::caution
-If you require [Server Side Encryption](https://docs.nextcloud.com/server/latest/admin_manual/configuration_files/encryption_configuration.html), you MUST use LDAP! OpenID and SAML will cause **irrevocable data loss**. Nextcoud Server-Side Encryption requires access to the user's cleartext password, which is not available through OpenID or SAML.
+If you require [Server Side Encryption](https://docs.nextcloud.com/server/latest/admin_manual/configuration_files/encryption_configuration.html), you must use LDAP. OpenID and SAML will cause **irrevocable data loss**. Nextcloud Server-Side Encryption requires access to the user's cleartext password, which is not available through OpenID or SAML.
 :::
 
 :::caution
