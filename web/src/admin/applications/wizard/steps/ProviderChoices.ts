@@ -10,19 +10,43 @@ export type LocalTypeCreate = TypeCreate & {
     renderer: ProviderRenderer;
 };
 
-export const providerTypeRenderers: Record<string, () => TemplateResult> = {
-    oauth2provider: () =>
-        html`<ak-application-wizard-authentication-by-oauth></ak-application-wizard-authentication-by-oauth>`,
-    ldapprovider: () =>
-        html`<ak-application-wizard-authentication-by-ldap></ak-application-wizard-authentication-by-ldap>`,
-    proxyprovider: () =>
-        html`<ak-application-wizard-authentication-for-reverse-proxy></ak-application-wizard-authentication-for-reverse-proxy>`,
-    racprovider: () =>
-        html`<ak-application-wizard-authentication-for-rac></ak-application-wizard-authentication-for-rac>`,
-    samlprovider: () =>
-        html`<ak-application-wizard-authentication-by-saml-configuration></ak-application-wizard-authentication-by-saml-configuration>`,
-    radiusprovider: () =>
-        html`<ak-application-wizard-authentication-by-radius></ak-application-wizard-authentication-by-radius>`,
-    scimprovider: () =>
-        html`<ak-application-wizard-authentication-by-scim></ak-application-wizard-authentication-by-scim>`,
+export const providerTypeRenderers: Record<
+    string,
+    { render: () => TemplateResult; order: number }
+> = {
+    oauth2provider: {
+        render: () =>
+            html`<ak-application-wizard-authentication-by-oauth></ak-application-wizard-authentication-by-oauth>`,
+        order: 90,
+    },
+    ldapprovider: {
+        render: () =>
+            html`<ak-application-wizard-authentication-by-ldap></ak-application-wizard-authentication-by-ldap>`,
+        order: 70,
+    },
+    proxyprovider: {
+        render: () =>
+            html`<ak-application-wizard-authentication-for-reverse-proxy></ak-application-wizard-authentication-for-reverse-proxy>`,
+        order: 75,
+    },
+    racprovider: {
+        render: () =>
+            html`<ak-application-wizard-authentication-for-rac></ak-application-wizard-authentication-for-rac>`,
+        order: 80,
+    },
+    samlprovider: {
+        render: () =>
+            html`<ak-application-wizard-authentication-by-saml-configuration></ak-application-wizard-authentication-by-saml-configuration>`,
+        order: 80,
+    },
+    radiusprovider: {
+        render: () =>
+            html`<ak-application-wizard-authentication-by-radius></ak-application-wizard-authentication-by-radius>`,
+        order: 70,
+    },
+    scimprovider: {
+        render: () =>
+            html`<ak-application-wizard-authentication-by-scim></ak-application-wizard-authentication-by-scim>`,
+        order: 60,
+    },
 };

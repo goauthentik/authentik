@@ -53,8 +53,13 @@ export class AkApplicationWizardMain extends AKElement {
                     .filter((providerType) => wizardReadyProviders.includes(providerType.modelName))
                     .map((providerType) => ({
                         ...providerType,
-                        renderer: providerTypeRenderers[providerType.modelName],
-                    })),
+                        renderer: providerTypeRenderers[providerType.modelName].render,
+                    }))
+                    .sort(
+                        (a, b) =>
+                            providerTypeRenderers[a.modelName].order -
+                            providerTypeRenderers[b.modelName].order,
+                    ).reverse(),
             );
         });
     }
