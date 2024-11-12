@@ -39,9 +39,7 @@ The following placeholders will be used:
 
 ## Proxmox VE configuration (using the web interface) 
 
-1. Log in to the Proxmox web interface.
-
-    - Access the Proxmox VE web interface and log in with an administrative account.
+1. Log in to the Proxmox VE web interface using an administrative account.
 
 2. Navigate to authentication source settings.
 
