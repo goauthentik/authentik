@@ -76,7 +76,9 @@ export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
                 : "pf-m-gold"}"
         >
             ${message}
-            <a href="${globalAK().api.base}if/admin/#/enterprise/licenses">${msg("Click here for more info.")}</a>
+            <a href="${globalAK().api.base}if/admin/#/enterprise/licenses"
+                >${msg("Click here for more info.")}</a
+            >
         </div>`;
     }
 
