@@ -112,7 +112,7 @@ function renderOAuth2Overview(rawProvider: OneOfProvider) {
     return renderSummary("OAuth2", provider.name, [
         [msg("Client type"), provider.clientType ? clientTypeToLabel.get(provider.clientType) : ""],
         [msg("Client ID"), provider.clientId],
-        [msg("Redirect URIs"), provider.redirectUris],
+        [msg("Redirect URIs"), provider.redirectUris || msg("-")],
     ]);
 }
 

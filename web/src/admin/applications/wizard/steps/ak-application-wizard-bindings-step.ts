@@ -13,8 +13,10 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 import { P, match } from "ts-pattern";
 
 import { msg, str } from "@lit/localize";
-import { html } from "lit";
+import { css, html } from "lit";
 import { customElement, query } from "lit/decorators.js";
+
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
 import { makeEditButton } from "./bindings/ak-application-wizard-bindings-edit-button.js";
 import "./bindings/ak-application-wizard-bindings-toolbar.js";
@@ -41,6 +43,17 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
 
     @query("ak-select-table")
     selectTable!: SelectTable;
+
+    static get styles() {
+        return super.styles.concat(
+            PFCard,
+            css`
+                .pf-c-card {
+                    margin-top: 1em;
+                }
+            `,
+        );
+    }
 
     get bindingsAsColumns() {
         return this.wizard.bindings.map((binding, index) => {
@@ -88,25 +101,30 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
             <h6 class="pf-c-title pf-m-md">
                 ${msg("These policies control which users can access this application.")}
             </h6>
-            <ak-application-wizard-bindings-toolbar
-                @clickNew=${() => this.onBindingEvent()}
-                @clickDelete=${() => this.onDeleteBindings()}
-            ></ak-application-wizard-bindings-toolbar>
-            <ak-select-table
-                multiple
-                id="bindings"
-                order="order"
-                .columns=${COLUMNS}
-                .content=${[]}
-            ></ak-select-table>
-            <ak-empty-state header=${msg("No bound policies.")} icon="pf-icon-module">
-                <div slot="body">${msg("No policies are currently bound to this object.")}</div>
-                <div slot="primary">
-                    <button @click=${() => this.onBindingEvent()} class="pf-c-button pf-m-primary">
-                        ${msg("Bind policy/group/user")}
-                    </button>
-                </div>
-            </ak-empty-state>`;
+            <div class="pf-c-card">
+                <ak-application-wizard-bindings-toolbar
+                    @clickNew=${() => this.onBindingEvent()}
+                    @clickDelete=${() => this.onDeleteBindings()}
+                ></ak-application-wizard-bindings-toolbar>
+                <ak-select-table
+                    multiple
+                    id="bindings"
+                    order="order"
+                    .columns=${COLUMNS}
+                    .content=${[]}
+                ></ak-select-table>
+                <ak-empty-state header=${msg("No bound policies.")} icon="pf-icon-module">
+                    <div slot="body">${msg("No policies are currently bound to this object.")}</div>
+                    <div slot="primary">
+                        <button
+                            @click=${() => this.onBindingEvent()}
+                            class="pf-c-button pf-m-primary"
+                        >
+                            ${msg("Bind policy/group/user")}
+                        </button>
+                    </div>
+                </ak-empty-state>
+            </div>`;
     }
 
     renderCollection() {
