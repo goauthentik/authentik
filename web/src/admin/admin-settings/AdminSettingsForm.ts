@@ -193,6 +193,13 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 help=${msg("Globally enable/disable impersonation.")}
             >
             </ak-switch-input>
+            <ak-switch-input
+                name="impersonationRequireReason"
+                label=${msg("Require reason for impersonation")}
+                ?checked="${this._settings?.impersonationRequireReason}"
+                help=${msg("Require administrators to provide a reason for impersonating a user.")}
+            >
+            </ak-switch-input>
             <ak-text-input
                 name="defaultTokenDuration"
                 label=${msg("Default token duration")}

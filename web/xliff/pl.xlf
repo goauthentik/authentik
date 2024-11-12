@@ -9123,6 +9123,12 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 <trans-unit id="sabf8a430d504f8c8">
   <source>Endpoint Google Chrome Device Trust is in preview.</source>
 </trans-unit>
+<trans-unit id="s6f4f35a5a4b9b3cb">
+  <source>Interactive</source>
+</trans-unit>
+<trans-unit id="sd020240e41e4c207">
+  <source>Enable this flag if the configured captcha requires User-interaction. Required for reCAPTCHA v2, hCaptcha and Cloudflare Turnstile.</source>
+</trans-unit>
     </body>
   </file>
 </xliff>

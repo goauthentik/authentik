@@ -60,7 +60,7 @@ def default_event_duration():
     """Default duration an Event is saved.
     This is used as a fallback when no brand is available"""
     try:
-        tenant = get_current_tenant()
+        tenant = get_current_tenant(only=["event_retention"])
         return now() + timedelta_from_string(tenant.event_retention)
     except Tenant.DoesNotExist:
         return now() + timedelta(days=365)

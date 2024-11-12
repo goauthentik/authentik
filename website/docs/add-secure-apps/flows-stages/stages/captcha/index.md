@@ -2,15 +2,17 @@
 title: Captcha stage
 ---
 
-This stage adds a form of verification using [Google's ReCaptcha](https://www.google.com/recaptcha/intro/v3.html) or compatible services. Currently supported implementations:
+This stage adds a form of verification using [Google's reCAPTCHA](https://www.google.com/recaptcha/intro/v3.html) or compatible services.
 
--   ReCaptcha
--   hCaptcha
--   Turnstile
+Currently supported implementations:
+
+-   [Google reCAPTCHA](#google-recaptcha)
+-   [hCaptcha](#hcaptcha)
+-   [Cloudflare Turnstile](#cloudflare-turnstile)
 
 ## Captcha provider configuration
 
-### Google ReCaptcha
+### Google reCAPTCHA
 
 This stage has two required fields: Public key and private key. These can both be acquired at https://www.google.com/recaptcha/admin.
 
@@ -18,10 +20,11 @@ This stage has two required fields: Public key and private key. These can both b
 
 #### Configuration options
 
--   JS URL: `https://www.recaptcha.net/recaptcha/api.js`
--   API URL: `https://www.recaptcha.net/recaptcha/api/siteverify`
+-   Interactive: Enabled when using reCAPTCHA v3
 -   Score minimum threshold: `0.5`
 -   Score maximum threshold: `1`
+-   JS URL: `https://www.recaptcha.net/recaptcha/api.js`
+-   API URL: `https://www.recaptcha.net/recaptcha/api/siteverify`
 
 ### hCaptcha
 
@@ -29,6 +32,7 @@ See https://docs.hcaptcha.com/switch
 
 #### Configuration options
 
+-   Interactive: Enabled
 -   JS URL: `https://js.hcaptcha.com/1/api.js`
 -   API URL: `https://api.hcaptcha.com/siteverify`
 
@@ -37,16 +41,13 @@ See https://docs.hcaptcha.com/switch
 -   Score minimum threshold: `0`
 -   Score maximum threshold: `0.5`
 
-### Turnstile
+### Cloudflare Turnstile
 
 See https://developers.cloudflare.com/turnstile/get-started/migrating-from-recaptcha
 
-:::warning
-To use Cloudflare Turnstile, the site must be configured to use the "Invisible" mode, otherwise the widget will be rendered incorrectly.
-:::
-
 #### Configuration options
 
+-   Interactive: Enabled if the Turnstile instance is configured as visible or managed
 -   JS URL: `https://challenges.cloudflare.com/turnstile/v0/api.js`
 -   API URL: `https://challenges.cloudflare.com/turnstile/v0/siteverify`
 

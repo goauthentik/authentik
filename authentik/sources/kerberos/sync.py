@@ -2,9 +2,9 @@
 
 from typing import Any
 
-import kadmin
 from django.core.exceptions import FieldError
 from django.db import IntegrityError, transaction
+from kadmin import KAdmin
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.expression.exceptions import (
@@ -30,7 +30,7 @@ class KerberosSync:
 
     _source: KerberosSource
     _logger: BoundLogger
-    _connection: "kadmin.KAdmin"
+    _connection: KAdmin
     mapper: SourceMapper
     user_manager: PropertyMappingManager
     group_manager: PropertyMappingManager
@@ -161,7 +161,7 @@ class KerberosSync:
 
         user_count = 0
         with Krb5ConfContext(self._source):
-            for principal in self._connection.principals():
+            for principal in self._connection.list_principals(None):
                 if self._handle_principal(principal):
                     user_count += 1
         return user_count
