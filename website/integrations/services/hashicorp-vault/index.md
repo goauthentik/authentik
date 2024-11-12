@@ -90,7 +90,7 @@ vault write auth/oidc/role/reader \
 
 ## External Groups
 
-If you wish to manage group membership in vault via Authentik you have to use [external groups](https://developer.hashicorp.com/vault/tutorials/auth-methods/oidc-auth#create-an-external-vault-group).
+If you wish to manage group membership in Hashicorp Vault via Authentik you have to use [external groups](https://developer.hashicorp.com/vault/tutorials/auth-methods/oidc-auth#create-an-external-vault-group).
 
 :::note
 This assumes that the steps above have already been completed and tested.
@@ -98,11 +98,11 @@ This assumes that the steps above have already been completed and tested.
 
 ### Step 1
 
-In authentik, edit the oidc provider created above. Unser "Advanced protocol settings" add "authentik default OAuth Mapping: OpenID 'profile'". This includes the "groups" mapping.
+In authentik, edit the OIDC provider created above. Under **Advanced protocol settings** add `authentik default OAuth Mapping: OpenID 'profile'` This includes the groups mapping.
 
 ### Step 2
 
-In hashicorp vault, change the reader role
+In Vault, change the reader role to have the following settings:
 
 ```
 vault write auth/oidc/role/reader \
@@ -116,7 +116,7 @@ vault write auth/oidc/role/reader \
       oidc_scopes=[ "openid profile email" ]
 ```
 
-Add a group
+Add a group.
 
 ```
 vault write identity/group/reader \
@@ -125,20 +125,19 @@ vault write identity/group/reader \
     type="external"
 ```
 
-Get the canonical id of the group
+Get the canonical ID of the group.
 
 ```
 vault list identity/group/id
 ```
 
-Get the id of the oidc accessor
+Get the ID of the OIDC accessor.
 
 ```
 vault auth list
 ```
 
-
-Add a group alias, this maps the group to the oidc backend
+Add a group alias, this maps the group to the OIDC backend.
 
 ```
 vault write identity/group-alias \
@@ -147,5 +146,5 @@ vault write identity/group-alias \
     name="group name in authentik"
 ```
 
-You should then be able to sign in via OIDC
+You should then be able to sign in via OIDC.
 `vault login -method=oidc role="reader"`
