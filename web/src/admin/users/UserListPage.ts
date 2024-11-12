@@ -2,6 +2,7 @@ import { AdminInterface } from "@goauthentik/admin/AdminInterface";
 import "@goauthentik/admin/users/ServiceAccountForm";
 import "@goauthentik/admin/users/UserActiveForm";
 import "@goauthentik/admin/users/UserForm";
+import "@goauthentik/admin/users/UserImpersonateForm";
 import "@goauthentik/admin/users/UserPasswordForm";
 import "@goauthentik/admin/users/UserResetEmailForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
@@ -266,20 +267,22 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                 </ak-forms-modal>
                 ${canImpersonate
                     ? html`
-                          <ak-action-button
-                              class="pf-m-tertiary"
-                              .apiRequest=${() => {
-                                  return new CoreApi(DEFAULT_CONFIG)
-                                      .coreUsersImpersonateCreate({
-                                          id: item.pk,
-                                      })
-                                      .then(() => {
-                                          window.location.href = "/";
-                                      });
-                              }}
-                          >
-                              ${msg("Impersonate")}
-                          </ak-action-button>
+                          <ak-forms-modal size=${PFSize.Medium} id="impersonate-request">
+                              <span slot="submit">${msg("Impersonate")}</span>
+                              <span slot="header">${msg("Impersonate")} ${item.username}</span>
+                              <ak-user-impersonate-form
+                                  slot="form"
+                                  .instancePk=${item.pk}
+                              ></ak-user-impersonate-form>
+                              <button slot="trigger" class="pf-c-button pf-m-tertiary">
+                                  <pf-tooltip
+                                      position="top"
+                                      content=${msg("Temporarily assume the identity of this user")}
+                                  >
+                                      <span>${msg("Impersonate")}</span>
+                                  </pf-tooltip>
+                              </button>
+                          </ak-forms-modal>
                       `
                     : html``}`,
         ];

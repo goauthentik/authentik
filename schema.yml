@@ -5295,6 +5295,12 @@ paths:
         required: true
       tags:
       - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImpersonationRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -42720,6 +42726,14 @@ components:
             incorrect user info is entered.
       required:
       - name
+    ImpersonationRequest:
+      type: object
+      properties:
+        reason:
+          type: string
+          minLength: 1
+      required:
+      - reason
     InstallID:
       type: object
       properties:
@@ -50029,6 +50043,10 @@ components:
         impersonation:
           type: boolean
           description: Globally enable/disable impersonation.
+        impersonation_require_reason:
+          type: boolean
+          description: Require administrators to provide a reason for impersonating
+            a user.
         default_token_duration:
           type: string
           minLength: 1
@@ -53758,6 +53776,10 @@ components:
         impersonation:
           type: boolean
           description: Globally enable/disable impersonation.
+        impersonation_require_reason:
+          type: boolean
+          description: Require administrators to provide a reason for impersonating
+            a user.
         default_token_duration:
           type: string
           description: Default token duration
@@ -53797,6 +53819,10 @@ components:
         impersonation:
           type: boolean
           description: Globally enable/disable impersonation.
+        impersonation_require_reason:
+          type: boolean
+          description: Require administrators to provide a reason for impersonating
+            a user.
         default_token_duration:
           type: string
           minLength: 1
