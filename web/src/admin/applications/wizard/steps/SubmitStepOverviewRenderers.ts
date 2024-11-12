@@ -109,7 +109,7 @@ const clientTypeToLabel = new Map<ClientTypeEnum, string>([
 
 function renderOAuth2Overview(rawProvider: OneOfProvider) {
     const provider = rawProvider as OAuth2Provider;
-    return renderSummary("Proxy", provider.name, [
+    return renderSummary("OAuth2", provider.name, [
         [msg("Client type"), provider.clientType ? clientTypeToLabel.get(provider.clientType) : ""],
         [msg("Client ID"), provider.clientId],
         [msg("Redirect URIs"), provider.redirectUris],

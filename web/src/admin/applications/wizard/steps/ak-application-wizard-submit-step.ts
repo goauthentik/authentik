@@ -287,27 +287,23 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
             );
         }
         return html` <ak-wizard-title
-                >${msg("Review The Application and Provider")}</ak-wizard-title
+                >${msg("Review the Application and Provider")}</ak-wizard-title
             >
             <h2 class="pf-c-title pf-m-xl">${msg("Application")}</h2>
             <dl class="pf-c-description-list">
                 <div class="pf-c-description-list__group">
-                    <dt class="pf-c-description-list__term">Name</dt>
+                    <dt class="pf-c-description-list__term">${msg("Name")}</dt>
                     <dt class="pf-c-description-list__description">${app.name}</dt>
                 </div>
                 <div class="pf-c-description-list__group">
+                    <dt class="pf-c-description-list__term">${msg("Policy engine mode")}</dt>
                     <dt class="pf-c-description-list__description">
-                        ${msg("Policy Engine Mode:")}:
-                        <strong
-                            >${app.policyEngineMode === PolicyEngineMode.Any
-                                ? msg("Any")
-                                : msg("All")}</strong
-                        >
+                        ${app.policyEngineMode?.toUpperCase()}
                     </dt>
                 </div>
                 ${(app.metaLaunchUrl ?? "").trim() !== ""
                     ? html` <div class="pf-c-description-list__group">
-                          <dt class="pf-c-description-list__term">Launch URL</dt>
+                          <dt class="pf-c-description-list__term">${msg("Launch URL")}</dt>
                           <dt class="pf-c-description-list__description">${app.metaLaunchUrl}</dt>
                       </div>`
                     : nothing}

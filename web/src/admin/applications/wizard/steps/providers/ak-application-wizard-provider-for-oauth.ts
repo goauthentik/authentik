@@ -14,7 +14,7 @@ import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.j
 
 @customElement("ak-application-wizard-provider-for-oauth")
 export class ApplicationWizardOauth2ProviderForm extends ApplicationWizardProviderForm<OAuth2ProviderRequest> {
-    label = msg("Configure Oauth2 Provider");
+    label = msg("Configure OAuth2 Provider");
 
     @state()
     showClientSecret = true;
