@@ -17,4 +17,8 @@ export class AkControlElement<T = string | string[]> extends AKElement {
     json(): T {
         throw new Error("Controllers using this protocol must override this method");
     }
+
+    get isValid(): boolean {
+        return true;
+    }
 }

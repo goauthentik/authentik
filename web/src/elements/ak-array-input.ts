@@ -1,6 +1,8 @@
 import { AkControlElement } from "@goauthentik/elements/AkControlElement";
+import { bound } from "@goauthentik/elements/decorators/bound";
 import { randomId } from "@goauthentik/elements/utils/randomId.js";
 
+import { msg } from "@lit/localize";
 import { TemplateResult, css, html, nothing } from "lit";
 import { customElement, property, queryAll } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
@@ -10,14 +12,14 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { bound } from "../decorators/bound";
-
 type InputCell<T> = (el: T) => TemplateResult | typeof nothing;
 
 export interface IArrayInput<T> {
     row: InputCell<T>;
     newItem: () => T;
     items: T[];
+    validate?: boolean;
+    validator?: (_: T[]) => boolean;
 }
 
 type Keyed<T> = { key: string; item: T };
@@ -51,6 +53,12 @@ export class ArrayInput<T> extends AkControlElement<T[]> implements IArrayInput<
         ];
     }
 
+    @property({ type: Boolean })
+    validate = false;
+
+    @property({ type: Object, attribute: false })
+    validator?: (_: T[]) => boolean;
+
     @property({ type: Array, attribute: false })
     row!: InputCell<T>;
 
@@ -63,9 +71,7 @@ export class ArrayInput<T> extends AkControlElement<T[]> implements IArrayInput<
     // interaction. Without it, we get undefined behavior in the re-rendering of the array.
     @property({ type: Array, attribute: false })
     set items(items: T[]) {
-        const olditems = new Map(
-            (this._items ?? []).map((key, item) => [JSON.stringify(item), key]),
-        );
+        const olditems = new Map((this._items ?? []).map((key, item) => [JSON.stringify(item), key]));
         const newitems = items.map((item) => ({
             item,
             key: olditems.get(JSON.stringify(item))?.key ?? randomId(),
@@ -80,16 +86,6 @@ export class ArrayInput<T> extends AkControlElement<T[]> implements IArrayInput<
     @queryAll("div.ak-input-group")
     inputGroups?: HTMLDivElement[];
 
-    itemsFromDom(): T[] {
-        return Array.from(this.inputGroups ?? [])
-            .map(
-                (group) =>
-                    group.querySelector<HTMLInputElement & AkControlElement<T>>("[name]")?.json() ??
-                    null,
-            )
-            .filter((i) => i !== null);
-    }
-
     json() {
         if (!this.inputGroups) {
             throw new Error("Could not find input group collection in ak-array-input");
@@ -97,19 +93,25 @@ export class ArrayInput<T> extends AkControlElement<T[]> implements IArrayInput<
         return this.items;
     }
 
-    sendChange() {
-        this.dispatchEvent(new Event("change", { composed: true, bubbles: true }));
+    get isValid() {
+        if (!this.validate) {
+            return true;
+        }
+
+        const oneIsValid = (g: HTMLDivElement) =>
+            g.querySelector<HTMLInputElement & AkControlElement<T>>("[name]")?.isValid ?? true;
+        const allAreValid = Array.from(this.inputGroups ?? []).every(oneIsValid);
+        return allAreValid && (this.validator ? this.validator(this.items) : true);
     }
 
-    renderDeleteButton(idx: number) {
-        const deleteOneGroup = () => {
-            this.items = [...this.items.slice(0, idx), ...this.items.slice(idx + 1)];
-            this.sendChange();
-        };
+    itemsFromDom(): T[] {
+        return Array.from(this.inputGroups ?? [])
+            .map((group) => group.querySelector<HTMLInputElement & AkControlElement<T>>("[name]")?.json() ?? null)
+            .filter((i) => i !== null);
+    }
 
-        return html`<button class="pf-c-button pf-m-control" type="button" @click=${deleteOneGroup}>
-            <i class="fas fa-minus" aria-hidden="true"></i>
-        </button>`;
+    sendChange() {
+        this.dispatchEvent(new Event("change", { composed: true, bubbles: true }));
     }
 
     @bound
@@ -124,6 +126,17 @@ export class ArrayInput<T> extends AkControlElement<T[]> implements IArrayInput<
         this.sendChange();
     }
 
+    renderDeleteButton(idx: number) {
+        const deleteOneGroup = () => {
+            this.items = [...this.items.slice(0, idx), ...this.items.slice(idx + 1)];
+            this.sendChange();
+        };
+
+        return html`<button class="pf-c-button pf-m-control" type="button" @click=${deleteOneGroup}>
+            <i class="fas fa-minus" aria-hidden="true"></i>
+        </button>`;
+    }
+
     render() {
         return html` <div class="pf-l-stack">
             ${repeat(
@@ -132,13 +145,17 @@ export class ArrayInput<T> extends AkControlElement<T[]> implements IArrayInput<
                 (item: Keyed<T>, idx) =>
                     html` <div class="ak-input-group" @change=${() => this.onChange()}>
                         ${this.row(item.item)}${this.renderDeleteButton(idx)}
-                    </div>`,
+                    </div>`
             )}
-            <button class="pf-c-button pf-m-control" type="button" @click=${this.addNewGroup}>
-                <i class="fas fa-plus" aria-hidden="true"></i>
+            <button class="pf-c-button pf-m-link" type="button" @click=${this.addNewGroup}>
+                <i class="fas fa-plus" aria-hidden="true"></i>&nbsp; ${msg("Add entry")}
             </button>
         </div>`;
     }
+}
+
+export function akArrayInput(properties: IArrayInput) {
+    return html`<ak-array-input ${spread(properties as Spread)}></ak-array-input>`;
 }
 
 declare global {
