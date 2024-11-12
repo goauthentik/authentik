@@ -1078,14 +1078,14 @@
 # Moved GeoIP and S3 under System Management/user_basic_operations
 
 [[redirects]]
-  from = "/install-config/storage-s3"
+  from = "/docs/install-config/storage-s3"
   to = "/docs/sys-mgmt/ops/storage-s3"
   status = 302
   force = true
 
 
 [[redirects]]
-  from = "/install-config/geoip"
+  from = "/docs/install-config/geoip"
   to = "/docs/sys-mgmt/ops/geoip"
   status = 302
   force = true
