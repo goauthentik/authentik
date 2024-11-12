@@ -59,7 +59,8 @@ export class AkApplicationWizardMain extends AKElement {
                         (a, b) =>
                             providerTypeRenderers[a.modelName].order -
                             providerTypeRenderers[b.modelName].order,
-                    ).reverse(),
+                    )
+                    .reverse(),
             );
         });
     }

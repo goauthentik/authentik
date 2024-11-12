@@ -18,6 +18,7 @@ import { styleMap } from "lit/directives/style-map.js";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFLabel from "@patternfly/patternfly/components/Label/label.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 const closeButtonIcon = html`<svg
     fill="currentColor"
@@ -37,6 +38,7 @@ const closeButtonIcon = html`<svg
 export class AkApplicationWizardHint extends AKElement implements ShowHintControllerHost {
     static get styles() {
         return [
+            PFBase,
             PFButton,
             PFPage,
             PFLabel,
