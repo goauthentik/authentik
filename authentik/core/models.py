@@ -581,6 +581,32 @@ class Application(SerializerModel, PolicyBindingModel):
         verbose_name_plural = _("Applications")
 
 
+class ApplicationEntitlement(AttributesMixin, SerializerModel):
+    """Application-scoped entitlement to control authorization in an application"""
+
+    app_entitlement_uuid = models.UUIDField(default=uuid4, primary_key=True)
+
+    name = models.TextField()
+
+    app = models.ForeignKey(Application, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True)
+
+    class Meta:
+        verbose_name = _("Application Entitlement")
+        verbose_name_plural = _("Application Entitlements")
+        unique_together = (("app", "name"),)
+
+    def __str__(self):
+        return f"Application Entitlement {self.name} for app {self.app_id}"
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.core.api.application_entitlements import ApplicationEntitlementSerializer
+
+        return ApplicationEntitlementSerializer
+
+
 class SourceUserMatchingModes(models.TextChoices):
     """Different modes a source can handle new/returning users"""
 

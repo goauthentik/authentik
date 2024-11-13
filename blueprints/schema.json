@@ -3169,6 +3169,46 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_core.applicationentitlement"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_core.applicationentitlement_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_core.applicationentitlement"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_core.applicationentitlement"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_core.token"
                             },
                             "id": {
@@ -4597,6 +4637,7 @@
                         "authentik_core.group",
                         "authentik_core.user",
                         "authentik_core.application",
+                        "authentik_core.applicationentitlement",
                         "authentik_core.token",
                         "authentik_enterprise.license",
                         "authentik_providers_google_workspace.googleworkspaceprovider",
@@ -6326,6 +6367,7 @@
                             "authentik_brands.delete_brand",
                             "authentik_brands.view_brand",
                             "authentik_core.add_application",
+                            "authentik_core.add_applicationentitlement",
                             "authentik_core.add_authenticatedsession",
                             "authentik_core.add_group",
                             "authentik_core.add_groupsourceconnection",
@@ -6338,6 +6380,7 @@
                             "authentik_core.add_usersourceconnection",
                             "authentik_core.assign_user_permissions",
                             "authentik_core.change_application",
+                            "authentik_core.change_applicationentitlement",
                             "authentik_core.change_authenticatedsession",
                             "authentik_core.change_group",
                             "authentik_core.change_groupsourceconnection",
@@ -6348,6 +6391,7 @@
                             "authentik_core.change_user",
                             "authentik_core.change_usersourceconnection",
                             "authentik_core.delete_application",
+                            "authentik_core.delete_applicationentitlement",
                             "authentik_core.delete_authenticatedsession",
                             "authentik_core.delete_group",
                             "authentik_core.delete_groupsourceconnection",
@@ -6363,6 +6407,7 @@
                             "authentik_core.reset_user_password",
                             "authentik_core.unassign_user_permissions",
                             "authentik_core.view_application",
+                            "authentik_core.view_applicationentitlement",
                             "authentik_core.view_authenticatedsession",
                             "authentik_core.view_group",
                             "authentik_core.view_groupsourceconnection",
@@ -12333,6 +12378,7 @@
                             "authentik_brands.delete_brand",
                             "authentik_brands.view_brand",
                             "authentik_core.add_application",
+                            "authentik_core.add_applicationentitlement",
                             "authentik_core.add_authenticatedsession",
                             "authentik_core.add_group",
                             "authentik_core.add_groupsourceconnection",
@@ -12345,6 +12391,7 @@
                             "authentik_core.add_usersourceconnection",
                             "authentik_core.assign_user_permissions",
                             "authentik_core.change_application",
+                            "authentik_core.change_applicationentitlement",
                             "authentik_core.change_authenticatedsession",
                             "authentik_core.change_group",
                             "authentik_core.change_groupsourceconnection",
@@ -12355,6 +12402,7 @@
                             "authentik_core.change_user",
                             "authentik_core.change_usersourceconnection",
                             "authentik_core.delete_application",
+                            "authentik_core.delete_applicationentitlement",
                             "authentik_core.delete_authenticatedsession",
                             "authentik_core.delete_group",
                             "authentik_core.delete_groupsourceconnection",
@@ -12370,6 +12418,7 @@
                             "authentik_core.reset_user_password",
                             "authentik_core.unassign_user_permissions",
                             "authentik_core.view_application",
+                            "authentik_core.view_applicationentitlement",
                             "authentik_core.view_authenticatedsession",
                             "authentik_core.view_group",
                             "authentik_core.view_groupsourceconnection",
@@ -12967,6 +13016,66 @@
                             "change_application",
                             "delete_application",
                             "view_application"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_core.applicationentitlement": {
+            "type": "object",
+            "properties": {
+                "app_entitlement_uuid": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "App entitlement uuid"
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "app": {
+                    "type": "integer",
+                    "title": "App"
+                },
+                "user": {
+                    "type": "integer",
+                    "title": "User"
+                },
+                "group": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Group"
+                },
+                "attributes": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "Attributes"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_core.applicationentitlement_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_applicationentitlement",
+                            "change_applicationentitlement",
+                            "delete_applicationentitlement",
+                            "view_applicationentitlement"
                         ]
                     },
                     "user": {
