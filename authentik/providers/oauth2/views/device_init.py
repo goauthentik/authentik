@@ -47,6 +47,9 @@ class CodeValidatorView(PolicyAccessView):
         self.provider = self.token.provider
         self.application = self.token.provider.application
 
+    def post(self, request: HttpRequest, *args, **kwargs):
+        return self.get(request, *args, **kwargs)
+
     def get(self, request: HttpRequest, *args, **kwargs):
         scope_descriptions = UserInfoView().get_scope_descriptions(self.token.scope, self.provider)
         planner = FlowPlanner(self.provider.authorization_flow)
