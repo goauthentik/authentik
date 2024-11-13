@@ -188,9 +188,8 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 </ak-array-input>
                 <p class="pf-c-form__helper-text">
                     ${msg(
-                        "This option configures the footer links on the flow executor pages. It must be a valid YAML or JSON list and can be used as follows:",
+                        "This option configures the footer links on the flow executor pages. The URL is limited to web and mail addresses. If the name is left blank, the URL will be shown.",
                     )}
-                    <code>[{"name": "Link Name","href":"https://goauthentik.io"}]</code>
                 </p>
             </ak-form-element-horizontal>
             <ak-switch-input

@@ -18,6 +18,10 @@ export class AkControlElement<T = string | string[]> extends AKElement {
         throw new Error("Controllers using this protocol must override this method");
     }
 
+    get toJson(): T {
+        return this.json();
+    }
+
     get isValid(): boolean {
         return true;
     }

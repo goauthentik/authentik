@@ -17,6 +17,10 @@ export interface IFooterLinkInput {
     footerLink: FooterLink;
 }
 
+const LEGAL_SCHEMES = ["http://", "https://", "mailto:"];
+const hasLegalScheme = (url: string) =>
+    LEGAL_SCHEMES.some((scheme) => url.substr(0, scheme.length).toLowerCase() === scheme);
+
 @customElement("ak-admin-settings-footer-link")
 export class FooterLinkInput extends AkControlElement<FooterLink> {
     static get styles() {
@@ -50,10 +54,7 @@ export class FooterLinkInput extends AkControlElement<FooterLink> {
 
     get isValid() {
         const href = this.json()?.href ?? "";
-        return (
-            (href.substr(0, 7) === "http://" || href.substr(0, 8) === "https://") &&
-            URL.canParse(href)
-        );
+        return hasLegalScheme(href) && URL.canParse(href);
     }
 
     render() {
