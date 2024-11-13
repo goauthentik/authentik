@@ -8712,6 +8712,18 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 <trans-unit id="sd020240e41e4c207">
   <source>Enable this flag if the configured captcha requires User-interaction. Required for reCAPTCHA v2, hCaptcha and Cloudflare Turnstile.</source>
 </trans-unit>
+<trans-unit id="saa29a2ac03cd9d19">
+  <source>Reason</source>
+</trans-unit>
+<trans-unit id="se9fd92a824994eba">
+  <source>Reason for impersonating the user</source>
+</trans-unit>
+<trans-unit id="s29fab8887734192f">
+  <source>Require reason for impersonation</source>
+</trans-unit>
+<trans-unit id="sc24af6de78468cfa">
+  <source>Require administrators to provide a reason for impersonating a user.</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
