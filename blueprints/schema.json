@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://goauthentik.io/blueprints/schema.json",
     "type": "object",
-    "title": "authentik 2024.10.0 Blueprint schema",
+    "title": "authentik 2024.10.1 Blueprint schema",
     "required": [
         "version",
         "entries"
@@ -9781,6 +9781,10 @@
                     "minLength": 1,
                     "title": "Api url"
                 },
+                "interactive": {
+                    "type": "boolean",
+                    "title": "Interactive"
+                },
                 "score_min_threshold": {
                     "type": "number",
                     "title": "Score min threshold"
@@ -13382,12 +13386,6 @@
                     "format": "uuid",
                     "title": "Authorization flow",
                     "description": "Flow used when authorizing this provider."
-                },
-                "invalidation_flow": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Invalidation flow",
-                    "description": "Flow used ending the session from a provider."
                 },
                 "property_mappings": {
                     "type": "array",

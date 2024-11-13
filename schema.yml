@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2024.10.0
+  version: 2024.10.1
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -5295,6 +5295,12 @@ paths:
         required: true
       tags:
       - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImpersonationRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -39220,7 +39226,10 @@ components:
           type: string
         js_url:
           type: string
+        interactive:
+          type: boolean
       required:
+      - interactive
       - js_url
       - pending_user
       - pending_user_avatar
@@ -39276,6 +39285,8 @@ components:
           type: string
         api_url:
           type: string
+        interactive:
+          type: boolean
         score_min_threshold:
           type: number
           format: double
@@ -39322,6 +39333,8 @@ components:
         api_url:
           type: string
           minLength: 1
+        interactive:
+          type: boolean
         score_min_threshold:
           type: number
           format: double
@@ -42713,6 +42726,14 @@ components:
             incorrect user info is entered.
       required:
       - name
+    ImpersonationRequest:
+      type: object
+      properties:
+        reason:
+          type: string
+          minLength: 1
+      required:
+      - reason
     InstallID:
       type: object
       properties:
@@ -47732,6 +47753,8 @@ components:
         api_url:
           type: string
           minLength: 1
+        interactive:
+          type: boolean
         score_min_threshold:
           type: number
           format: double
@@ -49464,10 +49487,6 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
-        invalidation_flow:
-          type: string
-          format: uuid
-          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -50024,6 +50043,10 @@ components:
         impersonation:
           type: boolean
           description: Globally enable/disable impersonation.
+        impersonation_require_reason:
+          type: boolean
+          description: Require administrators to provide a reason for impersonating
+            a user.
         default_token_duration:
           type: string
           minLength: 1
@@ -51699,10 +51722,6 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
-        invalidation_flow:
-          type: string
-          format: uuid
-          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -51760,7 +51779,6 @@ components:
       - assigned_backchannel_application_slug
       - authorization_flow
       - component
-      - invalidation_flow
       - meta_model_name
       - name
       - outpost_set
@@ -51784,10 +51802,6 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
-        invalidation_flow:
-          type: string
-          format: uuid
-          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -51804,7 +51818,6 @@ components:
           description: When set to true, connection tokens will be deleted upon disconnect.
       required:
       - authorization_flow
-      - invalidation_flow
       - name
     RadiusCheckAccess:
       type: object
@@ -53763,6 +53776,10 @@ components:
         impersonation:
           type: boolean
           description: Globally enable/disable impersonation.
+        impersonation_require_reason:
+          type: boolean
+          description: Require administrators to provide a reason for impersonating
+            a user.
         default_token_duration:
           type: string
           description: Default token duration
@@ -53802,6 +53819,10 @@ components:
         impersonation:
           type: boolean
           description: Globally enable/disable impersonation.
+        impersonation_require_reason:
+          type: boolean
+          description: Require administrators to provide a reason for impersonating
+            a user.
         default_token_duration:
           type: string
           minLength: 1

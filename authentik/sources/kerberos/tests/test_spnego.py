@@ -2,6 +2,8 @@
 
 from base64 import b64decode, b64encode
 from pathlib import Path
+from sys import platform
+from unittest import skipUnless
 
 import gssapi
 from django.urls import reverse
@@ -36,6 +38,7 @@ class TestSPNEGOSource(KerberosTestCase):
         )
         self.assertEqual(response.status_code, 200)
 
+    @skipUnless(platform.startswith("linux"), "Requires compatible GSSAPI implementation")
     def test_source_login(self):
         """test login view"""
         response = self.client.get(

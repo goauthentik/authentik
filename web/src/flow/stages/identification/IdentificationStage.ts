@@ -282,11 +282,11 @@ export class IdentificationStage extends BaseStage<
                 ? html`
                       <input name="captchaToken" type="hidden" .value="${this.captchaToken}" />
                       <ak-stage-captcha
-                          style="visibility: hidden; position:absolute;"
                           .challenge=${this.challenge.captchaStage}
                           .onTokenChange=${(token: string) => {
                               this.captchaToken = token;
                           }}
+                          embedded
                       ></ak-stage-captcha>
                   `
                 : nothing}

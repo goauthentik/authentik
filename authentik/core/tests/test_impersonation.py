@@ -29,7 +29,8 @@ class TestImpersonation(APITestCase):
             reverse(
                 "authentik_api:user-impersonate",
                 kwargs={"pk": self.other_user.pk},
-            )
+            ),
+            data={"reason": "some reason"},
         )
 
         response = self.client.get(reverse("authentik_api:user-me"))
@@ -55,7 +56,8 @@ class TestImpersonation(APITestCase):
             reverse(
                 "authentik_api:user-impersonate",
                 kwargs={"pk": self.other_user.pk},
-            )
+            ),
+            data={"reason": "some reason"},
         )
         self.assertEqual(response.status_code, 201)
 
@@ -75,7 +77,8 @@ class TestImpersonation(APITestCase):
             reverse(
                 "authentik_api:user-impersonate",
                 kwargs={"pk": self.other_user.pk},
-            )
+            ),
+            data={"reason": "some reason"},
         )
         self.assertEqual(response.status_code, 201)
 
@@ -89,7 +92,8 @@ class TestImpersonation(APITestCase):
         self.client.force_login(self.other_user)
 
         response = self.client.post(
-            reverse("authentik_api:user-impersonate", kwargs={"pk": self.user.pk})
+            reverse("authentik_api:user-impersonate", kwargs={"pk": self.user.pk}),
+            data={"reason": "some reason"},
         )
         self.assertEqual(response.status_code, 403)
 
@@ -105,7 +109,8 @@ class TestImpersonation(APITestCase):
         self.client.force_login(self.user)
 
         response = self.client.post(
-            reverse("authentik_api:user-impersonate", kwargs={"pk": self.other_user.pk})
+            reverse("authentik_api:user-impersonate", kwargs={"pk": self.other_user.pk}),
+            data={"reason": "some reason"},
         )
         self.assertEqual(response.status_code, 401)
 
@@ -118,7 +123,22 @@ class TestImpersonation(APITestCase):
         self.client.force_login(self.user)
 
         response = self.client.post(
-            reverse("authentik_api:user-impersonate", kwargs={"pk": self.user.pk})
+            reverse("authentik_api:user-impersonate", kwargs={"pk": self.user.pk}),
+            data={"reason": "some reason"},
+        )
+        self.assertEqual(response.status_code, 401)
+
+        response = self.client.get(reverse("authentik_api:user-me"))
+        response_body = loads(response.content.decode())
+        self.assertEqual(response_body["user"]["username"], self.user.username)
+
+    def test_impersonate_reason_required(self):
+        """test impersonation that user must provide reason"""
+        self.client.force_login(self.user)
+
+        response = self.client.post(
+            reverse("authentik_api:user-impersonate", kwargs={"pk": self.user.pk}),
+            data={"reason": ""},
         )
         self.assertEqual(response.status_code, 401)
 

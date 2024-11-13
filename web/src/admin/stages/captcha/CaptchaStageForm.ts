@@ -2,6 +2,7 @@ import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-number-input";
+import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
@@ -80,6 +81,15 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                             )}
                         </p>
                     </ak-form-element-horizontal>
+                    <ak-switch-input
+                        name="interactive"
+                        label=${msg("Interactive")}
+                        ?checked="${this.instance?.interactive}"
+                        help=${msg(
+                            "Enable this flag if the configured captcha requires User-interaction. Required for reCAPTCHA v2, hCaptcha and Cloudflare Turnstile.",
+                        )}
+                    >
+                    </ak-switch-input>
                     <ak-number-input
                         label=${msg("Score minimum threshold")}
                         required
