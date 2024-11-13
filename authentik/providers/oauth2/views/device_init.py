@@ -5,7 +5,7 @@ from typing import Any
 from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext as _
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, IntegerField
+from rest_framework.fields import CharField
 from structlog.stdlib import get_logger
 
 from authentik.brands.models import Brand
@@ -125,7 +125,7 @@ class OAuthDeviceCodeChallenge(Challenge):
 class OAuthDeviceCodeChallengeResponse(ChallengeResponse):
     """Response that includes the user-entered device code"""
 
-    code = IntegerField()
+    code = CharField()
     component = CharField(default="ak-provider-oauth2-device-code")
 
     def validate_code(self, code: int) -> HttpResponse | None:
