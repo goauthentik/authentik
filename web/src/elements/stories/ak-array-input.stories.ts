@@ -1,4 +1,5 @@
 import "@goauthentik/admin/admin-settings/AdminSettingsFooterLinks.js";
+import { FooterLinkInput } from "@goauthentik/admin/admin-settings/AdminSettingsFooterLinks.js";
 import "@goauthentik/elements/messages/MessageContainer";
 import { Meta, StoryObj, WebComponentsRenderer } from "@storybook/web-components";
 import { DecoratorFunction } from "storybook/internal/types";
@@ -19,7 +20,8 @@ const metadata: Meta<IArrayInput<unknown>> = {
     parameters: {
         docs: {
             description: {
-                component: "A table input object, in which multiple rows of related inputs can be grouped.",
+                component:
+                    "A table input object, in which multiple rows of related inputs can be grouped.",
             },
         },
     },
@@ -40,7 +42,10 @@ const metadata: Meta<IArrayInput<unknown>> = {
                 });
             }, 250);
 
-            return html`<div style="background: #fff; padding: 2em; position: relative" id="the-main-event">
+            return html`<div
+                style="background: #fff; padding: 2em; position: relative"
+                id="the-main-event"
+            >
                 <style>
                     li {
                         display: block;

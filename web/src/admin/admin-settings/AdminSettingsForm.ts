@@ -21,7 +21,7 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import { AdminApi, FooterLink, Settings, SettingsRequest } from "@goauthentik/api";
 
 import "./AdminSettingsFooterLinks.js";
-import { akFooterLinkInput } from "./AdminSettingsFooterLinks.js";
+import { IFooterLinkInput, akFooterLinkInput } from "./AdminSettingsFooterLinks.js";
 
 @customElement("ak-admin-settings-form")
 export class AdminSettingsForm extends Form<SettingsRequest> {
@@ -183,7 +183,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                             ".footerLink": f,
                             "style": "width: 100%",
                             "name": "footer-link",
-                        })}
+                        } as unknown as IFooterLinkInput)}
                 >
                 </ak-array-input>
                 <p class="pf-c-form__helper-text">

@@ -88,7 +88,7 @@ export class FooterLinkInput extends AkControlElement<FooterLink> {
 
 export function akFooterLinkInput(properties: IFooterLinkInput) {
     return html`<ak-admin-settings-footer-link
-        ${spread(properties as Spread)}
+        ${spread(properties as unknown as Spread)}
     ></ak-admin-settings-footer-link>`;
 }
 
