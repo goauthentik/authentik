@@ -24,7 +24,6 @@ import {
     CoreApi,
     type ModelRequest,
     type PolicyBinding,
-    PolicyEngineMode,
     ProviderModelEnum,
     ProxyMode,
     type ProxyProviderRequest,
@@ -84,7 +83,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
             PFProgressStepper,
             PFDescriptionList,
             css`
-                .pf-c-title {
+                .ak-wizard-main-content .pf-c-title {
                     padding-bottom: var(--pf-global--spacer--md);
                     padding-top: var(--pf-global--spacer--md);
                 }
@@ -212,7 +211,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
     ) {
         const icon = classMap(icons.reduce((acc, icon) => ({ ...acc, [icon]: true }), {}));
 
-        return html`<div data-ouid-component-state=${this.state}>
+        return html`<div data-ouid-component-state=${this.state} class="ak-wizard-main-content">
             <div class="pf-l-bullseye">
                 <div class="pf-c-empty-state pf-m-lg">
                     <div class="pf-c-empty-state__content">
@@ -287,36 +286,40 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
                 `Provider ${this.wizard.providerModel ?? "-- undefined --"} has no summary renderer.`,
             );
         }
-        return html` <ak-wizard-title
-                >${msg("Review the Application and Provider")}</ak-wizard-title
-            >
-            <h2 class="pf-c-title pf-m-xl">${msg("Application")}</h2>
-            <dl class="pf-c-description-list">
-                <div class="pf-c-description-list__group">
-                    <dt class="pf-c-description-list__term">${msg("Name")}</dt>
-                    <dt class="pf-c-description-list__description">${app.name}</dt>
-                </div>
-                <div class="pf-c-description-list__group">
-                    <dt class="pf-c-description-list__term">${msg("Group")}</dt>
-                    <dt class="pf-c-description-list__description">${app.group || msg("-")}</dt>
-                </div>
-                <div class="pf-c-description-list__group">
-                    <dt class="pf-c-description-list__term">${msg("Policy engine mode")}</dt>
-                    <dt class="pf-c-description-list__description">
-                        ${app.policyEngineMode?.toUpperCase()}
-                    </dt>
-                </div>
-                ${(app.metaLaunchUrl ?? "").trim() !== ""
-                    ? html` <div class="pf-c-description-list__group">
-                          <dt class="pf-c-description-list__term">${msg("Launch URL")}</dt>
-                          <dt class="pf-c-description-list__description">${app.metaLaunchUrl}</dt>
-                      </div>`
+        return html`
+            <div class="ak-wizard-main-content">
+                <ak-wizard-title>${msg("Review the Application and Provider")}</ak-wizard-title>
+                <h2 class="pf-c-title pf-m-xl">${msg("Application")}</h2>
+                <dl class="pf-c-description-list">
+                    <div class="pf-c-description-list__group">
+                        <dt class="pf-c-description-list__term">${msg("Name")}</dt>
+                        <dt class="pf-c-description-list__description">${app.name}</dt>
+                    </div>
+                    <div class="pf-c-description-list__group">
+                        <dt class="pf-c-description-list__term">${msg("Group")}</dt>
+                        <dt class="pf-c-description-list__description">${app.group || msg("-")}</dt>
+                    </div>
+                    <div class="pf-c-description-list__group">
+                        <dt class="pf-c-description-list__term">${msg("Policy engine mode")}</dt>
+                        <dt class="pf-c-description-list__description">
+                            ${app.policyEngineMode?.toUpperCase()}
+                        </dt>
+                    </div>
+                    ${(app.metaLaunchUrl ?? "").trim() !== ""
+                        ? html` <div class="pf-c-description-list__group">
+                              <dt class="pf-c-description-list__term">${msg("Launch URL")}</dt>
+                              <dt class="pf-c-description-list__description">
+                                  ${app.metaLaunchUrl}
+                              </dt>
+                          </div>`
+                        : nothing}
+                </dl>
+                ${renderer
+                    ? html` <h2 class="pf-c-title pf-m-xl pf-u-pt-xl">${msg("Provider")}</h2>
+                          ${renderer(provider)}`
                     : nothing}
-            </dl>
-            ${renderer
-                ? html` <h2 class="pf-c-title pf-m-xl pf-u-pt-xl">${msg("Provider")}</h2>
-                      ${renderer(provider)}`
-                : nothing}`;
+            </div>
+        `;
     }
 
     renderMain() {
