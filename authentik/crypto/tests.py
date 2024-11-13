@@ -89,6 +89,17 @@ class TestCrypto(APITestCase):
         self.assertIsInstance(ext[1], DNSName)
         self.assertEqual(ext[1].value, "baz")
 
+    def test_builder_api_duplicate(self):
+        """Test Builder (via API)"""
+        cert = create_test_cert()
+        self.client.force_login(create_test_admin_user())
+        res = self.client.post(
+            reverse("authentik_api:certificatekeypair-generate"),
+            data={"common_name": cert.name, "subject_alt_name": "bar,baz", "validity_days": 3},
+        )
+        self.assertEqual(res.status_code, 400)
+        self.assertJSONEqual(res.content, {"common_name": ["This field must be unique."]})
+
     def test_builder_api_empty_san(self):
         """Test Builder (via API)"""
         self.client.force_login(create_test_admin_user())
