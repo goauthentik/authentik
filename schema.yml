@@ -44957,7 +44957,8 @@ components:
           minLength: 1
           default: ak-provider-oauth2-device-code
         code:
-          type: integer
+          type: string
+          minLength: 1
       required:
       - code
     OAuthDeviceCodeFinishChallenge:

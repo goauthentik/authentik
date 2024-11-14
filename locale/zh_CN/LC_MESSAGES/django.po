@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-05 00:08+0000\n"
+"POT-Creation-Date: 2024-11-12 00:08+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/authentik/teams/119923/zh_CN/)\n"
@@ -1142,6 +1142,10 @@ msgstr "如果 zxcvbn 分数小于等于此值，则策略失败。"
 #: authentik/policies/password/models.py
 msgid "Password not set in context"
 msgstr "未在上下文中设置密码"
+
+#: authentik/policies/password/models.py
+msgid "Invalid password."
+msgstr "无效密码。"
 
 #: authentik/policies/password/models.py
 #, python-format
