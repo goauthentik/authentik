@@ -53,7 +53,7 @@ class ExtraRoleObjectPermissionSerializer(RoleObjectPermissionSerializer):
         except LookupError:
             return None
         objects = get_objects_for_group(instance.group, f"{app_label}.view_{model}", model_class)
-        obj = objects.first()
+        obj = objects.filter(pk=instance.object_pk).first()
         if not obj:
             return None
         return str(obj)
