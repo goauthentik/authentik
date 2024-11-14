@@ -74,6 +74,6 @@ return result`
 1. Go to `https://arubaorchestrator.company` using Incognito mode.
 2. Click **Log In Using Authentik** on the login screen.
 3. Authorize with authentik.
-4. You will be redirected to home screen of the Aruba Orchestrator.
+4. You will be redirected to the home screen of the Aruba Orchestrator.
 	
 
