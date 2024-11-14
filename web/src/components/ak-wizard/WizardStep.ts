@@ -262,7 +262,8 @@ export class WizardStep extends AKElement {
     renderSidebarStep(step: WizardStepLabel) {
         const buttonClasses = {
             "pf-c-wizard__nav-link": true,
-            "pf-m-current": step.active,
+            "pf-m-disabled": !step.enabled,
+            "pf-m-current": step.id === this.wizardStepState.currentStep,
         };
 
         return html`
