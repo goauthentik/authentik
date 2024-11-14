@@ -161,7 +161,7 @@ class LDAPOutpostConfigViewSet(ListModelMixin, GenericViewSet):
             instance={
                 "has_search_permission": (
                     request.user.has_perm("search_full_directory", provider)
-                    or request.user.has_perm("search_full_directory")
+                    or request.user.has_perm("authentik_providers_ldap.search_full_directory")
                 ),
                 "access": access_response,
             }
