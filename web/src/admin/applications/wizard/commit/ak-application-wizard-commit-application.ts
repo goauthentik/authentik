@@ -25,6 +25,7 @@ import {
     type TransactionApplicationRequest,
     type TransactionApplicationResponse,
     ValidationError,
+    instanceOfValidationError,
 } from "@goauthentik/api";
 
 import BasePanel from "../BasePanel";
@@ -68,6 +69,9 @@ const successState: State = {
     label: msg("Your application has been saved"),
     icon: ["fa-check-circle", "pf-m-success"],
 };
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isValidationError = (v: any): v is ValidationError => instanceOfValidationError(v);
 
 @customElement("ak-application-wizard-commit-application")
 export class ApplicationWizardCommitApplication extends BasePanel {
@@ -134,10 +138,25 @@ export class ApplicationWizardCommitApplication extends BasePanel {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .catch(async (resolution: any) => {
                 const errors = await parseAPIError(resolution);
+
+                // THIS is a really gross special case; if the user is duplicating the name of an
+                // existing provider, the error appears on the `app` (!) error object. We have to
+                // move that to the `provider.name` error field so it shows up in the right place.
+                if (isValidationError(errors) && Array.isArray(errors?.app?.provider)) {
+                    const providerError = errors.app.provider;
+                    errors.provider = errors.provider ?? {};
+                    errors.provider.name = providerError;
+                    delete errors.app.provider;
+                    if (Object.keys(errors.app).length === 0) {
+                        delete errors.app;
+                    }
+                }
+
+                this.errors = errors;
                 this.dispatchWizardUpdate({
                     update: {
                         ...this.wizard,
-                        errors,
+                        errors: this.errors,
                     },
                     status: "failed",
                 });
