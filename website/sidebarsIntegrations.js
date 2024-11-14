@@ -102,6 +102,7 @@ module.exports = {
                     type: "category",
                     label: "Networking",
                     items: [
+                        "services/aruba-orchestrator/index",
                         "services/firezone/index",
                         "services/fortigate-admin/index",
                         "services/fortigate-ssl/index",
