@@ -7,7 +7,7 @@ sidebar_label: Aruba Orchestrator
 
 <span class="badge badge--secondary">Support level: Community</span>
 
-## What is Service-Name
+## What is Aruba Orchestrator
 
 > Aruba Orchestrator is a network management platform used to centrally manage, configure, monitor, and automate Aruba network devices and services. It provides tools for network visibility, policy management, and performance monitoring, simplifying the administration of complex and distributed network environments.
 >
