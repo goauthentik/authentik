@@ -9272,7 +9272,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="saa29a2ac03cd9d19">
   <source>Reason</source>
-  <target> 原因</target>
+  <target>原因</target>
 </trans-unit>
 <trans-unit id="se9fd92a824994eba">
   <source>Reason for impersonating the user</source>
