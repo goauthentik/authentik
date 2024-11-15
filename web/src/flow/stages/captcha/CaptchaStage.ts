@@ -173,7 +173,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
                 .forEach((el) => el.remove());
             document.head.appendChild(this.scriptElement);
             if (!this.challenge.interactive) {
-                document.appendChild(this.captchaDocumentContainer);
+                document.body.appendChild(this.captchaDocumentContainer);
             }
         }
     }
