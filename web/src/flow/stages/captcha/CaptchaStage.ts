@@ -85,7 +85,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         super.disconnectedCallback();
         window.removeEventListener("message", this.messageCallback);
         if (!this.challenge.interactive) {
-            document.removeChild(this.captchaDocumentContainer);
+            document.body.removeChild(this.captchaDocumentContainer);
         }
     }
 
