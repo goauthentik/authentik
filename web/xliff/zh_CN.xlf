@@ -9270,6 +9270,22 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Enable this flag if the configured captcha requires User-interaction. Required for reCAPTCHA v2, hCaptcha and Cloudflare Turnstile.</source>
   <target>如果配置的验证码需要用户交互则启用此选项。reCAPTCHA v2、hCaptcha 和 Cloudflare Turnstile 需要启用。</target>
 </trans-unit>
+<trans-unit id="saa29a2ac03cd9d19">
+  <source>Reason</source>
+  <target>原因</target>
+</trans-unit>
+<trans-unit id="se9fd92a824994eba">
+  <source>Reason for impersonating the user</source>
+  <target>模拟此用户的原因</target>
+</trans-unit>
+<trans-unit id="s29fab8887734192f">
+  <source>Require reason for impersonation</source>
+  <target>需要模拟原因</target>
+</trans-unit>
+<trans-unit id="sc24af6de78468cfa">
+  <source>Require administrators to provide a reason for impersonating a user.</source>
+  <target>需要管理员提供模拟用户的原因。</target>
+</trans-unit>
     </body>
   </file>
 </xliff>
