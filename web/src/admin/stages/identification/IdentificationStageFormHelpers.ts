@@ -1,9 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types.js";
 
-import {
-    Source,
-    SourcesApi,
-} from "@goauthentik/api";
+import { Source, SourcesApi } from "@goauthentik/api";
 
 const sourceToSelect = (source: Source) => [source.pk, source.name, source.name, source];
 
@@ -17,25 +15,25 @@ export async function sourcesProvider(page = 1, search = "") {
 
     return {
         pagination: sources.pagination,
-        options: sources.results
-            .filter((source) => source.component !== "")
-            .map(sourceToSelect)
+        options: sources.results.filter((source) => source.component !== "").map(sourceToSelect),
     };
 }
 
 export function sourcesSelector(instanceSources: string[] | undefined) {
     if (!instanceSources) {
-        return async (sources: DualSelectPair<Source>) =>
-            sources.filter(([_0, _1, _2, source]: DualSelectPair<Prompt>) => source !== undefined);
+        return async (sources: DualSelectPair<Source>[]) =>
+            sources.filter(([_0, _1, _2, source]: DualSelectPair<Source>) => source !== undefined);
     }
     return async () => {
         const sourcesApi = new SourcesApi(DEFAULT_CONFIG);
         const sources = await Promise.allSettled(
-            instanceSources.map((instanceId) => sourcesApi.sourcesAllRetrieve({ sourceUuid: instanceId }))
+            instanceSources.map((instanceId) =>
+                sourcesApi.sourcesAllRetrieve({ slug: instanceId }),
+            ),
         );
         return sources
             .filter((s) => s.status === "fulfilled")
             .map((s) => s.value)
-            .map(sourceToSelect)
+            .map(sourceToSelect);
     };
 }
