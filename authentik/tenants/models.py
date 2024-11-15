@@ -4,6 +4,7 @@ import re
 from uuid import uuid4
 
 from django.apps import apps
+from django.contrib.postgres.fields import ArrayField
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models
@@ -99,6 +100,9 @@ class Tenant(TenantMixin, SerializerModel):
         default=DEFAULT_TOKEN_LENGTH,
         validators=[MinValueValidator(1)],
     )
+
+    analytics_enabled = models.BooleanField(default=False)
+    analytics_sources = ArrayField(models.TextField(), blank=True, default=list)
 
     def save(self, *args, **kwargs):
         if self.schema_name == "template":

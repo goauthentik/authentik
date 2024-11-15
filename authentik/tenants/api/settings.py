@@ -1,9 +1,12 @@
 """Serializer for tenants models"""
 
 from django_tenants.utils import get_public_schema_name
+from rest_framework.fields import SerializerMethodField
 from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.permissions import SAFE_METHODS
 
+from authentik.analytics.api import AnalyticsDescriptionSerializer
+from authentik.analytics.utils import get_analytics_description
 from authentik.core.api.utils import ModelSerializer
 from authentik.rbac.permissions import HasPermission
 from authentik.tenants.models import Tenant
@@ -11,6 +14,8 @@ from authentik.tenants.models import Tenant
 
 class SettingsSerializer(ModelSerializer):
     """Settings Serializer"""
+
+    analytics_sources_obj = SerializerMethodField()
 
     class Meta:
         model = Tenant
@@ -26,7 +31,18 @@ class SettingsSerializer(ModelSerializer):
             "impersonation_require_reason",
             "default_token_duration",
             "default_token_length",
+            "default_token_length",
+            "analytics_enabled",
+            "analytics_sources",
+            "analytics_sources_obj",
         ]
+
+    def get_analytics_sources_obj(self, obj: Tenant) -> list[AnalyticsDescriptionSerializer]:
+        result = []
+        for label, desc in get_analytics_description().items():
+            if label in obj.analytics_sources:
+                result.append((label, desc))
+        return result
 
 
 class SettingsView(RetrieveUpdateAPIView):
