@@ -2,18 +2,18 @@ import "@goauthentik/admin/applications/wizard/ak-wizard-title";
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
 import {
-    makeOAuth2PropertyMappingsSelector,
-    oauth2PropertyMappingsProvider,
-} from "@goauthentik/admin/providers/oauth2/OAuth2PropertyMappings.js";
-import {
     clientTypeOptions,
     issuerModeOptions,
     redirectUriHelp,
     subjectModeOptions,
 } from "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
 import {
-    makeSourceSelector,
+    propertyMappingsProvider,
+    propertyMappingsSelector,
+} from "@goauthentik/admin/providers/oauth2/OAuth2ProviderFormHelpers.js";
+import {
     oauth2SourcesProvider,
+    oauth2SourcesSelector,
 } from "@goauthentik/admin/providers/oauth2/OAuth2Sources.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
@@ -229,10 +229,8 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                             .errorMessages=${errors?.propertyMappings ?? []}
                         >
                             <ak-dual-select-dynamic-selected
-                                .provider=${oauth2PropertyMappingsProvider}
-                                .selector=${makeOAuth2PropertyMappingsSelector(
-                                    provider?.propertyMappings,
-                                )}
+                                .provider=${propertyMappingsProvider}
+                                .selector=${propertyMappingsSelector(provider?.propertyMappings)}
                                 available-label=${msg("Available Scopes")}
                                 selected-label=${msg("Selected Scopes")}
                             ></ak-dual-select-dynamic-selected>
@@ -286,7 +284,7 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                         >
                             <ak-dual-select-dynamic-selected
                                 .provider=${oauth2SourcesProvider}
-                                .selector=${makeSourceSelector(provider?.jwksSources)}
+                                .selector=${oauth2SourcesSelector(provider?.jwksSources)}
                                 available-label=${msg("Available Sources")}
                                 selected-label=${msg("Selected Sources")}
                             ></ak-dual-select-dynamic-selected>
