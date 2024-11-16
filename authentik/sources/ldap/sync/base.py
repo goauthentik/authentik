@@ -1,6 +1,7 @@
 """Sync LDAP Users and groups into authentik"""
 
 from collections.abc import Generator
+from time import sleep
 
 from django.conf import settings
 from ldap3 import DEREF_ALWAYS, SUBTREE, Connection
@@ -91,11 +92,14 @@ class BaseLDAPSynchronizer:
         controls=None,
         paged_size=None,
         paged_criticality=False,
+        rate_limit_delay=None,
     ):
         """Search in pages, returns each page"""
         cookie = True
         if not paged_size:
             paged_size = CONFIG.get_int("ldap.page_size", 50)
+        if rate_limit_delay is None:
+            rate_limit_delay = CONFIG.get_int("ldap.rate_limit_delay", 0)
         while cookie:
             self._connection.search(
                 search_base,
@@ -118,4 +122,5 @@ class BaseLDAPSynchronizer:
                 ]
             except KeyError:
                 cookie = None
+            sleep(rate_limit_delay)
             yield self._connection.response
