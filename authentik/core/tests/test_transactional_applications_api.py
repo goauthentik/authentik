@@ -45,6 +45,31 @@ class TestTransactionalApplicationsAPI(APITestCase):
         self.assertIsNotNone(app)
         self.assertEqual(app.provider.pk, provider.pk)
 
+    def test_create_transactional_permission_denied(self):
+        """Test transactional Application + provider creation (missing permissions)"""
+        self.client.force_login(self.user)
+        uid = generate_id()
+        response = self.client.put(
+            reverse("authentik_api:core-transactional-application"),
+            data={
+                "app": {
+                    "name": uid,
+                    "slug": uid,
+                },
+                "provider_model": "authentik_providers_saml.samlprovider",
+                "provider": {
+                    "name": uid,
+                    "authorization_flow": str(create_test_flow().pk),
+                    "invalidation_flow": str(create_test_flow().pk),
+                    "acs_url": "https://goauthentik.io",
+                },
+            },
+        )
+        self.assertJSONEqual(
+            response.content.decode(),
+            {"provider": "User lacks permission to create authentik_providers_saml.samlprovider"},
+        )
+
     def test_create_transactional_bindings(self):
         """Test transactional Application + provider creation"""
         assign_perm("authentik_policies.add_policybinding", self.user)
