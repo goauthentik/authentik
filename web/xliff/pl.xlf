@@ -8184,10 +8184,6 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
   <source>Selected Applications</source>
   <target>Wybrane aplikacje</target>
 </trans-unit>
-<trans-unit id="s862505f29064fc72">
-  <source>This option configures the footer links on the flow executor pages. It must be a valid YAML or JSON list and can be used as follows:</source>
-  <target>Ta opcja konfiguruje linki stopki na stronach wykonawców przepływu. Musi to być prawidłowa lista YAML lub JSON i może być używana w następujący sposób:</target>
-</trans-unit>
 <trans-unit id="s6d3f81dc4bcacbda">
   <source>Last used</source>
   <target>Ostatnio używany</target>
@@ -9140,6 +9136,18 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 </trans-unit>
 <trans-unit id="sc24af6de78468cfa">
   <source>Require administrators to provide a reason for impersonating a user.</source>
+</trans-unit>
+<trans-unit id="sd48cc52117f4d68b">
+  <source>Italian</source>
+</trans-unit>
+<trans-unit id="s6cee92a3b310e650">
+  <source>Add entry</source>
+</trans-unit>
+<trans-unit id="s8f36fb59c31d33eb">
+  <source>Link Title</source>
+</trans-unit>
+<trans-unit id="s92205c10ba1f0f4c">
+  <source>This option configures the footer links on the flow executor pages. The URL is limited to web and mail addresses. If the name is left blank, the URL will be shown.</source>
 </trans-unit>
     </body>
   </file>
