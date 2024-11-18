@@ -328,12 +328,18 @@
         },
         "test:e2e:watch": {
             "command": "wdio run ./tests/wdio.conf.ts",
+            "dependencies": [
+                "build"
+            ],
             "env": {
                 "TS_NODE_PROJECT": "./tests/tsconfig.test.json"
             }
         },
         "test:watch": {
             "command": "wdio run ./wdio.conf.ts",
+            "dependencies": [
+                "build"
+            ],
             "env": {
                 "TS_NODE_PROJECT": "tsconfig.test.json"
             }
