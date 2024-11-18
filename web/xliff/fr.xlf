@@ -8180,10 +8180,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Selected Applications</source>
   <target>Applications sélectionnées</target>
 </trans-unit>
-<trans-unit id="s862505f29064fc72">
-  <source>This option configures the footer links on the flow executor pages. It must be a valid YAML or JSON list and can be used as follows:</source>
-  <target>Cette option configure les liens de pied de page sur les pages de l'exécuteur de flux. Doit être une liste YAML ou JSON valide et peut être utilisée comme suit :</target>
-</trans-unit>
 <trans-unit id="s6d3f81dc4bcacbda">
   <source>Last used</source>
   <target>Utilisé pour la dernière fois</target>
@@ -9270,6 +9266,18 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="sc24af6de78468cfa">
   <source>Require administrators to provide a reason for impersonating a user.</source>
+</trans-unit>
+<trans-unit id="sd48cc52117f4d68b">
+  <source>Italian</source>
+</trans-unit>
+<trans-unit id="s6cee92a3b310e650">
+  <source>Add entry</source>
+</trans-unit>
+<trans-unit id="s8f36fb59c31d33eb">
+  <source>Link Title</source>
+</trans-unit>
+<trans-unit id="s92205c10ba1f0f4c">
+  <source>This option configures the footer links on the flow executor pages. The URL is limited to web and mail addresses. If the name is left blank, the URL will be shown.</source>
 </trans-unit>
     </body>
   </file>
