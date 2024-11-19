@@ -362,24 +362,9 @@ class TokenParams:
             },
         ).from_http(request, user=user)
 
-    def __post_init_client_credentials_jwt(self, request: HttpRequest):
-        assertion_type = request.POST.get(CLIENT_ASSERTION_TYPE, "")
-        if assertion_type != CLIENT_ASSERTION_TYPE_JWT:
-            LOGGER.warning("Invalid assertion type", assertion_type=assertion_type)
-            raise TokenError("invalid_grant")
-
-        client_secret = request.POST.get("client_secret", None)
-        assertion = request.POST.get(CLIENT_ASSERTION, client_secret)
-        if not assertion:
-            LOGGER.warning("Missing client assertion")
-            raise TokenError("invalid_grant")
-
-        token = None
-
-        source: OAuthSource | None = None
-        provider: OAuth2Provider | None = None
-        parsed_key: PyJWK | None = None
-
+    def __validate_jwt_from_source(
+        self, assertion: str
+    ) -> tuple[dict, OAuthSource] | tuple[None, None]:
         # Fully decode the JWT without verifying the signature, so we can get access to
         # the header.
         # Get the Key ID from the header, and use that to optimise our source query to only find
@@ -395,6 +380,7 @@ class TokenParams:
             raise TokenError("invalid_grant") from None
         expected_kid = decode_unvalidated["header"]["kid"]
         fallback_alg = decode_unvalidated["header"]["alg"]
+        token = source = None
         for source in self.provider.jwt_federation_sources.filter(
             oidc_jwks__keys__contains=[{"kid": expected_kid}]
         ):
@@ -405,10 +391,10 @@ class TokenParams:
                     continue
                 LOGGER.debug("verifying JWT with key", source=source.slug, key=key.get("kid"))
                 try:
-                    parsed_key = PyJWK.from_dict(key)
+                    parsed_key = PyJWK.from_dict(key).key
                     token = decode(
                         assertion,
-                        parsed_key.key,
+                        parsed_key,
                         algorithms=[key.get("alg")] if "alg" in key else [fallback_alg],
                         options={
                             "verify_aud": False,
@@ -418,10 +404,14 @@ class TokenParams:
                 # and not a public key
                 except (PyJWTError, ValueError, TypeError, AttributeError) as exc:
                     LOGGER.warning("failed to verify JWT", exc=exc, source=source.slug)
-
         if token:
             LOGGER.info("successfully verified JWT with source", source=source.slug)
+        return token, source
 
+    def __validate_jwt_from_provider(
+        self, assertion: str
+    ) -> tuple[dict, OAuth2Provider] | tuple[None, None]:
+        token = provider = _key = None
         federated_token = AccessToken.objects.filter(
             token=assertion, provider__in=self.provider.jwt_federation_providers.all()
         ).first()
@@ -445,6 +435,25 @@ class TokenParams:
 
         if token:
             LOGGER.info("successfully verified JWT with provider", provider=provider.name)
+        return token, provider
+
+    def __post_init_client_credentials_jwt(self, request: HttpRequest):
+        assertion_type = request.POST.get(CLIENT_ASSERTION_TYPE, "")
+        if assertion_type != CLIENT_ASSERTION_TYPE_JWT:
+            LOGGER.warning("Invalid assertion type", assertion_type=assertion_type)
+            raise TokenError("invalid_grant")
+
+        client_secret = request.POST.get("client_secret", None)
+        assertion = request.POST.get(CLIENT_ASSERTION, client_secret)
+        if not assertion:
+            LOGGER.warning("Missing client assertion")
+            raise TokenError("invalid_grant")
+
+        source = provider = None
+
+        token, source = self.__validate_jwt_from_source(assertion)
+        if not token:
+            token, provider = self.__validate_jwt_from_provider(assertion)
 
         if not token:
             LOGGER.warning("No token could be verified")
@@ -473,8 +482,6 @@ class TokenParams:
             method_args["source"] = source
         if provider:
             method_args["provider"] = provider
-        if parsed_key:
-            method_args["jwk_id"] = parsed_key.key_id
         Event.new(
             action=EventAction.LOGIN,
             **{
