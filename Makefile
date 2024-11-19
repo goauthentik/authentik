@@ -5,7 +5,7 @@ PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
 NPM_VERSION = $(shell python -m scripts.npm_version)
-PY_SOURCES = authentik tests scripts lifecycle .github
+PY_SOURCES = authentik tests scripts lifecycle .github website/docs/install-config/install/aws
 DOCKER_IMAGE ?= "authentik:test"
 
 GEN_API_TS = "gen-ts-api"
@@ -251,6 +251,9 @@ website-build:
 
 website-watch:  ## Build and watch the documentation website, updating automatically
 	cd website && npm run watch
+
+aws-cfn:
+	cd website && npm run aws-cfn
 
 #########################
 ## Docker
