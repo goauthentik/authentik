@@ -116,7 +116,7 @@ jobs:
           poetry run make test
           poetry run coverage xml
       - if: ${{ always() }}
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           flags: unit
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -140,7 +140,7 @@ jobs:
           poetry run coverage run manage.py test tests/integration
           poetry run coverage xml
       - if: ${{ always() }}
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           flags: integration
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -198,7 +198,7 @@ jobs:
           poetry run coverage run manage.py test ${{ matrix.job.glob }}
           poetry run coverage xml
       - if: ${{ always() }}
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           flags: e2e
           token: ${{ secrets.CODECOV_TOKEN }}

@@ -4,7 +4,6 @@ import { groupBy } from "@goauthentik/common/utils";
 import { AkControlElement } from "@goauthentik/elements/AkControlElement.js";
 import { PreventFormSubmit } from "@goauthentik/elements/forms/helpers";
 import type { GroupedOptions, SelectGroup, SelectOption } from "@goauthentik/elements/types.js";
-import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 import { randomId } from "@goauthentik/elements/utils/randomId.js";
 
 import { msg } from "@lit/localize";
@@ -32,10 +31,7 @@ export interface ISearchSelectBase<T> {
     emptyOption: string;
 }
 
-export class SearchSelectBase<T>
-    extends CustomEmitterElement(AkControlElement)
-    implements ISearchSelectBase<T>
-{
+export class SearchSelectBase<T> extends AkControlElement<string> implements ISearchSelectBase<T> {
     static get styles() {
         return [PFBase];
     }
@@ -54,7 +50,7 @@ export class SearchSelectBase<T>
 
     // A function which returns the currently selected object's primary key, used for serialization
     // into forms.
-    value!: (element: T | undefined) => unknown;
+    value!: (element: T | undefined) => string;
 
     // A function passed to this object that determines an object in the collection under search
     // should be automatically selected. Only used when the search itself is responsible for
@@ -105,7 +101,7 @@ export class SearchSelectBase<T>
     @state()
     error?: APIErrorTypes;
 
-    public toForm(): unknown {
+    public toForm(): string {
         if (!this.objects) {
             throw new PreventFormSubmit(msg("Loading options..."));
         }
@@ -114,6 +110,16 @@ export class SearchSelectBase<T>
 
     public json() {
         return this.toForm();
+    }
+
+    protected dispatchChangeEvent(value: T | undefined) {
+        this.dispatchEvent(
+            new CustomEvent("ak-change", {
+                composed: true,
+                bubbles: true,
+                detail: { value },
+            }),
+        );
     }
 
     public async updateData() {
@@ -127,7 +133,7 @@ export class SearchSelectBase<T>
                 objects.forEach((obj) => {
                     if (this.selected && this.selected(obj, objects || [])) {
                         this.selectedObject = obj;
-                        this.dispatchCustomEvent("ak-change", { value: this.selectedObject });
+                        this.dispatchChangeEvent(this.selectedObject);
                     }
                 });
                 this.objects = objects;
@@ -165,7 +171,7 @@ export class SearchSelectBase<T>
 
         this.query = value;
         this.updateData()?.then(() => {
-            this.dispatchCustomEvent("ak-change", { value: this.selectedObject });
+            this.dispatchChangeEvent(this.selectedObject);
         });
     }
 
@@ -173,7 +179,7 @@ export class SearchSelectBase<T>
         const value = (event.target as SearchSelectView).value;
         if (value === undefined) {
             this.selectedObject = undefined;
-            this.dispatchCustomEvent("ak-change", { value: undefined });
+            this.dispatchChangeEvent(undefined);
             return;
         }
         const selected = (this.objects ?? []).find((obj) => `${this.value(obj)}` === value);
@@ -181,7 +187,7 @@ export class SearchSelectBase<T>
             console.warn(`ak-search-select: No corresponding object found for value (${value}`);
         }
         this.selectedObject = selected;
-        this.dispatchCustomEvent("ak-change", { value: this.selectedObject });
+        this.dispatchChangeEvent(this.selectedObject);
     }
 
     private getGroupedItems(): GroupedOptions {

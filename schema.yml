@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2024.10.1
+  version: 2024.10.2
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -5295,6 +5295,12 @@ paths:
         required: true
       tags:
       - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImpersonationRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -39220,7 +39226,10 @@ components:
           type: string
         js_url:
           type: string
+        interactive:
+          type: boolean
       required:
+      - interactive
       - js_url
       - pending_user
       - pending_user_avatar
@@ -39276,6 +39285,8 @@ components:
           type: string
         api_url:
           type: string
+        interactive:
+          type: boolean
         score_min_threshold:
           type: number
           format: double
@@ -39322,6 +39333,8 @@ components:
         api_url:
           type: string
           minLength: 1
+        interactive:
+          type: boolean
         score_min_threshold:
           type: number
           format: double
@@ -42713,6 +42726,14 @@ components:
             incorrect user info is entered.
       required:
       - name
+    ImpersonationRequest:
+      type: object
+      properties:
+        reason:
+          type: string
+          minLength: 1
+      required:
+      - reason
     InstallID:
       type: object
       properties:
@@ -44936,7 +44957,8 @@ components:
           minLength: 1
           default: ak-provider-oauth2-device-code
         code:
-          type: integer
+          type: string
+          minLength: 1
       required:
       - code
     OAuthDeviceCodeFinishChallenge:
@@ -47732,6 +47754,8 @@ components:
         api_url:
           type: string
           minLength: 1
+        interactive:
+          type: boolean
         score_min_threshold:
           type: number
           format: double
@@ -50020,6 +50044,10 @@ components:
         impersonation:
           type: boolean
           description: Globally enable/disable impersonation.
+        impersonation_require_reason:
+          type: boolean
+          description: Require administrators to provide a reason for impersonating
+            a user.
         default_token_duration:
           type: string
           minLength: 1
@@ -53749,6 +53777,10 @@ components:
         impersonation:
           type: boolean
           description: Globally enable/disable impersonation.
+        impersonation_require_reason:
+          type: boolean
+          description: Require administrators to provide a reason for impersonating
+            a user.
         default_token_duration:
           type: string
           description: Default token duration
@@ -53788,6 +53820,10 @@ components:
         impersonation:
           type: boolean
           description: Globally enable/disable impersonation.
+        impersonation_require_reason:
+          type: boolean
+          description: Require administrators to provide a reason for impersonating
+            a user.
         default_token_duration:
           type: string
           minLength: 1
@@ -54644,6 +54680,10 @@ components:
           $ref: '#/components/schemas/ProviderModelEnum'
         provider:
           $ref: '#/components/schemas/modelRequest'
+        policy_bindings:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionPolicyBindingRequest'
       required:
       - app
       - provider
@@ -54661,6 +54701,41 @@ components:
       required:
       - applied
       - logs
+    TransactionPolicyBindingRequest:
+      type: object
+      description: PolicyBindingSerializer which does not require target as target
+        is set implicitly
+      properties:
+        policy:
+          type: string
+          format: uuid
+          nullable: true
+        group:
+          type: string
+          format: uuid
+          nullable: true
+        user:
+          type: integer
+          nullable: true
+        negate:
+          type: boolean
+          description: Negates the outcome of the policy. Messages are unaffected.
+        enabled:
+          type: boolean
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        timeout:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Timeout after which Policy execution is terminated.
+        failure_result:
+          type: boolean
+          description: Result if the Policy execution fails.
+      required:
+      - order
     TypeCreate:
       type: object
       description: Types of an object that can be created
