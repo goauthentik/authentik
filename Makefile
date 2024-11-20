@@ -149,7 +149,7 @@ gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescri
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
-		docker.io/openapitools/openapi-generator-cli:v6.5.0 generate \
+		docker.io/openapitools/openapi-generator-cli:v7.10.0 generate \
 		-i /local/schema.yml \
 		-g typescript-fetch \
 		-o /local/${GEN_API_TS} \
@@ -165,7 +165,7 @@ gen-client-py: gen-clean-py ## Build and install the authentik API for Python
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
-		docker.io/openapitools/openapi-generator-cli:v7.4.0 generate \
+		docker.io/openapitools/openapi-generator-cli:v7.10.0 generate \
 		-i /local/schema.yml \
 		-g python \
 		-o /local/${GEN_API_PY} \
@@ -184,13 +184,14 @@ gen-client-go: gen-clean-go  ## Build and install the authentik API for Golang
 	docker run \
 		--rm -v ${PWD}/${GEN_API_GO}:/local \
 		--user ${UID}:${GID} \
-		docker.io/openapitools/openapi-generator-cli:v6.5.0 generate \
+		docker.io/openapitools/openapi-generator-cli:v7.10.0 generate \
 		-i /local/schema.yml \
 		-g go \
 		-o /local/ \
 		-c /local/config.yaml
 	go mod edit -replace goauthentik.io/api/v3=./${GEN_API_GO}
-	rm -rf ./${GEN_API_GO}/config.yaml ./${GEN_API_GO}/templates/
+	rm -rf ./${GEN_API_GO}/config.yaml ./${GEN_API_GO}/templates/ ./${GEN_API_GO}/test
+	go run golang.org/x/tools/cmd/goimports@latest -w ./${GEN_API_GO}
 
 gen-dev-config:  ## Generate a local development config file
 	python -m scripts.generate_config
