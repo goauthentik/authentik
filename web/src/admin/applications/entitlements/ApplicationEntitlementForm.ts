@@ -15,10 +15,7 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 
-import {
-    ApplicationEntitlement,
-    CoreApi,
-} from "@goauthentik/api";
+import { ApplicationEntitlement, CoreApi } from "@goauthentik/api";
 
 @customElement("ak-application-entitlement-form")
 export class ApplicationEntitlementForm extends ModelForm<ApplicationEntitlement, string> {
