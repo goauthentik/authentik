@@ -19,6 +19,7 @@ SCIM_GROUP_SCHEMA = "urn:ietf:params:scim:schemas:core:2.0:Group"
 class User(BaseUser):
     """Modified User schema with added externalId field"""
 
+    id: str | int | None = None
     schemas: list[str] = [SCIM_USER_SCHEMA]
     externalId: str | None = None
     meta: dict | None = None
@@ -27,6 +28,7 @@ class User(BaseUser):
 class Group(BaseGroup):
     """Modified Group schema with added externalId field"""
 
+    id: str | int | None = None
     schemas: list[str] = [SCIM_GROUP_SCHEMA]
     externalId: str | None = None
     meta: dict | None = None
