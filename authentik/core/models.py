@@ -581,10 +581,8 @@ class Application(SerializerModel, PolicyBindingModel):
         verbose_name_plural = _("Applications")
 
 
-class ApplicationEntitlement(AttributesMixin, SerializerModel):
+class ApplicationEntitlement(AttributesMixin, SerializerModel, PolicyBindingModel):
     """Application-scoped entitlement to control authorization in an application"""
-
-    app_entitlement_uuid = models.UUIDField(default=uuid4, primary_key=True)
 
     name = models.TextField()
 

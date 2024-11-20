@@ -103,12 +103,12 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
             }}
             .usedBy=${(item: ApplicationEntitlement) => {
                 return new CoreApi(DEFAULT_CONFIG).coreApplicationEntitlementsUsedByList({
-                    appEntitlementUuid: item.appEntitlementUuid || "",
+                    pbmUuid: item.pbmUuid || "",
                 });
             }}
             .delete=${(item: ApplicationEntitlement) => {
                 return new CoreApi(DEFAULT_CONFIG).coreApplicationEntitlementsDestroy({
-                    appEntitlementUuid: item.appEntitlementUuid || "",
+                    pbmUuid: item.pbmUuid || "",
                 });
             }}
         >
@@ -128,7 +128,7 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
                     <span slot="header"> ${msg("Update Entitlement")} </span>
                     <ak-application-entitlement-form
                         slot="form"
-                        .instancePk=${item.appEntitlementUuid}
+                        .instancePk=${item.pbmUuid}
                         targetPk=${ifDefined(this.app)}
                     >
                     </ak-application-entitlement-form>
@@ -141,9 +141,14 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
 
     renderEmpty(): TemplateResult {
         return super.renderEmpty(
-            html`<ak-empty-state header=${msg("No app entitlements created.")} icon="pf-icon-module">
+            html`<ak-empty-state
+                header=${msg("No app entitlements created.")}
+                icon="pf-icon-module"
+            >
                 <div slot="body">
-                    ${msg("This application does currently not have any application entitlement defined.")}
+                    ${msg(
+                        "This application does currently not have any application entitlement defined.",
+                    )}
                 </div>
                 <div slot="primary"></div>
             </ak-empty-state>`,
@@ -156,7 +161,9 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
             <span slot="header"> ${msg("Create Entitlement")} </span>
             <ak-application-entitlement-form slot="form" targetPk=${ifDefined(this.app)}>
             </ak-application-entitlement-form>
-            <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create entitlement")}</button>
+            <button slot="trigger" class="pf-c-button pf-m-primary">
+                ${msg("Create entitlement")}
+            </button>
         </ak-forms-modal> `;
     }
 }

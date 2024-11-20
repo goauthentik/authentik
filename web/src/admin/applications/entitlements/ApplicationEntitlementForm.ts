@@ -9,21 +9,21 @@ import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
 import YAML from "yaml";
 
-
-
 import { msg } from "@lit/localize";
 import { CSSResult } from "lit";
 import { TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-
-
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 
-
-
-import { ApplicationEntitlement, CoreApi, CoreGroupsListRequest, CoreUsersListRequest, Group, User } from "@goauthentik/api";
-
+import {
+    ApplicationEntitlement,
+    CoreApi,
+    CoreGroupsListRequest,
+    CoreUsersListRequest,
+    Group,
+    User,
+} from "@goauthentik/api";
 
 enum target {
     group = "group",
@@ -33,16 +33,16 @@ enum target {
 @customElement("ak-application-entitlement-form")
 export class ApplicationEntitlementForm extends ModelForm<ApplicationEntitlement, string> {
     async loadInstance(pk: string): Promise<ApplicationEntitlement> {
-        const binding = await new CoreApi(DEFAULT_CONFIG).coreApplicationEntitlementsRetrieve({
-            appEntitlementUuid: pk,
+        const entitlement = await new CoreApi(DEFAULT_CONFIG).coreApplicationEntitlementsRetrieve({
+            pbmUuid: pk,
         });
-        if (binding?.groupObj) {
+        if (entitlement?.groupObj) {
             this.policyGroupUser = target.group;
         }
-        if (binding?.userObj) {
+        if (entitlement?.userObj) {
             this.policyGroupUser = target.user;
         }
-        return binding;
+        return entitlement;
     }
 
     @property()
@@ -52,7 +52,7 @@ export class ApplicationEntitlementForm extends ModelForm<ApplicationEntitlement
     policyGroupUser: target = target.group;
 
     getSuccessMessage(): string {
-        if (this.instance?.appEntitlementUuid) {
+        if (this.instance?.pbmUuid) {
             return msg("Successfully updated entitlement.");
         } else {
             return msg("Successfully created entitlement.");
@@ -76,9 +76,9 @@ export class ApplicationEntitlementForm extends ModelForm<ApplicationEntitlement
                 break;
         }
 
-        if (this.instance?.appEntitlementUuid) {
+        if (this.instance?.pbmUuid) {
             return new CoreApi(DEFAULT_CONFIG).coreApplicationEntitlementsUpdate({
-                appEntitlementUuid: this.instance.appEntitlementUuid || "",
+                pbmUuid: this.instance.pbmUuid || "",
                 applicationEntitlementRequest: data,
             });
         } else {
