@@ -13,15 +13,17 @@ sidebar_label: The Lounge
 >
 > -- https://thelounge.chat/
 
-:::note This guide assumes you already deployed an LDAP Provider, if not check [here](https://docs.goauthentik.io/docs/add-secure-apps/providers/ldap/generic_setup).
-If you made any changes, e.g. using a different name for the user, make sure to apply them here as well. :::
+:::note
+This guide assumes you already deployed an LDAP Provider, if not check [here](https://docs.goauthentik.io/docs/add-secure-apps/providers/ldap/generic_setup).
+If you made any changes, e.g. using a different name for the user, make sure to apply them here as well.
+:::
 
 ## Preparation
 
 The following placeholders will be used:
 
 -   `authentik.company` is the FQDN of the authentik install.
--   `dc=company,dc=com` the Base DN of the LDAP outpost. If you follwed the LDAP provider guide this is: `dc=goauthentik,dc=io`
+-   `dc=company,dc=com` the Base DN of the LDAP outpost. If you followed the LDAP provider guide this is: `dc=goauthentik,dc=io`
 -   `ldap_bind_user` the username of the desired LDAP Bind User. If you followed the LDAP provider guide this is: `ldapservice`
 
 ## LDAP Configuration
@@ -41,6 +43,6 @@ In the `config.js` file find the `ldap` section and make the following changes:
     1. Set `rootDN` to `cn=ldap_bind_user,ou=users,dc=company,dc=com`
     2. Set `rootPassword` to the password you have given to the `ldap_bind_user`
     3. Set `filter` to `(&(objectClass=user)`
-       1. Alternatively, if you want to restrict access by group, you can set it to: `(&(objectClass=user)(memberOf=cn=group_name,ou=groups,dc=ldap,dc=company,dc=com))`
+        1. Alternatively, if you want to restrict access by group, you can set it to: `(&(objectClass=user)(memberOf=cn=group_name,ou=groups,dc=ldap,dc=company,dc=com))`
     4. Set `base` to `dc=ldap,dc=company,dc=com`
-5. Finally, save the `config.js` file and restart The Lounge. You should be able to log in via LDAP now, as long as a user with the same 
+5. Finally, save the `config.js` file and restart The Lounge. You should be able to log in via LDAP now, as long as a user with the same
