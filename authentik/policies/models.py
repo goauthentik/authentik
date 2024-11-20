@@ -81,7 +81,9 @@ class PolicyBinding(SerializerModel):
         blank=True,
     )
 
-    target = InheritanceForeignKey(PolicyBindingModel, on_delete=models.CASCADE, related_name="+")
+    target = InheritanceForeignKey(
+        PolicyBindingModel, on_delete=models.CASCADE, related_name="bindings"
+    )
     negate = models.BooleanField(
         default=False,
         help_text=_("Negates the outcome of the policy. Messages are unaffected."),

@@ -1,6 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
-import "@goauthentik/components/ak-toggle-group";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -12,44 +11,25 @@ import YAML from "yaml";
 import { msg } from "@lit/localize";
 import { CSSResult } from "lit";
 import { TemplateResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 
 import {
     ApplicationEntitlement,
     CoreApi,
-    CoreGroupsListRequest,
-    CoreUsersListRequest,
-    Group,
-    User,
 } from "@goauthentik/api";
-
-enum target {
-    group = "group",
-    user = "user",
-}
 
 @customElement("ak-application-entitlement-form")
 export class ApplicationEntitlementForm extends ModelForm<ApplicationEntitlement, string> {
     async loadInstance(pk: string): Promise<ApplicationEntitlement> {
-        const entitlement = await new CoreApi(DEFAULT_CONFIG).coreApplicationEntitlementsRetrieve({
+        return new CoreApi(DEFAULT_CONFIG).coreApplicationEntitlementsRetrieve({
             pbmUuid: pk,
         });
-        if (entitlement?.groupObj) {
-            this.policyGroupUser = target.group;
-        }
-        if (entitlement?.userObj) {
-            this.policyGroupUser = target.user;
-        }
-        return entitlement;
     }
 
     @property()
     targetPk?: string;
-
-    @state()
-    policyGroupUser: target = target.group;
 
     getSuccessMessage(): string {
         if (this.instance?.pbmUuid) {
@@ -67,15 +47,6 @@ export class ApplicationEntitlementForm extends ModelForm<ApplicationEntitlement
         if (this.targetPk) {
             data.app = this.targetPk;
         }
-        switch (this.policyGroupUser) {
-            case target.group:
-                data.user = null;
-                break;
-            case target.user:
-                data.group = null;
-                break;
-        }
-
         if (this.instance?.pbmUuid) {
             return new CoreApi(DEFAULT_CONFIG).coreApplicationEntitlementsUpdate({
                 pbmUuid: this.instance.pbmUuid || "",
@@ -88,18 +59,6 @@ export class ApplicationEntitlementForm extends ModelForm<ApplicationEntitlement
         }
     }
 
-    renderModeSelector(): TemplateResult {
-        return html` <ak-toggle-group
-            value=${this.policyGroupUser}
-            @ak-toggle=${(ev: CustomEvent<{ value: target }>) => {
-                this.policyGroupUser = ev.detail.value;
-            }}
-        >
-            <option value=${target.group}>${msg("Group")}</option>
-            <option value=${target.user}>${msg("User")}</option>
-        </ak-toggle-group>`;
-    }
-
     renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
@@ -109,75 +68,6 @@ export class ApplicationEntitlementForm extends ModelForm<ApplicationEntitlement
                     required
                 />
             </ak-form-element-horizontal>
-            <div class="pf-c-card pf-m-selectable pf-m-selected">
-                <div class="pf-c-card__body">${this.renderModeSelector()}</div>
-                <div class="pf-c-card__footer">
-                    <ak-form-element-horizontal
-                        label=${msg("Group")}
-                        name="group"
-                        ?hidden=${this.policyGroupUser !== target.group}
-                    >
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Group[]> => {
-                                const args: CoreGroupsListRequest = {
-                                    ordering: "name",
-                                    includeUsers: false,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(
-                                    args,
-                                );
-                                return groups.results;
-                            }}
-                            .renderElement=${(group: Group): string => {
-                                return group.name;
-                            }}
-                            .value=${(group: Group | undefined): string | undefined => {
-                                return group?.pk;
-                            }}
-                            .selected=${(group: Group): boolean => {
-                                return group.pk === this.instance?.group;
-                            }}
-                            ?blankable=${true}
-                        >
-                        </ak-search-select>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("User")}
-                        name="user"
-                        ?hidden=${this.policyGroupUser !== target.user}
-                    >
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<User[]> => {
-                                const args: CoreUsersListRequest = {
-                                    ordering: "username",
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList(args);
-                                return users.results;
-                            }}
-                            .renderElement=${(user: User): string => {
-                                return user.username;
-                            }}
-                            .renderDescription=${(user: User): TemplateResult => {
-                                return html`${user.name}`;
-                            }}
-                            .value=${(user: User | undefined): number | undefined => {
-                                return user?.pk;
-                            }}
-                            .selected=${(user: User): boolean => {
-                                return user.pk === this.instance?.user;
-                            }}
-                            ?blankable=${true}
-                        >
-                        </ak-search-select>
-                    </ak-form-element-horizontal>
-                </div>
-            </div>
             <ak-form-element-horizontal
                 label=${msg("Attributes")}
                 ?required=${false}
