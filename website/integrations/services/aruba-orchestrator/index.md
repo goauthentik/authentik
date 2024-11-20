@@ -53,7 +53,7 @@ The following placeholders will be used:
 
 ## Aruba Orchestrator Configuration
 
-1. Log into the Aruba Orchestrator
+1. Log in to the Aruba Orchestrator.
 2. Create a new Remote Authentication Server under **Orchestrator** -> **Authentication** -> **Add New Server**
     - **Type**: `SAML`
 	- **Name**: `authentik`
