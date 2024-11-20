@@ -35,7 +35,7 @@ export interface KeyUnknown {
 // Literally the only field `assignValue()` cares about.
 type HTMLNamedElement = Pick<HTMLInputElement, "name">;
 
-type AkControlElement = HTMLInputElement & { json: () => string | string[] };
+export type AkControlElement<T = string | string[]> = HTMLInputElement & { json: () => T };
 
 /**
  * Recursively assign `value` into `json` while interpreting the dot-path of `element.name`

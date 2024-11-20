@@ -89,6 +89,9 @@ export class TreeViewNode extends AKElement {
                                 new CustomEvent(EVENT_REFRESH, {
                                     bubbles: true,
                                     composed: true,
+                                    detail: {
+                                        path: this.fullPath,
+                                    },
                                 }),
                             );
                         }}
