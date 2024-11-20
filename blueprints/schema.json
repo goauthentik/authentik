@@ -13039,15 +13039,6 @@
                     "type": "integer",
                     "title": "App"
                 },
-                "user": {
-                    "type": "integer",
-                    "title": "User"
-                },
-                "group": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Group"
-                },
                 "attributes": {
                     "type": "object",
                     "additionalProperties": true,

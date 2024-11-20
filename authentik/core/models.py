@@ -319,7 +319,10 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
         if not app:
             return []
         all_groups = self.all_groups()
-        return app.applicationentitlement_set.filter(Q(user=self) | Q(group__in=all_groups))
+        return app.applicationentitlement_set.filter(
+            Q(bindings__user=self) | Q(bindings__group__in=all_groups),
+            bindings__enabled=True,
+        )
 
     @property
     def serializer(self) -> Serializer:
@@ -594,8 +597,6 @@ class ApplicationEntitlement(AttributesMixin, SerializerModel, PolicyBindingMode
     name = models.TextField()
 
     app = models.ForeignKey(Application, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True)
 
     class Meta:
         verbose_name = _("Application Entitlement")

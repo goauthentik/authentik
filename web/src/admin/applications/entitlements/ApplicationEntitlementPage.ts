@@ -1,5 +1,6 @@
 import "@goauthentik/admin/applications/entitlements/ApplicationEntitlementForm";
 import "@goauthentik/admin/groups/GroupForm";
+import "@goauthentik/admin/policies/BoundPoliciesList";
 import "@goauthentik/admin/users/UserForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { PFSize } from "@goauthentik/common/enums";
@@ -11,7 +12,7 @@ import "@goauthentik/elements/forms/ProxyForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
 
-import { msg, str } from "@lit/localize";
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -25,6 +26,7 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
 
     checkbox = true;
     clearOnRefresh = true;
+    expandable = true;
 
     order = "order";
 
@@ -36,56 +38,7 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
     }
 
     columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("User / Group")),
-            new TableColumn(msg("Actions")),
-        ];
-    }
-
-    getPolicyUserGroupRowLabel(item: ApplicationEntitlement): string {
-        if (item.group) {
-            return msg(str`Group ${item.groupObj?.name}`);
-        } else if (item.user) {
-            return msg(str`User ${item.userObj?.name}`);
-        } else {
-            return msg("-");
-        }
-    }
-
-    getPolicyUserGroupRow(item: ApplicationEntitlement): TemplateResult {
-        const label = this.getPolicyUserGroupRowLabel(item);
-        if (item.user) {
-            return html` <a href=${`#/identity/users/${item.user}`}> ${label} </a> `;
-        }
-        if (item.group) {
-            return html` <a href=${`#/identity/groups/${item.group}`}> ${label} </a> `;
-        }
-        return html`${label}`;
-    }
-
-    getObjectEditButton(item: ApplicationEntitlement): TemplateResult {
-        if (item.group) {
-            return html`<ak-forms-modal>
-                <span slot="submit"> ${msg("Update")} </span>
-                <span slot="header"> ${msg("Update Group")} </span>
-                <ak-group-form slot="form" .instancePk=${item.groupObj?.pk}> </ak-group-form>
-                <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${msg("Edit Group")}
-                </button>
-            </ak-forms-modal>`;
-        } else if (item.user) {
-            return html`<ak-forms-modal>
-                <span slot="submit"> ${msg("Update")} </span>
-                <span slot="header"> ${msg("Update User")} </span>
-                <ak-user-form slot="form" .instancePk=${item.userObj?.pk}> </ak-user-form>
-                <button slot="trigger" class="pf-c-button pf-m-secondary">
-                    ${msg("Edit User")}
-                </button>
-            </ak-forms-modal>`;
-        } else {
-            return html``;
-        }
+        return [new TableColumn(msg("Name"), "name"), new TableColumn(msg("Actions"))];
     }
 
     renderToolbarSelected(): TemplateResult {
@@ -93,14 +46,6 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Application entitlement(s)")}
             .objects=${this.selectedElements}
-            .metadata=${(item: ApplicationEntitlement) => {
-                return [
-                    {
-                        key: msg("Policy / User / Group"),
-                        value: this.getPolicyUserGroupRowLabel(item),
-                    },
-                ];
-            }}
             .usedBy=${(item: ApplicationEntitlement) => {
                 return new CoreApi(DEFAULT_CONFIG).coreApplicationEntitlementsUsedByList({
                     pbmUuid: item.pbmUuid || "",
@@ -121,9 +66,7 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
     row(item: ApplicationEntitlement): TemplateResult[] {
         return [
             html`${item.name}`,
-            html`${this.getPolicyUserGroupRow(item)}`,
-            html`${this.getObjectEditButton(item)}
-                <ak-forms-modal size=${PFSize.Medium}>
+            html`<ak-forms-modal size=${PFSize.Medium}>
                     <span slot="submit"> ${msg("Update")} </span>
                     <span slot="header"> ${msg("Update Entitlement")} </span>
                     <ak-application-entitlement-form
@@ -132,11 +75,29 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
                         targetPk=${ifDefined(this.app)}
                     >
                     </ak-application-entitlement-form>
-                    <button slot="trigger" class="pf-c-button pf-m-secondary">
-                        ${msg("Edit Entitlement")}
+                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                        <pf-tooltip position="top" content=${msg("Edit")}>
+                            <i class="fas fa-edit"></i>
+                        </pf-tooltip>
                     </button>
                 </ak-forms-modal>`,
         ];
+    }
+
+    renderExpanded(item: ApplicationEntitlement): TemplateResult {
+        return html` <td></td>
+            <td role="cell" colspan="4">
+                <div class="pf-c-table__expandable-row-content">
+                    <div class="pf-c-content">
+                        <p>
+                            ${msg(
+                                "These bindings control which users have access to this entitlement.",
+                            )}
+                        </p>
+                        <ak-bound-policies-list .target=${item.pbmUuid}> </ak-bound-policies-list>
+                    </div>
+                </div>
+            </td>`;
     }
 
     renderEmpty(): TemplateResult {

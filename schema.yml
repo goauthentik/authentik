@@ -3108,11 +3108,6 @@ paths:
           type: string
           format: uuid
       - in: query
-        name: group
-        schema:
-          type: string
-          format: uuid
-      - in: query
         name: name
         schema:
           type: string
@@ -3145,10 +3140,6 @@ paths:
         description: A search term.
         schema:
           type: string
-      - in: query
-        name: user
-        schema:
-          type: integer
       tags:
       - core
       security:
@@ -38090,28 +38081,11 @@ components:
         app:
           type: string
           format: uuid
-        user:
-          type: integer
-          nullable: true
-        group:
-          type: string
-          format: uuid
-          nullable: true
         attributes: {}
-        group_obj:
-          allOf:
-          - $ref: '#/components/schemas/Group'
-          readOnly: true
-        user_obj:
-          allOf:
-          - $ref: '#/components/schemas/User'
-          readOnly: true
       required:
       - app
-      - group_obj
       - name
       - pbm_uuid
-      - user_obj
     ApplicationEntitlementRequest:
       type: object
       description: ApplicationEntitlement Serializer
@@ -38122,13 +38096,6 @@ components:
         app:
           type: string
           format: uuid
-        user:
-          type: integer
-          nullable: true
-        group:
-          type: string
-          format: uuid
-          nullable: true
         attributes: {}
       required:
       - app
@@ -47770,13 +47737,6 @@ components:
         app:
           type: string
           format: uuid
-        user:
-          type: integer
-          nullable: true
-        group:
-          type: string
-          format: uuid
-          nullable: true
         attributes: {}
     PatchedApplicationRequest:
       type: object
