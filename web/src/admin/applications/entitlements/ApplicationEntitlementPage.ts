@@ -1,6 +1,7 @@
 import "@goauthentik/admin/applications/entitlements/ApplicationEntitlementForm";
 import "@goauthentik/admin/groups/GroupForm";
 import "@goauthentik/admin/policies/BoundPoliciesList";
+import { PolicyBindingCheckTarget } from "@goauthentik/admin/policies/utils";
 import "@goauthentik/admin/users/UserForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { PFSize } from "@goauthentik/common/enums";
@@ -67,20 +68,20 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
         return [
             html`${item.name}`,
             html`<ak-forms-modal size=${PFSize.Medium}>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update Entitlement")} </span>
-                    <ak-application-entitlement-form
-                        slot="form"
-                        .instancePk=${item.pbmUuid}
-                        targetPk=${ifDefined(this.app)}
-                    >
-                    </ak-application-entitlement-form>
-                    <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit"></i>
-                        </pf-tooltip>
-                    </button>
-                </ak-forms-modal>`,
+                <span slot="submit"> ${msg("Update")} </span>
+                <span slot="header"> ${msg("Update Entitlement")} </span>
+                <ak-application-entitlement-form
+                    slot="form"
+                    .instancePk=${item.pbmUuid}
+                    targetPk=${ifDefined(this.app)}
+                >
+                </ak-application-entitlement-form>
+                <button slot="trigger" class="pf-c-button pf-m-plain">
+                    <pf-tooltip position="top" content=${msg("Edit")}>
+                        <i class="fas fa-edit"></i>
+                    </pf-tooltip>
+                </button>
+            </ak-forms-modal>`,
         ];
     }
 
@@ -94,7 +95,14 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
                                 "These bindings control which users have access to this entitlement.",
                             )}
                         </p>
-                        <ak-bound-policies-list .target=${item.pbmUuid}> </ak-bound-policies-list>
+                        <ak-bound-policies-list
+                            .target=${item.pbmUuid}
+                            .allowedTypes=${[
+                                PolicyBindingCheckTarget.group,
+                                PolicyBindingCheckTarget.user,
+                            ]}
+                        >
+                        </ak-bound-policies-list>
                     </div>
                 </div>
             </td>`;
