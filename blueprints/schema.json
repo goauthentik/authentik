@@ -13030,11 +13030,6 @@
         "model_authentik_core.applicationentitlement": {
             "type": "object",
             "properties": {
-                "app_entitlement_uuid": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "App entitlement uuid"
-                },
                 "name": {
                     "type": "string",
                     "minLength": 1,

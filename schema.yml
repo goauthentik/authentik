@@ -3108,11 +3108,6 @@ paths:
           type: string
           format: uuid
       - in: query
-        name: app_entitlement_uuid
-        schema:
-          type: string
-          format: uuid
-      - in: query
         name: group
         schema:
           type: string
@@ -3139,6 +3134,11 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
       - name: search
         required: false
         in: query
@@ -3204,13 +3204,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /core/application_entitlements/{app_entitlement_uuid}/:
+  /core/application_entitlements/{pbm_uuid}/:
     get:
       operationId: core_application_entitlements_retrieve
       description: ApplicationEntitlement Viewset
       parameters:
       - in: path
-        name: app_entitlement_uuid
+        name: pbm_uuid
         schema:
           type: string
           format: uuid
@@ -3244,7 +3244,7 @@ paths:
       description: ApplicationEntitlement Viewset
       parameters:
       - in: path
-        name: app_entitlement_uuid
+        name: pbm_uuid
         schema:
           type: string
           format: uuid
@@ -3284,7 +3284,7 @@ paths:
       description: ApplicationEntitlement Viewset
       parameters:
       - in: path
-        name: app_entitlement_uuid
+        name: pbm_uuid
         schema:
           type: string
           format: uuid
@@ -3323,7 +3323,7 @@ paths:
       description: ApplicationEntitlement Viewset
       parameters:
       - in: path
-        name: app_entitlement_uuid
+        name: pbm_uuid
         schema:
           type: string
           format: uuid
@@ -3348,13 +3348,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /core/application_entitlements/{app_entitlement_uuid}/used_by/:
+  /core/application_entitlements/{pbm_uuid}/used_by/:
     get:
       operationId: core_application_entitlements_used_by_list
       description: Get a list of all objects that use this object
       parameters:
       - in: path
-        name: app_entitlement_uuid
+        name: pbm_uuid
         schema:
           type: string
           format: uuid
@@ -38081,9 +38081,10 @@ components:
       type: object
       description: ApplicationEntitlement Serializer
       properties:
-        app_entitlement_uuid:
+        pbm_uuid:
           type: string
           format: uuid
+          readOnly: true
         name:
           type: string
         app:
@@ -38109,14 +38110,12 @@ components:
       - app
       - group_obj
       - name
+      - pbm_uuid
       - user_obj
     ApplicationEntitlementRequest:
       type: object
       description: ApplicationEntitlement Serializer
       properties:
-        app_entitlement_uuid:
-          type: string
-          format: uuid
         name:
           type: string
           minLength: 1
@@ -47765,9 +47764,6 @@ components:
       type: object
       description: ApplicationEntitlement Serializer
       properties:
-        app_entitlement_uuid:
-          type: string
-          format: uuid
         name:
           type: string
           minLength: 1

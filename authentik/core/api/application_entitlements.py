@@ -20,7 +20,7 @@ class ApplicationEntitlementSerializer(ModelSerializer):
     class Meta:
         model = ApplicationEntitlement
         fields = [
-            "app_entitlement_uuid",
+            "pbm_uuid",
             "name",
             "app",
             "user",
@@ -37,7 +37,7 @@ class ApplicationEntitlementViewSet(UsedByMixin, ModelViewSet):
     queryset = ApplicationEntitlement.objects.all()
     serializer_class = ApplicationEntitlementSerializer
     search_fields = [
-        "app_entitlement_uuid",
+        "pbm_uuid",
         "name",
         "app",
         "user",
@@ -45,7 +45,7 @@ class ApplicationEntitlementViewSet(UsedByMixin, ModelViewSet):
         "attributes",
     ]
     filterset_fields = [
-        "app_entitlement_uuid",
+        "pbm_uuid",
         "name",
         "app",
         "user",
