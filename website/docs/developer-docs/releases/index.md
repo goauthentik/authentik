@@ -78,7 +78,7 @@ Short summary of the issue
 
 ### Patches
 
-authentik x, y and z fix this issue, for other versions the workaround can be used.
+authentik x, y and z fix this issue, for other versions the workaround below can be used.
 
 ### Impact
 
@@ -96,7 +96,7 @@ Describe a workaround if possible
 
 If you have any questions or comments about this advisory:
 
--   Email us at [security@goauthentik.io](mailto:security@goauthentik.io)
+-   Email us at [security@goauthentik.io](mailto:security@goauthentik.io).
 ```
 
 </details>
