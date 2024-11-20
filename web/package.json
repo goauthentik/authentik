@@ -11,7 +11,7 @@
         "@floating-ui/dom": "^1.6.11",
         "@formatjs/intl-listformat": "^7.5.7",
         "@fortawesome/fontawesome-free": "^6.6.0",
-        "@goauthentik/api": "^2024.10.1-1731422425",
+        "@goauthentik/api": "^2024.10.2-1731887740",
         "@lit-labs/ssr": "^3.2.2",
         "@lit/context": "^1.1.2",
         "@lit/localize": "^0.12.2",
@@ -328,12 +328,18 @@
         },
         "test:e2e:watch": {
             "command": "wdio run ./tests/wdio.conf.ts",
+            "dependencies": [
+                "build"
+            ],
             "env": {
                 "TS_NODE_PROJECT": "./tests/tsconfig.test.json"
             }
         },
         "test:watch": {
             "command": "wdio run ./wdio.conf.ts",
+            "dependencies": [
+                "build"
+            ],
             "env": {
                 "TS_NODE_PROJECT": "tsconfig.test.json"
             }

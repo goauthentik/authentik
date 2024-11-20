@@ -7,7 +7,7 @@ export interface ISearchSelectApi<T> {
     fetchObjects: (query?: string) => Promise<T[]>;
     renderElement: (element: T) => string;
     renderDescription?: (element: T) => string | TemplateResult;
-    value: (element: T | undefined) => unknown;
+    value: (element: T | undefined) => string;
     selected?: (element: T, elements: T[]) => boolean;
     groupBy?: (items: T[]) => [string, T[]][];
 }
