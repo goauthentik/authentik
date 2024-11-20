@@ -30,7 +30,7 @@ func NewServer(ac *ak.APIController) *LDAPServer {
 	ls := &LDAPServer{
 		log:       log.WithField("logger", "authentik.outpost.ldap"),
 		ac:        ac,
-		cs:        ak.NewCryptoStore(ac.Client.CryptoApi),
+		cs:        ak.NewCryptoStore(ac.Client.CryptoAPI),
 		providers: []*ProviderInstance{},
 	}
 	s := ldap.NewServer()
