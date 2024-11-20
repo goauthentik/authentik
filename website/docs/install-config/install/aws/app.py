@@ -17,19 +17,16 @@ from aws_cdk import (
     aws_ecs as ecs,
 )
 from aws_cdk import (
+    aws_efs as efs,
+)
+from aws_cdk import (
     aws_elasticache as elasticache,
 )
 from aws_cdk import (
     aws_elasticloadbalancingv2 as elbv2,
 )
 from aws_cdk import (
-    aws_iam as iam,
-)
-from aws_cdk import (
     aws_rds as rds,
-)
-from aws_cdk import (
-    aws_s3 as s3,
 )
 from aws_cdk import (
     aws_secretsmanager as secretsmanager,
@@ -140,25 +137,11 @@ class AuthentikStack(Stack):
             description="Desired number of authentik worker tasks",
         )
 
-        storage_media_s3_bucket_name = CfnParameter(
-            self,
-            "AuthentikStorageMediaS3BucketName",
-            type="String",
-            description="Bucket name where to store authentik media files",
-        )
-
         certificate_arn = CfnParameter(
             self,
             "CertificateARN",
             type="String",
             description="ACM certificate ARN for HTTPS access",
-        )
-
-        authentik_domains = CfnParameter(
-            self,
-            "AuthentikDomains",
-            type="CommaDelimitedList",
-            description="List of comma-separated domains from which authentik will be accessed",
         )
 
         ### Resources
@@ -252,32 +235,32 @@ class AuthentikStack(Stack):
             cache_subnet_group_name=redis_subnet_group.ref,
         )
 
-        # S3
+        # Storage
 
-        storage_media_s3_bucket = s3.Bucket(
+        media_fs = efs.FileSystem(
             self,
-            "AuthentikS3MediaBucket",
-            bucket_name=storage_media_s3_bucket_name.value_as_string,
+            "AuthentikMediaEFS",
+            vpc=vpc,
             removal_policy=RemovalPolicy.RETAIN,
-            encryption=s3.BucketEncryption.S3_MANAGED,
-            block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
-            enforce_ssl=True,
-            cors=[
-                s3.CorsRule(
-                    allowed_methods=[s3.HttpMethods.GET],
-                    allowed_headers=["Authorization"],
-                    allowed_origins=authentik_domains.value_as_list,
-                    max_age=3000,
-                )
-            ],
+            security_group=ec2.SecurityGroup(
+                self,
+                "AuthentikMediaEFSSecurityGroup",
+                vpc=vpc,
+                description="Security group for authentik media EFS",
+                allow_all_outbound=True,
+            ),
+            encrypted=True,
+            performance_mode=efs.PerformanceMode.GENERAL_PURPOSE,
+            throughput_mode=efs.ThroughputMode.BURSTING,
         )
+        media_fs.connections.allow_default_port_from(authentik_security_group)
 
-        s3_access_role = iam.Role(
-            self,
-            "AuthentikS3AccessRole",
-            assumed_by=iam.ServicePrincipal("ecs-tasks.amazonaws.com"),
+        media_access_point = media_fs.add_access_point(
+            "AuthentikMediaAccessPoint",
+            path="/media",
+            create_acl=efs.Acl(owner_uid="1000", owner_gid="1000", permissions="755"),
+            posix_user=efs.PosixUser(uid="1000", gid="1000"),
         )
-        storage_media_s3_bucket.grant_read_write(s3_access_role)
 
         # ECS Cluster
 
@@ -287,9 +270,6 @@ class AuthentikStack(Stack):
             "AUTHENTIK_POSTGRESQL__HOST": database.instance_endpoint.hostname,
             "AUTHENTIK_POSTGRESQL__USER": "authentik",
             "AUTHENTIK_REDIS__HOST": redis.attr_primary_end_point_address,
-            "AUTHENTIK_STORAGE__MEDIA__BACKEND": "s3",
-            "AUTHENTIK_STORAGE__MEDIA__S3__REGION": Stack.of(self).region,
-            "AUTHENTIK_STORAGE__MEDIA__S3__BUCKET_NAME": storage_media_s3_bucket.bucket_name,
         }
 
         secrets = {
@@ -304,6 +284,17 @@ class AuthentikStack(Stack):
             "AuthentikServerTask",
             cpu=server_cpu.value_as_number,
             memory_limit_mib=server_memory.value_as_number,
+        )
+        server_task.add_volume(
+            name="media",
+            efs_volume_configuration=ecs.EfsVolumeConfiguration(
+                file_system_id=media_fs.file_system_id,
+                transit_encryption="ENABLED",
+                authorization_config=ecs.AuthorizationConfig(
+                    access_point_id=media_access_point.access_point_id,
+                    iam="ENABLED",
+                ),
+            ),
         )
         server_container = server_task.add_container(
             "AuthentikServerContainer",
@@ -324,6 +315,9 @@ class AuthentikStack(Stack):
             ),
         )
         server_container.add_port_mappings(ecs.PortMapping(container_port=9000))
+        server_container.add_mount_points(
+            ecs.MountPoint(container_path="/media", source_volume="media", read_only=False)
+        )
         server_service = ecs.FargateService(
             self,
             "AuthentikServerService",
@@ -334,21 +328,6 @@ class AuthentikStack(Stack):
             vpc_subnets=ec2.SubnetSelection(subnet_type=ec2.SubnetType.PRIVATE_WITH_EGRESS),
             enable_execute_command=True,
         )
-        server_task.add_to_task_role_policy(
-            iam.PolicyStatement(
-                actions=[
-                    "s3:DeleteObject*",
-                    "s3:GetBucket*",
-                    "s3:GetObject*",
-                    "s3:List*",
-                    "s3:PutObject*",
-                ],
-                resources=[
-                    storage_media_s3_bucket.bucket_arn,
-                    f"{storage_media_s3_bucket.bucket_arn}/*",
-                ],
-            )
-        )
 
         worker_task = ecs.FargateTaskDefinition(
             self,
@@ -356,7 +335,18 @@ class AuthentikStack(Stack):
             cpu=worker_cpu.value_as_number,
             memory_limit_mib=worker_memory.value_as_number,
         )
-        worker_container = worker_task.add_container(  # noqa: F841
+        worker_task.add_volume(
+            name="media",
+            efs_volume_configuration=ecs.EfsVolumeConfiguration(
+                file_system_id=media_fs.file_system_id,
+                transit_encryption="ENABLED",
+                authorization_config=ecs.AuthorizationConfig(
+                    access_point_id=media_access_point.access_point_id,
+                    iam="ENABLED",
+                ),
+            ),
+        )
+        worker_container = worker_task.add_container(
             "AuthentikWorkerContainer",
             image=ecs.ContainerImage.from_registry(
                 f"{authentik_image.value_as_string}:{authentik_version.value_as_string}"
@@ -374,6 +364,9 @@ class AuthentikStack(Stack):
                 timeout=Duration.seconds(30),
             ),
         )
+        worker_container.add_mount_points(
+            ecs.MountPoint(container_path="/media", source_volume="media", read_only=False)
+        )
         worker_service = ecs.FargateService(  # noqa: F841
             self,
             "AuthentikWorkerService",
@@ -383,21 +376,6 @@ class AuthentikStack(Stack):
             security_groups=[authentik_security_group],
             vpc_subnets=ec2.SubnetSelection(subnet_type=ec2.SubnetType.PRIVATE_WITH_EGRESS),
             enable_execute_command=True,
-        )
-        worker_task.add_to_task_role_policy(
-            iam.PolicyStatement(
-                actions=[
-                    "s3:DeleteObject*",
-                    "s3:GetBucket*",
-                    "s3:GetObject*",
-                    "s3:List*",
-                    "s3:PutObject*",
-                ],
-                resources=[
-                    storage_media_s3_bucket.bucket_arn,
-                    f"{storage_media_s3_bucket.bucket_arn}/*",
-                ],
-            )
         )
 
         # Load balancer

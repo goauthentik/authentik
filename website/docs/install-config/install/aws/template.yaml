@@ -6,9 +6,6 @@ Outputs:
       - AuthentikALB992EAB01
       - DNSName
 Parameters:
-  AuthentikDomains:
-    Description: List of comma-separated domains from which authentik will be accessed
-    Type: CommaDelimitedList
   AuthentikImage:
     Default: ghcr.io/goauthentik/server
     Description: authentik Docker image
@@ -26,9 +23,6 @@ Parameters:
     Default: 1024
     Description: authentik server memory in MiB
     Type: Number
-  AuthentikStorageMediaS3BucketName:
-    Description: Bucket name where to store authentik media files
-    Type: String
   AuthentikVersion:
     Default: 2024.10.2
     Description: authentik Docker image tag
@@ -228,6 +222,93 @@ Resources:
       - Ref: AuthentikVpcPrivateSubnet1Subnet6748EEA3
       - Ref: AuthentikVpcPrivateSubnet2Subnet6B8E7123
     Type: AWS::RDS::DBSubnetGroup
+  AuthentikMediaEFS4AB06689:
+    DeletionPolicy: Retain
+    Metadata:
+      aws:cdk:path: AuthentikStack/AuthentikMediaEFS/Resource
+    Properties:
+      Encrypted: true
+      FileSystemTags:
+      - Key: Name
+        Value: AuthentikStack/AuthentikMediaEFS
+      PerformanceMode: generalPurpose
+      ThroughputMode: bursting
+    Type: AWS::EFS::FileSystem
+    UpdateReplacePolicy: Retain
+  AuthentikMediaEFSAuthentikMediaAccessPointA60D3CC7:
+    Metadata:
+      aws:cdk:path: AuthentikStack/AuthentikMediaEFS/AuthentikMediaAccessPoint/Resource
+    Properties:
+      AccessPointTags:
+      - Key: Name
+        Value: AuthentikStack/AuthentikMediaEFS/AuthentikMediaAccessPoint
+      FileSystemId:
+        Ref: AuthentikMediaEFS4AB06689
+      PosixUser:
+        Gid: '1000'
+        Uid: '1000'
+      RootDirectory:
+        CreationInfo:
+          OwnerGid: '1000'
+          OwnerUid: '1000'
+          Permissions: '755'
+        Path: /media
+    Type: AWS::EFS::AccessPoint
+  AuthentikMediaEFSEfsMountTarget1D3A264C1:
+    Metadata:
+      aws:cdk:path: AuthentikStack/AuthentikMediaEFS/EfsMountTarget1
+    Properties:
+      FileSystemId:
+        Ref: AuthentikMediaEFS4AB06689
+      SecurityGroups:
+      - Fn::GetAtt:
+        - AuthentikMediaEFSSecurityGroup1840BA29
+        - GroupId
+      SubnetId:
+        Ref: AuthentikVpcPrivateSubnet1Subnet6748EEA3
+    Type: AWS::EFS::MountTarget
+  AuthentikMediaEFSEfsMountTarget224E8D525:
+    Metadata:
+      aws:cdk:path: AuthentikStack/AuthentikMediaEFS/EfsMountTarget2
+    Properties:
+      FileSystemId:
+        Ref: AuthentikMediaEFS4AB06689
+      SecurityGroups:
+      - Fn::GetAtt:
+        - AuthentikMediaEFSSecurityGroup1840BA29
+        - GroupId
+      SubnetId:
+        Ref: AuthentikVpcPrivateSubnet2Subnet6B8E7123
+    Type: AWS::EFS::MountTarget
+  AuthentikMediaEFSSecurityGroup1840BA29:
+    Metadata:
+      aws:cdk:path: AuthentikStack/AuthentikMediaEFSSecurityGroup/Resource
+    Properties:
+      GroupDescription: Security group for authentik media EFS
+      SecurityGroupEgress:
+      - CidrIp: 0.0.0.0/0
+        Description: Allow all outbound traffic by default
+        IpProtocol: '-1'
+      VpcId:
+        Ref: AuthentikVpcA1ABE6C2
+    Type: AWS::EC2::SecurityGroup
+  AuthentikMediaEFSSecurityGroupfromAuthentikStackAuthentikSG23C19B28204954496494:
+    Metadata:
+      aws:cdk:path: AuthentikStack/AuthentikMediaEFSSecurityGroup/from AuthentikStackAuthentikSG23C19B28:2049
+    Properties:
+      Description: from AuthentikStackAuthentikSG23C19B28:2049
+      FromPort: 2049
+      GroupId:
+        Fn::GetAtt:
+        - AuthentikMediaEFSSecurityGroup1840BA29
+        - GroupId
+      IpProtocol: tcp
+      SourceSecurityGroupId:
+        Fn::GetAtt:
+        - AuthentikSG3040E46F
+        - GroupId
+      ToPort: 2049
+    Type: AWS::EC2::SecurityGroupIngress
   AuthentikRedis:
     Metadata:
       aws:cdk:path: AuthentikStack/AuthentikRedis
@@ -256,105 +337,6 @@ Resources:
       - Ref: AuthentikVpcPrivateSubnet1Subnet6748EEA3
       - Ref: AuthentikVpcPrivateSubnet2Subnet6B8E7123
     Type: AWS::ElastiCache::SubnetGroup
-  AuthentikS3AccessRoleDefaultPolicy4D26D3D0:
-    Metadata:
-      aws:cdk:path: AuthentikStack/AuthentikS3AccessRole/DefaultPolicy/Resource
-    Properties:
-      PolicyDocument:
-        Statement:
-        - Action:
-          - s3:GetObject*
-          - s3:GetBucket*
-          - s3:List*
-          - s3:DeleteObject*
-          - s3:PutObject
-          - s3:PutObjectLegalHold
-          - s3:PutObjectRetention
-          - s3:PutObjectTagging
-          - s3:PutObjectVersionTagging
-          - s3:Abort*
-          Effect: Allow
-          Resource:
-          - Fn::GetAtt:
-            - AuthentikS3MediaBucketE752196A
-            - Arn
-          - Fn::Join:
-            - ''
-            - - Fn::GetAtt:
-                - AuthentikS3MediaBucketE752196A
-                - Arn
-              - /*
-        Version: '2012-10-17'
-      PolicyName: AuthentikS3AccessRoleDefaultPolicy4D26D3D0
-      Roles:
-      - Ref: AuthentikS3AccessRoleE616E4EB
-    Type: AWS::IAM::Policy
-  AuthentikS3AccessRoleE616E4EB:
-    Metadata:
-      aws:cdk:path: AuthentikStack/AuthentikS3AccessRole/Resource
-    Properties:
-      AssumeRolePolicyDocument:
-        Statement:
-        - Action: sts:AssumeRole
-          Effect: Allow
-          Principal:
-            Service: ecs-tasks.amazonaws.com
-        Version: '2012-10-17'
-    Type: AWS::IAM::Role
-  AuthentikS3MediaBucketE752196A:
-    DeletionPolicy: Retain
-    Metadata:
-      aws:cdk:path: AuthentikStack/AuthentikS3MediaBucket/Resource
-    Properties:
-      BucketEncryption:
-        ServerSideEncryptionConfiguration:
-        - ServerSideEncryptionByDefault:
-            SSEAlgorithm: AES256
-      BucketName:
-        Ref: AuthentikStorageMediaS3BucketName
-      CorsConfiguration:
-        CorsRules:
-        - AllowedHeaders:
-          - Authorization
-          AllowedMethods:
-          - GET
-          AllowedOrigins:
-            Ref: AuthentikDomains
-          MaxAge: 3000
-      PublicAccessBlockConfiguration:
-        BlockPublicAcls: true
-        BlockPublicPolicy: true
-        IgnorePublicAcls: true
-        RestrictPublicBuckets: true
-    Type: AWS::S3::Bucket
-    UpdateReplacePolicy: Retain
-  AuthentikS3MediaBucketPolicy11A7C3C5:
-    Metadata:
-      aws:cdk:path: AuthentikStack/AuthentikS3MediaBucket/Policy/Resource
-    Properties:
-      Bucket:
-        Ref: AuthentikS3MediaBucketE752196A
-      PolicyDocument:
-        Statement:
-        - Action: s3:*
-          Condition:
-            Bool:
-              aws:SecureTransport: 'false'
-          Effect: Deny
-          Principal:
-            AWS: '*'
-          Resource:
-          - Fn::GetAtt:
-            - AuthentikS3MediaBucketE752196A
-            - Arn
-          - Fn::Join:
-            - ''
-            - - Fn::GetAtt:
-                - AuthentikS3MediaBucketE752196A
-                - Arn
-              - /*
-        Version: '2012-10-17'
-    Type: AWS::S3::BucketPolicy
   AuthentikSG3040E46F:
     Metadata:
       aws:cdk:path: AuthentikStack/AuthentikSG/Resource
@@ -462,14 +444,6 @@ Resources:
             Fn::GetAtt:
             - AuthentikRedis
             - PrimaryEndPoint.Address
-        - Name: AUTHENTIK_STORAGE__MEDIA__BACKEND
-          Value: s3
-        - Name: AUTHENTIK_STORAGE__MEDIA__S3__REGION
-          Value:
-            Ref: AWS::Region
-        - Name: AUTHENTIK_STORAGE__MEDIA__S3__BUCKET_NAME
-          Value:
-            Ref: AuthentikS3MediaBucketE752196A
         Essential: true
         HealthCheck:
           Command:
@@ -494,6 +468,10 @@ Resources:
             awslogs-region:
               Ref: AWS::Region
             awslogs-stream-prefix: authentik-server
+        MountPoints:
+        - ContainerPath: /media
+          ReadOnly: false
+          SourceVolume: media
         Name: AuthentikServerContainer
         PortMappings:
         - ContainerPort: 9000
@@ -526,6 +504,16 @@ Resources:
         Fn::GetAtt:
         - AuthentikServerTaskTaskRole5BB06A73
         - Arn
+      Volumes:
+      - EFSVolumeConfiguration:
+          AuthorizationConfig:
+            AccessPointId:
+              Ref: AuthentikMediaEFSAuthentikMediaAccessPointA60D3CC7
+            IAM: ENABLED
+          FilesystemId:
+            Ref: AuthentikMediaEFS4AB06689
+          TransitEncryption: ENABLED
+        Name: media
     Type: AWS::ECS::TaskDefinition
   AuthentikServerTaskExecutionRole053E3BF5:
     Metadata:
@@ -604,23 +592,6 @@ Resources:
           - logs:PutLogEvents
           Effect: Allow
           Resource: '*'
-        - Action:
-          - s3:DeleteObject*
-          - s3:GetBucket*
-          - s3:GetObject*
-          - s3:List*
-          - s3:PutObject*
-          Effect: Allow
-          Resource:
-          - Fn::GetAtt:
-            - AuthentikS3MediaBucketE752196A
-            - Arn
-          - Fn::Join:
-            - ''
-            - - Fn::GetAtt:
-                - AuthentikS3MediaBucketE752196A
-                - Arn
-              - /*
         Version: '2012-10-17'
       PolicyName: AuthentikServerTaskTaskRoleDefaultPolicy4C2F360F
       Roles:
@@ -984,14 +955,6 @@ Resources:
             Fn::GetAtt:
             - AuthentikRedis
             - PrimaryEndPoint.Address
-        - Name: AUTHENTIK_STORAGE__MEDIA__BACKEND
-          Value: s3
-        - Name: AUTHENTIK_STORAGE__MEDIA__S3__REGION
-          Value:
-            Ref: AWS::Region
-        - Name: AUTHENTIK_STORAGE__MEDIA__S3__BUCKET_NAME
-          Value:
-            Ref: AuthentikS3MediaBucketE752196A
         Essential: true
         HealthCheck:
           Command:
@@ -1016,6 +979,10 @@ Resources:
             awslogs-region:
               Ref: AWS::Region
             awslogs-stream-prefix: authentik-worker
+        MountPoints:
+        - ContainerPath: /media
+          ReadOnly: false
+          SourceVolume: media
         Name: AuthentikWorkerContainer
         RestartPolicy:
           Enabled: true
@@ -1045,6 +1012,16 @@ Resources:
         Fn::GetAtt:
         - AuthentikWorkerTaskTaskRole87C41589
         - Arn
+      Volumes:
+      - EFSVolumeConfiguration:
+          AuthorizationConfig:
+            AccessPointId:
+              Ref: AuthentikMediaEFSAuthentikMediaAccessPointA60D3CC7
+            IAM: ENABLED
+          FilesystemId:
+            Ref: AuthentikMediaEFS4AB06689
+          TransitEncryption: ENABLED
+        Name: media
     Type: AWS::ECS::TaskDefinition
   AuthentikWorkerTaskTaskRole87C41589:
     Metadata:
@@ -1080,23 +1057,6 @@ Resources:
           - logs:PutLogEvents
           Effect: Allow
           Resource: '*'
-        - Action:
-          - s3:DeleteObject*
-          - s3:GetBucket*
-          - s3:GetObject*
-          - s3:List*
-          - s3:PutObject*
-          Effect: Allow
-          Resource:
-          - Fn::GetAtt:
-            - AuthentikS3MediaBucketE752196A
-            - Arn
-          - Fn::Join:
-            - ''
-            - - Fn::GetAtt:
-                - AuthentikS3MediaBucketE752196A
-                - Arn
-              - /*
         Version: '2012-10-17'
       PolicyName: AuthentikWorkerTaskTaskRoleDefaultPolicy4E74B62D
       Roles:
