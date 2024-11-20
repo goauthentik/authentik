@@ -331,6 +331,7 @@ class AuthentikStack(Stack):
             desired_count=server_desired_count.value_as_number,
             security_groups=[authentik_security_group],
             vpc_subnets=ec2.SubnetSelection(subnet_type=ec2.SubnetType.PRIVATE_WITH_EGRESS),
+            enable_execute_command=True,
         )
         server_task.add_to_task_role_policy(
             iam.PolicyStatement(
@@ -380,6 +381,7 @@ class AuthentikStack(Stack):
             desired_count=worker_desired_count.value_as_number,
             security_groups=[authentik_security_group],
             vpc_subnets=ec2.SubnetSelection(subnet_type=ec2.SubnetType.PRIVATE_WITH_EGRESS),
+            enable_execute_command=True,
         )
         worker_task.add_to_task_role_policy(
             iam.PolicyStatement(

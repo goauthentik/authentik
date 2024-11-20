@@ -415,6 +415,7 @@ Resources:
       DesiredCount:
         Ref: AuthentikServerDesiredCount
       EnableECSManagedTags: false
+      EnableExecuteCommand: true
       HealthCheckGracePeriodSeconds: 60
       LaunchType: FARGATE
       LoadBalancers:
@@ -584,6 +585,22 @@ Resources:
     Properties:
       PolicyDocument:
         Statement:
+        - Action:
+          - ssmmessages:CreateControlChannel
+          - ssmmessages:CreateDataChannel
+          - ssmmessages:OpenControlChannel
+          - ssmmessages:OpenDataChannel
+          Effect: Allow
+          Resource: '*'
+        - Action: logs:DescribeLogGroups
+          Effect: Allow
+          Resource: '*'
+        - Action:
+          - logs:CreateLogStream
+          - logs:DescribeLogStreams
+          - logs:PutLogEvents
+          Effect: Allow
+          Resource: '*'
         - Action:
           - s3:DeleteObject*
           - s3:GetBucket*
@@ -880,6 +897,7 @@ Resources:
       DesiredCount:
         Ref: AuthentikWorkerDesiredCount
       EnableECSManagedTags: false
+      EnableExecuteCommand: true
       LaunchType: FARGATE
       NetworkConfiguration:
         AwsvpcConfiguration:
@@ -1040,6 +1058,22 @@ Resources:
     Properties:
       PolicyDocument:
         Statement:
+        - Action:
+          - ssmmessages:CreateControlChannel
+          - ssmmessages:CreateDataChannel
+          - ssmmessages:OpenControlChannel
+          - ssmmessages:OpenDataChannel
+          Effect: Allow
+          Resource: '*'
+        - Action: logs:DescribeLogGroups
+          Effect: Allow
+          Resource: '*'
+        - Action:
+          - logs:CreateLogStream
+          - logs:DescribeLogStreams
+          - logs:PutLogEvents
+          Effect: Allow
+          Resource: '*'
         - Action:
           - s3:DeleteObject*
           - s3:GetBucket*
