@@ -48,7 +48,7 @@ The following placeholders will be used:
 	- - **Signing Certificate**:`ssl.certificate`
 	- - **Property Mappings**:`default` + `sp-roles`
 	- Leave everything else as default and save the settings.
-4. Download the signing certificate under **Applications** -> **Providers** -> **Aruba Orchestrator** 
+4. Download the signing certificate under **Applications** -> **Providers** -> **Aruba Orchestrator** .
 5. Create a new application under **Applications** -> **Applications**, pick a name and a slug, and assign the provider that you have just created.
 
 ## Aruba Orchestrator Configuration
