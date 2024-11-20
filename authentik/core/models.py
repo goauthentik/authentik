@@ -314,6 +314,13 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
         always_merger.merge(final_attributes, self.attributes)
         return final_attributes
 
+    def app_entitlements(self, app: "Application | None") -> QuerySet["ApplicationEntitlement"]:
+        """Get all entitlements this user has for `app`."""
+        if not app:
+            return []
+        all_groups = self.all_groups()
+        return app.applicationentitlement_set.filter(Q(user=self) | Q(group__in=all_groups))
+
     @property
     def serializer(self) -> Serializer:
         from authentik.core.api.users import UserSerializer

@@ -34,6 +34,7 @@ entries:
       scope_name: profile
       description: "General Profile Information"
       expression: |
+        entitlements = [entitlement.name for entitlement in request.user.app_entitlements(provider.application)]
         return {
             # Because authentik only saves the user's full name, and has no concept of first and last names,
             # the full name is used as given name.
@@ -42,8 +43,9 @@ entries:
             "given_name": request.user.name,
             "preferred_username": request.user.username,
             "nickname": request.user.username,
-            # groups is not part of the official userinfo schema, but is a quasi-standard
             "groups": [group.name for group in request.user.ak_groups.all()],
+            "entitlements": entitlements,
+            "roles": entitlements,
         }
   - identifiers:
       managed: goauthentik.io/providers/oauth2/scope-offline_access
