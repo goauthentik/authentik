@@ -71,6 +71,6 @@ The following placeholders will be used:
 
 ## Verification
 
-1. Go to `https://arubaorchestrator.company`
+1. Go to `https://arubaorchestrator.company`.
 2. Click **Log In Using authentik** on the login screen and authorize with authentik.
 3. You will be redirected to the home screen of the Aruba Orchestrator.
