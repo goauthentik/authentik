@@ -467,6 +467,9 @@ Resources:
         - Name: AUTHENTIK_STORAGE__MEDIA__S3__REGION
           Value:
             Ref: AWS::Region
+        - Name: AUTHENTIK_STORAGE__MEDIA__S3__BUCKET_NAME
+          Value:
+            Ref: AuthentikS3MediaBucketE752196A
         Essential: true
         HealthCheck:
           Command:
@@ -986,6 +989,9 @@ Resources:
         - Name: AUTHENTIK_STORAGE__MEDIA__S3__REGION
           Value:
             Ref: AWS::Region
+        - Name: AUTHENTIK_STORAGE__MEDIA__S3__BUCKET_NAME
+          Value:
+            Ref: AuthentikS3MediaBucketE752196A
         Essential: true
         HealthCheck:
           Command:

@@ -289,6 +289,7 @@ class AuthentikStack(Stack):
             "AUTHENTIK_REDIS__HOST": redis.attr_primary_end_point_address,
             "AUTHENTIK_STORAGE__MEDIA__BACKEND": "s3",
             "AUTHENTIK_STORAGE__MEDIA__S3__REGION": Stack.of(self).region,
+            "AUTHENTIK_STORAGE__MEDIA__S3__BUCKET_NAME": storage_media_s3_bucket.bucket_name,
         }
 
         secrets = {
