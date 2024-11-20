@@ -59,6 +59,7 @@ from authentik.providers.oauth2.models import (
     DeviceToken,
     OAuth2Provider,
     RefreshToken,
+    ScopeMapping,
 )
 from authentik.providers.oauth2.utils import TokenResponse, cors_allow, extract_client_auth
 from authentik.providers.oauth2.views.authorize import FORBIDDEN_URI_SCHEMES
@@ -77,7 +78,7 @@ class TokenParams:
     redirect_uri: str
     grant_type: str
     state: str
-    scope: list[str]
+    scope: set[str]
 
     provider: OAuth2Provider
 
@@ -112,10 +113,25 @@ class TokenParams:
             redirect_uri=request.POST.get("redirect_uri", ""),
             grant_type=request.POST.get("grant_type", ""),
             state=request.POST.get("state", ""),
-            scope=request.POST.get("scope", "").split(),
+            scope=set(request.POST.get("scope", "").split()),
             # PKCE parameter.
             code_verifier=request.POST.get("code_verifier"),
         )
+
+    def __check_scopes(self):
+        allowed_scope_names = set(
+            ScopeMapping.objects.filter(provider__in=[self.provider]).values_list(
+                "scope_name", flat=True
+            )
+        )
+        scopes_to_check = self.scope
+        if not scopes_to_check.issubset(allowed_scope_names):
+            LOGGER.info(
+                "Application requested scopes not configured, setting to overlap",
+                scope_allowed=allowed_scope_names,
+                scope_given=self.scope,
+            )
+            self.scope = self.scope.intersection(allowed_scope_names)
 
     def __check_policy_access(self, app: Application, request: HttpRequest, **kwargs):
         with start_span(
@@ -149,7 +165,7 @@ class TokenParams:
                     client_id=self.provider.client_id,
                 )
                 raise TokenError("invalid_client")
-
+        self.__check_scopes()
         if self.grant_type == GRANT_TYPE_AUTHORIZATION_CODE:
             with start_span(
                 op="authentik.providers.oauth2.post.parse.code",
@@ -710,7 +726,7 @@ class TokenView(View):
             "id_token": access_token.id_token.to_jwt(self.provider),
         }
 
-        if SCOPE_OFFLINE_ACCESS in self.params.scope:
+        if SCOPE_OFFLINE_ACCESS in self.params.device_code.scope:
             refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
             refresh_token = RefreshToken(
                 user=self.params.device_code.user,
