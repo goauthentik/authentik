@@ -34,7 +34,6 @@ The following placeholders will be used:
                result = "superAdmin"
           return result
      ```
-    >     return result
     - Save settings
 
 3. Create a new SAML Provider under **Applications** -> **Providers** using the following settings:
