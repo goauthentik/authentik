@@ -111,10 +111,8 @@ export default {
                 "install-config/upgrade",
                 "install-config/beta",
                 "install-config/reverse-proxy",
-                "install-config/geoip",
                 "install-config/automated-install",
                 "install-config/air-gapped",
-                "install-config/storage-s3",
             ],
         },
         {
@@ -543,7 +541,11 @@ export default {
                     type: "category",
                     label: "Operations",
                     collapsed: true,
-                    items: ["sys-mgmt/ops/monitoring"],
+                    items: [
+                        "sys-mgmt/ops/monitoring",
+                        "sys-mgmt/ops/storage-s3",
+                        "sys-mgmt/ops/geoip",
+                    ],
                 },
                 {
                     type: "category",

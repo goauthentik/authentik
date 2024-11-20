@@ -15,8 +15,8 @@
         {% endblock %}
         <link rel="stylesheet" type="text/css" href="{% static 'dist/authentik.css' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'dist/custom.css' %}" data-inject>
-        {% versioned_script "dist/poly-%v.js" %}
-        {% versioned_script "dist/standalone/loading/index-%v.js" %}
+        <script src="{% versioned_script 'dist/poly-%v.js' %}" type="module"></script>
+        <script src="{% versioned_script 'dist/standalone/loading/index-%v.js' %}" type="module"></script>
         {% block head %}
         {% endblock %}
         <meta name="sentry-trace" content="{{ sentry_trace }}" />

@@ -1,8 +1,8 @@
 """authentik kerberos source signals"""
 
-import kadmin
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from kadmin.exceptions import PyKAdminException
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 
@@ -48,7 +48,7 @@ def kerberos_sync_password(sender, user: User, password: str, **_):
                 source.connection().getprinc(user_source_connection.identifier).change_password(
                     password
                 )
-            except kadmin.KAdminError as exc:
+            except PyKAdminException as exc:
                 LOGGER.warning("failed to set Kerberos password", exc=exc, source=source)
                 Event.new(
                     EventAction.CONFIGURATION_ERROR,
