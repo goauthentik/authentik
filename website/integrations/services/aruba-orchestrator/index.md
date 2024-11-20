@@ -30,7 +30,6 @@ The following placeholders will be used:
 	- **SAML Attribute Name**: `sp-roles`
 	- **Expression**: Use the expression below but amend the group name as desired.
     >     if ak_is_group_member(request.user, name="authentik Admins"):
-    >          result = "superAdmin"
     >     return result
     - Save settings
 
