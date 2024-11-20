@@ -19,6 +19,7 @@ import (
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/gounicorn"
 	"goauthentik.io/internal/outpost/proxyv2"
+	"goauthentik.io/internal/utils"
 	"goauthentik.io/internal/utils/web"
 	"goauthentik.io/internal/web/brand_tls"
 )
@@ -149,7 +150,7 @@ func (ws *WebServer) listenPlain() {
 		ws.log.WithError(err).Warning("failed to listen")
 		return
 	}
-	proxyListener := &proxyproto.Listener{Listener: ln}
+	proxyListener := &proxyproto.Listener{Listener: ln, ConnPolicy: utils.GetProxyConnectionPolicy()}
 	defer proxyListener.Close()
 
 	ws.log.WithField("listen", config.Get().Listen.HTTP).Info("Starting HTTP server")
