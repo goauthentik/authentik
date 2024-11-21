@@ -45,4 +45,4 @@ In the `config.js` file find the `ldap` section and make the following changes:
     3. Set `filter` to `(&(objectClass=user)`
         1. Alternatively, if you want to restrict access by group, you can set it to: `(&(objectClass=user)(memberOf=cn=group_name,ou=groups,dc=ldap,dc=company,dc=com))`
     4. Set `base` to `dc=ldap,dc=company,dc=com`
-5. Finally, save the `config.js` file and restart The Lounge. You should be able to log in via LDAP now, as long as a user with the same
+5. Finally, save the `config.js` file and restart The Lounge. You should be able to log in via LDAP now, as long as a user with the same name exists.
