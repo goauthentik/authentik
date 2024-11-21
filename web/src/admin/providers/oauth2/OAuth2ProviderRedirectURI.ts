@@ -84,7 +84,7 @@ export class OAuth2ProviderRedirectURI extends AkControlElement<RedirectURI> {
                 required
                 id="url"
                 placeholder=${msg("URL")}
-                name="href"
+                name="url"
                 tabindex="1"
             />
         </div>`;
