@@ -1,12 +1,16 @@
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
+import {
+    IRedirectURIInput,
+    akOAuthRedirectURIInput,
+} from "@goauthentik/admin/providers/oauth2/OAuth2ProviderRedirectURI";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";
-import "@goauthentik/elements/ak-array-input/ak-array-input";
+import "@goauthentik/elements/ak-array-input.js";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
@@ -16,7 +20,7 @@ import "@goauthentik/elements/forms/SearchSelect";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -130,6 +134,14 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
     @state()
     redirectUris: RedirectURI[] = [];
 
+    static get styles() {
+        return super.styles.concat(css`
+            ak-array-input {
+                width: 100%;
+            }
+        `);
+    }
+
     async loadInstance(pk: number): Promise<OAuth2Provider> {
         const provider = await new ProvidersApi(DEFAULT_CONFIG).providersOauth2Retrieve({
             id: pk,
@@ -216,31 +228,15 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
                         name="redirectUris"
                     >
                         <ak-array-input
-                            .elements=${this.instance?.redirectUris || []}
-                            .elementRenderer=${(ru: RedirectURI) => {
-                                return html`<select name="matchingMode" class="pf-c-form-control">
-                                        <option
-                                            value="${MatchingModeEnum.Strict}"
-                                            ?selected=${ru.matchingMode === MatchingModeEnum.Strict}
-                                        >
-                                            ${msg("Strict")}
-                                        </option>
-                                        <option
-                                            value="${MatchingModeEnum.Regex}"
-                                            ?selected=${ru.matchingMode === MatchingModeEnum.Regex}
-                                        >
-                                            ${msg("Regex")}
-                                        </option>
-                                    </select>
-                                    <input
-                                        type="text"
-                                        value="${ru.url}"
-                                        class="pf-c-form-control"
-                                        required
-                                        name="url"
-                                    />`;
-                            }}
-                        ></ak-array-input>
+                            .items=${this.instance?.redirectUris ?? []}
+                            .newItem=${() => ({ matchingMode: MatchingModeEnum.Strict, url: "" })}
+                            .row=${(f?: RedirectURI) =>
+                                akOAuthRedirectURIInput({
+                                    ".redirectURI": f,
+                                    "style": "width: 100%",
+                                } as unknown as IRedirectURIInput)}
+                        >
+                        </ak-array-input>
                         ${redirectUriHelp}
                     </ak-form-element-horizontal>
 

@@ -14,18 +14,19 @@ def migrate_redirect_uris(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     db_alias = schema_editor.connection.alias
     for provider in OAuth2Provider.objects.using(db_alias).all():
         uris = []
-        for old in provider.old_redirect_uris.split():
+        for old in provider.old_redirect_uris.split("\n"):
             mode = RedirectURIMatchingMode.STRICT
             if old == "*" or old == ".*":
                 mode = RedirectURIMatchingMode.REGEX
             uris.append(RedirectURI(mode, url=old))
         provider.redirect_uris = uris
+        provider.save()
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_providers_oauth2", "0022_remove_accesstoken_session_id_and_more"),
+        ("authentik_providers_oauth2", "0023_alter_accesstoken_refreshtoken_use_hash_index"),
     ]
 
     operations = [
@@ -39,7 +40,7 @@ class Migration(migrations.Migration):
             name="_redirect_uris",
             field=models.JSONField(default=dict, verbose_name="Redirect URIs"),
         ),
-        migrations.RunPython(migrate_redirect_uris),
+        migrations.RunPython(migrate_redirect_uris, lambda *args: ...),
         migrations.RemoveField(
             model_name="oauth2provider",
             name="old_redirect_uris",
