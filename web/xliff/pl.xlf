@@ -7546,10 +7546,6 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
   <source>One hint, 'New Application Wizard', is currently hidden</source>
   <target>Jedna podpowiedź, „Kreator nowej aplikacji”, jest obecnie ukryty</target>
 </trans-unit>
-<trans-unit id="s61bd841e66966325">
-  <source>External applications that use authentik as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
-  <target>Aplikacje zewnętrzne, które używają authentik jako dostawcy tożsamości za pośrednictwem protokołów takich jak OAuth2 i SAML. Tutaj wyświetlane są wszystkie aplikacje, nawet te, do których nie masz dostępu.</target>
-</trans-unit>
 <trans-unit id="s1cc306d8e28c4464">
   <source>Deny message</source>
   <target>Komunikat odmowy</target>
@@ -9148,6 +9144,9 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 </trans-unit>
 <trans-unit id="s92205c10ba1f0f4c">
   <source>This option configures the footer links on the flow executor pages. The URL is limited to web and mail addresses. If the name is left blank, the URL will be shown.</source>
+</trans-unit>
+<trans-unit id="s66f572bec2bde9c4">
+  <source>External applications that use <x id="0" equiv-text="${this.brand.brandingTitle || &quot;authentik&quot;}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
 </trans-unit>
     </body>
   </file>
