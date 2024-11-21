@@ -21,7 +21,13 @@ from authentik.providers.oauth2.constants import (
     SCOPE_OPENID_EMAIL,
     SCOPE_OPENID_PROFILE,
 )
-from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider, ScopeMapping
+from authentik.providers.oauth2.models import (
+    ClientTypes,
+    OAuth2Provider,
+    RedirectURI,
+    RedirectURIMatchingMode,
+    ScopeMapping,
+)
 from tests.e2e.utils import SeleniumTestCase, retry
 
 
@@ -73,7 +79,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
             client_id=self.client_id,
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
-            redirect_uris="http://localhost:9009/",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:9009/")],
             authorization_flow=authorization_flow,
         )
         provider.property_mappings.set(
@@ -122,7 +128,9 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
             client_id=self.client_id,
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
-            redirect_uris="http://localhost:9009/auth/callback",
+            redirect_uris=[
+                RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:9009/auth/callback")
+            ],
             authorization_flow=authorization_flow,
         )
         provider.property_mappings.set(
@@ -193,7 +201,9 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
             client_id=self.client_id,
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
-            redirect_uris="http://localhost:9009/auth/callback",
+            redirect_uris=[
+                RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:9009/auth/callback")
+            ],
         )
         provider.property_mappings.set(
             ScopeMapping.objects.filter(
@@ -264,7 +274,9 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
             client_id=self.client_id,
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
-            redirect_uris="http://localhost:9009/auth/callback",
+            redirect_uris=[
+                RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:9009/auth/callback")
+            ],
         )
         provider.property_mappings.set(
             ScopeMapping.objects.filter(

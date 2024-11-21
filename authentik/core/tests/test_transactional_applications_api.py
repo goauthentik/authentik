@@ -31,6 +31,7 @@ class TestTransactionalApplicationsAPI(APITestCase):
                 "provider": {
                     "name": uid,
                     "authorization_flow": str(authorization_flow.pk),
+                    "redirect_uris": [],
                 },
             },
         )
@@ -56,6 +57,7 @@ class TestTransactionalApplicationsAPI(APITestCase):
                 "provider": {
                     "name": uid,
                     "authorization_flow": "",
+                    "redirect_uris": [],
                 },
             },
         )
