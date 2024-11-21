@@ -7512,10 +7512,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>One hint, 'New Application Wizard', is currently hidden</source>
   <target>힌트, '새 애플리케이션 마법사'는 현재, 숨겨져 있습니다.</target>
 </trans-unit>
-<trans-unit id="s61bd841e66966325">
-  <source>External applications that use authentik as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
-  <target>OAuth2 및 SAML과 같은 프로토콜을 통해 인증서를 ID 공급자로 사용하는 외부 애플리케이션. 액세스할 수 없는 애플리케이션을 포함한 모든 애플리케이션이 여기에 표시됩니다.</target>
-</trans-unit>
 <trans-unit id="s1cc306d8e28c4464">
   <source>Deny message</source>
   <target>거부 메시지</target>
@@ -8885,6 +8881,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s92205c10ba1f0f4c">
   <source>This option configures the footer links on the flow executor pages. The URL is limited to web and mail addresses. If the name is left blank, the URL will be shown.</source>
+</trans-unit>
+<trans-unit id="s66f572bec2bde9c4">
+  <source>External applications that use <x id="0" equiv-text="${this.brand.brandingTitle || &quot;authentik&quot;}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
 </trans-unit>
     </body>
   </file>

@@ -1748,23 +1748,22 @@ files = [
 
 [[package]]
 name = "geoip2"
-version = "4.8.0"
+version = "4.8.1"
 description = "MaxMind GeoIP2 API"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "geoip2-4.8.0-py2.py3-none-any.whl", hash = "sha256:39b38ec703575355d10475c0e6aa981827a2b4b5471d308c4ecb5e79cbe366ce"},
-    {file = "geoip2-4.8.0.tar.gz", hash = "sha256:dd9cc180b7d41724240ea481d5d539149e65b234f64282b231b9170794a9ac35"},
+    {file = "geoip2-4.8.1-py3-none-any.whl", hash = "sha256:9317bd75d899d3d942face75a003e73d39006e7fc6c7f9c3db91ae28fbf6a464"},
+    {file = "geoip2-4.8.1.tar.gz", hash = "sha256:9aea2eab4b3e6252f47456528ae9c35b104c45277639c13fce1be87c92f84257"},
 ]
 
 [package.dependencies]
 aiohttp = ">=3.6.2,<4.0.0"
 maxminddb = ">=2.5.1,<3.0.0"
 requests = ">=2.24.0,<3.0.0"
-setuptools = ">=60.0.0"
 
 [package.extras]
-test = ["mocket (>=3.11.1)"]
+test = ["pytest-httpserver (>=1.0.10)"]
 
 [[package]]
 name = "google-api-core"
