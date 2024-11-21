@@ -60,10 +60,10 @@ authentik requires at least the following allowed locations:
 
 ```
 default-src 'self';
-style-src 'self' 'unsafe-inline';
-script-src 'self' 'unsafe-inline';
 img-src 'https:' 'http:' 'data:';
 object-src 'none';
+style-src 'self' 'unsafe-inline';    # Required due to Lit/ShadowDOM
+script-src 'self' 'unsafe-inline';   # Required for generated scripts
 ```
 
 Your use case might require more allowed locations for various directives, e.g.
