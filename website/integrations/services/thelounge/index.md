@@ -28,7 +28,7 @@ The following placeholders will be used:
 
 ## LDAP Configuration
 
-### Authentik Configuration
+### authentik Configuration
 
 Follow the [instructions](https://docs.goauthentik.io/docs/add-secure-apps/outposts/#create-and-configure-an-outpost) to create an LDAP outpost and configure access via the outpost. No additional authentik configuration needs to be configured. 
 
