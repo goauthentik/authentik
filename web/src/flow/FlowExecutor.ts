@@ -5,7 +5,6 @@ import {
     TITLE_DEFAULT,
 } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
-import { purify } from "@goauthentik/common/purify";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { first } from "@goauthentik/common/utils";
 import { WebsocketClient } from "@goauthentik/common/ws";
@@ -14,6 +13,7 @@ import "@goauthentik/elements/LoadingOverlay";
 import "@goauthentik/elements/ak-locale-context";
 import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
 import { themeImage } from "@goauthentik/elements/utils/images";
+import "@goauthentik/flow/components/ak-brand-footer";
 import "@goauthentik/flow/sources/apple/AppleLoginInit";
 import "@goauthentik/flow/sources/plex/PlexLoginInit";
 import "@goauthentik/flow/stages/FlowErrorStage";
@@ -516,25 +516,9 @@ export class FlowExecutor extends Interface implements StageHost {
                                             ${until(this.renderChallenge())}
                                         </div>
                                         <footer class="pf-c-login__footer">
-                                            <ul class="pf-c-list pf-m-inline">
-                                                ${this.brand?.uiFooterLinks?.map((link) => {
-                                                    if (link.href) {
-                                                        return html`${purify(
-                                                            html`<li>
-                                                                <a href="${link.href}"
-                                                                    >${link.name}</a
-                                                                >
-                                                            </li>`,
-                                                        )}`;
-                                                    }
-                                                    return html`<li>
-                                                        <span>${link.name}</span>
-                                                    </li>`;
-                                                })}
-                                                <li>
-                                                    <span>${msg("Powered by authentik")}</span>
-                                                </li>
-                                            </ul>
+                                            <ak-brand-links
+                                                .links=${this.brand?.uiFooterLinks ?? []}
+                                            ></ak-brand-links>
                                         </footer>
                                     </div>
                                 </div>
