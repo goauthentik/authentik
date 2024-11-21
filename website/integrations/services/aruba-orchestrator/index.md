@@ -38,7 +38,7 @@ The following placeholders will be used:
 
 3. Create a new SAML Provider under **Applications** -> **Providers** using the following settings:
     - **Name**: Aruba Orchestrator
-    - **Authentication Flow**: `default-authentication-flow (Welcome to authentik!)`
+    - **Authentication Flow**: Use your preferred authentication flow (e.g., default-authentication-flow`)
     - **Authorization Flow ID**: `default-provider-authorization-explicit-consent (Authorize Application)`
 	- Protocol settings:
 	- - **ACS URL**: `https://arubaorchestrator.company/gms/rest/authentication/saml2/consume`
