@@ -234,6 +234,7 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
                                 akOAuthRedirectURIInput({
                                     ".redirectURI": f,
                                     "style": "width: 100%",
+                                    "name": "oauth2-redirect-uri",
                                 } as unknown as IRedirectURIInput)}
                         >
                         </ak-array-input>
