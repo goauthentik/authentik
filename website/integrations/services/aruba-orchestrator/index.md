@@ -47,7 +47,7 @@ The following placeholders will be used:
    - - **Issuer**: `https://arubaorchestrator.company/gms/rest/authentication/saml2/consume`
    - - **Service Provider Binding**: Post
    - Advanced protocol settings:
-   - - **Signing Certificate**:`ssl.certificate`
+   - - **Signing Certificate**:`SSL Certificate`
    - - **Property Mappings**:`default` + `sp-roles`
    - Leave everything else as default and save the settings.
 4. Download the signing certificate under **Applications** -> **Providers** -> **Aruba Orchestrator** .
