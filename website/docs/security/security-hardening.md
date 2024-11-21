@@ -54,6 +54,10 @@ With these restrictions in place, CAPTCHA stages can only be edited using [Bluep
 Setting up CSP incorrectly might result in the client not loading necessary third-party code.
 :::
 
+:::caution
+In some cases, a CSP header will already be set by authentik (for example, in [user uploaded content](https://github.com/goauthentik/authentik/pull/12092/)). Do not overwrite an already existing header as doing so might result in vulnerabilities. Instead, add a new CSP header.
+:::
+
 Content Security Policy (CSP) is a security standard that mitigates the risk of content injection vulnerabilities. authentik doesn't currently support CSP natively, so setting it up depends on your installation. We recommend using a [reverse proxy](../install-config/reverse-proxy.md) to set a CSP header.
 
 authentik requires at least the following allowed locations:
