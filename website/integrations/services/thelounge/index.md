@@ -30,7 +30,7 @@ The following placeholders will be used:
 
 ### Authentik Configuration
 
-No additional authentik configuration needs to be configured. Follow the LDAP outpost instructions to create an LDAP outpost and configure access via the outpost
+Follow the [instructions](https://docs.goauthentik.io/docs/add-secure-apps/outposts/#create-and-configure-an-outpost) to create an LDAP outpost and configure access via the outpost. No additional authentik configuration needs to be configured. 
 
 ### The Lounge configuration
 
