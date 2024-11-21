@@ -35,7 +35,7 @@ Enable the ability for users to change their Email address, defaults to `false`.
 
 ### Allow users to change username
 
-Enable the ability for users to change their Usernames, defaults to `false`.
+Enable the ability for users to change their usernames, defaults to `false`.
 
 ### Event retention
 
@@ -43,15 +43,9 @@ Configure how long [Events](./events/index.md) are retained for within authentik
 
 ### Footer links
 
-This option configures the footer links on the flow executor pages.
+This option allows you to optionaly add and configure footer links on the bottom of flow executor pages. This option can be used to add additional statis text to the flow executor pages, even if no URL is provided.
 
-The setting can be used as follows:
-
-```json
-[{ "name": "Link Name", "href": "https://goauthentik.io" }]
-```
-
-Starting with authentik 2024.6.1, the `href` attribute is optional, and this option can be used to add additional text to the flow executor pages.
+The URL is limited to web and email addresses. If the name is left blank, the URL will be shown.
 
 ### GDPR compliance
 
