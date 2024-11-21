@@ -53,7 +53,7 @@ func NewWebServer() *WebServer {
 	loggingHandler.Use(web.NewLoggingHandler(l, nil))
 
 	tmp := os.TempDir()
-	socketPath := path.Join(tmp, "authentik-core.sock")
+	socketPath := path.Join(tmp, UnixSocketName)
 
 	// create http client to talk to backend, normal client if we're in debug more
 	// and a client that connects to our socket when in non debug mode
