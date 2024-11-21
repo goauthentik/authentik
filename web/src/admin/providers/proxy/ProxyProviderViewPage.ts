@@ -392,9 +392,13 @@ export class ProxyProviderViewPage extends AKElement {
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
                                         <ul class="pf-c-list">
-                                            ${this.provider.redirectUris.split("\n").map((url) => {
-                                                return html`<li><pre>${url}</pre></li>`;
-                                            })}
+                                            <ul>
+                                                ${this.provider.redirectUris.map((ru) => {
+                                                    return html`<li>
+                                                        ${ru.matchingMode}: ${ru.url}
+                                                    </li>`;
+                                                })}
+                                            </ul>
                                         </ul>
                                     </div>
                                 </dd>
