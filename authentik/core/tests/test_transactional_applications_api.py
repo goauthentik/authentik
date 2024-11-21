@@ -31,6 +31,7 @@ class TestTransactionalApplicationsAPI(APITestCase):
                     "name": uid,
                     "authorization_flow": str(create_test_flow().pk),
                     "invalidation_flow": str(create_test_flow().pk),
+                    "redirect_uris": [],
                 },
             },
         )
@@ -57,6 +58,7 @@ class TestTransactionalApplicationsAPI(APITestCase):
                     "name": uid,
                     "authorization_flow": "",
                     "invalidation_flow": "",
+                    "redirect_uris": [],
                 },
             },
         )
