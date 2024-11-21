@@ -43,7 +43,7 @@ Configure how long [Events](./events/index.md) are retained for within authentik
 
 ### Footer links
 
-This option allows you to optionally add linked text (footer links) on the bottom of flow executor pages. You can also use this setting to display additional static text to the flow executor pages, even if no URL is provided.
+This option allows you to add linked text (footer links) on the bottom of flow executor pages. You can also use this setting to display additional static text to the flow executor pages, even if no URL is provided.
 
 The URL is limited to web and email addresses. If the name is left blank, the URL will be shown.
 
