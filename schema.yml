@@ -51498,7 +51498,9 @@ components:
           description: When enabled, this provider will intercept the authorization
             header and authenticate requests based on its value.
         redirect_uris:
-          type: string
+          type: array
+          items:
+            $ref: '#/components/schemas/RedirectURI'
           readOnly: true
         cookie_domain:
           type: string
