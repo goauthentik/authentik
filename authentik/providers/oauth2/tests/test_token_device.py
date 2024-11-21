@@ -14,7 +14,14 @@ from authentik.providers.oauth2.constants import (
     SCOPE_OPENID,
     SCOPE_OPENID_EMAIL,
 )
-from authentik.providers.oauth2.models import AccessToken, DeviceToken, OAuth2Provider, ScopeMapping
+from authentik.providers.oauth2.models import (
+    AccessToken,
+    DeviceToken,
+    OAuth2Provider,
+    RedirectURI,
+    RedirectURIMatchingMode,
+    ScopeMapping,
+)
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 
 
@@ -28,7 +35,7 @@ class TestTokenDeviceCode(OAuthTestCase):
         self.provider = OAuth2Provider.objects.create(
             name="test",
             authorization_flow=create_test_flow(),
-            redirect_uris="http://testserver",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://testserver")],
             signing_key=create_test_cert(),
         )
         self.provider.property_mappings.set(ScopeMapping.objects.all())

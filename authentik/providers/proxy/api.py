@@ -121,7 +121,6 @@ class ProxyProviderViewSet(UsedByMixin, ModelViewSet):
         "basic_auth_password_attribute": ["iexact"],
         "basic_auth_user_attribute": ["iexact"],
         "mode": ["iexact"],
-        "redirect_uris": ["iexact"],
         "cookie_domain": ["iexact"],
     }
     search_fields = ["name"]

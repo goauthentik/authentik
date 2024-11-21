@@ -20225,10 +20225,6 @@ paths:
         explode: true
         style: form
       - in: query
-        name: redirect_uris
-        schema:
-          type: string
-      - in: query
         name: refresh_token_validity
         schema:
           type: string
@@ -20643,10 +20639,6 @@ paths:
             format: uuid
         explode: true
         style: form
-      - in: query
-        name: redirect_uris__iexact
-        schema:
-          type: string
       - name: search
         required: false
         in: query
@@ -44074,6 +44066,11 @@ components:
       required:
       - challenge
       - name
+    MatchingModeEnum:
+      enum:
+      - strict
+      - regex
+      type: string
     Metadata:
       type: object
       description: Serializer for blueprint metadata
@@ -44776,8 +44773,9 @@ components:
           description: Key used to encrypt the tokens. When set, tokens will be encrypted
             and returned as JWEs.
         redirect_uris:
-          type: string
-          description: Enter each URI on a new line.
+          type: array
+          items:
+            $ref: '#/components/schemas/RedirectURI'
         sub_mode:
           allOf:
           - $ref: '#/components/schemas/SubModeEnum'
@@ -44806,6 +44804,7 @@ components:
       - meta_model_name
       - name
       - pk
+      - redirect_uris
       - verbose_name
       - verbose_name_plural
     OAuth2ProviderRequest:
@@ -44877,8 +44876,9 @@ components:
           description: Key used to encrypt the tokens. When set, tokens will be encrypted
             and returned as JWEs.
         redirect_uris:
-          type: string
-          description: Enter each URI on a new line.
+          type: array
+          items:
+            $ref: '#/components/schemas/RedirectURIRequest'
         sub_mode:
           allOf:
           - $ref: '#/components/schemas/SubModeEnum'
@@ -44900,6 +44900,7 @@ components:
       - authorization_flow
       - invalidation_flow
       - name
+      - redirect_uris
     OAuth2ProviderSetupURLs:
       type: object
       description: OAuth2 Provider Metadata serializer
@@ -48898,8 +48899,9 @@ components:
           description: Key used to encrypt the tokens. When set, tokens will be encrypted
             and returned as JWEs.
         redirect_uris:
-          type: string
-          description: Enter each URI on a new line.
+          type: array
+          items:
+            $ref: '#/components/schemas/RedirectURIRequest'
         sub_mode:
           allOf:
           - $ref: '#/components/schemas/SubModeEnum'
@@ -52092,6 +52094,29 @@ components:
           type: string
       required:
       - to
+    RedirectURI:
+      type: object
+      description: A single allowed redirect URI entry
+      properties:
+        matching_mode:
+          $ref: '#/components/schemas/MatchingModeEnum'
+        url:
+          type: string
+      required:
+      - matching_mode
+      - url
+    RedirectURIRequest:
+      type: object
+      description: A single allowed redirect URI entry
+      properties:
+        matching_mode:
+          $ref: '#/components/schemas/MatchingModeEnum'
+        url:
+          type: string
+          minLength: 1
+      required:
+      - matching_mode
+      - url
     Reputation:
       type: object
       description: Reputation Serializer
