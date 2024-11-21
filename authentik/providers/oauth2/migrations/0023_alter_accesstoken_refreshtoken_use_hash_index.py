@@ -8,7 +8,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_core", "0040_provider_invalidation_flow"),
+        ("authentik_core", "0039_source_group_matching_mode_alter_group_name_and_more"),
         ("authentik_providers_oauth2", "0022_remove_accesstoken_session_id_and_more"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]

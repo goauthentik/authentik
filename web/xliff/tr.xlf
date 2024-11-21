@@ -7495,10 +7495,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
   <source>One hint, 'New Application Wizard', is currently hidden</source>
   <target>Bir ipucu, 'Yeni Uygulama Sihirbazı' şu anda gizli</target>
 </trans-unit>
-<trans-unit id="s61bd841e66966325">
-  <source>External applications that use authentik as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
-  <target>OAuth2 ve SAML gibi protokoller aracılığıyla kimlik sağlayıcı olarak authentik kullanan harici uygulamalar. Erişemedikleriniz de dahil olmak üzere tüm uygulamalar burada gösterilir.</target>
-</trans-unit>
 <trans-unit id="s1cc306d8e28c4464">
   <source>Deny message</source>
   <target>İletiyi reddet</target>
@@ -9241,6 +9237,9 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 </trans-unit>
 <trans-unit id="s92205c10ba1f0f4c">
   <source>This option configures the footer links on the flow executor pages. The URL is limited to web and mail addresses. If the name is left blank, the URL will be shown.</source>
+</trans-unit>
+<trans-unit id="s66f572bec2bde9c4">
+  <source>External applications that use <x id="0" equiv-text="${this.brand.brandingTitle || &quot;authentik&quot;}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
 </trans-unit>
     </body>
   </file>

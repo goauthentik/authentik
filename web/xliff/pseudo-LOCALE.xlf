@@ -7490,10 +7490,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>One hint, 'New Application Wizard', is currently hidden</source>
   <target>Ōńē ĥĩńţ, 'Ńēŵ Àƥƥĺĩćàţĩōń Ŵĩźàŕď', ĩś ćũŕŕēńţĺŷ ĥĩďďēń</target>
 </trans-unit>
-<trans-unit id="s61bd841e66966325">
-  <source>External applications that use authentik as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
-  <target>Ēxţēŕńàĺ àƥƥĺĩćàţĩōńś ţĥàţ ũśē àũţĥēńţĩķ àś àń ĩďēńţĩţŷ ƥŕōvĩďēŕ vĩà ƥŕōţōćōĺś ĺĩķē ŌÀũţĥ2 àńď ŚÀḾĹ. Àĺĺ àƥƥĺĩćàţĩōńś àŕē śĥōŵń ĥēŕē, ēvēń ōńēś ŷōũ ćàńńōţ àććēśś.</target>
-</trans-unit>
 <trans-unit id="s1cc306d8e28c4464">
   <source>Deny message</source>
   <target>Ďēńŷ ḿēśśàĝē</target>
@@ -9187,5 +9183,8 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s92205c10ba1f0f4c">
   <source>This option configures the footer links on the flow executor pages. The URL is limited to web and mail addresses. If the name is left blank, the URL will be shown.</source>
+</trans-unit>
+<trans-unit id="s66f572bec2bde9c4">
+  <source>External applications that use <x id="0" equiv-text="${this.brand.brandingTitle || &quot;authentik&quot;}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
 </trans-unit>
 </body></file></xliff>

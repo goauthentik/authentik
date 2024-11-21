@@ -7498,10 +7498,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>One hint, 'New Application Wizard', is currently hidden</source>
   <target>Un suggerimento, "New Application Wizard", è attualmente nascosto</target>
 </trans-unit>
-<trans-unit id="s61bd841e66966325">
-  <source>External applications that use authentik as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
-  <target>Applicazioni esterne che utilizzano Authenk come fornitore di identità tramite protocolli come OAuth2 e SAML. Tutte le applicazioni sono mostrate qui, anche quelle a cui non è possibile accedere.</target>
-</trans-unit>
 <trans-unit id="s1cc306d8e28c4464">
   <source>Deny message</source>
   <target>Negare il messaggio</target>
@@ -9251,6 +9247,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sc24af6de78468cfa">
   <source>Require administrators to provide a reason for impersonating a user.</source>
+</trans-unit>
+<trans-unit id="s66f572bec2bde9c4">
+  <source>External applications that use <x id="0" equiv-text="${this.brand.brandingTitle || &quot;authentik&quot;}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
 </trans-unit>
     </body>
   </file>
