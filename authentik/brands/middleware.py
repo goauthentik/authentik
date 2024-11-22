@@ -4,7 +4,7 @@ from collections.abc import Callable
 
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse
-from django.utils.translation import activate
+from django.utils.translation import override
 
 from authentik.brands.utils import get_brand_for_request
 
@@ -18,10 +18,12 @@ class BrandMiddleware:
         self.get_response = get_response
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
+        locale_to_set = None
         if not hasattr(request, "brand"):
             brand = get_brand_for_request(request)
             request.brand = brand
             locale = brand.default_locale
             if locale != "":
-                activate(locale)
-        return self.get_response(request)
+                locale_to_set = locale
+        with override(locale_to_set):
+            return self.get_response(request)

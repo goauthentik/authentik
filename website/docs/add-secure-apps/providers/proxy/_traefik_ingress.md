@@ -7,6 +7,7 @@ metadata:
     name: authentik
 spec:
     forwardAuth:
+        # This address should point to the cluster endpoint provided by the kubernetes service, not the Ingress.
         address: http://outpost.company:9000/outpost.goauthentik.io/auth/traefik
         trustForwardHeader: true
         authResponseHeaders:

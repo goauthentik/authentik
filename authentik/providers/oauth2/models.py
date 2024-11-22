@@ -3,7 +3,7 @@
 import base64
 import binascii
 import json
-from dataclasses import asdict
+from dataclasses import asdict, dataclass
 from functools import cached_property
 from hashlib import sha256
 from typing import Any
@@ -12,7 +12,9 @@ from urllib.parse import urlparse, urlunparse
 from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePrivateKey
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
+from dacite import Config
 from dacite.core import from_dict
+from django.contrib.postgres.indexes import HashIndex
 from django.db import models
 from django.http import HttpRequest
 from django.templatetags.static import static
@@ -76,9 +78,23 @@ class IssuerMode(models.TextChoices):
     """Configure how the `iss` field is created."""
 
     GLOBAL = "global", _("Same identifier is used for all providers")
-    PER_PROVIDER = "per_provider", _(
-        "Each provider has a different issuer, based on the application slug."
+    PER_PROVIDER = (
+        "per_provider",
+        _("Each provider has a different issuer, based on the application slug."),
     )
+
+
+class RedirectURIMatchingMode(models.TextChoices):
+    STRICT = "strict", _("Strict URL comparison")
+    REGEX = "regex", _("Regular Expression URL matching")
+
+
+@dataclass
+class RedirectURI:
+    """A single redirect URI entry"""
+
+    matching_mode: RedirectURIMatchingMode
+    url: str
 
 
 class ResponseTypes(models.TextChoices):
@@ -155,11 +171,9 @@ class OAuth2Provider(WebfingerProvider, Provider):
         verbose_name=_("Client Secret"),
         default=generate_client_secret,
     )
-    redirect_uris = models.TextField(
-        default="",
-        blank=True,
+    _redirect_uris = models.JSONField(
+        default=dict,
         verbose_name=_("Redirect URIs"),
-        help_text=_("Enter each URI on a new line."),
     )
 
     include_claims_in_id_token = models.BooleanField(
@@ -271,11 +285,32 @@ class OAuth2Provider(WebfingerProvider, Provider):
             return None
 
     @property
+    def redirect_uris(self) -> list[RedirectURI]:
+        uris = []
+        for entry in self._redirect_uris:
+            uris.append(
+                from_dict(
+                    RedirectURI,
+                    entry,
+                    config=Config(type_hooks={RedirectURIMatchingMode: RedirectURIMatchingMode}),
+                )
+            )
+        return uris
+
+    @redirect_uris.setter
+    def redirect_uris(self, value: list[RedirectURI]):
+        cleansed = []
+        for entry in value:
+            cleansed.append(asdict(entry))
+        self._redirect_uris = cleansed
+
+    @property
     def launch_url(self) -> str | None:
         """Guess launch_url based on first redirect_uri"""
-        if self.redirect_uris == "":
+        redirects = self.redirect_uris
+        if len(redirects) < 1:
             return None
-        main_url = self.redirect_uris.split("\n", maxsplit=1)[0]
+        main_url = redirects[0].url
         try:
             launch_url = urlparse(main_url)._replace(path="")
             return urlunparse(launch_url)
@@ -418,7 +453,7 @@ class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
 
     class Meta:
         indexes = [
-            models.Index(fields=["token", "provider"]),
+            HashIndex(fields=["token"]),
         ]
         verbose_name = _("OAuth2 Access Token")
         verbose_name_plural = _("OAuth2 Access Tokens")
@@ -464,7 +499,7 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
 
     class Meta:
         indexes = [
-            models.Index(fields=["token", "provider"]),
+            HashIndex(fields=["token"]),
         ]
         verbose_name = _("OAuth2 Refresh Token")
         verbose_name_plural = _("OAuth2 Refresh Tokens")

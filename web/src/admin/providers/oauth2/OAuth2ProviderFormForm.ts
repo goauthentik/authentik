@@ -1,9 +1,14 @@
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
-import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
+import {
+    IRedirectURIInput,
+    akOAuthRedirectURIInput,
+} from "@goauthentik/admin/providers/oauth2/OAuth2ProviderRedirectURI";
+import { ascii_letters, digits, randomString } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";
+import "@goauthentik/elements/ak-array-input.js";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
@@ -20,7 +25,9 @@ import {
     ClientTypeEnum,
     FlowsInstancesListDesignationEnum,
     IssuerModeEnum,
+    MatchingModeEnum,
     OAuth2Provider,
+    RedirectURI,
     SubModeEnum,
     ValidationError,
 } from "@goauthentik/api";
@@ -95,13 +102,13 @@ export const issuerModeOptions = [
 
 const redirectUriHelpMessages = [
     msg(
-        "Valid redirect URLs after a successful authorization flow. Also specify any origins here for Implicit flows.",
+        "Valid redirect URIs after a successful authorization flow. Also specify any origins here for Implicit flows.",
     ),
     msg(
         "If no explicit redirect URIs are specified, the first successfully used redirect URI will be saved.",
     ),
     msg(
-        'To allow any redirect URI, set this value to ".*". Be aware of the possible security implications this can have.',
+        'To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.',
     ),
 ];
 
@@ -156,27 +163,36 @@ export function renderForm(
                 <ak-text-input
                     name="clientId"
                     label=${msg("Client ID")}
-                    value="${first(provider?.clientId, randomString(40, ascii_letters + digits))}"
+                    value="${provider?.clientId ?? randomString(40, ascii_letters + digits)}"
                     required
                 >
                 </ak-text-input>
                 <ak-text-input
                     name="clientSecret"
                     label=${msg("Client Secret")}
-                    value="${first(
-                        provider?.clientSecret,
-                        randomString(128, ascii_letters + digits),
-                    )}"
+                    value="${provider?.clientSecret ?? randomString(128, ascii_letters + digits)}"
                     ?hidden=${!showClientSecret}
                 >
                 </ak-text-input>
-                <ak-textarea-input
+                <ak-form-element-horizontal
+                    label=${msg("Redirect URIs/Origins")}
+                    required
                     name="redirectUris"
-                    label=${msg("Redirect URIs/Origins (RegEx)")}
-                    .value=${provider?.redirectUris}
-                    .bighelp=${redirectUriHelp}
                 >
-                </ak-textarea-input>
+                    <ak-array-input
+                        name="redirectUris"
+                        .items=${provider?.redirectUris ?? []}
+                        .newItem=${() => ({ matchingMode: MatchingModeEnum.Strict, url: "" })}
+                        .row=${(f?: RedirectURI) =>
+                            akOAuthRedirectURIInput({
+                                ".redirectURI": f,
+                                "style": "width: 100%",
+                                "name": "oauth2-redirect-uri",
+                            } as unknown as IRedirectURIInput)}
+                    >
+                    </ak-array-input>
+                    ${redirectUriHelp}
+                </ak-form-element-horizontal>
 
                 <ak-form-element-horizontal label=${msg("Signing Key")} name="signingKey">
                     <!-- NOTE: 'null' cast to 'undefined' on signingKey to satisfy Lit requirements -->
@@ -238,7 +254,7 @@ export function renderForm(
                     name="accessCodeValidity"
                     label=${msg("Access code validity")}
                     required
-                    value="${first(provider?.accessCodeValidity, "minutes=1")}"
+                    value="${provider?.accessCodeValidity ?? "minutes=1"}"
                     .bighelp=${html`<p class="pf-c-form__helper-text">
                             ${msg("Configure how long access codes are valid for.")}
                         </p>
@@ -248,7 +264,7 @@ export function renderForm(
                 <ak-text-input
                     name="accessTokenValidity"
                     label=${msg("Access Token validity")}
-                    value="${first(provider?.accessTokenValidity, "minutes=5")}"
+                    value="${provider?.accessTokenValidity ?? "minutes=5"}"
                     required
                     .bighelp=${html` <p class="pf-c-form__helper-text">
                             ${msg("Configure how long access tokens are valid for.")}
@@ -260,7 +276,7 @@ export function renderForm(
                 <ak-text-input
                     name="refreshTokenValidity"
                     label=${msg("Refresh Token validity")}
-                    value="${first(provider?.refreshTokenValidity, "days=30")}"
+                    value="${provider?.refreshTokenValidity ?? "days=30"}"
                     ?required=${true}
                     .bighelp=${html` <p class="pf-c-form__helper-text">
                             ${msg("Configure how long refresh tokens are valid for.")}
@@ -296,7 +312,7 @@ export function renderForm(
                 <ak-switch-input
                     name="includeClaimsInIdToken"
                     label=${msg("Include claims in id_token")}
-                    ?checked=${first(provider?.includeClaimsInIdToken, true)}
+                    ?checked=${provider?.includeClaimsInIdToken ?? true}
                     help=${msg(
                         "Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint.",
                     )}

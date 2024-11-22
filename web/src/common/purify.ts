@@ -10,10 +10,14 @@ export const DOM_PURIFY_STRICT: DOMPurify.Config = {
     ALLOWED_TAGS: ["#text"],
 };
 
+export async function renderStatic(input: TemplateResult): Promise<string> {
+    return await collectResult(render(input));
+}
+
 export function purify(input: TemplateResult): TemplateResult {
     return html`${until(
         (async () => {
-            const rendered = await collectResult(render(input));
+            const rendered = await renderStatic(input);
             const purified = DOMPurify.sanitize(rendered);
             return html`${unsafeHTML(purified)}`;
         })(),

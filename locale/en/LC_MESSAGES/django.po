@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-28 00:09+0000\n"
+"POT-Creation-Date: 2024-11-18 00:09+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -101,10 +101,19 @@ msgstr ""
 msgid "Brands"
 msgstr ""
 
+#: authentik/core/api/devices.py
+msgid "Extra description not available"
+msgstr ""
+
 #: authentik/core/api/providers.py
 msgid ""
 "When not set all providers are returned. When set to true, only backchannel "
 "providers are returned. When set to false, backchannel providers are excluded"
+msgstr ""
+
+#: authentik/core/api/transactional_applications.py
+#, python-brace-format
+msgid "User lacks permission to create {model}"
 msgstr ""
 
 #: authentik/core/api/users.py
@@ -1124,6 +1133,10 @@ msgstr ""
 
 #: authentik/policies/password/models.py
 msgid "Password not set in context"
+msgstr ""
+
+#: authentik/policies/password/models.py
+msgid "Invalid password."
 msgstr ""
 
 #: authentik/policies/password/models.py
@@ -3199,6 +3212,10 @@ msgstr ""
 
 #: authentik/tenants/models.py
 msgid "Globally enable/disable impersonation."
+msgstr ""
+
+#: authentik/tenants/models.py
+msgid "Require administrators to provide a reason for impersonating a user."
 msgstr ""
 
 #: authentik/tenants/models.py

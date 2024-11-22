@@ -33,6 +33,7 @@ RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
 # Stage 2: Run
 FROM ghcr.io/goauthentik/fips-debian:bookworm-slim-fips
 
+ARG VERSION
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
 

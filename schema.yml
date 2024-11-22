@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2024.10.0
+  version: 2024.10.4
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -5295,6 +5295,12 @@ paths:
         required: true
       tags:
       - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImpersonationRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -20219,10 +20225,6 @@ paths:
         explode: true
         style: form
       - in: query
-        name: redirect_uris
-        schema:
-          type: string
-      - in: query
         name: refresh_token_validity
         schema:
           type: string
@@ -20637,10 +20639,6 @@ paths:
             format: uuid
         explode: true
         style: form
-      - in: query
-        name: redirect_uris__iexact
-        schema:
-          type: string
       - name: search
         required: false
         in: query
@@ -39220,7 +39218,10 @@ components:
           type: string
         js_url:
           type: string
+        interactive:
+          type: boolean
       required:
+      - interactive
       - js_url
       - pending_user
       - pending_user_avatar
@@ -39276,6 +39277,8 @@ components:
           type: string
         api_url:
           type: string
+        interactive:
+          type: boolean
         score_min_threshold:
           type: number
           format: double
@@ -39322,6 +39325,8 @@ components:
         api_url:
           type: string
           minLength: 1
+        interactive:
+          type: boolean
         score_min_threshold:
           type: number
           format: double
@@ -42713,6 +42718,14 @@ components:
             incorrect user info is entered.
       required:
       - name
+    ImpersonationRequest:
+      type: object
+      properties:
+        reason:
+          type: string
+          minLength: 1
+      required:
+      - reason
     InstallID:
       type: object
       properties:
@@ -44053,6 +44066,11 @@ components:
       required:
       - challenge
       - name
+    MatchingModeEnum:
+      enum:
+      - strict
+      - regex
+      type: string
     Metadata:
       type: object
       description: Serializer for blueprint metadata
@@ -44755,8 +44773,9 @@ components:
           description: Key used to encrypt the tokens. When set, tokens will be encrypted
             and returned as JWEs.
         redirect_uris:
-          type: string
-          description: Enter each URI on a new line.
+          type: array
+          items:
+            $ref: '#/components/schemas/RedirectURI'
         sub_mode:
           allOf:
           - $ref: '#/components/schemas/SubModeEnum'
@@ -44785,6 +44804,7 @@ components:
       - meta_model_name
       - name
       - pk
+      - redirect_uris
       - verbose_name
       - verbose_name_plural
     OAuth2ProviderRequest:
@@ -44856,8 +44876,9 @@ components:
           description: Key used to encrypt the tokens. When set, tokens will be encrypted
             and returned as JWEs.
         redirect_uris:
-          type: string
-          description: Enter each URI on a new line.
+          type: array
+          items:
+            $ref: '#/components/schemas/RedirectURIRequest'
         sub_mode:
           allOf:
           - $ref: '#/components/schemas/SubModeEnum'
@@ -44879,6 +44900,7 @@ components:
       - authorization_flow
       - invalidation_flow
       - name
+      - redirect_uris
     OAuth2ProviderSetupURLs:
       type: object
       description: OAuth2 Provider Metadata serializer
@@ -44936,7 +44958,8 @@ components:
           minLength: 1
           default: ak-provider-oauth2-device-code
         code:
-          type: integer
+          type: string
+          minLength: 1
       required:
       - code
     OAuthDeviceCodeFinishChallenge:
@@ -47732,6 +47755,8 @@ components:
         api_url:
           type: string
           minLength: 1
+        interactive:
+          type: boolean
         score_min_threshold:
           type: number
           format: double
@@ -48874,8 +48899,9 @@ components:
           description: Key used to encrypt the tokens. When set, tokens will be encrypted
             and returned as JWEs.
         redirect_uris:
-          type: string
-          description: Enter each URI on a new line.
+          type: array
+          items:
+            $ref: '#/components/schemas/RedirectURIRequest'
         sub_mode:
           allOf:
           - $ref: '#/components/schemas/SubModeEnum'
@@ -49464,10 +49490,6 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
-        invalidation_flow:
-          type: string
-          format: uuid
-          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -50024,6 +50046,10 @@ components:
         impersonation:
           type: boolean
           description: Globally enable/disable impersonation.
+        impersonation_require_reason:
+          type: boolean
+          description: Require administrators to provide a reason for impersonating
+            a user.
         default_token_duration:
           type: string
           minLength: 1
@@ -51472,7 +51498,9 @@ components:
           description: When enabled, this provider will intercept the authorization
             header and authenticate requests based on its value.
         redirect_uris:
-          type: string
+          type: array
+          items:
+            $ref: '#/components/schemas/RedirectURI'
           readOnly: true
         cookie_domain:
           type: string
@@ -51699,10 +51727,6 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
-        invalidation_flow:
-          type: string
-          format: uuid
-          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -51760,7 +51784,6 @@ components:
       - assigned_backchannel_application_slug
       - authorization_flow
       - component
-      - invalidation_flow
       - meta_model_name
       - name
       - outpost_set
@@ -51784,10 +51807,6 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
-        invalidation_flow:
-          type: string
-          format: uuid
-          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -51804,7 +51823,6 @@ components:
           description: When set to true, connection tokens will be deleted upon disconnect.
       required:
       - authorization_flow
-      - invalidation_flow
       - name
     RadiusCheckAccess:
       type: object
@@ -52078,6 +52096,29 @@ components:
           type: string
       required:
       - to
+    RedirectURI:
+      type: object
+      description: A single allowed redirect URI entry
+      properties:
+        matching_mode:
+          $ref: '#/components/schemas/MatchingModeEnum'
+        url:
+          type: string
+      required:
+      - matching_mode
+      - url
+    RedirectURIRequest:
+      type: object
+      description: A single allowed redirect URI entry
+      properties:
+        matching_mode:
+          $ref: '#/components/schemas/MatchingModeEnum'
+        url:
+          type: string
+          minLength: 1
+      required:
+      - matching_mode
+      - url
     Reputation:
       type: object
       description: Reputation Serializer
@@ -53763,6 +53804,10 @@ components:
         impersonation:
           type: boolean
           description: Globally enable/disable impersonation.
+        impersonation_require_reason:
+          type: boolean
+          description: Require administrators to provide a reason for impersonating
+            a user.
         default_token_duration:
           type: string
           description: Default token duration
@@ -53802,6 +53847,10 @@ components:
         impersonation:
           type: boolean
           description: Globally enable/disable impersonation.
+        impersonation_require_reason:
+          type: boolean
+          description: Require administrators to provide a reason for impersonating
+            a user.
         default_token_duration:
           type: string
           minLength: 1
@@ -54658,6 +54707,10 @@ components:
           $ref: '#/components/schemas/ProviderModelEnum'
         provider:
           $ref: '#/components/schemas/modelRequest'
+        policy_bindings:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionPolicyBindingRequest'
       required:
       - app
       - provider
@@ -54675,6 +54728,41 @@ components:
       required:
       - applied
       - logs
+    TransactionPolicyBindingRequest:
+      type: object
+      description: PolicyBindingSerializer which does not require target as target
+        is set implicitly
+      properties:
+        policy:
+          type: string
+          format: uuid
+          nullable: true
+        group:
+          type: string
+          format: uuid
+          nullable: true
+        user:
+          type: integer
+          nullable: true
+        negate:
+          type: boolean
+          description: Negates the outcome of the policy. Messages are unaffected.
+        enabled:
+          type: boolean
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        timeout:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Timeout after which Policy execution is terminated.
+        failure_result:
+          type: boolean
+          description: Result if the Policy execution fails.
+      required:
+      - order
     TypeCreate:
       type: object
       description: Types of an object that can be created

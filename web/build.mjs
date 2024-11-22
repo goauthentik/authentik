@@ -119,13 +119,22 @@ async function buildOneSource(source, dest) {
                 Date.now() - start
             }ms`,
         );
+        return 0;
     } catch (exc) {
         console.error(`[${new Date(Date.now()).toISOString()}] Failed to build ${source}: ${exc}`);
+        return 1;
     }
 }
 
 async function buildAuthentik(interfaces) {
-    await Promise.allSettled(interfaces.map(([source, dest]) => buildOneSource(source, dest)));
+    const code = await Promise.allSettled(
+        interfaces.map(([source, dest]) => buildOneSource(source, dest)),
+    );
+    const finalCode = code.reduce((a, res) => a + res.value, 0);
+    if (finalCode > 0) {
+        return 1;
+    }
+    return 0;
 }
 
 let timeoutId = null;
@@ -163,11 +172,12 @@ if (process.argv.length > 2 && (process.argv[2] === "-w" || process.argv[2] === 
     });
 } else if (process.argv.length > 2 && (process.argv[2] === "-p" || process.argv[2] === "--proxy")) {
     // There's no watch-for-proxy, sorry.
-    await buildAuthentik(
-        interfaces.filter(([_, dest]) => ["standalone/loading", "."].includes(dest)),
+    process.exit(
+        await buildAuthentik(
+            interfaces.filter(([_, dest]) => ["standalone/loading", "."].includes(dest)),
+        ),
     );
-    process.exit(0);
 } else {
     // And the fallback: just build it.
-    await buildAuthentik(interfaces);
+    process.exit(await buildAuthentik(interfaces));
 }
