@@ -395,7 +395,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>
                 <span slot="header"> ${msg("Create User")} </span>
-                <ak-user-form slot="form"> </ak-user-form>
+                <ak-user-form defaultPath=${this.activePath} slot="form"> </ak-user-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>
             <ak-forms-modal .closeAfterSuccessfulSubmit=${false} .cancelText=${msg("Close")}>
@@ -417,6 +417,9 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                     <ak-treeview
                         .items=${this.userPaths?.paths || []}
                         activePath=${this.activePath}
+                        @ak-refresh=${(ev: CustomEvent<{ path: string }>) => {
+                            this.activePath = ev.detail.path;
+                        }}
                     ></ak-treeview>
                 </div>
             </div>
