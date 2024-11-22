@@ -1,1 +1,0 @@
-npm uninstall "@eslint/js" "@types/eslint__js" "@typescript-eslint/eslint-plugin" "@typescript-eslint/parser" "eslint-plugin-lit" "eslint-plugin-sonarjs" "eslint-plugin-wc" "typescript-eslint"
