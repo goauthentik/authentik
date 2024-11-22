@@ -7544,10 +7544,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>One hint, 'New Application Wizard', is currently hidden</source>
   <target>“新应用程序向导”提示目前已隐藏</target>
 </trans-unit>
-<trans-unit id="s61bd841e66966325">
-  <source>External applications that use authentik as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
-  <target>通过 OAuth2 和 SAML 等协议，使用 authentik 作为身份提供程序的外部应用程序。此处显示了所有应用程序，即使您无法访问的也包括在内。</target>
-</trans-unit>
 <trans-unit id="s1cc306d8e28c4464">
   <source>Deny message</source>
   <target>拒绝消息</target>
@@ -9297,6 +9293,10 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s92205c10ba1f0f4c">
   <source>This option configures the footer links on the flow executor pages. The URL is limited to web and mail addresses. If the name is left blank, the URL will be shown.</source>
   <target>此选项配置流程执行器页面上的页脚链接。URL 限为 Web 和电子邮件地址。如果名称留空，则显示 URL 自身。</target>
+</trans-unit>
+<trans-unit id="s66f572bec2bde9c4">
+  <source>External applications that use <x id="0" equiv-text="${this.brand.brandingTitle || &quot;authentik&quot;}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
+  <target>通过 OAuth2 和 SAML 等协议，使用 <x id="0" equiv-text="${this.brand.brandingTitle || &quot;authentik&quot;}"/> 作为身份提供程序的外部应用程序。此处显示了所有应用程序，即使您无法访问的也包括在内。</target>
 </trans-unit>
     </body>
   </file>

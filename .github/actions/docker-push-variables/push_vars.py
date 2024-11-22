@@ -7,7 +7,14 @@ from time import time
 parser = configparser.ConfigParser()
 parser.read(".bumpversion.cfg")
 
-should_build = str(len(os.environ.get("DOCKER_USERNAME", "")) > 0).lower()
+# Decide if we should push the image or not
+should_push = True
+if len(os.environ.get("DOCKER_USERNAME", "")) > 0:
+    # Don't push if we don't have DOCKER_USERNAME, i.e. no secrets are available
+    should_push = False
+if os.environ.get("GITHUB_REPOSITORY").lower() == "goauthentik/authentik-internal":
+    # Don't push on the internal repo
+    should_push = False
 
 branch_name = os.environ["GITHUB_REF"]
 if os.environ.get("GITHUB_HEAD_REF", "") != "":
@@ -64,7 +71,7 @@ def get_attest_image_names(image_with_tags: list[str]):
 
 
 with open(os.environ["GITHUB_OUTPUT"], "a+", encoding="utf-8") as _output:
-    print(f"shouldBuild={should_build}", file=_output)
+    print(f"shouldPush={str(should_push).lower()}", file=_output)
     print(f"sha={sha}", file=_output)
     print(f"version={version}", file=_output)
     print(f"prerelease={prerelease}", file=_output)
