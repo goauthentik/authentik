@@ -26,30 +26,30 @@ The following placeholders will be used:
 1. Log in to authentik as an admin, and go to the Admin interface.
 2. Create a new SAML Property Mapping under **Customisation** -> **Property Mappings**:
 
-    - **Name**: `Aruba Orchestrator RBAC`
-    - **SAML Attribute Name**: `sp-roles`
-    - **Expression**: Use the expression below but amend the group name as desired.
+   - **Name**: `Aruba Orchestrator RBAC`
+   - **SAML Attribute Name**: `sp-roles`
+   - **Expression**: Use the expression below but amend the group name as desired.
 
-    ```
-    if ak_is_group_member(request.user, name="authentik Admins"):
-              result = "superAdmin"
-         return result
-    ```
+   ```
+   if ak_is_group_member(request.user, name="authentik Admins"):
+             result = "superAdmin"
+        return result
+   ```
 
-    - Save settings
+   - Save settings
 
 3. Create a new SAML Provider under **Applications** -> **Providers** using the following settings:
-    - **Name**: Aruba Orchestrator
-    - **Authentication Flow**: Use your preferred authentication flow (e.g., default-authentication-flow`)
-    - **Authorization Flow ID**: `default-provider-authorization-explicit-consent (Authorize Application)`
-    - Protocol settings:
-    -   - **ACS URL**: `https://arubaorchestrator.company/gms/rest/authentication/saml2/consume`
-    -   - **Issuer**: `https://arubaorchestrator.company/gms/rest/authentication/saml2/consume`
-    -   - **Service Provider Binding**: Post
-    - Advanced protocol settings:
-    -   - **Signing Certificate**:`SSL Certificate`
-    -   - **Property Mappings**:`default` + `sp-roles`
-    - Leave everything else as default and save the settings.
+   - **Name**: Aruba Orchestrator
+   - **Authentication Flow**: Use your preferred authentication flow (e.g., default-authentication-flow`)
+   - **Authorization Flow ID**: `default-provider-authorization-explicit-consent (Authorize Application)`
+   - Protocol settings:
+   - - **ACS URL**: `https://arubaorchestrator.company/gms/rest/authentication/saml2/consume`
+   - - **Issuer**: `https://arubaorchestrator.company/gms/rest/authentication/saml2/consume`
+   - - **Service Provider Binding**: Post
+   - Advanced protocol settings:
+   - - **Signing Certificate**:`SSL Certificate`
+   - - **Property Mappings**:`default` + `sp-roles`
+   - Leave everything else as default and save the settings.
 4. Download the signing certificate under **Applications** -> **Providers** -> **Aruba Orchestrator** .
 5. Create a new application under **Applications** -> **Applications**, pick a name and a slug, and assign the provider that you have just created.
 
@@ -57,19 +57,19 @@ The following placeholders will be used:
 
 1. Log in to the Aruba Orchestrator.
 2. Create a new Remote Authentication Server under **Orchestrator** -> **Authentication** -> **Add New Server**.
-    - **Type**: `SAML`
-    - **Name**: `authentik`
-    - **Username Attribute**: `http://schemas.goauthentik.io/2021/02/saml/username`
-    - **Issuer URL**: `https://arubaorchestrator.company/gms/rest/authentication/saml2/consume`
-    - **SSO Endpoint**: `https://authentik.company/application/saml/<slug>/sso/binding/init/` (replace \<slug\> with application slug name)
-    - **IdP X509 Cert**: (paste in the downloaded signing certificate)
-    - **ACS URL**: `https://arubaorchestrator.company/gms/rest/authentication/saml2/consume`
-    - **EdgeConnect SLO Endpoint**: `https://arubaorchestrator.company/gms/rest/authentication/saml2/logout`
-    - **iDP SLO Endpoint**: (optional)
-    - **EdgeConnect X.509 Cert SLO**: (optional)
-    - **Roles Attribute**: `sp-roles` (optional)
-    - **Appliance Access Group Attribute**: (optional)
-    - **Default role**: (optional)
+   - **Type**: `SAML`
+   - **Name**: `authentik`
+   - **Username Attribute**: `http://schemas.goauthentik.io/2021/02/saml/username`
+   - **Issuer URL**: `https://arubaorchestrator.company/gms/rest/authentication/saml2/consume`
+   - **SSO Endpoint**: `https://authentik.company/application/saml/<slug>/sso/binding/init/` (replace \<slug\> with application slug name)
+   - **IdP X509 Cert**: (paste in the downloaded signing certificate)
+   - **ACS URL**: `https://arubaorchestrator.company/gms/rest/authentication/saml2/consume`
+   - **EdgeConnect SLO Endpoint**: `https://arubaorchestrator.company/gms/rest/authentication/saml2/logout`
+   - **iDP SLO Endpoint**: (optional)
+   - **EdgeConnect X.509 Cert SLO**: (optional)
+   - **Roles Attribute**: `sp-roles` (optional)
+   - **Appliance Access Group Attribute**: (optional)
+   - **Default role**: (optional)
 
 ## Verification
 
