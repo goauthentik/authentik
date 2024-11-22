@@ -71,7 +71,7 @@ def get_attest_image_names(image_with_tags: list[str]):
 
 
 with open(os.environ["GITHUB_OUTPUT"], "a+", encoding="utf-8") as _output:
-    print(f"shouldPush={should_push.lower()}", file=_output)
+    print(f"shouldPush={str(should_push).lower()}", file=_output)
     print(f"sha={sha}", file=_output)
     print(f"version={version}", file=_output)
     print(f"prerelease={prerelease}", file=_output)
