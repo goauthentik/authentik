@@ -12,7 +12,6 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
 import { type SearchSelectBase } from "@goauthentik/elements/forms/SearchSelect/SearchSelect.js";
 import "@goauthentik/elements/forms/SearchSelect/ak-search-select-ez.js";
-import { ISearchSelectApi } from "@goauthentik/elements/forms/SearchSelect/ak-search-select-ez.js";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
@@ -21,8 +20,6 @@ import { customElement, query, state } from "lit/decorators.js";
 import { CoreApi, Group, PoliciesApi, Policy, PolicyBinding, User } from "@goauthentik/api";
 
 const withQuery = <T>(search: string | undefined, args: T) => (search ? { ...args, search } : args);
-
-type SearchConfig = ISearchSelectApi<Policy> | ISearchSelectApi<Group> | ISearchSelectApi<User>;
 
 enum target {
     policy = "policy",
@@ -97,72 +94,74 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
 
     // The search select configurations for the three different types of fetches that we care about,
     // policy, user, and group, all using the SearchSelectEZ protocol.
-    get searchSelectConfigs() {
-        return {
-            policySelect: {
-                fetchObjects: async (query?: string): Promise<Policy[]> => {
-                    const policies = await new PoliciesApi(DEFAULT_CONFIG).policiesAllList(
-                        withQuery(query, {
-                            ordering: "name",
-                        }),
-                    );
-                    return policies.results;
-                },
-                groupBy: (items: Policy[]) => groupBy(items, (policy) => policy.verboseNamePlural),
-                renderElement: (policy: Policy): string => policy.name,
-                value: (policy: Policy | undefined): string | undefined => policy?.pk,
-                selected: (policy: Policy): boolean => policy.pk === this.instance?.policy,
-            },
-            groupSelect: {
-                fetchObjects: async (query?: string): Promise<Group[]> => {
-                    const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(
-                        withQuery(query, {
-                            ordering: "name",
-                            includeUsers: false,
-                        }),
-                    );
-                    return groups.results;
-                },
-                renderElement: (group: Group): string => group.name,
-                value: (group: Group | undefined): string | undefined => group?.pk,
-                selected: (group: Group): boolean => group.pk === this.instance?.group,
-            },
-            userSelect: {
-                fetchObjects: async (query?: string): Promise<User[]> => {
-                    const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList(
-                        withQuery(query, {
-                            ordering: "username",
-                        }),
-                    );
-                    return users.results;
-                },
-                renderElement: (user: User): string => user.username,
-                renderDescription: (user: User) => html`${user.name}`,
-                value: (user: User | undefined): number | undefined => user?.pk,
-                selected: (user: User): boolean => user.pk === this.instance?.user,
-            },
-        };
+    searchSelectConfigs(kind: target) {
+        switch (kind) {
+            case target.policy:
+                return {
+                    fetchObjects: async (query?: string): Promise<Policy[]> => {
+                        const policies = await new PoliciesApi(DEFAULT_CONFIG).policiesAllList(
+                            withQuery(query, {
+                                ordering: "name",
+                            }),
+                        );
+                        return policies.results;
+                    },
+                    groupBy: (items: Policy[]) =>
+                        groupBy(items, (policy) => policy.verboseNamePlural),
+                    renderElement: (policy: Policy): string => policy.name,
+                    value: (policy: Policy | undefined): string | undefined => policy?.pk,
+                    selected: (policy: Policy): boolean => policy.pk === this.instance?.policy,
+                };
+            case target.group:
+                return {
+                    fetchObjects: async (query?: string): Promise<Group[]> => {
+                        const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(
+                            withQuery(query, {
+                                ordering: "name",
+                                includeUsers: false,
+                            }),
+                        );
+                        return groups.results;
+                    },
+                    renderElement: (group: Group): string => group.name,
+                    value: (group: Group | undefined): string | undefined => group?.pk,
+                    selected: (group: Group): boolean => group.pk === this.instance?.group,
+                };
+            case target.user:
+                return {
+                    fetchObjects: async (query?: string): Promise<User[]> => {
+                        const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList(
+                            withQuery(query, {
+                                ordering: "username",
+                            }),
+                        );
+                        return users.results;
+                    },
+                    renderElement: (user: User): string => user.username,
+                    renderDescription: (user: User) => html`${user.name}`,
+                    value: (user: User | undefined): number | undefined => user?.pk,
+                    selected: (user: User): boolean => user.pk === this.instance?.user,
+                };
+            default:
+                throw new Error(`Unrecognized policy binding target ${kind}`);
+        }
     }
 
-    renderSearch(title: string, config: SearchConfig, policyKind: target) {
-        return this.policyGroupUser === policyKind
-            ? html`<ak-form-element-horizontal
-                  label=${title}
-                  name=${policyKind}
-                  ?hidden=${this.policyGroupUser !== policyKind}
-              >
-                  <ak-search-select-ez
-                      .config=${config}
-                      class="policy-search-select"
-                      blankable
-                  ></ak-search-select-ez>
-              </ak-form-element-horizontal>`
-            : nothing;
+    renderSearch(title: string, policyKind: target) {
+        if (policyKind !== this.policyGroupUser) {
+            return nothing;
+        }
+
+        return html`<ak-form-element-horizontal label=${title} name=${policyKind}>
+            <ak-search-select-ez
+                .config=${this.searchSelectConfigs(policyKind)}
+                class="policy-search-select"
+                blankable
+            ></ak-search-select-ez>
+        </ak-form-element-horizontal>`;
     }
 
     renderForm(instance?: PolicyBinding) {
-        const { policySelect, groupSelect, userSelect } = this.searchSelectConfigs;
-
         return html`<ak-wizard-title>${msg("Select A Policy Binding")}</ak-wizard-title>
             <form id="bindingform" class="pf-c-form pf-m-horizontal" slot="form">
                 <div class="pf-c-card pf-m-selectable pf-m-selected">
@@ -179,9 +178,9 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
                         </ak-toggle-group>
                     </div>
                     <div class="pf-c-card__footer">
-                        ${this.renderSearch(msg("Policy"), policySelect, target.policy)}
-                        ${this.renderSearch(msg("Group"), groupSelect, target.group)}
-                        ${this.renderSearch(msg("User"), userSelect, target.user)}
+                        ${this.renderSearch(msg("Policy"), target.policy)}
+                        ${this.renderSearch(msg("Group"), target.group)}
+                        ${this.renderSearch(msg("User"), target.user)}
                     </div>
                 </div>
                 <ak-switch-input

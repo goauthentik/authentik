@@ -27,15 +27,16 @@
 # Michael Gottinger, 2024
 # itxworks, 2024
 # Alexander Möbius, 2024
+# Christian Wichmann <cw1981@gmx.de>, 2024
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-05 00:08+0000\n"
+"POT-Creation-Date: 2024-11-18 00:09+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
-"Last-Translator: Alexander Möbius, 2024\n"
+"Last-Translator: Christian Wichmann <cw1981@gmx.de>, 2024\n"
 "Language-Team: German (https://app.transifex.com/authentik/teams/119923/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -148,6 +149,11 @@ msgstr ""
 "Wenn deaktiviert, werden alle Provider zurück gegeben. Wenn aktiviert, "
 "werden nur die backchannel Provider zurück gegeben. Zudem werden bei "
 "Deaktivierung die backchannel Provider ausgeschlossen."
+
+#: authentik/core/api/transactional_applications.py
+#, python-brace-format
+msgid "User lacks permission to create {model}"
+msgstr "Benutzer fehlt die Berechtigung, {model} zu erstellen"
 
 #: authentik/core/api/users.py
 msgid "No leading or trailing slashes allowed."
@@ -1266,6 +1272,10 @@ msgstr ""
 #: authentik/policies/password/models.py
 msgid "Password not set in context"
 msgstr "Passwort nicht im Kontext festgelegt"
+
+#: authentik/policies/password/models.py
+msgid "Invalid password."
+msgstr "Ungültiges Passwort."
 
 #: authentik/policies/password/models.py
 #, python-format
@@ -3585,6 +3595,12 @@ msgstr ""
 #: authentik/tenants/models.py
 msgid "Globally enable/disable impersonation."
 msgstr "Identitätswechsel global aktivieren/deaktivieren."
+
+#: authentik/tenants/models.py
+msgid "Require administrators to provide a reason for impersonating a user."
+msgstr ""
+"Administratoren auffordern, einen Grund anzugeben, um sich als ein Benutzer "
+"auszugeben."
 
 #: authentik/tenants/models.py
 msgid "Default token duration"

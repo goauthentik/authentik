@@ -7495,10 +7495,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
   <source>One hint, 'New Application Wizard', is currently hidden</source>
   <target>Bir ipucu, 'Yeni Uygulama Sihirbazı' şu anda gizli</target>
 </trans-unit>
-<trans-unit id="s61bd841e66966325">
-  <source>External applications that use authentik as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
-  <target>OAuth2 ve SAML gibi protokoller aracılığıyla kimlik sağlayıcı olarak authentik kullanan harici uygulamalar. Erişemedikleriniz de dahil olmak üzere tüm uygulamalar burada gösterilir.</target>
-</trans-unit>
 <trans-unit id="s1cc306d8e28c4464">
   <source>Deny message</source>
   <target>İletiyi reddet</target>
@@ -8132,10 +8128,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 <trans-unit id="sd176021da2ea0fe3">
   <source>Selected Applications</source>
   <target>Seçilmiş Uygulamalar</target>
-</trans-unit>
-<trans-unit id="s862505f29064fc72">
-  <source>This option configures the footer links on the flow executor pages. It must be a valid YAML or JSON list and can be used as follows:</source>
-  <target>Bu seçenek, akış yürütücüsü sayfalarındaki altbilgi bağlantılarını yapılandırır. Geçerli bir YAML veya JSON listesi olmalıdır ve aşağıdaki gibi kullanılabilir:</target>
 </trans-unit>
 <trans-unit id="s6d3f81dc4bcacbda">
   <source>Last used</source>
@@ -9221,6 +9213,33 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 </trans-unit>
 <trans-unit id="sd020240e41e4c207">
   <source>Enable this flag if the configured captcha requires User-interaction. Required for reCAPTCHA v2, hCaptcha and Cloudflare Turnstile.</source>
+</trans-unit>
+<trans-unit id="saa29a2ac03cd9d19">
+  <source>Reason</source>
+</trans-unit>
+<trans-unit id="se9fd92a824994eba">
+  <source>Reason for impersonating the user</source>
+</trans-unit>
+<trans-unit id="s29fab8887734192f">
+  <source>Require reason for impersonation</source>
+</trans-unit>
+<trans-unit id="sc24af6de78468cfa">
+  <source>Require administrators to provide a reason for impersonating a user.</source>
+</trans-unit>
+<trans-unit id="sd48cc52117f4d68b">
+  <source>Italian</source>
+</trans-unit>
+<trans-unit id="s6cee92a3b310e650">
+  <source>Add entry</source>
+</trans-unit>
+<trans-unit id="s8f36fb59c31d33eb">
+  <source>Link Title</source>
+</trans-unit>
+<trans-unit id="s92205c10ba1f0f4c">
+  <source>This option configures the footer links on the flow executor pages. The URL is limited to web and mail addresses. If the name is left blank, the URL will be shown.</source>
+</trans-unit>
+<trans-unit id="s66f572bec2bde9c4">
+  <source>External applications that use <x id="0" equiv-text="${this.brand.brandingTitle || &quot;authentik&quot;}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
 </trans-unit>
     </body>
   </file>

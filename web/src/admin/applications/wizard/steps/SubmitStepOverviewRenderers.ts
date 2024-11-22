@@ -10,12 +10,14 @@ import { html } from "lit";
 import {
     ClientTypeEnum,
     LDAPProvider,
+    MatchingModeEnum,
     OAuth2Provider,
     ProviderModelEnum,
     ProxyMode,
     ProxyProvider,
     RACProvider,
     RadiusProvider,
+    RedirectURI,
     SAMLProvider,
     SCIMProvider,
 } from "@goauthentik/api";
@@ -52,6 +54,22 @@ function renderRadiusOverview(rawProvider: OneOfProvider) {
 function renderRACOverview(rawProvider: OneOfProvider) {
     // @ts-expect-error TS6133
     const _provider = rawProvider as RACProvider;
+}
+
+function formatRedirectUris(uris: RedirectURI[] = []) {
+    return uris.length > 0
+        ? html`<ul class="pf-c-list pf-m-plain">
+              ${uris.map(
+                  (uri) =>
+                      html`<li>
+                          ${uri.url}
+                          (${uri.matchingMode === MatchingModeEnum.Strict
+                              ? msg("strict")
+                              : msg("regexp")})
+                      </li>`,
+              )}
+          </ul>`
+        : "-";
 }
 
 const proxyModeToLabel = new Map([
@@ -112,7 +130,7 @@ function renderOAuth2Overview(rawProvider: OneOfProvider) {
     return renderSummary("OAuth2", provider.name, [
         [msg("Client type"), provider.clientType ? clientTypeToLabel.get(provider.clientType) : ""],
         [msg("Client ID"), provider.clientId],
-        [msg("Redirect URIs"), provider.redirectUris || msg("-")],
+        [msg("Redirect URIs"), formatRedirectUris(provider.redirectUris)],
     ]);
 }
 

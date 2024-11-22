@@ -163,13 +163,15 @@ class TransactionalApplicationView(APIView):
             app, __, model = full_model.partition(".")
             if not request.user.has_perm(f"{app}.add_{model}"):
                 raise PermissionDenied(
-                    _(
-                        "User lacks permission to create {model}".format_map(
-                            {
-                                "model": full_model,
-                            }
+                    {
+                        entry.id: _(
+                            "User lacks permission to create {model}".format_map(
+                                {
+                                    "model": full_model,
+                                }
+                            )
                         )
-                    )
+                    }
                 )
         importer = Importer(blueprint, {})
         applied = importer.apply()

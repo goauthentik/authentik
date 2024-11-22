@@ -1,6 +1,18 @@
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import "@goauthentik/components/ak-radio-input";
+import "@goauthentik/components/ak-text-input";
+import "@goauthentik/components/ak-textarea-input";
+import "@goauthentik/elements/ak-array-input.js";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
+import "@goauthentik/elements/forms/FormGroup";
+import "@goauthentik/elements/forms/HorizontalFormElement";
+import "@goauthentik/elements/forms/Radio";
+import "@goauthentik/elements/forms/SearchSelect";
+import "@goauthentik/elements/utils/TimeDeltaHelp";
 
+import { css } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 import { ClientTypeEnum, OAuth2Provider, ProvidersApi } from "@goauthentik/api";
@@ -18,6 +30,14 @@ import { renderForm } from "./OAuth2ProviderFormForm.js";
 export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
     @state()
     showClientSecret = true;
+
+    static get styles() {
+        return super.styles.concat(css`
+            ak-array-input {
+                width: 100%;
+            }
+        `);
+    }
 
     async loadInstance(pk: number): Promise<OAuth2Provider> {
         const provider = await new ProvidersApi(DEFAULT_CONFIG).providersOauth2Retrieve({

@@ -129,6 +129,11 @@ class SourceFlowManager:
             )
             new_connection.user = self.request.user
             new_connection = self.update_user_connection(new_connection, **kwargs)
+            if existing := self.user_connection_type.objects.filter(
+                source=self.source, identifier=self.identifier
+            ).first():
+                existing = self.update_user_connection(existing)
+                return Action.AUTH, existing
             return Action.LINK, new_connection
 
         action, connection = self.matcher.get_user_action(self.identifier, self.user_properties)

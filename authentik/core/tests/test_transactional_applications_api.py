@@ -35,6 +35,7 @@ class TestTransactionalApplicationsAPI(APITestCase):
                     "name": uid,
                     "authorization_flow": str(create_test_flow().pk),
                     "invalidation_flow": str(create_test_flow().pk),
+                    "redirect_uris": [],
                 },
             },
         )
@@ -44,6 +45,31 @@ class TestTransactionalApplicationsAPI(APITestCase):
         app = Application.objects.filter(slug=uid).first()
         self.assertIsNotNone(app)
         self.assertEqual(app.provider.pk, provider.pk)
+
+    def test_create_transactional_permission_denied(self):
+        """Test transactional Application + provider creation (missing permissions)"""
+        self.client.force_login(self.user)
+        uid = generate_id()
+        response = self.client.put(
+            reverse("authentik_api:core-transactional-application"),
+            data={
+                "app": {
+                    "name": uid,
+                    "slug": uid,
+                },
+                "provider_model": "authentik_providers_saml.samlprovider",
+                "provider": {
+                    "name": uid,
+                    "authorization_flow": str(create_test_flow().pk),
+                    "invalidation_flow": str(create_test_flow().pk),
+                    "acs_url": "https://goauthentik.io",
+                },
+            },
+        )
+        self.assertJSONEqual(
+            response.content.decode(),
+            {"provider": "User lacks permission to create authentik_providers_saml.samlprovider"},
+        )
 
     def test_create_transactional_bindings(self):
         """Test transactional Application + provider creation"""
@@ -63,6 +89,8 @@ class TestTransactionalApplicationsAPI(APITestCase):
                 "provider": {
                     "name": uid,
                     "authorization_flow": str(authorization_flow.pk),
+                    "invalidation_flow": str(authorization_flow.pk),
+                    "redirect_uris": [],
                 },
                 "policy_bindings": [{"group": group.pk, "order": 0}],
             },
@@ -94,6 +122,7 @@ class TestTransactionalApplicationsAPI(APITestCase):
                     "name": uid,
                     "authorization_flow": "",
                     "invalidation_flow": "",
+                    "redirect_uris": [],
                 },
             },
         )
@@ -105,4 +134,33 @@ class TestTransactionalApplicationsAPI(APITestCase):
                     "invalidation_flow": ["This field may not be null."],
                 }
             },
+        )
+
+    def test_create_transactional_duplicate_name_provider(self):
+        """Test transactional Application + provider creation"""
+        self.client.force_login(self.user)
+        uid = generate_id()
+        OAuth2Provider.objects.create(
+            name=uid,
+            authorization_flow=create_test_flow(),
+            invalidation_flow=create_test_flow(),
+        )
+        response = self.client.put(
+            reverse("authentik_api:core-transactional-application"),
+            data={
+                "app": {
+                    "name": uid,
+                    "slug": uid,
+                },
+                "provider_model": "authentik_providers_oauth2.oauth2provider",
+                "provider": {
+                    "name": uid,
+                    "authorization_flow": str(create_test_flow().pk),
+                    "invalidation_flow": str(create_test_flow().pk),
+                },
+            },
+        )
+        self.assertJSONEqual(
+            response.content.decode(),
+            {"provider": {"name": ["State is set to must_created and object exists already"]}},
         )
