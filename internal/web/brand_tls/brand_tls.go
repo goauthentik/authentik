@@ -22,7 +22,7 @@ type Watcher struct {
 }
 
 func NewWatcher(client *api.APIClient) *Watcher {
-	cs := ak.NewCryptoStore(client.CryptoApi)
+	cs := ak.NewCryptoStore(client.CryptoAPI)
 	l := log.WithField("logger", "authentik.router.brand_tls")
 	cert, err := crypto.GenerateSelfSignedCert()
 	if err != nil {
@@ -47,7 +47,7 @@ func (w *Watcher) Start() {
 
 func (w *Watcher) Check() {
 	w.log.Info("updating brand certificates")
-	brands, err := ak.Paginator(w.client.CoreApi.CoreBrandsList(context.Background()), ak.PaginatorOptions{
+	brands, err := ak.Paginator(w.client.CoreAPI.CoreBrandsList(context.Background()), ak.PaginatorOptions{
 		PageSize: 100,
 		Logger:   w.log,
 	})
