@@ -31,7 +31,7 @@ The following placeholders will be used:
 5. In the provider settings, add the following redirect URLs under **Redirect URIs/Origins (RegEx)**:
     ```
     https://netbird.company
-    https://netbird.company*
+    https://netbird.company.*
     http://localhost:53000
     ```
 6. Under **Signing Key**, select an available key. By default, the authentik self-signed certificate is available.
