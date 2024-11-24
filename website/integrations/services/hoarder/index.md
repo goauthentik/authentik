@@ -52,4 +52,4 @@ OAUTH_ALLOW_DANGEROUS_EMAIL_ACCOUNT_LINKING=true
 # DISABLE_SIGNUPS=true
 ```
 
-Finally, restart the hoarder server and test your configuration.
+Finally, restart the Hoarder server and test your configuration.
