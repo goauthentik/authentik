@@ -119,6 +119,7 @@ module.exports = {
                         "services/frappe/index",
                         "services/freshrss/index",
                         "services/gravitee/index",
+                        "services/hoarder/index",
                         "services/home-assistant/index",
                         "services/immich/index",
                         "services/jellyfin/index",
@@ -127,7 +128,6 @@ module.exports = {
                         "services/sonarr/index",
                         "services/tautulli/index",
                         "services/weblate/index",
-                        "services/hoarder/index",
                     ],
                 },
                 {
