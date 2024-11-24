@@ -37,7 +37,7 @@ Create an application that uses `hoarder` provider. Optionally apply access rest
 
 ## Hoarder configuration
 
-In hoarder you'll need to add these environment variables:
+In Hoarder you'll need to add these environment variables:
 
 ```sh
 NEXTAUTH_URL=https://hoarder.company
