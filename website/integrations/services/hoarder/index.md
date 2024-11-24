@@ -41,7 +41,7 @@ In hoarder you'll need to add these environment variables:
 
 ```sh
 NEXTAUTH_URL=https://hoarder.company
-OAUTH_CLIENT_ID=client_id_from_provider
+OAUTH_CLIENT_ID=<Client ID from authentik>
 OAUTH_CLIENT_SECRET=<Client secret from authentik>
 OAUTH_WELLKNOWN_URL=https://authentik.company/application/o/hoarder/.well-known/openid-configuration
 OAUTH_PROVIDER_NAME=Authentik
