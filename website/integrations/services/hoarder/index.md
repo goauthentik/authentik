@@ -33,7 +33,8 @@ Everything else is up to you, just make sure to grab the client ID and the clien
 
 **Application Settings**
 
-Create an application that uses `hoarder` provider. Optionally apply access restrictions to the application.
+In authentik under **Applications** -> **Applications** of the **Admin interface**, create a new Application with the **Create** button that uses `hoarder` provider.
+Optionally apply access restrictions to the application.
 
 ## Hoarder configuration
 
