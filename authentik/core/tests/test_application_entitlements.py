@@ -17,7 +17,6 @@ class TestApplicationEntitlements(APITestCase):
         self.other_user = create_test_user()
         self.provider = OAuth2Provider.objects.create(
             name="test",
-            redirect_uris="http://some-other-domain",
             authorization_flow=create_test_flow(),
         )
         self.app: Application = Application.objects.create(
@@ -25,8 +24,6 @@ class TestApplicationEntitlements(APITestCase):
             slug=generate_id(),
             provider=self.provider,
         )
-        ent = ApplicationEntitlement.objects.create(app=self.app, name=generate_id())
-        PolicyBinding.objects.create(target=ent, user=self.other_user, order=0)
 
     def test_user(self):
         """Test user-direct assignment"""
@@ -53,6 +50,23 @@ class TestApplicationEntitlements(APITestCase):
         self.user.ak_groups.add(group)
         ent = ApplicationEntitlement.objects.create(app=self.app, name=generate_id())
         PolicyBinding.objects.create(target=ent, group=parent, order=0)
+        ents = self.user.app_entitlements(self.app)
+        self.assertEqual(len(ents), 1)
+        self.assertEqual(ents[0].name, ent.name)
+
+    def test_negate_user(self):
+        """Test with negate flag"""
+        ent = ApplicationEntitlement.objects.create(app=self.app, name=generate_id())
+        PolicyBinding.objects.create(target=ent, user=self.other_user, order=0, negate=True)
+        ents = self.user.app_entitlements(self.app)
+        self.assertEqual(len(ents), 1)
+        self.assertEqual(ents[0].name, ent.name)
+
+    def test_negate_group(self):
+        """Test with negate flag"""
+        other_group = Group.objects.create(name=generate_id())
+        ent = ApplicationEntitlement.objects.create(app=self.app, name=generate_id())
+        PolicyBinding.objects.create(target=ent, group=other_group, order=0, negate=True)
         ents = self.user.app_entitlements(self.app)
         self.assertEqual(len(ents), 1)
         self.assertEqual(ents[0].name, ent.name)
