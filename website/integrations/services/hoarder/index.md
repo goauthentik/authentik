@@ -22,7 +22,7 @@ The following placeholders will be used:
 
 ## Authentik configuration
 
-**Provider Settings**
+### Provider Settings
 
 In authentik under **Applications** -> **Providers** of the **Admin interface**, create a new **OAuth2/OpenID Provider** with the desired settings.
 
