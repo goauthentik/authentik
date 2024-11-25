@@ -319,10 +319,19 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
         if not app:
             return []
         all_groups = self.all_groups()
-        return app.applicationentitlement_set.filter(
-            Q(bindings__user=self) | Q(bindings__group__in=all_groups),
+        qs = app.applicationentitlement_set.filter(
+            Q(
+                Q(bindings__user=self) | Q(bindings__group__in=all_groups),
+                bindings__negate=False,
+            )
+            | Q(
+                Q(~Q(bindings__user=self), bindings__user__isnull=False)
+                | Q(~Q(bindings__group__in=all_groups), bindings__group__isnull=False),
+                bindings__negate=True,
+            ),
             bindings__enabled=True,
         )
+        return qs
 
     @property
     def serializer(self) -> Serializer:
