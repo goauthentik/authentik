@@ -272,6 +272,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                                   return new CoreApi(DEFAULT_CONFIG)
                                       .coreUsersImpersonateCreate({
                                           id: item.pk,
+                                          impersonationRequest: { reason: "" },
                                       })
                                       .then(() => {
                                           window.location.href = "/";

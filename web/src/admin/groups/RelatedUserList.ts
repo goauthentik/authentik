@@ -219,6 +219,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                                   return new CoreApi(DEFAULT_CONFIG)
                                       .coreUsersImpersonateCreate({
                                           id: item.pk,
+                                          impersonationRequest: { reason: "" },
                                       })
                                       .then(() => {
                                           window.location.href = "/";
