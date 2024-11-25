@@ -24,7 +24,7 @@ The following placeholders will be used:
 
 ### Provider Settings
 
-In authentik under **Applications** -> **Providers** of the **Admin interface**, create a new **OAuth2/OpenID Provider** with the desired settings.
+In authentik, under **Applications** -> **Providers** of the **Admin interface**, create a new **OAuth2/OpenID Provider** with the desired settings.
 
 -   Name: `hoarder`
 -   Redirect URI: `https://hoarder.company/api/auth/callback/custom`
