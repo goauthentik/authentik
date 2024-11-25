@@ -64,7 +64,7 @@ authentik requires at least the following allowed locations:
 
 ```
 default-src 'self';
-img-src 'https:' 'http:' 'data:';
+img-src https: http: data:;
 object-src 'none';
 style-src 'self' 'unsafe-inline';    # Required due to Lit/ShadowDOM
 script-src 'self' 'unsafe-inline';   # Required for generated scripts
