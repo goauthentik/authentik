@@ -57,7 +57,7 @@
         "@types/react": "^18.3.12",
         "cross-env": "^7.0.3",
         "prettier": "3.3.3",
-        "typescript": "~5.6.3",
+        "typescript": "~5.7.2",
         "wireit": "^0.14.9"
     },
     "wireit": {
