@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-18 00:09+0000\n"
+"POT-Creation-Date: 2024-11-24 00:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1252,6 +1252,11 @@ msgstr ""
 msgid "Search full LDAP directory"
 msgstr ""
 
+#: authentik/providers/oauth2/api/providers.py
+#, python-brace-format
+msgid "Invalid Regex Pattern: {url}"
+msgstr ""
+
 #: authentik/providers/oauth2/id_token.py
 msgid "Based on the Hashed User ID"
 msgstr ""
@@ -1292,6 +1297,14 @@ msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "Each provider has a different issuer, based on the application slug."
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Strict URL comparison"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Regular Expression URL matching"
 msgstr ""
 
 #: authentik/providers/oauth2/models.py
@@ -1368,10 +1381,6 @@ msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "Redirect URIs"
-msgstr ""
-
-#: authentik/providers/oauth2/models.py
-msgid "Enter each URI on a new line."
 msgstr ""
 
 #: authentik/providers/oauth2/models.py
