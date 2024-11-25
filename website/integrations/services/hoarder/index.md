@@ -38,7 +38,7 @@ Optionally apply access restrictions to the application.
 
 ## Hoarder configuration
 
-In Hoarder you'll need to add these environment variables:
+In Hoarder, you'll need to add these environment variables:
 
 ```sh
 NEXTAUTH_URL=https://hoarder.company
