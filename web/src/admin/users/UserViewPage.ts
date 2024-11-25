@@ -215,6 +215,7 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                               return new CoreApi(DEFAULT_CONFIG)
                                   .coreUsersImpersonateCreate({
                                       id: user.pk,
+                                      impersonationRequest: { reason: "" },
                                   })
                                   .then(() => {
                                       window.location.href = "/";
