@@ -304,10 +304,12 @@ DATABASES = {
         "USER": CONFIG.get("postgresql.user"),
         "PASSWORD": CONFIG.get("postgresql.password"),
         "PORT": CONFIG.get("postgresql.port"),
-        "SSLMODE": CONFIG.get("postgresql.sslmode"),
-        "SSLROOTCERT": CONFIG.get("postgresql.sslrootcert"),
-        "SSLCERT": CONFIG.get("postgresql.sslcert"),
-        "SSLKEY": CONFIG.get("postgresql.sslkey"),
+        "OPTIONS": {
+            "sslmode": CONFIG.get("postgresql.sslmode"),
+            "sslrootcert": CONFIG.get("postgresql.sslrootcert"),
+            "sslcert": CONFIG.get("postgresql.sslcert"),
+            "sslkey": CONFIG.get("postgresql.sslkey"),
+        },
         "TEST": {
             "NAME": CONFIG.get("postgresql.test.name"),
         },
