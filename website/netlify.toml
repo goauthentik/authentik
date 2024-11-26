@@ -720,6 +720,12 @@
   force = true
 
 [[redirects]]
+  from = "/docs/security/CVE-2024-42490"
+  to = "/docs/security/cves/CVE-2024-42490"
+  status = 302
+  force = true
+
+[[redirects]]
   from = "/docs/security/CVE-2023-26481"
   to = "/docs/security/cves/CVE-2023-26481"
   status = 302
