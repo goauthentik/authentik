@@ -67,8 +67,11 @@ func (ws *WebServer) configureStatic() {
 
 	// Media files, if backend is file
 	if config.Get().Storage.Media.Backend == "file" {
-		fsMedia := http.FileServer(http.Dir(config.Get().Storage.Media.File.Path))
-		indexLessRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/media/").Handler(http.StripPrefix("/media", fsMedia))
+		fsMedia := http.StripPrefix("/media", http.FileServer(http.Dir(config.Get().Storage.Media.File.Path)))
+		indexLessRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/media/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'; sandbox")
+			fsMedia.ServeHTTP(w, r)
+		})
 	}
 
 	staticRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/if/help/").Handler(pathStripper(

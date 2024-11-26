@@ -14,7 +14,11 @@ sidebar_label: Nextcloud
 > -- https://en.wikipedia.org/wiki/Nextcloud
 
 :::caution
-This setup only works, when Nextcloud is running with HTTPS enabled. See [here](https://docs.nextcloud.com/server/stable/admin_manual/configuration_server/reverse_proxy_configuration.html?highlight=overwriteprotocol#overwrite-parameters) on how to configure this.
+If you require [Server Side Encryption](https://docs.nextcloud.com/server/latest/admin_manual/configuration_files/encryption_configuration.html), you must use LDAP. OpenID and SAML will cause **irrevocable data loss**. Nextcloud Server-Side Encryption requires access to the user's cleartext password, which Nextcloud only has access to when using LDAP as the user enters their password directly into Nextcloud.
+:::
+
+:::caution
+This setup only works when Nextcloud is running with HTTPS enabled. See [here](https://docs.nextcloud.com/server/stable/admin_manual/configuration_server/reverse_proxy_configuration.html?highlight=overwriteprotocol#overwrite-parameters) on how to configure this.
 :::
 
 :::info
@@ -23,10 +27,11 @@ In case something goes wrong with the configuration, you can use the URL `http:/
 
 ## Authentication
 
-There are 2 ways to setup single sign on (SSO) for Nextcloud:
+There are 3 ways to setup single sign on (SSO) for Nextcloud:
 
 -   [via OIDC Connect (OAuth)](#openid-connect-auth)
 -   [via SAML](#saml-auth)
+-   via LDAP outpost (required for SSE, not covered in this documentation)
 
 ### OpenID Connect auth
 
