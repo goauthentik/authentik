@@ -1,5 +1,7 @@
 """Test Application Entitlements API"""
 
+from django.urls import reverse
+from guardian.shortcuts import assign_perm
 from rest_framework.test import APITestCase
 
 from authentik.core.models import Application, ApplicationEntitlement, Group
@@ -70,3 +72,45 @@ class TestApplicationEntitlements(APITestCase):
         ents = self.user.app_entitlements(self.app)
         self.assertEqual(len(ents), 1)
         self.assertEqual(ents[0].name, ent.name)
+
+    def test_api_perms_global(self):
+        """Test API creation with global permissions"""
+        assign_perm("authentik_core.add_applicationentitlement", self.user)
+        assign_perm("authentik_core.view_application", self.user)
+        self.client.force_login(self.user)
+        res = self.client.post(
+            reverse("authentik_api:applicationentitlement-list"),
+            data={
+                "name": generate_id(),
+                "app": self.app.pk,
+            },
+        )
+        self.assertEqual(res.status_code, 201)
+
+    def test_api_perms_scoped(self):
+        """Test API creation with scoped permissions"""
+        assign_perm("authentik_core.add_applicationentitlement", self.user)
+        assign_perm("authentik_core.view_application", self.user, self.app)
+        self.client.force_login(self.user)
+        res = self.client.post(
+            reverse("authentik_api:applicationentitlement-list"),
+            data={
+                "name": generate_id(),
+                "app": self.app.pk,
+            },
+        )
+        self.assertEqual(res.status_code, 201)
+
+    def test_api_perms_missing(self):
+        """Test API creation with no permissions"""
+        assign_perm("authentik_core.add_applicationentitlement", self.user)
+        self.client.force_login(self.user)
+        res = self.client.post(
+            reverse("authentik_api:applicationentitlement-list"),
+            data={
+                "name": generate_id(),
+                "app": self.app.pk,
+            },
+        )
+        self.assertEqual(res.status_code, 400)
+        self.assertJSONEqual(res.content, {"app": ["User does not have access to application."]})
