@@ -4,6 +4,7 @@ import {
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
     EVENT_WS_MESSAGE,
 } from "@goauthentik/common/constants";
+import { globalAK } from "@goauthentik/common/global";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { UIConfig, UserDisplay } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
@@ -207,7 +208,7 @@ class UserInterfacePresentation extends AKElement {
                             ${this.renderSettings()}
                             <div class="pf-c-page__header-tools-item">
                                 <a
-                                    href="/flows/-/default/invalidation/"
+                                    href="${globalAK().api.base}flows/-/default/invalidation/"
                                     class="pf-c-button pf-m-plain"
                                 >
                                     <pf-tooltip position="top" content=${msg("Sign out")}>
@@ -349,7 +350,7 @@ class UserInterfacePresentation extends AKElement {
 
         return html`<a
             class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none pf-u-display-block-on-md"
-            href="/if/admin/"
+            href="${globalAK().api.base}if/admin/"
         >
             ${msg("Admin interface")}
         </a>`;

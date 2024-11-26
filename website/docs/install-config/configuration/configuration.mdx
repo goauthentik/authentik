@@ -345,6 +345,16 @@ Configure Celery worker concurrency for authentik worker (see https://docs.celer
 
 Defaults to 2.
 
+### `AUTHENTIK_WEB__PATH`
+
+:::info
+Requires authentik 2024.8
+:::
+
+Configure the path under which authentik is serverd. For example to access authentik under `https://my.domain/authentik/`, set this to `/authentik/`. Value _must_ contain both a leading and trailing slash.
+
+Defaults to `/`.
+
 ## System settings <span class="badge badge--version">authentik 2024.2+</span>
 
 Additional settings are configurable using the Admin interface, under **System** -> **Settings** or using the API.

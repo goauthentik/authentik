@@ -1,3 +1,4 @@
+import { globalAK } from "@goauthentik/common/global";
 import "@goauthentik/flow/FormStatic";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
@@ -47,7 +48,9 @@ export class SessionEnd extends BaseStage<SessionEndChallenge, unknown> {
                             str`You've logged out of ${this.challenge.applicationName}. You can go back to the overview to launch another application, or log out of your authentik account.`,
                         )}
                     </p>
-                    <a href="/" class="pf-c-button pf-m-primary"> ${msg("Go back to overview")} </a>
+                    <a href="${globalAK().api.base}" class="pf-c-button pf-m-primary">
+                        ${msg("Go back to overview")}
+                    </a>
                     ${this.challenge.invalidationFlowUrl
                         ? html`
                               <a

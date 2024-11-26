@@ -36,6 +36,7 @@ from authentik.lib.utils.http import authentik_user_agent
 from authentik.lib.utils.reflection import get_env
 
 LOGGER = get_logger()
+_root_path = CONFIG.get("web.path", "/")
 
 
 class SentryIgnoredException(Exception):
@@ -90,7 +91,7 @@ def traces_sampler(sampling_context: dict) -> float:
     path = sampling_context.get("asgi_scope", {}).get("path", "")
     _type = sampling_context.get("asgi_scope", {}).get("type", "")
     # Ignore all healthcheck routes
-    if path.startswith("/-/health") or path.startswith("/-/metrics"):
+    if path.startswith(f"{_root_path}-/health") or path.startswith(f"{_root_path}-/metrics"):
         return 0
     if _type == "websocket":
         return 0
