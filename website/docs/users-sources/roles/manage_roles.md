@@ -37,6 +37,10 @@ To delete a role, follow these steps:
 
 In authentik, roles are assigned to [groups](../groups/index.mdx), not to individual users.
 
+:::warning
+In authentik, each role can only be applied to a single group at the moment.
+:::
+
 1.  To assign the role to a group, navigate to **Directory -> Groups**.
 2.  Click the name of the group to which you want to add a role.
 3.  On the group's detail page, on the Overview tab, click **Edit** in the **Group Info** area.

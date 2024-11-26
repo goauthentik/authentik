@@ -2962,13 +2962,13 @@ dev = ["bumpver", "isort", "mypy", "pylint", "pytest", "yapf"]
 
 [[package]]
 name = "msgraph-sdk"
-version = "1.12.0"
+version = "1.13.0"
 description = "The Microsoft Graph Python SDK"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "msgraph_sdk-1.12.0-py3-none-any.whl", hash = "sha256:ac298b546b240391b0e407379d039db32862a56d6fe15cf7c5f7e77631fc6771"},
-    {file = "msgraph_sdk-1.12.0.tar.gz", hash = "sha256:fbb5a8a9f6eed89b496f207eb35b6b4cfc7fefa75608aeef07477a3b2276d4fa"},
+    {file = "msgraph_sdk-1.13.0-py3-none-any.whl", hash = "sha256:7a170b46c287cfdd4edfe7ddfbce74c86e8c661901a61bec8cfa9190b72f79b3"},
+    {file = "msgraph_sdk-1.13.0.tar.gz", hash = "sha256:15ee4e812903c7fac5d828fe5f66f36ee42081b3a998ecd23b4a73c115683ce1"},
 ]
 
 [package.dependencies]
@@ -4535,13 +4535,13 @@ django-query = ["django (>=3.2)"]
 
 [[package]]
 name = "selenium"
-version = "4.26.1"
+version = "4.27.0"
 description = "Official Python bindings for Selenium WebDriver"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "selenium-4.26.1-py3-none-any.whl", hash = "sha256:1db3f3a0cd5bb07624fa8a3905a6fdde1595a42185a0617077c361dc53d104fb"},
-    {file = "selenium-4.26.1.tar.gz", hash = "sha256:7640f3f08ae7f4e450f895678e8a10a55eb4e4ca18311ed675ecc4684b96b683"},
+    {file = "selenium-4.27.0-py3-none-any.whl", hash = "sha256:70ff70cc8d08f19bda0e89d6a521c0f1c3ae648088c34dcf9fa177f1374c3b5f"},
+    {file = "selenium-4.27.0.tar.gz", hash = "sha256:e8850834c482dc93d92060586139cf8ff8be6c6f0e93db640fa65358548f426b"},
 ]
 
 [package.dependencies]
