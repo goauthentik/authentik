@@ -20,6 +20,7 @@ class UserOAuthSourceConnectionSerializer(UserSourceConnectionSerializer):
         extra_kwargs = {
             **UserSourceConnectionSerializer.Meta.extra_kwargs,
             "access_token": {"write_only": True},
+            "user": {"read_only": False},
         }
 
 

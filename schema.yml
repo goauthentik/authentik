@@ -28721,6 +28721,12 @@ paths:
         required: true
       tags:
       - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSourceConnectionRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -28754,6 +28760,11 @@ paths:
         required: true
       tags:
       - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserSourceConnectionRequest'
       security:
       - authentik: []
       responses:
@@ -50156,6 +50167,9 @@ components:
       properties:
         user:
           type: integer
+        source:
+          type: string
+          format: uuid
         identifier:
           type: string
           minLength: 1
@@ -50208,6 +50222,11 @@ components:
       type: object
       description: OAuth Source Serializer
       properties:
+        user:
+          type: integer
+        source:
+          type: string
+          format: uuid
         identifier:
           type: string
           minLength: 1
@@ -50220,6 +50239,9 @@ components:
       type: object
       description: Plex Source connection Serializer
       properties:
+        source:
+          type: string
+          format: uuid
         identifier:
           type: string
           minLength: 1
@@ -50269,9 +50291,19 @@ components:
       type: object
       description: SAML Source Serializer
       properties:
+        source:
+          type: string
+          format: uuid
         identifier:
           type: string
           minLength: 1
+    PatchedUserSourceConnectionRequest:
+      type: object
+      description: OAuth Source Serializer
+      properties:
+        source:
+          type: string
+          format: uuid
     PatchedUserWriteStageRequest:
       type: object
       description: UserWriteStage Serializer
@@ -55097,6 +55129,9 @@ components:
         user:
           type: integer
         source:
+          type: string
+          format: uuid
+        source_obj:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
@@ -55111,6 +55146,7 @@ components:
       - identifier
       - pk
       - source
+      - source_obj
       - user
     UserKerberosSourceConnectionRequest:
       type: object
@@ -55118,11 +55154,15 @@ components:
       properties:
         user:
           type: integer
+        source:
+          type: string
+          format: uuid
         identifier:
           type: string
           minLength: 1
       required:
       - identifier
+      - source
       - user
     UserLoginChallenge:
       type: object
@@ -55345,8 +55385,10 @@ components:
           title: ID
         user:
           type: integer
-          readOnly: true
         source:
+          type: string
+          format: uuid
+        source_obj:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
@@ -55362,11 +55404,17 @@ components:
       - identifier
       - pk
       - source
+      - source_obj
       - user
     UserOAuthSourceConnectionRequest:
       type: object
       description: OAuth Source Serializer
       properties:
+        user:
+          type: integer
+        source:
+          type: string
+          format: uuid
         identifier:
           type: string
           minLength: 1
@@ -55377,6 +55425,8 @@ components:
           nullable: true
       required:
       - identifier
+      - source
+      - user
     UserObjectPermission:
       type: object
       description: User-bound object level permission
@@ -55436,6 +55486,9 @@ components:
           type: integer
           readOnly: true
         source:
+          type: string
+          format: uuid
+        source_obj:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
@@ -55450,11 +55503,15 @@ components:
       - identifier
       - pk
       - source
+      - source_obj
       - user
     UserPlexSourceConnectionRequest:
       type: object
       description: Plex Source connection Serializer
       properties:
+        source:
+          type: string
+          format: uuid
         identifier:
           type: string
           minLength: 1
@@ -55465,6 +55522,7 @@ components:
       required:
       - identifier
       - plex_token
+      - source
     UserRequest:
       type: object
       description: User Serializer
@@ -55518,6 +55576,9 @@ components:
           type: integer
           readOnly: true
         source:
+          type: string
+          format: uuid
+        source_obj:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
@@ -55532,16 +55593,21 @@ components:
       - identifier
       - pk
       - source
+      - source_obj
       - user
     UserSAMLSourceConnectionRequest:
       type: object
       description: SAML Source Serializer
       properties:
+        source:
+          type: string
+          format: uuid
         identifier:
           type: string
           minLength: 1
       required:
       - identifier
+      - source
     UserSelf:
       type: object
       description: User Serializer for information a user can retrieve about themselves
@@ -55687,6 +55753,9 @@ components:
           type: integer
           readOnly: true
         source:
+          type: string
+          format: uuid
+        source_obj:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
@@ -55698,7 +55767,17 @@ components:
       - created
       - pk
       - source
+      - source_obj
       - user
+    UserSourceConnectionRequest:
+      type: object
+      description: OAuth Source Serializer
+      properties:
+        source:
+          type: string
+          format: uuid
+      required:
+      - source
     UserTypeEnum:
       enum:
       - internal
