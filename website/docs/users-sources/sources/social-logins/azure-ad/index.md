@@ -114,9 +114,9 @@ Try to login with a **_new_** user. You should see no prompts and the user shoul
 
 ### Machine-to-machine authentication <span class="badge badge--version">authentik 2024.12+</span>
 
-When using [Machine-to-Machine](../../../../add-secure-apps/providers/oauth2/client_credentials.md#jwt-authentication) authentication, some specific steps need to be considered.
+If using [Machine-to-Machine](../../../../add-secure-apps/providers/oauth2/client_credentials.md#jwt-authentication) authentication, some specific steps need to be considered.
 
-When getting the JWT token from Azure AD, the scope needs to be set to the Application ID URI, and _not_ the Graph URL, as otherwise the JWT will be in an invalid format.
+When getting the JWT token from Azure AD, set the scope to the Application ID URI, and _not_ the Graph URL; otherwise the JWT will be in an invalid format.
 
 ```http
 POST /<azure-ad-tenant-id>/oauth2/v2.0/token/ HTTP/1.1
