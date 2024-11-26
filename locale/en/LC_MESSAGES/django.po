@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-24 00:10+0000\n"
+"POT-Creation-Date: 2024-11-26 00:09+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -73,8 +73,8 @@ msgid "authentik Export - {date}"
 msgstr ""
 
 #: authentik/blueprints/v1/tasks.py authentik/crypto/tasks.py
-#, python-format
-msgid "Successfully imported %(count)d files."
+#, python-brace-format
+msgid "Successfully imported {count} files."
 msgstr ""
 
 #: authentik/brands/models.py
@@ -856,13 +856,13 @@ msgid "Starting full provider sync"
 msgstr ""
 
 #: authentik/lib/sync/outgoing/tasks.py
-#, python-format
-msgid "Syncing page %(page)d of users"
+#, python-brace-format
+msgid "Syncing page {page} of users"
 msgstr ""
 
 #: authentik/lib/sync/outgoing/tasks.py
-#, python-format
-msgid "Syncing page %(page)d of groups"
+#, python-brace-format
+msgid "Syncing page {page} of groups"
 msgstr ""
 
 #: authentik/lib/sync/outgoing/tasks.py
@@ -1012,8 +1012,8 @@ msgid "Event Matcher Policies"
 msgstr ""
 
 #: authentik/policies/expiry/models.py
-#, python-format
-msgid "Password expired %(days)d days ago. Please update your password."
+#, python-brace-format
+msgid "Password expired {days} days ago. Please update your password."
 msgstr ""
 
 #: authentik/policies/expiry/models.py
@@ -1140,8 +1140,8 @@ msgid "Invalid password."
 msgstr ""
 
 #: authentik/policies/password/models.py
-#, python-format
-msgid "Password exists on %(count)d online lists."
+#, python-brace-format
+msgid "Password exists on {count} online lists."
 msgstr ""
 
 #: authentik/policies/password/models.py
