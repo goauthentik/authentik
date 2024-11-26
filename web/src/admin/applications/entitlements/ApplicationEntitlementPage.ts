@@ -1,8 +1,7 @@
 import "@goauthentik/admin/applications/entitlements/ApplicationEntitlementForm";
-import "@goauthentik/admin/groups/GroupForm";
 import "@goauthentik/admin/policies/BoundPoliciesList";
 import { PolicyBindingCheckTarget } from "@goauthentik/admin/policies/utils";
-import "@goauthentik/admin/users/UserForm";
+import "@goauthentik/admin/rbac/ObjectPermissionModal";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { PFSize } from "@goauthentik/common/enums";
 import "@goauthentik/components/ak-status-label";
@@ -18,7 +17,11 @@ import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { ApplicationEntitlement, CoreApi } from "@goauthentik/api";
+import {
+    ApplicationEntitlement,
+    CoreApi,
+    RbacPermissionsAssignedByUsersListModelEnum,
+} from "@goauthentik/api";
 
 @customElement("ak-application-entitlements-list")
 export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
@@ -68,20 +71,25 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
         return [
             html`${item.name}`,
             html`<ak-forms-modal size=${PFSize.Medium}>
-                <span slot="submit"> ${msg("Update")} </span>
-                <span slot="header"> ${msg("Update Entitlement")} </span>
-                <ak-application-entitlement-form
-                    slot="form"
-                    .instancePk=${item.pbmUuid}
-                    targetPk=${ifDefined(this.app)}
+                    <span slot="submit"> ${msg("Update")} </span>
+                    <span slot="header"> ${msg("Update Entitlement")} </span>
+                    <ak-application-entitlement-form
+                        slot="form"
+                        .instancePk=${item.pbmUuid}
+                        targetPk=${ifDefined(this.app)}
+                    >
+                    </ak-application-entitlement-form>
+                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                        <pf-tooltip position="top" content=${msg("Edit")}>
+                            <i class="fas fa-edit"></i>
+                        </pf-tooltip>
+                    </button>
+                </ak-forms-modal>
+                <ak-rbac-object-permission-modal
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.CoreApplicationentitlement}
+                    objectPk=${item.pbmUuid}
                 >
-                </ak-application-entitlement-form>
-                <button slot="trigger" class="pf-c-button pf-m-plain">
-                    <pf-tooltip position="top" content=${msg("Edit")}>
-                        <i class="fas fa-edit"></i>
-                    </pf-tooltip>
-                </button>
-            </ak-forms-modal>`,
+                </ak-rbac-object-permission-modal>`,
         ];
     }
 
