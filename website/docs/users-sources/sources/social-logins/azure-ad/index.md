@@ -111,3 +111,22 @@ return True
 9. Open **Flow settings** and choose _azure-ad-enrollment_ as enrollment flow.
 
 Try to login with a **_new_** user. You should see no prompts and the user should have the correct information.
+
+### Machine-to-machine authentication <span class="badge badge--version">authentik 2024.12+</span>
+
+When doing [Machine-to-Machine](../../../../add-secure-apps/providers/oauth2/client_credentials.md#jwt-authentication), some specific steps need to be considered.
+
+When getting the JWT token from Azure AD, the scope needs to be set to the Application ID URI, and _not_ the Graph URL, as otherwise the JWT will be in an invalid format.
+
+```http
+POST /<azure-ad-tenant-id>/oauth2/v2.0/token/ HTTP/1.1
+Host: login.microsoftonline.com
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials&
+client_id=<application_client_id>&
+scope=api://<application_client_id>/.default&
+client_secret=<application_client_secret>
+```
+
+The JWT returned from the request above can be used with authentik to exchange it for an authentik JWT.

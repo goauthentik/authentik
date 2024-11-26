@@ -10,7 +10,7 @@ Hence identification is based on service-accounts, and authentication is based o
 
 An example request can look like this:
 
-```
+```http
 POST /application/o/token/ HTTP/1.1
 Host: authentik.company
 Content-Type: application/x-www-form-urlencoded
@@ -42,7 +42,7 @@ Starting with authentik 2022.6, you can define a JWKS URL/raw JWKS data in OAuth
 
 With this configure, any JWT issued by the configured certificates can be used to authenticate:
 
-```
+```http
 POST /application/o/token/ HTTP/1.1
 Host: authentik.company
 Content-Type: application/x-www-form-urlencoded
