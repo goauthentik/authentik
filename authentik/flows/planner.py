@@ -115,19 +115,10 @@ class FlowPlan:
         """Check if there are any stages left in this plan"""
         return len(self.markers) + len(self.bindings) > 0
 
-    def to_redirect(
+    def requires_flow_executor(
         self,
-        request: HttpRequest,
-        flow: Flow,
         allowed_silent_types: list["StageView"] | None = None,
-    ) -> HttpResponse:
-        """Redirect to the flow executor for this flow plan"""
-        # tmp import
-        from authentik.flows.views.executor import (
-            SESSION_KEY_PLAN,
-            FlowExecutorView,
-        )
-
+    ):
         # Check if we actually need to show the Flow executor, or if we can jump straight to the end
         found_unskippable = True
         if allowed_silent_types:
@@ -140,9 +131,24 @@ class FlowPlan:
                     found_unskippable = True
                 if marker and isinstance(marker, ReevaluateMarker):
                     found_unskippable = True
+        LOGGER.debug("Required flow executor status", status=found_unskippable)
+        return found_unskippable
 
-        if not found_unskippable:
-            LOGGER.debug("Skipping flow executor")
+    def to_redirect(
+        self,
+        request: HttpRequest,
+        flow: Flow,
+        allowed_silent_types: list["StageView"] | None = None,
+    ) -> HttpResponse:
+        """Redirect to the flow executor for this flow plan"""
+        from authentik.flows.views.executor import (
+            SESSION_KEY_PLAN,
+            FlowExecutorView,
+        )
+
+        requires_flow_executor = self.requires_flow_executor(allowed_silent_types)
+
+        if not requires_flow_executor:
             # No unskippable stages found, so we can directly return the response of the last stage
             final_stage: type[StageView] = self.bindings[-1].stage.view
             stage = final_stage(
