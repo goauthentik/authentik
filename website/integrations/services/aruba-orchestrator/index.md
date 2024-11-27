@@ -15,7 +15,7 @@ sidebar_label: Aruba Orchestrator
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in the documentation below:
 
 - `arubaorchestrator.company` is the FQDN of the Aruba Orchestrator install.
 - `authentik.company` is the FQDN of the authentik install.
@@ -36,7 +36,7 @@ The following placeholders will be used:
         return result
    ```
 
-   - Save settings
+   - Save the settings.
 
 3. Create a new SAML Provider under **Applications** -> **Providers** using the following settings:
    - **Name**: Aruba Orchestrator
