@@ -21,8 +21,8 @@ This is tested with DSM 7.1 or newer.
 
 The following placeholders will be used:
 
--   `synology.company` is the FQDN of the Synology DSM server.
--   `authentik.company` is the FQDN of the authentik install.
+- `synology.company` is the FQDN of the Synology DSM server.
+- `authentik.company` is the FQDN of the authentik install.
 
 ## authentik configuration
 
@@ -30,11 +30,11 @@ The following placeholders will be used:
 
 In the Admin interface of authentik, under _Providers_, create an OAuth2/OpenID provider with these settings:
 
--   Name: synology
--   Redirect URI: `https://synology.company/#/signin` (Note the absence of the trailing slash, and the inclusion of the webinterface port)
--   Signing Key: Select any available key
--   Subject mode: Based on the Users's Email (Matching on username could work, but not if you have duplicates due to e.g. a LDAP connection)
--   Take note of the 'Client ID' and 'Client secret'
+- Name: synology
+- Redirect URI: `https://synology.company/#/signin` (Note the absence of the trailing slash, and the inclusion of the webinterface port)
+- Signing Key: Select any available key
+- Subject mode: Based on the Users's Email (Matching on username could work, but not if you have duplicates due to e.g. a LDAP connection)
+- Take note of the 'Client ID' and 'Client secret'
 
 ### Step 2
 
@@ -48,16 +48,16 @@ To configure Synology DSM to utilize authentik as an OpenID Connect 1.0 Provider
 2. Check the **Enable OpenID Connect SSO service** checkbox in the **OpenID Connect SSO Service** section.
 3. Configure the following values:
 
--   Profile: OIDC
--   Account type: Domain/LDAP/local
--   Name: authentik
--   Well Known URL: Copy this from the 'OpenID Configuration URL' in the authentik provider (URL ends with '/.well-known/openid-configuration')
--   Application ID: The 'Client ID' from the authentik provider
--   Application Key: The 'Client secret' from the authentik provider
--   Redirect URL: https://synology.company/#/signin (This should match the 'Redirect URI' in authentik exactly)
--   Authorization Scope: openid profile email
--   Username Claim: preferred_username
--   Save the settings.
+- Profile: OIDC
+- Account type: Domain/LDAP/local
+- Name: authentik
+- Well Known URL: Copy this from the 'OpenID Configuration URL' in the authentik provider (URL ends with '/.well-known/openid-configuration')
+- Application ID: The 'Client ID' from the authentik provider
+- Application Key: The 'Client secret' from the authentik provider
+- Redirect URL: https://synology.company/#/signin (This should match the 'Redirect URI' in authentik exactly)
+- Authorization Scope: openid profile email
+- Username Claim: preferred_username
+- Save the settings.
 
 ## See also:
 

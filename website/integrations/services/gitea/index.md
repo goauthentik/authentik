@@ -21,8 +21,8 @@ This is based on authentik 2022.10.1 and Gitea 1.17.3 installed using the offici
 
 The following placeholders will be used:
 
--   `authentik.company` is the FQDN of authentik.
--   `gitea.company` is the FQDN of Gitea.
+- `authentik.company` is the FQDN of authentik.
+- `gitea.company` is the FQDN of Gitea.
 
 ### Step 1
 
@@ -34,12 +34,12 @@ Only settings that have been modified from default have been listed.
 
 **General Settings**
 
--   Redirect URIs: `https://gitea.company/user/oauth2/authentik/callback`
+- Redirect URIs: `https://gitea.company/user/oauth2/authentik/callback`
 
 **Protocol Settings**
 
--   Name: Gitea
--   Signing Key: Select any available key
+- Name: Gitea
+- Signing Key: Select any available key
 
 :::note
 Take note of the `Client ID` and `Client Secret`, you'll need to give them to Gitea in _Step 3_.
@@ -53,9 +53,9 @@ In authentik, create an application (under _Applications/Applications_) which us
 Only settings that have been modified from default have been listed.
 :::
 
--   Name: Gitea
--   Slug: gitea-slug
--   Provider: Gitea
+- Name: Gitea
+- Slug: gitea-slug
+- Provider: Gitea
 
 ### Step 3
 
@@ -63,13 +63,13 @@ Navigate to the _Authentication Sources_ page at https://gitea.company/admin/aut
 
 Change the following fields
 
--   Authentication Name: authentik
--   OAuth2 Provider: OpenID Connect
--   Client ID (Key): Step 1
--   Client Secret: Step 1
--   Icon URL: https://authentik.company/static/dist/assets/icons/icon.svg
--   OpenID Connect Auto Discovery URL: https://authentik.company/application/o/gitea-slug/.well-known/openid-configuration
--   Additional Scopes: `email profile`
+- Authentication Name: authentik
+- OAuth2 Provider: OpenID Connect
+- Client ID (Key): Step 1
+- Client Secret: Step 1
+- Icon URL: https://authentik.company/static/dist/assets/icons/icon.svg
+- OpenID Connect Auto Discovery URL: https://authentik.company/application/o/gitea-slug/.well-known/openid-configuration
+- Additional Scopes: `email profile`
 
 ![](./gitea1.png)
 
@@ -85,9 +85,9 @@ This step is **optional** and shows how to set claims to control the permissions
 
 The following groups will be used:
 
--   `gituser` for normal Gitea users.
--   `gitadmin` for Gitea users with administrative permissions.
--   `gitrestricted` for restricted Gitea users.
+- `gituser` for normal Gitea users.
+- `gitadmin` for Gitea users with administrative permissions.
+- `gitrestricted` for restricted Gitea users.
 
 :::note
 Users who are in none of these groups will not be able to log in to gitea.
@@ -107,8 +107,8 @@ In authentik, create a custom property mapping (under _Customization/Property Ma
 Only settings that have been modified from default have been listed.
 :::
 
--   Name: authentik gitea OAuth Mapping: OpenID 'gitea'
--   Scope name: gitea
+- Name: authentik gitea OAuth Mapping: OpenID 'gitea'
+- Scope name: gitea
 
 And as **Expression** set the following:
 
@@ -130,10 +130,10 @@ In authentik, edit the **Gitea** provider (under _Applications/Providers_) by cl
 
 Unfold the _Advanced protocol settings_ and activate these Mappings:
 
--   authentik default OAuth Mapping: OpenID 'email'
--   authentik default OAuth Mapping: OpenID 'profile'
--   authentik default OAuth Mapping: OpenID 'openid'
--   authentik gitea OAuth Mapping: OpenID 'gitea'
+- authentik default OAuth Mapping: OpenID 'email'
+- authentik default OAuth Mapping: OpenID 'profile'
+- authentik default OAuth Mapping: OpenID 'openid'
+- authentik gitea OAuth Mapping: OpenID 'gitea'
 
 Click `Update` and the configuration authentik is done.
 
@@ -147,11 +147,11 @@ Navigate to the _Authentication Sources_ page at https://gitea.company/admin/aut
 
 Change the following fields
 
--   Additional Scopes: `email profile gitea`
--   Required Claim Name: `gitea`
--   Claim name providing group names for this source. (Optional): `gitea`
--   Group Claim value for administrator users. (Optional - requires claim name above): `admin`
--   Group Claim value for restricted users. (Optional - requires claim name above): `restricted`
+- Additional Scopes: `email profile gitea`
+- Required Claim Name: `gitea`
+- Claim name providing group names for this source. (Optional): `gitea`
+- Group Claim value for administrator users. (Optional - requires claim name above): `admin`
+- Group Claim value for restricted users. (Optional - requires claim name above): `restricted`
 
 `Update Authentication Source` and you should be done.
 

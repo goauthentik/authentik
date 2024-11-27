@@ -76,10 +76,10 @@ Check if a user has any authenticator devices. Only fully validated devices are 
 
 Optionally, you can filter a specific device type. The following options are valid:
 
--   `totp`
--   `duo`
--   `static`
--   `webauthn`
+- `totp`
+- `duo`
+- `static`
+- `webauthn`
 
 Example:
 

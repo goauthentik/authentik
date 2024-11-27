@@ -24,4 +24,4 @@ Ensure the default admin user (Username `akadmin`) exists and has a password set
 
 If you have any questions or comments about this advisory:
 
--   Email us at [security@goauthentik.io](mailto:security@goauthentik.io)
+- Email us at [security@goauthentik.io](mailto:security@goauthentik.io)
