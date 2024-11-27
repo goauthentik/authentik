@@ -14,7 +14,7 @@ authentik doesn't ship with a default flow for this usecase, so it is recommende
 
 The flow is initiated by sending a POST request to the device authorization endpoint, `/application/o/device/` with the following contents:
 
-```
+```http
 POST /application/o/device/ HTTP/1.1
 Host: authentik.company
 Content-Type: application/x-www-form-urlencoded
@@ -36,7 +36,7 @@ The response contains the following fields:
 
 With this response, the device can start checking the status of the token by sending requests to the token endpoint like this:
 
-```
+```http
 POST /application/o/token/ HTTP/1.1
 Host: authentik.company
 Content-Type: application/x-www-form-urlencoded

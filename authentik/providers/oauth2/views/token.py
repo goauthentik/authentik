@@ -393,19 +393,22 @@ class TokenParams:
             LOGGER.warning("failed to parse JWT for kid lookup", exc=exc)
             raise TokenError("invalid_grant") from None
         expected_kid = decode_unvalidated["header"]["kid"]
+        fallback_alg = decode_unvalidated["header"]["alg"]
         for source in self.provider.jwks_sources.filter(
             oidc_jwks__keys__contains=[{"kid": expected_kid}]
         ):
             LOGGER.debug("verifying JWT with source", source=source.slug)
             keys = source.oidc_jwks.get("keys", [])
             for key in keys:
+                if key.get("kid") and key.get("kid") != expected_kid:
+                    continue
                 LOGGER.debug("verifying JWT with key", source=source.slug, key=key.get("kid"))
                 try:
                     parsed_key = PyJWK.from_dict(key)
                     token = decode(
                         assertion,
                         parsed_key.key,
-                        algorithms=[key.get("alg")],
+                        algorithms=[key.get("alg")] if "alg" in key else [fallback_alg],
                         options={
                             "verify_aud": False,
                         },
