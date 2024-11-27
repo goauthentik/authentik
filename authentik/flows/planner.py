@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from django.core.cache import cache
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse
 from sentry_sdk import start_span
 from sentry_sdk.tracing import Span
 from structlog.stdlib import BoundLogger, get_logger
@@ -23,6 +23,7 @@ from authentik.flows.models import (
     in_memory_stage,
 )
 from authentik.lib.config import CONFIG
+from authentik.lib.utils.urls import redirect_with_qs
 from authentik.outposts.models import Outpost
 from authentik.policies.engine import PolicyEngine
 from authentik.root.middleware import ClientIPMiddleware
@@ -109,6 +110,22 @@ class FlowPlan:
     def has_stages(self) -> bool:
         """Check if there are any stages left in this plan"""
         return len(self.markers) + len(self.bindings) > 0
+
+    def to_redirect(
+        self,
+        request: HttpRequest,
+        flow: Flow,
+    ) -> HttpResponse:
+        """Redirect to the flow executor for this flow plan"""
+        # tmp import
+        from authentik.flows.views.executor import SESSION_KEY_PLAN
+
+        request.session[SESSION_KEY_PLAN] = self
+        return redirect_with_qs(
+            "authentik_core:if-flow",
+            request.GET,
+            flow_slug=flow.slug,
+        )
 
 
 class FlowPlanner:
