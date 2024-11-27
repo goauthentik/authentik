@@ -14,7 +14,7 @@ const promptToSelect = (p: Prompt) => [
 
 export async function promptFieldsProvider(page = 1, search = "") {
     const prompts = await new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsList({
-        ordering: "field_name",
+        ordering: "field_name,order",
         pageSize: 20,
         search: search.trim(),
         page,
