@@ -381,13 +381,13 @@ typing-extensions = ">=4.0.0"
 
 [[package]]
 name = "bandit"
-version = "1.7.10"
+version = "1.8.0"
 description = "Security oriented static analyser for python code."
 optional = false
-python-versions = ">=3.8"
+python-versions = ">=3.9"
 files = [
-    {file = "bandit-1.7.10-py3-none-any.whl", hash = "sha256:665721d7bebbb4485a339c55161ac0eedde27d51e638000d91c8c2d68343ad02"},
-    {file = "bandit-1.7.10.tar.gz", hash = "sha256:59ed5caf5d92b6ada4bf65bc6437feea4a9da1093384445fed4d472acc6cff7b"},
+    {file = "bandit-1.8.0-py3-none-any.whl", hash = "sha256:b1a61d829c0968aed625381e426aa378904b996529d048f8d908fa28f6b13e38"},
+    {file = "bandit-1.8.0.tar.gz", hash = "sha256:b5bfe55a095abd9fe20099178a7c6c060f844bfd4fe4c76d28e35e4c52b9d31e"},
 ]
 
 [package.dependencies]
