@@ -15,7 +15,7 @@ sidebar_label: Aruba Orchestrator
 
 ## Preparation
 
-The following placeholders are used in the documentation below:
+The following placeholders are used in this guide:
 
 -   `arubaorchestrator.company` is the FQDN of the Aruba Orchestrator install.
 -   `authentik.company` is the FQDN of the authentik install.
