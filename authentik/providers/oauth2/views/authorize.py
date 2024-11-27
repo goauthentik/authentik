@@ -455,6 +455,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
         return plan.to_redirect(
             self.request,
             self.provider.authorization_flow,
+            allowed_silent_types=[OAuthFulfillmentStage],
         )
 
 

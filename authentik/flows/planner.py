@@ -1,7 +1,7 @@
 """Flows Planner"""
 
 from dataclasses import dataclass, field
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from django.core.cache import cache
 from django.http import HttpRequest, HttpResponse
@@ -27,6 +27,10 @@ from authentik.lib.utils.urls import redirect_with_qs
 from authentik.outposts.models import Outpost
 from authentik.policies.engine import PolicyEngine
 from authentik.root.middleware import ClientIPMiddleware
+
+if TYPE_CHECKING:
+    from authentik.flows.stage import StageView
+
 
 LOGGER = get_logger()
 PLAN_CONTEXT_PENDING_USER = "pending_user"
@@ -115,10 +119,36 @@ class FlowPlan:
         self,
         request: HttpRequest,
         flow: Flow,
+        allowed_silent_types: list["StageView"] | None = None,
     ) -> HttpResponse:
         """Redirect to the flow executor for this flow plan"""
         # tmp import
-        from authentik.flows.views.executor import SESSION_KEY_PLAN
+        from authentik.flows.views.executor import (
+            SESSION_KEY_PLAN,
+            FlowExecutorView,
+        )
+
+        # Check if we actually need to show the Flow executor, or if we can jump straight to the end
+        found_unskippable = True
+        if allowed_silent_types:
+            LOGGER.debug("Checking if we can skip the flow executor...")
+            # Policies applied to the flow have already been evaluated, so we're checking for stages
+            # allow-listed or bindings that require a policy re-eval
+            found_unskippable = False
+            for binding, marker in zip(self.bindings, self.markers, strict=True):
+                if binding.stage.view not in allowed_silent_types:
+                    found_unskippable = True
+                if marker and isinstance(marker, ReevaluateMarker):
+                    found_unskippable = True
+
+        if not found_unskippable:
+            LOGGER.debug("Skipping flow executor")
+            # No unskippable stages found, so we can directly return the response of the last stage
+            final_stage: type[StageView] = self.bindings[-1].stage.view
+            stage = final_stage(
+                FlowExecutorView(flow=flow, request=request, plan=self), request=request
+            )
+            return stage.dispatch(request)
 
         request.session[SESSION_KEY_PLAN] = self
         return redirect_with_qs(

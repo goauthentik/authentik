@@ -75,6 +75,7 @@ class CodeValidatorView(PolicyAccessView):
         return plan.to_redirect(
             self.request,
             self.token.provider.authorization_flow,
+            allowed_silent_types=[OAuthDeviceCodeFinishStage],
         )
 
 
