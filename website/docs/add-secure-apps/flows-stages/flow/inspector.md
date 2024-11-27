@@ -35,8 +35,8 @@ Alternatively, a user with the correct permission can launch the inspector by ad
 :::info
 Troubleshooting:
 
--   If the flow inspector does not launch and a "Bad request" error displays, this is likely either because you selected a flow that is not defined in your instance or the flow has a policy bound directly to it that prevents access, so the inspector won't open because the flow can't run results.
--   If the flow inspector launches but is empty, you can refresh the browser or advance the flow to load the inspector. This can occur when a race condition happens (the inspector tries to fetch the data before the flow plan is fully planned and as such the panel just shows blank).
+- If the flow inspector does not launch and a "Bad request" error displays, this is likely either because you selected a flow that is not defined in your instance or the flow has a policy bound directly to it that prevents access, so the inspector won't open because the flow can't run results.
+- If the flow inspector launches but is empty, you can refresh the browser or advance the flow to load the inspector. This can occur when a race condition happens (the inspector tries to fetch the data before the flow plan is fully planned and as such the panel just shows blank).
 
 :::
 

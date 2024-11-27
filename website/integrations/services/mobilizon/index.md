@@ -17,8 +17,8 @@ sidebar_label: Mobilizon
 
 The following placeholders will be used:
 
--   `mobilizon.company` is the FQDN of the mobilizon install.
--   `authentik.company` is the FQDN of the authentik install.
+- `mobilizon.company` is the FQDN of the mobilizon install.
+- `authentik.company` is the FQDN of the authentik install.
 
 ## authentik Configuration
 
@@ -26,16 +26,16 @@ The following placeholders will be used:
 
 Create a OAuth2/OpenID Provider (under _Applications/Providers_) with these settings:
 
--   Name : mobilizon
--   Redirect URI: `https://mobilizon.company/auth/keycloak/callback`
+- Name : mobilizon
+- Redirect URI: `https://mobilizon.company/auth/keycloak/callback`
 
 ### Step 3 - Application
 
 Create an application (under _Resources/Applications_) with these settings:
 
--   Name: Mobilizon
--   Slug: mobilizon
--   Provider: mobilizon
+- Name: Mobilizon
+- Slug: mobilizon
+- Provider: mobilizon
 
 ## Mobilizon Setup
 
@@ -67,4 +67,4 @@ Restart mobilizon.service
 
 ## Additional Resources
 
--   https://docs.joinmobilizon.org/administration/configure/auth/
+- https://docs.joinmobilizon.org/administration/configure/auth/

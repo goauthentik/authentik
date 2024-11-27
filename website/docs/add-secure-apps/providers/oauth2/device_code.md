@@ -25,12 +25,12 @@ scopes=openid email my-other-scope
 
 The response contains the following fields:
 
--   `device_code`: Device code, which is the code kept on the device
--   `verification_uri`: The URL to be shown to the enduser to input the code
--   `verification_uri_complete`: The same URL as above except the code will be prefilled
--   `user_code`: The raw code for the enduser to input
--   `expires_in`: The total seconds after which this token will expire
--   `interval`: The interval in seconds for how often the device should check the token status
+- `device_code`: Device code, which is the code kept on the device
+- `verification_uri`: The URL to be shown to the enduser to input the code
+- `verification_uri_complete`: The same URL as above except the code will be prefilled
+- `user_code`: The raw code for the enduser to input
+- `expires_in`: The total seconds after which this token will expire
+- `interval`: The interval in seconds for how often the device should check the token status
 
 ---
 

@@ -47,10 +47,10 @@ You can assign a role to a group, and then all users in the group inherit the pe
 
 To give a specific Role or User the ability to manage group members, the following permissions need to be granted on the matching Group object:
 
--   Can view group
--   Can add user to group
--   Can remove user from group
--   Can access admin interface (for managing a group's user within the authentik Admin interface)
+- Can view group
+- Can add user to group
+- Can remove user from group
+- Can access admin interface (for managing a group's user within the authentik Admin interface)
 
 In addition, the permission "Can view User" needs to be assigned, either globally or on specific users that should be manageable.
 

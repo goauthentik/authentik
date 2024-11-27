@@ -18,16 +18,16 @@ sidebar_label: Zulip
 
 The following placeholders will be used:
 
--   `authentik.company` is the FQDN of the authentik install.
--   `zulip.company` is the FQDN of the Zulip instance.
+- `authentik.company` is the FQDN of the authentik install.
+- `zulip.company` is the FQDN of the Zulip instance.
 
 Create an application in authentik and note the slug, as this will be used later. Create a SAML provider with the following parameters:
 
--   ACS URL: `https://zulip.company/complete/saml/`
--   Issuer: `https://authentik.company`
--   Service Provider Binding: `Post`
--   Signing Keypair: Select any certificate you have.
--   Property mappings: Select all Managed mappings.
+- ACS URL: `https://zulip.company/complete/saml/`
+- Issuer: `https://authentik.company`
+- Service Provider Binding: `Post`
+- Signing Keypair: Select any certificate you have.
+- Property mappings: Select all Managed mappings.
 
 ## Zulip Configuration
 
@@ -71,6 +71,6 @@ Remember to restart Zulip.
 
 Please refer to the following for further information:
 
--   https://zulip.com/
--   https://zulip.readthedocs.io
--   https://chat.zulip.org/ (Official public Zulip Chat instance)
+- https://zulip.com/
+- https://zulip.readthedocs.io
+- https://chat.zulip.org/ (Official public Zulip Chat instance)

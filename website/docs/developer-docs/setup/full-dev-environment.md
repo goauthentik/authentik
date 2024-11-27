@@ -4,12 +4,12 @@ title: Full development environment
 
 ## Requirements
 
--   Python 3.12
--   Poetry, which is used to manage dependencies
--   Go 1.23 or newer
--   Node.js 21 or newer
--   PostgreSQL 14 or newer
--   Redis (any recent version will do)
+- Python 3.12
+- Poetry, which is used to manage dependencies
+- Go 1.23 or newer
+- Node.js 21 or newer
+- PostgreSQL 14 or newer
+- Redis (any recent version will do)
 
 ## Services Setup
 

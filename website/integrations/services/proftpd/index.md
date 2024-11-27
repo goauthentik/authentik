@@ -19,7 +19,7 @@ This integration leverages authentik's LDAP for the identity provider to achieve
 
 The following placeholders will be used:
 
--   `authentik.company` is the FQDN of the authentik install.
+- `authentik.company` is the FQDN of the authentik install.
 
 ## authentik Configuration
 
@@ -41,17 +41,17 @@ _If you are unfamiliar with LDAP_: A bind account is used for authentication aga
 
 In authentik, create a LDAP provider (under _Applications/Providers_). This is an example for the settings:
 
--   Name : `provider-ldap` - or choose any
--   Bind DN : `DC=ldap,DC=goauthentik,DC=io`
--   Search group : `LDAPServiceUsers`
--   Certificate : `authentik Self-signed Certificate`
+- Name : `provider-ldap` - or choose any
+- Bind DN : `DC=ldap,DC=goauthentik,DC=io`
+- Search group : `LDAPServiceUsers`
+- Certificate : `authentik Self-signed Certificate`
 
 ### Step 3 - Application
 
 In authentik, create an application (under _Resources/Applications_) with these settings :
 
--   Name: `FTP` - or choose any
--   Provider: Choose the provider you created in _Step 2_
+- Name: `FTP` - or choose any
+- Provider: Choose the provider you created in _Step 2_
 
 ### Step 4 - Outpost
 

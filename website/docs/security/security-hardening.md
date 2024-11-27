@@ -10,8 +10,8 @@ authentik's default Password policy complies with the [NIST SP 800-63 Digital Id
 
 However, for further hardening compliant to the NIST Guidelines, consider
 
--   setting the length of the password to a minimum of 15 characters, and
--   enabling the "Check haveibeenpwned.com" blocklist comparison (note that this cannot be used on Air-gapped instances)
+- setting the length of the password to a minimum of 15 characters, and
+- enabling the "Check haveibeenpwned.com" blocklist comparison (note that this cannot be used on Air-gapped instances)
 
 For further options, see [Password policy](../customize/policies/index.md#password-policy).
 
@@ -21,9 +21,9 @@ For further options, see [Password policy](../customize/policies/index.md#passwo
 
 However, for further hardening, it is possible to prevent any user (even super-users) from using expressions to create or edit any objects. To do so, configure your deployment to block API requests to these endpoints:
 
--   `/api/v3/policies/expression*`
--   `/api/v3/propertymappings*`
--   `/api/v3/managed/blueprints*`
+- `/api/v3/policies/expression*`
+- `/api/v3/propertymappings*`
+- `/api/v3/managed/blueprints*`
 
 With these restrictions in place, expressions can only be edited using [Blueprints on the file system](../customize/blueprints/index.md#storage---file). Take care to restrict access to the file system itself.
 
@@ -33,7 +33,7 @@ Blueprints allow for templating and managing the authentik configuration as code
 
 To prevent any user from creating/editing blueprints, block API requests to this endpoint:
 
--   `/api/v3/managed/blueprints*`
+- `/api/v3/managed/blueprints*`
 
 With these restrictions in place, Blueprints can only be edited via [the file system](../customize/blueprints/index.md#storage---file).
 
@@ -43,8 +43,8 @@ The CAPTCHA stage allows for additional verification of a user while authenticat
 
 To prevent any user from creating/editing CAPTCHA stages block API requests to these endpoints:
 
--   `/api/v3/stages/captcha*`
--   `/api/v3/managed/blueprints*`
+- `/api/v3/stages/captcha*`
+- `/api/v3/managed/blueprints*`
 
 With these restrictions in place, CAPTCHA stages can only be edited using [Blueprints on the file system](../customize/blueprints/index.md#storage---file).
 
@@ -72,7 +72,7 @@ script-src 'self' 'unsafe-inline';   # Required for generated scripts
 
 Your use case might require more allowed locations for various directives, e.g.
 
--   when using a CAPTCHA service
--   when using Sentry
--   when using any custom JavaScript in a prompt stage
--   when using Spotlight Sidecar for development
+- when using a CAPTCHA service
+- when using Sentry
+- when using any custom JavaScript in a prompt stage
+- when using Spotlight Sidecar for development
