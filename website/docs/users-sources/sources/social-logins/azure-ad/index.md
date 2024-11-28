@@ -8,7 +8,7 @@ title: Azure AD
 
 The following placeholders will be used:
 
-- `authentik.company` is the FQDN of the authentik install.
+-   `authentik.company` is the FQDN of the authentik install.
 
 ## Azure setup
 
@@ -33,14 +33,14 @@ In authentik, create a new _Azure AD OAuth Source_ in Resources -> Sources.
 
 Use the following settings:
 
-- Name: `Azure AD`
-- Slug: `azure-ad` (this must match the URL being used above)
-- Consumer key: `*Application (client) ID* value from above`
-- Consumer secret: `*Value* of the secret from above`
+-   Name: `Azure AD`
+-   Slug: `azure-ad` (this must match the URL being used above)
+-   Consumer key: `*Application (client) ID* value from above`
+-   Consumer secret: `*Value* of the secret from above`
 
 If you kept the default _Supported account types_ selection of _Single tenant_, then you must change the URL below as well:
 
-- OIDC Well-known URL: `https://login.microsoftonline.com/*Directory (tenant) ID* from above/v2.0/.well-known/openid-configuration`
+-   OIDC Well-known URL: `https://login.microsoftonline.com/*Directory (tenant) ID* from above/v2.0/.well-known/openid-configuration`
 
 ![](./authentik_01.png)
 

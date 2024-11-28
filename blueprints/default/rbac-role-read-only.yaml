@@ -7,15 +7,12 @@ entries:
       name: authentik Read-only
     id: role
     attrs:
-      permissions: !Enumerate [
+      permissions:
+        !Enumerate [
           !Context goauthentik.io/rbac/models,
           SEQ,
-          !Format [
-              "%s.view_%s",
-              !Value 0,
-              !Index 0,
-          ],
-      ]
+          !Format ["%s.view_%s", !Value 0, !Index 0],
+        ]
   - model: authentik_core.group
     identifiers:
       name: authentik Read-only

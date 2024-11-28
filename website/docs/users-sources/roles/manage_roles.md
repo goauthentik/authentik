@@ -21,9 +21,9 @@ To create a new role, follow these steps:
 
 To modify a role, follow these steps:
 
-- To edit the name of the role, click the Edit icon beside the role's name.
+-   To edit the name of the role, click the Edit icon beside the role's name.
 
-- To modify the permissions that are assigned to the role click on the role's name to go to the role's detail page. There you can add, modify, or remove permissions. For more information, refer to ["Assign or remove permissions for a specific role"](../access-control/manage_permissions.md#assign-or-remove-permissions-for-a-specific-role).
+-   To modify the permissions that are assigned to the role click on the role's name to go to the role's detail page. There you can add, modify, or remove permissions. For more information, refer to ["Assign or remove permissions for a specific role"](../access-control/manage_permissions.md#assign-or-remove-permissions-for-a-specific-role).
 
 ## Delete a role
 

@@ -3,10 +3,7 @@
     "$id": "https://goauthentik.io/blueprints/schema.json",
     "type": "object",
     "title": "authentik 2024.10.4 Blueprint schema",
-    "required": [
-        "version",
-        "entries"
-    ],
+    "required": ["version", "entries"],
     "properties": {
         "version": {
             "$id": "#/properties/version",
@@ -17,9 +14,7 @@
         "metadata": {
             "$id": "#/properties/metadata",
             "type": "object",
-            "required": [
-                "name"
-            ],
+            "required": ["name"],
             "properties": {
                 "name": {
                     "type": "string"
@@ -43,10 +38,7 @@
                 "oneOf": [
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_tenants.domain"
@@ -83,10 +75,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_crypto.certificatekeypair"
@@ -123,10 +112,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_flows.flow"
@@ -163,10 +149,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_flows.flowstagebinding"
@@ -203,10 +186,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_outposts.dockerserviceconnection"
@@ -243,10 +223,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_outposts.kubernetesserviceconnection"
@@ -283,10 +260,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_outposts.outpost"
@@ -323,10 +297,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_policies_dummy.dummypolicy"
@@ -363,10 +334,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_policies_event_matcher.eventmatcherpolicy"
@@ -403,10 +371,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_policies_expiry.passwordexpirypolicy"
@@ -443,10 +408,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_policies_expression.expressionpolicy"
@@ -483,10 +445,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_policies_geoip.geoippolicy"
@@ -523,10 +482,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_policies_password.passwordpolicy"
@@ -563,10 +519,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_policies_reputation.reputationpolicy"
@@ -603,10 +556,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_policies.policybinding"
@@ -643,10 +593,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_providers_ldap.ldapprovider"
@@ -683,10 +630,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_providers_oauth2.scopemapping"
@@ -723,10 +667,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_providers_oauth2.oauth2provider"
@@ -763,10 +704,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_providers_proxy.proxyprovider"
@@ -803,10 +741,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_providers_radius.radiusprovider"
@@ -843,10 +778,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_providers_radius.radiusproviderpropertymapping"
@@ -883,10 +815,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_providers_saml.samlprovider"
@@ -923,10 +852,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_providers_saml.samlpropertymapping"
@@ -963,10 +889,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_providers_scim.scimprovider"
@@ -1003,10 +926,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_providers_scim.scimmapping"
@@ -1043,10 +963,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_rbac.role"
@@ -1083,10 +1000,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_sources_kerberos.kerberossource"
@@ -1123,10 +1037,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_sources_kerberos.kerberossourcepropertymapping"
@@ -1163,10 +1074,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_sources_kerberos.userkerberossourceconnection"
@@ -1203,10 +1111,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_sources_kerberos.groupkerberossourceconnection"
@@ -1243,10 +1148,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_sources_ldap.ldapsource"
@@ -1283,10 +1185,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_sources_ldap.ldapsourcepropertymapping"
@@ -1323,10 +1222,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_sources_oauth.oauthsource"
@@ -1363,10 +1259,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_sources_oauth.oauthsourcepropertymapping"
@@ -1403,10 +1296,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_sources_oauth.useroauthsourceconnection"
@@ -1443,10 +1333,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_sources_oauth.groupoauthsourceconnection"
@@ -1483,10 +1370,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_sources_plex.plexsource"
@@ -1523,10 +1407,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_sources_plex.plexsourcepropertymapping"
@@ -1563,10 +1444,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_sources_plex.userplexsourceconnection"
@@ -1603,10 +1481,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_sources_plex.groupplexsourceconnection"
@@ -1643,10 +1518,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_sources_saml.samlsource"
@@ -1683,10 +1555,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_sources_saml.samlsourcepropertymapping"
@@ -1723,10 +1592,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_sources_saml.usersamlsourceconnection"
@@ -1763,10 +1629,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_sources_saml.groupsamlsourceconnection"
@@ -1803,10 +1666,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_sources_scim.scimsource"
@@ -1843,10 +1703,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_sources_scim.scimsourcepropertymapping"
@@ -1883,10 +1740,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_stages_authenticator_duo.authenticatorduostage"
@@ -1923,10 +1777,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_stages_authenticator_duo.duodevice"
@@ -1963,10 +1814,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_stages_authenticator_sms.authenticatorsmsstage"
@@ -2003,10 +1851,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_stages_authenticator_sms.smsdevice"
@@ -2043,10 +1888,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_stages_authenticator_static.authenticatorstaticstage"
@@ -2083,10 +1925,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_stages_authenticator_static.staticdevice"
@@ -2123,10 +1962,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_stages_authenticator_totp.authenticatortotpstage"
@@ -2163,10 +1999,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_stages_authenticator_totp.totpdevice"
@@ -2203,10 +2036,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_stages_authenticator_validate.authenticatorvalidatestage"
@@ -2243,10 +2073,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_stages_authenticator_webauthn.authenticatorwebauthnstage"
@@ -2283,10 +2110,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_stages_authenticator_webauthn.webauthndevice"
@@ -2323,10 +2147,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_stages_captcha.captchastage"
@@ -2363,10 +2184,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_stages_consent.consentstage"
@@ -2403,10 +2221,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_stages_consent.userconsent"
@@ -2443,10 +2258,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_stages_deny.denystage"
@@ -2483,10 +2295,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_stages_dummy.dummystage"
@@ -2523,10 +2332,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_stages_email.emailstage"
@@ -2563,10 +2369,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_stages_identification.identificationstage"
@@ -2603,10 +2406,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_stages_invitation.invitationstage"
@@ -2643,10 +2443,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_stages_invitation.invitation"
@@ -2683,10 +2480,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_stages_password.passwordstage"
@@ -2723,10 +2517,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_stages_prompt.prompt"
@@ -2763,10 +2554,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_stages_prompt.promptstage"
@@ -2803,10 +2591,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_stages_user_delete.userdeletestage"
@@ -2843,10 +2628,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_stages_user_login.userloginstage"
@@ -2883,10 +2665,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_stages_user_logout.userlogoutstage"
@@ -2923,10 +2702,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_stages_user_write.userwritestage"
@@ -2963,10 +2739,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_brands.brand"
@@ -3003,10 +2776,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_blueprints.blueprintinstance"
@@ -3043,10 +2813,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_core.group"
@@ -3083,10 +2850,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_core.user"
@@ -3123,10 +2887,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_core.application"
@@ -3163,10 +2924,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_core.token"
@@ -3203,10 +2961,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_enterprise.license"
@@ -3243,10 +2998,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_providers_google_workspace.googleworkspaceprovider"
@@ -3283,10 +3035,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_providers_google_workspace.googleworkspaceprovidermapping"
@@ -3323,10 +3072,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_providers_microsoft_entra.microsoftentraprovider"
@@ -3363,10 +3109,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_providers_microsoft_entra.microsoftentraprovidermapping"
@@ -3403,10 +3146,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_providers_rac.racprovider"
@@ -3443,10 +3183,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_providers_rac.endpoint"
@@ -3483,10 +3220,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_providers_rac.racpropertymapping"
@@ -3523,10 +3257,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage"
@@ -3563,10 +3294,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_stages_source.sourcestage"
@@ -3603,10 +3331,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_events.event"
@@ -3643,10 +3368,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_events.notificationtransport"
@@ -3683,10 +3405,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_events.notification"
@@ -3723,10 +3442,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_events.notificationrule"
@@ -3763,10 +3479,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_events.notificationwebhookmapping"
@@ -3803,10 +3516,7 @@
                     },
                     {
                         "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
+                        "required": ["model", "identifiers"],
                         "properties": {
                             "model": {
                                 "const": "authentik_blueprints.metaapplyblueprint"
@@ -3871,9 +3581,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -3919,9 +3627,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -3984,10 +3690,7 @@
                 },
                 "policy_engine_mode": {
                     "type": "string",
-                    "enum": [
-                        "all",
-                        "any"
-                    ],
+                    "enum": ["all", "any"],
                     "title": "Policy engine mode"
                 },
                 "compatibility_mode": {
@@ -4008,11 +3711,7 @@
                 },
                 "denied_action": {
                     "type": "string",
-                    "enum": [
-                        "message_continue",
-                        "message",
-                        "continue"
-                    ],
+                    "enum": ["message_continue", "message", "continue"],
                     "title": "Denied action",
                     "description": "Configure what should happen when a flow denies access to a user."
                 },
@@ -4035,9 +3734,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -4092,19 +3789,12 @@
                 },
                 "policy_engine_mode": {
                     "type": "string",
-                    "enum": [
-                        "all",
-                        "any"
-                    ],
+                    "enum": ["all", "any"],
                     "title": "Policy engine mode"
                 },
                 "invalid_response_action": {
                     "type": "string",
-                    "enum": [
-                        "retry",
-                        "restart",
-                        "restart_with_context"
-                    ],
+                    "enum": ["retry", "restart", "restart_with_context"],
                     "title": "Invalid response action",
                     "description": "Configure how the flow executor should handle an invalid response to a challenge. RETRY returns the error message and a similar challenge to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT restarts the flow while keeping the current context."
                 }
@@ -4115,9 +3805,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -4175,9 +3863,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -4228,9 +3914,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -4260,12 +3944,7 @@
                 },
                 "type": {
                     "type": "string",
-                    "enum": [
-                        "proxy",
-                        "ldap",
-                        "radius",
-                        "rac"
-                    ],
+                    "enum": ["proxy", "ldap", "radius", "rac"],
                     "title": "Type"
                 },
                 "providers": {
@@ -4287,10 +3966,7 @@
                     "title": "Config"
                 },
                 "managed": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "minLength": 1,
                     "title": "Managed by authentik",
                     "description": "Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update."
@@ -4302,9 +3978,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -4360,9 +4034,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -4396,10 +4068,7 @@
                     "description": "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged."
                 },
                 "action": {
-                    "type": [
-                        "null",
-                        "string"
-                    ],
+                    "type": ["null", "string"],
                     "enum": [
                         null,
                         "login",
@@ -4434,19 +4103,13 @@
                     "description": "Match created events with this action type. When left empty, all action types will be matched."
                 },
                 "client_ip": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "minLength": 1,
                     "title": "Client ip",
                     "description": "Matches Event's Client IP (strict matching, for network matching use an Expression Policy)"
                 },
                 "app": {
-                    "type": [
-                        "null",
-                        "string"
-                    ],
+                    "type": ["null", "string"],
                     "enum": [
                         null,
                         "authentik.tenants",
@@ -4513,10 +4176,7 @@
                     "description": "Match events created by selected application. When left empty, all applications are matched."
                 },
                 "model": {
-                    "type": [
-                        "null",
-                        "string"
-                    ],
+                    "type": ["null", "string"],
                     "enum": [
                         null,
                         "authentik_tenants.domain",
@@ -4624,9 +4284,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -4676,9 +4334,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -4723,9 +4379,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -5035,9 +4689,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -5148,9 +4800,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -5204,9 +4854,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -5282,9 +4930,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -5369,18 +5015,12 @@
                 },
                 "search_mode": {
                     "type": "string",
-                    "enum": [
-                        "direct",
-                        "cached"
-                    ],
+                    "enum": ["direct", "cached"],
                     "title": "Search mode"
                 },
                 "bind_mode": {
                     "type": "string",
-                    "enum": [
-                        "direct",
-                        "cached"
-                    ],
+                    "enum": ["direct", "cached"],
                     "title": "Bind mode"
                 },
                 "mfa_support": {
@@ -5395,9 +5035,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -5422,10 +5060,7 @@
             "type": "object",
             "properties": {
                 "managed": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "minLength": 1,
                     "title": "Managed by authentik",
                     "description": "Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update."
@@ -5458,9 +5093,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -5516,10 +5149,7 @@
                 },
                 "client_type": {
                     "type": "string",
-                    "enum": [
-                        "confidential",
-                        "public"
-                    ],
+                    "enum": ["confidential", "public"],
                     "title": "Client Type",
                     "description": "Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable"
                 },
@@ -5576,10 +5206,7 @@
                         "properties": {
                             "matching_mode": {
                                 "type": "string",
-                                "enum": [
-                                    "strict",
-                                    "regex"
-                                ],
+                                "enum": ["strict", "regex"],
                                 "title": "Matching mode"
                             },
                             "url": {
@@ -5588,10 +5215,7 @@
                                 "title": "Url"
                             }
                         },
-                        "required": [
-                            "matching_mode",
-                            "url"
-                        ]
+                        "required": ["matching_mode", "url"]
                     },
                     "title": "Redirect uris"
                 },
@@ -5610,10 +5234,7 @@
                 },
                 "issuer_mode": {
                     "type": "string",
-                    "enum": [
-                        "global",
-                        "per_provider"
-                    ],
+                    "enum": ["global", "per_provider"],
                     "title": "Issuer mode",
                     "description": "Configure how the issuer field of the ID Token should be filled."
                 },
@@ -5632,9 +5253,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -5729,11 +5348,7 @@
                 },
                 "mode": {
                     "type": "string",
-                    "enum": [
-                        "proxy",
-                        "forward_single",
-                        "forward_domain"
-                    ],
+                    "enum": ["proxy", "forward_single", "forward_domain"],
                     "title": "Mode",
                     "description": "Enable support for forwardAuth in traefik and nginx auth_request. Exclusive with internal_host."
                 },
@@ -5773,9 +5388,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -5853,9 +5466,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -5879,10 +5490,7 @@
             "type": "object",
             "properties": {
                 "managed": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "minLength": 1,
                     "title": "Managed by authentik",
                     "description": "Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update."
@@ -5904,9 +5512,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -6054,10 +5660,7 @@
                 },
                 "sp_binding": {
                     "type": "string",
-                    "enum": [
-                        "redirect",
-                        "post"
-                    ],
+                    "enum": ["redirect", "post"],
                     "title": "Service Provider Binding",
                     "description": "This determines how authentik sends the response back to the Service Provider."
                 },
@@ -6073,9 +5676,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -6099,10 +5700,7 @@
             "type": "object",
             "properties": {
                 "managed": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "minLength": 1,
                     "title": "Managed by authentik",
                     "description": "Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update."
@@ -6123,10 +5721,7 @@
                     "title": "SAML Name"
                 },
                 "friendly_name": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "title": "Friendly name"
                 }
             },
@@ -6136,9 +5731,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -6216,9 +5809,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -6242,10 +5833,7 @@
             "type": "object",
             "properties": {
                 "managed": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "minLength": 1,
                     "title": "Managed by authentik",
                     "description": "Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update."
@@ -6267,9 +5855,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -6838,9 +6424,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -6913,10 +6497,7 @@
                 },
                 "policy_engine_mode": {
                     "type": "string",
-                    "enum": [
-                        "all",
-                        "any"
-                    ],
+                    "enum": ["all", "any"],
                     "title": "Policy engine mode"
                 },
                 "user_matching_mode": {
@@ -6943,11 +6524,7 @@
                 },
                 "group_matching_mode": {
                     "type": "string",
-                    "enum": [
-                        "identifier",
-                        "name_link",
-                        "name_deny"
-                    ],
+                    "enum": ["identifier", "name_link", "name_deny"],
                     "title": "Group matching mode",
                     "description": "How the source determines if an existing group should be used or a new group created."
                 },
@@ -7019,9 +6596,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -7045,10 +6620,7 @@
             "type": "object",
             "properties": {
                 "managed": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "minLength": 1,
                     "title": "Managed by authentik",
                     "description": "Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update."
@@ -7070,9 +6642,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -7116,9 +6686,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -7153,9 +6721,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -7226,10 +6792,7 @@
                 },
                 "policy_engine_mode": {
                     "type": "string",
-                    "enum": [
-                        "all",
-                        "any"
-                    ],
+                    "enum": ["all", "any"],
                     "title": "Policy engine mode"
                 },
                 "user_matching_mode": {
@@ -7356,9 +6919,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -7382,10 +6943,7 @@
             "type": "object",
             "properties": {
                 "managed": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "minLength": 1,
                     "title": "Managed by authentik",
                     "description": "Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update."
@@ -7407,9 +6965,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -7480,10 +7036,7 @@
                 },
                 "policy_engine_mode": {
                     "type": "string",
-                    "enum": [
-                        "all",
-                        "any"
-                    ],
+                    "enum": ["all", "any"],
                     "title": "Policy engine mode"
                 },
                 "user_matching_mode": {
@@ -7510,11 +7063,7 @@
                 },
                 "group_matching_mode": {
                     "type": "string",
-                    "enum": [
-                        "identifier",
-                        "name_link",
-                        "name_deny"
-                    ],
+                    "enum": ["identifier", "name_link", "name_deny"],
                     "title": "Group matching mode",
                     "description": "How the source determines if an existing group should be used or a new group created."
                 },
@@ -7539,37 +7088,25 @@
                     "title": "Provider type"
                 },
                 "request_token_url": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "maxLength": 255,
                     "title": "Request Token URL",
                     "description": "URL used to request the initial token. This URL is only required for OAuth 1."
                 },
                 "authorization_url": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "maxLength": 255,
                     "title": "Authorization URL",
                     "description": "URL the user is redirect to to conest the flow."
                 },
                 "access_token_url": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "maxLength": 255,
                     "title": "Access Token URL",
                     "description": "URL used by authentik to retrieve tokens."
                 },
                 "profile_url": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "maxLength": 255,
                     "title": "Profile URL",
                     "description": "URL used by authentik to get user information."
@@ -7608,9 +7145,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -7634,10 +7169,7 @@
             "type": "object",
             "properties": {
                 "managed": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "minLength": 1,
                     "title": "Managed by authentik",
                     "description": "Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update."
@@ -7659,9 +7191,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -7691,10 +7221,7 @@
                     "title": "Identifier"
                 },
                 "access_token": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "title": "Access token"
                 },
                 "icon": {
@@ -7709,9 +7236,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -7746,9 +7271,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -7819,10 +7342,7 @@
                 },
                 "policy_engine_mode": {
                     "type": "string",
-                    "enum": [
-                        "all",
-                        "any"
-                    ],
+                    "enum": ["all", "any"],
                     "title": "Policy engine mode"
                 },
                 "user_matching_mode": {
@@ -7849,11 +7369,7 @@
                 },
                 "group_matching_mode": {
                     "type": "string",
-                    "enum": [
-                        "identifier",
-                        "name_link",
-                        "name_deny"
-                    ],
+                    "enum": ["identifier", "name_link", "name_deny"],
                     "title": "Group matching mode",
                     "description": "How the source determines if an existing group should be used or a new group created."
                 },
@@ -7891,9 +7407,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -7917,10 +7431,7 @@
             "type": "object",
             "properties": {
                 "managed": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "minLength": 1,
                     "title": "Managed by authentik",
                     "description": "Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update."
@@ -7942,9 +7453,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -7989,9 +7498,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -8026,9 +7533,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -8099,10 +7604,7 @@
                 },
                 "policy_engine_mode": {
                     "type": "string",
-                    "enum": [
-                        "all",
-                        "any"
-                    ],
+                    "enum": ["all", "any"],
                     "title": "Policy engine mode"
                 },
                 "user_matching_mode": {
@@ -8129,11 +7631,7 @@
                 },
                 "group_matching_mode": {
                     "type": "string",
-                    "enum": [
-                        "identifier",
-                        "name_link",
-                        "name_deny"
-                    ],
+                    "enum": ["identifier", "name_link", "name_deny"],
                     "title": "Group matching mode",
                     "description": "How the source determines if an existing group should be used or a new group created."
                 },
@@ -8157,10 +7655,7 @@
                     "description": "URL that the initial Login request is sent to."
                 },
                 "slo_url": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "format": "uri",
                     "maxLength": 200,
                     "title": "SLO URL",
@@ -8185,11 +7680,7 @@
                 },
                 "binding_type": {
                     "type": "string",
-                    "enum": [
-                        "REDIRECT",
-                        "POST",
-                        "POST_AUTO"
-                    ],
+                    "enum": ["REDIRECT", "POST", "POST_AUTO"],
                     "title": "Binding type"
                 },
                 "verification_kp": {
@@ -8248,9 +7739,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -8274,10 +7763,7 @@
             "type": "object",
             "properties": {
                 "managed": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "minLength": 1,
                     "title": "Managed by authentik",
                     "description": "Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update."
@@ -8299,9 +7785,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -8341,9 +7825,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -8378,9 +7860,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -8454,9 +7934,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -8480,10 +7958,7 @@
             "type": "object",
             "properties": {
                 "managed": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "minLength": 1,
                     "title": "Managed by authentik",
                     "description": "Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update."
@@ -8505,9 +7980,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -8575,10 +8048,7 @@
                             },
                             "policy_engine_mode": {
                                 "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
+                                "enum": ["all", "any"],
                                 "title": "Policy engine mode"
                             },
                             "compatibility_mode": {
@@ -8608,12 +8078,7 @@
                                 "description": "Configure what should happen when a flow denies access to a user."
                             }
                         },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
+                        "required": ["name", "slug", "title", "designation"]
                     },
                     "title": "Flow set"
                 },
@@ -8624,10 +8089,7 @@
                     "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
                 },
                 "friendly_name": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "minLength": 1,
                     "title": "Friendly name"
                 },
@@ -8661,9 +8123,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -8700,9 +8160,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -8770,10 +8228,7 @@
                             },
                             "policy_engine_mode": {
                                 "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
+                                "enum": ["all", "any"],
                                 "title": "Policy engine mode"
                             },
                             "compatibility_mode": {
@@ -8803,12 +8258,7 @@
                                 "description": "Configure what should happen when a flow denies access to a user."
                             }
                         },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
+                        "required": ["name", "slug", "title", "designation"]
                     },
                     "title": "Flow set"
                 },
@@ -8819,19 +8269,13 @@
                     "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
                 },
                 "friendly_name": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "minLength": 1,
                     "title": "Friendly name"
                 },
                 "provider": {
                     "type": "string",
-                    "enum": [
-                        "twilio",
-                        "generic"
-                    ],
+                    "enum": ["twilio", "generic"],
                     "title": "Provider"
                 },
                 "from_number": {
@@ -8855,10 +8299,7 @@
                 },
                 "auth_type": {
                     "type": "string",
-                    "enum": [
-                        "basic",
-                        "bearer"
-                    ],
+                    "enum": ["basic", "bearer"],
                     "title": "Auth type"
                 },
                 "verify_only": {
@@ -8878,9 +8319,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -8917,9 +8356,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -8987,10 +8424,7 @@
                             },
                             "policy_engine_mode": {
                                 "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
+                                "enum": ["all", "any"],
                                 "title": "Policy engine mode"
                             },
                             "compatibility_mode": {
@@ -9020,12 +8454,7 @@
                                 "description": "Configure what should happen when a flow denies access to a user."
                             }
                         },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
+                        "required": ["name", "slug", "title", "designation"]
                     },
                     "title": "Flow set"
                 },
@@ -9036,10 +8465,7 @@
                     "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
                 },
                 "friendly_name": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "minLength": 1,
                     "title": "Friendly name"
                 },
@@ -9062,9 +8488,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -9101,9 +8525,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -9171,10 +8593,7 @@
                             },
                             "policy_engine_mode": {
                                 "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
+                                "enum": ["all", "any"],
                                 "title": "Policy engine mode"
                             },
                             "compatibility_mode": {
@@ -9204,12 +8623,7 @@
                                 "description": "Configure what should happen when a flow denies access to a user."
                             }
                         },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
+                        "required": ["name", "slug", "title", "designation"]
                     },
                     "title": "Flow set"
                 },
@@ -9220,19 +8634,13 @@
                     "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
                 },
                 "friendly_name": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "minLength": 1,
                     "title": "Friendly name"
                 },
                 "digits": {
                     "type": "string",
-                    "enum": [
-                        "6",
-                        "8"
-                    ],
+                    "enum": ["6", "8"],
                     "title": "Digits"
                 }
             },
@@ -9242,9 +8650,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -9281,9 +8687,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -9351,10 +8755,7 @@
                             },
                             "policy_engine_mode": {
                                 "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
+                                "enum": ["all", "any"],
                                 "title": "Policy engine mode"
                             },
                             "compatibility_mode": {
@@ -9384,35 +8785,20 @@
                                 "description": "Configure what should happen when a flow denies access to a user."
                             }
                         },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
+                        "required": ["name", "slug", "title", "designation"]
                     },
                     "title": "Flow set"
                 },
                 "not_configured_action": {
                     "type": "string",
-                    "enum": [
-                        "skip",
-                        "deny",
-                        "configure"
-                    ],
+                    "enum": ["skip", "deny", "configure"],
                     "title": "Not configured action"
                 },
                 "device_classes": {
                     "type": "array",
                     "items": {
                         "type": "string",
-                        "enum": [
-                            "static",
-                            "totp",
-                            "webauthn",
-                            "duo",
-                            "sms"
-                        ],
+                        "enum": ["static", "totp", "webauthn", "duo", "sms"],
                         "title": "Device classes"
                     },
                     "title": "Device classes",
@@ -9436,11 +8822,7 @@
                 },
                 "webauthn_user_verification": {
                     "type": "string",
-                    "enum": [
-                        "required",
-                        "preferred",
-                        "discouraged"
-                    ],
+                    "enum": ["required", "preferred", "discouraged"],
                     "title": "Webauthn user verification",
                     "description": "Enforce user verification for WebAuthn devices."
                 },
@@ -9459,9 +8841,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -9529,10 +8909,7 @@
                             },
                             "policy_engine_mode": {
                                 "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
+                                "enum": ["all", "any"],
                                 "title": "Policy engine mode"
                             },
                             "compatibility_mode": {
@@ -9562,12 +8939,7 @@
                                 "description": "Configure what should happen when a flow denies access to a user."
                             }
                         },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
+                        "required": ["name", "slug", "title", "designation"]
                     },
                     "title": "Flow set"
                 },
@@ -9578,41 +8950,23 @@
                     "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
                 },
                 "friendly_name": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "minLength": 1,
                     "title": "Friendly name"
                 },
                 "user_verification": {
                     "type": "string",
-                    "enum": [
-                        "required",
-                        "preferred",
-                        "discouraged"
-                    ],
+                    "enum": ["required", "preferred", "discouraged"],
                     "title": "User verification"
                 },
                 "authenticator_attachment": {
-                    "type": [
-                        "null",
-                        "string"
-                    ],
-                    "enum": [
-                        null,
-                        "platform",
-                        "cross-platform"
-                    ],
+                    "type": ["null", "string"],
+                    "enum": [null, "platform", "cross-platform"],
                     "title": "Authenticator attachment"
                 },
                 "resident_key_requirement": {
                     "type": "string",
-                    "enum": [
-                        "discouraged",
-                        "preferred",
-                        "required"
-                    ],
+                    "enum": ["discouraged", "preferred", "required"],
                     "title": "Resident key requirement"
                 },
                 "device_type_restrictions": {
@@ -9630,9 +8984,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -9668,9 +9020,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -9738,10 +9088,7 @@
                             },
                             "policy_engine_mode": {
                                 "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
+                                "enum": ["all", "any"],
                                 "title": "Policy engine mode"
                             },
                             "compatibility_mode": {
@@ -9771,12 +9118,7 @@
                                 "description": "Configure what should happen when a flow denies access to a user."
                             }
                         },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
+                        "required": ["name", "slug", "title", "designation"]
                     },
                     "title": "Flow set"
                 },
@@ -9826,9 +9168,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -9896,10 +9236,7 @@
                             },
                             "policy_engine_mode": {
                                 "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
+                                "enum": ["all", "any"],
                                 "title": "Policy engine mode"
                             },
                             "compatibility_mode": {
@@ -9929,22 +9266,13 @@
                                 "description": "Configure what should happen when a flow denies access to a user."
                             }
                         },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
+                        "required": ["name", "slug", "title", "designation"]
                     },
                     "title": "Flow set"
                 },
                 "mode": {
                     "type": "string",
-                    "enum": [
-                        "always_require",
-                        "permanent",
-                        "expiring"
-                    ],
+                    "enum": ["always_require", "permanent", "expiring"],
                     "title": "Mode"
                 },
                 "consent_expire_in": {
@@ -9960,9 +9288,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -9986,10 +9312,7 @@
             "type": "object",
             "properties": {
                 "expires": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "format": "date-time",
                     "title": "Expires"
                 },
@@ -10017,10 +9340,7 @@
                             "description": "Designates whether this user should be treated as active. Unselect this instead of deleting accounts."
                         },
                         "last_login": {
-                            "type": [
-                                "string",
-                                "null"
-                            ],
+                            "type": ["string", "null"],
                             "format": "date-time",
                             "title": "Last login"
                         },
@@ -10059,10 +9379,7 @@
                             "title": "Type"
                         }
                     },
-                    "required": [
-                        "username",
-                        "name"
-                    ],
+                    "required": ["username", "name"],
                     "title": "User"
                 },
                 "application": {
@@ -10112,10 +9429,7 @@
                         },
                         "policy_engine_mode": {
                             "type": "string",
-                            "enum": [
-                                "all",
-                                "any"
-                            ],
+                            "enum": ["all", "any"],
                             "title": "Policy engine mode"
                         },
                         "group": {
@@ -10123,10 +9437,7 @@
                             "title": "Group"
                         }
                     },
-                    "required": [
-                        "name",
-                        "slug"
-                    ],
+                    "required": ["name", "slug"],
                     "title": "Application"
                 },
                 "permissions": {
@@ -10141,9 +9452,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -10211,10 +9520,7 @@
                             },
                             "policy_engine_mode": {
                                 "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
+                                "enum": ["all", "any"],
                                 "title": "Policy engine mode"
                             },
                             "compatibility_mode": {
@@ -10244,12 +9550,7 @@
                                 "description": "Configure what should happen when a flow denies access to a user."
                             }
                         },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
+                        "required": ["name", "slug", "title", "designation"]
                     },
                     "title": "Flow set"
                 },
@@ -10264,9 +9565,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -10334,10 +9633,7 @@
                             },
                             "policy_engine_mode": {
                                 "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
+                                "enum": ["all", "any"],
                                 "title": "Policy engine mode"
                             },
                             "compatibility_mode": {
@@ -10367,12 +9663,7 @@
                                 "description": "Configure what should happen when a flow denies access to a user."
                             }
                         },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
+                        "required": ["name", "slug", "title", "designation"]
                     },
                     "title": "Flow set"
                 },
@@ -10387,9 +9678,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -10457,10 +9746,7 @@
                             },
                             "policy_engine_mode": {
                                 "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
+                                "enum": ["all", "any"],
                                 "title": "Policy engine mode"
                             },
                             "compatibility_mode": {
@@ -10490,12 +9776,7 @@
                                 "description": "Configure what should happen when a flow denies access to a user."
                             }
                         },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
+                        "required": ["name", "slug", "title", "designation"]
                     },
                     "title": "Flow set"
                 },
@@ -10573,9 +9854,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -10643,10 +9922,7 @@
                             },
                             "policy_engine_mode": {
                                 "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
+                                "enum": ["all", "any"],
                                 "title": "Policy engine mode"
                             },
                             "compatibility_mode": {
@@ -10676,12 +9952,7 @@
                                 "description": "Configure what should happen when a flow denies access to a user."
                             }
                         },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
+                        "required": ["name", "slug", "title", "designation"]
                     },
                     "title": "Flow set"
                 },
@@ -10689,11 +9960,7 @@
                     "type": "array",
                     "items": {
                         "type": "string",
-                        "enum": [
-                            "email",
-                            "username",
-                            "upn"
-                        ],
+                        "enum": ["email", "username", "upn"],
                         "title": "User fields"
                     },
                     "title": "User fields",
@@ -10762,9 +10029,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -10832,10 +10097,7 @@
                             },
                             "policy_engine_mode": {
                                 "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
+                                "enum": ["all", "any"],
                                 "title": "Policy engine mode"
                             },
                             "compatibility_mode": {
@@ -10865,12 +10127,7 @@
                                 "description": "Configure what should happen when a flow denies access to a user."
                             }
                         },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
+                        "required": ["name", "slug", "title", "designation"]
                     },
                     "title": "Flow set"
                 },
@@ -10886,9 +10143,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -10919,10 +10174,7 @@
                     "title": "Name"
                 },
                 "expires": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "format": "date-time",
                     "title": "Expires"
                 },
@@ -10949,9 +10201,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -11019,10 +10269,7 @@
                             },
                             "policy_engine_mode": {
                                 "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
+                                "enum": ["all", "any"],
                                 "title": "Policy engine mode"
                             },
                             "compatibility_mode": {
@@ -11052,12 +10299,7 @@
                                 "description": "Configure what should happen when a flow denies access to a user."
                             }
                         },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
+                        "required": ["name", "slug", "title", "designation"]
                     },
                     "title": "Flow set"
                 },
@@ -11101,9 +10343,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -11236,10 +10476,7 @@
                                         },
                                         "policy_engine_mode": {
                                             "type": "string",
-                                            "enum": [
-                                                "all",
-                                                "any"
-                                            ],
+                                            "enum": ["all", "any"],
                                             "title": "Policy engine mode"
                                         },
                                         "compatibility_mode": {
@@ -11279,9 +10516,7 @@
                                 "title": "Flow set"
                             }
                         },
-                        "required": [
-                            "name"
-                        ]
+                        "required": ["name"]
                     },
                     "title": "Promptstage set"
                 },
@@ -11304,9 +10539,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -11374,10 +10607,7 @@
                             },
                             "policy_engine_mode": {
                                 "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
+                                "enum": ["all", "any"],
                                 "title": "Policy engine mode"
                             },
                             "compatibility_mode": {
@@ -11407,12 +10637,7 @@
                                 "description": "Configure what should happen when a flow denies access to a user."
                             }
                         },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
+                        "required": ["name", "slug", "title", "designation"]
                     },
                     "title": "Flow set"
                 },
@@ -11439,9 +10664,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -11509,10 +10732,7 @@
                             },
                             "policy_engine_mode": {
                                 "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
+                                "enum": ["all", "any"],
                                 "title": "Policy engine mode"
                             },
                             "compatibility_mode": {
@@ -11542,12 +10762,7 @@
                                 "description": "Configure what should happen when a flow denies access to a user."
                             }
                         },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
+                        "required": ["name", "slug", "title", "designation"]
                     },
                     "title": "Flow set"
                 }
@@ -11558,9 +10773,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -11628,10 +10841,7 @@
                             },
                             "policy_engine_mode": {
                                 "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
+                                "enum": ["all", "any"],
                                 "title": "Policy engine mode"
                             },
                             "compatibility_mode": {
@@ -11661,12 +10871,7 @@
                                 "description": "Configure what should happen when a flow denies access to a user."
                             }
                         },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
+                        "required": ["name", "slug", "title", "designation"]
                     },
                     "title": "Flow set"
                 },
@@ -11716,9 +10921,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -11786,10 +10989,7 @@
                             },
                             "policy_engine_mode": {
                                 "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
+                                "enum": ["all", "any"],
                                 "title": "Policy engine mode"
                             },
                             "compatibility_mode": {
@@ -11819,12 +11019,7 @@
                                 "description": "Configure what should happen when a flow denies access to a user."
                             }
                         },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
+                        "required": ["name", "slug", "title", "designation"]
                     },
                     "title": "Flow set"
                 }
@@ -11835,9 +11030,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -11905,10 +11098,7 @@
                             },
                             "policy_engine_mode": {
                                 "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
+                                "enum": ["all", "any"],
                                 "title": "Policy engine mode"
                             },
                             "compatibility_mode": {
@@ -11938,12 +11128,7 @@
                                 "description": "Configure what should happen when a flow denies access to a user."
                             }
                         },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
+                        "required": ["name", "slug", "title", "designation"]
                     },
                     "title": "Flow set"
                 },
@@ -11988,9 +11173,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -12091,9 +11274,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -12145,9 +11326,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -12212,9 +11391,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -12256,10 +11433,7 @@
                     "description": "Designates whether this user should be treated as active. Unselect this instead of deleting accounts."
                 },
                 "last_login": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "format": "date-time",
                     "title": "Last login"
                 },
@@ -12298,10 +11472,7 @@
                     "title": "Type"
                 },
                 "password": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "minLength": 1,
                     "title": "Password"
                 },
@@ -12845,9 +12016,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -12920,10 +12089,7 @@
                 },
                 "policy_engine_mode": {
                     "type": "string",
-                    "enum": [
-                        "all",
-                        "any"
-                    ],
+                    "enum": ["all", "any"],
                     "title": "Policy engine mode"
                 },
                 "group": {
@@ -12942,9 +12108,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -12968,10 +12132,7 @@
             "type": "object",
             "properties": {
                 "managed": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "minLength": 1,
                     "title": "Managed by authentik",
                     "description": "Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update."
@@ -12985,12 +12146,7 @@
                 },
                 "intent": {
                     "type": "string",
-                    "enum": [
-                        "verification",
-                        "api",
-                        "recovery",
-                        "app_password"
-                    ],
+                    "enum": ["verification", "api", "recovery", "app_password"],
                     "title": "Intent"
                 },
                 "user": {
@@ -13002,10 +12158,7 @@
                     "title": "Description"
                 },
                 "expires": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "format": "date-time",
                     "title": "Expires"
                 },
@@ -13025,9 +12178,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -13063,9 +12214,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -13139,20 +12288,12 @@
                 },
                 "user_delete_action": {
                     "type": "string",
-                    "enum": [
-                        "do_nothing",
-                        "delete",
-                        "suspend"
-                    ],
+                    "enum": ["do_nothing", "delete", "suspend"],
                     "title": "User delete action"
                 },
                 "group_delete_action": {
                     "type": "string",
-                    "enum": [
-                        "do_nothing",
-                        "delete",
-                        "suspend"
-                    ],
+                    "enum": ["do_nothing", "delete", "suspend"],
                     "title": "Group delete action"
                 },
                 "default_group_email_domain": {
@@ -13167,9 +12308,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -13193,10 +12332,7 @@
             "type": "object",
             "properties": {
                 "managed": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "minLength": 1,
                     "title": "Managed by authentik",
                     "description": "Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update."
@@ -13218,9 +12354,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -13292,20 +12426,12 @@
                 },
                 "user_delete_action": {
                     "type": "string",
-                    "enum": [
-                        "do_nothing",
-                        "delete",
-                        "suspend"
-                    ],
+                    "enum": ["do_nothing", "delete", "suspend"],
                     "title": "User delete action"
                 },
                 "group_delete_action": {
                     "type": "string",
-                    "enum": [
-                        "do_nothing",
-                        "delete",
-                        "suspend"
-                    ],
+                    "enum": ["do_nothing", "delete", "suspend"],
                     "title": "Group delete action"
                 }
             },
@@ -13315,9 +12441,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -13341,10 +12465,7 @@
             "type": "object",
             "properties": {
                 "managed": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "minLength": 1,
                     "title": "Managed by authentik",
                     "description": "Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update."
@@ -13366,9 +12487,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -13439,9 +12558,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -13475,11 +12592,7 @@
                 },
                 "protocol": {
                     "type": "string",
-                    "enum": [
-                        "rdp",
-                        "vnc",
-                        "ssh"
-                    ],
+                    "enum": ["rdp", "vnc", "ssh"],
                     "title": "Protocol"
                 },
                 "host": {
@@ -13502,10 +12615,7 @@
                 },
                 "auth_mode": {
                     "type": "string",
-                    "enum": [
-                        "static",
-                        "prompt"
-                    ],
+                    "enum": ["static", "prompt"],
                     "title": "Auth mode"
                 },
                 "maximum_connections": {
@@ -13521,9 +12631,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -13547,10 +12655,7 @@
             "type": "object",
             "properties": {
                 "managed": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "minLength": 1,
                     "title": "Managed by authentik",
                     "description": "Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update."
@@ -13576,9 +12681,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -13646,10 +12749,7 @@
                             },
                             "policy_engine_mode": {
                                 "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
+                                "enum": ["all", "any"],
                                 "title": "Policy engine mode"
                             },
                             "compatibility_mode": {
@@ -13679,12 +12779,7 @@
                                 "description": "Configure what should happen when a flow denies access to a user."
                             }
                         },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
+                        "required": ["name", "slug", "title", "designation"]
                     },
                     "title": "Flow set"
                 },
@@ -13695,10 +12790,7 @@
                     "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
                 },
                 "friendly_name": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "minLength": 1,
                     "title": "Friendly name"
                 },
@@ -13714,9 +12806,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -13784,10 +12874,7 @@
                             },
                             "policy_engine_mode": {
                                 "type": "string",
-                                "enum": [
-                                    "all",
-                                    "any"
-                                ],
+                                "enum": ["all", "any"],
                                 "title": "Policy engine mode"
                             },
                             "compatibility_mode": {
@@ -13817,12 +12904,7 @@
                                 "description": "Configure what should happen when a flow denies access to a user."
                             }
                         },
-                        "required": [
-                            "name",
-                            "slug",
-                            "title",
-                            "designation"
-                        ]
+                        "required": ["name", "slug", "title", "designation"]
                     },
                     "title": "Flow set"
                 },
@@ -13843,9 +12925,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -13917,10 +12997,7 @@
                     "title": "Context"
                 },
                 "client_ip": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": ["string", "null"],
                     "minLength": 1,
                     "title": "Client ip"
                 },
@@ -13941,9 +13018,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -13973,12 +13048,7 @@
                 },
                 "mode": {
                     "type": "string",
-                    "enum": [
-                        "local",
-                        "webhook",
-                        "webhook_slack",
-                        "email"
-                    ],
+                    "enum": ["local", "webhook", "webhook_slack", "email"],
                     "title": "Mode"
                 },
                 "webhook_url": {
@@ -14001,9 +13071,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -14078,10 +13146,7 @@
                             "title": "Context"
                         },
                         "client_ip": {
-                            "type": [
-                                "string",
-                                "null"
-                            ],
+                            "type": ["string", "null"],
                             "minLength": 1,
                             "title": "Client ip"
                         },
@@ -14096,10 +13161,7 @@
                             "title": "Brand"
                         }
                     },
-                    "required": [
-                        "action",
-                        "app"
-                    ],
+                    "required": ["action", "app"],
                     "title": "Event"
                 },
                 "seen": {
@@ -14113,9 +13175,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -14155,11 +13215,7 @@
                 },
                 "severity": {
                     "type": "string",
-                    "enum": [
-                        "notice",
-                        "warning",
-                        "alert"
-                    ],
+                    "enum": ["notice", "warning", "alert"],
                     "title": "Severity",
                     "description": "Controls which severity level the created notifications will have."
                 },
@@ -14176,9 +13232,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -14218,9 +13272,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",
@@ -14259,9 +13311,7 @@
             "type": "array",
             "items": {
                 "type": "object",
-                "required": [
-                    "permission"
-                ],
+                "required": ["permission"],
                 "properties": {
                     "permission": {
                         "type": "string",

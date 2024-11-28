@@ -1,30 +1,29 @@
-{% load i18n %}
-{% get_current_language as LANGUAGE_CODE %}
+{% load i18n %} {% get_current_language as LANGUAGE_CODE %}
 
 <script>
-    window.authentik = {
-        locale: "{{ LANGUAGE_CODE }}",
-        config: JSON.parse('{{ config_json|escapejs }}'),
-        brand: JSON.parse('{{ brand_json|escapejs }}'),
-        versionFamily: "{{ version_family }}",
-        versionSubdomain: "{{ version_subdomain }}",
-        build: "{{ build }}",
-        api: {
-            base: "{{ base_url }}",
-        },
-    };
-    window.addEventListener("DOMContentLoaded", function () {
-        {% for message in messages %}
-        window.dispatchEvent(
-            new CustomEvent("ak-message", {
-                bubbles: true,
-                composed: true,
-                detail: {
-                    level: "{{ message.tags|escapejs }}",
-                    message: "{{ message.message|escapejs }}",
-                },
-            }),
-        );
-        {% endfor %}
-    });
+  window.authentik = {
+      locale: "{{ LANGUAGE_CODE }}",
+      config: JSON.parse('{{ config_json|escapejs }}'),
+      brand: JSON.parse('{{ brand_json|escapejs }}'),
+      versionFamily: "{{ version_family }}",
+      versionSubdomain: "{{ version_subdomain }}",
+      build: "{{ build }}",
+      api: {
+          base: "{{ base_url }}",
+      },
+  };
+  window.addEventListener("DOMContentLoaded", function () {
+      {% for message in messages %}
+      window.dispatchEvent(
+          new CustomEvent("ak-message", {
+              bubbles: true,
+              composed: true,
+              detail: {
+                  level: "{{ message.tags|escapejs }}",
+                  message: "{{ message.message|escapejs }}",
+              },
+          }),
+      );
+      {% endfor %}
+  });
 </script>

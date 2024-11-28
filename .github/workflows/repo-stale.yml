@@ -1,8 +1,8 @@
-name: 'authentik-repo-stale'
+name: "authentik-repo-stale"
 
 on:
   schedule:
-    - cron: '30 1 * * *'
+    - cron: "30 1 * * *"
   workflow_dispatch:
 
 permissions:

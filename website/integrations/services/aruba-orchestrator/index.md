@@ -11,7 +11,7 @@ sidebar_label: Aruba Orchestrator
 
 > Aruba Orchestrator is a network management platform used to centrally manage, configure, monitor, and automate Aruba network devices and services. It provides tools for network visibility, policy management, and performance monitoring, simplifying the administration of complex and distributed network environments.
 
-> -- https://www.hpe.com/us/en/aruba-edgeconnect-sd-wan.html
+> https://www.hpe.com/us/en/aruba-edgeconnect-sd-wan.html
 
 ## Preparation
 
