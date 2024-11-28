@@ -17,20 +17,20 @@ sidebar_label: HedgeDoc
 
 The following placeholders will be used:
 
--   `hedgedoc.company` is the FQDN of the HedgeDoc install.
--   `authentik.company` is the FQDN of the authentik install.
+- `hedgedoc.company` is the FQDN of the HedgeDoc install.
+- `authentik.company` is the FQDN of the authentik install.
 
 Create an OAuth2/OpenID provider with the following parameters:
 
--   Client Type: `Confidential`
--   Scopes: OpenID, Email and Profile
--   Signing Key: Select any available key
--   Redirect URIs: `https://hedgedoc.company/auth/oauth2/callback`
+- Client Type: `Confidential`
+- Scopes: OpenID, Email and Profile
+- Signing Key: Select any available key
+- Redirect URIs: `https://hedgedoc.company/auth/oauth2/callback`
 
 Note the Client ID and Client Secret values. Create an application, using the provider you've created above.
 To be logged in immediately if you click on the application, set:
 
--   Launch URL: `https://hedgedoc.company/auth/oauth2`
+- Launch URL: `https://hedgedoc.company/auth/oauth2`
 
 ## HedgeDoc
 

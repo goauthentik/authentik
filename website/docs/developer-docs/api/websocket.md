@@ -33,15 +33,15 @@ Authentication is done via the `Authorization` header, same as the regular API. 
 
 All messages have two fields, `instruction` and `args`. Instruction is any number from this list:
 
--   `0`: ACK, simply acknowledges the previous message
--   `1`: HELLO, used for monitoring and regularly sent by outposts
--   `2`: TRIGGER_UPDATE, sent by authentik to trigger a reload of the configuration
+- `0`: ACK, simply acknowledges the previous message
+- `1`: HELLO, used for monitoring and regularly sent by outposts
+- `2`: TRIGGER_UPDATE, sent by authentik to trigger a reload of the configuration
 
 Arguments for these messages vary, all though these common args are always sent:
 
--   `args['uuid']`: A unique UUID generated on startup of an outpost, used to uniquely identify it.
+- `args['uuid']`: A unique UUID generated on startup of an outpost, used to uniquely identify it.
 
 These fields are only sent for HELLO instructions:
 
--   `args['version']`: Version of the outpost
--   `args['buildHash']`: Build hash of the outpost, when available
+- `args['version']`: Version of the outpost
+- `args['buildHash']`: Build hash of the outpost, when available

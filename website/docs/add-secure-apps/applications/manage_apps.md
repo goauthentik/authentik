@@ -32,8 +32,8 @@ By default, all users can access applications when no policies are bound.
 
 When multiple policies/groups/users are attached, you can configure the _Policy engine mode_ to either:
 
--   Require users to pass all bindings/be member of all groups (ALL), or
--   Require users to pass either binding/be member of either group (ANY)
+- Require users to pass all bindings/be member of all groups (ALL), or
+- Require users to pass either binding/be member of either group (ANY)
 
 ## Hide applications
 

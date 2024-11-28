@@ -64,12 +64,12 @@ Each top level SCIM attribute is available as a variable in the expression. For 
 
 The following variables are available in the expression:
 
--   `schemas` as a list of strings
--   `userName` as a string
--   `name` as a dictionary
--   `emails` as a dictionary
--   `title` as a string
--   `urn_scim_schemas_extension_enterprise_2_0` as a dictionary
+- `schemas` as a list of strings
+- `userName` as a string
+- `name` as a dictionary
+- `emails` as a dictionary
+- `title` as a string
+- `urn_scim_schemas_extension_enterprise_2_0` as a dictionary
 
     :::info
     Top-level keys which include symbols not allowed in python syntax are converted to `_`.
