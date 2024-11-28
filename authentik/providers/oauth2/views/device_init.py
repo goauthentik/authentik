@@ -72,11 +72,7 @@ class CodeValidatorView(PolicyAccessView):
             LOGGER.warning("Flow not applicable to user")
             return None
         plan.insert_stage(in_memory_stage(OAuthDeviceCodeFinishStage))
-        return plan.to_redirect(
-            self.request,
-            self.token.provider.authorization_flow,
-            allowed_silent_types=[OAuthDeviceCodeFinishStage],
-        )
+        return plan.to_redirect(self.request, self.token.provider.authorization_flow)
 
 
 class DeviceEntryView(PolicyAccessView):
