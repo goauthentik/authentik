@@ -146,6 +146,7 @@ class FlowPlan:
             FlowExecutorView,
         )
 
+        request.session[SESSION_KEY_PLAN] = self
         requires_flow_executor = self.requires_flow_executor(allowed_silent_types)
 
         if not requires_flow_executor:
@@ -156,7 +157,6 @@ class FlowPlan:
             )
             return stage.dispatch(request)
 
-        request.session[SESSION_KEY_PLAN] = self
         return redirect_with_qs(
             "authentik_core:if-flow",
             request.GET,
