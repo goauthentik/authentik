@@ -152,9 +152,9 @@ class FlowPlan:
         if not requires_flow_executor:
             # No unskippable stages found, so we can directly return the response of the last stage
             final_stage: type[StageView] = self.bindings[-1].stage.view
-            stage = final_stage(
-                FlowExecutorView(flow=flow, request=request, plan=self), request=request
-            )
+            temp_exec = FlowExecutorView(flow=flow, request=request, plan=self)
+            temp_exec.current_stage = self.bindings[-1].stage
+            stage = final_stage(request=request, executor=temp_exec)
             return stage.dispatch(request)
 
         return redirect_with_qs(

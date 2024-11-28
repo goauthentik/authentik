@@ -54,11 +54,7 @@ class RACStartView(EnterprisePolicyAccessView):
                 provider=self.provider,
             )
         )
-        return plan.to_redirect(
-            request,
-            self.provider.authorization_flow,
-            allowed_silent_types=[RACFinalStage],
-        )
+        return plan.to_redirect(request, self.provider.authorization_flow)
 
 
 class RACInterface(InterfaceView):
