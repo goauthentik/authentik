@@ -234,7 +234,11 @@ export class OAuth2ProviderViewPage extends AKElement {
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
-                                        ${this.provider.redirectUris}
+                                        <ul>
+                                            ${this.provider.redirectUris.map((ru) => {
+                                                return html`<li>${ru.matchingMode}: ${ru.url}</li>`;
+                                            })}
+                                        </ul>
                                     </div>
                                 </dd>
                             </div>

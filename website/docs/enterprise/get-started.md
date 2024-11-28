@@ -10,8 +10,8 @@ To get started working with Enterprise authentik, [upgrade](../install-config/up
 
 If this is a fresh install, refer to our [technical documentation](../install-config/index.mdx) for instructions to install and configure authentik.
 
--   [Docker Compose installation](../install-config/install/docker-compose.mdx)
--   [Kubernetes installation](../install-config/install/kubernetes.md)
+- [Docker Compose installation](../install-config/install/docker-compose.mdx)
+- [Kubernetes installation](../install-config/install/kubernetes.md)
 
 ## Access Enterprise
 

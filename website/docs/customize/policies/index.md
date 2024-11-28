@@ -39,16 +39,16 @@ By default, authentik's Password policy is compliant with [NIST's recommendation
 This policy allows you to specify password rules, such as length and required characters.
 The following rules can be set:
 
--   Minimum amount of uppercase characters.
--   Minimum amount of lowercase characters.
--   Minimum amount of symbols characters.
--   Minimum length.
--   Symbol charset (define which characters are counted as symbols).
+- Minimum amount of uppercase characters.
+- Minimum amount of lowercase characters.
+- Minimum amount of symbols characters.
+- Minimum length.
+- Symbol charset (define which characters are counted as symbols).
 
 Starting with authentik 2022.11.0, the following checks can also be done with this policy:
 
--   Check the password hash against the database of [Have I Been Pwned](https://haveibeenpwned.com/). Only the first 5 characters of the hashed password are transmitted, the rest is compared in authentik
--   Check the password against the password complexity checker [zxcvbn](https://github.com/dropbox/zxcvbn), which detects weak password on various metrics.
+- Check the password hash against the database of [Have I Been Pwned](https://haveibeenpwned.com/). Only the first 5 characters of the hashed password are transmitted, the rest is compared in authentik
+- Check the password against the password complexity checker [zxcvbn](https://github.com/dropbox/zxcvbn), which detects weak password on various metrics.
 
 ### Reputation Policy
 

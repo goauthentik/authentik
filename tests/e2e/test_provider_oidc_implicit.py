@@ -19,7 +19,13 @@ from authentik.providers.oauth2.constants import (
     SCOPE_OPENID_EMAIL,
     SCOPE_OPENID_PROFILE,
 )
-from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider, ScopeMapping
+from authentik.providers.oauth2.models import (
+    ClientTypes,
+    OAuth2Provider,
+    RedirectURI,
+    RedirectURIMatchingMode,
+    ScopeMapping,
+)
 from tests.e2e.utils import SeleniumTestCase, retry
 
 
@@ -68,7 +74,7 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
             client_id=self.client_id,
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
-            redirect_uris="http://localhost:9009/",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:9009/")],
             authorization_flow=authorization_flow,
         )
         provider.property_mappings.set(
@@ -117,7 +123,9 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
             client_id=self.client_id,
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
-            redirect_uris="http://localhost:9009/implicit/",
+            redirect_uris=[
+                RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:9009/implicit/")
+            ],
             authorization_flow=authorization_flow,
         )
         provider.property_mappings.set(
@@ -170,7 +178,9 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
             client_id=self.client_id,
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
-            redirect_uris="http://localhost:9009/implicit/",
+            redirect_uris=[
+                RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:9009/implicit/")
+            ],
         )
         provider.property_mappings.set(
             ScopeMapping.objects.filter(
@@ -238,7 +248,9 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
             client_id=self.client_id,
             client_secret=self.client_secret,
             signing_key=create_test_cert(),
-            redirect_uris="http://localhost:9009/implicit/",
+            redirect_uris=[
+                RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:9009/implicit/")
+            ],
         )
         provider.property_mappings.set(
             ScopeMapping.objects.filter(

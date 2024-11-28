@@ -21,7 +21,7 @@ The mail server must support XOAUTH2 for both SMTPD and IMAP/POP. Postfix SMTP s
 
 The following placeholders will be used:
 
--   `authentik.company` is the FQDN of the authentik install.
+- `authentik.company` is the FQDN of the authentik install.
 
 Create a new oauth2 Scope Mapping which does not return the 'group' values and associate this mapping
 in the provider settings instead of the default oauth mapping.
@@ -41,9 +41,9 @@ return {
 
 Create an application in authentik. Create an _OAuth2/OpenID Provider_ with the following parameters:
 
--   Client Type: `Confidential`
--   Scopes: OpenID, Email, and the scope you created above
--   Signing Key: Select any available key
+- Client Type: `Confidential`
+- Scopes: OpenID, Email, and the scope you created above
+- Signing Key: Select any available key
 
 ## Roundcube Configuration
 
@@ -85,6 +85,6 @@ Outlook etc with no way to configure custom email servers.
 
 Please refer to the following for further configuration information:
 
--   https://roundcube.net
--   https://github.com/roundcube/roundcubemail/wiki/Configuration:-OAuth2
--   https://doc.dovecot.org/configuration_manual/authentication/oauth2/
+- https://roundcube.net
+- https://github.com/roundcube/roundcubemail/wiki/Configuration:-OAuth2
+- https://doc.dovecot.org/configuration_manual/authentication/oauth2/

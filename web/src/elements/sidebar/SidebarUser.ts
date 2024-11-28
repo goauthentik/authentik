@@ -1,3 +1,4 @@
+import { globalAK } from "@goauthentik/common/global";
 import { me } from "@goauthentik/common/users";
 import { AKElement } from "@goauthentik/elements/Base";
 
@@ -35,7 +36,11 @@ export class SidebarUser extends AKElement {
 
     render(): TemplateResult {
         return html`
-            <a href="/if/user/#/settings" class="pf-c-nav__link user-avatar" id="user-settings">
+            <a
+                href="${globalAK().api.base}if/user/#/settings"
+                class="pf-c-nav__link user-avatar"
+                id="user-settings"
+            >
                 ${until(
                     me().then((u) => {
                         return html`<img
@@ -47,7 +52,11 @@ export class SidebarUser extends AKElement {
                     html``,
                 )}
             </a>
-            <a href="/flows/-/default/invalidation/" class="pf-c-nav__link user-logout" id="logout">
+            <a
+                href="${globalAK().api.base}flows/-/default/invalidation/"
+                class="pf-c-nav__link user-logout"
+                id="logout"
+            >
                 <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
             </a>
         `;

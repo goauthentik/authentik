@@ -90,7 +90,7 @@ jobs:
         with:
           image-name: ghcr.io/goauthentik/dev-${{ matrix.type }}
       - name: Login to Container Registry
-        if: ${{ steps.ev.outputs.shouldBuild == 'true' }}
+        if: ${{ steps.ev.outputs.shouldPush == 'true' }}
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -104,16 +104,16 @@ jobs:
         with:
           tags: ${{ steps.ev.outputs.imageTags }}
           file: ${{ matrix.type }}.Dockerfile
-          push: ${{ steps.ev.outputs.shouldBuild == 'true' }}
+          push: ${{ steps.ev.outputs.shouldPush == 'true' }}
           build-args: |
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
           platforms: linux/amd64,linux/arm64
           context: .
           cache-from: type=registry,ref=ghcr.io/goauthentik/dev-${{ matrix.type }}:buildcache
-          cache-to: ${{ steps.ev.outputs.shouldBuild == 'true' && format('type=registry,ref=ghcr.io/goauthentik/dev-{0}:buildcache,mode=max', matrix.type) || '' }}
+          cache-to: ${{ steps.ev.outputs.shouldPush == 'true' && format('type=registry,ref=ghcr.io/goauthentik/dev-{0}:buildcache,mode=max', matrix.type) || '' }}
       - uses: actions/attest-build-provenance@v1
         id: attest
-        if: ${{ steps.ev.outputs.shouldBuild == 'true' }}
+        if: ${{ steps.ev.outputs.shouldPush == 'true' }}
         with:
           subject-name: ${{ steps.ev.outputs.attestImageNames }}
           subject-digest: ${{ steps.push.outputs.digest }}

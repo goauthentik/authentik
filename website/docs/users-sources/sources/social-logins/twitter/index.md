@@ -10,7 +10,7 @@ Allows users to authenticate using their twitter credentials
 
 The following placeholders will be used:
 
--   `authentik.company` is the FQDN of the authentik install.
+- `authentik.company` is the FQDN of the authentik install.
 
 ## Twitter
 

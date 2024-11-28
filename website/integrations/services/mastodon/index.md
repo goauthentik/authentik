@@ -17,8 +17,8 @@ sidebar_label: Mastodon
 
 The following placeholders will be used:
 
--   `mastodon.company` is the FQDN of the mastodon install.
--   `authentik.company` is the FQDN of the authentik install.
+- `mastodon.company` is the FQDN of the mastodon install.
+- `authentik.company` is the FQDN of the authentik install.
 
 ## authentik Configuration
 
@@ -26,16 +26,16 @@ The following placeholders will be used:
 
 Create a OAuth2/OpenID Provider (under _Applications/Providers_) with these settings:
 
--   Name : mastodon
--   Redirect URI: `https://mastodon.company/auth/auth/openid_connect/callback`
+- Name : mastodon
+- Redirect URI: `https://mastodon.company/auth/auth/openid_connect/callback`
 
 ### Step 3 - Application
 
 Create an application (under _Resources/Applications_) with these settings:
 
--   Name: Mastodon
--   Slug: mastodon
--   Provider: mastodon
+- Name: Mastodon
+- Slug: mastodon
+- Provider: mastodon
 
 ## Mastodon Setup
 
@@ -59,5 +59,5 @@ Restart mastodon-web.service
 
 ## Additional Resources
 
--   https://github.com/mastodon/mastodon/pull/16221
--   https://forum.fedimins.net/t/sso-fuer-verschiedene-dienste/42
+- https://github.com/mastodon/mastodon/pull/16221
+- https://forum.fedimins.net/t/sso-fuer-verschiedene-dienste/42
