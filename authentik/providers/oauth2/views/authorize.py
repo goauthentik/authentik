@@ -455,7 +455,13 @@ class AuthorizationFlowInitView(PolicyAccessView):
         return plan.to_redirect(
             self.request,
             self.provider.authorization_flow,
-            allowed_silent_types=[OAuthFulfillmentStage],
+            # We can only skip the flow executor and directly go to the final redirect URL if
+            #  we can submit the data to the RP via URL
+            allowed_silent_types=(
+                [OAuthFulfillmentStage]
+                if self.params.response_mode in [ResponseMode.QUERY, ResponseMode.FRAGMENT]
+                else []
+            ),
         )
 
 
