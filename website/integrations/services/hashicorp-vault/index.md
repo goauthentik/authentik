@@ -21,8 +21,8 @@ This is based on authentik 2022.2.1 and Vault 1.9.3. Instructions may differ bet
 
 The following placeholders will be used:
 
--   `authentik.company` is the FQDN of authentik.
--   `vault.company` is the FQDN of Vault.
+- `authentik.company` is the FQDN of authentik.
+- `vault.company` is the FQDN of Vault.
 
 ### Step 1
 
@@ -34,10 +34,10 @@ Only settings that have been modified from default have been listed.
 
 **Protocol Settings**
 
--   Name: Vault
--   Signing Key: Select any available key
+- Name: Vault
+- Signing Key: Select any available key
 
--   Redirect URIs/Origins:
+- Redirect URIs/Origins:
 
 ```
 https://vault.company/ui/vault/auth/oidc/oidc/callback
@@ -57,9 +57,9 @@ In authentik, create an application (under _Resources/Applications_) which uses 
 Only settings that have been modified from default have been listed.
 :::
 
--   Name: Vault
--   Slug: vault-slug
--   Provider: Vault
+- Name: Vault
+- Slug: vault-slug
+- Provider: Vault
 
 ### Step 3
 

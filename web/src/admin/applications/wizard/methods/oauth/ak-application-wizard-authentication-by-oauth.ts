@@ -12,6 +12,10 @@ import {
     subjectModeOptions,
 } from "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
 import {
+    IRedirectURIInput,
+    akOAuthRedirectURIInput,
+} from "@goauthentik/admin/providers/oauth2/OAuth2ProviderRedirectURI";
+import {
     makeSourceSelector,
     oauth2SourcesProvider,
 } from "@goauthentik/admin/providers/oauth2/OAuth2Sources.js";
@@ -31,7 +35,13 @@ import { customElement, state } from "@lit/reactive-element/decorators.js";
 import { html, nothing } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { ClientTypeEnum, FlowsInstancesListDesignationEnum, SourcesApi } from "@goauthentik/api";
+import {
+    ClientTypeEnum,
+    FlowsInstancesListDesignationEnum,
+    MatchingModeEnum,
+    RedirectURI,
+    SourcesApi,
+} from "@goauthentik/api";
 import { type OAuth2Provider, type PaginatedOAuthSourceList } from "@goauthentik/api";
 
 import BaseProviderPanel from "../BaseProviderPanel";
@@ -120,14 +130,27 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                         >
                         </ak-text-input>
 
-                        <ak-textarea-input
+                        <ak-form-element-horizontal
+                            label=${msg("Redirect URIs/Origins")}
+                            required
                             name="redirectUris"
-                            label=${msg("Redirect URIs/Origins (RegEx)")}
-                            .value=${provider?.redirectUris}
-                            .errorMessages=${errors?.redirectUriHelp ?? []}
-                            .bighelp=${redirectUriHelp}
                         >
-                        </ak-textarea-input>
+                            <ak-array-input
+                                .items=${[]}
+                                .newItem=${() => ({
+                                    matchingMode: MatchingModeEnum.Strict,
+                                    url: "",
+                                })}
+                                .row=${(f?: RedirectURI) =>
+                                    akOAuthRedirectURIInput({
+                                        ".redirectURI": f,
+                                        "style": "width: 100%",
+                                        "name": "oauth2-redirect-uri",
+                                    } as unknown as IRedirectURIInput)}
+                            >
+                            </ak-array-input>
+                            ${redirectUriHelp}
+                        </ak-form-element-horizontal>
 
                         <ak-form-element-horizontal
                             label=${msg("Signing Key")}

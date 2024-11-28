@@ -1,1 +1,1 @@
-website/developer-docs/index.md
+website/docs/developer-docs/index.md

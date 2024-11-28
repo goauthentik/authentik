@@ -10,8 +10,8 @@ Allows users to authenticate using their Github credentials
 
 The following placeholders will be used:
 
--   `authentik.company` is the FQDN of the authentik install.
--   `www.my.company` Homepage URL for your site
+- `authentik.company` is the FQDN of the authentik install.
+- `www.my.company` Homepage URL for your site
 
 ## Github
 

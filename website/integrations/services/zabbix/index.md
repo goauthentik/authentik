@@ -19,14 +19,14 @@ sidebar_label: Zabbix
 
 The following placeholders will be used:
 
--   `zabbix.company` is the FQDN of the Zabbix install.
--   `authentik.company` is the FQDN of the authentik install.
+- `zabbix.company` is the FQDN of the Zabbix install.
+- `authentik.company` is the FQDN of the authentik install.
 
 Create an application in authentik and note the slug, as this will be used later. Create a SAML provider with the following parameters:
 
--   ACS URL: `https://zabbix.company/zabbix/index_sso.php?acs`
--   Issuer: `zabbix`
--   Service Provider Binding: Post
+- ACS URL: `https://zabbix.company/zabbix/index_sso.php?acs`
+- Issuer: `zabbix`
+- Service Provider Binding: Post
 
 You can of course use a custom signing certificate, and adjust durations.
 

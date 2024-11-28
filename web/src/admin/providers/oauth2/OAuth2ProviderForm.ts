@@ -1,11 +1,16 @@
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
+import {
+    IRedirectURIInput,
+    akOAuthRedirectURIInput,
+} from "@goauthentik/admin/providers/oauth2/OAuth2ProviderRedirectURI";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";
+import "@goauthentik/elements/ak-array-input.js";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
@@ -15,7 +20,7 @@ import "@goauthentik/elements/forms/SearchSelect";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -23,8 +28,10 @@ import {
     ClientTypeEnum,
     FlowsInstancesListDesignationEnum,
     IssuerModeEnum,
+    MatchingModeEnum,
     OAuth2Provider,
     ProvidersApi,
+    RedirectURI,
     SubModeEnum,
 } from "@goauthentik/api";
 
@@ -98,13 +105,13 @@ export const issuerModeOptions = [
 
 const redirectUriHelpMessages = [
     msg(
-        "Valid redirect URLs after a successful authorization flow. Also specify any origins here for Implicit flows.",
+        "Valid redirect URIs after a successful authorization flow. Also specify any origins here for Implicit flows.",
     ),
     msg(
         "If no explicit redirect URIs are specified, the first successfully used redirect URI will be saved.",
     ),
     msg(
-        'To allow any redirect URI, set this value to ".*". Be aware of the possible security implications this can have.',
+        'To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.',
     ),
 ];
 
@@ -124,11 +131,23 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
     @state()
     showClientSecret = true;
 
+    @state()
+    redirectUris: RedirectURI[] = [];
+
+    static get styles() {
+        return super.styles.concat(css`
+            ak-array-input {
+                width: 100%;
+            }
+        `);
+    }
+
     async loadInstance(pk: number): Promise<OAuth2Provider> {
         const provider = await new ProvidersApi(DEFAULT_CONFIG).providersOauth2Retrieve({
             id: pk,
         });
         this.showClientSecret = provider.clientType === ClientTypeEnum.Confidential;
+        this.redirectUris = provider.redirectUris;
         return provider;
     }
 
@@ -203,13 +222,24 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
                         ?hidden=${!this.showClientSecret}
                     >
                     </ak-text-input>
-                    <ak-textarea-input
+                    <ak-form-element-horizontal
+                        label=${msg("Redirect URIs/Origins")}
+                        required
                         name="redirectUris"
-                        label=${msg("Redirect URIs/Origins (RegEx)")}
-                        .value=${provider?.redirectUris}
-                        .bighelp=${redirectUriHelp}
                     >
-                    </ak-textarea-input>
+                        <ak-array-input
+                            .items=${this.instance?.redirectUris ?? []}
+                            .newItem=${() => ({ matchingMode: MatchingModeEnum.Strict, url: "" })}
+                            .row=${(f?: RedirectURI) =>
+                                akOAuthRedirectURIInput({
+                                    ".redirectURI": f,
+                                    "style": "width: 100%",
+                                    "name": "oauth2-redirect-uri",
+                                } as unknown as IRedirectURIInput)}
+                        >
+                        </ak-array-input>
+                        ${redirectUriHelp}
+                    </ak-form-element-horizontal>
 
                     <ak-form-element-horizontal label=${msg("Signing Key")} name="signingKey">
                         <!-- NOTE: 'null' cast to 'undefined' on signingKey to satisfy Lit requirements -->

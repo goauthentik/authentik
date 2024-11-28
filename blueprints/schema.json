@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://goauthentik.io/blueprints/schema.json",
     "type": "object",
-    "title": "authentik 2024.10.2 Blueprint schema",
+    "title": "authentik 2024.10.4 Blueprint schema",
     "required": [
         "version",
         "entries"
@@ -5570,9 +5570,30 @@
                     "description": "Key used to encrypt the tokens. When set, tokens will be encrypted and returned as JWEs."
                 },
                 "redirect_uris": {
-                    "type": "string",
-                    "title": "Redirect URIs",
-                    "description": "Enter each URI on a new line."
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "matching_mode": {
+                                "type": "string",
+                                "enum": [
+                                    "strict",
+                                    "regex"
+                                ],
+                                "title": "Matching mode"
+                            },
+                            "url": {
+                                "type": "string",
+                                "minLength": 1,
+                                "title": "Url"
+                            }
+                        },
+                        "required": [
+                            "matching_mode",
+                            "url"
+                        ]
+                    },
+                    "title": "Redirect uris"
                 },
                 "sub_mode": {
                     "type": "string",

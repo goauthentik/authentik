@@ -19,7 +19,12 @@ from authentik.providers.oauth2.constants import (
     SCOPE_OPENID_PROFILE,
     TOKEN_TYPE,
 )
-from authentik.providers.oauth2.models import OAuth2Provider, ScopeMapping
+from authentik.providers.oauth2.models import (
+    OAuth2Provider,
+    RedirectURI,
+    RedirectURIMatchingMode,
+    ScopeMapping,
+)
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 from authentik.providers.oauth2.views.jwks import JWKSView
 from authentik.sources.oauth.models import OAuthSource
@@ -54,7 +59,7 @@ class TestTokenClientCredentialsJWTSource(OAuthTestCase):
         self.provider: OAuth2Provider = OAuth2Provider.objects.create(
             name="test",
             authorization_flow=create_test_flow(),
-            redirect_uris="http://testserver",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://testserver")],
             signing_key=self.cert,
         )
         self.provider.jwks_sources.add(self.source)

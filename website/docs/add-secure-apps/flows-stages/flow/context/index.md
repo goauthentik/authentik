@@ -144,12 +144,12 @@ Set by the [Password stage](../../stages/password/index.md), the [Authenticator 
 
 Possible options:
 
--   `password` (Authenticated via the password in authentik's database)
--   `token` (Authenticated via API token)
--   `ldap` (Authenticated via LDAP bind from an LDAP source)
--   `auth_mfa` (Authentication via MFA device without password)
--   `auth_webauthn_pwl` (Passwordless authentication via WebAuthn)
--   `jwt` ([M2M](../../../providers/oauth2/client_credentials.md) authentication via an existing JWT)
+- `password` (Authenticated via the password in authentik's database)
+- `token` (Authenticated via API token)
+- `ldap` (Authenticated via LDAP bind from an LDAP source)
+- `auth_mfa` (Authentication via MFA device without password)
+- `auth_webauthn_pwl` (Passwordless authentication via WebAuthn)
+- `jwt` ([M2M](../../../providers/oauth2/client_credentials.md) authentication via an existing JWT)
 
 ##### `auth_method_args` (dictionary)
 
