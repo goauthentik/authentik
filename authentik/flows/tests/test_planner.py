@@ -248,6 +248,9 @@ class TestFlowPlanner(TestCase):
         request = self.request_factory.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
+        middleware = SessionMiddleware(dummy_get_response)
+        middleware.process_request(request)
+        request.session.save()
         request.user = AnonymousUser()
         planner = FlowPlanner(flow)
         planner.allow_empty_flows = True
@@ -264,8 +267,9 @@ class TestFlowPlanner(TestCase):
             "https://authentik.company",
         )
 
-    def test_to_redirect_skip_policies(self):
-        """Test to_redirect and skipping the flow executor"""
+    def test_to_redirect_skip_stage(self):
+        """Test to_redirect and skipping the flow executor
+        (with a stage bound that cannot be skipped)"""
         flow = create_test_flow()
         flow.authentication = FlowAuthenticationRequirement.NONE
 
@@ -286,4 +290,28 @@ class TestFlowPlanner(TestCase):
                 return redirect("https://authentik.company")
 
         plan.append_stage(in_memory_stage(TStageView))
+        self.assertTrue(plan.requires_flow_executor(allowed_silent_types=[TStageView]))
+
+    def test_to_redirect_skip_policies(self):
+        """Test to_redirect and skipping the flow executor
+        (with a marker on the stage view type that can be skipped)
+
+        Note that this is not actually used anywhere in the code, all stages that are dynamically
+        added are statically added"""
+        flow = create_test_flow()
+        flow.authentication = FlowAuthenticationRequirement.NONE
+
+        request = self.request_factory.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        request.user = AnonymousUser()
+        planner = FlowPlanner(flow)
+        planner.allow_empty_flows = True
+        plan = planner.plan(request)
+
+        class TStageView(StageView):
+            def dispatch(self, request: HttpRequest, *args, **kwargs):
+                return redirect("https://authentik.company")
+
+        plan.append_stage(in_memory_stage(TStageView), ReevaluateMarker(None))
         self.assertTrue(plan.requires_flow_executor(allowed_silent_types=[TStageView]))

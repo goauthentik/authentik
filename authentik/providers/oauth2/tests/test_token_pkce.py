@@ -57,7 +57,7 @@ class TestTokenPKCE(OAuthTestCase):
             },
         )
         code: AuthorizationCode = AuthorizationCode.objects.filter(user=user).first()
-        self.assertJSONEqual(
+        self.assertEqual(
             response.url,
             f"foo://localhost?code={code.code}&state={state}",
         )
