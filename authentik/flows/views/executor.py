@@ -597,4 +597,4 @@ class ConfigureFlowInitView(LoginRequiredMixin, View):
         except FlowNonApplicableException:
             LOGGER.warning("Flow not applicable to user")
             raise Http404 from None
-        return plan.to_redirect(plan, self.request)
+        return plan.to_redirect(request, stage.configure_flow)
