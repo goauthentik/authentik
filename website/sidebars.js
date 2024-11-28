@@ -97,6 +97,7 @@ export default {
                     items: [
                         "install-config/install/docker-compose",
                         "install-config/install/kubernetes",
+                        "install-config/install/aws/index",
                     ],
                 },
                 {
