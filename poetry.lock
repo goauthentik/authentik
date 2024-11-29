@@ -5026,14 +5026,35 @@ files = [
 
 [[package]]
 name = "ua-parser"
-version = "0.18.0"
+version = "1.0.0"
 description = "Python port of Browserscope's user agent parser"
 optional = false
-python-versions = "*"
+python-versions = ">=3.9"
 files = [
-    {file = "ua-parser-0.18.0.tar.gz", hash = "sha256:db51f1b59bfaa82ed9e2a1d99a54d3e4153dddf99ac1435d51828165422e624e"},
-    {file = "ua_parser-0.18.0-py2.py3-none-any.whl", hash = "sha256:9d94ac3a80bcb0166823956a779186c746b50ea4c9fd9bf30fdb758553c38950"},
+    {file = "ua_parser-1.0.0-py3-none-any.whl", hash = "sha256:5b31133606a781f56692caa11a9671a9f330c22604b3c4957a7ba18c152212d0"},
+    {file = "ua_parser-1.0.0.tar.gz", hash = "sha256:a9740f53f4fbb72b7a03d304cae32a2785cafc55e8207efb74877bba17c35324"},
 ]
+
+[package.dependencies]
+ua-parser-builtins = "*"
+
+[package.extras]
+re2 = ["google-re2"]
+regex = ["ua-parser-rs"]
+yaml = ["PyYaml"]
+
+[[package]]
+name = "ua-parser-builtins"
+version = "0.18.0"
+description = "Precompiled rules for User Agent Parser"
+optional = false
+python-versions = ">=3.9"
+files = [
+    {file = "ua_parser_builtins-0.18.0-py3-none-any.whl", hash = "sha256:51cbc3d6ab9c533fc12fc7cededbef503c8d04e465d0aff20d869e15320b5ca9"},
+]
+
+[package.dependencies]
+ua-parser = "*"
 
 [[package]]
 name = "uritemplate"
