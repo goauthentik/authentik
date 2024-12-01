@@ -4,6 +4,7 @@
     "private": true,
     "license": "MIT",
     "scripts": {
+        "aws-cfn": "cd docs/install-config/install/aws && cdk synth > template.yaml && ./fix_template.py",
         "build": "cp ../docker-compose.yml static/docker-compose.yml && cp ../schema.yml static/schema.yaml && docusaurus gen-api-docs all && cross-env NODE_OPTIONS='--max_old_space_size=65536' docusaurus build",
         "build-bundled": "cp ../schema.yml static/schema.yaml && docusaurus gen-api-docs all && cross-env NODE_OPTIONS='--max_old_space_size=65536' docusaurus build",
         "deploy": "docusaurus deploy",
@@ -55,6 +56,7 @@
         "@docusaurus/tsconfig": "^3.6.3",
         "@docusaurus/types": "^3.3.2",
         "@types/react": "^18.3.12",
+        "aws-cdk": "^2.167.1",
         "cross-env": "^7.0.3",
         "prettier": "3.4.1",
         "typescript": "~5.7.2",

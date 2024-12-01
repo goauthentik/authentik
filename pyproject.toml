@@ -153,12 +153,14 @@ xmlsec = "*"
 zxcvbn = "*"
 
 [tool.poetry.dev-dependencies]
+aws-cdk-lib = "*"
 bandit = "*"
 black = "*"
 bump2version = "*"
 channels = { version = "*", extras = ["daphne"] }
 codespell = "*"
 colorama = "*"
+constructs = "*"
 coverage = { extras = ["toml"], version = "*" }
 debugpy = "*"
 drf-jsonschema-serializer = "*"

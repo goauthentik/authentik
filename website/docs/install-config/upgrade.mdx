@@ -39,13 +39,21 @@ import TabItem from "@theme/TabItem";
     ```
 
   </TabItem>
-<TabItem value="kubernetes" label="Kubernetes">
+  <TabItem value="kubernetes" label="Kubernetes">
     In your terminal, navigate to your installation directory and run the following commands:
 
     ```
     helm repo update
     helm upgrade --install authentik authentik/authentik -f values.yaml
     ```
+
+  </TabItem>
+  <TabItem value="aws-cloudformation-ecs" label="AWS Cloudformation ECS">
+    Navigate to your authentik AWS Cloudformation stack. Click on the **Changesets** tab and **Create changeset**.
+
+    Select **Use existing template** and follow the prompts to upgrade.
+
+    To upgrade to a specific version, select **Replace existing template** and use the following URL: `https://authentik-cloudformation-templates.s3.amazonaws.com/authentik.ecs.VERSION.yaml` replacing `VERSION` with the version you want to upgrade to. You can use `latest` to upgrade to the latest version.
 
   </TabItem>
 </Tabs>
