@@ -17,17 +17,17 @@ Under the **Certificate ARN** input, enter the previously created certificate AR
 
 This stack will create the following resources:
 
-- AWS SSM secrets for the PostgreSQL user and the authentik secret key.
-- A VPC for all other resources.
-- A RDS PostgreSQL Multi-AZ cluster.
-- An ElastiCache Redis Multi-AZ cluster.
+- AWS SSM secrets for the PostgreSQL user and the authentik secret key
+- A VPC for all other resources
+- A RDS PostgreSQL Multi-AZ cluster
+- An ElastiCache Redis Multi-AZ cluster
 - An ECS cluster with two tasks:
-    - One for the authentik server.
-    - One for the authentik worker.
-- An ALB pointing to the authentik server ECS task with the configured certificate.
-- An EFS filesystem mounted on both ECS tasks for media file storage.
+    - One for the authentik server
+    - One for the authentik worker
+- An ALB (Application Load Balancer) pointing to the authentik server ECS task with the configured certificate
+- An EFS filesystem mounted on both ECS tasks for media file storage
 
-The stack will output the endpoint of the ALB that you can point your DNS records to.
+The stack will output the endpoint of the ALB that to which you can point your DNS records.
 
 ### Further customization
 
