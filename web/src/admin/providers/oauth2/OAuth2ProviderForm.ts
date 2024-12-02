@@ -35,11 +35,8 @@ import {
     SubModeEnum,
 } from "@goauthentik/api";
 
-import {
-    makeOAuth2PropertyMappingsSelector,
-    oauth2PropertyMappingsProvider,
-} from "./OAuth2PropertyMappings.js";
-import { makeSourceSelector, oauth2SourcesProvider } from "./OAuth2Sources.js";
+import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuth2ProviderFormHelpers.js";
+import { oauth2SourcesProvider, oauth2SourcesSelector } from "./OAuth2Sources.js";
 
 export const clientTypeOptions = [
     {
@@ -335,10 +332,8 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
                     </ak-text-input>
                     <ak-form-element-horizontal label=${msg("Scopes")} name="propertyMappings">
                         <ak-dual-select-dynamic-selected
-                            .provider=${oauth2PropertyMappingsProvider}
-                            .selector=${makeOAuth2PropertyMappingsSelector(
-                                provider?.propertyMappings,
-                            )}
+                            .provider=${propertyMappingsProvider}
+                            .selector=${propertyMappingsSelector(provider?.propertyMappings)}
                             available-label=${msg("Available Scopes")}
                             selected-label=${msg("Selected Scopes")}
                         ></ak-dual-select-dynamic-selected>
@@ -391,7 +386,7 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
                     >
                         <ak-dual-select-dynamic-selected
                             .provider=${oauth2SourcesProvider}
-                            .selector=${makeSourceSelector(provider?.jwksSources)}
+                            .selector=${oauth2SourcesSelector(provider?.jwksSources)}
                             available-label=${msg("Available Sources")}
                             selected-label=${msg("Selected Sources")}
                         ></ak-dual-select-dynamic-selected>

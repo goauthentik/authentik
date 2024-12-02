@@ -2,8 +2,8 @@ import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 import {
-    makeSourceSelector,
     oauth2SourcesProvider,
+    oauth2SourcesSelector,
 } from "@goauthentik/admin/providers/oauth2/OAuth2Sources.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
@@ -30,10 +30,7 @@ import {
     ProxyProvider,
 } from "@goauthentik/api";
 
-import {
-    makeProxyPropertyMappingsSelector,
-    proxyPropertyMappingsProvider,
-} from "./ProxyProviderPropertyMappings.js";
+import { propertyMappingsProvider, propertyMappingsSelector } from "./ProxyProviderFormHelpers.js";
 
 @customElement("ak-provider-proxy-form")
 export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
@@ -302,10 +299,8 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
                         name="propertyMappings"
                     >
                         <ak-dual-select-dynamic-selected
-                            .provider=${proxyPropertyMappingsProvider}
-                            .selector=${makeProxyPropertyMappingsSelector(
-                                this.instance?.propertyMappings,
-                            )}
+                            .provider=${propertyMappingsProvider}
+                            .selector=${propertyMappingsSelector(this.instance?.propertyMappings)}
                             available-label="${msg("Available Scopes")}"
                             selected-label="${msg("Selected Scopes")}"
                         ></ak-dual-select-dynamic-selected>
@@ -394,7 +389,7 @@ ${this.instance?.skipPathRegex}</textarea
                     >
                         <ak-dual-select-dynamic-selected
                             .provider=${oauth2SourcesProvider}
-                            .selector=${makeSourceSelector(this.instance?.jwksSources)}
+                            .selector=${oauth2SourcesSelector(this.instance?.jwksSources)}
                             available-label=${msg("Available Sources")}
                             selected-label=${msg("Selected Sources")}
                         ></ak-dual-select-dynamic-selected>

@@ -1,12 +1,12 @@
 import "@goauthentik/admin/applications/wizard/ak-wizard-title";
 import {
-    makeSourceSelector,
     oauth2SourcesProvider,
+    oauth2SourcesSelector,
 } from "@goauthentik/admin/providers/oauth2/OAuth2Sources.js";
 import {
-    makeProxyPropertyMappingsSelector,
-    proxyPropertyMappingsProvider,
-} from "@goauthentik/admin/providers/proxy/ProxyProviderPropertyMappings.js";
+    propertyMappingsProvider,
+    propertyMappingsSelector,
+} from "@goauthentik/admin/providers/proxy/ProxyProviderFormHelpers.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-switch-input";
@@ -147,8 +147,8 @@ export class AkTypeProxyApplicationWizardPage extends BaseProviderPanel {
                             name="propertyMappings"
                         >
                             <ak-dual-select-dynamic-selected
-                                .provider=${proxyPropertyMappingsProvider}
-                                .selector=${makeProxyPropertyMappingsSelector(
+                                .provider=${propertyMappingsProvider}
+                                .selector=${propertyMappingsSelector(
                                     this.instance?.propertyMappings,
                                 )}
                                 available-label="${msg("Available Scopes")}"
@@ -248,7 +248,7 @@ export class AkTypeProxyApplicationWizardPage extends BaseProviderPanel {
                         >
                             <ak-dual-select-dynamic-selected
                                 .provider=${oauth2SourcesProvider}
-                                .selector=${makeSourceSelector(this.instance?.jwksSources)}
+                                .selector=${oauth2SourcesSelector(this.instance?.jwksSources)}
                                 available-label=${msg("Available Sources")}
                                 selected-label=${msg("Selected Sources")}
                             ></ak-dual-select-dynamic-selected>

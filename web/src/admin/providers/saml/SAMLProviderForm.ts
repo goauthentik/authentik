@@ -9,7 +9,6 @@ import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm"
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
@@ -31,28 +30,7 @@ import {
     SpBindingEnum,
 } from "@goauthentik/api";
 
-export async function samlPropertyMappingsProvider(page = 1, search = "") {
-    const propertyMappings = await new PropertymappingsApi(
-        DEFAULT_CONFIG,
-    ).propertymappingsProviderSamlList({
-        ordering: "saml_name",
-        pageSize: 20,
-        search: search.trim(),
-        page,
-    });
-    return {
-        pagination: propertyMappings.pagination,
-        options: propertyMappings.results.map((m) => [m.pk, m.name, m.name, m]),
-    };
-}
-
-export function makeSAMLPropertyMappingsSelector(instanceMappings?: string[]) {
-    const localMappings = instanceMappings ? new Set(instanceMappings) : undefined;
-    return localMappings
-        ? ([pk, _]: DualSelectPair) => localMappings.has(pk)
-        : ([_0, _1, _2, mapping]: DualSelectPair<SAMLPropertyMapping>) =>
-              mapping?.managed?.startsWith("goauthentik.io/providers/saml");
-}
+import { propertyMappingsProvider, propertyMappingsSelector } from "./SAMLProviderFormHelpers.js";
 
 @customElement("ak-provider-saml-form")
 export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
@@ -303,10 +281,8 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                         name="propertyMappings"
                     >
                         <ak-dual-select-dynamic-selected
-                            .provider=${samlPropertyMappingsProvider}
-                            .selector=${makeSAMLPropertyMappingsSelector(
-                                this.instance?.propertyMappings,
-                            )}
+                            .provider=${propertyMappingsProvider}
+                            .selector=${propertyMappingsSelector(this.instance?.propertyMappings)}
                             available-label=${msg("Available User Property Mappings")}
                             selected-label=${msg("Selected User Property Mappings")}
                         ></ak-dual-select-dynamic-selected>
