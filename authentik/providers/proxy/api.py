@@ -95,6 +95,7 @@ class ProxyProviderSerializer(ProviderSerializer):
             "redirect_uris",
             "cookie_domain",
             "jwt_federation_sources",
+            "jwt_federation_providers",
             "access_token_validity",
             "refresh_token_validity",
             "outpost_set",

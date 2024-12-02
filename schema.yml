@@ -49454,6 +49454,10 @@ components:
             title: Any JWT signed by the JWK of the selected source can be used to
               authenticate.
           title: Any JWT signed by the JWK of the selected source can be used to authenticate.
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
         access_token_validity:
           type: string
           minLength: 1
@@ -51524,6 +51528,10 @@ components:
             title: Any JWT signed by the JWK of the selected source can be used to
               authenticate.
           title: Any JWT signed by the JWK of the selected source can be used to authenticate.
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
         access_token_validity:
           type: string
           description: 'Tokens not valid on or after current time + this value (Format:
@@ -51632,6 +51640,10 @@ components:
             title: Any JWT signed by the JWK of the selected source can be used to
               authenticate.
           title: Any JWT signed by the JWK of the selected source can be used to authenticate.
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
         access_token_validity:
           type: string
           minLength: 1

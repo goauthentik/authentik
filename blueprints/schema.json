@@ -5761,6 +5761,13 @@
                     },
                     "title": "Any JWT signed by the JWK of the selected source can be used to authenticate."
                 },
+                "jwt_federation_providers": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "title": "Jwt federation providers"
+                },
                 "access_token_validity": {
                     "type": "string",
                     "minLength": 1,

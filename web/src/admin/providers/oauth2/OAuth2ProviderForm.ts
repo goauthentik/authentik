@@ -36,11 +36,8 @@ import {
     SubModeEnum,
 } from "@goauthentik/api";
 
-import {
-    makeOAuth2PropertyMappingsSelector,
-    oauth2PropertyMappingsProvider,
-} from "./OAuth2PropertyMappings.js";
-import { makeSourceSelector, oauth2SourcesProvider } from "./OAuth2Sources.js";
+import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuth2ProviderFormHelpers.js";
+import { oauth2SourcesProvider, oauth2SourcesSelector } from "./OAuth2Sources.js";
 
 export const clientTypeOptions = [
     {
@@ -120,6 +117,8 @@ export const redirectUriHelp = html`${redirectUriHelpMessages.map(
     (m) => html`<p class="pf-c-form__helper-text">${m}</p>`,
 )}`;
 
+const providerToSelect = (provider: OAuth2Provider) => [provider.pk, provider.name];
+
 export async function oauth2ProvidersProvider(page = 1, search = "") {
     const oauthProviders = await new ProvidersApi(DEFAULT_CONFIG).providersOauth2List({
         ordering: "name",
@@ -130,16 +129,31 @@ export async function oauth2ProvidersProvider(page = 1, search = "") {
 
     return {
         pagination: oauthProviders.pagination,
-        options: oauthProviders.results.map((provider) => [provider.pk, provider.name]),
+        options: oauthProviders.results.map((provider) => providerToSelect(provider)),
     };
 }
 
-export function makeProviderSelector(instanceSources: number[] | undefined) {
-    const localSources = instanceSources ? new Set(instanceSources) : undefined;
+export function oauth2ProviderSelector(instanceProviders: number[] | undefined) {
+    if (!instanceProviders) {
+        return async (mappings: DualSelectPair<OAuth2Provider>[]) =>
+            mappings.filter(
+                ([_0, _1, _2, source]: DualSelectPair<OAuth2Provider>) => source !== undefined,
+            );
+    }
 
-    return localSources
-        ? ([pk, _]: DualSelectPair) => localSources.has(parseInt(pk, 10))
-        : ([_0, _1, _2, prompt]: DualSelectPair<OAuth2Provider>) => prompt !== undefined;
+    return async () => {
+        const oauthSources = new ProvidersApi(DEFAULT_CONFIG);
+        const mappings = await Promise.allSettled(
+            instanceProviders.map((instanceId) =>
+                oauthSources.providersOauth2Retrieve({ id: instanceId }),
+            ),
+        );
+
+        return mappings
+            .filter((s) => s.status === "fulfilled")
+            .map((s) => s.value)
+            .map(providerToSelect);
+    };
 }
 
 /**
@@ -358,10 +372,8 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
                     </ak-text-input>
                     <ak-form-element-horizontal label=${msg("Scopes")} name="propertyMappings">
                         <ak-dual-select-dynamic-selected
-                            .provider=${oauth2PropertyMappingsProvider}
-                            .selector=${makeOAuth2PropertyMappingsSelector(
-                                provider?.propertyMappings,
-                            )}
+                            .provider=${propertyMappingsProvider}
+                            .selector=${propertyMappingsSelector(provider?.propertyMappings)}
                             available-label=${msg("Available Scopes")}
                             selected-label=${msg("Selected Scopes")}
                         ></ak-dual-select-dynamic-selected>
@@ -414,7 +426,7 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
                     >
                         <ak-dual-select-dynamic-selected
                             .provider=${oauth2SourcesProvider}
-                            .selector=${makeSourceSelector(provider?.jwtFederationSources)}
+                            .selector=${oauth2SourcesSelector(provider?.jwtFederationSources)}
                             available-label=${msg("Available Sources")}
                             selected-label=${msg("Selected Sources")}
                         ></ak-dual-select-dynamic-selected>
@@ -430,7 +442,7 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
                     >
                         <ak-dual-select-dynamic-selected
                             .provider=${oauth2ProvidersProvider}
-                            .selector=${makeProviderSelector(provider?.jwtFederationProviders)}
+                            .selector=${oauth2ProviderSelector(provider?.jwtFederationProviders)}
                             available-label=${msg("Available Providers")}
                             selected-label=${msg("Selected Providers")}
                         ></ak-dual-select-dynamic-selected>

@@ -2,8 +2,12 @@ import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 import {
-    makeSourceSelector,
+    oauth2ProviderSelector,
+    oauth2ProvidersProvider,
+} from "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
+import {
     oauth2SourcesProvider,
+    oauth2SourcesSelector,
 } from "@goauthentik/admin/providers/oauth2/OAuth2Sources.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
@@ -30,10 +34,7 @@ import {
     ProxyProvider,
 } from "@goauthentik/api";
 
-import {
-    makeProxyPropertyMappingsSelector,
-    proxyPropertyMappingsProvider,
-} from "./ProxyProviderPropertyMappings.js";
+import { propertyMappingsProvider, propertyMappingsSelector } from "./ProxyProviderFormHelpers.js";
 
 @customElement("ak-provider-proxy-form")
 export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
@@ -302,10 +303,8 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
                         name="propertyMappings"
                     >
                         <ak-dual-select-dynamic-selected
-                            .provider=${proxyPropertyMappingsProvider}
-                            .selector=${makeProxyPropertyMappingsSelector(
-                                this.instance?.propertyMappings,
-                            )}
+                            .provider=${propertyMappingsProvider}
+                            .selector=${propertyMappingsSelector(this.instance?.propertyMappings)}
                             available-label="${msg("Available Scopes")}"
                             selected-label="${msg("Selected Scopes")}"
                         ></ak-dual-select-dynamic-selected>
@@ -394,13 +393,31 @@ ${this.instance?.skipPathRegex}</textarea
                     >
                         <ak-dual-select-dynamic-selected
                             .provider=${oauth2SourcesProvider}
-                            .selector=${makeSourceSelector(this.instance?.jwtFederationSources)}
+                            .selector=${oauth2SourcesSelector(this.instance?.jwtFederationSources)}
                             available-label=${msg("Available Sources")}
                             selected-label=${msg("Selected Sources")}
                         ></ak-dual-select-dynamic-selected>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Federated OIDC Providers")}
+                        name="jwtFederationProviders"
+                    >
+                        <ak-dual-select-dynamic-selected
+                            .provider=${oauth2ProvidersProvider}
+                            .selector=${oauth2ProviderSelector(
+                                this.instance?.jwtFederationProviders,
+                            )}
+                            available-label=${msg("Available Providers")}
+                            selected-label=${msg("Selected Providers")}
+                        ></ak-dual-select-dynamic-selected>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "JWTs signed by the selected providers can be used to authenticate to this provider.",
                             )}
                         </p>
                     </ak-form-element-horizontal>
