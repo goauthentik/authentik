@@ -36,7 +36,7 @@ You can authenticate and get a token using an existing JWT. For readability we w
 
 To configure this, define a JWKS URL/raw JWKS data in OAuth Sources. If a JWKS URL is specified, authentik will fetch the data and store it in the source, and then select the source in the OAuth2 Provider that will be authenticated against.
 
-With this configure, any JWT issued by the configured sources' certificates can be used to authenticate:
+With this configuration, any JWT issued by the configured sources' certificates can be used to authenticate:
 
 ```http
 POST /application/o/token/ HTTP/1.1
@@ -49,9 +49,9 @@ client_assertion=$inputJWT&
 client_id=application_client_id
 ```
 
-Alternatively, you can set the `client_secret` parameter to the `$inputJWT`, for applications which can set the password from a file but not other parameters.
+Alternatively, you can set the `client_secret` parameter to `$inputJWT`, for applications that can set the password from a file but not other parameters.
 
-Input JWTs are checked to be signed by any of the selected _Federated OIDC Sources_, and their `exp` attribute must not be now or in the past.
+Input JWTs are checked to verify that they are signed by any of the selected _Federated OIDC Sources_, and that their `exp` attribute is not set as now or in the past.
 
 To dynamically limit access based on the claims of the tokens, you can use _[Expression policies](../../../customize/policies/expression.mdx)_:
 
@@ -61,7 +61,7 @@ return request.context["oauth_jwt"]["iss"] == "https://my.issuer"
 
 #### authentik-issued JWTs <span class="badge badge--version">authentik 2024.12+</span>
 
-To allow federation between providers, select the provider of the application you want to federate to in the provider settings of the application whose token will be used for authentication.
+To allow federation between providers, modify the provider settings of the application (whose token will be used for authentication) to select the provider of the application to which you want to federate.
 
 With this configure, any JWT issued by the configured providers can be used to authenticate:
 
