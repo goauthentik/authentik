@@ -22,6 +22,9 @@ import {
     type ApplicationRequest,
     CoreApi,
     type ModelRequest,
+    ProviderModelEnum,
+    ProxyMode,
+    type ProxyProviderRequest,
     type TransactionApplicationRequest,
     type TransactionApplicationResponse,
     ValidationError,
@@ -29,7 +32,6 @@ import {
 } from "@goauthentik/api";
 
 import BasePanel from "../BasePanel";
-import providerModelsList from "../auth-method-choice/ak-application-wizard-authentication-method-choice.choices";
 
 function cleanApplication(app: Partial<ApplicationRequest>): ApplicationRequest {
     return {
@@ -39,13 +41,18 @@ function cleanApplication(app: Partial<ApplicationRequest>): ApplicationRequest 
     };
 }
 
-type ProviderModelType = Exclude<ModelRequest["providerModel"], "11184809">;
-
 type State = {
     state: "idle" | "running" | "error" | "success";
     label: string | TemplateResult;
     icon: string[];
 };
+
+const providerMap: Map<string, string> = Object.values(ProviderModelEnum)
+    .filter((value) => /^authentik_providers_/.test(value) && /provider$/.test(value))
+    .reduce((acc: Map<string, string>, value) => {
+        acc.set(value.split(".")[1], value);
+        return acc;
+    }, new Map());
 
 const idleState: State = {
     state: "idle",
@@ -70,6 +77,7 @@ const successState: State = {
     icon: ["fa-check-circle", "pf-m-success"],
 };
 
+type StrictProviderModelEnum = Exclude<ProviderModelEnum, "11184809">;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isValidationError = (v: any): v is ValidationError => instanceOfValidationError(v);
 
@@ -102,19 +110,28 @@ export class ApplicationWizardCommitApplication extends BasePanel {
         if (this.commitState === idleState) {
             this.response = undefined;
             this.commitState = runningState;
-            const providerModel = providerModelsList.find(
-                ({ formName }) => formName === this.wizard.providerModel,
-            );
-            if (!providerModel) {
-                throw new Error(
-                    `Could not determine provider model from user request: ${JSON.stringify(this.wizard, null, 2)}`,
-                );
+
+            // Stringly-based API. Not the best, but it works. Just be aware that it is
+            // stringly-based.
+
+            const providerModel = providerMap.get(
+                this.wizard.providerModel,
+            ) as StrictProviderModelEnum;
+            const provider = this.wizard.provider as ModelRequest;
+            provider.providerModel = providerModel;
+
+            // Special case for the Proxy provider.
+            if (this.wizard.providerModel === "proxyprovider") {
+                (provider as ProxyProviderRequest).mode = this.wizard.proxyMode;
+                if ((provider as ProxyProviderRequest).mode !== ProxyMode.ForwardDomain) {
+                    (provider as ProxyProviderRequest).cookieDomain = "";
+                }
             }
 
             const request: TransactionApplicationRequest = {
-                providerModel: providerModel.modelName as ProviderModelType,
                 app: cleanApplication(this.wizard.app),
-                provider: providerModel.converter(this.wizard.provider),
+                providerModel,
+                provider,
             };
 
             this.send(request);
@@ -125,6 +142,7 @@ export class ApplicationWizardCommitApplication extends BasePanel {
         data: TransactionApplicationRequest,
     ): Promise<TransactionApplicationResponse | void> {
         this.errors = undefined;
+        this.commitState = idleState;
         new CoreApi(DEFAULT_CONFIG)
             .coreTransactionalApplicationsUpdate({
                 transactionApplicationRequest: data,
@@ -138,6 +156,7 @@ export class ApplicationWizardCommitApplication extends BasePanel {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .catch(async (resolution: any) => {
                 const errors = await parseAPIError(resolution);
+                console.log(errors);
 
                 // THIS is a really gross special case; if the user is duplicating the name of an
                 // existing provider, the error appears on the `app` (!) error object. We have to
@@ -164,11 +183,7 @@ export class ApplicationWizardCommitApplication extends BasePanel {
             });
     }
 
-    renderErrors(errors?: ValidationError) {
-        if (!errors) {
-            return nothing;
-        }
-
+    renderErrors(errors: ValidationError) {
         const navTo = (step: number) => () =>
             this.dispatchCustomEvent("ak-wizard-nav", {
                 command: "goto",
@@ -219,7 +234,9 @@ export class ApplicationWizardCommitApplication extends BasePanel {
                             >
                                 ${this.commitState.label}
                             </h1>
-                            ${this.renderErrors(this.errors)}
+                            ${this.commitState === errorState
+                                ? this.renderErrors(this.errors ?? {})
+                                : nothing}
                         </div>
                     </div>
                 </div>

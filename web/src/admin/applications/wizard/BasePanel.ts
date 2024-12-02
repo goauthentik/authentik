@@ -29,7 +29,7 @@ export class ApplicationWizardPageBase
         return AwadStyles;
     }
 
-    @consume({ context: applicationWizardContext })
+    @consume({ context: applicationWizardContext, subscribe: true })
     public wizard!: ApplicationWizardState;
 
     @query("form")

@@ -1,3 +1,4 @@
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AkWizard } from "@goauthentik/components/ak-wizard-main/AkWizard";
 import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
 
@@ -5,7 +6,10 @@ import { ContextProvider } from "@lit/context";
 import { msg } from "@lit/localize";
 import { customElement, state } from "lit/decorators.js";
 
-import { applicationWizardContext } from "./ContextIdentity";
+import { ProvidersApi, ProxyMode } from "@goauthentik/api";
+
+import { applicationWizardContext, applicationWizardProvidersContext } from "./ContextIdentity";
+import { providerTypeRenderers } from "./auth-method-choice/ak-application-wizard-authentication-method-choice.choices.js";
 import { newSteps } from "./steps";
 import {
     ApplicationStep,
@@ -19,6 +23,7 @@ const freshWizardState = (): ApplicationWizardState => ({
     app: {},
     provider: {},
     errors: {},
+    proxyMode: ProxyMode.Proxy,
 });
 
 @customElement("ak-application-wizard")
@@ -46,6 +51,11 @@ export class ApplicationWizard extends CustomListenerElement(
         initialValue: this.wizardState,
     });
 
+    wizardProviderProvider = new ContextProvider(this, {
+        context: applicationWizardProvidersContext,
+        initialValue: [],
+    });
+
     /**
      * One of our steps has multiple display variants, one for each type of service provider. We
      * want to *preserve* a customer's decisions about different providers; never make someone "go
@@ -55,6 +65,21 @@ export class ApplicationWizard extends CustomListenerElement(
      *
      */
     providerCache: Map<string, OneOfProvider> = new Map();
+
+    connectedCallback() {
+        super.connectedCallback();
+        new ProvidersApi(DEFAULT_CONFIG).providersAllTypesList().then((providerTypes) => {
+            const wizardReadyProviders = Object.keys(providerTypeRenderers);
+            this.wizardProviderProvider.setValue(
+                providerTypes
+                    .filter((providerType) => wizardReadyProviders.includes(providerType.modelName))
+                    .map((providerType) => ({
+                        ...providerType,
+                        renderer: providerTypeRenderers[providerType.modelName],
+                    })),
+            );
+        });
+    }
 
     // And this is where all the special cases go...
     handleUpdate(detail: ApplicationWizardStateUpdate) {
