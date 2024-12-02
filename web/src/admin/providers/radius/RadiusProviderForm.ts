@@ -4,7 +4,6 @@ import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm"
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
-import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -14,35 +13,9 @@ import { TemplateResult, html } from "lit";
 import { ifDefined } from "lit-html/directives/if-defined.js";
 import { customElement } from "lit/decorators.js";
 
-import {
-    FlowsInstancesListDesignationEnum,
-    PropertymappingsApi,
-    ProvidersApi,
-    RadiusProvider,
-    RadiusProviderPropertyMapping,
-} from "@goauthentik/api";
+import { FlowsInstancesListDesignationEnum, ProvidersApi, RadiusProvider } from "@goauthentik/api";
 
-export async function radiusPropertyMappingsProvider(page = 1, search = "") {
-    const propertyMappings = await new PropertymappingsApi(
-        DEFAULT_CONFIG,
-    ).propertymappingsProviderRadiusList({
-        ordering: "name",
-        pageSize: 20,
-        search: search.trim(),
-        page,
-    });
-    return {
-        pagination: propertyMappings.pagination,
-        options: propertyMappings.results.map((m) => [m.pk, m.name, m.name, m]),
-    };
-}
-
-export function makeRadiusPropertyMappingsSelector(instanceMappings?: string[]) {
-    const localMappings = instanceMappings ? new Set(instanceMappings) : undefined;
-    return localMappings
-        ? ([pk, _]: DualSelectPair) => localMappings.has(pk)
-        : ([_0, _1, _2, _]: DualSelectPair<RadiusProviderPropertyMapping>) => [];
-}
+import { propertyMappingsProvider, propertyMappingsSelector } from "./RadiusProviderFormHelpers.js";
 
 @customElement("ak-provider-radius-form")
 export class RadiusProviderFormPage extends WithBrandConfig(BaseProviderForm<RadiusProvider>) {
@@ -155,10 +128,8 @@ export class RadiusProviderFormPage extends WithBrandConfig(BaseProviderForm<Rad
                         name="propertyMappings"
                     >
                         <ak-dual-select-dynamic-selected
-                            .provider=${radiusPropertyMappingsProvider}
-                            .selector=${makeRadiusPropertyMappingsSelector(
-                                this.instance?.propertyMappings,
-                            )}
+                            .provider=${propertyMappingsProvider}
+                            .selector=${propertyMappingsSelector(this.instance?.propertyMappings)}
                             available-label=${msg("Available Property Mappings")}
                             selected-label=${msg("Selected Property Mappings")}
                         ></ak-dual-select-dynamic-selected>

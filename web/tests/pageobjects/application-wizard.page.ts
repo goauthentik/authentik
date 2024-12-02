@@ -29,15 +29,15 @@ class ApplicationWizardView extends AdminPage {
     app = ApplicationForm;
 
     async wizardTitle() {
-        return await $("ak-wizard-frame").$(".pf-c-wizard__title");
+        return await $(">>>ak-wizard-frame").$(">>>.pf-c-wizard__title");
     }
 
     async providerList() {
-        return await $("ak-application-wizard-authentication-method-choice");
+        return await $(">>>ak-application-wizard-authentication-method-choice");
     }
 
     async nextButton() {
-        return await $("ak-wizard-frame").$("footer button.pf-m-primary");
+        return await $(">>>ak-wizard-frame").$(">>>footer button.pf-m-primary");
     }
 
     async getProviderType(type: string) {
@@ -46,7 +46,7 @@ class ApplicationWizardView extends AdminPage {
     }
 
     async successMessage() {
-        return await $('[data-commit-state="success"]');
+        return await $('>>>[data-commit-state="success"]');
     }
 }
 
@@ -70,7 +70,7 @@ providerValues.forEach(([value, name]: Pair) => {
             get: async function () {
                 return await (
                     await this.providerList()
-                ).$(`div[data-ouid-component-name="${value}"]`);
+                ).$(`>>>div[data-ouid-component-name="${value}"]`);
             },
         },
     });

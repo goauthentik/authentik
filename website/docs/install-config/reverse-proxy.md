@@ -8,10 +8,10 @@ Since authentik uses WebSockets to communicate with Outposts, it does not suppor
 
 If you want to access authentik behind a reverse proxy, there are a few headers that must be passed upstream:
 
--   `X-Forwarded-Proto`: Tells authentik and Proxy Providers if they are being served over an HTTPS connection.
--   `X-Forwarded-For`: Without this, authentik will not know the IP addresses of clients.
--   `Host`: Required for various security checks, WebSocket handshake, and Outpost and Proxy Provider communication.
--   `Connection: Upgrade` and `Upgrade: WebSocket`: Required to upgrade protocols for requests to the WebSocket endpoints under HTTP/1.1.
+- `X-Forwarded-Proto`: Tells authentik and Proxy Providers if they are being served over an HTTPS connection.
+- `X-Forwarded-For`: Without this, authentik will not know the IP addresses of clients.
+- `Host`: Required for various security checks, WebSocket handshake, and Outpost and Proxy Provider communication.
+- `Connection: Upgrade` and `Upgrade: WebSocket`: Required to upgrade protocols for requests to the WebSocket endpoints under HTTP/1.1.
 
 It is also recommended to use a [modern TLS configuration](https://ssl-config.mozilla.org/) and disable SSL/TLS protocols older than TLS 1.3.
 

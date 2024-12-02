@@ -9285,18 +9285,23 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s58bec0ecd4f3ccd4">
   <source>Strict</source>
+  <target>严格</target>
 </trans-unit>
 <trans-unit id="sd27a8f54aca5d278">
   <source>Regex</source>
+  <target>正则表达式</target>
 </trans-unit>
 <trans-unit id="seb411b22a8f262d6">
   <source>Valid redirect URIs after a successful authorization flow. Also specify any origins here for Implicit flows.</source>
+  <target>授权流程成功后有效的重定向 URI。还可以在此处为隐式流程指定任何来源。</target>
 </trans-unit>
 <trans-unit id="s4c49d27de60a532b">
   <source>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</source>
+  <target>要允许任何重定向 URI，请设置模式为正则表达式，并将此值设置为 ".*"。请注意这可能带来的安全影响。</target>
 </trans-unit>
 <trans-unit id="s43f899a86c6a3484">
   <source>Redirect URIs/Origins</source>
+  <target>重定向 URI/Origin</target>
 </trans-unit>
     </body>
   </file>

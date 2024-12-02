@@ -2,7 +2,6 @@ import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm"
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
@@ -17,37 +16,11 @@ import {
     CoreApi,
     CoreGroupsListRequest,
     Group,
-    PropertymappingsApi,
     ProvidersApi,
-    SCIMMapping,
     SCIMProvider,
 } from "@goauthentik/api";
 
-export async function scimPropertyMappingsProvider(page = 1, search = "") {
-    const propertyMappings = await new PropertymappingsApi(
-        DEFAULT_CONFIG,
-    ).propertymappingsProviderScimList({
-        ordering: "managed",
-        pageSize: 20,
-        search: search.trim(),
-        page,
-    });
-    return {
-        pagination: propertyMappings.pagination,
-        options: propertyMappings.results.map((m) => [m.pk, m.name, m.name, m]),
-    };
-}
-
-export function makeSCIMPropertyMappingsSelector(
-    instanceMappings: string[] | undefined,
-    defaultSelected: string,
-) {
-    const localMappings = instanceMappings ? new Set(instanceMappings) : undefined;
-    return localMappings
-        ? ([pk, _]: DualSelectPair) => localMappings.has(pk)
-        : ([_0, _1, _2, mapping]: DualSelectPair<SCIMMapping>) =>
-              mapping?.managed === defaultSelected;
-}
+import { propertyMappingsProvider, propertyMappingsSelector } from "./SCIMProviderFormHelpers.js";
 
 @customElement("ak-provider-scim-form")
 export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
@@ -189,8 +162,8 @@ export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
                         label=${msg("User Property Mappings")}
                         name="propertyMappings">
                         <ak-dual-select-dynamic-selected
-                            .provider=${scimPropertyMappingsProvider}
-                            .selector=${makeSCIMPropertyMappingsSelector(
+                            .provider=${propertyMappingsProvider}
+                            .selector=${propertyMappingsSelector(
                                 this.instance?.propertyMappings,
                                 "goauthentik.io/providers/scim/user",
                             )}
@@ -206,8 +179,8 @@ export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
                         label=${msg("Group Property Mappings")}
                         name="propertyMappingsGroup">
                         <ak-dual-select-dynamic-selected
-                            .provider=${scimPropertyMappingsProvider}
-                            .selector=${makeSCIMPropertyMappingsSelector(
+                            .provider=${propertyMappingsProvider}
+                            .selector=${propertyMappingsSelector(
                                 this.instance?.propertyMappingsGroup,
                                 "goauthentik.io/providers/scim/group",
                             )}

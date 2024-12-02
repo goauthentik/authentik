@@ -21,16 +21,16 @@ This requires Proxmox VE 7.0 or newer.
 
 The following placeholders will be used:
 
--   `proxmox.company` is the FQDN of the Proxmox VE server.
--   `authentik.company` is the FQDN of the authentik install.
+- `proxmox.company` is the FQDN of the Proxmox VE server.
+- `authentik.company` is the FQDN of the authentik install.
 
 ### Step 1
 
 Under _Providers_, create an OAuth2/OpenID provider with these settings:
 
--   Name: proxmox
--   Redirect URI: `https://proxmox.company:8006` (Note the absence of the trailing slash, and the inclusion of the webinterface port)
--   Signing Key: Select any available key
+- Name: proxmox
+- Redirect URI: `https://proxmox.company:8006` (Note the absence of the trailing slash, and the inclusion of the webinterface port)
+- Signing Key: Select any available key
 
 ### Step 2
 

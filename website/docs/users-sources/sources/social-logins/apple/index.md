@@ -18,7 +18,7 @@ Apple mandates the use of a [registered TLD](https://en.wikipedia.org/wiki/List_
 
 The following placeholders will be used:
 
--   `authentik.company` is the FQDN of the authentik install.
+- `authentik.company` is the FQDN of the authentik install.
 
 ## Apple
 

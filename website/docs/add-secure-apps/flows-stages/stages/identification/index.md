@@ -8,9 +8,9 @@ This stage provides a ready-to-go form for users to identify themselves.
 
 Select which fields the user can use to identify themselves. Multiple fields can be selected. If no fields are selected, only sources will be shown.
 
--   Username
--   Email
--   UPN
+- Username
+- Email
+- UPN
 
     UPN will attempt to identify the user based on the `upn` attribute, which can be imported with an [LDAP Source](../../../../users-sources/sources/protocols/ldap)
 
