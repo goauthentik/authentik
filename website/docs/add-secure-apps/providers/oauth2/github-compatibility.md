@@ -17,7 +17,7 @@ To access the user's email address, a scope of `user:email` is required. To acce
 
 ## Special scopes for GitHub compatibility
 
--   `user`: No-op, is accepted for compatibility but does not give access to any resources
--   `read:user`: Same as above
--   `user:email`: Allows read-only access to `/user`, including email address
--   `read:org`: Allows read-only access to `/user/teams`, listing all the user's groups as teams.
+- `user`: No-op, is accepted for compatibility but does not give access to any resources
+- `read:user`: Same as above
+- `user:email`: Allows read-only access to `/user`, including email address
+- `read:org`: Allows read-only access to `/user/teams`, listing all the user's groups as teams.

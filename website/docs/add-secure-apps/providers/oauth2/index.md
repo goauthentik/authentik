@@ -70,9 +70,9 @@ Additionally, the [Refresh token](#refresh-token-grant) (grant type) is optional
 
 The flows and grant types used in this case are those used for a typical authorization process, with a user and an application:
 
--   _Authorization code_ grant type
--   _Implicit_ grant type (legacy)
--   _Hybrid_ grant type
+- _Authorization code_ grant type
+- _Implicit_ grant type (legacy)
+- _Hybrid_ grant type
 
 #### Authorization code
 
