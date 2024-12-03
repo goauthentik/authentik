@@ -20,7 +20,7 @@ The following placeholders will be used:
 -   `hoarder.company` is the FQDN of the Hoarder install.
 -   `authentik.company` is the FQDN of the authentik install.
 
-## Authentik configuration
+## authentik configuration
 
 ### Provider Settings
 
