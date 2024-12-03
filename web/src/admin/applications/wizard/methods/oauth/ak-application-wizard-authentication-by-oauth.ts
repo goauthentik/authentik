@@ -2,18 +2,22 @@ import "@goauthentik/admin/applications/wizard/ak-wizard-title";
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
 import {
-    makeOAuth2PropertyMappingsSelector,
-    oauth2PropertyMappingsProvider,
-} from "@goauthentik/admin/providers/oauth2/OAuth2PropertyMappings.js";
-import {
     clientTypeOptions,
     issuerModeOptions,
     redirectUriHelp,
     subjectModeOptions,
 } from "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
 import {
-    makeSourceSelector,
+    propertyMappingsProvider,
+    propertyMappingsSelector,
+} from "@goauthentik/admin/providers/oauth2/OAuth2ProviderFormHelpers.js";
+import {
+    IRedirectURIInput,
+    akOAuthRedirectURIInput,
+} from "@goauthentik/admin/providers/oauth2/OAuth2ProviderRedirectURI";
+import {
     oauth2SourcesProvider,
+    oauth2SourcesSelector,
 } from "@goauthentik/admin/providers/oauth2/OAuth2Sources.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
@@ -31,7 +35,13 @@ import { customElement, state } from "@lit/reactive-element/decorators.js";
 import { html, nothing } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { ClientTypeEnum, FlowsInstancesListDesignationEnum, SourcesApi } from "@goauthentik/api";
+import {
+    ClientTypeEnum,
+    FlowsInstancesListDesignationEnum,
+    MatchingModeEnum,
+    RedirectURI,
+    SourcesApi,
+} from "@goauthentik/api";
 import { type OAuth2Provider, type PaginatedOAuthSourceList } from "@goauthentik/api";
 
 import BaseProviderPanel from "../BaseProviderPanel";
@@ -120,14 +130,27 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                         >
                         </ak-text-input>
 
-                        <ak-textarea-input
+                        <ak-form-element-horizontal
+                            label=${msg("Redirect URIs/Origins")}
+                            required
                             name="redirectUris"
-                            label=${msg("Redirect URIs/Origins (RegEx)")}
-                            .value=${provider?.redirectUris}
-                            .errorMessages=${errors?.redirectUriHelp ?? []}
-                            .bighelp=${redirectUriHelp}
                         >
-                        </ak-textarea-input>
+                            <ak-array-input
+                                .items=${[]}
+                                .newItem=${() => ({
+                                    matchingMode: MatchingModeEnum.Strict,
+                                    url: "",
+                                })}
+                                .row=${(f?: RedirectURI) =>
+                                    akOAuthRedirectURIInput({
+                                        ".redirectURI": f,
+                                        "style": "width: 100%",
+                                        "name": "oauth2-redirect-uri",
+                                    } as unknown as IRedirectURIInput)}
+                            >
+                            </ak-array-input>
+                            ${redirectUriHelp}
+                        </ak-form-element-horizontal>
 
                         <ak-form-element-horizontal
                             label=${msg("Signing Key")}
@@ -229,10 +252,8 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                             .errorMessages=${errors?.propertyMappings ?? []}
                         >
                             <ak-dual-select-dynamic-selected
-                                .provider=${oauth2PropertyMappingsProvider}
-                                .selector=${makeOAuth2PropertyMappingsSelector(
-                                    provider?.propertyMappings,
-                                )}
+                                .provider=${propertyMappingsProvider}
+                                .selector=${propertyMappingsSelector(provider?.propertyMappings)}
                                 available-label=${msg("Available Scopes")}
                                 selected-label=${msg("Selected Scopes")}
                             ></ak-dual-select-dynamic-selected>
@@ -286,7 +307,7 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                         >
                             <ak-dual-select-dynamic-selected
                                 .provider=${oauth2SourcesProvider}
-                                .selector=${makeSourceSelector(provider?.jwksSources)}
+                                .selector=${oauth2SourcesSelector(provider?.jwksSources)}
                                 available-label=${msg("Available Sources")}
                                 selected-label=${msg("Selected Sources")}
                             ></ak-dual-select-dynamic-selected>

@@ -135,7 +135,7 @@ class PasswordPolicy(Policy):
         LOGGER.debug("got hibp result", count=final_count, hash=pw_hash[:5])
         if final_count > self.hibp_allowed_count:
             LOGGER.debug("password failed", check="hibp", count=final_count)
-            message = _("Password exists on %(count)d online lists." % {"count": final_count})
+            message = _("Password exists on {count} online lists.".format(count=final_count))
             return PolicyResult(False, message)
         return PolicyResult(True)
 

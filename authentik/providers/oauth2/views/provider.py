@@ -162,5 +162,5 @@ class ProviderInfoView(View):
             OAuth2Provider, pk=application.provider_id
         )
         response = super().dispatch(request, *args, **kwargs)
-        cors_allow(request, response, *self.provider.redirect_uris.split("\n"))
+        cors_allow(request, response, *[x.url for x in self.provider.redirect_uris])
         return response

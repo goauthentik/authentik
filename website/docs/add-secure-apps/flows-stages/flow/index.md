@@ -10,9 +10,9 @@ A flow is a method of describing a sequence of stages. A stage represents a sing
 
 For example a standard login flow would consist of the following stages:
 
--   **Identification stage**: user identifies themselves via a username or email address
--   **Password stage**: the user's password is checked against the hash in the database
--   **Login stage**: this stage attaches a currently pending user to the current session
+- **Identification stage**: user identifies themselves via a username or email address
+- **Password stage**: the user's password is checked against the hash in the database
+- **Login stage**: this stage attaches a currently pending user to the current session
 
 When these stages are successfully completed, authentik logs in the user.
 
@@ -70,22 +70,22 @@ import Defaultflowlist from "../flow/flow_list/\_defaultflowlist.mdx";
 
 **Behavior settings**:
 
--   **Compatibility mode**: Toggle this option on to increase compatibility with password managers and mobile devices. Password managers like [1Password](https://1password.com/), for example, don't need this setting to be enabled, when accessing the flow from a desktop browser. However accessing the flow from a mobile device might necessitate this setting to be enabled.
+- **Compatibility mode**: Toggle this option on to increase compatibility with password managers and mobile devices. Password managers like [1Password](https://1password.com/), for example, don't need this setting to be enabled, when accessing the flow from a desktop browser. However accessing the flow from a mobile device might necessitate this setting to be enabled.
 
     The technical reasons for this settings' existence is due to the JavaScript libraries we're using for the default flow interface. These interfaces are implemented using [Lit](https://lit.dev/), which is a modern web development library. It uses a web standard called ["Shadow DOMs"](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_shadow_DOM), which makes encapsulating styles simpler. Due to differences in Browser APIs, many password managers are not compatible with this technology.
 
     When the compatibility mode is enabled, authentik uses a polyfill which emulates the Shadow DOM APIs without actually using the feature, and instead a traditional DOM is rendered. This increases support for password managers, especially on mobile devices.
 
--   **Denied action**: Configure what happens when access to a flow is denied by a policy. By default, authentik will redirect to a `?next` parameter if set, and otherwise show an error message.
+- **Denied action**: Configure what happens when access to a flow is denied by a policy. By default, authentik will redirect to a `?next` parameter if set, and otherwise show an error message.
 
-    -   `MESSAGE_CONTINUE`: Show a message if no `?next` parameter is set, otherwise redirect.
-    -   `MESSAGE`: Always show error message.
-    -   `CONTINUE`: Always redirect, either to `?next` if set, otherwise to the default interface.
+    - `MESSAGE_CONTINUE`: Show a message if no `?next` parameter is set, otherwise redirect.
+    - `MESSAGE`: Always show error message.
+    - `CONTINUE`: Always redirect, either to `?next` if set, otherwise to the default interface.
 
--   **Policy engine mode**: Configure the flow to succeed in _any_ policy passes, or only if _all_ policies pass.
+- **Policy engine mode**: Configure the flow to succeed in _any_ policy passes, or only if _all_ policies pass.
 
 **Appearance Settings**:
 
--   **Layout**: select how the UI displays the flow when it is executed; with stacked elements, content left or right, and sidebar left or right.
+- **Layout**: select how the UI displays the flow when it is executed; with stacked elements, content left or right, and sidebar left or right.
 
--   **Background**: optionally, select a background image for the UI presentation of the flow.
+- **Background**: optionally, select a background image for the UI presentation of the flow.

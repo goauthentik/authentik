@@ -252,7 +252,7 @@ jobs:
           image-name: ghcr.io/goauthentik/dev-server
           image-arch: ${{ matrix.arch }}
       - name: Login to Container Registry
-        if: ${{ steps.ev.outputs.shouldBuild == 'true' }}
+        if: ${{ steps.ev.outputs.shouldPush == 'true' }}
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -269,15 +269,15 @@ jobs:
             GEOIPUPDATE_ACCOUNT_ID=${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}
             GEOIPUPDATE_LICENSE_KEY=${{ secrets.GEOIPUPDATE_LICENSE_KEY }}
           tags: ${{ steps.ev.outputs.imageTags }}
-          push: ${{ steps.ev.outputs.shouldBuild == 'true' }}
+          push: ${{ steps.ev.outputs.shouldPush == 'true' }}
           build-args: |
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
           cache-from: type=registry,ref=ghcr.io/goauthentik/dev-server:buildcache
-          cache-to: ${{ steps.ev.outputs.shouldBuild == 'true' && 'type=registry,ref=ghcr.io/goauthentik/dev-server:buildcache,mode=max' || '' }}
+          cache-to: ${{ steps.ev.outputs.shouldPush == 'true' && 'type=registry,ref=ghcr.io/goauthentik/dev-server:buildcache,mode=max' || '' }}
           platforms: linux/${{ matrix.arch }}
       - uses: actions/attest-build-provenance@v1
         id: attest
-        if: ${{ steps.ev.outputs.shouldBuild == 'true' }}
+        if: ${{ steps.ev.outputs.shouldPush == 'true' }}
         with:
           subject-name: ${{ steps.ev.outputs.attestImageNames }}
           subject-digest: ${{ steps.push.outputs.digest }}
@@ -303,7 +303,7 @@ jobs:
         with:
           image-name: ghcr.io/goauthentik/dev-server
       - name: Comment on PR
-        if: ${{ steps.ev.outputs.shouldBuild == 'true' }}
+        if: ${{ steps.ev.outputs.shouldPush == 'true' }}
         uses: ./.github/actions/comment-pr-instructions
         with:
           tag: ${{ steps.ev.outputs.imageMainTag }}

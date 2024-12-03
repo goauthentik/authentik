@@ -10,6 +10,7 @@ from structlog.stdlib import get_logger
 
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow
+from authentik.lib.config import CONFIG
 from authentik.lib.models import SerializerModel
 
 LOGGER = get_logger()
@@ -70,6 +71,18 @@ class Brand(SerializerModel):
         help_text=_("Web Certificate used by the authentik Core webserver."),
     )
     attributes = models.JSONField(default=dict, blank=True)
+
+    def branding_logo_url(self) -> str:
+        """Get branding_logo with the correct prefix"""
+        if self.branding_logo.startswith("/static"):
+            return CONFIG.get("web.path", "/")[:-1] + self.branding_logo
+        return self.branding_logo
+
+    def branding_favicon_url(self) -> str:
+        """Get branding_favicon with the correct prefix"""
+        if self.branding_favicon.startswith("/static"):
+            return CONFIG.get("web.path", "/")[:-1] + self.branding_favicon
+        return self.branding_favicon
 
     @property
     def serializer(self) -> Serializer:

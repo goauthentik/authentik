@@ -17,14 +17,14 @@ sidebar_label: Jenkins
 
 The following placeholders will be used:
 
--   `jenkins.company` is the FQDN of the Service install.
--   `authentik.company` is the FQDN of the authentik install.
+- `jenkins.company` is the FQDN of the Service install.
+- `authentik.company` is the FQDN of the authentik install.
 
 Create an OAuth2/OpenID provider with the following parameters:
 
--   **Client Type**: `Confidential`
--   **Scopes**: OpenID, Email and Profile
--   **Signing Key**: Select any available key
+- **Client Type**: `Confidential`
+- **Scopes**: OpenID, Email and Profile
+- **Signing Key**: Select any available key
 
 Note the Client ID and Client Secret values for the provider.
 
@@ -46,10 +46,10 @@ Check the checkbox **Override scopes** and input the scopes `openid profile emai
 
 Further down the page, expand the **Advanced** section and input the following values:
 
--   **User name field name**: `preferred_username`
--   **Full name field name**: `name`
--   **Email field name**: `email`
--   **Groups field name**: `groups`
+- **User name field name**: `preferred_username`
+- **Full name field name**: `name`
+- **Email field name**: `email`
+- **Groups field name**: `groups`
 
 We also recommend enabling the option **Enable Proof Key for Code Exchange** further down the page.
 

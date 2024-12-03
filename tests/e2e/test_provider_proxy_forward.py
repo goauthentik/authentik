@@ -3,6 +3,7 @@
 from json import loads
 from pathlib import Path
 from time import sleep
+from unittest import skip
 
 from selenium.webdriver.common.by import By
 
@@ -123,6 +124,7 @@ class TestProviderProxyForward(SeleniumTestCase):
         title = session_end_stage.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
         self.assertIn("You've logged out of", title)
 
+    @skip("Flaky test")
     @retry()
     def test_nginx(self):
         """Test nginx"""

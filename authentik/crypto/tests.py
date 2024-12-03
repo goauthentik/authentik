@@ -18,7 +18,7 @@ from authentik.crypto.models import CertificateKeyPair
 from authentik.crypto.tasks import MANAGED_DISCOVERED, certificate_discovery
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id, generate_key
-from authentik.providers.oauth2.models import OAuth2Provider
+from authentik.providers.oauth2.models import OAuth2Provider, RedirectURI, RedirectURIMatchingMode
 
 
 class TestCrypto(APITestCase):
@@ -274,7 +274,7 @@ class TestCrypto(APITestCase):
             client_id="test",
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
-            redirect_uris="http://localhost",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost")],
             signing_key=keypair,
         )
         response = self.client.get(
@@ -306,7 +306,7 @@ class TestCrypto(APITestCase):
             client_id="test",
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
-            redirect_uris="http://localhost",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost")],
             signing_key=keypair,
         )
         response = self.client.get(

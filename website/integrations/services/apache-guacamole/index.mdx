@@ -17,19 +17,19 @@ sidebar_label: Apache Guacamole™
 
 The following placeholders will be used:
 
--   `guacamole.company` is the FQDN of the Guacamole install.
--   `authentik.company` is the FQDN of the authentik install.
+- `guacamole.company` is the FQDN of the Guacamole install.
+- `authentik.company` is the FQDN of the authentik install.
 
 Create an OAuth2/OpenID provider with the following parameters:
 
--   **Client Type**: `Confidential`
--   **Redirect URIs**: `https://guacamole.company/` (depending on your Tomcat setup, you might have to add `/guacamole/` if the application runs in a subfolder)
--   **Scopes**: OpenID, Email, and Profile
+- **Client Type**: `Confidential`
+- **Redirect URIs**: `https://guacamole.company/` (depending on your Tomcat setup, you might have to add `/guacamole/` if the application runs in a subfolder)
+- **Scopes**: OpenID, Email, and Profile
 
 Under **Advanced protocol settings**, set the following:
 
--   **Token validity**: Any value to configure how long the session should last. Guacamole will not accept any tokens valid longer than 300 Minutes.
--   **Signing Key**: Set the key as `authentik Self-signed Certificate`
+- **Token validity**: Any value to configure how long the session should last. Guacamole will not accept any tokens valid longer than 300 Minutes.
+- **Signing Key**: Set the key as `authentik Self-signed Certificate`
 
 Note the Client ID value. Create an application, using the provider you've created above.
 

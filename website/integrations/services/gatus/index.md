@@ -17,15 +17,15 @@ sidebar_label: Gatus
 
 The following placeholders will be used:
 
--   `gatus.company` is the FQDN of the Gatus install.
--   `authentik.company` is the FQDN of the authentik install.
+- `gatus.company` is the FQDN of the Gatus install.
+- `authentik.company` is the FQDN of the authentik install.
 
 ## authentik configuration
 
 Create an OIDC provider with the following settings:
 
--   Name: 'gatus'
--   Redirect URL: 'https://gatus.company/authorization-code/callback'
+- Name: 'gatus'
+- Redirect URL: 'https://gatus.company/authorization-code/callback'
 
 Everything else is up to you and what you want, just don't forget to grab the client ID and secret!
 
