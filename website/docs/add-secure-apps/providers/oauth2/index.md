@@ -147,11 +147,14 @@ return True
 
 #### GitHub compatibility
 
-Refer to [GitHub Compatibility](./github-compatibility.md).
+- `user`: No-op, is accepted for compatibility but does not give access to any resources
+- `read:user`: Same as above
+- `user:email`: Allows read-only access to `/user`, including email address
+- `read:org`: Allows read-only access to `/user/teams`, listing all the user's groups as teams.
 
 #### authentik
 
--   `goauthentik.io/api`: This scope grants the refresh token access to the authentik API on behalf of the user
+- `goauthentik.io/api`: This scope grants the refresh token access to the authentik API on behalf of the user
 
 ## Default scopes <span class="badge badge--version">authentik 2022.7+</span>
 

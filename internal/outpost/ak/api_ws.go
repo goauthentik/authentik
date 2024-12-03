@@ -17,7 +17,7 @@ import (
 )
 
 func (ac *APIController) initWS(akURL url.URL, outpostUUID string) error {
-	pathTemplate := "%s://%s/ws/outpost/%s/?%s"
+	pathTemplate := "%s://%s%sws/outpost/%s/?%s"
 	query := akURL.Query()
 	query.Set("instance_uuid", ac.instanceUUID.String())
 	scheme := strings.ReplaceAll(akURL.Scheme, "http", "ws")
@@ -37,7 +37,7 @@ func (ac *APIController) initWS(akURL url.URL, outpostUUID string) error {
 		},
 	}
 
-	ws, _, err := dialer.Dial(fmt.Sprintf(pathTemplate, scheme, akURL.Host, outpostUUID, akURL.Query().Encode()), header)
+	ws, _, err := dialer.Dial(fmt.Sprintf(pathTemplate, scheme, akURL.Host, akURL.Path, outpostUUID, akURL.Query().Encode()), header)
 	if err != nil {
 		ac.logger.WithError(err).Warning("failed to connect websocket")
 		return err
@@ -83,6 +83,7 @@ func (ac *APIController) reconnectWS() {
 	u := url.URL{
 		Host:   ac.Client.GetConfig().Host,
 		Scheme: ac.Client.GetConfig().Scheme,
+		Path:   strings.ReplaceAll(ac.Client.GetConfig().Servers[0].URL, "api/v3", ""),
 	}
 	attempt := 1
 	for {

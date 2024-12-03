@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://goauthentik.io/blueprints/schema.json",
     "type": "object",
-    "title": "authentik 2024.10.0 Blueprint schema",
+    "title": "authentik 2024.10.4 Blueprint schema",
     "required": [
         "version",
         "entries"
@@ -5570,9 +5570,30 @@
                     "description": "Key used to encrypt the tokens. When set, tokens will be encrypted and returned as JWEs."
                 },
                 "redirect_uris": {
-                    "type": "string",
-                    "title": "Redirect URIs",
-                    "description": "Enter each URI on a new line."
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "matching_mode": {
+                                "type": "string",
+                                "enum": [
+                                    "strict",
+                                    "regex"
+                                ],
+                                "title": "Matching mode"
+                            },
+                            "url": {
+                                "type": "string",
+                                "minLength": 1,
+                                "title": "Url"
+                            }
+                        },
+                        "required": [
+                            "matching_mode",
+                            "url"
+                        ]
+                    },
+                    "title": "Redirect uris"
                 },
                 "sub_mode": {
                     "type": "string",
@@ -5596,13 +5617,20 @@
                     "title": "Issuer mode",
                     "description": "Configure how the issuer field of the ID Token should be filled."
                 },
-                "jwks_sources": {
+                "jwt_federation_sources": {
                     "type": "array",
                     "items": {
                         "type": "integer",
                         "title": "Any JWT signed by the JWK of the selected source can be used to authenticate."
                     },
                     "title": "Any JWT signed by the JWK of the selected source can be used to authenticate."
+                },
+                "jwt_federation_providers": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "title": "Jwt federation providers"
                 }
             },
             "required": []
@@ -5725,13 +5753,20 @@
                     "type": "string",
                     "title": "Cookie domain"
                 },
-                "jwks_sources": {
+                "jwt_federation_sources": {
                     "type": "array",
                     "items": {
                         "type": "integer",
                         "title": "Any JWT signed by the JWK of the selected source can be used to authenticate."
                     },
                     "title": "Any JWT signed by the JWK of the selected source can be used to authenticate."
+                },
+                "jwt_federation_providers": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "title": "Jwt federation providers"
                 },
                 "access_token_validity": {
                     "type": "string",
@@ -6974,7 +7009,7 @@
                 "spnego_server_name": {
                     "type": "string",
                     "title": "Spnego server name",
-                    "description": "Force the use of a specific server name for SPNEGO"
+                    "description": "Force the use of a specific server name for SPNEGO. Must be in the form HTTP@hostname"
                 },
                 "spnego_keytab": {
                     "type": "string",
@@ -9780,6 +9815,10 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Api url"
+                },
+                "interactive": {
+                    "type": "boolean",
+                    "title": "Interactive"
                 },
                 "score_min_threshold": {
                     "type": "number",
@@ -13382,12 +13421,6 @@
                     "format": "uuid",
                     "title": "Authorization flow",
                     "description": "Flow used when authorizing this provider."
-                },
-                "invalidation_flow": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Invalidation flow",
-                    "description": "Flow used ending the session from a provider."
                 },
                 "property_mappings": {
                     "type": "array",

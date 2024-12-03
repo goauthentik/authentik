@@ -14,6 +14,7 @@ type Config struct {
 	// Config for both core and outposts
 	Debug  bool         `yaml:"debug" env:"AUTHENTIK_DEBUG, overwrite"`
 	Listen ListenConfig `yaml:"listen" env:", prefix=AUTHENTIK_LISTEN__"`
+	Web    WebConfig    `yaml:"web" env:", prefix=AUTHENTIK_WEB__"`
 
 	// Outpost specific config
 	// These are only relevant for proxy/ldap outposts, and cannot be set via YAML
@@ -71,4 +72,8 @@ type OutpostConfig struct {
 	ContainerImageBase     string `yaml:"container_image_base" env:"CONTAINER_IMAGE_BASE, overwrite"`
 	Discover               bool   `yaml:"discover" env:"DISCOVER, overwrite"`
 	DisableEmbeddedOutpost bool   `yaml:"disable_embedded_outpost" env:"DISABLE_EMBEDDED_OUTPOST, overwrite"`
+}
+
+type WebConfig struct {
+	Path string `yaml:"path" env:"PATH, overwrite"`
 }

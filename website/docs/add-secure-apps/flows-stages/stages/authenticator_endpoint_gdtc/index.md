@@ -41,9 +41,9 @@ For detailed instructions, refer to Google documentation.
 3. On the **IAM** page, click **Service Accounts** in the left navigation pane.
 4. At the top of the **Service Accounts** page, click **Create Service Account**.
 
--   Under **Service account details** page, define the **Name** and **Description** for the new service account, and then click **Create and Continue**.
--   Under **Grant this service account access to project** you do not need to define a role, so click **Continue**.
--   Under **Grant users access to project** you do not need to define a role, so click **Done** to complete the creation of the service account.
+- Under **Service account details** page, define the **Name** and **Description** for the new service account, and then click **Create and Continue**.
+- Under **Grant this service account access to project** you do not need to define a role, so click **Continue**.
+- Under **Grant users access to project** you do not need to define a role, so click **Done** to complete the creation of the service account.
 
 ### Set credentials for the service account
 

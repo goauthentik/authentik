@@ -83,7 +83,7 @@ The `ENDPOINT` setting specifies how authentik talks to the S3 provider.
 
 The `CUSTOM_DOMAIN` setting specifies how URLs are constructed to be shown on the web interface. For example, an object stored at `application-icons/application.png` with a `CUSTOM__DOMAIN` setting of `s3.provider/authentik-media` will result in a URL of `https://s3.provider/authentik-media/application-icons/application.png`. You can also use subdomains for your buckets depending on what your S3 provider offers: `authentik-media.s3.provider`. Whether HTTPS is used is controlled by `AUTHENTIK_STORAGE__MEDIA__S3__SECURE_URLS`, which defaults to true.
 
-For more control over settings, refer to the [configuration reference](./configuration/configuration.mdx#media-storage-settings)
+For more control over settings, refer to the [configuration reference](../../install-config/configuration/configuration.mdx#media-storage-settings)
 
 ### Migrating between storage backends
 

@@ -21,8 +21,8 @@ Currently it is not possible to connect writefreely to authentik without making 
 
 The following placeholders will be used:
 
--   `writefreely.company` is the FQDN of the writefreely install.
--   `authentik.company` is the FQDN of the authentik install.
+- `writefreely.company` is the FQDN of the writefreely install.
+- `authentik.company` is the FQDN of the authentik install.
 
 ## authentik Configuration
 
@@ -30,16 +30,16 @@ The following placeholders will be used:
 
 Create a OAuth2/OpenID Provider (under _Applications/Providers_) with these settings:
 
--   Name: writefreely
--   Redirect URI: `https://writefreely.company/oauth/callback/generic`
+- Name: writefreely
+- Redirect URI: `https://writefreely.company/oauth/callback/generic`
 
 ### Step 3 - Application
 
 Create an application (under _Resources/Applications_) with these settings:
 
--   Name: Writefreely
--   Slug: writefreely
--   Provider: writefreely
+- Name: Writefreely
+- Slug: writefreely
+- Provider: writefreely
 
 ## Writefreely Setup
 
@@ -98,4 +98,4 @@ To link the accounts, first log into Writefreely with local credentials, and the
 
 ## Additional Resources
 
--   https://writefreely.org/docs/latest/admin/config
+- https://writefreely.org/docs/latest/admin/config
