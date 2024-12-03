@@ -61,7 +61,7 @@ The following placeholders will be used:
 
     ![Proxmox Add OpenID Connect Server Dialog](proxmox-source.png)
 
-4. **Save the configuration**
+4. **Save the configuration**.
 
     - Click **Add** to save the settings.
 
