@@ -28,7 +28,7 @@ jobs:
           - codespell
           - pending-migrations
           - ruff
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - name: Setup authentik env
@@ -36,7 +36,7 @@ jobs:
       - name: run job
         run: poetry run make ci-${{ matrix.job }}
   test-migrations:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - name: Setup authentik env
@@ -45,7 +45,7 @@ jobs:
         run: poetry run python -m lifecycle.migrate
   test-migrations-from-stable:
     name: test-migrations-from-stable - PostgreSQL ${{ matrix.psql }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
@@ -97,7 +97,7 @@ jobs:
           poetry run make test
   test-unittest:
     name: test-unittest - PostgreSQL ${{ matrix.psql }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     strategy:
       fail-fast: false
@@ -127,7 +127,7 @@ jobs:
           file: unittest.xml
           token: ${{ secrets.CODECOV_TOKEN }}
   test-integration:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
@@ -152,7 +152,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
   test-e2e:
     name: test-e2e (${{ matrix.job.name }})
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     strategy:
       fail-fast: false
@@ -216,7 +216,7 @@ jobs:
       - test-unittest
       - test-integration
       - test-e2e
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - run: echo mark
   build:
@@ -227,7 +227,7 @@ jobs:
           - amd64
           - arm64
     needs: ci-core-mark
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       # Needed to upload contianer images to ghcr.io
       packages: write
@@ -285,7 +285,7 @@ jobs:
   pr-comment:
     needs:
       - build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: ${{ github.event_name == 'pull_request' }}
     permissions:
       # Needed to write comments on PRs

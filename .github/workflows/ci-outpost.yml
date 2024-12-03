@@ -14,7 +14,7 @@ on:
 
 jobs:
   lint-golint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
@@ -35,7 +35,7 @@ jobs:
           args: --timeout 5000s --verbose
           skip-cache: true
   test-unittest:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
@@ -52,7 +52,7 @@ jobs:
     needs:
       - lint-golint
       - test-unittest
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - run: echo mark
   build-container:
@@ -67,7 +67,7 @@ jobs:
           - ldap
           - radius
           - rac
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       # Needed to upload contianer images to ghcr.io
       packages: write
@@ -122,7 +122,7 @@ jobs:
     timeout-minutes: 120
     needs:
       - ci-outpost-mark
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
