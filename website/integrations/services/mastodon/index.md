@@ -41,6 +41,14 @@ Create an application (under _Resources/Applications_) with these settings:
 
 Configure Mastodon `OIDC_` settings by editing the `.env.production` and add the following:
 
+:::warning
+When using `preferred_username` as the user identifier, ensure that the [Allow users to change username setting](https://docs.goauthentik.io/docs/sys-mgmt/settings#allow-users-to-change-username) is disabled to prevent authentication issues.
+:::
+
+:::info
+You can configure Mastodon to use either the `sub` or `preferred_username` as the UID field under `OIDC_UID_FIELD`. The `sub` option uses a unique, stable identifier for the user, while `preferred_username` uses the username configured in authentik.
+:::
+
 ```
 OIDC_ENABLED=true
 OIDC_DISPLAY_NAME=authentik
@@ -48,7 +56,7 @@ OIDC_DISCOVERY=true
 OIDC_ISSUER=< OpenID Configuration Issuer>
 OIDC_AUTH_ENDPOINT=https://authentik.company/application/o/authorize/
 OIDC_SCOPE=openid,profile,email
-OIDC_UID_FIELD=sub
+OIDC_UID_FIELD=preferred_username
 OIDC_CLIENT_ID=<Client ID>
 OIDC_CLIENT_SECRET=<Client Secret>
 OIDC_REDIRECT_URI=https://mastodon.company/auth/auth/openid_connect/callback
