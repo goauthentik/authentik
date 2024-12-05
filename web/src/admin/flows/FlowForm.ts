@@ -199,6 +199,13 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
                         ${msg("Require superuser.")}
                     </option>
                     <option
+                        value=${AuthenticationEnum.RequireRedirect}
+                        ?selected=${this.instance?.authentication ===
+                        AuthenticationEnum.RequireRedirect}
+                    >
+                        ${msg("Require being redirected from another flow.")}
+                    </option>
+                    <option
                         value=${AuthenticationEnum.RequireOutpost}
                         ?selected=${this.instance?.authentication ===
                         AuthenticationEnum.RequireOutpost}
