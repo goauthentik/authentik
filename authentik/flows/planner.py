@@ -37,6 +37,7 @@ PLAN_CONTEXT_OUTPOST = "outpost"
 # Is set by the Flow Planner when a FlowToken was used, and the currently active flow plan
 # was restored.
 PLAN_CONTEXT_IS_RESTORED = "is_restored"
+PLAN_CONTEXT_IS_REDIRECTED = "is_redirected"
 CACHE_TIMEOUT = CONFIG.get_int("cache.timeout_flows")
 CACHE_PREFIX = "goauthentik.io/flows/planner/"
 

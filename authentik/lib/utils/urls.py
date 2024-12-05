@@ -32,7 +32,7 @@ def redirect_with_qs(view: str, get_query_set: QueryDict | None = None, **kwargs
 
 def reverse_with_qs(view: str, query: QueryDict | None = None, **kwargs) -> str:
     """Reverse a view to it's url but include get params"""
-    url = reverse(view, **kwargs)
+    url = reverse(view, kwargs=kwargs)
     if query:
         url += "?" + urlencode(query.items())
     return url
