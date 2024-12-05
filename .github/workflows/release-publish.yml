@@ -55,7 +55,7 @@ jobs:
             VERSION=${{ github.ref }}
           tags: ${{ steps.ev.outputs.imageTags }}
           platforms: linux/amd64,linux/arm64
-      - uses: actions/attest-build-provenance@v1
+      - uses: actions/attest-build-provenance@v2
         id: attest
         with:
           subject-name: ${{ steps.ev.outputs.attestImageNames }}
@@ -119,7 +119,7 @@ jobs:
           file: ${{ matrix.type }}.Dockerfile
           platforms: linux/amd64,linux/arm64
           context: .
-      - uses: actions/attest-build-provenance@v1
+      - uses: actions/attest-build-provenance@v2
         id: attest
         with:
           subject-name: ${{ steps.ev.outputs.attestImageNames }}
