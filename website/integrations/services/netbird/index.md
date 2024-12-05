@@ -30,7 +30,7 @@ The following placeholders will be used:
 4. Note the generated **Client ID** and **Client Secret**.
 5. In the provider settings, add the following redirect URLs under **Redirect URIs/Origins**:
     - Strict; https://netbird.company
-    - Regex; https://netbird.company/.*
+    - Regex; https://netbird.company/.\*
     - Strict; http://localhost:53000
 6. Under **Signing Key**, select an available key. By default, the authentik self-signed certificate is available.
 7. Under **Advanced Protocol Settings**, set the **Access Code Validity** to `minutes=10` and set the **Subject Mode** to `Based on the User's ID`.
