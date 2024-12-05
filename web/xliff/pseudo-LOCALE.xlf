@@ -8990,7 +8990,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Śŷńć Ĝŕōũƥ</target>
 </trans-unit>
 <trans-unit id="s2d5f69929bb7221d">
-  <source><x id="0" equiv-text="${prompt.name}"/> ("<x id="1" equiv-text="${prompt.fieldKey}"/>", of type <x id="2" equiv-text="${prompt.type}"/>)</source>
+  <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
   <target><x id="0" equiv-text="${prompt.name}"/> ("<x id="1" equiv-text="${prompt.fieldKey}"/>", ōƒ ţŷƥē <x id="2" equiv-text="${prompt.type}"/>)</target>
 </trans-unit>
 <trans-unit id="sa38c5a2731be3a46">
@@ -9186,5 +9186,20 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s43f899a86c6a3484">
   <source>Redirect URIs/Origins</source>
+</trans-unit>
+<trans-unit id="sa52bf79fe1ccb13e">
+  <source>Federated OIDC Sources</source>
+</trans-unit>
+<trans-unit id="s555465bf6577505e">
+  <source>Federated OIDC Providers</source>
+</trans-unit>
+<trans-unit id="s066bfb12c9032dc2">
+  <source>Available Providers</source>
+</trans-unit>
+<trans-unit id="sa12111ca3f3e398e">
+  <source>Selected Providers</source>
+</trans-unit>
+<trans-unit id="s4f8a3f7792e6b940">
+  <source>JWTs signed by the selected providers can be used to authenticate to this provider.</source>
 </trans-unit>
 </body></file></xliff>
