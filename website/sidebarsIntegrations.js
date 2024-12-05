@@ -33,6 +33,7 @@ module.exports = {
                         "services/roundcube/index",
                         "services/sharepoint-se/index",
                         "services/slack/index",
+                        "services/thelounge/index",
                         "services/vikunja/index",
                         "services/wekan/index",
                         "services/wiki-js/index",

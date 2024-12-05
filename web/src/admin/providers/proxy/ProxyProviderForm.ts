@@ -2,6 +2,10 @@ import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 import {
+    oauth2ProviderSelector,
+    oauth2ProvidersProvider,
+} from "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
+import {
     oauth2SourcesProvider,
     oauth2SourcesSelector,
 } from "@goauthentik/admin/providers/oauth2/OAuth2Sources.js";
@@ -385,17 +389,35 @@ ${this.instance?.skipPathRegex}</textarea
                     ${this.showHttpBasic ? this.renderHttpBasic() : html``}
                     <ak-form-element-horizontal
                         label=${msg("Trusted OIDC Sources")}
-                        name="jwksSources"
+                        name="jwtFederationSources"
                     >
                         <ak-dual-select-dynamic-selected
                             .provider=${oauth2SourcesProvider}
-                            .selector=${oauth2SourcesSelector(this.instance?.jwksSources)}
+                            .selector=${oauth2SourcesSelector(this.instance?.jwtFederationSources)}
                             available-label=${msg("Available Sources")}
                             selected-label=${msg("Selected Sources")}
                         ></ak-dual-select-dynamic-selected>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Federated OIDC Providers")}
+                        name="jwtFederationProviders"
+                    >
+                        <ak-dual-select-dynamic-selected
+                            .provider=${oauth2ProvidersProvider}
+                            .selector=${oauth2ProviderSelector(
+                                this.instance?.jwtFederationProviders,
+                            )}
+                            available-label=${msg("Available Providers")}
+                            selected-label=${msg("Selected Providers")}
+                        ></ak-dual-select-dynamic-selected>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "JWTs signed by the selected providers can be used to authenticate to this provider.",
                             )}
                         </p>
                     </ak-form-element-horizontal>

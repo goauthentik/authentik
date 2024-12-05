@@ -111,7 +111,7 @@ jobs:
           context: .
           cache-from: type=registry,ref=ghcr.io/goauthentik/dev-${{ matrix.type }}:buildcache
           cache-to: ${{ steps.ev.outputs.shouldPush == 'true' && format('type=registry,ref=ghcr.io/goauthentik/dev-{0}:buildcache,mode=max', matrix.type) || '' }}
-      - uses: actions/attest-build-provenance@v1
+      - uses: actions/attest-build-provenance@v2
         id: attest
         if: ${{ steps.ev.outputs.shouldPush == 'true' }}
         with:

@@ -28,12 +28,10 @@ The following placeholders will be used:
 2. Create a new **OAuth2 / OpenID Provider**.
 3. Ensure the **Client Type** is set to `Public`.
 4. Note the generated **Client ID** and **Client Secret**.
-5. In the provider settings, add the following redirect URLs under **Redirect URIs/Origins (RegEx)**:
-    ```
-    https://netbird.company
-    https://netbird.company*
-    http://localhost:53000
-    ```
+5. In the provider settings, add the following redirect URLs under **Redirect URIs/Origins**:
+    - Strict; https://netbird.company
+    - Regex; https://netbird.company/.\*
+    - Strict; http://localhost:53000
 6. Under **Signing Key**, select an available key. By default, the authentik self-signed certificate is available.
 7. Under **Advanced Protocol Settings**, set the **Access Code Validity** to `minutes=10` and set the **Subject Mode** to `Based on the User's ID`.
 8. Click **Finish** to save the provider configuration.
