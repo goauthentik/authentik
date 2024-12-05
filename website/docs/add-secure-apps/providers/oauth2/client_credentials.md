@@ -30,17 +30,13 @@ In addition to that, with authentik 2024.4 it is also possible to pass the confi
 
 ### JWT-authentication
 
-Starting with authentik 2022.4, you can authenticate and get a token using an existing JWT.
+#### Externally issued JWTs <span class="badge badge--version">authentik 2022.4+</span>
 
-(For readability we will refer to the JWT issued by the external issuer/platform as input JWT, and the resulting JWT from authentik as the output JWT)
+You can authenticate and get a token using an existing JWT. For readability we will refer to the JWT issued by the external issuer/platform as input JWT, and the resulting JWT from authentik as the output JWT.
 
-To configure this, the certificate used to sign the input JWT must be created in authentik. The certificate is enough, a private key is not required. Afterwards, configure the certificate in the OAuth2 provider settings under _Verification certificates_.
+To configure this, define a JWKS URL/raw JWKS data in OAuth Sources. If a JWKS URL is specified, authentik will fetch the data and store it in the source, and then select the source in the OAuth2 Provider that will be authenticated against.
 
-:::info
-Starting with authentik 2022.6, you can define a JWKS URL/raw JWKS data in OAuth Sources, and use those to verify the key instead of having to manually create a certificate in authentik for them. This method is still supported but will be removed in a later version.
-:::
-
-With this configure, any JWT issued by the configured certificates can be used to authenticate:
+With this configuration, any JWT issued by the configured sources' certificates can be used to authenticate:
 
 ```http
 POST /application/o/token/ HTTP/1.1
@@ -53,11 +49,38 @@ client_assertion=$inputJWT&
 client_id=application_client_id
 ```
 
+Alternatively, you can set the `client_secret` parameter to `$inputJWT`, for applications that can set the password from a file but not other parameters.
+
+Input JWTs are checked to verify that they are signed by any of the selected _Federated OIDC Sources_, and that their `exp` attribute is not set as now or in the past.
+
+To dynamically limit access based on the claims of the tokens, you can use _[Expression policies](../../../customize/policies/expression.mdx)_:
+
+```python
+return request.context["oauth_jwt"]["iss"] == "https://my.issuer"
+```
+
+#### authentik-issued JWTs <span class="badge badge--version">authentik 2024.12+</span>
+
+To allow federation between providers, modify the provider settings of the application (whose token will be used for authentication) to select the provider of the application to which you want to federate.
+
+With this configure, any JWT issued by the configured providers can be used to authenticate:
+
+```
+POST /application/o/token/ HTTP/1.1
+Host: authentik.company
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials&
+client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer&
+client_assertion=$inputJWT&
+client_id=application_client_id
+```
+
 Alternatively, you can set the `client_secret` parameter to the `$inputJWT`, for applications which can set the password from a file but not other parameters.
 
-Input JWTs are checked to be signed by any of the selected _Verification certificates_, and their `exp` attribute must not be now or in the past.
+Input JWTs must be valid access tokens issued by any of the configured _Federated OIDC Providers_, they must not have been revoked and must not have expired.
 
-To do additional checks, you can use _[Expression policies](../../../customize/policies/expression.mdx)_:
+To dynamically limit access based on the claims of the tokens, you can use _[Expression policies](../../../customize/policies/expression.mdx)_:
 
 ```python
 return request.context["oauth_jwt"]["iss"] == "https://my.issuer"

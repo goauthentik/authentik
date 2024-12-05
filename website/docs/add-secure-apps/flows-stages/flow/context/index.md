@@ -170,7 +170,7 @@ Example:
     // JWT information when `auth_method` `jwt` was used
     "jwt": {},
     "source": null,
-    "jwk_id": ""
+    "provider": null
 }
 ```
 
