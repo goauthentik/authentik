@@ -34,7 +34,6 @@ entries:
       scope_name: profile
       description: "General Profile Information"
       expression: |
-        entitlements = [entitlement.name for entitlement in request.user.app_entitlements(provider.application)]
         return {
             # Because authentik only saves the user's full name, and has no concept of first and last names,
             # the full name is used as given name.
@@ -44,6 +43,17 @@ entries:
             "preferred_username": request.user.username,
             "nickname": request.user.username,
             "groups": [group.name for group in request.user.ak_groups.all()],
+        }
+  - identifiers:
+      managed: goauthentik.io/providers/oauth2/scope-entitlements
+    model: authentik_providers_oauth2.scopemapping
+    attrs:
+      name: "authentik default OAuth Mapping: Application Entitlements"
+      scope_name: entitlements
+      description: "Application entitlements"
+      expression: |
+        entitlements = [entitlement.name for entitlement in request.user.app_entitlements(provider.application)]
+        return {
             "entitlements": entitlements,
             "roles": entitlements,
         }
