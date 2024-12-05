@@ -108,7 +108,7 @@ class EventMatcherPolicy(Policy):
                 result=result,
             )
             matches.append(result)
-        passing = any(x.passing for x in matches)
+        passing = all(x.passing for x in matches)
         messages = chain(*[x.messages for x in matches])
         result = PolicyResult(passing, *messages)
         result.source_results = matches

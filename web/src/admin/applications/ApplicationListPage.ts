@@ -1,8 +1,8 @@
 import "@goauthentik/admin/applications/ApplicationForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { PFSize } from "@goauthentik/common/enums.js";
-import "@goauthentik/components/ak-app-icon";
-import MDApplication from "@goauthentik/docs/applications/index.md";
+import MDApplication from "@goauthentik/docs/add-secure-apps/applications/index.md";
+import "@goauthentik/elements/AppIcon.js";
+import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import "@goauthentik/elements/Markdown";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
@@ -13,9 +13,10 @@ import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
@@ -40,7 +41,7 @@ export const applicationListStyle = css`
 `;
 
 @customElement("ak-application-list")
-export class ApplicationListPage extends TablePage<Application> {
+export class ApplicationListPage extends WithBrandConfig(TablePage<Application>) {
     searchEnabled(): boolean {
         return true;
     }
@@ -49,7 +50,7 @@ export class ApplicationListPage extends TablePage<Application> {
     }
     pageDescription(): string {
         return msg(
-            "External applications that use authentik as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.",
+            str`External applications that use ${this.brand.brandingTitle || "authentik"} as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.`,
         );
     }
     pageIcon(): string {
@@ -122,7 +123,10 @@ export class ApplicationListPage extends TablePage<Application> {
 
     row(item: Application): TemplateResult[] {
         return [
-            html`<ak-app-icon size=${PFSize.Medium} .app=${item}></ak-app-icon>`,
+            html`<ak-app-icon
+                name=${item.name}
+                icon=${ifDefined(item.metaIcon || undefined)}
+            ></ak-app-icon>`,
             html`<a href="#/core/applications/${item.slug}">
                 <div>${item.name}</div>
                 ${item.metaPublisher ? html`<small>${item.metaPublisher}</small>` : html``}

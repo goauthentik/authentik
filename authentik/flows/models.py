@@ -14,6 +14,7 @@ from structlog.stdlib import get_logger
 from authentik.core.models import Token
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.challenge import FlowLayout
+from authentik.lib.config import CONFIG
 from authentik.lib.models import InheritanceForeignKey, SerializerModel
 from authentik.lib.utils.reflection import class_to_path
 from authentik.policies.models import PolicyBindingModel
@@ -107,7 +108,9 @@ class Stage(SerializerModel):
 
 
 def in_memory_stage(view: type["StageView"], **kwargs) -> Stage:
-    """Creates an in-memory stage instance, based on a `view` as view."""
+    """Creates an in-memory stage instance, based on a `view` as view.
+    Any key-word arguments are set as attributes on the stage object,
+    accessible via `self.executor.current_stage`."""
     stage = Stage()
     # Because we can't pickle a locally generated function,
     # we set the view as a separate property and reference a generic function
@@ -175,9 +178,13 @@ class Flow(SerializerModel, PolicyBindingModel):
         """Get the URL to the background image. If the name is /static or starts with http
         it is returned as-is"""
         if not self.background:
-            return "/static/dist/assets/images/flow_background.jpg"
-        if self.background.name.startswith("http") or self.background.name.startswith("/static"):
+            return (
+                CONFIG.get("web.path", "/")[:-1] + "/static/dist/assets/images/flow_background.jpg"
+            )
+        if self.background.name.startswith("http"):
             return self.background.name
+        if self.background.name.startswith("/static"):
+            return CONFIG.get("web.path", "/")[:-1] + self.background.name
         return self.background.url
 
     stages = models.ManyToManyField(Stage, through="FlowStageBinding", blank=True)

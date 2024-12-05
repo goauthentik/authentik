@@ -1,12 +1,12 @@
 import "@goauthentik/admin/applications/wizard/ak-wizard-title";
 import {
-    makeSourceSelector,
     oauth2SourcesProvider,
+    oauth2SourcesSelector,
 } from "@goauthentik/admin/providers/oauth2/OAuth2Sources.js";
 import {
-    makeProxyPropertyMappingsSelector,
-    proxyPropertyMappingsProvider,
-} from "@goauthentik/admin/providers/proxy/ProxyProviderPropertyMappings.js";
+    propertyMappingsProvider,
+    propertyMappingsSelector,
+} from "@goauthentik/admin/providers/proxy/ProxyProviderFormHelpers.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-switch-input";
@@ -105,26 +105,8 @@ export class AkTypeProxyApplicationWizardPage extends BaseProviderPanel {
                 ></ak-text-input>
 
                 <ak-form-element-horizontal
-                    label=${msg("Authentication flow")}
-                    ?required=${false}
-                    .errorMessages=${errors?.authenticationFlow ?? []}
-                    name="authenticationFlow"
-                >
-                    <ak-flow-search
-                        flowType=${FlowsInstancesListDesignationEnum.Authentication}
-                        .currentFlow=${this.instance?.authenticationFlow}
-                        required
-                    ></ak-flow-search>
-                    <p class="pf-c-form__helper-text">
-                        ${msg(
-                            "Flow used when a user access this provider and is not authenticated.",
-                        )}
-                    </p>
-                </ak-form-element-horizontal>
-
-                <ak-form-element-horizontal
                     label=${msg("Authorization flow")}
-                    ?required=${true}
+                    required
                     name="authorizationFlow"
                     .errorMessages=${errors?.authorizationFlow ?? []}
                 >
@@ -165,8 +147,8 @@ export class AkTypeProxyApplicationWizardPage extends BaseProviderPanel {
                             name="propertyMappings"
                         >
                             <ak-dual-select-dynamic-selected
-                                .provider=${proxyPropertyMappingsProvider}
-                                .selector=${makeProxyPropertyMappingsSelector(
+                                .provider=${propertyMappingsProvider}
+                                .selector=${propertyMappingsSelector(
                                     this.instance?.propertyMappings,
                                 )}
                                 available-label="${msg("Available Scopes")}"
@@ -196,6 +178,40 @@ export class AkTypeProxyApplicationWizardPage extends BaseProviderPanel {
                                 </p>`}
                         >
                         </ak-textarea-input>
+                    </div>
+                </ak-form-group>
+                <ak-form-group>
+                    <span slot="header"> ${msg("Advanced flow settings")} </span>
+                    <div slot="body" class="pf-c-form">
+                        <ak-form-element-horizontal
+                            name="authenticationFlow"
+                            label=${msg("Authentication flow")}
+                        >
+                            <ak-flow-search
+                                flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                                .currentFlow=${this.instance?.authenticationFlow}
+                            ></ak-flow-search>
+                            <p class="pf-c-form__helper-text">
+                                ${msg(
+                                    "Flow used when a user access this provider and is not authenticated.",
+                                )}
+                            </p>
+                        </ak-form-element-horizontal>
+                        <ak-form-element-horizontal
+                            label=${msg("Invalidation flow")}
+                            name="invalidationFlow"
+                            required
+                        >
+                            <ak-flow-search
+                                flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                                .currentFlow=${this.instance?.invalidationFlow}
+                                defaultFlowSlug="default-provider-invalidation-flow"
+                                required
+                            ></ak-flow-search>
+                            <p class="pf-c-form__helper-text">
+                                ${msg("Flow used when logging out of this provider.")}
+                            </p>
+                        </ak-form-element-horizontal>
                     </div>
                 </ak-form-group>
                 <ak-form-group>
@@ -232,7 +248,9 @@ export class AkTypeProxyApplicationWizardPage extends BaseProviderPanel {
                         >
                             <ak-dual-select-dynamic-selected
                                 .provider=${oauth2SourcesProvider}
-                                .selector=${makeSourceSelector(this.instance?.jwksSources)}
+                                .selector=${oauth2SourcesSelector(
+                                    this.instance?.jwtFederationSources,
+                                )}
                                 available-label=${msg("Available Sources")}
                                 selected-label=${msg("Selected Sources")}
                             ></ak-dual-select-dynamic-selected>

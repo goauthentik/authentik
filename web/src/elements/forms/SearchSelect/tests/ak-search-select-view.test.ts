@@ -1,8 +1,9 @@
+import { render } from "@goauthentik/elements/tests/utils.js";
 import { $, browser, expect } from "@wdio/globals";
 import { slug } from "github-slugger";
 import { Key } from "webdriverio";
 
-import { html, render } from "lit";
+import { html } from "lit";
 
 import "../ak-search-select-view.js";
 import { sampleData } from "../stories/sampleData.js";
@@ -97,12 +98,14 @@ describe("Search select: Test Input Field", () => {
     });
 
     afterEach(async () => {
-        document.body.querySelector("#a-separate-component")?.remove();
-        document.body.querySelector("ak-search-select-view")?.remove();
-        // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-        if (document.body["_$litPart$"]) {
+        await browser.execute(() => {
+            document.body.querySelector("#a-separate-component")?.remove();
+            document.body.querySelector("ak-search-select-view")?.remove();
             // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-            delete document.body["_$litPart$"];
-        }
+            if (document.body["_$litPart$"]) {
+                // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
+                delete document.body["_$litPart$"];
+            }
+        });
     });
 });

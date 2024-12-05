@@ -8,7 +8,12 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { ProvidersApi, SCIMProviderGroup, SyncObjectModelEnum } from "@goauthentik/api";
+import {
+    ProvidersApi,
+    ProvidersScimSyncObjectCreateRequest,
+    SCIMProviderGroup,
+    SyncObjectModelEnum,
+} from "@goauthentik/api";
 
 @customElement("ak-provider-scim-groups-list")
 export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
@@ -29,7 +34,9 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
                 <ak-sync-object-form
                     .provider=${this.providerId}
                     model=${SyncObjectModelEnum.Group}
-                    .sync=${new ProvidersApi(DEFAULT_CONFIG).providersScimSyncObjectCreate}
+                    .sync=${(data: ProvidersScimSyncObjectCreateRequest) => {
+                        return new ProvidersApi(DEFAULT_CONFIG).providersScimSyncObjectCreate(data);
+                    }}
                     slot="form"
                 >
                 </ak-sync-object-form>

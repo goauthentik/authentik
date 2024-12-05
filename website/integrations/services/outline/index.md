@@ -18,17 +18,17 @@ sidebar_label: Outline
 
 The following placeholders will be used:
 
--   `outline.company` is the FQDN of the Outline install.
--   `authentik.company` is the FQDN of the authentik install.
+- `outline.company` is the FQDN of the Outline install.
+- `authentik.company` is the FQDN of the authentik install.
 
 ## authentik configuration
 
 1. Create an OAuth2/OpenID provider with the following parameters:
 
--   Client Type: `Confidential`
--   Scopes: OpenID, Email and Profile
--   Signing Key: Select any available key
--   Redirect URIs: `https://outline.company/auth/oidc.callback`
+- Client Type: `Confidential`
+- Scopes: OpenID, Email and Profile
+- Signing Key: Select any available key
+- Redirect URIs: `https://outline.company/auth/oidc.callback`
 
 2. Note the Client ID and Client Secret values.
 

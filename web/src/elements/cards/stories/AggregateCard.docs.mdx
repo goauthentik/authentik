@@ -1,0 +1,24 @@
+import { Canvas, Description, Meta, Story, Title } from "@storybook/blocks";
+
+import * as AggregateCardStories from "./AggregateCard.stories";
+
+<Meta of={AggregateCardStories} />
+
+# Aggregate Cards
+
+Aggregate Cards are in-page elements to display isolated elements in a consistent, card-like format.
+Cards are used in dashboards and as asides for specific information.
+
+## Usage
+
+```Typescript
+import "@goauthentik/elements/cards/AggregateCard.js";
+```
+
+```html
+<ak-aggregate-card header="Some title"><p>This is the content of your card!</p></ak-aggregate-card>
+```
+
+## Demo
+
+<Story of={AggregateCardStories.DefaultStory} />

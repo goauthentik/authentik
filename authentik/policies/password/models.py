@@ -89,6 +89,10 @@ class PasswordPolicy(Policy):
 
     def passes_static(self, password: str, request: PolicyRequest) -> PolicyResult:
         """Check static rules"""
+        error_message = self.error_message
+        if error_message == "":
+            error_message = _("Invalid password.")
+
         if len(password) < self.length_min:
             LOGGER.debug("password failed", check="static", reason="length")
             return PolicyResult(False, self.error_message)
@@ -131,7 +135,7 @@ class PasswordPolicy(Policy):
         LOGGER.debug("got hibp result", count=final_count, hash=pw_hash[:5])
         if final_count > self.hibp_allowed_count:
             LOGGER.debug("password failed", check="hibp", count=final_count)
-            message = _("Password exists on %(count)d online lists." % {"count": final_count})
+            message = _("Password exists on {count} online lists.".format(count=final_count))
             return PolicyResult(False, message)
         return PolicyResult(True)
 

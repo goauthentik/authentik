@@ -59,7 +59,7 @@ export class BaseDeviceStage<
                 (this.host as AuthenticatorValidateStage).selectedDeviceChallenge = undefined;
             }}
         >
-            ${msg("Return to device picker")}
+            ${msg("Select another authentication method")}
         </button>`;
     }
 }

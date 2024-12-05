@@ -5,7 +5,7 @@ PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
 NPM_VERSION = $(shell python -m scripts.npm_version)
-PY_SOURCES = authentik tests scripts lifecycle .github
+PY_SOURCES = authentik tests scripts lifecycle .github website/docs/install-config/install/aws
 DOCKER_IMAGE ?= "authentik:test"
 
 GEN_API_TS = "gen-ts-api"
@@ -19,14 +19,13 @@ pg_name := $(shell python -m authentik.lib.config postgresql.name 2>/dev/null)
 CODESPELL_ARGS = -D - -D .github/codespell-dictionary.txt \
 		-I .github/codespell-words.txt \
 		-S 'web/src/locales/**' \
-		-S 'website/developer-docs/api/reference/**' \
+		-S 'website/docs/developer-docs/api/reference/**' \
 		authentik \
 		internal \
 		cmd \
 		web/src \
 		website/src \
 		website/blog \
-		website/developer-docs \
 		website/docs \
 		website/integrations \
 		website/src
@@ -252,6 +251,9 @@ website-build:
 
 website-watch:  ## Build and watch the documentation website, updating automatically
 	cd website && npm run watch
+
+aws-cfn:
+	cd website && npm run aws-cfn
 
 #########################
 ## Docker

@@ -554,7 +554,7 @@
         
       </trans-unit>
       <trans-unit id="s0382d73823585617">
-        <source><x id="0" equiv-text="${this.errorMessage}"/>: <x id="1" equiv-text="${e.toString()}"/></source>
+        <source><x id="0" equiv-text="${field}"/>: <x id="1" equiv-text="${errMsg}"/></source>
         <target>
         <x id="0" equiv-text="${this.errorMessage}"/>:
         <x id="1" equiv-text="${e.toString()}"/></target>
@@ -1014,24 +1014,9 @@
         <target>Secret du client</target>
         
       </trans-unit>
-      <trans-unit id="sde0ad51b14f77cf6">
-        <source>Redirect URIs/Origins (RegEx)</source>
-        <target>URI/Origines de redirection (RegEx)</target>
-        
-      </trans-unit>
-      <trans-unit id="s7f9eb9c8bd26e8fd">
-        <source>Valid redirect URLs after a successful authorization flow. Also specify any origins here for Implicit flows.</source>
-        <target>URLs de redirection autorisées après un flux d'autorisation réussi. Indiquez également toute origine ici pour les flux implicites.</target>
-        
-      </trans-unit>
       <trans-unit id="s2a369bc2febb5d55">
         <source>If no explicit redirect URIs are specified, the first successfully used redirect URI will be saved.</source>
         <target>Si aucune URI de redirection explicite n'est spécifiée, la première URI de redirection utilisée avec succès sera enregistrée.</target>
-        
-      </trans-unit>
-      <trans-unit id="sa8384c9c26731f83">
-        <source>To allow any redirect URI, set this value to ".*". Be aware of the possible security implications this can have.</source>
-        <target>Pour permettre n'importe quelle URI de redirection, définissez cette valeur sur ".*". Soyez conscient des possibles implications de sécurité que cela peut avoir.</target>
         
       </trans-unit>
       <trans-unit id="s55787f4dfcdce52b">
@@ -6617,11 +6602,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
         <target>Veuillez saisir votre code</target>
         
       </trans-unit>
-      <trans-unit id="s18b910437b73e8e8">
-        <source>Return to device picker</source>
-        <target>Retourner à la sélection d'appareil</target>
-        
-      </trans-unit>
       <trans-unit id="se409d01b52c4e12f">
         <source>Retry authentication</source>
         <target>Réessayer l'authentification</target>
@@ -6948,7 +6928,7 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
       </trans-unit>
       <trans-unit id="s1298e361e40ee1c5">
         <source>Stop impersonation</source>
-        <target>Arrêter l'appropriation utilisateu</target>
+        <target>Arrêter l'appropriation utilisateur</target>
         
       </trans-unit>
       <trans-unit id="s6abff64e7ff7fde9">
@@ -7547,10 +7527,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>One hint, 'New Application Wizard', is currently hidden</source>
   <target>Un indice, l'assistant nouvelle application est actuellement caché</target>
 </trans-unit>
-<trans-unit id="s61bd841e66966325">
-  <source>External applications that use authentik as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
-  <target>Applications externes qui utilisent authentik comme fournisseur d'identité, en utilisant des protocoles comme OAuth2 et SAML. Toutes les applications sont affichées ici, même celles auxquelles vous n'avez pas accès.</target>
-</trans-unit>
 <trans-unit id="s1cc306d8e28c4464">
   <source>Deny message</source>
   <target>Message de refus</target>
@@ -7650,10 +7626,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="sfc31264ef7ff86ef">
   <source>For nginx's auth_request or traefik's forwardAuth per root domain</source>
   <target>Pour nginx auth_request ou traefik forwardAuth par domaine racine</target>
-</trans-unit>
-<trans-unit id="sc615309d10a9228c">
-  <source>RBAC is in preview.</source>
-  <target>RBAC est en aperçu.</target>
 </trans-unit>
 <trans-unit id="s32babfed740fd3c1">
   <source>User type used for newly created users.</source>
@@ -7846,10 +7818,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="s38e7cd1a24e70faa">
   <source>Create Endpoint</source>
   <target>Créer un point de terminaison</target>
-</trans-unit>
-<trans-unit id="s4770c10e5b1c028c">
-  <source>RAC is in preview.</source>
-  <target>RAC est en aperçu.</target>
 </trans-unit>
 <trans-unit id="s168565f5ac74a89f">
   <source>Update RAC Provider</source>
@@ -8192,10 +8160,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="sd176021da2ea0fe3">
   <source>Selected Applications</source>
   <target>Applications sélectionnées</target>
-</trans-unit>
-<trans-unit id="s862505f29064fc72">
-  <source>This option configures the footer links on the flow executor pages. It must be a valid YAML or JSON list and can be used as follows:</source>
-  <target>Cette option configure les liens de pied de page sur les pages de l'exécuteur de flux. Doit être une liste YAML ou JSON valide et peut être utilisée comme suit :</target>
 </trans-unit>
 <trans-unit id="s6d3f81dc4bcacbda">
   <source>Last used</source>
@@ -8729,10 +8693,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Search returned no results.</source>
   <target>La recherche n'a pas retourné de résultat.</target>
 </trans-unit>
-<trans-unit id="s11ec812e25ceef8a">
-  <source>No messages found</source>
-  <target>Pas de message trouvé</target>
-</trans-unit>
 <trans-unit id="s23446284b56ca0cc">
   <source>Reputation score(s)</source>
   <target>Score(s) de réputation</target>
@@ -9087,9 +9047,259 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="sa38c5a2731be3a46">
   <source>authentik was unable to save this application:</source>
+  <target>authentik n'a pas pu sauvegarder cette application :</target>
 </trans-unit>
 <trans-unit id="s25bacc19d98b444e">
   <source>Parent Group</source>
+  <target>Groupe parent</target>
+</trans-unit>
+<trans-unit id="s0159c800f16ee1a5">
+  <source>Flow used when logging out of this provider.</source>
+  <target>Flux utilisé lors de la déconnexion de ce fournisseur.</target>
+</trans-unit>
+<trans-unit id="s821d70ef9496e6f7">
+  <source>Unbind flow</source>
+  <target>Flux de déconnexion</target>
+</trans-unit>
+<trans-unit id="s6773ec2a233bbf41">
+  <source>Flow used for unbinding users.</source>
+  <target>Flux utilisé pour déconnecter les utilisateurs.</target>
+</trans-unit>
+<trans-unit id="s99060120f626df5b">
+  <source>Verify SCIM server's certificates</source>
+  <target>Vérifier les certificats du serveur SCIM</target>
+</trans-unit>
+<trans-unit id="sac88482c48453fc8">
+  <source>You've logged out of <x id="0" equiv-text="${this.challenge.applicationName}"/>. You can go back to the overview to launch another application, or log out of your authentik account.</source>
+  <target>Vous vous êtes déconnecté de <x id="0" equiv-text="${this.challenge.applicationName}"/>. Vous pouvez retourner à la vue d'ensemble pour lancer une autre application, ou vous déconnecter de votre compte authentik.</target>
+</trans-unit>
+<trans-unit id="s3108167b562674e2">
+  <source>Go back to overview</source>
+  <target>Retourner à la vue d'ensemble</target>
+</trans-unit>
+<trans-unit id="sdb749e793de55478">
+  <source>Log out of <x id="0" equiv-text="${this.challenge.brandName}"/></source>
+  <target>Se déconnecter de <x id="0" equiv-text="${this.challenge.brandName}"/></target>
+</trans-unit>
+<trans-unit id="s521681ed1d5ff814">
+  <source>Log back into <x id="0" equiv-text="${this.challenge.applicationName}"/></source>
+  <target>Se reconnecter à <x id="0" equiv-text="${this.challenge.applicationName}"/></target>
+</trans-unit>
+<trans-unit id="sc991a35f5e88d1d3">
+  <source>Encryption Key</source>
+  <target>Clé de chiffrement</target>
+</trans-unit>
+<trans-unit id="s8a598f7aef81c3bc">
+  <source>Key used to encrypt the tokens.</source>
+  <target>Clé utilisée pour chiffrer les jetons.</target>
+</trans-unit>
+<trans-unit id="sbfee780fa0a2c83e">
+  <source>Device type <x id="0" equiv-text="${device.verboseName}"/> cannot be deleted</source>
+  <target>Le type d'appareil <x id="0" equiv-text="${device.verboseName}"/> ne peut pas être supprimé</target>
+</trans-unit>
+<trans-unit id="s336936629cdeb3e5">
+  <source>Stage used to verify users' browsers using Google Chrome Device Trust. This stage can be used in authentication/authorization flows.</source>
+  <target>Étape utilisée pour vérifier le navigateur des utilisateurs avec le connecteur de confiance des appareils Google Chrome Enterprise. Cette étape peut être utilisée dans les flux d'authentification et d'autorisation.</target>
+</trans-unit>
+<trans-unit id="s85fe794c71b4ace8">
+  <source>Google Verified Access API</source>
+  <target>API Google Verified Access</target>
+</trans-unit>
+<trans-unit id="s013620384af7c8b4">
+  <source>Device type <x id="0" equiv-text="${device.verboseName}"/> cannot be edited</source>
+  <target>Le type d'appareil <x id="0" equiv-text="${device.verboseName}"/> ne peut pas être édité</target>
+</trans-unit>
+<trans-unit id="s4347135696fc7cde">
+  <source>Advanced flow settings</source>
+  <target>Paramètres avancés des flux</target>
+</trans-unit>
+<trans-unit id="sf52ff57fd136cc2f">
+  <source>Enable this option to write password changes made in authentik back to Kerberos. Ignored if sync is disabled.</source>
+  <target>Activer cette option pour écrire les changements de mot de passe fait dans authentik dans Kerberos. Ignoré si la synchronisation est désactivée.</target>
+</trans-unit>
+<trans-unit id="s14a16542f956e11d">
+  <source>Realm settings</source>
+  <target>Paramètres du realm</target>
+</trans-unit>
+<trans-unit id="s9c2eae548d3c1c30">
+  <source>Realm</source>
+  <target>Realm</target>
+</trans-unit>
+<trans-unit id="s6b032212997e2491">
+  <source>Kerberos 5 configuration</source>
+  <target>Configuration Kerberos 5</target>
+</trans-unit>
+<trans-unit id="sbf50181022f47de3">
+  <source>Kerberos 5 configuration. See man krb5.conf(5) for configuration format. If left empty, a default krb5.conf will be used.</source>
+  <target>Configuration Kerbers 5. Cf. man krb5.conf(5) pour le format de configuration. Si laissé vide, un krb5.conf par défaut sera utilisé.</target>
+</trans-unit>
+<trans-unit id="s2386539a0bd62fab">
+  <source>Sync connection settings</source>
+  <target>Paramètres de synchronisation</target>
+</trans-unit>
+<trans-unit id="s0d1a6f3fe81351f8">
+  <source>Sync principal</source>
+  <target>Principal de synchronisation</target>
+</trans-unit>
+<trans-unit id="sa691d6e1974295fa">
+  <source>Principal used to authenticate to the KDC for syncing.</source>
+  <target>Principal utilisé pour s'authentifier au KDC pour synchroniser.</target>
+</trans-unit>
+<trans-unit id="s977b9c629eed3d33">
+  <source>Sync password</source>
+  <target>Mot de passe de synchronisation</target>
+</trans-unit>
+<trans-unit id="s77772860385de948">
+  <source>Password used to authenticate to the KDC for syncing. Optional if Sync keytab or Sync credentials cache is provided.</source>
+  <target>Mot de passe utilisé pour s'authentifier au KDC pour synchroniser. Optional si une keytab de synchronisation ou un credentials cache de synchronisation est fourni.</target>
+</trans-unit>
+<trans-unit id="sc59ec59c3d5e74dc">
+  <source>Sync keytab</source>
+  <target>Keytab de synchronisation</target>
+</trans-unit>
+<trans-unit id="scd42997958453f05">
+  <source>Keytab used to authenticate to the KDC for syncing. Optional if Sync password or Sync credentials cache is provided. Must be base64 encoded or in the form TYPE:residual.</source>
+  <target>Keytab utilisée pour s'authentifier au KDC pour synchroniser. Optional si un mot de passe de synchronisation ou un credentials cache de synchronisation est fourni. Doit être encodé en base64 ou de la forme TYPE:residual.</target>
+</trans-unit>
+<trans-unit id="s60eaf439ccdca1f2">
+  <source>Sync credentials cache</source>
+  <target>Credentials cache de synchronisation</target>
+</trans-unit>
+<trans-unit id="s95722900b0c9026f">
+  <source>Credentials cache used to authenticate to the KDC for syncing. Optional if Sync password or Sync keytab is provided. Must be in the form TYPE:residual.</source>
+  <target>Credentials cache utilisé pour s'authentifier au KDC pour synchroniser. Optional si un mot de passe de synchronisation ou une keytab de synchronisation est fourni. Doit être de la forme TYPE:residual.</target>
+</trans-unit>
+<trans-unit id="sf9c055db98d7994a">
+  <source>SPNEGO settings</source>
+  <target>Paramètres SPNEGO</target>
+</trans-unit>
+<trans-unit id="sab580a45dc46937f">
+  <source>SPNEGO server name</source>
+  <target>Nom de serveur SPNEGO</target>
+</trans-unit>
+<trans-unit id="s7a79d6174d17ab2d">
+  <source>Force the use of a specific server name for SPNEGO. Must be in the form HTTP@domain</source>
+  <target>Force l'utilisation d'un nom de serveur spécifique pour SPNEGO. Doit être de la forme HTTP@hostname</target>
+</trans-unit>
+<trans-unit id="sa4ba2b2081472ccd">
+  <source>SPNEGO keytab</source>
+  <target>Keytab SPNEGO</target>
+</trans-unit>
+<trans-unit id="s64adda975c1106c0">
+  <source>Keytab used for SPNEGO. Optional if SPNEGO credentials cache is provided. Must be base64 encoded or in the form TYPE:residual.</source>
+  <target>Keytab utilisée pour SPNEGO. Optional si un credentials cache SPNEGO est fourni. Doit être encodé en base64 ou de la forme TYPE:residual.</target>
+</trans-unit>
+<trans-unit id="s92247825b92587b5">
+  <source>SPNEGO credentials cache</source>
+  <target>Credentials cache SPNEGO</target>
+</trans-unit>
+<trans-unit id="sd9757c345e4062f8">
+  <source>Credentials cache used for SPNEGO. Optional if SPNEGO keytab is provided. Must be in the form TYPE:residual.</source>
+  <target>Credentials cache utilisé pour SPNEGO. Optional si une keytab SPNEGO est fournie. Doit être de la forme TYPE:residual.</target>
+</trans-unit>
+<trans-unit id="s734ab8fbcae0b69e">
+  <source>Kerberos Attribute mapping</source>
+  <target>Mappage d'attributs Kerberos</target>
+</trans-unit>
+<trans-unit id="s2c378e86e025fdb2">
+  <source>Update Kerberos Source</source>
+  <target>Mettre à jour la source Kerberos</target>
+</trans-unit>
+<trans-unit id="s03e4044abe0b556c">
+  <source>User database + Kerberos password</source>
+  <target>Base de données utilisateurs + mot de passe Kerberos</target>
+</trans-unit>
+<trans-unit id="s98bb2ae796f1ceef">
+  <source>Select another authentication method</source>
+  <target>Sélectionnez une autre méthode d'authentification</target>
+</trans-unit>
+<trans-unit id="s21d95b4651ad7a1e">
+  <source>Enter a one-time recovery code for this user.</source>
+  <target>Entrer un code de récupération à usage unique pour cette utilisateur.</target>
+</trans-unit>
+<trans-unit id="s2e1d5a7d320c25ef">
+  <source>Enter the code from your authenticator device.</source>
+  <target>Entrer le code sur votre appareil d'authentification.</target>
+</trans-unit>
+<trans-unit id="scc1a17d28912e974">
+  <source>Kerberos Source is in preview.</source>
+  <target>La source Kerberos est en aperçu.</target>
+</trans-unit>
+<trans-unit id="s54154a8d64a3597b">
+  <source>Captcha stage</source>
+  <target>Étape de Captcha</target>
+</trans-unit>
+<trans-unit id="s0c250af62ddbf801">
+  <source>When set, adds functionality exactly like a Captcha stage, but baked into the Identification stage.</source>
+  <target>Si défini, ajoute la fonctionnalité d'une étape Captcha, mais intégré dans l'étape d'identification.</target>
+</trans-unit>
+<trans-unit id="sabf8a430d504f8c8">
+  <source>Endpoint Google Chrome Device Trust is in preview.</source>
+  <target>Le point de terminaison Google Chrome Device Trust est en aperçu technique.</target>
+</trans-unit>
+<trans-unit id="s6f4f35a5a4b9b3cb">
+  <source>Interactive</source>
+  <target>Interactif</target>
+</trans-unit>
+<trans-unit id="sd020240e41e4c207">
+  <source>Enable this flag if the configured captcha requires User-interaction. Required for reCAPTCHA v2, hCaptcha and Cloudflare Turnstile.</source>
+  <target>Activer cette option si le captcha configuré requiert une interaction de l'utilisateur. Requis pour reCATCHA v2, hCaptcha et Cloudflare Turnstile.</target>
+</trans-unit>
+<trans-unit id="saa29a2ac03cd9d19">
+  <source>Reason</source>
+  <target>Raison</target>
+</trans-unit>
+<trans-unit id="se9fd92a824994eba">
+  <source>Reason for impersonating the user</source>
+  <target>Raison pour l'appropriation de l'utilisateur</target>
+</trans-unit>
+<trans-unit id="s29fab8887734192f">
+  <source>Require reason for impersonation</source>
+  <target>Forcer une raison d'appropriation</target>
+</trans-unit>
+<trans-unit id="sc24af6de78468cfa">
+  <source>Require administrators to provide a reason for impersonating a user.</source>
+  <target>Forcer les administrateurs à fournir une raison d'appropriation utilisateur.</target>
+</trans-unit>
+<trans-unit id="sd48cc52117f4d68b">
+  <source>Italian</source>
+  <target>Italien</target>
+</trans-unit>
+<trans-unit id="s6cee92a3b310e650">
+  <source>Add entry</source>
+  <target>Ajouter une entrée</target>
+</trans-unit>
+<trans-unit id="s8f36fb59c31d33eb">
+  <source>Link Title</source>
+  <target>Titre du lien</target>
+</trans-unit>
+<trans-unit id="s92205c10ba1f0f4c">
+  <source>This option configures the footer links on the flow executor pages. The URL is limited to web and mail addresses. If the name is left blank, the URL will be shown.</source>
+  <target>Cette option configure les liens affichés en bas de page sur l’exécuteur de flux. L'URL est limitée à des addresses web et courriel. Si le nom est laissé vide, l'URL sera affichée.</target>
+</trans-unit>
+<trans-unit id="s66f572bec2bde9c4">
+  <source>External applications that use <x id="0" equiv-text="${this.brand.brandingTitle || &quot;authentik&quot;}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
+  <target>Applications externes qui utilisent <x id="0" equiv-text="${this.brand.brandingTitle || &quot;authentik&quot;}"/> comme fournisseur d'identité en utilisant des protocoles comme OAuth2 et SAML. Toutes les applications sont affichées ici, même celles auxquelles vous n'avez pas accès.</target>
+</trans-unit>
+<trans-unit id="s58bec0ecd4f3ccd4">
+  <source>Strict</source>
+  <target>Strict</target>
+</trans-unit>
+<trans-unit id="sd27a8f54aca5d278">
+  <source>Regex</source>
+  <target>Regex</target>
+</trans-unit>
+<trans-unit id="seb411b22a8f262d6">
+  <source>Valid redirect URIs after a successful authorization flow. Also specify any origins here for Implicit flows.</source>
+  <target>URLs de redirection autorisées après un flux d'autorisation réussi. Indiquez également toute origine ici pour les flux implicites.</target>
+</trans-unit>
+<trans-unit id="s4c49d27de60a532b">
+  <source>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</source>
+  <target>Pour permettre n'importe quelle URI de redirection, définissez cette valeur sur ".*". Soyez conscient des possibles implications de sécurité que cela peut avoir.</target>
+</trans-unit>
+<trans-unit id="s43f899a86c6a3484">
+  <source>Redirect URIs/Origins</source>
+  <target>URLs de redirection/Origines</target>
 </trans-unit>
     </body>
   </file>

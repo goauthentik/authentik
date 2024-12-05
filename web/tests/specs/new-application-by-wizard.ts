@@ -16,7 +16,7 @@ async function reachTheProvider(title: string) {
     await ApplicationsListPage.logout();
     await login();
     await ApplicationsListPage.open();
-    await ApplicationsListPage.pause("ak-page-header");
+    await ApplicationsListPage.pause();
     await expect(await ApplicationsListPage.pageHeader()).toBeDisplayed();
     await expect(await ApplicationsListPage.pageHeader()).toHaveText("Applications");
 

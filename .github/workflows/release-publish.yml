@@ -169,6 +169,27 @@ jobs:
           file: ./authentik-outpost-${{ matrix.type }}_${{ matrix.goos }}_${{ matrix.goarch }}
           asset_name: authentik-outpost-${{ matrix.type }}_${{ matrix.goos }}_${{ matrix.goarch }}
           tag: ${{ github.ref }}
+  upload-aws-cfn-template:
+    permissions:
+      # Needed for AWS login
+      id-token: write
+      contents: read
+    needs:
+      - build-server
+      - build-outpost
+    env:
+      AWS_REGION: eu-central-1
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: "arn:aws:iam::016170277896:role/github_goauthentik_authentik"
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Upload template
+        run: |
+          aws s3 cp website/docs/install-config/install/aws/template.yaml s3://authentik-cloudformation-templates/authentik.ecs.${{ github.ref }}.yaml
+          aws s3 cp website/docs/install-config/install/aws/template.yaml s3://authentik-cloudformation-templates/authentik.ecs.latest.yaml
   test-release:
     needs:
       - build-server

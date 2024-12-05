@@ -1,6 +1,7 @@
 import { PFSize } from "@goauthentik/common/enums.js";
+import { globalAK } from "@goauthentik/common/global";
 import { truncateWords } from "@goauthentik/common/utils";
-import "@goauthentik/components/ak-app-icon";
+import "@goauthentik/elements/AppIcon";
 import { AKElement, rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Expand";
 import "@goauthentik/user/LibraryApplication/RACLaunchEndpointModal";
@@ -68,7 +69,7 @@ export class LibraryApplication extends AKElement {
     renderExpansion(application: Application) {
         const me = rootInterface<UserInterface>()?.me;
 
-        return html`<ak-expand textOpen=${msg("Less details")} textClosed=${msg("More details")}>
+        return html`<ak-expand text-open=${msg("Less details")} text-closed=${msg("More details")}>
             <div class="pf-c-content">
                 <small>${application.metaPublisher}</small>
             </div>
@@ -77,7 +78,8 @@ export class LibraryApplication extends AKElement {
                 ? html`
                       <a
                           class="pf-c-button pf-m-control pf-m-small pf-m-block"
-                          href="/if/admin/#/core/applications/${application?.slug}"
+                          href="${globalAK().api
+                              .base}if/admin/#/core/applications/${application?.slug}"
                       >
                           <i class="fas fa-edit"></i>&nbsp;${msg("Edit")}
                       </a>
@@ -115,7 +117,6 @@ export class LibraryApplication extends AKElement {
 
         const classes = { "pf-m-selectable": this.selected, "pf-m-selected": this.selected };
         const styles = this.background ? { background: this.background } : {};
-
         return html` <div
             class="pf-c-card pf-m-hoverable pf-m-compact ${classMap(classes)}"
             style=${styleMap(styles)}
@@ -125,7 +126,11 @@ export class LibraryApplication extends AKElement {
                     href="${ifDefined(this.application.launchUrl ?? "")}"
                     target="${ifDefined(this.application.openInNewTab ? "_blank" : undefined)}"
                 >
-                    <ak-app-icon size=${PFSize.Large} .app=${this.application}></ak-app-icon>
+                    <ak-app-icon
+                        size=${PFSize.Large}
+                        name=${this.application.name}
+                        icon=${ifDefined(this.application.metaIcon || undefined)}
+                    ></ak-app-icon>
                 </a>
             </div>
             <div class="pf-c-card__title">${this.renderLaunch()}</div>

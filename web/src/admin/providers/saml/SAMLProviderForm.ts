@@ -9,7 +9,6 @@ import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm"
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
@@ -31,28 +30,7 @@ import {
     SpBindingEnum,
 } from "@goauthentik/api";
 
-export async function samlPropertyMappingsProvider(page = 1, search = "") {
-    const propertyMappings = await new PropertymappingsApi(
-        DEFAULT_CONFIG,
-    ).propertymappingsProviderSamlList({
-        ordering: "saml_name",
-        pageSize: 20,
-        search: search.trim(),
-        page,
-    });
-    return {
-        pagination: propertyMappings.pagination,
-        options: propertyMappings.results.map((m) => [m.pk, m.name, m.name, m]),
-    };
-}
-
-export function makeSAMLPropertyMappingsSelector(instanceMappings?: string[]) {
-    const localMappings = instanceMappings ? new Set(instanceMappings) : undefined;
-    return localMappings
-        ? ([pk, _]: DualSelectPair) => localMappings.has(pk)
-        : ([_0, _1, _2, mapping]: DualSelectPair<SAMLPropertyMapping>) =>
-              mapping?.managed?.startsWith("goauthentik.io/providers/saml");
-}
+import { propertyMappingsProvider, propertyMappingsSelector } from "./SAMLProviderFormHelpers.js";
 
 @customElement("ak-provider-saml-form")
 export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
@@ -90,22 +68,8 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                 />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${msg("Authentication flow")}
-                ?required=${false}
-                name="authenticationFlow"
-            >
-                <ak-flow-search
-                    flowType=${FlowsInstancesListDesignationEnum.Authentication}
-                    .currentFlow=${this.instance?.authenticationFlow}
-                    required
-                ></ak-flow-search>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Flow used when a user access this provider and is not authenticated.")}
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal
                 label=${msg("Authorization flow")}
-                ?required=${true}
+                required
                 name="authorizationFlow"
             >
                 <ak-flow-search
@@ -178,6 +142,42 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                             value="${ifDefined(this.instance?.audience)}"
                             class="pf-c-form-control"
                         />
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+
+            <ak-form-group>
+                <span slot="header"> ${msg("Advanced flow settings")} </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("Authentication flow")}
+                        ?required=${false}
+                        name="authenticationFlow"
+                    >
+                        <ak-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                            .currentFlow=${this.instance?.authenticationFlow}
+                        ></ak-flow-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Flow used when a user access this provider and is not authenticated.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Invalidation flow")}
+                        name="invalidationFlow"
+                        required
+                    >
+                        <ak-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                            .currentFlow=${this.instance?.invalidationFlow}
+                            defaultFlowSlug="default-provider-invalidation-flow"
+                            required
+                        ></ak-flow-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Flow used when logging out of this provider.")}
+                        </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
@@ -281,10 +281,8 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                         name="propertyMappings"
                     >
                         <ak-dual-select-dynamic-selected
-                            .provider=${samlPropertyMappingsProvider}
-                            .selector=${makeSAMLPropertyMappingsSelector(
-                                this.instance?.propertyMappings,
-                            )}
+                            .provider=${propertyMappingsProvider}
+                            .selector=${propertyMappingsSelector(this.instance?.propertyMappings)}
                             available-label=${msg("Available User Property Mappings")}
                             selected-label=${msg("Selected User Property Mappings")}
                         ></ak-dual-select-dynamic-selected>

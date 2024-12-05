@@ -3,7 +3,7 @@
 import base64
 import binascii
 import json
-from dataclasses import asdict
+from dataclasses import asdict, dataclass
 from functools import cached_property
 from hashlib import sha256
 from typing import Any
@@ -12,18 +12,29 @@ from urllib.parse import urlparse, urlunparse
 from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePrivateKey
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
+from dacite import Config
 from dacite.core import from_dict
+from django.contrib.postgres.indexes import HashIndex
 from django.db import models
 from django.http import HttpRequest
 from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from jwcrypto.common import json_encode
+from jwcrypto.jwe import JWE
+from jwcrypto.jwk import JWK
 from jwt import encode
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.brands.models import WebfingerProvider
-from authentik.core.models import ExpiringModel, PropertyMapping, Provider, User
+from authentik.core.models import (
+    AuthenticatedSession,
+    ExpiringModel,
+    PropertyMapping,
+    Provider,
+    User,
+)
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_code_fixed_length, generate_id, generate_key
 from authentik.lib.models import SerializerModel
@@ -67,9 +78,23 @@ class IssuerMode(models.TextChoices):
     """Configure how the `iss` field is created."""
 
     GLOBAL = "global", _("Same identifier is used for all providers")
-    PER_PROVIDER = "per_provider", _(
-        "Each provider has a different issuer, based on the application slug."
+    PER_PROVIDER = (
+        "per_provider",
+        _("Each provider has a different issuer, based on the application slug."),
     )
+
+
+class RedirectURIMatchingMode(models.TextChoices):
+    STRICT = "strict", _("Strict URL comparison")
+    REGEX = "regex", _("Regular Expression URL matching")
+
+
+@dataclass
+class RedirectURI:
+    """A single redirect URI entry"""
+
+    matching_mode: RedirectURIMatchingMode
+    url: str
 
 
 class ResponseTypes(models.TextChoices):
@@ -146,11 +171,9 @@ class OAuth2Provider(WebfingerProvider, Provider):
         verbose_name=_("Client Secret"),
         default=generate_client_secret,
     )
-    redirect_uris = models.TextField(
-        default="",
-        blank=True,
+    _redirect_uris = models.JSONField(
+        default=dict,
         verbose_name=_("Redirect URIs"),
-        help_text=_("Enter each URI on a new line."),
     )
 
     include_claims_in_id_token = models.BooleanField(
@@ -206,12 +229,22 @@ class OAuth2Provider(WebfingerProvider, Provider):
         verbose_name=_("Signing Key"),
         on_delete=models.SET_NULL,
         null=True,
+        help_text=_("Key used to sign the tokens."),
+        related_name="oauth2provider_signing_key_set",
+    )
+    encryption_key = models.ForeignKey(
+        CertificateKeyPair,
+        verbose_name=_("Encryption Key"),
+        on_delete=models.SET_NULL,
+        null=True,
         help_text=_(
-            "Key used to sign the tokens. Only required when JWT Algorithm is set to RS256."
+            "Key used to encrypt the tokens. When set, "
+            "tokens will be encrypted and returned as JWEs."
         ),
+        related_name="oauth2provider_encryption_key_set",
     )
 
-    jwks_sources = models.ManyToManyField(
+    jwt_federation_sources = models.ManyToManyField(
         OAuthSource,
         verbose_name=_(
             "Any JWT signed by the JWK of the selected source can be used to authenticate."
@@ -220,6 +253,7 @@ class OAuth2Provider(WebfingerProvider, Provider):
         default=None,
         blank=True,
     )
+    jwt_federation_providers = models.ManyToManyField("OAuth2Provider", blank=True, default=None)
 
     @cached_property
     def jwt_key(self) -> tuple[str | PrivateKeyTypes, str]:
@@ -252,11 +286,32 @@ class OAuth2Provider(WebfingerProvider, Provider):
             return None
 
     @property
+    def redirect_uris(self) -> list[RedirectURI]:
+        uris = []
+        for entry in self._redirect_uris:
+            uris.append(
+                from_dict(
+                    RedirectURI,
+                    entry,
+                    config=Config(type_hooks={RedirectURIMatchingMode: RedirectURIMatchingMode}),
+                )
+            )
+        return uris
+
+    @redirect_uris.setter
+    def redirect_uris(self, value: list[RedirectURI]):
+        cleansed = []
+        for entry in value:
+            cleansed.append(asdict(entry))
+        self._redirect_uris = cleansed
+
+    @property
     def launch_url(self) -> str | None:
         """Guess launch_url based on first redirect_uri"""
-        if self.redirect_uris == "":
+        redirects = self.redirect_uris
+        if len(redirects) < 1:
             return None
-        main_url = self.redirect_uris.split("\n", maxsplit=1)[0]
+        main_url = redirects[0].url
         try:
             launch_url = urlparse(main_url)._replace(path="")
             return urlunparse(launch_url)
@@ -287,7 +342,27 @@ class OAuth2Provider(WebfingerProvider, Provider):
         if self.signing_key:
             headers["kid"] = self.signing_key.kid
         key, alg = self.jwt_key
-        return encode(payload, key, algorithm=alg, headers=headers)
+        encoded = encode(payload, key, algorithm=alg, headers=headers)
+        if self.encryption_key:
+            return self.encrypt(encoded)
+        return encoded
+
+    def encrypt(self, raw: str) -> str:
+        """Encrypt JWT"""
+        key = JWK.from_pem(self.encryption_key.certificate_data.encode())
+        jwe = JWE(
+            raw,
+            json_encode(
+                {
+                    "alg": "RSA-OAEP-256",
+                    "enc": "A256CBC-HS512",
+                    "typ": "JWE",
+                    "kid": self.encryption_key.kid,
+                }
+            ),
+        )
+        jwe.add_recipient(key)
+        return jwe.serialize(compact=True)
 
     def webfinger(self, resource: str, request: HttpRequest):
         return {
@@ -320,7 +395,9 @@ class BaseGrantModel(models.Model):
     revoked = models.BooleanField(default=False)
     _scope = models.TextField(default="", verbose_name=_("Scopes"))
     auth_time = models.DateTimeField(verbose_name="Authentication time")
-    session_id = models.CharField(default="", blank=True)
+    session = models.ForeignKey(
+        AuthenticatedSession, null=True, on_delete=models.SET_DEFAULT, default=None
+    )
 
     class Meta:
         abstract = True
@@ -377,7 +454,7 @@ class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
 
     class Meta:
         indexes = [
-            models.Index(fields=["token", "provider"]),
+            HashIndex(fields=["token"]),
         ]
         verbose_name = _("OAuth2 Access Token")
         verbose_name_plural = _("OAuth2 Access Tokens")
@@ -423,7 +500,7 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
 
     class Meta:
         indexes = [
-            models.Index(fields=["token", "provider"]),
+            HashIndex(fields=["token"]),
         ]
         verbose_name = _("OAuth2 Refresh Token")
         verbose_name_plural = _("OAuth2 Refresh Tokens")
@@ -458,6 +535,9 @@ class DeviceToken(ExpiringModel):
     device_code = models.TextField(default=generate_key)
     user_code = models.TextField(default=generate_code_fixed_length)
     _scope = models.TextField(default="", verbose_name=_("Scopes"))
+    session = models.ForeignKey(
+        AuthenticatedSession, null=True, on_delete=models.SET_DEFAULT, default=None
+    )
 
     @property
     def scope(self) -> list[str]:

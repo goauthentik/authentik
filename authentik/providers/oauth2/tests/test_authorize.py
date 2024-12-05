@@ -19,6 +19,8 @@ from authentik.providers.oauth2.models import (
     AuthorizationCode,
     GrantTypes,
     OAuth2Provider,
+    RedirectURI,
+    RedirectURIMatchingMode,
     ScopeMapping,
 )
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
@@ -39,7 +41,7 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=create_test_flow(),
-            redirect_uris="http://local.invalid/Foo",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid/Foo")],
         )
         with self.assertRaises(AuthorizeError):
             request = self.factory.get(
@@ -64,7 +66,7 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=create_test_flow(),
-            redirect_uris="http://local.invalid/Foo",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid/Foo")],
         )
         with self.assertRaises(AuthorizeError):
             request = self.factory.get(
@@ -84,7 +86,7 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=create_test_flow(),
-            redirect_uris="http://local.invalid",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
         )
         with self.assertRaises(RedirectUriError):
             request = self.factory.get("/", data={"response_type": "code", "client_id": "test"})
@@ -106,7 +108,7 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=create_test_flow(),
-            redirect_uris="data:local.invalid",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "data:local.invalid")],
         )
         with self.assertRaises(RedirectUriError):
             request = self.factory.get(
@@ -125,7 +127,7 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=create_test_flow(),
-            redirect_uris="",
+            redirect_uris=[],
         )
         with self.assertRaises(RedirectUriError):
             request = self.factory.get("/", data={"response_type": "code", "client_id": "test"})
@@ -140,7 +142,7 @@ class TestAuthorize(OAuthTestCase):
         )
         OAuthAuthorizationParams.from_request(request)
         provider.refresh_from_db()
-        self.assertEqual(provider.redirect_uris, "+")
+        self.assertEqual(provider.redirect_uris, [RedirectURI(RedirectURIMatchingMode.STRICT, "+")])
 
     def test_invalid_redirect_uri_regex(self):
         """test missing/invalid redirect URI"""
@@ -148,7 +150,7 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=create_test_flow(),
-            redirect_uris="http://local.invalid?",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid?")],
         )
         with self.assertRaises(RedirectUriError):
             request = self.factory.get("/", data={"response_type": "code", "client_id": "test"})
@@ -170,7 +172,7 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=create_test_flow(),
-            redirect_uris="+",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "+")],
         )
         with self.assertRaises(RedirectUriError):
             request = self.factory.get("/", data={"response_type": "code", "client_id": "test"})
@@ -213,7 +215,7 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=create_test_flow(),
-            redirect_uris="http://local.invalid/Foo",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid/Foo")],
         )
         provider.property_mappings.set(
             ScopeMapping.objects.filter(
@@ -301,7 +303,7 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=flow,
-            redirect_uris="foo://localhost",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "foo://localhost")],
             access_code_validity="seconds=100",
         )
         Application.objects.create(name="app", slug="app", provider=provider)
@@ -343,7 +345,7 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=flow,
-            redirect_uris="http://localhost",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost")],
             signing_key=self.keypair,
         )
         provider.property_mappings.set(
@@ -412,6 +414,73 @@ class TestAuthorize(OAuthTestCase):
                 delta=5,
             )
 
+    @apply_blueprint("system/providers-oauth2.yaml")
+    def test_full_implicit_enc(self):
+        """Test full authorization with encryption"""
+        flow = create_test_flow()
+        provider: OAuth2Provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test",
+            authorization_flow=flow,
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost")],
+            signing_key=self.keypair,
+            encryption_key=self.keypair,
+        )
+        provider.property_mappings.set(
+            ScopeMapping.objects.filter(
+                managed__in=[
+                    "goauthentik.io/providers/oauth2/scope-openid",
+                    "goauthentik.io/providers/oauth2/scope-email",
+                    "goauthentik.io/providers/oauth2/scope-profile",
+                ]
+            )
+        )
+        provider.property_mappings.add(
+            ScopeMapping.objects.create(
+                name=generate_id(), scope_name="test", expression="""return {"sub": "foo"}"""
+            )
+        )
+        Application.objects.create(name=generate_id(), slug=generate_id(), provider=provider)
+        state = generate_id()
+        user = create_test_admin_user()
+        self.client.force_login(user)
+        with patch(
+            "authentik.providers.oauth2.id_token.get_login_event",
+            MagicMock(
+                return_value=Event(
+                    action=EventAction.LOGIN,
+                    context={PLAN_CONTEXT_METHOD: "password"},
+                    created=now(),
+                )
+            ),
+        ):
+            # Step 1, initiate params and get redirect to flow
+            self.client.get(
+                reverse("authentik_providers_oauth2:authorize"),
+                data={
+                    "response_type": "id_token",
+                    "client_id": "test",
+                    "state": state,
+                    "scope": "openid test",
+                    "redirect_uri": "http://localhost",
+                    "nonce": generate_id(),
+                },
+            )
+            response = self.client.get(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            )
+            self.assertEqual(response.status_code, 200)
+            token: AccessToken = AccessToken.objects.filter(user=user).first()
+            expires = timedelta_from_string(provider.access_token_validity).total_seconds()
+            jwt = self.validate_jwe(token, provider)
+            self.assertEqual(jwt["amr"], ["pwd"])
+            self.assertEqual(jwt["sub"], "foo")
+            self.assertAlmostEqual(
+                jwt["exp"] - now().timestamp(),
+                expires,
+                delta=5,
+            )
+
     def test_full_fragment_code(self):
         """Test full authorization"""
         flow = create_test_flow()
@@ -419,7 +488,7 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=flow,
-            redirect_uris="http://localhost",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost")],
             signing_key=self.keypair,
         )
         Application.objects.create(name="app", slug="app", provider=provider)
@@ -474,7 +543,7 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id=generate_id(),
             authorization_flow=flow,
-            redirect_uris="http://localhost",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost")],
             signing_key=self.keypair,
         )
         provider.property_mappings.set(
@@ -532,7 +601,7 @@ class TestAuthorize(OAuthTestCase):
             name=generate_id(),
             client_id=generate_id(),
             authorization_flow=flow,
-            redirect_uris="http://localhost",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost")],
             signing_key=self.keypair,
         )
         app = Application.objects.create(name=generate_id(), slug=generate_id(), provider=provider)
