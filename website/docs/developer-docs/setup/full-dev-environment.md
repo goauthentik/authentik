@@ -21,7 +21,7 @@ If you use locally installed databases, the PostgreSQL credentials given to auth
 :::
 
 :::warning
-If you are running a development environment and you have read replicas configured in your `local.env.yaml` file, you might encounter problems logging back in. This is because dev environments do not have read replica databases, but the `local.env.yaml` file is configured to call them. If you cannot log in, edit your local `local.env.yaml` file to remove the `postgresql.read_replicas` entry.
+If you are running a development environment and you have read replicas configured in your `local.env.yaml` file, you might encounter problems logging back in. This is because dev environments do not have read replica databases, but the `local.env.yaml` file is configured to call them. If you cannot log in edit your local `local.env.yaml` file to remove the `postgresql.read_replicas` entry.
 :::
 
 ## Backend Setup
