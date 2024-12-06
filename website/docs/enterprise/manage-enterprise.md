@@ -101,7 +101,15 @@ The following events occur when a license expires or the internal/external user 
 
 - After another 2 weeks, users get a warning banner
 
-- After another 2 weeks, the authentik Enterprise instance becomes “read-only”
+- After another 2 weeks, the authentik Enterprise instance becomes "read-only"
+
+    When an authentik instance has gone into read-only mode, the following actions can still be done:
+
+    - Users can authenticate and authorize applications
+    - Licenses can be modified
+    - Users can be modified/deleted <span class="badge badge--version">authentik 2024.12+</span>
+
+    Once the user count returns to be within the limits of the license, authentik will return to the standard read-write mode and the notification will disappear.
 
 ### About users and licenses
 
