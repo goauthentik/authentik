@@ -23,7 +23,8 @@ spec:
             - X-authentik-meta-app
             - X-authentik-meta-version
 ```
-:::info 
+
+:::info
 Traefik changed the apiVersion of the middleware CRD in version 3.0, for older versions please subsititue "apiVersion: traefik.containo.us/v1alpha1"
 :::
 
