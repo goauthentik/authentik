@@ -30,7 +30,8 @@ describe("Simple Table", () => {
     });
 
     it("the table should have as many entries as the data source", async () => {
-        const rows = await table.$("tbody").$$("tr");
+        const tbody = await table.$(">>>tbody");
+        const rows = await tbody.$$(">>>tr");
         expect(rows.length).toBe(content.length);
     });
 

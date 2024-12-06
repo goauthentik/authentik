@@ -41,20 +41,20 @@ describe("Select Table", () => {
     });
 
     it("the table should have as many entries as the data source", async () => {
-        const rows = await table.$("tbody").$$("tr");
+        const rows = await table.$(">>>tbody").$$(">>>tr");
         expect(rows.length).toBe(content.length);
     });
 
     it(`the third item ought to have the name ${item3.name}`, async () => {
-        const rows = await table.$("tbody").$$("tr");
-        const cells = await rows[2].$$("td");
+        const rows = await table.$(">>>tbody").$$(">>>tr");
+        const cells = await rows[2].$$(">>>td");
         const cell1Text = await cells[1].getText();
         expect(cell1Text).toEqual(item3.name);
     });
 
     it("Selecting one item ought to result in the value of the table being set", async () => {
-        const rows = await table.$("tbody").$$("tr");
-        const control = await rows[2].$$("td")[0].$("input");
+        const rows = await table.$(">>>tbody").$$(">>>tr");
+        const control = await rows[2].$$(">>>td")[0].$(">>>input");
         await control.click();
         expect(await selecttable.getValue()).toEqual(slug(item3.name));
     });
@@ -88,26 +88,27 @@ describe("Multiselect Table", () => {
     });
 
     it("it should render the select-all control", async () => {
-        const selall = await table.$("thead").$$("tr")[0].$$("td")[0];
+        const thead = await table.$(">>>thead");
+        const selall = await thead.$$(">>>tr")[0].$$(">>>td")[0];
         if (selall === undefined) {
             throw new Error("Could not find table header");
         }
-        const input = await selall.$("input");
+        const input = await selall.$(">>>input");
         expect(await input.getProperty("name")).toEqual("select-all-input");
     });
 
     it("it should set the value when one input is clicked", async () => {
-        const input = await table.$("tbody").$$("tr")[2].$$("td")[0].$("input");
+        const input = await table.$(">>>tbody").$$(">>>tr")[2].$$(">>>td")[0].$(">>>input");
         await input.click();
         expect(await selecttable.getValue()).toEqual(slug(nutritionDbUSDA[2].name));
     });
 
     it("it should select all when that control is clicked", async () => {
-        const selall = await table.$("thead").$$("tr")[0].$$("td")[0];
+        const selall = await table.$(">>>thead").$$(">>>tr")[0].$$(">>>td")[0];
         if (selall === undefined) {
             throw new Error("Could not find table header");
         }
-        const input = await selall.$("input");
+        const input = await selall.$(">>>input");
         await input.click();
         const value = await selecttable.getValue();
         const values = value.split(";").toSorted(alphaSort).join(";");
@@ -116,11 +117,11 @@ describe("Multiselect Table", () => {
     });
 
     it("it should clear all when that control is clicked twice", async () => {
-        const selall = await table.$("thead").$$("tr")[0].$$("td")[0];
+        const selall = await table.$(">>>thead").$$(">>>tr")[0].$$(">>>td")[0];
         if (selall === undefined) {
             throw new Error("Could not find table header");
         }
-        const input = await selall.$("input");
+        const input = await selall.$(">>>input");
         await input.click();
         const value = await selecttable.getValue();
         const values = value.split(";").toSorted(alphaSort).join(";");

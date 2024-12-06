@@ -244,7 +244,7 @@ class OAuth2Provider(WebfingerProvider, Provider):
         related_name="oauth2provider_encryption_key_set",
     )
 
-    jwks_sources = models.ManyToManyField(
+    jwt_federation_sources = models.ManyToManyField(
         OAuthSource,
         verbose_name=_(
             "Any JWT signed by the JWK of the selected source can be used to authenticate."
@@ -253,6 +253,7 @@ class OAuth2Provider(WebfingerProvider, Provider):
         default=None,
         blank=True,
     )
+    jwt_federation_providers = models.ManyToManyField("OAuth2Provider", blank=True, default=None)
 
     @cached_property
     def jwt_key(self) -> tuple[str | PrivateKeyTypes, str]:
