@@ -50,7 +50,9 @@ class KerberosSource(Source):
         blank=True,
         help_text=_("Custom krb5.conf to use. Uses the system one by default"),
     )
-    kadmin_type = models.TextField(choices=KAdminType.choices, default=KAdminType.OTHER, help_text=_("KAdmin server type"))
+    kadmin_type = models.TextField(
+        choices=KAdminType.choices, default=KAdminType.OTHER, help_text=_("KAdmin server type")
+    )
 
     sync_users = models.BooleanField(
         default=False, help_text=_("Sync users from Kerberos into authentik"), db_index=True

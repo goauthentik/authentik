@@ -44,7 +44,9 @@ class KerberosSync:
         self._logger = get_logger().bind(source=self._source, syncer=self.__class__.__name__)
         self.mapper = SourceMapper(self._source)
         self.user_manager = self.mapper.get_manager(User, ["principal", "principal_obj"])
-        self.group_manager = self.mapper.get_manager(Group, ["group_id", "principal", "principal_obj"])
+        self.group_manager = self.mapper.get_manager(
+            Group, ["group_id", "principal", "principal_obj"]
+        )
         self.matcher = SourceMatcher(
             self._source, UserKerberosSourceConnection, GroupKerberosSourceConnection
         )
