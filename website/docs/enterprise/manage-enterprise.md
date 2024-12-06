@@ -107,7 +107,7 @@ The following events occur when a license expires or the internal/external user 
 
     - Users can authenticate and authorize applications
     - Licenses can be modified
-    - Users can be modified/deleted <span class="badge badge--version">authentik 2024.12+</span>
+    - Users can be modified/deleted <span class="badge badge--version">authentik 2024.10.5+</span>
 
     Once the user count returns to be within the limits of the license, authentik will return to the standard read-write mode and the notification will disappear.
 
