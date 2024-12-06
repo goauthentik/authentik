@@ -20,6 +20,10 @@ You can also use a native install, if you prefer.
 If you use locally installed databases, the PostgreSQL credentials given to authentik should have permissions for `CREATE DATABASE` and `DROP DATABASE`, because authentik creates a temporary database for tests.
 :::
 
+:::warning
+If you are running a [development environment](../../developer-docs/setup/full-dev-environment.md) and you have read replicas configured in your `local.env.yaml` file, you might encounter problems logging back in. This is because dev environments do not have read replica databases, but the `local.env.yaml` file is configured to call them. If you cannot log in, edit your local `.env` file to remove the `postgresql.read_replicas` entry.
+:::
+
 ## Backend Setup
 
 :::info

@@ -100,7 +100,7 @@ The same PostgreSQL settings as described above are used for each read replica.
 Note that `USE_PGBOUNCER` and `USE_PGPOOL` are inherited from the main database configuration and are _not_ overridable on read replicas.
 
 :::warning
-If you are running a [development environment](../../developer-docs/setup/full-dev-environment.md) and you have read replicas configured in your `.env` file, you might encounter problems logging back in. This is because dev environments do not have read replica databases, but the `.env` file is configured to call them. If you cannot log in, edit your local `.env` file to remove the `postgresql.read_replicas` entry.
+If you are running a [development environment](../../developer-docs/setup/full-dev-environment.md) be aware that read replicas are not supported.
 :::
 
 ## Redis Settings
