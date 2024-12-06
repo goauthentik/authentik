@@ -6976,6 +6976,16 @@
                     "title": "Krb5 conf",
                     "description": "Custom krb5.conf to use. Uses the system one by default"
                 },
+                "kadmin_type": {
+                    "type": "string",
+                    "enum": [
+                        "MIT",
+                        "Heimdal",
+                        "other"
+                    ],
+                    "title": "Kadmin type",
+                    "description": "KAdmin server type"
+                },
                 "sync_users": {
                     "type": "boolean",
                     "title": "Sync users",

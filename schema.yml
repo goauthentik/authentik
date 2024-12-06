@@ -25868,6 +25868,17 @@ paths:
         schema:
           type: boolean
       - in: query
+        name: kadmin_type
+        schema:
+          type: string
+          enum:
+          - Heimdal
+          - MIT
+          - other
+        description: |+
+          KAdmin server type
+
+      - in: query
         name: name
         schema:
           type: string
@@ -42879,6 +42890,12 @@ components:
       - global
       - per_provider
       type: string
+    KadminTypeEnum:
+      enum:
+      - MIT
+      - Heimdal
+      - other
+      type: string
     KerberosSource:
       type: object
       description: Kerberos Source Serializer
@@ -42966,6 +42983,10 @@ components:
         krb5_conf:
           type: string
           description: Custom krb5.conf to use. Uses the system one by default
+        kadmin_type:
+          allOf:
+          - $ref: '#/components/schemas/KadminTypeEnum'
+          description: KAdmin server type
         sync_users:
           type: boolean
           description: Sync users from Kerberos into authentik
@@ -43134,6 +43155,10 @@ components:
         krb5_conf:
           type: string
           description: Custom krb5.conf to use. Uses the system one by default
+        kadmin_type:
+          allOf:
+          - $ref: '#/components/schemas/KadminTypeEnum'
+          description: KAdmin server type
         sync_users:
           type: boolean
           description: Sync users from Kerberos into authentik
@@ -48459,6 +48484,10 @@ components:
         krb5_conf:
           type: string
           description: Custom krb5.conf to use. Uses the system one by default
+        kadmin_type:
+          allOf:
+          - $ref: '#/components/schemas/KadminTypeEnum'
+          description: KAdmin server type
         sync_users:
           type: boolean
           description: Sync users from Kerberos into authentik

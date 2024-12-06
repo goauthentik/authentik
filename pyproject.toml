@@ -122,7 +122,9 @@ kubernetes = "*"
 ldap3 = "*"
 lxml = "*"
 msgraph-sdk = "*"
-opencontainers = { git = "https://github.com/vsoch/oci-python", rev = "20d69d9cc50a0fef31605b46f06da0c94f1ec3cf", extras = ["reggie"] }
+opencontainers = { git = "https://github.com/vsoch/oci-python", rev = "20d69d9cc50a0fef31605b46f06da0c94f1ec3cf", extras = [
+    "reggie",
+] }
 packaging = "*"
 paramiko = "*"
 psycopg = { extras = ["c"], version = "*" }
@@ -131,7 +133,7 @@ pydantic-scim = "*"
 pyjwt = "*"
 pyrad = "*"
 python = "~3.12"
-python-kadmin-rs = "0.4.0"
+python-kadmin-rs = "0.4.2"
 pyyaml = "*"
 requests-oauthlib = "*"
 scim2-filter-parser = "*"
