@@ -4260,48 +4260,43 @@ cli = ["click (>=5.0)"]
 
 [[package]]
 name = "python-kadmin-rs"
-version = "0.4.2"
+version = "0.5.2"
 description = "Python interface to the Kerberos administration interface (kadm5)"
 optional = false
 python-versions = "<3.14,>=3.9"
 files = [
-    {file = "python_kadmin_rs-0.4.2-cp310-cp310-macosx_14_0_arm64.whl", hash = "sha256:7a16d27d8aa7322ba043958fdb5b3e9fe9b83c10fc4bdda3bf905cfd5cc2738e"},
-    {file = "python_kadmin_rs-0.4.2-cp310-cp310-macosx_14_0_x86_64.whl", hash = "sha256:a65c56d9f4a246e845b53c5475bfa03f5d1bc200d4360f1d565199f264c9be7d"},
-    {file = "python_kadmin_rs-0.4.2-cp310-cp310-manylinux_2_28_aarch64.whl", hash = "sha256:54c375b48710ff7a51c05f43e8be78cffbbb25e3ea7f9838526c55c8994d7b80"},
-    {file = "python_kadmin_rs-0.4.2-cp310-cp310-manylinux_2_28_x86_64.whl", hash = "sha256:10de37cc10698eadbf6c23a036b2c0821e52cd4b15fc9401acfcc458dbcaa6cf"},
-    {file = "python_kadmin_rs-0.4.2-cp310-cp310-musllinux_1_2_aarch64.whl", hash = "sha256:b23d2de13417075d8ee5fea1eafe0e79b38dca9b2cab8986bf80604a3234b7b0"},
-    {file = "python_kadmin_rs-0.4.2-cp310-cp310-musllinux_1_2_x86_64.whl", hash = "sha256:3313db904451b002d13535a45453ce0b395b6293f387e214bab260a0fbdb3ee6"},
-    {file = "python_kadmin_rs-0.4.2-cp311-cp311-macosx_14_0_arm64.whl", hash = "sha256:88e6b0a315a0da4dda7821516e3105d2b2e6a2d5a02b7cdfefbe1887a245e75c"},
-    {file = "python_kadmin_rs-0.4.2-cp311-cp311-macosx_14_0_x86_64.whl", hash = "sha256:3f0f97ce565842f95529fb7de695661b7296546b49fae56c58980ed7c5759304"},
-    {file = "python_kadmin_rs-0.4.2-cp311-cp311-manylinux_2_28_aarch64.whl", hash = "sha256:9df23fb2ab678f03067ff3f0ee081ae3bce77952b3c6d8b527969f8a6ac83e3c"},
-    {file = "python_kadmin_rs-0.4.2-cp311-cp311-manylinux_2_28_x86_64.whl", hash = "sha256:b1b47dc632f56258eac93f7f12ef373556a7d78bde27b9e0e1a939f39408bd15"},
-    {file = "python_kadmin_rs-0.4.2-cp311-cp311-musllinux_1_2_aarch64.whl", hash = "sha256:f291f9cf3d24f370a8d85cef5569f85bdcde599536c64369f71b970bb79bda54"},
-    {file = "python_kadmin_rs-0.4.2-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:3b718dfdacc096789f9f0e9a94709b6e7e40e1d1f6619566a4822a0e34755f3e"},
-    {file = "python_kadmin_rs-0.4.2-cp312-cp312-macosx_14_0_arm64.whl", hash = "sha256:b6917720d7e100f6e7887e598074783f920a6795cd20171734a04b2f31e08bca"},
-    {file = "python_kadmin_rs-0.4.2-cp312-cp312-macosx_14_0_x86_64.whl", hash = "sha256:5b3deafc8913a11b7b59e32a5d76d0b6026d4943e7b215ef3ecc7bb13304af06"},
-    {file = "python_kadmin_rs-0.4.2-cp312-cp312-manylinux_2_28_aarch64.whl", hash = "sha256:7143572ba9fa6cdb36ccec46853dd0bf1c916a5030cb902e7ef6e680a02db05c"},
-    {file = "python_kadmin_rs-0.4.2-cp312-cp312-manylinux_2_28_x86_64.whl", hash = "sha256:33e98edd8cce98246a05f97e47f107fb512017162192beecd566eba974328e8e"},
-    {file = "python_kadmin_rs-0.4.2-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:62505323fa4e569a204c565d7dcc38d83be620d921109c61e4a4fb61cf6b1b0f"},
-    {file = "python_kadmin_rs-0.4.2-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:e7c60976c990d16a314f7cba399e78c941bb0305dab5290fd0cc70930defc027"},
-    {file = "python_kadmin_rs-0.4.2-cp313-cp313-macosx_14_0_arm64.whl", hash = "sha256:a379a860840b9bddb3951c4fc94013f7eb59aa9fb292827efc24616a40c89205"},
-    {file = "python_kadmin_rs-0.4.2-cp313-cp313-macosx_14_0_x86_64.whl", hash = "sha256:99c99705d4bbeb273819fa1e5e1fe36243e7e3f92dc6bfa5b2f107f6c8b6d875"},
-    {file = "python_kadmin_rs-0.4.2-cp313-cp313-manylinux_2_28_aarch64.whl", hash = "sha256:1873e5e4fb1149bdd9264873aa070ed09881a23be18f34dbbffc4cc5f5412d50"},
-    {file = "python_kadmin_rs-0.4.2-cp313-cp313-manylinux_2_28_x86_64.whl", hash = "sha256:b071e5c0723071c23f77de6f92e191a3427682747b0bd7f0cdc9ead4dd534632"},
-    {file = "python_kadmin_rs-0.4.2-cp313-cp313-musllinux_1_2_aarch64.whl", hash = "sha256:92adf76fb841b1f7c0383ffc804777da0a7a42f34a6b325f97d27c13d743fbdd"},
-    {file = "python_kadmin_rs-0.4.2-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:143df0a8e7774931e533cf613f556a6fddcc273c48cc8bf9811b1a3636280d8c"},
-    {file = "python_kadmin_rs-0.4.2-cp39-cp39-macosx_14_0_arm64.whl", hash = "sha256:ec249282031f45ec34f9868db73b3112187caf7ee393cd4cbd902695b9da4854"},
-    {file = "python_kadmin_rs-0.4.2-cp39-cp39-macosx_14_0_x86_64.whl", hash = "sha256:54ebd28990811998752a17c3806b32f269d73979a28cfb64e0aa46ad119650e2"},
-    {file = "python_kadmin_rs-0.4.2-cp39-cp39-manylinux_2_28_aarch64.whl", hash = "sha256:253453f21581d0cc47de74c5d203cdf1d1836fa1224a18a8b79cb57ae3aa834e"},
-    {file = "python_kadmin_rs-0.4.2-cp39-cp39-manylinux_2_28_x86_64.whl", hash = "sha256:0b734b81db0289f37d3d7d036845b5f81497a9cf970da1f201df82209c9e5f40"},
-    {file = "python_kadmin_rs-0.4.2-cp39-cp39-musllinux_1_2_aarch64.whl", hash = "sha256:0e3cfb9fe4905eda93f683a51a66eaaafcec55ee2b57afde2e445ecdec8f1b48"},
-    {file = "python_kadmin_rs-0.4.2-cp39-cp39-musllinux_1_2_x86_64.whl", hash = "sha256:c2f6799ec0d49d8215684b80d09dd6b5763080e7059e5ffb5e5e996d3f39dc14"},
-    {file = "python_kadmin_rs-0.4.2-pp310-pypy310_pp73-macosx_14_0_x86_64.whl", hash = "sha256:fed459071f97a71665f37d6e2e84576514c9c94f9cda137b4edf6f8fc4ccaf0d"},
-    {file = "python_kadmin_rs-0.4.2-pp310-pypy310_pp73-manylinux_2_28_aarch64.whl", hash = "sha256:8edfe9852867b762bd6f61ebb4e630304ac5136c767d46214003ad9b39fe5390"},
-    {file = "python_kadmin_rs-0.4.2-pp310-pypy310_pp73-manylinux_2_28_x86_64.whl", hash = "sha256:e82ecaa88a0fcfe174db03086948a206c4e0df70f2bdd69d04fcd460126e5409"},
-    {file = "python_kadmin_rs-0.4.2-pp39-pypy39_pp73-macosx_14_0_x86_64.whl", hash = "sha256:a0b8d2b57f0c0858185f86f09d1e143920783ae0b4cc77c748b075a57e7ad880"},
-    {file = "python_kadmin_rs-0.4.2-pp39-pypy39_pp73-manylinux_2_28_aarch64.whl", hash = "sha256:62b65bdba2582f4abd67eb4ad2fe01b0b2249a3d663239edb8669c2d6a1eca8c"},
-    {file = "python_kadmin_rs-0.4.2-pp39-pypy39_pp73-manylinux_2_28_x86_64.whl", hash = "sha256:ba628e54e1d01d39f5780baec1adff5ba8052af8462cd647533bf0b35fcb3870"},
-    {file = "python_kadmin_rs-0.4.2.tar.gz", hash = "sha256:2db6554a3e14471153fe41a65e2483b05148bc4820655e5564a08f3156b8a3f4"},
+    {file = "python_kadmin_rs-0.5.2-cp310-cp310-macosx_14_0_arm64.whl", hash = "sha256:1399e507467881882275eb822caee73f7eb509d25c25af406e91a75221a08ec9"},
+    {file = "python_kadmin_rs-0.5.2-cp310-cp310-macosx_14_0_x86_64.whl", hash = "sha256:86c5f0c799ea903fcc7d67ed47ce9080ea639c8468483c4d6e3a854ab268c959"},
+    {file = "python_kadmin_rs-0.5.2-cp310-cp310-manylinux_2_28_x86_64.whl", hash = "sha256:244fca7d8ca7793729b8a01ae9f2a3c5931fca6bc11d7f3b67fa95297146cd8e"},
+    {file = "python_kadmin_rs-0.5.2-cp310-cp310-musllinux_1_2_aarch64.whl", hash = "sha256:034bed577e20cdf4682f4d591ec68d51a44e85a101f2d905c3728143390d93f1"},
+    {file = "python_kadmin_rs-0.5.2-cp310-cp310-musllinux_1_2_x86_64.whl", hash = "sha256:048e73490278f74510ac7f19a11ca7860c88863f55f2c79a47c875fc174bb2aa"},
+    {file = "python_kadmin_rs-0.5.2-cp311-cp311-macosx_14_0_arm64.whl", hash = "sha256:dc580a38397dcdd2021127861c0d35a0c85e556644673387e40331f3fb402dc6"},
+    {file = "python_kadmin_rs-0.5.2-cp311-cp311-macosx_14_0_x86_64.whl", hash = "sha256:abb4df1a35bb177a7a9d2aee82d99d2285240368e6a1784c5066003872374679"},
+    {file = "python_kadmin_rs-0.5.2-cp311-cp311-manylinux_2_28_x86_64.whl", hash = "sha256:83574caf964140e87df04a1d97d84b1dd1d60395cae430429b8c1b78a1f5e6de"},
+    {file = "python_kadmin_rs-0.5.2-cp311-cp311-musllinux_1_2_aarch64.whl", hash = "sha256:01fc8c3cf707bbe011610107a6803ea2cb9025f4152931f40a39dc8b8d29d42a"},
+    {file = "python_kadmin_rs-0.5.2-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:bb5091dbeb0159f95292768b5dc7cce057a29339d5f9c085921a8f16baa3cb32"},
+    {file = "python_kadmin_rs-0.5.2-cp312-cp312-macosx_14_0_arm64.whl", hash = "sha256:0ece4d210b70f7810a8d909f32872bb47602f8c9ca00289fb8d34a6ee79f5b19"},
+    {file = "python_kadmin_rs-0.5.2-cp312-cp312-macosx_14_0_x86_64.whl", hash = "sha256:d351b5793d8340e9101bdd2684dc6e84156e37af910140530e762d2d92905819"},
+    {file = "python_kadmin_rs-0.5.2-cp312-cp312-manylinux_2_28_aarch64.whl", hash = "sha256:13e13c0487dfb9f6986fc6a11e8526875c935aa9bbdf9514049f2c5b5b5cdae7"},
+    {file = "python_kadmin_rs-0.5.2-cp312-cp312-manylinux_2_28_x86_64.whl", hash = "sha256:40fd1663c47bcada61e0bb7c681a1518b9fd1d17f03e3193bdfb6313e5afa6d0"},
+    {file = "python_kadmin_rs-0.5.2-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:945a9314e47d930825e46f532341ea1f595a7a78a9d75866e5564bd28cd4b6af"},
+    {file = "python_kadmin_rs-0.5.2-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:40cc14b24028a23a796fa5a53e6236c72c90247be803c6a8976f6e758b377f67"},
+    {file = "python_kadmin_rs-0.5.2-cp313-cp313-macosx_14_0_arm64.whl", hash = "sha256:cd5b032fb5c8d609d38bc417e1e5405885d153d39742bbac6514af28b8930a74"},
+    {file = "python_kadmin_rs-0.5.2-cp313-cp313-macosx_14_0_x86_64.whl", hash = "sha256:6f904a912ea04cd285b0d33107d6e68c904b046fa5bd7555c48986ee4ef139f7"},
+    {file = "python_kadmin_rs-0.5.2-cp313-cp313-manylinux_2_28_aarch64.whl", hash = "sha256:4234bc17dff770cbc32c14b22659651f4c9a882086cc19be7467f4755357f756"},
+    {file = "python_kadmin_rs-0.5.2-cp313-cp313-manylinux_2_28_x86_64.whl", hash = "sha256:bb3abbf9a0a91a9205cef8ff4fb45bdeb7ee773d2eda67e3a8c01a2f9f561b7f"},
+    {file = "python_kadmin_rs-0.5.2-cp313-cp313-musllinux_1_2_aarch64.whl", hash = "sha256:6503feef30cb59fd79b573cde5a2e9f892e5b89ffdb78e78db21815f67a14b80"},
+    {file = "python_kadmin_rs-0.5.2-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:b6bfe54524573ccf4424344af88e57804399061f16aaf2db1965cafce79f3c76"},
+    {file = "python_kadmin_rs-0.5.2-cp39-cp39-macosx_14_0_arm64.whl", hash = "sha256:c953f2cdfd92217d8ae4d3dc0374305ed0bd21cbfa7de50c5f7dfc53c44eaa7a"},
+    {file = "python_kadmin_rs-0.5.2-cp39-cp39-macosx_14_0_x86_64.whl", hash = "sha256:2632b02116651a23e3b5b7fce87f939067918f41b9d542af21ee09d964d41bfd"},
+    {file = "python_kadmin_rs-0.5.2-cp39-cp39-manylinux_2_28_x86_64.whl", hash = "sha256:ed6eafd0f9606d1d554aae7b9f5ebae681ef0dc33b08b0affb363fa65b367ad6"},
+    {file = "python_kadmin_rs-0.5.2-cp39-cp39-musllinux_1_2_aarch64.whl", hash = "sha256:81df51e55e45fee08890f85230a33ddb066a7116ef8bdbe9ce854f3b95ed4c2d"},
+    {file = "python_kadmin_rs-0.5.2-cp39-cp39-musllinux_1_2_x86_64.whl", hash = "sha256:fb0954ff796e2cb5813665575ecd8f51df28dfeb52a81601516b056288418a94"},
+    {file = "python_kadmin_rs-0.5.2-pp310-pypy310_pp73-macosx_14_0_x86_64.whl", hash = "sha256:6fcb5f5c49e96e8ec6c5096c701871978bd2a3a7ef4ebdcbc3abb6a05aa8a5b7"},
+    {file = "python_kadmin_rs-0.5.2-pp310-pypy310_pp73-manylinux_2_28_x86_64.whl", hash = "sha256:beb2619c27b2f079d7d0c67f3e998712f236808f0c2c0a5389f07d1977246762"},
+    {file = "python_kadmin_rs-0.5.2-pp39-pypy39_pp73-macosx_14_0_x86_64.whl", hash = "sha256:cecaeebe7acf78e17730b1fa8e5be7aae0e9052c347fc35b1a2d3f77fd69bfe1"},
+    {file = "python_kadmin_rs-0.5.2-pp39-pypy39_pp73-manylinux_2_28_x86_64.whl", hash = "sha256:c9b2692f6e07461703ac1d20c590ffd5e980d918cdb19c95d875e5f1cf1df397"},
+    {file = "python_kadmin_rs-0.5.2.tar.gz", hash = "sha256:8ff0c8cc8f2a10ce20ae0cf1dd5b2d5569e47d1d54cf53c4fbc95f9120e91bd8"},
 ]
 
 [[package]]
@@ -5936,4 +5931,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.12"
-content-hash = "92dfbfed43c45af76ccc20fac247eb677202d4a1ce6a8381c22f3f6148713330"
+content-hash = "38089ad25be7638c118f4b503ad2f8495c941667f5485efe60b2bbdb14d6f44c"
