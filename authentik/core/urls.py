@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.urls import path
 
+from authentik.core.api.application_entitlements import ApplicationEntitlementViewSet
 from authentik.core.api.applications import ApplicationViewSet
 from authentik.core.api.authenticated_sessions import AuthenticatedSessionViewSet
 from authentik.core.api.devices import AdminDeviceViewSet, DeviceViewSet
@@ -69,6 +70,7 @@ urlpatterns = [
 api_urlpatterns = [
     ("core/authenticated_sessions", AuthenticatedSessionViewSet),
     ("core/applications", ApplicationViewSet),
+    ("core/application_entitlements", ApplicationEntitlementViewSet),
     path(
         "core/transactional/applications/",
         TransactionalApplicationView.as_view(),

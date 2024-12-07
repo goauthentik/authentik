@@ -68,6 +68,8 @@ class TestUserinfo(OAuthTestCase):
                 "nickname": self.user.name,
                 "groups": [group.name for group in self.user.ak_groups.all()],
                 "sub": "bar",
+                "roles": [],
+                "entitlements": [],
             },
         )
         self.assertEqual(res.status_code, 200)
@@ -90,6 +92,8 @@ class TestUserinfo(OAuthTestCase):
                 "nickname": self.user.name,
                 "groups": [group.name for group in self.user.ak_groups.all()],
                 "sub": "bar",
+                "roles": [],
+                "entitlements": [],
             },
         )
         self.assertEqual(res.status_code, 200)
