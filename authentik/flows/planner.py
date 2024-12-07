@@ -1,10 +1,10 @@
 """Flows Planner"""
 
 from dataclasses import dataclass, field
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from django.core.cache import cache
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse
 from sentry_sdk import start_span
 from sentry_sdk.tracing import Span
 from structlog.stdlib import BoundLogger, get_logger
@@ -23,9 +23,14 @@ from authentik.flows.models import (
     in_memory_stage,
 )
 from authentik.lib.config import CONFIG
+from authentik.lib.utils.urls import redirect_with_qs
 from authentik.outposts.models import Outpost
 from authentik.policies.engine import PolicyEngine
 from authentik.root.middleware import ClientIPMiddleware
+
+if TYPE_CHECKING:
+    from authentik.flows.stage import StageView
+
 
 LOGGER = get_logger()
 PLAN_CONTEXT_PENDING_USER = "pending_user"
@@ -109,6 +114,54 @@ class FlowPlan:
     def has_stages(self) -> bool:
         """Check if there are any stages left in this plan"""
         return len(self.markers) + len(self.bindings) > 0
+
+    def requires_flow_executor(
+        self,
+        allowed_silent_types: list["StageView"] | None = None,
+    ):
+        # Check if we actually need to show the Flow executor, or if we can jump straight to the end
+        found_unskippable = True
+        if allowed_silent_types:
+            LOGGER.debug("Checking if we can skip the flow executor...")
+            # Policies applied to the flow have already been evaluated, so we're checking for stages
+            # allow-listed or bindings that require a policy re-eval
+            found_unskippable = False
+            for binding, marker in zip(self.bindings, self.markers, strict=True):
+                if binding.stage.view not in allowed_silent_types:
+                    found_unskippable = True
+                if marker and isinstance(marker, ReevaluateMarker):
+                    found_unskippable = True
+        LOGGER.debug("Required flow executor status", status=found_unskippable)
+        return found_unskippable
+
+    def to_redirect(
+        self,
+        request: HttpRequest,
+        flow: Flow,
+        allowed_silent_types: list["StageView"] | None = None,
+    ) -> HttpResponse:
+        """Redirect to the flow executor for this flow plan"""
+        from authentik.flows.views.executor import (
+            SESSION_KEY_PLAN,
+            FlowExecutorView,
+        )
+
+        request.session[SESSION_KEY_PLAN] = self
+        requires_flow_executor = self.requires_flow_executor(allowed_silent_types)
+
+        if not requires_flow_executor:
+            # No unskippable stages found, so we can directly return the response of the last stage
+            final_stage: type[StageView] = self.bindings[-1].stage.view
+            temp_exec = FlowExecutorView(flow=flow, request=request, plan=self)
+            temp_exec.current_stage = self.bindings[-1].stage
+            stage = final_stage(request=request, executor=temp_exec)
+            return stage.dispatch(request)
+
+        return redirect_with_qs(
+            "authentik_core:if-flow",
+            request.GET,
+            flow_slug=flow.slug,
+        )
 
 
 class FlowPlanner:

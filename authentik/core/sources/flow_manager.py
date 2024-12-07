@@ -265,12 +265,7 @@ class SourceFlowManager:
         if stages:
             for stage in stages:
                 plan.append_stage(stage)
-        self.request.session[SESSION_KEY_PLAN] = plan
-        return redirect_with_qs(
-            "authentik_core:if-flow",
-            self.request.GET,
-            flow_slug=flow.slug,
-        )
+        return plan.to_redirect(self.request, flow)
 
     def handle_auth(
         self,
