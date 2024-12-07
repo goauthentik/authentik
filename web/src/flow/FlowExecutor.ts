@@ -435,6 +435,7 @@ export class FlowExecutor extends Interface implements StageHost {
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-flow-error>`;
+            case "ak-stage-redirect":
             case "xak-flow-redirect":
                 return html`<ak-stage-redirect
                     .host=${this as StageHost}

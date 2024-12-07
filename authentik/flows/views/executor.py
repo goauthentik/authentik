@@ -48,6 +48,7 @@ from authentik.flows.models import (
 )
 from authentik.flows.planner import (
     CACHE_PREFIX,
+    PLAN_CONTEXT_IS_REDIRECTED,
     PLAN_CONTEXT_IS_RESTORED,
     PLAN_CONTEXT_PENDING_USER,
     PLAN_CONTEXT_REDIRECT,
@@ -58,7 +59,7 @@ from authentik.flows.stage import AccessDeniedStage, StageView
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.errors import exception_to_string
 from authentik.lib.utils.reflection import all_subclasses, class_to_path
-from authentik.lib.utils.urls import is_url_absolute, redirect_with_qs
+from authentik.lib.utils.urls import is_url_absolute, redirect_with_qs, reverse_with_qs
 from authentik.policies.engine import PolicyEngine
 
 LOGGER = get_logger()
@@ -171,7 +172,8 @@ class FlowExecutorView(APIView):
                     # Existing plan is deleted from session and instance
                     self.plan = None
                     self.cancel()
-                self._logger.debug("f(exec): Continuing existing plan")
+                else:
+                    self._logger.debug("f(exec): Continuing existing plan")
 
             # Initial flow request, check if we have an upstream query string passed in
             request.session[SESSION_KEY_GET] = get_params
@@ -370,6 +372,26 @@ class FlowExecutorView(APIView):
         kwargs = self.kwargs
         kwargs.update({"flow_slug": self.flow.slug})
         return redirect_with_qs("authentik_api:flow-executor", self.request.GET, **kwargs)
+
+    def switch_flow_with_context(self, flow: Flow, keep_context=True) -> HttpResponse:
+        """Switch to another flow, optionally keeping all context"""
+        self._logger.info(
+            f"f(exec): Switching flow to {flow.slug} "
+            f"while {"" if keep_context else "not "}keeping context"
+        )
+        planner = FlowPlanner(flow)
+        planner.use_cache = False
+        default_context = self.plan.context if keep_context else {}
+        try:
+            default_context[PLAN_CONTEXT_IS_REDIRECTED] = self.plan.flow_pk
+            plan = planner.plan(self.request, default_context)
+        except FlowNonApplicableException as exc:
+            self._logger.warning("f(exec): Flow switch not applicable to current user", exc=exc)
+            return self.handle_invalid_flow(exc)
+        self.request.session[SESSION_KEY_PLAN] = plan
+        kwargs = self.kwargs
+        kwargs.update({"flow_slug": flow.slug})
+        return reverse_with_qs("authentik_core:if-flow", self.request.GET, **kwargs)
 
     def _flow_done(self) -> HttpResponse:
         """User Successfully passed all stages"""
