@@ -61,12 +61,15 @@ jobs:
         working-directory: web/
         run: npm run build
   ci-web-mark:
+    if: always()
     needs:
       - build
       - lint
     runs-on: ubuntu-latest
     steps:
-      - run: echo mark
+      - uses: re-actors/alls-green@release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}
   test:
     needs:
       - ci-web-mark
