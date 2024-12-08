@@ -17,8 +17,8 @@ sidebar_label: What's Up Docker
 
 The following placeholders will be used:
 
--   `wud.company` is the FQDN of the WUD install.
--   `authentik.company` is the FQDN of the authentik install.
+- `wud.company` is the FQDN of the WUD install.
+- `authentik.company` is the FQDN of the authentik install.
 
 ## WUD configuration
 

@@ -33,6 +33,7 @@ module.exports = {
                         "services/roundcube/index",
                         "services/sharepoint-se/index",
                         "services/slack/index",
+                        "services/thelounge/index",
                         "services/vikunja/index",
                         "services/wekan/index",
                         "services/wiki-js/index",
@@ -102,6 +103,7 @@ module.exports = {
                     type: "category",
                     label: "Networking",
                     items: [
+                        "services/aruba-orchestrator/index",
                         "services/firezone/index",
                         "services/fortigate-admin/index",
                         "services/fortigate-ssl/index",

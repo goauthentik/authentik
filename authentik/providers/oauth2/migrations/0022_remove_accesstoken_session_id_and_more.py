@@ -37,7 +37,7 @@ def migrate_session(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_core", "0040_provider_invalidation_flow"),
+        ("authentik_core", "0039_source_group_matching_mode_alter_group_name_and_more"),
         ("authentik_providers_oauth2", "0021_oauth2provider_encryption_key_and_more"),
     ]
 

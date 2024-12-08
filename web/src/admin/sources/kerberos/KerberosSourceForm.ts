@@ -15,7 +15,6 @@ import {
     WithCapabilitiesConfig,
 } from "@goauthentik/elements/Interface/capabilitiesProvider";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -29,37 +28,12 @@ import {
     FlowsInstancesListDesignationEnum,
     GroupMatchingModeEnum,
     KerberosSource,
-    KerberosSourcePropertyMapping,
     KerberosSourceRequest,
-    PropertymappingsApi,
     SourcesApi,
     UserMatchingModeEnum,
 } from "@goauthentik/api";
 
-async function propertyMappingsProvider(page = 1, search = "") {
-    const propertyMappings = await new PropertymappingsApi(
-        DEFAULT_CONFIG,
-    ).propertymappingsSourceKerberosList({
-        ordering: "managed",
-        pageSize: 20,
-        search: search.trim(),
-        page,
-    });
-
-    return {
-        pagination: propertyMappings.pagination,
-        options: propertyMappings.results.map((m) => [m.pk, m.name, m.name, m]),
-    };
-}
-
-function makePropertyMappingsSelector(object: string, instanceMappings?: string[]) {
-    const localMappings = instanceMappings ? new Set(instanceMappings) : undefined;
-    return localMappings
-        ? ([pk, _]: DualSelectPair) => localMappings.has(pk)
-        : ([_0, _1, _2, mapping]: DualSelectPair<KerberosSourcePropertyMapping>) =>
-              object == "user" &&
-              mapping?.managed?.startsWith("goauthentik.io/sources/kerberos/user/default/");
-}
+import { propertyMappingsProvider, propertyMappingsSelector } from "./KerberosSourceFormHelpers.js";
 
 @customElement("ak-source-kerberos-form")
 export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<KerberosSource>) {
@@ -323,7 +297,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     >
                         <ak-dual-select-dynamic-selected
                             .provider=${propertyMappingsProvider}
-                            .selector=${makePropertyMappingsSelector(
+                            .selector=${propertyMappingsSelector(
                                 "user",
                                 this.instance?.userPropertyMappings,
                             )}
@@ -340,7 +314,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     >
                         <ak-dual-select-dynamic-selected
                             .provider=${propertyMappingsProvider}
-                            .selector=${makePropertyMappingsSelector(
+                            .selector=${propertyMappingsSelector(
                                 "group",
                                 this.instance?.groupPropertyMappings,
                             )}

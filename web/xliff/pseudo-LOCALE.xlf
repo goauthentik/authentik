@@ -548,7 +548,7 @@
 
       </trans-unit>
       <trans-unit id="s0382d73823585617">
-        <source><x id="0" equiv-text="${this.errorMessage}"/>: <x id="1" equiv-text="${e.toString()}"/></source>
+        <source><x id="0" equiv-text="${field}"/>: <x id="1" equiv-text="${errMsg}"/></source>
   <target><x id="0" equiv-text="${this.errorMessage}"/>: <x id="1" equiv-text="${e.toString()}"/></target>
 
       </trans-unit>
@@ -1002,24 +1002,9 @@
   <target>Ćĺĩēńţ Śēćŕēţ</target>
 
       </trans-unit>
-      <trans-unit id="sde0ad51b14f77cf6">
-        <source>Redirect URIs/Origins (RegEx)</source>
-  <target>Ŕēďĩŕēćţ ŨŔĨś/Ōŕĩĝĩńś (ŔēĝĒx)</target>
-
-      </trans-unit>
-      <trans-unit id="s7f9eb9c8bd26e8fd">
-        <source>Valid redirect URLs after a successful authorization flow. Also specify any origins here for Implicit flows.</source>
-  <target>Vàĺĩď ŕēďĩŕēćţ ŨŔĹś àƒţēŕ à śũććēśśƒũĺ àũţĥōŕĩźàţĩōń ƒĺōŵ. Àĺśō śƥēćĩƒŷ àńŷ ōŕĩĝĩńś ĥēŕē ƒōŕ Ĩḿƥĺĩćĩţ ƒĺōŵś.</target>
-
-      </trans-unit>
       <trans-unit id="s2a369bc2febb5d55">
         <source>If no explicit redirect URIs are specified, the first successfully used redirect URI will be saved.</source>
   <target>Ĩƒ ńō ēxƥĺĩćĩţ ŕēďĩŕēćţ ŨŔĨś àŕē śƥēćĩƒĩēď, ţĥē ƒĩŕśţ śũććēśśƒũĺĺŷ ũśēď ŕēďĩŕēćţ ŨŔĨ ŵĩĺĺ ƀē śàvēď.</target>
-
-      </trans-unit>
-      <trans-unit id="sa8384c9c26731f83">
-        <source>To allow any redirect URI, set this value to ".*". Be aware of the possible security implications this can have.</source>
-  <target>Ţō àĺĺōŵ àńŷ ŕēďĩŕēćţ ŨŔĨ, śēţ ţĥĩś vàĺũē ţō ".*". ßē àŵàŕē ōƒ ţĥē ƥōśśĩƀĺē śēćũŕĩţŷ ĩḿƥĺĩćàţĩōńś ţĥĩś ćàń ĥàvē.</target>
 
       </trans-unit>
       <trans-unit id="s55787f4dfcdce52b">
@@ -7490,10 +7475,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>One hint, 'New Application Wizard', is currently hidden</source>
   <target>Ōńē ĥĩńţ, 'Ńēŵ Àƥƥĺĩćàţĩōń Ŵĩźàŕď', ĩś ćũŕŕēńţĺŷ ĥĩďďēń</target>
 </trans-unit>
-<trans-unit id="s61bd841e66966325">
-  <source>External applications that use authentik as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
-  <target>Ēxţēŕńàĺ àƥƥĺĩćàţĩōńś ţĥàţ ũśē àũţĥēńţĩķ àś àń ĩďēńţĩţŷ ƥŕōvĩďēŕ vĩà ƥŕōţōćōĺś ĺĩķē ŌÀũţĥ2 àńď ŚÀḾĹ. Àĺĺ àƥƥĺĩćàţĩōńś àŕē śĥōŵń ĥēŕē, ēvēń ōńēś ŷōũ ćàńńōţ àććēśś.</target>
-</trans-unit>
 <trans-unit id="s1cc306d8e28c4464">
   <source>Deny message</source>
   <target>Ďēńŷ ḿēśśàĝē</target>
@@ -9009,7 +8990,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Śŷńć Ĝŕōũƥ</target>
 </trans-unit>
 <trans-unit id="s2d5f69929bb7221d">
-  <source><x id="0" equiv-text="${prompt.name}"/> ("<x id="1" equiv-text="${prompt.fieldKey}"/>", of type <x id="2" equiv-text="${prompt.type}"/>)</source>
+  <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
   <target><x id="0" equiv-text="${prompt.name}"/> ("<x id="1" equiv-text="${prompt.fieldKey}"/>", ōƒ ţŷƥē <x id="2" equiv-text="${prompt.type}"/>)</target>
 </trans-unit>
 <trans-unit id="sa38c5a2731be3a46">
@@ -9187,5 +9168,38 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s92205c10ba1f0f4c">
   <source>This option configures the footer links on the flow executor pages. The URL is limited to web and mail addresses. If the name is left blank, the URL will be shown.</source>
+</trans-unit>
+<trans-unit id="s66f572bec2bde9c4">
+  <source>External applications that use <x id="0" equiv-text="${this.brand.brandingTitle || &quot;authentik&quot;}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
+</trans-unit>
+<trans-unit id="s58bec0ecd4f3ccd4">
+  <source>Strict</source>
+</trans-unit>
+<trans-unit id="sd27a8f54aca5d278">
+  <source>Regex</source>
+</trans-unit>
+<trans-unit id="seb411b22a8f262d6">
+  <source>Valid redirect URIs after a successful authorization flow. Also specify any origins here for Implicit flows.</source>
+</trans-unit>
+<trans-unit id="s4c49d27de60a532b">
+  <source>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</source>
+</trans-unit>
+<trans-unit id="s43f899a86c6a3484">
+  <source>Redirect URIs/Origins</source>
+</trans-unit>
+<trans-unit id="sa52bf79fe1ccb13e">
+  <source>Federated OIDC Sources</source>
+</trans-unit>
+<trans-unit id="s555465bf6577505e">
+  <source>Federated OIDC Providers</source>
+</trans-unit>
+<trans-unit id="s066bfb12c9032dc2">
+  <source>Available Providers</source>
+</trans-unit>
+<trans-unit id="sa12111ca3f3e398e">
+  <source>Selected Providers</source>
+</trans-unit>
+<trans-unit id="s4f8a3f7792e6b940">
+  <source>JWTs signed by the selected providers can be used to authenticate to this provider.</source>
 </trans-unit>
 </body></file></xliff>

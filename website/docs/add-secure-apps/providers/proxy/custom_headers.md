@@ -4,8 +4,8 @@ title: Custom headers
 
 The proxy can send custom headers to your upstream application. These can be configured in one of two ways:
 
--   Group attributes; this allows for inheritance, but only allows static values
--   Property mappings; this allows for dynamic values
+- Group attributes; this allows for inheritance, but only allows static values
+- Property mappings; this allows for dynamic values
 
 ## Group attributes
 
