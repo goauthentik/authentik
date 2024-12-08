@@ -45510,6 +45510,7 @@ components:
       - ldap
       - radius
       - rac
+      - scim
       type: string
     PaginatedApplicationList:
       type: object
