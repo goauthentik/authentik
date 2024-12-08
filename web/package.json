@@ -133,8 +133,8 @@
         "pseudolocalize": "wireit",
         "storybook": "storybook dev -p 6006",
         "storybook:build": "wireit",
-        "storybook:build-import-map": "wireit",
         "test": "wireit",
+        "test:e2e": "wireit",
         "test:e2e:watch": "wireit",
         "test:watch": "wireit",
         "tsc": "wireit",
@@ -316,14 +316,21 @@
                 "NODE_OPTIONS": "--max_old_space_size=8192"
             }
         },
-        "storybook:build-import-map": {
-            "command": "node scripts/build-storybook-import-maps.mjs"
-        },
         "test": {
             "command": "wdio ./wdio.conf.ts --logLevel=warn",
             "env": {
                 "CI": "true",
                 "TS_NODE_PROJECT": "tsconfig.test.json"
+            }
+        },
+        "test:e2e": {
+            "command": "wdio run ./tests/wdio.conf.ts",
+            "dependencies": [
+                "build"
+            ],
+            "env": {
+                "CI": "true",
+                "TS_NODE_PROJECT": "./tests/tsconfig.test.json"
             }
         },
         "test:e2e:watch": {

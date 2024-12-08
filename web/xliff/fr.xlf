@@ -9043,7 +9043,7 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="s2d5f69929bb7221d">
   <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
-  <target><x id="0" equiv-text="${prompt.name}"/> (&amp;quot;<x id="1" equiv-text="${prompt.fieldKey}"/>&amp;quot;, de type <x id="2" equiv-text="${prompt.type}"/>)</target>
+  <target><x id="0" equiv-text="${p.name}"/> (&amp;quot;<x id="1" equiv-text="${p.fieldKey}"/>&amp;quot;, de type <x id="2" equiv-text="${p.type}"/>)</target>
 </trans-unit>
 <trans-unit id="sa38c5a2731be3a46">
   <source>authentik was unable to save this application:</source>
@@ -9303,18 +9303,23 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="sa52bf79fe1ccb13e">
   <source>Federated OIDC Sources</source>
+  <target>Sources OIDC fédérées</target>
 </trans-unit>
 <trans-unit id="s555465bf6577505e">
   <source>Federated OIDC Providers</source>
+  <target>Fournisseurs OIDC fédérés</target>
 </trans-unit>
 <trans-unit id="s066bfb12c9032dc2">
   <source>Available Providers</source>
+  <target>Fournisseurs disponibles</target>
 </trans-unit>
 <trans-unit id="sa12111ca3f3e398e">
   <source>Selected Providers</source>
+  <target>Fournisseurs sélectionnés</target>
 </trans-unit>
 <trans-unit id="s4f8a3f7792e6b940">
   <source>JWTs signed by the selected providers can be used to authenticate to this provider.</source>
+  <target>Les JWTs signés par les fournisseurs sélectionnés peuvent être utilisés pour s'authentifier auprès de ce fournisseur.</target>
 </trans-unit>
     </body>
   </file>
