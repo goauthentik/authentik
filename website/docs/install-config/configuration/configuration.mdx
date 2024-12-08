@@ -99,6 +99,10 @@ The same PostgreSQL settings as described above are used for each read replica.
 
 Note that `USE_PGBOUNCER` and `USE_PGPOOL` are inherited from the main database configuration and are _not_ overridable on read replicas.
 
+:::warning
+If you are running a [development environment](../../developer-docs/setup/full-dev-environment.md) be aware that read replicas are not supported.
+:::
+
 ## Redis Settings
 
 - `AUTHENTIK_REDIS__HOST`: Redis server host when not using configuration URL
