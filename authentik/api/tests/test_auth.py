@@ -143,3 +143,66 @@ class TestAPIAuth(TestCase):
         )
         with self.assertRaises(AuthenticationFailed):
             bearer_auth(f"Bearer {access_token.token}".encode())
+
+    def test_invalid_token_format(self):
+        """Test invalid token format"""
+        with self.assertRaises(AuthenticationFailed):
+            bearer_auth(f"Bearer invalid token format".encode())
+
+    def test_empty_bearer_token(self):
+        """Test empty bearer token"""
+        with self.assertRaises(AuthenticationFailed):
+            bearer_auth(b"Bearer ")
+
+    def test_invalid_bearer_token(self):
+        """Test invalid bearer token"""
+        with self.assertRaises(AuthenticationFailed):
+            bearer_auth(b"Bearer invalid_token")
+
+    def test_valid_token_with_expired_scope(self):
+        """Test valid token with expired scope"""
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(), client_id=generate_id(), authorization_flow=create_test_flow()
+        )
+        access_token = AccessToken.objects.create(
+            user=create_test_admin_user(),
+            provider=provider,
+            token=generate_id(),
+            auth_time=timezone.now(),
+            _scope=SCOPE_AUTHENTIK_API,
+            _id_token=json.dumps({}),
+            expires=timezone.now() - timezone.timedelta(days=1),
+        )
+        with self.assertRaises(AuthenticationFailed):
+            bearer_auth(f"Bearer {access_token.token}".encode())
+
+    def test_valid_token_with_multiple_scopes(self):
+        """Test valid token with multiple scopes"""
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(), client_id=generate_id(), authorization_flow=create_test_flow()
+        )
+        access_token = AccessToken.objects.create(
+            user=create_test_admin_user(),
+            provider=provider,
+            token=generate_id(),
+            auth_time=timezone.now(),
+            _scope=f"{SCOPE_AUTHENTIK_API} another_scope",
+            _id_token=json.dumps({}),
+        )
+        self.assertEqual(bearer_auth(f"Bearer {access_token.token}".encode()), access_token.user)
+
+    def test_valid_token_with_invalid_scope(self):
+        """Test valid token with invalid scope"""
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(), client_id=generate_id(), authorization_flow=create_test_flow()
+        )
+        access_token = AccessToken.objects.create(
+            user=create_test_admin_user(),
+            provider=provider,
+            token=generate_id(),
+            auth_time=timezone.now(),
+            _scope="invalid_scope",
+            _id_token=json.dumps({}),
+        )
+        with self.assertRaises(AuthenticationFailed):
+            bearer_auth(f"Bearer {access_token.token}".encode())
