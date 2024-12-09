@@ -34,11 +34,11 @@ export default class Page {
 
     async searchSelect(searchSelector: string, managedSelector: string, buttonSelector: string) {
         const inputBind = await $(searchSelector);
-        const inputMain = await inputBind.$('input[type="text"]');
+        const inputMain = await inputBind.$('>>>input[type="text"]');
         await inputMain.click();
         const searchBlock = await (
-            await $(`div[data-managed-for="${managedSelector}"]`).$("ak-list-select")
-        ).shadow$$("button");
+            await $(`>>>div[data-managed-for="${managedSelector}"]`).$(">>>ak-list-select")
+        ).$$(">>>button");
         let target: WebdriverIO.Element;
         // @ts-expect-error "Types break on shadow$$"
         for (const button of searchBlock) {

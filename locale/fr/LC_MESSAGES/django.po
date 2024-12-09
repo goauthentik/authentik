@@ -11,7 +11,7 @@
 # Mordecai, 2023
 # Charles Leclerc, 2024
 # nerdinator <florian.dupret@gmail.com>, 2024
-# Titouan Petit, 2024
+# Tina, 2024
 # Marc Schmitt, 2024
 # 
 #, fuzzy
@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-23 16:39+0000\n"
+"POT-Creation-Date: 2024-11-26 00:09+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Marc Schmitt, 2024\n"
 "Language-Team: French (https://app.transifex.com/authentik/teams/119923/fr/)\n"
@@ -89,9 +89,9 @@ msgid "authentik Export - {date}"
 msgstr "Export authentik - {date}"
 
 #: authentik/blueprints/v1/tasks.py authentik/crypto/tasks.py
-#, python-format
-msgid "Successfully imported %(count)d files."
-msgstr " %(count)d fichiers importés avec succès."
+#, python-brace-format
+msgid "Successfully imported {count} files."
+msgstr "{count} fichiers importés avec succès."
 
 #: authentik/brands/models.py
 msgid ""
@@ -121,6 +121,10 @@ msgstr "Marque"
 msgid "Brands"
 msgstr "Marques"
 
+#: authentik/core/api/devices.py
+msgid "Extra description not available"
+msgstr "Description supplémentaire indisponible"
+
 #: authentik/core/api/providers.py
 msgid ""
 "When not set all providers are returned. When set to true, only backchannel "
@@ -130,6 +134,11 @@ msgstr ""
 "Si non défini, tous les fournisseurs sont retournés. Si vrai, seul les "
 "fournisseurs backchannels sont retournés. Si faux, les fournisseurs "
 "backchannels sont exclus"
+
+#: authentik/core/api/transactional_applications.py
+#, python-brace-format
+msgid "User lacks permission to create {model}"
+msgstr "L'utilisateur manque de permission pour créer {model}"
 
 #: authentik/core/api/users.py
 msgid "No leading or trailing slashes allowed."
@@ -933,14 +942,14 @@ msgid "Starting full provider sync"
 msgstr "Démarrage d'une synchronisation complète du fournisseur"
 
 #: authentik/lib/sync/outgoing/tasks.py
-#, python-format
-msgid "Syncing page %(page)d of users"
-msgstr "Synchronisation de la page %(page)d d'utilisateurs"
+#, python-brace-format
+msgid "Syncing page {page} of users"
+msgstr "Synchronisation de la page {page} d'utilisateurs"
 
 #: authentik/lib/sync/outgoing/tasks.py
-#, python-format
-msgid "Syncing page %(page)d of groups"
-msgstr "Synchronisation de la page %(page)d de groupes"
+#, python-brace-format
+msgid "Syncing page {page} of groups"
+msgstr "Synchronisation de la page {page} de groupes"
 
 #: authentik/lib/sync/outgoing/tasks.py
 #, python-brace-format
@@ -1113,11 +1122,11 @@ msgid "Event Matcher Policies"
 msgstr "Politiques d'association d'évènements"
 
 #: authentik/policies/expiry/models.py
-#, python-format
-msgid "Password expired %(days)d days ago. Please update your password."
+#, python-brace-format
+msgid "Password expired {days} days ago. Please update your password."
 msgstr ""
-"Mot de passe expiré il y a %(days)d jours. Merci de mettre à jour votre mot "
-"de passe."
+"Mot de passe expiré il y a {days} jours. Merci de mettre à jour votre mot de"
+" passe."
 
 #: authentik/policies/expiry/models.py
 msgid "Password has expired."
@@ -1249,9 +1258,13 @@ msgid "Password not set in context"
 msgstr "Mot de passe non défini dans le contexte"
 
 #: authentik/policies/password/models.py
-#, python-format
-msgid "Password exists on %(count)d online lists."
-msgstr "Le mot de passe existe sur %(count)d liste en ligne."
+msgid "Invalid password."
+msgstr "Mot de passe invalide."
+
+#: authentik/policies/password/models.py
+#, python-brace-format
+msgid "Password exists on {count} online lists."
+msgstr "Le mot de passe existe sur {count} listes en ligne."
 
 #: authentik/policies/password/models.py
 msgid "Password is too weak."
@@ -1378,6 +1391,11 @@ msgstr "Fournisseurs LDAP"
 msgid "Search full LDAP directory"
 msgstr "Rechercher dans l'annuaire LDAP complet"
 
+#: authentik/providers/oauth2/api/providers.py
+#, python-brace-format
+msgid "Invalid Regex Pattern: {url}"
+msgstr "Pattern de regex invalide : {url}"
+
 #: authentik/providers/oauth2/id_token.py
 msgid "Based on the Hashed User ID"
 msgstr "Basé sur le hash de l'ID utilisateur"
@@ -1426,6 +1444,14 @@ msgid "Each provider has a different issuer, based on the application slug."
 msgstr ""
 "Chaque fournisseur a un émetteur différent, basé sur le slug de "
 "l'application."
+
+#: authentik/providers/oauth2/models.py
+msgid "Strict URL comparison"
+msgstr "Comparaison stricte d'URL"
+
+#: authentik/providers/oauth2/models.py
+msgid "Regular Expression URL matching"
+msgstr "Correspondance d'URL par expression régulière"
 
 #: authentik/providers/oauth2/models.py
 msgid "code (Authorization Code Flow)"
@@ -1506,10 +1532,6 @@ msgstr "Secret du client"
 #: authentik/providers/oauth2/models.py
 msgid "Redirect URIs"
 msgstr "URIs de redirection"
-
-#: authentik/providers/oauth2/models.py
-msgid "Enter each URI on a new line."
-msgstr "Entrez chaque URI sur une nouvelle ligne."
 
 #: authentik/providers/oauth2/models.py
 msgid "Include claims in id_token"
@@ -2889,13 +2911,8 @@ msgid "Captcha Stages"
 msgstr "Étapes de Captcha"
 
 #: authentik/stages/captcha/stage.py
-msgid "Unknown error"
-msgstr "Erreur inconnue"
-
-#: authentik/stages/captcha/stage.py
-#, python-brace-format
-msgid "Failed to validate token: {error}"
-msgstr "Échec de validation du jeton : {error}"
+msgid "Invalid captcha response. Retrying may solve this issue."
+msgstr "Réponse captcha invalide. Réessayer peut résoudre ce problème."
 
 #: authentik/stages/captcha/stage.py
 msgid "Invalid captcha response"
@@ -3561,6 +3578,11 @@ msgstr ""
 #: authentik/tenants/models.py
 msgid "Globally enable/disable impersonation."
 msgstr "Activer/désactiver l'appropriation utilisateur de manière globale."
+
+#: authentik/tenants/models.py
+msgid "Require administrators to provide a reason for impersonating a user."
+msgstr ""
+"Forcer les administrateurs à fournir une raison d'appropriation utilisateur."
 
 #: authentik/tenants/models.py
 msgid "Default token duration"

@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-28 00:09+0000\n"
+"POT-Creation-Date: 2024-11-18 00:09+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: tom max, 2024\n"
 "Language-Team: Italian (https://app.transifex.com/authentik/teams/119923/it/)\n"
@@ -121,6 +121,10 @@ msgstr "Brand"
 msgid "Brands"
 msgstr "Brands"
 
+#: authentik/core/api/devices.py
+msgid "Extra description not available"
+msgstr "Descrizione extra non disponibile"
+
 #: authentik/core/api/providers.py
 msgid ""
 "When not set all providers are returned. When set to true, only backchannel "
@@ -130,6 +134,11 @@ msgstr ""
 "Se non impostato, vengono restituiti tutti i provider. Se impostato su vero,"
 " vengono restituiti solo i provider di backchannel. Se impostato su falso, i"
 " provider di backchannel vengono esclusi"
+
+#: authentik/core/api/transactional_applications.py
+#, python-brace-format
+msgid "User lacks permission to create {model}"
+msgstr "L'utente non ha i diritti per creare {model}"
 
 #: authentik/core/api/users.py
 msgid "No leading or trailing slashes allowed."
@@ -1239,6 +1248,10 @@ msgstr ""
 #: authentik/policies/password/models.py
 msgid "Password not set in context"
 msgstr "Password non impostata nel contesto"
+
+#: authentik/policies/password/models.py
+msgid "Invalid password."
+msgstr "Password invalida."
 
 #: authentik/policies/password/models.py
 #, python-format
@@ -3549,6 +3562,12 @@ msgstr ""
 #: authentik/tenants/models.py
 msgid "Globally enable/disable impersonation."
 msgstr "Abilita/disabilita globalmente la l'impersonazione."
+
+#: authentik/tenants/models.py
+msgid "Require administrators to provide a reason for impersonating a user."
+msgstr ""
+"Richiedi agli amministratori di fornire una ragione per impersonare un "
+"utente."
 
 #: authentik/tenants/models.py
 msgid "Default token duration"

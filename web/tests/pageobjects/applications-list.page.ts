@@ -11,7 +11,7 @@ class ApplicationsListPage extends AdminPage {
      */
 
     async startWizardButton() {
-        return await $("ak-application-wizard").$('button[slot="trigger"]');
+        return await $(">>>ak-application-wizard").$('>>>button[slot="trigger"]');
     }
 
     async open() {

@@ -19,23 +19,23 @@ Uptime Kuma currently supports only a single user and no native SSO solution. To
 
 The following placeholders will be used:
 
--   `uptime-kuma.company` is the FQDN of the Uptime Kuma install.
--   `authentik.company` is the FQDN of the authentik install.
+- `uptime-kuma.company` is the FQDN of the Uptime Kuma install.
+- `authentik.company` is the FQDN of the authentik install.
 
 Create an application in authentik. Create a Proxy provider with the following parameters:
 
--   Internal host
+- Internal host
 
     If Uptime Kuma is running in docker, and you're deploying the authentik proxy on the same host, set the value to `http://uptime-kuma:3001`, where uptime-kuma is the name of your container.
 
     If Uptime Kuma is running on a different server to where you are deploying the authentik proxy, set the value to `http://<Other Host>:3001`.
 
--   External host
+- External host
 
     `https://uptime-kuma.company`
     Set this to the external URL you will be accessing Uptime Kuma from.
 
--   Skip path regex
+- Skip path regex
 
     Add the following regex rules to keep the public status page accessible without authentication.
 

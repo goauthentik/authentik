@@ -8,7 +8,7 @@ title: Azure AD
 
 The following placeholders will be used:
 
--   `authentik.company` is the FQDN of the authentik install.
+- `authentik.company` is the FQDN of the authentik install.
 
 ## Azure setup
 
@@ -33,14 +33,14 @@ In authentik, create a new _Azure AD OAuth Source_ in Resources -> Sources.
 
 Use the following settings:
 
--   Name: `Azure AD`
--   Slug: `azure-ad` (this must match the URL being used above)
--   Consumer key: `*Application (client) ID* value from above`
--   Consumer secret: `*Value* of the secret from above`
+- Name: `Azure AD`
+- Slug: `azure-ad` (this must match the URL being used above)
+- Consumer key: `*Application (client) ID* value from above`
+- Consumer secret: `*Value* of the secret from above`
 
 If you kept the default _Supported account types_ selection of _Single tenant_, then you must change the URL below as well:
 
--   OIDC Well-known URL: `https://login.microsoftonline.com/*Directory (tenant) ID* from above/v2.0/.well-known/openid-configuration`
+- OIDC Well-known URL: `https://login.microsoftonline.com/*Directory (tenant) ID* from above/v2.0/.well-known/openid-configuration`
 
 ![](./authentik_01.png)
 
@@ -111,3 +111,22 @@ return True
 9. Open **Flow settings** and choose _azure-ad-enrollment_ as enrollment flow.
 
 Try to login with a **_new_** user. You should see no prompts and the user should have the correct information.
+
+### Machine-to-machine authentication <span class="badge badge--version">authentik 2024.12+</span>
+
+If using [Machine-to-Machine](../../../../add-secure-apps/providers/oauth2/client_credentials.md#jwt-authentication) authentication, some specific steps need to be considered.
+
+When getting the JWT token from Azure AD, set the scope to the Application ID URI, and _not_ the Graph URL; otherwise the JWT will be in an invalid format.
+
+```http
+POST /<azure-ad-tenant-id>/oauth2/v2.0/token/ HTTP/1.1
+Host: login.microsoftonline.com
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials&
+client_id=<application_client_id>&
+scope=api://<application_client_id>/.default&
+client_secret=<application_client_secret>
+```
+
+The JWT returned from the request above can be used with authentik to exchange it for an authentik JWT.

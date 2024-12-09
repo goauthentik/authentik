@@ -17,7 +17,7 @@ sidebar_label: Oracle Cloud
 
 The following placeholders will be used:
 
--   `authentik.company` is the FQDN of authentik.
+- `authentik.company` is the FQDN of authentik.
 
 ### Step 1 - authentik
 
@@ -29,16 +29,16 @@ Only settings that have been modified from default have been listed.
 
 **Protocol Settings**
 
--   Name: Oracle Cloud
--   Client ID: Copy and Save this for Later
--   Client Secret: Copy and Save this for later
--   Signing Key: Select any available key
+- Name: Oracle Cloud
+- Client ID: Copy and Save this for Later
+- Client Secret: Copy and Save this for later
+- Signing Key: Select any available key
 
 Create an application which uses this provider. Optionally apply access restrictions to the application using policy bindings.
 
--   Name: Oracle Cloud
--   Slug: oracle-cloud
--   Provider: Oracle Cloud
+- Name: Oracle Cloud
+- Slug: oracle-cloud
+- Provider: Oracle Cloud
 
 ### Step 2 - Oracle Cloud
 

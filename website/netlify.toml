@@ -720,6 +720,12 @@
   force = true
 
 [[redirects]]
+  from = "/docs/security/CVE-2024-42490"
+  to = "/docs/security/cves/CVE-2024-42490"
+  status = 302
+  force = true
+
+[[redirects]]
   from = "/docs/security/CVE-2023-26481"
   to = "/docs/security/cves/CVE-2023-26481"
   status = 302
@@ -1071,5 +1077,21 @@
 [[redirects]]
   from = "/developer-docs/translation"
   to = "/docs/developer-docs/translation"
+  status = 302
+  force = true
+
+
+# Moved GeoIP and S3 under System Management/user_basic_operations
+
+[[redirects]]
+  from = "/docs/install-config/storage-s3"
+  to = "/docs/sys-mgmt/ops/storage-s3"
+  status = 302
+  force = true
+
+
+[[redirects]]
+  from = "/docs/install-config/geoip"
+  to = "/docs/sys-mgmt/ops/geoip"
   status = 302
   force = true

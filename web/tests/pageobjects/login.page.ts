@@ -11,23 +11,23 @@ class LoginPage extends Page {
      * Selectors
      */
     async inputUsername() {
-        return await $('input[name="uidField"]');
+        return await $('>>>input[name="uidField"]');
     }
 
     async usernameBtnSubmit() {
-        return await $('button[type="submit"]');
+        return await $('>>>button[type="submit"]');
     }
 
     async inputPassword() {
-        return await $("input#ak-stage-password-input");
+        return await $(">>>input#ak-stage-password-input");
     }
 
     async passwordBtnSubmit() {
-        return await $("ak-stage-password").$('button[type="submit"]');
+        return await $(">>>ak-stage-password").$('>>>button[type="submit"]');
     }
 
     async authFailure() {
-        return await $(".pf-m-error");
+        return await $(">>>.pf-m-error");
     }
 
     /**
@@ -53,7 +53,7 @@ class LoginPage extends Page {
         await this.pause();
         await this.password(password);
         await this.pause();
-        await this.pause("div.header h1");
+        await this.pause(">>>div.header h1");
         return UserLibraryPage;
     }
 

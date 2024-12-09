@@ -59,7 +59,7 @@ const maxInstances =
     process.env.MAX_INSTANCES !== undefined
         ? parseInt(process.env.MAX_INSTANCES, DEFAULT_MAX_INSTANCES)
         : runHeadless
-          ? 10
+          ? 1
           : 1;
 
 export const config: WebdriverIO.Config = {

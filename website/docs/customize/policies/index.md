@@ -32,19 +32,23 @@ This policy can enforce regular password rotation by expiring set passwords afte
 
 ### Password Policy
 
+:::warning
+By default, authentik's Password policy is compliant with [NIST's recommendations](https://pages.nist.gov/800-63-4/sp800-63b.html#password) for passwords. To remain compliant with NIST, be cautious when editing the default values. For additional hardening configuration settings, refer to [Hardening authentik](../../security/security-hardening.md#password-policy).
+:::
+
 This policy allows you to specify password rules, such as length and required characters.
 The following rules can be set:
 
--   Minimum amount of uppercase characters.
--   Minimum amount of lowercase characters.
--   Minimum amount of symbols characters.
--   Minimum length.
--   Symbol charset (define which characters are counted as symbols).
+- Minimum amount of uppercase characters.
+- Minimum amount of lowercase characters.
+- Minimum amount of symbols characters.
+- Minimum length.
+- Symbol charset (define which characters are counted as symbols).
 
 Starting with authentik 2022.11.0, the following checks can also be done with this policy:
 
--   Check the password hash against the database of [Have I Been Pwned](https://haveibeenpwned.com/). Only the first 5 characters of the hashed password are transmitted, the rest is compared in authentik
--   Check the password against the password complexity checker [zxcvbn](https://github.com/dropbox/zxcvbn), which detects weak password on various metrics.
+- Check the password hash against the database of [Have I Been Pwned](https://haveibeenpwned.com/). Only the first 5 characters of the hashed password are transmitted, the rest is compared in authentik
+- Check the password against the password complexity checker [zxcvbn](https://github.com/dropbox/zxcvbn), which detects weak password on various metrics.
 
 ### Reputation Policy
 

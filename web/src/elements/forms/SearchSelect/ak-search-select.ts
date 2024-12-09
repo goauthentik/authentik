@@ -9,7 +9,7 @@ export interface ISearchSelect<T> extends ISearchSelectBase<T> {
     fetchObjects: (query?: string) => Promise<T[]>;
     renderElement: (element: T) => string;
     renderDescription?: (element: T) => string | TemplateResult;
-    value: (element: T | undefined) => unknown;
+    value: (element: T | undefined) => string;
     selected?: (element: T, elements: T[]) => boolean;
     groupBy: (items: T[]) => [string, T[]][];
 }
@@ -69,7 +69,7 @@ export class SearchSelect<T> extends SearchSelectBase<T> implements ISearchSelec
     // A function which returns the currently selected object's primary key, used for serialization
     // into forms.
     @property({ attribute: false })
-    value!: (element: T | undefined) => unknown;
+    value!: (element: T | undefined) => string;
 
     // A function passed to this object that determines an object in the collection under search
     // should be automatically selected. Only used when the search itself is responsible for

@@ -10,8 +10,8 @@ You can also [view a video walk-through](https://www.youtube.com/watch?v=O1qUbrk
 
 ### Requirements
 
--   Kubernetes
--   Helm
+- Kubernetes
+- Helm
 
 ## Video
 
