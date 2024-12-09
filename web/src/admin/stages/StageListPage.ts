@@ -17,6 +17,7 @@ import "@goauthentik/admin/stages/identification/IdentificationStageForm";
 import "@goauthentik/admin/stages/invitation/InvitationStageForm";
 import "@goauthentik/admin/stages/password/PasswordStageForm";
 import "@goauthentik/admin/stages/prompt/PromptStageForm";
+import "@goauthentik/admin/stages/redirect/RedirectStageForm";
 import "@goauthentik/admin/stages/source/SourceStageForm";
 import "@goauthentik/admin/stages/user_delete/UserDeleteStageForm";
 import "@goauthentik/admin/stages/user_login/UserLoginStageForm";
