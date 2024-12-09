@@ -161,7 +161,7 @@ class SourceViewSet(
 class UserSourceConnectionSerializer(SourceSerializer):
     """OAuth Source Serializer"""
 
-    source = SourceSerializer(read_only=True)
+    source_obj = SourceSerializer(read_only=True, source="source")
 
     class Meta:
         model = UserSourceConnection
@@ -169,6 +169,7 @@ class UserSourceConnectionSerializer(SourceSerializer):
             "pk",
             "user",
             "source",
+            "source_obj",
             "created",
         ]
         extra_kwargs = {

@@ -70,7 +70,7 @@ export class UserSourceSettingsPage extends AKElement {
         let connectionPk = -1;
         if (this.connections) {
             const connections = this.connections.results.filter(
-                (con) => con.source.slug === source.objectUid,
+                (con) => con.sourceObj.slug === source.objectUid,
             );
             if (connections.length > 0) {
                 connectionPk = connections[0].pk;
