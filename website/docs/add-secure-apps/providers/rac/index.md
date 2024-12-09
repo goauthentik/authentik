@@ -7,10 +7,6 @@ title: Remote Access Control (RAC) Provider
 ---
 
 :::info
-This feature is in technical preview, so please report any bugs on [GitHub](https://github.com/goauthentik/authentik/issues).
-:::
-
-:::info
 This provider requires the deployment of the [RAC Outpost](../../outposts/index.mdx).
 :::
 
@@ -60,6 +56,6 @@ A new connection is created every time an endpoint is selected in the [User Inte
 
 The following features are currently supported:
 
--   Bi-directional clipboard
--   Audio redirection (from remote machine to browser)
--   Resizing
+- Bi-directional clipboard
+- Audio redirection (from remote machine to browser)
+- Resizing

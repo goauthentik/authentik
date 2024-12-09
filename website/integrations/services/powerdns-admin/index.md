@@ -17,17 +17,17 @@ sidebar_label: PowerDNS-Admin
 
 The following placeholders will be used:
 
--   `pdns-admin.company` is the FQDN of the PowerDNS-Admin install.
--   `authentik.company` is the FQDN of the authentik install.
+- `pdns-admin.company` is the FQDN of the PowerDNS-Admin install.
+- `authentik.company` is the FQDN of the authentik install.
 
 Create a SAML provider with the following parameters:
 
--   ACS URL: `https://pdns-admin.company/saml/authorized`
--   Issuer: `https://authentik.company`
--   Service Provider Binding: `Post`
--   Audience: `pdns-admin`
--   Signing Keypair: Select any certificate you have.
--   Property mappings: Select all Managed mappings.
+- ACS URL: `https://pdns-admin.company/saml/authorized`
+- Issuer: `https://authentik.company`
+- Service Provider Binding: `Post`
+- Audience: `pdns-admin`
+- Signing Keypair: Select any certificate you have.
+- Property mappings: Select all Managed mappings.
 
 You can of course use a custom signing certificate, and adjust durations.
 

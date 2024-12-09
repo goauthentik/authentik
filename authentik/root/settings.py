@@ -32,6 +32,8 @@ LOGIN_URL = "authentik_flows:default-authentication"
 # Custom user model
 AUTH_USER_MODEL = "authentik_core.User"
 
+CSRF_COOKIE_PATH = LANGUAGE_COOKIE_PATH = SESSION_COOKIE_PATH = CONFIG.get("web.path", "/")
+
 CSRF_COOKIE_NAME = "authentik_csrf"
 CSRF_HEADER_NAME = "HTTP_X_AUTHENTIK_CSRF"
 LANGUAGE_COOKIE_NAME = "authentik_language"
@@ -304,10 +306,12 @@ DATABASES = {
         "USER": CONFIG.get("postgresql.user"),
         "PASSWORD": CONFIG.get("postgresql.password"),
         "PORT": CONFIG.get("postgresql.port"),
-        "SSLMODE": CONFIG.get("postgresql.sslmode"),
-        "SSLROOTCERT": CONFIG.get("postgresql.sslrootcert"),
-        "SSLCERT": CONFIG.get("postgresql.sslcert"),
-        "SSLKEY": CONFIG.get("postgresql.sslkey"),
+        "OPTIONS": {
+            "sslmode": CONFIG.get("postgresql.sslmode"),
+            "sslrootcert": CONFIG.get("postgresql.sslrootcert"),
+            "sslcert": CONFIG.get("postgresql.sslcert"),
+            "sslkey": CONFIG.get("postgresql.sslkey"),
+        },
         "TEST": {
             "NAME": CONFIG.get("postgresql.test.name"),
         },
@@ -425,7 +429,7 @@ if _ERROR_REPORTING:
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATICFILES_DIRS = [BASE_DIR / Path("web")]
-STATIC_URL = "/static/"
+STATIC_URL = CONFIG.get("web.path", "/") + "static/"
 
 STORAGES = {
     "staticfiles": {

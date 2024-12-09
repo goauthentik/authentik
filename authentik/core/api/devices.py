@@ -1,5 +1,6 @@
 """Authenticator Devices API Views"""
 
+from django.utils.translation import gettext_lazy as _
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework.fields import (
@@ -40,7 +41,11 @@ class DeviceSerializer(MetaNameSerializer):
     def get_extra_description(self, instance: Device) -> str:
         """Get extra description"""
         if isinstance(instance, WebAuthnDevice):
-            return instance.device_type.description
+            return (
+                instance.device_type.description
+                if instance.device_type
+                else _("Extra description not available")
+            )
         if isinstance(instance, EndpointDevice):
             return instance.data.get("deviceSignals", {}).get("deviceModel")
         return ""

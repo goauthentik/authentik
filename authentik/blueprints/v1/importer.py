@@ -65,7 +65,12 @@ from authentik.lib.utils.reflection import get_apps
 from authentik.outposts.models import OutpostServiceConnection
 from authentik.policies.models import Policy, PolicyBindingModel
 from authentik.policies.reputation.models import Reputation
-from authentik.providers.oauth2.models import AccessToken, AuthorizationCode, RefreshToken
+from authentik.providers.oauth2.models import (
+    AccessToken,
+    AuthorizationCode,
+    DeviceToken,
+    RefreshToken,
+)
 from authentik.providers.scim.models import SCIMProviderGroup, SCIMProviderUser
 from authentik.rbac.models import Role
 from authentik.sources.scim.models import SCIMSourceGroup, SCIMSourceUser
@@ -125,6 +130,7 @@ def excluded_models() -> list[type[Model]]:
         MicrosoftEntraProviderGroup,
         EndpointDevice,
         EndpointDeviceConnection,
+        DeviceToken,
     )
 
 
@@ -293,7 +299,11 @@ class Importer:
 
         serializer_kwargs = {}
         model_instance = existing_models.first()
-        if not isinstance(model(), BaseMetaModel) and model_instance:
+        if (
+            not isinstance(model(), BaseMetaModel)
+            and model_instance
+            and entry.state != BlueprintEntryDesiredState.MUST_CREATED
+        ):
             self.logger.debug(
                 "Initialise serializer with instance",
                 model=model,
@@ -303,11 +313,12 @@ class Importer:
             serializer_kwargs["instance"] = model_instance
             serializer_kwargs["partial"] = True
         elif model_instance and entry.state == BlueprintEntryDesiredState.MUST_CREATED:
+            msg = (
+                f"State is set to {BlueprintEntryDesiredState.MUST_CREATED.value} "
+                "and object exists already",
+            )
             raise EntryInvalidError.from_entry(
-                (
-                    f"State is set to {BlueprintEntryDesiredState.MUST_CREATED} "
-                    "and object exists already",
-                ),
+                ValidationError({k: msg for k in entry.identifiers.keys()}, "unique"),
                 entry,
             )
         else:

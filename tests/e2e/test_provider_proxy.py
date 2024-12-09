@@ -8,6 +8,7 @@ from time import sleep
 from unittest.case import skip, skipUnless
 
 from channels.testing import ChannelsLiveServerTestCase
+from jwt import decode
 from selenium.webdriver.common.by import By
 
 from authentik.blueprints.tests import apply_blueprint, reconcile_app
@@ -107,6 +108,11 @@ class TestProviderProxy(SeleniumTestCase):
 
         self.assertEqual(body["headers"]["X-Authentik-Username"], [self.user.username])
         self.assertEqual(body["headers"]["X-Foo"], ["bar"])
+        raw_jwt: str = body["headers"]["X-Authentik-Jwt"][0]
+        jwt = decode(raw_jwt, options={"verify_signature": False})
+
+        self.assertIsNotNone(jwt["sid"])
+        self.assertIsNotNone(jwt["ak_proxy"])
 
         self.driver.get("http://localhost:9000/outpost.goauthentik.io/sign_out")
         sleep(2)

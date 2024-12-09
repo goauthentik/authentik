@@ -11,11 +11,11 @@ sidebar_label: GitHub Enterprise Cloud EMU
 
 > With Enterprise Managed Users, you manage the lifecycle and authentication of your users on GitHub from an external identity management system, or IdP:
 >
-> -   Your IdP provisions new user accounts on GitHub, with access to your enterprise.
-> -   Users must authenticate on your IdP to access your enterprise's resources on GitHub.
-> -   You control usernames, profile data, organization membership, and repository access from your IdP.
-> -   If your enterprise uses OIDC SSO, GitHub will validate access to your enterprise and its resources using your IdP's Conditional Access Policy (CAP). See "About support for your IdP's Conditional Access Policy."
-> -   Managed user accounts cannot create public content or collaborate outside your enterprise. See "Abilities and restrictions of managed user accounts."
+> - Your IdP provisions new user accounts on GitHub, with access to your enterprise.
+> - Users must authenticate on your IdP to access your enterprise's resources on GitHub.
+> - You control usernames, profile data, organization membership, and repository access from your IdP.
+> - If your enterprise uses OIDC SSO, GitHub will validate access to your enterprise and its resources using your IdP's Conditional Access Policy (CAP). See "About support for your IdP's Conditional Access Policy."
+> - Managed user accounts cannot create public content or collaborate outside your enterprise. See "Abilities and restrictions of managed user accounts."
 >
 > -- https://docs.github.com/en/enterprise-cloud@latest/admin/managing-iam/understanding-iam-for-enterprises/about-enterprise-managed-users
 
@@ -23,10 +23,10 @@ sidebar_label: GitHub Enterprise Cloud EMU
 
 The following placeholders will be used:
 
--   `github.com/enterprises/foo` is your GitHub organization, where `foo` is the name of your enterprise
--   `authentik.company` is the FQDN of the authentik Install
--   `GitHub Users` is an authentik group used for holding GitHub users.
--   `GitHub Admins` is an authentik group used for indicating GitHub administrators.
+- `github.com/enterprises/foo` is your GitHub organization, where `foo` is the name of your enterprise
+- `authentik.company` is the FQDN of the authentik Install
+- `GitHub Users` is an authentik group used for holding GitHub users.
+- `GitHub Admins` is an authentik group used for indicating GitHub administrators.
 
 Note that in order to use the EMU Enterprise, you _must_ set up both SAML and SCIM.
 
@@ -36,10 +36,10 @@ First, create the two groups, in authentik, go to _Groups_, click _Create_ and p
 
 Create a SAML provider with the following parameters:
 
--   ACS URL: `https://github.com/enterprises/foo/saml/consume`
--   Audience: `https://github.com/enterprises/foo`
--   Issuer: `https://github.com/enterprises/foo`
--   Binding: `Post`
+- ACS URL: `https://github.com/enterprises/foo/saml/consume`
+- Audience: `https://github.com/enterprises/foo`
+- Issuer: `https://github.com/enterprises/foo`
+- Binding: `Post`
 
 Under _Advanced protocol settings_, set a certificate for _Signing Certificate_. Also set your _NameID Property Mapping_ to the _Email_ field. GitHub will create a username for your EMU users based on the SAML NameID, this NameID must also match the SCIM _userName_ attribute. This is covered later.
 
@@ -57,11 +57,11 @@ After you have set a password for this account and generated your SCIM token, na
 
 On this page:
 
--   Select the `Require SAML authentication` checkbox.
--   In `Sign on URL`, input the _SSO URL (Redirect)_ entry from the SAML provider you created.
--   For `Issuer`, input the `Issuer` you set in authentik
--   For `Public certificate`, paste the _full_ signing certificate into this field.
--   Verify that the `Signature method` and `Digest method` match your SAML provider settings in authentik.
+- Select the `Require SAML authentication` checkbox.
+- In `Sign on URL`, input the _SSO URL (Redirect)_ entry from the SAML provider you created.
+- For `Issuer`, input the `Issuer` you set in authentik
+- For `Public certificate`, paste the _full_ signing certificate into this field.
+- Verify that the `Signature method` and `Digest method` match your SAML provider settings in authentik.
 
 ![Screenshot showing populated GitHub enterprise SAML settings](ghec_emu_settings.png)
 
@@ -93,13 +93,13 @@ If you named your group anything other than `GitHub Admins`, please ensure you c
 
 Create a new SCIM provider with the following parameters:
 
--   URL: `https://api.github.com/scim/v2/enterprises/foo/` (Replacing `foo` with your Enterprise slug.)
--   Token: Paste the token provided from GitHub here.
--   In the _User filtering_ section, you can select your `GitHub Users` group.
--   In the _Attribute mapping_ section, de-select the `authentik default SCIM Mapping: User` mapping by selecting it on the right-hand side and clicking the left-facing single chevron.
--   Select the property mapping you created in the previous step and add it by clicking the right-facing single chevron.
--   You can leave the _Group Property Mappings_ as is.
--   Click _Finish_.
+- URL: `https://api.github.com/scim/v2/enterprises/foo/` (Replacing `foo` with your Enterprise slug.)
+- Token: Paste the token provided from GitHub here.
+- In the _User filtering_ section, you can select your `GitHub Users` group.
+- In the _Attribute mapping_ section, de-select the `authentik default SCIM Mapping: User` mapping by selecting it on the right-hand side and clicking the left-facing single chevron.
+- Select the property mapping you created in the previous step and add it by clicking the right-facing single chevron.
+- You can leave the _Group Property Mappings_ as is.
+- Click _Finish_.
 
 Go back to your GitHub EMU Application created in the first step and add your new SCIM provider in the _Backchannel Providers_ field, then click the _Update_ button.
 

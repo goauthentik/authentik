@@ -2,9 +2,9 @@
 title: SCIM Source
 ---
 
-:::info
-This feature is in technical preview, so please report any bugs on [GitHub](https://github.com/goauthentik/authentik/issues).
-:::
+<span class="badge badge--preview">Preview</span>
+
+---
 
 The SCIM source allows other applications to directly create users and groups within authentik. SCIM provides predefined schema for users and groups, with a RESTful API, to enable automatic user provisioning and deprovisioning, SCIM is supported by applications such as Microsoft Entra ID, Google Workspace, and Okta.
 
@@ -64,12 +64,12 @@ Each top level SCIM attribute is available as a variable in the expression. For 
 
 The following variables are available in the expression:
 
--   `schemas` as a list of strings
--   `userName` as a string
--   `name` as a dictionary
--   `emails` as a dictionary
--   `title` as a string
--   `urn_scim_schemas_extension_enterprise_2_0` as a dictionary
+- `schemas` as a list of strings
+- `userName` as a string
+- `name` as a dictionary
+- `emails` as a dictionary
+- `title` as a string
+- `urn_scim_schemas_extension_enterprise_2_0` as a dictionary
 
     :::info
     Top-level keys which include symbols not allowed in python syntax are converted to `_`.

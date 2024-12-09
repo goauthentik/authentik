@@ -26,14 +26,14 @@ To add an application to authentik and have it display on users' **My applicatio
 
 ## Authorization
 
-Application access can be configured using (Policy) Bindings. Click on an application in the applications list, and select the _Policy / Group / User Bindings_ tab. There you can bind users/groups/policies to grant them access. When nothing is bound, everyone has access. You can use this to grant access to one or multiple users/groups, or dynamically give access using policies.
+Application access can be configured using (Policy) bindings. Click on an application in the applications list, and select the _Policy / Group / User Bindings_ tab. There you can bind users/groups/policies to grant them access. When nothing is bound, everyone has access. You can use this to grant access to one or multiple users/groups, or dynamically give access using policies.
 
 By default, all users can access applications when no policies are bound.
 
 When multiple policies/groups/users are attached, you can configure the _Policy engine mode_ to either:
 
--   Require users to pass all bindings/be member of all groups (ALL), or
--   Require users to pass either binding/be member of either group (ANY)
+- Require users to pass all bindings/be member of all groups (ALL), or
+- Require users to pass either binding/be member of either group (ANY)
 
 ## Hide applications
 

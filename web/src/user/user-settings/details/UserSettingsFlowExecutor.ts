@@ -1,5 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { globalAK } from "@goauthentik/common/global";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { refreshMe } from "@goauthentik/common/users";
 import { AKElement } from "@goauthentik/elements/Base";
@@ -173,7 +174,10 @@ export class UserSettingsFlowExecutor
                     `authentik/user/flows: unsupported stage type ${this.challenge.component}`,
                 );
                 return html`
-                    <a href="/if/flow/${this.flowSlug}/" class="pf-c-button pf-m-primary">
+                    <a
+                        href="${globalAK().api.base}if/flow/${this.flowSlug}/"
+                        class="pf-c-button pf-m-primary"
+                    >
                         ${msg("Open settings")}
                     </a>
                 `;

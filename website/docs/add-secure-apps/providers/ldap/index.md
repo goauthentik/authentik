@@ -22,30 +22,30 @@ Note: Every LDAP provider needs to have a unique base DN. You can achieve this b
 
 The following fields are currently sent for users:
 
--   `cn`: User's username
--   `uid`: Unique user identifier
--   `uidNumber`: A unique numeric identifier for the user
--   `name`: User's name
--   `displayName`: User's name
--   `mail`: User's email address
--   `objectClass`: A list of these strings:
-    -   "user"
-    -   "organizationalPerson"
-    -   "goauthentik.io/ldap/user"
--   `memberOf`: A list of all DNs that the user is a member of
--   `homeDirectory`: A default home directory path for the user, by default `/home/$username`. Can be overwritten by setting `homeDirectory` as an attribute on users or groups.
--   `ak-active`: "true" if the account is active, otherwise "false"
--   `ak-superuser`: "true" if the account is part of a group with superuser permissions, otherwise "false"
+- `cn`: User's username
+- `uid`: Unique user identifier
+- `uidNumber`: A unique numeric identifier for the user
+- `name`: User's name
+- `displayName`: User's name
+- `mail`: User's email address
+- `objectClass`: A list of these strings:
+    - "user"
+    - "organizationalPerson"
+    - "goauthentik.io/ldap/user"
+- `memberOf`: A list of all DNs that the user is a member of
+- `homeDirectory`: A default home directory path for the user, by default `/home/$username`. Can be overwritten by setting `homeDirectory` as an attribute on users or groups.
+- `ak-active`: "true" if the account is active, otherwise "false"
+- `ak-superuser`: "true" if the account is part of a group with superuser permissions, otherwise "false"
 
 The following fields are current set for groups:
 
--   `cn`: The group's name
--   `uid`: Unique group identifier
--   `gidNumber`: A unique numeric identifier for the group
--   `member`: A list of all DNs of the groups members
--   `objectClass`: A list of these strings:
-    -   "group"
-    -   "goauthentik.io/ldap/group"
+- `cn`: The group's name
+- `uid`: Unique group identifier
+- `gidNumber`: A unique numeric identifier for the group
+- `member`: A list of all DNs of the groups members
+- `objectClass`: A list of these strings:
+    - "group"
+    - "goauthentik.io/ldap/group"
 
 A virtual group is also created for each user, they have the same fields as groups but have an additional objectClass: `goauthentik.io/ldap/virtual-group`.
 The virtual groups gidNumber is equal to the uidNumber of the user.
@@ -78,9 +78,9 @@ All bind modes rely on flows.
 
 The following stages are supported:
 
--   [Identification](../../flows-stages/stages/identification/index.md)
--   [Password](../../flows-stages/stages/password/index.md)
--   [Authenticator validation](../../flows-stages/stages/authenticator_validate/index.md)
+- [Identification](../../flows-stages/stages/identification/index.md)
+- [Password](../../flows-stages/stages/password/index.md)
+- [Authenticator validation](../../flows-stages/stages/authenticator_validate/index.md)
 
     Note: Authenticator validation currently only supports DUO, TOTP and static authenticators.
 
@@ -90,9 +90,9 @@ The following stages are supported:
 
     SMS-based authenticators are not supported as they require a code to be sent from authentik, which is not possible during the bind.
 
--   [User Logout](../../flows-stages/stages/user_logout.md)
--   [User Login](../../flows-stages/stages/user_login/index.md)
--   [Deny](../../flows-stages/stages/deny.md)
+- [User Logout](../../flows-stages/stages/user_logout.md)
+- [User Login](../../flows-stages/stages/user_login/index.md)
+- [Deny](../../flows-stages/stages/deny.md)
 
 #### Direct bind
 

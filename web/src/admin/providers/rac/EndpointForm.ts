@@ -15,10 +15,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import { AuthModeEnum, Endpoint, ProtocolEnum, RacApi } from "@goauthentik/api";
 
-import {
-    makeRACPropertyMappingsSelector,
-    racPropertyMappingsProvider,
-} from "./RACPropertyMappings.js";
+import { propertyMappingsProvider, propertyMappingsSelector } from "./RACProviderFormHelpers.js";
 
 @customElement("ak-rac-endpoint-form")
 export class EndpointForm extends ModelForm<Endpoint, string> {
@@ -114,8 +111,8 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Property mappings")} name="propertyMappings">
                 <ak-dual-select-dynamic-selected
-                    .provider=${racPropertyMappingsProvider}
-                    .selector=${makeRACPropertyMappingsSelector(this.instance?.propertyMappings)}
+                    .provider=${propertyMappingsProvider}
+                    .selector=${propertyMappingsSelector(this.instance?.propertyMappings)}
                     available-label="${msg("Available User Property Mappings")}"
                     selected-label="${msg("Selected User Property Mappings")}"
                 ></ak-dual-select-dynamic-selected>

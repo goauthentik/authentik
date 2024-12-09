@@ -36,13 +36,13 @@ Learn more in our documentation about [Enterprise licenses](../enterprise/manage
 
 ### Important considerations
 
--   Upon creating another tenant, a new schema will be created by cloning the `template` schema. This special schema is like a tenant with no data created in it. Cloning an existing schema instead of creating a new one and running migrations on it is done for efficiency purposes.
+- Upon creating another tenant, a new schema will be created by cloning the `template` schema. This special schema is like a tenant with no data created in it. Cloning an existing schema instead of creating a new one and running migrations on it is done for efficiency purposes.
 
--   In a typical deployment, all data stored in Redis (such as tasks, locks, and cached objects) will have its keys prefixed by the `schema_name`.
+- In a typical deployment, all data stored in Redis (such as tasks, locks, and cached objects) will have its keys prefixed by the `schema_name`.
 
--   Files are isolated on a per-tenant basis, with each tenant folder named according to the schema_name. For example, `/media/t_example`. The same is true regardless of the storage backend.
+- Files are isolated on a per-tenant basis, with each tenant folder named according to the schema_name. For example, `/media/t_example`. The same is true regardless of the storage backend.
 
--   Using an [embedded outpost](../add-secure-apps/outposts/embedded/embedded.mdx) with multi-tenancy is not currently supported. Disable the embedded outpost with `AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true` configuration setting.
+- Using an [embedded outpost](../add-secure-apps/outposts/embedded/embedded.mdx) with multi-tenancy is not currently supported. Disable the embedded outpost with `AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true` configuration setting.
 
 ## Usage
 

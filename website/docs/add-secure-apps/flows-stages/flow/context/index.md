@@ -112,7 +112,7 @@ An optional list of all permissions that will be given to the application by gra
 
 #### Deny stage
 
-##### `deny_message` (string) <span class="badge badge--version">authentik 2023.10+</span>
+##### `deny_message` (string) <span class="badge badge--version">authentik 2023.10+</span>
 
 Optionally overwrite the deny message shown, has a higher priority than the message configured in the stage.
 
@@ -128,7 +128,7 @@ If set, this must be a list of group objects and not group names.
 
 Path the `pending_user` will be written to. If not set in the flow, falls back to the value set in the user_write stage, and otherwise to the `users` path.
 
-##### `user_type` (string) <span class="badge badge--version">authentik 2023.10+</span>
+##### `user_type` (string) <span class="badge badge--version">authentik 2023.10+</span>
 
 Type the `pending_user` will be created as. Must be one of `internal`, `external` or `service_account`.
 
@@ -144,12 +144,12 @@ Set by the [Password stage](../../stages/password/index.md), the [Authenticator 
 
 Possible options:
 
--   `password` (Authenticated via the password in authentik's database)
--   `token` (Authenticated via API token)
--   `ldap` (Authenticated via LDAP bind from an LDAP source)
--   `auth_mfa` (Authentication via MFA device without password)
--   `auth_webauthn_pwl` (Passwordless authentication via WebAuthn)
--   `jwt` ([M2M](../../../providers/oauth2/client_credentials.md) authentication via an existing JWT)
+- `password` (Authenticated via the password in authentik's database)
+- `token` (Authenticated via API token)
+- `ldap` (Authenticated via LDAP bind from an LDAP source)
+- `auth_mfa` (Authentication via MFA device without password)
+- `auth_webauthn_pwl` (Passwordless authentication via WebAuthn)
+- `jwt` ([M2M](../../../providers/oauth2/client_credentials.md) authentication via an existing JWT)
 
 ##### `auth_method_args` (dictionary)
 
@@ -170,7 +170,7 @@ Example:
     // JWT information when `auth_method` `jwt` was used
     "jwt": {},
     "source": null,
-    "jwk_id": ""
+    "provider": null
 }
 ```
 

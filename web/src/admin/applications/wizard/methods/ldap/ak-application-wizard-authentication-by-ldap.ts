@@ -71,6 +71,7 @@ export class ApplicationWizardApplicationDetails extends WithBrandConfig(BasePro
                         flowType=${FlowsInstancesListDesignationEnum.Invalidation}
                         .currentFlow=${provider?.invalidationFlow}
                         .brandFlow=${this.brand.flowInvalidation}
+                        defaultFlowSlug="default-invalidation-flow"
                         required
                     ></ak-branded-flow-search>
                     <p class="pf-c-form__helper-text">${msg("Flow used for unbinding users.")}</p>
@@ -97,7 +98,7 @@ export class ApplicationWizardApplicationDetails extends WithBrandConfig(BasePro
                 </ak-radio-input>
 
                 <ak-switch-input
-                    name="openInNewTab"
+                    name="mfaSupport"
                     label=${msg("Code-based MFA Support")}
                     ?checked=${provider?.mfaSupport ?? true}
                     help=${mfaSupportHelp}

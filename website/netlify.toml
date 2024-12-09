@@ -62,7 +62,10 @@
   to = "/docs/providers/property-mappings/expression"
   status = 302
 
-
+[[redirects]]
+  from = "/docs/add-secure-apps/flows-stages/flow/layouts.md"
+  to = "/docs/add-secure-apps/flows-stages/flow/executors/if-flow.md"
+  status = 302
 
 
 
@@ -675,8 +678,8 @@
   force = true
 
 [[redirects]]
-  from = "/docs/providers/radius/x"
-  to = "/docs/add-secure-apps/providers/radius/x"
+  from = "/docs/providers/radius/"
+  to = "/docs/add-secure-apps/providers/radius/"
   status = 302
   force = true
 
@@ -713,6 +716,12 @@
 [[redirects]]
   from = "/docs/security/CVE-2022-46172"
   to = "/docs/security/cves/CVE-2022-46172"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/docs/security/CVE-2024-42490"
+  to = "/docs/security/cves/CVE-2024-42490"
   status = 302
   force = true
 
@@ -1068,5 +1077,21 @@
 [[redirects]]
   from = "/developer-docs/translation"
   to = "/docs/developer-docs/translation"
+  status = 302
+  force = true
+
+
+# Moved GeoIP and S3 under System Management/user_basic_operations
+
+[[redirects]]
+  from = "/docs/install-config/storage-s3"
+  to = "/docs/sys-mgmt/ops/storage-s3"
+  status = 302
+  force = true
+
+
+[[redirects]]
+  from = "/docs/install-config/geoip"
+  to = "/docs/sys-mgmt/ops/geoip"
   status = 302
   force = true

@@ -2,13 +2,14 @@ import { generateVersionDropdown } from "./src/utils.js";
 import apiReference from "./docs/developer-docs/api/reference/sidebar";
 
 const releases = [
+    "releases/2024/v2024.10",
     "releases/2024/v2024.8",
     "releases/2024/v2024.6",
-    "releases/2024/v2024.4",
     {
         type: "category",
         label: "Previous versions",
         items: [
+            "releases/2024/v2024.4",
             "releases/2024/v2024.2",
             "releases/2023/v2023.10",
             "releases/2023/v2023.8",
@@ -96,6 +97,7 @@ export default {
                     items: [
                         "install-config/install/docker-compose",
                         "install-config/install/kubernetes",
+                        "install-config/install/aws/index",
                     ],
                 },
                 {
@@ -110,10 +112,8 @@ export default {
                 "install-config/upgrade",
                 "install-config/beta",
                 "install-config/reverse-proxy",
-                "install-config/geoip",
                 "install-config/automated-install",
                 "install-config/air-gapped",
-                "install-config/storage-s3",
             ],
         },
         {
@@ -250,14 +250,14 @@ export default {
                                 id: "add-secure-apps/flows-stages/flow/index",
                             },
                             items: [
-                                "add-secure-apps/flows-stages/flow/layouts",
                                 "add-secure-apps/flows-stages/flow/inspector",
                                 "add-secure-apps/flows-stages/flow/context/index",
                                 {
                                     type: "category",
-                                    label: "Examples",
+                                    label: "Defaults and Examples",
                                     items: [
                                         "add-secure-apps/flows-stages/flow/examples/flows",
+                                        "add-secure-apps/flows-stages/flow/examples/default_flows",
                                         "add-secure-apps/flows-stages/flow/examples/snippets",
                                     ],
                                 },
@@ -553,7 +553,11 @@ export default {
                     type: "category",
                     label: "Operations",
                     collapsed: true,
-                    items: ["sys-mgmt/ops/monitoring"],
+                    items: [
+                        "sys-mgmt/ops/monitoring",
+                        "sys-mgmt/ops/storage-s3",
+                        "sys-mgmt/ops/geoip",
+                    ],
                 },
                 {
                     type: "category",
@@ -656,26 +660,51 @@ export default {
                 {
                     type: "category",
                     label: "Audits and Certificates",
-                    items: ["security/audits-and-certs/2023-06-cure53"],
+                    items: [
+                        "security/audits-and-certs/2023-06-cure53",
+                        "security/audits-and-certs/2024-11-cobalt",
+                    ],
                 },
                 {
                     type: "category",
                     label: "CVEs",
                     items: [
-                        "security/cves/CVE-2024-47077",
-                        "security/cves/CVE-2024-47070",
-                        "security/cves/CVE-2024-38371",
-                        "security/cves/CVE-2024-37905",
-                        "security/cves/CVE-2024-23647",
-                        "security/cves/CVE-2024-21637",
-                        "security/cves/CVE-2023-48228",
-                        "security/cves/GHSA-rjvp-29xq-f62w",
-                        "security/cves/CVE-2023-39522",
-                        "security/cves/CVE-2023-36456",
-                        "security/cves/CVE-2023-26481",
-                        "security/cves/CVE-2022-23555",
-                        "security/cves/CVE-2022-46145",
-                        "security/cves/CVE-2022-46172",
+                        {
+                            type: "category",
+                            label: "2024",
+                            items: [
+                                "security/cves/CVE-2024-52307",
+                                "security/cves/CVE-2024-52289",
+                                "security/cves/CVE-2024-52287",
+                                "security/cves/CVE-2024-47077",
+                                "security/cves/CVE-2024-47070",
+                                "security/cves/CVE-2024-42490",
+                                "security/cves/CVE-2024-38371",
+                                "security/cves/CVE-2024-37905",
+                                "security/cves/CVE-2024-23647",
+                                "security/cves/CVE-2024-21637",
+                            ],
+                        },
+                        {
+                            type: "category",
+                            label: "2023",
+                            items: [
+                                "security/cves/CVE-2023-48228",
+                                "security/cves/GHSA-rjvp-29xq-f62w",
+                                "security/cves/CVE-2023-39522",
+                                "security/cves/CVE-2023-36456",
+                                "security/cves/CVE-2023-26481",
+                            ],
+                        },
+                        {
+                            type: "category",
+                            label: "2022",
+                            items: [
+                                "security/cves/CVE-2022-46172",
+                                "security/cves/CVE-2022-46145",
+                                "security/cves/CVE-2022-23555",
+                            ],
+                        },
                     ],
                 },
             ],
