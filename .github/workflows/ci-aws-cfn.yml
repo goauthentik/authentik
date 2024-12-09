@@ -18,7 +18,7 @@ env:
 
 jobs:
   check-changes-applied:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - name: Setup authentik env
@@ -38,6 +38,6 @@ jobs:
   ci-aws-cfn-mark:
     needs:
       - check-changes-applied
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - run: echo mark
