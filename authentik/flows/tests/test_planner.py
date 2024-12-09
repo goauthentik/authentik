@@ -5,6 +5,8 @@ from unittest.mock import MagicMock, Mock, PropertyMock, patch
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.core.cache import cache
+from django.http import HttpRequest
+from django.shortcuts import redirect
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
 from guardian.shortcuts import get_anonymous_user
@@ -14,8 +16,14 @@ from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableException
 from authentik.flows.markers import ReevaluateMarker, StageMarker
-from authentik.flows.models import FlowAuthenticationRequirement, FlowDesignation, FlowStageBinding
+from authentik.flows.models import (
+    FlowAuthenticationRequirement,
+    FlowDesignation,
+    FlowStageBinding,
+    in_memory_stage,
+)
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner, cache_key
+from authentik.flows.stage import StageView
 from authentik.lib.tests.utils import dummy_get_response
 from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.models import Outpost
@@ -211,3 +219,99 @@ class TestFlowPlanner(TestCase):
 
             self.assertIsInstance(plan.markers[0], StageMarker)
             self.assertIsInstance(plan.markers[1], ReevaluateMarker)
+
+    def test_to_redirect(self):
+        """Test to_redirect and skipping the flow executor"""
+        flow = create_test_flow()
+        flow.authentication = FlowAuthenticationRequirement.NONE
+        request = self.request_factory.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        middleware = SessionMiddleware(dummy_get_response)
+        middleware.process_request(request)
+        request.session.save()
+
+        request.user = AnonymousUser()
+        planner = FlowPlanner(flow)
+        planner.allow_empty_flows = True
+        plan = planner.plan(request)
+        self.assertTrue(plan.requires_flow_executor())
+        self.assertEqual(
+            plan.to_redirect(request, flow).url,
+            reverse("authentik_core:if-flow", kwargs={"flow_slug": flow.slug}),
+        )
+
+    def test_to_redirect_skip_simple(self):
+        """Test to_redirect and skipping the flow executor"""
+        flow = create_test_flow()
+        flow.authentication = FlowAuthenticationRequirement.NONE
+        request = self.request_factory.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        middleware = SessionMiddleware(dummy_get_response)
+        middleware.process_request(request)
+        request.session.save()
+        request.user = AnonymousUser()
+        planner = FlowPlanner(flow)
+        planner.allow_empty_flows = True
+        plan = planner.plan(request)
+
+        class TStageView(StageView):
+            def dispatch(self, request: HttpRequest, *args, **kwargs):
+                return redirect("https://authentik.company")
+
+        plan.append_stage(in_memory_stage(TStageView))
+        self.assertFalse(plan.requires_flow_executor(allowed_silent_types=[TStageView]))
+        self.assertEqual(
+            plan.to_redirect(request, flow, allowed_silent_types=[TStageView]).url,
+            "https://authentik.company",
+        )
+
+    def test_to_redirect_skip_stage(self):
+        """Test to_redirect and skipping the flow executor
+        (with a stage bound that cannot be skipped)"""
+        flow = create_test_flow()
+        flow.authentication = FlowAuthenticationRequirement.NONE
+
+        FlowStageBinding.objects.create(
+            target=flow, stage=DummyStage.objects.create(name="dummy"), order=0
+        )
+
+        request = self.request_factory.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        request.user = AnonymousUser()
+        planner = FlowPlanner(flow)
+        planner.allow_empty_flows = True
+        plan = planner.plan(request)
+
+        class TStageView(StageView):
+            def dispatch(self, request: HttpRequest, *args, **kwargs):
+                return redirect("https://authentik.company")
+
+        plan.append_stage(in_memory_stage(TStageView))
+        self.assertTrue(plan.requires_flow_executor(allowed_silent_types=[TStageView]))
+
+    def test_to_redirect_skip_policies(self):
+        """Test to_redirect and skipping the flow executor
+        (with a marker on the stage view type that can be skipped)
+
+        Note that this is not actually used anywhere in the code, all stages that are dynamically
+        added are statically added"""
+        flow = create_test_flow()
+        flow.authentication = FlowAuthenticationRequirement.NONE
+
+        request = self.request_factory.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        request.user = AnonymousUser()
+        planner = FlowPlanner(flow)
+        planner.allow_empty_flows = True
+        plan = planner.plan(request)
+
+        class TStageView(StageView):
+            def dispatch(self, request: HttpRequest, *args, **kwargs):
+                return redirect("https://authentik.company")
+
+        plan.append_stage(in_memory_stage(TStageView), ReevaluateMarker(None))
+        self.assertTrue(plan.requires_flow_executor(allowed_silent_types=[TStageView]))
