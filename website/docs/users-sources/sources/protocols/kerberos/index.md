@@ -130,7 +130,7 @@ The following variable is available to Kerberos source property mappings:
 
 - `principal`: a Python string containing the Kerberos principal. For example `alice@REALM.COMPANY` or `HTTP/authentik.company@REALM.COMPANY`.
 
-When invoked from a SPNEGO context, the following variable is also available:
+When the property mapping is invoked from a SPNEGO context, the following variable is also available:
 
 - `spnego_info`: a Python dictionary with the following keys:
     - `initiator_name`: the name of the initiator of the GSSAPI security context
@@ -138,7 +138,7 @@ When invoked from a SPNEGO context, the following variable is also available:
     - `mech`: the GSSAPI mechanism used. Should always be Kerberos
     - `actual_flags`: the flags set on the GSSAPI security context
 
-When invoked from a synchronization context, the following variable is also available:
+When the property mapping is invoked from a synchronization context, the following variable is also available:
 
 - `principal_obj`: a [`Principal`](https://kadmin-rs.readthedocs.io/latest/kadmin.html#kadmin.Principal) object retrieved from the KAdmin API
 
