@@ -1,6 +1,4 @@
----
-title: Contributing to authentik
----
+# Contributing to authentik
 
 :+1::tada: Thanks for taking the time to contribute! :tada::+1:
 
