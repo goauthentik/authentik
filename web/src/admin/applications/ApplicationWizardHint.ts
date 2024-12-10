@@ -47,6 +47,9 @@ export class AkApplicationWizardHint extends AKElement implements ShowHintContro
                     padding-top: 0;
                     padding-bottom: 0;
                 }
+                .ak-hint-text {
+                    padding-bottom: var(--pf-global--spacer--md);
+                }
             `,
         ];
     }
@@ -103,7 +106,7 @@ export class AkApplicationWizardHint extends AKElement implements ShowHintContro
         return html` <section class="pf-c-page__main-section pf-m-no-padding-mobile">
             <ak-hint>
                 <ak-hint-body>
-                    <p>
+                    <p class="ak-hint-text">
                         You can now configure both an application and its authentication provider at
                         the same time with our new Application Wizard.
                         <!-- <a href="(link to docs)">Learn more about the wizard here.</a> -->

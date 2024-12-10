@@ -64,10 +64,8 @@ export class WizardStep extends AKElement {
             PFTitle,
             css`
                 .ak-wizard-box {
-                    min-height: 60%;
-                    min-height: 60vh;
-                    max-height: 75%;
-                    max-height: 75vh;
+                    height: 75%;
+                    height: 75vh;
                     display: flex;
                     flex-direction: column;
                     position: relative;
