@@ -94,6 +94,12 @@ export class ApplicationViewPage extends AKElement {
         }
     }
 
+    updated(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("applicationSlug") && this.applicationSlug) {
+            this.fetchApplication(this.applicationSlug);
+        }
+    }
+
     render(): TemplateResult {
         return html`<ak-page-header
                 header=${this.application?.name || msg("Loading")}
