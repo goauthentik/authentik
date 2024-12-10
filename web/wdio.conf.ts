@@ -1,5 +1,6 @@
 import replace from "@rollup/plugin-replace";
 import { browser } from "@wdio/globals";
+import type { Options } from "@wdio/types";
 import path from "path";
 import { cwd } from "process";
 import { fileURLToPath } from "url";
@@ -62,7 +63,7 @@ const maxInstances =
           ? 1
           : 1;
 
-export const config: WebdriverIO.Config = {
+export const config: Options.Testrunner = {
     //
     // ====================
     // Runner Configuration

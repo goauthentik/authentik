@@ -41,6 +41,7 @@ export default [
         },
         files: ["src/**"],
         rules: {
+            "lit/attribute-names": "off",
             // "lit/attribute-names": "error",
             "lit/no-private-properties": "error",
             // "lit/prefer-nothing": "warn",
