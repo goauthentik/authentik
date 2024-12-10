@@ -49,7 +49,7 @@ Another method to control which users or groups can access an application is to 
 4. In the expanded area, click **Bind existing Group/User**
    In the **Create Binding** modal box, select either the tab for **Group** or **User**.
 5. In the drop-down list, select the group or user.
-6. Optionally, configure additional settings for the binding, and then click ** Create** to create the binding and close the modal box.
+6. Optionally, configure additional settings for the binding, and then click **Create** to create the binding and close the modal box.
 
 ## Hide applications
 
