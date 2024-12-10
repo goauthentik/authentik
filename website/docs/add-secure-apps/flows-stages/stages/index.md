@@ -55,7 +55,7 @@ To bind a stage to a flow, follow these steps:
 4. On the Flow page, click the **Stage Bindings** tab at the top.
 5. Here, you can decide if you want to create a new stage and bind it to the flow (**Create and bind Stage**), or if you want to select an existing stage and bind it to the flow (**Bind existing stage**).
 
-## Bind users and groups to a stage binding
+## Bind users and groups to a flow's stage binding
 
 You can use bindings to determine whehther or not a stage is presented to a single user or any users within a group. You do this by binding the user or group to a stage binding within a specific flow. For example, if you have a flow that contains a stage that prompts the user for multi-factor authentication, but you only want certain users to see this stage (and fulfill the MFA prompt), then you would bind the appropriate group (or single user) to the stage binding for that flow.
 
@@ -67,7 +67,7 @@ To bind a user or a group to a stage binding for a specifc flow, follow these st
 4. On the Flow page, click the **Stage Bindings** tab at the top.
 5. Locate the stage binding to which you want to bind a user or group, and then **click the caret (>) to expand the stage binding details.**
 
-[](./edit_stage_binding.png)
+![](./edit_stage_binding.png)
 
 6. In the expanded area, click **Bind existing policy/group/user**.
 7. In the **Create Binding** modal box, select either the tab for **Group** or **User**.
