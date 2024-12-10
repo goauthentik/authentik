@@ -18,6 +18,11 @@ services:
       POSTGRES_DB: ${PG_DB:-authentik}
     env_file:
       - .env
+    deploy:
+      resources:
+        reservations:
+          cpus: '0.0001'
+          memory: 150M
   redis:
     image: docker.io/library/redis:alpine
     command: --save 60 1 --loglevel warning
@@ -30,6 +35,12 @@ services:
       timeout: 3s
     volumes:
       - redis:/data
+    deploy:
+      resources:
+        reservations:
+          cpus: '0.0001'
+          memory: 20M
+      
   server:
     image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2024.10.4}
     restart: unless-stopped
@@ -53,6 +64,11 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+    deploy:
+      resources:
+        reservations:
+          cpus: '0.0001'
+          memory: 400M
   worker:
     image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2024.10.4}
     restart: unless-stopped
@@ -82,7 +98,11 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-
+    deploy:
+      resources:
+        reservations:
+          cpus: '0.0001'
+          memory: 400M
 volumes:
   database:
     driver: local
