@@ -163,7 +163,8 @@ class UserSerializer(ModelSerializer):
         )
         validated_data["user_permissions"] = permissions
         instance: User = super().create(validated_data)
-        self._set_password(instance, password)
+        # use keep_date=True, so change_password_date is the same as in log event
+        self._set_password(instance, password, keep_date=True)
         return instance
 
     def update(self, instance: User, validated_data: dict) -> User:
@@ -178,14 +179,17 @@ class UserSerializer(ModelSerializer):
         self._set_password(instance, password)
         return instance
 
-    def _set_password(self, instance: User, password: str | None):
+    def _set_password(self, instance: User, password: str | None, keep_date: bool = False):
         """Set password of user if we're in a blueprint context, and if it's an empty
         string then use an unusable password"""
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context and password:
             instance.set_password(password)
             instance.save()
         if len(instance.password) == 0:
-            instance.set_unusable_password()
+            if keep_date:
+                instance.set_unusable_password(change_datetime=instance.password_change_date)
+            else:
+                instance.set_unusable_password()
             instance.save()
 
     def get_avatar(self, user: User) -> str:
