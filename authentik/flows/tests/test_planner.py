@@ -22,7 +22,12 @@ from authentik.flows.models import (
     FlowStageBinding,
     in_memory_stage,
 )
-from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner, cache_key
+from authentik.flows.planner import (
+    PLAN_CONTEXT_IS_REDIRECTED,
+    PLAN_CONTEXT_PENDING_USER,
+    FlowPlanner,
+    cache_key,
+)
 from authentik.flows.stage import StageView
 from authentik.lib.tests.utils import dummy_get_response
 from authentik.outposts.apps import MANAGED_OUTPOST
@@ -80,6 +85,24 @@ class TestFlowPlanner(TestCase):
         planner = FlowPlanner(flow)
         planner.allow_empty_flows = True
         planner.plan(request)
+
+    def test_authentication_redirect_required(self):
+        """Test flow authentication (redirect required)"""
+        flow = create_test_flow()
+        flow.authentication = FlowAuthenticationRequirement.REQUIRE_REDIRECT
+        request = self.request_factory.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        request.user = AnonymousUser()
+        planner = FlowPlanner(flow)
+        planner.allow_empty_flows = True
+
+        with self.assertRaises(FlowNonApplicableException):
+            planner.plan(request)
+
+        context = {}
+        context[PLAN_CONTEXT_IS_REDIRECTED] = create_test_flow()
+        planner.plan(request, context)
 
     @reconcile_app("authentik_outposts")
     def test_authentication_outpost(self):

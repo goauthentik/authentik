@@ -463,13 +463,25 @@
 
 [[redirects]]
   from = "/docs/policies/working_with_policies/unique_email"
-  to = "/docs/customize/policies/working_with_policies/unique_email"
+  to = "/docs/customize/policies/expression/unique_email"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/docs/customize/policies/working_with_policies/unique_email"
+  to = "/docs/customize/policies/expression/unique_email"
   status = 302
   force = true
 
 [[redirects]]
   from = "/docs/policies/working_with_policies/whitelist_email"
-  to = "/docs/customize/policies/working_with_policies/whitelist_email"
+  to = "/docs/customize/policies/expression/whitelist_email"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/docs/customize/policies/working_with_policies/whitelist_email"
+  to = "/docs/customize/policies/expression/whitelist_email"
   status = 302
   force = true
 

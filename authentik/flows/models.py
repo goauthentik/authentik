@@ -33,6 +33,7 @@ class FlowAuthenticationRequirement(models.TextChoices):
     REQUIRE_AUTHENTICATED = "require_authenticated"
     REQUIRE_UNAUTHENTICATED = "require_unauthenticated"
     REQUIRE_SUPERUSER = "require_superuser"
+    REQUIRE_REDIRECT = "require_redirect"
     REQUIRE_OUTPOST = "require_outpost"
 
 

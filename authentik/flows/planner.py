@@ -42,6 +42,8 @@ PLAN_CONTEXT_OUTPOST = "outpost"
 # Is set by the Flow Planner when a FlowToken was used, and the currently active flow plan
 # was restored.
 PLAN_CONTEXT_IS_RESTORED = "is_restored"
+PLAN_CONTEXT_IS_REDIRECTED = "is_redirected"
+PLAN_CONTEXT_REDIRECT_STAGE_TARGET = "redirect_stage_target"
 CACHE_TIMEOUT = CONFIG.get_int("cache.timeout_flows")
 CACHE_PREFIX = "goauthentik.io/flows/planner/"
 
@@ -181,7 +183,7 @@ class FlowPlanner:
         self.flow = flow
         self._logger = get_logger().bind(flow_slug=flow.slug)
 
-    def _check_authentication(self, request: HttpRequest):
+    def _check_authentication(self, request: HttpRequest, context: dict[str, Any]):
         """Check the flow's authentication level is matched by `request`"""
         if (
             self.flow.authentication == FlowAuthenticationRequirement.REQUIRE_AUTHENTICATED
@@ -196,6 +198,11 @@ class FlowPlanner:
         if (
             self.flow.authentication == FlowAuthenticationRequirement.REQUIRE_SUPERUSER
             and not request.user.is_superuser
+        ):
+            raise FlowNonApplicableException()
+        if (
+            self.flow.authentication == FlowAuthenticationRequirement.REQUIRE_REDIRECT
+            and context.get(PLAN_CONTEXT_IS_REDIRECTED) is None
         ):
             raise FlowNonApplicableException()
         outpost_user = ClientIPMiddleware.get_outpost_user(request)
@@ -229,18 +236,13 @@ class FlowPlanner:
             )
             context = default_context or {}
             # Bit of a workaround here, if there is a pending user set in the default context
-            # we use that user for our cache key
-            # to make sure they don't get the generic response
+            # we use that user for our cache key to make sure they don't get the generic response
             if context and PLAN_CONTEXT_PENDING_USER in context:
                 user = context[PLAN_CONTEXT_PENDING_USER]
             else:
                 user = request.user
-                # We only need to check the flow authentication if it's planned without a user
-                # in the context, as a user in the context can only be set via the explicit code API
-                # or if a flow is restarted due to `invalid_response_action` being set to
-                # `restart_with_context`, which can only happen if the user was already authorized
-                # to use the flow
-                context.update(self._check_authentication(request))
+
+            context.update(self._check_authentication(request, context))
             # First off, check the flow's direct policy bindings
             # to make sure the user even has access to the flow
             engine = PolicyEngine(self.flow, user, request)

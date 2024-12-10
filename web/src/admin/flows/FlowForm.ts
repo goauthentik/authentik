@@ -189,21 +189,28 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
                         ?selected=${this.instance?.authentication ===
                         AuthenticationEnum.RequireUnauthenticated}
                     >
-                        ${msg("Require no authentication.")}
+                        ${msg("Require no authentication")}
                     </option>
                     <option
                         value=${AuthenticationEnum.RequireSuperuser}
                         ?selected=${this.instance?.authentication ===
                         AuthenticationEnum.RequireSuperuser}
                     >
-                        ${msg("Require superuser.")}
+                        ${msg("Require superuser")}
+                    </option>
+                    <option
+                        value=${AuthenticationEnum.RequireRedirect}
+                        ?selected=${this.instance?.authentication ===
+                        AuthenticationEnum.RequireRedirect}
+                    >
+                        ${msg("Require being redirected from another flow")}
                     </option>
                     <option
                         value=${AuthenticationEnum.RequireOutpost}
                         ?selected=${this.instance?.authentication ===
                         AuthenticationEnum.RequireOutpost}
                     >
-                        ${msg("Require Outpost (flow can only be executed from an outpost).")}
+                        ${msg("Require Outpost (flow can only be executed from an outpost)")}
                     </option>
                 </select>
                 <p class="pf-c-form__helper-text">

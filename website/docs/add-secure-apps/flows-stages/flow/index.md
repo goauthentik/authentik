@@ -44,7 +44,7 @@ To create a flow, follow these steps:
 2. In the Admin interface, navigate to **Flows and Stages -> Flows**.
 3. Click **Create**, define the flow using the [configuration settings](#flow-configuration-options) described below, and then click **Finish**.
 
-After creating the flow, you can then [bind specific stages](../stages/index.md#bind-a-stage-to-a-flow) to the flow and [bind policies](../../../customize/policies/working_with_policies/working_with_policies.md) to the flow to further customize the user's log in and authentication process.
+After creating the flow, you can then [bind specific stages](../stages/index.md#bind-a-stage-to-a-flow) to the flow and [bind policies](../../../customize/policies/working_with_policies.md) to the flow to further customize the user's log in and authentication process.
 
 To determine which flow should be used, authentik will first check which default authentication flow is configured in the active [**Brand**](../../../customize/brands.md). If no default is configured there, the policies in all flows with the matching designation are checked, and the first flow with matching policies sorted by `slug` will be used.
 
@@ -66,7 +66,7 @@ import Defaultflowlist from "../flow/flow_list/\_defaultflowlist.mdx";
 
 <Defaultflowlist />
 
-**Authentication**: Using this option, you can configure whether the the flow requires initial authentication or not, whether the user must be a superuser, or if the flow requires an outpost.
+**Authentication**: Using this option, you can configure whether the the flow requires initial authentication or not, whether the user must be a superuser, if the flow can only be started after being redirected by a [Redirect stage](../stages/redirect/index.md), or if the flow requires an outpost.
 
 **Behavior settings**:
 

@@ -8,7 +8,7 @@ In effect, policies determine whether or not a specific stage is applied to a fl
 
 For example, you can create a policy that, for certain users, skips over a stage that prompts for MFA input. Or, you can define a policy that allows users to access a login flow only if the policy criteria are met. See below for other policies, including the reputation policy and an events-driven policy to manage notifications.
 
-For instructions about creating and binding policies to flows and stages, refer to ["Working with policies](./working_with_policies/working_with_policies.md)".
+For instructions about creating and binding policies to flows and stages, refer to ["Working with policies](./working_with_policies.md)".
 
 ## Standard policies
 
