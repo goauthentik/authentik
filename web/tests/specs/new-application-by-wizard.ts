@@ -35,7 +35,7 @@ async function reachTheApplicationsPage() {
     await ApplicationsListPage.logout();
     await login();
     await ApplicationsListPage.open();
-    await ApplicationsListPage.pause("ak-page-header");
+    await ApplicationsListPage.pause();
     await expect(await ApplicationsListPage.pageHeader()).toBeDisplayed();
     await expect(await ApplicationsListPage.pageHeader()).toHaveText("Applications");
 }
@@ -63,7 +63,7 @@ async function getCommitMessage() {
 async function fillOutTheProviderAndProceed(provider: TestSequence) {
     // The wizard automagically provides a name.  If it doesn't, that's a bug.
     const wizardProvider = provider.filter((p) => p.length < 2 || p[1] !== "name");
-    await $("ak-wizard-page-type-create").waitForDisplayed();
+    await $(">>>ak-wizard-page-type-create").waitForDisplayed();
     for await (const field of wizardProvider) {
         const thefunc = field[0];
         const args = field.slice(1);
@@ -78,7 +78,7 @@ async function fillOutTheProviderAndProceed(provider: TestSequence) {
 
 export async function findWizardTitle() {
     return await (async () => {
-        for await (const item of $$("ak-wizard-title")) {
+        for await (const item of $$(">>>ak-wizard-title")) {
             if ((await item.isExisting()) && (await item.isDisplayed())) {
                 return item;
             }

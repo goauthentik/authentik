@@ -19,8 +19,8 @@ sidebar_label: Gravitee
 
 The following placeholders will be used:
 
--   `gravitee.company` is the FQDN of the Gravitee install.
--   `authentik.company` is the FQDN of the authentik install.
+- `gravitee.company` is the FQDN of the Gravitee install.
+- `authentik.company` is the FQDN of the authentik install.
 
 ## authentik configuration
 
@@ -54,11 +54,11 @@ In the Gravitee Management Console, navigate to _Organizations_ (gravitee.compan
 Only settings that have been modified from default have been listed.
 :::
 
--   **Allow portal authentication to use this identity provider**: enable this
--   **Client ID**: Enter the Client ID from authentik that you noted in step 1
--   **Client Secret**: Enter the Client Secret from authentik that you noted in step 1
--   **Token Endpoint**: Populate this field with the **Token URL**
--   **Authorize Endpoint**: Populate this field with the **Authorize URL**
--   **Userinfo Endpoint**: Populate this field with the **Userinfo URL**
--   **Userinfo Logout Endpoint**: Populate this field with the **Logout URL**
--   **Scopes**: `email openid profile`
+- **Allow portal authentication to use this identity provider**: enable this
+- **Client ID**: Enter the Client ID from authentik that you noted in step 1
+- **Client Secret**: Enter the Client Secret from authentik that you noted in step 1
+- **Token Endpoint**: Populate this field with the **Token URL**
+- **Authorize Endpoint**: Populate this field with the **Authorize URL**
+- **Userinfo Endpoint**: Populate this field with the **Userinfo URL**
+- **Userinfo Logout Endpoint**: Populate this field with the **Logout URL**
+- **Scopes**: `email openid profile`

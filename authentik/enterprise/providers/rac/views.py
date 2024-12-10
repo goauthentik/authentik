@@ -18,9 +18,7 @@ from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, FlowPlanner
 from authentik.flows.stage import RedirectStage
-from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.utils.time import timedelta_from_string
-from authentik.lib.utils.urls import redirect_with_qs
 from authentik.policies.engine import PolicyEngine
 
 
@@ -56,12 +54,7 @@ class RACStartView(EnterprisePolicyAccessView):
                 provider=self.provider,
             )
         )
-        request.session[SESSION_KEY_PLAN] = plan
-        return redirect_with_qs(
-            "authentik_core:if-flow",
-            request.GET,
-            flow_slug=self.provider.authorization_flow.slug,
-        )
+        return plan.to_redirect(request, self.provider.authorization_flow)
 
 
 class RACInterface(InterfaceView):

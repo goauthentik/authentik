@@ -32,11 +32,9 @@ import {
     ValidationError,
 } from "@goauthentik/api";
 
-import {
-    makeOAuth2PropertyMappingsSelector,
-    oauth2PropertyMappingsProvider,
-} from "./OAuth2PropertyMappings.js";
-import { makeSourceSelector, oauth2SourcesProvider } from "./OAuth2Sources.js";
+import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuth2ProviderFormHelpers.js";
+import { oauth2ProvidersProvider, oauth2ProvidersSelector } from "./OAuth2ProvidersProvider.js";
+import { oauth2SourcesProvider, oauth2SourcesSelector } from "./OAuth2Sources.js";
 
 export const clientTypeOptions = [
     {
@@ -178,7 +176,7 @@ export function renderForm(
                 >
                 </ak-text-input>
                 <ak-form-element-horizontal
-                    label=${msg("Redirect URIs/Origins")}
+                    label=${msg("Redirect URIs/Origins (RegEx)")}
                     required
                     name="redirectUris"
                 >
@@ -288,8 +286,8 @@ export function renderForm(
                 </ak-text-input>
                 <ak-form-element-horizontal label=${msg("Scopes")} name="propertyMappings">
                     <ak-dual-select-dynamic-selected
-                        .provider=${oauth2PropertyMappingsProvider}
-                        .selector=${makeOAuth2PropertyMappingsSelector(provider?.propertyMappings)}
+                        .provider=${propertyMappingsProvider}
+                        .selector=${propertyMappingsSelector(provider?.propertyMappings)}
                         available-label=${msg("Available Scopes")}
                         selected-label=${msg("Selected Scopes")}
                     ></ak-dual-select-dynamic-selected>
@@ -334,16 +332,35 @@ export function renderForm(
         <ak-form-group>
             <span slot="header">${msg("Machine-to-Machine authentication settings")}</span>
             <div slot="body" class="pf-c-form">
-                <ak-form-element-horizontal label=${msg("Trusted OIDC Sources")} name="jwksSources">
+                <ak-form-element-horizontal
+                    label=${msg("Federated OIDC Sources")}
+                    name="jwtFederationSources"
+                >
                     <ak-dual-select-dynamic-selected
                         .provider=${oauth2SourcesProvider}
-                        .selector=${makeSourceSelector(provider?.jwksSources)}
+                        .selector=${oauth2SourcesSelector(provider?.jwtFederationSources)}
                         available-label=${msg("Available Sources")}
                         selected-label=${msg("Selected Sources")}
                     ></ak-dual-select-dynamic-selected>
                     <p class="pf-c-form__helper-text">
                         ${msg(
                             "JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider.",
+                        )}
+                    </p>
+                </ak-form-element-horizontal>
+                <ak-form-element-horizontal
+                    label=${msg("Federated OIDC Providers")}
+                    name="jwtFederationProviders"
+                >
+                    <ak-dual-select-dynamic-selected
+                        .provider=${oauth2ProvidersProvider}
+                        .selector=${oauth2ProvidersSelector(provider?.jwtFederationProviders)}
+                        available-label=${msg("Available Providers")}
+                        selected-label=${msg("Selected Providers")}
+                    ></ak-dual-select-dynamic-selected>
+                    <p class="pf-c-form__helper-text">
+                        ${msg(
+                            "JWTs signed by the selected providers can be used to authenticate to this provider.",
                         )}
                     </p>
                 </ak-form-element-horizontal>

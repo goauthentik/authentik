@@ -35,13 +35,12 @@ export default class Page {
      */
     async searchSelect(searchSelector: string, managedSelector: string, buttonSelector: string) {
         const inputBind = await $(searchSelector);
-        const inputMain = await inputBind.$('input[type="text"]');
+        const inputMain = await inputBind.$('>>>input[type="text"]');
         await inputMain.click();
         const searchBlock = await (
-            await $(`div[data-managed-for="${managedSelector}"]`).$("ak-list-select")
-        ).shadow$$("button");
+            await $(`>>>div[data-managed-for="${managedSelector}"]`).$(">>>ak-list-select")
+        ).$$("button");
         let target: WebdriverIO.Element;
-        // @ts-expect-error "Types break on shadow$$"
         for (const button of searchBlock) {
             if ((await button.getText()).includes(buttonSelector)) {
                 target = button;
@@ -77,11 +76,10 @@ export default class Page {
 
         // Weirdly necessary because it's portals!
         const searchBlock = await (
-            await $(`div[data-managed-for="${name}"]`).$("ak-list-select")
-        ).shadow$$("button");
+            await $(`>>>div[data-managed-for="${name}"]`).$(">>>ak-list-select")
+        ).$$("button");
 
         let target: WebdriverIO.Element;
-        // @ts-expect-error "Types break on shadow$$"
         for (const button of searchBlock) {
             if ((await button.getText()).includes(value)) {
                 target = button;

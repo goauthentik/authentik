@@ -1,16 +1,6 @@
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-radio-input";
-import "@goauthentik/components/ak-text-input";
-import "@goauthentik/components/ak-textarea-input";
-import "@goauthentik/elements/ak-array-input.js";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
-import "@goauthentik/elements/utils/TimeDeltaHelp";
+import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types";
 
 import { css } from "lit";
 import { customElement, state } from "lit/decorators.js";
@@ -18,6 +8,45 @@ import { customElement, state } from "lit/decorators.js";
 import { ClientTypeEnum, OAuth2Provider, ProvidersApi } from "@goauthentik/api";
 
 import { renderForm } from "./OAuth2ProviderFormForm.js";
+
+const providerToSelect = (provider: OAuth2Provider) => [provider.pk, provider.name];
+
+export async function oauth2ProvidersProvider(page = 1, search = "") {
+    const oauthProviders = await new ProvidersApi(DEFAULT_CONFIG).providersOauth2List({
+        ordering: "name",
+        pageSize: 20,
+        search: search.trim(),
+        page,
+    });
+
+    return {
+        pagination: oauthProviders.pagination,
+        options: oauthProviders.results.map((provider) => providerToSelect(provider)),
+    };
+}
+
+export function oauth2ProviderSelector(instanceProviders: number[] | undefined) {
+    if (!instanceProviders) {
+        return async (mappings: DualSelectPair<OAuth2Provider>[]) =>
+            mappings.filter(
+                ([_0, _1, _2, source]: DualSelectPair<OAuth2Provider>) => source !== undefined,
+            );
+    }
+
+    return async () => {
+        const oauthSources = new ProvidersApi(DEFAULT_CONFIG);
+        const mappings = await Promise.allSettled(
+            instanceProviders.map((instanceId) =>
+                oauthSources.providersOauth2Retrieve({ id: instanceId }),
+            ),
+        );
+
+        return mappings
+            .filter((s) => s.status === "fulfilled")
+            .map((s) => s.value)
+            .map(providerToSelect);
+    };
+}
 
 /**
  * Form page for OAuth2 Authentication Method

@@ -1,5 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_NOTIFICATION_DRAWER_TOGGLE, EVENT_REFRESH } from "@goauthentik/common/constants";
+import { globalAK } from "@goauthentik/common/global";
 import { actionToLabel } from "@goauthentik/common/labels";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { me } from "@goauthentik/common/users";
@@ -100,7 +101,7 @@ export class NotificationDrawer extends AKElement {
                 html`
                     <a
                         class="pf-c-dropdown__toggle pf-m-plain"
-                        href="/if/admin/#/events/log/${item.event?.pk}"
+                        href="${globalAK().api.base}if/admin/#/events/log/${item.event?.pk}"
                     >
                         <pf-tooltip position="top" content=${msg("Show details")}>
                             <i class="fas fa-share-square"></i>

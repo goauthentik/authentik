@@ -71,7 +71,8 @@ export const completeOAuth2ProviderForm: TestProvider = () => [
     [setRadio, "subMode", "Based on the User's username"],
     [setRadio, "issuerMode", "Same identifier is used for all providers"],
     [setFormGroup, /Machine-to-Machine authentication settings/, "open"],
-    [checkIsPresent, '[name="jwksSources"]'],
+    [checkIsPresent, '[name="jwtFederationSources"]'],
+    [checkIsPresent, '[name="jwtFederationProviders"]'],
 ];
 
 // components.schemas.LDAPProviderRequest
@@ -303,7 +304,8 @@ const proxyModeCompletions: TestSequence = [
     [setFormGroup, /Advanced flow settings/, "open"],
     [setSearchSelect, "authenticationFlow", /default-source-authentication/],
     [setSearchSelect, "invalidationFlow", /default-invalidation-flow/],
-    [checkIsPresent, '[name="jwksSources"]'],
+    [checkIsPresent, '[name="jwtFederationSources"]'],
+    [checkIsPresent, '[name="jwtFederationProviders"]'],
 ];
 
 export const completeProxyProviderForm: TestProvider = () => [

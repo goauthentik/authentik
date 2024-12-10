@@ -15,7 +15,7 @@ describe("ak-divider", () => {
 
     it("should render the divider with the specified text", async () => {
         render(html`<ak-divider><span>Your Message Here</span></ak-divider>`);
-        const span = await $("ak-divider").$("span");
+        const span = await $("ak-divider").$(">>>span");
         await expect(span).toExist();
         await expect(span).toHaveText("Your Message Here");
     });

@@ -97,6 +97,7 @@ export default {
                     items: [
                         "install-config/install/docker-compose",
                         "install-config/install/kubernetes",
+                        "install-config/install/aws/index",
                     ],
                 },
                 {
@@ -648,7 +649,10 @@ export default {
                 {
                     type: "category",
                     label: "Audits and Certificates",
-                    items: ["security/audits-and-certs/2023-06-cure53"],
+                    items: [
+                        "security/audits-and-certs/2023-06-cure53",
+                        "security/audits-and-certs/2024-11-cobalt",
+                    ],
                 },
                 {
                     type: "category",
@@ -663,6 +667,7 @@ export default {
                                 "security/cves/CVE-2024-52287",
                                 "security/cves/CVE-2024-47077",
                                 "security/cves/CVE-2024-47070",
+                                "security/cves/CVE-2024-42490",
                                 "security/cves/CVE-2024-38371",
                                 "security/cves/CVE-2024-37905",
                                 "security/cves/CVE-2024-23647",
@@ -684,9 +689,9 @@ export default {
                             type: "category",
                             label: "2022",
                             items: [
-                                "security/cves/CVE-2022-23555",
-                                "security/cves/CVE-2022-46145",
                                 "security/cves/CVE-2022-46172",
+                                "security/cves/CVE-2022-46145",
+                                "security/cves/CVE-2022-23555",
                             ],
                         },
                     ],

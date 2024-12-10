@@ -25,5 +25,7 @@ class BrandMiddleware:
             locale = brand.default_locale
             if locale != "":
                 locale_to_set = locale
-        with override(locale_to_set):
-            return self.get_response(request)
+        if locale_to_set:
+            with override(locale_to_set):
+                return self.get_response(request)
+        return self.get_response(request)

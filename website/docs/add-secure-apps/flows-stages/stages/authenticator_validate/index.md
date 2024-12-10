@@ -4,19 +4,19 @@ title: Authenticator validation stage
 
 This stage validates an already configured Authenticator Device. This device has to be configured using any of the other authenticator stages:
 
--   [Duo authenticator stage](../authenticator_duo/index.md)
--   [SMS authenticator stage](../authenticator_sms/index.md)
--   [Static authenticator stage](../authenticator_static/index.md)
--   [TOTP authenticator stage](../authenticator_totp/index.md)
--   [WebAuthn authenticator stage](../authenticator_webauthn/index.md)
+- [Duo authenticator stage](../authenticator_duo/index.md)
+- [SMS authenticator stage](../authenticator_sms/index.md)
+- [Static authenticator stage](../authenticator_static/index.md)
+- [TOTP authenticator stage](../authenticator_totp/index.md)
+- [WebAuthn authenticator stage](../authenticator_webauthn/index.md)
 
 You can select which type of device classes are allowed.
 
 Using the `Not configured action`, you can choose what happens when a user does not have any matching devices.
 
--   Skip: Validation is skipped and the flow continues
--   Deny: Access is denied, the flow execution ends
--   Configure: This option requires a _Configuration stage_ to be set. The validation stage will be marked as successful, and the configuration stage will be injected into the flow.
+- Skip: Validation is skipped and the flow continues
+- Deny: Access is denied, the flow execution ends
+- Configure: This option requires a _Configuration stage_ to be set. The validation stage will be marked as successful, and the configuration stage will be injected into the flow.
 
 By default, authenticator validation is required every time the flow containing this stage is executed. To only change this behavior, set _Last validation threshold_ to a non-zero value. (Requires authentik 2022.5)
 Keep in mind that when using Code-based devices (TOTP, Static and SMS), values lower than `seconds=30` cannot be used, as with the way TOTP devices are saved, there is no exact timestamp.

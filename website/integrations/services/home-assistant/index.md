@@ -24,8 +24,8 @@ For Home Assistant to work with authentik, a custom integration needs to be inst
 
 The following placeholders will be used:
 
--   `hass.company` is the FQDN of the Home Assistant install.
--   `authentik.company` is the FQDN of the authentik install.
+- `hass.company` is the FQDN of the Home Assistant install.
+- `authentik.company` is the FQDN of the authentik install.
 
 ## authentik configuration
 

@@ -43,10 +43,10 @@ export async function clickButton(name: string, ctx?: WebdriverIO.Element) {
 export async function clickToggleGroup(name: string, value: string | RegExp) {
     const comparator = makeComparator(value);
     const button = await (async () => {
-        for await (const button of $(`[data-ouid-component-name=${name}]`).$$(
-            ".pf-c-toggle-group__button",
+        for await (const button of $(`>>>[data-ouid-component-name=${name}]`).$$(
+            ">>>.pf-c-toggle-group__button",
         )) {
-            if (comparator(await button.$(".pf-c-toggle-group__text").getText())) {
+            if (comparator(await button.$(">>>.pf-c-toggle-group__text").getText())) {
                 return button;
             }
         }
@@ -64,14 +64,16 @@ export async function clickToggleGroup(name: string, value: string | RegExp) {
 export async function setFormGroup(name: string | RegExp, setting: "open" | "closed") {
     const comparator = makeComparator(name);
     const formGroup = await (async () => {
-        for await (const group of browser.$$("ak-form-group")) {
+        for await (const group of browser.$$(">>>ak-form-group")) {
             // Delightfully, wizards may have slotted elements that *exist* but are not *attached*,
             // and this can break the damn tests.
             if (!(await group.isDisplayed())) {
                 continue;
             }
             if (
-                comparator(await group.$("div.pf-c-form__field-group-header-title-text").getText())
+                comparator(
+                    await group.$(">>>div.pf-c-form__field-group-header-title-text").getText(),
+                )
             ) {
                 return group;
             }
@@ -83,7 +85,7 @@ export async function setFormGroup(name: string | RegExp, setting: "open" | "clo
     }
 
     await formGroup.scrollIntoView();
-    const toggle = await formGroup.$("div.pf-c-form__field-group-toggle-button button");
+    const toggle = await formGroup.$(">>>div.pf-c-form__field-group-toggle-button button");
     await match([await toggle.getAttribute("aria-expanded"), setting])
         .with(["false", "open"], async () => await toggle.click())
         .with(["true", "closed"], async () => await toggle.click())
@@ -92,13 +94,13 @@ export async function setFormGroup(name: string | RegExp, setting: "open" | "clo
 }
 
 export async function setRadio(name: string, value: string | RegExp) {
-    const control = await $(`ak-radio[name="${name}"]`);
+    const control = await $(`>>>ak-radio[name="${name}"]`);
     await control.scrollIntoView();
 
     const comparator = makeComparator(value);
     const item = await (async () => {
-        for await (const item of control.$$("div.pf-c-radio")) {
-            if (comparator(await item.$(".pf-c-radio__label").getText())) {
+        for await (const item of control.$$(">>>div.pf-c-radio")) {
+            if (comparator(await item.$(">>>.pf-c-radio__label").getText())) {
                 return item;
             }
         }
@@ -116,12 +118,12 @@ export async function setRadio(name: string, value: string | RegExp) {
 export async function setSearchSelect(name: string, value: string | RegExp) {
     const control = await (async () => {
         try {
-            const control = await $(`ak-search-select[name="${name}"]`);
+            const control = await $(`>>>ak-search-select[name="${name}"]`);
             await control.waitForExist({ timeout: 500 });
             return control;
             // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
         } catch (_e: any) {
-            const control = await $(`ak-search-selects-ez[name="${name}"]`);
+            const control = await $(`>>>ak-search-selects-ez[name="${name}"]`);
             return control;
         }
     })();
@@ -131,15 +133,15 @@ export async function setSearchSelect(name: string, value: string | RegExp) {
     }
 
     // Find the search select input control and activate it.
-    const view = await control.$("ak-search-select-view");
-    const input = await view.$('input[type="text"]');
+    const view = await control.$(">>>ak-search-select-view");
+    const input = await view.$('>>>input[type="text"]');
     await input.scrollIntoView();
     await input.click();
 
     const comparator = makeComparator(value);
     const button = await (async () => {
-        for await (const button of $(`div[data-managed-for*="${name}"]`)
-            .$("ak-list-select")
+        for await (const button of $(`>>>div[data-managed-for*="${name}"]`)
+            .$(">>>ak-list-select")
             .$$("button")) {
             if (comparator(await button.getText())) {
                 return button;
@@ -159,41 +161,41 @@ export async function setSearchSelect(name: string, value: string | RegExp) {
 }
 
 export async function setTextInput(name: string, value: string) {
-    const control = await $(`input[name="${name}"]`);
+    const control = await $(`>>>input[name="${name}"]`);
     await control.scrollIntoView();
     await control.setValue(value);
     await doBlur(control);
 }
 
 export async function setTextareaInput(name: string, value: string) {
-    const control = await $(`textarea[name="${name}"]`);
+    const control = await $(`>>>textarea[name="${name}"]`);
     await control.scrollIntoView();
     await control.setValue(value);
     await doBlur(control);
 }
 
 export async function setToggle(name: string, set: boolean) {
-    const toggle = await $(`input[name="${name}"]`);
+    const toggle = await $(`>>>input[name="${name}"]`);
     await toggle.scrollIntoView();
     await expect(await toggle.getAttribute("type")).toBe("checkbox");
     const state = await toggle.isSelected();
     if (set !== state) {
-        const control = await (await toggle.parentElement()).$(".pf-c-switch__toggle");
+        const control = await (await toggle.parentElement()).$(">>>.pf-c-switch__toggle");
         await control.click();
         await doBlur(control);
     }
 }
 
 export async function setTypeCreate(name: string, value: string | RegExp) {
-    const control = await $(`ak-wizard-page-type-create[name="${name}"]`);
+    const control = await $(`>>>ak-wizard-page-type-create[name="${name}"]`);
     await control.scrollIntoView();
 
     const comparator = makeComparator(value);
     const card = await (async () => {
-        for await (const card of $("ak-wizard-page-type-create").$$(
-            '[data-ouid-component-type="ak-type-create-grid-card"]',
+        for await (const card of $(">>>ak-wizard-page-type-create").$$(
+            '>>>[data-ouid-component-type="ak-type-create-grid-card"]',
         )) {
-            if (comparator(await card.$(".pf-c-card__title").getText())) {
+            if (comparator(await card.$(">>>.pf-c-card__title").getText())) {
                 return card;
             }
         }

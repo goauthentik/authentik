@@ -15,7 +15,6 @@ import {
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
-import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -29,33 +28,11 @@ import {
     FlowsInstancesListDesignationEnum,
     GroupMatchingModeEnum,
     PlexSource,
-    PlexSourcePropertyMapping,
-    PropertymappingsApi,
     SourcesApi,
     UserMatchingModeEnum,
 } from "@goauthentik/api";
 
-async function propertyMappingsProvider(page = 1, search = "") {
-    const propertyMappings = await new PropertymappingsApi(
-        DEFAULT_CONFIG,
-    ).propertymappingsSourcePlexList({
-        ordering: "managed",
-        pageSize: 20,
-        search: search.trim(),
-        page,
-    });
-    return {
-        pagination: propertyMappings.pagination,
-        options: propertyMappings.results.map((m) => [m.pk, m.name, m.name, m]),
-    };
-}
-
-function makePropertyMappingsSelector(instanceMappings?: string[]) {
-    const localMappings = instanceMappings ? new Set(instanceMappings) : undefined;
-    return localMappings
-        ? ([pk, _]: DualSelectPair) => localMappings.has(pk)
-        : ([_0, _1, _2, _]: DualSelectPair<PlexSourcePropertyMapping>) => false;
-}
+import { propertyMappingsProvider, propertyMappingsSelector } from "./PlexSourceFormHelpers.js";
 
 @customElement("ak-source-plex-form")
 export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSource>) {
@@ -420,7 +397,7 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
                     >
                         <ak-dual-select-dynamic-selected
                             .provider=${propertyMappingsProvider}
-                            .selector=${makePropertyMappingsSelector(
+                            .selector=${propertyMappingsSelector(
                                 this.instance?.userPropertyMappings,
                             )}
                             available-label="${msg("Available User Property Mappings")}"
@@ -436,7 +413,7 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
                     >
                         <ak-dual-select-dynamic-selected
                             .provider=${propertyMappingsProvider}
-                            .selector=${makePropertyMappingsSelector(
+                            .selector=${propertyMappingsSelector(
                                 this.instance?.groupPropertyMappings,
                             )}
                             available-label="${msg("Available Group Property Mappings")}"

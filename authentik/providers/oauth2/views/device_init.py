@@ -16,7 +16,6 @@ from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_SSO, FlowPlanner
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import SESSION_KEY_PLAN
-from authentik.lib.utils.urls import redirect_with_qs
 from authentik.policies.views import PolicyAccessView
 from authentik.providers.oauth2.models import DeviceToken
 from authentik.providers.oauth2.views.device_finish import (
@@ -73,12 +72,7 @@ class CodeValidatorView(PolicyAccessView):
             LOGGER.warning("Flow not applicable to user")
             return None
         plan.insert_stage(in_memory_stage(OAuthDeviceCodeFinishStage))
-        request.session[SESSION_KEY_PLAN] = plan
-        return redirect_with_qs(
-            "authentik_core:if-flow",
-            request.GET,
-            flow_slug=self.token.provider.authorization_flow.slug,
-        )
+        return plan.to_redirect(self.request, self.token.provider.authorization_flow)
 
 
 class DeviceEntryView(PolicyAccessView):
@@ -109,11 +103,7 @@ class DeviceEntryView(PolicyAccessView):
         plan.append_stage(in_memory_stage(OAuthDeviceCodeStage))
 
         self.request.session[SESSION_KEY_PLAN] = plan
-        return redirect_with_qs(
-            "authentik_core:if-flow",
-            self.request.GET,
-            flow_slug=device_flow.slug,
-        )
+        return plan.to_redirect(self.request, device_flow)
 
 
 class OAuthDeviceCodeChallenge(Challenge):
@@ -137,7 +127,7 @@ class OAuthDeviceCodeChallengeResponse(ChallengeResponse):
 
 
 class OAuthDeviceCodeStage(ChallengeStageView):
-    """Flow challenge for users to enter device codes"""
+    """Flow challenge for users to enter device code"""
 
     response_class = OAuthDeviceCodeChallengeResponse
 

@@ -1,8 +1,6 @@
 import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
-import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -14,33 +12,11 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import {
     CurrentBrand,
     FlowsInstancesListDesignationEnum,
-    PropertymappingsApi,
     RadiusProvider,
-    RadiusProviderPropertyMapping,
     ValidationError,
 } from "@goauthentik/api";
 
-export async function radiusPropertyMappingsProvider(page = 1, search = "") {
-    const propertyMappings = await new PropertymappingsApi(
-        DEFAULT_CONFIG,
-    ).propertymappingsProviderRadiusList({
-        ordering: "name",
-        pageSize: 20,
-        search: search.trim(),
-        page,
-    });
-    return {
-        pagination: propertyMappings.pagination,
-        options: propertyMappings.results.map((m) => [m.pk, m.name, m.name, m]),
-    };
-}
-
-export function makeRadiusPropertyMappingsSelector(instanceMappings?: string[]) {
-    const localMappings = instanceMappings ? new Set(instanceMappings) : undefined;
-    return localMappings
-        ? ([pk, _]: DualSelectPair) => localMappings.has(pk)
-        : ([_0, _1, _2, _]: DualSelectPair<RadiusProviderPropertyMapping>) => [];
-}
+import { propertyMappingsProvider, propertyMappingsSelector } from "./RadiusProviderFormHelpers.js";
 
 const mfaSupportHelp = msg(
     "When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.",
@@ -74,7 +50,7 @@ export function renderForm(
 
         <ak-form-element-horizontal
             label=${msg("Authentication flow")}
-            ?required=${true}
+            required
             name="authorizationFlow"
             .errorMessages=${errors?.authorizationFlow ?? []}
         >
@@ -121,8 +97,8 @@ export function renderForm(
                     name="propertyMappings"
                 >
                     <ak-dual-select-dynamic-selected
-                        .provider=${radiusPropertyMappingsProvider}
-                        .selector=${makeRadiusPropertyMappingsSelector(provider?.propertyMappings)}
+                        .provider=${propertyMappingsProvider}
+                        .selector=${propertyMappingsSelector(provider?.propertyMappings)}
                         available-label=${msg("Available Property Mappings")}
                         selected-label=${msg("Selected Property Mappings")}
                     ></ak-dual-select-dynamic-selected>

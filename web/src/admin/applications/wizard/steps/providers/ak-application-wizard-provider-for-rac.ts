@@ -2,9 +2,11 @@ import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
 import "@goauthentik/admin/common/ak-crypto-certificate-search.js";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import {
-    makeRACPropertyMappingsSelector,
-    racPropertyMappingsProvider,
-} from "@goauthentik/admin/providers/rac/RACPropertyMappings.js";
+    propertyMappingsProvider,
+    propertyMappingsSelector,
+} from "@goauthentik/admin/providers/rac/RACProviderFormHelpers.js";
+import "@goauthentik/components/ak-text-input";
+import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 
 import { msg } from "@lit/localize";
@@ -65,10 +67,8 @@ export class ApplicationWizardRACProviderForm extends ApplicationWizardProviderF
                             name="propertyMappings"
                         >
                             <ak-dual-select-dynamic-selected
-                                .provider=${racPropertyMappingsProvider}
-                                .selector=${makeRACPropertyMappingsSelector(
-                                    provider.propertyMappings,
-                                )}
+                                .provider=${propertyMappingsProvider}
+                                .selector=${propertyMappingsSelector(provider?.propertyMappings)}
                                 available-label="${msg("Available Property Mappings")}"
                                 selected-label="${msg("Selected Property Mappings")}"
                             ></ak-dual-select-dynamic-selected>
