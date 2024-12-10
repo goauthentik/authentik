@@ -76,7 +76,7 @@ class IdentificationChallenge(Challenge):
     allow_show_password = BooleanField(default=False)
     application_pre = CharField(required=False)
     flow_designation = ChoiceField(FlowDesignation.choices)
-    captcha_stage = CaptchaChallenge(required=False)
+    captcha_stage = CaptchaChallenge(required=False, allow_null=True)
 
     enroll_url = CharField(required=False)
     recovery_url = CharField(required=False)
