@@ -17,7 +17,7 @@ from authentik.flows.views.executor import SESSION_KEY_POST
 from authentik.lib.views import bad_request_message
 from authentik.policies.views import PolicyAccessView
 from authentik.providers.saml.exceptions import CannotHandleAssertion
-from authentik.providers.saml.models import SAMLProvider
+from authentik.providers.saml.models import SAMLBindings, SAMLProvider
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequestParser
 from authentik.providers.saml.views.flows import (
     REQUEST_KEY_RELAY_STATE,
@@ -73,7 +73,13 @@ class SAMLSSOView(PolicyAccessView):
         except FlowNonApplicableException:
             raise Http404 from None
         plan.append_stage(in_memory_stage(SAMLFlowFinalView))
-        return plan.to_redirect(request, self.provider.authorization_flow)
+        return plan.to_redirect(
+            request,
+            self.provider.authorization_flow,
+            allowed_silent_types=(
+                [SAMLFlowFinalView] if self.provider.sp_binding in [SAMLBindings.REDIRECT] else []
+            ),
+        )
 
     def post(self, request: HttpRequest, application_slug: str) -> HttpResponse:
         """GET and POST use the same handler, but we can't
