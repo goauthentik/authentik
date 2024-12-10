@@ -65,7 +65,7 @@ Note the `Client ID` and `Client Secret` values.
 - **Fallback Login**: _Select this option if you want EspoCRM's login as fallback._
 - **Allow OIDC login for admin users**: _Select this option if you want EspoCRM's admin users to be able to log in via OIDC._
 
-        _The following values are listed as slugs for clarity. An example for the first variable is included.
+    _The following values are listed as slugs for clarity. An example for the first variable is included._
 
     You can also view the full URLs on the provider's page in authentik's Admin interface.
 
