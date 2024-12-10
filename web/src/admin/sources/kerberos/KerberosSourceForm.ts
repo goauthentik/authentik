@@ -27,6 +27,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import {
     FlowsInstancesListDesignationEnum,
     GroupMatchingModeEnum,
+    KadminTypeEnum,
     KerberosSource,
     KerberosSourceRequest,
     SourcesApi,
@@ -215,6 +216,34 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
             <ak-form-group .expanded=${false}>
                 <span slot="header"> ${msg("Sync connection settings")} </span>
                 <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("KAdmin type")}
+                        ?required=${true}
+                        name="kadminType"
+                    >
+                        <ak-radio
+                            .options=${[
+                                {
+                                    label: "MIT",
+                                    value: KadminTypeEnum.Mit,
+                                    default: true,
+                                    description: html`${msg("MIT krb5 kadmin")}`,
+                                },
+                                {
+                                    label: "Heimdal",
+                                    value: KadminTypeEnum.Heimdal,
+                                    description: html`${msg("Heimdal kadmin")}`,
+                                },
+                                {
+                                    label: msg("Other"),
+                                    value: KadminTypeEnum.Other,
+                                    description: html`${msg("Other type of kadmin")}`,
+                                },
+                            ]}
+                            .value=${this.instance?.kadminType}
+                        >
+                        </ak-radio>
+                    </ak-form-element-horizontal>
                     <ak-text-input
                         name="syncPrincipal"
                         label=${msg("Sync principal")}
