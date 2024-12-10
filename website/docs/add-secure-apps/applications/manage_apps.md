@@ -26,7 +26,11 @@ To add an application to authentik and have it display on users' **My applicatio
 
 ## Authorization
 
-Application access can be configured using (Policy) bindings. Click on an application in the applications list, and select the _Policy / Group / User Bindings_ tab. There you can bind users/groups/policies to grant them access. When nothing is bound, everyone has access. You can use this to grant access to one or multiple users/groups, or dynamically give access using policies.
+Application access can be configured using either (Policy) bindings or Application Entitlements.
+
+### Policy-driven authorization
+
+To use a policy to control which users or groups can access an application, click on an application in the applications list, and select the **Policy/Group/User Bindings** tab. There you can bind users/groups/policies to grant them access. When nothing is bound, everyone has access. You can use this to grant access to one or multiple users/groups, or dynamically give access using policies.
 
 By default, all users can access applications when no policies are bound.
 
@@ -34,6 +38,18 @@ When multiple policies/groups/users are attached, you can configure the _Policy 
 
 - Require users to pass all bindings/be member of all groups (ALL), or
 - Require users to pass either binding/be member of either group (ANY)
+
+### Application Entitlements
+
+Another method to control which users or groups can access an application is to create an Application Entitlement (which defines the specific application(s)), and then bind that to specific groups or users.
+
+1. To create an Application Entitlement open the Admin interface and navigate to **Applications -> Applications**.
+2. Click the **Application entitlements** tab, and then click **Create entitlement**. Provide a name for the entitlement, enter any optional **Attributes** , and then click **Create**.
+3. Locate the entitlement to which you want to bind a user or group, and then **click the caret (>) to expand the entitlement details.**
+4. In the expanded area, click **Bind existing Group/User**
+In the **Create Binding** modal box, select either the tab for **Group** or **User**.
+8. In the drop-down list, select the group or user.
+9. Optionally, configure additional settings for the binding, and then click ** Create** to create the binding and close the modal box.
 
 ## Hide applications
 
