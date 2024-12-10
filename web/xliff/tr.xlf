@@ -4517,7 +4517,7 @@ Belirlenen seçeneklerden biri veya her ikisi de eşiğe eşit veya eşiğin üz
         
       </trans-unit>
       <trans-unit id="sff3b708e23bb96b2">
-        <source>Evaluate policies before the Stage is present to the user.</source>
+        <source>Evaluate policies before the Stage is presented to the user.</source>
         <target>Aşama kullanıcıya sunulmadan önce ilkeleri değerlendirin.</target>
         
       </trans-unit>
