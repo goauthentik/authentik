@@ -1,6 +1,7 @@
 import "@goauthentik/admin/applications/ApplicationAuthorizeChart";
 import "@goauthentik/admin/applications/ApplicationCheckAccessForm";
 import "@goauthentik/admin/applications/ApplicationForm";
+import "@goauthentik/admin/applications/entitlements/ApplicationEntitlementPage";
 import "@goauthentik/admin/policies/BoundPoliciesList";
 import "@goauthentik/admin/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
@@ -299,6 +300,21 @@ export class ApplicationViewPage extends AKElement {
                             </ak-object-changelog>
                         </div>
                     </div>
+                </div>
+            </section>
+            <section
+                slot="page-app-entitlements"
+                data-tab-title="${msg("Application entitlements")}"
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-c-card">
+                    <div class="pf-c-card__title">
+                        ${msg(
+                            "These entitlements can be used to configure user access in this application.",
+                        )}
+                    </div>
+                    <ak-application-entitlements-list .app=${this.application.pk}>
+                    </ak-application-entitlements-list>
                 </div>
             </section>
             <section
