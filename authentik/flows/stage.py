@@ -2,6 +2,7 @@
 
 from typing import TYPE_CHECKING
 
+from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.http import HttpRequest
 from django.http.request import QueryDict
@@ -224,6 +225,14 @@ class ChallengeStageView(StageView):
                 full_errors[field].append(field_error)
         challenge_response.initial_data["response_errors"] = full_errors
         if not challenge_response.is_valid():
+            if settings.TEST:
+                raise StageInvalidException(
+                    (
+                        f"Invalid challenge response: \n\t{challenge_response.errors}"
+                        f"\n\nValidated data:\n\t {challenge_response.data}"
+                        f"\n\nInitial data:\n\t {challenge_response.initial_data}"
+                    ),
+                )
             self.logger.error(
                 "f(ch): invalid challenge response",
                 errors=challenge_response.errors,

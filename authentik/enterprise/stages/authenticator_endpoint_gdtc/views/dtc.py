@@ -4,7 +4,9 @@ from typing import Any
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
+from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.clickjacking import xframe_options_sameorigin
 from googleapiclient.discovery import build
 
 from authentik.enterprise.stages.authenticator_endpoint_gdtc.models import (
@@ -26,6 +28,7 @@ HEADER_ACCESS_CHALLENGE_RESPONSE = "X-Verified-Access-Challenge-Response"
 DEVICE_TRUST_VERIFIED_ACCESS = "VerifiedAccess"
 
 
+@method_decorator(xframe_options_sameorigin, name="dispatch")
 class GoogleChromeDeviceTrustConnector(View):
     """Google Chrome Device-trust connector based endpoint authenticator"""
 

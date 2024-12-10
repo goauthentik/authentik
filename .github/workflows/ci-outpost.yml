@@ -49,12 +49,15 @@ jobs:
         run: |
           go test -timeout 0 -v -race -coverprofile=coverage.out -covermode=atomic -cover ./...
   ci-outpost-mark:
+    if: always()
     needs:
       - lint-golint
       - test-unittest
     runs-on: ubuntu-latest
     steps:
-      - run: echo mark
+      - uses: re-actors/alls-green@release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}
   build-container:
     timeout-minutes: 120
     needs:
