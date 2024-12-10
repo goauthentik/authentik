@@ -55,6 +55,7 @@ class StreamResponseSerializer(PassiveSerializer):
     iss = SerializerMethodField()
     aud = ListField(child=CharField())
     delivery = SerializerMethodField()
+    format = CharField()
 
     events_requested = ListField(child=CharField())
     events_supported = SerializerMethodField()
