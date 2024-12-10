@@ -126,24 +126,13 @@ export class RedirectStageForm extends BaseStageForm<RedirectStage> {
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">${msg("Redirect the user to a Flow.")}</p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
+                    <ak-switch-input
                         ?hidden=${this.mode !== RedirectStageModeEnum.Flow}
                         name="keepContext"
+                        label=${msg("Keep flow context")}
+                        ?checked="${this.instance?.keepContext ?? true}"
                     >
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${this.instance?.keepContext ?? true}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label">${msg("Keep flow context")}</span>
-                        </label>
-                    </ak-form-element-horizontal>
+                    </ak-switch-input>
                 </div>
             </ak-form-group>`;
     }
