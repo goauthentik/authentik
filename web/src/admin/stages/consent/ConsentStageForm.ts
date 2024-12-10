@@ -83,13 +83,13 @@ export class ConsentStageForm extends BaseStageForm<ConsentStage> {
                                 value=${ConsentStageModeEnum.Permanent}
                                 ?selected=${this.instance?.mode === ConsentStageModeEnum.Permanent}
                             >
-                                ${msg("Consent given last indefinitely")}
+                                ${msg("Consent given lasts indefinitely")}
                             </option>
                             <option
                                 value=${ConsentStageModeEnum.Expiring}
                                 ?selected=${this.instance?.mode === ConsentStageModeEnum.Expiring}
                             >
-                                ${msg("Consent expires.")}
+                                ${msg("Consent expire.")}
                             </option>
                         </select>
                     </ak-form-element-horizontal>
