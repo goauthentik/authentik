@@ -12,7 +12,7 @@ entryPoints:
   web:
     address: ":80"
 
-# Re-use the same config file to define everything
+# Reuse the same config file to define everything
 providers:
   file:
     filename: /etc/traefik/traefik.yml

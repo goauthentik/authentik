@@ -1,15 +1,18 @@
+from functools import cached_property
 from uuid import uuid4
 
+from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePrivateKey
+from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
+from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
-from django.http import HttpRequest
 from django.templatetags.static import static
-from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from jwt import encode
 
 from authentik.core.models import BackchannelProvider, Token, User
 from authentik.crypto.models import CertificateKeyPair
-from authentik.providers.oauth2.models import OAuth2Provider
+from authentik.providers.oauth2.models import JWTAlgorithms, OAuth2Provider
 
 
 class EventTypes(models.TextChoices):
@@ -17,6 +20,7 @@ class EventTypes(models.TextChoices):
 
     CAEP_SESSION_REVOKED = "https://schemas.openid.net/secevent/caep/event-type/session-revoked"
     CAEP_CREDENTIAL_CHANGE = "https://schemas.openid.net/secevent/caep/event-type/credential-change"
+    SET_VERIFICATION = "https://schemas.openid.net/secevent/ssf/event-type/verification"
 
 
 class DeliveryMethods(models.TextChoices):
@@ -42,6 +46,20 @@ class SSFProvider(BackchannelProvider):
     oidc_auth_providers = models.ManyToManyField(OAuth2Provider, blank=True, default=None)
 
     token = models.ForeignKey(Token, on_delete=models.CASCADE, null=True, default=None)
+
+    @cached_property
+    def jwt_key(self) -> tuple[str | PrivateKeyTypes, str]:
+        """Get either the configured certificate or the client secret"""
+        if not self.signing_key:
+            # No Certificate at all, assume HS256
+            return self.client_secret, JWTAlgorithms.HS256
+        key: CertificateKeyPair = self.signing_key
+        private_key = key.private_key
+        if isinstance(private_key, RSAPrivateKey):
+            return private_key, JWTAlgorithms.RS256
+        if isinstance(private_key, EllipticCurvePrivateKey):
+            return private_key, JWTAlgorithms.ES256
+        raise ValueError(f"Invalid private key type: {type(private_key)}")
 
     @property
     def service_account_identifier(self) -> str:
@@ -83,6 +101,13 @@ class Stream(models.Model):
 
     def __str__(self) -> str:
         return "SSF Stream"
+
+    def encode(self, data: dict) -> str:
+        headers = {}
+        if self.provider.signing_key:
+            headers["kid"] = self.provider.signing_key.kid
+        key, alg = self.provider.jwt_key
+        return encode(data, key, algorithm=alg, headers=headers)
 
 
 class UserStreamSubject(models.Model):

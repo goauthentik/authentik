@@ -4,7 +4,6 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 from structlog.stdlib import get_logger
-from rest_framework.mixins import CreateModelMixin, DestroyModelMixin
 
 from authentik.core.api.utils import PassiveSerializer
 from authentik.enterprise.providers.ssf.models import DeliveryMethods, EventTypes, Stream
@@ -89,11 +88,8 @@ class StreamView(SSFView):
     def post(self, request: Request, *args, **kwargs) -> Response:
         stream = StreamSerializer(data=request.data)
         stream.is_valid(raise_exception=True)
-        instance =stream.save(provider=self.provider)
-        response = StreamResponseSerializer(instance=instance, context={
-            "request": request
-        }).data
-        print(response)
+        instance = stream.save(provider=self.provider)
+        response = StreamResponseSerializer(instance=instance, context={"request": request}).data
         return Response(response, status=201)
 
     def delete(self, request: Request, *args, **kwargs) -> Response:
