@@ -18,7 +18,6 @@ class StreamDeliverySerializer(PassiveSerializer):
 
 
 class StreamSerializer(ModelSerializer):
-
     delivery = StreamDeliverySerializer()
     events_requested = ListField(
         child=ChoiceField(choices=[(x.value, x.value) for x in EventTypes])
@@ -49,7 +48,6 @@ class StreamSerializer(ModelSerializer):
 
 
 class StreamResponseSerializer(PassiveSerializer):
-
     stream_id = CharField(source="pk")
     iss = SerializerMethodField()
     aud = ListField(child=CharField())
@@ -88,7 +86,15 @@ class StreamView(SSFView):
     def post(self, request: Request, *args, **kwargs) -> Response:
         stream = StreamSerializer(data=request.data)
         stream.is_valid(raise_exception=True)
-        instance = stream.save(provider=self.provider)
+        instance: Stream = stream.save(provider=self.provider)
+        instance.new_event(
+            EventTypes.SET_VERIFICATION,
+            request,
+            {
+                "state": None,
+            },
+            sub_id={"format": "opaque", "id": str(instance.uuid)},
+        ).queue()
         response = StreamResponseSerializer(instance=instance, context={"request": request}).data
         return Response(response, status=201)
 
