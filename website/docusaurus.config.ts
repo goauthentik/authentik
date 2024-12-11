@@ -148,6 +148,9 @@ module.exports = async function (): Promise<Config> {
         markdown: {
             mermaid: true,
         },
+        future: {
+            experimental_faster: true,
+        },
         themes: ["@docusaurus/theme-mermaid", "docusaurus-theme-openapi-docs"],
     };
 };
