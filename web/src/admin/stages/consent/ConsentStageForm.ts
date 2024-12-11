@@ -89,7 +89,7 @@ export class ConsentStageForm extends BaseStageForm<ConsentStage> {
                                 value=${ConsentStageModeEnum.Expiring}
                                 ?selected=${this.instance?.mode === ConsentStageModeEnum.Expiring}
                             >
-                                ${msg("Consent expire.")}
+                                ${msg("Consent expires")}
                             </option>
                         </select>
                     </ak-form-element-horizontal>
