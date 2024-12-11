@@ -116,3 +116,7 @@ class UserStreamSubject(models.Model):
 
     def __str__(self) -> str:
         return f"Stream subject {self.stream_id} to {self.user_id}"
+
+class StreamEvent(models.Model):
+
+    uuid = models.UUIDField(default=uuid4, primary_key=True, editable=False)

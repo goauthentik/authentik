@@ -15,12 +15,11 @@ from authentik.core.models import (
     UserTypes,
 )
 from authentik.enterprise.providers.ssf.models import (
-    DeliveryMethods,
     EventTypes,
     SSFProvider,
     Stream,
 )
-from authentik.enterprise.providers.ssf.tasks import send_ssf_event, ssf_push_request
+from authentik.enterprise.providers.ssf.tasks import send_single_ssf_event, send_ssf_event
 from authentik.events.middleware import audit_ignore
 from authentik.events.utils import get_user
 
@@ -56,19 +55,16 @@ def ssf_providers_post_save(sender: type[Model], instance: SSFProvider, created:
 
 @receiver(post_save, sender=Stream)
 def ssf_stream_post_create(sender: type[Model], instance: Stream, created: bool, **_):
-    """Send a verification event when a push stream is created"""
+    """Send a verification event when a stream is created"""
     if not created:
         return
-    if instance.delivery_method != DeliveryMethods.RISC_PUSH:
-        return
-    ssf_push_request.delay(
+    send_single_ssf_event.delay(
         str(instance.uuid),
-        instance.endpoint_url,
         {
             "jti": uuid4().hex,
             # TODO: Figure out how to get iss
             "iss": "https://ak.beryju.dev/.well-known/ssf-configuration/abm-ssf/8",
-            "aud": instance.aud[0],
+            "aud": instance.aud,
             "iat": int(datetime.now().timestamp()),
             "sub_id": {"format": "opaque", "id": str(instance.uuid)},
             "events": {
