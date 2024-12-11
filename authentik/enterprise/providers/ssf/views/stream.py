@@ -7,6 +7,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.api.utils import PassiveSerializer
 from authentik.enterprise.providers.ssf.models import DeliveryMethods, EventTypes, Stream
+from authentik.enterprise.providers.ssf.tasks import send_ssf_event
 from authentik.enterprise.providers.ssf.views.base import SSFView
 
 LOGGER = get_logger()
@@ -18,7 +19,6 @@ class StreamDeliverySerializer(PassiveSerializer):
 
 
 class StreamSerializer(ModelSerializer):
-
     delivery = StreamDeliverySerializer()
     events_requested = ListField(
         child=ChoiceField(choices=[(x.value, x.value) for x in EventTypes])
@@ -49,7 +49,6 @@ class StreamSerializer(ModelSerializer):
 
 
 class StreamResponseSerializer(PassiveSerializer):
-
     stream_id = CharField(source="pk")
     iss = SerializerMethodField()
     aud = ListField(child=CharField())
@@ -88,7 +87,15 @@ class StreamView(SSFView):
     def post(self, request: Request, *args, **kwargs) -> Response:
         stream = StreamSerializer(data=request.data)
         stream.is_valid(raise_exception=True)
-        instance = stream.save(provider=self.provider)
+        instance: Stream = stream.save(provider=self.provider)
+        send_ssf_event(
+            EventTypes.SET_VERIFICATION,
+            request,
+            {
+                "state": None,
+            },
+            sub_id={"format": "opaque", "id": str(instance.uuid)},
+        )
         response = StreamResponseSerializer(instance=instance, context={"request": request}).data
         return Response(response, status=201)
 

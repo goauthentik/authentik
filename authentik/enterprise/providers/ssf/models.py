@@ -1,3 +1,4 @@
+from datetime import datetime
 from functools import cached_property
 from uuid import uuid4
 
@@ -6,7 +7,9 @@ from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from django.http import HttpRequest
 from django.templatetags.static import static
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from jwt import encode
 
@@ -28,6 +31,13 @@ class DeliveryMethods(models.TextChoices):
 
     RISC_PUSH = "https://schemas.openid.net/secevent/risc/delivery-method/push"
     RISC_POLL = "https://schemas.openid.net/secevent/risc/delivery-method/poll"
+
+
+class SSFEventStatus(models.TextChoices):
+    """SSF Event status"""
+
+    PENDING = "pending"
+    SENT = "sent"
 
 
 class SSFProvider(BackchannelProvider):
@@ -102,6 +112,32 @@ class Stream(models.Model):
     def __str__(self) -> str:
         return "SSF Stream"
 
+    def prepare_event_payload(
+        self, type: EventTypes, request: HttpRequest, event_data: dict, **kwargs
+    ) -> dict:
+        jti = uuid4()
+        return {
+            "uuid": jti,
+            "stream": self,
+            "type": type,
+            "payload": {
+                "jti": jti.hex,
+                "aud": self.aud,
+                "iat": int(datetime.now().timestamp()),
+                "iss": request.build_absolute_uri(
+                    reverse(
+                        "authentik_providers_ssf:configuration",
+                        kwargs={
+                            "application_slug": self.provider.application.slug,
+                            "provider": self.provider.pk,
+                        },
+                    )
+                ),
+                "events": {type: event_data},
+                **kwargs,
+            },
+        }
+
     def encode(self, data: dict) -> str:
         headers = {}
         if self.provider.signing_key:
@@ -117,6 +153,23 @@ class UserStreamSubject(models.Model):
     def __str__(self) -> str:
         return f"Stream subject {self.stream_id} to {self.user_id}"
 
+
 class StreamEvent(models.Model):
+    """Single stream event to be sent"""
 
     uuid = models.UUIDField(default=uuid4, primary_key=True, editable=False)
+
+    stream = models.ForeignKey(Stream, on_delete=models.CASCADE)
+    status = models.TextField(choices=SSFEventStatus.choices)
+
+    type = models.TextField(choices=EventTypes.choices)
+    payload = models.JSONField(default=dict)
+
+    def __str__(self):
+        return f"Stream event {self.type}"
+
+    def queue(self):
+        """Queue event to be sent"""
+        from authentik.enterprise.providers.ssf.tasks import send_single_ssf_event
+
+        return send_single_ssf_event.delay(str(self.stream.uuid), str(self.uuid))

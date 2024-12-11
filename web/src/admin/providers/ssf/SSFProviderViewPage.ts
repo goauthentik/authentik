@@ -130,7 +130,9 @@ export class SSFProviderViewPage extends AKElement {
                                 <span class="pf-c-description-list__text">${msg("URL")}</span>
                             </dt>
                             <dd class="pf-c-description-list__description">
-                                <div class="pf-c-description-list__text">${this.provider.ssfUrl}</div>
+                                <div class="pf-c-description-list__text">
+                                    ${this.provider.ssfUrl}
+                                </div>
                             </dd>
                         </div>
                         <div class="pf-c-description-list__group">
