@@ -22,7 +22,7 @@ To create a new policy, follow these steps:
 After creating the policy, you can bind it to either a [flow](../../../add-secure-apps/flows-stages/flow/index.md) or to a [stage](../../../add-secure-apps/flows-stages/stages/index.md).
 
 :::info
-Bindings are instantiated objects themselves, and conceptually can be considered as the "connector" between the policy and the stage or flow. This is why you might read about "binding a binding", because technically, a binding is "spliced" into another binding, in order to intercept and enforce the criteria defined in the policy. You can edit bindings on a flow's **Stage Bindings** tab.
+Bindings are instantiated objects themselves, and conceptually can be considered as the "connector" between the policy and the stage or flow. This is why you might read about "binding a binding", because technically, a binding is "spliced" into another binding, in order to intercept and enforce the criteria defined in the policy. To learn more refer to our [Bindings documentation](../../../add-secure-apps/flows-stages/bindings/index.md).
 :::
 
 ### Bind a policy to a flow

@@ -28,5 +28,5 @@ Bindings are also used for [Application Entitlements](../../applications/manage_
 It's important to remember that bindings are instantiated objects themselves, and conceptually can be considered as the "connector" between two components. This is why you might read about "binding a binding", because technically, a binding is "spliced" into another binding, in order to intercept and enforce the criteria defined in the second binding.
 
 :::info
-Be aware that some stages and flows do not allow user or group bindings, because in any certain scenarios (authentication or enrollment), the Flow plan doesn't yet know who the user or group is.
+Be aware that some stages and flows do not allow user or group bindings, because in certain scenarios (authentication or enrollment), the flow plan doesn't yet know who the user or group is.
 :::
