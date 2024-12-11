@@ -14,9 +14,7 @@ class TestStream(APITestCase):
             signing_key=create_test_cert(),
         )
         self.application = Application.objects.create(
-            name=generate_id(),
-            slug=generate_id(),
-            provider=self.provider
+            name=generate_id(), slug=generate_id(), provider=self.provider
         )
 
     def test_stream_add(self):

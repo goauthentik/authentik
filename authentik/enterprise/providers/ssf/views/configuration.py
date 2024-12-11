@@ -47,10 +47,6 @@ class ConfigurationView(SSFView):
                     },
                 )
             ),
-            "add_subject_endpoint": "https://transmitter.most-secure.com/add-subject",
-            "remove_subject_endpoint": "https://transmitter.most-secure.com/remove-subject",
-            "verification_endpoint": "https://transmitter.most-secure.com/verification",
-            "status_endpoint": "https://transmitter.most-secure.com/status",
             "delivery_methods_supported": [
                 DeliveryMethods.RISC_PUSH,
             ],
