@@ -52486,6 +52486,7 @@ components:
       required:
       - component
       - meta_model_name
+      - mode
       - name
       - pk
       - verbose_name
@@ -52517,6 +52518,7 @@ components:
           format: uuid
           nullable: true
       required:
+      - mode
       - name
     RedirectURI:
       type: object

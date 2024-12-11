@@ -19,7 +19,7 @@ class RedirectStage(Stage):
     """Redirect the user to another flow, potentially with all gathered context"""
 
     keep_context = models.BooleanField(default=True)
-    mode = models.TextField(choices=RedirectMode.choices, default=RedirectMode.STATIC)
+    mode = models.TextField(choices=RedirectMode.choices)
     target_static = models.CharField(blank=True, default="")
     target_flow = models.ForeignKey(
         Flow,
