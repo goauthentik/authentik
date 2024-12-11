@@ -44,12 +44,12 @@ When multiple policies/groups/users are attached, you can configure the _Policy 
 Another method to control which users or groups can access an application is to create an Application Entitlement (which defines the specific application(s)), and then bind that to specific groups or users.
 
 1. To create an Application Entitlement open the Admin interface and navigate to **Applications -> Applications**.
-2. Click the **Application entitlements** tab, and then click **Create entitlement**. Provide a name for the entitlement, enter any optional **Attributes** , and then click **Create**.
-3. Locate the entitlement to which you want to bind a user or group, and then **click the caret (>) to expand the entitlement details.**
-4. In the expanded area, click **Bind existing Group/User**
-   In the **Create Binding** modal box, select either the tab for **Group** or **User**.
-5. In the drop-down list, select the group or user.
-6. Optionally, configure additional settings for the binding, and then click **Create** to create the binding and close the modal box.
+2. Click the name of the application to which you want to add an entitlement.
+3. Click the **Application entitlements** tab at the top of the page, and then click **Create entitlement**. Provide a name for the entitlement, enter any optional **Attributes**, and then click **Create**.
+4. Locate the entitlement to which you want to bind a user or group, and then **click the caret (>) to expand the entitlement details.**
+5. In the expanded area, click **Bind existing Group/User**.
+6. In the **Create Binding** modal box, select either the tab for **Group** or **User**, and then in the drop-down list, select the group or user.
+7. Optionally, configure additional settings for the binding, and then click **Create** to create the binding and close the modal box.
 
 ## Hide applications
 
