@@ -30,7 +30,7 @@ Application access can be configured using either (Policy) bindings or Applicati
 
 ### Policy-driven authorization
 
-To use a policy to control which users or groups can access an application, click on an application in the applications list, and select the **Policy/Group/User Bindings** tab. There you can bind users/groups/policies to grant them access. When nothing is bound, everyone has access. You can use this to grant access to one or multiple users/groups, or dynamically give access using policies.
+To use a policy to control which users or groups can access an application, click on an application in the applications list, and select the **Policy/Group/User Bindings** tab. There you can bind users/groups/policies to grant them access. When nothing is bound, everyone has access. Binding a policy restricts access to specific Users or Groups, or by other custom policies such as restriction to a set time-of-day or a geographic region.
 
 By default, all users can access applications when no policies are bound.
 
