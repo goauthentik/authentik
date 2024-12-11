@@ -102,8 +102,12 @@ class Stage(SerializerModel):
         user settings are available, or a challenge."""
         return None
 
+    @property
+    def is_in_memory(self):
+        return hasattr(self, "__in_memory_type")
+
     def __str__(self):
-        if hasattr(self, "__in_memory_type"):
+        if self.is_in_memory:
             return f"In-memory Stage {getattr(self, '__in_memory_type')}"
         return f"Stage {self.name}"
 
