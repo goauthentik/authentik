@@ -43,18 +43,13 @@ class RedirectStageView(ChallengeStageView):
         return self.executor.stage_ok()
 
     def parse_target(self, target: str) -> str | Flow:
-        print("hello i am parsing")
         parsed_target = urlsplit(target)
 
         if parsed_target.scheme != URL_SCHEME_FLOW:
             return target
 
-        print("trying to find flow with path")
-        print(parsed_target.netloc)
-        print(parsed_target)
         flow = Flow.objects.filter(slug=parsed_target.netloc).first()
         if not flow:
-            print("found no flow")
             self.logger.warning(
                 f"Flow set by {PLAN_CONTEXT_REDIRECT_STAGE_TARGET} does not exist",
                 flow_slug=parsed_target.path,
