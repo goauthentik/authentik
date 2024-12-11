@@ -64,6 +64,11 @@
         "typescript": "~5.7.3",
         "wireit": "^0.14.11"
     },
+    "optionalDependencies": {
+        "@rspack/binding-darwin-arm64": "1.1.6",
+        "@rspack/binding-linux-arm64-gnu": "1.1.6",
+        "@rspack/binding-linux-x64-gnu": "1.1.6"
+    },
     "wireit": {
         "lint:lockfile": {
             "__comment": "The lockfile-lint package does not have an option to ensure resolved hashes are set everywhere",
