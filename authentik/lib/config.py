@@ -371,8 +371,8 @@ def django_db_config(config: ConfigLoader | None = None) -> dict:
 
     for replica in config.get_keys("postgresql.read_replicas"):
         _database = deepcopy(db["default"])
-        for setting in db["default"].keys():
-            if setting in ("TEST", "OPTIONS"):
+        for setting, current_value in db["default"].items():
+            if isinstance(current_value, dict):
                 continue
             override = config.get(
                 f"postgresql.read_replicas.{replica}.{setting.lower()}", default=UNSET
