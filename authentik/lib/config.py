@@ -5,6 +5,7 @@ import json
 import os
 from collections.abc import Mapping
 from contextlib import contextmanager
+from copy import deepcopy
 from dataclasses import dataclass, field
 from enum import Enum
 from glob import glob
@@ -369,15 +370,21 @@ def django_db_config(config: ConfigLoader | None = None) -> dict:
         db["default"]["CONN_MAX_AGE"] = None  # persistent
 
     for replica in config.get_keys("postgresql.read_replicas"):
-        _database = db["default"].copy()
+        _database = deepcopy(db["default"])
         for setting in db["default"].keys():
-            if setting in ("TEST",):
+            if setting in ("TEST", "OPTIONS"):
                 continue
             override = config.get(
                 f"postgresql.read_replicas.{replica}.{setting.lower()}", default=UNSET
             )
             if override is not UNSET:
                 _database[setting] = override
+        for setting in db["default"]["OPTIONS"].keys():
+            override = config.get(
+                f"postgresql.read_replicas.{replica}.{setting.lower()}", default=UNSET
+            )
+            if override is not UNSET:
+                _database["OPTIONS"][setting] = override
         db[f"replica_{replica}"] = _database
     return db
 

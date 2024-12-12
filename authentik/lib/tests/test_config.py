@@ -368,7 +368,7 @@ class TestConfig(TestCase):
                     "HOST": "bar",
                     "NAME": "foo",
                     "OPTIONS": {
-                        "sslcert": "foo",
+                        "sslcert": "bar",
                         "sslkey": "foo",
                         "sslmode": "foo",
                         "sslrootcert": "foo",
