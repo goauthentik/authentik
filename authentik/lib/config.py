@@ -336,6 +336,52 @@ def redis_url(db: int) -> str:
     return _redis_url
 
 
+def django_db_config(config: ConfigLoader | None = None) -> dict:
+    if not config:
+        config = CONFIG
+    db = {
+        "default": {
+            "ENGINE": "authentik.root.db",
+            "HOST": config.get("postgresql.host"),
+            "NAME": config.get("postgresql.name"),
+            "USER": config.get("postgresql.user"),
+            "PASSWORD": config.get("postgresql.password"),
+            "PORT": config.get("postgresql.port"),
+            "OPTIONS": {
+                "sslmode": config.get("postgresql.sslmode"),
+                "sslrootcert": config.get("postgresql.sslrootcert"),
+                "sslcert": config.get("postgresql.sslcert"),
+                "sslkey": config.get("postgresql.sslkey"),
+            },
+            "TEST": {
+                "NAME": config.get("postgresql.test.name"),
+            },
+        }
+    }
+
+    if config.get_bool("postgresql.use_pgpool", False):
+        db["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
+
+    if config.get_bool("postgresql.use_pgbouncer", False):
+        # https://docs.djangoproject.com/en/4.0/ref/databases/#transaction-pooling-server-side-cursors
+        db["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
+        # https://docs.djangoproject.com/en/4.0/ref/databases/#persistent-connections
+        db["default"]["CONN_MAX_AGE"] = None  # persistent
+
+    for replica in config.get_keys("postgresql.read_replicas"):
+        _database = db["default"].copy()
+        for setting in db["default"].keys():
+            if setting in ("TEST",):
+                continue
+            override = config.get(
+                f"postgresql.read_replicas.{replica}.{setting.lower()}", default=UNSET
+            )
+            if override is not UNSET:
+                _database[setting] = override
+        db[f"replica_{replica}"] = _database
+    return db
+
+
 if __name__ == "__main__":
     if len(argv) < 2:  # noqa: PLR2004
         print(dumps(CONFIG.raw, indent=4, cls=AttrEncoder))
