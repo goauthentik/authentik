@@ -19,6 +19,7 @@ module.exports = {
                     items: [
                         "services/bookstack/index",
                         "services/dokuwiki/index",
+                        "services/espoCRM/index",
                         "services/hedgedoc/index",
                         "services/kimai/index",
                         "services/mastodon/index",

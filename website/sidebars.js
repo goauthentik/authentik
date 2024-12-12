@@ -193,8 +193,10 @@ export default {
                                 id: "add-secure-apps/providers/oauth2/index",
                             },
                             items: [
+                                "add-secure-apps/providers/oauth2/create-oauth2-provider",
                                 "add-secure-apps/providers/oauth2/client_credentials",
                                 "add-secure-apps/providers/oauth2/device_code",
+                                "add-secure-apps/providers/oauth2/github-compatibility",
                             ],
                         },
                         "add-secure-apps/providers/saml/index",
@@ -649,7 +651,10 @@ export default {
                 {
                     type: "category",
                     label: "Audits and Certificates",
-                    items: ["security/audits-and-certs/2023-06-cure53"],
+                    items: [
+                        "security/audits-and-certs/2023-06-cure53",
+                        "security/audits-and-certs/2024-11-cobalt",
+                    ],
                 },
                 {
                     type: "category",
