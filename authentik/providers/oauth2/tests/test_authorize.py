@@ -311,7 +311,7 @@ class TestAuthorize(OAuthTestCase):
         user = create_test_admin_user()
         self.client.force_login(user)
         # Step 1, initiate params and get redirect to flow
-        self.client.get(
+        response = self.client.get(
             reverse("authentik_providers_oauth2:authorize"),
             data={
                 "response_type": "code",
@@ -320,16 +320,10 @@ class TestAuthorize(OAuthTestCase):
                 "redirect_uri": "foo://localhost",
             },
         )
-        response = self.client.get(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
-        )
         code: AuthorizationCode = AuthorizationCode.objects.filter(user=user).first()
-        self.assertJSONEqual(
-            response.content.decode(),
-            {
-                "component": "xak-flow-redirect",
-                "to": f"foo://localhost?code={code.code}&state={state}",
-            },
+        self.assertEqual(
+            response.url,
+            f"foo://localhost?code={code.code}&state={state}",
         )
         self.assertAlmostEqual(
             code.expires.timestamp() - now().timestamp(),
@@ -377,7 +371,7 @@ class TestAuthorize(OAuthTestCase):
             ),
         ):
             # Step 1, initiate params and get redirect to flow
-            self.client.get(
+            response = self.client.get(
                 reverse("authentik_providers_oauth2:authorize"),
                 data={
                     "response_type": "id_token",
@@ -388,22 +382,16 @@ class TestAuthorize(OAuthTestCase):
                     "nonce": generate_id(),
                 },
             )
-            response = self.client.get(
-                reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
-            )
             token: AccessToken = AccessToken.objects.filter(user=user).first()
             expires = timedelta_from_string(provider.access_token_validity).total_seconds()
-            self.assertJSONEqual(
-                response.content.decode(),
-                {
-                    "component": "xak-flow-redirect",
-                    "to": (
-                        f"http://localhost#access_token={token.token}"
-                        f"&id_token={provider.encode(token.id_token.to_dict())}"
-                        f"&token_type={TOKEN_TYPE}"
-                        f"&expires_in={int(expires)}&state={state}"
-                    ),
-                },
+            self.assertEqual(
+                response.url,
+                (
+                    f"http://localhost#access_token={token.token}"
+                    f"&id_token={provider.encode(token.id_token.to_dict())}"
+                    f"&token_type={TOKEN_TYPE}"
+                    f"&expires_in={int(expires)}&state={state}"
+                ),
             )
             jwt = self.validate_jwt(token, provider)
             self.assertEqual(jwt["amr"], ["pwd"])
@@ -455,7 +443,7 @@ class TestAuthorize(OAuthTestCase):
             ),
         ):
             # Step 1, initiate params and get redirect to flow
-            self.client.get(
+            response = self.client.get(
                 reverse("authentik_providers_oauth2:authorize"),
                 data={
                     "response_type": "id_token",
@@ -466,10 +454,7 @@ class TestAuthorize(OAuthTestCase):
                     "nonce": generate_id(),
                 },
             )
-            response = self.client.get(
-                reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
-            )
-            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.status_code, 302)
             token: AccessToken = AccessToken.objects.filter(user=user).first()
             expires = timedelta_from_string(provider.access_token_validity).total_seconds()
             jwt = self.validate_jwe(token, provider)
@@ -506,7 +491,7 @@ class TestAuthorize(OAuthTestCase):
             ),
         ):
             # Step 1, initiate params and get redirect to flow
-            self.client.get(
+            response = self.client.get(
                 reverse("authentik_providers_oauth2:authorize"),
                 data={
                     "response_type": "code",
@@ -518,16 +503,10 @@ class TestAuthorize(OAuthTestCase):
                     "nonce": generate_id(),
                 },
             )
-            response = self.client.get(
-                reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
-            )
             code: AuthorizationCode = AuthorizationCode.objects.filter(user=user).first()
-            self.assertJSONEqual(
-                response.content.decode(),
-                {
-                    "component": "xak-flow-redirect",
-                    "to": (f"http://localhost#code={code.code}" f"&state={state}"),
-                },
+            self.assertEqual(
+                response.url,
+                f"http://localhost#code={code.code}&state={state}",
             )
             self.assertAlmostEqual(
                 code.expires.timestamp() - now().timestamp(),

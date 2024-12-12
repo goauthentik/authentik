@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://goauthentik.io/blueprints/schema.json",
     "type": "object",
-    "title": "authentik 2024.10.4 Blueprint schema",
+    "title": "authentik 2024.10.5 Blueprint schema",
     "required": [
         "version",
         "entries"
@@ -6975,6 +6975,16 @@
                     "type": "string",
                     "title": "Krb5 conf",
                     "description": "Custom krb5.conf to use. Uses the system one by default"
+                },
+                "kadmin_type": {
+                    "type": "string",
+                    "enum": [
+                        "MIT",
+                        "Heimdal",
+                        "other"
+                    ],
+                    "title": "Kadmin type",
+                    "description": "KAdmin server type"
                 },
                 "sync_users": {
                     "type": "boolean",
