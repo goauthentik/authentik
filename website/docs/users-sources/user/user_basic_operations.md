@@ -132,4 +132,6 @@ With authentik, an Admin can impersonate a user, meaning that the Admin temporar
 
 :::info
 An Admin can globally enable or disable impersonation in the [System Settings](../../sys-mgmt/settings.md#impersonation). By default, this option is set to true, meaning all users can be personified.
+
+An Admin can also configure whether inputting a reason for impersonation is required in the [System Settings](../../sys-mgmt/settings.md#require-reason-for-impersonation).
 :::
