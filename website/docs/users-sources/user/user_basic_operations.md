@@ -128,7 +128,7 @@ With authentik, an Admin can impersonate a user, meaning that the Admin temporar
 1. In the Admin interface, navigate to **Directory > Users** to display all users.
 2. Click the name of the user to display the full User details page.
 3. On the Overview tab, beneath **User Details**, in the **Actions** area, click **Impersonate**.
-4. At the prompt, provide a reason why you are impersonating this user, and then click **Submit**.
+4. At the prompt, provide a reason why you are impersonating this user, and then click **Impersonate**.
 
 :::info
 An Admin can globally enable or disable impersonation in the [System Settings](../../sys-mgmt/settings.md#impersonation). By default, this option is set to true, meaning all users can be impersonated.
