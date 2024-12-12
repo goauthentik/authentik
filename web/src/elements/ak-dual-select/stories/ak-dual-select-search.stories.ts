@@ -3,6 +3,7 @@ import { debounce } from "@goauthentik/elements/utils/debounce";
 import { Meta, StoryObj } from "@storybook/web-components";
 
 import { TemplateResult, html } from "lit";
+import DOMPurify from "dompurify";
 
 import "../components/ak-search-bar";
 import { AkSearchbar } from "../components/ak-search-bar";
@@ -40,7 +41,8 @@ const container = (testItem: TemplateResult) =>
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const displayMessage = (result: any) => {
-    const doc = new DOMParser().parseFromString(`<p><i>Content</i>: ${result}</p>`, "text/xml");
+    const sanitizedResult = DOMPurify.sanitize(result);
+    const doc = new DOMParser().parseFromString(`<p><i>Content</i>: ${sanitizedResult}</p>`, "text/xml");
     const target = document.querySelector("#action-button-message-pad");
     target!.replaceChildren(doc.firstChild!);
 };
@@ -48,7 +50,8 @@ const displayMessage = (result: any) => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const displayMessage2 = (result: any) => {
     console.debug("Huh.");
-    const doc = new DOMParser().parseFromString(`<p><i>Behavior</i>: ${result}</p>`, "text/xml");
+    const sanitizedResult = DOMPurify.sanitize(result);
+    const doc = new DOMParser().parseFromString(`<p><i>Behavior</i>: ${sanitizedResult}</p>`, "text/xml");
     const target = document.querySelector("#action-button-message-pad-2");
     target!.replaceChildren(doc.firstChild!);
 };
