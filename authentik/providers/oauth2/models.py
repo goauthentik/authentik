@@ -396,7 +396,7 @@ class BaseGrantModel(models.Model):
     _scope = models.TextField(default="", verbose_name=_("Scopes"))
     auth_time = models.DateTimeField(verbose_name="Authentication time")
     session = models.ForeignKey(
-        AuthenticatedSession, null=True, on_delete=models.SET_DEFAULT, default=None
+        AuthenticatedSession, null=True, on_delete=models.CASCADE, default=None
     )
 
     class Meta:
@@ -497,6 +497,9 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
 
     token = models.TextField(default=generate_client_secret)
     _id_token = models.TextField(verbose_name=_("ID Token"))
+    session = models.ForeignKey(
+        AuthenticatedSession, null=True, on_delete=models.SET_DEFAULT, default=None
+    )
 
     class Meta:
         indexes = [
