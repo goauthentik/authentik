@@ -2,7 +2,7 @@
 title: Working with policies
 ---
 
-For an overview of policies, refer to our documentation on [Policies](../index.md).
+For an overview of policies refer to our documentation on [Policies](../index.md).
 
 authentik provides several [standard policy types](../index.md#standard-policies), which can be configured for your specific needs.
 
