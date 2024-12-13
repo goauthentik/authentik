@@ -20,9 +20,17 @@ To add an application to authentik and have it display on users' **My applicatio
 
 2. Click **Create with Wizard**. (Alternatively, use our legacy process and click **Create**. The legacy process requires that the application and its authentication provider be configured separately.)
 
-3. In the **New application** wizard, define the application details, the provider type and configuration, and then click **Submit**.
+3. In the **New application** wizard, define the application details, the provider type, bindings for the application.
 
-4. To manage the display of the new application on the **My applications** page, you can optionally define the bindings for a specific policy, group, or user. Note that if you do not define bindings, then all users have access to the application, For more information, refer to [authorization](#authorization).
+- **Application**: provide a name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+
+- **Choose a Provider**: Select the provider types for this application.
+
+- **Configure a Provider**: Provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and any addiitonal required configurations.
+
+- **Configure Bindings**: To manage the display of the new application on the **My applications** page, you can optionally define [bindings](../flows-stages/bindings/index.md) for a specific policy, group, or user. To do so in the Wizard, click **Bind existing policy/group/user** to add a binding. You can select an existing policy binding, or create a new binding specifically for a group or user. For example, if you select **User** and then choose an existing user from the drop-down menu, you create a new binding between the user and this specific application. Note that if you do not define any bindings, then all users have access to the application. For more information, refer to [authorization](#authorization).
+
+4. On the **Review and Submit Application** panel, review the configuration for the new application and its provider, and then click **Submit**.
 
 ## Authorization
 
