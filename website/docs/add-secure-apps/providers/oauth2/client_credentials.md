@@ -30,7 +30,7 @@ In addition to that, with authentik 2024.4 it is also possible to pass the confi
 
 ### JWT-authentication
 
-#### Externally issued JWTs <span class="badge badge--version">authentik 2022.4+</span>
+#### Externally issued JWTs
 
 You can authenticate and get a token using an existing JWT. For readability we will refer to the JWT issued by the external issuer/platform as input JWT, and the resulting JWT from authentik as the output JWT.
 

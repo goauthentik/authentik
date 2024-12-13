@@ -23,11 +23,11 @@ Keep in mind that when using Code-based devices (TOTP, Static and SMS), values l
 
 ### Options
 
-#### Less-frequent validation <span class="badge badge--version">authentik 2022.5.1+</span>
+#### Less-frequent validation
 
 You can configure this stage to only ask for MFA validation if the user hasn't authenticated themselves within a defined time period. To configure this, set _Last validation threshold_ to any non-zero value. Any of the users devices within the selected classes are checked.
 
-#### Passwordless authentication <span class="badge badge--version">authentik 2021.12.4+</span>
+#### Passwordless authentication
 
 :::caution
 Firefox has some known issues regarding TouchID (see https://bugzilla.mozilla.org/show_bug.cgi?id=1536482)

@@ -14,7 +14,7 @@ This source allows users to enroll themselves with an external OAuth-based Ident
 
     Starting with authentik 2022.10, the default scopes can be replaced by prefix the value for scopes with `*`.
 
-### OpenID Connect <span class="badge badge--version">authentik 2022.6+</span>
+### OpenID Connect
 
 #### Well-known
 
