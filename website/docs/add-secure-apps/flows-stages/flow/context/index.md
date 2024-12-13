@@ -76,7 +76,7 @@ This key is set to `True` when the flow is executed from an "SSO" context. For e
 
 This key is set when a flow execution is continued from a token. This happens for example when an [Email stage](../../stages/email/index.mdx) is used and the user clicks on the link within the email. The token object contains the key that was used to restore the flow execution.
 
-#### `is_redirected` (Flow object)
+#### `is_redirected` (Flow object) <span class="badge badge--version">authentik 2024.12+</span>
 
 This key is set when the current flow was reached through a [Redirect stage](../../stages/redirect/index.md) in Flow mode.
 
@@ -198,7 +198,7 @@ If _Show matched user_ is disabled, this key will be set to the user identifier 
 
 #### Redirect stage
 
-##### `redirect_stage_target` (string)
+##### `redirect_stage_target` (string) <span class="badge badge--version">authentik 2024.12+</span>
 
 [Set this key](../../../../customize/policies/expression/managing_flow_context_keys.md) in an Expression Policy to override [Redirect stage](../../stages/redirect/index.md) to force it to redirect to a certain URL or flow. This is useful when a flow requires that the redirection target be decided dynamically.
 
