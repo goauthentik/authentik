@@ -5,6 +5,7 @@ import json
 import os
 from collections.abc import Mapping
 from contextlib import contextmanager
+from copy import deepcopy
 from dataclasses import dataclass, field
 from enum import Enum
 from glob import glob
@@ -334,6 +335,58 @@ def redis_url(db: int) -> str:
         f"/{db}{_redis_tls_requirements}"
     )
     return _redis_url
+
+
+def django_db_config(config: ConfigLoader | None = None) -> dict:
+    if not config:
+        config = CONFIG
+    db = {
+        "default": {
+            "ENGINE": "authentik.root.db",
+            "HOST": config.get("postgresql.host"),
+            "NAME": config.get("postgresql.name"),
+            "USER": config.get("postgresql.user"),
+            "PASSWORD": config.get("postgresql.password"),
+            "PORT": config.get("postgresql.port"),
+            "OPTIONS": {
+                "sslmode": config.get("postgresql.sslmode"),
+                "sslrootcert": config.get("postgresql.sslrootcert"),
+                "sslcert": config.get("postgresql.sslcert"),
+                "sslkey": config.get("postgresql.sslkey"),
+            },
+            "TEST": {
+                "NAME": config.get("postgresql.test.name"),
+            },
+        }
+    }
+
+    if config.get_bool("postgresql.use_pgpool", False):
+        db["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
+
+    if config.get_bool("postgresql.use_pgbouncer", False):
+        # https://docs.djangoproject.com/en/4.0/ref/databases/#transaction-pooling-server-side-cursors
+        db["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
+        # https://docs.djangoproject.com/en/4.0/ref/databases/#persistent-connections
+        db["default"]["CONN_MAX_AGE"] = None  # persistent
+
+    for replica in config.get_keys("postgresql.read_replicas"):
+        _database = deepcopy(db["default"])
+        for setting, current_value in db["default"].items():
+            if isinstance(current_value, dict):
+                continue
+            override = config.get(
+                f"postgresql.read_replicas.{replica}.{setting.lower()}", default=UNSET
+            )
+            if override is not UNSET:
+                _database[setting] = override
+        for setting in db["default"]["OPTIONS"].keys():
+            override = config.get(
+                f"postgresql.read_replicas.{replica}.{setting.lower()}", default=UNSET
+            )
+            if override is not UNSET:
+                _database["OPTIONS"][setting] = override
+        db[f"replica_{replica}"] = _database
+    return db
 
 
 if __name__ == "__main__":

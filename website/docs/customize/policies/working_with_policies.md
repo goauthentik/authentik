@@ -2,11 +2,13 @@
 title: Working with policies
 ---
 
-For an overview of policies refer to our documentation on [Policies](../index.md).
+For an overview of policies, refer to our documentation on [Policies](./index.md).
 
-authentik provides several [standard policy types](../index.md#standard-policies), which can be configured for your specific needs.
+authentik provides several [standard policy types](./index.md#standard-policies), which can be configured for your specific needs.
 
-We also document how to use a policy to [whitelist email domains](./whitelist_email.md) and to [ensure unique email addresses](./unique_email.md).
+We also document how to use a policy to [whitelist email domains](./expression/whitelist_email.md) and to [ensure unique email addresses](./expression/unique_email.md).
+
+To learn more see also [Bindings](../../add-secure-apps/flows-stages/bindings/index.md) and how to use the [authentik Wizard to bind policy bindings to the new application](../../add-secure-apps/applications/manage_apps.md#add-new-applications) (for example, to configure application-specific access).
 
 ## Create a policy
 
@@ -19,10 +21,10 @@ To create a new policy, follow these steps:
 
 ## Bind a policy to a flow or stage
 
-After creating the policy, you can bind it to either a [flow](../../../add-secure-apps/flows-stages/flow/index.md) or to a [stage](../../../add-secure-apps/flows-stages/stages/index.md).
+After creating the policy, you can bind it to either a [flow](../../add-secure-apps/flows-stages/flow/index.md) or to a [stage](../../add-secure-apps/flows-stages/stages/index.md).
 
 :::info
-Bindings are instantiated objects themselves, and conceptually can be considered as the "connector" between the policy and the stage or flow. This is why you might read about "binding a binding", because technically, a binding is "spliced" into another binding, in order to intercept and enforce the criteria defined in the policy. To learn more refer to our [Bindings documentation](../../../add-secure-apps/flows-stages/bindings/index.md).
+Bindings are instantiated objects themselves, and conceptually can be considered as the "connector" between the policy and the stage or flow. This is why you might read about "binding a binding", because technically, a binding is "spliced" into another binding, in order to intercept and enforce the criteria defined in the policy. To learn more refer to our [Bindings documentation](../../add-secure-apps/flows-stages/bindings/index.md).
 :::
 
 ### Bind a policy to a flow

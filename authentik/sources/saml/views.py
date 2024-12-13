@@ -31,8 +31,7 @@ from authentik.flows.planner import (
     FlowPlanner,
 )
 from authentik.flows.stage import ChallengeStageView
-from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
-from authentik.lib.utils.urls import redirect_with_qs
+from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET
 from authentik.lib.views import bad_request_message
 from authentik.providers.saml.utils.encoding import nice64
 from authentik.sources.saml.exceptions import MissingSAMLResponse, UnsupportedNameIDFormat
@@ -89,12 +88,7 @@ class InitiateView(View):
             raise Http404 from None
         for stage in stages_to_append:
             plan.append_stage(stage)
-        self.request.session[SESSION_KEY_PLAN] = plan
-        return redirect_with_qs(
-            "authentik_core:if-flow",
-            self.request.GET,
-            flow_slug=source.pre_authentication_flow.slug,
-        )
+        return plan.to_redirect(self.request, source.pre_authentication_flow)
 
     def get(self, request: HttpRequest, source_slug: str) -> HttpResponse:
         """Replies with an XHTML SSO Request."""

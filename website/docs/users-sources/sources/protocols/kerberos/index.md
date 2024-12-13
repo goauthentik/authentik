@@ -130,6 +130,18 @@ The following variable is available to Kerberos source property mappings:
 
 - `principal`: a Python string containing the Kerberos principal. For example `alice@REALM.COMPANY` or `HTTP/authentik.company@REALM.COMPANY`.
 
+When the property mapping is invoked from a SPNEGO context, the following variable is also available:
+
+- `spnego_info`: a Python dictionary with the following keys:
+    - `initiator_name`: the name of the initiator of the GSSAPI security context
+    - `target_name`: the name of the target of the GSSAPI security context
+    - `mech`: the GSSAPI mechanism used. Should always be Kerberos
+    - `actual_flags`: the flags set on the GSSAPI security context
+
+When the property mapping is invoked from a synchronization context, the following variable is also available:
+
+- `principal_obj`: a [`Principal`](https://kadmin-rs.readthedocs.io/latest/kadmin.html#kadmin.Principal) object retrieved from the KAdmin API
+
 ## Troubleshooting
 
 You can start authentik with the `KRB5_TRACE=/dev/stderr` environment variable for Kerberos to print errors in the logs.

@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://goauthentik.io/blueprints/schema.json",
     "type": "object",
-    "title": "authentik 2024.10.4 Blueprint schema",
+    "title": "authentik 2024.10.5 Blueprint schema",
     "required": [
         "version",
         "entries"
@@ -2809,6 +2809,46 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_stages_redirect.redirectstage"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_stages_redirect.redirectstage_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_stages_redirect.redirectstage"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_stages_redirect.redirectstage"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_stages_user_delete.userdeletestage"
                             },
                             "id": {
@@ -4023,6 +4063,7 @@
                         "require_authenticated",
                         "require_unauthenticated",
                         "require_superuser",
+                        "require_redirect",
                         "require_outpost"
                     ],
                     "title": "Authentication",
@@ -4493,6 +4534,7 @@
                         "authentik.stages.invitation",
                         "authentik.stages.password",
                         "authentik.stages.prompt",
+                        "authentik.stages.redirect",
                         "authentik.stages.user_delete",
                         "authentik.stages.user_login",
                         "authentik.stages.user_logout",
@@ -4588,6 +4630,7 @@
                         "authentik_stages_password.passwordstage",
                         "authentik_stages_prompt.prompt",
                         "authentik_stages_prompt.promptstage",
+                        "authentik_stages_redirect.redirectstage",
                         "authentik_stages_user_delete.userdeletestage",
                         "authentik_stages_user_login.userloginstage",
                         "authentik_stages_user_logout.userlogoutstage",
@@ -6813,6 +6856,10 @@
                             "authentik_stages_prompt.delete_promptstage",
                             "authentik_stages_prompt.view_prompt",
                             "authentik_stages_prompt.view_promptstage",
+                            "authentik_stages_redirect.add_redirectstage",
+                            "authentik_stages_redirect.change_redirectstage",
+                            "authentik_stages_redirect.delete_redirectstage",
+                            "authentik_stages_redirect.view_redirectstage",
                             "authentik_stages_source.add_sourcestage",
                             "authentik_stages_source.change_sourcestage",
                             "authentik_stages_source.delete_sourcestage",
@@ -6975,6 +7022,16 @@
                     "type": "string",
                     "title": "Krb5 conf",
                     "description": "Custom krb5.conf to use. Uses the system one by default"
+                },
+                "kadmin_type": {
+                    "type": "string",
+                    "enum": [
+                        "MIT",
+                        "Heimdal",
+                        "other"
+                    ],
+                    "title": "Kadmin type",
+                    "description": "KAdmin server type"
                 },
                 "sync_users": {
                     "type": "boolean",
@@ -11475,6 +11532,146 @@
                 }
             }
         },
+        "model_authentik_stages_redirect.redirectstage": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "flow_set": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "minLength": 1,
+                                "title": "Name"
+                            },
+                            "slug": {
+                                "type": "string",
+                                "maxLength": 50,
+                                "minLength": 1,
+                                "pattern": "^[-a-zA-Z0-9_]+$",
+                                "title": "Slug",
+                                "description": "Visible in the URL."
+                            },
+                            "title": {
+                                "type": "string",
+                                "minLength": 1,
+                                "title": "Title",
+                                "description": "Shown as the Title in Flow pages."
+                            },
+                            "designation": {
+                                "type": "string",
+                                "enum": [
+                                    "authentication",
+                                    "authorization",
+                                    "invalidation",
+                                    "enrollment",
+                                    "unenrollment",
+                                    "recovery",
+                                    "stage_configuration"
+                                ],
+                                "title": "Designation",
+                                "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
+                            },
+                            "policy_engine_mode": {
+                                "type": "string",
+                                "enum": [
+                                    "all",
+                                    "any"
+                                ],
+                                "title": "Policy engine mode"
+                            },
+                            "compatibility_mode": {
+                                "type": "boolean",
+                                "title": "Compatibility mode",
+                                "description": "Enable compatibility mode, increases compatibility with password managers on mobile devices."
+                            },
+                            "layout": {
+                                "type": "string",
+                                "enum": [
+                                    "stacked",
+                                    "content_left",
+                                    "content_right",
+                                    "sidebar_left",
+                                    "sidebar_right"
+                                ],
+                                "title": "Layout"
+                            },
+                            "denied_action": {
+                                "type": "string",
+                                "enum": [
+                                    "message_continue",
+                                    "message",
+                                    "continue"
+                                ],
+                                "title": "Denied action",
+                                "description": "Configure what should happen when a flow denies access to a user."
+                            }
+                        },
+                        "required": [
+                            "name",
+                            "slug",
+                            "title",
+                            "designation"
+                        ]
+                    },
+                    "title": "Flow set"
+                },
+                "keep_context": {
+                    "type": "boolean",
+                    "title": "Keep context"
+                },
+                "mode": {
+                    "type": "string",
+                    "enum": [
+                        "static",
+                        "flow"
+                    ],
+                    "title": "Mode"
+                },
+                "target_static": {
+                    "type": "string",
+                    "title": "Target static"
+                },
+                "target_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Target flow"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_stages_redirect.redirectstage_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_redirectstage",
+                            "change_redirectstage",
+                            "delete_redirectstage",
+                            "view_redirectstage"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model_authentik_stages_user_delete.userdeletestage": {
             "type": "object",
             "properties": {
@@ -12820,6 +13017,10 @@
                             "authentik_stages_prompt.delete_promptstage",
                             "authentik_stages_prompt.view_prompt",
                             "authentik_stages_prompt.view_promptstage",
+                            "authentik_stages_redirect.add_redirectstage",
+                            "authentik_stages_redirect.change_redirectstage",
+                            "authentik_stages_redirect.delete_redirectstage",
+                            "authentik_stages_redirect.view_redirectstage",
                             "authentik_stages_source.add_sourcestage",
                             "authentik_stages_source.change_sourcestage",
                             "authentik_stages_source.delete_sourcestage",
