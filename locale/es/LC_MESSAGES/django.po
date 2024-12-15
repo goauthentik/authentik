@@ -1232,8 +1232,8 @@ msgstr "Borrar las métricas de caché de la Política"
 #: authentik/policies/password/models.py
 msgid "Field key to check, field keys defined in Prompt stages are available."
 msgstr ""
-"Tecla de campo para comprobar, están disponibles las claves de campo "
-"definidas en las etapas de solicitud."
+"Clave de campo a verificar, las claves de campo definidas en las etapas de "
+"Solicitud están disponibles."
 
 #: authentik/policies/password/models.py
 msgid "How many times the password hash is allowed to be on haveibeenpwned"
