@@ -1474,7 +1474,7 @@ msgstr "código id_token token (flujo híbrido)"
 
 #: authentik/providers/oauth2/models.py
 msgid "HS256 (Symmetric Encryption)"
-msgstr "HS256 (cifrado simétrico)"
+msgstr "HS256 (Encriptación Simétrica)"
 
 #: authentik/providers/oauth2/models.py
 msgid "RS256 (Asymmetric Encryption)"
