@@ -1446,7 +1446,7 @@ msgstr "Comparación de URL estricta"
 
 #: authentik/providers/oauth2/models.py
 msgid "Regular Expression URL matching"
-msgstr "Comparación de URL mediante expresiones regulares"
+msgstr "Coincidencia de URL con Expresiones Regulares"
 
 #: authentik/providers/oauth2/models.py
 msgid "code (Authorization Code Flow)"
