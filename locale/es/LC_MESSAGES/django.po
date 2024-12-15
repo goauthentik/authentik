@@ -1578,7 +1578,7 @@ msgstr "Clave utilizada para firmar los tokens."
 
 #: authentik/providers/oauth2/models.py
 msgid "Encryption Key"
-msgstr "Clave de encriptación"
+msgstr "Clave de Encriptación"
 
 #: authentik/providers/oauth2/models.py
 msgid ""
