@@ -3352,8 +3352,8 @@ msgid ""
 "Password: Masked input, multiple inputs of this type on the same prompt need"
 " to be identical."
 msgstr ""
-"Contraseña: Entrada enmascarada, múltiples entradas de este tipo en el mismo"
-" campo deben ser idénticas."
+"Contraseña: Entrada enmascarada; múltiples entradas de este tipo en la misma"
+" solicitud deben ser idénticas."
 
 #: authentik/stages/prompt/models.py
 msgid "Fixed choice field rendered as a group of radio buttons."
