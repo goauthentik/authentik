@@ -1389,7 +1389,7 @@ msgstr "Buscar en el directorio LDAP completo"
 #: authentik/providers/oauth2/api/providers.py
 #, python-brace-format
 msgid "Invalid Regex Pattern: {url}"
-msgstr "Patrón regex inválido: {url}"
+msgstr "Patrón Regex Inválido: {url}"
 
 #: authentik/providers/oauth2/id_token.py
 msgid "Based on the Hashed User ID"
