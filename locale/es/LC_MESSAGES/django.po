@@ -1828,7 +1828,7 @@ msgid ""
 "Value of the audience restriction field of the assertion. When left empty, "
 "no audience restriction will be added."
 msgstr ""
-"Valor del campo de restricción de audiencia de la aseveración. Si se deja "
+"Valor del campo de restricción de audiencia de la declaración. Si se deja "
 "vacío, no se agregará ninguna restricción de audiencia."
 
 #: authentik/providers/saml/models.py
@@ -1863,7 +1863,7 @@ msgid ""
 "Assertion valid not before current time + this value (Format: "
 "hours=-1;minutes=-2;seconds=-3)."
 msgstr ""
-"Aseveración válida no antes de la hora actual + este valor (Formato: "
+"Declaración válida no antes de la hora actual + este valor (Formato: "
 "hours=-1;minutes=-2;seconds=-3)."
 
 #: authentik/providers/saml/models.py
