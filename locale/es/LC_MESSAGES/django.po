@@ -1697,7 +1697,7 @@ msgstr ""
 
 #: authentik/providers/proxy/models.py
 msgid "Validate SSL Certificates of upstream servers"
-msgstr "Validar Certificados SSL de servidores de origen"
+msgstr "Valida Certificados SSL de servidores de origen"
 
 #: authentik/providers/proxy/models.py
 msgid "Internal host SSL Validation"
