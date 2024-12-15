@@ -1965,7 +1965,7 @@ msgid ""
 msgstr ""
 "Cuando se selecciona esta opción, el IdP cifra las declaraciones entrantes "
 "utilizando la clave pública del par de claves de encriptación. El SP "
-"descifra la aseveración utilizando la clave privada."
+"descifra la declaración utilizando la clave privada."
 
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "Encryption Keypair"
