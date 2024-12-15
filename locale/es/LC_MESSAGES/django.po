@@ -430,8 +430,8 @@ msgid ""
 "Optional Private Key. If this is set, you can use this keypair for "
 "encryption."
 msgstr ""
-"Clave privada opcional. Si está configurado, puede usar este par de claves "
-"para el cifrado."
+"Clave Privada opcional. Si está configurado, puede utilizar este par de "
+"claves para el cifrado."
 
 #: authentik/crypto/models.py
 msgid "Certificate-Key Pair"
