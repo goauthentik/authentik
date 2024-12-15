@@ -3418,11 +3418,11 @@ msgstr ""
 
 #: authentik/stages/prompt/models.py
 msgid "Prompt"
-msgstr "Rápido"
+msgstr "Solicitud"
 
 #: authentik/stages/prompt/models.py
 msgid "Prompts"
-msgstr "Indicaciones"
+msgstr "Solicitudes"
 
 #: authentik/stages/prompt/models.py
 msgid "Prompt Stage"
