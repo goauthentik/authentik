@@ -1095,8 +1095,8 @@ msgid ""
 "Match created events with this action type. When left empty, all action "
 "types will be matched."
 msgstr ""
-"Haga coincidir los eventos creados con este tipo de acción. Cuando se deja "
-"vacío, todos los tipos de acción coincidirán."
+"Coincidir con los eventos creados que tengan este tipo de acción. Si se deja"
+" en blanco, se incluyen todos los tipos de acción."
 
 #: authentik/policies/event_matcher/models.py
 msgid ""
