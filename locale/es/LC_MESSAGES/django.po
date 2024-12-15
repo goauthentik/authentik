@@ -1074,8 +1074,8 @@ msgid ""
 "Match events created by selected application. When left empty, all "
 "applications are matched."
 msgstr ""
-"Coincidir con eventos creados por la aplicación seleccionada. Cuando se deja"
-" vacío, todas las solicitudes coinciden."
+"Coincidir con los eventos creados por la aplicación seleccionada. Si se deja"
+" en blanco, se incluyen todas las aplicaciones."
 
 #: authentik/policies/event_matcher/api.py
 #: authentik/policies/event_matcher/models.py
