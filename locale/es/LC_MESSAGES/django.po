@@ -3426,11 +3426,11 @@ msgstr "Solicitudes"
 
 #: authentik/stages/prompt/models.py
 msgid "Prompt Stage"
-msgstr "Etapa rápida"
+msgstr "Etapa de Solicitud"
 
 #: authentik/stages/prompt/models.py
 msgid "Prompt Stages"
-msgstr "Etapas rápidas"
+msgstr "Etapas de Solicitud"
 
 #: authentik/stages/prompt/stage.py
 msgid "Passwords don't match."
