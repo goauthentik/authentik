@@ -6,7 +6,6 @@
 # Translators:
 # jcamat, 2022
 # Andres Ruz, 2024
-# Jairo Reyes, 2024
 # Jens L. <jens@goauthentik.io>, 2024
 # Angel, 2024
 # Iamanaws, 2024
@@ -1083,9 +1082,9 @@ msgid ""
 "Match events created by selected model. When left empty, all models are "
 "matched. When an app is selected, all the application's models are matched."
 msgstr ""
-"Vincula eventos creados por el modelo seleccionado. Si está vacío, se "
-"vincularán todos los modelos. Al elegir una aplicación, se vincularán todos "
-"los modelos de la aplicación."
+"Coincidir con los eventos creados por el modelo seleccionado. Si se deja en "
+"blanco, se incluyen todos los modelos. Cuando se selecciona una aplicación, "
+"se incluyen todos los modelos de esa aplicación."
 
 #: authentik/policies/event_matcher/api.py
 msgid "At least one criteria must be set."
