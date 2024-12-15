@@ -1871,7 +1871,7 @@ msgid ""
 "Assertion not valid on or after current time + this value (Format: "
 "hours=1;minutes=2;seconds=3)."
 msgstr ""
-"La declaración no es válida en o después de la hora actual + este valor "
+"La aserción no es válida en o después de la hora actual + este valor "
 "(Formato: horas = 1; minutos = 2; segundos = 3)."
 
 #: authentik/providers/saml/models.py
