@@ -1808,7 +1808,7 @@ msgid ""
 "Response' must be selected."
 msgstr ""
 "Con un par de claves de firma seleccionado, se debe seleccionar al menos una"
-" de las opciones 'Firmar Aseveración' y 'Firmar Respuesta'."
+" de las opciones 'Firmar Declaración' y 'Firmar Respuesta'."
 
 #: authentik/providers/saml/api/providers.py
 msgid "Invalid XML Syntax"
