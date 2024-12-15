@@ -1963,9 +1963,9 @@ msgid ""
 " key of the encryption keypair. The assertion is decrypted by the SP using "
 "the the private key."
 msgstr ""
-"Cuando se selecciona esta opción, el IdP cifra las declaraciones entrantes "
+"Cuando se selecciona esta opción, el IdP cifra las aserción entrantes "
 "utilizando la clave pública del par de claves de encriptación. El SP "
-"descifra la declaración utilizando la clave privada."
+"descifra la aserción utilizando la clave privada."
 
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "Encryption Keypair"
