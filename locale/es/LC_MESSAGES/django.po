@@ -1708,7 +1708,7 @@ msgid ""
 "Enable support for forwardAuth in traefik and nginx auth_request. Exclusive "
 "with internal_host."
 msgstr ""
-"Habilite el soporte para ForwardAuth en traefik y nginx auth_request. "
+"Habilite el soporte para forwardAuth en traefik y nginx auth_request. "
 "Exclusivo con internal_host."
 
 #: authentik/providers/proxy/models.py
