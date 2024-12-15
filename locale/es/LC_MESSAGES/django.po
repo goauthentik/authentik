@@ -2817,9 +2817,9 @@ msgid ""
 " devices. After this configuration Stage passes, the user is not prompted "
 "again."
 msgstr ""
-"Etapas usadas para configurar Autenticador cuando el usuario no tiene ningún"
-" dispositivo compatible. Una vez superada esta etapa de configuración, el "
-"usuario no volverá a ser interrumpido de nuevo."
+"Etapas usadas para configurar el Autenticador cuando el usuario no tiene "
+"ningún dispositivo compatible. Una vez superada esta etapa de configuración,"
+" el usuario no volverá a recibir ninguna solicitud."
 
 #: authentik/stages/authenticator_validate/models.py
 msgid "Device classes which can be used to authenticate"
