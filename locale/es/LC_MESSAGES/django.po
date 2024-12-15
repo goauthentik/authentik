@@ -1482,7 +1482,7 @@ msgstr "RS256 (cifrado asimétrico)"
 
 #: authentik/providers/oauth2/models.py
 msgid "ES256 (Asymmetric Encryption)"
-msgstr "ES256 (cifrado asimétrico)"
+msgstr "ES256 (Encriptación Asimétrica)"
 
 #: authentik/providers/oauth2/models.py
 msgid "Scope used by the client"
