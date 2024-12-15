@@ -1945,7 +1945,7 @@ msgstr ""
 
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "Verification Certificate"
-msgstr "Certificado de verificación"
+msgstr "Certificado de Verificación"
 
 #: authentik/providers/saml/models.py
 msgid "Keypair used to sign outgoing Responses going to the Service Provider."
