@@ -2548,7 +2548,7 @@ msgstr "Vinculación POST"
 
 #: authentik/sources/saml/models.py
 msgid "POST Binding with auto-confirmation"
-msgstr "Encuadernación POST con confirmación automática"
+msgstr "Vinculación POST con confirmación automática"
 
 #: authentik/sources/saml/models.py
 msgid "Flow used before authentication."
