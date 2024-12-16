@@ -2157,7 +2157,7 @@ msgstr "Conexión de Fuente Kerberos de Usuario"
 
 #: authentik/sources/kerberos/models.py
 msgid "User Kerberos Source Connections"
-msgstr "Conexiones de Fuente Kerberos de Usuario"
+msgstr "Conexiones de Fuente de Kerberos de Usuario"
 
 #: authentik/sources/kerberos/models.py
 msgid "Group Kerberos Source Connection"
@@ -2165,7 +2165,7 @@ msgstr "Conexión de Fuente Kerberos de Grupo"
 
 #: authentik/sources/kerberos/models.py
 msgid "Group Kerberos Source Connections"
-msgstr "Grupo de Conexiones de Fuente de Kerberos"
+msgstr "Conexiones de Fuente de Kerberos de Grupo"
 
 #: authentik/sources/kerberos/views.py
 msgid "SPNEGO authentication required"
