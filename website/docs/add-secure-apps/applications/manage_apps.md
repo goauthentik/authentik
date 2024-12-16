@@ -26,7 +26,7 @@ To add an application to authentik and have it display on users' **My applicatio
 
 - **Choose a Provider**: Select the provider types for this application.
 
-- **Configure a Provider**: Provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and any addiitonal required configurations.
+- **Configure a Provider**: Provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and any additional required configurations.
 
 - **Configure Bindings**: To manage the display of the new application on the **My applications** page, you can optionally define [bindings](../flows-stages/bindings/index.md) for a specific policy, group, or user. To do so in the Wizard, click **Bind existing policy/group/user** to add a binding. You can select an existing policy binding, or create a new binding specifically for a group or user. For example, if you select **User** and then choose an existing user from the drop-down menu, you create a new binding between the user and this specific application. Note that if you do not define any bindings, then all users have access to the application. For more information, refer to [authorization](#authorization).
 

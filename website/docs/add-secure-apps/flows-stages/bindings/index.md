@@ -16,6 +16,7 @@ The two most common types of bindings in authentik are:
 
 - stage bindings
 - policy bindings
+- user and group bindings
 
 A _stage binding_ connects a stage to a flow. The "additional content" (i.e. the content in the stage) is now added to the flow.
 
