@@ -2341,7 +2341,7 @@ msgstr "Fuente de OAuth"
 
 #: authentik/sources/oauth/models.py
 msgid "OAuth Sources"
-msgstr "Fuentes OAuth"
+msgstr "Fuentes de OAuth"
 
 #: authentik/sources/oauth/models.py
 msgid "GitHub OAuth Source"
@@ -2349,7 +2349,7 @@ msgstr "Fuente de OAuth de GitHub"
 
 #: authentik/sources/oauth/models.py
 msgid "GitHub OAuth Sources"
-msgstr "Fuentes OAuth de GitHub"
+msgstr "Fuentes de OAuth de GitHub"
 
 #: authentik/sources/oauth/models.py
 msgid "GitLab OAuth Source"
@@ -2357,7 +2357,7 @@ msgstr "Fuente de OAuth de GitLab"
 
 #: authentik/sources/oauth/models.py
 msgid "GitLab OAuth Sources"
-msgstr "Fuentes OAuth de GitLab"
+msgstr "Fuentes de OAuth de GitLab"
 
 #: authentik/sources/oauth/models.py
 msgid "Twitch OAuth Source"
@@ -2365,7 +2365,7 @@ msgstr "Fuente de OAuth de Twitch"
 
 #: authentik/sources/oauth/models.py
 msgid "Twitch OAuth Sources"
-msgstr "Fuentes OAuth de Twitch"
+msgstr "Fuentes de OAuth de Twitch"
 
 #: authentik/sources/oauth/models.py
 msgid "Mailcow OAuth Source"
@@ -2373,7 +2373,7 @@ msgstr "Fuente de OAuth de Mailcow"
 
 #: authentik/sources/oauth/models.py
 msgid "Mailcow OAuth Sources"
-msgstr "Fuentes OAuth de Mailcow"
+msgstr "Fuentes de OAuth de Mailcow"
 
 #: authentik/sources/oauth/models.py
 msgid "Twitter OAuth Source"
@@ -2381,7 +2381,7 @@ msgstr "Fuente de OAuth de Twitter"
 
 #: authentik/sources/oauth/models.py
 msgid "Twitter OAuth Sources"
-msgstr "Fuentes OAuth de Twitter"
+msgstr "Fuentes de OAuth de Twitter"
 
 #: authentik/sources/oauth/models.py
 msgid "Facebook OAuth Source"
@@ -2389,7 +2389,7 @@ msgstr "Fuente de OAuth de Facebook"
 
 #: authentik/sources/oauth/models.py
 msgid "Facebook OAuth Sources"
-msgstr "Fuentes OAuth de Facebook"
+msgstr "Fuentes de OAuth de Facebook"
 
 #: authentik/sources/oauth/models.py
 msgid "Discord OAuth Source"
@@ -2397,7 +2397,7 @@ msgstr "Fuente de OAuth de Discord"
 
 #: authentik/sources/oauth/models.py
 msgid "Discord OAuth Sources"
-msgstr "Fuentes OAuth de Discord"
+msgstr "Fuentes de OAuth de Discord"
 
 #: authentik/sources/oauth/models.py
 msgid "Patreon OAuth Source"
@@ -2405,7 +2405,7 @@ msgstr "Fuente de OAuth de Patreon"
 
 #: authentik/sources/oauth/models.py
 msgid "Patreon OAuth Sources"
-msgstr "Fuentes OAuth de Patreon"
+msgstr "Fuentes de OAuth de Patreon"
 
 #: authentik/sources/oauth/models.py
 msgid "Google OAuth Source"
@@ -2413,7 +2413,7 @@ msgstr "Fuente de OAuth de Google"
 
 #: authentik/sources/oauth/models.py
 msgid "Google OAuth Sources"
-msgstr "Fuentes OAuth de Google"
+msgstr "Fuentes de OAuth de Google"
 
 #: authentik/sources/oauth/models.py
 msgid "Azure AD OAuth Source"
@@ -2421,7 +2421,7 @@ msgstr "Fuente de OAuth de Azure AD"
 
 #: authentik/sources/oauth/models.py
 msgid "Azure AD OAuth Sources"
-msgstr "Fuentes OAuth de Azure AD"
+msgstr "Fuentes de OAuth de Azure AD"
 
 #: authentik/sources/oauth/models.py
 msgid "OpenID OAuth Source"
@@ -2429,7 +2429,7 @@ msgstr "Fuente de OAuth de OpenID"
 
 #: authentik/sources/oauth/models.py
 msgid "OpenID OAuth Sources"
-msgstr "Fuentes OAuth de OpenID"
+msgstr "Fuentes de OAuth de OpenID"
 
 #: authentik/sources/oauth/models.py
 msgid "Apple OAuth Source"
@@ -2437,7 +2437,7 @@ msgstr "Fuente de OAuth de Apple "
 
 #: authentik/sources/oauth/models.py
 msgid "Apple OAuth Sources"
-msgstr "Fuentes OAuth de Apple"
+msgstr "Fuentes de OAuth de Apple"
 
 #: authentik/sources/oauth/models.py
 msgid "Okta OAuth Source"
@@ -2445,7 +2445,7 @@ msgstr "Fuente de OAuth de Okta"
 
 #: authentik/sources/oauth/models.py
 msgid "Okta OAuth Sources"
-msgstr "Fuentes OAuth de Okta"
+msgstr "Fuentes de OAuth de Okta"
 
 #: authentik/sources/oauth/models.py
 msgid "Reddit OAuth Source"
@@ -2453,31 +2453,31 @@ msgstr "Fuente de OAuth de Reddit"
 
 #: authentik/sources/oauth/models.py
 msgid "Reddit OAuth Sources"
-msgstr "Fuentes OAuth de Reddit"
+msgstr "Fuentes de OAuth de Reddit"
 
 #: authentik/sources/oauth/models.py
 msgid "OAuth Source Property Mapping"
-msgstr "Asignación de Propiedades de Fuente OAuth"
+msgstr "Asignación de Propiedades de Fuente de OAuth"
 
 #: authentik/sources/oauth/models.py
 msgid "OAuth Source Property Mappings"
-msgstr "Asignaciones de Propiedades de Fuente OAuth"
+msgstr "Asignaciones de Propiedades de Fuente de OAuth"
 
 #: authentik/sources/oauth/models.py
 msgid "User OAuth Source Connection"
-msgstr "Conexión de Fuente OAuth de Usuario"
+msgstr "Conexión de Fuente de OAuth de Usuario"
 
 #: authentik/sources/oauth/models.py
 msgid "User OAuth Source Connections"
-msgstr "Conexiones de Fuente OAuth de Usuario"
+msgstr "Conexiones de Fuente de OAuth de Usuario"
 
 #: authentik/sources/oauth/models.py
 msgid "Group OAuth Source Connection"
-msgstr "Conexión de Fuente OAuth de Grupo"
+msgstr "Conexión de Fuente de OAuth de Grupo"
 
 #: authentik/sources/oauth/models.py
 msgid "Group OAuth Source Connections"
-msgstr "Conexiones de Fuente OAuth de Grupo"
+msgstr "Conexiones de Fuente de OAuth de Grupo"
 
 #: authentik/sources/oauth/views/callback.py
 #, python-brace-format
