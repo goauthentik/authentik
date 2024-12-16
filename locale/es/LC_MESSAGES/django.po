@@ -2507,11 +2507,11 @@ msgstr "Token de Plex usado para comprobar amigos"
 
 #: authentik/sources/plex/models.py
 msgid "Plex Source"
-msgstr "Fuente Plex"
+msgstr "Fuente de Plex"
 
 #: authentik/sources/plex/models.py
 msgid "Plex Sources"
-msgstr "Fuentes Plex"
+msgstr "Fuentes de Plex"
 
 #: authentik/sources/plex/models.py
 msgid "Plex Source Property Mapping"
