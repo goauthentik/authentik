@@ -5,7 +5,6 @@
 # 
 # Translators:
 # jcamat, 2022
-# Andres Ruz, 2024
 # Jens L. <jens@goauthentik.io>, 2024
 # Angel, 2024
 # Iamanaws, 2024
@@ -127,9 +126,9 @@ msgid ""
 "providers are returned. When set to false, backchannel providers are "
 "excluded"
 msgstr ""
-"Si no se establece, se devuelven todos los proveedores. Si se establece en "
-"true, sólo se devuelven los proveedores del canal de retorno. Si se "
-"establece en false, se excluyen los proveedores del canal de retorno."
+"Cuando no se configura, se devuelven todos los proveedores. Cuando se "
+"configura como verdadero, solo se devuelven los proveedores de backchannel. "
+"Cuando se configura como falso, se excluyen los proveedores de backchannel."
 
 #: authentik/core/api/transactional_applications.py
 #, python-brace-format
