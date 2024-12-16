@@ -2544,7 +2544,7 @@ msgstr "Vínculo de Redirección"
 
 #: authentik/sources/saml/models.py
 msgid "POST Binding"
-msgstr "Enlace POST"
+msgstr "Vinculación POST"
 
 #: authentik/sources/saml/models.py
 msgid "POST Binding with auto-confirmation"
