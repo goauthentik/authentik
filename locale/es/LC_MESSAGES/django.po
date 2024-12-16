@@ -226,7 +226,7 @@ msgid ""
 "Accessed from applications; optional backchannel providers for protocols "
 "like LDAP and SCIM."
 msgstr ""
-"Accesible desde aplicaciones; proveedores de canal de retorno opcionales "
+"Se accede desde aplicaciones; proveedores de canal secundario opcionales "
 "para protocolos como LDAP y SCIM."
 
 #: authentik/core/models.py
