@@ -2535,7 +2535,7 @@ msgstr "Conexión de Fuente Plex de Grupo"
 
 #: authentik/sources/plex/models.py
 msgid "Group Plex Source Connections"
-msgstr "Conexiones de Fuente Plex de Grupo"
+msgstr "Conexiones de Fuente de Plex de Grupo"
 
 #: authentik/sources/saml/models.py
 msgid "Redirect Binding"
