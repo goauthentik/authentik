@@ -2188,7 +2188,8 @@ msgstr ""
 
 #: authentik/sources/ldap/api.py
 msgid "Only a single LDAP Source with password synchronization is allowed"
-msgstr "Solo está permitida una Fuente LDAP con sincronización de contraseña"
+msgstr ""
+"Solo está permitida una Fuente de LDAP con sincronización de contraseña"
 
 #: authentik/sources/ldap/models.py
 msgid "Server URI"
