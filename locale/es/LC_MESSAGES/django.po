@@ -1266,7 +1266,7 @@ msgstr "La contraseña es muy débil."
 
 #: authentik/policies/password/models.py
 msgid "Password Policy"
-msgstr "Política de contraseñas"
+msgstr "Política de Contraseñas"
 
 #: authentik/policies/password/models.py
 msgid "Password Policies"
@@ -1278,7 +1278,7 @@ msgstr "Se debe verificar la IP o el nombre de usuario"
 
 #: authentik/policies/reputation/models.py
 msgid "Reputation Policy"
-msgstr "Política de reputación"
+msgstr "Política de Reputación"
 
 #: authentik/policies/reputation/models.py
 msgid "Reputation Policies"
