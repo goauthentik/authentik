@@ -1108,7 +1108,7 @@ msgstr ""
 
 #: authentik/policies/event_matcher/models.py
 msgid "Event Matcher Policy"
-msgstr "Política de Event Matcher"
+msgstr "Política de Comparador de Eventos"
 
 #: authentik/policies/event_matcher/models.py
 msgid "Event Matcher Policies"
