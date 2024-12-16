@@ -2622,11 +2622,11 @@ msgstr "Fuente de SAML"
 
 #: authentik/sources/saml/models.py
 msgid "SAML Sources"
-msgstr "Fuentes SAML"
+msgstr "Fuentes de SAML"
 
 #: authentik/sources/saml/models.py
 msgid "SAML Source Property Mapping"
-msgstr "Asignación de Propiedades de Fuente SAML"
+msgstr "Asignación de Propiedades de Fuente de SAML"
 
 #: authentik/sources/saml/models.py
 msgid "SAML Source Property Mappings"
