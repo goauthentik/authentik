@@ -2634,35 +2634,35 @@ msgstr "Asignaciones de Propiedades de Fuente de SAML"
 
 #: authentik/sources/saml/models.py
 msgid "User SAML Source Connection"
-msgstr "Conexión de Fuente SAML de Usuario"
+msgstr "Conexión de Fuente de SAML de Usuario"
 
 #: authentik/sources/saml/models.py
 msgid "User SAML Source Connections"
-msgstr "Conexiones de Fuente SAML de Usuario"
+msgstr "Conexiones de Fuente de SAML de Usuario"
 
 #: authentik/sources/saml/models.py
 msgid "Group SAML Source Connection"
-msgstr "Conexión de Fuente SAML de Grupo"
+msgstr "Conexión de Fuente de SAML de Grupo"
 
 #: authentik/sources/saml/models.py
 msgid "Group SAML Source Connections"
-msgstr "Conexiones de Fuente SAML de Grupo"
+msgstr "Conexiones de Fuente de SAML de Grupo"
 
 #: authentik/sources/scim/models.py
 msgid "SCIM Source"
-msgstr "Fuente SCIM"
+msgstr "Fuente de SCIM"
 
 #: authentik/sources/scim/models.py
 msgid "SCIM Sources"
-msgstr "Fuentes SCIM"
+msgstr "Fuentes de SCIM"
 
 #: authentik/sources/scim/models.py
 msgid "SCIM Source Property Mapping"
-msgstr "Asignación de Propiedades de Fuente SCIM"
+msgstr "Asignación de Propiedades de Fuente de SCIM"
 
 #: authentik/sources/scim/models.py
 msgid "SCIM Source Property Mappings"
-msgstr "Asignaciones de Propiedades de Fuente SCIM"
+msgstr "Asignaciones de Propiedades de Fuente de SCIM"
 
 #: authentik/stages/authenticator_duo/models.py
 msgid "Duo Authenticator Setup Stage"
