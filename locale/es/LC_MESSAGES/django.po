@@ -1172,7 +1172,7 @@ msgstr "todas, todas las políticas deben aprobarse"
 
 #: authentik/policies/models.py
 msgid "any, any policy must pass"
-msgstr "cualquiera, cualquier política debe aprobarse"
+msgstr "cualquiera, cualquier política debe pasar"
 
 #: authentik/policies/models.py
 msgid "Policy Binding Model"
