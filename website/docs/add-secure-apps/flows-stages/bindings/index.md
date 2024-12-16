@@ -2,7 +2,7 @@
 title: Bindings
 ---
 
-A binding is, simply put, a connection between two components (a flow, stage, policy, user, or group) _that adds additional content_ to one those existing components.
+A binding is, simply put, a connection between two components (a flow, stage, policy, user, or group). The use of the binding adds additional functionality to one those existing components; for example, a policy binding can cause a new stage to be presented within a flow, for a specific user.
 
 :::info
 For information about creating and managing bindings, refer to [Working with bindings](./work_with_bindings.md).
