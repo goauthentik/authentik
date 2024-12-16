@@ -2523,11 +2523,11 @@ msgstr "Asignaciones de Propiedades de Fuente de Plex"
 
 #: authentik/sources/plex/models.py
 msgid "User Plex Source Connection"
-msgstr "Conexión de Fuente Plex de Usuario"
+msgstr "Conexión de Fuente de Plex de Usuario"
 
 #: authentik/sources/plex/models.py
 msgid "User Plex Source Connections"
-msgstr "Conexiones de Fuente Plex de Usuario"
+msgstr "Conexiones de Fuente de Plex de Usuario"
 
 #: authentik/sources/plex/models.py
 msgid "Group Plex Source Connection"
