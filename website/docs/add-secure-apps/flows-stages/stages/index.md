@@ -43,7 +43,7 @@ To create a stage, follow these steps:
 2. In the Admin interface, navigate to **Flows and Stages -> Stages**.
 3. Click **Create**, define the flow using the configuration settings, and then click **Finish**.
 
-After creating the stage, you can then [bind the stage to a flow](#bind-a-stage-to-a-flow) or [bind a policy to the stage](../../../customize/policies/working_with_policies/working_with_policies.md) (the policy determines whether or not the stage will be implemented in the flow).
+After creating the stage, you can then [bind the stage to a flow](#bind-a-stage-to-a-flow) or [bind a policy to the stage](../../../customize/policies/working_with_policies.md) (the policy determines whether or not the stage will be implemented in the flow).
 
 ## Bind a stage to a flow
 

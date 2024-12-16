@@ -93,7 +93,11 @@ class ChallengeStageView(StageView):
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Return a challenge for the frontend to solve"""
-        challenge = self._get_challenge(*args, **kwargs)
+        try:
+            challenge = self._get_challenge(*args, **kwargs)
+        except StageInvalidException as exc:
+            self.logger.debug("Got StageInvalidException", exc=exc)
+            return self.executor.stage_invalid()
         if not challenge.is_valid():
             self.logger.warning(
                 "f(ch): Invalid challenge",
@@ -169,11 +173,7 @@ class ChallengeStageView(StageView):
                 stage_type=self.__class__.__name__, method="get_challenge"
             ).time(),
         ):
-            try:
-                challenge = self.get_challenge(*args, **kwargs)
-            except StageInvalidException as exc:
-                self.logger.debug("Got StageInvalidException", exc=exc)
-                return self.executor.stage_invalid()
+            challenge = self.get_challenge(*args, **kwargs)
         with start_span(
             op="authentik.flow.stage._get_challenge",
             name=self.__class__.__name__,

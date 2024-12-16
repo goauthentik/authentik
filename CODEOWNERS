@@ -25,4 +25,5 @@ tests/wdio/                     @goauthentik/frontend
 # Docs & Website
 website/                        @goauthentik/docs
 # Security
+SECURITY.md                     @goauthentik/security
 website/docs/security/          @goauthentik/security
