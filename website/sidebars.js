@@ -297,6 +297,7 @@ export default {
                                 "add-secure-apps/flows-stages/stages/invitation/index",
                                 "add-secure-apps/flows-stages/stages/password/index",
                                 "add-secure-apps/flows-stages/stages/prompt/index",
+                                "add-secure-apps/flows-stages/stages/redirect/index",
                                 "add-secure-apps/flows-stages/stages/source/index",
                                 "add-secure-apps/flows-stages/stages/user_delete",
                                 "add-secure-apps/flows-stages/stages/user_login/index",
@@ -352,19 +353,20 @@ export default {
                         id: "customize/policies/index",
                     },
                     items: [
+                        "customize/policies/working_with_policies",
                         {
                             type: "category",
-                            label: "Working with Policies",
+                            label: "Expression Policies",
                             link: {
                                 type: "doc",
-                                id: "customize/policies/working_with_policies/working_with_policies",
+                                id: "customize/policies/expression",
                             },
                             items: [
-                                "customize/policies/working_with_policies/unique_email",
-                                "customize/policies/working_with_policies/whitelist_email",
+                                "customize/policies/expression/unique_email",
+                                "customize/policies/expression/whitelist_email",
+                                "customize/policies/expression/managing_flow_context_keys",
                             ],
                         },
-                        "customize/policies/expression",
                     ],
                 },
                 {
