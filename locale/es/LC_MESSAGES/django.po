@@ -2273,11 +2273,11 @@ msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "LDAP Source"
-msgstr "Fuente LDAP"
+msgstr "Fuente de LDAP"
 
 #: authentik/sources/ldap/models.py
 msgid "LDAP Sources"
-msgstr "Fuentes LDAP"
+msgstr "Fuentes de LDAP"
 
 #: authentik/sources/ldap/models.py
 msgid "LDAP Source Property Mapping"
