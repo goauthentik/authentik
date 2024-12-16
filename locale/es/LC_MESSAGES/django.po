@@ -2515,11 +2515,11 @@ msgstr "Fuentes de Plex"
 
 #: authentik/sources/plex/models.py
 msgid "Plex Source Property Mapping"
-msgstr "Asignación de Propiedades de Fuente Plex"
+msgstr "Asignación de Propiedades de Fuente de Plex"
 
 #: authentik/sources/plex/models.py
 msgid "Plex Source Property Mappings"
-msgstr "Asignaciones de Propiedades de Fuente Plex"
+msgstr "Asignaciones de Propiedades de Fuente de Plex"
 
 #: authentik/sources/plex/models.py
 msgid "User Plex Source Connection"
