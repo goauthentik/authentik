@@ -2165,7 +2165,7 @@ msgstr "Conexión de Fuente Kerberos de Grupo"
 
 #: authentik/sources/kerberos/models.py
 msgid "Group Kerberos Source Connections"
-msgstr "Conexiones de Fuente Kerberos de Grupo"
+msgstr "Grupo de Conexiones de Fuente de Kerberos"
 
 #: authentik/sources/kerberos/views.py
 msgid "SPNEGO authentication required"
