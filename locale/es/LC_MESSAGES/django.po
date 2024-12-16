@@ -2630,7 +2630,7 @@ msgstr "Asignación de Propiedades de Fuente de SAML"
 
 #: authentik/sources/saml/models.py
 msgid "SAML Source Property Mappings"
-msgstr "Asignaciones de Propiedades de Fuente SAML"
+msgstr "Asignaciones de Propiedades de Fuente de SAML"
 
 #: authentik/sources/saml/models.py
 msgid "User SAML Source Connection"
