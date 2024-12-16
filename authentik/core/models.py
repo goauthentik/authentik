@@ -330,8 +330,15 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
                 bindings__negate=True,
             ),
             bindings__enabled=True,
-        )
+        ).order_by("name")
         return qs
+
+    def app_entitlements_attributes(self, app: "Application | None") -> dict:
+        """Get a dictionary containing all merged attributes from app entitlements for `app`."""
+        final_attributes = {}
+        for attrs in self.app_entitlements(app).values_list("attributes", flat=True):
+            always_merger.merge(final_attributes, attrs)
+        return final_attributes
 
     @property
     def serializer(self) -> Serializer:
@@ -621,6 +628,8 @@ class ApplicationEntitlement(AttributesMixin, SerializerModel, PolicyBindingMode
 
         return ApplicationEntitlementSerializer
 
+    def supported_policy_binding_targets(self):
+        return ["group", "user"]
 
 class SourceUserMatchingModes(models.TextChoices):
     """Different modes a source can handle new/returning users"""

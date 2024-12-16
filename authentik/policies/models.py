@@ -47,6 +47,10 @@ class PolicyBindingModel(models.Model):
     def __str__(self) -> str:
         return f"PolicyBindingModel {self.pbm_uuid}"
 
+    def supported_policy_binding_targets(self):
+        """Return the list of objects that can be bound to this object. """
+        return ["policy", "user", "group"]
+
 
 class PolicyBinding(SerializerModel):
     """Relationship between a Policy and a PolicyBindingModel."""

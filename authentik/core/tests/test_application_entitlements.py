@@ -5,8 +5,9 @@ from guardian.shortcuts import assign_perm
 from rest_framework.test import APITestCase
 
 from authentik.core.models import Application, ApplicationEntitlement, Group
-from authentik.core.tests.utils import create_test_flow, create_test_user
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_user
 from authentik.lib.generators import generate_id
+from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.models import OAuth2Provider
 
@@ -114,3 +115,39 @@ class TestApplicationEntitlements(APITestCase):
         )
         self.assertEqual(res.status_code, 400)
         self.assertJSONEqual(res.content, {"app": ["User does not have access to application."]})
+
+    def test_api_bindings_policy(self):
+        """Test that API doesn't allow policies to be bound to this"""
+        ent = ApplicationEntitlement.objects.create(app=self.app, name=generate_id())
+        policy = DummyPolicy.objects.create(name=generate_id())
+        admin = create_test_admin_user()
+        self.client.force_login(admin)
+        response = self.client.post(
+            reverse("authentik_api:policybinding-list"),
+            data={
+                "target": ent.pbm_uuid,
+                "policy": policy.pk,
+                "order": 0,
+            },
+        )
+        self.assertJSONEqual(
+            response.content.decode(),
+            {"non_field_errors": ["One of 'group', 'user' must be set."]},
+        )
+
+    def test_api_bindings_group(self):
+        """Test that API doesn't allow policies to be bound to this"""
+        ent = ApplicationEntitlement.objects.create(app=self.app, name=generate_id())
+        group = Group.objects.create(name=generate_id())
+        admin = create_test_admin_user()
+        self.client.force_login(admin)
+        response = self.client.post(
+            reverse("authentik_api:policybinding-list"),
+            data={
+                "target": ent.pbm_uuid,
+                "group": group.pk,
+                "order": 0,
+            },
+        )
+        self.assertEqual(response.status_code, 201)
+        self.assertTrue(PolicyBinding.objects.filter(target=ent.pbm_uuid).exists())
