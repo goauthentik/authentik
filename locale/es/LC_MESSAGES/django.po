@@ -2337,23 +2337,23 @@ msgstr "Alcances Adicionales"
 
 #: authentik/sources/oauth/models.py
 msgid "OAuth Source"
-msgstr "Fuente de OAuth"
+msgstr "Fuente OAuth"
 
 #: authentik/sources/oauth/models.py
 msgid "OAuth Sources"
-msgstr "Fuentes de OAuth"
+msgstr "Fuentes OAuth"
 
 #: authentik/sources/oauth/models.py
 msgid "GitHub OAuth Source"
-msgstr "Fuente de OAuth de GitHub"
+msgstr "Fuente OAuth de GitHub"
 
 #: authentik/sources/oauth/models.py
 msgid "GitHub OAuth Sources"
-msgstr "Fuentes de OAuth de GitHub"
+msgstr "Fuentes OAuth de GitHub"
 
 #: authentik/sources/oauth/models.py
 msgid "GitLab OAuth Source"
-msgstr "Fuente de OAuth de GitLab"
+msgstr "Fuente OAuth de GitLab"
 
 #: authentik/sources/oauth/models.py
 msgid "GitLab OAuth Sources"
