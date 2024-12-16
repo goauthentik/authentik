@@ -2353,7 +2353,7 @@ msgstr "Fuentes de OAuth de GitHub"
 
 #: authentik/sources/oauth/models.py
 msgid "GitLab OAuth Source"
-msgstr "Fuente OAuth de GitLab"
+msgstr "Fuente de OAuth de GitLab"
 
 #: authentik/sources/oauth/models.py
 msgid "GitLab OAuth Sources"
