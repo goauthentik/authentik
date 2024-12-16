@@ -2153,7 +2153,7 @@ msgstr "Asignaciones de Propiedades de Fuente Kerberos"
 
 #: authentik/sources/kerberos/models.py
 msgid "User Kerberos Source Connection"
-msgstr "Conexión de Fuente Kerberos de Usuario"
+msgstr "Conexión de Fuente de Kerberos de Usuario"
 
 #: authentik/sources/kerberos/models.py
 msgid "User Kerberos Source Connections"
