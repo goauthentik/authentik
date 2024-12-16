@@ -127,8 +127,9 @@ msgid ""
 "excluded"
 msgstr ""
 "Cuando no se configura, se devuelven todos los proveedores. Cuando se "
-"configura como verdadero, solo se devuelven los proveedores de backchannel. "
-"Cuando se configura como falso, se excluyen los proveedores de backchannel."
+"configura como verdadero, solo se devuelven los proveedores de canal "
+"secundario. Cuando se configura como falso, se excluyen los proveedores de "
+"canal secundario."
 
 #: authentik/core/api/transactional_applications.py
 #, python-brace-format
