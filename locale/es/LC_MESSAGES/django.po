@@ -2145,11 +2145,11 @@ msgstr "Fuentes Kerberos"
 
 #: authentik/sources/kerberos/models.py
 msgid "Kerberos Source Property Mapping"
-msgstr "Asignación de Propiedades de Fuente Kerberos"
+msgstr "Asignación de Propiedades de Fuente de Kerberos"
 
 #: authentik/sources/kerberos/models.py
 msgid "Kerberos Source Property Mappings"
-msgstr "Asignaciones de Propiedades de Fuente Kerberos"
+msgstr "Asignaciones de Propiedades de Fuente de Kerberos"
 
 #: authentik/sources/kerberos/models.py
 msgid "User Kerberos Source Connection"
