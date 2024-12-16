@@ -2269,7 +2269,7 @@ msgid ""
 "enabled on a single LDAP source."
 msgstr ""
 "Cuando un usuario cambie su contraseña, sincronízala de vuelta con LDAP. "
-"Esto solo puede habilitarse en una única fuente LDAP."
+"Esto solo puede habilitarse en una única fuente de LDAP."
 
 #: authentik/sources/ldap/models.py
 msgid "LDAP Source"
