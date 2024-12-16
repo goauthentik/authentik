@@ -89,7 +89,7 @@ A pop-up will appear on your browser with the link for you to copy and to send t
 ### Automate email to a user
 
 :::info
-This option is only available if a default recovery flow was configured for the currently active brand.
+This option is only available if a default recovery flow was configured for the currently active [brand](../../customize/brands.md).
 :::
 
 You can use our automated email to send a link with the URL for the user to reset their password. This option will only work if you have properly [configured a SMTP server during the installation](../../install-config/install/docker-compose.mdx#email-configuration-optional-but-recommended) and set an email address for the user.
