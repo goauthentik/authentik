@@ -1134,7 +1134,7 @@ msgstr "Políticas de caducidad de contraseñas"
 
 #: authentik/policies/expression/models.py
 msgid "Expression Policy"
-msgstr "Política de expresión"
+msgstr "Política de Expresión"
 
 #: authentik/policies/expression/models.py
 msgid "Expression Policies"
