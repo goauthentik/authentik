@@ -97,7 +97,7 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
     }
 
     renderEmptyCollection() {
-        return html` <ak-wizard-title>${msg("Configure Policy Bindings")}</ak-wizard-title>
+        return html` <ak-wizard-title>${msg("Configure Policy/User/Group Bindings")}</ak-wizard-title>
             <h6 class="pf-c-title pf-m-md">
                 ${msg("These policies control which users can access this application.")}
             </h6>
