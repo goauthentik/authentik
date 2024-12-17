@@ -50239,6 +50239,8 @@ components:
       type: object
       description: Plex Source connection Serializer
       properties:
+        user:
+          type: integer
         source:
           type: string
           format: uuid
@@ -50291,6 +50293,8 @@ components:
       type: object
       description: SAML Source Serializer
       properties:
+        user:
+          type: integer
         source:
           type: string
           format: uuid
@@ -50301,6 +50305,8 @@ components:
       type: object
       description: OAuth Source Serializer
       properties:
+        user:
+          type: integer
         source:
           type: string
           format: uuid
@@ -55484,7 +55490,6 @@ components:
           title: ID
         user:
           type: integer
-          readOnly: true
         source:
           type: string
           format: uuid
@@ -55509,6 +55514,8 @@ components:
       type: object
       description: Plex Source connection Serializer
       properties:
+        user:
+          type: integer
         source:
           type: string
           format: uuid
@@ -55523,6 +55530,7 @@ components:
       - identifier
       - plex_token
       - source
+      - user
     UserRequest:
       type: object
       description: User Serializer
@@ -55574,7 +55582,6 @@ components:
           title: ID
         user:
           type: integer
-          readOnly: true
         source:
           type: string
           format: uuid
@@ -55599,6 +55606,8 @@ components:
       type: object
       description: SAML Source Serializer
       properties:
+        user:
+          type: integer
         source:
           type: string
           format: uuid
@@ -55608,6 +55617,7 @@ components:
       required:
       - identifier
       - source
+      - user
     UserSelf:
       type: object
       description: User Serializer for information a user can retrieve about themselves
@@ -55751,7 +55761,6 @@ components:
           title: ID
         user:
           type: integer
-          readOnly: true
         source:
           type: string
           format: uuid
@@ -55773,11 +55782,14 @@ components:
       type: object
       description: OAuth Source Serializer
       properties:
+        user:
+          type: integer
         source:
           type: string
           format: uuid
       required:
       - source
+      - user
     UserTypeEnum:
       enum:
       - internal

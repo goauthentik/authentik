@@ -7979,6 +7979,10 @@
         "model_authentik_sources_plex.userplexsourceconnection": {
             "type": "object",
             "properties": {
+                "user": {
+                    "type": "integer",
+                    "title": "User"
+                },
                 "source": {
                     "type": "integer",
                     "title": "Source"
@@ -8340,6 +8344,10 @@
         "model_authentik_sources_saml.usersamlsourceconnection": {
             "type": "object",
             "properties": {
+                "user": {
+                    "type": "integer",
+                    "title": "User"
+                },
                 "source": {
                     "type": "integer",
                     "title": "Source"
