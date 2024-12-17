@@ -7145,6 +7145,20 @@
         "model_authentik_sources_kerberos.groupkerberossourceconnection": {
             "type": "object",
             "properties": {
+                "group": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Group"
+                },
+                "source": {
+                    "type": "integer",
+                    "title": "Source"
+                },
+                "identifier": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Identifier"
+                },
                 "icon": {
                     "type": "string",
                     "minLength": 1,
@@ -7746,6 +7760,20 @@
         "model_authentik_sources_oauth.groupoauthsourceconnection": {
             "type": "object",
             "properties": {
+                "group": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Group"
+                },
+                "source": {
+                    "type": "integer",
+                    "title": "Source"
+                },
+                "identifier": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Identifier"
+                },
                 "icon": {
                     "type": "string",
                     "minLength": 1,
@@ -8034,6 +8062,20 @@
         "model_authentik_sources_plex.groupplexsourceconnection": {
             "type": "object",
             "properties": {
+                "group": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Group"
+                },
+                "source": {
+                    "type": "integer",
+                    "title": "Source"
+                },
+                "identifier": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Identifier"
+                },
                 "icon": {
                     "type": "string",
                     "minLength": 1,
@@ -8394,6 +8436,20 @@
         "model_authentik_sources_saml.groupsamlsourceconnection": {
             "type": "object",
             "properties": {
+                "group": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Group"
+                },
+                "source": {
+                    "type": "integer",
+                    "title": "Source"
+                },
+                "identifier": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Identifier"
+                },
                 "icon": {
                     "type": "string",
                     "minLength": 1,
