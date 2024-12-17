@@ -128,7 +128,10 @@ export default {
                         type: "doc",
                         id: "add-secure-apps/applications/index",
                     },
-                    items: ["add-secure-apps/applications/manage_apps"],
+                    items: [
+                        "add-secure-apps/applications/manage_apps",
+                        "add-secure-apps/applications/entitlements",
+                    ],
                 },
                 {
                     type: "category",

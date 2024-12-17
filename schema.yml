@@ -43114,7 +43114,9 @@ components:
         flow_designation:
           $ref: '#/components/schemas/FlowDesignationEnum'
         captcha_stage:
-          $ref: '#/components/schemas/CaptchaChallenge'
+          allOf:
+          - $ref: '#/components/schemas/CaptchaChallenge'
+          nullable: true
         enroll_url:
           type: string
         recovery_url:
