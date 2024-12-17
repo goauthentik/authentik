@@ -631,6 +631,7 @@ class ApplicationEntitlement(AttributesMixin, SerializerModel, PolicyBindingMode
     def supported_policy_binding_targets(self):
         return ["group", "user"]
 
+
 class SourceUserMatchingModes(models.TextChoices):
     """Different modes a source can handle new/returning users"""
 

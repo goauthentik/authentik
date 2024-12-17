@@ -48,7 +48,7 @@ class PolicyBindingModel(models.Model):
         return f"PolicyBindingModel {self.pbm_uuid}"
 
     def supported_policy_binding_targets(self):
-        """Return the list of objects that can be bound to this object. """
+        """Return the list of objects that can be bound to this object."""
         return ["policy", "user", "group"]
 
 

@@ -86,6 +86,7 @@ class PolicyBindingSerializer(ModelSerializer):
         """Check that either policy, group or user is set."""
         target: PolicyBindingModel = attrs.get("target")
         supported = target.supported_policy_binding_targets()
+        supported.sort()
         count = sum([bool(attrs.get(x, None)) for x in supported])
         invalid = count > 1
         empty = count < 1
