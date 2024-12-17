@@ -22,23 +22,19 @@ To add an application to authentik and have it display on users' **My applicatio
 
 3. In the **New application** wizard, define the application details, the provider type, bindings for the application.
 
-- **Application**: provide a name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Application**: provide a name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 
-- **Choose a Provider**: Select the provider types for this application.
+    - **Choose a Provider**: Select the provider types for this application.
 
-- **Configure a Provider**: Provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and any additional required configurations.
+    - **Configure a Provider**: Provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and any additional required configurations.
 
-- **Configure Bindings**: To manage the display of the new application on the **My applications** page, you can optionally define [bindings](../flows-stages/bindings/index.md) for a specific policy, group, or user. To do so in the Wizard, click **Bind existing policy/group/user** to add a binding. You can select an existing policy binding, or create a new binding specifically for a group or user. For example, if you select **User** and then choose an existing user from the drop-down menu, you create a new binding between the user and this specific application. Note that if you do not define any bindings, then all users have access to the application. For more information, refer to [authorization](#authorization).
+    - **Configure Bindings**: To manage the display of the new application on the **My applications** page, you can optionally create a [binding](../flows-stages/bindings/index.md) between the application and a specific policy, group, or user. Note that if you do not define any bindings, then all users have access to the application. For more information about user access, refer to our documentation about [authorization](#policy-driven-authorization) and [hiding an application](#hide-applications).
 
 4. On the **Review and Submit Application** panel, review the configuration for the new application and its provider, and then click **Submit**.
 
-## Authorization
+## Policy-driven authorization
 
-Application access can be configured using either (Policy) bindings or Application Entitlements.
-
-### Policy-driven authorization
-
-To use a policy to control which users or groups can access an application, click on an application in the applications list, and select the **Policy/Group/User Bindings** tab. There you can bind users/groups/policies to grant them access. When nothing is bound, everyone has access. Binding a policy restricts access to specific Users or Groups, or by other custom policies such as restriction to a set time-of-day or a geographic region.
+To use a [policy](../../customize/policies/index.md) to control which users or groups can access an application, click on an application in the applications list, and select the **Policy/Group/User Bindings** tab. There you can bind users/groups/policies to grant them access. When nothing is bound, everyone has access. Binding a policy restricts access to specific Users or Groups, or by other custom policies such as restriction to a set time-of-day or a geographic region.
 
 By default, all users can access applications when no policies are bound.
 
@@ -47,12 +43,42 @@ When multiple policies/groups/users are attached, you can configure the _Policy 
 - Require users to pass all bindings/be member of all groups (ALL), or
 - Require users to pass either binding/be member of either group (ANY)
 
-### Application Entitlements
+## Application Entitlements
 
-Another method to control which users or groups can access an application is to create an Application Entitlement (which defines the specific application(s)), and then bind that to specific groups or users.
+<span class="badge badge--preview">Preview</span>
+<span class="badge badge--version">authentik 2024.12+</span>
 
-1. To create an Application Entitlement open the Admin interface and navigate to **Applications -> Applications**.
-2. Click the name of the application to which you want to add an entitlement.
+Application entitlements can be used through authentik to manage authorization within an application (what areas of the app can users or groups can access). Entitlements are scoped to a single application and can be bound to multiple users/groups (binding policies is not currently supported), giving them access to the entitlement. An application can either check for the name of the entitlement (via the [`entitlements` scope](../providers/oauth2/index.md#default--special-scopes)), or via attributes stored in entitlements.
+
+An authentik admin can create an entitlement [in the Admin interface](#create-an-application-entitlement) or using the [authentik API](../../developer-docs/api/api.md).
+
+Because entitlements exist within an application, names of entitlements must be unique within an application. This also means that entitlements are deleted when an application is deleted.
+
+### Using entitlements
+
+Entitlements a user has access to can be retrieved using the `user.app_entitlements()` function in property mappings/policies. This function needs to be passed the specific application for which to get the entitlements. For example:
+
+```python
+entitlements = [entitlement.name for entitlement in request.user.app_entitlements(provider.application)]
+return {
+    "entitlements": entitlements,
+}
+```
+
+### Attributes
+
+Each entitlement can store attributes similar to user and group attributes. These attributes can be accessed in property mappings and passed to applications via `user.app_entitlements_attributes`. For example:
+
+```python
+attrs = request.user.app_entitlements(provider.application)
+return {
+    "my_attr": attrs.get("my_attr")
+}
+```
+### Create an application entitlement
+
+1. To create an application entitlement open the Admin interface and navigate to **Applications -> Applications**.
+2. Click the name of the application for which you want to create an entitlement.
 3. Click the **Application entitlements** tab at the top of the page, and then click **Create entitlement**. Provide a name for the entitlement, enter any optional **Attributes**, and then click **Create**.
 4. Locate the entitlement to which you want to bind a user or group, and then **click the caret (>) to expand the entitlement details.**
 5. In the expanded area, click **Bind existing Group/User**.
