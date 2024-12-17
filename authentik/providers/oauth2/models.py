@@ -497,6 +497,8 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
 
     token = models.TextField(default=generate_client_secret)
     _id_token = models.TextField(verbose_name=_("ID Token"))
+    # Shadow the `session` field from `BaseGrantModel` as we want refresh tokens to persist even
+    # when the session is terminated.
     session = models.ForeignKey(
         AuthenticatedSession, null=True, on_delete=models.SET_DEFAULT, default=None
     )
