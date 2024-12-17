@@ -24,8 +24,8 @@ If you need to delete an organization open a ticket in the Support center.
 
 In the Customer portal you can remove members and invite new members to the organization. When you invite new members, you can specify the role for the new member.
 
--   **Member**: can view licenses, including the license key.
--   **Owner**: can do everything the Member role can do, plus: add and remove members, order and renew licenses, and edit the organization.
+- **Member**: can view licenses, including the license key.
+- **Owner**: can do everything the Member role can do, plus: add and remove members, order and renew licenses, and edit the organization.
 
 1. To manage membership in an organization, log in to the [Customer portal](./get-started.md#access-enterprise).
 
@@ -97,11 +97,19 @@ The **Enterprise -> Licenses** page shows your current licenses' **Cumulative li
 
 The following events occur when a license expires or the internal/external user count is over the licensed user count for the time period below.
 
--   After 2 weeks of the expiry date administrators see a warning banner on the Admin interface
+- After 2 weeks of the expiry date administrators see a warning banner on the Admin interface
 
--   After another 2 weeks, users get a warning banner
+- After another 2 weeks, users get a warning banner
 
--   After another 2 weeks, the authentik Enterprise instance becomes “read-only”
+- After another 2 weeks, the authentik Enterprise instance becomes "read-only"
+
+    When an authentik instance is in read-only mode, the following actions are still possible:
+
+    - Users can authenticate and authorize applications
+    - Licenses can be modified
+    - Users can be modified/deleted <span class="badge badge--version">authentik 2024.10.5+</span>
+
+    After the violation is corrected (either the user count returns to be within the limits of the license or the license is renewed), authentik will return to the standard read-write mode and the notification will disappear.
 
 ### About users and licenses
 

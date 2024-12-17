@@ -97,6 +97,7 @@ export default {
                     items: [
                         "install-config/install/docker-compose",
                         "install-config/install/kubernetes",
+                        "install-config/install/aws/index",
                     ],
                 },
                 {
@@ -192,8 +193,10 @@ export default {
                                 id: "add-secure-apps/providers/oauth2/index",
                             },
                             items: [
+                                "add-secure-apps/providers/oauth2/create-oauth2-provider",
                                 "add-secure-apps/providers/oauth2/client_credentials",
                                 "add-secure-apps/providers/oauth2/device_code",
+                                "add-secure-apps/providers/oauth2/github-compatibility",
                             ],
                         },
                         "add-secure-apps/providers/saml/index",
@@ -294,6 +297,7 @@ export default {
                                 "add-secure-apps/flows-stages/stages/invitation/index",
                                 "add-secure-apps/flows-stages/stages/password/index",
                                 "add-secure-apps/flows-stages/stages/prompt/index",
+                                "add-secure-apps/flows-stages/stages/redirect/index",
                                 "add-secure-apps/flows-stages/stages/source/index",
                                 "add-secure-apps/flows-stages/stages/user_delete",
                                 "add-secure-apps/flows-stages/stages/user_login/index",
@@ -349,19 +353,20 @@ export default {
                         id: "customize/policies/index",
                     },
                     items: [
+                        "customize/policies/working_with_policies",
                         {
                             type: "category",
-                            label: "Working with Policies",
+                            label: "Expression Policies",
                             link: {
                                 type: "doc",
-                                id: "customize/policies/working_with_policies/working_with_policies",
+                                id: "customize/policies/expression",
                             },
                             items: [
-                                "customize/policies/working_with_policies/unique_email",
-                                "customize/policies/working_with_policies/whitelist_email",
+                                "customize/policies/expression/unique_email",
+                                "customize/policies/expression/whitelist_email",
+                                "customize/policies/expression/managing_flow_context_keys",
                             ],
                         },
-                        "customize/policies/expression",
                     ],
                 },
                 {
@@ -648,7 +653,10 @@ export default {
                 {
                     type: "category",
                     label: "Audits and Certificates",
-                    items: ["security/audits-and-certs/2023-06-cure53"],
+                    items: [
+                        "security/audits-and-certs/2023-06-cure53",
+                        "security/audits-and-certs/2024-11-cobalt",
+                    ],
                 },
                 {
                     type: "category",
@@ -663,6 +671,7 @@ export default {
                                 "security/cves/CVE-2024-52287",
                                 "security/cves/CVE-2024-47077",
                                 "security/cves/CVE-2024-47070",
+                                "security/cves/CVE-2024-42490",
                                 "security/cves/CVE-2024-38371",
                                 "security/cves/CVE-2024-37905",
                                 "security/cves/CVE-2024-23647",
@@ -684,9 +693,9 @@ export default {
                             type: "category",
                             label: "2022",
                             items: [
-                                "security/cves/CVE-2022-23555",
-                                "security/cves/CVE-2022-46145",
                                 "security/cves/CVE-2022-46172",
+                                "security/cves/CVE-2022-46145",
+                                "security/cves/CVE-2022-23555",
                             ],
                         },
                     ],

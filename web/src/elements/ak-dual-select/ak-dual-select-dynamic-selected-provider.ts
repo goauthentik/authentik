@@ -23,7 +23,7 @@ export class AkDualSelectDynamic extends AkDualSelectProvider {
      * @attr
      */
     @property({ attribute: false })
-    selector: ([key, _]: DualSelectPair) => boolean = ([_key, _]) => false;
+    selector: (_: DualSelectPair[]) => Promise<DualSelectPair[]> = async (_) => Promise.resolve([]);
 
     private firstUpdateHasRun = false;
 
@@ -33,9 +33,9 @@ export class AkDualSelectDynamic extends AkDualSelectProvider {
         // the selected list with the contents derived from the selector.
         if (!this.firstUpdateHasRun && this.options.length > 0) {
             this.firstUpdateHasRun = true;
-            this.selected = Array.from(
-                new Set([...this.selected, ...this.options.filter(this.selector)]),
-            );
+            this.selector(this.options).then((selected) => {
+                this.selected = selected;
+            });
         }
     }
 

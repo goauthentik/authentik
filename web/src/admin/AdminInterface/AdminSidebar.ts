@@ -1,5 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_SIDEBAR_TOGGLE, VERSION } from "@goauthentik/common/constants";
+import { globalAK } from "@goauthentik/common/global";
 import { me } from "@goauthentik/common/users";
 import { AKElement } from "@goauthentik/elements/Base";
 import {
@@ -112,7 +113,7 @@ export class AkAdminSidebar extends WithCapabilitiesConfig(AKElement) {
 
         // prettier-ignore
         const sidebarContent: SidebarEntry[] = [
-            ["/if/user/", msg("User interface"), { "?isAbsoluteLink": true, "?highlight": true }],
+            [`${globalAK().api.base}if/user/`, msg("User interface"), { "?isAbsoluteLink": true, "?highlight": true }],
             [null, msg("Dashboards"), { "?expanded": true }, [
                 ["/administration/overview", msg("Overview")],
                 ["/administration/dashboard/users", msg("User Statistics")],

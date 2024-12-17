@@ -10,16 +10,16 @@ Configure how authentik should show avatars for users. Following values can be s
 
 Default: `gravatar,initials`
 
--   `none`: Disables per-user avatars and just shows a 1x1 pixel transparent picture
--   `gravatar`: Uses gravatar with the user's email address
--   `initials`: Generated avatars based on the user's name
--   Any URL: If you want to use images hosted on another server, you can set any URL.
+- `none`: Disables per-user avatars and just shows a 1x1 pixel transparent picture
+- `gravatar`: Uses gravatar with the user's email address
+- `initials`: Generated avatars based on the user's name
+- Any URL: If you want to use images hosted on another server, you can set any URL.
 
     Additionally, these placeholders can be used:
 
-    -   `%(username)s`: The user's username
-    -   `%(mail_hash)s`: The email address, md5 hashed
-    -   `%(upn)s`: The user's UPN, if set (otherwise an empty string)
+    - `%(username)s`: The user's username
+    - `%(mail_hash)s`: The email address, md5 hashed
+    - `%(upn)s`: The user's UPN, if set (otherwise an empty string)
 
 You can also use an attribute path like `attributes.something.avatar`, which can be used in combination with the file field to allow users to upload custom avatars for themselves.
 

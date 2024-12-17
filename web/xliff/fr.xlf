@@ -554,7 +554,7 @@
         
       </trans-unit>
       <trans-unit id="s0382d73823585617">
-        <source><x id="0" equiv-text="${this.errorMessage}"/>: <x id="1" equiv-text="${e.toString()}"/></source>
+        <source><x id="0" equiv-text="${field}"/>: <x id="1" equiv-text="${errMsg}"/></source>
         <target>
         <x id="0" equiv-text="${this.errorMessage}"/>:
         <x id="1" equiv-text="${e.toString()}"/></target>
@@ -1014,24 +1014,9 @@
         <target>Secret du client</target>
         
       </trans-unit>
-      <trans-unit id="sde0ad51b14f77cf6">
-        <source>Redirect URIs/Origins (RegEx)</source>
-        <target>URI/Origines de redirection (RegEx)</target>
-        
-      </trans-unit>
-      <trans-unit id="s7f9eb9c8bd26e8fd">
-        <source>Valid redirect URLs after a successful authorization flow. Also specify any origins here for Implicit flows.</source>
-        <target>URLs de redirection autorisées après un flux d'autorisation réussi. Indiquez également toute origine ici pour les flux implicites.</target>
-        
-      </trans-unit>
       <trans-unit id="s2a369bc2febb5d55">
         <source>If no explicit redirect URIs are specified, the first successfully used redirect URI will be saved.</source>
         <target>Si aucune URI de redirection explicite n'est spécifiée, la première URI de redirection utilisée avec succès sera enregistrée.</target>
-        
-      </trans-unit>
-      <trans-unit id="sa8384c9c26731f83">
-        <source>To allow any redirect URI, set this value to ".*". Be aware of the possible security implications this can have.</source>
-        <target>Pour permettre n'importe quelle URI de redirection, définissez cette valeur sur ".*". Soyez conscient des possibles implications de sécurité que cela peut avoir.</target>
         
       </trans-unit>
       <trans-unit id="s55787f4dfcdce52b">
@@ -6943,7 +6928,7 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
       </trans-unit>
       <trans-unit id="s1298e361e40ee1c5">
         <source>Stop impersonation</source>
-        <target>Arrêter l'appropriation utilisateu</target>
+        <target>Arrêter l'appropriation utilisateur</target>
         
       </trans-unit>
       <trans-unit id="s6abff64e7ff7fde9">
@@ -9057,8 +9042,8 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <target>Synchroniser le groupe</target>
 </trans-unit>
 <trans-unit id="s2d5f69929bb7221d">
-  <source><x id="0" equiv-text="${prompt.name}"/> ("<x id="1" equiv-text="${prompt.fieldKey}"/>", of type <x id="2" equiv-text="${prompt.type}"/>)</source>
-  <target><x id="0" equiv-text="${prompt.name}"/> (&amp;quot;<x id="1" equiv-text="${prompt.fieldKey}"/>&amp;quot;, de type <x id="2" equiv-text="${prompt.type}"/>)</target>
+  <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
+  <target><x id="0" equiv-text="${p.name}"/> (&amp;quot;<x id="1" equiv-text="${p.fieldKey}"/>&amp;quot;, de type <x id="2" equiv-text="${p.type}"/>)</target>
 </trans-unit>
 <trans-unit id="sa38c5a2731be3a46">
   <source>authentik was unable to save this application:</source>
@@ -9226,57 +9211,115 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="s98bb2ae796f1ceef">
   <source>Select another authentication method</source>
+  <target>Sélectionnez une autre méthode d'authentification</target>
 </trans-unit>
 <trans-unit id="s21d95b4651ad7a1e">
   <source>Enter a one-time recovery code for this user.</source>
+  <target>Entrer un code de récupération à usage unique pour cette utilisateur.</target>
 </trans-unit>
 <trans-unit id="s2e1d5a7d320c25ef">
   <source>Enter the code from your authenticator device.</source>
+  <target>Entrer le code sur votre appareil d'authentification.</target>
 </trans-unit>
 <trans-unit id="scc1a17d28912e974">
   <source>Kerberos Source is in preview.</source>
+  <target>La source Kerberos est en aperçu.</target>
 </trans-unit>
 <trans-unit id="s54154a8d64a3597b">
   <source>Captcha stage</source>
+  <target>Étape de Captcha</target>
 </trans-unit>
 <trans-unit id="s0c250af62ddbf801">
   <source>When set, adds functionality exactly like a Captcha stage, but baked into the Identification stage.</source>
+  <target>Si défini, ajoute la fonctionnalité d'une étape Captcha, mais intégré dans l'étape d'identification.</target>
 </trans-unit>
 <trans-unit id="sabf8a430d504f8c8">
   <source>Endpoint Google Chrome Device Trust is in preview.</source>
+  <target>Le point de terminaison Google Chrome Device Trust est en aperçu technique.</target>
 </trans-unit>
 <trans-unit id="s6f4f35a5a4b9b3cb">
   <source>Interactive</source>
+  <target>Interactif</target>
 </trans-unit>
 <trans-unit id="sd020240e41e4c207">
   <source>Enable this flag if the configured captcha requires User-interaction. Required for reCAPTCHA v2, hCaptcha and Cloudflare Turnstile.</source>
+  <target>Activer cette option si le captcha configuré requiert une interaction de l'utilisateur. Requis pour reCATCHA v2, hCaptcha et Cloudflare Turnstile.</target>
 </trans-unit>
 <trans-unit id="saa29a2ac03cd9d19">
   <source>Reason</source>
+  <target>Raison</target>
 </trans-unit>
 <trans-unit id="se9fd92a824994eba">
   <source>Reason for impersonating the user</source>
+  <target>Raison pour l'appropriation de l'utilisateur</target>
 </trans-unit>
 <trans-unit id="s29fab8887734192f">
   <source>Require reason for impersonation</source>
+  <target>Forcer une raison d'appropriation</target>
 </trans-unit>
 <trans-unit id="sc24af6de78468cfa">
   <source>Require administrators to provide a reason for impersonating a user.</source>
+  <target>Forcer les administrateurs à fournir une raison d'appropriation utilisateur.</target>
 </trans-unit>
 <trans-unit id="sd48cc52117f4d68b">
   <source>Italian</source>
+  <target>Italien</target>
 </trans-unit>
 <trans-unit id="s6cee92a3b310e650">
   <source>Add entry</source>
+  <target>Ajouter une entrée</target>
 </trans-unit>
 <trans-unit id="s8f36fb59c31d33eb">
   <source>Link Title</source>
+  <target>Titre du lien</target>
 </trans-unit>
 <trans-unit id="s92205c10ba1f0f4c">
   <source>This option configures the footer links on the flow executor pages. The URL is limited to web and mail addresses. If the name is left blank, the URL will be shown.</source>
+  <target>Cette option configure les liens affichés en bas de page sur l’exécuteur de flux. L'URL est limitée à des addresses web et courriel. Si le nom est laissé vide, l'URL sera affichée.</target>
 </trans-unit>
 <trans-unit id="s66f572bec2bde9c4">
   <source>External applications that use <x id="0" equiv-text="${this.brand.brandingTitle || &quot;authentik&quot;}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
+  <target>Applications externes qui utilisent <x id="0" equiv-text="${this.brand.brandingTitle || &quot;authentik&quot;}"/> comme fournisseur d'identité en utilisant des protocoles comme OAuth2 et SAML. Toutes les applications sont affichées ici, même celles auxquelles vous n'avez pas accès.</target>
+</trans-unit>
+<trans-unit id="s58bec0ecd4f3ccd4">
+  <source>Strict</source>
+  <target>Strict</target>
+</trans-unit>
+<trans-unit id="sd27a8f54aca5d278">
+  <source>Regex</source>
+  <target>Regex</target>
+</trans-unit>
+<trans-unit id="seb411b22a8f262d6">
+  <source>Valid redirect URIs after a successful authorization flow. Also specify any origins here for Implicit flows.</source>
+  <target>URLs de redirection autorisées après un flux d'autorisation réussi. Indiquez également toute origine ici pour les flux implicites.</target>
+</trans-unit>
+<trans-unit id="s4c49d27de60a532b">
+  <source>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</source>
+  <target>Pour permettre n'importe quelle URI de redirection, définissez cette valeur sur ".*". Soyez conscient des possibles implications de sécurité que cela peut avoir.</target>
+</trans-unit>
+<trans-unit id="s43f899a86c6a3484">
+  <source>Redirect URIs/Origins</source>
+  <target>URLs de redirection/Origines</target>
+</trans-unit>
+<trans-unit id="sa52bf79fe1ccb13e">
+  <source>Federated OIDC Sources</source>
+  <target>Sources OIDC fédérées</target>
+</trans-unit>
+<trans-unit id="s555465bf6577505e">
+  <source>Federated OIDC Providers</source>
+  <target>Fournisseurs OIDC fédérés</target>
+</trans-unit>
+<trans-unit id="s066bfb12c9032dc2">
+  <source>Available Providers</source>
+  <target>Fournisseurs disponibles</target>
+</trans-unit>
+<trans-unit id="sa12111ca3f3e398e">
+  <source>Selected Providers</source>
+  <target>Fournisseurs sélectionnés</target>
+</trans-unit>
+<trans-unit id="s4f8a3f7792e6b940">
+  <source>JWTs signed by the selected providers can be used to authenticate to this provider.</source>
+  <target>Les JWTs signés par les fournisseurs sélectionnés peuvent être utilisés pour s'authentifier auprès de ce fournisseur.</target>
 </trans-unit>
     </body>
   </file>

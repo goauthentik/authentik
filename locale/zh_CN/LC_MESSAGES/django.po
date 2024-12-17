@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-18 00:09+0000\n"
+"POT-Creation-Date: 2024-11-26 00:09+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/authentik/teams/119923/zh_CN/)\n"
@@ -81,9 +81,9 @@ msgid "authentik Export - {date}"
 msgstr "authentik 导出 - {date}"
 
 #: authentik/blueprints/v1/tasks.py authentik/crypto/tasks.py
-#, python-format
-msgid "Successfully imported %(count)d files."
-msgstr "已成功导入 %(count)d 个文件。"
+#, python-brace-format
+msgid "Successfully imported {count} files."
+msgstr "已成功导入 {count} 个文件。"
 
 #: authentik/brands/models.py
 msgid ""
@@ -867,14 +867,14 @@ msgid "Starting full provider sync"
 msgstr "开始全量提供程序同步"
 
 #: authentik/lib/sync/outgoing/tasks.py
-#, python-format
-msgid "Syncing page %(page)d of users"
-msgstr "正在同步用户页面 %(page)d"
+#, python-brace-format
+msgid "Syncing page {page} of users"
+msgstr "正在同步用户页面 {page}"
 
 #: authentik/lib/sync/outgoing/tasks.py
-#, python-format
-msgid "Syncing page %(page)d of groups"
-msgstr "正在同步群组页面 %(page)d"
+#, python-brace-format
+msgid "Syncing page {page} of groups"
+msgstr "正在同步群组页面 {page}"
 
 #: authentik/lib/sync/outgoing/tasks.py
 #, python-brace-format
@@ -1025,9 +1025,9 @@ msgid "Event Matcher Policies"
 msgstr "事件匹配策略"
 
 #: authentik/policies/expiry/models.py
-#, python-format
-msgid "Password expired %(days)d days ago. Please update your password."
-msgstr "密码在 %(days)d 天前过期。请更新您的密码。"
+#, python-brace-format
+msgid "Password expired {days} days ago. Please update your password."
+msgstr "密码在 {days} 天前过期。请更新您的密码。"
 
 #: authentik/policies/expiry/models.py
 msgid "Password has expired."
@@ -1153,9 +1153,9 @@ msgid "Invalid password."
 msgstr "无效密码。"
 
 #: authentik/policies/password/models.py
-#, python-format
-msgid "Password exists on %(count)d online lists."
-msgstr "%(count)d 个在线列表中存在密码。"
+#, python-brace-format
+msgid "Password exists on {count} online lists."
+msgstr "{count} 个在线列表中存在密码。"
 
 #: authentik/policies/password/models.py
 msgid "Password is too weak."
@@ -1274,6 +1274,11 @@ msgstr "LDAP 提供程序"
 msgid "Search full LDAP directory"
 msgstr "搜索完整 LDAP 目录"
 
+#: authentik/providers/oauth2/api/providers.py
+#, python-brace-format
+msgid "Invalid Regex Pattern: {url}"
+msgstr "无效的正则表达式模式：{url}"
+
 #: authentik/providers/oauth2/id_token.py
 msgid "Based on the Hashed User ID"
 msgstr "基于经过哈希处理的用户 ID"
@@ -1315,6 +1320,14 @@ msgstr "所有提供程序都使用相同的标识符"
 #: authentik/providers/oauth2/models.py
 msgid "Each provider has a different issuer, based on the application slug."
 msgstr "根据应用程序 Slug，每个提供程序都有不同的颁发者。"
+
+#: authentik/providers/oauth2/models.py
+msgid "Strict URL comparison"
+msgstr "严格 URL 比较"
+
+#: authentik/providers/oauth2/models.py
+msgid "Regular Expression URL matching"
+msgstr "正则表达式 URL 匹配"
 
 #: authentik/providers/oauth2/models.py
 msgid "code (Authorization Code Flow)"
@@ -1391,10 +1404,6 @@ msgstr "客户端密钥"
 #: authentik/providers/oauth2/models.py
 msgid "Redirect URIs"
 msgstr "重定向 URI"
-
-#: authentik/providers/oauth2/models.py
-msgid "Enter each URI on a new line."
-msgstr "每行输入一个 URI。"
 
 #: authentik/providers/oauth2/models.py
 msgid "Include claims in id_token"

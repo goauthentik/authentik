@@ -17,8 +17,8 @@ sidebar_label: SonarQube
 
 The following placeholders will be used:
 
--   `sonarqube.company` is the FQDN of the sonarqube install.
--   `authentik.company` is the FQDN of the authentik install.
+- `sonarqube.company` is the FQDN of the sonarqube install.
+- `authentik.company` is the FQDN of the authentik install.
 
 ## Terraform provider
 
@@ -65,11 +65,11 @@ Navigate to Administration -> Configuration -> Authentication -> Saml
 
 Input these Values
 
--   Application ID: https://sonarqube.company/saml2/metadata
--   Provider Name: authentik
--   Provider ID: https://authentik.company/
--   SAML login url: https://authentik.company/application/saml/sonarqube/sso/binding/redirect/
--   Identity provider certificate: Download it from authentik
--   SAML user login attribute: http://schemas.goauthentik.io/2021/02/saml/username
--   SAML user name attribute: http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name
--   SAML user email attribute: http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress
+- Application ID: https://sonarqube.company/saml2/metadata
+- Provider Name: authentik
+- Provider ID: https://authentik.company/
+- SAML login url: https://authentik.company/application/saml/sonarqube/sso/binding/redirect/
+- Identity provider certificate: Download it from authentik
+- SAML user login attribute: http://schemas.goauthentik.io/2021/02/saml/username
+- SAML user name attribute: http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name
+- SAML user email attribute: http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress

@@ -21,8 +21,8 @@ This is based on authentik 2021.10.4 and OnlyOffice 11.5.4.1582. Instructions ma
 
 The following placeholders will be used:
 
--   `authentik.company` is the FQDN of authentik.
--   `onlyoffice.company` is the FQDN of the OnlyOffice instance.
+- `authentik.company` is the FQDN of authentik.
+- `onlyoffice.company` is the FQDN of the OnlyOffice instance.
 
 Open your OnlyOffice instance, navigate to the settings by clicking the cog-icon in the navbar, then click on _Control Panel_ on the sidebar.
 
@@ -46,8 +46,8 @@ Navigate back to your OnlyOffice Control panel, and paste the URL into _Load met
 
 Under _Attribute Mapping_, set the following values
 
--   _First Name_: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
--   _Last Name_: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
--   _Email_: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
+- _First Name_: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
+- _Last Name_: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
+- _Email_: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
 
 Click save and a new SSO button will appear on the OnlyOffice login page.

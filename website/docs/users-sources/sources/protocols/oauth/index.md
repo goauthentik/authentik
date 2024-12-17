@@ -4,13 +4,13 @@ title: OAuth Source
 
 This source allows users to enroll themselves with an external OAuth-based Identity Provider. The generic provider expects the endpoint to return OpenID-Connect compatible information. Vendor-specific implementations have their own OAuth Source.
 
--   Policies: Allow/Forbid users from linking their accounts with this provider.
--   Request Token URL: This field is used for OAuth v1 implementations and will be provided by the provider.
--   Authorization URL: This value will be provided by the provider.
--   Access Token URL: This value will be provided by the provider.
--   Profile URL: This URL is called by authentik to retrieve user information upon successful authentication.
--   Consumer key/Consumer secret: These values will be provided by the provider.
--   Scopes: Configure additional scopes to send to the provider.
+- Policies: Allow/Forbid users from linking their accounts with this provider.
+- Request Token URL: This field is used for OAuth v1 implementations and will be provided by the provider.
+- Authorization URL: This value will be provided by the provider.
+- Access Token URL: This value will be provided by the provider.
+- Profile URL: This URL is called by authentik to retrieve user information upon successful authentication.
+- Consumer key/Consumer secret: These values will be provided by the provider.
+- Scopes: Configure additional scopes to send to the provider.
 
     Starting with authentik 2022.10, the default scopes can be replaced by prefix the value for scopes with `*`.
 
@@ -36,7 +36,7 @@ See the [overview](../../property-mappings/index.md) for information on how prop
 
 The following variables are available to OAuth source property mappings:
 
--   `info`: A Python dictionary containing OAuth claims. For example (values might differ depending on the source):
+- `info`: A Python dictionary containing OAuth claims. For example (values might differ depending on the source):
     ```python
     {
         "iss": "https://source.company",
@@ -51,5 +51,5 @@ The following variables are available to OAuth source property mappings:
         "nickname": "user",
     }
     ```
--   `client`: An OAuth client object to make requests to the Source with authentication built-in.
--   `token`: A Python dictionary containing OAuth tokens.
+- `client`: An OAuth client object to make requests to the Source with authentication built-in.
+- `token`: A Python dictionary containing OAuth tokens.
