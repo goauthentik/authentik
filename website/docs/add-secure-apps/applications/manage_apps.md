@@ -48,7 +48,7 @@ When multiple policies/groups/users are attached, you can configure the _Policy 
 <span class="badge badge--preview">Preview</span>
 <span class="badge badge--version">authentik 2024.12+</span>
 
-Application entitlements can be used through authentik to manage authorization within an application (what areas of the app can users or groups can access). Entitlements are scoped to a single application and can be bound to multiple users/groups (binding policies is not currently supported), giving them access to the entitlement. An application can either check for the name of the entitlement (via the [`entitlements` scope](../providers/oauth2/index.md#default--special-scopes)), or via attributes stored in entitlements.
+Application entitlements can be used through authentik to manage authorization within an application (what areas of the app can users or groups can access). Entitlements are scoped to a single application and can be bound to multiple users/groups (binding policies is not currently supported), giving them access to the entitlement. An application can either check for the name of the entitlement (via the `entitlements` scope), or via attributes stored in entitlements.
 
 An authentik admin can create an entitlement [in the Admin interface](#create-an-application-entitlement) or using the [authentik API](../../developer-docs/api/api.md).
 
@@ -75,6 +75,7 @@ return {
     "my_attr": attrs.get("my_attr")
 }
 ```
+
 ### Create an application entitlement
 
 1. To create an application entitlement open the Admin interface and navigate to **Applications -> Applications**.
