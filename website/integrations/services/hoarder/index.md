@@ -17,8 +17,8 @@ sidebar_label: Hoarder
 
 The following placeholders will be used:
 
--   `hoarder.company` is the FQDN of the Hoarder install.
--   `authentik.company` is the FQDN of the authentik install.
+- `hoarder.company` is the FQDN of the Hoarder install.
+- `authentik.company` is the FQDN of the authentik install.
 
 ## authentik configuration
 
@@ -26,8 +26,8 @@ The following placeholders will be used:
 
 In authentik, under **Applications** -> **Providers** of the **Admin interface**, create a new **OAuth2/OpenID Provider** with the desired settings.
 
--   Name: `hoarder`
--   Redirect URI: `https://hoarder.company/api/auth/callback/custom`
+- Name: `hoarder`
+- Redirect URI: `https://hoarder.company/api/auth/callback/custom`
 
 Everything else is up to you, just make sure to grab the client ID and the client secret!
 
