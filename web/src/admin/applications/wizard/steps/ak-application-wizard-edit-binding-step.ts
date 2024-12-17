@@ -162,7 +162,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
     }
 
     renderForm(instance?: PolicyBinding) {
-        return html`<ak-wizard-title>${msg("Select A Policy/User/Group Binding")}</ak-wizard-title>
+        return html`<ak-wizard-title>${msg("Create a Policy/User/Group Binding")}</ak-wizard-title>
             <form id="bindingform" class="pf-c-form pf-m-horizontal" slot="form">
                 <div class="pf-c-card pf-m-selectable pf-m-selected">
                     <div class="pf-c-card__body">
