@@ -2,6 +2,7 @@
 
 import configparser
 import os
+import requests
 from time import time
 
 parser = configparser.ConfigParser()
@@ -29,6 +30,15 @@ is_release = "dev" not in image_names[0]
 
 sha = os.environ["GITHUB_SHA"] if not is_pull_request else os.getenv("PR_HEAD_SHA")
 
+latest_published_version = requests.get("https://version.goauthentik.io/version.json")
+latest_published_version.raise_for_status()
+# 2042.0.0
+latest_published_version = latest_published_version.json()["stable"]["version"]
+# 2042.0
+latest_published_version_family = ".".join(
+    latest_published_version.split("-", 1)[0].split(".")[:-1]
+)
+
 # 2042.1.0 or 2042.1.0-rc1
 version = parser.get("bumpversion", "current_version")
 # 2042.1
@@ -42,8 +52,11 @@ if is_release:
             f"{name}:{version}",
         ]
         if not prerelease:
+            if latest_published_version_family == version_family or version[-1] == "0":
+                image_tags += [
+                    f"{name}:latest",
+                ]
             image_tags += [
-                f"{name}:latest",
                 f"{name}:{version_family}",
             ]
 else:
