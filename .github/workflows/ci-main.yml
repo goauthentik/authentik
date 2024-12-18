@@ -53,6 +53,7 @@ jobs:
         name: compute test matrix
         run: |
           MATRIX="$(find authentik -name tests.py -o -name tests | sed 's/.*/{"test_path": "&", "psql": "15"}\n{"test_path": "&", "psql": "16"}/' | jq --slurp --compact-output)"
+          echo $MATRIX
           echo matrix="$MATRIX" >> "$GITHUB_OUTPUT"
   test-migrations-from-stable:
     name: test-migrations-from-stable - PostgreSQL ${{ matrix.psql }}
