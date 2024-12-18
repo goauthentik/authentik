@@ -28,6 +28,7 @@ class TestPropertyMappings(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
         self.source = SAMLSource.objects.create(
+            name=generate_id(),
             slug=generate_id(),
             issuer="authentik",
             allow_idp_initiated=True,
