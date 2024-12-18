@@ -44,37 +44,43 @@ export class FormGroup extends AKElement {
     }
 
     render(): TemplateResult {
-        return html`<div class="pf-c-form__field-group ${this.expanded ? "pf-m-expanded" : ""}">
-            <div class="pf-c-form__field-group-toggle">
-                <div class="pf-c-form__field-group-toggle-button">
-                    <button
-                        class="pf-c-button pf-m-plain"
-                        type="button"
-                        aria-expanded="${this.expanded}"
-                        aria-label=${this.ariaLabel}
-                        @click=${() => {
-                            this.expanded = !this.expanded;
-                        }}
-                    >
-                        <span class="pf-c-form__field-group-toggle-icon">
-                            <i class="fas fa-angle-right" aria-hidden="true"></i>
-                        </span>
-                    </button>
+        return html` <div class="pf-c-form">
+            <div class="pf-c-form__field-group ${this.expanded ? "pf-m-expanded" : ""}">
+                <div class="pf-c-form__field-group-toggle">
+                    <div class="pf-c-form__field-group-toggle-button">
+                        <button
+                            class="pf-c-button pf-m-plain"
+                            type="button"
+                            aria-expanded="${this.expanded}"
+                            aria-label=${this.ariaLabel}
+                            @click=${() => {
+                                this.expanded = !this.expanded;
+                            }}
+                        >
+                            <span class="pf-c-form__field-group-toggle-icon">
+                                <i class="fas fa-angle-right" aria-hidden="true"></i>
+                            </span>
+                        </button>
+                    </div>
                 </div>
-            </div>
-            <div class="pf-c-form__field-group-header">
-                <div class="pf-c-form__field-group-header-main">
-                    <div class="pf-c-form__field-group-header-title">
-                        <div class="pf-c-form__field-group-header-title-text">
-                            <slot name="header"></slot>
+                <div class="pf-c-form__field-group-header">
+                    <div class="pf-c-form__field-group-header-main">
+                        <div class="pf-c-form__field-group-header-title">
+                            <div class="pf-c-form__field-group-header-title-text">
+                                <slot name="header"></slot>
+                            </div>
+                        </div>
+                        <div class="pf-c-form__field-group-header-description">
+                            <slot name="description"></slot>
                         </div>
                     </div>
-                    <div class="pf-c-form__field-group-header-description">
-                        <slot name="description"></slot>
-                    </div>
                 </div>
+                <slot
+                    ?hidden=${!this.expanded}
+                    class="pf-c-form__field-group-body"
+                    name="body"
+                ></slot>
             </div>
-            <slot ?hidden=${!this.expanded} class="pf-c-form__field-group-body" name="body"></slot>
         </div>`;
     }
 }

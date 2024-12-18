@@ -1,40 +1,18 @@
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
-import {
-    oauth2ProviderSelector,
-    oauth2ProvidersProvider,
-} from "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
-import {
-    oauth2SourcesProvider,
-    oauth2SourcesSelector,
-} from "@goauthentik/admin/providers/oauth2/OAuth2Sources.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
-import "@goauthentik/components/ak-toggle-group";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/SearchSelect";
-import "@goauthentik/elements/utils/TimeDeltaHelp";
 
-import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
-import {
-    FlowsInstancesListDesignationEnum,
-    ProvidersApi,
-    ProxyMode,
-    ProxyProvider,
-} from "@goauthentik/api";
+import { ProvidersApi, ProxyMode, ProxyProvider } from "@goauthentik/api";
 
-import { propertyMappingsProvider, propertyMappingsSelector } from "./ProxyProviderFormHelpers.js";
+import { SetMode, SetShowHttpBasic, renderForm } from "./ProxyProviderFormForm.js";
 
 @customElement("ak-provider-proxy-form")
 export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
@@ -46,8 +24,8 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
         const provider = await new ProvidersApi(DEFAULT_CONFIG).providersProxyRetrieve({
             id: pk,
         });
-        this.showHttpBasic = first(provider.basicAuthEnabled, true);
-        this.mode = first(provider.mode, ProxyMode.Proxy);
+        this.showHttpBasic = provider.basicAuthEnabled ?? true;
+        this.mode = provider.mode ?? ProxyMode.Proxy;
         return provider;
     }
 
@@ -74,392 +52,22 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
         }
     }
 
-    renderHttpBasic(): TemplateResult {
-        return html`<ak-text-input
-                name="basicAuthUserAttribute"
-                label=${msg("HTTP-Basic Username Key")}
-                value="${ifDefined(this.instance?.basicAuthUserAttribute)}"
-                help=${msg(
-                    "User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used.",
-                )}
-            >
-            </ak-text-input>
-
-            <ak-text-input
-                name="basicAuthPasswordAttribute"
-                label=${msg("HTTP-Basic Password Key")}
-                value="${ifDefined(this.instance?.basicAuthPasswordAttribute)}"
-                help=${msg(
-                    "User/Group Attribute used for the password part of the HTTP-Basic Header.",
-                )}
-            >
-            </ak-text-input>`;
-    }
-
-    renderModeSelector(): TemplateResult {
-        const setMode = (ev: CustomEvent<{ value: ProxyMode }>) => {
+    renderForm() {
+        const onSetMode: SetMode = (ev) => {
             this.mode = ev.detail.value;
         };
 
-        // prettier-ignore
-        return html`
-            <ak-toggle-group value=${this.mode} @ak-toggle=${setMode}>
-                <option value=${ProxyMode.Proxy}>${msg("Proxy")}</option>
-                <option value=${ProxyMode.ForwardSingle}>${msg("Forward auth (single application)")}</option>
-                <option value=${ProxyMode.ForwardDomain}>${msg("Forward auth (domain level)")}</option>
-            </ak-toggle-group>
-        `;
-    }
+        const onSetShowHttpBasic: SetShowHttpBasic = (ev: Event) => {
+            const el = ev.target as HTMLInputElement;
+            this.showHttpBasic = el.checked;
+        };
 
-    renderSettings(): TemplateResult {
-        switch (this.mode) {
-            case ProxyMode.Proxy:
-                return html`<p class="pf-u-mb-xl">
-                        ${msg(
-                            "This provider will behave like a transparent reverse-proxy, except requests must be authenticated. If your upstream application uses HTTPS, make sure to connect to the outpost using HTTPS as well.",
-                        )}
-                    </p>
-                    <ak-form-element-horizontal
-                        label=${msg("External host")}
-                        ?required=${true}
-                        name="externalHost"
-                    >
-                        <input
-                            type="text"
-                            value="${ifDefined(this.instance?.externalHost)}"
-                            class="pf-c-form-control"
-                            required
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "The external URL you'll access the application at. Include any non-standard port.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Internal host")}
-                        ?required=${true}
-                        name="internalHost"
-                    >
-                        <input
-                            type="text"
-                            value="${ifDefined(this.instance?.internalHost)}"
-                            class="pf-c-form-control"
-                            required
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Upstream host that the requests are forwarded to.")}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal name="internalHostSslValidation">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${first(this.instance?.internalHostSslValidation, true)}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label"
-                                >${msg("Internal host SSL Validation")}</span
-                            >
-                        </label>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Validate SSL Certificates of upstream servers.")}
-                        </p>
-                    </ak-form-element-horizontal>`;
-            case ProxyMode.ForwardSingle:
-                return html`<p class="pf-u-mb-xl">
-                        ${msg(
-                            "Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /outpost.goauthentik.io must be routed to the outpost (when using a managed outpost, this is done for you).",
-                        )}
-                    </p>
-                    <ak-form-element-horizontal
-                        label=${msg("External host")}
-                        ?required=${true}
-                        name="externalHost"
-                    >
-                        <input
-                            type="text"
-                            value="${ifDefined(this.instance?.externalHost)}"
-                            class="pf-c-form-control"
-                            required
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "The external URL you'll access the application at. Include any non-standard port.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>`;
-            case ProxyMode.ForwardDomain:
-                return html`<p class="pf-u-mb-xl">
-                        ${msg(
-                            "Use this provider with nginx's auth_request or traefik's forwardAuth. Only a single provider is required per root domain. You can't do per-application authorization, but you don't have to create a provider for each application.",
-                        )}
-                    </p>
-                    <div class="pf-u-mb-xl">
-                        ${msg("An example setup can look like this:")}
-                        <ul class="pf-c-list">
-                            <li>${msg("authentik running on auth.example.com")}</li>
-                            <li>${msg("app1 running on app1.example.com")}</li>
-                        </ul>
-                        ${msg(
-                            "In this case, you'd set the Authentication URL to auth.example.com and Cookie domain to example.com.",
-                        )}
-                    </div>
-                    <ak-form-element-horizontal
-                        label=${msg("Authentication URL")}
-                        ?required=${true}
-                        name="externalHost"
-                    >
-                        <input
-                            type="text"
-                            value="${first(this.instance?.externalHost, window.location.origin)}"
-                            class="pf-c-form-control"
-                            required
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "The external URL you'll authenticate at. The authentik core server should be reachable under this URL.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Cookie domain")}
-                        name="cookieDomain"
-                        ?required=${true}
-                    >
-                        <input
-                            type="text"
-                            value="${ifDefined(this.instance?.cookieDomain)}"
-                            class="pf-c-form-control"
-                            required
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "Set this to the domain you wish the authentication to be valid for. Must be a parent domain of the URL above. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>`;
-            case ProxyMode.UnknownDefaultOpenApi:
-                return html`<p>${msg("Unknown proxy mode")}</p>`;
-        }
-    }
-
-    renderForm(): TemplateResult {
-        return html`
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Authorization flow")}
-                required
-                name="authorizationFlow"
-            >
-                <ak-flow-search
-                    flowType=${FlowsInstancesListDesignationEnum.Authorization}
-                    .currentFlow=${this.instance?.authorizationFlow}
-                    required
-                ></ak-flow-search>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Flow used when authorizing this provider.")}
-                </p>
-            </ak-form-element-horizontal>
-
-            <div class="pf-c-card pf-m-selectable pf-m-selected">
-                <div class="pf-c-card__body">${this.renderModeSelector()}</div>
-                <div class="pf-c-card__footer">${this.renderSettings()}</div>
-            </div>
-            <ak-form-element-horizontal label=${msg("Token validity")} name="accessTokenValidity">
-                <input
-                    type="text"
-                    value="${first(this.instance?.accessTokenValidity, "hours=24")}"
-                    class="pf-c-form-control"
-                />
-                <p class="pf-c-form__helper-text">
-                    ${msg("Configure how long tokens are valid for.")}
-                </p>
-                <ak-utils-time-delta-help></ak-utils-time-delta-help>
-            </ak-form-element-horizontal>
-
-            <ak-form-group>
-                <span slot="header">${msg("Advanced protocol settings")}</span>
-                <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal label=${msg("Certificate")} name="certificate">
-                        <ak-crypto-certificate-search
-                            .certificate=${this.instance?.certificate}
-                        ></ak-crypto-certificate-search>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Additional scopes")}
-                        name="propertyMappings"
-                    >
-                        <ak-dual-select-dynamic-selected
-                            .provider=${propertyMappingsProvider}
-                            .selector=${propertyMappingsSelector(this.instance?.propertyMappings)}
-                            available-label="${msg("Available Scopes")}"
-                            selected-label="${msg("Selected Scopes")}"
-                        ></ak-dual-select-dynamic-selected>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Additional scope mappings, which are passed to the proxy.")}
-                        </p>
-                    </ak-form-element-horizontal>
-
-                    <ak-form-element-horizontal
-                        label="${this.mode === ProxyMode.ForwardDomain
-                            ? msg("Unauthenticated URLs")
-                            : msg("Unauthenticated Paths")}"
-                        name="skipPathRegex"
-                    >
-                        <textarea class="pf-c-form-control">
-${this.instance?.skipPathRegex}</textarea
-                        >
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "Regular expressions for which authentication is not required. Each new line is interpreted as a new expression.",
-                            )}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "When using proxy or forward auth (single application) mode, the requested URL Path is checked against the regular expressions. When using forward auth (domain mode), the full requested URL including scheme and host is matched against the regular expressions.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
-                </div>
-            </ak-form-group>
-            <ak-form-group>
-                <span slot="header">${msg("Authentication settings")}</span>
-                <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal name="interceptHeaderAuth">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${first(this.instance?.interceptHeaderAuth, true)}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label"
-                                >${msg("Intercept header authentication")}</span
-                            >
-                        </label>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "When enabled, authentik will intercept the Authorization header to authenticate the request.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal name="basicAuthEnabled">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${first(this.instance?.basicAuthEnabled, false)}
-                                @change=${(ev: Event) => {
-                                    const el = ev.target as HTMLInputElement;
-                                    this.showHttpBasic = el.checked;
-                                }}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label"
-                                >${msg("Send HTTP-Basic Authentication")}</span
-                            >
-                        </label>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "Send a custom HTTP-Basic Authentication header based on values from authentik.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
-                    ${this.showHttpBasic ? this.renderHttpBasic() : html``}
-                    <ak-form-element-horizontal
-                        label=${msg("Trusted OIDC Sources")}
-                        name="jwtFederationSources"
-                    >
-                        <ak-dual-select-dynamic-selected
-                            .provider=${oauth2SourcesProvider}
-                            .selector=${oauth2SourcesSelector(this.instance?.jwtFederationSources)}
-                            available-label=${msg("Available Sources")}
-                            selected-label=${msg("Selected Sources")}
-                        ></ak-dual-select-dynamic-selected>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Federated OIDC Providers")}
-                        name="jwtFederationProviders"
-                    >
-                        <ak-dual-select-dynamic-selected
-                            .provider=${oauth2ProvidersProvider}
-                            .selector=${oauth2ProviderSelector(
-                                this.instance?.jwtFederationProviders,
-                            )}
-                            available-label=${msg("Available Providers")}
-                            selected-label=${msg("Selected Providers")}
-                        ></ak-dual-select-dynamic-selected>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "JWTs signed by the selected providers can be used to authenticate to this provider.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
-                </div>
-            </ak-form-group>
-
-            <ak-form-group>
-                <span slot="header"> ${msg("Advanced flow settings")} </span>
-                <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Authentication flow")}
-                        ?required=${false}
-                        name="authenticationFlow"
-                    >
-                        <ak-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.Authentication}
-                            .currentFlow=${this.instance?.authenticationFlow}
-                        ></ak-flow-search>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "Flow used when a user access this provider and is not authenticated.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Invalidation flow")}
-                        name="invalidationFlow"
-                        required
-                    >
-                        <ak-flow-search
-                            flowType=${FlowsInstancesListDesignationEnum.Invalidation}
-                            .currentFlow=${this.instance?.invalidationFlow}
-                            defaultFlowSlug="default-provider-invalidation-flow"
-                            required
-                        ></ak-flow-search>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Flow used when logging out of this provider.")}
-                        </p>
-                    </ak-form-element-horizontal>
-                </div>
-            </ak-form-group>
-        `;
+        return renderForm(this.instance ?? {}, [], {
+            mode: this.mode,
+            onSetMode,
+            showHttpBasic: this.showHttpBasic,
+            onSetShowHttpBasic,
+        });
     }
 }
 
