@@ -3731,14 +3731,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <source>Always require consent</source>
         <target>Exigir siempre el consentimiento</target>
       </trans-unit>
-      <trans-unit id="s8ce8bdc9cc9c8604">
-        <source>Consent given last indefinitely</source>
-        <target>El último consentimiento otorgado indefinidamente</target>
-      </trans-unit>
-      <trans-unit id="sb986f15fa9b17805">
-        <source>Consent expires.</source>
-        <target>El consentimiento caduca.</target>
-      </trans-unit>
       <trans-unit id="s6f328f2d8382d998">
         <source>Consent expires in</source>
         <target>El consentimiento vence en</target>
@@ -4107,12 +4099,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s7b105164d209f670">
         <source>Require authentication</source>
-      </trans-unit>
-      <trans-unit id="s239c2a351cde6d39">
-        <source>Require no authentication.</source>
-      </trans-unit>
-      <trans-unit id="s98beadfeeb3acb66">
-        <source>Require superuser.</source>
       </trans-unit>
       <trans-unit id="sfad9279cc42c6b61">
         <source>Required authentication level for this flow.</source>
@@ -5825,9 +5811,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s7513372fe60f6387">
   <source>Event volume</source>
 </trans-unit>
-<trans-unit id="s047a5f0211fedc72">
-  <source>Require Outpost (flow can only be executed from an outpost).</source>
-</trans-unit>
 <trans-unit id="s3271da6c18c25b18">
   <source>Connection settings.</source>
 </trans-unit>
@@ -6990,6 +6973,69 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s4f8a3f7792e6b940">
   <source>JWTs signed by the selected providers can be used to authenticate to this provider.</source>
+</trans-unit>
+<trans-unit id="s3cc2b33d2a8000d3">
+  <source>KAdmin type</source>
+</trans-unit>
+<trans-unit id="s624e1c8739507529">
+  <source>MIT krb5 kadmin</source>
+</trans-unit>
+<trans-unit id="s6d225d9e74dfff6f">
+  <source>Heimdal kadmin</source>
+</trans-unit>
+<trans-unit id="sc9e494c8346b7cb5">
+  <source>Other</source>
+</trans-unit>
+<trans-unit id="sbf6c78047e8ec8f8">
+  <source>Other type of kadmin</source>
+</trans-unit>
+<trans-unit id="sb53d0b77abef2316">
+  <source>To let a user directly reset their password, configure a recovery flow on the currently active brand.</source>
+</trans-unit>
+<trans-unit id="s2e5226fcf269689b">
+  <source>Consent given lasts indefinitely</source>
+</trans-unit>
+<trans-unit id="s7eff620292ed9349">
+  <source>Consent expires</source>
+</trans-unit>
+<trans-unit id="s1cc032bcc50b2942">
+  <source>Available Policies</source>
+</trans-unit>
+<trans-unit id="s3ad64193ad5f4a5e">
+  <source>Selected Policies</source>
+</trans-unit>
+<trans-unit id="sc487e11d5987dbb4">
+  <source>Redirect the user to another flow, potentially with all gathered context</source>
+</trans-unit>
+<trans-unit id="sad9d5481474d4f5b">
+  <source>Static</source>
+</trans-unit>
+<trans-unit id="se87a96950464bc89">
+  <source>Target URL</source>
+</trans-unit>
+<trans-unit id="s7f3097955b19736a">
+  <source>Redirect the user to a static URL.</source>
+</trans-unit>
+<trans-unit id="s9bdee1c5130c8240">
+  <source>Target Flow</source>
+</trans-unit>
+<trans-unit id="sa5d1405b8d6529c7">
+  <source>Redirect the user to a Flow.</source>
+</trans-unit>
+<trans-unit id="s7c9db337d14d42b3">
+  <source>Keep flow context</source>
+</trans-unit>
+<trans-unit id="s0d7dea184036a74d">
+  <source>Require no authentication</source>
+</trans-unit>
+<trans-unit id="s66f533986ba6182c">
+  <source>Require superuser</source>
+</trans-unit>
+<trans-unit id="s26c0a8789930b5fd">
+  <source>Require being redirected from another flow</source>
+</trans-unit>
+<trans-unit id="sbfaee8cfbf4e44e8">
+  <source>Require Outpost (flow can only be executed from an outpost)</source>
 </trans-unit>
     </body>
   </file>
