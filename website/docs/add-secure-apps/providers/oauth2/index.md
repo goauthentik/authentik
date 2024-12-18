@@ -154,7 +154,7 @@ This does _not_ apply to special scopes, as those are not configurable in the pr
 - `openid`: A scope required by the OpenID Connect spec to specify that an OAuth interaction is OpenID Connect. Does not add any data to the token.
 - `profile`: Include basic profile information, such as username, name and group membership.
 - `email`: Include the users' email address.
-- `entitlements`: Include [application entitlement](../../applications/entitlements.md) data
+- `entitlements`: Include application entitlement data.
 - `offline_access`: An OAuth 2.0 scope which indicates that the application is requesting a refresh token.
 
 ### authentik
