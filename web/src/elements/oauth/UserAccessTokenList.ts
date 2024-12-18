@@ -1,5 +1,4 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/chips/Chip";
@@ -27,12 +26,10 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
         return super.styles.concat(PFFlex);
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<TokenModel>> {
+    async apiEndpoint(): Promise<PaginatedResponse<TokenModel>> {
         return new Oauth2Api(DEFAULT_CONFIG).oauth2AccessTokensList({
+            ...(await this.defaultEndpointConfig()),
             user: this.userId,
-            ordering: "expires",
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
         });
     }
 
@@ -66,15 +63,15 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Refresh Tokens(s)")}
+            objectLabel=${msg("Access Tokens(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: ExpiringBaseGrantModel) => {
-                return new Oauth2Api(DEFAULT_CONFIG).oauth2RefreshTokensUsedByList({
+                return new Oauth2Api(DEFAULT_CONFIG).oauth2AccessTokensUsedByList({
                     id: item.pk,
                 });
             }}
             .delete=${(item: ExpiringBaseGrantModel) => {
-                return new Oauth2Api(DEFAULT_CONFIG).oauth2RefreshTokensDestroy({
+                return new Oauth2Api(DEFAULT_CONFIG).oauth2AccessTokensDestroy({
                     id: item.pk,
                 });
             }}
@@ -104,5 +101,11 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
                 })}
             </ak-chip-group>`,
         ];
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-oauth-access-token-list": UserOAuthAccessTokenList;
     }
 }

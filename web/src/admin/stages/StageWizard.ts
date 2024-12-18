@@ -15,6 +15,7 @@ import "@goauthentik/admin/stages/identification/IdentificationStageForm";
 import "@goauthentik/admin/stages/invitation/InvitationStageForm";
 import "@goauthentik/admin/stages/password/PasswordStageForm";
 import "@goauthentik/admin/stages/prompt/PromptStageForm";
+import "@goauthentik/admin/stages/redirect/RedirectStageForm";
 import "@goauthentik/admin/stages/source/SourceStageForm";
 import "@goauthentik/admin/stages/user_delete/UserDeleteStageForm";
 import "@goauthentik/admin/stages/user_login/UserLoginStageForm";
@@ -125,5 +126,11 @@ export class StageWizard extends AKElement {
                 <button slot="trigger" class="pf-c-button pf-m-primary">${this.createText}</button>
             </ak-wizard>
         `;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-wizard": StageWizard;
     }
 }

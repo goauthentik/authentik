@@ -11,6 +11,7 @@ env:
 
 jobs:
   build:
+    if: ${{ github.repository != 'goauthentik/authentik-internal' }}
     runs-on: ubuntu-latest
     steps:
       - id: generate_token
@@ -24,7 +25,7 @@ jobs:
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - run: poetry run ak update_webauthn_mds
-      - uses: peter-evans/create-pull-request@v6
+      - uses: peter-evans/create-pull-request@v7
         id: cpr
         with:
           token: ${{ steps.generate_token.outputs.token }}

@@ -14,6 +14,8 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider.js";
 import "@goauthentik/elements/PageHeader";
 import "@goauthentik/elements/cards/AggregatePromiseCard";
+import "@goauthentik/elements/cards/QuickActionsCard.js";
+import type { QuickAction } from "@goauthentik/elements/cards/QuickActionsCard.js";
 import { paramURL } from "@goauthentik/elements/router/RouterOutlet";
 
 import { msg, str } from "@lit/localize";
@@ -25,7 +27,6 @@ import { when } from "lit/directives/when.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDivider from "@patternfly/patternfly/components/Divider/divider.css";
-import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -37,6 +38,11 @@ export function versionFamily(): string {
     parts.pop();
     return parts.join(".");
 }
+
+const RELEASE = `${VERSION.split(".").slice(0, -1).join(".")}#fixed-in-${VERSION.replaceAll(
+    ".",
+    "",
+)}`;
 
 const AdminOverviewBase = WithLicenseSummary(AKElement);
 
@@ -50,7 +56,6 @@ export class AdminOverviewPage extends AdminOverviewBase {
             PFGrid,
             PFPage,
             PFContent,
-            PFList,
             PFDivider,
             css`
                 .pf-l-grid__item {
@@ -73,6 +78,14 @@ export class AdminOverviewPage extends AdminOverviewBase {
         ];
     }
 
+    quickActions: QuickAction[] = [
+        [msg("Create a new application"), paramURL("/core/applications", { createForm: true })],
+        [msg("Check the logs"), paramURL("/events/log")],
+        [msg("Explore integrations"), "https://goauthentik.io/integrations/", true],
+        [msg("Manage users"), paramURL("/identity/users")],
+        [msg("Check the release notes"), `https://goauthentik.io/docs/releases/${RELEASE}`, true],
+    ];
+
     @state()
     user?: SessionUser;
 
@@ -84,7 +97,7 @@ export class AdminOverviewPage extends AdminOverviewBase {
         const name = this.user?.user.name ?? this.user?.user.username;
 
         return html`<ak-page-header icon="" header="" description=${msg("General system status")}>
-                <span slot="header"> ${msg(str`Welcome, ${name}.`)} </span>
+                <span slot="header"> ${msg(str`Welcome, ${name || ""}.`)} </span>
             </ak-page-header>
             <section class="pf-c-page__main-section">
                 <div class="pf-l-grid pf-m-gutter">
@@ -93,15 +106,8 @@ export class AdminOverviewPage extends AdminOverviewBase {
                         class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl pf-l-grid pf-m-gutter"
                     >
                         <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl">
-                            <ak-aggregate-card
-                                icon="fa fa-share"
-                                header=${msg("Quick actions")}
-                                .isCenter=${false}
-                            >
-                                <ul class="pf-c-list">
-                                    ${this.renderActions()}
-                                </ul>
-                            </ak-aggregate-card>
+                            <ak-quick-actions-card .actions=${this.quickActions}>
+                            </ak-quick-actions-card>
                         </div>
                         <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl">
                             <ak-aggregate-card
@@ -208,7 +214,14 @@ export class AdminOverviewPage extends AdminOverviewBase {
 
             return html`<li>
                 ${ex(
-                    () => html`<a href="${url}" class="pf-u-mb-xl" target="_blank">${content}</a>`,
+                    () =>
+                        html`<a
+                            href="${url}"
+                            class="pf-u-mb-xl"
+                            rel="noopener noreferrer"
+                            target="_blank"
+                            >${content}</a
+                        >`,
                     () => html`<a href="${url}" class="pf-u-mb-xl" )>${content}</a>`,
                 )}
             </li>`;

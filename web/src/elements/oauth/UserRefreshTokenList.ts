@@ -1,5 +1,4 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/chips/Chip";
@@ -27,12 +26,10 @@ export class UserOAuthRefreshTokenList extends Table<TokenModel> {
         return super.styles.concat(PFFlex);
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<TokenModel>> {
+    async apiEndpoint(): Promise<PaginatedResponse<TokenModel>> {
         return new Oauth2Api(DEFAULT_CONFIG).oauth2RefreshTokensList({
+            ...(await this.defaultEndpointConfig()),
             user: this.userId,
-            ordering: "expires",
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
         });
     }
 
@@ -105,5 +102,11 @@ export class UserOAuthRefreshTokenList extends Table<TokenModel> {
                 })}
             </ak-chip-group>`,
         ];
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-oauth-refresh-token-list": UserOAuthRefreshTokenList;
     }
 }

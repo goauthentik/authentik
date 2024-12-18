@@ -44,6 +44,13 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
             self.fields["key"] = CharField(required=False)
 
+    def validate_user(self, user: User):
+        """Ensure user of token cannot be changed"""
+        if self.instance and self.instance.user_id:
+            if user.pk != self.instance.user_id:
+                raise ValidationError("User cannot be changed")
+        return user
+
     def validate(self, attrs: dict[Any, str]) -> dict[Any, str]:
         """Ensure only API or App password tokens are created."""
         request: Request = self.context.get("request")

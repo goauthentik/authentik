@@ -15,10 +15,7 @@ import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
-    CoreApi,
-    CoreGroupsListRequest,
     FlowsInstancesListDesignationEnum,
-    Group,
     LDAPAPIAccessMode,
     LDAPProvider,
     ProvidersApi,
@@ -59,50 +56,6 @@ export class LDAPProviderFormPage extends WithBrandConfig(BaseProviderForm<LDAPP
                     class="pf-c-form-control"
                     required
                 />
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Bind flow")}
-                ?required=${true}
-                name="authorizationFlow"
-            >
-                <ak-branded-flow-search
-                    flowType=${FlowsInstancesListDesignationEnum.Authentication}
-                    .currentFlow=${this.instance?.authorizationFlow}
-                    .brandFlow=${this.brand?.flowAuthentication}
-                    required
-                ></ak-branded-flow-search>
-                <p class="pf-c-form__helper-text">${msg("Flow used for users to authenticate.")}</p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Search group")} name="searchGroup">
-                <ak-search-select
-                    .fetchObjects=${async (query?: string): Promise<Group[]> => {
-                        const args: CoreGroupsListRequest = {
-                            ordering: "name",
-                            includeUsers: false,
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(args);
-                        return groups.results;
-                    }}
-                    .renderElement=${(group: Group): string => {
-                        return group.name;
-                    }}
-                    .value=${(group: Group | undefined): string | undefined => {
-                        return group?.pk;
-                    }}
-                    .selected=${(group: Group): boolean => {
-                        return group.pk === this.instance?.searchGroup;
-                    }}
-                    ?blankable=${true}
-                >
-                </ak-search-select>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "Users in the selected group can do search queries. If no group is selected, no LDAP Searches are allowed.",
-                    )}
-                </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Bind mode")} name="bindMode">
                 <ak-radio
@@ -177,6 +130,42 @@ export class LDAPProviderFormPage extends WithBrandConfig(BaseProviderForm<LDAPP
                 </p>
             </ak-form-element-horizontal>
 
+            <ak-form-group expanded>
+                <span slot="header"> ${msg("Flow settings")} </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("Bind flow")}
+                        name="authorizationFlow"
+                        required
+                    >
+                        <ak-branded-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                            .currentFlow=${this.instance?.authorizationFlow}
+                            .brandFlow=${this.brand?.flowAuthentication}
+                            required
+                        ></ak-branded-flow-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Flow used for users to authenticate.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Unbind flow")}
+                        name="invalidationFlow"
+                        required
+                    >
+                        <ak-branded-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                            .currentFlow=${this.instance?.invalidationFlow}
+                            .brandFlow=${this.brand.flowInvalidation}
+                            defaultFlowSlug="default-invalidation-flow"
+                            required
+                        ></ak-branded-flow-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Flow used for unbinding users.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
@@ -259,5 +248,11 @@ export class LDAPProviderFormPage extends WithBrandConfig(BaseProviderForm<LDAPP
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-ldap-form": LDAPProviderFormPage;
     }
 }

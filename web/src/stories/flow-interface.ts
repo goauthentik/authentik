@@ -13,3 +13,9 @@ export class StoryFlowInterface extends FlowExecutor {
         return this.storyTheme;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-storybook-interface-flow": StoryFlowInterface;
+    }
+}

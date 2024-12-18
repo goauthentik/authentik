@@ -1,7 +1,7 @@
 """test SAML Source"""
 
+from pathlib import Path
 from time import sleep
-from typing import Any
 
 from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
@@ -76,25 +76,33 @@ class TestSourceSAML(SeleniumTestCase):
     def setUp(self):
         self.slug = generate_id()
         super().setUp()
-
-    def get_container_specs(self) -> dict[str, Any] | None:
-        return {
-            "image": "kristophjunge/test-saml-idp:1.15",
-            "detach": True,
-            "ports": {"8080": "8080"},
-            "auto_remove": True,
-            "healthcheck": Healthcheck(
+        self.run_container(
+            image="kristophjunge/test-saml-idp:1.15",
+            ports={"8080": "8080"},
+            healthcheck=Healthcheck(
                 test=["CMD", "curl", "http://localhost:8080"],
                 interval=5 * 1_000 * 1_000_000,
                 start_period=1 * 1_000 * 1_000_000,
             ),
-            "environment": {
+            volumes={
+                str(
+                    (Path(__file__).parent / Path("test-saml-idp/saml20-sp-remote.php")).absolute()
+                ): {
+                    "bind": "/var/www/simplesamlphp/metadata/saml20-sp-remote.php",
+                    "mode": "ro",
+                }
+            },
+            environment={
                 "SIMPLESAMLPHP_SP_ENTITY_ID": "entity-id",
+                "SIMPLESAMLPHP_SP_NAME_ID_FORMAT": (
+                    "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
+                ),
+                "SIMPLESAMLPHP_SP_NAME_ID_ATTRIBUTE": "email",
                 "SIMPLESAMLPHP_SP_ASSERTION_CONSUMER_SERVICE": (
                     self.url("authentik_sources_saml:acs", source_slug=self.slug)
                 ),
             },
-        }
+        )
 
     @retry()
     @apply_blueprint(
@@ -155,8 +163,7 @@ class TestSourceSAML(SeleniumTestCase):
         self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
 
         # Wait until we're logged in
-        self.wait_for_url(self.if_user_url("/library"))
-        self.driver.get(self.if_user_url("/settings"))
+        self.wait_for_url(self.if_user_url())
 
         self.assert_user(
             User.objects.exclude(username="akadmin")
@@ -238,8 +245,7 @@ class TestSourceSAML(SeleniumTestCase):
         self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
 
         # Wait until we're logged in
-        self.wait_for_url(self.if_user_url("/library"))
-        self.driver.get(self.if_user_url("/settings"))
+        self.wait_for_url(self.if_user_url())
 
         self.assert_user(
             User.objects.exclude(username="akadmin")
@@ -308,9 +314,112 @@ class TestSourceSAML(SeleniumTestCase):
         self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
 
         # Wait until we're logged in
-        self.wait_for_url(self.if_user_url("/library"))
-        self.driver.get(self.if_user_url("/settings"))
+        self.wait_for_url(self.if_user_url())
 
+        self.assert_user(
+            User.objects.exclude(username="akadmin")
+            .exclude(username__startswith="ak-outpost")
+            .exclude_anonymous()
+            .exclude(pk=self.user.pk)
+            .first()
+        )
+
+    @retry()
+    @apply_blueprint(
+        "default/flow-default-authentication-flow.yaml",
+        "default/flow-default-invalidation-flow.yaml",
+    )
+    @apply_blueprint(
+        "default/flow-default-source-authentication.yaml",
+        "default/flow-default-source-enrollment.yaml",
+        "default/flow-default-source-pre-authentication.yaml",
+    )
+    def test_idp_post_auto_enroll_auth(self):
+        """test SAML Source With post binding (auto redirect)"""
+        # Bootstrap all needed objects
+        authentication_flow = Flow.objects.get(slug="default-source-authentication")
+        enrollment_flow = Flow.objects.get(slug="default-source-enrollment")
+        pre_authentication_flow = Flow.objects.get(slug="default-source-pre-authentication")
+        keypair = CertificateKeyPair.objects.create(
+            name=generate_id(),
+            certificate_data=IDP_CERT,
+            key_data=IDP_KEY,
+        )
+
+        source = SAMLSource.objects.create(
+            name=generate_id(),
+            slug=self.slug,
+            authentication_flow=authentication_flow,
+            enrollment_flow=enrollment_flow,
+            pre_authentication_flow=pre_authentication_flow,
+            issuer="entity-id",
+            sso_url=f"http://{self.host}:8080/simplesaml/saml2/idp/SSOService.php",
+            binding_type=SAMLBindingTypes.POST_AUTO,
+            signing_kp=keypair,
+        )
+        ident_stage = IdentificationStage.objects.first()
+        ident_stage.sources.set([source])
+        ident_stage.save()
+
+        self.driver.get(self.live_server_url)
+
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        identification_stage = self.get_shadow_root("ak-stage-identification", flow_executor)
+        wait = WebDriverWait(identification_stage, self.wait_timeout)
+
+        wait.until(
+            ec.presence_of_element_located(
+                (By.CSS_SELECTOR, ".pf-c-login__main-footer-links-item > button")
+            )
+        )
+        identification_stage.find_element(
+            By.CSS_SELECTOR, ".pf-c-login__main-footer-links-item > button"
+        ).click()
+
+        # Now we should be at the IDP, wait for the username field
+        self.wait.until(ec.presence_of_element_located((By.ID, "username")))
+        self.driver.find_element(By.ID, "username").send_keys("user1")
+        self.driver.find_element(By.ID, "password").send_keys("user1pass")
+        self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
+
+        # Wait until we're logged in
+        self.wait_for_url(self.if_user_url())
+
+        self.assert_user(
+            User.objects.exclude(username="akadmin")
+            .exclude(username__startswith="ak-outpost")
+            .exclude_anonymous()
+            .exclude(pk=self.user.pk)
+            .first()
+        )
+
+        # Clear all cookies and log in again
+        self.driver.delete_all_cookies()
+        self.driver.get(self.live_server_url)
+
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        identification_stage = self.get_shadow_root("ak-stage-identification", flow_executor)
+        wait = WebDriverWait(identification_stage, self.wait_timeout)
+
+        wait.until(
+            ec.presence_of_element_located(
+                (By.CSS_SELECTOR, ".pf-c-login__main-footer-links-item > button")
+            )
+        )
+        identification_stage.find_element(
+            By.CSS_SELECTOR, ".pf-c-login__main-footer-links-item > button"
+        ).click()
+
+        # Now we should be at the IDP, wait for the username field
+        self.wait.until(ec.presence_of_element_located((By.ID, "username")))
+        self.driver.find_element(By.ID, "username").send_keys("user1")
+        self.driver.find_element(By.ID, "password").send_keys("user1pass")
+        self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
+
+        # Wait until we're logged in
+        self.wait_for_url(self.if_user_url())
+
+        # sleep(999999)
         self.assert_user(
             User.objects.exclude(username="akadmin")
             .exclude(username__startswith="ak-outpost")

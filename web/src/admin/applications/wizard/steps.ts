@@ -7,6 +7,7 @@ import {
     SubmitStep,
 } from "@goauthentik/components/ak-wizard-main/commonWizardButtons";
 
+import { msg } from "@lit/localize";
 import { html } from "lit";
 
 import "./application/ak-application-wizard-application-details";
@@ -23,7 +24,7 @@ import { ApplicationStep as ApplicationStepType } from "./types";
 
 class ApplicationStep implements ApplicationStepType {
     id = "application";
-    label = "Application Details";
+    label = msg("Application Details");
     disabled = false;
     valid = false;
     get buttons() {
@@ -36,12 +37,12 @@ class ApplicationStep implements ApplicationStepType {
 
 class ProviderMethodStep implements ApplicationStepType {
     id = "provider-method";
-    label = "Provider Type";
+    label = msg("Provider Type");
     disabled = false;
     valid = false;
 
     get buttons() {
-        return [BackStep, this.valid ? NextStep : DisabledNextStep, CancelWizard];
+        return [this.valid ? NextStep : DisabledNextStep, BackStep, CancelWizard];
     }
 
     render() {
@@ -53,11 +54,11 @@ class ProviderMethodStep implements ApplicationStepType {
 
 class ProviderStepDetails implements ApplicationStepType {
     id = "provider-details";
-    label = "Provider Configuration";
+    label = msg("Provider Configuration");
     disabled = true;
     valid = false;
     get buttons() {
-        return [BackStep, this.valid ? SubmitStep : DisabledNextStep, CancelWizard];
+        return [this.valid ? SubmitStep : DisabledNextStep, BackStep, CancelWizard];
     }
 
     render() {
@@ -67,7 +68,7 @@ class ProviderStepDetails implements ApplicationStepType {
 
 class SubmitApplicationStep implements ApplicationStepType {
     id = "submit";
-    label = "Submit Application";
+    label = msg("Submit Application");
     disabled = true;
     valid = false;
 

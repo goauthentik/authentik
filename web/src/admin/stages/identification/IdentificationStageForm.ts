@@ -3,6 +3,7 @@ import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first, groupBy } from "@goauthentik/common/utils";
 import "@goauthentik/elements/ak-checkbox-group/ak-checkbox-group.js";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -15,13 +16,14 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import {
     FlowsInstancesListDesignationEnum,
     IdentificationStage,
-    PaginatedSourceList,
-    SourcesApi,
     Stage,
     StagesApi,
+    StagesCaptchaListRequest,
     StagesPasswordListRequest,
     UserFieldsEnum,
 } from "@goauthentik/api";
+
+import { sourcesProvider, sourcesSelector } from "./IdentificationStageFormHelpers.js";
 
 @customElement("ak-stage-identification-form")
 export class IdentificationStageForm extends BaseStageForm<IdentificationStage> {
@@ -42,25 +44,17 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
         });
     }
 
-    async load(): Promise<void> {
-        this.sources = await new SourcesApi(DEFAULT_CONFIG).sourcesAllList({
-            ordering: "slug",
-        });
-    }
-
-    sources?: PaginatedSourceList;
-
     async send(data: IdentificationStage): Promise<IdentificationStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesIdentificationUpdate({
                 stageUuid: this.instance.pk || "",
                 identificationStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesIdentificationCreate({
-                identificationStageRequest: data,
-            });
         }
+
+        return new StagesApi(DEFAULT_CONFIG).stagesIdentificationCreate({
+            identificationStageRequest: data,
+        });
     }
 
     isUserFieldSelected(field: UserFieldsEnum): boolean {
@@ -120,24 +114,47 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                                 ).stagesPasswordList(args);
                                 return stages.results;
                             }}
-                            .groupBy=${(items: Stage[]) => {
-                                return groupBy(items, (stage) => stage.verboseNamePlural);
-                            }}
-                            .renderElement=${(stage: Stage): string => {
-                                return stage.name;
-                            }}
-                            .value=${(stage: Stage | undefined): string | undefined => {
-                                return stage?.pk;
-                            }}
-                            .selected=${(stage: Stage): boolean => {
-                                return stage.pk === this.instance?.passwordStage;
-                            }}
-                            ?blankable=${true}
+                            .groupBy=${(items: Stage[]) =>
+                                groupBy(items, (stage) => stage.verboseNamePlural)}
+                            .renderElement=${(stage: Stage): string => stage.name}
+                            .value=${(stage: Stage | undefined): string | undefined => stage?.pk}
+                            .selected=${(stage: Stage): boolean =>
+                                stage.pk === this.instance?.passwordStage}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "When selected, a password field is shown on the same page instead of a separate page. This prevents username enumeration attacks.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${msg("Captcha stage")} name="captchaStage">
+                        <ak-search-select
+                            .fetchObjects=${async (query?: string): Promise<Stage[]> => {
+                                const args: StagesCaptchaListRequest = {
+                                    ordering: "name",
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const stages = await new StagesApi(
+                                    DEFAULT_CONFIG,
+                                ).stagesCaptchaList(args);
+                                return stages.results;
+                            }}
+                            .groupBy=${(items: Stage[]) =>
+                                groupBy(items, (stage) => stage.verboseNamePlural)}
+                            .renderElement=${(stage: Stage): string => stage.name}
+                            .value=${(stage: Stage | undefined): string | undefined => stage?.pk}
+                            .selected=${(stage: Stage): boolean =>
+                                stage.pk === this.instance?.captchaStage}
+                            blankable
+                        >
+                        </ak-search-select>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "When set, adds functionality exactly like a Captcha stage, but baked into the Identification stage.",
                             )}
                         </p>
                     </ak-form-element-horizontal>
@@ -213,32 +230,16 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                         ?required=${true}
                         name="sources"
                     >
-                        <select class="pf-c-form-control" multiple>
-                            ${this.sources?.results
-                                .filter((source) => {
-                                    return source.component !== "";
-                                })
-                                .map((source) => {
-                                    const selected = Array.from(this.instance?.sources || []).some(
-                                        (su) => {
-                                            return su == source.pk;
-                                        },
-                                    );
-                                    return html`<option
-                                        value=${ifDefined(source.pk)}
-                                        ?selected=${selected}
-                                    >
-                                        ${source.name}
-                                    </option>`;
-                                })}
-                        </select>
+                        <ak-dual-select-dynamic-selected
+                            .provider=${sourcesProvider}
+                            .selector=${sourcesSelector(this.instance?.sources)}
+                            available-label="${msg("Available Sources")}"
+                            selected-label="${msg("Selected Sources")}"
+                        ></ak-dual-select-dynamic-selected>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Select sources should be shown for users to authenticate with. This only affects web-based sources, not LDAP.",
                             )}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Hold control/command to select multiple items.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="showSourceLabels">
@@ -308,5 +309,11 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-identification-form": IdentificationStageForm;
     }
 }

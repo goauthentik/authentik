@@ -5,12 +5,14 @@ from collections import OrderedDict
 from hashlib import sha512
 from pathlib import Path
 
+import orjson
 from celery.schedules import crontab
 from django.conf import ImproperlyConfigured
 from sentry_sdk import set_tag
+from xmlsec import enable_debug_trace
 
 from authentik import __version__
-from authentik.lib.config import CONFIG, redis_url
+from authentik.lib.config import CONFIG, django_db_config, redis_url
 from authentik.lib.logging import get_logger_config, structlog_configure
 from authentik.lib.sentry import sentry_init
 from authentik.lib.utils.reflection import get_env
@@ -29,6 +31,8 @@ LOGIN_URL = "authentik_flows:default-authentication"
 
 # Custom user model
 AUTH_USER_MODEL = "authentik_core.User"
+
+CSRF_COOKIE_PATH = LANGUAGE_COOKIE_PATH = SESSION_COOKIE_PATH = CONFIG.get("web.path", "/")
 
 CSRF_COOKIE_NAME = "authentik_csrf"
 CSRF_HEADER_NAME = "HTTP_X_AUTHENTIK_CSRF"
@@ -51,7 +55,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 SHARED_APPS = [
     "django_tenants",
     "authentik.tenants",
-    "daphne",
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.humanize",
@@ -59,6 +62,7 @@ SHARED_APPS = [
     "django_filters",
     "drf_spectacular",
     "django_prometheus",
+    "django_countries",
     "pgactivity",
     "pglock",
     "channels",
@@ -76,6 +80,7 @@ TENANT_APPS = [
     "authentik.policies.event_matcher",
     "authentik.policies.expiry",
     "authentik.policies.expression",
+    "authentik.policies.geoip",
     "authentik.policies.password",
     "authentik.policies.reputation",
     "authentik.policies",
@@ -87,6 +92,7 @@ TENANT_APPS = [
     "authentik.providers.scim",
     "authentik.rbac",
     "authentik.recovery",
+    "authentik.sources.kerberos",
     "authentik.sources.ldap",
     "authentik.sources.oauth",
     "authentik.sources.plex",
@@ -108,6 +114,7 @@ TENANT_APPS = [
     "authentik.stages.invitation",
     "authentik.stages.password",
     "authentik.stages.prompt",
+    "authentik.stages.redirect",
     "authentik.stages.user_delete",
     "authentik.stages.user_login",
     "authentik.stages.user_logout",
@@ -146,8 +153,8 @@ SPECTACULAR_SETTINGS = {
         "url": "https://github.com/goauthentik/authentik/blob/main/LICENSE",
     },
     "ENUM_NAME_OVERRIDES": {
+        "CountryCodeEnum": "django_countries.countries",
         "EventActions": "authentik.events.models.EventAction",
-        "ChallengeChoices": "authentik.flows.challenge.ChallengeTypes",
         "FlowDesignationEnum": "authentik.flows.models.FlowDesignation",
         "FlowLayoutEnum": "authentik.flows.models.FlowLayout",
         "PolicyEngineMode": "authentik.policies.models.PolicyEngineMode",
@@ -178,16 +185,20 @@ REST_FRAMEWORK = {
         "rest_framework.filters.OrderingFilter",
         "rest_framework.filters.SearchFilter",
     ],
-    "DEFAULT_PARSER_CLASSES": [
-        "rest_framework.parsers.JSONParser",
-    ],
     "DEFAULT_PERMISSION_CLASSES": ("authentik.rbac.permissions.ObjectPermissions",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "authentik.api.authentication.TokenAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ),
     "DEFAULT_RENDERER_CLASSES": [
-        "rest_framework.renderers.JSONRenderer",
+        "drf_orjson_renderer.renderers.ORJSONRenderer",
+    ],
+    "ORJSON_RENDERER_OPTIONS": [
+        orjson.OPT_NON_STR_KEYS,
+        orjson.OPT_UTC_Z,
+    ],
+    "DEFAULT_PARSER_CLASSES": [
+        "drf_orjson_renderer.parsers.ORJSONParser",
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
@@ -287,53 +298,7 @@ CHANNEL_LAYERS = {
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
 ORIGINAL_BACKEND = "django_prometheus.db.backends.postgresql"
-DATABASES = {
-    "default": {
-        "ENGINE": "authentik.root.db",
-        "HOST": CONFIG.get("postgresql.host"),
-        "NAME": CONFIG.get("postgresql.name"),
-        "USER": CONFIG.get("postgresql.user"),
-        "PASSWORD": CONFIG.get("postgresql.password"),
-        "PORT": CONFIG.get("postgresql.port"),
-        "SSLMODE": CONFIG.get("postgresql.sslmode"),
-        "SSLROOTCERT": CONFIG.get("postgresql.sslrootcert"),
-        "SSLCERT": CONFIG.get("postgresql.sslcert"),
-        "SSLKEY": CONFIG.get("postgresql.sslkey"),
-        "TEST": {
-            "NAME": CONFIG.get("postgresql.test.name"),
-        },
-        # https://docs.djangoproject.com/en/4.0/ref/databases/#transaction-pooling-server-side-cursors
-        "DISABLE_SERVER_SIDE_CURSORS": CONFIG.get_bool(
-            "postgresql.disable_server_side_cursors", False
-        ),
-        # https://docs.djangoproject.com/en/4.0/ref/databases/#persistent-connections
-        # Not a PostgreSQL-specific setting, but a database-specific setting.
-        # However, only PostgreSQL is supported as a database, so we place this setting
-        # in the 'postgresql' path.
-        "CONN_MAX_AGE": CONFIG.get_optional_int("postgresql.conn_max_age", 0),
-    }
-}
-
-for replica in CONFIG.get_keys("postgresql.read_replicas"):
-    _database = DATABASES["default"].copy()
-    for setting in DATABASES["default"].keys():
-        default = object()
-
-        if setting in ("TEST",):
-            continue
-
-        if setting in ("CONN_MAX_AGE",):
-            override = CONFIG.get_optional_int(
-                f"postgresql.read_replicas.{replica}.{setting.lower()}",
-            )
-        else:
-            override = CONFIG.get(
-                f"postgresql.read_replicas.{replica}.{setting.lower()}", default=default
-            )
-
-        if override is not default:
-            _database[setting] = override
-    DATABASES[f"replica_{replica}"] = _database
+DATABASES = django_db_config()
 
 DATABASE_ROUTERS = (
     "authentik.tenants.db.FailoverRouter",
@@ -424,7 +389,7 @@ if _ERROR_REPORTING:
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATICFILES_DIRS = [BASE_DIR / Path("web")]
-STATIC_URL = "/static/"
+STATIC_URL = CONFIG.get("web.path", "/") + "static/"
 
 STORAGES = {
     "staticfiles": {
@@ -521,6 +486,8 @@ if DEBUG:
     REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"].append(
         "rest_framework.renderers.BrowsableAPIRenderer"
     )
+    SHARED_APPS.insert(SHARED_APPS.index("django.contrib.staticfiles"), "daphne")
+    enable_debug_trace(True)
 
 TENANT_APPS.append("authentik.core")
 

@@ -1,6 +1,7 @@
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
@@ -15,11 +16,11 @@ import {
     CoreApi,
     CoreGroupsListRequest,
     Group,
-    PaginatedSCIMMappingList,
-    PropertymappingsApi,
     ProvidersApi,
     SCIMProvider,
 } from "@goauthentik/api";
+
+import { propertyMappingsProvider, propertyMappingsSelector } from "./SCIMProviderFormHelpers.js";
 
 @customElement("ak-provider-scim-form")
 export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
@@ -28,16 +29,6 @@ export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
             id: pk,
         });
     }
-
-    async load(): Promise<void> {
-        this.propertyMappings = await new PropertymappingsApi(
-            DEFAULT_CONFIG,
-        ).propertymappingsScimList({
-            ordering: "managed",
-        });
-    }
-
-    propertyMappings?: PaginatedSCIMMappingList;
 
     async send(data: SCIMProvider): Promise<SCIMProvider> {
         if (this.instance) {
@@ -74,6 +65,23 @@ export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
                         <p class="pf-c-form__helper-text">
                             ${msg("SCIM base url, usually ends in /v2.")}
                         </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal name="verifyCertificates">
+                        <label class="pf-c-switch">
+                            <input
+                                class="pf-c-switch__input"
+                                type="checkbox"
+                                ?checked=${first(this.instance?.verifyCertificates, true)}
+                            />
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label"
+                                >${msg("Verify SCIM server's certificates")}</span
+                            >
+                        </label>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Token")}
@@ -152,70 +160,44 @@ export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("User Property Mappings")}
-                        name="propertyMappings"
-                    >
-                        <select class="pf-c-form-control" multiple>
-                            ${this.propertyMappings?.results.map((mapping) => {
-                                let selected = false;
-                                if (!this.instance?.propertyMappings) {
-                                    selected =
-                                        mapping.managed === "goauthentik.io/providers/scim/user" ||
-                                        false;
-                                } else {
-                                    selected = Array.from(this.instance?.propertyMappings).some(
-                                        (su) => {
-                                            return su == mapping.pk;
-                                        },
-                                    );
-                                }
-                                return html`<option
-                                    value=${ifDefined(mapping.pk)}
-                                    ?selected=${selected}
-                                >
-                                    ${mapping.name}
-                                </option>`;
-                            })}
+                        name="propertyMappings">
+                        <ak-dual-select-dynamic-selected
+                            .provider=${propertyMappingsProvider}
+                            .selector=${propertyMappingsSelector(
+                                this.instance?.propertyMappings,
+                                "goauthentik.io/providers/scim/user",
+                            )}
+                            available-label=${msg("Available User Property Mappings")}
+                            selected-label=${msg("Selected User Property Mappings")}
+                        ></ak-dual-select-dynamic-selected>
                         </select>
                         <p class="pf-c-form__helper-text">
                             ${msg("Property mappings used to user mapping.")}
                         </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Hold control/command to select multiple items.")}
-                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Group Property Mappings")}
-                        name="propertyMappingsGroup"
-                    >
-                        <select class="pf-c-form-control" multiple>
-                            ${this.propertyMappings?.results.map((mapping) => {
-                                let selected = false;
-                                if (!this.instance?.propertyMappingsGroup) {
-                                    selected =
-                                        mapping.managed === "goauthentik.io/providers/scim/group";
-                                } else {
-                                    selected = Array.from(
-                                        this.instance?.propertyMappingsGroup,
-                                    ).some((su) => {
-                                        return su == mapping.pk;
-                                    });
-                                }
-                                return html`<option
-                                    value=${ifDefined(mapping.pk)}
-                                    ?selected=${selected}
-                                >
-                                    ${mapping.name}
-                                </option>`;
-                            })}
-                        </select>
+                        name="propertyMappingsGroup">
+                        <ak-dual-select-dynamic-selected
+                            .provider=${propertyMappingsProvider}
+                            .selector=${propertyMappingsSelector(
+                                this.instance?.propertyMappingsGroup,
+                                "goauthentik.io/providers/scim/group",
+                            )}
+                            available-label=${msg("Available Group Property Mappings")}
+                            selected-label=${msg("Selected Group Property Mappings")}
+                        ></ak-dual-select-dynamic-selected>
                         <p class="pf-c-form__helper-text">
                             ${msg("Property mappings used to group creation.")}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Hold control/command to select multiple items.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-scim-form": SCIMProviderFormPage;
     }
 }

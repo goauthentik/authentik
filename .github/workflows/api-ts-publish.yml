@@ -7,6 +7,7 @@ on:
   workflow_dispatch:
 jobs:
   build:
+    if: ${{ github.repository != 'goauthentik/authentik-internal' }}
     runs-on: ubuntu-latest
     steps:
       - id: generate_token
@@ -31,11 +32,16 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
       - name: Upgrade /web
-        working-directory: web/
+        working-directory: web
         run: |
           export VERSION=`node -e 'console.log(require("../gen-ts-api/package.json").version)'`
           npm i @goauthentik/api@$VERSION
-      - uses: peter-evans/create-pull-request@v6
+      - name: Upgrade /web/packages/sfe
+        working-directory: web/packages/sfe
+        run: |
+          export VERSION=`node -e 'console.log(require("../gen-ts-api/package.json").version)'`
+          npm i @goauthentik/api@$VERSION
+      - uses: peter-evans/create-pull-request@v7
         id: cpr
         with:
           token: ${{ steps.generate_token.outputs.token }}

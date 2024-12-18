@@ -85,6 +85,10 @@ class Tenant(TenantMixin, SerializerModel):
     impersonation = models.BooleanField(
         help_text=_("Globally enable/disable impersonation."), default=True
     )
+    impersonation_require_reason = models.BooleanField(
+        help_text=_("Require administrators to provide a reason for impersonating a user."),
+        default=True,
+    )
     default_token_duration = models.TextField(
         help_text=_("Default token duration"),
         default=DEFAULT_TOKEN_DURATION,

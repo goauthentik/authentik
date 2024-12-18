@@ -42,6 +42,7 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
     def __init__(self, provider: SCIMProvider):
         super().__init__(provider)
         self._session = get_http_session()
+        self._session.verify = provider.verify_certificates
         self.provider = provider
         # Remove trailing slashes as we assume the URL doesn't have any
         base_url = provider.url
@@ -89,6 +90,6 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
             return ServiceProviderConfiguration.model_validate(
                 self._request("GET", "/ServiceProviderConfig")
             )
-        except (ValidationError, SCIMRequestException) as exc:
+        except (ValidationError, SCIMRequestException, NotFoundSyncException) as exc:
             self.logger.warning("failed to get ServiceProviderConfig", exc=exc)
             return default_config

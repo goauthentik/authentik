@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build
-FROM --platform=${BUILDPLATFORM} mcr.microsoft.com/oss/go/microsoft/golang:1.22-fips-bookworm AS builder
+FROM --platform=${BUILDPLATFORM} mcr.microsoft.com/oss/go/microsoft/golang:1.23-fips-bookworm AS builder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -33,14 +33,15 @@ RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
 # Stage 2: Run
 FROM ghcr.io/beryju/guacd:1.5.5-fips
 
+ARG VERSION
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
 
-LABEL org.opencontainers.image.url https://goauthentik.io
-LABEL org.opencontainers.image.description goauthentik.io RAC outpost, see https://goauthentik.io for more info.
-LABEL org.opencontainers.image.source https://github.com/goauthentik/authentik
-LABEL org.opencontainers.image.version ${VERSION}
-LABEL org.opencontainers.image.revision ${GIT_BUILD_HASH}
+LABEL org.opencontainers.image.url=https://goauthentik.io
+LABEL org.opencontainers.image.description="goauthentik.io RAC outpost, see https://goauthentik.io for more info."
+LABEL org.opencontainers.image.source=https://github.com/goauthentik/authentik
+LABEL org.opencontainers.image.version=${VERSION}
+LABEL org.opencontainers.image.revision=${GIT_BUILD_HASH}
 
 COPY --from=builder /go/rac /
 

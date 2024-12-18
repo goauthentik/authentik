@@ -1,6 +1,9 @@
 ---
-title: Service Name
+title: Integrate with Service Name
+sidebar_label: Service Name
 ---
+
+# Service Name
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -14,8 +17,8 @@ title: Service Name
 
 The following placeholders will be used:
 
--   `service.company` is the FQDN of the Service install. (Remove this for SaaS)
--   `authentik.company` is the FQDN of the authentik install.
+- `service.company` is the FQDN of the Service install. (Remove this for SaaS)
+- `authentik.company` is the FQDN of the authentik install.
 
 ## Service configuration
 

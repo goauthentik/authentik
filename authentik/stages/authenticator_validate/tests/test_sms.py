@@ -107,6 +107,7 @@ class AuthenticatorValidateStageSMSTests(FlowTestCase):
                         "device_class": "sms",
                         "device_uid": str(device.pk),
                         "challenge": {},
+                        "last_used": None,
                     },
                 },
             )

@@ -1,6 +1,9 @@
 ---
-title: Paperless-ng
+title: Integrate with Paperless-ng
+sidebar_label: Paperless-ng
 ---
+
+# Paperless-ng
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -20,7 +23,7 @@ The author of Paperless-ng recommends you do not expose Paperless outside your n
 
 The following placeholders will be used:
 
--   `paperless.company` is the FQDN of the Paperless-ng install.
+- `paperless.company` is the FQDN of the Paperless-ng install.
 
 Also set up your proxy server to use forward auth with paperless.company: https://goauthentik.io/docs/providers/proxy/forward_auth
 

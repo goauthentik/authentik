@@ -4,6 +4,7 @@ import { MODAL_BUTTON_STYLES } from "@goauthentik/elements/buttons/ModalButton";
 import { ModalShowEvent } from "@goauthentik/elements/controllers/ModalOrchestrationController.js";
 import { Table } from "@goauthentik/elements/table/Table";
 
+import { msg } from "@lit/localize";
 import { CSSResult } from "lit";
 import { TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
@@ -92,7 +93,7 @@ export abstract class TableModal<T> extends Table<T> {
                         @click=${() => (this.open = false)}
                         class="pf-c-button pf-m-plain"
                         type="button"
-                        aria-label="Close dialog"
+                        aria-label=${msg("Close dialog")}
                     >
                         <i class="fas fa-times" aria-hidden="true"></i>
                     </button>

@@ -6,10 +6,12 @@ Installing authentik is exactly the same process for both Enterprise version and
 
 ## Install Enterprise
 
-To get started working with Enterprise authentik, upgrade to the [2023.8.x](../releases) version or later. For installation steps, refer to our [technical documentation](../installation/index.mdx) for instructions to install and configure authentik.
+To get started working with Enterprise authentik, [upgrade](../install-config/upgrade.mdx) to the [2023.8.x](../releases) version or later.
 
--   [Docker Compose installation](../installation/docker-compose.mdx)
--   [Kubernetes installation](../installation/kubernetes.md)
+If this is a fresh install, refer to our [technical documentation](../install-config/index.mdx) for instructions to install and configure authentik.
+
+- [Docker Compose installation](../install-config/install/docker-compose.mdx)
+- [Kubernetes installation](../install-config/install/kubernetes.md)
 
 ## Access Enterprise
 
@@ -18,6 +20,10 @@ Access your Enterprise features by first [purchasing a license](./manage-enterpr
 To open the Customer portal and buy a license, go to the Admin interface and in the left pane, navigate to **Enterprise -> Licenses**, and then click **Go to Customer portal**.
 
 The license key provides direct access to the Customer portal, where you define your organization and its members, manage billing, and access our Support center.
+
+:::info
+A license is associated with a specific Organization in the customer portal and a specific authentik instance (with a unique Install ID), and not with individual users. A single license is purchased for a specified number of users. Additional users can be added to a license, or additional licenses purchased for the same instance, if more users need to be added later.
+:::
 
 ## Visit the Support center
 

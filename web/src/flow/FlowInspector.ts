@@ -4,7 +4,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Expand";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -19,7 +19,8 @@ import { FlowInspection, FlowsApi, ResponseError, Stage } from "@goauthentik/api
 
 @customElement("ak-flow-inspector")
 export class FlowInspector extends AKElement {
-    flowSlug: string;
+    @property()
+    flowSlug?: string;
 
     @property({ attribute: false })
     state?: FlowInspection;
@@ -55,7 +56,6 @@ export class FlowInspector extends AKElement {
 
     constructor() {
         super();
-        this.flowSlug = window.location.pathname.split("/")[3];
         window.addEventListener(EVENT_FLOW_ADVANCE, this.advanceHandler as EventListener);
     }
 
@@ -67,7 +67,7 @@ export class FlowInspector extends AKElement {
     advanceHandler = (): void => {
         new FlowsApi(DEFAULT_CONFIG)
             .flowsInspectorGet({
-                flowSlug: this.flowSlug,
+                flowSlug: this.flowSlug || "",
             })
             .then((state) => {
                 this.error = undefined;
@@ -116,8 +116,7 @@ export class FlowInspector extends AKElement {
         }
         if (!this.state) {
             this.advanceHandler();
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state loading> </ak-empty-state>`;
         }
         return html`<div class="pf-c-drawer__body pf-m-no-padding">
             <div class="pf-c-notification-drawer">
@@ -269,7 +268,7 @@ ${JSON.stringify(this.getStage(this.state.currentPlan?.nextPlannedStage?.stageOb
                                                       </div>
                                                   </div>
                                               </li>`
-                                            : html``}
+                                            : nothing}
                                         ${this.state.currentPlan?.nextPlannedStage &&
                                         !this.state.isCompleted
                                             ? html`<li
@@ -297,7 +296,7 @@ ${JSON.stringify(this.getStage(this.state.currentPlan?.nextPlannedStage?.stageOb
                                                       </div>
                                                   </div>
                                               </li>`
-                                            : html``}
+                                            : nothing}
                                     </ol>
                                 </div>
                             </div>
@@ -330,5 +329,11 @@ ${JSON.stringify(this.state.currentPlan?.planContext, null, 4)}</pre
                 </div>
             </div>
         </div>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-flow-inspector": FlowInspector;
     }
 }

@@ -15,7 +15,6 @@ const doGroupBy = (items: Provider[]) => groupBy(items, (item) => item.verboseNa
 async function fetch(query?: string) {
     const args: ProvidersAllListRequest = {
         ordering: "name",
-        backchannel: false,
     };
     if (query !== undefined) {
         args.search = query;
@@ -77,5 +76,11 @@ export class AkProviderInput extends AKElement {
             </ak-search-select>
             ${this.help ? html`<p class="pf-c-form__helper-text">${this.help}</p>` : nothing}
         </ak-form-element-horizontal>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-search-input": AkProviderInput;
     }
 }

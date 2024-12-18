@@ -1,6 +1,9 @@
 ---
-title: Grafana
+title: Integrate with Grafana
+sidebar_label: Grafana
 ---
+
+# Grafana
 
 <span class="badge badge--primary">Support level: authentik</span>
 
@@ -14,15 +17,15 @@ title: Grafana
 
 The following placeholders will be used:
 
--   `grafana.company` is the FQDN of the Grafana install.
--   `authentik.company` is the FQDN of the authentik install.
+- `grafana.company` is the FQDN of the Grafana install.
+- `authentik.company` is the FQDN of the authentik install.
 
 Create an OAuth2/OpenID provider with the following parameters:
 
--   Client Type: `Confidential`
--   Scopes: OpenID, Email and Profile
--   Signing Key: Select any available key
--   Redirect URIs: `https://grafana.company/login/generic_oauth`
+- Client Type: `Confidential`
+- Scopes: OpenID, Email and Profile
+- Signing Key: Select any available key
+- Redirect URIs: `https://grafana.company/login/generic_oauth`
 
 Note the Client ID and Client Secret values.
 

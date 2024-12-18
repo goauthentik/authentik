@@ -2,6 +2,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/sidebar/SidebarBrand";
 import "@goauthentik/elements/sidebar/SidebarUser";
 
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
@@ -41,7 +42,6 @@ export class Sidebar extends AKElement {
                 nav {
                     display: flex;
                     flex-direction: column;
-                    max-height: 100vh;
                     height: 100%;
                     overflow-y: hidden;
                 }
@@ -68,7 +68,7 @@ export class Sidebar extends AKElement {
     render(): TemplateResult {
         return html`<nav
             class="pf-c-nav ${this.activeTheme === UiThemeEnum.Light ? "pf-m-light" : ""}"
-            aria-label="Global"
+            aria-label=${msg("Global")}
         >
             <ak-sidebar-brand></ak-sidebar-brand>
             <ul class="pf-c-nav__list">
@@ -76,5 +76,11 @@ export class Sidebar extends AKElement {
             </ul>
             <ak-sidebar-user></ak-sidebar-user>
         </nav>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-sidebar": Sidebar;
     }
 }

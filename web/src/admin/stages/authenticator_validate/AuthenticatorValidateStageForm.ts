@@ -2,8 +2,8 @@ import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { deviceTypeRestrictionPair } from "@goauthentik/admin/stages/authenticator_webauthn/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/Alert";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider";
-import { DataProvision } from "@goauthentik/elements/ak-dual-select/types";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
@@ -22,6 +22,12 @@ import {
     StagesApi,
     UserVerificationEnum,
 } from "@goauthentik/api";
+
+import {
+    authenticatorWebauthnDeviceTypesListProvider,
+    stagesProvider,
+    stagesSelector,
+} from "./AuthenticatorValidateStageFormHelpers.js";
 
 @customElement("ak-stage-authenticator-validate-form")
 export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorValidateStage> {
@@ -177,21 +183,14 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                                   label=${msg("Configuration stages")}
                                   name="configurationStages"
                               >
-                                  <select class="pf-c-form-control" multiple>
-                                      ${this.stages?.results.map((stage) => {
-                                          const selected = Array.from(
-                                              this.instance?.configurationStages || [],
-                                          ).some((su) => {
-                                              return su == stage.pk;
-                                          });
-                                          return html`<option
-                                              value=${ifDefined(stage.pk)}
-                                              ?selected=${selected}
-                                          >
-                                              ${stage.name} (${stage.verboseName})
-                                          </option>`;
-                                      })}
-                                  </select>
+                                  <ak-dual-select-dynamic-selected
+                                      .provider=${stagesProvider}
+                                      .selector=${stagesSelector(
+                                          this.instance?.configurationStages,
+                                      )}
+                                      available-label="${msg("Available Stages")}"
+                                      selected-label="${msg("Selected Stages")}"
+                                  ></ak-dual-select-dynamic-selected>
                                   <p class="pf-c-form__helper-text">
                                       ${msg(
                                           "Stages used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again.",
@@ -242,19 +241,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                         name="webauthnAllowedDeviceTypes"
                     >
                         <ak-dual-select-provider
-                            .provider=${(page: number, search?: string): Promise<DataProvision> => {
-                                return new StagesApi(DEFAULT_CONFIG)
-                                    .stagesAuthenticatorWebauthnDeviceTypesList({
-                                        page: page,
-                                        search: search,
-                                    })
-                                    .then((results) => {
-                                        return {
-                                            pagination: results.pagination,
-                                            options: results.results.map(deviceTypeRestrictionPair),
-                                        };
-                                    });
-                            }}
+                            .provider=${authenticatorWebauthnDeviceTypesListProvider}
                             .selected=${(this.instance?.webauthnAllowedDeviceTypesObj ?? []).map(
                                 deviceTypeRestrictionPair,
                             )}
@@ -278,5 +265,11 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                 </div>
             </ak-form-group>
         `;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-authenticator-validate-form": AuthenticatorValidateStageForm;
     }
 }

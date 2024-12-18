@@ -1,3 +1,4 @@
+import "@goauthentik/admin/sources/kerberos/KerberosSourceViewPage";
 import "@goauthentik/admin/sources/ldap/LDAPSourceViewPage";
 import "@goauthentik/admin/sources/oauth/OAuthSourceViewPage";
 import "@goauthentik/admin/sources/plex/PlexSourceViewPage";
@@ -36,6 +37,10 @@ export class SourceViewPage extends AKElement {
             return html`<ak-empty-state ?loading=${true} ?fullHeight=${true}></ak-empty-state>`;
         }
         switch (this.source?.component) {
+            case "ak-source-kerberos-form":
+                return html`<ak-source-kerberos-view
+                    sourceSlug=${this.source.slug}
+                ></ak-source-kerberos-view>`;
             case "ak-source-ldap-form":
                 return html`<ak-source-ldap-view
                     sourceSlug=${this.source.slug}
@@ -69,5 +74,11 @@ export class SourceViewPage extends AKElement {
             >
             </ak-page-header>
             ${this.renderSource()}`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-source-view": SourceViewPage;
     }
 }

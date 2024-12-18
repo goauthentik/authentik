@@ -1,13 +1,19 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/elements/forms/DeleteBulkForm";
+import "@goauthentik/elements/forms/ModalForm";
+import "@goauthentik/elements/sync/SyncObjectForm";
 import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { MicrosoftEntraProviderGroup, ProvidersApi } from "@goauthentik/api";
+import {
+    MicrosoftEntraProviderGroup,
+    ProvidersApi,
+    ProvidersMicrosoftEntraSyncObjectCreateRequest,
+    SyncObjectModelEnum,
+} from "@goauthentik/api";
 
 @customElement("ak-provider-microsoft-entra-groups-list")
 export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProviderGroup> {
@@ -18,6 +24,26 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
 
     searchEnabled(): boolean {
         return true;
+    }
+
+    renderToolbar(): TemplateResult {
+        return html`<ak-forms-modal cancelText=${msg("Close")} ?closeAfterSuccessfulSubmit=${false}>
+                <span slot="submit">${msg("Sync")}</span>
+                <span slot="header">${msg("Sync Group")}</span>
+                <ak-sync-object-form
+                    .provider=${this.providerId}
+                    model=${SyncObjectModelEnum.Group}
+                    .sync=${(data: ProvidersMicrosoftEntraSyncObjectCreateRequest) => {
+                        return new ProvidersApi(
+                            DEFAULT_CONFIG,
+                        ).providersMicrosoftEntraSyncObjectCreate(data);
+                    }}
+                    slot="form"
+                >
+                </ak-sync-object-form>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Sync")}</button>
+            </ak-forms-modal>
+            ${super.renderToolbar()}`;
     }
 
     renderToolbarSelected(): TemplateResult {
@@ -37,12 +63,9 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
         </ak-forms-delete-bulk>`;
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<MicrosoftEntraProviderGroup>> {
+    async apiEndpoint(): Promise<PaginatedResponse<MicrosoftEntraProviderGroup>> {
         return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraGroupsList({
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            ordering: this.order,
-            search: this.search || "",
+            ...(await this.defaultEndpointConfig()),
             providerId: this.providerId,
         });
     }
@@ -66,5 +89,11 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
                 <pre>${JSON.stringify(item.attributes, null, 4)}</pre>
             </div>
         </td>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-microsoft-entra-groups-list": MicrosoftEntraProviderGroupList;
     }
 }

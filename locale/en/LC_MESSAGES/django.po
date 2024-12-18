@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-16 00:08+0000\n"
+"POT-Creation-Date: 2024-11-26 00:09+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: authentik/admin/models.py
+msgid "Version history"
+msgstr ""
+
+#: authentik/admin/tasks.py
+#, python-brace-format
+msgid "New version {version} available!"
+msgstr ""
 
 #: authentik/api/schema.py
 msgid "Generic API Error"
@@ -31,8 +40,7 @@ msgid "Blueprint file does not exist"
 msgstr ""
 
 #: authentik/blueprints/api.py
-#, python-brace-format
-msgid "Failed to validate blueprint: {logs}"
+msgid "Failed to validate blueprint"
 msgstr ""
 
 #: authentik/blueprints/api.py
@@ -65,14 +73,20 @@ msgid "authentik Export - {date}"
 msgstr ""
 
 #: authentik/blueprints/v1/tasks.py authentik/crypto/tasks.py
-#, python-format
-msgid "Successfully imported %(count)d files."
+#, python-brace-format
+msgid "Successfully imported {count} files."
 msgstr ""
 
 #: authentik/brands/models.py
 msgid ""
 "Domain that activates this brand. Can be a superset, i.e. `a.b` for `aa.b` "
 "and `ba.b`"
+msgstr ""
+
+#: authentik/brands/models.py
+msgid ""
+"When set, external users will be redirected to this application after "
+"authenticating."
 msgstr ""
 
 #: authentik/brands/models.py
@@ -87,10 +101,19 @@ msgstr ""
 msgid "Brands"
 msgstr ""
 
+#: authentik/core/api/devices.py
+msgid "Extra description not available"
+msgstr ""
+
 #: authentik/core/api/providers.py
 msgid ""
 "When not set all providers are returned. When set to true, only backchannel "
 "providers are returned. When set to false, backchannel providers are excluded"
+msgstr ""
+
+#: authentik/core/api/transactional_applications.py
+#, python-brace-format
+msgid "User lacks permission to create {model}"
 msgstr ""
 
 #: authentik/core/api/users.py
@@ -173,6 +196,10 @@ msgid "Flow used when authorizing this provider."
 msgstr ""
 
 #: authentik/core/models.py
+msgid "Flow used ending the session from a provider."
+msgstr ""
+
+#: authentik/core/models.py
 msgid ""
 "Accessed from applications; optional backchannel providers for protocols "
 "like LDAP and SCIM."
@@ -227,6 +254,16 @@ msgid ""
 msgstr ""
 
 #: authentik/core/models.py
+msgid ""
+"Link to a group with identical name. Can have security implications when a "
+"group name is used with another source."
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Use the group name, but deny enrollment when the name already exists."
+msgstr ""
+
+#: authentik/core/models.py
 msgid "Source's display Name."
 msgstr ""
 
@@ -246,6 +283,12 @@ msgstr ""
 msgid ""
 "How the source determines if an existing user should be authenticated or a "
 "new user enrolled."
+msgstr ""
+
+#: authentik/core/models.py
+msgid ""
+"How the source determines if an existing group should be used or a new group "
+"created."
 msgstr ""
 
 #: authentik/core/models.py
@@ -301,52 +344,12 @@ msgstr ""
 msgid "Source is not configured for enrollment."
 msgstr ""
 
-#: authentik/core/templates/if/end_session.html
-msgid "End session"
-msgstr ""
-
-#: authentik/core/templates/if/end_session.html
-#, python-format
-msgid ""
-"\n"
-"You've logged out of %(application)s.\n"
-msgstr ""
-
-#: authentik/core/templates/if/end_session.html
-#, python-format
-msgid ""
-"\n"
-"            You've logged out of %(application)s. You can go back to the "
-"overview to launch another application, or log out of your "
-"%(branding_title)s account.\n"
-"        "
-msgstr ""
-
-#: authentik/core/templates/if/end_session.html
-msgid "Go back to overview"
-msgstr ""
-
-#: authentik/core/templates/if/end_session.html
-#, python-format
-msgid ""
-"\n"
-"            Log out of %(branding_title)s\n"
-"        "
-msgstr ""
-
-#: authentik/core/templates/if/end_session.html
-#, python-format
-msgid ""
-"\n"
-"            Log back into %(application)s\n"
-"        "
-msgstr ""
-
 #: authentik/core/templates/if/error.html
 msgid "Go home"
 msgstr ""
 
 #: authentik/core/templates/login/base_full.html
+#: authentik/flows/templates/if/flow-sfe.html
 msgid "Powered by authentik"
 msgstr ""
 
@@ -355,6 +358,10 @@ msgstr ""
 #: authentik/providers/saml/views/sso.py
 #, python-format
 msgid "You're about to sign into %(application)s."
+msgstr ""
+
+#: authentik/core/views/interface.py
+msgid "Interface can only be accessed by internal users."
 msgstr ""
 
 #: authentik/crypto/api.py
@@ -433,7 +440,7 @@ msgstr ""
 
 #: authentik/enterprise/providers/google_workspace/models.py
 #: authentik/enterprise/providers/microsoft_entra/models.py
-#: authentik/providers/scim/models.py authentik/sources/ldap/models.py
+#: authentik/providers/scim/models.py
 msgid "Property mappings used for group creation/updating."
 msgstr ""
 
@@ -509,11 +516,11 @@ msgid "RAC Endpoints"
 msgstr ""
 
 #: authentik/enterprise/providers/rac/models.py
-msgid "RAC Property Mapping"
+msgid "RAC Provider Property Mapping"
 msgstr ""
 
 #: authentik/enterprise/providers/rac/models.py
-msgid "RAC Property Mappings"
+msgid "RAC Provider Property Mappings"
 msgstr ""
 
 #: authentik/enterprise/providers/rac/models.py
@@ -530,6 +537,26 @@ msgstr ""
 
 #: authentik/enterprise/providers/rac/views.py
 msgid "(You are already connected in another tab/window)"
+msgstr ""
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Authenticator Google Device Trust Connector Stage"
+msgstr ""
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Authenticator Google Device Trust Connector Stages"
+msgstr ""
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Device"
+msgstr ""
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Devices"
+msgstr ""
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/stage.py
+msgid "Verifying your browser..."
 msgstr ""
 
 #: authentik/enterprise/stages/source/models.py
@@ -829,13 +856,13 @@ msgid "Starting full provider sync"
 msgstr ""
 
 #: authentik/lib/sync/outgoing/tasks.py
-#, python-format
-msgid "Syncing page %(page)d of users"
+#, python-brace-format
+msgid "Syncing page {page} of users"
 msgstr ""
 
 #: authentik/lib/sync/outgoing/tasks.py
-#, python-format
-msgid "Syncing page %(page)d of groups"
+#, python-brace-format
+msgid "Syncing page {page} of groups"
 msgstr ""
 
 #: authentik/lib/sync/outgoing/tasks.py
@@ -985,8 +1012,8 @@ msgid "Event Matcher Policies"
 msgstr ""
 
 #: authentik/policies/expiry/models.py
-#, python-format
-msgid "Password expired %(days)d days ago. Please update your password."
+#, python-brace-format
+msgid "Password expired {days} days ago. Please update your password."
 msgstr ""
 
 #: authentik/policies/expiry/models.py
@@ -1007,6 +1034,30 @@ msgstr ""
 
 #: authentik/policies/expression/models.py
 msgid "Expression Policies"
+msgstr ""
+
+#: authentik/policies/geoip/models.py
+msgid "GeoIP: client IP not found in ASN database."
+msgstr ""
+
+#: authentik/policies/geoip/models.py
+msgid "Client IP is not part of an allowed autonomous system."
+msgstr ""
+
+#: authentik/policies/geoip/models.py
+msgid "GeoIP: client IP address not found in City database."
+msgstr ""
+
+#: authentik/policies/geoip/models.py
+msgid "Client IP is not in an allowed country."
+msgstr ""
+
+#: authentik/policies/geoip/models.py
+msgid "GeoIP Policy"
+msgstr ""
+
+#: authentik/policies/geoip/models.py
+msgid "GeoIP Policies"
 msgstr ""
 
 #: authentik/policies/models.py
@@ -1085,8 +1136,12 @@ msgid "Password not set in context"
 msgstr ""
 
 #: authentik/policies/password/models.py
-#, python-format
-msgid "Password exists on %(count)d online lists."
+msgid "Invalid password."
+msgstr ""
+
+#: authentik/policies/password/models.py
+#, python-brace-format
+msgid "Password exists on {count} online lists."
 msgstr ""
 
 #: authentik/policies/password/models.py
@@ -1163,12 +1218,6 @@ msgstr ""
 
 #: authentik/providers/ldap/models.py
 msgid ""
-"Users in this group can do search queries. If not set, every user can "
-"execute search queries."
-msgstr ""
-
-#: authentik/providers/ldap/models.py
-msgid ""
 "The start for uidNumbers, this number is added to the user.pk to make sure "
 "that the numbers aren't too low for POSIX users. Default is 2000 to ensure "
 "that we don't collide with local users uidNumber"
@@ -1197,6 +1246,15 @@ msgstr ""
 
 #: authentik/providers/ldap/models.py
 msgid "LDAP Providers"
+msgstr ""
+
+#: authentik/providers/ldap/models.py
+msgid "Search full LDAP directory"
+msgstr ""
+
+#: authentik/providers/oauth2/api/providers.py
+#, python-brace-format
+msgid "Invalid Regex Pattern: {url}"
 msgstr ""
 
 #: authentik/providers/oauth2/id_token.py
@@ -1239,6 +1297,14 @@ msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "Each provider has a different issuer, based on the application slug."
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Strict URL comparison"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Regular Expression URL matching"
 msgstr ""
 
 #: authentik/providers/oauth2/models.py
@@ -1318,10 +1384,6 @@ msgid "Redirect URIs"
 msgstr ""
 
 #: authentik/providers/oauth2/models.py
-msgid "Enter each URI on a new line."
-msgstr ""
-
-#: authentik/providers/oauth2/models.py
 msgid "Include claims in id_token"
 msgstr ""
 
@@ -1358,9 +1420,17 @@ msgid "Signing Key"
 msgstr ""
 
 #: authentik/providers/oauth2/models.py
+msgid "Key used to sign the tokens."
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Encryption Key"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
 msgid ""
-"Key used to sign the tokens. Only required when JWT Algorithm is set to "
-"RS256."
+"Key used to encrypt the tokens. When set, tokens will be encrypted and "
+"returned as JWEs."
 msgstr ""
 
 #: authentik/providers/oauth2/models.py
@@ -1543,6 +1613,20 @@ msgstr ""
 msgid "Radius Providers"
 msgstr ""
 
+#: authentik/providers/radius/models.py
+msgid "Radius Provider Property Mapping"
+msgstr ""
+
+#: authentik/providers/radius/models.py
+msgid "Radius Provider Property Mappings"
+msgstr ""
+
+#: authentik/providers/saml/api/providers.py
+msgid ""
+"With a signing keypair selected, at least one of 'Sign assertion' and 'Sign "
+"Response' must be selected."
+msgstr ""
+
 #: authentik/providers/saml/api/providers.py
 msgid "Invalid XML Syntax"
 msgstr ""
@@ -1674,6 +1758,17 @@ msgstr ""
 msgid "Signing Keypair"
 msgstr ""
 
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid ""
+"When selected, incoming assertions are encrypted by the IdP using the public "
+"key of the encryption keypair. The assertion is decrypted by the SP using "
+"the the private key."
+msgstr ""
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "Encryption Keypair"
+msgstr ""
+
 #: authentik/providers/saml/models.py
 msgid "Default relay_state value for IDP-initiated logins"
 msgstr ""
@@ -1687,11 +1782,11 @@ msgid "SAML Providers"
 msgstr ""
 
 #: authentik/providers/saml/models.py
-msgid "SAML Property Mapping"
+msgid "SAML Provider Property Mapping"
 msgstr ""
 
 #: authentik/providers/saml/models.py
-msgid "SAML Property Mappings"
+msgid "SAML Provider Property Mappings"
 msgstr ""
 
 #: authentik/providers/saml/models.py
@@ -1719,11 +1814,11 @@ msgid "SCIM Providers"
 msgstr ""
 
 #: authentik/providers/scim/models.py
-msgid "SCIM Mapping"
+msgid "SCIM Provider Mapping"
 msgstr ""
 
 #: authentik/providers/scim/models.py
-msgid "SCIM Mappings"
+msgid "SCIM Provider Mappings"
 msgstr ""
 
 #: authentik/rbac/models.py
@@ -1768,6 +1863,111 @@ msgstr ""
 
 #: authentik/recovery/views.py
 msgid "Used recovery-link to authenticate."
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos realm"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "Custom krb5.conf to use. Uses the system one by default"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "Sync users from Kerberos into authentik"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "When a user changes their password, sync it back to Kerberos"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "Principal to authenticate to kadmin for sync."
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "Password to authenticate to kadmin for sync"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"Keytab to authenticate to kadmin for sync. Must be base64-encoded or in the "
+"form TYPE:residual"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"Credentials cache to authenticate to kadmin for sync. Must be in the form "
+"TYPE:residual"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"Force the use of a specific server name for SPNEGO. Must be in the form "
+"HTTP@hostname"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "SPNEGO keytab base64-encoded or path to keytab in the form FILE:path"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "Credential cache to use for SPNEGO in form type:residual"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"If enabled, the authentik-stored password will be updated upon login with "
+"the Kerberos password backend"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Source"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Sources"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Source Property Mapping"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Source Property Mappings"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "User Kerberos Source Connection"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "User Kerberos Source Connections"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "Group Kerberos Source Connection"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "Group Kerberos Source Connections"
+msgstr ""
+
+#: authentik/sources/kerberos/views.py
+msgid "SPNEGO authentication required"
+msgstr ""
+
+#: authentik/sources/kerberos/views.py
+msgid ""
+"\n"
+"                    Make sure you have valid tickets (obtainable via kinit)\n"
+"                    and configured the browser correctly.\n"
+"                    Please contact your administrator.\n"
+"                "
+msgstr ""
+
+#: authentik/sources/ldap/api.py
+msgid "Only a single LDAP Source with password synchronization is allowed"
 msgstr ""
 
 #: authentik/sources/ldap/models.py
@@ -1852,11 +2052,11 @@ msgid "LDAP Sources"
 msgstr ""
 
 #: authentik/sources/ldap/models.py
-msgid "LDAP Property Mapping"
+msgid "LDAP Source Property Mapping"
 msgstr ""
 
 #: authentik/sources/ldap/models.py
-msgid "LDAP Property Mappings"
+msgid "LDAP Source Property Mappings"
 msgstr ""
 
 #: authentik/sources/ldap/signals.py
@@ -2025,11 +2225,27 @@ msgid "Reddit OAuth Sources"
 msgstr ""
 
 #: authentik/sources/oauth/models.py
+msgid "OAuth Source Property Mapping"
+msgstr ""
+
+#: authentik/sources/oauth/models.py
+msgid "OAuth Source Property Mappings"
+msgstr ""
+
+#: authentik/sources/oauth/models.py
 msgid "User OAuth Source Connection"
 msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "User OAuth Source Connections"
+msgstr ""
+
+#: authentik/sources/oauth/models.py
+msgid "Group OAuth Source Connection"
+msgstr ""
+
+#: authentik/sources/oauth/models.py
+msgid "Group OAuth Source Connections"
 msgstr ""
 
 #: authentik/sources/oauth/views/callback.py
@@ -2064,11 +2280,27 @@ msgid "Plex Sources"
 msgstr ""
 
 #: authentik/sources/plex/models.py
+msgid "Plex Source Property Mapping"
+msgstr ""
+
+#: authentik/sources/plex/models.py
+msgid "Plex Source Property Mappings"
+msgstr ""
+
+#: authentik/sources/plex/models.py
 msgid "User Plex Source Connection"
 msgstr ""
 
 #: authentik/sources/plex/models.py
 msgid "User Plex Source Connections"
+msgstr ""
+
+#: authentik/sources/plex/models.py
+msgid "Group Plex Source Connection"
+msgstr ""
+
+#: authentik/sources/plex/models.py
+msgid "Group Plex Source Connections"
 msgstr ""
 
 #: authentik/sources/saml/models.py
@@ -2146,11 +2378,27 @@ msgid "SAML Sources"
 msgstr ""
 
 #: authentik/sources/saml/models.py
+msgid "SAML Source Property Mapping"
+msgstr ""
+
+#: authentik/sources/saml/models.py
+msgid "SAML Source Property Mappings"
+msgstr ""
+
+#: authentik/sources/saml/models.py
 msgid "User SAML Source Connection"
 msgstr ""
 
 #: authentik/sources/saml/models.py
 msgid "User SAML Source Connections"
+msgstr ""
+
+#: authentik/sources/saml/models.py
+msgid "Group SAML Source Connection"
+msgstr ""
+
+#: authentik/sources/saml/models.py
+msgid "Group SAML Source Connections"
 msgstr ""
 
 #: authentik/sources/scim/models.py
@@ -2159,6 +2407,14 @@ msgstr ""
 
 #: authentik/sources/scim/models.py
 msgid "SCIM Sources"
+msgstr ""
+
+#: authentik/sources/scim/models.py
+msgid "SCIM Source Property Mapping"
+msgstr ""
+
+#: authentik/sources/scim/models.py
+msgid "SCIM Source Property Mappings"
 msgstr ""
 
 #: authentik/stages/authenticator_duo/models.py
@@ -2380,12 +2636,7 @@ msgid "Captcha Stages"
 msgstr ""
 
 #: authentik/stages/captcha/stage.py
-msgid "Unknown error"
-msgstr ""
-
-#: authentik/stages/captcha/stage.py
-#, python-brace-format
-msgid "Failed to validate token: {error}"
+msgid "Invalid captcha response. Retrying may solve this issue."
 msgstr ""
 
 #: authentik/stages/captcha/stage.py
@@ -2716,6 +2967,10 @@ msgid "User database + LDAP password"
 msgstr ""
 
 #: authentik/stages/password/models.py
+msgid "User database + Kerberos password"
+msgstr ""
+
+#: authentik/stages/password/models.py
 msgid "Selection of backends to test the password against."
 msgstr ""
 
@@ -2723,6 +2978,12 @@ msgstr ""
 msgid ""
 "How many attempts a user has before the flow is canceled. To lock the user "
 "out, use a reputation policy and a user_write stage."
+msgstr ""
+
+#: authentik/stages/password/models.py
+msgid ""
+"When enabled, provides a 'show password' button with the password input "
+"field."
 msgstr ""
 
 #: authentik/stages/password/models.py
@@ -2960,6 +3221,10 @@ msgstr ""
 
 #: authentik/tenants/models.py
 msgid "Globally enable/disable impersonation."
+msgstr ""
+
+#: authentik/tenants/models.py
+msgid "Require administrators to provide a reason for impersonating a user."
 msgstr ""
 
 #: authentik/tenants/models.py

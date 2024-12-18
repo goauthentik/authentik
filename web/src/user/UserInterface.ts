@@ -4,6 +4,7 @@ import {
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
     EVENT_WS_MESSAGE,
 } from "@goauthentik/common/constants";
+import { globalAK } from "@goauthentik/common/global";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { UIConfig, UserDisplay } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
@@ -21,6 +22,7 @@ import "@goauthentik/elements/router/RouterOutlet";
 import "@goauthentik/elements/sidebar/Sidebar";
 import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
 import "@goauthentik/elements/sidebar/SidebarItem";
+import { themeImage } from "@goauthentik/elements/utils/images";
 import { ROUTES } from "@goauthentik/user/Routes";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { match } from "ts-pattern";
@@ -116,7 +118,6 @@ const customStyles = css`
 
 @customElement("ak-interface-user-presentation")
 // @ts-ignore
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 class UserInterfacePresentation extends AKElement {
     static get styles() {
         return [
@@ -168,7 +169,7 @@ class UserInterfacePresentation extends AKElement {
     }
 
     get isFullyConfigured() {
-        return !!(this.uiConfig && this.me && this.brand);
+        return Boolean(this.uiConfig && this.me && this.brand);
     }
 
     render() {
@@ -193,7 +194,7 @@ class UserInterfacePresentation extends AKElement {
                         <a href="#/" class="pf-c-page__header-brand-link">
                             <img
                                 class="pf-c-brand"
-                                src="${this.brand.brandingLogo}"
+                                src="${themeImage(this.brand.brandingLogo)}"
                                 alt="${this.brand.brandingTitle}"
                             />
                         </a>
@@ -207,7 +208,7 @@ class UserInterfacePresentation extends AKElement {
                             ${this.renderSettings()}
                             <div class="pf-c-page__header-tools-item">
                                 <a
-                                    href="/flows/-/default/invalidation/"
+                                    href="${globalAK().api.base}flows/-/default/invalidation/"
                                     class="pf-c-button pf-m-plain"
                                 >
                                     <pf-tooltip position="top" content=${msg("Sign out")}>
@@ -349,7 +350,7 @@ class UserInterfacePresentation extends AKElement {
 
         return html`<a
             class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none pf-u-display-block-on-md"
-            href="/if/admin/"
+            href="${globalAK().api.base}if/admin/"
         >
             ${msg("Admin interface")}
         </a>`;
@@ -454,7 +455,7 @@ export class UserInterface extends EnterpriseAwareInterface {
     }
 
     get isFullyConfigured() {
-        return !!(this.uiConfig && this.me);
+        return Boolean(this.uiConfig && this.me);
     }
 
     render() {
@@ -470,5 +471,12 @@ export class UserInterface extends EnterpriseAwareInterface {
             ?apiDrawerOpen=${this.apiDrawerOpen}
             notificationsCount=${this.notificationsCount}
         ></ak-interface-user-presentation>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-interface-user-presentation": UserInterfacePresentation;
+        "ak-interface-user": UserInterface;
     }
 }

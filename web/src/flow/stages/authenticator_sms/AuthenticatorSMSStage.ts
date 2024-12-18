@@ -54,7 +54,7 @@ export class AuthenticatorSMSStage extends BaseStage<
                     </ak-form-static>
                     <ak-form-element
                         label="${msg("Phone number")}"
-                        ?required="${true}"
+                        required
                         class="pf-c-form__group"
                         .errors=${(this.challenge?.responseErrors || {})["phone_number"]}
                     >
@@ -68,11 +68,7 @@ export class AuthenticatorSMSStage extends BaseStage<
                             required
                         />
                     </ak-form-element>
-                    ${"non_field_errors" in (this.challenge?.responseErrors || {})
-                        ? this.renderNonFieldErrors(
-                              this.challenge?.responseErrors?.non_field_errors || [],
-                          )
-                        : html``}
+                    ${this.renderNonFieldErrors()}
                     <div class="pf-c-form__group pf-m-action">
                         <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
                             ${msg("Continue")}
@@ -109,11 +105,10 @@ export class AuthenticatorSMSStage extends BaseStage<
                     </ak-form-static>
                     <ak-form-element
                         label="${msg("Code")}"
-                        ?required="${true}"
+                        required
                         class="pf-c-form__group"
                         .errors=${(this.challenge?.responseErrors || {})["code"]}
                     >
-                        <!-- @ts-ignore -->
                         <input
                             type="text"
                             name="code"
@@ -126,11 +121,7 @@ export class AuthenticatorSMSStage extends BaseStage<
                             required
                         />
                     </ak-form-element>
-                    ${"non_field_errors" in (this.challenge?.responseErrors || {})
-                        ? this.renderNonFieldErrors(
-                              this.challenge?.responseErrors?.non_field_errors || [],
-                          )
-                        : html``}
+                    ${this.renderNonFieldErrors()}
                     <div class="pf-c-form__group pf-m-action">
                         <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
                             ${msg("Continue")}
@@ -145,12 +136,17 @@ export class AuthenticatorSMSStage extends BaseStage<
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state loading> </ak-empty-state>`;
         }
         if (this.challenge.phoneNumberRequired) {
             return this.renderPhoneNumber();
         }
         return this.renderCode();
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-authenticator-sms": AuthenticatorSMSStage;
     }
 }

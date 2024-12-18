@@ -1,10 +1,10 @@
 import "@goauthentik/admin/sources/SourceWizard";
+import "@goauthentik/admin/sources/kerberos/KerberosSourceForm";
 import "@goauthentik/admin/sources/ldap/LDAPSourceForm";
 import "@goauthentik/admin/sources/oauth/OAuthSourceForm";
 import "@goauthentik/admin/sources/plex/PlexSourceForm";
 import "@goauthentik/admin/sources/saml/SAMLSourceForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
@@ -44,13 +44,8 @@ export class SourceListPage extends TablePage<Source> {
     @property()
     order = "name";
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Source>> {
-        return new SourcesApi(DEFAULT_CONFIG).sourcesAllList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
-        });
+    async apiEndpoint(): Promise<PaginatedResponse<Source>> {
+        return new SourcesApi(DEFAULT_CONFIG).sourcesAllList(await this.defaultEndpointConfig());
     }
 
     columns(): TableColumn[] {
@@ -130,5 +125,11 @@ export class SourceListPage extends TablePage<Source> {
 
     renderObjectCreate(): TemplateResult {
         return html`<ak-source-wizard> </ak-source-wizard> `;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-source-list": SourceListPage;
     }
 }

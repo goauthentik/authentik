@@ -1,6 +1,7 @@
-import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderFormPage";
+import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderForm";
 import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderGroupList";
 import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderUserList";
+import "@goauthentik/admin/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/events/ObjectChangelog";
@@ -10,7 +11,6 @@ import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/events/LogViewer";
-import "@goauthentik/elements/rbac/ObjectPermissionsPage";
 
 import { msg } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
@@ -220,5 +220,11 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
                     ></ak-sync-status-card>
                 </div>
             </div>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-microsoft-entra-view": MicrosoftEntraProviderViewPage;
     }
 }

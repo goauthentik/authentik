@@ -21,7 +21,6 @@ from authentik.flows.challenge import (
     AutosubmitChallenge,
     Challenge,
     ChallengeResponse,
-    ChallengeTypes,
 )
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import in_memory_stage
@@ -29,11 +28,11 @@ from authentik.flows.planner import (
     PLAN_CONTEXT_REDIRECT,
     PLAN_CONTEXT_SOURCE,
     PLAN_CONTEXT_SSO,
+    FlowPlan,
     FlowPlanner,
 )
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
-from authentik.lib.utils.urls import redirect_with_qs
 from authentik.lib.views import bad_request_message
 from authentik.providers.saml.utils.encoding import nice64
 from authentik.sources.saml.exceptions import MissingSAMLResponse, UnsupportedNameIDFormat
@@ -52,7 +51,6 @@ class AutosubmitStageView(ChallengeStageView):
     def get_challenge(self, *args, **kwargs) -> Challenge:
         return AutosubmitChallenge(
             data={
-                "type": ChallengeTypes.NATIVE.value,
                 "component": "ak-stage-autosubmit",
                 "title": self.executor.plan.context.get(PLAN_CONTEXT_TITLE, ""),
                 "url": self.executor.plan.context.get(PLAN_CONTEXT_URL, ""),
@@ -91,12 +89,7 @@ class InitiateView(View):
             raise Http404 from None
         for stage in stages_to_append:
             plan.append_stage(stage)
-        self.request.session[SESSION_KEY_PLAN] = plan
-        return redirect_with_qs(
-            "authentik_core:if-flow",
-            self.request.GET,
-            flow_slug=source.pre_authentication_flow.slug,
-        )
+        return plan.to_redirect(self.request, source.pre_authentication_flow)
 
     def get(self, request: HttpRequest, source_slug: str) -> HttpResponse:
         """Replies with an XHTML SSO Request."""
@@ -156,12 +149,15 @@ class ACSView(View):
         processor = ResponseProcessor(source, request)
         try:
             processor.parse()
-        except MissingSAMLResponse as exc:
-            return bad_request_message(request, str(exc))
-        except VerificationError as exc:
+        except (MissingSAMLResponse, VerificationError) as exc:
             return bad_request_message(request, str(exc))
 
         try:
+            if SESSION_KEY_PLAN in request.session:
+                plan: FlowPlan = self.request.session[SESSION_KEY_PLAN]
+                plan_redirect = plan.context.get(PLAN_CONTEXT_REDIRECT)
+                if plan_redirect:
+                    self.request.session[SESSION_KEY_GET] = {NEXT_ARG_NAME: plan_redirect}
             return processor.prepare_flow_manager().get_flow()
         except (UnsupportedNameIDFormat, ValueError) as exc:
             return bad_request_message(request, str(exc))

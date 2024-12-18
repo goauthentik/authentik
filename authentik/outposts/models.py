@@ -53,7 +53,7 @@ class ServiceConnectionInvalid(SentryIgnoredException):
 class OutpostConfig:
     """Configuration an outpost uses to configure it self"""
 
-    # update website/docs/outposts/_config.md
+    # update website/docs/add-secure-apps/outposts/_config.md
 
     authentik_host: str = ""
     authentik_host_insecure: bool = False
@@ -61,6 +61,7 @@ class OutpostConfig:
 
     log_level: str = CONFIG.get("log_level")
     object_naming_template: str = field(default="ak-outpost-%(name)s")
+    refresh_interval: str = "minutes=5"
 
     container_image: str | None = field(default=None)
 
@@ -450,7 +451,7 @@ class OutpostState:
             return False
         if self.build_hash != get_build_hash():
             return False
-        return parse(self.version) < OUR_VERSION
+        return parse(self.version) != OUR_VERSION
 
     @staticmethod
     def for_outpost(outpost: Outpost) -> list["OutpostState"]:

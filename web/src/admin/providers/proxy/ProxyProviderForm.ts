@@ -1,9 +1,18 @@
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
+import {
+    oauth2ProviderSelector,
+    oauth2ProvidersProvider,
+} from "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
+import {
+    oauth2SourcesProvider,
+    oauth2SourcesSelector,
+} from "@goauthentik/admin/providers/oauth2/OAuth2Sources.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-toggle-group";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -20,14 +29,12 @@ import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 import {
     FlowsInstancesListDesignationEnum,
-    PaginatedOAuthSourceList,
-    PaginatedScopeMappingList,
-    PropertymappingsApi,
     ProvidersApi,
     ProxyMode,
     ProxyProvider,
-    SourcesApi,
 } from "@goauthentik/api";
+
+import { propertyMappingsProvider, propertyMappingsSelector } from "./ProxyProviderFormHelpers.js";
 
 @customElement("ak-provider-proxy-form")
 export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
@@ -43,21 +50,6 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
         this.mode = first(provider.mode, ProxyMode.Proxy);
         return provider;
     }
-
-    async load(): Promise<void> {
-        this.propertyMappings = await new PropertymappingsApi(
-            DEFAULT_CONFIG,
-        ).propertymappingsScopeList({
-            ordering: "scope_name",
-        });
-        this.oauthSources = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthList({
-            ordering: "name",
-            hasJwks: true,
-        });
-    }
-
-    propertyMappings?: PaginatedScopeMappingList;
-    oauthSources?: PaginatedOAuthSourceList;
 
     @state()
     showHttpBasic = true;
@@ -258,7 +250,8 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html`
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -267,22 +260,8 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
                 />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${msg("Authentication flow")}
-                ?required=${false}
-                name="authenticationFlow"
-            >
-                <ak-flow-search
-                    flowType=${FlowsInstancesListDesignationEnum.Authentication}
-                    .currentFlow=${this.instance?.authenticationFlow}
-                    required
-                ></ak-flow-search>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Flow used when a user access this provider and is not authenticated.")}
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal
                 label=${msg("Authorization flow")}
-                ?required=${true}
+                required
                 name="authorizationFlow"
             >
                 <ak-flow-search
@@ -323,30 +302,14 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
                         label=${msg("Additional scopes")}
                         name="propertyMappings"
                     >
-                        <select class="pf-c-form-control" multiple>
-                            ${this.propertyMappings?.results
-                                .filter((scope) => {
-                                    return !scope.managed?.startsWith("goauthentik.io/providers");
-                                })
-                                .map((scope) => {
-                                    const selected = (this.instance?.propertyMappings || []).some(
-                                        (su) => {
-                                            return su == scope.pk;
-                                        },
-                                    );
-                                    return html`<option
-                                        value=${ifDefined(scope.pk)}
-                                        ?selected=${selected}
-                                    >
-                                        ${scope.name}
-                                    </option>`;
-                                })}
-                        </select>
+                        <ak-dual-select-dynamic-selected
+                            .provider=${propertyMappingsProvider}
+                            .selector=${propertyMappingsSelector(this.instance?.propertyMappings)}
+                            available-label="${msg("Available Scopes")}"
+                            selected-label="${msg("Selected Scopes")}"
+                        ></ak-dual-select-dynamic-selected>
                         <p class="pf-c-form__helper-text">
                             ${msg("Additional scope mappings, which are passed to the proxy.")}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Hold control/command to select multiple items.")}
                         </p>
                     </ak-form-element-horizontal>
 
@@ -426,28 +389,82 @@ ${this.instance?.skipPathRegex}</textarea
                     ${this.showHttpBasic ? this.renderHttpBasic() : html``}
                     <ak-form-element-horizontal
                         label=${msg("Trusted OIDC Sources")}
-                        name="jwksSources"
+                        name="jwtFederationSources"
                     >
-                        <select class="pf-c-form-control" multiple>
-                            ${this.oauthSources?.results.map((source) => {
-                                const selected = (this.instance?.jwksSources || []).some((su) => {
-                                    return su == source.pk;
-                                });
-                                return html`<option value=${source.pk} ?selected=${selected}>
-                                    ${source.name} (${source.slug})
-                                </option>`;
-                            })}
-                        </select>
+                        <ak-dual-select-dynamic-selected
+                            .provider=${oauth2SourcesProvider}
+                            .selector=${oauth2SourcesSelector(this.instance?.jwtFederationSources)}
+                            available-label=${msg("Available Sources")}
+                            selected-label=${msg("Selected Sources")}
+                        ></ak-dual-select-dynamic-selected>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider.",
                             )}
                         </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Federated OIDC Providers")}
+                        name="jwtFederationProviders"
+                    >
+                        <ak-dual-select-dynamic-selected
+                            .provider=${oauth2ProvidersProvider}
+                            .selector=${oauth2ProviderSelector(
+                                this.instance?.jwtFederationProviders,
+                            )}
+                            available-label=${msg("Available Providers")}
+                            selected-label=${msg("Selected Providers")}
+                        ></ak-dual-select-dynamic-selected>
                         <p class="pf-c-form__helper-text">
-                            ${msg("Hold control/command to select multiple items.")}
+                            ${msg(
+                                "JWTs signed by the selected providers can be used to authenticate to this provider.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>`;
+            </ak-form-group>
+
+            <ak-form-group>
+                <span slot="header"> ${msg("Advanced flow settings")} </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("Authentication flow")}
+                        ?required=${false}
+                        name="authenticationFlow"
+                    >
+                        <ak-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                            .currentFlow=${this.instance?.authenticationFlow}
+                        ></ak-flow-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Flow used when a user access this provider and is not authenticated.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Invalidation flow")}
+                        name="invalidationFlow"
+                        required
+                    >
+                        <ak-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                            .currentFlow=${this.instance?.invalidationFlow}
+                            defaultFlowSlug="default-provider-invalidation-flow"
+                            required
+                        ></ak-flow-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Flow used when logging out of this provider.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+        `;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-proxy-form": ProxyProviderFormPage;
     }
 }

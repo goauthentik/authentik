@@ -1,13 +1,19 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/elements/forms/DeleteBulkForm";
+import "@goauthentik/elements/forms/ModalForm";
+import "@goauthentik/elements/sync/SyncObjectForm";
 import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { ProvidersApi, SCIMProviderUser } from "@goauthentik/api";
+import {
+    ProvidersApi,
+    ProvidersScimSyncObjectCreateRequest,
+    SCIMProviderUser,
+    SyncObjectModelEnum,
+} from "@goauthentik/api";
 
 @customElement("ak-provider-scim-users-list")
 export class SCIMProviderUserList extends Table<SCIMProviderUser> {
@@ -20,6 +26,24 @@ export class SCIMProviderUserList extends Table<SCIMProviderUser> {
 
     checkbox = true;
     clearOnRefresh = true;
+
+    renderToolbar(): TemplateResult {
+        return html`<ak-forms-modal cancelText=${msg("Close")} ?closeAfterSuccessfulSubmit=${false}>
+                <span slot="submit">${msg("Sync")}</span>
+                <span slot="header">${msg("Sync User")}</span>
+                <ak-sync-object-form
+                    .provider=${this.providerId}
+                    model=${SyncObjectModelEnum.User}
+                    .sync=${(data: ProvidersScimSyncObjectCreateRequest) => {
+                        return new ProvidersApi(DEFAULT_CONFIG).providersScimSyncObjectCreate(data);
+                    }}
+                    slot="form"
+                >
+                </ak-sync-object-form>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Sync")}</button>
+            </ak-forms-modal>
+            ${super.renderToolbar()}`;
+    }
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
@@ -38,12 +62,9 @@ export class SCIMProviderUserList extends Table<SCIMProviderUser> {
         </ak-forms-delete-bulk>`;
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<SCIMProviderUser>> {
+    async apiEndpoint(): Promise<PaginatedResponse<SCIMProviderUser>> {
         return new ProvidersApi(DEFAULT_CONFIG).providersScimUsersList({
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            ordering: this.order,
-            search: this.search || "",
+            ...(await this.defaultEndpointConfig()),
             providerId: this.providerId,
         });
     }
@@ -60,5 +81,11 @@ export class SCIMProviderUserList extends Table<SCIMProviderUser> {
             </a>`,
             html`${item.id}`,
         ];
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-scim-users-list": SCIMProviderUserList;
     }
 }
