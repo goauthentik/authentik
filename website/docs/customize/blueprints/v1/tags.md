@@ -301,7 +301,7 @@ The above example will resolve to something like this:
     - "bar: (index: 2, letter: r)"
 ```
 
-#### `!AtIndex`
+#### `!AtIndex` <span class="badge badge--version">authentik 2024.12+</span>
 
 Minimal example:
 
