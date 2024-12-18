@@ -43,15 +43,25 @@ jobs:
         uses: ./.github/actions/setup
       - name: run migrations
         run: poetry run python -m lifecycle.migrate
+  test-unit-matrix:
+    name: Compute unittest matrix
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: set-matrix
+        name: compute test matrix
+        run: |
+          MATRIX="$(find authentik -name tests.py -o -name tests | sed 's/.*/{"test_path": "&", "psql": "15"}\n{"test_path": "&", "psql": "16"}/' | jq --slurp --compact-output)"
+          echo matrix="$MATRIX" >> "$GITHUB_OUTPUT"
   test-migrations-from-stable:
     name: test-migrations-from-stable - PostgreSQL ${{ matrix.psql }}
+    needs: test-unit-matrix
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix:
-        psql:
-          - 15-alpine
-          - 16-alpine
+      matrix: ${{ fromJson(needs.test-unit-matrix.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -94,17 +104,16 @@ jobs:
           # Test in the main database that we just migrated from the previous stable version
           AUTHENTIK_POSTGRESQL__TEST__NAME: authentik
         run: |
-          poetry run make test
+          poetry run coverage run manage.py test --keepdb ${{ matrix.test_path }}
+          poetry run coverage report
   test-unittest:
     name: test-unittest - PostgreSQL ${{ matrix.psql }}
+    needs: test-unit-matrix
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
       fail-fast: false
-      matrix:
-        psql:
-          - 15-alpine
-          - 16-alpine
+      matrix: ${{ fromJson(needs.test-unit-matrix.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
       - name: Setup authentik env
@@ -113,7 +122,8 @@ jobs:
           postgresql_version: ${{ matrix.psql }}
       - name: run unittest
         run: |
-          poetry run make test
+          poetry run coverage run manage.py test --keepdb ${{ matrix.test_path }}
+          poetry run coverage report
           poetry run coverage xml
       - if: ${{ always() }}
         uses: codecov/codecov-action@v5
