@@ -2,6 +2,7 @@
 
 import configparser
 import os
+from socket import timeout
 from time import time
 
 import requests
@@ -31,7 +32,7 @@ is_release = "dev" not in image_names[0]
 
 sha = os.environ["GITHUB_SHA"] if not is_pull_request else os.getenv("PR_HEAD_SHA")
 
-latest_published_version = requests.get("https://version.goauthentik.io/version.json")
+latest_published_version = requests.get("https://version.goauthentik.io/version.json", timeout=60)
 latest_published_version.raise_for_status()
 # 2042.0.0
 latest_published_version = latest_published_version.json()["stable"]["version"]
