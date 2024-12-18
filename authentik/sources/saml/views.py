@@ -28,10 +28,11 @@ from authentik.flows.planner import (
     PLAN_CONTEXT_REDIRECT,
     PLAN_CONTEXT_SOURCE,
     PLAN_CONTEXT_SSO,
+    FlowPlan,
     FlowPlanner,
 )
 from authentik.flows.stage import ChallengeStageView
-from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET
+from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
 from authentik.lib.views import bad_request_message
 from authentik.providers.saml.utils.encoding import nice64
 from authentik.sources.saml.exceptions import MissingSAMLResponse, UnsupportedNameIDFormat
@@ -148,12 +149,15 @@ class ACSView(View):
         processor = ResponseProcessor(source, request)
         try:
             processor.parse()
-        except MissingSAMLResponse as exc:
-            return bad_request_message(request, str(exc))
-        except VerificationError as exc:
+        except (MissingSAMLResponse, VerificationError) as exc:
             return bad_request_message(request, str(exc))
 
         try:
+            if SESSION_KEY_PLAN in request.session:
+                plan: FlowPlan = self.request.session[SESSION_KEY_PLAN]
+                plan_redirect = plan.context.get(PLAN_CONTEXT_REDIRECT)
+                if plan_redirect:
+                    self.request.session[SESSION_KEY_GET] = {NEXT_ARG_NAME: plan_redirect}
             return processor.prepare_flow_manager().get_flow()
         except (UnsupportedNameIDFormat, ValueError) as exc:
             return bad_request_message(request, str(exc))
