@@ -50,5 +50,5 @@ runs:
         IMAGE_ARCH: ${{ inputs.image-arch }}
         PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
       run: |
-        pip3 install requests
+        sudo apt install -y python3-requests
         python3 ${{ github.action_path }}/push_vars.py
