@@ -44,7 +44,6 @@ jobs:
       - name: run migrations
         run: poetry run python -m lifecycle.migrate
   test-unit-matrix:
-    name: Compute unittest matrix
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
