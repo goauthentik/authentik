@@ -294,7 +294,10 @@ class ConfigLoader:
 
     def get_bool(self, path: str, default=False) -> bool:
         """Wrapper for get that converts value into boolean"""
-        return str(self.get(path, default)).lower() == "true"
+        value = self.get(path, UNSET)
+        if value is UNSET:
+            return default
+        return str(self.get(path)).lower() == "true"
 
     def get_keys(self, path: str, sep=".") -> list[str]:
         """List attribute keys by using yaml path"""
