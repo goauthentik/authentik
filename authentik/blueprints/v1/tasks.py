@@ -1,11 +1,11 @@
 """v1 blueprints tasks"""
 
-import pglock
 from dataclasses import asdict, dataclass, field
 from hashlib import sha512
 from pathlib import Path
 from sys import platform
 
+import pglock
 from dacite.core import from_dict
 from django.db import DatabaseError, InternalError, ProgrammingError, connection
 from django.utils.text import slugify
