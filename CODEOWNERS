@@ -25,6 +25,9 @@ CODEOWNERS                      @goauthentik/infrastructure
 # Web
 web/                            @goauthentik/frontend
 tests/wdio/                     @goauthentik/frontend
+# Locale
+locale/                         @goauthentik/backend @goauthentik/frontend
+web/xliff/                      @goauthentik/backend @goauthentik/frontend
 # Docs & Website
 website/                        @goauthentik/docs
 CODE_OF_CONDUCT.md              @goauthentik/docs
