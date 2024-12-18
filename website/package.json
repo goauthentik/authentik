@@ -27,7 +27,7 @@
         "@mdx-js/react": "^3.1.0",
         "clsx": "^2.1.1",
         "disqus-react": "^1.1.5",
-        "docusaurus-plugin-openapi-docs": "^4.3.0",
+        "docusaurus-plugin-openapi-docs": "^4.3.1",
         "docusaurus-theme-openapi-docs": "^4.3.0",
         "postcss": "^8.4.49",
         "prism-react-renderer": "^2.4.1",
