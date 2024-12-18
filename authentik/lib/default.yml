@@ -6,8 +6,6 @@ postgresql:
   user: authentik
   port: 5432
   password: "env://POSTGRES_PASSWORD"
-  conn_max_age: 0
-  disable_server_side_cursors: false
   test:
     name: test_authentik
   read_replicas: {}
