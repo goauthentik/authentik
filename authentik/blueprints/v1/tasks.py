@@ -1,12 +1,13 @@
 """v1 blueprints tasks"""
 
+import pglock
 from dataclasses import asdict, dataclass, field
 from hashlib import sha512
 from pathlib import Path
 from sys import platform
 
 from dacite.core import from_dict
-from django.db import DatabaseError, InternalError, ProgrammingError
+from django.db import DatabaseError, InternalError, ProgrammingError, connection
 from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
@@ -152,15 +153,27 @@ def blueprints_find() -> list[BlueprintFile]:
 @prefill_task
 def blueprints_discovery(self: SystemTask, path: str | None = None):
     """Find blueprints and check if they need to be created in the database"""
-    count = 0
-    for blueprint in blueprints_find():
-        if path and blueprint.path != path:
-            continue
-        check_blueprint_v1_file(blueprint)
-        count += 1
-    self.set_status(
-        TaskStatus.SUCCESSFUL, _("Successfully imported {count} files.".format(count=count))
-    )
+    with pglock.advisory(
+        lock_id=f"goauthentik.io/{connection.schema_name}/blueprints/discovery",
+        timeout=0,
+        side_effect=pglock.Return,
+    ) as lock_acquired:
+        if not lock_acquired:
+            LOGGER.debug("Not running blueprint discovery, lock was not acquired")
+            self.set_status(
+                TaskStatus.SUCCESSFUL,
+                _("Blueprint discovery lock could not be acquired. Skipping discovery."),
+            )
+            return
+        count = 0
+        for blueprint in blueprints_find():
+            if path and blueprint.path != path:
+                continue
+            check_blueprint_v1_file(blueprint)
+            count += 1
+        self.set_status(
+            TaskStatus.SUCCESSFUL, _("Successfully imported {count} files.".format(count=count))
+        )
 
 
 def check_blueprint_v1_file(blueprint: BlueprintFile):
@@ -197,48 +210,60 @@ def check_blueprint_v1_file(blueprint: BlueprintFile):
 def apply_blueprint(self: SystemTask, instance_pk: str):
     """Apply single blueprint"""
     self.save_on_success = False
-    instance: BlueprintInstance | None = None
-    try:
-        instance: BlueprintInstance = BlueprintInstance.objects.filter(pk=instance_pk).first()
-        if not instance or not instance.enabled:
+    with pglock.advisory(
+        lock_id=f"goauthentik.io/{connection.schema_name}/blueprints/apply/{instance_pk}",
+        timeout=0,
+        side_effect=pglock.Return,
+    ) as lock_acquired:
+        if not lock_acquired:
+            LOGGER.debug("Not running blueprint discovery, lock was not acquired")
+            self.set_status(
+                TaskStatus.SUCCESSFUL,
+                _("Blueprint apply lock could not be acquired. Skipping apply."),
+            )
             return
-        self.set_uid(slugify(instance.name))
-        blueprint_content = instance.retrieve()
-        file_hash = sha512(blueprint_content.encode()).hexdigest()
-        importer = Importer.from_string(blueprint_content, instance.context)
-        if importer.blueprint.metadata:
-            instance.metadata = asdict(importer.blueprint.metadata)
-        valid, logs = importer.validate()
-        if not valid:
-            instance.status = BlueprintInstanceStatus.ERROR
-            instance.save()
-            self.set_status(TaskStatus.ERROR, *logs)
-            return
-        with capture_logs() as logs:
-            applied = importer.apply()
-            if not applied:
+        instance: BlueprintInstance | None = None
+        try:
+            instance: BlueprintInstance = BlueprintInstance.objects.filter(pk=instance_pk).first()
+            if not instance or not instance.enabled:
+                return
+            self.set_uid(slugify(instance.name))
+            blueprint_content = instance.retrieve()
+            file_hash = sha512(blueprint_content.encode()).hexdigest()
+            importer = Importer.from_string(blueprint_content, instance.context)
+            if importer.blueprint.metadata:
+                instance.metadata = asdict(importer.blueprint.metadata)
+            valid, logs = importer.validate()
+            if not valid:
                 instance.status = BlueprintInstanceStatus.ERROR
                 instance.save()
                 self.set_status(TaskStatus.ERROR, *logs)
                 return
-        instance.status = BlueprintInstanceStatus.SUCCESSFUL
-        instance.last_applied_hash = file_hash
-        instance.last_applied = now()
-        self.set_status(TaskStatus.SUCCESSFUL)
-    except (
-        OSError,
-        DatabaseError,
-        ProgrammingError,
-        InternalError,
-        BlueprintRetrievalFailed,
-        EntryInvalidError,
-    ) as exc:
-        if instance:
-            instance.status = BlueprintInstanceStatus.ERROR
-        self.set_error(exc)
-    finally:
-        if instance:
-            instance.save()
+            with capture_logs() as logs:
+                applied = importer.apply()
+                if not applied:
+                    instance.status = BlueprintInstanceStatus.ERROR
+                    instance.save()
+                    self.set_status(TaskStatus.ERROR, *logs)
+                    return
+            instance.status = BlueprintInstanceStatus.SUCCESSFUL
+            instance.last_applied_hash = file_hash
+            instance.last_applied = now()
+            self.set_status(TaskStatus.SUCCESSFUL)
+        except (
+            OSError,
+            DatabaseError,
+            ProgrammingError,
+            InternalError,
+            BlueprintRetrievalFailed,
+            EntryInvalidError,
+        ) as exc:
+            if instance:
+                instance.status = BlueprintInstanceStatus.ERROR
+            self.set_error(exc)
+        finally:
+            if instance:
+                instance.save()
 
 
 @CELERY_APP.task()
