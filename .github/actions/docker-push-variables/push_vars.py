@@ -2,7 +2,6 @@
 
 import configparser
 import os
-from socket import timeout
 from time import time
 
 import requests
