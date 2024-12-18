@@ -42,7 +42,6 @@ SESSION_COOKIE_DOMAIN = CONFIG.get("cookie_domain", None)
 APPEND_SLASH = False
 
 AUTHENTICATION_BACKENDS = [
-    "django.contrib.auth.backends.ModelBackend",
     BACKEND_INBUILT,
     BACKEND_APP_PASSWORD,
     BACKEND_LDAP,
