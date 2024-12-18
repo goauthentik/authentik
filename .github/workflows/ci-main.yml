@@ -56,7 +56,8 @@ jobs:
           echo matrix="$MATRIX" >> "$GITHUB_OUTPUT"
   test-migrations-from-stable:
     name: test-migrations-from-stable - PostgreSQL ${{ matrix.psql }}
-    needs: test-unit-matrix
+    needs:
+      - test-unit-matrix
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -107,7 +108,8 @@ jobs:
           poetry run coverage report
   test-unittest:
     name: test-unittest - PostgreSQL ${{ matrix.psql }}
-    needs: test-unit-matrix
+    needs:
+      - test-unit-matrix
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
