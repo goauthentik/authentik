@@ -1,8 +1,8 @@
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 import {
-    makeMicrosoftEntraPropertyMappingsSelector,
-    microsoftEntraPropertyMappingsProvider,
-} from "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderPropertyMappings";
+    propertyMappingsProvider,
+    propertyMappingsSelector,
+} from "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderFormHelpers.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
@@ -213,8 +213,8 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                         name="propertyMappings"
                     >
                         <ak-dual-select-dynamic-selected
-                            .provider=${microsoftEntraPropertyMappingsProvider}
-                            .selector=${makeMicrosoftEntraPropertyMappingsSelector(
+                            .provider=${propertyMappingsProvider}
+                            .selector=${propertyMappingsSelector(
                                 this.instance?.propertyMappings,
                                 "goauthentik.io/providers/microsoft_entra/user",
                             )}
@@ -230,8 +230,8 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                         name="propertyMappingsGroup"
                     >
                         <ak-dual-select-dynamic-selected
-                            .provider=${microsoftEntraPropertyMappingsProvider}
-                            .selector=${makeMicrosoftEntraPropertyMappingsSelector(
+                            .provider=${propertyMappingsProvider}
+                            .selector=${propertyMappingsSelector(
                                 this.instance?.propertyMappingsGroup,
                                 "goauthentik.io/providers/microsoft_entra/group",
                             )}

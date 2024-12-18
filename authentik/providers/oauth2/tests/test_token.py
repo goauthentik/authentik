@@ -22,6 +22,8 @@ from authentik.providers.oauth2.models import (
     AccessToken,
     AuthorizationCode,
     OAuth2Provider,
+    RedirectURI,
+    RedirectURIMatchingMode,
     RefreshToken,
     ScopeMapping,
 )
@@ -42,7 +44,7 @@ class TestToken(OAuthTestCase):
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
-            redirect_uris="http://TestServer",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://TestServer")],
             signing_key=self.keypair,
         )
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
@@ -69,7 +71,7 @@ class TestToken(OAuthTestCase):
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
-            redirect_uris="http://testserver",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://testserver")],
             signing_key=self.keypair,
         )
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
@@ -90,7 +92,7 @@ class TestToken(OAuthTestCase):
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
-            redirect_uris="http://local.invalid",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
             signing_key=self.keypair,
         )
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
@@ -118,7 +120,7 @@ class TestToken(OAuthTestCase):
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
-            redirect_uris="http://local.invalid",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
             signing_key=self.keypair,
         )
         # Needs to be assigned to an application for iss to be set
@@ -157,7 +159,7 @@ class TestToken(OAuthTestCase):
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
-            redirect_uris="http://local.invalid",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
             signing_key=self.keypair,
             encryption_key=self.keypair,
         )
@@ -188,7 +190,7 @@ class TestToken(OAuthTestCase):
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
-            redirect_uris="http://local.invalid",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
             signing_key=self.keypair,
         )
         provider.property_mappings.set(
@@ -250,7 +252,7 @@ class TestToken(OAuthTestCase):
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
-            redirect_uris="http://local.invalid",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
             signing_key=self.keypair,
         )
         provider.property_mappings.set(
@@ -308,7 +310,7 @@ class TestToken(OAuthTestCase):
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
-            redirect_uris="http://testserver",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://testserver")],
             signing_key=self.keypair,
         )
         provider.property_mappings.set(

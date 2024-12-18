@@ -16,7 +16,8 @@ For VS Code, for example, add these entries to your `settings.json`:
         "!If sequence",
         "!Index scalar",
         "!KeyOf scalar",
-        "!Value scalar"
+        "!Value scalar",
+        "!AtIndex scalar"
     ]
 }
 ```
@@ -166,9 +167,9 @@ This tag takes 3 arguments:
 !Enumerate [<iterable>, <output_object_type>, <single_item_yaml>]
 ```
 
--   **iterable**: Any Python iterable or custom tag that resolves to such iterable
--   **output_object_type**: `SEQ` or `MAP`. Controls whether the returned YAML will be a mapping or a sequence.
--   **single_item_yaml**: The YAML to use to create a single entry in the output object
+- **iterable**: Any Python iterable or custom tag that resolves to such iterable
+- **output_object_type**: `SEQ` or `MAP`. Controls whether the returned YAML will be a mapping or a sequence.
+- **single_item_yaml**: The YAML to use to create a single entry in the output object
 
 2. `!Index` tag:
 
@@ -182,7 +183,7 @@ This tag takes 1 argument:
 !Index <depth>
 ```
 
--   **depth**: Must be >= 0. A depth of 0 refers to the `!Enumerate` tag this tag is located in. A depth of 1 refers to one `!Enumerate` tag above that (to be used when multiple `!Enumerate` tags are nested inside each other).
+- **depth**: Must be >= 0. A depth of 0 refers to the `!Enumerate` tag this tag is located in. A depth of 1 refers to one `!Enumerate` tag above that (to be used when multiple `!Enumerate` tags are nested inside each other).
 
 Accesses the `!Enumerate` tag's iterable and resolves to the index of the item currently being iterated (in case `!Enumerate` is iterating over a sequence), or the mapping key (in case `!Enumerate` is iterating over a mapping).
 
@@ -200,7 +201,7 @@ This tag takes 1 argument:
 !Value <depth>
 ```
 
--   **depth**: Must be >= 0. A depth of 0 refers to the `!Enumerate` tag this tag is located in. A depth of 1 refers to one `!Enumerate` tag above that (to be used when multiple `!Enumerate` tags are nested inside each other).
+- **depth**: Must be >= 0. A depth of 0 refers to the `!Enumerate` tag this tag is located in. A depth of 1 refers to one `!Enumerate` tag above that (to be used when multiple `!Enumerate` tags are nested inside each other).
 
 Accesses the `!Enumerate` tag's iterable and resolves to the value of the item currently being iterated.
 
@@ -299,3 +300,23 @@ The above example will resolve to something like this:
     - "bar: (index: 1, letter: a)"
     - "bar: (index: 2, letter: r)"
 ```
+
+#### `!AtIndex` <span class="badge badge--version">authentik 2024.12+</span>
+
+Minimal example:
+
+```yaml
+value_in_sequence: !AtIndex [["first", "second"], 0] # Resolves to "first"
+value_in_mapping: !AtIndex [{ "foo": "bar", "other": "value" }, "foo"] # Resolves to "bar"
+```
+
+Example with default value:
+
+```yaml
+default_value: !AtIndex [["first"], 100, "default"]  # Resolves to "default"
+default_value: !AtIndex [["first"], 100]  # Throws an error
+```
+
+Resolves to the value at a specific index in a sequence or a mapping.
+
+If no value can be found at the specified index and no default is provided, an error is raised and the blueprint is invalid.

@@ -29,7 +29,7 @@ To edit the group's name, parent group, whether or not the group is for superuse
 
 To [add or remove users](../user/user_basic_operations.md#add-a-user-to-a-group) from the group, or to manage permissions assigned to the group, click on the name of the group to go to the group's detail page.
 
-For more information about permissions, refer to ["Assign or remove permissions for a specific group"](../access-control/manage_permissions.md#assign-or-remove-permissions-on-a-specific-group).
+For more information about permissions, refer to [Assign or remove permissions for a specific group](../access-control/manage_permissions.md#assign-or-remove-permissions-on-a-specific-group).
 
 ## Delete a group
 
@@ -41,16 +41,16 @@ To delete a group, follow these steps:
 
 ## Assign a role to a group
 
-You can assign a role to a group, and then all users in the group inherit the permissions assigned to that role. For instructions and more information, see ["Assign a role to a group"](../roles/manage_roles.md#assign-a-role-to-a-group).
+You can assign a role to a group, and then all users in the group inherit the permissions assigned to that role. For instructions and more information, see [Assign a role to a group](../roles/manage_roles.md#assign-a-role-to-a-group).
 
 ## Delegating group member management <span class="badge badge--version">authentik 2024.4+</span>
 
 To give a specific Role or User the ability to manage group members, the following permissions need to be granted on the matching Group object:
 
--   Can view group
--   Can add user to group
--   Can remove user from group
--   Can access admin interface (for managing a group's user within the authentik Admin interface)
+- Can view group
+- Can add user to group
+- Can remove user from group
+- Can access admin interface (for managing a group's user within the authentik Admin interface)
 
 In addition, the permission "Can view User" needs to be assigned, either globally or on specific users that should be manageable.
 

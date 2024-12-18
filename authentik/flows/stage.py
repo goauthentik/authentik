@@ -2,6 +2,7 @@
 
 from typing import TYPE_CHECKING
 
+from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.http import HttpRequest
 from django.http.request import QueryDict
@@ -92,7 +93,11 @@ class ChallengeStageView(StageView):
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Return a challenge for the frontend to solve"""
-        challenge = self._get_challenge(*args, **kwargs)
+        try:
+            challenge = self._get_challenge(*args, **kwargs)
+        except StageInvalidException as exc:
+            self.logger.debug("Got StageInvalidException", exc=exc)
+            return self.executor.stage_invalid()
         if not challenge.is_valid():
             self.logger.warning(
                 "f(ch): Invalid challenge",
@@ -168,11 +173,7 @@ class ChallengeStageView(StageView):
                 stage_type=self.__class__.__name__, method="get_challenge"
             ).time(),
         ):
-            try:
-                challenge = self.get_challenge(*args, **kwargs)
-            except StageInvalidException as exc:
-                self.logger.debug("Got StageInvalidException", exc=exc)
-                return self.executor.stage_invalid()
+            challenge = self.get_challenge(*args, **kwargs)
         with start_span(
             op="authentik.flow.stage._get_challenge",
             name=self.__class__.__name__,
@@ -224,6 +225,14 @@ class ChallengeStageView(StageView):
                 full_errors[field].append(field_error)
         challenge_response.initial_data["response_errors"] = full_errors
         if not challenge_response.is_valid():
+            if settings.TEST:
+                raise StageInvalidException(
+                    (
+                        f"Invalid challenge response: \n\t{challenge_response.errors}"
+                        f"\n\nValidated data:\n\t {challenge_response.data}"
+                        f"\n\nInitial data:\n\t {challenge_response.initial_data}"
+                    ),
+                )
             self.logger.error(
                 "f(ch): invalid challenge response",
                 errors=challenge_response.errors,

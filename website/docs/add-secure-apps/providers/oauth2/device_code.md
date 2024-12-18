@@ -14,29 +14,29 @@ authentik doesn't ship with a default flow for this usecase, so it is recommende
 
 The flow is initiated by sending a POST request to the device authorization endpoint, `/application/o/device/` with the following contents:
 
-```
+```http
 POST /application/o/device/ HTTP/1.1
 Host: authentik.company
 Content-Type: application/x-www-form-urlencoded
 
 client_id=application_client_id&
-scopes=openid email my-other-scope
+scope=openid email my-other-scope
 ```
 
 The response contains the following fields:
 
--   `device_code`: Device code, which is the code kept on the device
--   `verification_uri`: The URL to be shown to the enduser to input the code
--   `verification_uri_complete`: The same URL as above except the code will be prefilled
--   `user_code`: The raw code for the enduser to input
--   `expires_in`: The total seconds after which this token will expire
--   `interval`: The interval in seconds for how often the device should check the token status
+- `device_code`: Device code, which is the code kept on the device
+- `verification_uri`: The URL to be shown to the enduser to input the code
+- `verification_uri_complete`: The same URL as above except the code will be prefilled
+- `user_code`: The raw code for the enduser to input
+- `expires_in`: The total seconds after which this token will expire
+- `interval`: The interval in seconds for how often the device should check the token status
 
 ---
 
 With this response, the device can start checking the status of the token by sending requests to the token endpoint like this:
 
-```
+```http
 POST /application/o/token/ HTTP/1.1
 Host: authentik.company
 Content-Type: application/x-www-form-urlencoded

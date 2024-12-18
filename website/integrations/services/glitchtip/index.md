@@ -17,15 +17,15 @@ sidebar_label: Glitchtip
 
 The following placeholders will be used:
 
--   `glitchtip.company` is the FQDN of the Glitchtip install.
--   `authentik.company` is the FQDN of the authentik install.
+- `glitchtip.company` is the FQDN of the Glitchtip install.
+- `authentik.company` is the FQDN of the authentik install.
 
 ## authentik configuration
 
 Create an OAuth2/OpenID provider with the following parameters:
 
--   Client Type: `Confidential`
--   Redirect URIs: `https://glitchtip.company/accounts/oidc/authentik/login/callback/`
+- Client Type: `Confidential`
+- Redirect URIs: `https://glitchtip.company/accounts/oidc/authentik/login/callback/`
 
 Note the Client ID and Client Secret values.
 
@@ -45,13 +45,13 @@ sudo docker exec -it glitchtip-web-1 ./manage.py createsuperuser
 
 3. Click **Add Social Application** and enter the following details:
 
--   Provider: `OpenID Connect`
--   Provider ID: `authentik` (should match the Redirect URI configured above)
--   Provider Name: Whatever you want to appear on GlitchTip's log in button
--   Client ID: &lt;Client ID from authentik>
--   Secret key: &lt;Client Secret from authentik>
--   Key: leave blank
--   Settings: `{"server_url": "https://authentik.company/application/o/<Slug of the application from above>/"}`
-    The URL should match the **OpenID Configuration Issuer** URL for the authentik provider.
+- Provider: `OpenID Connect`
+- Provider ID: `authentik` (should match the Redirect URI configured above)
+- Provider Name: Whatever you want to appear on GlitchTip's log in button
+- Client ID: &lt;Client ID from authentik>
+- Secret key: &lt;Client Secret from authentik>
+- Key: leave blank
+- Settings: `{"server_url": "https://authentik.company/application/o/<Slug of the application from above>/"}`
+  The URL should match the **OpenID Configuration Issuer** URL for the authentik provider.
 
 This will add a **Log in with Authentik** button to the GlitchTip log in page. To add an authentik account to an existing GlitchTip account, log in using the username/password, click _Profile_, then click _Add Account_ in the _Social Auth Accounts_ section.

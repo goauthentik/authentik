@@ -11,9 +11,9 @@ inputs:
     description: "Docker image arch"
 
 outputs:
-  shouldBuild:
-    description: "Whether to build image or not"
-    value: ${{ steps.ev.outputs.shouldBuild }}
+  shouldPush:
+    description: "Whether to push the image or not"
+    value: ${{ steps.ev.outputs.shouldPush }}
 
   sha:
     description: "sha"

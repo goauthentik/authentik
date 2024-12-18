@@ -40,6 +40,7 @@ class Migration(migrations.Migration):
                     ("require_authenticated", "Require Authenticated"),
                     ("require_unauthenticated", "Require Unauthenticated"),
                     ("require_superuser", "Require Superuser"),
+                    ("require_redirect", "Require Redirect"),
                     ("require_outpost", "Require Outpost"),
                 ],
                 default="none",

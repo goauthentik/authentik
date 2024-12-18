@@ -35,9 +35,9 @@ If you have the provider metadata, you should be able to extract all values you 
 
 This will depend heavily on what software you are using for your IDP. On the Metadata tab in the SAML Federation Source you can download the metadata for the service provider, this should enable you to import this into most IDPs. If this does not work, the important parts are:
 
--   Entity ID: Taken from the Issuer/Entity ID field above
--   Return URL/ACS URL: `https://authentik.company/source/saml/<source-slug>/acs/`
--   Certificate: If you have chosen to sign your outgoing requests, use the public side of the certificate that you specified in the settings
+- Entity ID: Taken from the Issuer/Entity ID field above
+- Return URL/ACS URL: `https://authentik.company/source/saml/<source-slug>/acs/`
+- Certificate: If you have chosen to sign your outgoing requests, use the public side of the certificate that you specified in the settings
 
 ## Example IDP metadata
 
@@ -89,5 +89,5 @@ See the [overview](../../property-mappings/index.md) for information on how prop
 
 The following variables are available to SAML source property mappings:
 
--   `root`: An XML `ETree` object containing data from the source.
--   `name_id`: An XML `Element` object identifying the user.
+- `root`: An XML `ETree` object containing data from the source.
+- `name_id`: An XML `Element` object identifying the user.

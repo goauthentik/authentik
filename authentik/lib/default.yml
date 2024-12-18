@@ -135,6 +135,7 @@ web:
   # No default here as it's set dynamically
   # workers: 2
   threads: 4
+  path: /
 
 worker:
   concurrency: 2

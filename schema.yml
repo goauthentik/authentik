@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2024.10.2
+  version: 2024.10.5
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -20225,10 +20225,6 @@ paths:
         explode: true
         style: form
       - in: query
-        name: redirect_uris
-        schema:
-          type: string
-      - in: query
         name: refresh_token_validity
         schema:
           type: string
@@ -20643,10 +20639,6 @@ paths:
             format: uuid
         explode: true
         style: form
-      - in: query
-        name: redirect_uris__iexact
-        schema:
-          type: string
       - name: search
         required: false
         in: query
@@ -23398,6 +23390,7 @@ paths:
           - authentik_stages_password.passwordstage
           - authentik_stages_prompt.prompt
           - authentik_stages_prompt.promptstage
+          - authentik_stages_redirect.redirectstage
           - authentik_stages_source.sourcestage
           - authentik_stages_user_delete.userdeletestage
           - authentik_stages_user_login.userloginstage
@@ -23637,6 +23630,7 @@ paths:
           - authentik_stages_password.passwordstage
           - authentik_stages_prompt.prompt
           - authentik_stages_prompt.promptstage
+          - authentik_stages_redirect.redirectstage
           - authentik_stages_source.sourcestage
           - authentik_stages_user_delete.userdeletestage
           - authentik_stages_user_login.userloginstage
@@ -25014,6 +25008,12 @@ paths:
         required: true
       tags:
       - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupKerberosSourceConnectionRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -25048,6 +25048,11 @@ paths:
         required: true
       tags:
       - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedGroupKerberosSourceConnectionRequest'
       security:
       - authentik: []
       responses:
@@ -25202,6 +25207,12 @@ paths:
       description: Group-source connection Viewset
       tags:
       - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupOAuthSourceConnectionRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -25269,6 +25280,12 @@ paths:
         required: true
       tags:
       - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupOAuthSourceConnectionRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -25302,6 +25319,11 @@ paths:
         required: true
       tags:
       - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedGroupOAuthSourceConnectionRequest'
       security:
       - authentik: []
       responses:
@@ -25454,6 +25476,12 @@ paths:
       description: Group-source connection Viewset
       tags:
       - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupPlexSourceConnectionRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -25521,6 +25549,12 @@ paths:
         required: true
       tags:
       - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupPlexSourceConnectionRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -25554,6 +25588,11 @@ paths:
         required: true
       tags:
       - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedGroupPlexSourceConnectionRequest'
       security:
       - authentik: []
       responses:
@@ -25747,6 +25786,12 @@ paths:
         required: true
       tags:
       - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupSAMLSourceConnectionRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -25780,6 +25825,11 @@ paths:
         required: true
       tags:
       - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedGroupSAMLSourceConnectionRequest'
       security:
       - authentik: []
       responses:
@@ -25875,6 +25925,17 @@ paths:
         name: enabled
         schema:
           type: boolean
+      - in: query
+        name: kadmin_type
+        schema:
+          type: string
+          enum:
+          - Heimdal
+          - MIT
+          - other
+        description: |+
+          KAdmin server type
+
       - in: query
         name: name
         schema:
@@ -28729,6 +28790,12 @@ paths:
         required: true
       tags:
       - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSourceConnectionRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -28762,6 +28829,11 @@ paths:
         required: true
       tags:
       - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserSourceConnectionRequest'
       security:
       - authentik: []
       responses:
@@ -35644,6 +35716,275 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /stages/redirect/:
+    get:
+      operationId: stages_redirect_list
+      description: RedirectStage Viewset
+      parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRedirectStageList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: stages_redirect_create
+      description: RedirectStage Viewset
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RedirectStageRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RedirectStage'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /stages/redirect/{stage_uuid}/:
+    get:
+      operationId: stages_redirect_retrieve
+      description: RedirectStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Redirect Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RedirectStage'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: stages_redirect_update
+      description: RedirectStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Redirect Stage.
+        required: true
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RedirectStageRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RedirectStage'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: stages_redirect_partial_update
+      description: RedirectStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Redirect Stage.
+        required: true
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRedirectStageRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RedirectStage'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: stages_redirect_destroy
+      description: RedirectStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Redirect Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /stages/redirect/{stage_uuid}/used_by/:
+    get:
+      operationId: stages_redirect_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Redirect Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /stages/source/:
     get:
       operationId: stages_source_list
@@ -37675,6 +38016,7 @@ components:
       - authentik.stages.invitation
       - authentik.stages.password
       - authentik.stages.prompt
+      - authentik.stages.redirect
       - authentik.stages.user_delete
       - authentik.stages.user_login
       - authentik.stages.user_logout
@@ -37987,6 +38329,7 @@ components:
       - require_authenticated
       - require_unauthenticated
       - require_superuser
+      - require_redirect
       - require_outpost
       type: string
     AuthenticatorAttachmentEnum:
@@ -41428,6 +41771,7 @@ components:
       - $ref: '#/components/schemas/PasswordChallengeResponseRequest'
       - $ref: '#/components/schemas/PlexAuthenticationChallengeResponseRequest'
       - $ref: '#/components/schemas/PromptChallengeResponseRequest'
+      - $ref: '#/components/schemas/RedirectChallengeResponseRequest'
       - $ref: '#/components/schemas/UserLoginChallengeResponseRequest'
       discriminator:
         propertyName: component
@@ -41451,6 +41795,7 @@ components:
           ak-stage-password: '#/components/schemas/PasswordChallengeResponseRequest'
           ak-source-plex: '#/components/schemas/PlexAuthenticationChallengeResponseRequest'
           ak-stage-prompt: '#/components/schemas/PromptChallengeResponseRequest'
+          xak-flow-redirect: '#/components/schemas/RedirectChallengeResponseRequest'
           ak-stage-user-login: '#/components/schemas/UserLoginChallengeResponseRequest'
     FlowDesignationEnum:
       enum:
@@ -42277,14 +42622,15 @@ components:
         group:
           type: string
           format: uuid
-          readOnly: true
         source:
+          type: string
+          format: uuid
+        source_obj:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
         identifier:
           type: string
-          readOnly: true
         created:
           type: string
           format: date-time
@@ -42294,6 +42640,24 @@ components:
       - group
       - identifier
       - pk
+      - source
+      - source_obj
+    GroupKerberosSourceConnectionRequest:
+      type: object
+      description: OAuth Group-Source connection Serializer
+      properties:
+        group:
+          type: string
+          format: uuid
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+      required:
+      - group
+      - identifier
       - source
     GroupMatchingModeEnum:
       enum:
@@ -42389,14 +42753,15 @@ components:
         group:
           type: string
           format: uuid
-          readOnly: true
         source:
+          type: string
+          format: uuid
+        source_obj:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
         identifier:
           type: string
-          readOnly: true
         created:
           type: string
           format: date-time
@@ -42406,6 +42771,24 @@ components:
       - group
       - identifier
       - pk
+      - source
+      - source_obj
+    GroupOAuthSourceConnectionRequest:
+      type: object
+      description: OAuth Group-Source connection Serializer
+      properties:
+        group:
+          type: string
+          format: uuid
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+      required:
+      - group
+      - identifier
       - source
     GroupPlexSourceConnection:
       type: object
@@ -42418,14 +42801,15 @@ components:
         group:
           type: string
           format: uuid
-          readOnly: true
         source:
+          type: string
+          format: uuid
+        source_obj:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
         identifier:
           type: string
-          readOnly: true
         created:
           type: string
           format: date-time
@@ -42435,6 +42819,24 @@ components:
       - group
       - identifier
       - pk
+      - source
+      - source_obj
+    GroupPlexSourceConnectionRequest:
+      type: object
+      description: Plex Group-Source connection Serializer
+      properties:
+        group:
+          type: string
+          format: uuid
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+      required:
+      - group
+      - identifier
       - source
     GroupRequest:
       type: object
@@ -42475,14 +42877,15 @@ components:
         group:
           type: string
           format: uuid
-          readOnly: true
         source:
+          type: string
+          format: uuid
+        source_obj:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
         identifier:
           type: string
-          readOnly: true
         created:
           type: string
           format: date-time
@@ -42492,6 +42895,24 @@ components:
       - group
       - identifier
       - pk
+      - source
+      - source_obj
+    GroupSAMLSourceConnectionRequest:
+      type: object
+      description: OAuth Group-Source connection Serializer
+      properties:
+        group:
+          type: string
+          format: uuid
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+      required:
+      - group
+      - identifier
       - source
     IdentificationChallenge:
       type: object
@@ -42887,6 +43308,12 @@ components:
       - global
       - per_provider
       type: string
+    KadminTypeEnum:
+      enum:
+      - MIT
+      - Heimdal
+      - other
+      type: string
     KerberosSource:
       type: object
       description: Kerberos Source Serializer
@@ -42974,6 +43401,10 @@ components:
         krb5_conf:
           type: string
           description: Custom krb5.conf to use. Uses the system one by default
+        kadmin_type:
+          allOf:
+          - $ref: '#/components/schemas/KadminTypeEnum'
+          description: KAdmin server type
         sync_users:
           type: boolean
           description: Sync users from Kerberos into authentik
@@ -43142,6 +43573,10 @@ components:
         krb5_conf:
           type: string
           description: Custom krb5.conf to use. Uses the system one by default
+        kadmin_type:
+          allOf:
+          - $ref: '#/components/schemas/KadminTypeEnum'
+          description: KAdmin server type
         sync_users:
           type: boolean
           description: Sync users from Kerberos into authentik
@@ -44074,6 +44509,11 @@ components:
       required:
       - challenge
       - name
+    MatchingModeEnum:
+      enum:
+      - strict
+      - regex
+      type: string
     Metadata:
       type: object
       description: Serializer for blueprint metadata
@@ -44425,6 +44865,7 @@ components:
       - authentik_stages_password.passwordstage
       - authentik_stages_prompt.prompt
       - authentik_stages_prompt.promptstage
+      - authentik_stages_redirect.redirectstage
       - authentik_stages_user_delete.userdeletestage
       - authentik_stages_user_login.userloginstage
       - authentik_stages_user_logout.userlogoutstage
@@ -44776,8 +45217,9 @@ components:
           description: Key used to encrypt the tokens. When set, tokens will be encrypted
             and returned as JWEs.
         redirect_uris:
-          type: string
-          description: Enter each URI on a new line.
+          type: array
+          items:
+            $ref: '#/components/schemas/RedirectURI'
         sub_mode:
           allOf:
           - $ref: '#/components/schemas/SubModeEnum'
@@ -44787,7 +45229,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/IssuerModeEnum'
           description: Configure how the issuer field of the ID Token should be filled.
-        jwks_sources:
+        jwt_federation_sources:
           type: array
           items:
             type: string
@@ -44795,6 +45237,10 @@ components:
             title: Any JWT signed by the JWK of the selected source can be used to
               authenticate.
           title: Any JWT signed by the JWK of the selected source can be used to authenticate.
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -44806,6 +45252,7 @@ components:
       - meta_model_name
       - name
       - pk
+      - redirect_uris
       - verbose_name
       - verbose_name_plural
     OAuth2ProviderRequest:
@@ -44877,8 +45324,9 @@ components:
           description: Key used to encrypt the tokens. When set, tokens will be encrypted
             and returned as JWEs.
         redirect_uris:
-          type: string
-          description: Enter each URI on a new line.
+          type: array
+          items:
+            $ref: '#/components/schemas/RedirectURIRequest'
         sub_mode:
           allOf:
           - $ref: '#/components/schemas/SubModeEnum'
@@ -44888,7 +45336,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/IssuerModeEnum'
           description: Configure how the issuer field of the ID Token should be filled.
-        jwks_sources:
+        jwt_federation_sources:
           type: array
           items:
             type: string
@@ -44896,10 +45344,15 @@ components:
             title: Any JWT signed by the JWK of the selected source can be used to
               authenticate.
           title: Any JWT signed by the JWK of the selected source can be used to authenticate.
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
       required:
       - authorization_flow
       - invalidation_flow
       - name
+      - redirect_uris
     OAuth2ProviderSetupURLs:
       type: object
       description: OAuth2 Provider Metadata serializer
@@ -46507,6 +46960,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RadiusProviderPropertyMapping'
+      required:
+      - pagination
+      - results
+    PaginatedRedirectStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RedirectStage'
       required:
       - pagination
       - results
@@ -48240,6 +48705,45 @@ components:
         default_group_email_domain:
           type: string
           minLength: 1
+    PatchedGroupKerberosSourceConnectionRequest:
+      type: object
+      description: OAuth Group-Source connection Serializer
+      properties:
+        group:
+          type: string
+          format: uuid
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+    PatchedGroupOAuthSourceConnectionRequest:
+      type: object
+      description: OAuth Group-Source connection Serializer
+      properties:
+        group:
+          type: string
+          format: uuid
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+    PatchedGroupPlexSourceConnectionRequest:
+      type: object
+      description: Plex Group-Source connection Serializer
+      properties:
+        group:
+          type: string
+          format: uuid
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
     PatchedGroupRequest:
       type: object
       description: Group Serializer
@@ -48266,6 +48770,19 @@ components:
           items:
             type: string
             format: uuid
+    PatchedGroupSAMLSourceConnectionRequest:
+      type: object
+      description: OAuth Group-Source connection Serializer
+      properties:
+        group:
+          type: string
+          format: uuid
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
     PatchedIdentificationStageRequest:
       type: object
       description: IdentificationStage Serializer
@@ -48450,6 +48967,10 @@ components:
         krb5_conf:
           type: string
           description: Custom krb5.conf to use. Uses the system one by default
+        kadmin_type:
+          allOf:
+          - $ref: '#/components/schemas/KadminTypeEnum'
+          description: KAdmin server type
         sync_users:
           type: boolean
           description: Sync users from Kerberos into authentik
@@ -48898,8 +49419,9 @@ components:
           description: Key used to encrypt the tokens. When set, tokens will be encrypted
             and returned as JWEs.
         redirect_uris:
-          type: string
-          description: Enter each URI on a new line.
+          type: array
+          items:
+            $ref: '#/components/schemas/RedirectURIRequest'
         sub_mode:
           allOf:
           - $ref: '#/components/schemas/SubModeEnum'
@@ -48909,7 +49431,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/IssuerModeEnum'
           description: Configure how the issuer field of the ID Token should be filled.
-        jwks_sources:
+        jwt_federation_sources:
           type: array
           items:
             type: string
@@ -48917,6 +49439,10 @@ components:
             title: Any JWT signed by the JWK of the selected source can be used to
               authenticate.
           title: Any JWT signed by the JWK of the selected source can be used to authenticate.
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
     PatchedOAuthSourcePropertyMappingRequest:
       type: object
       description: OAuthSourcePropertyMapping Serializer
@@ -49432,7 +49958,7 @@ components:
             header and authenticate requests based on its value.
         cookie_domain:
           type: string
-        jwks_sources:
+        jwt_federation_sources:
           type: array
           items:
             type: string
@@ -49440,6 +49966,10 @@ components:
             title: Any JWT signed by the JWK of the selected source can be used to
               authenticate.
           title: Any JWT signed by the JWK of the selected source can be used to authenticate.
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
         access_token_validity:
           type: string
           minLength: 1
@@ -49564,6 +50094,27 @@ components:
             should only be enabled if all users that will bind to this provider have
             a TOTP device configured, as otherwise a password may incorrectly be rejected
             if it contains a semicolon.
+    PatchedRedirectStageRequest:
+      type: object
+      description: RedirectStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSetRequest'
+        keep_context:
+          type: boolean
+        mode:
+          $ref: '#/components/schemas/RedirectStageModeEnum'
+        target_static:
+          type: string
+        target_flow:
+          type: string
+          format: uuid
+          nullable: true
     PatchedReputationPolicyRequest:
       type: object
       description: Reputation Policy Serializer
@@ -50154,6 +50705,9 @@ components:
       properties:
         user:
           type: integer
+        source:
+          type: string
+          format: uuid
         identifier:
           type: string
           minLength: 1
@@ -50206,6 +50760,11 @@ components:
       type: object
       description: OAuth Source Serializer
       properties:
+        user:
+          type: integer
+        source:
+          type: string
+          format: uuid
         identifier:
           type: string
           minLength: 1
@@ -50218,6 +50777,11 @@ components:
       type: object
       description: Plex Source connection Serializer
       properties:
+        user:
+          type: integer
+        source:
+          type: string
+          format: uuid
         identifier:
           type: string
           minLength: 1
@@ -50267,9 +50831,23 @@ components:
       type: object
       description: SAML Source Serializer
       properties:
+        user:
+          type: integer
+        source:
+          type: string
+          format: uuid
         identifier:
           type: string
           minLength: 1
+    PatchedUserSourceConnectionRequest:
+      type: object
+      description: User source connection
+      properties:
+        user:
+          type: integer
+        source:
+          type: string
+          format: uuid
     PatchedUserWriteStageRequest:
       type: object
       description: UserWriteStage Serializer
@@ -51496,11 +52074,13 @@ components:
           description: When enabled, this provider will intercept the authorization
             header and authenticate requests based on its value.
         redirect_uris:
-          type: string
+          type: array
+          items:
+            $ref: '#/components/schemas/RedirectURI'
           readOnly: true
         cookie_domain:
           type: string
-        jwks_sources:
+        jwt_federation_sources:
           type: array
           items:
             type: string
@@ -51508,6 +52088,10 @@ components:
             title: Any JWT signed by the JWK of the selected source can be used to
               authenticate.
           title: Any JWT signed by the JWK of the selected source can be used to authenticate.
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
         access_token_validity:
           type: string
           description: 'Tokens not valid on or after current time + this value (Format:
@@ -51608,7 +52192,7 @@ components:
             header and authenticate requests based on its value.
         cookie_domain:
           type: string
-        jwks_sources:
+        jwt_federation_sources:
           type: array
           items:
             type: string
@@ -51616,6 +52200,10 @@ components:
             title: Any JWT signed by the JWK of the selected source can be used to
               authenticate.
           title: Any JWT signed by the JWK of the selected source can be used to authenticate.
+        jwt_federation_providers:
+          type: array
+          items:
+            type: integer
         access_token_validity:
           type: string
           minLength: 1
@@ -52092,6 +52680,120 @@ components:
           type: string
       required:
       - to
+    RedirectChallengeResponseRequest:
+      type: object
+      description: Redirect challenge response
+      properties:
+        component:
+          type: string
+          minLength: 1
+          default: xak-flow-redirect
+        to:
+          type: string
+          minLength: 1
+      required:
+      - to
+    RedirectStage:
+      type: object
+      description: RedirectStage Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Stage uuid
+        name:
+          type: string
+        component:
+          type: string
+          description: Get object type so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSet'
+        keep_context:
+          type: boolean
+        mode:
+          $ref: '#/components/schemas/RedirectStageModeEnum'
+        target_static:
+          type: string
+        target_flow:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+      - component
+      - meta_model_name
+      - mode
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    RedirectStageModeEnum:
+      enum:
+      - static
+      - flow
+      type: string
+    RedirectStageRequest:
+      type: object
+      description: RedirectStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSetRequest'
+        keep_context:
+          type: boolean
+        mode:
+          $ref: '#/components/schemas/RedirectStageModeEnum'
+        target_static:
+          type: string
+        target_flow:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+      - mode
+      - name
+    RedirectURI:
+      type: object
+      description: A single allowed redirect URI entry
+      properties:
+        matching_mode:
+          $ref: '#/components/schemas/MatchingModeEnum'
+        url:
+          type: string
+      required:
+      - matching_mode
+      - url
+    RedirectURIRequest:
+      type: object
+      description: A single allowed redirect URI entry
+      properties:
+        matching_mode:
+          $ref: '#/components/schemas/MatchingModeEnum'
+        url:
+          type: string
+          minLength: 1
+      required:
+      - matching_mode
+      - url
     Reputation:
       type: object
       description: Reputation Serializer
@@ -55070,6 +55772,9 @@ components:
         user:
           type: integer
         source:
+          type: string
+          format: uuid
+        source_obj:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
@@ -55084,6 +55789,7 @@ components:
       - identifier
       - pk
       - source
+      - source_obj
       - user
     UserKerberosSourceConnectionRequest:
       type: object
@@ -55091,11 +55797,15 @@ components:
       properties:
         user:
           type: integer
+        source:
+          type: string
+          format: uuid
         identifier:
           type: string
           minLength: 1
       required:
       - identifier
+      - source
       - user
     UserLoginChallenge:
       type: object
@@ -55318,8 +56028,10 @@ components:
           title: ID
         user:
           type: integer
-          readOnly: true
         source:
+          type: string
+          format: uuid
+        source_obj:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
@@ -55335,11 +56047,17 @@ components:
       - identifier
       - pk
       - source
+      - source_obj
       - user
     UserOAuthSourceConnectionRequest:
       type: object
       description: OAuth Source Serializer
       properties:
+        user:
+          type: integer
+        source:
+          type: string
+          format: uuid
         identifier:
           type: string
           minLength: 1
@@ -55350,6 +56068,8 @@ components:
           nullable: true
       required:
       - identifier
+      - source
+      - user
     UserObjectPermission:
       type: object
       description: User-bound object level permission
@@ -55407,8 +56127,10 @@ components:
           title: ID
         user:
           type: integer
-          readOnly: true
         source:
+          type: string
+          format: uuid
+        source_obj:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
@@ -55423,11 +56145,17 @@ components:
       - identifier
       - pk
       - source
+      - source_obj
       - user
     UserPlexSourceConnectionRequest:
       type: object
       description: Plex Source connection Serializer
       properties:
+        user:
+          type: integer
+        source:
+          type: string
+          format: uuid
         identifier:
           type: string
           minLength: 1
@@ -55438,6 +56166,8 @@ components:
       required:
       - identifier
       - plex_token
+      - source
+      - user
     UserRequest:
       type: object
       description: User Serializer
@@ -55489,8 +56219,10 @@ components:
           title: ID
         user:
           type: integer
-          readOnly: true
         source:
+          type: string
+          format: uuid
+        source_obj:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
@@ -55505,16 +56237,24 @@ components:
       - identifier
       - pk
       - source
+      - source_obj
       - user
     UserSAMLSourceConnectionRequest:
       type: object
       description: SAML Source Serializer
       properties:
+        user:
+          type: integer
+        source:
+          type: string
+          format: uuid
         identifier:
           type: string
           minLength: 1
       required:
       - identifier
+      - source
+      - user
     UserSelf:
       type: object
       description: User Serializer for information a user can retrieve about themselves
@@ -55650,7 +56390,7 @@ components:
       - title
     UserSourceConnection:
       type: object
-      description: OAuth Source Serializer
+      description: User source connection
       properties:
         pk:
           type: integer
@@ -55658,8 +56398,10 @@ components:
           title: ID
         user:
           type: integer
-          readOnly: true
         source:
+          type: string
+          format: uuid
+        source_obj:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
@@ -55670,6 +56412,19 @@ components:
       required:
       - created
       - pk
+      - source
+      - source_obj
+      - user
+    UserSourceConnectionRequest:
+      type: object
+      description: User source connection
+      properties:
+        user:
+          type: integer
+        source:
+          type: string
+          format: uuid
+      required:
       - source
       - user
     UserTypeEnum:

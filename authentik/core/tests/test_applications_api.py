@@ -12,7 +12,7 @@ from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
-from authentik.providers.oauth2.models import OAuth2Provider
+from authentik.providers.oauth2.models import OAuth2Provider, RedirectURI, RedirectURIMatchingMode
 from authentik.providers.proxy.models import ProxyProvider
 from authentik.providers.saml.models import SAMLProvider
 
@@ -24,7 +24,7 @@ class TestApplicationsAPI(APITestCase):
         self.user = create_test_admin_user()
         self.provider = OAuth2Provider.objects.create(
             name="test",
-            redirect_uris="http://some-other-domain",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://some-other-domain")],
             authorization_flow=create_test_flow(),
         )
         self.allowed: Application = Application.objects.create(

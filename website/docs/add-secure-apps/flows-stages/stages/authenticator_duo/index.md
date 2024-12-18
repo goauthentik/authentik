@@ -24,7 +24,7 @@ The Duo username can be found by navigating to your Duo Admin dashboard and sele
 
 You can call the `/api/v3/stages/authenticator/duo/{stage_uuid}/import_devices/` endpoint ([see here](https://goauthentik.io/api/#post-/stages/authenticator/duo/-stage_uuid-/import_devices/)) using the following parameters:
 
--   `duo_user_id`: The Duo User's ID. This can be found in the Duo Admin Portal, navigating to the user list and clicking on a single user. Their ID is shown in th URL.
--   `username`: The authentik user's username to assign the device to.
+- `duo_user_id`: The Duo User's ID. This can be found in the Duo Admin Portal, navigating to the user list and clicking on a single user. Their ID is shown in th URL.
+- `username`: The authentik user's username to assign the device to.
 
 Additionally, you need to pass `stage_uuid` which is the `authenticator_duo` stage, in which you entered your API credentials.
