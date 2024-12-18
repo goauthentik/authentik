@@ -377,7 +377,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                                           `
                                         : html` <p>
                                               ${msg(
-                                                  "To let a user directly reset a their password, configure a recovery flow on the currently active brand.",
+                                                  "To let a user directly reset their password, configure a recovery flow on the currently active brand.",
                                               )}
                                           </p>`}
                                 </div>

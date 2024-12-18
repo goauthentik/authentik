@@ -215,6 +215,10 @@ class TestBlueprintsV1(TransactionTestCase):
                     },
                     "nested_context": "context-nested-value",
                     "env_null": None,
+                    "at_index_sequence": "foo",
+                    "at_index_sequence_default": "non existent",
+                    "at_index_mapping": 2,
+                    "at_index_mapping_default": "non existent",
                 }
             ).exists()
         )

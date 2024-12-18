@@ -13,15 +13,16 @@
 # albanobattistella <albanobattistella@gmail.com>, 2024
 # Nicola Mersi, 2024
 # tom max, 2024
+# Marc Schmitt, 2024
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-18 00:09+0000\n"
+"POT-Creation-Date: 2024-11-26 00:09+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
-"Last-Translator: tom max, 2024\n"
+"Last-Translator: Marc Schmitt, 2024\n"
 "Language-Team: Italian (https://app.transifex.com/authentik/teams/119923/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -89,9 +90,9 @@ msgid "authentik Export - {date}"
 msgstr "Esportazione authentik - {date}"
 
 #: authentik/blueprints/v1/tasks.py authentik/crypto/tasks.py
-#, python-format
-msgid "Successfully imported %(count)d files."
-msgstr "Importato con successo %(count)d file."
+#, python-brace-format
+msgid "Successfully imported {count} files."
+msgstr "Importato con successo {count} file."
 
 #: authentik/brands/models.py
 msgid ""
@@ -635,7 +636,7 @@ msgstr "Fasi Sorgenti"
 #: authentik/events/api/tasks.py
 #, python-brace-format
 msgid "Successfully started task {name}."
-msgstr "Attività {nome} avviata correttamente."
+msgstr "Attività {name} avviata correttamente."
 
 #: authentik/events/models.py
 msgid "Event"
@@ -937,14 +938,14 @@ msgid "Starting full provider sync"
 msgstr "Avvio della sincronizzazione completa del provider"
 
 #: authentik/lib/sync/outgoing/tasks.py
-#, python-format
-msgid "Syncing page %(page)d of users"
-msgstr "Sincronizzando pagina %(page)d degli utenti"
+#, python-brace-format
+msgid "Syncing page {page} of users"
+msgstr "Sincronizzando pagina {page} degli utenti"
 
 #: authentik/lib/sync/outgoing/tasks.py
-#, python-format
-msgid "Syncing page %(page)d of groups"
-msgstr "Sincronizzando pagina %(page)d dei gruppi"
+#, python-brace-format
+msgid "Syncing page {page} of groups"
+msgstr "Sincronizzando pagina {page} dei gruppi"
 
 #: authentik/lib/sync/outgoing/tasks.py
 #, python-brace-format
@@ -1117,10 +1118,10 @@ msgid "Event Matcher Policies"
 msgstr "Criteri Corrispondenza Evento"
 
 #: authentik/policies/expiry/models.py
-#, python-format
-msgid "Password expired %(days)d days ago. Please update your password."
+#, python-brace-format
+msgid "Password expired {days} days ago. Please update your password."
 msgstr ""
-"Password scaduta %(days)d giorni fa. Si prega di aggiornare la password."
+"Password scaduta {days} giorni fa. Si prega di aggiornare la password."
 
 #: authentik/policies/expiry/models.py
 msgid "Password has expired."
@@ -1254,9 +1255,9 @@ msgid "Invalid password."
 msgstr "Password invalida."
 
 #: authentik/policies/password/models.py
-#, python-format
-msgid "Password exists on %(count)d online lists."
-msgstr "Password esistente in %(count)d lite online."
+#, python-brace-format
+msgid "Password exists on {count} online lists."
+msgstr "Password esistente in {count} lite online."
 
 #: authentik/policies/password/models.py
 msgid "Password is too weak."
@@ -1383,6 +1384,11 @@ msgstr "Providers LDAP"
 msgid "Search full LDAP directory"
 msgstr "Ricerca completa nella directory LDAP"
 
+#: authentik/providers/oauth2/api/providers.py
+#, python-brace-format
+msgid "Invalid Regex Pattern: {url}"
+msgstr "Modello Regex non valido: {url}"
+
 #: authentik/providers/oauth2/id_token.py
 msgid "Based on the Hashed User ID"
 msgstr "Basato sull'ID utente hashato"
@@ -1427,6 +1433,14 @@ msgstr "Stesso identificatore usato su tutti i providers"
 msgid "Each provider has a different issuer, based on the application slug."
 msgstr ""
 "Ogni provider ha un issuer differente, basato sullo slug dell'applicazione."
+
+#: authentik/providers/oauth2/models.py
+msgid "Strict URL comparison"
+msgstr "Confronto URL rigoroso"
+
+#: authentik/providers/oauth2/models.py
+msgid "Regular Expression URL matching"
+msgstr "Corrispondenza URL espressione regolare"
 
 #: authentik/providers/oauth2/models.py
 msgid "code (Authorization Code Flow)"
@@ -1507,10 +1521,6 @@ msgstr "Client Secret"
 #: authentik/providers/oauth2/models.py
 msgid "Redirect URIs"
 msgstr "URL di reindirizzamento"
-
-#: authentik/providers/oauth2/models.py
-msgid "Enter each URI on a new line."
-msgstr "Inserisci ogni URI su una nuova riga."
 
 #: authentik/providers/oauth2/models.py
 msgid "Include claims in id_token"

@@ -70,15 +70,19 @@ data "authentik_flow" "default-provider-authorization-implicit-consent" {
   slug = "default-provider-authorization-implicit-consent"
 }
 
-data "authentik_scope_mapping" "scope-email" {
+data "authentik_flow" "default-provider-invalidation" {
+  slug = "default-invalidation-flow"
+}
+
+data "authentik_property_mapping_provider_scope" "scope-email" {
   name = "authentik default OAuth Mapping: OpenID 'email'"
 }
 
-data "authentik_scope_mapping" "scope-profile" {
+data "authentik_property_mapping_provider_scope" "scope-profile" {
   name = "authentik default OAuth Mapping: OpenID 'profile'"
 }
 
-data "authentik_scope_mapping" "scope-openid" {
+data "authentik_property_mapping_provider_scope" "scope-openid" {
   name = "authentik default OAuth Mapping: OpenID 'openid'"
 }
 
@@ -91,11 +95,18 @@ resource "authentik_provider_oauth2" "argocd" {
   # Optional: will be generated if not provided
   # client_secret = "my_client_secret"
 
-  authorization_flow  = data.authentik_flow.default-provider-authorization-implicit-consent.id
+  authorization_flow = data.authentik_flow.default-provider-authorization-implicit_consent.id
+  invalidation_flow  = data.authentik_flow.default-provider-invalidation.id
 
-  redirect_uris = [
-    "https://argocd.company/api/dex/callback",
-    "http://localhost:8085/auth/callback"
+  allowed_redirect_uris = [
+    {
+      matching_mode = "strict",
+      url           = "https://argocd.company/api/dex/callback",
+    },
+    {
+      matching_mode = "strict",
+      url           = "http://localhost:8085/auth/callback",
+    }
   ]
 
   property_mappings = [
@@ -114,7 +125,6 @@ resource "authentik_application" "argocd" {
 resource "authentik_group" "argocd_admins" {
   name    = "ArgoCD Admins"
 }
-
 
 resource "authentik_group" "argocd_viewers" {
   name    = "ArgoCD Viewers"

@@ -9044,8 +9044,8 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>同步组</target>
 </trans-unit>
 <trans-unit id="s2d5f69929bb7221d">
-  <source><x id="0" equiv-text="${prompt.name}"/> (&quot;<x id="1" equiv-text="${prompt.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${prompt.type}"/>)</source>
-  <target><x id="0" equiv-text="${prompt.name}"/>（&amp;quot;<x id="1" equiv-text="${prompt.fieldKey}"/>&amp;quot;，类型为 <x id="2" equiv-text="${prompt.type}"/>）</target>
+  <source><x id="0" equiv-text="${p.name}"/> (&quot;<x id="1" equiv-text="${p.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${p.type}"/>)</source>
+  <target><x id="0" equiv-text="${p.name}"/>（&amp;quot;<x id="1" equiv-text="${p.fieldKey}"/>&amp;quot;，类型为 <x id="2" equiv-text="${p.type}"/>）</target>
 </trans-unit>
 <trans-unit id="sa38c5a2731be3a46">
   <source>authentik was unable to save this application:</source>
@@ -9302,6 +9302,26 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s43f899a86c6a3484">
   <source>Redirect URIs/Origins</source>
   <target>重定向 URI/Origin</target>
+</trans-unit>
+<trans-unit id="sa52bf79fe1ccb13e">
+  <source>Federated OIDC Sources</source>
+  <target>联邦式 OIDC 源</target>
+</trans-unit>
+<trans-unit id="s555465bf6577505e">
+  <source>Federated OIDC Providers</source>
+  <target>联邦式 OIDC 提供程序</target>
+</trans-unit>
+<trans-unit id="s066bfb12c9032dc2">
+  <source>Available Providers</source>
+  <target>可用提供程序</target>
+</trans-unit>
+<trans-unit id="sa12111ca3f3e398e">
+  <source>Selected Providers</source>
+  <target>已选提供程序</target>
+</trans-unit>
+<trans-unit id="s4f8a3f7792e6b940">
+  <source>JWTs signed by the selected providers can be used to authenticate to this provider.</source>
+  <target>由已选提供程序签发的 JWT 可以用于此提供程序的身份验证。</target>
 </trans-unit>
     </body>
   </file>

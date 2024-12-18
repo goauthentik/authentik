@@ -19,6 +19,7 @@ module.exports = {
                     items: [
                         "services/bookstack/index",
                         "services/dokuwiki/index",
+                        "services/espoCRM/index",
                         "services/hedgedoc/index",
                         "services/kimai/index",
                         "services/mastodon/index",
@@ -121,6 +122,7 @@ module.exports = {
                         "services/frappe/index",
                         "services/freshrss/index",
                         "services/gravitee/index",
+                        "services/hoarder/index",
                         "services/home-assistant/index",
                         "services/immich/index",
                         "services/jellyfin/index",

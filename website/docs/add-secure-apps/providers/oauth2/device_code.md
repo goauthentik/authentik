@@ -20,7 +20,7 @@ Host: authentik.company
 Content-Type: application/x-www-form-urlencoded
 
 client_id=application_client_id&
-scopes=openid email my-other-scope
+scope=openid email my-other-scope
 ```
 
 The response contains the following fields:
