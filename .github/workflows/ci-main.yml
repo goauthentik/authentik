@@ -52,7 +52,7 @@ jobs:
       - id: set-matrix
         name: compute test matrix
         run: |
-          MATRIX="$(find authentik -name tests.py -o -name tests | sed 's/.*/{"test_path": "&", "psql": "15"}\n{"test_path": "&", "psql": "16"}/' | jq --slurp --compact-output)"
+          MATRIX="$(find authentik -name tests.py -o -name tests | sed 's/.*/{"test_path": "&", "psql": "15"}\n{"test_path": "&", "psql": "16"}/' | jq --slurp --compact-output '{"include": .}')"
           echo $MATRIX
           echo matrix="$MATRIX" >> "$GITHUB_OUTPUT"
   test-migrations-from-stable:
