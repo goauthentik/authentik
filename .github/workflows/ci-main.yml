@@ -56,7 +56,7 @@ jobs:
           echo $MATRIX
           echo matrix="$MATRIX" >> "$GITHUB_OUTPUT"
   test-migrations-from-stable:
-    name: test-migrations-from-stable - PostgreSQL ${{ matrix.psql }}
+    name: test-migrations-from-stable - ${{ matrix.test_path}} - PostgreSQL ${{ matrix.psql }}
     needs:
       - test-unit-matrix
     runs-on: ubuntu-latest
@@ -108,7 +108,7 @@ jobs:
           poetry run coverage run manage.py test --keepdb ${{ matrix.test_path }}
           poetry run coverage report
   test-unittest:
-    name: test-unittest - PostgreSQL ${{ matrix.psql }}
+    name: test-unittest - ${{ matrix.test_path }} - PostgreSQL ${{ matrix.psql }}
     needs:
       - test-unit-matrix
     runs-on: ubuntu-latest
