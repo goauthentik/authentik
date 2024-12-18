@@ -64,6 +64,8 @@ remote_debug: false
 log_level: info
 
 session_storage: cache
+sessions:
+  cookie_age: days=14
 
 error_reporting:
   enabled: false

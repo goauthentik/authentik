@@ -327,6 +327,12 @@ Defaults to `86400`.
 
 Configure if the sessions are stored in the cache or the database. Defaults to `cache`. Allowed values are `cache` and `db`. Note that changing this value will invalidate all previous sessions.
 
+### `AUTHENTIK_SESSIONS__COOKIE_AGE` <span class="badge badge--version">authentik 2024.12+</span>
+
+Configure how long the session cookie is valid. Does not impact how long sessions are valid for. See [../../add-secure-apps/flows-stages/stages/user_login/index.md](the User login stage) for session validity.
+
+Defaults to `days=14`.
+
 ### `AUTHENTIK_WEB__WORKERS` <span class="badge badge--version">authentik 2022.9+</span>
 
 Configure how many gunicorn worker processes should be started (see https://docs.gunicorn.org/en/stable/design.html).
