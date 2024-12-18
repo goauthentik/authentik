@@ -159,9 +159,9 @@ class SourceViewSet(
 
 
 class UserSourceConnectionSerializer(SourceSerializer):
-    """OAuth Source Serializer"""
+    """User source connection"""
 
-    source = SourceSerializer(read_only=True)
+    source_obj = SourceSerializer(read_only=True, source="source")
 
     class Meta:
         model = UserSourceConnection
@@ -169,10 +169,10 @@ class UserSourceConnectionSerializer(SourceSerializer):
             "pk",
             "user",
             "source",
+            "source_obj",
             "created",
         ]
         extra_kwargs = {
-            "user": {"read_only": True},
             "created": {"read_only": True},
         }
 
@@ -197,9 +197,9 @@ class UserSourceConnectionViewSet(
 
 
 class GroupSourceConnectionSerializer(SourceSerializer):
-    """Group Source Connection Serializer"""
+    """Group Source Connection"""
 
-    source = SourceSerializer(read_only=True)
+    source_obj = SourceSerializer(read_only=True)
 
     class Meta:
         model = GroupSourceConnection
@@ -207,12 +207,11 @@ class GroupSourceConnectionSerializer(SourceSerializer):
             "pk",
             "group",
             "source",
+            "source_obj",
             "identifier",
             "created",
         ]
         extra_kwargs = {
-            "group": {"read_only": True},
-            "identifier": {"read_only": True},
             "created": {"read_only": True},
         }
 

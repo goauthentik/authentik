@@ -25008,6 +25008,12 @@ paths:
         required: true
       tags:
       - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupKerberosSourceConnectionRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -25042,6 +25048,11 @@ paths:
         required: true
       tags:
       - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedGroupKerberosSourceConnectionRequest'
       security:
       - authentik: []
       responses:
@@ -25196,6 +25207,12 @@ paths:
       description: Group-source connection Viewset
       tags:
       - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupOAuthSourceConnectionRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -25263,6 +25280,12 @@ paths:
         required: true
       tags:
       - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupOAuthSourceConnectionRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -25296,6 +25319,11 @@ paths:
         required: true
       tags:
       - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedGroupOAuthSourceConnectionRequest'
       security:
       - authentik: []
       responses:
@@ -25448,6 +25476,12 @@ paths:
       description: Group-source connection Viewset
       tags:
       - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupPlexSourceConnectionRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -25515,6 +25549,12 @@ paths:
         required: true
       tags:
       - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupPlexSourceConnectionRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -25548,6 +25588,11 @@ paths:
         required: true
       tags:
       - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedGroupPlexSourceConnectionRequest'
       security:
       - authentik: []
       responses:
@@ -25741,6 +25786,12 @@ paths:
         required: true
       tags:
       - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupSAMLSourceConnectionRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -25774,6 +25825,11 @@ paths:
         required: true
       tags:
       - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedGroupSAMLSourceConnectionRequest'
       security:
       - authentik: []
       responses:
@@ -28734,6 +28790,12 @@ paths:
         required: true
       tags:
       - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSourceConnectionRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -28767,6 +28829,11 @@ paths:
         required: true
       tags:
       - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserSourceConnectionRequest'
       security:
       - authentik: []
       responses:
@@ -42555,14 +42622,15 @@ components:
         group:
           type: string
           format: uuid
-          readOnly: true
         source:
+          type: string
+          format: uuid
+        source_obj:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
         identifier:
           type: string
-          readOnly: true
         created:
           type: string
           format: date-time
@@ -42572,6 +42640,24 @@ components:
       - group
       - identifier
       - pk
+      - source
+      - source_obj
+    GroupKerberosSourceConnectionRequest:
+      type: object
+      description: OAuth Group-Source connection Serializer
+      properties:
+        group:
+          type: string
+          format: uuid
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+      required:
+      - group
+      - identifier
       - source
     GroupMatchingModeEnum:
       enum:
@@ -42667,14 +42753,15 @@ components:
         group:
           type: string
           format: uuid
-          readOnly: true
         source:
+          type: string
+          format: uuid
+        source_obj:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
         identifier:
           type: string
-          readOnly: true
         created:
           type: string
           format: date-time
@@ -42684,6 +42771,24 @@ components:
       - group
       - identifier
       - pk
+      - source
+      - source_obj
+    GroupOAuthSourceConnectionRequest:
+      type: object
+      description: OAuth Group-Source connection Serializer
+      properties:
+        group:
+          type: string
+          format: uuid
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+      required:
+      - group
+      - identifier
       - source
     GroupPlexSourceConnection:
       type: object
@@ -42696,14 +42801,15 @@ components:
         group:
           type: string
           format: uuid
-          readOnly: true
         source:
+          type: string
+          format: uuid
+        source_obj:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
         identifier:
           type: string
-          readOnly: true
         created:
           type: string
           format: date-time
@@ -42713,6 +42819,24 @@ components:
       - group
       - identifier
       - pk
+      - source
+      - source_obj
+    GroupPlexSourceConnectionRequest:
+      type: object
+      description: Plex Group-Source connection Serializer
+      properties:
+        group:
+          type: string
+          format: uuid
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+      required:
+      - group
+      - identifier
       - source
     GroupRequest:
       type: object
@@ -42753,14 +42877,15 @@ components:
         group:
           type: string
           format: uuid
-          readOnly: true
         source:
+          type: string
+          format: uuid
+        source_obj:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
         identifier:
           type: string
-          readOnly: true
         created:
           type: string
           format: date-time
@@ -42770,6 +42895,24 @@ components:
       - group
       - identifier
       - pk
+      - source
+      - source_obj
+    GroupSAMLSourceConnectionRequest:
+      type: object
+      description: OAuth Group-Source connection Serializer
+      properties:
+        group:
+          type: string
+          format: uuid
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+      required:
+      - group
+      - identifier
       - source
     IdentificationChallenge:
       type: object
@@ -48562,6 +48705,45 @@ components:
         default_group_email_domain:
           type: string
           minLength: 1
+    PatchedGroupKerberosSourceConnectionRequest:
+      type: object
+      description: OAuth Group-Source connection Serializer
+      properties:
+        group:
+          type: string
+          format: uuid
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+    PatchedGroupOAuthSourceConnectionRequest:
+      type: object
+      description: OAuth Group-Source connection Serializer
+      properties:
+        group:
+          type: string
+          format: uuid
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+    PatchedGroupPlexSourceConnectionRequest:
+      type: object
+      description: Plex Group-Source connection Serializer
+      properties:
+        group:
+          type: string
+          format: uuid
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
     PatchedGroupRequest:
       type: object
       description: Group Serializer
@@ -48588,6 +48770,19 @@ components:
           items:
             type: string
             format: uuid
+    PatchedGroupSAMLSourceConnectionRequest:
+      type: object
+      description: OAuth Group-Source connection Serializer
+      properties:
+        group:
+          type: string
+          format: uuid
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
     PatchedIdentificationStageRequest:
       type: object
       description: IdentificationStage Serializer
@@ -50510,6 +50705,9 @@ components:
       properties:
         user:
           type: integer
+        source:
+          type: string
+          format: uuid
         identifier:
           type: string
           minLength: 1
@@ -50562,6 +50760,11 @@ components:
       type: object
       description: OAuth Source Serializer
       properties:
+        user:
+          type: integer
+        source:
+          type: string
+          format: uuid
         identifier:
           type: string
           minLength: 1
@@ -50574,6 +50777,11 @@ components:
       type: object
       description: Plex Source connection Serializer
       properties:
+        user:
+          type: integer
+        source:
+          type: string
+          format: uuid
         identifier:
           type: string
           minLength: 1
@@ -50623,9 +50831,23 @@ components:
       type: object
       description: SAML Source Serializer
       properties:
+        user:
+          type: integer
+        source:
+          type: string
+          format: uuid
         identifier:
           type: string
           minLength: 1
+    PatchedUserSourceConnectionRequest:
+      type: object
+      description: User source connection
+      properties:
+        user:
+          type: integer
+        source:
+          type: string
+          format: uuid
     PatchedUserWriteStageRequest:
       type: object
       description: UserWriteStage Serializer
@@ -55550,6 +55772,9 @@ components:
         user:
           type: integer
         source:
+          type: string
+          format: uuid
+        source_obj:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
@@ -55564,6 +55789,7 @@ components:
       - identifier
       - pk
       - source
+      - source_obj
       - user
     UserKerberosSourceConnectionRequest:
       type: object
@@ -55571,11 +55797,15 @@ components:
       properties:
         user:
           type: integer
+        source:
+          type: string
+          format: uuid
         identifier:
           type: string
           minLength: 1
       required:
       - identifier
+      - source
       - user
     UserLoginChallenge:
       type: object
@@ -55798,8 +56028,10 @@ components:
           title: ID
         user:
           type: integer
-          readOnly: true
         source:
+          type: string
+          format: uuid
+        source_obj:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
@@ -55815,11 +56047,17 @@ components:
       - identifier
       - pk
       - source
+      - source_obj
       - user
     UserOAuthSourceConnectionRequest:
       type: object
       description: OAuth Source Serializer
       properties:
+        user:
+          type: integer
+        source:
+          type: string
+          format: uuid
         identifier:
           type: string
           minLength: 1
@@ -55830,6 +56068,8 @@ components:
           nullable: true
       required:
       - identifier
+      - source
+      - user
     UserObjectPermission:
       type: object
       description: User-bound object level permission
@@ -55887,8 +56127,10 @@ components:
           title: ID
         user:
           type: integer
-          readOnly: true
         source:
+          type: string
+          format: uuid
+        source_obj:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
@@ -55903,11 +56145,17 @@ components:
       - identifier
       - pk
       - source
+      - source_obj
       - user
     UserPlexSourceConnectionRequest:
       type: object
       description: Plex Source connection Serializer
       properties:
+        user:
+          type: integer
+        source:
+          type: string
+          format: uuid
         identifier:
           type: string
           minLength: 1
@@ -55918,6 +56166,8 @@ components:
       required:
       - identifier
       - plex_token
+      - source
+      - user
     UserRequest:
       type: object
       description: User Serializer
@@ -55969,8 +56219,10 @@ components:
           title: ID
         user:
           type: integer
-          readOnly: true
         source:
+          type: string
+          format: uuid
+        source_obj:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
@@ -55985,16 +56237,24 @@ components:
       - identifier
       - pk
       - source
+      - source_obj
       - user
     UserSAMLSourceConnectionRequest:
       type: object
       description: SAML Source Serializer
       properties:
+        user:
+          type: integer
+        source:
+          type: string
+          format: uuid
         identifier:
           type: string
           minLength: 1
       required:
       - identifier
+      - source
+      - user
     UserSelf:
       type: object
       description: User Serializer for information a user can retrieve about themselves
@@ -56130,7 +56390,7 @@ components:
       - title
     UserSourceConnection:
       type: object
-      description: OAuth Source Serializer
+      description: User source connection
       properties:
         pk:
           type: integer
@@ -56138,8 +56398,10 @@ components:
           title: ID
         user:
           type: integer
-          readOnly: true
         source:
+          type: string
+          format: uuid
+        source_obj:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
@@ -56150,6 +56412,19 @@ components:
       required:
       - created
       - pk
+      - source
+      - source_obj
+      - user
+    UserSourceConnectionRequest:
+      type: object
+      description: User source connection
+      properties:
+        user:
+          type: integer
+        source:
+          type: string
+          format: uuid
+      required:
       - source
       - user
     UserTypeEnum:
