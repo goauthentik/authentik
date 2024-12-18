@@ -2,8 +2,9 @@
 
 import configparser
 import os
-import requests
 from time import time
+
+import requests
 
 parser = configparser.ConfigParser()
 parser.read(".bumpversion.cfg")
