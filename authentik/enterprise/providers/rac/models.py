@@ -148,7 +148,12 @@ class ConnectionToken(ExpiringModel):
     endpoint = models.ForeignKey(Endpoint, on_delete=models.CASCADE)
     token = models.TextField(default=default_token_key)
     settings = models.JSONField(default=dict)
-    session = models.ForeignKey("authentik_core.AuthenticatedSession", on_delete=models.CASCADE)
+    old_session = models.ForeignKey(
+        "authentik_core.OldAuthenticatedSession", on_delete=models.CASCADE
+    )
+    session = models.ForeignKey(
+        "authentik_core.AuthenticatedSession", on_delete=models.CASCADE, null=True
+    )
 
     def get_settings(self) -> dict:
         """Get settings"""

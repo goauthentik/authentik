@@ -4,6 +4,7 @@ from datetime import datetime
 from hashlib import sha256
 from typing import Any, Optional, Self
 from uuid import uuid4
+from django.contrib.sessions.base_session import AbstractBaseSession, BaseSessionManager
 
 from deepmerge import always_merger
 from django.contrib.auth.hashers import check_password
@@ -636,19 +637,29 @@ class SourceUserMatchingModes(models.TextChoices):
     """Different modes a source can handle new/returning users"""
 
     IDENTIFIER = "identifier", _("Use the source-specific identifier")
-    EMAIL_LINK = "email_link", _(
-        "Link to a user with identical email address. Can have security implications "
-        "when a source doesn't validate email addresses."
+    EMAIL_LINK = (
+        "email_link",
+        _(
+            "Link to a user with identical email address. Can have security implications "
+            "when a source doesn't validate email addresses."
+        ),
     )
-    EMAIL_DENY = "email_deny", _(
-        "Use the user's email address, but deny enrollment when the email address already exists."
+    EMAIL_DENY = (
+        "email_deny",
+        _(
+            "Use the user's email address, but deny enrollment when the email address already exists."
+        ),
     )
-    USERNAME_LINK = "username_link", _(
-        "Link to a user with identical username. Can have security implications "
-        "when a username is used with another source."
+    USERNAME_LINK = (
+        "username_link",
+        _(
+            "Link to a user with identical username. Can have security implications "
+            "when a username is used with another source."
+        ),
     )
-    USERNAME_DENY = "username_deny", _(
-        "Use the user's username, but deny enrollment when the username already exists."
+    USERNAME_DENY = (
+        "username_deny",
+        _("Use the user's username, but deny enrollment when the username already exists."),
     )
 
 
@@ -656,12 +667,16 @@ class SourceGroupMatchingModes(models.TextChoices):
     """Different modes a source can handle new/returning groups"""
 
     IDENTIFIER = "identifier", _("Use the source-specific identifier")
-    NAME_LINK = "name_link", _(
-        "Link to a group with identical name. Can have security implications "
-        "when a group name is used with another source."
+    NAME_LINK = (
+        "name_link",
+        _(
+            "Link to a group with identical name. Can have security implications "
+            "when a group name is used with another source."
+        ),
     )
-    NAME_DENY = "name_deny", _(
-        "Use the group name, but deny enrollment when the name already exists."
+    NAME_DENY = (
+        "name_deny",
+        _("Use the group name, but deny enrollment when the name already exists."),
     )
 
 
@@ -980,7 +995,68 @@ class PropertyMapping(SerializerModel, ManagedModel):
         verbose_name_plural = _("Property Mappings")
 
 
-class AuthenticatedSession(ExpiringModel):
+class SessionManager(BaseSessionManager):
+    use_in_migrations = True
+
+    def save(self, session_key, session_dict, expire_date):
+        s = self.model(
+            session_key=session_key, session_data=self.encode(session_dict), expires=expire_date
+        )
+        if session_dict:
+            s.save()
+        else:
+            s.delete()  # Clear sessions with no data.
+        return s
+
+
+class Session(ExpiringModel, AbstractBaseSession):
+    # Remove upstream field because we're using our own ExpiringModel
+    expire_date = None
+
+    objects = SessionManager()
+
+    @classmethod
+    def get_session_store_class(cls):
+        from authentik.core.sessions import SessionStore
+
+        return SessionStore
+
+    class Meta:
+        verbose_name = _("Session")
+        verbose_name_plural = _("Sessions")
+
+
+class AuthenticatedSession(Session):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    last_ip = models.TextField()
+    last_user_agent = models.TextField(blank=True)
+    last_used = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = _("Authenticated Session")
+        verbose_name_plural = _("Authenticated Sessions")
+
+    def __str__(self) -> str:
+        return f"Authenticated Session {self.session_key[:10]}"
+
+    @staticmethod
+    def from_request(request: HttpRequest, user: User) -> Optional["AuthenticatedSession"]:
+        """Create a new session from a http request"""
+        from authentik.root.middleware import ClientIPMiddleware
+
+        if not hasattr(request, "session") or not request.session.session_key:
+            return None
+        return AuthenticatedSession(
+            session_key=request.session.session_key,
+            user=user,
+            last_ip=ClientIPMiddleware.get_client_ip(request),
+            last_user_agent=request.META.get("HTTP_USER_AGENT", ""),
+            expires=request.session.get_expiry_date(),
+        )
+
+
+class OldAuthenticatedSession(ExpiringModel):
     """Additional session class for authenticated users. Augments the standard django session
     to achieve the following:
         - Make it queryable by user
@@ -1019,3 +1095,6 @@ class AuthenticatedSession(ExpiringModel):
             last_user_agent=request.META.get("HTTP_USER_AGENT", ""),
             expires=request.session.get_expiry_date(),
         )
+
+
+AuthenticatedSession = OldAuthenticatedSession
