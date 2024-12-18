@@ -48,6 +48,16 @@ sequenceDiagram
     rp->>user: User is logged in
 ```
 
+| Endpoint             | URL                                                                  |
+| -------------------- | -------------------------------------------------------------------- |
+| Authorization        | `/application/o/authorize/`                                          |
+| Token                | `/application/o/token/`                                              |
+| User Info            | `/application/o/userinfo/`                                           |
+| Token Revoke         | `/application/o/revoke/`                                             |
+| End Session          | `/application/o/<application slug>/end-session/`                     |
+| JWKS                 | `/application/o/<application slug>/jwks/`                            |
+| OpenID Configuration | `/application/o/<application slug>/.well-known/openid-configuration` |
+
 ### Additional configuration options with Redirect URIs
 
 When using an OAuth 2.0 provider in authentik, the OP must validate the provided redirect URI by the RP. An authentik admin can configure a list in the **Redirect URI** field on the Provider.
@@ -122,16 +132,6 @@ Starting with authentik 2024.2, the refresh token grant type requires the `offli
 
 Scopes can be configured using scope mappings, a type of [property mapping](../property-mappings/index.md#scope-mappings).
 
-| Endpoint             | URL                                                                  |
-| -------------------- | -------------------------------------------------------------------- |
-| Authorization        | `/application/o/authorize/`                                          |
-| Token                | `/application/o/token/`                                              |
-| User Info            | `/application/o/userinfo/`                                           |
-| Token Revoke         | `/application/o/revoke/`                                             |
-| End Session          | `/application/o/<application slug>/end-session/`                     |
-| JWKS                 | `/application/o/<application slug>/jwks/`                            |
-| OpenID Configuration | `/application/o/<application slug>/.well-known/openid-configuration` |
-
 ## Scope authorization
 
 By default, every user that has access to an application can request any of the configured scopes. Starting with authentik 2022.4, you can do additional checks for the scope in an expression policy (bound to the application):
@@ -143,7 +143,23 @@ if "my-admin-scope" in request.context["oauth_scopes"]:
 return True
 ```
 
-## Special scopes
+## Default & special scopes
+
+When a client does not request any scopes, authentik will treat the request as if all configured scopes were requested. Depending on the configured authorization flow, consent still needs to be given, and all scopes are listed there.
+
+This does _not_ apply to special scopes, as those are not configurable in the provider.
+
+### Default
+
+- `openid`: A scope required by the OpenID Connect spec to specify that an OAuth interaction is OpenID Connect. Does not add any data to the token.
+- `profile`: Include basic profile information, such as username, name and group membership.
+- `email`: Include the users' email address.
+- `entitlements`: Include application entitlement data.
+- `offline_access`: An OAuth 2.0 scope which indicates that the application is requesting a refresh token.
+
+### authentik
+
+- `goauthentik.io/api`: This scope grants the refresh token access to the authentik API on behalf of the user
 
 ### GitHub compatibility
 
@@ -152,19 +168,9 @@ return True
 - `user:email`: Allows read-only access to `/user`, including email address
 - `read:org`: Allows read-only access to `/user/teams`, listing all the user's groups as teams.
 
-### authentik
-
-- `goauthentik.io/api`: This scope grants the refresh token access to the authentik API on behalf of the user
-
-## Default scopes <span class="badge badge--version">authentik 2022.7+</span>
-
-When a client does not request any scopes, authentik will treat the request as if all configured scopes were requested. Depending on the configured authorization flow, consent still needs to be given, and all scopes are listed there.
-
-This does _not_ apply to special scopes, as those are not configurable in the provider.
-
 ## Signing & Encryption
 
-[JWT](https://jwt.io/introduction)s created by authentik will always be signed.
+[JWTs](https://jwt.io/introduction) created by authentik will always be signed.
 
 When a _Signing Key_ is selected in the provider, the JWT will be signed asymmetrically with the private key of the selected certificate, and can be verified using the public key of the certificate. The public key data of the signing key can be retrieved via the JWKS endpoint listed on the provider page.
 
