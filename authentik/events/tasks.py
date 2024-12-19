@@ -138,7 +138,6 @@ def notification_cleanup(self: SystemTask):
     """Cleanup seen notifications and notifications whose event expired."""
     notifications = Notification.objects.filter(Q(event=None) | Q(seen=True))
     amount = notifications.count()
-    for notification in notifications:
-        notification.delete()
+    notifications.delete()
     LOGGER.debug("Expired notifications", amount=amount)
     self.set_status(TaskStatus.SUCCESSFUL, f"Expired {amount} Notifications")
