@@ -306,6 +306,17 @@ export default {
                                 "add-secure-apps/flows-stages/stages/user_write",
                             ],
                         },
+                        {
+                            type: "category",
+                            label: "Bindings",
+                            link: {
+                                type: "doc",
+                                id: "add-secure-apps/flows-stages/bindings/index",
+                            },
+                            items: [
+                                "add-secure-apps/flows-stages/bindings/work_with_bindings",
+                            ],
+                        },
                     ],
                 },
                 {
