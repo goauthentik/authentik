@@ -31,8 +31,8 @@ import {
 interface ProviderBase {
     pk: number;
     name: string;
-    assignedBackchannelApplicationName?: string;
-    assignedApplicationName?: string;
+    assignedBackchannelApplicationName: string | null;
+    assignedApplicationName: string | null;
 }
 
 const api = () => new ProvidersApi(DEFAULT_CONFIG);
@@ -52,7 +52,7 @@ const dualSelectPairMaker = (item: ProviderBase): DualSelectPair => {
         `${item.pk}`,
         html`<div class="selection-main">${label}</div>
             <div class="selection-desc">${item.name}</div>`,
-        label,
+        label ?? undefined,
     ];
 };
 
