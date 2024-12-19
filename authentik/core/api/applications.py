@@ -7,7 +7,9 @@ from datetime import timedelta
 from django.core.cache import cache
 from django.db.models import QuerySet
 from django.db.models.functions import ExtractHour
+from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from guardian.shortcuts import get_objects_for_user
@@ -65,10 +67,16 @@ class ApplicationSerializer(ModelSerializer):
 
     def get_launch_url(self, app: Application) -> str | None:
         """Allow formatting of launch URL"""
-        user = None
+        rel_url = reverse(
+            "authentik_core:application-launch",
+            kwargs={
+                "application_slug": app.slug,
+            },
+        )
         if "request" in self.context:
-            user = self.context["request"].user
-        return app.get_launch_url(user)
+            request: HttpRequest = self.context["request"]
+            return request.build_absolute_uri(rel_url)
+        return rel_url
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
