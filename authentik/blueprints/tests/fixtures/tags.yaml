@@ -150,6 +150,7 @@ entries:
               at_index_sequence_default: !AtIndex [!Context sequence, 100, "non existent"]
               at_index_mapping: !AtIndex [!Context mapping, "key2"]
               at_index_mapping_default: !AtIndex [!Context mapping, "invalid", "non existent"]
+              find_object: !AtIndex [!FindObject [authentik_providers_oauth2.scopemapping, [scope_name, openid]], managed]
       identifiers:
           name: test
       conditions:
