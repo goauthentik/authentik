@@ -9,7 +9,7 @@ jobs:
   clean-ghcr:
     if: ${{ github.repository != 'goauthentik/authentik-internal' }}
     name: Delete old unused container images
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - id: generate_token
         uses: tibdex/github-app-token@v2
