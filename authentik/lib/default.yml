@@ -6,8 +6,6 @@ postgresql:
   user: authentik
   port: 5432
   password: "env://POSTGRES_PASSWORD"
-  use_pgbouncer: false
-  use_pgpool: false
   test:
     name: test_authentik
   read_replicas: {}

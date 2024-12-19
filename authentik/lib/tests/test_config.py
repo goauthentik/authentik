@@ -214,6 +214,9 @@ class TestConfig(TestCase):
                     "PORT": "foo",
                     "TEST": {"NAME": "foo"},
                     "USER": "foo",
+                    "CONN_MAX_AGE": 0,
+                    "CONN_HEALTH_CHECKS": False,
+                    "DISABLE_SERVER_SIDE_CURSORS": False,
                 }
             },
         )
@@ -251,8 +254,77 @@ class TestConfig(TestCase):
                     "PORT": "foo",
                     "TEST": {"NAME": "foo"},
                     "USER": "foo",
+                    "CONN_MAX_AGE": 0,
+                    "CONN_HEALTH_CHECKS": False,
+                    "DISABLE_SERVER_SIDE_CURSORS": False,
                 },
                 "replica_0": {
+                    "ENGINE": "authentik.root.db",
+                    "HOST": "bar",
+                    "NAME": "foo",
+                    "OPTIONS": {
+                        "sslcert": "foo",
+                        "sslkey": "foo",
+                        "sslmode": "foo",
+                        "sslrootcert": "foo",
+                    },
+                    "PASSWORD": "foo",
+                    "PORT": "foo",
+                    "TEST": {"NAME": "foo"},
+                    "USER": "foo",
+                    "CONN_MAX_AGE": 0,
+                    "CONN_HEALTH_CHECKS": False,
+                    "DISABLE_SERVER_SIDE_CURSORS": False,
+                },
+            },
+        )
+
+    def test_db_read_replicas_pgbouncer(self):
+        """Test read replicas"""
+        config = ConfigLoader()
+        config.set("postgresql.host", "foo")
+        config.set("postgresql.name", "foo")
+        config.set("postgresql.user", "foo")
+        config.set("postgresql.password", "foo")
+        config.set("postgresql.port", "foo")
+        config.set("postgresql.sslmode", "foo")
+        config.set("postgresql.sslrootcert", "foo")
+        config.set("postgresql.sslcert", "foo")
+        config.set("postgresql.sslkey", "foo")
+        config.set("postgresql.test.name", "foo")
+        config.set("postgresql.use_pgbouncer", True)
+        # Read replica
+        config.set("postgresql.read_replicas.0.host", "bar")
+        # Override conn_max_age
+        config.set("postgresql.read_replicas.0.conn_max_age", 10)
+        # This isn't supported
+        config.set("postgresql.read_replicas.0.use_pgbouncer", False)
+        conf = django_db_config(config)
+        self.assertEqual(
+            conf,
+            {
+                "default": {
+                    "DISABLE_SERVER_SIDE_CURSORS": True,
+                    "CONN_MAX_AGE": None,
+                    "CONN_HEALTH_CHECKS": False,
+                    "ENGINE": "authentik.root.db",
+                    "HOST": "foo",
+                    "NAME": "foo",
+                    "OPTIONS": {
+                        "sslcert": "foo",
+                        "sslkey": "foo",
+                        "sslmode": "foo",
+                        "sslrootcert": "foo",
+                    },
+                    "PASSWORD": "foo",
+                    "PORT": "foo",
+                    "TEST": {"NAME": "foo"},
+                    "USER": "foo",
+                },
+                "replica_0": {
+                    "DISABLE_SERVER_SIDE_CURSORS": True,
+                    "CONN_MAX_AGE": 10,
+                    "CONN_HEALTH_CHECKS": False,
                     "ENGINE": "authentik.root.db",
                     "HOST": "bar",
                     "NAME": "foo",
@@ -294,6 +366,8 @@ class TestConfig(TestCase):
             {
                 "default": {
                     "DISABLE_SERVER_SIDE_CURSORS": True,
+                    "CONN_MAX_AGE": 0,
+                    "CONN_HEALTH_CHECKS": False,
                     "ENGINE": "authentik.root.db",
                     "HOST": "foo",
                     "NAME": "foo",
@@ -310,6 +384,8 @@ class TestConfig(TestCase):
                 },
                 "replica_0": {
                     "DISABLE_SERVER_SIDE_CURSORS": True,
+                    "CONN_MAX_AGE": 0,
+                    "CONN_HEALTH_CHECKS": False,
                     "ENGINE": "authentik.root.db",
                     "HOST": "bar",
                     "NAME": "foo",
@@ -362,6 +438,9 @@ class TestConfig(TestCase):
                     "PORT": "foo",
                     "TEST": {"NAME": "foo"},
                     "USER": "foo",
+                    "DISABLE_SERVER_SIDE_CURSORS": False,
+                    "CONN_MAX_AGE": 0,
+                    "CONN_HEALTH_CHECKS": False,
                 },
                 "replica_0": {
                     "ENGINE": "authentik.root.db",
@@ -377,6 +456,9 @@ class TestConfig(TestCase):
                     "PORT": "foo",
                     "TEST": {"NAME": "foo"},
                     "USER": "foo",
+                    "DISABLE_SERVER_SIDE_CURSORS": False,
+                    "CONN_MAX_AGE": 0,
+                    "CONN_HEALTH_CHECKS": False,
                 },
             },
         )
