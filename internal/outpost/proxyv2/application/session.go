@@ -45,7 +45,7 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 				break
 			}
 			ca := config.Get().Redis.TLSCaCert
-			if ca != nil {
+			if ca != nil && *ca != "" {
 				// Get the SystemCertPool, continue with an empty pool on error
 				rootCAs, _ := x509.SystemCertPool()
 				if rootCAs == nil {
