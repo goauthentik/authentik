@@ -1,5 +1,5 @@
-#!/bin/bash -x
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+#!/usr/bin/env -S bash -x
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 GITHUB_OUTPUT=/dev/stdout \
     GITHUB_REF=ref \
     GITHUB_SHA=sha \
