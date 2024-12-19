@@ -112,7 +112,6 @@ class DockerTestCase(TestCase):
             specs["network"] = self.__network.name
         specs["labels"] = self.docker_labels
         specs["detach"] = True
-        specs["auto_remove"] = True
         if hasattr(self, "live_server_url"):
             specs.setdefault("environment", {})
             specs["environment"]["AUTHENTIK_HOST"] = self.live_server_url
@@ -136,13 +135,17 @@ class DockerTestCase(TestCase):
             print("::endgroup::")
 
     def tearDown(self):
-        containers = self.docker_client.containers.list(
+        containers: list[Container] = self.docker_client.containers.list(
             filters={"label": ",".join(f"{x}={y}" for x, y in self.docker_labels.items())}
         )
         for container in containers:
             self.output_container_logs(container)
             try:
                 container.kill()
+            except DockerException:
+                pass
+            try:
+                container.remove(force=True)
             except DockerException:
                 pass
         self.__network.remove()
