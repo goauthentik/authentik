@@ -110,7 +110,7 @@ When your PostgreSQL database/s are running behind a connection pooler, like PgB
 - `AUTHENTIK_POSTGRESQL__CONN_MAX_AGE`
   A connection pooler running in session pool mode (PgBouncer default) can be incompatible with unlimited persistent connections enabled by setting this to `null`: If the connection from the connection pooler to the database server is dropped, the connection pooler will wait for the client to disconnect before releasing the connection; however this will **never** happen as authentik is configured to keep the connection to the connection pooler forever.
 
-To address this incompatibility, either configure the connection pooler to run in transaction pool mode, or update this setting to a value lower than any timeouts that may cause the connection to the database to be dropped (up to `0`).
+    To address this incompatibility, either configure the connection pooler to run in transaction pool mode, or update this setting to a value lower than any timeouts that may cause the connection to the database to be dropped (up to `0`).
 
 - `AUTHENTIK_POSTGRESQL__DISABLE_SERVER_SIDE_CURSORS`
   Using a connection pooler in transaction pool mode (e.g. PgPool, or PgBouncer in transaction or statement pool mode) requires disabling server-side cursors, so this setting must be set to `false`.
