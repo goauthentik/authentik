@@ -1,4 +1,4 @@
-# Machine-to-machine authentication
+## Machine-to-machine authentication
 
 Client credentials can be used for machine-to-machine communication authentication. Clients can authenticate themselves using service-accounts; standard client_id + client_secret is not sufficient. This behavior is due to providers only being able to have a single secret at any given time.
 
@@ -63,7 +63,7 @@ return request.context["oauth_jwt"]["iss"] == "https://my.issuer"
 
 To allow federation between providers, modify the provider settings of the application (whose token will be used for authentication) to select the provider of the application to which you want to federate.
 
-With this configure, any JWT issued by the configured providers can be used to authenticate:
+With this configuration, any JWT issued by the configured providers can be used to authenticate:
 
 ```
 POST /application/o/token/ HTTP/1.1

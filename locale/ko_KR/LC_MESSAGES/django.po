@@ -358,7 +358,7 @@ msgid "Flows"
 msgstr "흐름"
 
 #: authentik/flows/models.py:209
-msgid "Evaluate policies when the Stage is presented to the user."
+msgid "Evaluate policies when the Stage is present to the user."
 msgstr "단계가 유저에게 표시될 때 정책을 심사합니다."
 
 #: authentik/flows/models.py:216

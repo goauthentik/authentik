@@ -870,7 +870,7 @@ msgid "Evaluate policies during the Flow planning process."
 msgstr "Akış planlama sürecinde ilkeleri değerlendirin."
 
 #: authentik/flows/models.py
-msgid "Evaluate policies when the Stage is presented to the user."
+msgid "Evaluate policies when the Stage is present to the user."
 msgstr "Aşama kullanıcıya sunulduğunda ilkeleri değerlendirin."
 
 #: authentik/flows/models.py

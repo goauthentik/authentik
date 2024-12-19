@@ -6,6 +6,7 @@ from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.urls import resolve
 from structlog.stdlib import BoundLogger, get_logger
 
+from authentik.core.api.users import UserViewSet
 from authentik.enterprise.api import LicenseViewSet
 from authentik.enterprise.license import LicenseKey
 from authentik.enterprise.models import LicenseUsageStatus
@@ -58,6 +59,9 @@ class EnterpriseMiddleware:
             return True
         # Flow executor is mounted as an API path but explicitly allowed
         if request.resolver_match._func_path == class_to_path(FlowExecutorView):
+            return True
+        # Always allow making changes to users, even in case the license has ben exceeded
+        if request.resolver_match._func_path == class_to_path(UserViewSet):
             return True
         # Only apply these restrictions to the API
         if "authentik_api" not in request.resolver_match.app_names:

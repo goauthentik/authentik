@@ -560,7 +560,7 @@ msgid "Evaluate policies during the Flow planning process."
 msgstr "在流程規劃過程中的評估政策。"
 
 #: authentik/flows/models.py:219
-msgid "Evaluate policies when the Stage is presented to the user."
+msgid "Evaluate policies when the Stage is present to the user."
 msgstr "當階段出現在使用者面前時的評估政策。"
 
 #: authentik/flows/models.py:226

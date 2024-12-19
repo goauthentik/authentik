@@ -238,13 +238,7 @@ class SourceFlowManager:
                 self.request.GET,
                 flow_slug=flow_slug,
             )
-        # Ensure redirect is carried through when user was trying to
-        # authorize application
-        final_redirect = self.request.session.get(SESSION_KEY_GET, {}).get(
-            NEXT_ARG_NAME, "authentik_core:if-user"
-        )
-        if PLAN_CONTEXT_REDIRECT not in flow_context:
-            flow_context[PLAN_CONTEXT_REDIRECT] = final_redirect
+        flow_context.setdefault(PLAN_CONTEXT_REDIRECT, final_redirect)
 
         if not flow:
             return bad_request_message(
@@ -265,12 +259,7 @@ class SourceFlowManager:
         if stages:
             for stage in stages:
                 plan.append_stage(stage)
-        self.request.session[SESSION_KEY_PLAN] = plan
-        return redirect_with_qs(
-            "authentik_core:if-flow",
-            self.request.GET,
-            flow_slug=flow.slug,
-        )
+        return plan.to_redirect(self.request, flow)
 
     def handle_auth(
         self,

@@ -84,19 +84,17 @@ class PolicyBindingSerializer(ModelSerializer):
 
     def validate(self, attrs: OrderedDict) -> OrderedDict:
         """Check that either policy, group or user is set."""
-        count = sum(
-            [
-                bool(attrs.get("policy", None)),
-                bool(attrs.get("group", None)),
-                bool(attrs.get("user", None)),
-            ]
-        )
+        target: PolicyBindingModel = attrs.get("target")
+        supported = target.supported_policy_binding_targets()
+        supported.sort()
+        count = sum([bool(attrs.get(x, None)) for x in supported])
         invalid = count > 1
         empty = count < 1
+        warning = ", ".join(f"'{x}'" for x in supported)
         if invalid:
-            raise ValidationError("Only one of 'policy', 'group' or 'user' can be set.")
+            raise ValidationError(f"Only one of {warning} can be set.")
         if empty:
-            raise ValidationError("One of 'policy', 'group' or 'user' must be set.")
+            raise ValidationError(f"One of {warning} must be set.")
         return attrs
 
 

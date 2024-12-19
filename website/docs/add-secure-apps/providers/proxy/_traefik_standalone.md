@@ -8,6 +8,7 @@ http:
                 authResponseHeaders:
                     - X-authentik-username
                     - X-authentik-groups
+                    - X-authentik-entitlements
                     - X-authentik-email
                     - X-authentik-name
                     - X-authentik-uid
