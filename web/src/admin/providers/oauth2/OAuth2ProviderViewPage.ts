@@ -369,7 +369,6 @@ export class OAuth2ProviderViewPage extends AKElement {
                             ]}
                             .md=${MDProviderOAuth2}
                             meta="providers/oauth2/index.md"
-                            ;
                         ></ak-markdown>
                     </div>
                 </div>
