@@ -105,7 +105,7 @@ If the user does not receive the email, check if the mail server parameters [are
 As an Admin, you can simply reset the password for the user.
 
 1. In the Admin interface, navigate to **Directory > Users** to display all users.
-2. Either click the name of the user to display the full User details page, or click the chevron beside their name to expand the toptions.
+2. Either click the name of the user to display the full User details page, or click the chevron beside their name to expand the options.
 3. To reset the user's password, click **Reset password**, and then define the new value.
 
 ## Deactivate or Delete user
@@ -128,3 +128,18 @@ You may instead deactivate the account to preserve identity data.
 2. Review the changes and click **Delete**.
 
 The user list refreshes and no longer displays the removed users.
+
+## Impersonate a user
+
+With authentik, an Admin can impersonate a user, meaning that the Admin temporarily assumes the identity of the user.
+
+1. In the Admin interface, navigate to **Directory > Users** to display all users.
+2. Click the name of the user to display the full User details page.
+3. On the Overview tab, beneath **User Details**, in the **Actions** area, click **Impersonate**.
+4. At the prompt, provide a reason why you are impersonating this user, and then click **Impersonate**.
+
+:::info
+An Admin can globally enable or disable impersonation in the [System Settings](../../sys-mgmt/settings.md#impersonation). By default, this option is set to true, meaning all users can be impersonated.
+
+An Admin can also configure whether inputting a reason for impersonation is required in the [System Settings](../../sys-mgmt/settings.md#require-reason-for-impersonation).
+:::
