@@ -18,6 +18,7 @@ from authentik.core.models import (
 )
 from authentik.events.system_tasks import SystemTask, TaskStatus, prefill_task
 from authentik.lib.config import CONFIG
+from authentik.lib.utils.db import qs_batch_iter
 from authentik.root.celery import CELERY_APP
 
 LOGGER = get_logger()
@@ -34,14 +35,14 @@ def clean_expired_models(self: SystemTask):
             cls.objects.all().exclude(expiring=False).exclude(expiring=True, expires__gt=now())
         )
         amount = objects.count()
-        for obj in objects:
+        for obj in qs_batch_iter(objects):
             obj.expire_action()
         LOGGER.debug("Expired models", model=cls, amount=amount)
         messages.append(f"Expired {amount} {cls._meta.verbose_name_plural}")
     # Special case
     amount = 0
 
-    for session in AuthenticatedSession.objects.all():
+    for session in qs_batch_iter(AuthenticatedSession.objects.all()):
         match CONFIG.get("session_storage", "cache"):
             case "cache":
                 cache_key = f"{KEY_PREFIX}{session.session_key}"
