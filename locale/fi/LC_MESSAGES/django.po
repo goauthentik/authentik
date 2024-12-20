@@ -773,7 +773,7 @@ msgstr "Käytäntö ({type})"
 #: authentik/flows/api/flows_diagram.py
 #, python-brace-format
 msgid "Binding {order}"
-msgstr "Sidos {order}"
+msgstr "Liitos {order}"
 
 #: authentik/flows/api/flows_diagram.py
 msgid "Policy passed"
@@ -901,7 +901,7 @@ msgstr ""
 
 #: authentik/flows/models.py
 msgid "Flow Stage Binding"
-msgstr "Prosessivaihesidos"
+msgstr "Prosessivaiheliitos"
 
 #: authentik/flows/models.py
 msgid "Flow Stage Bindings"
