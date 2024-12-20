@@ -19,6 +19,7 @@ from authentik.lib.sync.outgoing.exceptions import (
     TransientSyncException,
 )
 from authentik.lib.utils.http import get_http_session
+from authentik.outposts.http import OutpostHTTPAdapter
 from authentik.providers.scim.clients.exceptions import SCIMRequestException
 from authentik.providers.scim.clients.schema import ServiceProviderConfiguration
 from authentik.providers.scim.models import SCIMProvider
@@ -41,8 +42,7 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
 
     def __init__(self, provider: SCIMProvider):
         super().__init__(provider)
-        self._session = get_http_session()
-        self._session.verify = provider.verify_certificates
+        self._session = self.get_session(provider)
         self.provider = provider
         # Remove trailing slashes as we assume the URL doesn't have any
         base_url = provider.url
@@ -51,6 +51,15 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
         self.base_url = base_url
         self.token = provider.token
         self._config = self.get_service_provider_config()
+
+    def get_session(self, provider: SCIMProvider):
+        session = get_http_session()
+        if self.provider.outpost_set.exists():
+            adapter = OutpostHTTPAdapter()
+            session.mount("https://", adapter)
+            session.mount("http://", adapter)
+        session.verify = provider.verify_certificates
+        return session
 
     def _request(self, method: str, path: str, **kwargs) -> dict:
         """Wrapper to send a request to the full URL"""
