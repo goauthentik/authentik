@@ -2540,7 +2540,7 @@ msgstr "POST-liitos"
 
 #: authentik/sources/saml/models.py
 msgid "POST Binding with auto-confirmation"
-msgstr "POST-liitosautomaattisella vahvistuksella"
+msgstr "POST-liitos automaattisella vahvistuksella"
 
 #: authentik/sources/saml/models.py
 msgid "Flow used before authentication."
