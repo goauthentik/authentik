@@ -1695,7 +1695,7 @@ msgid ""
 "Enable support for forwardAuth in traefik and nginx auth_request. Exclusive "
 "with internal_host."
 msgstr ""
-"Kytke käyttöön tuki forwardAuthille traefikin ja nginx:n auth_requestissa. "
+"Kytke käyttöön tuki traefikin forwardAuthille ja nginx:n auth_requestille. "
 "Poissulkee internal_host-asetuksen."
 
 #: authentik/providers/proxy/models.py
