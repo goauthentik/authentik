@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-server:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       # Needed to upload contianer images to ghcr.io
       packages: write
@@ -62,7 +62,7 @@ jobs:
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
   build-outpost:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       # Needed to upload contianer images to ghcr.io
       packages: write
@@ -127,7 +127,7 @@ jobs:
           push-to-registry: true
   build-outpost-binary:
     timeout-minutes: 120
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       # Needed to upload binaries to the release
       contents: write
@@ -179,7 +179,7 @@ jobs:
       - build-outpost
     env:
       AWS_REGION: eu-central-1
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: aws-actions/configure-aws-credentials@v4
@@ -195,7 +195,7 @@ jobs:
       - build-server
       - build-outpost
       - build-outpost-binary
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - name: Run test suite in final docker images
@@ -211,7 +211,7 @@ jobs:
       - build-server
       - build-outpost
       - build-outpost-binary
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - name: prepare variables
