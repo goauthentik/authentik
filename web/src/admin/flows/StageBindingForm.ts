@@ -161,7 +161,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                     <span class="pf-c-switch__label">${msg("Evaluate when stage is run")}</span>
                 </label>
                 <p class="pf-c-form__helper-text">
-                    ${msg("Evaluate policies before the Stage is present to the user.")}
+                    ${msg("Evaluate policies before the Stage is presented to the user.")}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal

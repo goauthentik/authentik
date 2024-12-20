@@ -227,7 +227,7 @@ class FlowStageBinding(SerializerModel, PolicyBindingModel):
     )
     re_evaluate_policies = models.BooleanField(
         default=True,
-        help_text=_("Evaluate policies when the Stage is present to the user."),
+        help_text=_("Evaluate policies when the Stage is presented to the user."),
     )
 
     invalid_response_action = models.TextField(
