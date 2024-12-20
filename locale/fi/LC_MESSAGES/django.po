@@ -1178,7 +1178,8 @@ msgstr "Käytännön liitosmallit"
 
 #: authentik/policies/models.py
 msgid "Negates the outcome of the policy. Messages are unaffected."
-msgstr "Kumoaa käytännön lopputuloksen. Ei vaikutusta viesteihin."
+msgstr ""
+"Kääntää käytännön lopputuloksen vastakkaiseksi. Ei vaikutusta viesteihin."
 
 #: authentik/policies/models.py
 msgid "Timeout after which Policy execution is terminated."
