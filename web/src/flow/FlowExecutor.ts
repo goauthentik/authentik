@@ -5,6 +5,7 @@ import {
     TITLE_DEFAULT,
 } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
+import { purify } from "@goauthentik/common/purify";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { first } from "@goauthentik/common/utils";
 import { WebsocketClient } from "@goauthentik/common/ws";
@@ -16,6 +17,7 @@ import { themeImage } from "@goauthentik/elements/utils/images";
 import "@goauthentik/flow/sources/apple/AppleLoginInit";
 import "@goauthentik/flow/sources/plex/PlexLoginInit";
 import "@goauthentik/flow/stages/FlowErrorStage";
+import "@goauthentik/flow/stages/FlowFrameStage";
 import "@goauthentik/flow/stages/RedirectStage";
 import { StageHost, SubmitOptions } from "@goauthentik/flow/stages/base";
 
@@ -169,6 +171,19 @@ export class FlowExecutor extends Interface implements StageHost {
         }
         this.addEventListener(EVENT_FLOW_INSPECTOR_TOGGLE, () => {
             this.inspectorOpen = !this.inspectorOpen;
+        });
+        window.addEventListener("message", (event) => {
+            const msg: {
+                source?: string;
+                context?: string;
+                message: string;
+            } = event.data;
+            if (msg.source !== "goauthentik.io" || msg.context !== "flow-executor") {
+                return;
+            }
+            if (msg.message === "submit") {
+                this.submit({} as FlowChallengeResponseRequest);
+            }
         });
     }
 
@@ -408,6 +423,12 @@ export class FlowExecutor extends Interface implements StageHost {
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-flow-provider-oauth2-code-finish>`;
+            case "ak-stage-session-end":
+                await import("@goauthentik/flow/providers/SessionEnd");
+                return html`<ak-stage-session-end
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-stage-session-end>`;
             // Internal stages
             case "ak-stage-flow-error":
                 return html`<ak-stage-flow-error
@@ -423,6 +444,11 @@ export class FlowExecutor extends Interface implements StageHost {
                 </ak-stage-redirect>`;
             case "xak-flow-shell":
                 return html`${unsafeHTML((this.challenge as ShellChallenge).body)}`;
+            case "xak-flow-frame":
+                return html`<xak-flow-frame
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></xak-flow-frame>`;
             default:
                 return html`Invalid native challenge element`;
         }
@@ -435,6 +461,7 @@ export class FlowExecutor extends Interface implements StageHost {
         await import("@goauthentik/flow/FlowInspector");
         return html`<ak-flow-inspector
             class="pf-c-drawer__panel pf-m-width-33"
+            .flowSlug=${this.flowSlug}
         ></ak-flow-inspector>`;
     }
 
@@ -493,9 +520,13 @@ export class FlowExecutor extends Interface implements StageHost {
                                             <ul class="pf-c-list pf-m-inline">
                                                 ${this.brand?.uiFooterLinks?.map((link) => {
                                                     if (link.href) {
-                                                        return html`<li>
-                                                            <a href="${link.href}">${link.name}</a>
-                                                        </li>`;
+                                                        return html`${purify(
+                                                            html`<li>
+                                                                <a href="${link.href}"
+                                                                    >${link.name}</a
+                                                                >
+                                                            </li>`,
+                                                        )}`;
                                                     }
                                                     return html`<li>
                                                         <span>${link.name}</span>

@@ -4,7 +4,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import renderDescriptionList from "@goauthentik/components/DescriptionList";
 import "@goauthentik/components/events/ObjectChangelog";
-import MDProviderOAuth2 from "@goauthentik/docs/providers/oauth2/index.md";
+import MDProviderOAuth2 from "@goauthentik/docs/add-secure-apps/providers/oauth2/index.md";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/EmptyState";
@@ -234,7 +234,11 @@ export class OAuth2ProviderViewPage extends AKElement {
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
-                                        ${this.provider.redirectUris}
+                                        <ul>
+                                            ${this.provider.redirectUris.map((ru) => {
+                                                return html`<li>${ru.matchingMode}: ${ru.url}</li>`;
+                                            })}
+                                        </ul>
                                     </div>
                                 </dd>
                             </div>

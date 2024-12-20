@@ -46,6 +46,7 @@ class TestFlowInspector(APITestCase):
             res.content,
             {
                 "allow_show_password": False,
+                "captcha_stage": None,
                 "component": "ak-stage-identification",
                 "flow_info": {
                     "background": flow.background_url,

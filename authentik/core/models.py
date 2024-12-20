@@ -314,6 +314,32 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
         always_merger.merge(final_attributes, self.attributes)
         return final_attributes
 
+    def app_entitlements(self, app: "Application | None") -> QuerySet["ApplicationEntitlement"]:
+        """Get all entitlements this user has for `app`."""
+        if not app:
+            return []
+        all_groups = self.all_groups()
+        qs = app.applicationentitlement_set.filter(
+            Q(
+                Q(bindings__user=self) | Q(bindings__group__in=all_groups),
+                bindings__negate=False,
+            )
+            | Q(
+                Q(~Q(bindings__user=self), bindings__user__isnull=False)
+                | Q(~Q(bindings__group__in=all_groups), bindings__group__isnull=False),
+                bindings__negate=True,
+            ),
+            bindings__enabled=True,
+        ).order_by("name")
+        return qs
+
+    def app_entitlements_attributes(self, app: "Application | None") -> dict:
+        """Get a dictionary containing all merged attributes from app entitlements for `app`."""
+        final_attributes = {}
+        for attrs in self.app_entitlements(app).values_list("attributes", flat=True):
+            always_merger.merge(final_attributes, attrs)
+        return final_attributes
+
     @property
     def serializer(self) -> Serializer:
         from authentik.core.api.users import UserSerializer
@@ -330,11 +356,13 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
         """superuser == staff user"""
         return self.is_superuser  # type: ignore
 
-    def set_password(self, raw_password, signal=True):
+    def set_password(self, raw_password, signal=True, sender=None):
         if self.pk and signal:
             from authentik.core.signals import password_changed
 
-            password_changed.send(sender=self, user=self, password=raw_password)
+            if not sender:
+                sender = self
+            password_changed.send(sender=sender, user=self, password=raw_password)
         self.password_change_date = now()
         return super().set_password(raw_password)
 
@@ -391,13 +419,22 @@ class Provider(SerializerModel):
         ),
         related_name="provider_authentication",
     )
-
     authorization_flow = models.ForeignKey(
         "authentik_flows.Flow",
+        # Set to cascade even though null is allowed, since most providers
+        # still require an authorization flow set
         on_delete=models.CASCADE,
         null=True,
         help_text=_("Flow used when authorizing this provider."),
         related_name="provider_authorization",
+    )
+    invalidation_flow = models.ForeignKey(
+        "authentik_flows.Flow",
+        on_delete=models.SET_DEFAULT,
+        default=None,
+        null=True,
+        help_text=_("Flow used ending the session from a provider."),
+        related_name="provider_invalidation",
     )
 
     property_mappings = models.ManyToManyField("PropertyMapping", default=None, blank=True)
@@ -568,6 +605,31 @@ class Application(SerializerModel, PolicyBindingModel):
     class Meta:
         verbose_name = _("Application")
         verbose_name_plural = _("Applications")
+
+
+class ApplicationEntitlement(AttributesMixin, SerializerModel, PolicyBindingModel):
+    """Application-scoped entitlement to control authorization in an application"""
+
+    name = models.TextField()
+
+    app = models.ForeignKey(Application, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = _("Application Entitlement")
+        verbose_name_plural = _("Application Entitlements")
+        unique_together = (("app", "name"),)
+
+    def __str__(self):
+        return f"Application Entitlement {self.name} for app {self.app_id}"
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.core.api.application_entitlements import ApplicationEntitlementSerializer
+
+        return ApplicationEntitlementSerializer
+
+    def supported_policy_binding_targets(self):
+        return ["group", "user"]
 
 
 class SourceUserMatchingModes(models.TextChoices):

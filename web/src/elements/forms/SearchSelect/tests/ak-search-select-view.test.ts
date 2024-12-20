@@ -1,8 +1,9 @@
+import { render } from "@goauthentik/elements/tests/utils.js";
 import { $, browser, expect } from "@wdio/globals";
 import { slug } from "github-slugger";
 import { Key } from "webdriverio";
 
-import { html, render } from "lit";
+import { html } from "lit";
 
 import "../ak-search-select-view.js";
 import { sampleData } from "../stories/sampleData.js";
@@ -21,9 +22,8 @@ describe("Search select: Test Input Field", () => {
             html`<ak-search-select-view .options=${longGoodForYouPairs}> </ak-search-select-view>`,
             document.body,
         );
-        select = await AkSearchSelectViewDriver.build(
-            await $("ak-search-select-view").getElement(),
-        );
+        // @ts-expect-error "Another ChainablePromise mistake"
+        select = await AkSearchSelectViewDriver.build(await $("ak-search-select-view"));
     });
 
     it("should open the menu when the input is clicked", async () => {
@@ -58,9 +58,8 @@ describe("Search select: Test Input Field", () => {
         expect(await select.open).toBe(false);
         expect(await select.menuIsVisible()).toBe(false);
         await browser.keys("A");
-        select = await AkSearchSelectViewDriver.build(
-            await $("ak-search-select-view").getElement(),
-        );
+        // @ts-expect-error "Another ChainablePromise mistake"
+        select = await AkSearchSelectViewDriver.build(await $("ak-search-select-view"));
         expect(await select.open).toBe(true);
         expect(await select.menuIsVisible()).toBe(true);
     });
@@ -69,6 +68,7 @@ describe("Search select: Test Input Field", () => {
         await select.focusOnInput();
         await browser.keys("Ap");
         await expect(await select.menuIsVisible()).toBe(true);
+        // @ts-expect-error "Another ChainablePromise mistake"
         const elements = Array.from(await select.listElements());
         await expect(elements.length).toBe(2);
     });
@@ -77,6 +77,7 @@ describe("Search select: Test Input Field", () => {
         await select.focusOnInput();
         await browser.keys("Ap");
         await expect(await select.menuIsVisible()).toBe(true);
+        // @ts-expect-error "Another ChainablePromise mistake"
         const elements = Array.from(await select.listElements());
         await expect(elements.length).toBe(2);
         await browser.keys(Key.Tab);
@@ -97,12 +98,14 @@ describe("Search select: Test Input Field", () => {
     });
 
     afterEach(async () => {
-        document.body.querySelector("#a-separate-component")?.remove();
-        document.body.querySelector("ak-search-select-view")?.remove();
-        // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-        if (document.body["_$litPart$"]) {
+        await browser.execute(() => {
+            document.body.querySelector("#a-separate-component")?.remove();
+            document.body.querySelector("ak-search-select-view")?.remove();
             // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-            delete document.body["_$litPart$"];
-        }
+            if (document.body["_$litPart$"]) {
+                // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
+                delete document.body["_$litPart$"];
+            }
+        });
     });
 });

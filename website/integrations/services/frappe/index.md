@@ -21,9 +21,9 @@ These instructions apply to all projects in the Frappe Family.
 
 The following placeholders will be used:
 
--   `frappe.company` is the FQDN of the Frappe install.
--   `authentik.company` is the FQDN of the authentik install.
--   `provider` is the name for the social login provider in Frappe.
+- `frappe.company` is the FQDN of the Frappe install.
+- `authentik.company` is the FQDN of the authentik install.
+- `provider` is the name for the social login provider in Frappe.
 
 ## authentik configuration
 

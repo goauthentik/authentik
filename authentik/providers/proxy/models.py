@@ -13,7 +13,13 @@ from rest_framework.serializers import Serializer
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.models import DomainlessURLValidator
 from authentik.outposts.models import OutpostModel
-from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider, ScopeMapping
+from authentik.providers.oauth2.models import (
+    ClientTypes,
+    OAuth2Provider,
+    RedirectURI,
+    RedirectURIMatchingMode,
+    ScopeMapping,
+)
 
 SCOPE_AK_PROXY = "ak_proxy"
 OUTPOST_CALLBACK_SIGNATURE = "X-authentik-auth-callback"
@@ -24,14 +30,14 @@ def get_cookie_secret():
     return "".join(SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(32))
 
 
-def _get_callback_url(uri: str) -> str:
-    return "\n".join(
-        [
-            urljoin(uri, "outpost.goauthentik.io/callback")
-            + f"\\?{OUTPOST_CALLBACK_SIGNATURE}=true",
-            uri + f"\\?{OUTPOST_CALLBACK_SIGNATURE}=true",
-        ]
-    )
+def _get_callback_url(uri: str) -> list[RedirectURI]:
+    return [
+        RedirectURI(
+            RedirectURIMatchingMode.STRICT,
+            urljoin(uri, "outpost.goauthentik.io/callback") + f"?{OUTPOST_CALLBACK_SIGNATURE}=true",
+        ),
+        RedirectURI(RedirectURIMatchingMode.STRICT, uri + f"?{OUTPOST_CALLBACK_SIGNATURE}=true"),
+    ]
 
 
 class ProxyMode(models.TextChoices):
@@ -141,6 +147,7 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
                 "goauthentik.io/providers/oauth2/scope-openid",
                 "goauthentik.io/providers/oauth2/scope-profile",
                 "goauthentik.io/providers/oauth2/scope-email",
+                "goauthentik.io/providers/oauth2/scope-entitlements",
                 "goauthentik.io/providers/proxy/scope-proxy",
             ]
         )

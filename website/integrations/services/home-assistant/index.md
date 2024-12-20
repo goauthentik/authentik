@@ -16,6 +16,9 @@ sidebar_label: Home Assistant
 :::caution
 You might run into CSRF errors, this is caused by a technology Home-assistant uses and not authentik, see [this GitHub issue](https://github.com/goauthentik/authentik/issues/884#issuecomment-851542477).
 :::
+:::caution
+Only prefixes starting with `/auth` need to be proxied (excluding prefixes starting with `/auth/token`), see [this GitHub issue](https://github.com/BeryJu/hass-auth-header/issues/212). This can be configured in the reverse proxy (e.g. nginx, Traefik) or in authentik Provider's **Unauthorized Paths**.
+:::
 :::note
 For Home Assistant to work with authentik, a custom integration needs to be installed for Home Assistant.
 :::
@@ -24,8 +27,8 @@ For Home Assistant to work with authentik, a custom integration needs to be inst
 
 The following placeholders will be used:
 
--   `hass.company` is the FQDN of the Home Assistant install.
--   `authentik.company` is the FQDN of the authentik install.
+- `hass.company` is the FQDN of the Home Assistant install.
+- `authentik.company` is the FQDN of the authentik install.
 
 ## authentik configuration
 
@@ -43,7 +46,7 @@ The following placeholders will be used:
     - **Slug**: homeassistant
     - **Provider**: Home Assistant (the provider you created in step 1)
 
-3. Create an outpost deployment for the provider you've created above, as described [here](../../../docs/outposts/). Deploy this Outpost either on the same host or a different host that can access Home Assistant. The outpost will connect to authentik and configure itself.
+3. Create an outpost deployment for the provider you've created above, as described [here](https://docs.goauthentik.io/docs/add-secure-apps/outposts/index.md). Deploy this Outpost either on the same host or a different host that can access Home Assistant. The outpost will connect to authentik and configure itself.
 
 ## Home Assistant configuration
 

@@ -6,8 +6,8 @@
 # Translators:
 # Chen Zhikai, 2022
 # 刘松, 2022
-# Jens L. <jens@goauthentik.io>, 2024
 # Tianhao Chai <cth451@gmail.com>, 2024
+# Jens L. <jens@goauthentik.io>, 2024
 # deluxghost, 2024
 # 
 #, fuzzy
@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-25 00:08+0000\n"
+"POT-Creation-Date: 2024-12-18 13:31+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2024\n"
 "Language-Team: Chinese Simplified (https://app.transifex.com/authentik/teams/119923/zh-Hans/)\n"
@@ -24,6 +24,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh-Hans\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+
+#: authentik/admin/models.py
+msgid "Version history"
+msgstr "版本历史"
 
 #: authentik/admin/tasks.py
 #, python-brace-format
@@ -43,9 +47,8 @@ msgid "Blueprint file does not exist"
 msgstr "蓝图文件不存在"
 
 #: authentik/blueprints/api.py
-#, python-brace-format
-msgid "Failed to validate blueprint: {logs}"
-msgstr "验证蓝图失败：{logs}"
+msgid "Failed to validate blueprint"
+msgstr "验证蓝图失败"
 
 #: authentik/blueprints/api.py
 msgid "Either path or content must be set."
@@ -79,9 +82,9 @@ msgid "authentik Export - {date}"
 msgstr "authentik 导出 - {date}"
 
 #: authentik/blueprints/v1/tasks.py authentik/crypto/tasks.py
-#, python-format
-msgid "Successfully imported %(count)d files."
-msgstr "已成功导入 %(count)d 个文件。"
+#, python-brace-format
+msgid "Successfully imported {count} files."
+msgstr "已成功导入 {count} 个文件。"
 
 #: authentik/brands/models.py
 msgid ""
@@ -107,12 +110,21 @@ msgstr "品牌"
 msgid "Brands"
 msgstr "品牌"
 
+#: authentik/core/api/devices.py
+msgid "Extra description not available"
+msgstr "额外描述不可用"
+
 #: authentik/core/api/providers.py
 msgid ""
 "When not set all providers are returned. When set to true, only backchannel "
 "providers are returned. When set to false, backchannel providers are "
 "excluded"
 msgstr "如果未设置，则返回所有提供程序。如果启用，仅返回反向通道提供程序。如果禁用，则返回非反向通道提供程序"
+
+#: authentik/core/api/transactional_applications.py
+#, python-brace-format
+msgid "User lacks permission to create {model}"
+msgstr "用户缺少创建 {model} 的权限"
 
 #: authentik/core/api/users.py
 msgid "No leading or trailing slashes allowed."
@@ -192,6 +204,10 @@ msgstr "当关联应用程序被未验证身份的用户访问时，用于身份
 #: authentik/core/models.py
 msgid "Flow used when authorizing this provider."
 msgstr "授权此提供程序时使用的流程。"
+
+#: authentik/core/models.py
+msgid "Flow used ending the session from a provider."
+msgstr "从提供程序结束会话使用的流程。"
 
 #: authentik/core/models.py
 msgid ""
@@ -337,55 +353,6 @@ msgstr "成功链接 {source}！"
 #: authentik/core/sources/flow_manager.py
 msgid "Source is not configured for enrollment."
 msgstr "源未被配置用于注册。"
-
-#: authentik/core/templates/if/end_session.html
-msgid "End session"
-msgstr "结束会话"
-
-#: authentik/core/templates/if/end_session.html
-#, python-format
-msgid ""
-"\n"
-"You've logged out of %(application)s.\n"
-msgstr ""
-"\n"
-"您已登出 %(application)s。\n"
-
-#: authentik/core/templates/if/end_session.html
-#, python-format
-msgid ""
-"\n"
-"            You've logged out of %(application)s. You can go back to the overview to launch another application, or log out of your %(branding_title)s account.\n"
-"        "
-msgstr ""
-"\n"
-"           您已成功登出 %(application)s 。现在您可以返回总览页来启动其他应用，或者登出您的 %(branding_title)s 账户。"
-
-#: authentik/core/templates/if/end_session.html
-msgid "Go back to overview"
-msgstr "返回总览"
-
-#: authentik/core/templates/if/end_session.html
-#, python-format
-msgid ""
-"\n"
-"            Log out of %(branding_title)s\n"
-"        "
-msgstr ""
-"\n"
-"            登出 %(branding_title)s\n"
-"        "
-
-#: authentik/core/templates/if/end_session.html
-#, python-format
-msgid ""
-"\n"
-"            Log back into %(application)s\n"
-"        "
-msgstr ""
-"\n"
-"            重新登录 %(application)s\n"
-"        "
 
 #: authentik/core/templates/if/error.html
 msgid "Go home"
@@ -581,6 +548,26 @@ msgstr "已达到最大连接数。"
 #: authentik/enterprise/providers/rac/views.py
 msgid "(You are already connected in another tab/window)"
 msgstr "（您已经在另一个标签页/窗口连接了）"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Authenticator Google Device Trust Connector Stage"
+msgstr "端点身份验证器 Google 设备信任连接器阶段"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Authenticator Google Device Trust Connector Stages"
+msgstr "端点身份验证器 Google 设备信任连接器阶段"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Device"
+msgstr "端点设备"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Devices"
+msgstr "端点设备"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/stage.py
+msgid "Verifying your browser..."
+msgstr "正在验证您的浏览器…"
 
 #: authentik/enterprise/stages/source/models.py
 msgid ""
@@ -881,14 +868,14 @@ msgid "Starting full provider sync"
 msgstr "开始全量提供程序同步"
 
 #: authentik/lib/sync/outgoing/tasks.py
-#, python-format
-msgid "Syncing page %(page)d of users"
-msgstr "正在同步用户页面 %(page)d"
+#, python-brace-format
+msgid "Syncing page {page} of users"
+msgstr "正在同步用户页面 {page}"
 
 #: authentik/lib/sync/outgoing/tasks.py
-#, python-format
-msgid "Syncing page %(page)d of groups"
-msgstr "正在同步群组页面 %(page)d"
+#, python-brace-format
+msgid "Syncing page {page} of groups"
+msgstr "正在同步群组页面 {page}"
 
 #: authentik/lib/sync/outgoing/tasks.py
 #, python-brace-format
@@ -1039,9 +1026,9 @@ msgid "Event Matcher Policies"
 msgstr "事件匹配策略"
 
 #: authentik/policies/expiry/models.py
-#, python-format
-msgid "Password expired %(days)d days ago. Please update your password."
-msgstr "密码在 %(days)d 天前过期。请更新您的密码。"
+#, python-brace-format
+msgid "Password expired {days} days ago. Please update your password."
+msgstr "密码在 {days} 天前过期。请更新您的密码。"
 
 #: authentik/policies/expiry/models.py
 msgid "Password has expired."
@@ -1163,9 +1150,13 @@ msgid "Password not set in context"
 msgstr "未在上下文中设置密码"
 
 #: authentik/policies/password/models.py
-#, python-format
-msgid "Password exists on %(count)d online lists."
-msgstr "%(count)d 个在线列表中存在密码。"
+msgid "Invalid password."
+msgstr "无效密码。"
+
+#: authentik/policies/password/models.py
+#, python-brace-format
+msgid "Password exists on {count} online lists."
+msgstr "{count} 个在线列表中存在密码。"
 
 #: authentik/policies/password/models.py
 msgid "Password is too weak."
@@ -1284,6 +1275,11 @@ msgstr "LDAP 提供程序"
 msgid "Search full LDAP directory"
 msgstr "搜索完整 LDAP 目录"
 
+#: authentik/providers/oauth2/api/providers.py
+#, python-brace-format
+msgid "Invalid Regex Pattern: {url}"
+msgstr "无效的正则表达式模式：{url}"
+
 #: authentik/providers/oauth2/id_token.py
 msgid "Based on the Hashed User ID"
 msgstr "基于经过哈希处理的用户 ID"
@@ -1325,6 +1321,14 @@ msgstr "所有提供程序都使用相同的标识符"
 #: authentik/providers/oauth2/models.py
 msgid "Each provider has a different issuer, based on the application slug."
 msgstr "根据应用程序 Slug，每个提供程序都有不同的颁发者。"
+
+#: authentik/providers/oauth2/models.py
+msgid "Strict URL comparison"
+msgstr "严格 URL 比较"
+
+#: authentik/providers/oauth2/models.py
+msgid "Regular Expression URL matching"
+msgstr "正则表达式 URL 匹配"
 
 #: authentik/providers/oauth2/models.py
 msgid "code (Authorization Code Flow)"
@@ -1403,10 +1407,6 @@ msgid "Redirect URIs"
 msgstr "重定向 URI"
 
 #: authentik/providers/oauth2/models.py
-msgid "Enter each URI on a new line."
-msgstr "每行输入一个 URI。"
-
-#: authentik/providers/oauth2/models.py
 msgid "Include claims in id_token"
 msgstr "在 id_token 中包含声明"
 
@@ -1443,10 +1443,18 @@ msgid "Signing Key"
 msgstr "签名密钥"
 
 #: authentik/providers/oauth2/models.py
+msgid "Key used to sign the tokens."
+msgstr "用于签名令牌的密钥。"
+
+#: authentik/providers/oauth2/models.py
+msgid "Encryption Key"
+msgstr "加密密钥"
+
+#: authentik/providers/oauth2/models.py
 msgid ""
-"Key used to sign the tokens. Only required when JWT Algorithm is set to "
-"RS256."
-msgstr "用于签名令牌的密钥。仅当 JWT 算法设置为 RS256 时才需要。"
+"Key used to encrypt the tokens. When set, tokens will be encrypted and "
+"returned as JWEs."
+msgstr "用于加密令牌的密钥。如果设置，则令牌会被加密，并以 JWE 形式返回。"
 
 #: authentik/providers/oauth2/models.py
 msgid ""
@@ -1881,6 +1889,116 @@ msgstr "创建一个密钥，可用于恢复对 authentik 的访问权限。"
 #: authentik/recovery/views.py
 msgid "Used recovery-link to authenticate."
 msgstr "已使用恢复链接进行身份验证。"
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos realm"
+msgstr "Kerberos 领域"
+
+#: authentik/sources/kerberos/models.py
+msgid "Custom krb5.conf to use. Uses the system one by default"
+msgstr "要使用的自定义 krb5.conf。默认使用系统自带"
+
+#: authentik/sources/kerberos/models.py
+msgid "KAdmin server type"
+msgstr "KAdmin 服务器类型"
+
+#: authentik/sources/kerberos/models.py
+msgid "Sync users from Kerberos into authentik"
+msgstr "从 Kerberos 同步用户到 authentik"
+
+#: authentik/sources/kerberos/models.py
+msgid "When a user changes their password, sync it back to Kerberos"
+msgstr "当用户修改密码时，将其同步回 Kerberos"
+
+#: authentik/sources/kerberos/models.py
+msgid "Principal to authenticate to kadmin for sync."
+msgstr "向 kadmin 进行身份验证以进行同步的主体。"
+
+#: authentik/sources/kerberos/models.py
+msgid "Password to authenticate to kadmin for sync"
+msgstr "向 kadmin 进行身份验证以进行同步的密码"
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"Keytab to authenticate to kadmin for sync. Must be base64-encoded or in the "
+"form TYPE:residual"
+msgstr "向 kadmin 进行身份验证以进行同步的 Keytab。必须以 Base64 编码，或者形式为 TYPE:residual"
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"Credentials cache to authenticate to kadmin for sync. Must be in the form "
+"TYPE:residual"
+msgstr "向 kadmin 进行身份验证以进行同步的凭据缓存。形式必须为 TYPE:residual"
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"Force the use of a specific server name for SPNEGO. Must be in the form "
+"HTTP@hostname"
+msgstr "强制为 SPNEGO 使用特定服务器名称。形式必须为 HTTP@主机名"
+
+#: authentik/sources/kerberos/models.py
+msgid "SPNEGO keytab base64-encoded or path to keytab in the form FILE:path"
+msgstr "以 Base64 编码的 SPNEGO Keytab 或 FILE:path 形式的 Keytab 路径"
+
+#: authentik/sources/kerberos/models.py
+msgid "Credential cache to use for SPNEGO in form type:residual"
+msgstr "SPNEGO 使用的凭据缓存，形式为 type:residual"
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"If enabled, the authentik-stored password will be updated upon login with "
+"the Kerberos password backend"
+msgstr "启用时，authentik 存储的密码将会在使用 Kerberos 密码后端登录时更新"
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Source"
+msgstr "Kerberos 源"
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Sources"
+msgstr "Kerberos 源"
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Source Property Mapping"
+msgstr "Kerberos 源属性映射"
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Source Property Mappings"
+msgstr "Kerberos 源属性映射"
+
+#: authentik/sources/kerberos/models.py
+msgid "User Kerberos Source Connection"
+msgstr "用户 Kerberos 源连接"
+
+#: authentik/sources/kerberos/models.py
+msgid "User Kerberos Source Connections"
+msgstr "用户 Kerberos 源连接"
+
+#: authentik/sources/kerberos/models.py
+msgid "Group Kerberos Source Connection"
+msgstr "组 Kerberos 源连接"
+
+#: authentik/sources/kerberos/models.py
+msgid "Group Kerberos Source Connections"
+msgstr "组 Kerberos 源连接"
+
+#: authentik/sources/kerberos/views.py
+msgid "SPNEGO authentication required"
+msgstr "需要 SPNEGO 身份验证"
+
+#: authentik/sources/kerberos/views.py
+msgid ""
+"\n"
+"                    Make sure you have valid tickets (obtainable via kinit)\n"
+"                    and configured the browser correctly.\n"
+"                    Please contact your administrator.\n"
+"                "
+msgstr ""
+"\n"
+"                    请确认您拥有有效票据（通过 kinit 获得）\n"
+"                    并且已正确配置浏览器。\n"
+"                    请联系您的管理员。\n"
+"                "
 
 #: authentik/sources/ldap/api.py
 msgid "Only a single LDAP Source with password synchronization is allowed"
@@ -2557,13 +2675,8 @@ msgid "Captcha Stages"
 msgstr "验证码阶段"
 
 #: authentik/stages/captcha/stage.py
-msgid "Unknown error"
-msgstr "未知错误"
-
-#: authentik/stages/captcha/stage.py
-#, python-brace-format
-msgid "Failed to validate token: {error}"
-msgstr "验证令牌失败：{error}"
+msgid "Invalid captcha response. Retrying may solve this issue."
+msgstr "无效的验证码响应。重试可能会解决此问题。"
 
 #: authentik/stages/captcha/stage.py
 msgid "Invalid captcha response"
@@ -2749,7 +2862,7 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-"    If you did not request a password change, please ignore this Email. The link above is valid for %(expires)s.\n"
+"    If you did not request a password change, please ignore this email. The link above is valid for %(expires)s.\n"
 "    "
 msgstr ""
 "\n"
@@ -2773,7 +2886,7 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-"If you did not request a password change, please ignore this Email. The link above is valid for %(expires)s.\n"
+"If you did not request a password change, please ignore this email. The link above is valid for %(expires)s.\n"
 msgstr ""
 "\n"
 "如果您没有请求更改密码，请忽略此电子邮件。上面的链接在 %(expires)s 内有效。\n"
@@ -2911,6 +3024,10 @@ msgid "User database + LDAP password"
 msgstr "用户数据库 + LDAP 密码"
 
 #: authentik/stages/password/models.py
+msgid "User database + Kerberos password"
+msgstr "用户数据库 + Kerberos 密码"
+
+#: authentik/stages/password/models.py
 msgid "Selection of backends to test the password against."
 msgstr "选择用于测试密码的后端。"
 
@@ -3038,6 +3155,22 @@ msgstr "输入阶段"
 msgid "Passwords don't match."
 msgstr "密码不匹配。"
 
+#: authentik/stages/redirect/api.py
+msgid "Target URL should be present when mode is Static."
+msgstr "当模式为静态时，目标 URL 应存在。"
+
+#: authentik/stages/redirect/api.py
+msgid "Target Flow should be present when mode is Flow."
+msgstr "当模式为流程时，目标流程应存在。"
+
+#: authentik/stages/redirect/models.py
+msgid "Redirect Stage"
+msgstr "重定向阶段"
+
+#: authentik/stages/redirect/models.py
+msgid "Redirect Stages"
+msgstr "重定向阶段"
+
 #: authentik/stages/user_delete/models.py
 msgid "User Delete Stage"
 msgstr "用户删除阶段"
@@ -3164,6 +3297,10 @@ msgstr "启用时，所有由用户造成的事件会在相应用户被删除时
 #: authentik/tenants/models.py
 msgid "Globally enable/disable impersonation."
 msgstr "全局启用/禁用模拟身份。"
+
+#: authentik/tenants/models.py
+msgid "Require administrators to provide a reason for impersonating a user."
+msgstr "需要管理员提供模拟用户的原因。"
 
 #: authentik/tenants/models.py
 msgid "Default token duration"

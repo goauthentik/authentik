@@ -4,7 +4,6 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first, groupBy } from "@goauthentik/common/utils";
 import "@goauthentik/elements/ak-checkbox-group/ak-checkbox-group.js";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -17,39 +16,14 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import {
     FlowsInstancesListDesignationEnum,
     IdentificationStage,
-    Source,
-    SourcesApi,
     Stage,
     StagesApi,
+    StagesCaptchaListRequest,
     StagesPasswordListRequest,
     UserFieldsEnum,
 } from "@goauthentik/api";
 
-async function sourcesProvider(page = 1, search = "") {
-    const sources = await new SourcesApi(DEFAULT_CONFIG).sourcesAllList({
-        ordering: "slug",
-        pageSize: 20,
-        search: search.trim(),
-        page,
-    });
-
-    return {
-        pagination: sources.pagination,
-        options: sources.results
-            .filter((source) => source.component !== "")
-            .map((source) => [source.pk, source.name, source.name, source]),
-    };
-}
-
-function makeSourcesSelector(instanceSources: string[] | undefined) {
-    const localSources = instanceSources ? new Set(instanceSources) : undefined;
-
-    return localSources
-        ? ([pk, _]: DualSelectPair) => localSources.has(pk)
-        : // Creating a new instance, auto-select built-in source only when no other sources exist
-          ([_0, _1, _2, source]: DualSelectPair<Source>) =>
-              source !== undefined && source.component === "";
-}
+import { sourcesProvider, sourcesSelector } from "./IdentificationStageFormHelpers.js";
 
 @customElement("ak-stage-identification-form")
 export class IdentificationStageForm extends BaseStageForm<IdentificationStage> {
@@ -140,24 +114,47 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                                 ).stagesPasswordList(args);
                                 return stages.results;
                             }}
-                            .groupBy=${(items: Stage[]) => {
-                                return groupBy(items, (stage) => stage.verboseNamePlural);
-                            }}
-                            .renderElement=${(stage: Stage): string => {
-                                return stage.name;
-                            }}
-                            .value=${(stage: Stage | undefined): string | undefined => {
-                                return stage?.pk;
-                            }}
-                            .selected=${(stage: Stage): boolean => {
-                                return stage.pk === this.instance?.passwordStage;
-                            }}
-                            ?blankable=${true}
+                            .groupBy=${(items: Stage[]) =>
+                                groupBy(items, (stage) => stage.verboseNamePlural)}
+                            .renderElement=${(stage: Stage): string => stage.name}
+                            .value=${(stage: Stage | undefined): string | undefined => stage?.pk}
+                            .selected=${(stage: Stage): boolean =>
+                                stage.pk === this.instance?.passwordStage}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "When selected, a password field is shown on the same page instead of a separate page. This prevents username enumeration attacks.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${msg("Captcha stage")} name="captchaStage">
+                        <ak-search-select
+                            .fetchObjects=${async (query?: string): Promise<Stage[]> => {
+                                const args: StagesCaptchaListRequest = {
+                                    ordering: "name",
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const stages = await new StagesApi(
+                                    DEFAULT_CONFIG,
+                                ).stagesCaptchaList(args);
+                                return stages.results;
+                            }}
+                            .groupBy=${(items: Stage[]) =>
+                                groupBy(items, (stage) => stage.verboseNamePlural)}
+                            .renderElement=${(stage: Stage): string => stage.name}
+                            .value=${(stage: Stage | undefined): string | undefined => stage?.pk}
+                            .selected=${(stage: Stage): boolean =>
+                                stage.pk === this.instance?.captchaStage}
+                            blankable
+                        >
+                        </ak-search-select>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "When set, adds functionality exactly like a Captcha stage, but baked into the Identification stage.",
                             )}
                         </p>
                     </ak-form-element-horizontal>
@@ -235,9 +232,9 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                     >
                         <ak-dual-select-dynamic-selected
                             .provider=${sourcesProvider}
-                            .selector=${makeSourcesSelector(this.instance?.sources)}
-                            available-label="${msg("Available Stages")}"
-                            selected-label="${msg("Selected Stages")}"
+                            .selector=${sourcesSelector(this.instance?.sources)}
+                            available-label="${msg("Available Sources")}"
+                            selected-label="${msg("Selected Sources")}"
                         ></ak-dual-select-dynamic-selected>
                         <p class="pf-c-form__helper-text">
                             ${msg(

@@ -54,9 +54,23 @@ class SAMLProviderSerializer(ProviderSerializer):
         if "request" not in self._context:
             return ""
         request: HttpRequest = self._context["request"]._request
-        return request.build_absolute_uri(
-            reverse("authentik_api:samlprovider-metadata", kwargs={"pk": instance.pk}) + "?download"
-        )
+        try:
+            return request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_saml:metadata-download",
+                    kwargs={"application_slug": instance.application.slug},
+                )
+            )
+        except Provider.application.RelatedObjectDoesNotExist:
+            return request.build_absolute_uri(
+                reverse(
+                    "authentik_api:samlprovider-metadata",
+                    kwargs={
+                        "pk": instance.pk,
+                    },
+                )
+                + "?download"
+            )
 
     def get_url_sso_post(self, instance: SAMLProvider) -> str:
         """Get SSO Post URL"""
@@ -188,6 +202,9 @@ class SAMLProviderImportSerializer(PassiveSerializer):
     authorization_flow = PrimaryKeyRelatedField(
         queryset=Flow.objects.filter(designation=FlowDesignation.AUTHORIZATION),
     )
+    invalidation_flow = PrimaryKeyRelatedField(
+        queryset=Flow.objects.filter(designation=FlowDesignation.INVALIDATION),
+    )
     file = FileField()
 
 
@@ -277,7 +294,9 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
         try:
             metadata = ServiceProviderMetadataParser().parse(file.read().decode())
             metadata.to_provider(
-                data.validated_data["name"], data.validated_data["authorization_flow"]
+                data.validated_data["name"],
+                data.validated_data["authorization_flow"],
+                data.validated_data["invalidation_flow"],
             )
         except ValueError as exc:  # pragma: no cover
             LOGGER.warning(str(exc))

@@ -25,24 +25,11 @@ import { TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { Application, CoreApi, PolicyEngineMode, Provider } from "@goauthentik/api";
+import { Application, CoreApi, Provider } from "@goauthentik/api";
 
+import { policyOptions } from "./PolicyOptions.js";
 import "./components/ak-backchannel-input";
 import "./components/ak-provider-search-input";
-
-export const policyOptions = [
-    {
-        label: "any",
-        value: PolicyEngineMode.Any,
-        default: true,
-        description: html`${msg("Any policy must match to grant access")}`,
-    },
-    {
-        label: "all",
-        value: PolicyEngineMode.All,
-        description: html`${msg("All policies must match to grant access")}`,
-    },
-];
 
 @customElement("ak-application-form")
 export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Application, string>) {

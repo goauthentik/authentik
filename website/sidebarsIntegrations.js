@@ -1,13 +1,5 @@
-const docsSidebar = require("./sidebars.js");
-const generateVersionDropdown =
-    require("./src/utils.js").generateVersionDropdown;
-
 module.exports = {
     integrations: [
-        {
-            type: "html",
-            value: generateVersionDropdown(docsSidebar),
-        },
         {
             type: "doc",
             id: "index",
@@ -27,6 +19,7 @@ module.exports = {
                     items: [
                         "services/bookstack/index",
                         "services/dokuwiki/index",
+                        "services/espoCRM/index",
                         "services/hedgedoc/index",
                         "services/kimai/index",
                         "services/mastodon/index",
@@ -41,6 +34,7 @@ module.exports = {
                         "services/roundcube/index",
                         "services/sharepoint-se/index",
                         "services/slack/index",
+                        "services/thelounge/index",
                         "services/vikunja/index",
                         "services/wekan/index",
                         "services/wiki-js/index",
@@ -110,6 +104,7 @@ module.exports = {
                     type: "category",
                     label: "Networking",
                     items: [
+                        "services/aruba-orchestrator/index",
                         "services/firezone/index",
                         "services/fortigate-admin/index",
                         "services/fortigate-ssl/index",
@@ -127,6 +122,7 @@ module.exports = {
                         "services/frappe/index",
                         "services/freshrss/index",
                         "services/gravitee/index",
+                        "services/hoarder/index",
                         "services/home-assistant/index",
                         "services/immich/index",
                         "services/jellyfin/index",
@@ -165,9 +161,10 @@ module.exports = {
                     label: "Version Control Systems",
                     items: [
                         "services/gitea/index",
-                        "services/github-enterprise-cloud/index",
-                        "services/github-enterprise-server/index",
                         "services/github-organization/index",
+                        "services/github-enterprise-cloud/index",
+                        "services/github-enterprise-emu/index",
+                        "services/github-enterprise-server/index",
                         "services/gitlab/index",
                     ],
                 },

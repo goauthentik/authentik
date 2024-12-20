@@ -4,7 +4,6 @@ from django_filters.rest_framework.backends import DjangoFilterBackend
 from rest_framework import mixins
 from rest_framework.fields import ChoiceField
 from rest_framework.filters import OrderingFilter, SearchFilter
-from rest_framework.permissions import IsAdminUser
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from authentik.api.authorization import OwnerFilter, OwnerPermissions
@@ -72,7 +71,6 @@ class TOTPDeviceViewSet(
 class TOTPAdminDeviceViewSet(ModelViewSet):
     """Viewset for totp authenticator devices (for admins)"""
 
-    permission_classes = [IsAdminUser]
     queryset = TOTPDevice.objects.all()
     serializer_class = TOTPDeviceSerializer
     search_fields = ["name"]

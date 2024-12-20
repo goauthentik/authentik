@@ -9,7 +9,7 @@ export interface ISearchSelect<T> extends ISearchSelectBase<T> {
     fetchObjects: (query?: string) => Promise<T[]>;
     renderElement: (element: T) => string;
     renderDescription?: (element: T) => string | TemplateResult;
-    value: (element: T | undefined) => unknown;
+    value: (element: T | undefined) => string;
     selected?: (element: T, elements: T[]) => boolean;
     groupBy: (items: T[]) => [string, T[]][];
 }
@@ -21,14 +21,12 @@ export interface ISearchSelect<T> extends ISearchSelectBase<T> {
  * The API layer of  ak-search-select
  *
  * - @prop fetchObjects (Function): The function by which objects are retrieved by the API.
- * - @prop renderElement (Function | string): Either a function that can retrieve the string
- *   "label" of the element, or the name of the field from which the label can be retrieved.¹
- * - @prop renderDescription (Function | string): Either a function that can retrieve the string
- *   or TemplateResult "description" of the element, or the name of the field from which the
- *   description can be retrieved.¹
- * - @prop value (Function | string): Either a function that can retrieve the value (the current
- *   API object's primary key) selected or the name of the field from which the value can be
- *   retrieved.¹
+ * - @prop renderElement (Function): A function that can retrieve the string
+ *   "label" of the element
+ * - @prop renderDescription (Function): A function that can retrieve the string
+ *   or TemplateResult "description" of the element
+ * - @prop value (Function | string): A function that can retrieve the value (the current
+ *   API object's primary key) selected.
  * - @prop selected (Function): A function that retrieves the current "live" value from the
      list of objects fetched by the function above.
  * - @prop groupBy (Function): A function that can group the objects fetched from the API by
@@ -41,11 +39,6 @@ export interface ISearchSelect<T> extends ISearchSelectBase<T> {
  *   shown if `blankable`
  * - @attr selectedObject (Object<T>): The current object, or undefined, selected
  *
- * ¹ Due to a limitation in the parsing of properties-vs-attributes, these must be defined as
- *   properties, not attributes.  As a consequence, they must be declared in property syntax.
- *   Example:
- *
- *   `.renderElement=${"name"}`
  *
  * - @fires ak-change - When a value from the collection has been positively chosen, either as a
  *   consequence of the user typing or when selecting from the list.
@@ -76,7 +69,7 @@ export class SearchSelect<T> extends SearchSelectBase<T> implements ISearchSelec
     // A function which returns the currently selected object's primary key, used for serialization
     // into forms.
     @property({ attribute: false })
-    value!: (element: T | undefined) => unknown;
+    value!: (element: T | undefined) => string;
 
     // A function passed to this object that determines an object in the collection under search
     // should be automatically selected. Only used when the search itself is responsible for
