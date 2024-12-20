@@ -40,6 +40,11 @@ class TestPlexSource(TestCase):
             slug="test",
         )
 
+    def test_login_challenge(self):
+        """Test login_challenge"""
+        ui_login_button = self.source.ui_login_button(None)
+        self.assertTrue(ui_login_button.challenge.is_valid(raise_exception=True))
+
     def test_get_user_info(self):
         """Test get_user_info"""
         token = generate_key()
@@ -49,7 +54,7 @@ class TestPlexSource(TestCase):
             self.assertEqual(
                 api.get_user_info(),
                 (
-                    {"username": "username", "email": "foo@bar.baz", "name": "title"},
+                    USER_INFO_RESPONSE,
                     1234123419,
                 ),
             )
@@ -77,3 +82,21 @@ class TestPlexSource(TestCase):
             mocker.get("https://plex.tv/api/v2/user", exc=RequestException())
             check_plex_token_all()
             self.assertTrue(Event.objects.filter(action=EventAction.CONFIGURATION_ERROR).exists())
+
+    def test_user_base_properties(self):
+        """Test user base properties"""
+        properties = self.source.get_base_user_properties(info=USER_INFO_RESPONSE)
+        self.assertEqual(
+            properties,
+            {
+                "username": "username",
+                "name": "title",
+                "email": "foo@bar.baz",
+            },
+        )
+
+    def test_group_base_properties(self):
+        """Test group base properties"""
+        for group_id in ["group 1", "group 2"]:
+            properties = self.source.get_base_group_properties(group_id=group_id)
+            self.assertEqual(properties, {"name": group_id})

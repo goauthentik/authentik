@@ -1,5 +1,6 @@
 import { RequestInfo } from "@goauthentik/common/api/middleware";
 import { EVENT_API_DRAWER_TOGGLE, EVENT_REQUEST_POST } from "@goauthentik/common/constants";
+import { globalAK } from "@goauthentik/common/global";
 import { AKElement } from "@goauthentik/elements/Base";
 
 import { msg } from "@lit/localize";
@@ -86,7 +87,9 @@ export class APIDrawer extends AKElement {
                         <h1 class="pf-c-notification-drawer__header-title">
                             ${msg("API Requests")}
                         </h1>
-                        <a href="/api/v3/" target="_blank">${msg("Open API Browser")}</a>
+                        <a href="${globalAK().api.base}api/v3/" target="_blank"
+                            >${msg("Open API Browser")}</a
+                        >
                     </div>
                     <div class="pf-c-notification-drawer__header-action">
                         <div class="pf-c-notification-drawer__header-action-close">
@@ -101,7 +104,7 @@ export class APIDrawer extends AKElement {
                                 }}
                                 class="pf-c-button pf-m-plain"
                                 type="button"
-                                aria-label="Close"
+                                aria-label=${msg("Close")}
                             >
                                 <i class="fas fa-times" aria-hidden="true"></i>
                             </button>
@@ -115,5 +118,11 @@ export class APIDrawer extends AKElement {
                 </div>
             </div>
         </div>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-api-drawer": APIDrawer;
     }
 }

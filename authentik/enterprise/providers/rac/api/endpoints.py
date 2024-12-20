@@ -8,11 +8,11 @@ from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_sche
 from rest_framework.fields import SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
 from authentik.core.api.used_by import UsedByMixin
+from authentik.core.api.utils import ModelSerializer
 from authentik.core.models import Provider
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.providers.rac.api.providers import RACProviderSerializer

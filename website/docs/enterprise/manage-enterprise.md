@@ -8,7 +8,7 @@ Your organization defines the members, their roles, the licenses associated with
 
 ### Create an Organization
 
-1. To create a new organization, log in to the [Customer portal](./get-started#access-enterprise).
+1. To create a new organization, log in to the [Customer portal](./get-started.md#access-enterprise).
 
 2. On the **My organizations** page, click **Create an organization**.
 
@@ -24,10 +24,10 @@ If you need to delete an organization open a ticket in the Support center.
 
 In the Customer portal you can remove members and invite new members to the organization. When you invite new members, you can specify the role for the new member.
 
--   **Member**: can view licenses, including the license key.
--   **Owner**: can do everything the Member role can do, plus: add and remove members, order and renew licenses, and edit the organization.
+- **Member**: can view licenses, including the license key.
+- **Owner**: can do everything the Member role can do, plus: add and remove members, order and renew licenses, and edit the organization.
 
-1. To manage membership in an organization, log in to the [Customer portal](./get-started#access-enterprise).
+1. To manage membership in an organization, log in to the [Customer portal](./get-started.md#access-enterprise).
 
 2. On the **My organizations** page, click the name of the organization you want to edit membership in.
 
@@ -40,6 +40,8 @@ In the Customer portal you can remove members and invite new members to the orga
     A message appears that the invitation has been sent. When the recipient accepts the invitation by clicking a link in the email, they will be added to the organization.
 
 ## License management
+
+Note that a license is associated with a specific Organization in the customer portal and a specific authentik instance (with a unique Install ID), and not with individual users. A single license is purchased for a specified number of users. Additional users can be added to a license, or additional licenses purchased for the same instance, if more users need to be added later.
 
 ### Buy a license
 
@@ -93,25 +95,27 @@ The **Enterprise -> Licenses** page shows your current licenses' **Cumulative li
 
 ### License violation notifications
 
-The following events occur when a license expeires and is not renewed within two weeks.
+The following events occur when a license expires or the internal/external user count is over the licensed user count for the time period below.
 
--   After 2 weeks of the expiry date administrators see a warning banner on the Admin interface
+- After 2 weeks of the expiry date administrators see a warning banner on the Admin interface
 
--   After another 2 weeks, users get a warning banner
+- After another 2 weeks, users get a warning banner
 
--   After another 2 weeks, the authentik Enterprise instance becomes “read-only”
+- After another 2 weeks, the authentik Enterprise instance becomes "read-only"
+
+    When an authentik instance is in read-only mode, the following actions are still possible:
+
+    - Users can authenticate and authorize applications
+    - Licenses can be modified
+    - Users can be modified/deleted <span class="badge badge--version">authentik 2024.10.5+</span>
+
+    After the violation is corrected (either the user count returns to be within the limits of the license or the license is renewed), authentik will return to the standard read-write mode and the notification will disappear.
 
 ### About users and licenses
 
-License usage is calculated based on total user counts and log-in data data that authentik regularly captures. This data is checked against all valid licenses, and the sum total of all users.
+License usage is calculated based on total user counts that authentik regularly captures. This data is checked against all valid licenses, and the sum total of all users. Internal and external users are counted based on the number of active users of the respective type saved in authentik. Service account users are not counted towards the license.
 
--   The **_default user_** count is calculated based on actual users assigned to the organization.
-
--   The **_external user_** count is calculated based on how many external users were active (i.e. logged in) since the start of the current month.
-
-:::info
-An **internal** user is typically a team member, such as company employees, who gets access to the full Enterprise feature set. An **external** user might be an external consultant or a B2C customer who logged onto your website to shop. These users don't get access to enterprise features.
-:::
+An **internal** user is typically a team member, such as a company employee, who has access to the full Enterprise feature set. An **external** user might be an external consultant, a volunteer in a charitable site, or a B2C customer who logged onto your website to shop. External users don't get access to Enterprise features, nor to the **My applications** page in authentik. Instead, external users are authenticated and then redirected to log directly into their [default application](../customize/brands.md#external-user-settings).
 
 ### Upgrade the number of users in a license
 

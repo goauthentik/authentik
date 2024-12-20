@@ -3,10 +3,11 @@
 from collections.abc import Iterable
 
 from django.db import models
+from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import BackchannelProvider, Group
+from authentik.core.models import BackchannelProvider
 from authentik.crypto.models import CertificateKeyPair
 from authentik.outposts.models import OutpostModel
 
@@ -24,17 +25,6 @@ class LDAPProvider(OutpostModel, BackchannelProvider):
     base_dn = models.TextField(
         default="DC=ldap,DC=goauthentik,DC=io",
         help_text=_("DN under which objects are accessible."),
-    )
-
-    search_group = models.ForeignKey(
-        Group,
-        null=True,
-        default=None,
-        on_delete=models.SET_DEFAULT,
-        help_text=_(
-            "Users in this group can do search queries. "
-            "If not set, every user can execute search queries."
-        ),
     )
 
     tls_server_name = models.TextField(
@@ -91,6 +81,10 @@ class LDAPProvider(OutpostModel, BackchannelProvider):
         return "ak-provider-ldap-form"
 
     @property
+    def icon_url(self) -> str | None:
+        return static("authentik/sources/ldap.png")
+
+    @property
     def serializer(self) -> type[Serializer]:
         from authentik.providers.ldap.api import LDAPProviderSerializer
 
@@ -108,3 +102,6 @@ class LDAPProvider(OutpostModel, BackchannelProvider):
     class Meta:
         verbose_name = _("LDAP Provider")
         verbose_name_plural = _("LDAP Providers")
+        permissions = [
+            ("search_full_directory", _("Search full LDAP directory")),
+        ]

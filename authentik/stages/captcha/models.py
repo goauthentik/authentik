@@ -9,10 +9,24 @@ from authentik.flows.models import Stage
 
 
 class CaptchaStage(Stage):
-    """Verify the user is human using Google's reCaptcha."""
+    """Verify the user is human using Google's reCaptcha/other compatible CAPTCHA solutions."""
 
     public_key = models.TextField(help_text=_("Public key, acquired your captcha Provider."))
     private_key = models.TextField(help_text=_("Private key, acquired your captcha Provider."))
+
+    interactive = models.BooleanField(default=False)
+
+    score_min_threshold = models.FloatField(default=0.5)  # Default values for reCaptcha
+    score_max_threshold = models.FloatField(default=1.0)  # Default values for reCaptcha
+
+    error_on_invalid_score = models.BooleanField(
+        default=True,
+        help_text=_(
+            "When enabled and the received captcha score is outside of the given threshold, "
+            "the stage will show an error message. When not enabled, the flow will continue, "
+            "but the data from the captcha will be available in the context for policy decisions"
+        ),
+    )
 
     js_url = models.TextField(default="https://www.recaptcha.net/recaptcha/api.js")
     api_url = models.TextField(default="https://www.recaptcha.net/recaptcha/api/siteverify")

@@ -5,7 +5,7 @@ PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
 NPM_VERSION = $(shell python -m scripts.npm_version)
-PY_SOURCES = authentik tests scripts lifecycle .github
+PY_SOURCES = authentik tests scripts lifecycle .github website/docs/install-config/install/aws
 DOCKER_IMAGE ?= "authentik:test"
 
 GEN_API_TS = "gen-ts-api"
@@ -19,13 +19,13 @@ pg_name := $(shell python -m authentik.lib.config postgresql.name 2>/dev/null)
 CODESPELL_ARGS = -D - -D .github/codespell-dictionary.txt \
 		-I .github/codespell-words.txt \
 		-S 'web/src/locales/**' \
+		-S 'website/docs/developer-docs/api/reference/**' \
 		authentik \
 		internal \
 		cmd \
 		web/src \
 		website/src \
 		website/blog \
-		website/developer-docs \
 		website/docs \
 		website/integrations \
 		website/src
@@ -42,12 +42,12 @@ help:  ## Show this help
 		sort
 	@echo ""
 
-test-go:
+go-test:
 	go test -timeout 0 -v -race -cover ./...
 
 test-docker:  ## Run all tests in a docker-compose
-	echo "PG_PASS=$(openssl rand -base64 32)" >> .env
-	echo "AUTHENTIK_SECRET_KEY=$(openssl rand -base64 32)" >> .env
+	echo "PG_PASS=$(shell openssl rand 32 | base64 -w 0)" >> .env
+	echo "AUTHENTIK_SECRET_KEY=$(shell openssl rand 32 | base64 -w 0)" >> .env
 	docker compose pull -q
 	docker compose up --no-start
 	docker compose start postgresql redis
@@ -59,9 +59,11 @@ test: ## Run the server tests and produce a coverage report (locally)
 	coverage html
 	coverage report
 
-lint-fix:  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
+lint-fix: lint-codespell  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
 	black $(PY_SOURCES)
 	ruff check --fix $(PY_SOURCES)
+
+lint-codespell:  ## Reports spelling errors.
 	codespell -w $(CODESPELL_ARGS)
 
 lint: ## Lint the python and golang sources
@@ -207,6 +209,9 @@ web: web-lint-fix web-lint web-check-compile  ## Automatically fix formatting is
 web-install:  ## Install the necessary libraries to build the Authentik UI
 	cd web && npm ci
 
+web-test: ## Run tests for the Authentik UI
+	cd web && npm run test
+
 web-watch:  ## Build and watch the Authentik UI for changes, updating automatically
 	rm -rf web/dist/
 	mkdir web/dist/
@@ -238,7 +243,7 @@ website: website-lint-fix website-build  ## Automatically fix formatting issues 
 website-install:
 	cd website && npm ci
 
-website-lint-fix:
+website-lint-fix: lint-codespell
 	cd website && npm run prettier
 
 website-build:
@@ -247,11 +252,15 @@ website-build:
 website-watch:  ## Build and watch the documentation website, updating automatically
 	cd website && npm run watch
 
+aws-cfn:
+	cd website && npm run aws-cfn
+
 #########################
 ## Docker
 #########################
 
 docker:  ## Build a docker image of the current source tree
+	mkdir -p ${GEN_API_TS}
 	DOCKER_BUILDKIT=1 docker build . --progress plain --tag ${DOCKER_IMAGE}
 
 #########################

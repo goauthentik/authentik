@@ -16,7 +16,7 @@ entries:
     placeholder: Username
     placeholder_expression: false
     required: true
-    type: text
+    type: username
     field_key: username
     label: Username
   identifiers:

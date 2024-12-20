@@ -14,8 +14,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Pre-release test
         run: |
-          echo "PG_PASS=$(openssl rand -base64 32)" >> .env
-          echo "AUTHENTIK_SECRET_KEY=$(openssl rand -base64 32)" >> .env
+          echo "PG_PASS=$(openssl rand 32 | base64 -w 0)" >> .env
+          echo "AUTHENTIK_SECRET_KEY=$(openssl rand 32 | base64 -w 0)" >> .env
           docker buildx install
           mkdir -p ./gen-ts-api
           docker build -t testing:latest .

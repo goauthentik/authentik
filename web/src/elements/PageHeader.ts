@@ -13,7 +13,7 @@ import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -107,21 +107,23 @@ export class PageHeader extends WithBrandConfig(AKElement) {
         });
     }
 
-    setTitle(value: string) {
+    setTitle(header?: string) {
         const currentIf = currentInterface();
-        const title = this.brand?.brandingTitle || TITLE_DEFAULT;
-        document.title =
-            currentIf === "admin"
-                ? `${msg("Admin")} - ${title}`
-                : value !== ""
-                  ? `${value} - ${title}`
-                  : title;
+        let title = this.brand?.brandingTitle || TITLE_DEFAULT;
+        if (currentIf === "admin") {
+            title = `${msg("Admin")} - ${title}`;
+        }
+        // Prepend the header to the title
+        if (header !== undefined && header !== "") {
+            title = `${header} - ${title}`;
+        }
+        document.title = title;
     }
 
-    willUpdate(changedProperties: PropertyValues<this>) {
-        if (changedProperties.has("header") && this.header) {
-            this.setTitle(this.header);
-        }
+    willUpdate() {
+        // Always update title, even if there's no header value set,
+        // as in that case we still need to return to the generic title
+        this.setTitle(this.header);
     }
 
     renderIcon(): TemplateResult {
@@ -136,62 +138,67 @@ export class PageHeader extends WithBrandConfig(AKElement) {
     }
 
     render(): TemplateResult {
-        return html` <ak-enterprise-status interface="admin"></ak-enterprise-status>
-            <div class="bar">
-                <button
-                    class="sidebar-trigger pf-c-button pf-m-plain"
-                    @click=${() => {
-                        this.dispatchEvent(
-                            new CustomEvent(EVENT_SIDEBAR_TOGGLE, {
-                                bubbles: true,
-                                composed: true,
-                            }),
-                        );
-                    }}
-                >
-                    <i class="fas fa-bars"></i>
-                </button>
-                <section class="pf-c-page__main-section pf-m-light">
-                    <div class="pf-c-content">
-                        <h1>
-                            <slot name="icon">${this.renderIcon()}</slot>&nbsp;
-                            <slot name="header">${this.header}</slot>
-                        </h1>
-                        ${this.description ? html`<p>${this.description}</p>` : html``}
-                    </div>
-                </section>
-                <button
-                    class="notification-trigger pf-c-button pf-m-plain"
-                    @click=${() => {
-                        this.dispatchEvent(
-                            new CustomEvent(EVENT_API_DRAWER_TOGGLE, {
-                                bubbles: true,
-                                composed: true,
-                            }),
-                        );
-                    }}
-                >
-                    <pf-tooltip position="top" content=${msg("Open API drawer")}>
-                        <i class="fas fa-code"></i>
-                    </pf-tooltip>
-                </button>
-                <button
-                    class="notification-trigger pf-c-button pf-m-plain ${this.hasNotifications
-                        ? "has-notifications"
-                        : ""}"
-                    @click=${() => {
-                        this.dispatchEvent(
-                            new CustomEvent(EVENT_NOTIFICATION_DRAWER_TOGGLE, {
-                                bubbles: true,
-                                composed: true,
-                            }),
-                        );
-                    }}
-                >
-                    <pf-tooltip position="top" content=${msg("Open Notification drawer")}>
-                        <i class="fas fa-bell"></i>
-                    </pf-tooltip>
-                </button>
-            </div>`;
+        return html`<div class="bar">
+            <button
+                class="sidebar-trigger pf-c-button pf-m-plain"
+                @click=${() => {
+                    this.dispatchEvent(
+                        new CustomEvent(EVENT_SIDEBAR_TOGGLE, {
+                            bubbles: true,
+                            composed: true,
+                        }),
+                    );
+                }}
+            >
+                <i class="fas fa-bars"></i>
+            </button>
+            <section class="pf-c-page__main-section pf-m-light">
+                <div class="pf-c-content">
+                    <h1>
+                        <slot name="icon">${this.renderIcon()}</slot>&nbsp;
+                        <slot name="header">${this.header}</slot>
+                    </h1>
+                    ${this.description ? html`<p>${this.description}</p>` : html``}
+                </div>
+            </section>
+            <button
+                class="notification-trigger pf-c-button pf-m-plain"
+                @click=${() => {
+                    this.dispatchEvent(
+                        new CustomEvent(EVENT_API_DRAWER_TOGGLE, {
+                            bubbles: true,
+                            composed: true,
+                        }),
+                    );
+                }}
+            >
+                <pf-tooltip position="top" content=${msg("Open API drawer")}>
+                    <i class="fas fa-code"></i>
+                </pf-tooltip>
+            </button>
+            <button
+                class="notification-trigger pf-c-button pf-m-plain ${this.hasNotifications
+                    ? "has-notifications"
+                    : ""}"
+                @click=${() => {
+                    this.dispatchEvent(
+                        new CustomEvent(EVENT_NOTIFICATION_DRAWER_TOGGLE, {
+                            bubbles: true,
+                            composed: true,
+                        }),
+                    );
+                }}
+            >
+                <pf-tooltip position="top" content=${msg("Open Notification drawer")}>
+                    <i class="fas fa-bell"></i>
+                </pf-tooltip>
+            </button>
+        </div>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-page-header": PageHeader;
     }
 }

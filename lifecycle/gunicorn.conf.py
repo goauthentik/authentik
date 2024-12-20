@@ -7,6 +7,8 @@ from pathlib import Path
 from tempfile import gettempdir
 from typing import TYPE_CHECKING
 
+from cryptography.hazmat.backends.openssl.backend import backend
+from defusedxml import defuse_stdlib
 from prometheus_client.values import MultiProcessValue
 
 from authentik import get_full_version
@@ -25,6 +27,11 @@ if TYPE_CHECKING:
 
     from authentik.root.asgi import AuthentikAsgi
 
+defuse_stdlib()
+
+if CONFIG.get_bool("compliance.fips.enabled", False):
+    backend._enable_fips()
+
 wait_for_db()
 
 _tmp = Path(gettempdir())
@@ -40,7 +47,7 @@ bind = f"unix://{str(_tmp.joinpath('authentik-core.sock'))}"
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
 os.environ.setdefault("PROMETHEUS_MULTIPROC_DIR", prometheus_tmp_dir)
 
-preload = True
+preload_app = True
 
 max_requests = 1000
 max_requests_jitter = 50
@@ -109,8 +116,8 @@ def post_worker_init(worker: DjangoUvicornWorker):
     # does not use this signal, so we can skip this safely
     if worker._worker_id != 1:
         return
-    app: "WSGIApplication" = worker.app
-    root_app: "AuthentikAsgi" = app.callable
+    app: WSGIApplication = worker.app
+    root_app: AuthentikAsgi = app.callable
     root_app.call_startup()
 
 

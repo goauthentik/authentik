@@ -3,12 +3,11 @@
 from django_filters.rest_framework.backends import DjangoFilterBackend
 from rest_framework import mixins
 from rest_framework.filters import OrderingFilter, SearchFilter
-from rest_framework.permissions import IsAdminUser
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from authentik.api.authorization import OwnerFilter, OwnerPermissions
 from authentik.core.api.used_by import UsedByMixin
+from authentik.core.api.utils import ModelSerializer
 from authentik.stages.authenticator_webauthn.api.device_types import WebAuthnDeviceTypeSerializer
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 
@@ -20,7 +19,10 @@ class WebAuthnDeviceSerializer(ModelSerializer):
 
     class Meta:
         model = WebAuthnDevice
-        fields = ["pk", "name", "created_on", "device_type"]
+        fields = ["pk", "name", "created_on", "device_type", "aaguid"]
+        extra_kwargs = {
+            "aaguid": {"read_only": True},
+        }
 
 
 class WebAuthnDeviceViewSet(
@@ -45,7 +47,6 @@ class WebAuthnDeviceViewSet(
 class WebAuthnAdminDeviceViewSet(ModelViewSet):
     """Viewset for WebAuthn authenticator devices (for admins)"""
 
-    permission_classes = [IsAdminUser]
     queryset = WebAuthnDevice.objects.all()
     serializer_class = WebAuthnDeviceSerializer
     search_fields = ["name"]

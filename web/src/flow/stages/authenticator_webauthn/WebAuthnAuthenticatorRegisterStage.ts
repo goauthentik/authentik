@@ -8,7 +8,7 @@ import "@goauthentik/elements/EmptyState";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html, nothing } from "lit";
+import { CSSResult, PropertyValues, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -115,14 +115,16 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
             });
     }
 
-    firstUpdated(): void {
-        // convert certain members of the PublicKeyCredentialCreateOptions into
-        // byte arrays as expected by the spec.
-        this.publicKeyCredentialCreateOptions = transformCredentialCreateOptions(
-            this.challenge?.registration as PublicKeyCredentialCreationOptions,
-            this.challenge?.registration.user.id,
-        );
-        this.registerWrapper();
+    updated(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("challenge") && this.challenge !== undefined) {
+            // convert certain members of the PublicKeyCredentialCreateOptions into
+            // byte arrays as expected by the spec.
+            this.publicKeyCredentialCreateOptions = transformCredentialCreateOptions(
+                this.challenge?.registration as PublicKeyCredentialCreationOptions,
+                this.challenge?.registration.user.id,
+            );
+            this.registerWrapper();
+        }
     }
 
     render(): TemplateResult {
@@ -154,7 +156,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
                         ? html`<p class="pf-m-block">
                               ${this.challenge.responseErrors["response"][0].string}
                           </p>`
-                        : html``}
+                        : nothing}
                     <div class="pf-c-form__group pf-m-action">
                         ${!this.registerRunning
                             ? html` <button
@@ -170,5 +172,11 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
                     </div>
                 </form>
             </div>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-authenticator-webauthn": WebAuthnAuthenticatorRegisterStage;
     }
 }

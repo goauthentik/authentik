@@ -23,7 +23,7 @@ LOGGER = get_logger()
 
 VALID_SCHEMA_NAME = re.compile(r"^t_[a-z0-9]{1,61}$")
 
-DEFAULT_TOKEN_DURATION = "minutes=30"  # nosec
+DEFAULT_TOKEN_DURATION = "days=1"  # nosec
 DEFAULT_TOKEN_LENGTH = 60
 
 
@@ -84,6 +84,10 @@ class Tenant(TenantMixin, SerializerModel):
     )
     impersonation = models.BooleanField(
         help_text=_("Globally enable/disable impersonation."), default=True
+    )
+    impersonation_require_reason = models.BooleanField(
+        help_text=_("Require administrators to provide a reason for impersonating a user."),
+        default=True,
     )
     default_token_duration = models.TextField(
         help_text=_("Default token duration"),

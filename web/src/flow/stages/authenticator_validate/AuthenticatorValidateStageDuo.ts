@@ -3,7 +3,7 @@ import "@goauthentik/elements/forms/FormElement";
 import { BaseDeviceStage } from "@goauthentik/flow/stages/authenticator_validate/base";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
+import { PropertyValues, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import {
@@ -26,27 +26,28 @@ export class AuthenticatorValidateStageWebDuo extends BaseDeviceStage<
     @state()
     authenticating = false;
 
-    firstUpdated(): void {
-        this.authenticating = true;
-        this.host
-            ?.submit(
-                {
-                    duo: this.deviceChallenge?.deviceUid,
-                },
-                { invisible: true },
-            )
-            .then(() => {
-                this.authenticating = false;
-            })
-            .catch(() => {
-                this.authenticating = false;
-            });
+    updated(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("challenge") && this.challenge !== undefined) {
+            this.authenticating = true;
+            this.host
+                ?.submit(
+                    {
+                        duo: this.deviceChallenge?.deviceUid,
+                    },
+                    { invisible: true },
+                )
+                .then(() => {
+                    this.authenticating = false;
+                })
+                .catch(() => {
+                    this.authenticating = false;
+                });
+        }
     }
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state loading> </ak-empty-state>`;
         }
         const errors = this.challenge.responseErrors?.duo || [];
         const errorMessage = errors.map((err) => err.string);
@@ -69,5 +70,11 @@ export class AuthenticatorValidateStageWebDuo extends BaseDeviceStage<
                 <div class="pf-c-form__group pf-m-action">${this.renderReturnToDevicePicker()}</div>
             </form>
         </div>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-authenticator-validate-duo": AuthenticatorValidateStageWebDuo;
     }
 }

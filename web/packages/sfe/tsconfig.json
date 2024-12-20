@@ -1,0 +1,7 @@
+{
+    "compilerOptions": {
+        "types": ["jquery"],
+        "esModuleInterop": true,
+        "lib": ["DOM", "ES2015", "ES2017"]
+    }
+}

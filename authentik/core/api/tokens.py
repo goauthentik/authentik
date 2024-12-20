@@ -2,6 +2,7 @@
 
 from typing import Any
 
+from django.utils.timezone import now
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
 from guardian.shortcuts import assign_perm, get_anonymous_user
@@ -11,7 +12,6 @@ from rest_framework.fields import CharField
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.api.authorization import OwnerSuperuserPermissions
@@ -19,7 +19,7 @@ from authentik.blueprints.api import ManagedSerializer
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserSerializer
-from authentik.core.api.utils import PassiveSerializer
+from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import (
     USER_ATTRIBUTE_TOKEN_EXPIRING,
     USER_ATTRIBUTE_TOKEN_MAXIMUM_LIFETIME,
@@ -27,7 +27,6 @@ from authentik.core.models import (
     TokenIntents,
     User,
     default_token_duration,
-    token_expires_from_timedelta,
 )
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import model_to_dict
@@ -44,6 +43,13 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
         super().__init__(*args, **kwargs)
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
             self.fields["key"] = CharField(required=False)
+
+    def validate_user(self, user: User):
+        """Ensure user of token cannot be changed"""
+        if self.instance and self.instance.user_id:
+            if user.pk != self.instance.user_id:
+                raise ValidationError("User cannot be changed")
+        return user
 
     def validate(self, attrs: dict[Any, str]) -> dict[Any, str]:
         """Ensure only API or App password tokens are created."""
@@ -68,15 +74,17 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
             max_token_lifetime_dt = default_token_duration()
             if max_token_lifetime is not None:
                 try:
-                    max_token_lifetime_dt = timedelta_from_string(max_token_lifetime)
+                    max_token_lifetime_dt = now() + timedelta_from_string(max_token_lifetime)
                 except ValueError:
-                    max_token_lifetime_dt = default_token_duration()
+                    pass
 
-            if "expires" in attrs and attrs.get("expires") > token_expires_from_timedelta(
-                max_token_lifetime_dt
-            ):
+            if "expires" in attrs and attrs.get("expires") > max_token_lifetime_dt:
                 raise ValidationError(
-                    {"expires": f"Token expires exceeds maximum lifetime ({max_token_lifetime})."}
+                    {
+                        "expires": (
+                            f"Token expires exceeds maximum lifetime ({max_token_lifetime_dt} UTC)."
+                        )
+                    }
                 )
         elif attrs.get("intent") == TokenIntents.INTENT_API:
             # For API tokens, expires cannot be overridden

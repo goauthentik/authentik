@@ -9,11 +9,11 @@ from rest_framework.fields import ReadOnlyField
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet
 
 from authentik.api.authorization import OwnerFilter, OwnerPermissions
 from authentik.core.api.used_by import UsedByMixin
+from authentik.core.api.utils import ModelSerializer
 from authentik.events.api.events import EventSerializer
 from authentik.events.models import Notification
 
@@ -69,8 +69,5 @@ class NotificationViewSet(
     @action(detail=False, methods=["post"])
     def mark_all_seen(self, request: Request) -> Response:
         """Mark all the user's notifications as seen"""
-        notifications = Notification.objects.filter(user=request.user)
-        for notification in notifications:
-            notification.seen = True
-        Notification.objects.bulk_update(notifications, ["seen"])
+        Notification.objects.filter(user=request.user, seen=False).update(seen=True)
         return Response({}, status=204)

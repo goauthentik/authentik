@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "authentik"
-version = "2024.2.2"
+version = "2024.12.0"
 description = ""
 authors = ["authentik Team <hello@goauthentik.io>"]
 
@@ -32,7 +32,7 @@ select = [
     "PL",
 ]
 ignore = [
-    "DJ001" # Avoid using `null=True` on string-based fields,
+    "DJ001", # Avoid using `null=True` on string-based fields,
 ]
 [tool.ruff.lint.pylint]
 max-args = 7
@@ -76,7 +76,7 @@ show_missing = true
 DJANGO_SETTINGS_MODULE = "authentik.root.settings"
 python_files = ["tests.py", "test_*.py", "*_tests.py"]
 junit_family = "xunit2"
-addopts = "-p no:celery -p authentik.root.test_plugin --junitxml=unittest.xml -vv --full-trace --doctest-modules"
+addopts = "-p no:celery -p authentik.root.test_plugin --junitxml=unittest.xml -vv --full-trace --doctest-modules --import-mode=importlib"
 filterwarnings = [
     "ignore:defusedxml.lxml is no longer supported and will be removed in a future release.:DeprecationWarning",
     "ignore:SelectableGroups dict interface is deprecated. Use select.:DeprecationWarning",
@@ -85,53 +85,56 @@ filterwarnings = [
 [tool.poetry.dependencies]
 argon2-cffi = "*"
 celery = "*"
-channels = { version = "*", extras = ["daphne"] }
+channels = "*"
 channels-redis = "*"
-codespell = "*"
-colorama = "*"
+cryptography = "*"
 dacite = "*"
 deepmerge = "*"
 defusedxml = "*"
 django = "*"
+django-countries = "*"
+django-cte = "*"
 django-filter = "*"
 django-guardian = "*"
 django-model-utils = "*"
+django-pglock = "*"
 django-prometheus = "*"
 django-redis = "*"
 django-storages = { extras = ["s3"], version = "*" }
 # See https://github.com/django-tenants/django-tenants/pull/997
-django-tenants = { git = "https://github.com/rissson/django-tenants.git", branch="authentik-fixes" }
-djangorestframework = "*"
+django-tenants = { git = "https://github.com/rissson/django-tenants.git", branch = "authentik-fixes" }
+djangorestframework = "3.14.0"
 djangorestframework-guardian = "*"
 docker = "*"
+drf-orjson-renderer = "*"
 drf-spectacular = "*"
 dumb-init = "*"
 duo-client = "*"
-facebook-sdk = "*"
 fido2 = "*"
 flower = "*"
 geoip2 = "*"
+google-api-python-client = "*"
 gunicorn = "*"
+gssapi = "*"
+jsonpatch = "*"
+jwcrypto = "*"
 kubernetes = "*"
 ldap3 = "*"
-lxml = [
-    # 5.0.0 works with libxml2 2.11.x, which is standard on brew
-    { version = "5.0.0", platform = "darwin" },
-    # 4.9.x works with previous libxml2 versions, which is what we get on linux
-    { version = "4.9.4", platform = "linux" },
-]
-jsonpatch = "*"
-opencontainers = { extras = ["reggie"], version = "*" }
+lxml = "*"
+msgraph-sdk = "*"
+opencontainers = { git = "https://github.com/vsoch/oci-python", rev = "20d69d9cc50a0fef31605b46f06da0c94f1ec3cf", extras = ["reggie"] }
 packaging = "*"
 paramiko = "*"
 psycopg = { extras = ["c"], version = "*" }
-pycryptodome = "*"
 pydantic = "*"
 pydantic-scim = "*"
 pyjwt = "*"
+pyrad = "*"
 python = "~3.12"
+python-kadmin-rs = "0.5.2"
 pyyaml = "*"
 requests-oauthlib = "*"
+scim2-filter-parser = "*"
 sentry-sdk = "*"
 service_identity = "*"
 setproctitle = "*"
@@ -139,7 +142,6 @@ structlog = "*"
 swagger-spec-validator = "*"
 tenant-schemas-celery = "*"
 twilio = "*"
-twisted = "*"
 ua-parser = "*"
 # Pinned because of botocore https://github.com/orgs/python-poetry/discussions/7937
 urllib3 = { extras = ["secure"], version = "<3" }
@@ -151,17 +153,21 @@ xmlsec = "*"
 zxcvbn = "*"
 
 [tool.poetry.dev-dependencies]
+aws-cdk-lib = "*"
 bandit = "*"
 black = "*"
 bump2version = "*"
+channels = { version = "*", extras = ["daphne"] }
+codespell = "*"
 colorama = "*"
+constructs = "*"
 coverage = { extras = ["toml"], version = "*" }
 debugpy = "*"
 drf-jsonschema-serializer = "*"
 freezegun = "*"
 importlib-metadata = "*"
+k5test = "*"
 pdoc = "*"
-pyrad = "*"
 pytest = "*"
 pytest-django = "*"
 pytest-github-actions-annotate-failures = "*"

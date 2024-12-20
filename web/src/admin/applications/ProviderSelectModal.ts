@@ -1,5 +1,4 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
@@ -21,20 +20,17 @@ export class ProviderSelectModal extends TableModal<Provider> {
     }
 
     @property({ type: Boolean })
-    backchannelOnly = false;
+    backchannel?: boolean;
 
     @property()
     confirm!: (selectedItems: Provider[]) => Promise<unknown>;
 
     order = "name";
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Provider>> {
+    async apiEndpoint(): Promise<PaginatedResponse<Provider>> {
         return new ProvidersApi(DEFAULT_CONFIG).providersAllList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
-            backchannelOnly: this.backchannelOnly,
+            ...(await this.defaultEndpointConfig()),
+            backchannel: this.backchannel,
         });
     }
 
@@ -83,5 +79,11 @@ export class ProviderSelectModal extends TableModal<Provider> {
                     ${msg("Cancel")}
                 </ak-spinner-button>
             </footer>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-select-table": ProviderSelectModal;
     }
 }

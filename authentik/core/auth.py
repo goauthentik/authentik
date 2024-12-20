@@ -31,8 +31,9 @@ class InbuiltBackend(ModelBackend):
         # Since we can't directly pass other variables to signals, and we want to log the method
         # and the token used, we assume we're running in a flow and set a variable in the context
         flow_plan: FlowPlan = request.session.get(SESSION_KEY_PLAN, FlowPlan(""))
-        flow_plan.context[PLAN_CONTEXT_METHOD] = method
-        flow_plan.context[PLAN_CONTEXT_METHOD_ARGS] = cleanse_dict(sanitize_dict(kwargs))
+        flow_plan.context.setdefault(PLAN_CONTEXT_METHOD, method)
+        flow_plan.context.setdefault(PLAN_CONTEXT_METHOD_ARGS, {})
+        flow_plan.context[PLAN_CONTEXT_METHOD_ARGS].update(cleanse_dict(sanitize_dict(kwargs)))
         request.session[SESSION_KEY_PLAN] = flow_plan
 
 

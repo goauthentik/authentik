@@ -1,18 +1,14 @@
-import { EVENT_LOCALE_CHANGE } from "@goauthentik/common/constants";
-import { EVENT_LOCALE_REQUEST } from "@goauthentik/common/constants";
-import { customEvent, isCustomEvent } from "@goauthentik/elements/utils/customEvents";
+import { EVENT_LOCALE_CHANGE, EVENT_LOCALE_REQUEST } from "@goauthentik/common/constants";
+import { AKElement } from "@goauthentik/elements/Base";
+import { customEvent } from "@goauthentik/elements/utils/customEvents";
 
-import { LitElement, html } from "lit";
+import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
+import { WithBrandConfig } from "../Interface/brandProvider";
 import { initializeLocalization } from "./configureLocale";
 import type { LocaleGetter, LocaleSetter } from "./configureLocale";
-import {
-    DEFAULT_LOCALE,
-    autoDetectLanguage,
-    getBestMatchLocale,
-    localeCodeFromUrl,
-} from "./helpers";
+import { DEFAULT_LOCALE, autoDetectLanguage, getBestMatchLocale } from "./helpers";
 
 /**
  * A component to manage your locale settings.
@@ -28,7 +24,7 @@ import {
  * @fires ak-locale-change - When a valid locale has been swapped in
  */
 @customElement("ak-locale-context")
-export class LocaleContext extends LitElement {
+export class LocaleContext extends WithBrandConfig(AKElement) {
     /// @attribute The text representation of the current locale */
     @property({ attribute: true, type: String })
     locale = DEFAULT_LOCALE;
@@ -59,39 +55,29 @@ export class LocaleContext extends LitElement {
 
     connectedCallback() {
         super.connectedCallback();
-        const localeRequest = autoDetectLanguage(this.locale);
-        this.updateLocale(localeRequest);
-        window.addEventListener(EVENT_LOCALE_REQUEST, this.updateLocaleHandler);
+        this.updateLocale();
+        window.addEventListener(EVENT_LOCALE_REQUEST, this.updateLocaleHandler as EventListener);
     }
 
     disconnectedCallback() {
-        window.removeEventListener(EVENT_LOCALE_REQUEST, this.updateLocaleHandler);
+        window.removeEventListener(EVENT_LOCALE_REQUEST, this.updateLocaleHandler as EventListener);
         super.disconnectedCallback();
     }
 
-    updateLocaleHandler(ev: Event) {
-        if (!isCustomEvent(ev)) {
-            console.warn(`Received a non-custom event at EVENT_LOCALE_REQUEST: ${ev}`);
-            return;
-        }
+    updateLocaleHandler(ev: CustomEvent<{ locale: string }>) {
         console.debug("authentik/locale: Locale update request received.");
         this.updateLocale(ev.detail.locale);
     }
 
-    updateLocale(code: string) {
-        const urlCode = localeCodeFromUrl(this.param);
-        const requestedLocale = urlCode ? urlCode : code;
-        const locale = getBestMatchLocale(requestedLocale);
+    updateLocale(requestedLocale: string | undefined = undefined) {
+        const localeRequest = autoDetectLanguage(requestedLocale, this.brand?.defaultLocale);
+        const locale = getBestMatchLocale(localeRequest);
         if (!locale) {
-            console.warn(`authentik/locale: failed to find locale for code ${code}`);
+            console.warn(`authentik/locale: failed to find locale for code ${localeRequest}`);
             return;
         }
         locale.locale().then(() => {
-            console.debug(`authentik/locale: Loaded locale '${code}'`);
-            if (this.getLocale() === code) {
-                return;
-            }
-            console.debug(`Setting Locale to ... ${locale.label()} (${locale.code})`);
+            console.debug(`authentik/locale: Setting Locale to ${locale.label()} (${locale.code})`);
             this.setLocale(locale.code).then(() => {
                 window.setTimeout(this.notifyApplication, 0);
             });
@@ -110,3 +96,9 @@ export class LocaleContext extends LitElement {
 }
 
 export default LocaleContext;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-locale-context": LocaleContext;
+    }
+}

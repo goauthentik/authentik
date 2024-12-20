@@ -36,6 +36,7 @@ from authentik.lib.utils.http import authentik_user_agent
 from authentik.lib.utils.reflection import get_env
 
 LOGGER = get_logger()
+_root_path = CONFIG.get("web.path", "/")
 
 
 class SentryIgnoredException(Exception):
@@ -59,15 +60,16 @@ def sentry_init(**sentry_init_kwargs):
         "_experiments": {
             "profiles_sample_rate": float(CONFIG.get("error_reporting.sample_rate", 0.1)),
         },
+        **sentry_init_kwargs,
+        **CONFIG.get_dict_from_b64_json("error_reporting.extra_args", {}),
     }
-    kwargs.update(**sentry_init_kwargs)
 
     sentry_sdk_init(
         dsn=CONFIG.get("error_reporting.sentry_dsn"),
         integrations=[
             ArgvIntegration(),
             StdlibIntegration(),
-            DjangoIntegration(transaction_style="function_name"),
+            DjangoIntegration(transaction_style="function_name", cache_spans=True),
             CeleryIntegration(),
             RedisIntegration(),
             ThreadingIntegration(propagate_hub=True),
@@ -89,7 +91,7 @@ def traces_sampler(sampling_context: dict) -> float:
     path = sampling_context.get("asgi_scope", {}).get("path", "")
     _type = sampling_context.get("asgi_scope", {}).get("type", "")
     # Ignore all healthcheck routes
-    if path.startswith("/-/health") or path.startswith("/-/metrics"):
+    if path.startswith(f"{_root_path}-/health") or path.startswith(f"{_root_path}-/metrics"):
         return 0
     if _type == "websocket":
         return 0

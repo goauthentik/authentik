@@ -1,13 +1,11 @@
 import { authentikConfigContext } from "@goauthentik/elements/AuthentikContexts";
+import type { AbstractConstructor } from "@goauthentik/elements/types.js";
 
 import { consume } from "@lit/context";
 import type { LitElement } from "lit";
 
 import { CapabilitiesEnum } from "@goauthentik/api";
 import { Config } from "@goauthentik/api";
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Constructor<T = object> = abstract new (...args: any[]) => T;
 
 // Using a unique, lexically scoped, and locally static symbol as the field name for the context
 // means that it's inaccessible to any child class looking for it. It's one of the strongest privacy
@@ -45,7 +43,7 @@ class WCC {
  *
  */
 
-export function WithCapabilitiesConfig<T extends Constructor<LitElement>>(
+export function WithCapabilitiesConfig<T extends AbstractConstructor<LitElement>>(
     superclass: T,
     subscribe = true,
 ) {

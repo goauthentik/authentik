@@ -1,12 +1,10 @@
 import { authentikEnterpriseContext } from "@goauthentik/elements/AuthentikContexts";
+import { Constructor } from "@goauthentik/elements/types.js";
 
 import { consume } from "@lit/context";
 import type { LitElement } from "lit";
 
-import type { LicenseSummary } from "@goauthentik/api";
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Constructor<T = object> = abstract new (...args: any[]) => T;
+import { type LicenseSummary, LicenseSummaryStatusEnum } from "@goauthentik/api";
 
 export function WithLicenseSummary<T extends Constructor<LitElement>>(
     superclass: T,
@@ -17,7 +15,7 @@ export function WithLicenseSummary<T extends Constructor<LitElement>>(
         public licenseSummary!: LicenseSummary;
 
         get hasEnterpriseLicense() {
-            return this.licenseSummary?.hasLicense;
+            return this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed;
         }
     }
 

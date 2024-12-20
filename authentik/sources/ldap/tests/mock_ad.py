@@ -34,7 +34,7 @@ def mock_ad_connection(password: str) -> Connection:
             "objectSid": "unique-test-group",
             "objectClass": "group",
             "distinguishedName": "cn=group1,ou=groups,dc=goauthentik,dc=io",
-            "member": ["cn=user0,ou=users,dc=goauthentik,dc=io"],
+            "member": ["cn=user,ou=users,dc=goauthentik,dc=io"],
         },
     )
     # Group without SID
@@ -47,7 +47,7 @@ def mock_ad_connection(password: str) -> Connection:
         },
     )
     connection.strategy.add_entry(
-        "cn=user0,ou=users,dc=goauthentik,dc=io",
+        "cn=user0,ou=foo,ou=users,dc=goauthentik,dc=io",
         {
             "userPassword": password,
             "sAMAccountName": "user0_sn",

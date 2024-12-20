@@ -5,6 +5,7 @@ from json import loads
 from typing import Any
 
 from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.models import Permission
 from django.contrib.sessions.backends.cache import KEY_PREFIX
 from django.core.cache import cache
 from django.db.models.functions import ExtractHour
@@ -33,16 +34,21 @@ from drf_spectacular.utils import (
 )
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, IntegerField, ListField, SerializerMethodField
+from rest_framework.exceptions import ValidationError
+from rest_framework.fields import (
+    BooleanField,
+    CharField,
+    ChoiceField,
+    DateTimeField,
+    IntegerField,
+    ListField,
+    SerializerMethodField,
+)
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import (
-    BooleanField,
-    DateTimeField,
     ListSerializer,
-    ModelSerializer,
     PrimaryKeyRelatedField,
-    ValidationError,
 )
 from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
@@ -52,7 +58,12 @@ from authentik.admin.api.metrics import CoordinateSerializer
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.brands.models import Brand
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import JSONDictField, LinkSerializer, PassiveSerializer
+from authentik.core.api.utils import (
+    JSONDictField,
+    LinkSerializer,
+    ModelSerializer,
+    PassiveSerializer,
+)
 from authentik.core.middleware import (
     SESSION_KEY_IMPERSONATE_ORIGINAL_USER,
     SESSION_KEY_IMPERSONATE_USER,
@@ -74,6 +85,7 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.lib.avatars import get_avatar
 from authentik.rbac.decorators import permission_required
+from authentik.rbac.models import get_permission_choices
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
@@ -113,23 +125,43 @@ class UserSerializer(ModelSerializer):
         queryset=Group.objects.all().order_by("name"),
         default=list,
     )
-    groups_obj = ListSerializer(child=UserGroupSerializer(), read_only=True, source="ak_groups")
+    groups_obj = SerializerMethodField(allow_null=True)
     uid = CharField(read_only=True)
     username = CharField(
         max_length=150,
         validators=[UniqueValidator(queryset=User.objects.all().order_by("username"))],
     )
 
+    @property
+    def _should_include_groups(self) -> bool:
+        request: Request = self.context.get("request", None)
+        if not request:
+            return True
+        return str(request.query_params.get("include_groups", "true")).lower() == "true"
+
+    @extend_schema_field(UserGroupSerializer(many=True))
+    def get_groups_obj(self, instance: User) -> list[UserGroupSerializer] | None:
+        if not self._should_include_groups:
+            return None
+        return UserGroupSerializer(instance.ak_groups, many=True).data
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
             self.fields["password"] = CharField(required=False, allow_null=True)
+            self.fields["permissions"] = ListField(
+                required=False, child=ChoiceField(choices=get_permission_choices())
+            )
 
     def create(self, validated_data: dict) -> User:
         """If this serializer is used in the blueprint context, we allow for
         directly setting a password. However should be done via the `set_password`
         method instead of directly setting it like rest_framework."""
         password = validated_data.pop("password", None)
+        permissions = Permission.objects.filter(
+            codename__in=[x.split(".")[1] for x in validated_data.pop("permissions", [])]
+        )
+        validated_data["user_permissions"] = permissions
         instance: User = super().create(validated_data)
         self._set_password(instance, password)
         return instance
@@ -138,6 +170,10 @@ class UserSerializer(ModelSerializer):
         """Same as `create` above, set the password directly if we're in a blueprint
         context"""
         password = validated_data.pop("password", None)
+        permissions = Permission.objects.filter(
+            codename__in=[x.split(".")[1] for x in validated_data.pop("permissions", [])]
+        )
+        validated_data["user_permissions"] = permissions
         instance = super().update(instance, validated_data)
         self._set_password(instance, password)
         return instance
@@ -394,8 +430,19 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     search_fields = ["username", "name", "is_active", "email", "uuid"]
     filterset_class = UsersFilter
 
-    def get_queryset(self):  # pragma: no cover
-        return User.objects.all().exclude_anonymous().prefetch_related("ak_groups")
+    def get_queryset(self):
+        base_qs = User.objects.all().exclude_anonymous()
+        if self.serializer_class(context={"request": self.request})._should_include_groups:
+            base_qs = base_qs.prefetch_related("ak_groups")
+        return base_qs
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter("include_groups", bool, default=True),
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
     def _create_recovery_link(self) -> tuple[str, Token]:
         """Create a recovery link (when the current brand has a recovery flow set),
@@ -619,7 +666,12 @@ class UserViewSet(UsedByMixin, ModelViewSet):
 
     @permission_required("authentik_core.impersonate")
     @extend_schema(
-        request=OpenApiTypes.NONE,
+        request=inline_serializer(
+            "ImpersonationSerializer",
+            {
+                "reason": CharField(required=True),
+            },
+        ),
         responses={
             "204": OpenApiResponse(description="Successfully started impersonation"),
             "401": OpenApiResponse(description="Access denied"),
@@ -631,18 +683,27 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         if not request.tenant.impersonation:
             LOGGER.debug("User attempted to impersonate", user=request.user)
             return Response(status=401)
-        if not request.user.has_perm("impersonate"):
+        user_to_be = self.get_object()
+        reason = request.data.get("reason", "")
+        # Check both object-level perms and global perms
+        if not request.user.has_perm(
+            "authentik_core.impersonate", user_to_be
+        ) and not request.user.has_perm("authentik_core.impersonate"):
             LOGGER.debug("User attempted to impersonate without permissions", user=request.user)
             return Response(status=401)
-        user_to_be = self.get_object()
         if user_to_be.pk == self.request.user.pk:
             LOGGER.debug("User attempted to impersonate themselves", user=request.user)
+            return Response(status=401)
+        if not reason and request.tenant.impersonation_require_reason:
+            LOGGER.debug(
+                "User attempted to impersonate without providing a reason", user=request.user
+            )
             return Response(status=401)
 
         request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER] = request.user
         request.session[SESSION_KEY_IMPERSONATE_USER] = user_to_be
 
-        Event.new(EventAction.IMPERSONATION_STARTED).from_http(request, user_to_be)
+        Event.new(EventAction.IMPERSONATION_STARTED, reason=reason).from_http(request, user_to_be)
 
         return Response(status=201)
 

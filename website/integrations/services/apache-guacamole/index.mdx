@@ -1,6 +1,9 @@
 ---
-title: Apache Guacamole™
+title: Integrate with Apache Guacamole™
+sidebar_label: Apache Guacamole™
 ---
+
+# Apache Guacamole™
 
 <span class="badge badge--primary">Support level: authentik</span>
 
@@ -14,25 +17,25 @@ title: Apache Guacamole™
 
 The following placeholders will be used:
 
--   `guacamole.company` is the FQDN of the Guacamole install.
--   `authentik.company` is the FQDN of the authentik install.
+- `guacamole.company` is the FQDN of the Guacamole install.
+- `authentik.company` is the FQDN of the authentik install.
 
 Create an OAuth2/OpenID provider with the following parameters:
 
--   Client Type: `Confidential`
--   Redirect URIs: `https://guacamole.company/` (depending on your Tomcat setup, you might have to add `/guacamole/` if the application runs in a subfolder)
--   Scopes: OpenID, Email and Profile
+- **Client Type**: `Confidential`
+- **Redirect URIs**: `https://guacamole.company/` (depending on your Tomcat setup, you might have to add `/guacamole/` if the application runs in a subfolder)
+- **Scopes**: OpenID, Email, and Profile
 
-Under _Advanced protocol settings_, set the following:
+Under **Advanced protocol settings**, set the following:
 
--   Token validity: Any value to configure how long the session should last. Guacamole will not accept any tokens valid longer than 300 Minutes.
--   Signing Key: Set the key as `authentik Self-signed Certificate`
+- **Token validity**: Any value to configure how long the session should last. Guacamole will not accept any tokens valid longer than 300 Minutes.
+- **Signing Key**: Set the key as `authentik Self-signed Certificate`
 
 Note the Client ID value. Create an application, using the provider you've created above.
 
 ## Guacamole
 
-It is recommended you configure an admin account in Guacamole before setting up SSO to make things easier. Create a user in Guacamole using the email address of your user in authentik and give them admin permissions. Without this you might loose access to the Guacamole admin settings and have to revert the settings below.
+It is recommended you configure an admin account in Guacamole before setting up SSO to make things easier. Create a user in Guacamole using the username of your user in authentik and give them admin permissions. Without this, you might lose access to the Guacamole admin settings and have to revert the settings below.
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
@@ -40,11 +43,11 @@ import TabItem from "@theme/TabItem";
 <Tabs
   defaultValue="docker"
   values={[
-    {label: 'Docker', value: 'docker'},
-    {label: 'Standalone', value: 'standalone'},
+    { label: 'Docker', value: 'docker' },
+    { label: 'Standalone', value: 'standalone' },
   ]}>
   <TabItem value="docker">
-    The docker containers are configured via environment variables. The following variables are required:
+    The Docker containers are configured via environment variables. The following variables are required:
 
 ```yaml
 OPENID_AUTHORIZATION_ENDPOINT: https://authentik.company/application/o/authorize/
@@ -52,6 +55,7 @@ OPENID_CLIENT_ID: # client ID from above
 OPENID_ISSUER: https://authentik.company/application/o/*Slug of the application from above*/
 OPENID_JWKS_ENDPOINT: https://authentik.company/application/o/*Slug of the application from above*/jwks/
 OPENID_REDIRECT_URI: https://guacamole.company/ # This must match the redirect URI above
+OPENID_USERNAME_CLAIM_TYPE: preferred_username
 ```
 
   </TabItem>
@@ -64,6 +68,7 @@ openid-client-id=# client ID from above
 openid-issuer=https://authentik.company/application/o/*Slug of the application from above*/
 openid-jwks-endpoint=https://authentik.company/application/o/*Slug of the application from above*/jwks/
 openid-redirect-uri=https://guacamole.company/ # This must match the redirect URI above
+openid-username-claim-type=preferred_username
 ```
 
   </TabItem>

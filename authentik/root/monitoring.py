@@ -1,6 +1,8 @@
 """Metrics view"""
 
-from base64 import b64encode
+from hmac import compare_digest
+from pathlib import Path
+from tempfile import gettempdir
 
 from django.conf import settings
 from django.db import connections
@@ -16,39 +18,38 @@ monitoring_set = Signal()
 
 
 class MetricsView(View):
-    """Wrapper around ExportToDjangoView, using http-basic auth"""
+    """Wrapper around ExportToDjangoView with authentication, accessed by the authentik router"""
+
+    def __init__(self, **kwargs):
+        _tmp = Path(gettempdir())
+        with open(_tmp / "authentik-core-metrics.key") as _f:
+            self.monitoring_key = _f.read()
 
     def get(self, request: HttpRequest) -> HttpResponse:
         """Check for HTTP-Basic auth"""
         auth_header = request.META.get("HTTP_AUTHORIZATION", "")
         auth_type, _, given_credentials = auth_header.partition(" ")
-        credentials = f"monitor:{settings.SECRET_KEY}"
-        expected = b64encode(str.encode(credentials)).decode()
-        authed = auth_type == "Basic" and given_credentials == expected
+        authed = auth_type == "Bearer" and compare_digest(given_credentials, self.monitoring_key)
         if not authed and not settings.DEBUG:
-            response = HttpResponse(status=401)
-            response["WWW-Authenticate"] = 'Basic realm="authentik-monitoring"'
-            return response
-
+            return HttpResponse(status=401)
         monitoring_set.send_robust(self)
-
         return ExportToDjangoView(request)
 
 
 class LiveView(View):
-    """View for liveness probe, always returns Http 204"""
+    """View for liveness probe, always returns Http 200"""
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
-        return HttpResponse(status=204)
+        return HttpResponse(status=200)
 
 
 class ReadyView(View):
-    """View for readiness probe, always returns Http 204, unless sql or redis is down"""
+    """View for readiness probe, always returns Http 200, unless sql or redis is down"""
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
         try:
-            db_conn = connections["default"]
-            _ = db_conn.cursor()
+            for db_conn in connections.all():
+                _ = db_conn.cursor()
         except OperationalError:  # pragma: no cover
             return HttpResponse(status=503)
         try:
@@ -56,4 +57,4 @@ class ReadyView(View):
             redis_conn.ping()
         except RedisError:  # pragma: no cover
             return HttpResponse(status=503)
-        return HttpResponse(status=204)
+        return HttpResponse(status=200)

@@ -41,6 +41,12 @@ class TestUsersAPI(APITestCase):
         )
         self.assertEqual(response.status_code, 200)
 
+    def test_list_with_groups(self):
+        """Test listing with groups"""
+        self.client.force_login(self.admin)
+        response = self.client.get(reverse("authentik_api:user-list"), {"include_groups": "true"})
+        self.assertEqual(response.status_code, 200)
+
     def test_metrics(self):
         """Test user's metrics"""
         self.client.force_login(self.admin)

@@ -121,3 +121,37 @@ class TestAPIPerms(APITestCase):
             },
         )
         self.assertEqual(res.status_code, 403)
+
+    def test_update_simple(self):
+        """Test update with permission"""
+        self.client.force_login(self.user)
+        inv = Invitation.objects.create(name=generate_id(), created_by=self.superuser)
+        self.role.assign_permission("authentik_stages_invitation.view_invitation", obj=inv)
+        self.role.assign_permission("authentik_stages_invitation.change_invitation", obj=inv)
+        res = self.client.patch(
+            reverse("authentik_api:invitation-detail", kwargs={"pk": inv.pk}),
+            data={
+                "name": generate_id(),
+            },
+        )
+        self.assertEqual(res.status_code, 200)
+
+    def test_update_simple_denied(self):
+        """Test update without assigning permission"""
+        self.client.force_login(self.user)
+        inv = Invitation.objects.create(name=generate_id(), created_by=self.superuser)
+        res = self.client.patch(
+            reverse("authentik_api:invitation-detail", kwargs={"pk": inv.pk}),
+            data={
+                "name": generate_id(),
+            },
+        )
+        self.assertEqual(res.status_code, 403)
+
+    def test_anonymous_user_denied(self):
+        """Test anonymous user denied"""
+        res = self.client.get(reverse("authentik_api:invitation-list"))
+        self.assertEqual(res.status_code, 403)
+
+        res = self.client.get(reverse("authentik_api:user-detail", kwargs={"pk": self.user.pk}))
+        self.assertEqual(res.status_code, 403)

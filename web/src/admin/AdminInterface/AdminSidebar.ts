@@ -1,5 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_SIDEBAR_TOGGLE, VERSION } from "@goauthentik/common/constants";
+import { globalAK } from "@goauthentik/common/global";
 import { me } from "@goauthentik/common/users";
 import { AKElement } from "@goauthentik/elements/Base";
 import {
@@ -93,7 +94,10 @@ export class AkAdminSidebar extends WithCapabilitiesConfig(AKElement) {
         // a browser reflow, which may trigger some other styling the application is monitoring,
         // triggering a re-render which triggers a browser reflow, ad infinitum. But we've been
         // living with that since jQuery, and it's both well-known and fortunately rare.
+
+        // eslint-disable-next-line wc/no-self-class
         this.classList.remove("pf-m-expanded", "pf-m-collapsed");
+        // eslint-disable-next-line wc/no-self-class
         this.classList.add(this.open ? "pf-m-expanded" : "pf-m-collapsed");
     }
 
@@ -109,7 +113,7 @@ export class AkAdminSidebar extends WithCapabilitiesConfig(AKElement) {
 
         // prettier-ignore
         const sidebarContent: SidebarEntry[] = [
-            ["/if/user/", msg("User interface"), { "?isAbsoluteLink": true, "?highlight": true }],
+            [`${globalAK().api.base}if/user/`, msg("User interface"), { "?isAbsoluteLink": true, "?highlight": true }],
             [null, msg("Dashboards"), { "?expanded": true }, [
                 ["/administration/overview", msg("Overview")],
                 ["/administration/dashboard/users", msg("User Statistics")],
@@ -151,9 +155,9 @@ export class AkAdminSidebar extends WithCapabilitiesConfig(AKElement) {
         const renderOneSidebarItem: SidebarRenderer = ([path, label, attributes, children]) => {
             const properties = Array.isArray(attributes)
                 ? { ".activeWhen": attributes }
-                : attributes ?? {};
+                : (attributes ?? {});
             if (path) {
-                properties["path"] = path;
+                properties.path = path;
             }
             return html`<ak-sidebar-item ${spread(properties)}>
                 ${label ? html`<span slot="label">${label}</span>` : nothing}
@@ -166,7 +170,7 @@ export class AkAdminSidebar extends WithCapabilitiesConfig(AKElement) {
             ${this.renderNewVersionMessage()}
             ${this.renderImpersonationMessage()}
             ${map(sidebarContent, renderOneSidebarItem)}
-            ${this.renderEnterpriseMessage()}
+            ${this.renderEnterpriseMenu()}
         `;
     }
 
@@ -199,7 +203,7 @@ export class AkAdminSidebar extends WithCapabilitiesConfig(AKElement) {
             : nothing;
     }
 
-    renderEnterpriseMessage() {
+    renderEnterpriseMenu() {
         return this.can(CapabilitiesEnum.IsEnterprise)
             ? html`
                   <ak-sidebar-item>
@@ -210,5 +214,11 @@ export class AkAdminSidebar extends WithCapabilitiesConfig(AKElement) {
                   </ak-sidebar-item>
               `
             : nothing;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-admin-sidebar": AkAdminSidebar;
     }
 }

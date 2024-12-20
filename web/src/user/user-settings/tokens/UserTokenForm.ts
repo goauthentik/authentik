@@ -1,4 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { dateTimeLocal } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
@@ -44,11 +45,8 @@ export class UserTokenForm extends ModelForm<Token, string> {
     renderForm(): TemplateResult {
         const now = new Date();
         const expiringDate = this.instance?.expires
-            ? new Date(
-                  this.instance.expires.getTime() -
-                      this.instance.expires.getTimezoneOffset() * 60000,
-              )
-            : new Date(now.getTime() + 30 * 60000 - now.getTimezoneOffset() * 60000);
+            ? new Date(this.instance.expires.getTime())
+            : new Date(now.getTime() + 30 * 60000);
 
         return html` <ak-form-element-horizontal
                 label=${msg("Identifier")}
@@ -73,11 +71,17 @@ export class UserTokenForm extends ModelForm<Token, string> {
                 ? html`<ak-form-element-horizontal label=${msg("Expiring")} name="expires">
                       <input
                           type="datetime-local"
-                          value="${expiringDate.toISOString().slice(0, -8)}"
-                          min="${now.toISOString().slice(0, -8)}"
+                          value="${dateTimeLocal(expiringDate)}"
+                          min="${dateTimeLocal(now)}"
                           class="pf-c-form-control"
                       />
                   </ak-form-element-horizontal>`
                 : html``}`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-token-form": UserTokenForm;
     }
 }

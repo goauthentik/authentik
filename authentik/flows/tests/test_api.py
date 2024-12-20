@@ -6,6 +6,7 @@ from rest_framework.test import APITestCase
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.flows.api.stages import StageSerializer, StageViewSet
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding, Stage
+from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.stages.dummy.models import DummyStage
@@ -99,5 +100,23 @@ class TestFlowsAPI(APITestCase):
 
         response = self.client.get(
             reverse("authentik_api:stage-types"),
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_execute(self):
+        """Test execute endpoint"""
+        user = create_test_admin_user()
+        self.client.force_login(user)
+
+        flow = Flow.objects.create(
+            name=generate_id(),
+            slug=generate_id(),
+            designation=FlowDesignation.AUTHENTICATION,
+        )
+        FlowStageBinding.objects.create(
+            target=flow, stage=DummyStage.objects.create(name=generate_id()), order=0
+        )
+        response = self.client.get(
+            reverse("authentik_api:flow-execute", kwargs={"slug": flow.slug})
         )
         self.assertEqual(response.status_code, 200)

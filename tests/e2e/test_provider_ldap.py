@@ -3,14 +3,13 @@
 from dataclasses import asdict
 from time import sleep
 
-from docker.client import DockerClient, from_env
-from docker.models.containers import Container
-from guardian.shortcuts import get_anonymous_user
+from guardian.shortcuts import assign_perm
 from ldap3 import ALL, ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES, SUBTREE, Connection, Server
 from ldap3.core.exceptions import LDAPInvalidCredentialsResult
 
 from authentik.blueprints.tests import apply_blueprint, reconcile_app
 from authentik.core.models import Application, User
+from authentik.core.tests.utils import create_test_user
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
@@ -23,29 +22,18 @@ from tests.e2e.utils import SeleniumTestCase, retry
 class TestProviderLDAP(SeleniumTestCase):
     """LDAP and Outpost e2e tests"""
 
-    ldap_container: Container
-
-    def tearDown(self) -> None:
-        super().tearDown()
-        self.output_container_logs(self.ldap_container)
-        self.ldap_container.kill()
-
-    def start_ldap(self, outpost: Outpost) -> Container:
+    def start_ldap(self, outpost: Outpost):
         """Start ldap container based on outpost created"""
-        client: DockerClient = from_env()
-        container = client.containers.run(
+        self.run_container(
             image=self.get_container_image("ghcr.io/goauthentik/dev-ldap"),
-            detach=True,
             ports={
                 "3389": "3389",
                 "6636": "6636",
             },
             environment={
-                "AUTHENTIK_HOST": self.live_server_url,
                 "AUTHENTIK_TOKEN": outpost.token.key,
             },
         )
-        return container
 
     def _prepare(self) -> User:
         """prepare user, provider, app and container"""
@@ -55,9 +43,9 @@ class TestProviderLDAP(SeleniumTestCase):
         ldap: LDAPProvider = LDAPProvider.objects.create(
             name=generate_id(),
             authorization_flow=Flow.objects.get(slug="default-authentication-flow"),
-            search_group=self.user.ak_groups.first(),
             search_mode=APIAccessMode.CACHED,
         )
+        assign_perm("search_full_directory", self.user, ldap)
         # we need to create an application to actually access the ldap
         Application.objects.create(name=generate_id(), slug=generate_id(), provider=ldap)
         outpost: Outpost = Outpost.objects.create(
@@ -67,7 +55,7 @@ class TestProviderLDAP(SeleniumTestCase):
         )
         outpost.providers.add(ldap)
 
-        self.ldap_container = self.start_ldap(outpost)
+        self.start_ldap(outpost)
 
         # Wait until outpost healthcheck succeeds
         healthcheck_retries = 0
@@ -180,15 +168,13 @@ class TestProviderLDAP(SeleniumTestCase):
         )
         with self.assertRaises(LDAPInvalidCredentialsResult):
             _connection.bind()
-        anon = get_anonymous_user()
         self.assertTrue(
             Event.objects.filter(
                 action=EventAction.LOGIN_FAILED,
                 user={
-                    "pk": anon.pk,
-                    "email": anon.email,
-                    "username": anon.username,
-                    "is_anonymous": True,
+                    "pk": self.user.pk,
+                    "email": self.user.email,
+                    "username": self.user.username,
                 },
             ).exists(),
         )
@@ -327,6 +313,83 @@ class TestProviderLDAP(SeleniumTestCase):
                     "ak-active": True,
                     "ak-superuser": True,
                     "extraAttribute": ["bar"],
+                },
+                "type": "searchResEntry",
+            },
+        ]
+        self.assert_list_dict_equal(expected, response)
+
+    @retry()
+    @apply_blueprint(
+        "default/flow-default-authentication-flow.yaml",
+        "default/flow-default-invalidation-flow.yaml",
+    )
+    @reconcile_app("authentik_tenants")
+    @reconcile_app("authentik_outposts")
+    def test_ldap_bind_search_no_perms(self):
+        """Test simple bind + search"""
+        user = create_test_user()
+        self._prepare()
+        server = Server("ldap://localhost:3389", get_info=ALL)
+        _connection = Connection(
+            server,
+            raise_exceptions=True,
+            user=f"cn={user.username},ou=users,dc=ldap,dc=goauthentik,dc=io",
+            password=user.username,
+        )
+        _connection.bind()
+        self.assertTrue(
+            Event.objects.filter(
+                action=EventAction.LOGIN,
+                user={
+                    "pk": user.pk,
+                    "email": user.email,
+                    "username": user.username,
+                },
+            )
+        )
+
+        _connection.search(
+            "ou=Users,DC=ldaP,dc=goauthentik,dc=io",
+            "(objectClass=user)",
+            search_scope=SUBTREE,
+            attributes=[ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES],
+        )
+        response: list = _connection.response
+        # Remove raw_attributes to make checking easier
+        for obj in response:
+            del obj["raw_attributes"]
+            del obj["raw_dn"]
+            obj["attributes"] = dict(obj["attributes"])
+        expected = [
+            {
+                "dn": f"cn={user.username},ou=users,dc=ldap,dc=goauthentik,dc=io",
+                "attributes": {
+                    "cn": user.username,
+                    "sAMAccountName": user.username,
+                    "uid": user.uid,
+                    "name": user.name,
+                    "displayName": user.name,
+                    "sn": user.name,
+                    "mail": user.email,
+                    "objectClass": [
+                        "top",
+                        "person",
+                        "organizationalPerson",
+                        "inetOrgPerson",
+                        "user",
+                        "posixAccount",
+                        "goauthentik.io/ldap/user",
+                    ],
+                    "uidNumber": 2000 + user.pk,
+                    "gidNumber": 2000 + user.pk,
+                    "memberOf": [
+                        f"cn={group.name},ou=groups,dc=ldap,dc=goauthentik,dc=io"
+                        for group in user.ak_groups.all()
+                    ],
+                    "homeDirectory": f"/home/{user.username}",
+                    "ak-active": True,
+                    "ak-superuser": False,
                 },
                 "type": "searchResEntry",
             },

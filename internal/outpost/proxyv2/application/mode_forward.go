@@ -59,19 +59,11 @@ func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Reque
 		a.log.Trace("path can be accessed without authentication")
 		return
 	}
-	a.handleAuthStart(rw, r)
 	// set the redirect flag to the current URL we have, since we redirect
 	// to a (possibly) different domain, but we want to be redirected back
 	// to the application
 	// X-Forwarded-Uri is only the path, so we need to build the entire URL
-	s, _ := a.sessions.Get(r, a.SessionName())
-	if _, redirectSet := s.Values[constants.SessionRedirect]; !redirectSet {
-		s.Values[constants.SessionRedirect] = fwd.String()
-		err = s.Save(r, rw)
-		if err != nil {
-			a.log.WithError(err).Warning("failed to save session")
-		}
-	}
+	a.handleAuthStart(rw, r, fwd.String())
 }
 
 func (a *Application) forwardHandleCaddy(rw http.ResponseWriter, r *http.Request) {
@@ -110,19 +102,11 @@ func (a *Application) forwardHandleCaddy(rw http.ResponseWriter, r *http.Request
 		a.log.Trace("path can be accessed without authentication")
 		return
 	}
-	a.handleAuthStart(rw, r)
 	// set the redirect flag to the current URL we have, since we redirect
 	// to a (possibly) different domain, but we want to be redirected back
 	// to the application
 	// X-Forwarded-Uri is only the path, so we need to build the entire URL
-	s, _ := a.sessions.Get(r, a.SessionName())
-	if _, redirectSet := s.Values[constants.SessionRedirect]; !redirectSet {
-		s.Values[constants.SessionRedirect] = fwd.String()
-		err = s.Save(r, rw)
-		if err != nil {
-			a.log.WithError(err).Warning("failed to save session")
-		}
-	}
+	a.handleAuthStart(rw, r, fwd.String())
 }
 
 func (a *Application) forwardHandleNginx(rw http.ResponseWriter, r *http.Request) {
@@ -185,17 +169,9 @@ func (a *Application) forwardHandleEnvoy(rw http.ResponseWriter, r *http.Request
 		a.log.Trace("path can be accessed without authentication")
 		return
 	}
-	a.handleAuthStart(rw, r)
 	// set the redirect flag to the current URL we have, since we redirect
 	// to a (possibly) different domain, but we want to be redirected back
 	// to the application
 	// X-Forwarded-Uri is only the path, so we need to build the entire URL
-	s, _ := a.sessions.Get(r, a.SessionName())
-	if _, redirectSet := s.Values[constants.SessionRedirect]; !redirectSet {
-		s.Values[constants.SessionRedirect] = fwd.String()
-		err = s.Save(r, rw)
-		if err != nil {
-			a.log.WithError(err).Warning("failed to save session before redirect")
-		}
-	}
+	a.handleAuthStart(rw, r, fwd.String())
 }

@@ -1,16 +1,13 @@
-const docsSidebar = require("./sidebars.js");
-const generateVersionDropdown =
-    require("./src/utils.js").generateVersionDropdown;
-
 module.exports = {
     integrations: [
         {
-            type: "html",
-            value: generateVersionDropdown(docsSidebar),
+            type: "doc",
+            id: "index",
         },
         {
             type: "category",
             label: "Applications",
+            collapsed: false,
             link: {
                 type: "doc",
                 id: "services/index",
@@ -22,6 +19,7 @@ module.exports = {
                     items: [
                         "services/bookstack/index",
                         "services/dokuwiki/index",
+                        "services/espoCRM/index",
                         "services/hedgedoc/index",
                         "services/kimai/index",
                         "services/mastodon/index",
@@ -35,6 +33,8 @@ module.exports = {
                         "services/rocketchat/index",
                         "services/roundcube/index",
                         "services/sharepoint-se/index",
+                        "services/slack/index",
+                        "services/thelounge/index",
                         "services/vikunja/index",
                         "services/wekan/index",
                         "services/wiki-js/index",
@@ -55,7 +55,10 @@ module.exports = {
                 {
                     type: "category",
                     label: "Dashboards",
-                    items: ["services/organizr/index"],
+                    items: [
+                        "services/organizr/index",
+                        "services/linkwarden/index",
+                    ],
                 },
                 {
                     type: "category",
@@ -75,20 +78,19 @@ module.exports = {
                         "services/apache-guacamole/index",
                         "services/argocd/index",
                         "services/awx-tower/index",
-                        "services/firezone/index",
-                        "services/fortimanager/index",
+                        "services/cloudflare-access/index",
+                        "services/globalprotect/index",
                         "services/harbor/index",
                         "services/hashicorp-vault/index",
                         "services/jenkins/index",
                         "services/minio/index",
                         "services/netbox/index",
-                        "services/opnsense/index",
-                        "services/pfsense/index",
                         "services/pgadmin/index",
                         "services/phpipam/index",
                         "services/powerdns-admin/index",
                         "services/proftpd/index",
                         "services/qnap-nas/index",
+                        "services/semgrep/index",
                         "services/synology-dsm/index",
                         "services/skyhigh/index",
                         "services/snipe-it/index",
@@ -100,10 +102,27 @@ module.exports = {
                 },
                 {
                     type: "category",
+                    label: "Networking",
+                    items: [
+                        "services/aruba-orchestrator/index",
+                        "services/firezone/index",
+                        "services/fortigate-admin/index",
+                        "services/fortigate-ssl/index",
+                        "services/fortimanager/index",
+                        "services/opnsense/index",
+                        "services/pfsense/index",
+                        "services/netbird/index",
+                    ],
+                },
+                {
+                    type: "category",
                     label: "Miscellaneous",
                     items: [
+                        "services/engomo/index",
+                        "services/frappe/index",
                         "services/freshrss/index",
                         "services/gravitee/index",
+                        "services/hoarder/index",
                         "services/home-assistant/index",
                         "services/immich/index",
                         "services/jellyfin/index",
@@ -118,12 +137,15 @@ module.exports = {
                     type: "category",
                     label: "Monitoring",
                     items: [
+                        "services/gatus/index",
                         "services/glitchtip/index",
                         "services/grafana/index",
+                        "services/observium/index",
                         "services/sentry/index",
                         "services/ubuntu-landscape/index",
                         "services/uptime-kuma/index",
                         "services/zabbix/index",
+                        "services/whats-up-docker/index",
                     ],
                 },
                 {
@@ -139,56 +161,11 @@ module.exports = {
                     label: "Version Control Systems",
                     items: [
                         "services/gitea/index",
-                        "services/github-enterprise-cloud/index",
-                        "services/github-enterprise-server/index",
                         "services/github-organization/index",
+                        "services/github-enterprise-cloud/index",
+                        "services/github-enterprise-emu/index",
+                        "services/github-enterprise-server/index",
                         "services/gitlab/index",
-                    ],
-                },
-            ],
-        },
-        {
-            type: "category",
-            label: "Federation & Social login",
-            link: {
-                type: "generated-index",
-                title: "Sources",
-                slug: "sources",
-                description:
-                    "Sources of users which can be federated with authentik",
-            },
-            items: [
-                {
-                    type: "category",
-                    label: "Directory synchronization",
-                    items: [
-                        "sources/active-directory/index",
-                        "sources/freeipa/index",
-                    ],
-                },
-                "sources/general",
-                {
-                    type: "category",
-                    label: "Protocols",
-                    items: [
-                        "sources/ldap/index",
-                        "sources/oauth/index",
-                        "sources/saml/index",
-                    ],
-                },
-                {
-                    type: "category",
-                    label: "Social Logins",
-                    items: [
-                        "sources/apple/index",
-                        "sources/azure-ad/index",
-                        "sources/discord/index",
-                        "sources/github/index",
-                        "sources/google/index",
-                        "sources/mailcow/index",
-                        "sources/twitch/index",
-                        "sources/plex/index",
-                        "sources/twitter/index",
                     ],
                 },
             ],

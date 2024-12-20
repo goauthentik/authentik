@@ -25,7 +25,7 @@ class ObjectFilter(ObjectPermissionsFilter):
         # Outposts (which are the only objects using internal service accounts)
         # except requests to return an empty list when they have no objects
         # assigned
-        if request.user.type == UserTypes.INTERNAL_SERVICE_ACCOUNT:
+        if getattr(request.user, "type", None) == UserTypes.INTERNAL_SERVICE_ACCOUNT:
             return queryset
         if not queryset.exists():
             # User doesn't have direct permission to all objects

@@ -2,9 +2,11 @@
 
 from collections.abc import Callable
 from hashlib import sha512
+from ipaddress import ip_address
 from time import perf_counter, time
 from typing import Any
 
+from channels.exceptions import DenyConnection
 from django.conf import settings
 from django.contrib.sessions.backends.base import UpdateError
 from django.contrib.sessions.exceptions import SessionInterrupted
@@ -16,7 +18,7 @@ from django.middleware.csrf import CsrfViewMiddleware as UpstreamCsrfViewMiddlew
 from django.utils.cache import patch_vary_headers
 from django.utils.http import http_date
 from jwt import PyJWTError, decode, encode
-from sentry_sdk.hub import Hub
+from sentry_sdk import Scope
 from structlog.stdlib import get_logger
 
 from authentik.core.models import Token, TokenIntents, User, UserTypes
@@ -39,7 +41,9 @@ class SessionMiddleware(UpstreamSessionMiddleware):
             # Since go does not consider localhost with http a secure origin
             # we can't set the secure flag.
             user_agent = request.META.get("HTTP_USER_AGENT", "")
-            if user_agent.startswith("goauthentik.io/outpost/") or "safari" in user_agent.lower():
+            if user_agent.startswith("goauthentik.io/outpost/") or (
+                "safari" in user_agent.lower() and "chrome" not in user_agent.lower()
+            ):
                 return False
             return True
         return False
@@ -173,6 +177,7 @@ class ClientIPMiddleware:
 
     def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]):
         self.get_response = get_response
+        self.logger = get_logger().bind()
 
     def _get_client_ip_from_meta(self, meta: dict[str, Any]) -> str:
         """Attempt to get the client's IP by checking common HTTP Headers.
@@ -184,11 +189,16 @@ class ClientIPMiddleware:
             "HTTP_X_FORWARDED_FOR",
             "REMOTE_ADDR",
         )
-        for _header in headers:
-            if _header in meta:
-                ips: list[str] = meta.get(_header).split(",")
-                return ips[0].strip()
-        return self.default_ip
+        try:
+            for _header in headers:
+                if _header in meta:
+                    ips: list[str] = meta.get(_header).split(",")
+                    # Ensure the IP parses as a valid IP
+                    return str(ip_address(ips[0].strip()))
+            return self.default_ip
+        except ValueError as exc:
+            self.logger.debug("Invalid remote IP", exc=exc)
+            return self.default_ip
 
     # FIXME: this should probably not be in `root` but rather in a middleware in `outposts`
     # but for now it's fine
@@ -220,14 +230,16 @@ class ClientIPMiddleware:
             )
             return None
         # Update sentry scope to include correct IP
-        user = Hub.current.scope._user
-        if not user:
-            user = {}
-        user["ip_address"] = delegated_ip
-        Hub.current.scope.set_user(user)
+        sentry_user = Scope.get_isolation_scope()._user or {}
+        sentry_user["ip_address"] = delegated_ip
+        Scope.get_isolation_scope().set_user(sentry_user)
         # Set the outpost service account on the request
         setattr(request, self.request_attr_outpost_user, user)
-        return delegated_ip
+        try:
+            return str(ip_address(delegated_ip))
+        except ValueError as exc:
+            self.logger.debug("Invalid remote IP from Outpost", exc=exc)
+            return None
 
     def _get_client_ip(self, request: HttpRequest | None) -> str:
         """Attempt to get the client's IP by checking common HTTP Headers.
@@ -271,7 +283,15 @@ class ChannelsLoggingMiddleware:
 
     async def __call__(self, scope, receive, send):
         self.log(scope)
-        return await self.inner(scope, receive, send)
+        try:
+            return await self.inner(scope, receive, send)
+        except DenyConnection:
+            return await send({"type": "websocket.close"})
+        except Exception as exc:
+            if settings.DEBUG:
+                raise exc
+            LOGGER.warning("Exception in ASGI application", exc=exc)
+            return await send({"type": "websocket.close"})
 
     def log(self, scope: dict, **kwargs):
         """Log request"""

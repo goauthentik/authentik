@@ -10,9 +10,10 @@ from jwt import PyJWKSet
 
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_cert, create_test_flow
+from authentik.crypto.builder import PrivateKeyAlg
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_id
-from authentik.providers.oauth2.models import OAuth2Provider
+from authentik.providers.oauth2.models import OAuth2Provider, RedirectURI, RedirectURIMatchingMode
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 
 TEST_CORDS_CERT = """
@@ -48,7 +49,7 @@ class TestJWKS(OAuthTestCase):
             name="test",
             client_id="test",
             authorization_flow=create_test_flow(),
-            redirect_uris="http://local.invalid",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
             signing_key=create_test_cert(),
         )
         app = Application.objects.create(name="test", slug="test", provider=provider)
@@ -67,7 +68,7 @@ class TestJWKS(OAuthTestCase):
             name="test",
             client_id="test",
             authorization_flow=create_test_flow(),
-            redirect_uris="http://local.invalid",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
         )
         app = Application.objects.create(name="test", slug="test", provider=provider)
         response = self.client.get(
@@ -81,8 +82,8 @@ class TestJWKS(OAuthTestCase):
             name="test",
             client_id="test",
             authorization_flow=create_test_flow(),
-            redirect_uris="http://local.invalid",
-            signing_key=create_test_cert(use_ec_private_key=True),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
+            signing_key=create_test_cert(PrivateKeyAlg.ECDSA),
         )
         app = Application.objects.create(name="test", slug="test", provider=provider)
         response = self.client.get(
@@ -90,6 +91,24 @@ class TestJWKS(OAuthTestCase):
         )
         body = json.loads(response.content.decode())
         self.assertEqual(len(body["keys"]), 1)
+        PyJWKSet.from_dict(body)
+
+    def test_enc(self):
+        """Test with JWE"""
+        provider = OAuth2Provider.objects.create(
+            name="test",
+            client_id="test",
+            authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
+            signing_key=create_test_cert(PrivateKeyAlg.ECDSA),
+            encryption_key=create_test_cert(PrivateKeyAlg.ECDSA),
+        )
+        app = Application.objects.create(name="test", slug="test", provider=provider)
+        response = self.client.get(
+            reverse("authentik_providers_oauth2:jwks", kwargs={"application_slug": app.slug})
+        )
+        body = json.loads(response.content.decode())
+        self.assertEqual(len(body["keys"]), 2)
         PyJWKSet.from_dict(body)
 
     def test_ecdsa_coords_mismatched(self):
@@ -103,7 +122,7 @@ class TestJWKS(OAuthTestCase):
             name="test",
             client_id="test",
             authorization_flow=create_test_flow(),
-            redirect_uris="http://local.invalid",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
             signing_key=cert,
         )
         app = Application.objects.create(name="test", slug="test", provider=provider)

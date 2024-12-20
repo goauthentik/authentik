@@ -134,6 +134,12 @@ export class DeleteBulkForm<T> extends ModalButton {
     @property()
     buttonLabel = msg("Delete");
 
+    /**
+     * Action shown in messages, for example `deleted` or `removed`
+     */
+    @property()
+    action = msg("deleted");
+
     @property({ attribute: false })
     metadata: (item: T) => BulkDeleteMetadata = (item: T) => {
         const rec = item as Record<string, unknown>;
@@ -236,5 +242,12 @@ export class DeleteBulkForm<T> extends ModalButton {
                     ${msg("Cancel")}
                 </ak-spinner-button>
             </footer>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-delete-objects-table": DeleteObjectsTable<unknown>;
+        "ak-forms-delete-bulk": DeleteBulkForm<unknown>;
     }
 }

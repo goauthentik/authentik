@@ -1,4 +1,4 @@
-import { AKElement } from "@goauthentik/elements/Base";
+import { AkControlElement } from "@goauthentik/elements/AkControlElement.js";
 import { debounce } from "@goauthentik/elements/utils/debounce";
 import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
 
@@ -26,40 +26,63 @@ import type { DataProvider, DualSelectPair } from "./types";
  */
 
 @customElement("ak-dual-select-provider")
-export class AkDualSelectProvider extends CustomListenerElement(AKElement) {
+export class AkDualSelectProvider extends CustomListenerElement(AkControlElement) {
     /** A function that takes a page and returns the DualSelectPair[] collection with which to update
      * the "Available" pane.
+     *
+     * @attr
      */
     @property({ type: Object })
     provider!: DataProvider;
 
+    /**
+     * The list of selected items. This is the *complete* list, not paginated, as presented by a
+     * component with a multi-select list of items to track.
+     *
+     * @attr
+     */
     @property({ type: Array })
     selected: DualSelectPair[] = [];
 
+    /**
+     * The label for the left ("available") pane
+     *
+     * @attr
+     */
     @property({ attribute: "available-label" })
     availableLabel = msg("Available options");
 
+    /**
+     * The label for the right ("selected") pane
+     *
+     * @attr
+     */
     @property({ attribute: "selected-label" })
     selectedLabel = msg("Selected options");
 
-    /** The remote lists are debounced by definition. This is the interval for the debounce. */
+    /**
+     * The debounce for the search as the user is typing in a request
+     *
+     * @attr
+     */
     @property({ attribute: "search-delay", type: Number })
     searchDelay = 250;
 
     @state()
-    private options: DualSelectPair[] = [];
+    options: DualSelectPair[] = [];
 
-    private dualSelector: Ref<AkDualSelect> = createRef();
+    protected dualSelector: Ref<AkDualSelect> = createRef();
 
-    private isLoading = false;
+    protected isLoading = false;
 
-    private pagination?: Pagination;
+    private doneFirstUpdate = false;
+    private internalSelected: DualSelectPair[] = [];
+
+    protected pagination?: Pagination;
 
     constructor() {
         super();
         setTimeout(() => this.fetch(1), 0);
-        // Notify AkForElementHorizontal how to handle this thing.
-        this.dataset.akControl = "true";
         this.onNav = this.onNav.bind(this);
         this.onChange = this.onChange.bind(this);
         this.onSearch = this.onSearch.bind(this);
@@ -69,6 +92,11 @@ export class AkDualSelectProvider extends CustomListenerElement(AKElement) {
     }
 
     willUpdate(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("selected") && !this.doneFirstUpdate) {
+            this.doneFirstUpdate = true;
+            this.internalSelected = this.selected;
+        }
+
         if (changedProperties.has("searchDelay")) {
             this.doSearch = debounce(
                 AkDualSelectProvider.prototype.doSearch.bind(this),
@@ -105,7 +133,8 @@ export class AkDualSelectProvider extends CustomListenerElement(AKElement) {
         if (!(event instanceof CustomEvent)) {
             throw new Error(`Expecting a CustomEvent for change, received ${event} instead`);
         }
-        this.selected = event.detail.value;
+        this.internalSelected = event.detail.value;
+        this.selected = this.internalSelected;
     }
 
     onSearch(event: Event) {
@@ -124,14 +153,24 @@ export class AkDualSelectProvider extends CustomListenerElement(AKElement) {
         return this.dualSelector.value!.selected.map(([k, _]) => k);
     }
 
+    json() {
+        return this.value;
+    }
+
     render() {
         return html`<ak-dual-select
             ${ref(this.dualSelector)}
             .options=${this.options}
             .pages=${this.pagination}
-            .selected=${this.selected}
+            .selected=${this.internalSelected}
             available-label=${this.availableLabel}
             selected-label=${this.selectedLabel}
         ></ak-dual-select>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-dual-select-provider": AkDualSelectProvider;
     }
 }

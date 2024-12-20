@@ -18,7 +18,7 @@ export function me(): Promise<SessionUser> {
                 if (!user.user.settings || !("locale" in user.user.settings)) {
                     return user;
                 }
-                const locale = user.user.settings.locale;
+                const locale: string | undefined = user.user.settings.locale;
                 if (locale && locale !== "") {
                     console.debug(
                         `authentik/locale: Activating user's configured locale '${locale}'`,

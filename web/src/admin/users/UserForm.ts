@@ -20,6 +20,9 @@ export class UserForm extends ModelForm<User, number> {
     @property({ attribute: false })
     group?: Group;
 
+    @property()
+    defaultPath: string = "users";
+
     static get defaultUserAttributes(): { [key: string]: unknown } {
         return {};
     }
@@ -107,7 +110,7 @@ export class UserForm extends ModelForm<User, number> {
                 <ak-radio
                     .options=${[
                         {
-                            label: "Internal",
+                            label: msg("Internal"),
                             value: UserTypeEnum.Internal,
                             default: true,
                             description: html`${msg(
@@ -115,17 +118,25 @@ export class UserForm extends ModelForm<User, number> {
                             )}`,
                         },
                         {
-                            label: "External",
+                            label: msg("External"),
                             value: UserTypeEnum.External,
                             description: html`${msg(
                                 "External users might be external consultants or B2C customers. These users don't get access to enterprise features.",
                             )}`,
                         },
                         {
-                            label: "Service account",
+                            label: msg("Service account"),
                             value: UserTypeEnum.ServiceAccount,
                             description: html`${msg(
                                 "Service accounts should be used for machine-to-machine authentication or other automations.",
+                            )}`,
+                        },
+                        {
+                            label: msg("Internal Service account"),
+                            value: UserTypeEnum.InternalServiceAccount,
+                            disabled: true,
+                            description: html`${msg(
+                                "Internal Service accounts are created and managed by authentik and cannot be created manually.",
                             )}`,
                         },
                     ]}
@@ -164,7 +175,7 @@ export class UserForm extends ModelForm<User, number> {
             <ak-form-element-horizontal label=${msg("Path")} ?required=${true} name="path">
                 <input
                     type="text"
-                    value="${first(this.instance?.path, "users")}"
+                    value="${first(this.instance?.path, this.defaultPath)}"
                     class="pf-c-form-control"
                     required
                 />
@@ -185,5 +196,11 @@ export class UserForm extends ModelForm<User, number> {
                     ${msg("Set custom attributes using YAML or JSON.")}
                 </p>
             </ak-form-element-horizontal>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-form": UserForm;
     }
 }

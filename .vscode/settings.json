@@ -4,36 +4,37 @@
         "asgi",
         "authentik",
         "authn",
+        "entra",
         "goauthentik",
+        "jwe",
         "jwks",
+        "kubernetes",
         "oidc",
         "openid",
+        "passwordless",
         "plex",
         "saml",
-        "totp",
-        "webauthn",
-        "traefik",
-        "passwordless",
-        "kubernetes",
-        "sso",
-        "slo",
         "scim",
+        "slo",
+        "sso",
+        "totp",
+        "traefik",
+        "webauthn"
     ],
     "todo-tree.tree.showCountsInTree": true,
     "todo-tree.tree.showBadges": true,
     "yaml.customTags": [
         "!Condition sequence",
         "!Context scalar",
-        "!Context sequence",
         "!Enumerate sequence",
         "!Env scalar",
-        "!Env sequence",
         "!Find sequence",
         "!Format sequence",
         "!If sequence",
         "!Index scalar",
         "!KeyOf scalar",
         "!Value scalar",
+        "!AtIndex scalar"
     ],
     "typescript.preferences.importModuleSpecifier": "non-relative",
     "typescript.preferences.importModuleSpecifierEnding": "index",
@@ -50,9 +51,7 @@
             "ignoreCase": false
         }
     ],
-    "go.testFlags": [
-        "-count=1"
-    ],
+    "go.testFlags": ["-count=1"],
     "github-actions.workflows.pinned.workflows": [
         ".github/workflows/ci-main.yml"
     ]

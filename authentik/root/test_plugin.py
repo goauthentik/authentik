@@ -1,6 +1,8 @@
 from os import environ
+from ssl import OPENSSL_VERSION
 
 import pytest
+from cryptography.hazmat.backends.openssl.backend import backend
 
 from authentik import get_full_version
 
@@ -18,4 +20,7 @@ def pytest_sessionstart(*_, **__):
 @pytest.hookimpl(trylast=True)
 def pytest_report_header(*_, **__):
     """Add authentik version to pytest output"""
-    return [f"authentik version: {get_full_version()}"]
+    return [
+        f"authentik version: {get_full_version()}",
+        f"OpenSSL version: {OPENSSL_VERSION}, FIPS: {backend._fips_enabled}",
+    ]

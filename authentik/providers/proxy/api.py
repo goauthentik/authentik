@@ -6,13 +6,14 @@ from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema_field
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, ListField, ReadOnlyField, SerializerMethodField
-from rest_framework.serializers import ModelSerializer
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
+from rest_framework.mixins import ListModelMixin
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import PassiveSerializer
+from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.lib.utils.time import timedelta_from_string
+from authentik.providers.oauth2.api.providers import RedirectURISerializer
 from authentik.providers.oauth2.models import ScopeMapping
 from authentik.providers.oauth2.views.provider import ProviderInfoView
 from authentik.providers.proxy.models import ProxyMode, ProxyProvider
@@ -39,7 +40,7 @@ class ProxyProviderSerializer(ProviderSerializer):
     """ProxyProvider Serializer"""
 
     client_id = CharField(read_only=True)
-    redirect_uris = CharField(read_only=True)
+    redirect_uris = RedirectURISerializer(many=True, read_only=True, source="_redirect_uris")
     outpost_set = ListField(child=CharField(), read_only=True, source="outpost_set.all")
 
     def validate_basic_auth_enabled(self, value: bool) -> bool:
@@ -93,7 +94,8 @@ class ProxyProviderSerializer(ProviderSerializer):
             "intercept_header_auth",
             "redirect_uris",
             "cookie_domain",
-            "jwks_sources",
+            "jwt_federation_sources",
+            "jwt_federation_providers",
             "access_token_validity",
             "refresh_token_validity",
             "outpost_set",
@@ -121,7 +123,6 @@ class ProxyProviderViewSet(UsedByMixin, ModelViewSet):
         "basic_auth_password_attribute": ["iexact"],
         "basic_auth_user_attribute": ["iexact"],
         "mode": ["iexact"],
-        "redirect_uris": ["iexact"],
         "cookie_domain": ["iexact"],
     }
     search_fields = ["name"]
@@ -182,7 +183,7 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
         ]
 
 
-class ProxyOutpostConfigViewSet(ReadOnlyModelViewSet):
+class ProxyOutpostConfigViewSet(ListModelMixin, GenericViewSet):
     """ProxyProvider Viewset"""
 
     queryset = ProxyProvider.objects.filter(application__isnull=False)

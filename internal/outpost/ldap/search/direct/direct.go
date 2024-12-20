@@ -12,13 +12,13 @@ import (
 	"github.com/getsentry/sentry-go"
 	"github.com/prometheus/client_golang/prometheus"
 	"goauthentik.io/api/v3"
+	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/ldap/constants"
 	"goauthentik.io/internal/outpost/ldap/group"
 	"goauthentik.io/internal/outpost/ldap/metrics"
 	"goauthentik.io/internal/outpost/ldap/search"
 	"goauthentik.io/internal/outpost/ldap/server"
 	"goauthentik.io/internal/outpost/ldap/utils"
-	"goauthentik.io/internal/outpost/ldap/utils/paginator"
 )
 
 type DirectSearcher struct {
@@ -113,16 +113,21 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 		errs.Go(func() error {
 			if flags.CanSearch {
 				uapisp := sentry.StartSpan(errCtx, "authentik.providers.ldap.search.api_user")
-				searchReq, skip := utils.ParseFilterForUser(c.CoreApi.CoreUsersList(uapisp.Context()), parsedFilter, false)
+				searchReq, skip := utils.ParseFilterForUser(c.CoreApi.CoreUsersList(uapisp.Context()).IncludeGroups(true), parsedFilter, false)
 
 				if skip {
 					req.Log().Trace("Skip backend request")
 					return nil
 				}
 
-				u := paginator.FetchUsers(searchReq)
+				u, err := ak.Paginator(searchReq, ak.PaginatorOptions{
+					PageSize: 100,
+					Logger:   ds.log,
+				})
 				uapisp.Finish()
-
+				if err != nil {
+					return err
+				}
 				users = &u
 			} else {
 				if flags.UserInfo == nil {
@@ -150,7 +155,7 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 	if needGroups {
 		errs.Go(func() error {
 			gapisp := sentry.StartSpan(errCtx, "authentik.providers.ldap.search.api_group")
-			searchReq, skip := utils.ParseFilterForGroup(c.CoreApi.CoreGroupsList(gapisp.Context()), parsedFilter, false)
+			searchReq, skip := utils.ParseFilterForGroup(c.CoreApi.CoreGroupsList(gapisp.Context()).IncludeUsers(true), parsedFilter, false)
 			if skip {
 				req.Log().Trace("Skip backend request")
 				return nil
@@ -161,8 +166,14 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 				searchReq = searchReq.MembersByPk([]int32{flags.UserPk})
 			}
 
-			g := paginator.FetchGroups(searchReq)
+			g, err := ak.Paginator(searchReq, ak.PaginatorOptions{
+				PageSize: 100,
+				Logger:   ds.log,
+			})
 			gapisp.Finish()
+			if err != nil {
+				return err
+			}
 			req.Log().WithField("count", len(g)).Trace("Got results from API")
 
 			if !flags.CanSearch {
@@ -177,7 +188,6 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 					}
 				}
 			}
-
 			groups = &g
 			return nil
 		})

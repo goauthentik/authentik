@@ -50,7 +50,6 @@ jobs:
       fail-fast: false
       matrix:
         psql:
-          - 12-alpine
           - 15-alpine
           - 16-alpine
     steps:
@@ -104,7 +103,6 @@ jobs:
       fail-fast: false
       matrix:
         psql:
-          - 12-alpine
           - 15-alpine
           - 16-alpine
     steps:
@@ -118,9 +116,15 @@ jobs:
           poetry run make test
           poetry run coverage xml
       - if: ${{ always() }}
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           flags: unit
+          token: ${{ secrets.CODECOV_TOKEN }}
+      - if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          flags: unit
+          file: unittest.xml
           token: ${{ secrets.CODECOV_TOKEN }}
   test-integration:
     runs-on: ubuntu-latest
@@ -130,15 +134,21 @@ jobs:
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: Create k8s Kind Cluster
-        uses: helm/kind-action@v1.9.0
+        uses: helm/kind-action@v1.11.0
       - name: run integration
         run: |
           poetry run coverage run manage.py test tests/integration
           poetry run coverage xml
       - if: ${{ always() }}
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           flags: integration
+          token: ${{ secrets.CODECOV_TOKEN }}
+      - if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          flags: integration
+          file: unittest.xml
           token: ${{ secrets.CODECOV_TOKEN }}
   test-e2e:
     name: test-e2e (${{ matrix.job.name }})
@@ -160,6 +170,8 @@ jobs:
             glob: tests/e2e/test_provider_ldap* tests/e2e/test_source_ldap*
           - name: radius
             glob: tests/e2e/test_provider_radius*
+          - name: scim
+            glob: tests/e2e/test_source_scim*
           - name: flows
             glob: tests/e2e/test_flows*
     steps:
@@ -168,7 +180,7 @@ jobs:
         uses: ./.github/actions/setup
       - name: Setup e2e env (chrome, etc)
         run: |
-          docker compose -f tests/e2e/docker-compose.yml up -d
+          docker compose -f tests/e2e/docker-compose.yml up -d --quiet-pull
       - id: cache-web
         uses: actions/cache@v4
         with:
@@ -186,11 +198,18 @@ jobs:
           poetry run coverage run manage.py test ${{ matrix.job.glob }}
           poetry run coverage xml
       - if: ${{ always() }}
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           flags: e2e
           token: ${{ secrets.CODECOV_TOKEN }}
+      - if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          flags: e2e
+          file: unittest.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
   ci-core-mark:
+    if: always()
     needs:
       - lint
       - test-migrations
@@ -200,7 +219,9 @@ jobs:
       - test-e2e
     runs-on: ubuntu-latest
     steps:
-      - run: echo mark
+      - uses: re-actors/alls-green@release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}
   build:
     strategy:
       fail-fast: false
@@ -213,13 +234,16 @@ jobs:
     permissions:
       # Needed to upload contianer images to ghcr.io
       packages: write
+      # Needed for attestation
+      id-token: write
+      attestations: write
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3.0.0
+        uses: docker/setup-qemu-action@v3.2.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: prepare variables
@@ -231,7 +255,7 @@ jobs:
           image-name: ghcr.io/goauthentik/dev-server
           image-arch: ${{ matrix.arch }}
       - name: Login to Container Registry
-        if: ${{ steps.ev.outputs.shouldBuild == 'true' }}
+        if: ${{ steps.ev.outputs.shouldPush == 'true' }}
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -240,19 +264,27 @@ jobs:
       - name: generate ts client
         run: make gen-client-ts
       - name: Build Docker Image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
+        id: push
         with:
           context: .
           secrets: |
             GEOIPUPDATE_ACCOUNT_ID=${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}
             GEOIPUPDATE_LICENSE_KEY=${{ secrets.GEOIPUPDATE_LICENSE_KEY }}
           tags: ${{ steps.ev.outputs.imageTags }}
-          push: ${{ steps.ev.outputs.shouldBuild == 'true' }}
+          push: ${{ steps.ev.outputs.shouldPush == 'true' }}
           build-args: |
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=registry,ref=ghcr.io/goauthentik/dev-server:buildcache
+          cache-to: ${{ steps.ev.outputs.shouldPush == 'true' && 'type=registry,ref=ghcr.io/goauthentik/dev-server:buildcache,mode=max' || '' }}
           platforms: linux/${{ matrix.arch }}
+      - uses: actions/attest-build-provenance@v2
+        id: attest
+        if: ${{ steps.ev.outputs.shouldPush == 'true' }}
+        with:
+          subject-name: ${{ steps.ev.outputs.attestImageNames }}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
   pr-comment:
     needs:
       - build
@@ -274,6 +306,7 @@ jobs:
         with:
           image-name: ghcr.io/goauthentik/dev-server
       - name: Comment on PR
+        if: ${{ steps.ev.outputs.shouldPush == 'true' }}
         uses: ./.github/actions/comment-pr-instructions
         with:
-          tag: gh-${{ steps.ev.outputs.imageMainTag }}
+          tag: ${{ steps.ev.outputs.imageMainTag }}

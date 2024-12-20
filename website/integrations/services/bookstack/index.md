@@ -1,6 +1,9 @@
 ---
-title: Bookstack
+title: Integrate with Bookstack
+sidebar_label: Bookstack
 ---
+
+# Bookstack
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -18,9 +21,9 @@ This is based on authentik 2021.7.2 and BookStack V21.05.3. Instructions may dif
 
 The following placeholders will be used:
 
--   `book.company` is the FQDN of BookStack.
--   `authentik.company` is the FQDN of authentik.
--   `METADATAURL` is the url for the SAML metadata from authentik
+- `book.company` is the FQDN of BookStack.
+- `authentik.company` is the FQDN of authentik.
+- `METADATAURL` is the url for the SAML metadata from authentik
 
 ### Step 1
 
@@ -28,16 +31,16 @@ In authentik, under _Providers_, create a _SAML Provider_ with these settings:
 
 **Protocol Settings**
 
--   Name: Bookstack
--   ACS URL: https://book.company/saml2/acs
--   Issuer: https://authentik.company
--   Service Provider Binding: Post
--   Audience: https://book.company/saml2/metadata
+- Name: Bookstack
+- ACS URL: https://book.company/saml2/acs
+- Issuer: https://authentik.company
+- Service Provider Binding: Post
+- Audience: https://book.company/saml2/metadata
 
 **Advanced protocol settings**
 
--   Signing Certificate: Choose your certificate or the default authentik Self-signed Certificate
-    All other options as default.
+- Signing Certificate: Choose your certificate or the default authentik Self-signed Certificate
+  All other options as default.
 
 ![](./authentik_saml_bookstack.png)
 
@@ -45,10 +48,10 @@ In authentik, under _Providers_, create a _SAML Provider_ with these settings:
 
 In authentik, create an application which uses this provider. Optionally apply access restrictions to the application using policy bindings.
 
--   Name: Bookstack
--   Slug: bookstack
--   Provider: Bookstack
--   Launch URL: https://book.company
+- Name: Bookstack
+- Slug: bookstack
+- Provider: Bookstack
+- Launch URL: https://book.company
 
 ### Step 3
 

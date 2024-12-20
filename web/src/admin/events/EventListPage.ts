@@ -3,7 +3,6 @@ import { EventGeo, EventUser } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
 import { actionToLabel } from "@goauthentik/common/labels";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-event-info";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
@@ -45,13 +44,8 @@ export class EventListPage extends TablePage<Event> {
         `);
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Event>> {
-        return new EventsApi(DEFAULT_CONFIG).eventsEventsList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
-        });
+    async apiEndpoint(): Promise<PaginatedResponse<Event>> {
+        return new EventsApi(DEFAULT_CONFIG).eventsEventsList(await this.defaultEndpointConfig());
     }
 
     columns(): TableColumn[] {
@@ -97,7 +91,7 @@ export class EventListPage extends TablePage<Event> {
     }
 
     renderExpanded(item: Event): TemplateResult {
-        return html` <td role="cell" colspan="3">
+        return html` <td role="cell" colspan="5">
                 <div class="pf-c-table__expandable-row-content">
                     <ak-event-info .event=${item as EventWithContext}></ak-event-info>
                 </div>
@@ -105,5 +99,11 @@ export class EventListPage extends TablePage<Event> {
             <td></td>
             <td></td>
             <td></td>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-event-list": EventListPage;
     }
 }

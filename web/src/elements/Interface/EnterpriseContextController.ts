@@ -1,23 +1,22 @@
-import { EVENT_REFRESH_ENTERPRISE } from "@goauthentik/authentik/common/constants";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { EVENT_REFRESH_ENTERPRISE } from "@goauthentik/common/constants";
 import { authentikEnterpriseContext } from "@goauthentik/elements/AuthentikContexts";
+import type { ReactiveElementHost } from "@goauthentik/elements/types.js";
 
 import { ContextProvider } from "@lit/context";
-import { ReactiveController, ReactiveControllerHost } from "lit";
+import type { ReactiveController } from "lit";
 
 import type { LicenseSummary } from "@goauthentik/api";
 import { EnterpriseApi } from "@goauthentik/api";
 
 import type { AkEnterpriseInterface } from "./Interface";
 
-type ReactiveElementHost = Partial<ReactiveControllerHost> & AkEnterpriseInterface;
-
 export class EnterpriseContextController implements ReactiveController {
-    host!: ReactiveElementHost;
+    host!: ReactiveElementHost<AkEnterpriseInterface>;
 
     context!: ContextProvider<{ __context__: LicenseSummary | undefined }>;
 
-    constructor(host: ReactiveElementHost) {
+    constructor(host: ReactiveElementHost<AkEnterpriseInterface>) {
         this.host = host;
         this.context = new ContextProvider(this.host, {
             context: authentikEnterpriseContext,

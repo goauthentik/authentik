@@ -1,0 +1,47 @@
+version: 1
+metadata:
+  labels:
+    blueprints.goauthentik.io/system: "true"
+  name: System - Microsoft Entra Provider - Mappings
+entries:
+  - identifiers:
+      managed: goauthentik.io/providers/microsoft_entra/user
+    model: authentik_providers_microsoft_entra.microsoftentraprovidermapping
+    attrs:
+      name: "authentik default Microsoft Entra Mapping: User"
+      expression: |
+        # Field reference: (note that keys have to converted to snake_case)
+        # https://learn.microsoft.com/en-us/graph/api/resources/user?view=graph-rest-1.0
+        from msgraph.generated.models.password_profile import PasswordProfile
+
+        user = {
+            "display_name": request.user.name,
+            "account_enabled": request.user.is_active,
+            "mail_nickname": request.user.username,
+            "user_principal_name": request.user.email,
+        }
+        if connection:
+            # If there is a connection already made (discover or update), we can use
+            # that connection's immutable_id...
+            user["on_premises_immutable_id"] = connection.attributes.get("on_premises_immutable_id")
+        else:
+            user["password_profile"] = PasswordProfile(
+                password=request.user.password
+            )
+            # ...otherwise we set an immutable ID based on the user's UID
+            user["on_premises_immutable_id"] = request.user.uid,
+        return user
+  - identifiers:
+      managed: goauthentik.io/providers/microsoft_entra/group
+    model: authentik_providers_microsoft_entra.microsoftentraprovidermapping
+    attrs:
+      name: "authentik default Microsoft Entra Mapping: Group"
+      expression: |
+        # Field reference: (note that keys have to converted to snake_case)
+        # https://learn.microsoft.com/en-us/graph/api/group-post-groups?view=graph-rest-1.0&tabs=http#request-body
+        return {
+            "display_name": group.name,
+            "mail_enabled": False,
+            "security_enabled": True,
+            "mail_nickname": slugify(group.name),
+        }

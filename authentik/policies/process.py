@@ -4,7 +4,7 @@ from multiprocessing import get_context
 from multiprocessing.connection import Connection
 
 from django.core.cache import cache
-from sentry_sdk.hub import Hub
+from sentry_sdk import start_span
 from sentry_sdk.tracing import Span
 from structlog.stdlib import get_logger
 
@@ -121,15 +121,15 @@ class PolicyProcess(PROCESS_CLASS):
     def profiling_wrapper(self):
         """Run with profiling enabled"""
         with (
-            Hub.current.start_span(
+            start_span(
                 op="authentik.policy.process.execute",
             ) as span,
             HIST_POLICIES_EXECUTION_TIME.labels(
                 binding_order=self.binding.order,
                 binding_target_type=self.binding.target_type,
                 binding_target_name=self.binding.target_name,
-                object_pk=str(self.request.obj.pk),
-                object_type=class_to_path(self.request.obj.__class__),
+                object_pk=str(self.request.obj.pk) if self.request.obj else "",
+                object_type=class_to_path(self.request.obj.__class__) if self.request.obj else "",
                 mode="execute_process",
             ).time(),
         ):

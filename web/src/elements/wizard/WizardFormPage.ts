@@ -2,7 +2,7 @@ import { Form, KeyUnknown } from "@goauthentik/elements/forms/Form";
 import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
 import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { property } from "lit/decorators.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -12,7 +12,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-@customElement("ak-wizard-form")
 export abstract class WizardForm extends Form<KeyUnknown> {
     viewportCheck = false;
 

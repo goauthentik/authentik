@@ -1,6 +1,9 @@
 ---
-title: Google Workspace
+title: Integrate with Google Workspace
+sidebar_label: Google Workspace
 ---
+
+# Google Workspace
 
 <span class="badge badge--primary">Support level: authentik</span>
 
@@ -14,8 +17,8 @@ title: Google Workspace
 
 The following placeholders will be used:
 
--   `authentik.company` is the FQDN of the authentik install.
--   `example.com` is the default E-mail address configured in Google workspace.
+- `authentik.company` is the FQDN of the authentik install.
+- `example.com` is the default E-mail address configured in Google workspace.
 
 ## authentik Configuration
 
@@ -23,10 +26,10 @@ Create an application in authentik and note the slug, as this will be used later
 
 Create a SAML provider with the following parameters:
 
--   ACS URL: `https://www.google.com/a/example.com/acs`
--   Issuer: `google.com/a/example.com`
--   Binding: `Post`
--   Audience: `google.com/a/example.com`
+- ACS URL: `https://www.google.com/a/example.com/acs`
+- Issuer: `google.com/a/example.com`
+- Binding: `Post`
+- Audience: `google.com/a/example.com`
 
 Under _Advanced protocol settings_, set the option _NameID Property Mapping_ to the default E-mail property mapping called _authentik default SAML Mapping: Email_. Also make sure a _Signing Certificate_ is selected in the same section.
 

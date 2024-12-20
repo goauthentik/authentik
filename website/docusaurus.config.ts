@@ -1,6 +1,7 @@
-const fs = require("fs").promises;
 import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
+import { themes as prismThemes } from "prism-react-renderer";
+import type * as OpenApiPlugin from "docusaurus-plugin-openapi-docs";
 
 module.exports = async function (): Promise<Config> {
     const remarkGithub = (await import("remark-github")).default;
@@ -33,17 +34,12 @@ module.exports = async function (): Promise<Config> {
                     },
                     {
                         to: "docs/",
-                        label: "Docs",
+                        label: "Documentation",
                         position: "left",
                     },
                     {
                         to: "integrations/",
                         label: "Integrations",
-                        position: "left",
-                    },
-                    {
-                        to: "developer-docs/",
-                        label: "Developer",
                         position: "left",
                     },
                     {
@@ -82,7 +78,9 @@ module.exports = async function (): Promise<Config> {
                 indexName: "goauthentik",
             },
             prism: {
-                additionalLanguages: ["python", "diff", "json"],
+                theme: prismThemes.oneLight,
+                darkTheme: prismThemes.oneDark,
+                additionalLanguages: ["python", "diff", "json", "http"],
             },
         },
         presets: [
@@ -91,9 +89,10 @@ module.exports = async function (): Promise<Config> {
                 {
                     docs: {
                         id: "docs",
-                        sidebarPath: require.resolve("./sidebars.js"),
+                        sidebarPath: "./sidebars.js",
                         editUrl:
                             "https://github.com/goauthentik/authentik/edit/main/website/",
+                        docItemComponent: "@theme/ApiItem",
                         remarkPlugins: [
                             [
                                 remarkGithub,
@@ -115,17 +114,6 @@ module.exports = async function (): Promise<Config> {
                     },
                 } satisfies Preset.Options,
             ],
-            [
-                "redocusaurus",
-                {
-                    specs: [
-                        {
-                            id: "main",
-                            spec: "static/schema.yaml",
-                        },
-                    ],
-                },
-            ],
         ],
         plugins: [
             [
@@ -134,26 +122,32 @@ module.exports = async function (): Promise<Config> {
                     id: "docsIntegrations",
                     path: "integrations",
                     routeBasePath: "integrations",
-                    sidebarPath: require.resolve("./sidebarsIntegrations.js"),
+                    sidebarPath: "./sidebarsIntegrations.js",
                     editUrl:
                         "https://github.com/goauthentik/authentik/edit/main/website/",
                 },
             ],
             [
-                "@docusaurus/plugin-content-docs",
+                "docusaurus-plugin-openapi-docs",
                 {
-                    id: "docsDevelopers",
-                    path: "developer-docs",
-                    routeBasePath: "developer-docs",
-                    sidebarPath: require.resolve("./sidebarsDev.js"),
-                    editUrl:
-                        "https://github.com/goauthentik/authentik/edit/main/website/",
+                    id: "api",
+                    docsPluginId: "docs",
+                    config: {
+                        authentik: {
+                            specPath: "static/schema.yaml",
+                            outputDir: "docs/developer-docs/api/reference/",
+                            hideSendButton: true,
+                            sidebarOptions: {
+                                groupPathsBy: "tag",
+                            },
+                        } satisfies OpenApiPlugin.Options,
+                    },
                 },
             ],
         ],
         markdown: {
             mermaid: true,
         },
-        themes: ["@docusaurus/theme-mermaid"],
+        themes: ["@docusaurus/theme-mermaid", "docusaurus-theme-openapi-docs"],
     };
 };

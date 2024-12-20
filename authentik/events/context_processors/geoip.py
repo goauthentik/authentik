@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Optional, TypedDict
 from django.http import HttpRequest
 from geoip2.errors import GeoIP2Error
 from geoip2.models import City
-from sentry_sdk.hub import Hub
+from sentry_sdk import start_span
 
 from authentik.events.context_processors.mmdb import MMDBContextProcessor
 from authentik.lib.config import CONFIG
@@ -45,13 +45,13 @@ class GeoIPContextProcessor(MMDBContextProcessor):
 
     def enrich_context(self, request: HttpRequest) -> dict:
         # Different key `geoip` vs `geo` for legacy reasons
-        return {"geoip": self.city(ClientIPMiddleware.get_client_ip(request))}
+        return {"geoip": self.city_dict(ClientIPMiddleware.get_client_ip(request))}
 
     def city(self, ip_address: str) -> City | None:
         """Wrapper for Reader.city"""
-        with Hub.current.start_span(
+        with start_span(
             op="authentik.events.geo.city",
-            description=ip_address,
+            name=ip_address,
         ):
             if not self.configured():
                 return None

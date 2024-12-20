@@ -554,7 +554,7 @@
         
       </trans-unit>
       <trans-unit id="s0382d73823585617">
-        <source><x id="0" equiv-text="${this.errorMessage}"/>: <x id="1" equiv-text="${e.toString()}"/></source>
+        <source><x id="0" equiv-text="${field}"/>: <x id="1" equiv-text="${errMsg}"/></source>
         <target>
         <x id="0" equiv-text="${this.errorMessage}"/>：
         <x id="1" equiv-text="${e.toString()}"/></target>
@@ -612,7 +612,7 @@
         
       </trans-unit>
       <trans-unit id="s6dfd15978586d05f">
-        <source>Welcome, <x id="0" equiv-text="${name}"/>.</source>
+        <source>Welcome, <x id="0" equiv-text="${name || &quot;&quot;}"/>.</source>
         <target>欢迎，
         <x id="0" equiv-text="${name}"/>。</target>
         
@@ -836,22 +836,12 @@
       </trans-unit>
       <trans-unit id="sff69c1a637f899a6">
         <source>Bind flow</source>
-        <target>Bind 流程</target>
+        <target>绑定流程</target>
         
       </trans-unit>
       <trans-unit id="s319040353f479853">
         <source>Flow used for users to authenticate.</source>
         <target>用于验证用户身份的流程。</target>
-        
-      </trans-unit>
-      <trans-unit id="sbc80eab557fbf782">
-        <source>Search group</source>
-        <target>搜索组</target>
-        
-      </trans-unit>
-      <trans-unit id="s04b7f8d6aaef3756">
-        <source>Users in the selected group can do search queries. If no group is selected, no LDAP Searches are allowed.</source>
-        <target>所选组中的用户可以执行搜索查询。如果未选择任何组，则不允许 LDAP 搜索。</target>
         
       </trans-unit>
       <trans-unit id="se5973e7c8ba0fc71">
@@ -1024,24 +1014,9 @@
         <target>客户端 Secret</target>
         
       </trans-unit>
-      <trans-unit id="sde0ad51b14f77cf6">
-        <source>Redirect URIs/Origins (RegEx)</source>
-        <target>重定向 URI/Origin（正则）</target>
-        
-      </trans-unit>
-      <trans-unit id="s7f9eb9c8bd26e8fd">
-        <source>Valid redirect URLs after a successful authorization flow. Also specify any origins here for Implicit flows.</source>
-        <target>授权流程成功后有效的重定向 URL。还可以在此处为隐式流程指定任何来源。</target>
-        
-      </trans-unit>
       <trans-unit id="s2a369bc2febb5d55">
         <source>If no explicit redirect URIs are specified, the first successfully used redirect URI will be saved.</source>
         <target>如果未指定显式重定向 URI，则将保存第一个成功使用的重定向 URI。</target>
-        
-      </trans-unit>
-      <trans-unit id="sa8384c9c26731f83">
-        <source>To allow any redirect URI, set this value to &quot;.*&quot;. Be aware of the possible security implications this can have.</source>
-        <target>要允许任何重定向 URI，请将此值设置为 &quot;.*&quot;。请注意这可能带来的安全影响。</target>
         
       </trans-unit>
       <trans-unit id="s55787f4dfcdce52b">
@@ -1097,11 +1072,6 @@
       <trans-unit id="s3a3fae99373ce56b">
         <source>Select which scopes can be used by the client. The client still has to specify the scope to access the data.</source>
         <target>选择客户端可以使用哪些作用域。客户端仍然需要指定访问数据的范围。</target>
-        
-      </trans-unit>
-      <trans-unit id="sffd2e553143d1b0e">
-        <source>Hold control/command to select multiple items.</source>
-        <target>按住 ctrl/command 键可选择多个项目。</target>
         
       </trans-unit>
       <trans-unit id="s26bf2730430efbea">
@@ -1544,21 +1514,6 @@
         <target>选择类型</target>
         
       </trans-unit>
-      <trans-unit id="s0b3bf19b31dd6bac">
-        <source>Try the new application wizard</source>
-        <target>尝试新应用程序向导</target>
-        
-      </trans-unit>
-      <trans-unit id="sa18e1c6e0e6f16cc">
-        <source>The new application wizard greatly simplifies the steps required to create applications and providers.</source>
-        <target>新应用程序向导大幅度简化了创建应用程序和提供程序所需的操作步骤。</target>
-        
-      </trans-unit>
-      <trans-unit id="s01ef54f5d7c6ed47">
-        <source>Try it now</source>
-        <target>现在尝试</target>
-        
-      </trans-unit>
       <trans-unit id="s382a2aa3984474dd">
         <source>Create</source>
         <target>创建</target>
@@ -1948,12 +1903,12 @@
       </trans-unit>
       <trans-unit id="sb7794c2910b1a9ec">
         <source>Bind DN</source>
-        <target>Bind DN</target>
+        <target>绑定 DN</target>
         
       </trans-unit>
       <trans-unit id="s5694f9421c428227">
         <source>Bind Password</source>
-        <target>Bind 密码</target>
+        <target>绑定密码</target>
         
       </trans-unit>
       <trans-unit id="s086e1bbe7c97ea16">
@@ -2421,11 +2376,6 @@
         <target>将创建的事件与此操作类型匹配。留空时，所有操作类型都将匹配。</target>
         
       </trans-unit>
-      <trans-unit id="sfab527528ea64618">
-        <source>Matches Event's Client IP (strict matching, for network matching use an Expression Policy.</source>
-        <target>匹配事件的客户端 IP（严格匹配，要网络匹配请使用表达式策略）。</target>
-        
-      </trans-unit>
       <trans-unit id="s5a15a8f39c699273">
         <source>Match events created by selected application. When left empty, all applications are matched.</source>
         <target>匹配选定应用程序创建的事件。如果留空，则匹配所有应用程序。</target>
@@ -2760,11 +2710,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>当前没有策略绑定到此对象。</target>
         
       </trans-unit>
-      <trans-unit id="sddb040c47daae56b">
-        <source>Bind existing policy</source>
-        <target>绑定已有策略</target>
-        
-      </trans-unit>
       <trans-unit id="saa855c61e0403fe6">
         <source>Warning: Application is not used by any Outpost.</source>
         <target>警告：应用程序未被任何前哨使用。</target>
@@ -2887,17 +2832,12 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="sb7684e2910a33a1f">
         <source>Bind CN</source>
-        <target>Bind CN</target>
+        <target>绑定 CN</target>
         
       </trans-unit>
       <trans-unit id="s3de6db803012016a">
         <source>LDAP Attribute mapping</source>
         <target>LDAP 属性映射</target>
-        
-      </trans-unit>
-      <trans-unit id="s7c05ee41d634aa45">
-        <source>Property mappings used to user creation.</source>
-        <target>用于创建用户的属性映射。</target>
         
       </trans-unit>
       <trans-unit id="s94333971a07803b9">
@@ -3310,22 +3250,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>尚未同步。</target>
         
       </trans-unit>
-      <trans-unit id="s388ee787bbf2271b">
-        <source>Task finished with warnings</source>
-        <target>任务已完成但有警告</target>
-        
-      </trans-unit>
-      <trans-unit id="s949826fad0fe0909">
-        <source>Task finished with errors</source>
-        <target>任务已完成但有错误</target>
-        
-      </trans-unit>
-      <trans-unit id="sbedb77365a066648">
-        <source>Last sync: <x id="0" equiv-text="${task.finishTimestamp.toLocaleString()}"/></source>
-        <target>上次同步：
-        <x id="0" equiv-text="${task.finishTimestamp.toLocaleString()}"/></target>
-        
-      </trans-unit>
       <trans-unit id="sf3fec8353106ac2f">
         <source>OAuth Source <x id="0" equiv-text="${this.source.name}"/></source>
         <target>OAuth 源
@@ -3396,16 +3320,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="sffeef5b119d8625c">
         <source>Successfully created mapping.</source>
         <target>已成功创建映射。</target>
-        
-      </trans-unit>
-      <trans-unit id="s1c33d22492029aba">
-        <source>Object field</source>
-        <target>对象字段</target>
-        
-      </trans-unit>
-      <trans-unit id="s06df3c3b6a503da8">
-        <source>Field of the user object this value is written to.</source>
-        <target>写入此值的用户对象的字段。</target>
         
       </trans-unit>
       <trans-unit id="sd39c5e998efecf93">
@@ -3681,11 +3595,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="sfeb779d4ccbc5a0e">
         <source>Recovery flow</source>
         <target>恢复流程</target>
-        
-      </trans-unit>
-      <trans-unit id="s1c2fd8097e14a608">
-        <source>Recovery flow. If left empty, the first applicable flow sorted by the slug is used.</source>
-        <target>恢复流程。如果留空，则使用按 Slug 排序的第一个适用流程。</target>
         
       </trans-unit>
       <trans-unit id="s836aa192b30c21da">
@@ -5059,16 +4968,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>始终需要征得同意授权</target>
         
       </trans-unit>
-      <trans-unit id="s8ce8bdc9cc9c8604">
-        <source>Consent given last indefinitely</source>
-        <target>无限期同意授权</target>
-        
-      </trans-unit>
-      <trans-unit id="sb986f15fa9b17805">
-        <source>Consent expires.</source>
-        <target>同意授权会过期。</target>
-        
-      </trans-unit>
       <trans-unit id="s6f328f2d8382d998">
         <source>Consent expires in</source>
         <target>同意授权过期时间</target>
@@ -5329,14 +5228,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>字段</target>
         
       </trans-unit>
-      <trans-unit id="s2d5f69929bb7221d">
-        <source><x id="0" equiv-text="${prompt.name}"/> (&quot;<x id="1" equiv-text="${prompt.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${prompt.type}"/>)</source>
-        <target>
-        <x id="0" equiv-text="${prompt.name}"/>（&quot;
-        <x id="1" equiv-text="${prompt.fieldKey}"/>&quot;，类型为
-        <x id="2" equiv-text="${prompt.type}"/>）</target>
-        
-      </trans-unit>
       <trans-unit id="s3b7b519444181264">
         <source>Validation Policies</source>
         <target>验证策略</target>
@@ -5578,16 +5469,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>需要身份验证</target>
         
       </trans-unit>
-      <trans-unit id="s239c2a351cde6d39">
-        <source>Require no authentication.</source>
-        <target>需要无身份验证。</target>
-        
-      </trans-unit>
-      <trans-unit id="s98beadfeeb3acb66">
-        <source>Require superuser.</source>
-        <target>需要管理员用户。</target>
-        
-      </trans-unit>
       <trans-unit id="sfad9279cc42c6b61">
         <source>Required authentication level for this flow.</source>
         <target>此流程需要身份验证等级。</target>
@@ -5757,11 +5638,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s9a393a04eaf1eb0e">
         <source>Create Stage binding</source>
         <target>创建阶段绑定</target>
-        
-      </trans-unit>
-      <trans-unit id="s207e8b106806d7e4">
-        <source>Bind stage</source>
-        <target>绑定阶段</target>
         
       </trans-unit>
       <trans-unit id="scc2e420c54dc8089">
@@ -6066,12 +5942,6 @@ Bindings to groups/users are checked against the user of the event.</source>
       <trans-unit id="s322e34cfcba47155">
         <source>Not available</source>
         <target>不可用</target>
-        
-      </trans-unit>
-      <trans-unit id="s02b632a9ac24a824">
-        <source>Last seen: <x id="0" equiv-text="${this.outpostHealth.lastSeen?.toLocaleTimeString()}"/></source>
-        <target>上次出现：
-        <x id="0" equiv-text="${this.outpostHealth.lastSeen?.toLocaleTimeString()}"/></target>
         
       </trans-unit>
       <trans-unit id="sa43153d53ae65063">
@@ -6714,11 +6584,6 @@ Bindings to groups/users are checked against the user of the event.</source>
         <target>请输入您的代码</target>
         
       </trans-unit>
-      <trans-unit id="s18b910437b73e8e8">
-        <source>Return to device picker</source>
-        <target>返回设备选择器</target>
-        
-      </trans-unit>
       <trans-unit id="se409d01b52c4e12f">
         <source>Retry authentication</source>
         <target>重试身份验证</target>
@@ -6882,11 +6747,6 @@ Bindings to groups/users are checked against the user of the event.</source>
       <trans-unit id="s6fe64b4625517333">
         <source>Powered by authentik</source>
         <target>由 authentik 强力驱动</target>
-        
-      </trans-unit>
-      <trans-unit id="sdf34a5599d66f85c">
-        <source>Background image</source>
-        <target>背景图片</target>
         
       </trans-unit>
       <trans-unit id="s7fa4e5e409d43573">
@@ -7202,10 +7062,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Send us feedback!</source>
   <target>给我们发送反馈！</target>
 </trans-unit>
-<trans-unit id="s4015746f55a8d89f">
-  <source>Get a license</source>
-  <target>获取许可证</target>
-</trans-unit>
 <trans-unit id="sb2cbd06f8e25b47e">
   <source>Go to Customer Portal</source>
   <target>前往客户中心</target>
@@ -7483,10 +7339,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Saving Application...</source>
   <target>正在保存应用程序…</target>
 </trans-unit>
-<trans-unit id="s823abdb61543a826">
-  <source>Authentik was unable to save this application:</source>
-  <target>Authentik 无法保存此应用程序：</target>
-</trans-unit>
 <trans-unit id="s848288f8c2265aad">
   <source>Your application has been saved</source>
   <target>您的应用程序已保存</target>
@@ -7577,10 +7429,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Editing is disabled for managed tokens</source>
   <target>托管令牌的编辑已被禁用</target>
 </trans-unit>
-<trans-unit id="s78ab26da7f067de8">
-  <source>Select permissions to grant</source>
-  <target>选择权限以授予</target>
-</trans-unit>
 <trans-unit id="sdeb90bfd8a80b86b">
   <source>Permissions to add</source>
   <target>要添加的权限</target>
@@ -7660,10 +7508,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s070fdfb03034ca9b">
   <source>One hint, 'New Application Wizard', is currently hidden</source>
   <target>“新应用程序向导”提示目前已隐藏</target>
-</trans-unit>
-<trans-unit id="s61bd841e66966325">
-  <source>External applications that use authentik as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
-  <target>通过 OAuth2 和 SAML 等协议，使用 authentik 作为身份提供程序的外部应用程序。此处显示了所有应用程序，即使您无法访问的也包括在内。</target>
 </trans-unit>
 <trans-unit id="s1cc306d8e28c4464">
   <source>Deny message</source>
@@ -7764,10 +7608,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sfc31264ef7ff86ef">
   <source>For nginx's auth_request or traefik's forwardAuth per root domain</source>
   <target>适用于按根域名配置的 nginx 的 auth_request 或 traefik 的 forwardAuth</target>
-</trans-unit>
-<trans-unit id="sc615309d10a9228c">
-  <source>RBAC is in preview.</source>
-  <target>RBAC 目前处于预览状态。</target>
 </trans-unit>
 <trans-unit id="s32babfed740fd3c1">
   <source>User type used for newly created users.</source>
@@ -7881,10 +7721,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Configure Proxy Provider</source>
   <target>配置代理提供程序</target>
 </trans-unit>
-<trans-unit id="sf6d46bb442b77e91">
-  <source>AdditionalScopes</source>
-  <target>额外的作用域</target>
-</trans-unit>
 <trans-unit id="s2c8c6f89089b31d4">
   <source>Configure Radius Provider</source>
   <target>配置 Radius 提供程序</target>
@@ -7908,10 +7744,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s7513372fe60f6387">
   <source>Event volume</source>
   <target>事件容量</target>
-</trans-unit>
-<trans-unit id="s047a5f0211fedc72">
-  <source>Require Outpost (flow can only be executed from an outpost).</source>
-  <target>需要前哨（流程只能从前哨执行）。</target>
 </trans-unit>
 <trans-unit id="s3271da6c18c25b18">
   <source>Connection settings.</source>
@@ -7964,10 +7796,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s38e7cd1a24e70faa">
   <source>Create Endpoint</source>
   <target>创建端点</target>
-</trans-unit>
-<trans-unit id="s4770c10e5b1c028c">
-  <source>RAC is in preview.</source>
-  <target>RAC 目前处于预览状态。</target>
 </trans-unit>
 <trans-unit id="s168565f5ac74a89f">
   <source>Update RAC Provider</source>
@@ -8092,10 +7920,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s95d56e58f816d211">
   <source>Dutch</source>
   <target>荷兰语</target>
-</trans-unit>
-<trans-unit id="s16a15af46bc9aeef">
-  <source>Failed to fetch objects: <x id="0" equiv-text="${this.error.detail}"/></source>
-  <target>获取对象失败：<x id="0" equiv-text="${this.error.detail}"/></target>
 </trans-unit>
 <trans-unit id="s744401846fea6e76">
   <source>Brand</source>
@@ -8314,14 +8138,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sd176021da2ea0fe3">
   <source>Selected Applications</source>
   <target>已选应用</target>
-</trans-unit>
-<trans-unit id="s862505f29064fc72">
-  <source>This option configures the footer links on the flow executor pages. It must be a valid YAML or JSON list and can be used as follows:</source>
-  <target>此选项配置流程执行器页面上的页脚链接。必须为有效的 YAML 或 JSON 列表，可以使用以下值：</target>
-</trans-unit>
-<trans-unit id="sb2275335377069aa">
-  <source>This feature requires an enterprise license.</source>
-  <target>此功能需要企业版许可证。</target>
 </trans-unit>
 <trans-unit id="s6d3f81dc4bcacbda">
   <source>Last used</source>
@@ -8566,6 +8382,1006 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sa6b2c110466d1754">
   <source>Default length of generated tokens</source>
   <target>生成令牌的默认长度</target>
+</trans-unit>
+<trans-unit id="s1f25e1e20469a9ea">
+  <source>deleted</source>
+  <target>已删除</target>
+</trans-unit>
+<trans-unit id="s0ca04e397298bc43">
+  <source>Select permissions to assign</source>
+  <target>选择权限以分配</target>
+</trans-unit>
+<trans-unit id="s676d94e7e31a8075">
+  <source>SCIM Source is in preview.</source>
+  <target>SCIM 源目前处于预览状态。</target>
+</trans-unit>
+<trans-unit id="s31f1afc0a81977c1">
+  <source>Update SCIM Source</source>
+  <target>更新 SCIM 源</target>
+</trans-unit>
+<trans-unit id="s4bb356adc8a7f85b">
+  <source>SCIM Base URL</source>
+  <target>SCIM Base URL</target>
+</trans-unit>
+<trans-unit id="sb23304fc42c5d6d9">
+  <source>Provisioned Users</source>
+  <target>预配用户</target>
+</trans-unit>
+<trans-unit id="s6a81ee82b2e5ecbb">
+  <source>Provisioned Groups</source>
+  <target>预配组</target>
+</trans-unit>
+<trans-unit id="s10154dbd4fbc697b">
+  <source>removed</source>
+  <target>已删除</target>
+</trans-unit>
+<trans-unit id="s30d6ff9e15e0a40a">
+  <source>Verifying...</source>
+  <target>正在验证...</target>
+</trans-unit>
+<trans-unit id="sc1673c93148583ba">
+  <source>Request failed. Please try again later.</source>
+  <target>请求失败。请稍后重试。</target>
+</trans-unit>
+<trans-unit id="s85be1f5e7a0fa3b1">
+  <source>Available Roles</source>
+  <target>可用角色</target>
+</trans-unit>
+<trans-unit id="sa59d53ee922c08b5">
+  <source>Selected Roles</source>
+  <target>已选角色</target>
+</trans-unit>
+<trans-unit id="s7bfbf84a8ad5883f">
+  <source>Internal Service accounts are created and managed by authentik and cannot be created manually.</source>
+  <target>内部服务账户由 authentik 创建和管理，无法手动创建。</target>
+</trans-unit>
+<trans-unit id="sb0680e5f8782db1e">
+  <source>Private key Algorithm</source>
+  <target>私钥算法</target>
+</trans-unit>
+<trans-unit id="sa03cbf19feebd249">
+  <source>RSA</source>
+  <target>RSA</target>
+</trans-unit>
+<trans-unit id="sfbfccbd3e395c147">
+  <source>ECDSA</source>
+  <target>ECDSA</target>
+</trans-unit>
+<trans-unit id="sebea299e52db4242">
+  <source>Algorithm used to generate the private key.</source>
+  <target>用于生成私钥的算法。</target>
+</trans-unit>
+<trans-unit id="s21e38ec6ffa2b918">
+  <source>Added ID <x id="0" equiv-text="${item}"/></source>
+  <target>已添加 ID <x id="0" equiv-text="${item}"/></target>
+</trans-unit>
+<trans-unit id="s74918a09ef39ed26">
+  <source>Removed ID <x id="0" equiv-text="${item}"/></source>
+  <target>已删除 ID <x id="0" equiv-text="${item}"/></target>
+</trans-unit>
+<trans-unit id="s3a20e5d7dd70dcd3">
+  <source>Cleared</source>
+  <target>已清除</target>
+</trans-unit>
+<trans-unit id="s8cfd29891b2c93f0">
+  <source>Google Workspace Provider</source>
+  <target>Google Workspace 提供程序</target>
+</trans-unit>
+<trans-unit id="sa817aa9f6f88a991">
+  <source>Credentials</source>
+  <target>凭据</target>
+</trans-unit>
+<trans-unit id="sc668815044e218c2">
+  <source>Delegated Subject</source>
+  <target>委托主题</target>
+</trans-unit>
+<trans-unit id="se89a9ecf275e4343">
+  <source>Default group email domain</source>
+  <target>默认组电子邮件域</target>
+</trans-unit>
+<trans-unit id="s64a0a6da6ed6d680">
+  <source>Default domain that is used to generate a group's email address. Can be customized using property mappings.</source>
+  <target>用于生成组内电子邮件的默认域。可以通过属性映射进行自定义。</target>
+</trans-unit>
+<trans-unit id="sd061e65955e036ca">
+  <source>User deletion action</source>
+  <target>用户删除动作</target>
+</trans-unit>
+<trans-unit id="s87f86f65b5e19ea7">
+  <source>User is deleted</source>
+  <target>用户被删除</target>
+</trans-unit>
+<trans-unit id="s3906cd4a102867a3">
+  <source>Suspend</source>
+  <target>停用</target>
+</trans-unit>
+<trans-unit id="s0bf5b364e2c79392">
+  <source>User is suspended, and connection to user in authentik is removed.</source>
+  <target>用户被停用，authentik 与此用户的连接被删除。</target>
+</trans-unit>
+<trans-unit id="s4acb0250d735c2a9">
+  <source>Do Nothing</source>
+  <target>什么也不做</target>
+</trans-unit>
+<trans-unit id="s5fe525d19499ed47">
+  <source>The connection is removed but the user is not modified</source>
+  <target>连接被删除，但用户未被修改</target>
+</trans-unit>
+<trans-unit id="s676a0127c35d240a">
+  <source>Determines what authentik will do when a User is deleted.</source>
+  <target>决定当用户被删除时，authentik 应该做什么。</target>
+</trans-unit>
+<trans-unit id="sd1aa04cc32caf2b0">
+  <source>Group deletion action</source>
+  <target>组删除动作</target>
+</trans-unit>
+<trans-unit id="s874c788479481131">
+  <source>Group is deleted</source>
+  <target>组被删除</target>
+</trans-unit>
+<trans-unit id="s0983fa9b84e4a9f7">
+  <source>The connection is removed but the group is not modified</source>
+  <target>连接被删除，但组未被修改</target>
+</trans-unit>
+<trans-unit id="sdb872a9f425937fa">
+  <source>Determines what authentik will do when a Group is deleted.</source>
+  <target>决定当组被删除时，authentik 应该做什么。</target>
+</trans-unit>
+<trans-unit id="sa5f28f1ad0bee45b">
+  <source>Google Workspace Provider is in preview.</source>
+  <target>Google Workspace 提供程序处于预览状态。</target>
+</trans-unit>
+<trans-unit id="s958928ab6208d748">
+  <source>Microsoft Entra Provider</source>
+  <target>Microsoft Entra 提供程序</target>
+</trans-unit>
+<trans-unit id="sc7d6bc4aebb58fe9">
+  <source>Google Cloud credentials file.</source>
+  <target>Google Cloud 凭据文件。</target>
+</trans-unit>
+<trans-unit id="s2e707072d5a9615d">
+  <source>Email address of the user the actions of authentik will be delegated to.</source>
+  <target>接受 authentik 操作委托的用户电子邮件地址。</target>
+</trans-unit>
+<trans-unit id="s03a759e65ceb722d">
+  <source>Client ID for the app registration.</source>
+  <target>应用注册的客户端 ID。</target>
+</trans-unit>
+<trans-unit id="s479980cf9252628c">
+  <source>Client secret for the app registration.</source>
+  <target>应用注册的客户端密钥。</target>
+</trans-unit>
+<trans-unit id="s25c2392ffcb78df2">
+  <source>Tenant ID</source>
+  <target>租户 ID</target>
+</trans-unit>
+<trans-unit id="s89e4e698cdb1187f">
+  <source>ID of the tenant accounts will be synced into.</source>
+  <target>将被同步的租户账户 ID。</target>
+</trans-unit>
+<trans-unit id="sf341f5dfc7a11633">
+  <source>Microsoft Entra Provider is in preview.</source>
+  <target>Microsoft Entra 提供程序处于预览状态。</target>
+</trans-unit>
+<trans-unit id="s79dd6df244c05ae9">
+  <source>Update Microsoft Entra Provider</source>
+  <target>更新 Microsoft Entra 提供程序</target>
+</trans-unit>
+<trans-unit id="saf4b498d81141878">
+  <source>Finished successfully</source>
+  <target>成功完成</target>
+</trans-unit>
+<trans-unit id="s46f1d86ffec6223c">
+  <source>Finished with errors</source>
+  <target>已完成但有错误</target>
+</trans-unit>
+<trans-unit id="sbd12ed8a1053a108">
+  <source>Finished <x id="0" equiv-text="${getRelativeTime(task.finishTimestamp)}"/> (<x id="1" equiv-text="${task.finishTimestamp.toLocaleString()}"/>)</source>
+  <target><x id="0" equiv-text="${getRelativeTime(task.finishTimestamp)}"/>（<x id="1" equiv-text="${task.finishTimestamp.toLocaleString()}"/>） 完成</target>
+</trans-unit>
+<trans-unit id="sc3c334d642866997">
+  <source>Sync currently running</source>
+  <target>当前正在同步</target>
+</trans-unit>
+<trans-unit id="sd520a4089006ca93">
+  <source>Update Google Workspace Provider</source>
+  <target>Google Workspace 提供程序</target>
+</trans-unit>
+<trans-unit id="sfdfa5bb4ddd99d70">
+  <source>Enterprise only</source>
+  <target>仅限企业版</target>
+</trans-unit>
+<trans-unit id="scffa59cfac1951f2">
+  <source><x id="0" equiv-text="${type.name}"/> Icon</source>
+  <target><x id="0" equiv-text="${type.name}"/> 图标</target>
+</trans-unit>
+<trans-unit id="s1da3499258024860">
+  <source><x id="0" equiv-text="${versionString}"/> (build <x id="1" equiv-text="${this.outpostHealth.buildHash.substring(0, 8)}"/>)</source>
+  <target><x id="0" equiv-text="${versionString}"/>（构建 <x id="1" equiv-text="${this.outpostHealth.buildHash.substring(0, 8)}"/>）</target>
+</trans-unit>
+<trans-unit id="s001fd928369d4ddc">
+  <source><x id="0" equiv-text="${versionString}"/> (FIPS)</source>
+  <target><x id="0" equiv-text="${versionString}"/>（FIPS）</target>
+</trans-unit>
+<trans-unit id="sce17c2bdea3e6ace">
+  <source>Score minimum threshold</source>
+  <target>分数最小阈值</target>
+</trans-unit>
+<trans-unit id="sf2fcb974c62625fc">
+  <source>Minimum required score to allow continuing</source>
+  <target>允许继续所需的最小分数</target>
+</trans-unit>
+<trans-unit id="s7452199a73ce8b78">
+  <source>Score maximum threshold</source>
+  <target>分数最大阈值</target>
+</trans-unit>
+<trans-unit id="s2d3a6cd50b46b44d">
+  <source>Maximum allowed score to allow continuing</source>
+  <target>允许继续所需的最大分数</target>
+</trans-unit>
+<trans-unit id="s9d6e40d9a9a58fbf">
+  <source>Error on invalid score</source>
+  <target>分数无效时报错</target>
+</trans-unit>
+<trans-unit id="s2af59e2f9f12847a">
+  <source>When enabled and the resultant score is outside the threshold, the user will not be able to continue. When disabled, the user will be able to continue and the score can be used in policies to customize further stages.</source>
+  <target>启用时，如果结果分数超出阈值，用户将无法继续。禁用时，用户可以继续，分数可用于自定义下一阶段的策略。</target>
+</trans-unit>
+<trans-unit id="s10092327ad833090">
+  <source>Microsoft Entra Group(s)</source>
+  <target>Microsoft Entra 组</target>
+</trans-unit>
+<trans-unit id="s811c45ad24a5feae">
+  <source>Microsoft Entra User(s)</source>
+  <target>Microsoft Entra 用户</target>
+</trans-unit>
+<trans-unit id="s7d2d3d298fdccfc8">
+  <source>Google Workspace Group(s)</source>
+  <target>Google Workspace 组</target>
+</trans-unit>
+<trans-unit id="s8c9cf2c004755526">
+  <source>Google Workspace User(s)</source>
+  <target>Google Workspace 用户</target>
+</trans-unit>
+<trans-unit id="sd000b42fea07c34a">
+  <source>SCIM Group(s)</source>
+  <target>SCIM 组</target>
+</trans-unit>
+<trans-unit id="s146769fb55f1ee50">
+  <source>SCIM User(s)</source>
+  <target>SCIM 用户</target>
+</trans-unit>
+<trans-unit id="s35f47dbd321aaf15">
+  <source>FIPS compliance: passing</source>
+  <target>FIPS 合规性：通过</target>
+</trans-unit>
+<trans-unit id="sc94578030c702562">
+  <source>Unverified</source>
+  <target>未验证</target>
+</trans-unit>
+<trans-unit id="s16749cce7c4c1589">
+  <source>FIPS compliance: unverified</source>
+  <target>FIPS 合规性：未验证</target>
+</trans-unit>
+<trans-unit id="s0b2ad58c3deaa8dd">
+  <source>FIPS Status</source>
+  <target>FIPS 状态</target>
+</trans-unit>
+<trans-unit id="s4facec1106c91cf9">
+  <source>Search returned no results.</source>
+  <target>搜索未返回结果。</target>
+</trans-unit>
+<trans-unit id="s23446284b56ca0cc">
+  <source>Reputation score(s)</source>
+  <target>信誉分数</target>
+</trans-unit>
+<trans-unit id="s7a64ac07061f85b2">
+  <source>See documentation</source>
+  <target>查看文档</target>
+</trans-unit>
+<trans-unit id="se166e95fe447ebcd">
+  <source>Close dialog</source>
+  <target>关闭对话框</target>
+</trans-unit>
+<trans-unit id="s3dc14a4b8129f989">
+  <source>Pagination</source>
+  <target>分页</target>
+</trans-unit>
+<trans-unit id="s6d46b842e227be57">
+  <source>Application Details</source>
+  <target>应用程序详情</target>
+</trans-unit>
+<trans-unit id="s76415a60e548cafe">
+  <source>Provider Configuration</source>
+  <target>提供程序配置</target>
+</trans-unit>
+<trans-unit id="sde59c64619570b57">
+  <source>Submit Application</source>
+  <target>提交应用程序</target>
+</trans-unit>
+<trans-unit id="sf2da0e95c78f2cb7">
+  <source>Restore Application Wizard Hint</source>
+  <target>恢复应用程序向导提示</target>
+</trans-unit>
+<trans-unit id="s76dc6d0d1a7db8e2">
+  <source>Your authentik password</source>
+  <target>您的 authentik 密码</target>
+</trans-unit>
+<trans-unit id="se3a34af2a05c5c98">
+  <source>Internal Service account</source>
+  <target>内部服务账户</target>
+</trans-unit>
+<trans-unit id="s681c086b8f7afcae">
+  <source>Global</source>
+  <target>全局</target>
+</trans-unit>
+<trans-unit id="s1b85e6ac2978a2c0">
+  <source>Outpost integrations</source>
+  <target>前哨集成</target>
+</trans-unit>
+<trans-unit id="sec55a3a7f18615ec">
+  <source>Outpost integrations define how authentik connects to external platforms to manage and deploy Outposts.</source>
+  <target>前哨集成定义了 authentik 如何连接到外部平台以管理和部署前哨。</target>
+</trans-unit>
+<trans-unit id="s74d86eb7e5a10fdf">
+  <source>Operation failed to complete</source>
+  <target>完成操作失败</target>
+</trans-unit>
+<trans-unit id="sc0448bc8a76227cb">
+  <source>Failed to fetch objects: </source>
+  <target>拉取对象失败：</target>
+</trans-unit>
+<trans-unit id="s233a0201fde4a38d">
+  <source>Available Scopes</source>
+  <target>可用作用域</target>
+</trans-unit>
+<trans-unit id="s631b3419f6dfd031">
+  <source>Selected Scopes</source>
+  <target>已选作用域</target>
+</trans-unit>
+<trans-unit id="s81d76cccf339a43c">
+  <source>Available Property Mappings</source>
+  <target>可用属性映射</target>
+</trans-unit>
+<trans-unit id="se9195c05c61d8ef8">
+  <source>Selected Property Mappings</source>
+  <target>已选属性映射</target>
+</trans-unit>
+<trans-unit id="s0619413371f33083">
+  <source>Available User Property Mappings</source>
+  <target>可用用户属性映射</target>
+</trans-unit>
+<trans-unit id="sbb46aed99e712337">
+  <source>Selected User Property Mappings</source>
+  <target>已选用户属性映射</target>
+</trans-unit>
+<trans-unit id="se84ebf32648e6a63">
+  <source>Available Group Property Mappings</source>
+  <target>可用组属性映射</target>
+</trans-unit>
+<trans-unit id="seaf9f9ecb99568c7">
+  <source>Selected Group Property Mappings</source>
+  <target>已选组属性映射</target>
+</trans-unit>
+<trans-unit id="sc362f1f1e4044878">
+  <source>Ensure the user satisfies requirements of geography or network topology, based on IP address. If any of the configured values match, the policy passes.</source>
+  <target>确保用户满足基于 IP 地址的地理或网络拓扑要求。如果任何配置的值匹配，则策略通过。</target>
+</trans-unit>
+<trans-unit id="s26c2828bf8db525e">
+  <source>ASNs</source>
+  <target>ASN</target>
+</trans-unit>
+<trans-unit id="s72ee4dd6cfa6e10d">
+  <source>List of autonomous system numbers. Comma separated. E.g. 13335, 15169, 20940</source>
+  <target>ASN 列表。逗号分隔。例如 13335, 15169, 20940</target>
+</trans-unit>
+<trans-unit id="s77fbb0a6d145442d">
+  <source>Countries</source>
+  <target>地区</target>
+</trans-unit>
+<trans-unit id="sdd277e10884a7272">
+  <source>Available Countries</source>
+  <target>可用地区</target>
+</trans-unit>
+<trans-unit id="s7a93139fb12ebf96">
+  <source>Selected Countries</source>
+  <target>已选地区</target>
+</trans-unit>
+<trans-unit id="s375a13497266db93">
+  <source>Bind existing policy/group/user</source>
+  <target>绑定已有策略/组/用户</target>
+</trans-unit>
+<trans-unit id="s8e2de27afeb78e5a">
+  <source>Property mappings for user creation.</source>
+  <target>用于创建用户的属性映射。</target>
+</trans-unit>
+<trans-unit id="s045cf2d851164d5a">
+  <source>Property mappings for group creation.</source>
+  <target>用于创建组的属性映射。</target>
+</trans-unit>
+<trans-unit id="s9642f1d8ee6e787d">
+  <source>Link to a group with identical name. Can have security implications when a group is used with another source</source>
+  <target>链接到名称相同的组。当其他源使用相同组名时，可能会有安全隐患。</target>
+</trans-unit>
+<trans-unit id="s485964f83b5ed044">
+  <source>Use the group's name, but deny enrollment when the name already exists</source>
+  <target>使用组的名称，但在名称已存在时拒绝注册。</target>
+</trans-unit>
+<trans-unit id="s2b1b532c5271b296">
+  <source>Group matching mode</source>
+  <target>组匹配模式</target>
+</trans-unit>
+<trans-unit id="s704381cea57e5a12">
+  <source>OAuth Attribute mapping</source>
+  <target>OAuth 属性映射</target>
+</trans-unit>
+<trans-unit id="s4b9501c321dc4922">
+  <source>Plex Attribute mapping</source>
+  <target>Plex 属性映射</target>
+</trans-unit>
+<trans-unit id="s6135938c50ad8a4b">
+  <source>Encryption Certificate</source>
+  <target>加密证书</target>
+</trans-unit>
+<trans-unit id="s37b8d48b9416fc25">
+  <source>When selected, encrypted assertions will be decrypted using this keypair.</source>
+  <target>选择此选项时，被加密的断言将以此密钥对解密。</target>
+</trans-unit>
+<trans-unit id="s924a87f37bc0201e">
+  <source>SAML Attribute mapping</source>
+  <target>SAML 属性映射</target>
+</trans-unit>
+<trans-unit id="sf0532ddee3b4e977">
+  <source>SCIM Attribute mapping</source>
+  <target>SCIM 属性映射</target>
+</trans-unit>
+<trans-unit id="sd61a4f736ac0a98e">
+  <source>External user settings</source>
+  <target>外部用户设置</target>
+</trans-unit>
+<trans-unit id="sdc4f72f6a46ae2c8">
+  <source>Default application</source>
+  <target>默认应用程序</target>
+</trans-unit>
+<trans-unit id="sac85801a25b7bb27">
+  <source>When configured, external users will automatically be redirected to this application when not attempting to access a different application</source>
+  <target>配置时，外部用户会被自动重定向到此应用程序，除非用户尝试访问其他应用程序</target>
+</trans-unit>
+<trans-unit id="s9f4d6296b906d591">
+  <source>Warning: One or more license(s) have expired.</source>
+  <target>警告：一个或多个许可证已过期。</target>
+</trans-unit>
+<trans-unit id="s3b016caea59af3ef">
+  <source>Warning: One or more license(s) will expire within the next 2 weeks.</source>
+  <target>警告：一个或多个许可证将在 2 星期内过期。</target>
+</trans-unit>
+<trans-unit id="sd8a5f7269b7ac7a3">
+  <source>Caution: This authentik instance has entered read-only mode due to expired/exceeded licenses.</source>
+  <target>注意：由于许可证过期/超限，此 authentik 实例已进入只读模式。</target>
+</trans-unit>
+<trans-unit id="se8c58e65674b6847">
+  <source>This authentik instance uses a Trial license.</source>
+  <target>此 authentik 实例使用的是试用许可证。</target>
+</trans-unit>
+<trans-unit id="s6ee52309e586eb18">
+  <source>This authentik instance uses a Non-production license.</source>
+  <target>此 authentik 实例使用的是非生产许可证。</target>
+</trans-unit>
+<trans-unit id="s4a799b4562ab2051">
+  <source>Access Tokens(s)</source>
+  <target>访问令牌</target>
+</trans-unit>
+<trans-unit id="s4ae42fa672dd72bc">
+  <source>Created at</source>
+  <target>创建于</target>
+</trans-unit>
+<trans-unit id="see1f8a5c8e11c5ab">
+  <source>Last updated at</source>
+  <target>上次更新于</target>
+</trans-unit>
+<trans-unit id="s82dd7087cd1471ab">
+  <source>Last used at</source>
+  <target>上次使用于</target>
+</trans-unit>
+<trans-unit id="s9dda0789d278f5c5">
+  <source>Provide users with a 'show password' button.</source>
+  <target>为用户提供“显示密码”按钮。</target>
+</trans-unit>
+<trans-unit id="s2f7f35f6a5b733f5">
+  <source>Show password</source>
+  <target>显示密码</target>
+</trans-unit>
+<trans-unit id="s452f791e0ff6a13e">
+  <source>Hide password</source>
+  <target>隐藏密码</target>
+</trans-unit>
+<trans-unit id="s08272eeeddfd244e">
+  <source>An outpost is on an incorrect version!</source>
+  <target>一个前哨的版本不正确！</target>
+</trans-unit>
+<trans-unit id="sa30c12014e955946">
+  <source>Russian</source>
+  <target>俄语</target>
+</trans-unit>
+<trans-unit id="s354405ae02cb262d">
+  <source>Last seen: <x id="0" equiv-text="${getRelativeTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</source>
+  <target>上次出现：<x id="0" equiv-text="${getRelativeTime(lastSeen)}"/>（<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>）</target>
+</trans-unit>
+<trans-unit id="s5aebe06e3ddf6ca9">
+  <source>Sign assertions</source>
+  <target>签名断言</target>
+</trans-unit>
+<trans-unit id="s4e2329ffa0ef6b74">
+  <source>When enabled, the assertion element of the SAML response will be signed.</source>
+  <target>启用时，SAML 响应的断言元素会被签名。</target>
+</trans-unit>
+<trans-unit id="s2ad1b968b37ded68">
+  <source>Sign responses</source>
+  <target>签名响应</target>
+</trans-unit>
+<trans-unit id="sb416d07987093cd5">
+  <source>When selected, assertions will be encrypted using this keypair.</source>
+  <target>选择此选项时，断言将以此密钥对加密。</target>
+</trans-unit>
+<trans-unit id="sa42be520242dec2a">
+  <source>Available Sources</source>
+  <target>可用源</target>
+</trans-unit>
+<trans-unit id="s876e75cf2c07b38e">
+  <source>Selected Sources</source>
+  <target>已选源</target>
+</trans-unit>
+<trans-unit id="s3b579c4bb6b447ae">
+  <source>Successfully triggered sync.</source>
+  <target>已成功触发同步。</target>
+</trans-unit>
+<trans-unit id="s05073d2537b45d1a">
+  <source>Sync</source>
+  <target>同步</target>
+</trans-unit>
+<trans-unit id="se9da93aa2e6cce21">
+  <source>Sync User</source>
+  <target>同步用户</target>
+</trans-unit>
+<trans-unit id="s7bd456df0becbbff">
+  <source>Available Stages</source>
+  <target>可用阶段</target>
+</trans-unit>
+<trans-unit id="sf80798d2f56b540b">
+  <source>Selected Stages</source>
+  <target>已选阶段</target>
+</trans-unit>
+<trans-unit id="sf651943c3ddff635">
+  <source>Available Fields</source>
+  <target>可用字段</target>
+</trans-unit>
+<trans-unit id="s80ba9c5ebb7826a9">
+  <source>Selected Fields</source>
+  <target>已选字段</target>
+</trans-unit>
+<trans-unit id="s26733a6289ca6f1a">
+  <source>Available Transports</source>
+  <target>可用传输</target>
+</trans-unit>
+<trans-unit id="sa65f772cfc5aa67e">
+  <source>Selected Transports</source>
+  <target>已选传输</target>
+</trans-unit>
+<trans-unit id="sd923f95605fed7b2">
+  <source>Expired</source>
+  <target>已过期</target>
+</trans-unit>
+<trans-unit id="s86959994f28077dc">
+  <source>Expiring soon</source>
+  <target>即将过期</target>
+</trans-unit>
+<trans-unit id="sc60a5fba70bf5a53">
+  <source>Unlicensed</source>
+  <target>未许可</target>
+</trans-unit>
+<trans-unit id="s4f9880ce82953741">
+  <source>Read Only</source>
+  <target>只读</target>
+</trans-unit>
+<trans-unit id="s4220dda46d622211">
+  <source>Valid</source>
+  <target>有效</target>
+</trans-unit>
+<trans-unit id="sdc94711a2eb66a45">
+  <source>Current license status</source>
+  <target>当前许可证状态</target>
+</trans-unit>
+<trans-unit id="se10fb73c1f1039c5">
+  <source>Overall license status</source>
+  <target>总体许可证状态</target>
+</trans-unit>
+<trans-unit id="sc4804358f202968c">
+  <source>Internal user usage</source>
+  <target>内部用户用量</target>
+</trans-unit>
+<trans-unit id="s087d6f07b52b30ec">
+  <source><x id="0" equiv-text="${internalUserPercentage &lt; Infinity ? internalUserPercentage : &quot;∞&quot;}"/>%</source>
+  <target><x id="0" equiv-text="${internalUserPercentage &lt; Infinity ? internalUserPercentage : &quot;∞&quot;}"/>%</target>
+</trans-unit>
+<trans-unit id="sae72e1569d34fb02">
+  <source>External user usage</source>
+  <target>外部用户用量</target>
+</trans-unit>
+<trans-unit id="sa82f8948649d0989">
+  <source>Matches Event's Client IP (strict matching, for network matching use an Expression Policy).</source>
+  <target>匹配事件的客户端 IP（严格匹配，要网络匹配请使用表达式策略）。</target>
+</trans-unit>
+<trans-unit id="s6506b7c69456b0d6">
+  <source>Invalid update request.</source>
+  <target>无效更新请求。</target>
+</trans-unit>
+<trans-unit id="s3819162efec77de1">
+  <source>Sync Group</source>
+  <target>同步组</target>
+</trans-unit>
+<trans-unit id="s2d5f69929bb7221d">
+  <source><x id="0" equiv-text="${p.name}"/> (&quot;<x id="1" equiv-text="${p.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${p.type}"/>)</source>
+  <target><x id="0" equiv-text="${p.name}"/>（&amp;quot;<x id="1" equiv-text="${p.fieldKey}"/>&amp;quot;，类型为 <x id="2" equiv-text="${p.type}"/>）</target>
+</trans-unit>
+<trans-unit id="sa38c5a2731be3a46">
+  <source>authentik was unable to save this application:</source>
+  <target>authentik 无法保存此应用程序：</target>
+</trans-unit>
+<trans-unit id="s25bacc19d98b444e">
+  <source>Parent Group</source>
+  <target>父组</target>
+</trans-unit>
+<trans-unit id="s0159c800f16ee1a5">
+  <source>Flow used when logging out of this provider.</source>
+  <target>登出此提供程序时使用的流程。</target>
+</trans-unit>
+<trans-unit id="s821d70ef9496e6f7">
+  <source>Unbind flow</source>
+  <target>取消绑定流程</target>
+</trans-unit>
+<trans-unit id="s6773ec2a233bbf41">
+  <source>Flow used for unbinding users.</source>
+  <target>用于取消绑定用户的流程。</target>
+</trans-unit>
+<trans-unit id="s99060120f626df5b">
+  <source>Verify SCIM server's certificates</source>
+  <target>验证 SCIM 服务器证书</target>
+</trans-unit>
+<trans-unit id="sac88482c48453fc8">
+  <source>You've logged out of <x id="0" equiv-text="${this.challenge.applicationName}"/>. You can go back to the overview to launch another application, or log out of your authentik account.</source>
+  <target>您已成功登出 <x id="0" equiv-text="${this.challenge.applicationName}"/>。现在您可以返回总览页来启动其他应用，或者登出您的 authentik 账户。</target>
+</trans-unit>
+<trans-unit id="s3108167b562674e2">
+  <source>Go back to overview</source>
+  <target>返回总览</target>
+</trans-unit>
+<trans-unit id="sdb749e793de55478">
+  <source>Log out of <x id="0" equiv-text="${this.challenge.brandName}"/></source>
+  <target>登出 <x id="0" equiv-text="${this.challenge.brandName}"/></target>
+</trans-unit>
+<trans-unit id="s521681ed1d5ff814">
+  <source>Log back into <x id="0" equiv-text="${this.challenge.applicationName}"/></source>
+  <target>重新登录 <x id="0" equiv-text="${this.challenge.applicationName}"/></target>
+</trans-unit>
+<trans-unit id="sc991a35f5e88d1d3">
+  <source>Encryption Key</source>
+  <target>加密密钥</target>
+</trans-unit>
+<trans-unit id="s8a598f7aef81c3bc">
+  <source>Key used to encrypt the tokens.</source>
+  <target>用于加密令牌的密钥。</target>
+</trans-unit>
+<trans-unit id="sbfee780fa0a2c83e">
+  <source>Device type <x id="0" equiv-text="${device.verboseName}"/> cannot be deleted</source>
+  <target>设备类型 <x id="0" equiv-text="${device.verboseName}"/> 无法被删除</target>
+</trans-unit>
+<trans-unit id="s336936629cdeb3e5">
+  <source>Stage used to verify users' browsers using Google Chrome Device Trust. This stage can be used in authentication/authorization flows.</source>
+  <target>通过 Google Chrome 设备信任来验证用户浏览器的阶段。此阶段可在身份验证/授权流程中使用。</target>
+</trans-unit>
+<trans-unit id="s85fe794c71b4ace8">
+  <source>Google Verified Access API</source>
+  <target>Google Verified Access API</target>
+</trans-unit>
+<trans-unit id="s013620384af7c8b4">
+  <source>Device type <x id="0" equiv-text="${device.verboseName}"/> cannot be edited</source>
+  <target>设备类型 <x id="0" equiv-text="${device.verboseName}"/> 无法被编辑</target>
+</trans-unit>
+<trans-unit id="s4347135696fc7cde">
+  <source>Advanced flow settings</source>
+  <target>高级流程设置</target>
+</trans-unit>
+<trans-unit id="sf52ff57fd136cc2f">
+  <source>Enable this option to write password changes made in authentik back to Kerberos. Ignored if sync is disabled.</source>
+  <target>启用此选项会将 authentik 作出的密码修改写入回 Kerberos。如果未启用同步则忽略。</target>
+</trans-unit>
+<trans-unit id="s14a16542f956e11d">
+  <source>Realm settings</source>
+  <target>领域设置</target>
+</trans-unit>
+<trans-unit id="s9c2eae548d3c1c30">
+  <source>Realm</source>
+  <target>领域</target>
+</trans-unit>
+<trans-unit id="s6b032212997e2491">
+  <source>Kerberos 5 configuration</source>
+  <target>Kerberos 5 配置</target>
+</trans-unit>
+<trans-unit id="sbf50181022f47de3">
+  <source>Kerberos 5 configuration. See man krb5.conf(5) for configuration format. If left empty, a default krb5.conf will be used.</source>
+  <target>Kerberos 5 配置。请阅读 man krb5.conf(5) 了解配置格式。如果留空，则使用默认的 krb5.conf。</target>
+</trans-unit>
+<trans-unit id="s2386539a0bd62fab">
+  <source>Sync connection settings</source>
+  <target>同步连接设置</target>
+</trans-unit>
+<trans-unit id="s0d1a6f3fe81351f8">
+  <source>Sync principal</source>
+  <target>同步主体</target>
+</trans-unit>
+<trans-unit id="sa691d6e1974295fa">
+  <source>Principal used to authenticate to the KDC for syncing.</source>
+  <target>向 KDC 进行身份验证以进行同步的主体。</target>
+</trans-unit>
+<trans-unit id="s977b9c629eed3d33">
+  <source>Sync password</source>
+  <target>同步密码</target>
+</trans-unit>
+<trans-unit id="s77772860385de948">
+  <source>Password used to authenticate to the KDC for syncing. Optional if Sync keytab or Sync credentials cache is provided.</source>
+  <target>向 KDC 进行身份验证以进行同步的密码。如果提供了同步 Keytab 或同步凭据缓存，则此选项是可选的。</target>
+</trans-unit>
+<trans-unit id="sc59ec59c3d5e74dc">
+  <source>Sync keytab</source>
+  <target>同步 Keytab</target>
+</trans-unit>
+<trans-unit id="scd42997958453f05">
+  <source>Keytab used to authenticate to the KDC for syncing. Optional if Sync password or Sync credentials cache is provided. Must be base64 encoded or in the form TYPE:residual.</source>
+  <target>向 KDC 进行身份验证以进行同步的 Keytab。如果提供了同步密码或同步凭据缓存，则此选项是可选的。必须以 Base64 编码，或者形式为 TYPE:residual。</target>
+</trans-unit>
+<trans-unit id="s60eaf439ccdca1f2">
+  <source>Sync credentials cache</source>
+  <target>同步凭据缓存</target>
+</trans-unit>
+<trans-unit id="s95722900b0c9026f">
+  <source>Credentials cache used to authenticate to the KDC for syncing. Optional if Sync password or Sync keytab is provided. Must be in the form TYPE:residual.</source>
+  <target>向 KDC 进行身份验证以进行同步的凭据缓存。如果提供了同步密码或同步 Keytab，则此选项是可选的。形式必须为 TYPE:residual。</target>
+</trans-unit>
+<trans-unit id="sf9c055db98d7994a">
+  <source>SPNEGO settings</source>
+  <target>SPNEGO 设置</target>
+</trans-unit>
+<trans-unit id="sab580a45dc46937f">
+  <source>SPNEGO server name</source>
+  <target>SPNEGO 服务器名称</target>
+</trans-unit>
+<trans-unit id="s7a79d6174d17ab2d">
+  <source>Force the use of a specific server name for SPNEGO. Must be in the form HTTP@domain</source>
+  <target>强制为 SPNEGO 使用特定服务器名称。形式必须为 HTTP@域名</target>
+</trans-unit>
+<trans-unit id="sa4ba2b2081472ccd">
+  <source>SPNEGO keytab</source>
+  <target>SPNEGO Keytab</target>
+</trans-unit>
+<trans-unit id="s64adda975c1106c0">
+  <source>Keytab used for SPNEGO. Optional if SPNEGO credentials cache is provided. Must be base64 encoded or in the form TYPE:residual.</source>
+  <target>SPNEGO 使用的 Keytab。如果提供了 SPNEGO 凭据缓存，则此选项是可选的。必须以 Base64 编码，或者形式为 TYPE:residual。</target>
+</trans-unit>
+<trans-unit id="s92247825b92587b5">
+  <source>SPNEGO credentials cache</source>
+  <target>SPNEGO 凭据缓存</target>
+</trans-unit>
+<trans-unit id="sd9757c345e4062f8">
+  <source>Credentials cache used for SPNEGO. Optional if SPNEGO keytab is provided. Must be in the form TYPE:residual.</source>
+  <target>SPNEGO 使用的凭据缓存。如果提供了 SPNEGO Keytab，则此选项是可选的。形式必须为 TYPE:residual。</target>
+</trans-unit>
+<trans-unit id="s734ab8fbcae0b69e">
+  <source>Kerberos Attribute mapping</source>
+  <target>Kerberos 属性映射</target>
+</trans-unit>
+<trans-unit id="s2c378e86e025fdb2">
+  <source>Update Kerberos Source</source>
+  <target>更新 Kerberos 源</target>
+</trans-unit>
+<trans-unit id="s03e4044abe0b556c">
+  <source>User database + Kerberos password</source>
+  <target>用户数据库 + Kerberos 密码</target>
+</trans-unit>
+<trans-unit id="s98bb2ae796f1ceef">
+  <source>Select another authentication method</source>
+  <target>选择另一种身份验证方法</target>
+</trans-unit>
+<trans-unit id="s21d95b4651ad7a1e">
+  <source>Enter a one-time recovery code for this user.</source>
+  <target>为此用户输入一次性恢复代码。</target>
+</trans-unit>
+<trans-unit id="s2e1d5a7d320c25ef">
+  <source>Enter the code from your authenticator device.</source>
+  <target>请输入来自您身份验证设备的代码。</target>
+</trans-unit>
+<trans-unit id="scc1a17d28912e974">
+  <source>Kerberos Source is in preview.</source>
+  <target>Kerberos 源目前处于预览状态。</target>
+</trans-unit>
+<trans-unit id="s54154a8d64a3597b">
+  <source>Captcha stage</source>
+  <target>验证码阶段</target>
+</trans-unit>
+<trans-unit id="s0c250af62ddbf801">
+  <source>When set, adds functionality exactly like a Captcha stage, but baked into the Identification stage.</source>
+  <target>设置后，添加与验证码阶段完全相同的功能，但融入识别阶段。</target>
+</trans-unit>
+<trans-unit id="sabf8a430d504f8c8">
+  <source>Endpoint Google Chrome Device Trust is in preview.</source>
+  <target>端点 Google Chrome 设备信任处于预览状态。</target>
+</trans-unit>
+<trans-unit id="s6f4f35a5a4b9b3cb">
+  <source>Interactive</source>
+  <target>交互式</target>
+</trans-unit>
+<trans-unit id="sd020240e41e4c207">
+  <source>Enable this flag if the configured captcha requires User-interaction. Required for reCAPTCHA v2, hCaptcha and Cloudflare Turnstile.</source>
+  <target>如果配置的验证码需要用户交互则启用此选项。reCAPTCHA v2、hCaptcha 和 Cloudflare Turnstile 需要启用。</target>
+</trans-unit>
+<trans-unit id="saa29a2ac03cd9d19">
+  <source>Reason</source>
+  <target>原因</target>
+</trans-unit>
+<trans-unit id="se9fd92a824994eba">
+  <source>Reason for impersonating the user</source>
+  <target>模拟此用户的原因</target>
+</trans-unit>
+<trans-unit id="s29fab8887734192f">
+  <source>Require reason for impersonation</source>
+  <target>需要模拟原因</target>
+</trans-unit>
+<trans-unit id="sc24af6de78468cfa">
+  <source>Require administrators to provide a reason for impersonating a user.</source>
+  <target>需要管理员提供模拟用户的原因。</target>
+</trans-unit>
+<trans-unit id="sd48cc52117f4d68b">
+  <source>Italian</source>
+  <target>意大利语</target>
+</trans-unit>
+<trans-unit id="s6cee92a3b310e650">
+  <source>Add entry</source>
+  <target>添加条目</target>
+</trans-unit>
+<trans-unit id="s8f36fb59c31d33eb">
+  <source>Link Title</source>
+  <target>链接标题</target>
+</trans-unit>
+<trans-unit id="s92205c10ba1f0f4c">
+  <source>This option configures the footer links on the flow executor pages. The URL is limited to web and mail addresses. If the name is left blank, the URL will be shown.</source>
+  <target>此选项配置流程执行器页面上的页脚链接。URL 限为 Web 和电子邮件地址。如果名称留空，则显示 URL 自身。</target>
+</trans-unit>
+<trans-unit id="s66f572bec2bde9c4">
+  <source>External applications that use <x id="0" equiv-text="${this.brand.brandingTitle || &quot;authentik&quot;}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
+  <target>通过 OAuth2 和 SAML 等协议，使用 <x id="0" equiv-text="${this.brand.brandingTitle || &quot;authentik&quot;}"/> 作为身份提供程序的外部应用程序。此处显示了所有应用程序，即使您无法访问的也包括在内。</target>
+</trans-unit>
+<trans-unit id="s58bec0ecd4f3ccd4">
+  <source>Strict</source>
+  <target>严格</target>
+</trans-unit>
+<trans-unit id="sd27a8f54aca5d278">
+  <source>Regex</source>
+  <target>正则表达式</target>
+</trans-unit>
+<trans-unit id="seb411b22a8f262d6">
+  <source>Valid redirect URIs after a successful authorization flow. Also specify any origins here for Implicit flows.</source>
+  <target>授权流程成功后有效的重定向 URI。还可以在此处为隐式流程指定任何来源。</target>
+</trans-unit>
+<trans-unit id="s4c49d27de60a532b">
+  <source>To allow any redirect URI, set the mode to Regex and the value to &quot;.*&quot;. Be aware of the possible security implications this can have.</source>
+  <target>要允许任何重定向 URI，请设置模式为正则表达式，并将此值设置为 &quot;.*&quot;。请注意这可能带来的安全影响。</target>
+</trans-unit>
+<trans-unit id="s43f899a86c6a3484">
+  <source>Redirect URIs/Origins</source>
+  <target>重定向 URI/Origin</target>
+</trans-unit>
+<trans-unit id="sa52bf79fe1ccb13e">
+  <source>Federated OIDC Sources</source>
+  <target>联邦式 OIDC 源</target>
+</trans-unit>
+<trans-unit id="s555465bf6577505e">
+  <source>Federated OIDC Providers</source>
+  <target>联邦式 OIDC 提供程序</target>
+</trans-unit>
+<trans-unit id="s066bfb12c9032dc2">
+  <source>Available Providers</source>
+  <target>可用提供程序</target>
+</trans-unit>
+<trans-unit id="sa12111ca3f3e398e">
+  <source>Selected Providers</source>
+  <target>已选提供程序</target>
+</trans-unit>
+<trans-unit id="s4f8a3f7792e6b940">
+  <source>JWTs signed by the selected providers can be used to authenticate to this provider.</source>
+  <target>由已选提供程序签发的 JWT 可以用于此提供程序的身份验证。</target>
+</trans-unit>
+<trans-unit id="s3cc2b33d2a8000d3">
+  <source>KAdmin type</source>
+  <target>KAdmin 类型</target>
+</trans-unit>
+<trans-unit id="s624e1c8739507529">
+  <source>MIT krb5 kadmin</source>
+  <target>MIT krb5 kadmin</target>
+</trans-unit>
+<trans-unit id="s6d225d9e74dfff6f">
+  <source>Heimdal kadmin</source>
+  <target>Heimdal kadmin</target>
+</trans-unit>
+<trans-unit id="sc9e494c8346b7cb5">
+  <source>Other</source>
+  <target>其他</target>
+</trans-unit>
+<trans-unit id="sbf6c78047e8ec8f8">
+  <source>Other type of kadmin</source>
+  <target>其他类型 kadmin</target>
+</trans-unit>
+<trans-unit id="sb53d0b77abef2316">
+  <source>To let a user directly reset their password, configure a recovery flow on the currently active brand.</source>
+  <target>要让用户直接重置密码，请在当前活动的品牌上配置恢复流程。</target>
+</trans-unit>
+<trans-unit id="s2e5226fcf269689b">
+  <source>Consent given lasts indefinitely</source>
+  <target>无限期同意授权</target>
+</trans-unit>
+<trans-unit id="s7eff620292ed9349">
+  <source>Consent expires</source>
+  <target>同意授权会过期</target>
+</trans-unit>
+<trans-unit id="s1cc032bcc50b2942">
+  <source>Available Policies</source>
+  <target>可用策略</target>
+</trans-unit>
+<trans-unit id="s3ad64193ad5f4a5e">
+  <source>Selected Policies</source>
+  <target>已选策略</target>
+</trans-unit>
+<trans-unit id="sc487e11d5987dbb4">
+  <source>Redirect the user to another flow, potentially with all gathered context</source>
+  <target>将用户重定向到另一个流程，可能包含所有已收集的上下文</target>
+</trans-unit>
+<trans-unit id="sad9d5481474d4f5b">
+  <source>Static</source>
+  <target>静态</target>
+</trans-unit>
+<trans-unit id="se87a96950464bc89">
+  <source>Target URL</source>
+  <target>目标 URL</target>
+</trans-unit>
+<trans-unit id="s7f3097955b19736a">
+  <source>Redirect the user to a static URL.</source>
+  <target>将用户重定向到一个静态 URL。</target>
+</trans-unit>
+<trans-unit id="s9bdee1c5130c8240">
+  <source>Target Flow</source>
+  <target>目标流程</target>
+</trans-unit>
+<trans-unit id="sa5d1405b8d6529c7">
+  <source>Redirect the user to a Flow.</source>
+  <target>将用户重定向到一个流程。</target>
+</trans-unit>
+<trans-unit id="s7c9db337d14d42b3">
+  <source>Keep flow context</source>
+  <target>保留流程上下文</target>
+</trans-unit>
+<trans-unit id="s0d7dea184036a74d">
+  <source>Require no authentication</source>
+  <target>需要无身份验证</target>
+</trans-unit>
+<trans-unit id="s66f533986ba6182c">
+  <source>Require superuser</source>
+  <target>需要管理员用户</target>
+</trans-unit>
+<trans-unit id="s26c0a8789930b5fd">
+  <source>Require being redirected from another flow</source>
+  <target>需要重定向自另一个流程</target>
+</trans-unit>
+<trans-unit id="sbfaee8cfbf4e44e8">
+  <source>Require Outpost (flow can only be executed from an outpost)</source>
+  <target>需要前哨（流程只能从前哨执行）</target>
 </trans-unit>
     </body>
   </file>
