@@ -1,16 +1,20 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_API_DRAWER_TOGGLE, EVENT_NOTIFICATION_DRAWER_TOGGLE, EVENT_WS_MESSAGE } from "@goauthentik/common/constants";
+import {
+    EVENT_API_DRAWER_TOGGLE,
+    EVENT_NOTIFICATION_DRAWER_TOGGLE,
+    EVENT_WS_MESSAGE,
+} from "@goauthentik/common/constants";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { UIConfig } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
 import { WebsocketClient } from "@goauthentik/common/ws";
+import "@goauthentik/components/ak-nav-buttons";
 import { AKElement } from "@goauthentik/elements/Base";
 import { EnterpriseAwareInterface } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/ak-locale-context";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/enterprise/EnterpriseStatusBanner";
 import "@goauthentik/elements/messages/MessageContainer";
-import "@goauthentik/components/ak-nav-buttons";
 import "@goauthentik/elements/notifications/APIDrawer";
 import "@goauthentik/elements/notifications/NotificationDrawer";
 import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
@@ -22,13 +26,9 @@ import { themeImage } from "@goauthentik/elements/utils/images";
 import { ROUTES } from "@goauthentik/user/Routes";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-
-
 import { msg } from "@lit/localize";
 import { css, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-
-
 
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFBrand from "@patternfly/patternfly/components/Brand/brand.css";
@@ -40,10 +40,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
-
-
 import { CurrentBrand, EventsApi, SessionUser } from "@goauthentik/api";
-
 
 const customStyles = css`
     .pf-c-page__main,
@@ -206,7 +203,9 @@ class UserInterfacePresentation extends AKElement {
                             />
                         </a>
                     </div>
-                    <ak-nav-buttons .uiConfig=${this.uiConfig} .me=${this.me}>${this.renderAdminInterfaceLink()}</ak-nav-buttons>
+                    <ak-nav-buttons .uiConfig=${this.uiConfig} .me=${this.me}
+                        >${this.renderAdminInterfaceLink()}</ak-nav-buttons
+                    >
                 </header>
                 <div class="pf-c-page__drawer">
                     <div

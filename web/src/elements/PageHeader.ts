@@ -1,13 +1,13 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import {
-    EVENT_API_DRAWER_TOGGLE,
-    EVENT_NOTIFICATION_DRAWER_TOGGLE,
     EVENT_SIDEBAR_TOGGLE,
     EVENT_WS_MESSAGE,
     TITLE_DEFAULT,
 } from "@goauthentik/common/constants";
 import { currentInterface } from "@goauthentik/common/sentry";
+import { UIConfig, UserDisplay, uiConfig } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
+import "@goauthentik/components/ak-nav-buttons";
 import { AKElement } from "@goauthentik/elements/Base";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
@@ -15,7 +15,6 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -26,7 +25,6 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { EventsApi, SessionUser } from "@goauthentik/api";
-import { globalAK } from "@goauthentik/common/global";
 
 @customElement("ak-page-header")
 export class PageHeader extends WithBrandConfig(AKElement) {
@@ -46,10 +44,13 @@ export class PageHeader extends WithBrandConfig(AKElement) {
     description?: string;
 
     @property({ type: Boolean })
-    hasIcon = false;
+    hasIcon = true;
 
     @state()
     me?: SessionUser;
+
+    @state()
+    uiConfig!: UIConfig;
 
     static get styles(): CSSResult[] {
         return [
@@ -119,6 +120,8 @@ export class PageHeader extends WithBrandConfig(AKElement) {
 
     async firstUpdated() {
         this.me = await me();
+        this.uiConfig = await uiConfig();
+        this.uiConfig.navbar.userDisplay = UserDisplay.none;
         const notifications = await new EventsApi(DEFAULT_CONFIG).eventsNotificationsList({
             seen: false,
             ordering: "-created",
@@ -147,7 +150,7 @@ export class PageHeader extends WithBrandConfig(AKElement) {
         this.setTitle(this.header);
     }
 
-    renderIcon(): TemplateResult {
+    renderIcon() {
         if (this.icon) {
             if (this.iconImage && !this.icon.startsWith("fa://")) {
                 return html`<img class="pf-icon" src="${this.icon}" alt="page icon" />`;
@@ -155,7 +158,7 @@ export class PageHeader extends WithBrandConfig(AKElement) {
             const icon = this.icon.replaceAll("fa://", "fa ");
             return html`<i class=${icon}></i>`;
         }
-        return html``;
+        return nothing;
     }
 
     render(): TemplateResult {
@@ -186,74 +189,7 @@ export class PageHeader extends WithBrandConfig(AKElement) {
             </section>
             <div class="pf-c-page__header-tools">
                 <div class="pf-c-page__header-tools-group">
-                    <div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg">
-                        <button
-                            class="pf-c-button pf-m-plain"
-                            type="button"
-                            @click=${() => {
-                                this.dispatchEvent(
-                                    new CustomEvent(EVENT_API_DRAWER_TOGGLE, {
-                                        bubbles: true,
-                                        composed: true,
-                                    }),
-                                );
-                            }}
-                        >
-                            <pf-tooltip position="top" content=${msg("Open API drawer")}>
-                                <i class="fas fa-code" aria-hidden="true"></i>
-                            </pf-tooltip>
-                        </button>
-                    </div>
-                    <div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg">
-                        <button
-                            class="pf-c-button pf-m-plain"
-                            type="button"
-                            aria-label="${msg("Unread notifications")}"
-                            @click=${() => {
-                                this.dispatchEvent(
-                                    new CustomEvent(EVENT_NOTIFICATION_DRAWER_TOGGLE, {
-                                        bubbles: true,
-                                        composed: true,
-                                    }),
-                                );
-                            }}
-                        >
-                            <span
-                                class="pf-c-notification-badge ${this.notificationsCount > 0
-                                    ? "pf-m-unread"
-                                    : ""}"
-                            >
-                                <pf-tooltip
-                                    position="top"
-                                    content=${msg("Open Notification drawer")}
-                                >
-                                    <i class="fas fa-bell" aria-hidden="true"></i>
-                                </pf-tooltip>
-                                <span class="pf-c-notification-badge__count"
-                                    >${this.notificationsCount}</span
-                                >
-                            </span>
-                        </button>
-                    </div>
-                    <div class="pf-c-page__header-tools-item">
-                        <a class="pf-c-button pf-m-plain" type="button" href="/if/user/#/settings">
-                            <pf-tooltip position="top" content=${msg("Settings")}>
-                                <i class="fas fa-cog" aria-hidden="true"></i>
-                            </pf-tooltip>
-                        </a>
-                    </div>
-                    <div class="pf-c-page__header-tools-item">
-                        <a href="${globalAK().api.base}flows/-/default/invalidation/" class="pf-c-button pf-m-plain">
-                            <pf-tooltip position="top" content=${msg("Sign out")}>
-                                <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
-                            </pf-tooltip>
-                        </a>
-                    </div>
-                    <img
-                        class="pf-c-avatar"
-                        src=${ifDefined(this.me?.user.avatar)}
-                        alt="${msg("Avatar image")}"
-                    />
+                    <ak-nav-buttons .uiConfig=${this.uiConfig} .me=${this.me}></ak-nav-buttons>
                 </div>
             </div>
         </div>`;

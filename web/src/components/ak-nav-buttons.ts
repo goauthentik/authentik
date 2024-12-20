@@ -3,6 +3,7 @@ import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
 } from "@goauthentik/common/constants";
+import { globalAK } from "@goauthentik/common/global";
 import { UIConfig, UserDisplay, uiConfig } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
 import { AKElement } from "@goauthentik/elements/Base";
@@ -23,7 +24,6 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 import { CoreApi, EventsApi, SessionUser } from "@goauthentik/api";
-import { globalAK } from "@goauthentik/common/global";
 
 @customElement("ak-nav-buttons")
 export class NavigationButtons extends AKElement {
@@ -167,6 +167,7 @@ export class NavigationButtons extends AKElement {
             .with(UserDisplay.username, () => this.me.user.username)
             .with(UserDisplay.name, () => this.me.user.name)
             .with(UserDisplay.email, () => this.me.user.email || "")
+            .with(UserDisplay.none, () => "")
             .otherwise(() => this.me.user.username);
     }
 
@@ -179,7 +180,10 @@ export class NavigationButtons extends AKElement {
                 <!-- -->
                 ${this.renderSettings()}
                 <div class="pf-c-page__header-tools-item">
-                    <a href="${globalAK().api.base}flows/-/default/invalidation/" class="pf-c-button pf-m-plain">
+                    <a
+                        href="${globalAK().api.base}flows/-/default/invalidation/"
+                        class="pf-c-button pf-m-plain"
+                    >
                         <pf-tooltip position="top" content=${msg("Sign out")}>
                             <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
                         </pf-tooltip>
@@ -188,11 +192,13 @@ export class NavigationButtons extends AKElement {
                 <slot name="extra"></slot>
             </div>
             ${this.renderImpersonation()}
-            <div class="pf-c-page__header-tools-group">
-                <div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-md">
-                    ${this.userDisplayName}
-                </div>
-            </div>
+            ${this.userDisplayName != ""
+                ? html`<div class="pf-c-page__header-tools-group">
+                      <div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-md">
+                          ${this.userDisplayName}
+                      </div>
+                  </div>`
+                : nothing}
             <img class="pf-c-avatar" src=${this.me.user.avatar} alt="${msg("Avatar image")}" />
         </div>`;
     }
