@@ -12,6 +12,7 @@ For VS Code, for example, add these entries to your `settings.json`:
         "!Enumerate sequence",
         "!Env scalar",
         "!Find sequence",
+        "!FindObject sequence",
         "!Format sequence",
         "!If sequence",
         "!Index scalar",
@@ -60,7 +61,22 @@ configure_flow:
     ]
 ```
 
-Looks up any model and resolves to the the matches' primary key.
+Looks up any model and resolves to the matches' primary key.
+First argument is the model to be queried, remaining arguments are expected to be pairs of key=value pairs to query for.
+
+#### `!FindObject` <span class="badge badge--version">authentik 2025.2+</span>
+
+Examples:
+
+```yaml
+flow_designation:
+    !AtIndex [
+        !FindObject [authentik_flows.flow, [slug, default-password-change]],
+        designation,
+    ]
+```
+
+Looks up any model and resolves to the matches' serialized data.
 First argument is the model to be queried, remaining arguments are expected to be pairs of key=value pairs to query for.
 
 #### `!Context`

@@ -311,7 +311,7 @@ class Format(YAMLTag):
 
 
 class Find(YAMLTag):
-    """Find any object"""
+    """Find any object primary key"""
 
     model_name: str | YAMLTag
     conditions: list[list]
@@ -326,7 +326,7 @@ class Find(YAMLTag):
                 values.append(loader.construct_object(node_values))
             self.conditions.append(values)
 
-    def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+    def _get_instance(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
         if isinstance(self.model_name, YAMLTag):
             model_name = self.model_name.resolve(entry, blueprint)
         else:
@@ -348,10 +348,27 @@ class Find(YAMLTag):
             else:
                 query_value = cond[1]
             query &= Q(**{query_key: query_value})
-        instance = model_class.objects.filter(query).first()
+        return model_class.objects.filter(query).first()
+
+    def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        instance = self._get_instance(entry, blueprint)
         if instance:
             return instance.pk
         return None
+
+
+class FindObject(Find):
+    """Find any object"""
+
+    def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        instance = self._get_instance(entry, blueprint)
+        if not instance:
+            return None
+        if not isinstance(instance, SerializerModel):
+            raise EntryInvalidError.from_entry(
+                f"Model {self.model_name} is not resolvable through FindObject", entry
+            )
+        return instance.serializer(instance=instance).data
 
 
 class Condition(YAMLTag):
@@ -649,6 +666,7 @@ class BlueprintLoader(SafeLoader):
         super().__init__(*args, **kwargs)
         self.add_constructor("!KeyOf", KeyOf)
         self.add_constructor("!Find", Find)
+        self.add_constructor("!FindObject", FindObject)
         self.add_constructor("!Context", Context)
         self.add_constructor("!Format", Format)
         self.add_constructor("!Condition", Condition)
