@@ -3884,8 +3884,7 @@
                     {
                         "type": "object",
                         "required": [
-                            "model",
-                            "identifiers"
+                            "model"
                         ],
                         "properties": {
                             "model": {
@@ -3914,9 +3913,6 @@
                                 "$ref": "#/$defs/model_authentik_blueprints.metaapplyblueprint_permissions"
                             },
                             "attrs": {
-                                "$ref": "#/$defs/model_authentik_blueprints.metaapplyblueprint"
-                            },
-                            "identifiers": {
                                 "$ref": "#/$defs/model_authentik_blueprints.metaapplyblueprint"
                             }
                         }
