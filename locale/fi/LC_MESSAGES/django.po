@@ -1427,8 +1427,8 @@ msgstr "Samaa tunnistetta käytetään kaikkien palveluntarjoajien kanssa"
 #: authentik/providers/oauth2/models.py
 msgid "Each provider has a different issuer, based on the application slug."
 msgstr ""
-"Jokaisella palveluntarjoajalla on eri myöntäjä, sovelluksen tunnisteesta "
-"riippuen."
+"Jokaisella palveluntarjoajalla on eri myöntäjä, sovelluksen "
+"polkutunnisteesta riippuen."
 
 #: authentik/providers/oauth2/models.py
 msgid "Strict URL comparison"
