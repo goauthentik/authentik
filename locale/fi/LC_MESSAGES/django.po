@@ -905,7 +905,7 @@ msgstr "Prosessivaiheliitos"
 
 #: authentik/flows/models.py
 msgid "Flow Stage Bindings"
-msgstr "Prosessivaihesidokset"
+msgstr "Prosessivaiheliitokset"
 
 #: authentik/flows/models.py
 msgid ""
@@ -1170,11 +1170,11 @@ msgstr "any, minkä tahansa käytännön läpäisy riittää"
 
 #: authentik/policies/models.py
 msgid "Policy Binding Model"
-msgstr "Käytännön sidosmalli"
+msgstr "Käytännön liitosmalli"
 
 #: authentik/policies/models.py
 msgid "Policy Binding Models"
-msgstr "Käytännön sidosmallit"
+msgstr "Käytännön liitosmallit"
 
 #: authentik/policies/models.py
 msgid "Negates the outcome of the policy. Messages are unaffected."
