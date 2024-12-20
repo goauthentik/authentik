@@ -1315,7 +1315,7 @@ msgid ""
 "                    "
 msgstr ""
 "\n"
-"                    Käytäntösidos '%(name)s' palauttituloksen '%(result)s'\n"
+"                    Käytäntöliitos '%(name)s' palautti tuloksen '%(result)s'\n"
 "                    "
 
 #: authentik/policies/views.py
