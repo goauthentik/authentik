@@ -26,6 +26,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { EventsApi, SessionUser } from "@goauthentik/api";
+import { globalAK } from "@goauthentik/common/global";
 
 @customElement("ak-page-header")
 export class PageHeader extends WithBrandConfig(AKElement) {
@@ -242,7 +243,7 @@ export class PageHeader extends WithBrandConfig(AKElement) {
                         </a>
                     </div>
                     <div class="pf-c-page__header-tools-item">
-                        <a href="/flows/-/default/invalidation/" class="pf-c-button pf-m-plain">
+                        <a href="${globalAK().api.base}flows/-/default/invalidation/" class="pf-c-button pf-m-plain">
                             <pf-tooltip position="top" content=${msg("Sign out")}>
                                 <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
                             </pf-tooltip>
