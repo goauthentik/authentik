@@ -1825,7 +1825,7 @@ msgstr "Tunnetaan myös nimellä EntityID"
 
 #: authentik/providers/saml/models.py
 msgid "Service Provider Binding"
-msgstr "Palveluntarjoajasidos"
+msgstr "Palveluntarjoajaliitos"
 
 #: authentik/providers/saml/models.py
 msgid ""
