@@ -62,16 +62,20 @@ export class PageHeader extends WithBrandConfig(AKElement) {
             PFAvatar,
             PFDropdown,
             css`
+                :host {
+                    position: sticky;
+                    top: 0;
+                    z-index: 100;
+                }
                 .bar {
                     border-bottom: var(--pf-global--BorderWidth--sm);
                     border-bottom-style: solid;
                     border-bottom-color: var(--pf-global--BorderColor--100);
-                }
-                .bar {
                     display: flex;
                     flex-direction: row;
                     min-height: 114px;
                     max-height: 114px;
+                    background-color: var(--pf-c-page--BackgroundColor);
                 }
                 .pf-c-page__main-section.pf-m-light {
                     background-color: transparent;

@@ -32,9 +32,6 @@ body {
 .notification-trigger {
     background-color: transparent !important;
 }
-.pf-c-page__main-section.pf-m-light {
-    background-color: transparent;
-}
 .pf-c-content {
     color: var(--ak-dark-foreground);
 }
