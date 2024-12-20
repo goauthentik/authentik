@@ -1190,11 +1190,11 @@ msgstr "Tulos, jos käytännön suoritus epäonnistuu."
 
 #: authentik/policies/models.py
 msgid "Policy Binding"
-msgstr "Käytännön sidos"
+msgstr "Käytännön liitos"
 
 #: authentik/policies/models.py
 msgid "Policy Bindings"
-msgstr "Käytännön sidokset"
+msgstr "Käytännön liitokset"
 
 #: authentik/policies/models.py
 msgid ""
