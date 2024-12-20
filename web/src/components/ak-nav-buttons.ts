@@ -12,6 +12,7 @@ import { match } from "ts-pattern";
 import { msg } from "@lit/localize";
 import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFBrand from "@patternfly/patternfly/components/Brand/brand.css";
@@ -28,10 +29,10 @@ import { CoreApi, EventsApi, SessionUser } from "@goauthentik/api";
 @customElement("ak-nav-buttons")
 export class NavigationButtons extends AKElement {
     @property({ type: Object })
-    uiConfig!: UIConfig;
+    uiConfig?: UIConfig;
 
     @property({ type: Object })
-    me!: SessionUser;
+    me?: SessionUser;
 
     @property({ type: Boolean, reflect: true })
     notificationDrawerOpen = false;
@@ -74,7 +75,7 @@ export class NavigationButtons extends AKElement {
     }
 
     renderApiDrawerTrigger() {
-        if (!this.uiConfig.enabledFeatures.apiDrawer) {
+        if (!this.uiConfig?.enabledFeatures.apiDrawer) {
             return nothing;
         }
 
@@ -95,7 +96,7 @@ export class NavigationButtons extends AKElement {
     }
 
     renderNotificationDrawerTrigger() {
-        if (!this.uiConfig.enabledFeatures.notificationDrawer) {
+        if (!this.uiConfig?.enabledFeatures.notificationDrawer) {
             return nothing;
         }
 
@@ -128,7 +129,7 @@ export class NavigationButtons extends AKElement {
     }
 
     renderSettings() {
-        if (!this.uiConfig.enabledFeatures.settings) {
+        if (!this.uiConfig?.enabledFeatures.settings) {
             return nothing;
         }
 
@@ -142,7 +143,7 @@ export class NavigationButtons extends AKElement {
     }
 
     renderImpersonation() {
-        if (!this.me.original) {
+        if (!this.me?.original) {
             return nothing;
         }
 
@@ -163,12 +164,12 @@ export class NavigationButtons extends AKElement {
     }
 
     get userDisplayName() {
-        return match<UserDisplay, string>(this.uiConfig.navbar.userDisplay)
-            .with(UserDisplay.username, () => this.me.user.username)
-            .with(UserDisplay.name, () => this.me.user.name)
-            .with(UserDisplay.email, () => this.me.user.email || "")
+        return match<UserDisplay | undefined, string | undefined>(this.uiConfig?.navbar.userDisplay)
+            .with(UserDisplay.username, () => this.me?.user.username)
+            .with(UserDisplay.name, () => this.me?.user.name)
+            .with(UserDisplay.email, () => this.me?.user.email || "")
             .with(UserDisplay.none, () => "")
-            .otherwise(() => this.me.user.username);
+            .otherwise(() => this.me?.user.username);
     }
 
     render() {
@@ -199,7 +200,11 @@ export class NavigationButtons extends AKElement {
                       </div>
                   </div>`
                 : nothing}
-            <img class="pf-c-avatar" src=${this.me.user.avatar} alt="${msg("Avatar image")}" />
+            <img
+                class="pf-c-avatar"
+                src=${ifDefined(this.me?.user.avatar)}
+                alt="${msg("Avatar image")}"
+            />
         </div>`;
     }
 }
