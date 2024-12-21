@@ -1170,11 +1170,11 @@ msgstr "any, minkä tahansa käytännön läpäisy riittää"
 
 #: authentik/policies/models.py
 msgid "Policy Binding Model"
-msgstr "Käytännön liitosmalli"
+msgstr "Käytäntöliitosmalli"
 
 #: authentik/policies/models.py
 msgid "Policy Binding Models"
-msgstr "Käytännön liitosmallit"
+msgstr "Käytäntöliitosmallit"
 
 #: authentik/policies/models.py
 msgid "Negates the outcome of the policy. Messages are unaffected."
@@ -1191,11 +1191,11 @@ msgstr "Tulos, jos käytännön suoritus epäonnistuu."
 
 #: authentik/policies/models.py
 msgid "Policy Binding"
-msgstr "Käytännön liitos"
+msgstr "Käytäntöliitos"
 
 #: authentik/policies/models.py
 msgid "Policy Bindings"
-msgstr "Käytännön liitokset"
+msgstr "Käytäntöliitokset"
 
 #: authentik/policies/models.py
 msgid ""
@@ -1215,11 +1215,11 @@ msgstr "Käytännöt"
 
 #: authentik/policies/models.py
 msgid "View Policy's cache metrics"
-msgstr "Näytä käytännön välimuistitilastot"
+msgstr "Näytä käytäntövälimuistitilastot"
 
 #: authentik/policies/models.py
 msgid "Clear Policy's cache metrics"
-msgstr "Tyhjennä käytännön välimuistitilastot"
+msgstr "Tyhjennä käytäntövälimuistitilastot"
 
 #: authentik/policies/password/models.py
 msgid "Field key to check, field keys defined in Prompt stages are available."
