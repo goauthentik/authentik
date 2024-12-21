@@ -1195,7 +1195,7 @@ msgstr "Käytännön liitos"
 
 #: authentik/policies/models.py
 msgid "Policy Bindings"
-msgstr "Käytännön liitokset"
+msgstr "Käytäntöliitokset"
 
 #: authentik/policies/models.py
 msgid ""
