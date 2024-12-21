@@ -3,6 +3,7 @@
     --ak-global--Color--100: var(--ak-dark-foreground) !important;
     --pf-c-page__main-section--m-light--BackgroundColor: var(--ak-dark-background-darker);
     --pf-global--link--Color: var(--ak-dark-foreground-link) !important;
+    --pf-global--BorderColor--100: var(--ak-dark-background-lighter) !important;
 }
 body {
     background-color: var(--ak-dark-background) !important;
@@ -30,9 +31,6 @@ body {
 .sidebar-trigger,
 .notification-trigger {
     background-color: transparent !important;
-}
-.pf-c-page__main-section.pf-m-light {
-    background-color: transparent;
 }
 .pf-c-content {
     color: var(--ak-dark-foreground);
