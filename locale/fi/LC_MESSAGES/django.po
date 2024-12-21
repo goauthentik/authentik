@@ -1215,11 +1215,11 @@ msgstr "Käytännöt"
 
 #: authentik/policies/models.py
 msgid "View Policy's cache metrics"
-msgstr "Näytä käytännön välimuistitilastot"
+msgstr "Näytä käytäntövälimuistitilastot"
 
 #: authentik/policies/models.py
 msgid "Clear Policy's cache metrics"
-msgstr "Tyhjennä käytännön välimuistitilastot"
+msgstr "Tyhjennä käytäntövälimuistitilastot"
 
 #: authentik/policies/password/models.py
 msgid "Field key to check, field keys defined in Prompt stages are available."
