@@ -1170,11 +1170,11 @@ msgstr "any, minkä tahansa käytännön läpäisy riittää"
 
 #: authentik/policies/models.py
 msgid "Policy Binding Model"
-msgstr "Käytännön liitosmalli"
+msgstr "Käytäntöliitosmalli"
 
 #: authentik/policies/models.py
 msgid "Policy Binding Models"
-msgstr "Käytännön liitosmallit"
+msgstr "Käytäntöliitosmallit"
 
 #: authentik/policies/models.py
 msgid "Negates the outcome of the policy. Messages are unaffected."
