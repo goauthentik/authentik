@@ -1,6 +1,6 @@
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/sidebar/SidebarBrand";
-import "@goauthentik/elements/sidebar/SidebarUser";
+import "@goauthentik/elements/sidebar/SidebarVersion";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -74,7 +74,7 @@ export class Sidebar extends AKElement {
             <ul class="pf-c-nav__list">
                 <slot></slot>
             </ul>
-            <ak-sidebar-user></ak-sidebar-user>
+            <ak-sidebar-version></ak-sidebar-version>
         </nav>`;
     }
 }

@@ -42,6 +42,9 @@ export class SidebarBrand extends WithBrandConfig(AKElement) {
                     align-items: center;
                     height: 114px;
                     min-height: 114px;
+                    border-bottom: var(--pf-global--BorderWidth--sm);
+                    border-bottom-style: solid;
+                    border-bottom-color: var(--pf-global--BorderColor--100);
                 }
                 .pf-c-brand img {
                     padding: 0 0.5rem;
