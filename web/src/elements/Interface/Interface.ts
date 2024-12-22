@@ -49,11 +49,15 @@ export class Interface extends AKElement implements AkInterface {
     constructor() {
         super();
         document.adoptedStyleSheets = [...document.adoptedStyleSheets, ensureCSSStyleSheet(PFBase)];
+        this._initContexts();
+        this.dataset.akInterfaceRoot = "true";
+    }
+
+    _initContexts() {
         this[brandContext] = new BrandContextController(this);
         this[configContext] = new ConfigContextController(this);
         this[modalController] = new ModalOrchestrationController(this);
         this[versionContext] = new VersionContextController(this);
-        this.dataset.akInterfaceRoot = "true";
     }
 
     _activateTheme(theme: UiThemeEnum, ...roots: DocumentOrShadowRoot[]): void {
