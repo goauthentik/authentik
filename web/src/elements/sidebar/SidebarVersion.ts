@@ -6,7 +6,7 @@ import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSumma
 import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { CSSResult, css, html, nothing } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
@@ -48,7 +48,10 @@ export class SidebarVersion extends WithLicenseSummary(AKElement) {
         this.version = await new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve();
     }
 
-    render(): TemplateResult {
+    render() {
+        if (!this.version || !this.licenseSummary) {
+            return nothing;
+        }
         let product = globalAK().brand.brandingTitle || DefaultBrand.brandingTitle;
         if (this.licenseSummary.status != LicenseSummaryStatusEnum.Unlicensed) {
             product += ` ${msg("Enterprise")}`;

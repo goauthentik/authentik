@@ -1,6 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { VERSION } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
+import "@goauthentik/elements/EmptyState";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider";
 import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
@@ -94,16 +95,17 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton))
                     <div class="pf-c-about-modal-box__content">
                         <div class="pf-c-about-modal-box__body">
                             <div class="pf-c-content">
-                                <dl>
-                                    ${until(
-                                        this.getAboutEntries().then((entries) => {
-                                            return entries.map(([label, value]) => {
+                                ${until(
+                                    this.getAboutEntries().then((entries) => {
+                                        return html`<dl>
+                                            ${entries.map(([label, value]) => {
                                                 return html`<dt>${label}</dt>
                                                     <dd>${value}</dd>`;
-                                            });
-                                        }),
-                                    )}
-                                </dl>
+                                            })}
+                                        </dl>`;
+                                    }),
+                                    html`<ak-empty-state loading></ak-empty-state>`,
+                                )}
                             </div>
                         </div>
                         <p class="pf-c-about-modal-box__strapline"></p>
