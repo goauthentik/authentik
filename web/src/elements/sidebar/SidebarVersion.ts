@@ -1,25 +1,29 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import type { AdminInterface } from "@goauthentik/admin/AdminInterface/AdminInterface";
 import { globalAK } from "@goauthentik/common/global";
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement, rootInterface } from "@goauthentik/elements/Base";
 import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider";
+import { WithVersion } from "@goauthentik/elements/Interface/versionProvider";
+import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { CSSResult, css, html, nothing } from "lit";
+import { customElement } from "lit/decorators.js";
 
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { AdminApi, LicenseSummaryStatusEnum, Version } from "@goauthentik/api";
+import { LicenseSummaryStatusEnum } from "@goauthentik/api";
 
 @customElement("ak-sidebar-version")
-export class SidebarVersion extends WithLicenseSummary(AKElement) {
+export class SidebarVersion extends WithLicenseSummary(WithVersion(AKElement)) {
     static get styles(): CSSResult[] {
         return [
             PFBase,
             PFNav,
             PFAvatar,
+            PFButton,
             css`
                 :host {
                     display: flex;
@@ -37,20 +41,24 @@ export class SidebarVersion extends WithLicenseSummary(AKElement) {
         ];
     }
 
-    @state()
-    version?: Version;
-
-    async firstUpdated() {
-        this.version = await new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve();
-    }
-
-    render(): TemplateResult {
-        let product = globalAK().brand.brandingTitle;
+    render() {
+        if (!this.version || !this.licenseSummary) {
+            return nothing;
+        }
+        let product = globalAK().brand.brandingTitle || DefaultBrand.brandingTitle;
         if (this.licenseSummary.status != LicenseSummaryStatusEnum.Unlicensed) {
             product += ` ${msg("Enterprise")}`;
         }
-        return html`<p class="pf-c-title">${product}</p>
-            <p class="pf-c-title">${msg(str`Version ${this.version?.versionCurrent}`)}</p> `;
+        return html`<button
+            class="pf-c-button pf-m-plain"
+            @click=${() => {
+                const int = rootInterface<AdminInterface>();
+                int?.aboutModal?.onClick();
+            }}
+        >
+            <p class="pf-c-title">${product}</p>
+            <p class="pf-c-title">${msg(str`Version ${this.version?.versionCurrent || ""}`)}</p>
+        </button>`;
     }
 }
 

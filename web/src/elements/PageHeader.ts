@@ -1,4 +1,3 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import {
     EVENT_SIDEBAR_TOGGLE,
     EVENT_WS_MESSAGE,
@@ -24,7 +23,7 @@ import PFNotificationBadge from "@patternfly/patternfly/components/NotificationB
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { EventsApi, SessionUser } from "@goauthentik/api";
+import { SessionUser } from "@goauthentik/api";
 
 @customElement("ak-page-header")
 export class PageHeader extends WithBrandConfig(AKElement) {
@@ -33,9 +32,6 @@ export class PageHeader extends WithBrandConfig(AKElement) {
 
     @property({ type: Boolean })
     iconImage = false;
-
-    @state()
-    notificationsCount = 0;
 
     @property()
     header = "";
@@ -65,7 +61,7 @@ export class PageHeader extends WithBrandConfig(AKElement) {
                 :host {
                     position: sticky;
                     top: 0;
-                    z-index: 100;
+                    z-index: var(--pf-global--ZIndex--lg);
                 }
                 .bar {
                     border-bottom: var(--pf-global--BorderWidth--sm);
@@ -126,13 +122,6 @@ export class PageHeader extends WithBrandConfig(AKElement) {
         this.me = await me();
         this.uiConfig = await uiConfig();
         this.uiConfig.navbar.userDisplay = UserDisplay.none;
-        const notifications = await new EventsApi(DEFAULT_CONFIG).eventsNotificationsList({
-            seen: false,
-            ordering: "-created",
-            pageSize: 1,
-            user: this.me.user.pk,
-        });
-        this.notificationsCount = notifications.pagination.count;
     }
 
     setTitle(header?: string) {

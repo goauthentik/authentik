@@ -1,5 +1,6 @@
+import "@goauthentik/admin/AdminInterface/AboutModal";
+import type { AboutModal } from "@goauthentik/admin/AdminInterface/AboutModal";
 import { ROUTES } from "@goauthentik/admin/Routes";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
@@ -20,7 +21,7 @@ import "@goauthentik/elements/sidebar/Sidebar";
 import "@goauthentik/elements/sidebar/SidebarItem";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, property, query, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -28,7 +29,7 @@ import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { AdminApi, SessionUser, UiThemeEnum, Version } from "@goauthentik/api";
+import { SessionUser, UiThemeEnum, Version } from "@goauthentik/api";
 
 import "./AdminSidebar";
 
@@ -47,6 +48,9 @@ export class AdminInterface extends EnterpriseAwareInterface {
 
     @state()
     user?: SessionUser;
+
+    @query("ak-about-modal")
+    aboutModal?: AboutModal;
 
     static get styles(): CSSResult[] {
         return [
@@ -77,6 +81,9 @@ export class AdminInterface extends EnterpriseAwareInterface {
                 ak-admin-sidebar {
                     grid-area: nav;
                 }
+                .pf-c-drawer__panel {
+                    z-index: var(--pf-global--ZIndex--xl);
+                }
             `,
         ];
     }
@@ -100,7 +107,6 @@ export class AdminInterface extends EnterpriseAwareInterface {
 
     async firstUpdated(): Promise<void> {
         configureSentry(true);
-        this.version = await new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve();
         this.user = await me();
         const canAccessAdmin =
             this.user.user.isSuperuser ||
@@ -159,6 +165,7 @@ export class AdminInterface extends EnterpriseAwareInterface {
                                     : "display-none"}"
                                 ?hidden=${!this.apiDrawerOpen}
                             ></ak-api-drawer>
+                            <ak-about-modal></ak-about-modal>
                         </div>
                     </div>
                 </div></div

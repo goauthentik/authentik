@@ -7,6 +7,7 @@ import {
     CapabilitiesEnum,
     WithCapabilitiesConfig,
 } from "@goauthentik/elements/Interface/capabilitiesProvider";
+import { WithVersion } from "@goauthentik/elements/Interface/versionProvider";
 import { ID_REGEX, SLUG_REGEX, UUID_REGEX } from "@goauthentik/elements/router/Route";
 import { getRootStyle } from "@goauthentik/elements/utils/getRootStyle";
 import { spread } from "@open-wc/lit-helpers";
@@ -16,25 +17,19 @@ import { TemplateResult, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 
-import { AdminApi, CoreApi, UiThemeEnum, Version } from "@goauthentik/api";
+import { CoreApi, UiThemeEnum } from "@goauthentik/api";
 import type { SessionUser, UserSelf } from "@goauthentik/api";
 
 @customElement("ak-admin-sidebar")
-export class AkAdminSidebar extends WithCapabilitiesConfig(AKElement) {
+export class AkAdminSidebar extends WithCapabilitiesConfig(WithVersion(AKElement)) {
     @property({ type: Boolean, reflect: true })
     open = true;
-
-    @state()
-    version: Version["versionCurrent"] | null = null;
 
     @state()
     impersonation: UserSelf["username"] | null = null;
 
     constructor() {
         super();
-        new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve().then((version) => {
-            this.version = version.versionCurrent;
-        });
         me().then((user: SessionUser) => {
             this.impersonation = user.original ? user.user.username : null;
         });
@@ -175,12 +170,10 @@ export class AkAdminSidebar extends WithCapabilitiesConfig(AKElement) {
     }
 
     renderNewVersionMessage() {
-        return this.version && this.version !== VERSION
+        return this.version && this.version.versionCurrent !== VERSION
             ? html`
                   <ak-sidebar-item ?highlight=${true}>
-                      <span slot="label"
-                          >${msg("A newer version of the frontend is available.")}</span
-                      >
+                      <span slot="label">${msg("A newer version of the UI is available.")}</span>
                   </ak-sidebar-item>
               `
             : nothing;
