@@ -28,6 +28,7 @@ module.exports = {
                         "services/nextcloud/index",
                         "services/onlyoffice/index",
                         "services/outline/index",
+                        "services/owncloud/index",
                         "services/paperless-ng/index",
                         "services/paperless-ngx/index",
                         "services/rocketchat/index",
