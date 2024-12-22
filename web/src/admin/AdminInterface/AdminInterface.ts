@@ -81,6 +81,9 @@ export class AdminInterface extends EnterpriseAwareInterface {
                 ak-admin-sidebar {
                     grid-area: nav;
                 }
+                .pf-c-drawer__panel {
+                    z-index: var(--pf-global--ZIndex--xl);
+                }
             `,
         ];
     }
