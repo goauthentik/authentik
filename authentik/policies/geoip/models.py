@@ -27,9 +27,9 @@ class GeoIPPolicy(Policy):
     asns = ArrayField(models.IntegerField(), blank=True, default=list)
     countries = CountryField(multiple=True, blank=True)
 
+    distance_tolerance_km = models.PositiveIntegerField(default=50)
     check_history = models.BooleanField(default=False)
     history_max_distance_km = models.PositiveBigIntegerField(default=0)
-    history_distance_tolerance_km = models.PositiveIntegerField(default=50)
     history_login_count = models.PositiveIntegerField(default=5)
 
     check_impossible_travel = models.BooleanField(default=False)
@@ -59,10 +59,8 @@ class GeoIPPolicy(Policy):
         if self.countries:
             static_results.append(self.passes_country(request))
 
-        if self.check_history:
+        if self.check_history or self.check_impossible_travel:
             dynamic_results.append(self.passes_distance(request))
-        if self.check_impossible_travel:
-            dynamic_results.append(self.passed_impossible(request))
 
         if not static_results:
             return PolicyResult(True)
@@ -110,12 +108,17 @@ class GeoIPPolicy(Policy):
         return PolicyResult(True)
 
     def passes_distance(self, request: PolicyRequest) -> PolicyResult:
-        user = request.user
+        """Check if current policy execution is out of distance range compared
+        to previous authentication requests"""
         # Get previous login event and GeoIP data
-        previous_logins = Event.objects.filter(
-            action=EventAction.LOGIN.value,
-            user__pk=user.pk,
-        ).order_by("-created")[: self.history_login_count]
+        previous_logins = (
+            Event.objects.filter(
+                action=EventAction.LOGIN.value,
+                user__pk=request.user.pk,
+            )
+            .order_by("-created")
+            .values_list("context")[: self.history_login_count]
+        )
         for previous_login in previous_logins:
             previous_login_geoip: GeoIPDict | None = previous_login.context.get("geo")
             geoip_data: GeoIPDict | None = request.context.get("geoip")
@@ -127,14 +130,17 @@ class GeoIPPolicy(Policy):
                 (previous_login_geoip["lat"], previous_login_geoip["long"]),
                 (geoip_data["lat"], geoip_data["long"]),
             )
-            if isclose(
-                dist.km, self.history_max_distance_km, abs_tol=self.history_distance_tolerance_km
+            if self.check_history and isclose(
+                dist.km, self.history_max_distance_km, abs_tol=self.distance_tolerance_km
             ):
-                return PolicyResult(False)
+                return PolicyResult(
+                    False, _("Distance from previous authentication is larger than threshold.")
+                )
+            if self.check_impossible_travel and isclose(
+                dist.km, MAX_DISTANCE_HOUR_KM, abs_tol=self.distance_tolerance_km
+            ):
+                return PolicyResult(False, _("Distance is further than possible."))
         return PolicyResult(True)
-
-    def passed_impossible(self, request: PolicyRequest) -> PolicyResult:
-        pass
 
     class Meta(Policy.PolicyMeta):
         verbose_name = _("GeoIP Policy")

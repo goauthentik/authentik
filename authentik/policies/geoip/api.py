@@ -44,7 +44,7 @@ class GeoIPPolicySerializer(CountryFieldMixin, PolicySerializer):
             "countries_obj",
             "check_history",
             "history_max_distance_km",
-            "history_distance_tolerance_km",
+            "distance_tolerance_km",
             "history_login_count",
         ]
 

@@ -44013,7 +44013,7 @@ components:
           maximum: 9223372036854775807
           minimum: 0
           format: int64
-        history_distance_tolerance_km:
+        distance_tolerance_km:
           type: integer
           maximum: 2147483647
           minimum: 0
@@ -44060,7 +44060,7 @@ components:
           maximum: 9223372036854775807
           minimum: 0
           format: int64
-        history_distance_tolerance_km:
+        distance_tolerance_km:
           type: integer
           maximum: 2147483647
           minimum: 0
@@ -50594,7 +50594,7 @@ components:
           maximum: 9223372036854775807
           minimum: 0
           format: int64
-        history_distance_tolerance_km:
+        distance_tolerance_km:
           type: integer
           maximum: 2147483647
           minimum: 0

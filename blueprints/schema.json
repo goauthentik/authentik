@@ -5243,11 +5243,11 @@
                     "maximum": 9223372036854775807,
                     "title": "History max distance km"
                 },
-                "history_distance_tolerance_km": {
+                "distance_tolerance_km": {
                     "type": "integer",
                     "minimum": 0,
                     "maximum": 2147483647,
-                    "title": "History distance tolerance km"
+                    "title": "Distance tolerance km"
                 },
                 "history_login_count": {
                     "type": "integer",
