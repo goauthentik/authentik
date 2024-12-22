@@ -1,23 +1,23 @@
 import type { AdminInterface } from "@goauthentik/admin/AdminInterface/AdminInterface";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { globalAK } from "@goauthentik/common/global";
 import { AKElement, rootInterface } from "@goauthentik/elements/Base";
 import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider";
+import { WithVersion } from "@goauthentik/elements/Interface/versionProvider";
 import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, css, html, nothing } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement } from "lit/decorators.js";
 
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { AdminApi, LicenseSummaryStatusEnum, Version } from "@goauthentik/api";
+import { LicenseSummaryStatusEnum } from "@goauthentik/api";
 
 @customElement("ak-sidebar-version")
-export class SidebarVersion extends WithLicenseSummary(AKElement) {
+export class SidebarVersion extends WithLicenseSummary(WithVersion(AKElement)) {
     static get styles(): CSSResult[] {
         return [
             PFBase,
@@ -39,13 +39,6 @@ export class SidebarVersion extends WithLicenseSummary(AKElement) {
                 }
             `,
         ];
-    }
-
-    @state()
-    version?: Version;
-
-    async firstUpdated() {
-        this.version = await new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve();
     }
 
     render() {

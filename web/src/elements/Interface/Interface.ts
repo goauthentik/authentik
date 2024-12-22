@@ -1,4 +1,5 @@
 import { UIConfig, uiConfig } from "@goauthentik/common/ui/config";
+import { VersionContextController } from "@goauthentik/elements/Interface/VersionContextController";
 import { ModalOrchestrationController } from "@goauthentik/elements/controllers/ModalOrchestrationController.js";
 import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet";
 
@@ -6,7 +7,7 @@ import { state } from "lit/decorators.js";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import type { Config, CurrentBrand, LicenseSummary } from "@goauthentik/api";
+import type { Config, CurrentBrand, LicenseSummary, Version } from "@goauthentik/api";
 import { UiThemeEnum } from "@goauthentik/api";
 
 import { AKElement, rootInterface } from "../Base";
@@ -19,11 +20,13 @@ export type AkInterface = HTMLElement & {
     brand?: CurrentBrand;
     uiConfig?: UIConfig;
     config?: Config;
+    version?: Version;
 };
 
 const brandContext = Symbol("brandContext");
 const configContext = Symbol("configContext");
 const modalController = Symbol("modalController");
+const versionContext = Symbol("versionContext");
 
 export class Interface extends AKElement implements AkInterface {
     @state()
@@ -34,6 +37,8 @@ export class Interface extends AKElement implements AkInterface {
     [configContext]!: ConfigContextController;
 
     [modalController]!: ModalOrchestrationController;
+
+    [versionContext]!: VersionContextController;
 
     @state()
     config?: Config;
@@ -47,6 +52,7 @@ export class Interface extends AKElement implements AkInterface {
         this[brandContext] = new BrandContextController(this);
         this[configContext] = new ConfigContextController(this);
         this[modalController] = new ModalOrchestrationController(this);
+        this[versionContext] = new VersionContextController(this);
         this.dataset.akInterfaceRoot = "true";
     }
 
