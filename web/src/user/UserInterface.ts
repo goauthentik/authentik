@@ -54,12 +54,7 @@ const customStyles = css`
         box-shadow: none !important;
         color: black !important;
     }
-    :host([theme="dark"]) .pf-c-page__header {
-        color: var(--ak-dark-foreground) !important;
-    }
-    :host([theme="light"]) .pf-c-page__header-tools-item .fas,
-    :host([theme="light"]) .pf-c-notification-badge__count,
-    :host([theme="light"]) .pf-c-page__header-tools-group .pf-c-button {
+    :host([theme="light"]) .pf-c-button.pf-m-secondary {
         color: var(--ak-global--Color--100) !important;
     }
     .pf-c-page {
