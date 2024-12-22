@@ -1,4 +1,6 @@
 import { ROUTES } from "@goauthentik/admin/Routes";
+import "@goauthentik/admin/AdminInterface/AboutModal";
+import type { AboutModal } from "@goauthentik/admin/AdminInterface/AboutModal";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import {
     EVENT_API_DRAWER_TOGGLE,
@@ -20,7 +22,7 @@ import "@goauthentik/elements/sidebar/Sidebar";
 import "@goauthentik/elements/sidebar/SidebarItem";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, property, query, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -47,6 +49,9 @@ export class AdminInterface extends EnterpriseAwareInterface {
 
     @state()
     user?: SessionUser;
+
+    @query("ak-about-modal")
+    aboutModal?: AboutModal;
 
     static get styles(): CSSResult[] {
         return [
@@ -159,6 +164,7 @@ export class AdminInterface extends EnterpriseAwareInterface {
                                     : "display-none"}"
                                 ?hidden=${!this.apiDrawerOpen}
                             ></ak-api-drawer>
+                            <ak-about-modal></ak-about-modal>
                         </div>
                     </div>
                 </div></div
