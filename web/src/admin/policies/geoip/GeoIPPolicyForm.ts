@@ -46,7 +46,7 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
     }
 
     renderForm(): TemplateResult {
-        return html` <span>
+        return html`<span>
                 ${msg(
                     "Ensure the user satisfies requirements of geography or network topology, based on IP address. If any of the configured values match, the policy passes.",
                 )}
@@ -80,7 +80,7 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                 </p>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
-                <span slot="header"> ${msg("Policy-specific settings")} </span>
+                <span slot="header"> ${msg("Static rule settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("ASNs")} name="asns">
                         <input
@@ -120,6 +120,25 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                             selected-label="${msg("Selected Countries")}"
                         >
                         </ak-dual-select-provider>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+            <ak-form-group .expanded=${true}>
+                <span slot="header"> ${msg("Dynamic rule settings")} </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("Historical Login Count")}
+                        name="historyLoginCount"
+                    >
+                        <input
+                            type="number"
+                            min="1"
+                            value="${this.instance?.historyLoginCount ?? ""}"
+                            class="pf-c-form-control"
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Amount of previous login events to check against.")}
+                        </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>`;
