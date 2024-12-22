@@ -1,5 +1,6 @@
 from textwrap import indent
 from typing import Iterable
+
 from channels.generic.websocket import JsonWebsocketConsumer
 from pylsp.python_lsp import PythonLSPServer
 
@@ -36,7 +37,7 @@ class LSPConsumer(JsonWebsocketConsumer):
         self.handler = self.handler_class(None, None, consumer=self.send_json)
 
     def disconnect(self, code):
-        pass
+        self.handler.m_shutdown()
 
     def wrap_expression(self, expression: str, params: Iterable[str]) -> str:
         """Wrap expression in a function, call it, and save the result as `result`"""
@@ -49,20 +50,20 @@ class LSPConsumer(JsonWebsocketConsumer):
         return full_expression
 
     def send_json(self, content, close=False):
-        print(self.handler.config)
+        # print(self.handler.config)
         return super().send_json(content, close)
 
     def receive_json(self, content, **kwargs):
-        if content.get("method", "") == "textDocument/didOpen":
-            textDocument = content.get("params",{}).get("textDocument", {})
-            text = textDocument.get("text")
-            if text:
-                textDocument["text"] = self.wrap_expression(text, ["request: PolicyRequest"])
-        if content.get("method", "") == "textDocument/didChange":
-            contentChanges = content.get("params", {}).get("contentChanges", [""])
-            text = contentChanges[0].get("text", "")
-            if text:
-                contentChanges[0]["text"] = self.wrap_expression(text, ["request: PolicyRequest"])
+        # if content.get("method", "") == "textDocument/didOpen":
+        #     textDocument = content.get("params",{}).get("textDocument", {})
+        #     text = textDocument.get("text")
+        #     if text:
+        #         textDocument["text"] = self.wrap_expression(text, ["request: PolicyRequest"])
+        # if content.get("method", "") == "textDocument/didChange":
+        #     contentChanges = content.get("params", {}).get("contentChanges", [""])
+        #     text = contentChanges[0].get("text", "")
+        #     if text:
+        #         contentChanges[0]["text"] = self.wrap_expression(text, ["request: PolicyRequest"])
         self.handler.consume(content)
         # print(self.handler.config.plugin_manager.get_plugins())
-        print(self.handler.config.plugin_settings("jedi_completion"))
+        # print(self.handler.config.plugin_settings("jedi_completion"))
