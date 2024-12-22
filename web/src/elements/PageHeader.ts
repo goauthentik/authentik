@@ -65,7 +65,7 @@ export class PageHeader extends WithBrandConfig(AKElement) {
                 :host {
                     position: sticky;
                     top: 0;
-                    z-index: 100;
+                    z-index: var(--pf-global--ZIndex--lg);
                 }
                 .bar {
                     border-bottom: var(--pf-global--BorderWidth--sm);
