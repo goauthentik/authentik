@@ -1,4 +1,4 @@
-<?xml version="1.0"?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<?xml version="1.0" ?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
   <file target-language="zh-Hans" source-language="en" original="lit-localize-inputs" datatype="plaintext">
     <body>
       <trans-unit id="s4caed5b7a7e5d89b">
@@ -596,9 +596,9 @@
         
       </trans-unit>
       <trans-unit id="saa0e2675da69651b">
-        <source>The URL "<x id="0" equiv-text="${this.url}"/>" was not found.</source>
-        <target>未找到 URL "
-        <x id="0" equiv-text="${this.url}"/>"。</target>
+        <source>The URL &quot;<x id="0" equiv-text="${this.url}"/>&quot; was not found.</source>
+        <target>未找到 URL &quot;
+        <x id="0" equiv-text="${this.url}"/>&quot;。</target>
         
       </trans-unit>
       <trans-unit id="s58cd9c2fe836d9c6">
@@ -1730,8 +1730,8 @@
         
       </trans-unit>
       <trans-unit id="sa90b7809586c35ce">
-        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".</source>
-        <target>输入完整 URL、相对路径，或者使用 'fa://fa-test' 来使用 Font Awesome 图标 "fa-test"。</target>
+        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon &quot;fa-test&quot;.</source>
+        <target>输入完整 URL、相对路径，或者使用 'fa://fa-test' 来使用 Font Awesome 图标 &quot;fa-test&quot;。</target>
         
       </trans-unit>
       <trans-unit id="s0410779cb47de312">
@@ -2879,8 +2879,8 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="s76768bebabb7d543">
-        <source>Field which contains members of a group. Note that if using the "memberUid" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'</source>
-        <target>包含组成员的字段。请注意，如果使用 "memberUid" 字段，则假定该值包含相对可分辨名称。例如，'memberUid=some-user' 而不是 'memberUid=cn=some-user,ou=groups,...'</target>
+        <source>Field which contains members of a group. Note that if using the &quot;memberUid&quot; field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'</source>
+        <target>包含组成员的字段。请注意，如果使用 &quot;memberUid&quot; 字段，则假定该值包含相对可分辨名称。例如，'memberUid=some-user' 而不是 'memberUid=cn=some-user,ou=groups,...'</target>
         
       </trans-unit>
       <trans-unit id="s026555347e589f0e">
@@ -3626,8 +3626,8 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="s7b1fba26d245cb1c">
-        <source>When using an external logging solution for archiving, this can be set to "minutes=5".</source>
-        <target>使用外部日志记录解决方案进行存档时，可以将其设置为 "minutes=5"。</target>
+        <source>When using an external logging solution for archiving, this can be set to &quot;minutes=5&quot;.</source>
+        <target>使用外部日志记录解决方案进行存档时，可以将其设置为 &quot;minutes=5&quot;。</target>
         
       </trans-unit>
       <trans-unit id="s44536d20bb5c8257">
@@ -3803,10 +3803,10 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="sa95a538bfbb86111">
-        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> "<x id="1" equiv-text="${this.obj?.name}"/>"?</source>
+        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> &quot;<x id="1" equiv-text="${this.obj?.name}"/>&quot;?</source>
         <target>您确定要更新
-        <x id="0" equiv-text="${this.objectLabel}"/>"
-        <x id="1" equiv-text="${this.obj?.name}"/>" 吗？</target>
+        <x id="0" equiv-text="${this.objectLabel}"/>&quot;
+        <x id="1" equiv-text="${this.obj?.name}"/>&quot; 吗？</target>
         
       </trans-unit>
       <trans-unit id="sc92d7cfb6ee1fec6">
@@ -4882,7 +4882,7 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="sdf1d8edef27236f0">
-        <source>A "roaming" authenticator, like a YubiKey</source>
+        <source>A &quot;roaming&quot; authenticator, like a YubiKey</source>
         <target>像 YubiKey 这样的“漫游”身份验证器</target>
         
       </trans-unit>
@@ -5251,7 +5251,7 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="s1608b2f94fa0dbd4">
-        <source>If set to a duration above 0, the user will have the option to choose to "stay signed in", which will extend their session by the time specified here.</source>
+        <source>If set to a duration above 0, the user will have the option to choose to &quot;stay signed in&quot;, which will extend their session by the time specified here.</source>
         <target>如果设置时长大于 0，用户可以选择“保持登录”选项，这将使用户的会话延长此处设置的时间。</target>
         
       </trans-unit>
@@ -7566,7 +7566,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>成功创建用户并添加到组 <x id="0" equiv-text="${this.group.name}"/></target>
 </trans-unit>
 <trans-unit id="s824e0943a7104668">
-  <source>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</source>
+  <source>This user will be added to the group &quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&quot;.</source>
   <target>此用户将会被添加到组 &amp;quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&amp;quot;。</target>
 </trans-unit>
 <trans-unit id="s62e7f6ed7d9cb3ca">
@@ -8872,7 +8872,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>同步组</target>
 </trans-unit>
 <trans-unit id="s2d5f69929bb7221d">
-  <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
+  <source><x id="0" equiv-text="${p.name}"/> (&quot;<x id="1" equiv-text="${p.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${p.type}"/>)</source>
   <target><x id="0" equiv-text="${p.name}"/>（&amp;quot;<x id="1" equiv-text="${p.fieldKey}"/>&amp;quot;，类型为 <x id="2" equiv-text="${p.type}"/>）</target>
 </trans-unit>
 <trans-unit id="s25bacc19d98b444e">
@@ -9120,8 +9120,8 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>授权流程成功后有效的重定向 URI。还可以在此处为隐式流程指定任何来源。</target>
 </trans-unit>
 <trans-unit id="s4c49d27de60a532b">
-  <source>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</source>
-  <target>要允许任何重定向 URI，请设置模式为正则表达式，并将此值设置为 ".*"。请注意这可能带来的安全影响。</target>
+  <source>To allow any redirect URI, set the mode to Regex and the value to &quot;.*&quot;. Be aware of the possible security implications this can have.</source>
+  <target>要允许任何重定向 URI，请设置模式为正则表达式，并将此值设置为 &quot;.*&quot;。请注意这可能带来的安全影响。</target>
 </trans-unit>
 <trans-unit id="sa52bf79fe1ccb13e">
   <source>Federated OIDC Sources</source>
@@ -9229,132 +9229,175 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sb80507bed88545a6">
   <source>An application name is required</source>
+  <target>需要应用程序名称</target>
 </trans-unit>
 <trans-unit id="s39c052006b2b141a">
   <source>Not a valid URL</source>
+  <target>不是有效的 URL</target>
 </trans-unit>
 <trans-unit id="s317f3ab0da3d068a">
   <source>Not a valid slug</source>
+  <target>不是有效的 Slug</target>
 </trans-unit>
 <trans-unit id="s177577c23ed3ca7e">
   <source>Configure The Application</source>
+  <target>配置应用程序</target>
 </trans-unit>
 <trans-unit id="s030ed8a3f12c23ff">
   <source>Configure Bindings</source>
+  <target>配置绑定</target>
 </trans-unit>
 <trans-unit id="sc387b20e6d629087">
   <source>Configure Policy/User/Group Bindings</source>
+  <target>配置策略/用户/组绑定</target>
 </trans-unit>
 <trans-unit id="s71c3ec95efe723ca">
   <source>No bound policies.</source>
+  <target>没有绑定的策略</target>
 </trans-unit>
 <trans-unit id="sab1786ef3c0383ba">
   <source>Bind policy/group/user</source>
+  <target>绑定策略/组/用户</target>
 </trans-unit>
 <trans-unit id="s082ea0f3c0a854ff">
   <source>Configure Policy Bindings</source>
+  <target>配置策略绑定</target>
 </trans-unit>
 <trans-unit id="sac315d5bd28d4efa">
   <source>Don't Pass</source>
+  <target>不通过</target>
 </trans-unit>
 <trans-unit id="s54a37223ce938349">
   <source>Save Binding</source>
+  <target>保存绑定</target>
 </trans-unit>
 <trans-unit id="s931754aabd4a6a47">
   <source>Create a Policy/User/Group Binding</source>
+  <target>创建一个策略/用户/组绑定</target>
 </trans-unit>
 <trans-unit id="s10ba15343fe64890">
   <source>Choose A Provider</source>
+  <target>选择提供程序</target>
 </trans-unit>
 <trans-unit id="sb7be945aa799b8d7">
   <source>Please choose a provider type before proceeding.</source>
+  <target>请在继续前选择一个提供程序类型。</target>
 </trans-unit>
 <trans-unit id="s2289ff3b411251d8">
   <source>Choose a Provider Type</source>
+  <target>选择提供程序类型</target>
 </trans-unit>
 <trans-unit id="sde0ad51b14f77cf6">
   <source>Redirect URIs/Origins (RegEx)</source>
+  <target>重定向 URI/Origin（正则）</target>
 </trans-unit>
 <trans-unit id="s89ae85c3a9df8a6f">
   <source>Configure OAuth2 Provider</source>
+  <target>配置 OAuth2 提供程序</target>
 </trans-unit>
 <trans-unit id="s881271a499c9db98">
   <source>Configure Remote Access Provider</source>
+  <target>配置远程访问提供程序</target>
 </trans-unit>
 <trans-unit id="s9b6bf63fddc7362f">
   <source>List of CIDRs (comma-seperated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.</source>
+  <target>允许客户端连接的 CIDR 列表（逗号分隔）。严格的 CIDR 会在宽松的之前匹配。来自 CIDR 范围外的客户端连接将会被丢弃。</target>
 </trans-unit>
 <trans-unit id="s19907c16eb319618">
   <source>Configure Provider</source>
+  <target>配置提供程序</target>
 </trans-unit>
 <trans-unit id="s7055edd8fab866f4">
   <source>strict</source>
+  <target>严格</target>
 </trans-unit>
 <trans-unit id="s5e57ca23b946c1b8">
   <source>regexp</source>
+  <target>正则表达式</target>
 </trans-unit>
 <trans-unit id="sd226dc54c414585a">
   <source>Review and Submit Application</source>
+  <target>检查与提交应用程序</target>
 </trans-unit>
 <trans-unit id="s828ded9ade500ffc">
   <source>There was an error. Please go back and review the application.</source>
+  <target>存在一个错误。请返回检查此应用程序。</target>
 </trans-unit>
 <trans-unit id="s9fdda682893624a1">
   <source>There was an error:</source>
+  <target>存在一个错误：</target>
 </trans-unit>
 <trans-unit id="s201ee6bc6d9f97da">
   <source>Please go back and review the application.</source>
+  <target>请返回检查此应用程序。</target>
 </trans-unit>
 <trans-unit id="s9c09ef16900241fa">
   <source>Review the Application and Provider</source>
+  <target>检查应用程序和提供程序</target>
 </trans-unit>
 <trans-unit id="s0a0a21f7bcf9d865">
   <source>Saving application...</source>
+  <target>正在保存应用程序...</target>
 </trans-unit>
 <trans-unit id="se669a4b939be0891">
   <source>authentik was unable to complete this process.</source>
+  <target>authentik 无法完成此操作。</target>
 </trans-unit>
 <trans-unit id="s8aac845c63f45ca2">
   <source>Create with wizard</source>
+  <target>通过向导创建</target>
 </trans-unit>
 <trans-unit id="s080af72866b69b3d">
   <source>Bind existing <x id="0" equiv-text="${this.allowedTypesLabel}"/></source>
+  <target>绑定已存在的 <x id="0" equiv-text="${this.allowedTypesLabel}"/></target>
 </trans-unit>
 <trans-unit id="sa36117e97f49c86e">
   <source>Successfully updated entitlement.</source>
+  <target>已成功更新授权。</target>
 </trans-unit>
 <trans-unit id="s86bee999b735111f">
   <source>Successfully created entitlement.</source>
+  <target>已成功创建授权。</target>
 </trans-unit>
 <trans-unit id="s8a48455905fc14e6">
   <source>Application entitlement(s)</source>
+  <target>应用程序授权</target>
 </trans-unit>
 <trans-unit id="sae971cbff672090b">
   <source>Update Entitlement</source>
+  <target>更新授权</target>
 </trans-unit>
 <trans-unit id="s537a58ae0ff50f1c">
   <source>These bindings control which users have access to this entitlement.</source>
+  <target>这些绑定控制哪些用户可以访问此授权。</target>
 </trans-unit>
 <trans-unit id="s05849efeac672dc7">
   <source>No app entitlements created.</source>
+  <target>未创建应用程序授权。</target>
 </trans-unit>
 <trans-unit id="sdc8a8f29af6aa411">
   <source>This application does currently not have any application entitlement defined.</source>
+  <target>此应用程序目前没有定义任何应用程序授权。</target>
 </trans-unit>
 <trans-unit id="sf0bd204ce3fea1de">
   <source>Create Entitlement</source>
+  <target>创建授权</target>
 </trans-unit>
 <trans-unit id="s55d8e42d0a1c057e">
   <source>Create entitlement</source>
+  <target>创建授权</target>
 </trans-unit>
 <trans-unit id="sc6479479c936939f">
   <source>Application entitlements</source>
+  <target>应用程序授权</target>
 </trans-unit>
 <trans-unit id="sfafbd9bddb38d172">
   <source>Application entitlements are in preview.</source>
+  <target>应用程序授权目前处于预览状态。</target>
 </trans-unit>
 <trans-unit id="s8e1c375a007d1839">
   <source>These entitlements can be used to configure user access in this application.</source>
+  <target>这些授权可以用于配置用户对应用程序的访问。</target>
 </trans-unit>
     </body>
   </file>
