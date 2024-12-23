@@ -9389,11 +9389,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sc6479479c936939f">
   <source>Application entitlements</source>
-  <target>应用程序权限</target>
+  <target>应用程序授权</target>
 </trans-unit>
 <trans-unit id="sfafbd9bddb38d172">
   <source>Application entitlements are in preview.</source>
-  <target>应用程序权限目前处于预览状态。</target>
+  <target>应用程序授权目前处于预览状态。</target>
 </trans-unit>
 <trans-unit id="s8e1c375a007d1839">
   <source>These entitlements can be used to configure user access in this application.</source>
