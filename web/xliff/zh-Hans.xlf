@@ -9369,23 +9369,23 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s537a58ae0ff50f1c">
   <source>These bindings control which users have access to this entitlement.</source>
-  <target>这些绑定控制哪些用户可以访问此权限。</target>
+  <target>这些绑定控制哪些用户可以访问此授权。</target>
 </trans-unit>
 <trans-unit id="s05849efeac672dc7">
   <source>No app entitlements created.</source>
-  <target>未创建应用程序权限。</target>
+  <target>未创建应用程序授权。</target>
 </trans-unit>
 <trans-unit id="sdc8a8f29af6aa411">
   <source>This application does currently not have any application entitlement defined.</source>
-  <target>此应用程序目前没有定义任何应用程序权限。</target>
+  <target>此应用程序目前没有定义任何应用程序授权。</target>
 </trans-unit>
 <trans-unit id="sf0bd204ce3fea1de">
   <source>Create Entitlement</source>
-  <target>创建权限</target>
+  <target>创建授权</target>
 </trans-unit>
 <trans-unit id="s55d8e42d0a1c057e">
   <source>Create entitlement</source>
-  <target>创建权限</target>
+  <target>创建授权</target>
 </trans-unit>
 <trans-unit id="sc6479479c936939f">
   <source>Application entitlements</source>
