@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 	"fmt"
+	"maps"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -16,13 +17,16 @@ import (
 	"goauthentik.io/internal/constants"
 )
 
-func (ac *APIController) getWebsocketURL(akURL url.URL, outpostUUID string) *url.URL {
+func (ac *APIController) getWebsocketURL(akURL url.URL, outpostUUID string, query url.Values) *url.URL {
 	wsUrl := &url.URL{}
 	wsUrl.Scheme = strings.ReplaceAll(akURL.Scheme, "http", "ws")
 	wsUrl.Host = akURL.Host
-	_p, _ := url.JoinPath(akURL.Path, "ws/outpost/", outpostUUID)
+	_p, _ := url.JoinPath(akURL.Path, "ws/outpost/", outpostUUID, "/")
 	wsUrl.Path = _p
-	wsUrl.RawQuery = akURL.Query().Encode()
+	v := url.Values{}
+	maps.Insert(v, maps.All(akURL.Query()))
+	maps.Insert(v, maps.All(query))
+	wsUrl.RawQuery = v.Encode()
 	return wsUrl
 }
 
@@ -45,7 +49,9 @@ func (ac *APIController) initWS(akURL url.URL, outpostUUID string) error {
 		},
 	}
 
-	ws, _, err := dialer.Dial(ac.getWebsocketURL(akURL, outpostUUID).String(), header)
+	wsu := ac.getWebsocketURL(akURL, outpostUUID, query).String()
+	ac.logger.WithField("url", wsu).Debug("connecting to websocket")
+	ws, _, err := dialer.Dial(wsu, header)
 	if err != nil {
 		ac.logger.WithError(err).Warning("failed to connect websocket")
 		return err
