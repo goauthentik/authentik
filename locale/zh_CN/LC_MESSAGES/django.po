@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-18 13:31+0000\n"
+"POT-Creation-Date: 2024-12-20 00:08+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2024\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/authentik/teams/119923/zh_CN/)\n"
@@ -108,6 +108,10 @@ msgstr "品牌"
 #: authentik/brands/models.py
 msgid "Brands"
 msgstr "品牌"
+
+#: authentik/core/api/application_entitlements.py
+msgid "User does not have access to application."
+msgstr "用户没有访问此应用程序的权限。"
 
 #: authentik/core/api/devices.py
 msgid "Extra description not available"
@@ -233,6 +237,14 @@ msgstr "应用程序"
 #: authentik/core/models.py
 msgid "Applications"
 msgstr "应用程序"
+
+#: authentik/core/models.py
+msgid "Application Entitlement"
+msgstr "应用程序授权"
+
+#: authentik/core/models.py
+msgid "Application Entitlements"
+msgstr "应用程序授权"
 
 #: authentik/core/models.py
 msgid "Use the source-specific identifier"
