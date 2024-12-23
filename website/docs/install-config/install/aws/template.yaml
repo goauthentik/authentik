@@ -24,7 +24,7 @@ Parameters:
     Description: authentik server memory in MiB
     Type: Number
   AuthentikVersion:
-    Default: 2024.12.0
+    Default: 2024.12.1
     Description: authentik Docker image tag
     Type: String
   AuthentikWorkerCPU:
