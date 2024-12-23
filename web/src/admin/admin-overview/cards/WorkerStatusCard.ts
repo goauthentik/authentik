@@ -28,7 +28,7 @@ export class WorkersStatusCard extends AdminStatusCard<Worker[]> {
                 icon: "fa fa-times-circle pf-m-danger",
                 message: html`${msg("No workers connected. Background tasks will not run.")}`,
             });
-        } else if (value.filter(w => !w.versionMatching).length > 0) {
+        } else if (value.filter((w) => !w.versionMatching).length > 0) {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-times-circle pf-m-danger",
                 message: html`${msg("Worker with incorrect version connected.")}`,
