@@ -349,7 +349,7 @@ paths:
           description: ''
   /admin/workers/:
     get:
-      operationId: admin_workers_retrieve
+      operationId: admin_workers_list
       description: Get currently connected worker count.
       tags:
       - admin
@@ -360,7 +360,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Workers'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Worker'
           description: ''
         '400':
           content:
@@ -56987,13 +56989,19 @@ components:
       required:
       - aaguid
       - description
-    Workers:
+    Worker:
       type: object
       properties:
-        count:
-          type: integer
+        worker_id:
+          type: string
+        version:
+          type: string
+        version_matching:
+          type: boolean
       required:
-      - count
+      - version
+      - version_matching
+      - worker_id
     modelRequest:
       oneOf:
       - $ref: '#/components/schemas/GoogleWorkspaceProviderRequest'
