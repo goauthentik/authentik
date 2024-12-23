@@ -9353,19 +9353,19 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sa36117e97f49c86e">
   <source>Successfully updated entitlement.</source>
-  <target>已成功更新权限。</target>
+  <target>已成功更新授权。</target>
 </trans-unit>
 <trans-unit id="s86bee999b735111f">
   <source>Successfully created entitlement.</source>
-  <target>已成功创建权限。</target>
+  <target>已成功创建授权。</target>
 </trans-unit>
 <trans-unit id="s8a48455905fc14e6">
   <source>Application entitlement(s)</source>
-  <target>应用程序权限</target>
+  <target>应用程序授权</target>
 </trans-unit>
 <trans-unit id="sae971cbff672090b">
   <source>Update Entitlement</source>
-  <target>更新权限</target>
+  <target>更新授权</target>
 </trans-unit>
 <trans-unit id="s537a58ae0ff50f1c">
   <source>These bindings control which users have access to this entitlement.</source>
