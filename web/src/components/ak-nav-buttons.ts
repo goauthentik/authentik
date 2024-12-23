@@ -142,7 +142,11 @@ export class NavigationButtons extends AKElement {
         }
 
         return html`<div class="pf-c-page__header-tools-item">
-            <a class="pf-c-button pf-m-plain" type="button" href="#/settings">
+            <a
+                class="pf-c-button pf-m-plain"
+                type="button"
+                href="${globalAK().api.base}if/user/#/settings"
+            >
                 <pf-tooltip position="top" content=${msg("Settings")}>
                     <i class="fas fa-cog" aria-hidden="true"></i>
                 </pf-tooltip>
