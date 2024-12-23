@@ -16,7 +16,7 @@ func BUILD(def string) string {
 func FullVersion() string {
 	ver := VERSION
 	if b := BUILD(""); b != "" {
-		ver = fmt.Sprintf("%s.%s", ver, b)
+		return fmt.Sprintf("%s+%s", ver, b)
 	}
 	return ver
 }
