@@ -241,11 +241,11 @@ msgstr "应用程序"
 
 #: authentik/core/models.py
 msgid "Application Entitlement"
-msgstr "应用程序权限"
+msgstr "应用程序授权"
 
 #: authentik/core/models.py
 msgid "Application Entitlements"
-msgstr "应用程序权限"
+msgstr "应用程序授权"
 
 #: authentik/core/models.py
 msgid "Use the source-specific identifier"
