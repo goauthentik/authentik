@@ -9397,7 +9397,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s8e1c375a007d1839">
   <source>These entitlements can be used to configure user access in this application.</source>
-  <target>这些权限可以用于配置用户对应用程序的访问。</target>
+  <target>这些授权可以用于配置用户对应用程序的访问。</target>
 </trans-unit>
     </body>
   </file>
