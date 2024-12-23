@@ -4159,7 +4159,7 @@
                 "re_evaluate_policies": {
                     "type": "boolean",
                     "title": "Re evaluate policies",
-                    "description": "Evaluate policies when the Stage is present to the user."
+                    "description": "Evaluate policies when the Stage is presented to the user."
                 },
                 "order": {
                     "type": "integer",
