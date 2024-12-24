@@ -22,7 +22,7 @@ The following placeholders will be used:
 
 ## authentik configuration
 
-1. From the authentik admin interface, navigate to Applications -> Applications.
+1. From the **authentik admin interface**, navigate to **Applications** -> **Applications**.
 2. Use the wizard to create a new application. During this process:
     - Note the **Client ID**, **Client Secret**, and **slug** values as they will be required later.
     - Set the redirect URI to `https://komga.company/login/oauth2/code/authentik`.
