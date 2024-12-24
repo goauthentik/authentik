@@ -24,9 +24,9 @@ The following placeholders will be used:
 
 1. From the authentik admin interface, navigate to Applications -> Applications.
 2. Use the wizard to create a new application. During this process:
-   - Note the **Client ID**, **Client Secret**, and **slug** values as they will be required later.
-   - Set the redirect URI to `https://komga.company/login/oauth2/code/authentik`.
-   - Select any available signing key.
+    - Note the **Client ID**, **Client Secret**, and **slug** values as they will be required later.
+    - Set the redirect URI to `https://komga.company/login/oauth2/code/authentik`.
+    - Select any available signing key.
 
 ## Komga configuration
 
@@ -42,20 +42,20 @@ You can configure Komga to use either the `sub` or `preferred_username` as the U
 
 ```yml
 spring:
-  security:
-    oauth2:
-      client:
-        registration:
-          authentik:
-            provider: authentik
-            client-id: <client-id>
-            client-secret: <client secret>
-            client-name: authentik
-            scope: openid,email
-            authorization-grant-type: authorization_code
-            redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
-        provider:
-          authentik:
-            user-name-attribute: preferred_username
-            issuer-uri: https://authentik.company/application/o/<application slug>/
+    security:
+        oauth2:
+            client:
+                registration:
+                    authentik:
+                        provider: authentik
+                        client-id: <client-id>
+                        client-secret: <client secret>
+                        client-name: authentik
+                        scope: openid,email
+                        authorization-grant-type: authorization_code
+                        redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
+                provider:
+                    authentik:
+                        user-name-attribute: preferred_username
+                        issuer-uri: https://authentik.company/application/o/<application slug>/
 ```
