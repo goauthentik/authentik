@@ -20,48 +20,32 @@ The following placeholders will be used:
 -   `chronograf.company` is the FQDN of the Chronograf install
 -   `authentik.company` is the FQDN of the authentik install.
 
+## authentik configuration
+
+From the administration interface of your authentik installation, navigate to **Applications -> Applications** on the left sidebar, and create an OAuth2/OpenID provider using the wizard. Take note of the application slug, client ID, and Client secret as you will need them later. Set a strict redirect URI to `https://service.company/oauth/authentik/callback`, and set the signing key to any availi, then submit the wizard.
+
 ## Service Configuration
 
-:::Note
-In this configuration, "GENERIC_NAME" is what will appear on the Chronograf login page.
-:::
-
-The following environement variables can be configured using the official Chronograf docker container (https://hub.docker.com/_/chronograf?tab=description). They are also valid for a standalone configuration using an environment file. You may wish to limit/alter the 'GENERIC_SCOPES' and GENERERIC_API_KEY to match your install preferences.
-
-Additional resources for service configuraton:
-https://docs.influxdata.com/chronograf/v1/administration/config-options/
-```
-      PUBLIC_URL: "https://service.company"
-      TOKEN_SECRET: "<generate_a_token_secret>"
-      JWKS_URL: "https://auth.authentik.company/application/o/chrono/jwks/"
-      GENERIC_NAME: "Authentik"
-      GENERIC_CLIENT_ID: "<client id from Authentik>"
-      GENERIC_CLIENT_SECRET: "<client secret from Authentik>"
-      GENERIC_SCOPES: "email,profile,openid"
-      GENERIC_DOMAINS: "authentik.company"
-      GENERIC_AUTH_URL: "https://auth.authentik.company/application/o/authorize/"
-      GENERIC_TOKEN_URL: "https://auth.authentik.company/application/o/token/"
-      GENERIC_API_URL: "https://auth.authentik.company/application/o/userinfo/"
-      GENERIC_API_KEY: "email"
-```
-In this configuration, "GENERIC_NAME" is what will appear on the Chronograf login page:
-
-![image](https://github.com/tomlawesome/authentik/assets/76453276/c14a4694-563b-4a94-9cd4-162c4e543bd7)
-
-
-## Authentik configuration
-
-Create an oAuth provider for your service, along with an application. Authentik makes the required endpoints available by default, so no advanced/special configuration is required for generic oauth.  
+Add the following environm variables to your Chronograf setup. This setup is also valid if you configured Chronograf with a config file. You may wish to limit/alter the `GENERIC_SCOPES` and `GENERERIC_API_KEY` options to match your preferences.
 
 :::Note
-Only settings that have been modified from default have been listed.
+You can visit the [Chronograf configuration option documentation](https://docs.influxdata.com/chronograf/v1/administration/config-options/) for more information.
 :::
 
-Protocol Settings
+```txt
+PUBLIC_URL=https://chronograf.company
+TOKEN_SECRET=<A random secret>
+JWKS_URL=https://authentik.company/application/o/<Application slug from before>/jwks/
+GENERIC_NAME=authentik
+GENERIC_CLIENT_ID=<Client ID from above>
+GENERIC_CLIENT_SECRET=<Client secret from above>
+GENERIC_SCOPES=email,profile,openid
+GENERIC_DOMAINS=authentik.company
+GENERIC_AUTH_URL=https://authentik.company/application/o/authorize/
+GENERIC_TOKEN_URL=https://auth.authentik.company/application/o/token/
+GENERIC_API_URL=https://auth.authentik.company/application/o/userinfo/
+GENERIC_API_KEY=email
+```
 
-    Name: Chronograf
-
-    Signing Key: Select any available key
-
-    Redirect URIs/Origins: Authentik will save the first succesful redirect URI if you enter * in this field, but the following should work: `https://service.company/oauth/Authentik/callback`
+After restarting your Chronograf instance, a "Login with authentik" button should be visible on the login page.
 
