@@ -1,21 +1,23 @@
 ---
-title: Chronograf oauth
+title: Integrate with Chronograf
+sidebar_label: Chronograf
 ---
+
+# Chronograf
 
 <span class="badge badge--secondary">Support level: Community</span>
 
-## Chronograf
+## What is Chronograf
 
-Part of the TICK stack from Influxdata (https://www.influxdata.com/). 
-
-Influxdata say: "Chronograf allows you to quickly see the data that you have stored in InfluxDB so you can build robust queries and alerts. It is simple to use and includes templates and libraries to allow you to rapidly build dashboards with real-time visualizations of your data."
-[Read more](https://www.influxdata.com/time-series-platform/chronograf/).
+> Chronograf allows you to quickly see the data that you have stored in InfluxDB so you can build robust queries and alerts. It is simple to use and includes templates and libraries to allow you to rapidly build dashboards with real-time visualizations of your data.
+>
+> -- https://www.influxdata.com/time-series-platform/chronograf/
 
 ## Preparation
 
 The following placeholders will be used:
 
--   `service.company` is the FQDN of the Chronograf install. E.g. chronograf.domain.tld
+-   `chronograf.company` is the FQDN of the Chronograf install
 -   `authentik.company` is the FQDN of the authentik install.
 
 ## Service Configuration
