@@ -137,6 +137,7 @@ module.exports = {
                     type: "category",
                     label: "Monitoring",
                     items: [
+                        "services/chronograf/index",
                         "services/gatus/index",
                         "services/glitchtip/index",
                         "services/grafana/index",
