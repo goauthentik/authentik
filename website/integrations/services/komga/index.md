@@ -22,11 +22,15 @@ The following placeholders will be used:
 
 ## authentik configuration
 
-From the main page of the **authentik admin interface**, navigate to **Applications** -> **Applications** and follow the wizard to create a new service. Take note of the Client ID, Client Secret, and slug as you will need them later. Then, set the redirect URI to `https://komga.company/login/oauth2/code/authentik` and select any availible signing key.
+1. From the authentik admin interface, navigate to Applications -> Applications.
+2. Use the wizard to create a new application. During this process:
+   - Note the **Client ID**, **Client Secret**, and **slug** values as they will be required later.
+   - Set the redirect URI to `https://komga.company/login/oauth2/code/authentik`.
+   - Select any available signing key.
 
 ## Komga configuration
 
-Update Komga's `application.yml` to include the following options:
+To configure Komga, update its `application.yml` file to include the following options:
 
 :::info
 All configuration options can be found in [Komga's OAuth2 Advanced configuration documentation](https://komga.org/docs/installation/oauth2/#advanced-configuration).
