@@ -45,7 +45,7 @@ class AuthentikCryptoConfig(ManagedAppConfig):
         ).first()
         now = datetime.now(tz=UTC)
         if not cert or (
-            now < cert.certificate.not_valid_after_utc or now > cert.certificate.not_valid_after_utc
+            now < cert.certificate.not_valid_before_utc or now > cert.certificate.not_valid_after_utc
         ):
             self._create_update_cert()
 
