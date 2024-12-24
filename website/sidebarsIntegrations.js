@@ -118,6 +118,7 @@ module.exports = {
                     type: "category",
                     label: "Miscellaneous",
                     items: [
+                        "services/calibre-web/index",
                         "services/engomo/index",
                         "services/frappe/index",
                         "services/freshrss/index",
