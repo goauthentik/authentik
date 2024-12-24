@@ -50,6 +50,7 @@ GENERIC_AUTH_URL=https://authentik.company/application/o/authorize/
 GENERIC_TOKEN_URL=https://auth.authentik.company/application/o/token/
 GENERIC_API_URL=https://auth.authentik.company/application/o/userinfo/
 GENERIC_API_KEY=email
+USE_ID_TOKEN=true
 ```
 
 After restarting your Chronograf instance, the login page should display a "Login with authentik" button.
