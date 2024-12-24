@@ -16,5 +16,5 @@ def get_full_version() -> str:
     """Get full version, with build hash appended"""
     version = __version__
     if (build_hash := get_build_hash()) != "":
-        version += "." + build_hash
+        return f"{version}+{build_hash}"
     return version
