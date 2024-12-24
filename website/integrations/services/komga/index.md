@@ -11,14 +11,14 @@ sidebar_label: Komga
 
 > Komga is an open-source comic and manga server that lets users organize, read, and stream their digital comic collections with ease.
 >
-> -- [https://service.xyz](https://komga.org/)
+> -- https://komga.org/
 
 ## Preparation
 
 The following placeholders will be used:
 
 - `komga.company` is the FQDN of the Komga install.
-- `komga.company` is the FQDN of the authentik install.
+- `authentik.company` is the FQDN of the authentik install.
 
 ## authentik configuration
 
