@@ -48,7 +48,7 @@ spring:
                 registration:
                     authentik:
                         provider: authentik
-                        client-id: <client-id>
+                        client-id: <client id>
                         client-secret: <client secret>
                         client-name: authentik
                         scope: openid,email
