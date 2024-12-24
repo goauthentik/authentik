@@ -1,6 +1,6 @@
 ---
-title: Integrate with Chronograf
-sidebar_label: Chronograf
+title: Integrate with Chronograf  
+sidebar_label: Chronograf  
 ---
 
 # Chronograf
@@ -9,36 +9,41 @@ sidebar_label: Chronograf
 
 ## What is Chronograf
 
-> Chronograf allows you to quickly see the data that you have stored in InfluxDB so you can build robust queries and alerts. It is simple to use and includes templates and libraries to allow you to rapidly build dashboards with real-time visualizations of your data.
+> Chronograf lets you quickly visualize the data stored in InfluxDB, enabling you to build robust queries and alerts. It is simple to use and comes with templates and libraries for rapidly creating dashboards with real-time data visualizations.  
 >
 > -- https://www.influxdata.com/time-series-platform/chronograf/
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders will be used:  
 
--   `chronograf.company` is the FQDN of the Chronograf install
--   `authentik.company` is the FQDN of the authentik install.
+- `chronograf.company` is the FQDN of your Chronograf install.  
+- `authentik.company` is the FQDN of your authentik install.  
 
 ## authentik configuration
 
-From the administration interface of your authentik installation, navigate to **Applications -> Applications** on the left sidebar, and create an OAuth2/OpenID provider using the wizard. Take note of the application slug, client ID, and Client secret as you will need them later. Set a strict redirect URI to `https://service.company/oauth/authentik/callback`, and set the signing key to any availi, then submit the wizard.
+1. From the **authentik admin interface**, navigate to **Applications** -> **Applications** on the left sidebar.  
+2. Create an OAuth2/OpenID provider using the wizard.  
+   - Note the application slug, client ID, and client secret, as they will be required later.  
+   - Set a strict redirect URI to `https://chronograf.company/oauth/authentik/callback`.  
+   - Choose a signing key (any available key is acceptable).  
+3. Complete and submit the wizard.  
 
-## Service Configuration
+## Chronograf configuration
 
-Add the following environm variables to your Chronograf setup. This setup is also valid if you configured Chronograf with a config file. You may wish to limit/alter the `GENERIC_SCOPES` and `GENERERIC_API_KEY` options to match your preferences.
+Add the following environment variables to your Chronograf setup. If you are using a configuration file for Chronograf, these settings can also be included there. You may modify the values for `GENERIC_SCOPES` and `GENERIC_API_KEY` to suit your specific requirements.  
 
-:::Note
-You can visit the [Chronograf configuration option documentation](https://docs.influxdata.com/chronograf/v1/administration/config-options/) for more information.
+:::info  
+Refer to the [Chronograf configuration options documentation](https://docs.influxdata.com/chronograf/v1/administration/config-options/) for more information.  
 :::
 
-```txt
+```
 PUBLIC_URL=https://chronograf.company
 TOKEN_SECRET=<A random secret>
-JWKS_URL=https://authentik.company/application/o/<Application slug from before>/jwks/
+JWKS_URL=https://authentik.company/application/o/<application-slug>/jwks/
 GENERIC_NAME=authentik
-GENERIC_CLIENT_ID=<Client ID from above>
-GENERIC_CLIENT_SECRET=<Client secret from above>
+GENERIC_CLIENT_ID=<client-id>
+GENERIC_CLIENT_SECRET=<client-secret>
 GENERIC_SCOPES=email,profile,openid
 GENERIC_DOMAINS=authentik.company
 GENERIC_AUTH_URL=https://authentik.company/application/o/authorize/
@@ -47,5 +52,4 @@ GENERIC_API_URL=https://auth.authentik.company/application/o/userinfo/
 GENERIC_API_KEY=email
 ```
 
-After restarting your Chronograf instance, a "Login with authentik" button should be visible on the login page.
-
+After restarting your Chronograf instance, the login page should display a "Login with authentik" button.  
