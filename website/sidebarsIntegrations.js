@@ -130,6 +130,7 @@ module.exports = {
                         "services/sonar-qube/index",
                         "services/sonarr/index",
                         "services/tautulli/index",
+                        "services/tandoor-recipes/index",
                         "services/weblate/index",
                     ],
                 },
