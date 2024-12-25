@@ -29,16 +29,14 @@ const modalController = Symbol("modalController");
 const versionContext = Symbol("versionContext");
 
 export class Interface extends AKElement implements AkInterface {
-    @state()
-    uiConfig?: UIConfig;
-
     [brandContext]!: BrandContextController;
 
     [configContext]!: ConfigContextController;
 
     [modalController]!: ModalOrchestrationController;
 
-    [versionContext]!: VersionContextController;
+    @state()
+    uiConfig?: UIConfig;
 
     @state()
     config?: Config;
@@ -57,7 +55,6 @@ export class Interface extends AKElement implements AkInterface {
         this[brandContext] = new BrandContextController(this);
         this[configContext] = new ConfigContextController(this);
         this[modalController] = new ModalOrchestrationController(this);
-        this[versionContext] = new VersionContextController(this);
     }
 
     _activateTheme(theme: UiThemeEnum, ...roots: DocumentOrShadowRoot[]): void {
@@ -91,12 +88,21 @@ const enterpriseContext = Symbol("enterpriseContext");
 
 export class EnterpriseAwareInterface extends Interface {
     [enterpriseContext]!: EnterpriseContextController;
+    [versionContext]!: VersionContextController;
 
     @state()
     licenseSummary?: LicenseSummary;
 
+    @state()
+    version?: Version;
+
     constructor() {
         super();
+    }
+
+    _initContexts(): void {
+        super._initContexts();
         this[enterpriseContext] = new EnterpriseContextController(this);
+        this[versionContext] = new VersionContextController(this);
     }
 }

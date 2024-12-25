@@ -29,7 +29,7 @@ import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { SessionUser, UiThemeEnum, Version } from "@goauthentik/api";
+import { SessionUser, UiThemeEnum } from "@goauthentik/api";
 
 import "./AdminSidebar";
 
@@ -42,9 +42,6 @@ export class AdminInterface extends EnterpriseAwareInterface {
     apiDrawerOpen = getURLParam("apiDrawerOpen", false);
 
     ws: WebsocketClient;
-
-    @state()
-    version?: Version;
 
     @state()
     user?: SessionUser;
