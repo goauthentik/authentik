@@ -20,7 +20,6 @@ export type AkInterface = HTMLElement & {
     brand?: CurrentBrand;
     uiConfig?: UIConfig;
     config?: Config;
-    version?: Version;
 };
 
 const brandContext = Symbol("brandContext");
@@ -80,13 +79,14 @@ export class Interface extends AKElement implements AkInterface {
     }
 }
 
-export type AkEnterpriseInterface = AkInterface & {
+export type AkAuthenticatedInterface = AkInterface & {
     licenseSummary?: LicenseSummary;
+    version?: Version;
 };
 
 const enterpriseContext = Symbol("enterpriseContext");
 
-export class EnterpriseAwareInterface extends Interface {
+export class AuthenticatedInterface extends Interface {
     [enterpriseContext]!: EnterpriseContextController;
     [versionContext]!: VersionContextController;
 
