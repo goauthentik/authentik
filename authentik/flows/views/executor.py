@@ -171,7 +171,8 @@ class FlowExecutorView(APIView):
                     # Existing plan is deleted from session and instance
                     self.plan = None
                     self.cancel()
-                self._logger.debug("f(exec): Continuing existing plan")
+                else:
+                    self._logger.debug("f(exec): Continuing existing plan")
 
             # Initial flow request, check if we have an upstream query string passed in
             request.session[SESSION_KEY_GET] = get_params

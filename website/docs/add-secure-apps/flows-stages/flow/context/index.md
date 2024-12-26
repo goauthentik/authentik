@@ -12,6 +12,8 @@ For example, in the Identification Stage (part of the default login flow), you c
 
 Any data can be stored in the flow context, however there are some reserved keys in the context dictionary that are used by authentik stages.
 
+To manage flow context on a more granular level, see [Setting flow context keys](../../../../customize/policies/expression/managing_flow_context_keys.md).
+
 ## Context dictionary and reserved keys
 
 This section describes the data (the context) that are used in authentik, and provides a list of keys, what they are used for and when they are set.
@@ -68,11 +70,15 @@ When a flow is executed by an Outpost (for example the [LDAP](../../../providers
 
 #### `is_sso` (boolean)
 
-Set to `True` when the flow is executed from an "SSO" context. For example, this is set when a flow is used during the authentication or enrollment via an external source, and if a flow is executed to authorize access to an application.
+This key is set to `True` when the flow is executed from an "SSO" context. For example, this is set when a flow is used during the authentication or enrollment via an external source, and if a flow is executed to authorize access to an application.
 
 #### `is_restored` (Token object)
 
-Set when a flow execution is continued from a token. This happens for example when an [Email stage](../../stages/email/index.mdx) is used and the user clicks on the link within the email. The token object contains the key that was used to restore the flow execution.
+This key is set when a flow execution is continued from a token. This happens for example when an [Email stage](../../stages/email/index.mdx) is used and the user clicks on the link within the email. The token object contains the key that was used to restore the flow execution.
+
+#### `is_redirected` (Flow object) <span class="badge badge--version">authentik 2024.12+</span>
+
+This key is set when the current flow was reached through a [Redirect stage](../../stages/redirect/index.md) in Flow mode.
 
 ### Stage-specific keys
 
@@ -189,3 +195,11 @@ Optionally override the email address that the email will be sent to. If not set
 ##### `pending_user_identifier` (string)
 
 If _Show matched user_ is disabled, this key will be set to the user identifier entered by the user in the identification stage.
+
+#### Redirect stage
+
+##### `redirect_stage_target` (string) <span class="badge badge--version">authentik 2024.12+</span>
+
+[Set this key](../../../../customize/policies/expression/managing_flow_context_keys.md) in an Expression Policy to override [Redirect stage](../../stages/redirect/index.md) to force it to redirect to a certain URL or flow. This is useful when a flow requires that the redirection target be decided dynamically.
+
+Use the format `ak-flow://{slug}` to use the Redirect stage in Flow mode. Any other format will result in the Redirect stage running in Static mode.

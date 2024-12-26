@@ -12,7 +12,7 @@ from sentry_sdk import set_tag
 from xmlsec import enable_debug_trace
 
 from authentik import __version__
-from authentik.lib.config import CONFIG, redis_url
+from authentik.lib.config import CONFIG, django_db_config, redis_url
 from authentik.lib.logging import get_logger_config, structlog_configure
 from authentik.lib.sentry import sentry_init
 from authentik.lib.utils.reflection import get_env
@@ -114,6 +114,7 @@ TENANT_APPS = [
     "authentik.stages.invitation",
     "authentik.stages.password",
     "authentik.stages.prompt",
+    "authentik.stages.redirect",
     "authentik.stages.user_delete",
     "authentik.stages.user_login",
     "authentik.stages.user_logout",
@@ -297,47 +298,7 @@ CHANNEL_LAYERS = {
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
 ORIGINAL_BACKEND = "django_prometheus.db.backends.postgresql"
-DATABASES = {
-    "default": {
-        "ENGINE": "authentik.root.db",
-        "HOST": CONFIG.get("postgresql.host"),
-        "NAME": CONFIG.get("postgresql.name"),
-        "USER": CONFIG.get("postgresql.user"),
-        "PASSWORD": CONFIG.get("postgresql.password"),
-        "PORT": CONFIG.get("postgresql.port"),
-        "OPTIONS": {
-            "sslmode": CONFIG.get("postgresql.sslmode"),
-            "sslrootcert": CONFIG.get("postgresql.sslrootcert"),
-            "sslcert": CONFIG.get("postgresql.sslcert"),
-            "sslkey": CONFIG.get("postgresql.sslkey"),
-        },
-        "TEST": {
-            "NAME": CONFIG.get("postgresql.test.name"),
-        },
-    }
-}
-
-if CONFIG.get_bool("postgresql.use_pgpool", False):
-    DATABASES["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
-
-if CONFIG.get_bool("postgresql.use_pgbouncer", False):
-    # https://docs.djangoproject.com/en/4.0/ref/databases/#transaction-pooling-server-side-cursors
-    DATABASES["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
-    # https://docs.djangoproject.com/en/4.0/ref/databases/#persistent-connections
-    DATABASES["default"]["CONN_MAX_AGE"] = None  # persistent
-
-for replica in CONFIG.get_keys("postgresql.read_replicas"):
-    _database = DATABASES["default"].copy()
-    for setting in DATABASES["default"].keys():
-        default = object()
-        if setting in ("TEST",):
-            continue
-        override = CONFIG.get(
-            f"postgresql.read_replicas.{replica}.{setting.lower()}", default=default
-        )
-        if override is not default:
-            _database[setting] = override
-    DATABASES[f"replica_{replica}"] = _database
+DATABASES = django_db_config()
 
 DATABASE_ROUTERS = (
     "authentik.tenants.db.FailoverRouter",

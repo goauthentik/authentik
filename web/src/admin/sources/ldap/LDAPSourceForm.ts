@@ -38,11 +38,11 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                 slug: this.instance.slug,
                 patchedLDAPSourceRequest: data,
             });
-        } else {
-            return new SourcesApi(DEFAULT_CONFIG).sourcesLdapCreate({
-                lDAPSourceRequest: data as unknown as LDAPSourceRequest,
-            });
         }
+
+        return new SourcesApi(DEFAULT_CONFIG).sourcesLdapCreate({
+            lDAPSourceRequest: data as unknown as LDAPSourceRequest,
+        });
     }
 
     renderForm(): TemplateResult {

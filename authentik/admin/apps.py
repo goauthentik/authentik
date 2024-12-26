@@ -1,11 +1,10 @@
 """authentik admin app config"""
 
-from prometheus_client import Gauge, Info
+from prometheus_client import Info
 
 from authentik.blueprints.apps import ManagedAppConfig
 
 PROM_INFO = Info("authentik_version", "Currently running authentik version")
-GAUGE_WORKERS = Gauge("authentik_admin_workers", "Currently connected workers")
 
 
 class AuthentikAdminConfig(ManagedAppConfig):

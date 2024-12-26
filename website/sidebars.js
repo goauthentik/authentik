@@ -2,13 +2,14 @@ import { generateVersionDropdown } from "./src/utils.js";
 import apiReference from "./docs/developer-docs/api/reference/sidebar";
 
 const releases = [
+    "releases/2024/v2024.12",
     "releases/2024/v2024.10",
     "releases/2024/v2024.8",
-    "releases/2024/v2024.6",
     {
         type: "category",
         label: "Previous versions",
         items: [
+            "releases/2024/v2024.6",
             "releases/2024/v2024.4",
             "releases/2024/v2024.2",
             "releases/2023/v2023.10",
@@ -193,8 +194,10 @@ export default {
                                 id: "add-secure-apps/providers/oauth2/index",
                             },
                             items: [
+                                "add-secure-apps/providers/oauth2/create-oauth2-provider",
                                 "add-secure-apps/providers/oauth2/client_credentials",
                                 "add-secure-apps/providers/oauth2/device_code",
+                                "add-secure-apps/providers/oauth2/github-compatibility",
                             ],
                         },
                         "add-secure-apps/providers/saml/index",
@@ -295,11 +298,23 @@ export default {
                                 "add-secure-apps/flows-stages/stages/invitation/index",
                                 "add-secure-apps/flows-stages/stages/password/index",
                                 "add-secure-apps/flows-stages/stages/prompt/index",
+                                "add-secure-apps/flows-stages/stages/redirect/index",
                                 "add-secure-apps/flows-stages/stages/source/index",
                                 "add-secure-apps/flows-stages/stages/user_delete",
                                 "add-secure-apps/flows-stages/stages/user_login/index",
                                 "add-secure-apps/flows-stages/stages/user_logout",
                                 "add-secure-apps/flows-stages/stages/user_write",
+                            ],
+                        },
+                        {
+                            type: "category",
+                            label: "Bindings",
+                            link: {
+                                type: "doc",
+                                id: "add-secure-apps/flows-stages/bindings/index",
+                            },
+                            items: [
+                                "add-secure-apps/flows-stages/bindings/work_with_bindings",
                             ],
                         },
                     ],
@@ -350,19 +365,20 @@ export default {
                         id: "customize/policies/index",
                     },
                     items: [
+                        "customize/policies/working_with_policies",
                         {
                             type: "category",
-                            label: "Working with Policies",
+                            label: "Expression Policies",
                             link: {
                                 type: "doc",
-                                id: "customize/policies/working_with_policies/working_with_policies",
+                                id: "customize/policies/expression",
                             },
                             items: [
-                                "customize/policies/working_with_policies/unique_email",
-                                "customize/policies/working_with_policies/whitelist_email",
+                                "customize/policies/expression/unique_email",
+                                "customize/policies/expression/whitelist_email",
+                                "customize/policies/expression/managing_flow_context_keys",
                             ],
                         },
-                        "customize/policies/expression",
                     ],
                 },
                 {

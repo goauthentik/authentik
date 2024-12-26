@@ -24,6 +24,10 @@ from authentik.lib.sentry import SentryIgnoredException
 from authentik.policies.models import PolicyBindingModel
 
 
+class UNSET:
+    """Used to test whether a key has not been set."""
+
+
 def get_attrs(obj: SerializerModel) -> dict[str, Any]:
     """Get object's attributes via their serializer, and convert it to a normal dict"""
     serializer: Serializer = obj.serializer(obj)
@@ -197,6 +201,9 @@ class Blueprint:
 
 class YAMLTag:
     """Base class for all YAML Tags"""
+
+    def __repr__(self) -> str:
+        return str(self.resolve(BlueprintEntry(""), Blueprint()))
 
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
         """Implement yaml tag logic"""
@@ -556,6 +563,53 @@ class Value(EnumeratedItem):
             raise EntryInvalidError.from_entry(f"Empty/invalid context: {context}", entry) from exc
 
 
+class AtIndex(YAMLTag):
+    """Get value at index of a sequence or mapping"""
+
+    obj: YAMLTag | dict | list | tuple
+    attribute: int | str | YAMLTag
+    default: Any | UNSET
+
+    def __init__(self, loader: "BlueprintLoader", node: SequenceNode) -> None:
+        super().__init__()
+        self.obj = loader.construct_object(node.value[0])
+        self.attribute = loader.construct_object(node.value[1])
+        if len(node.value) == 2:  # noqa: PLR2004
+            self.default = UNSET
+        else:
+            self.default = loader.construct_object(node.value[2])
+
+    def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        if isinstance(self.obj, YAMLTag):
+            obj = self.obj.resolve(entry, blueprint)
+        else:
+            obj = self.obj
+        if isinstance(self.attribute, YAMLTag):
+            attribute = self.attribute.resolve(entry, blueprint)
+        else:
+            attribute = self.attribute
+
+        if isinstance(obj, list | tuple):
+            try:
+                return obj[attribute]
+            except TypeError as exc:
+                raise EntryInvalidError.from_entry(
+                    f"Invalid index for list: {attribute}", entry
+                ) from exc
+            except IndexError as exc:
+                if self.default is UNSET:
+                    raise EntryInvalidError.from_entry(
+                        f"Index out of range: {attribute}", entry
+                    ) from exc
+                return self.default
+        if attribute in obj:
+            return obj[attribute]
+        else:
+            if self.default is UNSET:
+                raise EntryInvalidError.from_entry(f"Key does not exist: {attribute}", entry)
+            return self.default
+
+
 class BlueprintDumper(SafeDumper):
     """Dump dataclasses to yaml"""
 
@@ -606,6 +660,7 @@ class BlueprintLoader(SafeLoader):
         self.add_constructor("!Enumerate", Enumerate)
         self.add_constructor("!Value", Value)
         self.add_constructor("!Index", Index)
+        self.add_constructor("!AtIndex", AtIndex)
 
 
 class EntryInvalidError(SentryIgnoredException):

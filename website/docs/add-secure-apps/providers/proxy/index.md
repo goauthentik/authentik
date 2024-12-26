@@ -36,6 +36,12 @@ Example value: `foo|bar|baz`
 
 The groups the user is member of, separated by a pipe
 
+### `X-authentik-entitlements`
+
+Example value: `foo|bar|baz`
+
+The entitlements on the application this user has access to, separated by a pipe
+
 ### `X-authentik-email`
 
 Example value: `root@localhost`
