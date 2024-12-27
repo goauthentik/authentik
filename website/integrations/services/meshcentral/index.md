@@ -1,5 +1,6 @@
 ---
-title: MeshCentral
+title: Integrate with MeshCentral
+sidebar_label: MeshCentral
 ---
 
 <span class="badge badge--secondary">Support level: Community</span>
@@ -12,7 +13,7 @@ title: MeshCentral
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `meshcentral.company` is the FQDN of the MeshCentral install.
 - `authentik.company` is the FQDN of the authentik install.
@@ -34,9 +35,16 @@ Next, create an application, using the provider you've created above.
 
 Edit the `config.json` for your MeshCentral deployment, and add the following code in the `domains:` subsection:
 
+:::info  
+For Docker deployments, the `config.json` should be located in the directory on the host machine you mapped to `/opt/meshcentral/meshcentral-data`.
+:::
+
+:::info
+If you need to enable advanced OIDC configurations, please refer to the [Using the OpenID Connect Strategy](https://ylianst.github.io/MeshCentral/meshcentral/openidConnectStrategy/) section in the MeshCentral documentation for detailed instructions.
+:::
+
 ```json
     "domains": {
-        (...)
             "authStrategies": {
                 "oidc": {
                     "issuer": "https://authentik.company/application/o/meshcentral/",
@@ -45,15 +53,6 @@ Edit the `config.json` for your MeshCentral deployment, and add the following co
                     "newAccounts": true
                 }
             },
-        (...)
 ```
 
-> For Docker deployments, this file should be located in the host directory you mapped to `/opt/meshcentral/meshcentral-data` in the container.
-
-> Remember to follow JSON formatting rules.
-
-Restart the MeshCentral server instance and browse to `https://meshcentral.company`, and you should be greeted with a new button to allow signing in with OIDC:
-
-![MeshCentral sign-in page with OIDC enabled](meshcentral.png)
-
-> Should you need to enable any advanced OIDC configurations, please see [Using the OpenID Connect Strategy on MeshCentral](https://ylianst.github.io/MeshCentral/meshcentral/openidConnectStrategy/).
+To ensure everything is setup correctly, restart your MeshCentral instance and visit the main page. You should be greeted with a new button to allow signing in with OIDC.
