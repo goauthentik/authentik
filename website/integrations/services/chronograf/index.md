@@ -15,19 +15,19 @@ sidebar_label: Chronograf
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `chronograf.company` is the FQDN of your Chronograf install.
 - `authentik.company` is the FQDN of your authentik install.
 
 ## authentik configuration
 
-1. From the **authentik admin interface**, navigate to **Applications** -> **Applications** on the left sidebar.
-2. Create an OAuth2/OpenID provider using the wizard.
+1. From the authentik Admin interface navigate to **Applications** -> **Applications** on the left sidebar.
+2. Create an application and an OAuth2/OpenID provider using the [wizard](https://docs.goauthentik.io/docs/add-secure-apps/applications/manage_apps#add-new-applications).
     - Note the application slug, client ID, and client secret, as they will be required later.
     - Set a strict redirect URI to `https://chronograf.company/oauth/authentik/callback`.
     - Choose a signing key (any available key is acceptable).
-3. Complete and submit the wizard.
+3. Complete and submit the settings to close the wizard.
 
 ## Chronograf configuration
 
@@ -53,4 +53,4 @@ GENERIC_API_KEY=email
 USE_ID_TOKEN=true
 ```
 
-After restarting your Chronograf instance, the login page should display a "Login with authentik" button.
+After restarting your Chronograf instance, the login page should display a "Log in with authentik" button.
