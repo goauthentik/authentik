@@ -14,17 +14,17 @@ title: MeshCentral
 
 The following placeholders will be used:
 
--   `meshcentral.company` is the FQDN of the MeshCentral install.
--   `authentik.company` is the FQDN of the authentik install.
+- `meshcentral.company` is the FQDN of the MeshCentral install.
+- `authentik.company` is the FQDN of the authentik install.
 
 ## authentik configuration
 
 Create an OAuth2/OpenID provider with the following parameters:
 
--   Client Type: `Confidential`
--   Redirect URIs: `https://meshcentral.company/auth-oidc-callback`
--   Scopes: OpenID, Email and Profile
--   Signing Key: Select any available key
+- Client Type: `Confidential`
+- Redirect URIs: `https://meshcentral.company/auth-oidc-callback`
+- Scopes: OpenID, Email and Profile
+- Signing Key: Select any available key
 
 Note the Client ID and Client Secret values.
 
@@ -47,6 +47,7 @@ Edit the `config.json` for your MeshCentral deployment, and add the following co
             },
         (...)
 ```
+
 > For Docker deployments, this file should be located in the host directory you mapped to `/opt/meshcentral/meshcentral-data` in the container.
 
 > Remember to follow JSON formatting rules.
