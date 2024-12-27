@@ -15,16 +15,16 @@ sidebar_label: Komga
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `komga.company` is the FQDN of the Komga install.
 - `authentik.company` is the FQDN of the authentik install.
 
 ## authentik configuration
 
-1. From the **authentik admin interface**, navigate to **Applications** -> **Applications**.
-2. Use the wizard to create a new application. During this process:
-    - Note the **Client ID**, **Client Secret**, and **slug** values as they will be required later.
+1. From the **authentik Admin interface**, navigate to **Applications** -> **Applications**.
+2. Use the wizard to create a new application and provider. During this process:
+    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set the redirect URI to `https://komga.company/login/oauth2/code/authentik`.
     - Select any available signing key.
 
@@ -37,7 +37,7 @@ All configuration options can be found in [Komga's OAuth2 Advanced configuration
 :::
 
 :::warning
-You can configure Komga to use either the `sub` or `preferred_username` as the UID field under `user-name-attribute`. When using `preferred_username` as the user identifier, ensure that the [Allow users to change username setting](https://docs.goauthentik.io/docs/sys-mgmt/settings#allow-users-to-change-username) is disabled to prevent authentication issues. The `sub` option uses a unique, stable identifier for the user, while `preferred_username` uses the username configured in authentik.
+You can configure Komga to use either the `sub` or `preferred_username` as the UID field under `user-name-attribute`. When using `preferred_username` as the user identifier, ensure that the [**Allow users to change username** setting](https://docs.goauthentik.io/docs/sys-mgmt/settings#allow-users-to-change-username) is disabled to prevent authentication issues. The `sub` option uses a unique, stable identifier for the user, while `preferred_username` uses the username configured in authentik.
 :::
 
 ```yml
