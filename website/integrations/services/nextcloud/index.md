@@ -37,7 +37,7 @@ There are 3 ways to setup single sign on (SSO) for Nextcloud:
 
 #### Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `nextcloud.company` is the FQDN of the Nextcloud install.
 - `authentik.company` is the FQDN of the authentik install.
@@ -226,7 +226,7 @@ If you do not have any relying parties accessing authentik from the outside, you
 
 #### Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `nextcloud.company` is the FQDN of the Nextcloud install.
 - `authentik.company` is the FQDN of the authentik install.
