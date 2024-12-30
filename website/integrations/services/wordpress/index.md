@@ -19,7 +19,7 @@ There are many different plugins for WordPress that allow you to setup SSO using
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `wp.company` is the FQDN of WordPress.
 - `authentik.company` is the FQDN of authentik.

@@ -13,6 +13,10 @@ import (
 	"goauthentik.io/internal/utils/sentry"
 )
 
+var (
+	ErrAuthentikStarting = errors.New("authentik starting")
+)
+
 func (ws *WebServer) configureProxy() {
 	// Reverse proxy to the application server
 	director := func(req *http.Request) {
@@ -38,7 +42,7 @@ func (ws *WebServer) configureProxy() {
 	}))
 	ws.mainRouter.PathPrefix(config.Get().Web.Path).HandlerFunc(sentry.SentryNoSample(func(rw http.ResponseWriter, r *http.Request) {
 		if !ws.g.IsRunning() {
-			ws.proxyErrorHandler(rw, r, errors.New("authentik starting"))
+			ws.proxyErrorHandler(rw, r, ErrAuthentikStarting)
 			return
 		}
 		before := time.Now()
@@ -59,7 +63,9 @@ func (ws *WebServer) configureProxy() {
 }
 
 func (ws *WebServer) proxyErrorHandler(rw http.ResponseWriter, req *http.Request, err error) {
-	ws.log.WithError(err).Warning("failed to proxy to backend")
+	if !errors.Is(err, ErrAuthentikStarting) {
+		ws.log.WithError(err).Warning("failed to proxy to backend")
+	}
 	rw.WriteHeader(http.StatusBadGateway)
 	em := fmt.Sprintf("failed to connect to authentik backend: %v", err)
 	// return json if the client asks for json

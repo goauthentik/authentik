@@ -23,7 +23,7 @@ AWX is the open-source version of RHAAP. The term "AWX" will be used interchange
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `awx.company` is the FQDN of the AWX/RHAAP install.
 - `authentik.company` is the FQDN of the authentik install.

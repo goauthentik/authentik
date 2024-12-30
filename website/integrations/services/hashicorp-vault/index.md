@@ -19,7 +19,7 @@ This is based on authentik 2022.2.1 and Vault 1.9.3. Instructions may differ bet
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of authentik.
 - `vault.company` is the FQDN of Vault.

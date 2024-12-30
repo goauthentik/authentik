@@ -19,7 +19,7 @@ This guide does _not_ cover Team Mapping. Please refer to EspoCRM's [documentati
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `crm.<your_company>` is the FQDN of the EspoCRM install.
 - `authentik.<your_company>` is the FQDN of the authentik install.

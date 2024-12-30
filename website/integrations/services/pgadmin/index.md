@@ -19,7 +19,7 @@ This is based on authentik 2022.3.3 and pgAdmin4 6.19
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `pgadmin.company` is the FQDN of pgAdmin.
 - `authentik.company` is the FQDN of authentik.

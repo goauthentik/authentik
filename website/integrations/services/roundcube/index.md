@@ -19,7 +19,7 @@ The mail server must support XOAUTH2 for both SMTPD and IMAP/POP. Postfix SMTP s
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik install.
 

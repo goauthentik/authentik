@@ -17,7 +17,7 @@ sidebar_label: FortiManager
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `fgm.company` is the FQDN of the FortiManager install.
 - `authentik.company` is the FQDN of the authentik install.

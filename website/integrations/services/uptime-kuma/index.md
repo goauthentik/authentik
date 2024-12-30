@@ -17,7 +17,7 @@ Uptime Kuma currently supports only a single user and no native SSO solution. To
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `uptime-kuma.company` is the FQDN of the Uptime Kuma install.
 - `authentik.company` is the FQDN of the authentik install.

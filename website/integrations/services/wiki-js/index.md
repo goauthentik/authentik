@@ -19,7 +19,7 @@ This is based on authentik 2022.11 and Wiki.js 2.5. Instructions may differ betw
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `wiki.company` is the FQDN of Wiki.js.
 - `authentik.company` is the FQDN of authentik.
