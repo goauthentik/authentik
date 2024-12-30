@@ -40,9 +40,7 @@ LOGGER = get_logger()
 
 
 class RawXMLDataRenderer(BaseRenderer):
-    """
-    Renderer to allow application/xml as value for 'Accept' in the metadata endpoint.
-    """
+    """Renderer to allow application/xml as value for 'Accept' in the metadata endpoint."""
 
     media_type = "application/xml"
     format = "xml"
@@ -251,12 +249,12 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
                 ],
                 description="Optionally force the metadata to only include one binding.",
             ),
+            # Explicitly excluded, because otherwise spectacular automatically
+            # add it when using multiple renderer_classes
             OpenApiParameter(
                 name="format",
                 exclude=True,
                 required=False,
-                description="Explicitly excluded, because otherwise spectacular automatically "
-                + "add it when using multiple renderer_classes",
             ),
         ],
     )
