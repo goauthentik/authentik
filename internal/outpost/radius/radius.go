@@ -6,7 +6,7 @@ import (
 	"sort"
 	"sync"
 
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/radius/metrics"
@@ -23,12 +23,12 @@ type ProviderInstance struct {
 	flowSlug   string
 	providerId int32
 	s          *RadiusServer
-	log        *log.Entry
+	log        *zap.Logger
 }
 
 type RadiusServer struct {
 	s   radius.PacketServer
-	log *log.Entry
+	log *zap.Logger
 	ac  *ak.APIController
 
 	providers []*ProviderInstance
@@ -36,7 +36,7 @@ type RadiusServer struct {
 
 func NewServer(ac *ak.APIController) *RadiusServer {
 	rs := &RadiusServer{
-		log:       log.WithField("logger", "authentik.outpost.radius"),
+		log:       config.Get().Logger().Named("authentik.outpost.radius"),
 		ac:        ac,
 		providers: []*ProviderInstance{},
 	}
@@ -58,7 +58,7 @@ func (rs *RadiusServer) RADIUSSecret(ctx context.Context, remoteAddr net.Addr) (
 
 	host, _, err := net.SplitHostPort(remoteAddr.String())
 	if err != nil {
-		rs.log.WithError(err).Warning("Failed to get remote IP")
+		rs.log.Warn("Failed to get remote IP", zap.Error(err))
 		return nil, err
 	}
 	ip := net.ParseIP(host)
@@ -75,7 +75,7 @@ func (rs *RadiusServer) RADIUSSecret(ctx context.Context, remoteAddr net.Addr) (
 		}
 	}
 	if len(matchedPrefixes) < 1 {
-		rs.log.WithField("ip", ip.String()).Warning("No matching prefixes found")
+		rs.log.Warn("No matching prefixes found", zap.String("ip", ip.String()))
 		return []byte{}, nil
 	}
 	// Sort matched cidrs by prefix length
@@ -85,7 +85,7 @@ func (rs *RadiusServer) RADIUSSecret(ctx context.Context, remoteAddr net.Addr) (
 		return bi < bj
 	})
 	candidate := matchedPrefixes[0]
-	rs.log.WithField("ip", ip.String()).WithField("cidr", candidate.c.String()).Debug("Matched CIDR")
+	rs.log.Debug("Matched CIDR", zap.String("ip", ip.String()), zap.String("cidr", candidate.c.String()))
 	return candidate.p.SharedSecret, nil
 }
 

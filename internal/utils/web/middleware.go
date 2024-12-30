@@ -3,12 +3,11 @@ package web
 import (
 	"bufio"
 	"errors"
-	"fmt"
 	"net"
 	"net/http"
 	"time"
 
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 )
 
 // responseLogger is wrapper of http.ResponseWriter that keeps track of its HTTP status
@@ -69,16 +68,16 @@ func (l *responseLogger) Flush() {
 // loggingHandler is the http.Handler implementation for LoggingHandler
 type loggingHandler struct {
 	handler      http.Handler
-	logger       *log.Entry
+	logger       *zap.Logger
 	afterHandler afterHandler
 }
 
-type afterHandler func(l *log.Entry, r *http.Request) *log.Entry
+type afterHandler func(l *zap.Logger, r *http.Request) *zap.Logger
 
 // NewLoggingHandler provides an http.Handler which logs requests to the HTTP server
-func NewLoggingHandler(logger *log.Entry, after afterHandler) func(h http.Handler) http.Handler {
+func NewLoggingHandler(logger *zap.Logger, after afterHandler) func(h http.Handler) http.Handler {
 	if after == nil {
-		after = func(l *log.Entry, r *http.Request) *log.Entry {
+		after = func(l *zap.Logger, r *http.Request) *zap.Logger {
 			return l
 		}
 	}
@@ -101,14 +100,15 @@ func (h loggingHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	if req.TLS != nil {
 		scheme = "https"
 	}
-	h.afterHandler(h.logger.WithFields(log.Fields{
-		"remote":     req.RemoteAddr,
-		"host":       GetHost(req),
-		"runtime":    fmt.Sprintf("%0.3f", duration),
-		"method":     req.Method,
-		"scheme":     scheme,
-		"size":       responseLogger.Size(),
-		"status":     responseLogger.Status(),
-		"user_agent": req.UserAgent(),
-	}), req).Info(url.RequestURI())
+	fields := []zap.Field{
+		zap.String("remote", req.RemoteAddr),
+		zap.String("host", GetHost(req)),
+		zap.Duration("runtime", time.Duration(duration)),
+		zap.String("method", req.Method),
+		zap.String("scheme", scheme),
+		zap.Int("size", responseLogger.Size()),
+		zap.Int("status", responseLogger.Status()),
+		zap.String("user_agent", req.UserAgent()),
+	}
+	h.afterHandler(h.logger.With(fields...), req).Info(url.RequestURI())
 }

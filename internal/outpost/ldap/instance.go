@@ -5,7 +5,7 @@ import (
 	"strings"
 	"sync"
 
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/ldap/bind"
@@ -28,7 +28,7 @@ type ProviderInstance struct {
 	authenticationFlowSlug string
 	invalidationFlowSlug   *string
 	s                      *LDAPServer
-	log                    *log.Entry
+	log                    *zap.Logger
 
 	tlsServerName   *string
 	cert            *tls.Certificate

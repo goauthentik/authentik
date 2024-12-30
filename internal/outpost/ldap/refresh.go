@@ -7,9 +7,9 @@ import (
 	"strings"
 	"sync"
 
-	log "github.com/sirupsen/logrus"
-
+	"go.uber.org/zap"
 	"goauthentik.io/api/v3"
+	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/ldap/bind"
 	directbind "goauthentik.io/internal/outpost/ldap/bind/direct"
@@ -45,7 +45,7 @@ func (ls *LDAPServer) Refresh() error {
 		userDN := strings.ToLower(fmt.Sprintf("ou=%s,%s", constants.OUUsers, *provider.BaseDn))
 		groupDN := strings.ToLower(fmt.Sprintf("ou=%s,%s", constants.OUGroups, *provider.BaseDn))
 		virtualGroupDN := strings.ToLower(fmt.Sprintf("ou=%s,%s", constants.OUVirtualGroups, *provider.BaseDn))
-		logger := log.WithField("logger", "authentik.outpost.ldap").WithField("provider", provider.Name)
+		logger := config.Get().Logger().Named("authentik.outpost.ldap").With(zap.String("provider", provider.Name))
 
 		// Get existing instance so we can transfer boundUsers
 		existing := ls.getCurrentProvider(provider.Pk)
@@ -79,7 +79,7 @@ func (ls *LDAPServer) Refresh() error {
 		if kp := provider.Certificate.Get(); kp != nil {
 			err := ls.cs.AddKeypair(*kp)
 			if err != nil {
-				ls.log.WithError(err).Warning("Failed to initially fetch certificate")
+				ls.log.Warn("Failed to initially fetch certificate", zap.Error(err))
 			}
 			providers[idx].cert = ls.cs.Get(*kp)
 			providers[idx].certUUID = *kp

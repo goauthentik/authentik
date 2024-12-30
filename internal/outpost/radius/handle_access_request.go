@@ -4,7 +4,7 @@ import (
 	"encoding/base64"
 
 	"github.com/prometheus/client_golang/prometheus"
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 	"goauthentik.io/internal/outpost/flow"
 	"goauthentik.io/internal/outpost/radius/metrics"
 	"layeh.com/radius"
@@ -14,10 +14,10 @@ import (
 func (rs *RadiusServer) Handle_AccessRequest(w radius.ResponseWriter, r *RadiusRequest) {
 	username := rfc2865.UserName_GetString(r.Packet)
 
-	fe := flow.NewFlowExecutor(r.Context(), r.pi.flowSlug, r.pi.s.ac.Client.GetConfig(), log.Fields{
-		"username":  username,
-		"client":    r.RemoteAddr(),
-		"requestId": r.ID(),
+	fe := flow.NewFlowExecutor(r.Context(), r.pi.flowSlug, r.pi.s.ac.Client.GetConfig(), []zap.Field{
+		zap.String("username", username),
+		zap.String("client", r.RemoteAddr()),
+		zap.String("requestId", r.ID()),
 	})
 	fe.DelegateClientIP(r.RemoteAddr())
 	fe.Params.Add("goauthentik.io/outpost/radius", "true")
@@ -27,7 +27,7 @@ func (rs *RadiusServer) Handle_AccessRequest(w radius.ResponseWriter, r *RadiusR
 
 	passed, err := fe.Execute()
 	if err != nil {
-		r.Log().WithField("username", username).WithError(err).Warning("failed to execute flow")
+		r.Log().Warn("failed to execute flow", zap.String("username", username), zap.Error(err))
 		metrics.RequestsRejected.With(prometheus.Labels{
 			"outpost_name": rs.ac.Outpost.Name,
 			"reason":       "flow_error",
@@ -49,7 +49,7 @@ func (rs *RadiusServer) Handle_AccessRequest(w radius.ResponseWriter, r *RadiusR
 		r.Context(), r.pi.providerId,
 	).AppSlug(r.pi.appSlug).Execute()
 	if err != nil {
-		r.Log().WithField("username", username).WithError(err).Warning("failed to check access")
+		r.Log().Warn("failed to check access", zap.String("username", username), zap.Error(err))
 		_ = w.Write(r.Response(radius.CodeAccessReject))
 		metrics.RequestsRejected.With(prometheus.Labels{
 			"outpost_name": rs.ac.Outpost.Name,
@@ -59,7 +59,7 @@ func (rs *RadiusServer) Handle_AccessRequest(w radius.ResponseWriter, r *RadiusR
 		return
 	}
 	if !access.Access.Passing {
-		r.Log().WithField("username", username).Info("Access denied for user")
+		r.Log().Info("Access denied for user", zap.String("username", username))
 		_ = w.Write(r.Response(radius.CodeAccessReject))
 		metrics.RequestsRejected.With(prometheus.Labels{
 			"outpost_name": rs.ac.Outpost.Name,
@@ -76,12 +76,12 @@ func (rs *RadiusServer) Handle_AccessRequest(w radius.ResponseWriter, r *RadiusR
 	}
 	rawData, err := base64.StdEncoding.DecodeString(access.GetAttributes())
 	if err != nil {
-		r.Log().WithError(err).Warning("failed to decode attributes from core")
+		r.Log().Warn("failed to decode attributes from core", zap.Error(err))
 		return
 	}
 	p, err := radius.Parse(rawData, r.pi.SharedSecret)
 	if err != nil {
-		r.Log().WithError(err).Warning("failed to parse attributes from core")
+		r.Log().Warn("failed to parse attributes from core", zap.Error(err))
 	}
 	for _, attr := range p.Attributes {
 		res.Add(attr.Type, attr.Attribute)

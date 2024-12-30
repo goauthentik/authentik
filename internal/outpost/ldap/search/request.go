@@ -9,7 +9,8 @@ import (
 	"beryju.io/ldap"
 	"github.com/getsentry/sentry-go"
 	"github.com/google/uuid"
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
+	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/utils"
 )
 
@@ -17,7 +18,7 @@ type Request struct {
 	ldap.SearchRequest
 	BindDN            string
 	FilterObjectClass string
-	log               *log.Entry
+	log               *zap.Logger
 
 	id   string
 	conn net.Conn
@@ -41,17 +42,17 @@ func NewRequest(bindDN string, searchReq ldap.SearchRequest, conn net.Conn) (*Re
 	})
 	span.SetTag("ldap_filter", searchReq.Filter)
 	span.SetTag("ldap_base_dn", searchReq.BaseDN)
-	l := log.WithFields(log.Fields{
-		"bindDN":    bindDN,
-		"baseDN":    searchReq.BaseDN,
-		"requestId": rid,
-		"scope":     ldap.ScopeMap[searchReq.Scope],
-		"client":    utils.GetIP(conn.RemoteAddr()),
-		"filter":    searchReq.Filter,
-	})
+	l := config.Get().Logger().With(
+		zap.String("bindDN", bindDN),
+		zap.String("baseDN", searchReq.BaseDN),
+		zap.String("requestId", rid),
+		zap.String("scope", ldap.ScopeMap[searchReq.Scope]),
+		zap.String("client", utils.GetIP(conn.RemoteAddr())),
+		zap.String("filter", searchReq.Filter),
+	)
 	filterOC, err := ldap.GetFilterObjectClass(searchReq.Filter)
 	if err != nil && len(searchReq.Filter) > 0 {
-		l.WithError(err).WithField("objectClass", filterOC).Warning("invalid filter object class")
+		l.Warn("invalid filter object class", zap.Error(err), zap.String("objectClass", filterOC))
 	}
 	return &Request{
 		SearchRequest:     searchReq,
@@ -68,7 +69,7 @@ func (r *Request) Context() context.Context {
 	return r.ctx
 }
 
-func (r *Request) Log() *log.Entry {
+func (r *Request) Log() *zap.Logger {
 	return r.log
 }
 

@@ -6,6 +6,8 @@ import (
 
 	"github.com/gorilla/websocket"
 	"github.com/wwt/guac"
+	"go.uber.org/zap"
+	"goauthentik.io/internal/config"
 )
 
 var (
@@ -26,7 +28,7 @@ func (c *Connection) wsToGuacd() {
 		default:
 			_, data, e := c.ws.ReadMessage()
 			if e != nil {
-				c.log.WithError(e).Trace("Error reading message from ws")
+				c.log.Debug("Error reading message from ws", config.Trace(), zap.Error(e))
 				c.onError(e)
 				return
 			}
@@ -44,7 +46,7 @@ func (c *Connection) wsToGuacd() {
 			}
 
 			if _, e = w.Write(data); e != nil {
-				c.log.WithError(e).Trace("Failed writing to guacd")
+				c.log.Debug("Failed writing to guacd", config.Trace(), zap.Error(e))
 				c.onError(e)
 				return
 			}
@@ -68,7 +70,7 @@ func (c *Connection) guacdToWs() {
 		default:
 			ins, e := r.ReadSome()
 			if e != nil {
-				c.log.WithError(e).Trace("Error reading from guacd")
+				c.log.Debug("Error reading from guacd", zap.Error(e), config.Trace())
 				c.onError(e)
 				return
 			}
@@ -79,7 +81,7 @@ func (c *Connection) guacdToWs() {
 			}
 
 			if _, e = buf.Write(ins); e != nil {
-				c.log.WithError(e).Trace("Failed to buffer guacd to ws")
+				c.log.Debug("Failed to buffer guacd to ws", zap.Error(e), config.Trace())
 				c.onError(e)
 				return
 			}
@@ -90,7 +92,7 @@ func (c *Connection) guacdToWs() {
 					if e == websocket.ErrCloseSent {
 						return
 					}
-					c.log.WithError(e).Trace("Failed sending message to ws")
+					c.log.Debug("Failed sending message to ws", zap.Error(e), config.Trace())
 					c.onError(e)
 					return
 				}

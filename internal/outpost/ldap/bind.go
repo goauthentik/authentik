@@ -8,6 +8,7 @@ import (
 	"github.com/getsentry/sentry-go"
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 	"goauthentik.io/internal/outpost/ldap/bind"
 	"goauthentik.io/internal/outpost/ldap/metrics"
 )
@@ -22,7 +23,7 @@ func (ls *LDAPServer) Bind(bindDN string, bindPW string, conn net.Conn) (ldap.LD
 			"type":         "bind",
 			"app":          selectedApp,
 		}).Observe(float64(span.EndTime.Sub(span.StartTime)) / float64(time.Second))
-		req.Log().WithField("took-ms", span.EndTime.Sub(span.StartTime).Milliseconds()).Info("Bind request")
+		req.Log().Info("Bind request", zap.Duration("took-ms", span.EndTime.Sub(span.StartTime)))
 	}()
 
 	defer func() {
@@ -40,10 +41,10 @@ func (ls *LDAPServer) Bind(bindDN string, bindPW string, conn net.Conn) (ldap.LD
 			selectedApp = instance.GetAppSlug()
 			return instance.binder.Bind(username, req)
 		} else {
-			req.Log().WithError(err).Debug("Username not for instance")
+			req.Log().Debug("Username not for instance", zap.Error(err))
 		}
 	}
-	req.Log().WithField("request", "bind").Warning("No provider found for request")
+	req.Log().Warn("No provider found for request", zap.String("request", "bind"))
 	metrics.RequestsRejected.With(prometheus.Labels{
 		"outpost_name": ls.ac.Outpost.Name,
 		"type":         "bind",

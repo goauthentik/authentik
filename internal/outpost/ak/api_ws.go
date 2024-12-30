@@ -13,6 +13,7 @@ import (
 
 	"github.com/gorilla/websocket"
 	"github.com/prometheus/client_golang/prometheus"
+	"go.uber.org/zap"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/constants"
 )
@@ -50,10 +51,10 @@ func (ac *APIController) initWS(akURL url.URL, outpostUUID string) error {
 	}
 
 	wsu := ac.getWebsocketURL(akURL, outpostUUID, query).String()
-	ac.logger.WithField("url", wsu).Debug("connecting to websocket")
+	ac.logger.Debug("connecting to websocket", zap.String("url", wsu))
 	ws, _, err := dialer.Dial(wsu, header)
 	if err != nil {
-		ac.logger.WithError(err).Warning("failed to connect websocket")
+		ac.logger.Warn("failed to connect websocket", zap.Error(err))
 		return err
 	}
 
@@ -65,11 +66,11 @@ func (ac *APIController) initWS(akURL url.URL, outpostUUID string) error {
 	}
 	err = ws.WriteJSON(msg)
 	if err != nil {
-		ac.logger.WithField("logger", "authentik.outpost.ak-ws").WithError(err).Warning("Failed to hello to authentik")
+		ac.logger.Named("authentik.outpost.ak-ws").Warn("Failed to hello to authentik", zap.Error(err))
 		return err
 	}
 	ac.lastWsReconnect = time.Now()
-	ac.logger.WithField("logger", "authentik.outpost.ak-ws").WithField("outpost", outpostUUID).Info("Successfully connected websocket")
+	ac.logger.Named("authentik.outpost.ak-ws").Info("Successfully connected websocket", zap.String("outpost", outpostUUID))
 	return nil
 }
 
@@ -79,12 +80,12 @@ func (ac *APIController) Shutdown() {
 	// waiting (with timeout) for the server to close the connection.
 	err := ac.wsConn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
 	if err != nil {
-		ac.logger.WithError(err).Warning("failed to write close message")
+		ac.logger.Warn("failed to write close message", zap.Error(err))
 		return
 	}
 	err = ac.wsConn.Close()
 	if err != nil {
-		ac.logger.WithError(err).Warning("failed to close websocket")
+		ac.logger.Warn("failed to close websocket", zap.Error(err))
 	}
 	ac.logger.Info("finished shutdown")
 }
@@ -107,7 +108,7 @@ func (ac *APIController) reconnectWS() {
 		err := ac.initWS(u, ac.Outpost.Pk)
 		attempt += 1
 		if err != nil {
-			ac.logger.Infof("waiting %d seconds to reconnect", ac.wsBackoffMultiplier)
+			ac.logger.Info("waiting to reconnect", zap.Int("seconds", ac.wsBackoffMultiplier))
 			time.Sleep(time.Duration(ac.wsBackoffMultiplier) * time.Second)
 			ac.wsBackoffMultiplier = ac.wsBackoffMultiplier * 2
 			// Limit to 300 seconds (5m)
@@ -123,7 +124,7 @@ func (ac *APIController) reconnectWS() {
 }
 
 func (ac *APIController) startWSHandler() {
-	logger := ac.logger.WithField("loop", "ws-handler")
+	logger := ac.logger.With(zap.String("loop", "ws-handler"))
 	for {
 		var wsMsg websocketMessage
 		if ac.wsConn == nil {
@@ -138,7 +139,7 @@ func (ac *APIController) startWSHandler() {
 				"outpost_type": ac.Server.Type(),
 				"uuid":         ac.instanceUUID.String(),
 			}).Set(0)
-			logger.WithError(err).Warning("ws read error")
+			logger.Warn("ws read error", zap.Error(err))
 			go ac.reconnectWS()
 			time.Sleep(time.Second * 5)
 			continue
@@ -153,7 +154,7 @@ func (ac *APIController) startWSHandler() {
 			logger.Debug("Got update trigger...")
 			err := ac.OnRefresh()
 			if err != nil {
-				logger.WithError(err).Debug("Failed to update")
+				logger.Debug("Failed to update", zap.Error(err))
 			} else {
 				LastUpdate.With(prometheus.Labels{
 					"outpost_name": ac.Outpost.Name,
@@ -181,12 +182,12 @@ func (ac *APIController) startWSHealth() {
 		}
 		err := ac.SendWSHello(map[string]interface{}{})
 		if err != nil {
-			ac.logger.WithField("loop", "ws-health").WithError(err).Warning("ws write error")
+			ac.logger.Warn("ws write error", zap.String("loop", "ws-health"), zap.Error(err))
 			go ac.reconnectWS()
 			time.Sleep(time.Second * 5)
 			continue
 		} else {
-			ac.logger.WithField("loop", "ws-health").Trace("hello'd")
+			ac.logger.Debug("hello'd", zap.String("loop", "ws-health"), config.Trace())
 			ConnectionStatus.With(prometheus.Labels{
 				"outpost_name": ac.Outpost.Name,
 				"outpost_type": ac.Server.Type(),
@@ -197,7 +198,7 @@ func (ac *APIController) startWSHealth() {
 }
 
 func (ac *APIController) startIntervalUpdater() {
-	logger := ac.logger.WithField("loop", "interval-updater")
+	logger := ac.logger.With(zap.String("loop", "interval-updater"))
 	getInterval := func() time.Duration {
 		// Ensure timer interval is not negative or 0
 		// for 0 we assume migration or unconfigured, so default to 5 minutes
@@ -215,7 +216,7 @@ func (ac *APIController) startIntervalUpdater() {
 		logger.Debug("Running interval update")
 		err := ac.OnRefresh()
 		if err != nil {
-			logger.WithError(err).Debug("Failed to update")
+			logger.Debug("Failed to update", zap.Error(err))
 		} else {
 			LastUpdate.With(prometheus.Labels{
 				"outpost_name": ac.Outpost.Name,

@@ -5,6 +5,7 @@ import (
 	"net"
 
 	"github.com/pires/go-proxyproto"
+	"go.uber.org/zap"
 
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/crypto"
@@ -15,7 +16,7 @@ import (
 func (ws *WebServer) GetCertificate() func(ch *tls.ClientHelloInfo) (*tls.Certificate, error) {
 	cert, err := crypto.GenerateSelfSignedCert()
 	if err != nil {
-		ws.log.WithError(err).Error("failed to generate default cert")
+		ws.log.Error("failed to generate default cert", zap.Error(err))
 	}
 	return func(ch *tls.ClientHelloInfo) (*tls.Certificate, error) {
 		if ch.ServerName == "" {
@@ -30,7 +31,7 @@ func (ws *WebServer) GetCertificate() func(ch *tls.ClientHelloInfo) (*tls.Certif
 		if ws.BrandTLS != nil {
 			return ws.BrandTLS.GetCertificate(ch)
 		}
-		ws.log.Trace("using default, self-signed certificate")
+		ws.log.Debug("using default, self-signed certificate", config.Trace())
 		return &cert, nil
 	}
 }
@@ -42,14 +43,14 @@ func (ws *WebServer) listenTLS() {
 
 	ln, err := net.Listen("tcp", config.Get().Listen.HTTPS)
 	if err != nil {
-		ws.log.WithError(err).Warning("failed to listen (TLS)")
+		ws.log.Warn("failed to listen (TLS)", zap.Error(err))
 		return
 	}
 	proxyListener := &proxyproto.Listener{Listener: web.TCPKeepAliveListener{TCPListener: ln.(*net.TCPListener)}, ConnPolicy: utils.GetProxyConnectionPolicy()}
 	defer proxyListener.Close()
 
 	tlsListener := tls.NewListener(proxyListener, tlsConfig)
-	ws.log.WithField("listen", config.Get().Listen.HTTPS).Info("Starting HTTPS server")
+	ws.log.Info("Starting HTTPS server", zap.String("listen", config.Get().Listen.HTTPS))
 	ws.serve(tlsListener)
-	ws.log.WithField("listen", config.Get().Listen.HTTPS).Info("Stopping HTTPS server")
+	ws.log.Info("Stopping HTTPS server", zap.String("listen", config.Get().Listen.HTTPS))
 }

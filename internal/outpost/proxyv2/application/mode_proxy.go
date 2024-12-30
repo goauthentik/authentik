@@ -10,7 +10,8 @@ import (
 
 	"github.com/getsentry/sentry-go"
 	"github.com/prometheus/client_golang/prometheus"
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
+	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/proxyv2/metrics"
 	"goauthentik.io/internal/utils/web"
 )
@@ -41,13 +42,13 @@ func (a *Application) configureProxy() error {
 			if err == nil || err == http.ErrAbortHandler {
 				return
 			}
-			log.WithError(err.(error)).Error("recover in reverse proxy")
+			a.log.Error("recover in reverse proxy", zap.Error(err.(error)))
 		}()
 		claims, err := a.checkAuth(rw, r)
 		if claims == nil && a.IsAllowlisted(r.URL) {
-			a.log.Trace("path can be accessed without authentication")
+			a.log.Debug("path can be accessed without authentication", config.Trace())
 		} else if claims == nil && err != nil {
-			a.log.WithError(err).Trace("no claims")
+			a.log.Debug("no claims", zap.Error(err), config.Trace())
 			a.redirectToStart(rw, r)
 			return
 		} else {
@@ -77,13 +78,13 @@ func (a *Application) proxyModifyRequest(ou *url.URL) func(req *http.Request) {
 		if claims != nil && claims.Proxy != nil && claims.Proxy.BackendOverride != "" {
 			u, err := url.Parse(claims.Proxy.BackendOverride)
 			if err != nil {
-				a.log.WithField("backend_override", claims.Proxy.BackendOverride).WithError(err).Warning("failed parse user backend override")
+				a.log.Warn("failed parse user backend override", zap.String("backend_override", claims.Proxy.BackendOverride), zap.Error(err))
 			} else {
 				r.URL.Scheme = u.Scheme
 				r.URL.Host = u.Host
 			}
 		}
-		a.log.WithField("upstream_url", r.URL.String()).Trace("final upstream url")
+		a.log.Debug("final upstream url", zap.String("upstream_url", r.URL.String()))
 	}
 }
 

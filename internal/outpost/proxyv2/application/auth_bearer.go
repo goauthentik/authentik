@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"strings"
 
+	"go.uber.org/zap"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
 )
 
@@ -35,26 +36,26 @@ func (a *Application) attemptBearerAuth(token string) *TokenIntrospectionRespons
 	}
 	req, err := http.NewRequest("POST", a.endpoint.TokenIntrospection, strings.NewReader(values.Encode()))
 	if err != nil {
-		a.log.WithError(err).Warning("failed to create introspection request")
+		a.log.Warn("failed to create introspection request", zap.Error(err))
 		return nil
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	res, err := a.publicHostHTTPClient.Do(req)
 	if err != nil || res.StatusCode > 200 {
-		a.log.WithError(err).Warning("failed to send introspection request")
+		a.log.Warn("failed to send introspection request", zap.Error(err))
 		return nil
 	}
 	intro := TokenIntrospectionResponse{}
 	err = json.NewDecoder(res.Body).Decode(&intro)
 	if err != nil {
-		a.log.WithError(err).Warning("failed to parse introspection response")
+		a.log.Warn("failed to parse introspection response", zap.Error(err))
 		return nil
 	}
 	if !intro.Active {
-		a.log.Warning("token is not active")
+		a.log.Warn("token is not active")
 		return nil
 	}
 	intro.RawToken = token
-	a.log.Trace("successfully introspected bearer token")
+	a.log.Debug("successfully introspected bearer token")
 	return &intro
 }

@@ -27,22 +27,22 @@ func (a *Application) checkAuth(rw http.ResponseWriter, r *http.Request) (*Claim
 	// Check bearer token if set
 	bearer := a.checkAuthHeaderBearer(r)
 	if bearer != "" {
-		a.log.Trace("checking bearer token")
+		a.log.Debug("checking bearer token")
 		tc := a.attemptBearerAuth(bearer)
 		if tc != nil {
 			return a.saveAndCacheClaims(rw, r, tc.Claims)
 		}
-		a.log.Trace("no/invalid bearer token")
+		a.log.Debug("no/invalid bearer token")
 	}
 	// Check basic auth if set
 	username, password, basicSet := r.BasicAuth()
 	if basicSet {
-		a.log.Trace("checking basic auth")
+		a.log.Debug("checking basic auth")
 		tc := a.attemptBasicAuth(username, password)
 		if tc != nil {
 			return a.saveAndCacheClaims(rw, r, *tc)
 		}
-		a.log.Trace("no/invalid basic auth")
+		a.log.Debug("no/invalid basic auth")
 	}
 
 	return nil, fmt.Errorf("failed to get claims from session")

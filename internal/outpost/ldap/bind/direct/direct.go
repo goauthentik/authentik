@@ -6,7 +6,8 @@ import (
 	"strings"
 
 	goldap "github.com/go-ldap/ldap/v3"
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
+	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/flow"
 	"goauthentik.io/internal/outpost/ldap/server"
 	"goauthentik.io/internal/outpost/ldap/utils"
@@ -16,13 +17,13 @@ const ContextUserKey = "ak_user"
 
 type DirectBinder struct {
 	si  server.LDAPServerInstance
-	log *log.Entry
+	log *zap.Logger
 }
 
 func NewDirectBinder(si server.LDAPServerInstance) *DirectBinder {
 	db := &DirectBinder{
 		si:  si,
-		log: log.WithField("logger", "authentik.outpost.ldap.binder.direct"),
+		log: config.Get().Logger().Named("authentik.outpost.ldap.binder.direct"),
 	}
 	db.log.Info("initialised direct binder")
 	return db
@@ -47,12 +48,12 @@ func (db *DirectBinder) GetUsername(dn string) (string, error) {
 }
 
 func (db *DirectBinder) TimerFlowCacheExpiry(ctx context.Context) {
-	fe := flow.NewFlowExecutor(ctx, db.si.GetAuthenticationFlowSlug(), db.si.GetAPIClient().GetConfig(), log.Fields{})
+	fe := flow.NewFlowExecutor(ctx, db.si.GetAuthenticationFlowSlug(), db.si.GetAPIClient().GetConfig(), []zap.Field{})
 	fe.Params.Add("goauthentik.io/outpost/ldap", "true")
 	fe.Params.Add("goauthentik.io/outpost/ldap-warmup", "true")
 
 	err := fe.WarmUp()
 	if err != nil {
-		db.log.WithError(err).Warning("failed to warm up flow cache")
+		db.log.Warn("failed to warm up flow cache", zap.Error(err))
 	}
 }

@@ -21,7 +21,7 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/jellydator/ttlcache/v3"
 	"github.com/prometheus/client_golang/prometheus"
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/ak"
@@ -49,7 +49,7 @@ type Application struct {
 	httpClient           *http.Client
 	publicHostHTTPClient *http.Client
 
-	log *log.Entry
+	log *zap.Logger
 	mux *mux.Router
 	ak  *ak.APIController
 	srv Server
@@ -71,7 +71,7 @@ func init() {
 }
 
 func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, oldApp *Application) (*Application, error) {
-	muxLogger := log.WithField("logger", "authentik.outpost.proxyv2.application").WithField("name", p.Name)
+	muxLogger := config.Get().Logger().Named("authentik.outpost.proxyv2.application").With(zap.String("name", p.Name))
 
 	externalHost, err := url.Parse(p.ExternalHost)
 	if err != nil {
@@ -158,15 +158,15 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, old
 		}
 		a.sessions = sess
 	}
-	mux.Use(web.NewLoggingHandler(muxLogger, func(l *log.Entry, r *http.Request) *log.Entry {
+	mux.Use(web.NewLoggingHandler(muxLogger, func(l *zap.Logger, r *http.Request) *zap.Logger {
 		c := a.getClaimsFromSession(r)
 		if c == nil {
 			return l
 		}
 		if c.PreferredUsername != "" {
-			return l.WithField("user", c.PreferredUsername)
+			return l.With(zap.String("user", c.PreferredUsername))
 		}
-		return l.WithField("user", c.Sub)
+		return l.With(zap.String("user", c.Sub))
 	}))
 	mux.Use(func(inner http.Handler) http.Handler {
 		return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
@@ -220,7 +220,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, old
 		// denied to reference for final URL
 		rd, ok := a.checkRedirectParam(r)
 		if ok {
-			a.log.WithField("rd", rd).Trace("Setting redirect")
+			a.log.Debug("Setting redirect", zap.String("rd", rd))
 			fwd = rd
 		}
 		a.handleAuthStart(w, r, fwd)
@@ -253,7 +253,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, old
 			re, err := regexp.Compile(regex)
 			if err != nil {
 				// TODO: maybe create event for this?
-				a.log.WithError(err).Warning("failed to compile SkipPathRegex")
+				a.log.Warn("failed to compile SkipPathRegex", zap.Error(err))
 				continue
 			}
 			a.UnauthenticatedRegex = append(a.UnauthenticatedRegex, re)
@@ -312,7 +312,7 @@ func (a *Application) handleSignOut(rw http.ResponseWriter, r *http.Request) {
 		return c.Sub == cc.Sub
 	})
 	if err != nil {
-		a.log.WithError(err).Warning("failed to logout of other sessions")
+		a.log.Warn("failed to logout of other sessions", zap.Error(err))
 	}
 	http.Redirect(rw, r, redirect, http.StatusFound)
 }

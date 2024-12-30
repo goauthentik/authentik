@@ -6,7 +6,7 @@ import (
 	"beryju.io/ldap"
 	"github.com/getsentry/sentry-go"
 	"github.com/prometheus/client_golang/prometheus"
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 	"goauthentik.io/internal/outpost/flow"
 	"goauthentik.io/internal/outpost/ldap/bind"
 	"goauthentik.io/internal/outpost/ldap/flags"
@@ -14,10 +14,10 @@ import (
 )
 
 func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResultCode, error) {
-	fe := flow.NewFlowExecutor(req.Context(), db.si.GetAuthenticationFlowSlug(), db.si.GetAPIClient().GetConfig(), log.Fields{
-		"bindDN":    req.BindDN,
-		"client":    req.RemoteAddr(),
-		"requestId": req.ID(),
+	fe := flow.NewFlowExecutor(req.Context(), db.si.GetAuthenticationFlowSlug(), db.si.GetAPIClient().GetConfig(), []zap.Field{
+		zap.String("bindDN", req.BindDN),
+		zap.String("client", req.RemoteAddr()),
+		zap.String("requestId", req.ID()),
 	})
 	fe.DelegateClientIP(req.RemoteAddr())
 	fe.Params.Add("goauthentik.io/outpost/ldap", "true")
@@ -44,7 +44,7 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 			"reason":       "flow_error",
 			"app":          db.si.GetAppSlug(),
 		}).Inc()
-		req.Log().WithError(err).Warning("failed to execute flow")
+		req.Log().Warn("failed to execute flow", zap.Error(err))
 		return ldap.LDAPResultInvalidCredentials, nil
 	}
 	if !passed {
@@ -78,7 +78,7 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 			"reason":       "access_check_fail",
 			"app":          db.si.GetAppSlug(),
 		}).Inc()
-		req.Log().WithError(err).Warning("failed to check access")
+		req.Log().Warn("failed to check access", zap.Error(err))
 		return ldap.LDAPResultOperationsError, nil
 	}
 	req.Log().Info("User has access")
@@ -92,7 +92,7 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 			"reason":       "user_info_fail",
 			"app":          db.si.GetAppSlug(),
 		}).Inc()
-		req.Log().WithError(err).Warning("failed to get user info")
+		req.Log().Warn("failed to get user info", zap.Error(err))
 		return ldap.LDAPResultOperationsError, nil
 	}
 	flags.UserPk = userInfo.User.Pk

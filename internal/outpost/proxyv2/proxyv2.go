@@ -12,7 +12,7 @@ import (
 	sentryhttp "github.com/getsentry/sentry-go/http"
 	"github.com/gorilla/mux"
 	"github.com/pires/go-proxyproto"
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/crypto"
@@ -30,16 +30,16 @@ type ProxyServer struct {
 
 	cryptoStore *ak.CryptoStore
 	apps        map[string]*application.Application
-	log         *log.Entry
+	log         *zap.Logger
 	mux         *mux.Router
 	akAPI       *ak.APIController
 }
 
 func NewProxyServer(ac *ak.APIController) *ProxyServer {
-	l := log.WithField("logger", "authentik.outpost.proxyv2")
+	l := config.Get().Logger().Named("authentik.outpost.proxyv2")
 	defaultCert, err := crypto.GenerateSelfSignedCert()
 	if err != nil {
-		l.Fatal(err)
+		l.Fatal("Failed to generate self-signed certificate", zap.Error(err))
 	}
 
 	rootMux := mux.NewRouter()
@@ -51,7 +51,7 @@ func NewProxyServer(ac *ak.APIController) *ProxyServer {
 	})
 
 	globalMux := rootMux.NewRoute().Subrouter()
-	globalMux.Use(web.NewLoggingHandler(l.WithField("logger", "authentik.outpost.proxyv2.http"), nil))
+	globalMux.Use(web.NewLoggingHandler(l.Named("authentik.outpost.proxyv2.http"), nil))
 	if ac.GlobalConfig.ErrorReporting.Enabled {
 		globalMux.Use(sentryhttp.New(sentryhttp.Options{}).Handle)
 	}
@@ -99,11 +99,11 @@ func (ps *ProxyServer) TimerFlowCacheExpiry(context.Context) {}
 func (ps *ProxyServer) GetCertificate(serverName string) *tls.Certificate {
 	app, ok := ps.apps[serverName]
 	if !ok {
-		ps.log.WithField("server-name", serverName).Debug("failed to get certificate for ServerName")
+		ps.log.Debug("failed to get certificate for ServerName", zap.String("server-name", serverName))
 		return nil
 	}
 	if app.Cert == nil {
-		ps.log.WithField("server-name", serverName).Debug("app does not have a certificate")
+		ps.log.Debug("app does not have a certificate", zap.String("server-name", serverName))
 		return nil
 	}
 	return app.Cert
@@ -126,15 +126,15 @@ func (ps *ProxyServer) ServeHTTP() {
 	listenAddress := config.Get().Listen.HTTP
 	listener, err := net.Listen("tcp", listenAddress)
 	if err != nil {
-		ps.log.WithField("listen", listenAddress).WithError(err).Warning("Failed to listen")
+		ps.log.Warn("Failed to listen", zap.Error(err))
 		return
 	}
 	proxyListener := &proxyproto.Listener{Listener: listener, ConnPolicy: utils.GetProxyConnectionPolicy()}
 	defer proxyListener.Close()
 
-	ps.log.WithField("listen", listenAddress).Info("Starting HTTP server")
+	ps.log.Info("Starting HTTP server", zap.String("listen", listenAddress))
 	ps.serve(proxyListener)
-	ps.log.WithField("listen", listenAddress).Info("Stopping HTTP server")
+	ps.log.Info("Stopping HTTP server", zap.String("listen", listenAddress))
 }
 
 // ServeHTTPS constructs a net.Listener and starts handling HTTPS requests
@@ -145,16 +145,16 @@ func (ps *ProxyServer) ServeHTTPS() {
 
 	ln, err := net.Listen("tcp", listenAddress)
 	if err != nil {
-		ps.log.WithError(err).Warning("Failed to listen (TLS)")
+		ps.log.Warn("Failed to listen (TLS)", zap.Error(err))
 		return
 	}
 	proxyListener := &proxyproto.Listener{Listener: web.TCPKeepAliveListener{TCPListener: ln.(*net.TCPListener)}, ConnPolicy: utils.GetProxyConnectionPolicy()}
 	defer proxyListener.Close()
 
 	tlsListener := tls.NewListener(proxyListener, tlsConfig)
-	ps.log.WithField("listen", listenAddress).Info("Starting HTTPS server")
+	ps.log.Info("Starting HTTPS server", zap.String("listen", listenAddress))
 	ps.serve(tlsListener)
-	ps.log.WithField("listen", listenAddress).Info("Stopping HTTPS server")
+	ps.log.Info("Stopping HTTPS server", zap.String("listen", listenAddress))
 }
 
 func (ps *ProxyServer) Start() error {
@@ -190,14 +190,14 @@ func (ps *ProxyServer) serve(listener net.Listener) {
 		// We received an interrupt signal, shut down.
 		if err := srv.Shutdown(context.Background()); err != nil {
 			// Error from closing listeners, or context timeout:
-			ps.log.WithError(err).Info("HTTP server Shutdown")
+			ps.log.Info("HTTP server Shutdown", zap.Error(err))
 		}
 		close(idleConnsClosed)
 	}()
 
 	err := srv.Serve(listener)
 	if err != nil && !errors.Is(err, http.ErrServerClosed) {
-		ps.log.Errorf("ERROR: http.Serve() - %s", err)
+		ps.log.Error("Failed to serve", zap.Error(err))
 	}
 	<-idleConnsClosed
 }

@@ -6,6 +6,7 @@ import (
 
 	"github.com/go-http-utils/etag"
 	"github.com/gorilla/mux"
+	"go.uber.org/zap"
 
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/constants"
@@ -86,7 +87,7 @@ func (ws *WebServer) configureStatic() {
 		rw.WriteHeader(200)
 		_, err := rw.Write(staticWeb.RobotsTxt)
 		if err != nil {
-			ws.log.WithError(err).Warning("failed to write response")
+			ws.log.Warn("failed to write response", zap.Error(err))
 		}
 	})
 	staticRouter.PathPrefix(config.Get().Web.Path).Path("/.well-known/security.txt").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
@@ -94,7 +95,7 @@ func (ws *WebServer) configureStatic() {
 		rw.WriteHeader(200)
 		_, err := rw.Write(staticWeb.SecurityTxt)
 		if err != nil {
-			ws.log.WithError(err).Warning("failed to write response")
+			ws.log.Warn("failed to write response", zap.Error(err))
 		}
 	})
 }

@@ -8,6 +8,7 @@ import (
 
 	"github.com/pires/go-proxyproto"
 	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/crypto"
 	"goauthentik.io/internal/outpost/ak"
@@ -19,7 +20,7 @@ import (
 
 type LDAPServer struct {
 	s           *ldap.Server
-	log         *log.Entry
+	log         *zap.Logger
 	ac          *ak.APIController
 	cs          *ak.CryptoStore
 	defaultCert *tls.Certificate
@@ -28,7 +29,7 @@ type LDAPServer struct {
 
 func NewServer(ac *ak.APIController) *LDAPServer {
 	ls := &LDAPServer{
-		log:       log.WithField("logger", "authentik.outpost.ldap"),
+		log:       config.Get().Logger().Named("authentik.outpost.ldap"),
 		ac:        ac,
 		cs:        ak.NewCryptoStore(ac.Client.CryptoApi),
 		providers: []*ProviderInstance{},

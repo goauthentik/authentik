@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 )
 
 type ErrorPageData struct {
@@ -34,7 +34,7 @@ func (a *Application) ErrorPage(rw http.ResponseWriter, r *http.Request, err str
 // NewProxyErrorHandler creates a ProxyErrorHandler using the template given.
 func (a *Application) newProxyErrorHandler() func(http.ResponseWriter, *http.Request, error) {
 	return func(rw http.ResponseWriter, req *http.Request, proxyErr error) {
-		log.WithError(proxyErr).Warning("Error proxying to upstream server")
+		a.log.Warn("Error proxying to upstream server", zap.Error(proxyErr))
 		rw.WriteHeader(http.StatusBadGateway)
 		a.ErrorPage(rw, req, fmt.Sprintf("Error proxying to upstream server: %v", proxyErr))
 	}

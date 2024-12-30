@@ -7,16 +7,17 @@ import (
 	"sync"
 
 	"github.com/mitchellh/mapstructure"
-	log "github.com/sirupsen/logrus"
 	"github.com/wwt/guac"
+	"go.uber.org/zap"
 
+	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/rac/connection"
 	"goauthentik.io/internal/outpost/rac/metrics"
 )
 
 type RACServer struct {
-	log   *log.Entry
+	log   *zap.Logger
 	ac    *ak.APIController
 	guacd *exec.Cmd
 	connm sync.RWMutex
@@ -25,7 +26,7 @@ type RACServer struct {
 
 func NewServer(ac *ak.APIController) *RACServer {
 	rs := &RACServer{
-		log:   log.WithField("logger", "authentik.outpost.rac"),
+		log:   config.Get().Logger().Named("authentik.outpost.rac"),
 		ac:    ac,
 		connm: sync.RWMutex{},
 		conns: map[string]connection.Connection{},
@@ -56,7 +57,7 @@ func (rs *RACServer) wsHandler(ctx context.Context, args map[string]interface{})
 	wsm := WSMessage{}
 	err := mapstructure.Decode(args, &wsm)
 	if err != nil {
-		rs.log.WithError(err).Warning("invalid ws message")
+		rs.log.Warn("invalid ws message", zap.Error(err))
 		return
 	}
 	config := guac.NewGuacamoleConfiguration()
@@ -71,7 +72,7 @@ func (rs *RACServer) wsHandler(ctx context.Context, args map[string]interface{})
 	}
 	cc, err := connection.NewConnection(rs.ac, wsm.DestChannelID, config)
 	if err != nil {
-		rs.log.WithError(err).Warning("failed to setup connection")
+		rs.log.Warn("failed to setup connection", zap.Error(err))
 		return
 	}
 	cc.OnError = func(err error) {

@@ -9,8 +9,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/gorilla/securecookie"
-	log "github.com/sirupsen/logrus"
 	"goauthentik.io/api/v3"
+	"goauthentik.io/internal/config"
 )
 
 func TestSecret() string {
@@ -29,19 +29,17 @@ func MockConfig() api.Config {
 }
 
 func MockAK(outpost api.Outpost, globalConfig api.Config) *APIController {
-	config := api.NewConfiguration()
-	config.HTTPClient = &http.Client{
+	cfg := api.NewConfiguration()
+	cfg.HTTPClient = &http.Client{
 		Transport: GetTLSTransport(),
 	}
 	token := TestSecret()
-	config.AddDefaultHeader("Authorization", fmt.Sprintf("Bearer %s", token))
+	cfg.AddDefaultHeader("Authorization", fmt.Sprintf("Bearer %s", token))
 
 	// create the API client, with the transport
-	apiClient := api.NewAPIClient(config)
+	apiClient := api.NewAPIClient(cfg)
 
-	log := log.WithField("logger", "authentik.outpost.ak-api-controller")
-
-	log.WithField("name", outpost.Name).Debug("Fetched outpost configuration")
+	log := config.Get().Logger().Named("authentik.outpost.ak-api-controller")
 
 	log.Debug("Fetched global configuration")
 
@@ -61,6 +59,5 @@ func MockAK(outpost api.Outpost, globalConfig api.Config) *APIController {
 		wsBackoffMultiplier: 1,
 		refreshHandlers:     make([]func(), 0),
 	}
-	ac.logger.WithField("offset", ac.reloadOffset.String()).Debug("HA Reload offset")
 	return ac
 }

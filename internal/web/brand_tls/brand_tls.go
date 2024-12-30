@@ -6,16 +6,17 @@ import (
 	"strings"
 	"time"
 
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 
 	"goauthentik.io/api/v3"
+	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/crypto"
 	"goauthentik.io/internal/outpost/ak"
 )
 
 type Watcher struct {
 	client   *api.APIClient
-	log      *log.Entry
+	log      *zap.Logger
 	cs       *ak.CryptoStore
 	fallback *tls.Certificate
 	brands   []api.Brand
@@ -23,10 +24,10 @@ type Watcher struct {
 
 func NewWatcher(client *api.APIClient) *Watcher {
 	cs := ak.NewCryptoStore(client.CryptoApi)
-	l := log.WithField("logger", "authentik.router.brand_tls")
+	l := config.Get().Logger().Named("authentik.router.brand_tls")
 	cert, err := crypto.GenerateSelfSignedCert()
 	if err != nil {
-		l.WithError(err).Error("failed to generate default cert")
+		l.Error("failed to generate default cert", zap.Error(err))
 	}
 
 	return &Watcher{
@@ -52,7 +53,7 @@ func (w *Watcher) Check() {
 		Logger:   w.log,
 	})
 	if err != nil {
-		w.log.WithError(err).Warning("failed to get brands")
+		w.log.Warn("failed to get brands", zap.Error(err))
 		return
 	}
 	for _, b := range brands {
@@ -62,7 +63,7 @@ func (w *Watcher) Check() {
 		}
 		err := w.cs.AddKeypair(*kp)
 		if err != nil {
-			w.log.WithError(err).Warning("failed to add certificate")
+			w.log.Warn("failed to add certificate", zap.Error(err))
 		}
 	}
 	w.brands = brands

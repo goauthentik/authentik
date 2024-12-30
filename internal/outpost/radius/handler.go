@@ -7,7 +7,7 @@ import (
 	"github.com/getsentry/sentry-go"
 	"github.com/google/uuid"
 	"github.com/prometheus/client_golang/prometheus"
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 
 	"goauthentik.io/internal/outpost/radius/metrics"
 	"goauthentik.io/internal/utils"
@@ -16,13 +16,13 @@ import (
 
 type RadiusRequest struct {
 	*radius.Request
-	log  *log.Entry
+	log  *zap.Logger
 	id   string
 	span *sentry.Span
 	pi   *ProviderInstance
 }
 
-func (r *RadiusRequest) Log() *log.Entry {
+func (r *RadiusRequest) Log() *zap.Logger {
 	return r.log
 }
 
@@ -39,7 +39,7 @@ func (rs *RadiusServer) ServeRADIUS(w radius.ResponseWriter, r *radius.Request) 
 		sentry.WithTransactionName("authentik.providers.radius.connect"))
 	rid := uuid.New().String()
 	span.SetTag("request_uid", rid)
-	rl := rs.log.WithField("code", r.Code.String()).WithField("request", rid)
+	rl := rs.log.With(zap.String("code", r.Code.String()), zap.String("request", rid))
 	selectedApp := ""
 	defer func() {
 		span.Finish()
@@ -68,7 +68,7 @@ func (rs *RadiusServer) ServeRADIUS(w radius.ResponseWriter, r *radius.Request) 
 		}
 	}
 	if pi == nil {
-		nr.Log().WithField("hashed_secret", string(sha512.New().Sum(r.Secret))).Warning("No provider found")
+		nr.Log().Warn("No provider found", zap.String("hashed_secret", string(sha512.New().Sum(r.Secret))))
 		_ = w.Write(r.Response(radius.CodeAccessReject))
 		return
 	}

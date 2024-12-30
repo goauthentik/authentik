@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+
+	"go.uber.org/zap"
 )
 
 type TokenResponse struct {
@@ -32,7 +34,7 @@ func (a *Application) attemptBasicAuth(username, password string) *Claims {
 	}
 	req, err := http.NewRequest("POST", a.endpoint.TokenURL, strings.NewReader(values.Encode()))
 	if err != nil {
-		a.log.WithError(err).Warning("failed to create token request")
+		a.log.Warn("failed to create token request", zap.Error(err))
 		return nil
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
@@ -42,26 +44,26 @@ func (a *Application) attemptBasicAuth(username, password string) *Claims {
 		if err != nil {
 			b = []byte(err.Error())
 		}
-		a.log.WithError(err).WithField("body", string(b)).Warning("failed to send token request")
+		a.log.Warn("failed to send token request", zap.Error(err), zap.String("body", string(b)))
 		return nil
 	}
 	var token TokenResponse
 	err = json.NewDecoder(res.Body).Decode(&token)
 	if err != nil {
-		a.log.WithError(err).Warning("failed to parse token response")
+		a.log.Warn("failed to parse token response", zap.Error(err))
 		return nil
 	}
 	// Parse and verify ID Token payload.
 	idToken, err := a.tokenVerifier.Verify(context.Background(), token.IDToken)
 	if err != nil {
-		a.log.WithError(err).Warning("failed to verify token")
+		a.log.Warn("failed to verify token", zap.Error(err))
 		return nil
 	}
 
 	// Extract custom claims
 	var claims *Claims
 	if err := idToken.Claims(&claims); err != nil {
-		a.log.WithError(err).Warning("failed to convert token to claims")
+		a.log.Warn("failed to convert token to claims", zap.Error(err))
 		return nil
 	}
 	if claims.Proxy == nil {

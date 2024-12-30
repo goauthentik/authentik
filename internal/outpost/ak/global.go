@@ -6,7 +6,8 @@ import (
 
 	"github.com/getsentry/sentry-go"
 	httptransport "github.com/go-openapi/runtime/client"
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/constants"
@@ -20,34 +21,37 @@ var (
 )
 
 func doGlobalSetup(outpost api.Outpost, globalConfig *api.Config) {
-	l := log.WithField("logger", "authentik.outpost")
+	l := config.Get().Logger().Named("authentik.outpost")
 	m := outpost.Managed.Get()
 	level, ok := outpost.Config[ConfigLogLevel]
 	if !ok {
 		level = "info"
 	}
+	var pl zapcore.Level
 	if m == nil || *m == "" {
 		switch level.(string) {
 		case "trace":
-			log.SetLevel(log.TraceLevel)
+			pl = zapcore.DebugLevel
 		case "debug":
-			log.SetLevel(log.DebugLevel)
+			pl = zapcore.DebugLevel
 		case "info":
-			log.SetLevel(log.InfoLevel)
+			pl = zapcore.InfoLevel
 		case "warning":
-			log.SetLevel(log.WarnLevel)
+			pl = zapcore.WarnLevel
 		case "error":
-			log.SetLevel(log.ErrorLevel)
+			pl = zapcore.ErrorLevel
 		default:
-			log.SetLevel(log.DebugLevel)
+			pl = zapcore.DebugLevel
 		}
 	} else {
 		l.Debug("Managed outpost, not setting global log level")
 	}
+	nl := config.Get().BuildLoggerWithLevel(pl)
+	config.Get().SetLogger(nl)
 
 	if globalConfig.ErrorReporting.Enabled {
 		if !initialSetup {
-			l.WithField("env", globalConfig.ErrorReporting.Environment).Debug("Error reporting enabled")
+			l.Debug("Error reporting enabled", zap.String("env", globalConfig.ErrorReporting.Environment))
 		}
 		err := sentry.Init(sentry.ClientOptions{
 			Dsn:           globalConfig.ErrorReporting.SentryDsn,
@@ -61,12 +65,12 @@ func doGlobalSetup(outpost api.Outpost, globalConfig *api.Config) {
 			},
 		})
 		if err != nil {
-			l.WithField("env", globalConfig.ErrorReporting.Environment).WithError(err).Warning("Failed to initialise sentry")
+			l.Warn("Failed to initialise sentry", zap.Error(err), zap.String("env", globalConfig.ErrorReporting.Environment))
 		}
 	}
 
 	if !initialSetup {
-		l.WithField("hash", constants.BUILD("tagged")).WithField("version", constants.VERSION).Info("Starting authentik outpost")
+		l.Info("Starting authentik outpost", zap.String("hash", constants.BUILD("tagged")), zap.String("version", constants.VERSION))
 		initialSetup = true
 	}
 }

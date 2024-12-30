@@ -5,13 +5,14 @@ import (
 	"fmt"
 	"strings"
 
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 
 	"beryju.io/ldap"
 	"github.com/getsentry/sentry-go"
 	"github.com/prometheus/client_golang/prometheus"
 	"goauthentik.io/api/v3"
+	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/ldap/constants"
 	"goauthentik.io/internal/outpost/ldap/group"
@@ -23,13 +24,13 @@ import (
 
 type DirectSearcher struct {
 	si  server.LDAPServerInstance
-	log *log.Entry
+	log *zap.Logger
 }
 
 func NewDirectSearcher(si server.LDAPServerInstance) *DirectSearcher {
 	ds := &DirectSearcher{
 		si:  si,
-		log: log.WithField("logger", "authentik.outpost.ldap.searcher.direct"),
+		log: config.Get().Logger().Named("authentik.outpost.ldap.searcher.direct"),
 	}
 	return ds
 }
@@ -116,7 +117,7 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 				searchReq, skip := utils.ParseFilterForUser(c.CoreApi.CoreUsersList(uapisp.Context()).IncludeGroups(true), parsedFilter, false)
 
 				if skip {
-					req.Log().Trace("Skip backend request")
+					req.Log().Debug("Skip backend request", config.Trace())
 					return nil
 				}
 
@@ -136,7 +137,7 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 					uapisp.Finish()
 
 					if err != nil {
-						req.Log().WithError(err).Warning("Failed to get user info")
+						req.Log().Warn("Failed to get user info", zap.Error(err))
 						return fmt.Errorf("failed to get userinfo")
 					}
 
@@ -157,7 +158,7 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 			gapisp := sentry.StartSpan(errCtx, "authentik.providers.ldap.search.api_group")
 			searchReq, skip := utils.ParseFilterForGroup(c.CoreApi.CoreGroupsList(gapisp.Context()).IncludeUsers(true), parsedFilter, false)
 			if skip {
-				req.Log().Trace("Skip backend request")
+				req.Log().Debug("Skip backend request", config.Trace())
 				return nil
 			}
 
@@ -174,7 +175,7 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 			if err != nil {
 				return err
 			}
-			req.Log().WithField("count", len(g)).Trace("Got results from API")
+			req.Log().Debug("Got results from API", config.Trace(), zap.Int("count", len(g)))
 
 			if !flags.CanSearch {
 				for i, results := range g {

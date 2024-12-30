@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"go.uber.org/zap"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/utils/sentry"
 )
@@ -29,7 +30,7 @@ func (ws *WebServer) configureProxy() {
 		if req.TLS != nil {
 			req.Header.Set("X-Forwarded-Proto", "https")
 		}
-		ws.log.WithField("url", req.URL.String()).WithField("headers", req.Header).Trace("tracing request to backend")
+		ws.log.Debug("tracing request to backend", config.Trace(), zap.String("url", req.URL.String()), zap.Any("headers", req.Header))
 	}
 	rp := &httputil.ReverseProxy{
 		Director:  director,
@@ -64,7 +65,7 @@ func (ws *WebServer) configureProxy() {
 
 func (ws *WebServer) proxyErrorHandler(rw http.ResponseWriter, req *http.Request, err error) {
 	if !errors.Is(err, ErrAuthentikStarting) {
-		ws.log.WithError(err).Warning("failed to proxy to backend")
+		ws.log.Warn("failed to proxy to backend", zap.Error(err))
 	}
 	rw.WriteHeader(http.StatusBadGateway)
 	em := fmt.Sprintf("failed to connect to authentik backend: %v", err)
@@ -77,7 +78,7 @@ func (ws *WebServer) proxyErrorHandler(rw http.ResponseWriter, req *http.Request
 		_, err = rw.Write([]byte(em))
 	}
 	if err != nil {
-		ws.log.WithError(err).Warning("failed to write error message")
+		ws.log.Warn("failed to write error message", zap.Error(err))
 	}
 }
 

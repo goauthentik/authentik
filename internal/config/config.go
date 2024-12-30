@@ -86,7 +86,7 @@ func (c *Config) Setup(paths ...string) {
 	if err != nil {
 		log.WithError(err).Info("failed to load env vars")
 	}
-	c.configureLogger()
+	c.log = c.BuildLogger()
 }
 
 func (c *Config) LoadConfig(raw []byte) error {
@@ -176,32 +176,4 @@ func (c *Config) parseScheme(rawVal string) string {
 		return strings.TrimSpace(string(d))
 	}
 	return rawVal
-}
-
-func (c *Config) configureLogger() {
-	switch strings.ToLower(c.LogLevel) {
-	case "trace":
-		log.SetLevel(log.TraceLevel)
-	case "debug":
-		log.SetLevel(log.DebugLevel)
-	case "info":
-		log.SetLevel(log.InfoLevel)
-	case "warning":
-		log.SetLevel(log.WarnLevel)
-	case "error":
-		log.SetLevel(log.ErrorLevel)
-	default:
-		log.SetLevel(log.DebugLevel)
-	}
-
-	fm := log.FieldMap{
-		log.FieldKeyMsg:  "event",
-		log.FieldKeyTime: "timestamp",
-	}
-
-	if c.Debug {
-		log.SetFormatter(&log.TextFormatter{FieldMap: fm})
-	} else {
-		log.SetFormatter(&log.JSONFormatter{FieldMap: fm, DisableHTMLEscape: true})
-	}
 }

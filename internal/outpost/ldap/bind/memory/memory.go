@@ -5,7 +5,8 @@ import (
 
 	"beryju.io/ldap"
 	ttlcache "github.com/jellydator/ttlcache/v3"
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
+	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/ldap/bind"
 	"goauthentik.io/internal/outpost/ldap/bind/direct"
 	"goauthentik.io/internal/outpost/ldap/server"
@@ -19,14 +20,14 @@ type Credentials struct {
 type SessionBinder struct {
 	direct.DirectBinder
 	si       server.LDAPServerInstance
-	log      *log.Entry
+	log      *zap.Logger
 	sessions *ttlcache.Cache[Credentials, ldap.LDAPResultCode]
 }
 
 func NewSessionBinder(si server.LDAPServerInstance, oldBinder bind.Binder) *SessionBinder {
 	sb := &SessionBinder{
 		si:  si,
-		log: log.WithField("logger", "authentik.outpost.ldap.binder.session"),
+		log: config.Get().Logger().Named("authentik.outpost.ldap.binder.session"),
 	}
 	if oldSb, ok := oldBinder.(*SessionBinder); ok {
 		sb.DirectBinder = oldSb.DirectBinder
@@ -47,7 +48,7 @@ func (sb *SessionBinder) Bind(username string, req *bind.Request) (ldap.LDAPResu
 		Password: req.BindPW,
 	})
 	if item != nil {
-		sb.log.WithField("bindDN", req.BindDN).Info("authenticated from session")
+		sb.log.Info("authenticated from session", zap.String("bindDN", req.BindDN))
 		return item.Value(), nil
 	}
 	sb.log.Debug("No session found for user, executing flow")

@@ -9,7 +9,9 @@ import (
 	"net/url"
 	"strings"
 
+	"go.uber.org/zap"
 	"goauthentik.io/api/v3"
+	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/constants"
 )
 
@@ -33,7 +35,7 @@ func (a *Application) setAuthorizationHeader(headers http.Header, c *Claims) {
 		return
 	}
 	authVal := base64.StdEncoding.EncodeToString([]byte(username + ":" + password))
-	a.log.WithField("username", username).Trace("setting http basic auth")
+	a.log.Debug("setting http basic auth", zap.String("username", username), config.Trace())
 	headers.Set("Authorization", fmt.Sprintf("Basic %s", authVal))
 }
 
@@ -61,7 +63,7 @@ func (a *Application) addHeaders(headers http.Header, c *Claims) {
 	a.setAuthorizationHeader(headers, c)
 	// Check if user has additional headers set that we should sent
 	if additionalHeaders, ok := userAttributes["additionalHeaders"]; ok {
-		a.log.WithField("headers", additionalHeaders).Trace("setting additional headers")
+		a.log.Debug("setting additional headers", config.Trace(), zap.Any("headers", additionalHeaders))
 		if additionalHeaders == nil {
 			return
 		}
@@ -82,7 +84,7 @@ func (a *Application) getTraefikForwardUrl(r *http.Request) (*url.URL, error) {
 	if err != nil {
 		return nil, err
 	}
-	a.log.WithField("url", u.String()).Trace("traefik forwarded url")
+	a.log.Debug("traefik forward url", zap.String("url", u.String()))
 	return u, nil
 }
 
@@ -96,7 +98,7 @@ func (a *Application) getNginxForwardUrl(r *http.Request) (*url.URL, error) {
 			Scheme: "",
 			Path:   ou,
 		}
-		a.log.WithField("url", u.String()).Info("building forward URL from X-Original-URI")
+		a.log.Debug("building forward URL from X-Original-URI", zap.String("url", u.String()))
 		return u, nil
 	}
 	h := r.Header.Get("X-Original-URL")
@@ -105,16 +107,16 @@ func (a *Application) getNginxForwardUrl(r *http.Request) (*url.URL, error) {
 	}
 	u, err := url.Parse(h)
 	if err != nil {
-		a.log.WithError(err).Warning("failed to parse URL from nginx")
+		a.log.Warn("failed to parse URL from nginx", zap.Error(err))
 		return nil, err
 	}
-	a.log.WithField("url", u.String()).Trace("nginx forwarded url")
+	a.log.Debug("nginx forwarded url", zap.String("url", u.String()), config.Trace())
 	return u, nil
 }
 
 func (a *Application) ReportMisconfiguration(r *http.Request, msg string, fields map[string]interface{}) {
 	fields["message"] = msg
-	a.log.WithFields(fields).Error("Reporting configuration error")
+	a.log.Error("Reporting configuration error", zap.Any("fields", fields))
 	req := api.EventRequest{
 		Action:   api.EVENTACTIONS_CONFIGURATION_ERROR,
 		App:      "authentik.providers.proxy", // must match python apps.py name
@@ -123,7 +125,7 @@ func (a *Application) ReportMisconfiguration(r *http.Request, msg string, fields
 	}
 	_, _, err := a.ak.Client.EventsApi.EventsEventsCreate(context.Background()).EventRequest(req).Execute()
 	if err != nil {
-		a.log.WithError(err).Warning("failed to report configuration error")
+		a.log.Warn("failed to report configuration error", zap.Error(err))
 	}
 }
 
@@ -136,7 +138,7 @@ func (a *Application) IsAllowlisted(u *url.URL) bool {
 			testString = u.String()
 		}
 		match := ur.MatchString(testString)
-		a.log.WithField("match", match).WithField("regex", ur.String()).WithField("url", testString).Trace("Matching URL against allow list")
+		a.log.Debug("Matching URL against allow list", zap.Bool("match", match), zap.String("regex", ur.String()), zap.String("url", testString), config.Trace())
 		if match {
 			return true
 		}

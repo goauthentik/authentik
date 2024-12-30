@@ -3,7 +3,6 @@ package metrics
 import (
 	"net/http"
 
-	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/utils/sentry"
 
@@ -26,7 +25,7 @@ var (
 
 func RunServer() {
 	m := mux.NewRouter()
-	l := log.WithField("logger", "authentik.outpost.metrics")
+	l := config.Get().Logger().Named("authentik.outpost.metrics")
 	m.Use(sentry.SentryNoSampleMiddleware)
 	m.HandleFunc("/outpost.goauthentik.io/ping", func(rw http.ResponseWriter, r *http.Request) {
 		rw.WriteHeader(204)

@@ -9,8 +9,9 @@ import (
 	"beryju.io/ldap"
 	"github.com/getsentry/sentry-go"
 	"github.com/prometheus/client_golang/prometheus"
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 	"goauthentik.io/api/v3"
+	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/ldap/constants"
 	"goauthentik.io/internal/outpost/ldap/flags"
@@ -24,7 +25,7 @@ import (
 
 type MemorySearcher struct {
 	si  server.LDAPServerInstance
-	log *log.Entry
+	log *zap.Logger
 	ds  *direct.DirectSearcher
 
 	users  []api.User
@@ -34,7 +35,7 @@ type MemorySearcher struct {
 func NewMemorySearcher(si server.LDAPServerInstance) *MemorySearcher {
 	ms := &MemorySearcher{
 		si:  si,
-		log: log.WithField("logger", "authentik.outpost.ldap.searcher.memory"),
+		log: config.Get().Logger().Named("authentik.outpost.ldap.searcher.memory"),
 		ds:  direct.NewDirectSearcher(si),
 	}
 	ms.log.Debug("initialised memory searcher")
@@ -129,7 +130,7 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 					}
 				}
 				if flag.UserInfo == nil {
-					req.Log().WithField("pk", flag.UserPk).Warning("User with pk is not in local cache")
+					req.Log().Warn("User with pk is not in local cache", zap.Int32("pk", flag.UserPk))
 					err = fmt.Errorf("failed to get userinfo")
 				}
 			}
