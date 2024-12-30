@@ -15,7 +15,7 @@ sidebar_label: GitHub Organization
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `github.com/orgs/foo` is your GitHub organization, where `foo` is the name of your org
 - `authentik.company` is the FQDN of the authentik Install

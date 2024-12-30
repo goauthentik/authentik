@@ -15,7 +15,7 @@ sidebar_label: Kimai
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `kimai.company` is the FQDN of the Kimai Install
 - `authentik.company` is the FQDN of the authentik Install

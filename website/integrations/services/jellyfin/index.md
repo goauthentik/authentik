@@ -27,7 +27,7 @@ An LDAP outpost must be deployed to use the Jellyfin LDAP plugin
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `jellyfin.company` is the FQDN of the Jellyfin install.
 - `authentik.company` is the FQDN of the authentik install.

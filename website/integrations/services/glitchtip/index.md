@@ -15,7 +15,7 @@ sidebar_label: Glitchtip
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `glitchtip.company` is the FQDN of the Glitchtip install.
 - `authentik.company` is the FQDN of the authentik install.

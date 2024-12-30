@@ -16,7 +16,7 @@ sidebar_label: Rancher
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `rancher.company` is the FQDN of the Rancher install.
 - `authentik.company` is the FQDN of the authentik install.

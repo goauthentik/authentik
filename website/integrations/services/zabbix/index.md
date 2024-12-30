@@ -17,7 +17,7 @@ sidebar_label: Zabbix
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `zabbix.company` is the FQDN of the Zabbix install.
 - `authentik.company` is the FQDN of the authentik install.
