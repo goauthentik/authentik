@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/mitchellh/mapstructure"
+	"go.uber.org/zap"
 	"goauthentik.io/internal/outpost/proxyv2/application"
 )
 
@@ -30,21 +31,21 @@ func ParseWSProvider(args map[string]interface{}) (*WSProviderMsg, error) {
 func (ps *ProxyServer) handleWSMessage(ctx context.Context, args map[string]interface{}) {
 	msg, err := ParseWSProvider(args)
 	if err != nil {
-		ps.log.WithError(err).Warning("invalid provider-specific ws message")
+		ps.log.Warn("invalid provider-specific ws message", zap.Error(err))
 		return
 	}
 	switch msg.SubType {
 	case WSProviderSubTypeLogout:
 		for _, p := range ps.apps {
-			ps.log.WithField("provider", p.Host).Debug("Logging out")
+			ps.log.Debug("Logging out", zap.String("provider", p.Host))
 			err := p.Logout(ctx, func(c application.Claims) bool {
 				return c.Sid == msg.SessionID
 			})
 			if err != nil {
-				ps.log.WithField("provider", p.Host).WithError(err).Warning("failed to logout")
+				ps.log.Warn("failed to logout", zap.String("provider", p.Host), zap.Error(err))
 			}
 		}
 	default:
-		ps.log.WithField("sub_type", msg.SubType).Warning("invalid sub_type")
+		ps.log.Warn("invalid sub_type", zap.String("sub_type", string(msg.SubType)))
 	}
 }

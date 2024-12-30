@@ -151,7 +151,6 @@ func (ps *ProxyServer) ServeHTTPS() {
 	proxyListener := &proxyproto.Listener{
 		Listener: web.TCPKeepAliveListener{
 			TCPListener: ln.(*net.TCPListener),
-			Logger:      ps.log,
 		},
 		ConnPolicy: utils.GetProxyConnectionPolicy(),
 	}

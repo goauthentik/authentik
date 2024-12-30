@@ -15,6 +15,7 @@ import (
 	"github.com/gorilla/securecookie"
 	"github.com/gorilla/sessions"
 	"github.com/redis/go-redis/v9"
+	"go.uber.org/zap"
 
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/config"
@@ -53,11 +54,11 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 				}
 				certs, err := os.ReadFile(*ca)
 				if err != nil {
-					a.log.WithError(err).Fatalf("Failed to append %s to RootCAs", *ca)
+					a.log.Fatal("Failed to append to RootCAs", zap.String("ca", *ca), zap.Error(err))
 				}
 				// Append our cert to the system pool
 				if ok := rootCAs.AppendCertsFromPEM(certs); !ok {
-					a.log.Println("No certs appended, using system certs only")
+					a.log.Info("No certs appended, using system certs only")
 				}
 				tls.RootCAs = rootCAs
 			}
@@ -86,7 +87,7 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 			Path:     "/",
 		})
 
-		a.log.Trace("using redis session backend")
+		a.log.Debug("using redis session backend", config.Trace())
 		return rs, nil
 	}
 	dir := os.TempDir()
@@ -105,7 +106,7 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 	cs.Options.SameSite = http.SameSiteLaxMode
 	cs.Options.MaxAge = maxAge
 	cs.Options.Path = "/"
-	a.log.WithField("dir", dir).Trace("using filesystem session backend")
+	a.log.Debug("using filesystem session backend", config.Trace(), zap.String("dir", dir))
 	return cs, nil
 }
 
@@ -136,7 +137,7 @@ func (a *Application) Logout(ctx context.Context, filter func(c Claims) bool) er
 			fullPath := path.Join(os.TempDir(), file.Name())
 			data, err := os.ReadFile(fullPath)
 			if err != nil {
-				a.log.WithError(err).Warning("failed to read file")
+				a.log.Warn("failed to read file", zap.Error(err))
 				continue
 			}
 			err = securecookie.DecodeMulti(
@@ -144,7 +145,7 @@ func (a *Application) Logout(ctx context.Context, filter func(c Claims) bool) er
 				&s.Values, a.getAllCodecs()...,
 			)
 			if err != nil {
-				a.log.WithError(err).Trace("failed to decode session")
+				a.log.Debug("failed to decode session", zap.Error(err), config.Trace())
 				continue
 			}
 			rc, ok := s.Values[constants.SessionClaims]
@@ -153,10 +154,10 @@ func (a *Application) Logout(ctx context.Context, filter func(c Claims) bool) er
 			}
 			claims := s.Values[constants.SessionClaims].(Claims)
 			if filter(claims) {
-				a.log.WithField("path", fullPath).Trace("deleting session")
+				a.log.Debug("deleting session", zap.String("path", fullPath), config.Trace())
 				err := os.Remove(fullPath)
 				if err != nil {
-					a.log.WithError(err).Warning("failed to delete session")
+					a.log.Warn("failed to delete session", zap.Error(err))
 					continue
 				}
 			}
@@ -172,13 +173,13 @@ func (a *Application) Logout(ctx context.Context, filter func(c Claims) bool) er
 		for _, key := range keys {
 			v, err := client.Get(ctx, key).Result()
 			if err != nil {
-				a.log.WithError(err).Warning("failed to get value")
+				a.log.Warn("failed to get value", zap.Error(err))
 				continue
 			}
 			s := sessions.Session{}
 			err = serializer.Deserialize([]byte(v), &s)
 			if err != nil {
-				a.log.WithError(err).Warning("failed to deserialize")
+				a.log.Warn("failed to deserialize", zap.Error(err))
 				continue
 			}
 			c := s.Values[constants.SessionClaims]
@@ -187,10 +188,10 @@ func (a *Application) Logout(ctx context.Context, filter func(c Claims) bool) er
 			}
 			claims := c.(Claims)
 			if filter(claims) {
-				a.log.WithField("key", key).Trace("deleting session")
+				a.log.Debug("deleting session", zap.String("key", key), config.Trace())
 				_, err := client.Del(ctx, key).Result()
 				if err != nil {
-					a.log.WithError(err).Warning("failed to delete key")
+					a.log.Warn("failed to delete key", zap.Error(err))
 					continue
 				}
 			}

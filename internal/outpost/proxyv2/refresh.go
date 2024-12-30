@@ -7,6 +7,7 @@ import (
 	"net/url"
 
 	"github.com/getsentry/sentry-go"
+	"go.uber.org/zap"
 	"goauthentik.io/internal/constants"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/proxyv2/application"
@@ -20,7 +21,7 @@ func (ps *ProxyServer) Refresh() error {
 		Logger:   ps.log,
 	})
 	if err != nil {
-		ps.log.WithError(err).Error("Failed to fetch providers")
+		ps.log.Error("Failed to fetch providers", zap.Error(err))
 	}
 	if err != nil {
 		return err
@@ -40,7 +41,7 @@ func (ps *ProxyServer) Refresh() error {
 		}
 		externalHost, err := url.Parse(provider.ExternalHost)
 		if err != nil {
-			ps.log.WithError(err).Warning("failed to parse URL, skipping provider")
+			ps.log.Warn("failed to parse URL, skipping provider", zap.Error(err))
 			continue
 		}
 		existing, ok := ps.apps[externalHost.Host]
@@ -49,7 +50,7 @@ func (ps *ProxyServer) Refresh() error {
 			existing.Stop()
 		}
 		if err != nil {
-			ps.log.WithError(err).Warning("failed to setup application")
+			ps.log.Warn("failed to setup application", zap.Error(err))
 			continue
 		}
 		apps[externalHost.Host] = a

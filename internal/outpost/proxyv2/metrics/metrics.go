@@ -3,6 +3,7 @@ package metrics
 import (
 	"net/http"
 
+	"go.uber.org/zap"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/utils/sentry"
 
@@ -32,9 +33,9 @@ func RunServer() {
 	})
 	m.Path("/metrics").Handler(promhttp.Handler())
 	listen := config.Get().Listen.Metrics
-	l.WithField("listen", listen).Info("Starting Metrics server")
+	l.Info("Starting Metrics server", zap.String("listen", listen))
 	err := http.ListenAndServe(listen, m)
 	if err != nil {
-		l.WithError(err).Warning("Failed to start metrics listener")
+		l.Warn("Failed to start metrics listener", zap.Error(err))
 	}
 }

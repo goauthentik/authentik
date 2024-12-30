@@ -5,6 +5,8 @@ import (
 
 	"beryju.io/ldap"
 	goldap "github.com/go-ldap/ldap/v3"
+	"go.uber.org/zap"
+	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/ldap/constants"
 	"goauthentik.io/internal/outpost/ldap/search"
 )
@@ -12,12 +14,12 @@ import (
 func (ls *LDAPServer) providerForRequest(req *search.Request) *ProviderInstance {
 	parsedBaseDN, err := goldap.ParseDN(strings.ToLower(req.BaseDN))
 	if err != nil {
-		req.Log().WithError(err).Info("failed to parse base DN")
+		req.Log().Info("failed to parse base DN", zap.Error(err))
 		return nil
 	}
 	parsedBindDN, err := goldap.ParseDN(strings.ToLower(req.BindDN))
 	if err != nil {
-		req.Log().WithError(err).Info("failed to parse bind DN")
+		req.Log().Info("failed to parse bind DN", zap.Error(err))
 		return nil
 	}
 	var selectedProvider *ProviderInstance
@@ -31,7 +33,7 @@ func (ls *LDAPServer) providerForRequest(req *search.Request) *ProviderInstance 
 		if baseDNMatches || bindDNMatches {
 			// Only select the provider if it's a more precise match than previously
 			if len(provider.BaseDN) > longestMatch {
-				req.Log().WithField("provider", provider.BaseDN).Trace("selecting provider for search request")
+				req.Log().Debug("selecting provider for search request", zap.String("provider", provider.BaseDN), config.Trace())
 				selectedProvider = provider
 				longestMatch = len(provider.BaseDN)
 			}
@@ -43,13 +45,13 @@ func (ls *LDAPServer) providerForRequest(req *search.Request) *ProviderInstance 
 func (ls *LDAPServer) searchRoute(req *search.Request, pi *ProviderInstance) (ldap.ServerSearchResult, error) {
 	// Route based on the base DN
 	if len(req.BaseDN) == 0 {
-		req.Log().Trace("routing to base")
+		req.Log().Debug("routing to base", config.Trace())
 		return pi.searcher.SearchBase(req)
 	}
 	if strings.EqualFold(req.BaseDN, "cn=subschema") || req.FilterObjectClass == constants.OCSubSchema {
-		req.Log().Trace("routing to subschema")
+		req.Log().Debug("routing to subschema", config.Trace())
 		return pi.searcher.SearchSubschema(req)
 	}
-	req.Log().Trace("routing to default")
+	req.Log().Debug("routing to default", config.Trace())
 	return pi.searcher.Search(req)
 }

@@ -1,6 +1,8 @@
 package config
 
 import (
+	"strings"
+
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"goauthentik.io/internal/constants"
@@ -23,6 +25,35 @@ func (c *Config) BuildLogger() *zap.Logger {
 		l = zapcore.DebugLevel
 	}
 	return c.BuildLoggerWithLevel(l)
+}
+
+type TraceFilterCore struct {
+	zapcore.Core
+}
+
+func (c *TraceFilterCore) isTrace(fields []zapcore.Field) bool {
+	for _, f := range fields {
+		if _, ok := f.Interface.(trace); ok {
+			return true
+		}
+	}
+	return false
+}
+
+func (c *TraceFilterCore) Check(entry zapcore.Entry, checked *zapcore.CheckedEntry) *zapcore.CheckedEntry {
+	if c.Enabled(entry.Level) {
+		return checked.AddCore(entry, c)
+	}
+	return checked
+}
+
+func (c *TraceFilterCore) Write(entry zapcore.Entry, fields []zapcore.Field) error {
+	if c.isTrace(fields) {
+		if !strings.EqualFold(Get().LogLevel, "trace") {
+			return nil
+		}
+	}
+	return c.Core.Write(entry, fields)
 }
 
 func (c *Config) BuildLoggerWithLevel(l zapcore.Level) *zap.Logger {
@@ -54,11 +85,14 @@ func (c *Config) BuildLoggerWithLevel(l zapcore.Level) *zap.Logger {
 	if err != nil {
 		panic(err)
 	}
-	return log.WithOptions(zap.Hooks(func(e zapcore.Entry) error {
-		return nil
-	}))
+	return zap.New(&TraceFilterCore{log.Core()})
 }
 
+type trace struct{}
+
 func Trace() zap.Field {
-	return zap.Skip()
+	return zap.Field{
+		Type:      zapcore.SkipType,
+		Interface: trace{},
+	}
 }

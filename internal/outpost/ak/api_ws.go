@@ -66,11 +66,11 @@ func (ac *APIController) initWS(akURL url.URL, outpostUUID string) error {
 	}
 	err = ws.WriteJSON(msg)
 	if err != nil {
-		ac.logger.Named("authentik.outpost.ak-ws").Warn("Failed to hello to authentik", zap.Error(err))
+		ac.logger.Named("ak-ws").Warn("Failed to hello to authentik", zap.Error(err))
 		return err
 	}
 	ac.lastWsReconnect = time.Now()
-	ac.logger.Named("authentik.outpost.ak-ws").Info("Successfully connected websocket", zap.String("outpost", outpostUUID))
+	ac.logger.Named("ak-ws").Info("Successfully connected websocket", zap.String("outpost", outpostUUID))
 	return nil
 }
 

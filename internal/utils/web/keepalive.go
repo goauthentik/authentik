@@ -13,7 +13,6 @@ import (
 // go away.
 type TCPKeepAliveListener struct {
 	*net.TCPListener
-	Logger *zap.Logger
 }
 
 func (ln TCPKeepAliveListener) Accept() (net.Conn, error) {
@@ -23,11 +22,11 @@ func (ln TCPKeepAliveListener) Accept() (net.Conn, error) {
 	}
 	err = tc.SetKeepAlive(true)
 	if err != nil {
-		ln.Logger.Warn("Error setting Keep-Alive", zap.Error(err))
+		log.Warn("Error setting Keep-Alive", zap.Error(err))
 	}
 	err = tc.SetKeepAlivePeriod(3 * time.Minute)
 	if err != nil {
-		ln.Logger.Warn("Error setting Keep-Alive period", zap.Error(err))
+		log.Warn("Error setting Keep-Alive period", zap.Error(err))
 	}
 	return tc, nil
 }

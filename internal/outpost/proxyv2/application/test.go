@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"testing"
 
+	"go.uber.org/zap"
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/ak"
 )
@@ -76,7 +77,7 @@ func (a *Application) assertState(t *testing.T, req *http.Request, response *htt
 	loc, _ := response.Result().Location()
 	q := loc.Query()
 	state := q.Get("state")
-	a.log.WithField("actual", state).Warning("actual state")
+	a.log.Warn("actual state", zap.String("actual", state))
 	// modify request to set state so we can parse it
 	nr := req.Clone(req.Context())
 	nrq := nr.URL.Query()

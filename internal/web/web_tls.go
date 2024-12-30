@@ -49,7 +49,6 @@ func (ws *WebServer) listenTLS() {
 	proxyListener := &proxyproto.Listener{
 		Listener: web.TCPKeepAliveListener{
 			TCPListener: ln.(*net.TCPListener),
-			Logger:      ws.log,
 		},
 		ConnPolicy: utils.GetProxyConnectionPolicy(),
 	}

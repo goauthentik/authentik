@@ -5,7 +5,6 @@ import (
 	"net/url"
 
 	"go.uber.org/zap"
-	"goauthentik.io/internal/config"
 )
 
 type hostInterceptor struct {
@@ -25,7 +24,7 @@ func (t hostInterceptor) RoundTrip(r *http.Request) (*http.Response, error) {
 func NewHostInterceptor(inner *http.Client, host string) *http.Client {
 	aku, err := url.Parse(host)
 	if err != nil {
-		config.Get().Logger().Warn("failed to parse host", zap.String("host", host), zap.Error(err))
+		log.Warn("failed to parse host", zap.String("host", host), zap.Error(err))
 	}
 	return &http.Client{
 		Transport: hostInterceptor{

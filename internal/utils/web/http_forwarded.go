@@ -21,7 +21,6 @@ func ProxyHeaders() func(http.Handler) http.Handler {
 		nets = append(nets, cidr)
 	}
 	ph := handlers.ProxyHeaders
-	l := config.Get().Logger()
 	return func(h http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			host, _, err := net.SplitHostPort(r.RemoteAddr)
@@ -30,7 +29,7 @@ func ProxyHeaders() func(http.Handler) http.Handler {
 				remoteAddr := net.ParseIP(host)
 				for _, allowedCidr := range nets {
 					if remoteAddr != nil && allowedCidr.Contains(remoteAddr) {
-						l.Debug("Setting proxy headers", config.Trace(), zap.String("remoteAddr", remoteAddr.String()), zap.String("cidr", allowedCidr.String()))
+						log.Debug("Setting proxy headers", config.Trace(), zap.String("remoteAddr", remoteAddr.String()), zap.String("cidr", allowedCidr.String()))
 						ph(h).ServeHTTP(w, r)
 						return
 					}

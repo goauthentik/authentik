@@ -4,6 +4,9 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+
+	"go.uber.org/zap"
+	"goauthentik.io/internal/config"
 )
 
 func urlJoin(originalUrl string, newPath string) string {
@@ -24,7 +27,7 @@ func (a *Application) redirect(rw http.ResponseWriter, r *http.Request) {
 	if state.Redirect == "" {
 		state.Redirect = fallbackRedirect
 	}
-	a.log.WithField("redirect", state.Redirect).Trace("final redirect")
+	a.log.Debug("final redirect", zap.String("redirect", state.Redirect), config.Trace())
 	http.Redirect(rw, r, state.Redirect, http.StatusFound)
 }
 
