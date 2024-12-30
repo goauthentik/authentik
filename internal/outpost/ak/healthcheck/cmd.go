@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"os"
 
-	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"go.uber.org/zap"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/utils/web"
 )
@@ -23,16 +23,17 @@ func check() int {
 	h := &http.Client{
 		Transport: web.NewUserAgentTransport("goauthentik.io/healthcheck", http.DefaultTransport),
 	}
+	l := config.Get().Logger()
 	url := fmt.Sprintf("http://%s/outpost.goauthentik.io/ping", config.Get().Listen.Metrics)
 	res, err := h.Head(url)
 	if err != nil {
-		log.WithError(err).Warning("failed to send healthcheck request")
+		l.Warn("failed to send healthcheck request", zap.Error(err))
 		return 1
 	}
 	if res.StatusCode >= 400 {
-		log.WithField("status", res.StatusCode).Warning("unhealthy status code")
+		l.Warn("unhealthy status code", zap.Int("status", res.StatusCode))
 		return 1
 	}
-	log.Debug("successfully checked health")
+	l.Debug("successfully checked health")
 	return 0
 }

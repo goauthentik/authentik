@@ -7,13 +7,13 @@ import (
 	"net/http/pprof"
 
 	"github.com/gorilla/mux"
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/utils/web"
 )
 
 func EnableDebugServer() {
-	l := log.WithField("logger", "authentik.go_debugger")
+	l := config.Get().Logger().Named("authentik.go_debugger")
 	if !config.Get().Debug {
 		l.Info("not enabling debug server, set `AUTHENTIK_DEBUG` to `true` to enable it.")
 		return
@@ -38,20 +38,20 @@ func EnableDebugServer() {
 			}
 			_, err = w.Write([]byte(fmt.Sprintf("<a href='%[1]s'>%[1]s</a><br>", tpl)))
 			if err != nil {
-				l.WithError(err).Warning("failed to write index")
+				l.Warn("failed to write index", zap.Error(err))
 				return nil
 			}
 			return nil
 		})
 	})
 	go func() {
-		l.WithField("listen", config.Get().Listen.Debug).Info("Starting Debug server")
+		l.Info("Starting Debug server", zap.String("listen", config.Get().Listen.Debug))
 		err := http.ListenAndServe(
 			config.Get().Listen.Debug,
 			web.NewLoggingHandler(l, nil)(h),
 		)
 		if l != nil {
-			l.WithError(err).Warn("failed to start debug server")
+			l.Warn("failed to start debug server", zap.Error(err))
 		}
 	}()
 }

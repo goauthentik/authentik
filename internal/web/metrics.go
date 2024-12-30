@@ -13,7 +13,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/utils/sentry"
 )
@@ -26,13 +26,13 @@ var Requests = promauto.NewHistogramVec(prometheus.HistogramOpts{
 }, []string{"dest"})
 
 func (ws *WebServer) runMetricsServer() {
-	l := log.WithField("logger", "authentik.router.metrics")
+	l := ws.log.Named("authentik.router.metrics")
 	tmp := os.TempDir()
 	key := base64.StdEncoding.EncodeToString(securecookie.GenerateRandomKey(64))
 	keyPath := path.Join(tmp, MetricsKeyFile)
 	err := os.WriteFile(keyPath, []byte(key), 0o600)
 	if err != nil {
-		l.WithError(err).Warning("failed to save metrics key")
+		l.Warn("failed to save metrics key", zap.Error(err))
 		return
 	}
 
@@ -48,29 +48,32 @@ func (ws *WebServer) runMetricsServer() {
 		// Get upstream metrics
 		re, err := http.NewRequest("GET", fmt.Sprintf("%s%s-/metrics/", ws.upstreamURL.String(), config.Get().Web.Path), nil)
 		if err != nil {
-			l.WithError(err).Warning("failed to get upstream metrics")
+			l.Warn("failed to get upstream metrics", zap.Error(err))
 			return
 		}
 		re.Header.Set("Authorization", fmt.Sprintf("Bearer %s", key))
 		res, err := ws.upstreamHttpClient().Do(re)
 		if err != nil {
-			l.WithError(err).Warning("failed to get upstream metrics")
+			l.Warn("failed to get upstream metrics", zap.Error(err))
 			return
 		}
 		_, err = io.Copy(rw, res.Body)
 		if err != nil {
-			l.WithError(err).Warning("failed to get upstream metrics")
+			l.Warn("failed to get upstream metrics", zap.Error(err))
 			return
 		}
 	})
-	l.WithField("listen", config.Get().Listen.Metrics).Info("Starting Metrics server")
+	defer func() {
+		err = os.Remove(keyPath)
+		if err != nil {
+			l.Warn("failed to remove metrics key file", zap.Error(err))
+		}
+	}()
+	l.Info("Starting Metrics server", zap.String("listen", config.Get().Listen.Metrics))
 	err = http.ListenAndServe(config.Get().Listen.Metrics, m)
 	if err != nil {
-		l.WithError(err).Warning("Failed to start metrics server")
+		l.Warn("Failed to start metrics server", zap.Error(err))
+		return
 	}
-	l.WithField("listen", config.Get().Listen.Metrics).Info("Stopping Metrics server")
-	err = os.Remove(keyPath)
-	if err != nil {
-		l.WithError(err).Warning("failed to remove metrics key file")
-	}
+	l.Info("Stopping Metrics server", zap.String("listen", config.Get().Listen.Metrics))
 }

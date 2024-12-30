@@ -14,7 +14,7 @@ import (
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/pires/go-proxyproto"
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/gounicorn"
@@ -37,7 +37,7 @@ type WebServer struct {
 	gunicornReady  bool
 	mainRouter     *mux.Router
 	loggingRouter  *mux.Router
-	log            *log.Entry
+	log            *zap.Logger
 	upstreamClient *http.Client
 	upstreamURL    *url.URL
 }
@@ -45,7 +45,7 @@ type WebServer struct {
 const UnixSocketName = "authentik-core.sock"
 
 func NewWebServer() *WebServer {
-	l := log.WithField("logger", "authentik.router")
+	l := config.Get().Logger().Named("authentik.router")
 	mainHandler := mux.NewRouter()
 	mainHandler.Use(web.ProxyHeaders())
 	mainHandler.Use(handlers.CompressHandler)
@@ -90,7 +90,7 @@ func NewWebServer() *WebServer {
 	ws.g = gounicorn.New(func() bool {
 		req, err := http.NewRequest(http.MethodGet, hcUrl, nil)
 		if err != nil {
-			ws.log.WithError(err).Warning("failed to create request for healthcheck")
+			ws.log.Warn("failed to create request for healthcheck", zap.Error(err))
 			return false
 		}
 		req.Header.Set("User-Agent", "goauthentik.io/router/healthcheck")
@@ -116,19 +116,19 @@ func (ws *WebServer) attemptStartBackend() {
 			return
 		}
 		err := ws.g.Start()
-		log.WithField("logger", "authentik.router").WithError(err).Warning("gunicorn process died, restarting")
+		ws.log.Warn("gunicorn process died, restarting", zap.Error(err))
 		if err != nil {
-			log.WithField("logger", "authentik.router").WithError(err).Error("gunicorn failed to start, restarting")
+			ws.log.Error("gunicorn failed to start, restarting", zap.Error(err))
 			continue
 		}
 		failedChecks := 0
 		for range time.NewTicker(30 * time.Second).C {
 			if !ws.g.IsRunning() {
-				log.WithField("logger", "authentik.router").Warningf("gunicorn process failed healthcheck %d times", failedChecks)
+				ws.log.Warn("gunicorn process failed healthcheck", zap.Int("times", failedChecks))
 				failedChecks += 1
 			}
 			if failedChecks >= 3 {
-				log.WithField("logger", "authentik.router").WithError(err).Error("gunicorn process failed healthcheck three times, restarting")
+				ws.log.Error("gunicorn process failed healthcheck three times, restarting", zap.Error(err))
 				break
 			}
 		}
@@ -152,15 +152,15 @@ func (ws *WebServer) Shutdown() {
 func (ws *WebServer) listenPlain() {
 	ln, err := net.Listen("tcp", config.Get().Listen.HTTP)
 	if err != nil {
-		ws.log.WithError(err).Warning("failed to listen")
+		ws.log.Warn("failed to listen", zap.Error(err))
 		return
 	}
 	proxyListener := &proxyproto.Listener{Listener: ln, ConnPolicy: utils.GetProxyConnectionPolicy()}
 	defer proxyListener.Close()
 
-	ws.log.WithField("listen", config.Get().Listen.HTTP).Info("Starting HTTP server")
+	ws.log.Info("Starting HTTP server", zap.String("listen", config.Get().Listen.HTTP))
 	ws.serve(proxyListener)
-	ws.log.WithField("listen", config.Get().Listen.HTTP).Info("Stopping HTTP server")
+	ws.log.Info("Stopping HTTP server", zap.String("listen", config.Get().Listen.HTTP))
 }
 
 func (ws *WebServer) serve(listener net.Listener) {
@@ -176,14 +176,14 @@ func (ws *WebServer) serve(listener net.Listener) {
 		// We received an interrupt signal, shut down.
 		if err := srv.Shutdown(context.Background()); err != nil {
 			// Error from closing listeners, or context timeout:
-			ws.log.WithError(err).Warning("HTTP server Shutdown")
+			ws.log.Warn("HTTP server Shutdown", zap.Error(err))
 		}
 		close(idleConnsClosed)
 	}()
 
 	err := srv.Serve(listener)
 	if err != nil && !errors.Is(err, http.ErrServerClosed) {
-		ws.log.WithError(err).Error("ERROR: http.Serve()")
+		ws.log.Error("ERROR: http.Serve()", zap.Error(err))
 	}
 	<-idleConnsClosed
 }

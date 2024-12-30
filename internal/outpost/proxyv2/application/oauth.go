@@ -5,6 +5,7 @@ import (
 	"net/url"
 	"strings"
 
+	"go.uber.org/zap"
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
 )
@@ -18,13 +19,13 @@ const (
 func (a *Application) handleAuthStart(rw http.ResponseWriter, r *http.Request, fwd string) {
 	state, err := a.createState(r, fwd)
 	if err != nil {
-		a.log.WithError(err).Warning("failed to create state")
+		a.log.Warn("failed to create state", zap.Error(err))
 		return
 	}
 	s, _ := a.sessions.Get(r, a.SessionName())
 	err = s.Save(r, rw)
 	if err != nil {
-		a.log.WithError(err).Warning("failed to save session")
+		a.log.Warn("failed to save session", zap.Error(err))
 	}
 	http.Redirect(rw, r, a.oauthConfig.AuthCodeURL(state), http.StatusFound)
 }
@@ -32,7 +33,7 @@ func (a *Application) handleAuthStart(rw http.ResponseWriter, r *http.Request, f
 func (a *Application) redirectToStart(rw http.ResponseWriter, r *http.Request) {
 	s, err := a.sessions.Get(r, a.SessionName())
 	if err != nil {
-		a.log.WithError(err).Warning("failed to decode session")
+		a.log.Warn("failed to decode session", zap.Error(err))
 	}
 	if r.Header.Get(constants.HeaderAuthorization) != "" && *a.proxyConfig.InterceptHeaderAuth {
 		rw.WriteHeader(401)
@@ -53,7 +54,7 @@ func (a *Application) redirectToStart(rw http.ResponseWriter, r *http.Request) {
 		// In forward_domain we only check that the current URL's host
 		// ends with the cookie domain (remove the leading period if set)
 		if !strings.HasSuffix(r.URL.Hostname(), dom) {
-			a.log.WithField("url", r.URL.String()).WithField("cd", dom).Warning("Invalid redirect found")
+			a.log.Warn("Invalid redirect found", zap.String("url", r.URL.String()), zap.String("cd", dom))
 			redirectUrl = a.proxyConfig.ExternalHost
 		}
 	}
@@ -61,7 +62,7 @@ func (a *Application) redirectToStart(rw http.ResponseWriter, r *http.Request) {
 		s.Values[constants.SessionRedirect] = redirectUrl
 		err = s.Save(r, rw)
 		if err != nil {
-			a.log.WithError(err).Warning("failed to save session before redirect")
+			a.log.Warn("failed to save session before redirect", zap.Error(err))
 		}
 	}
 

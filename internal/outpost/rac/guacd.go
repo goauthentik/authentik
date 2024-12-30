@@ -5,7 +5,7 @@ import (
 	"os/exec"
 	"strings"
 
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 	"goauthentik.io/internal/outpost/ak"
 )
 
@@ -19,8 +19,10 @@ func (rs *RACServer) startGuac() error {
 	guacdArgs = append(guacdArgs, "-L", rs.ac.Outpost.Config[ak.ConfigLogLevel].(string))
 	rs.guacd = exec.Command(guacdPath, guacdArgs...)
 	rs.guacd.Env = os.Environ()
-	rs.guacd.Stdout = rs.log.WithField("logger", "authentik.outpost.rac.guacd").WriterLevel(log.InfoLevel)
-	rs.guacd.Stderr = rs.log.WithField("logger", "authentik.outpost.rac.guacd").WriterLevel(log.InfoLevel)
+	sw, _ := zap.NewStdLogAt(rs.log, zap.InfoLevel)
+	ew, _ := zap.NewStdLogAt(rs.log, zap.ErrorLevel)
+	rs.guacd.Stdout = sw.Writer()
+	rs.guacd.Stderr = ew.Writer()
 	rs.log.Info("starting guacd")
 	return rs.guacd.Start()
 }

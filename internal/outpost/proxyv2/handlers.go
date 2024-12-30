@@ -8,7 +8,9 @@ import (
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"go.uber.org/zap"
 	"goauthentik.io/api/v3"
+	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/proxyv2/application"
 	"goauthentik.io/internal/outpost/proxyv2/metrics"
 	sentryutils "goauthentik.io/internal/utils/sentry"
@@ -45,7 +47,7 @@ func (ps *ProxyServer) lookupApp(r *http.Request) (*application.Application, str
 	// Try to find application by directly looking up host first (proxy, forward_auth_single)
 	a, ok := ps.apps[host]
 	if ok {
-		ps.log.WithField("host", host).WithField("app", a.ProxyConfig().Name).Trace("Found app based direct host match")
+		ps.log.Debug("Found app based direct host match", config.Trace(), zap.String("host", host), zap.String("app", a.ProxyConfig().Name))
 		return a, host
 	}
 	// For forward_auth_domain, we don't have a direct app to domain relationship
@@ -71,7 +73,7 @@ func (ps *ProxyServer) lookupApp(r *http.Request) (*application.Application, str
 		longestMatchLength = len(cd)
 		// Also for forward_auth_domain, we need to respond on the external domain
 		if app.ProxyConfig().ExternalHost == host {
-			ps.log.WithField("host", host).WithField("app", app.ProxyConfig().Name).Debug("Found app based on external_host")
+			ps.log.Debug("Found app based on external_host", zap.String("host", host), zap.String("app", app.ProxyConfig().Name))
 			return app, host
 		}
 	}
@@ -80,7 +82,7 @@ func (ps *ProxyServer) lookupApp(r *http.Request) (*application.Application, str
 	if longestMatchLength == 0 {
 		return nil, host
 	}
-	ps.log.WithField("host", host).WithField("app", longestMatch.ProxyConfig().Name).Debug("Found app based on cookie domain")
+	ps.log.Debug("Found app based on cookie domain", zap.String("host", host), zap.String("app", longestMatch.ProxyConfig().Name))
 	return longestMatch, host
 }
 
@@ -97,15 +99,15 @@ func (ps *ProxyServer) Handle(rw http.ResponseWriter, r *http.Request) {
 	if a == nil {
 		// If we only have one handler, host name switching doesn't matter
 		if len(ps.apps) == 1 {
-			ps.log.WithField("host", host).Trace("passing to single app mux")
+			ps.log.Debug("passing to single app mux", config.Trace(), zap.String("host", host))
 			for k := range ps.apps {
 				ps.apps[k].ServeHTTP(rw, r)
 				return
 			}
 		}
 
-		ps.log.WithField("headers", r.Header).Trace("tracing headers for no hostname match")
-		ps.log.WithField("host", host).Warning("no app for hostname")
+		ps.log.Debug("tracing headers for no hostname match", zap.Any("headers", r.Header), config.Trace())
+		ps.log.Warn("no app for hostname", zap.String("host", host))
 
 		rw.Header().Set("Content-Type", "application/json")
 		rw.WriteHeader(http.StatusBadRequest)
@@ -121,10 +123,10 @@ func (ps *ProxyServer) Handle(rw http.ResponseWriter, r *http.Request) {
 			Detail:  fmt.Sprintf("Check the outpost settings and make sure '%s' is included.", host),
 		})
 		if err != nil {
-			ps.log.WithError(err).Warning("Failed to write error body")
+			ps.log.Warn("Failed to write error body", zap.Error(err))
 		}
 		return
 	}
-	ps.log.WithField("host", host).Trace("passing to application mux")
+	ps.log.Debug("passing to application mux", zap.String("host", host), config.Trace())
 	a.ServeHTTP(rw, r)
 }

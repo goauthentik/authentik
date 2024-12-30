@@ -16,9 +16,10 @@ import (
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 	"github.com/prometheus/client_golang/prometheus"
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 
 	"goauthentik.io/api/v3"
+	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/constants"
 	cryptobackend "goauthentik.io/internal/crypto/backend"
 	"goauthentik.io/internal/utils/web"
@@ -38,7 +39,7 @@ type APIController struct {
 
 	token string
 
-	logger *log.Entry
+	logger *zap.Logger
 
 	reloadOffset time.Duration
 
@@ -78,7 +79,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	// create the API client, with the transport
 	apiClient := api.NewAPIClient(apiConfig)
 
-	log := log.WithField("logger", "authentik.outpost.ak-api-controller")
+	log := config.Get().Logger().Named("authentik.outpost.ak-api-controller")
 
 	// Because we don't know the outpost UUID, we simply do a list and pick the first
 	// The service account this token belongs to should only have access to a single outpost
@@ -91,7 +92,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 			break
 		}
 
-		log.WithError(err).Error("Failed to fetch outpost configuration, retrying in 3 seconds")
+		log.Error("Failed to fetch outpost configuration, retrying in 3 seconds", zap.Error(err))
 		time.Sleep(time.Second * 3)
 	}
 	if len(outposts.Results) < 1 {
@@ -99,11 +100,11 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	}
 	outpost := outposts.Results[0]
 
-	log.WithField("name", outpost.Name).Debug("Fetched outpost configuration")
+	log.Debug("Fetched outpost configuration", zap.String("name", outpost.Name))
 
 	akConfig, _, err := apiClient.RootApi.RootConfigRetrieve(context.Background()).Execute()
 	if err != nil {
-		log.WithError(err).Error("Failed to fetch global configuration")
+		log.Error("Failed to fetch global configuration", zap.Error(err))
 		return nil
 	}
 	log.Debug("Fetched global configuration")
@@ -125,7 +126,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 		wsBackoffMultiplier: 1,
 		refreshHandlers:     make([]func(), 0),
 	}
-	ac.logger.WithField("offset", ac.reloadOffset.String()).Debug("HA Reload offset")
+	ac.logger.Debug("HA Reload offset", zap.Duration("offset", ac.reloadOffset))
 	err = ac.initWS(akURL, outpost.Pk)
 	if err != nil {
 		go ac.reconnectWS()
@@ -160,7 +161,7 @@ func (a *APIController) configureRefreshSignal() {
 			<-s
 			err := a.OnRefresh()
 			if err != nil {
-				a.logger.WithError(err).Warning("failed to refresh")
+				a.logger.Warn("failed to refresh", zap.Error(err))
 			}
 		}
 	}()
@@ -181,12 +182,12 @@ func (a *APIController) OnRefresh() error {
 	// The service account this token belongs to should only have access to a single outpost
 	outposts, _, err := a.Client.OutpostsApi.OutpostsInstancesList(context.Background()).Execute()
 	if err != nil {
-		log.WithError(err).Error("Failed to fetch outpost configuration")
+		a.logger.Error("Failed to fetch outpost configuration", zap.Error(err))
 		return err
 	}
 	a.Outpost = outposts.Results[0]
 
-	a.logger.WithField("name", a.Outpost.Name).Debug("Fetched outpost configuration")
+	a.logger.Debug("Fetched outpost configuration", zap.String("name", a.Outpost.Name))
 	doGlobalSetup(a.Outpost, a.GlobalConfig)
 	err = a.Server.Refresh()
 	for _, handler := range a.refreshHandlers {

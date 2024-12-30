@@ -3,6 +3,8 @@ package ak
 import (
 	"context"
 	"time"
+
+	"go.uber.org/zap"
 )
 
 func (a *APIController) startPeriodicalTasks() {
@@ -10,7 +12,7 @@ func (a *APIController) startPeriodicalTasks() {
 	defer canc()
 	go a.Server.TimerFlowCacheExpiry(ctx)
 	for range time.Tick(time.Duration(a.GlobalConfig.CacheTimeoutFlows) * time.Second) {
-		a.logger.WithField("timer", "cache-timeout").Debug("Running periodical tasks")
+		a.logger.Debug("Running periodical tasks", zap.String("timer", "cache-timeout"))
 		a.Server.TimerFlowCacheExpiry(ctx)
 	}
 }

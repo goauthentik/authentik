@@ -7,7 +7,7 @@ import (
 	"beryju.io/ldap"
 	"github.com/getsentry/sentry-go"
 	"github.com/prometheus/client_golang/prometheus"
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 	"goauthentik.io/internal/outpost/ldap/bind"
 	"goauthentik.io/internal/outpost/ldap/metrics"
 )
@@ -22,7 +22,7 @@ func (ls *LDAPServer) Unbind(boundDN string, conn net.Conn) (ldap.LDAPResultCode
 			"type":         "unbind",
 			"app":          selectedApp,
 		}).Observe(float64(span.EndTime.Sub(span.StartTime)) / float64(time.Second))
-		req.Log().WithField("took-ms", span.EndTime.Sub(span.StartTime).Milliseconds()).Info("Unbind request")
+		req.Log().Info("Unbind request", zap.Duration("took-ms", span.EndTime.Sub(span.StartTime)))
 	}()
 
 	defer func() {
@@ -30,7 +30,7 @@ func (ls *LDAPServer) Unbind(boundDN string, conn net.Conn) (ldap.LDAPResultCode
 		if err == nil {
 			return
 		}
-		log.WithError(err.(error)).Error("recover in bind request")
+		req.Log().Error("recover in unbind request", zap.Error(err.(error)))
 		sentry.CaptureException(err.(error))
 	}()
 
@@ -40,10 +40,10 @@ func (ls *LDAPServer) Unbind(boundDN string, conn net.Conn) (ldap.LDAPResultCode
 			selectedApp = instance.GetAppSlug()
 			return instance.binder.Unbind(username, req)
 		} else {
-			req.Log().WithError(err).Debug("Username not for instance")
+			req.Log().Debug("Username not for instance", zap.Error(err))
 		}
 	}
-	req.Log().WithField("request", "unbind").Warning("No provider found for request")
+	req.Log().Warn("No provider found for request", zap.String("request", "unbind"))
 	metrics.RequestsRejected.With(prometheus.Labels{
 		"outpost_name": ls.ac.Outpost.Name,
 		"type":         "unbind",

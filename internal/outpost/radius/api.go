@@ -7,7 +7,8 @@ import (
 	"sort"
 	"strings"
 
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
+	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/ak"
 )
 
@@ -17,7 +18,7 @@ func parseCIDRs(raw string) []*net.IPNet {
 	for i, p := range parts {
 		_, ipnet, err := net.ParseCIDR(strings.TrimSpace(p))
 		if err != nil {
-			log.WithError(err).WithField("cidr", p).Error("Failed to parse CIDR")
+			config.Get().Logger().Error("Failed to parse CIDR", zap.Error(err), zap.String("cidr", p))
 			continue
 		}
 		cidrs[i] = ipnet
@@ -43,7 +44,7 @@ func (rs *RadiusServer) Refresh() error {
 	}
 	providers := make([]*ProviderInstance, len(apiProviders))
 	for idx, provider := range apiProviders {
-		logger := log.WithField("logger", "authentik.outpost.radius").WithField("provider", provider.Name)
+		logger := config.Get().Logger().Named("authentik.outpost.radius").With(zap.String("provider", provider.Name))
 		providers[idx] = &ProviderInstance{
 			SharedSecret:   []byte(provider.GetSharedSecret()),
 			ClientNetworks: parseCIDRs(provider.GetClientNetworks()),
@@ -61,6 +62,6 @@ func (rs *RadiusServer) Refresh() error {
 }
 
 func (rs *RadiusServer) StartRadiusServer() error {
-	rs.log.WithField("listen", rs.s.Addr).Info("Starting radius server")
+	rs.log.Info("Starting radius server", zap.String("listen", rs.s.Addr))
 	return rs.s.ListenAndServe()
 }

@@ -11,7 +11,7 @@ import (
 	"syscall"
 	"time"
 
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/utils"
@@ -21,7 +21,7 @@ type GoUnicorn struct {
 	Healthcheck     func() bool
 	HealthyCallback func()
 
-	log     *log.Entry
+	log     *zap.Logger
 	p       *exec.Cmd
 	pidFile string
 	started bool
@@ -30,7 +30,7 @@ type GoUnicorn struct {
 }
 
 func New(healthcheck func() bool) *GoUnicorn {
-	logger := log.WithField("logger", "authentik.router.unicorn")
+	logger := config.Get().Logger().Named("authentik.router.unicorn")
 	g := &GoUnicorn{
 		Healthcheck:     healthcheck,
 		log:             logger,
@@ -71,7 +71,7 @@ func (g *GoUnicorn) initCmd() {
 			args = append(args, "--pid", g.pidFile)
 		}
 	}
-	g.log.WithField("args", args).WithField("cmd", command).Debug("Starting gunicorn")
+	g.log.Debug("Starting gunicorn", zap.Strings("args", args), zap.String("cmd", command))
 	g.p = exec.Command(command, args...)
 	g.p.Env = os.Environ()
 	g.p.Stdout = os.Stdout
@@ -108,23 +108,23 @@ func (g *GoUnicorn) healthcheck() {
 }
 
 func (g *GoUnicorn) Reload() {
-	g.log.WithField("method", "reload").Info("reloading gunicorn")
+	g.log.Info("reloading gunicorn", zap.String("method", "reload"))
 	err := g.p.Process.Signal(syscall.SIGHUP)
 	if err != nil {
-		g.log.WithError(err).Warning("failed to reload gunicorn")
+		g.log.Warn("failed to reload gunicorn", zap.Error(err))
 	}
 }
 
 func (g *GoUnicorn) Restart() {
-	g.log.WithField("method", "restart").Info("restart gunicorn")
+	g.log.Info("restart gunicorn", zap.String("method", "restart"))
 	if g.pidFile == "" {
-		g.log.Warning("pidfile is non existent, cannot restart")
+		g.log.Warn("pidfile is non existent, cannot restart")
 		return
 	}
 
 	err := g.p.Process.Signal(syscall.SIGUSR2)
 	if err != nil {
-		g.log.WithError(err).Warning("failed to restart gunicorn")
+		g.log.Warn("failed to restart gunicorn", zap.Error(err))
 		return
 	}
 
@@ -136,37 +136,37 @@ func (g *GoUnicorn) Restart() {
 		if err == nil || !os.IsNotExist(err) {
 			break
 		}
-		g.log.Debugf("waiting for new gunicorn pidfile to appear at %s", newPidFile)
+		g.log.Debug("waiting for new gunicorn pidfile to appear", zap.String("path", newPidFile))
 	}
 	if err != nil {
-		g.log.WithError(err).Warning("failed to find the new gunicorn process, aborting")
+		g.log.Warn("failed to find the new gunicorn process, aborting", zap.Error(err))
 		return
 	}
 
 	newPidB, err := os.ReadFile(newPidFile)
 	if err != nil {
-		g.log.WithError(err).Warning("failed to find the new gunicorn process, aborting")
+		g.log.Warn("failed to find the new gunicorn process, aborting", zap.Error(err))
 		return
 	}
 	newPidS := strings.TrimSpace(string(newPidB[:]))
 	newPid, err := strconv.Atoi(newPidS)
 	if err != nil {
-		g.log.WithError(err).Warning("failed to find the new gunicorn process, aborting")
+		g.log.Warn("failed to find the new gunicorn process, aborting", zap.Error(err))
 		return
 	}
-	g.log.Warningf("new gunicorn PID is %d", newPid)
+	g.log.Warn("new gunicorn PID", zap.Int("pid", newPid))
 
 	newProcess, err := utils.FindProcess(newPid)
 	if newProcess == nil || err != nil {
-		g.log.WithError(err).Warning("failed to find the new gunicorn process, aborting")
+		g.log.Warn("failed to find the new gunicorn process, aborting", zap.Error(err))
 		return
 	}
 
 	// The new process has started, let's gracefully kill the old one
-	g.log.Warning("killing old gunicorn")
+	g.log.Warn("killing old gunicorn")
 	err = g.p.Process.Signal(syscall.SIGTERM)
 	if err != nil {
-		g.log.Warning("failed to kill old instance of gunicorn")
+		g.log.Warn("failed to kill old instance of gunicorn")
 	}
 
 	g.p.Process = newProcess
@@ -179,19 +179,19 @@ func (g *GoUnicorn) Kill() {
 	}
 	var err error
 	if runtime.GOOS == "darwin" {
-		g.log.WithField("method", "kill").Warning("stopping gunicorn")
+		g.log.Warn("stopping gunicorn", zap.String("method", "kill"))
 		err = g.p.Process.Kill()
 	} else {
-		g.log.WithField("method", "sigterm").Warning("stopping gunicorn")
+		g.log.Warn("stopping gunicorn", zap.String("method", "sigterm"))
 		err = syscall.Kill(g.p.Process.Pid, syscall.SIGTERM)
 	}
 	if err != nil {
-		g.log.WithError(err).Warning("failed to stop gunicorn")
+		g.log.Warn("failed to stop gunicorn", zap.Error(err))
 	}
 	if g.pidFile != "" {
 		err := os.Remove(g.pidFile)
 		if err != nil {
-			g.log.WithError(err).Warning("failed to remove pidfile")
+			g.log.Warn("failed to remove pidfile", zap.Error(err))
 		}
 	}
 	g.killed = true

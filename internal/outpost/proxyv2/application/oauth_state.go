@@ -11,6 +11,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/gorilla/securecookie"
 	"github.com/mitchellh/mapstructure"
+	"go.uber.org/zap"
 	"goauthentik.io/api/v3"
 )
 
@@ -41,7 +42,7 @@ func (a *Application) checkRedirectParam(r *http.Request) (string, bool) {
 	}
 	u, err := url.Parse(rd)
 	if err != nil {
-		a.log.WithError(err).Warning("Failed to parse redirect URL")
+		a.log.Warn("Failed to parse redirect URL", zap.Error(err))
 		return "", false
 	}
 	// Check to make sure we only redirect to allowed places
@@ -56,12 +57,12 @@ func (a *Application) checkRedirectParam(r *http.Request) (string, bool) {
 			u.Scheme = ext.Scheme
 		}
 		if u.Host != ext.Host {
-			a.log.WithField("url", u.String()).WithField("ext", ext.String()).Warning("redirect URI did not contain external host")
+			a.log.Warn("redirect URI did not contain external host", zap.String("url", u.String()), zap.String("ext", ext.String()))
 			return "", false
 		}
 	} else {
 		if !strings.HasSuffix(u.Host, *a.proxyConfig.CookieDomain) {
-			a.log.WithField("host", u.Host).WithField("dom", *a.proxyConfig.CookieDomain).Warning("redirect URI Host was not included in cookie domain")
+			a.log.Warn("redirect URI Host was not included in cookie domain", zap.String("host", u.Host), zap.String("dom", *a.proxyConfig.CookieDomain))
 			return "", false
 		}
 	}
@@ -98,27 +99,27 @@ func (a *Application) stateFromRequest(r *http.Request) *OAuthState {
 		return []byte(a.proxyConfig.GetCookieSecret()), nil
 	})
 	if err != nil {
-		a.log.WithError(err).Warning("failed to parse state jwt")
+		a.log.Warn("failed to parse state jwt", zap.Error(err))
 		return nil
 	}
 	iss, err := token.Claims.GetIssuer()
 	if err != nil {
-		a.log.WithError(err).Warning("state jwt without issuer")
+		a.log.Warn("state jwt without issuer", zap.Error(err))
 		return nil
 	}
 	if iss != fmt.Sprintf("goauthentik.io/outpost/%s", a.proxyConfig.GetClientId()) {
-		a.log.WithField("issuer", iss).Warning("invalid state jwt issuer")
+		a.log.Warn("invalid state jwt issuer", zap.String("issuer", iss))
 		return nil
 	}
 	claims := &OAuthState{}
 	err = mapstructure.Decode(token.Claims, &claims)
 	if err != nil {
-		a.log.WithError(err).Warning("failed to mapdecode")
+		a.log.Warn("failed to mapdecode", zap.Error(err))
 		return nil
 	}
 	s, _ := a.sessions.Get(r, a.SessionName())
 	if claims.SessionID != s.ID {
-		a.log.WithField("is", claims.SessionID).WithField("should", s.ID).Warning("mismatched session ID")
+		a.log.Warn("mismatched session ID", zap.String("is", claims.SessionID), zap.String("should", s.ID))
 		return nil
 	}
 	return claims

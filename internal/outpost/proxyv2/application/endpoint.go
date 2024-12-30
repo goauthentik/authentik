@@ -3,7 +3,6 @@ package application
 import (
 	"net/url"
 
-	log "github.com/sirupsen/logrus"
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/config"
 	"golang.org/x/oauth2"
@@ -60,7 +59,7 @@ func GetOIDCEndpoint(p api.ProxyOutpostConfig, authentikHost string, embedded bo
 	var newBrowserHost *url.URL
 	if embedded {
 		if authentikHost == "" {
-			log.Warning("Outpost has localhost/blank API Connection but no authentik_host is configured.")
+			config.Get().Logger().Warn("Outpost has localhost/blank API Connection but no authentik_host is configured.")
 			return ep
 		}
 		newBrowserHost = aku

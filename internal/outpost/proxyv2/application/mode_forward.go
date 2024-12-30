@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"strings"
 
+	"go.uber.org/zap"
+	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
 )
 
@@ -24,7 +26,7 @@ func (a *Application) configureForward() error {
 }
 
 func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Request) {
-	a.log.WithField("header", r.Header).Trace("tracing headers for debug")
+	a.log.Debug("tracing headers for debug", zap.Any("header", r.Header), config.Trace())
 	// First check if we've got everything we need
 	fwd, err := a.getTraefikForwardUrl(r)
 	if err != nil {
@@ -53,10 +55,10 @@ func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Reque
 	if claims != nil && err == nil {
 		a.addHeaders(rw.Header(), claims)
 		rw.Header().Set("User-Agent", r.Header.Get("User-Agent"))
-		a.log.WithField("headers", rw.Header()).Trace("headers written to forward_auth")
+		a.log.Debug("headers written to forward_auth", zap.Any("headers", rw.Header()), config.Trace())
 		return
 	} else if claims == nil && a.IsAllowlisted(fwd) {
-		a.log.Trace("path can be accessed without authentication")
+		a.log.Debug("path can be accessed without authentication", config.Trace())
 		return
 	}
 	// set the redirect flag to the current URL we have, since we redirect
@@ -67,7 +69,7 @@ func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Reque
 }
 
 func (a *Application) forwardHandleCaddy(rw http.ResponseWriter, r *http.Request) {
-	a.log.WithField("header", r.Header).Trace("tracing headers for debug")
+	a.log.Debug("tracing headers for debug", zap.Any("header", r.Header), config.Trace())
 	// First check if we've got everything we need
 	fwd, err := a.getTraefikForwardUrl(r)
 	if err != nil {
@@ -96,10 +98,10 @@ func (a *Application) forwardHandleCaddy(rw http.ResponseWriter, r *http.Request
 	if claims != nil && err == nil {
 		a.addHeaders(rw.Header(), claims)
 		rw.Header().Set("User-Agent", r.Header.Get("User-Agent"))
-		a.log.WithField("headers", rw.Header()).Trace("headers written to forward_auth")
+		a.log.Debug("headers written to forward_auth", zap.Any("headers", rw.Header()), config.Trace())
 		return
 	} else if claims == nil && a.IsAllowlisted(fwd) {
-		a.log.Trace("path can be accessed without authentication")
+		a.log.Debug("path can be accessed without authentication", config.Trace())
 		return
 	}
 	// set the redirect flag to the current URL we have, since we redirect
@@ -110,7 +112,7 @@ func (a *Application) forwardHandleCaddy(rw http.ResponseWriter, r *http.Request
 }
 
 func (a *Application) forwardHandleNginx(rw http.ResponseWriter, r *http.Request) {
-	a.log.WithField("header", r.Header).Trace("tracing headers for debug")
+	a.log.Debug("tracing headers for debug", zap.Any("header", r.Header), config.Trace())
 	fwd, err := a.getNginxForwardUrl(r)
 	if err != nil {
 		a.ReportMisconfiguration(r, fmt.Sprintf("Outpost %s (Provider %s) failed to detect a forward URL from nginx", a.outpostName, a.proxyConfig.Name), map[string]interface{}{
@@ -128,10 +130,10 @@ func (a *Application) forwardHandleNginx(rw http.ResponseWriter, r *http.Request
 		a.addHeaders(rw.Header(), claims)
 		rw.Header().Set("User-Agent", r.Header.Get("User-Agent"))
 		rw.WriteHeader(200)
-		a.log.WithField("headers", rw.Header()).Trace("headers written to forward_auth")
+		a.log.Debug("headers written to forward_auth", zap.Any("headers", rw.Header()), config.Trace())
 		return
 	} else if claims == nil && a.IsAllowlisted(fwd) {
-		a.log.Trace("path can be accessed without authentication")
+		a.log.Debug("path can be accessed without authentication", config.Trace())
 		return
 	}
 
@@ -140,13 +142,13 @@ func (a *Application) forwardHandleNginx(rw http.ResponseWriter, r *http.Request
 		s.Values[constants.SessionRedirect] = fwd.String()
 		err = s.Save(r, rw)
 		if err != nil {
-			a.log.WithError(err).Warning("failed to save session before redirect")
+			a.log.Warn("failed to save session before redirect", zap.Error(err))
 		}
 	}
 
 	if fwd.String() != r.URL.String() {
 		if strings.HasPrefix(fwd.Path, "/outpost.goauthentik.io") {
-			a.log.WithField("url", r.URL.String()).Trace("path begins with /outpost.goauthentik.io, allowing access")
+			a.log.Debug("path begins with /outpost.goauthentik.io, allowing access", zap.String("url", r.URL.String()), config.Trace())
 			return
 		}
 	}
@@ -154,7 +156,7 @@ func (a *Application) forwardHandleNginx(rw http.ResponseWriter, r *http.Request
 }
 
 func (a *Application) forwardHandleEnvoy(rw http.ResponseWriter, r *http.Request) {
-	a.log.WithField("header", r.Header).Trace("tracing headers for debug")
+	a.log.Debug("tracing headers for debug", zap.Any("header", r.Header), config.Trace())
 	r.URL.Path = strings.TrimPrefix(r.URL.Path, envoyPrefix)
 	r.URL.Host = r.Host
 	fwd := r.URL
@@ -163,10 +165,10 @@ func (a *Application) forwardHandleEnvoy(rw http.ResponseWriter, r *http.Request
 	if claims != nil && err == nil {
 		a.addHeaders(rw.Header(), claims)
 		rw.Header().Set("User-Agent", r.Header.Get("User-Agent"))
-		a.log.WithField("headers", rw.Header()).Trace("headers written to forward_auth")
+		a.log.Debug("headers written to forward_auth", config.Trace(), zap.Any("headers", rw.Header()))
 		return
 	} else if claims == nil && a.IsAllowlisted(fwd) {
-		a.log.Trace("path can be accessed without authentication")
+		a.log.Debug("path can be accessed without authentication", config.Trace())
 		return
 	}
 	// set the redirect flag to the current URL we have, since we redirect

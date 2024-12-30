@@ -3,6 +3,7 @@ package constants
 import (
 	"fmt"
 	"os"
+	"strings"
 )
 
 func BUILD(def string) string {
@@ -30,3 +31,7 @@ func UserAgent() string {
 }
 
 const VERSION = "2024.12.1"
+
+func CI() bool {
+	return strings.EqualFold(os.Getenv("CI"), "true")
+}

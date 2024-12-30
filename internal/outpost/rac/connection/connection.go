@@ -10,8 +10,8 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
-	log "github.com/sirupsen/logrus"
 	"github.com/wwt/guac"
+	"go.uber.org/zap"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/constants"
 	"goauthentik.io/internal/outpost/ak"
@@ -20,7 +20,7 @@ import (
 const guacAddr = "0.0.0.0:4822"
 
 type Connection struct {
-	log       *log.Entry
+	log       *zap.Logger
 	st        *guac.SimpleTunnel
 	ac        *ak.APIController
 	ws        *websocket.Conn
@@ -34,7 +34,7 @@ func NewConnection(ac *ak.APIController, forChannel string, cfg *guac.Config) (*
 	ctx, canc := context.WithCancel(context.Background())
 	c := &Connection{
 		ac:        ac,
-		log:       log.WithField("connection", forChannel),
+		log:       config.Get().Logger().With(zap.String("connection", forChannel)),
 		ctx:       ctx,
 		ctxCancel: canc,
 		OnError:   func(err error) {},
@@ -75,7 +75,7 @@ func (c *Connection) initSocket(forChannel string) error {
 	url := fmt.Sprintf(pathTemplate, scheme, c.ac.Client.GetConfig().Host, forChannel)
 	ws, _, err := dialer.Dial(url, header)
 	if err != nil {
-		c.log.WithError(err).Warning("failed to connect websocket")
+		c.log.Warn("failed to connect websocket", zap.Error(err))
 		return err
 	}
 	c.ws = ws
@@ -116,9 +116,9 @@ func (c *Connection) onError(err error) {
 	c.closing = true
 	e := c.st.Close()
 	if e != nil {
-		c.log.WithError(e).Warning("failed to close guacd connection")
+		c.log.Warn("failed to close guacd connection", zap.Error(err))
 	}
-	c.log.WithError(err).Info("removing connection")
+	c.log.Info("removing connection")
 	c.ctxCancel()
 	c.OnError(err)
 }

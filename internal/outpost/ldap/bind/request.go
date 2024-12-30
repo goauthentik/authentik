@@ -7,7 +7,8 @@ import (
 
 	"github.com/getsentry/sentry-go"
 	"github.com/google/uuid"
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
+	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/utils"
 )
 
@@ -16,7 +17,7 @@ type Request struct {
 	BindPW string
 	id     string
 	conn   net.Conn
-	log    *log.Entry
+	log    *zap.Logger
 	ctx    context.Context
 }
 
@@ -41,9 +42,12 @@ func NewRequest(bindDN string, bindPW string, conn net.Conn) (*Request, *sentry.
 		BindDN: bindDN,
 		BindPW: bindPW,
 		conn:   conn,
-		log:    log.WithField("bindDN", bindDN).WithField("requestId", rid).WithField("client", utils.GetIP(conn.RemoteAddr())),
-		id:     rid,
-		ctx:    span.Context(),
+		log: config.Get().Logger().With(
+			zap.String("bindDN", bindDN),
+			zap.String("requestId", rid),
+			zap.String("client", utils.GetIP(conn.RemoteAddr()))),
+		id:  rid,
+		ctx: span.Context(),
 	}, span
 }
 
@@ -51,7 +55,7 @@ func (r *Request) Context() context.Context {
 	return r.ctx
 }
 
-func (r *Request) Log() *log.Entry {
+func (r *Request) Log() *zap.Logger {
 	return r.log
 }
 

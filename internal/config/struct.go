@@ -1,6 +1,10 @@
 package config
 
+import "go.uber.org/zap"
+
 type Config struct {
+	log *zap.Logger
+
 	// Core specific config
 	Storage        StorageConfig        `yaml:"storage"`
 	LogLevel       string               `yaml:"log_level" env:"AUTHENTIK_LOG_LEVEL, overwrite"`

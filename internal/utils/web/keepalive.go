@@ -4,7 +4,7 @@ import (
 	"net"
 	"time"
 
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 )
 
 // tcpKeepAliveListener sets TCP keep-alive timeouts on accepted
@@ -22,11 +22,11 @@ func (ln TCPKeepAliveListener) Accept() (net.Conn, error) {
 	}
 	err = tc.SetKeepAlive(true)
 	if err != nil {
-		log.WithError(err).Warning("Error setting Keep-Alive")
+		log.Warn("Error setting Keep-Alive", zap.Error(err))
 	}
 	err = tc.SetKeepAlivePeriod(3 * time.Minute)
 	if err != nil {
-		log.WithError(err).Warning("Error setting Keep-Alive period")
+		log.Warn("Error setting Keep-Alive period", zap.Error(err))
 	}
 	return tc, nil
 }

@@ -8,8 +8,8 @@ import (
 	"testing"
 
 	"github.com/gorilla/securecookie"
-	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/zap"
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/flow"
 )
@@ -19,7 +19,7 @@ func testSecret() string {
 }
 
 func TestFlowExecutor_SetSecrets_Plain(t *testing.T) {
-	fe := flow.NewFlowExecutor(context.TODO(), "", api.NewConfiguration(), logrus.Fields{})
+	fe := flow.NewFlowExecutor(context.TODO(), "", api.NewConfiguration(), []zap.Field{})
 	pw := testSecret()
 	fe.SetSecrets(pw, false)
 	assert.Equal(t, pw, fe.Answers[flow.StagePassword])
@@ -27,7 +27,7 @@ func TestFlowExecutor_SetSecrets_Plain(t *testing.T) {
 }
 
 func TestFlowExecutor_SetSecrets_TOTP_6(t *testing.T) {
-	fe := flow.NewFlowExecutor(context.TODO(), "", api.NewConfiguration(), logrus.Fields{})
+	fe := flow.NewFlowExecutor(context.TODO(), "", api.NewConfiguration(), []zap.Field{})
 	pw := testSecret()
 	totp := 123456
 	formatted := fmt.Sprintf("%s%s%d", pw, flow.CodePasswordSeparator, totp)
@@ -37,7 +37,7 @@ func TestFlowExecutor_SetSecrets_TOTP_6(t *testing.T) {
 }
 
 func TestFlowExecutor_SetSecrets_TOTP_8(t *testing.T) {
-	fe := flow.NewFlowExecutor(context.TODO(), "", api.NewConfiguration(), logrus.Fields{})
+	fe := flow.NewFlowExecutor(context.TODO(), "", api.NewConfiguration(), []zap.Field{})
 	pw := testSecret()
 	totp := 12345678
 	formatted := fmt.Sprintf("%s%s%d", pw, flow.CodePasswordSeparator, totp)
@@ -47,7 +47,7 @@ func TestFlowExecutor_SetSecrets_TOTP_8(t *testing.T) {
 }
 
 func TestFlowExecutor_SetSecrets_TOTP_TooLong(t *testing.T) {
-	fe := flow.NewFlowExecutor(context.TODO(), "", api.NewConfiguration(), logrus.Fields{})
+	fe := flow.NewFlowExecutor(context.TODO(), "", api.NewConfiguration(), []zap.Field{})
 	pw := testSecret()
 	totp := 1234567890
 	formatted := fmt.Sprintf("%s%s%d", pw, flow.CodePasswordSeparator, totp)
@@ -57,7 +57,7 @@ func TestFlowExecutor_SetSecrets_TOTP_TooLong(t *testing.T) {
 }
 
 func TestFlowExecutor_SetSecrets_TOTP_NoCode(t *testing.T) {
-	fe := flow.NewFlowExecutor(context.TODO(), "", api.NewConfiguration(), logrus.Fields{})
+	fe := flow.NewFlowExecutor(context.TODO(), "", api.NewConfiguration(), []zap.Field{})
 	pw := testSecret()
 	fe.SetSecrets(pw, true)
 	assert.Equal(t, pw, fe.Answers[flow.StagePassword])

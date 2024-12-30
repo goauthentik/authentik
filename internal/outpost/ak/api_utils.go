@@ -4,7 +4,7 @@ import (
 	"errors"
 	"net/http"
 
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 	"goauthentik.io/api/v3"
 )
 
@@ -26,7 +26,7 @@ type PaginatorResponse[Tobj any] interface {
 // Paginator options for page size
 type PaginatorOptions struct {
 	PageSize int
-	Logger   *log.Entry
+	Logger   *zap.Logger
 }
 
 // Automatically fetch all objects from an API endpoint using the pagination
@@ -41,7 +41,7 @@ func Paginator[Tobj any, Treq any, Tres PaginatorResponse[Tobj]](
 		cfreq = bfreq.(PaginatorRequest[Treq, Tres]).PageSize(int32(opts.PageSize))
 		res, _, err := cfreq.(PaginatorRequest[Treq, Tres]).Execute()
 		if err != nil {
-			opts.Logger.WithError(err).WithField("page", page).Warning("failed to fetch page")
+			opts.Logger.Warn("failed to fetch page", zap.Error(err), zap.Int32("page", page))
 		}
 		return res, err
 	}

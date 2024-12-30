@@ -12,7 +12,7 @@ import (
 	"strings"
 
 	env "github.com/sethvargo/go-envconfig"
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 	"gopkg.in/yaml.v2"
 
 	"goauthentik.io/authentik/lib"
@@ -69,24 +69,25 @@ func Get() *Config {
 }
 
 func (c *Config) Setup(paths ...string) {
+	c.log = c.BuildLogger()
 	// initially try to load the default config which is compiled in
 	err := c.LoadConfig(lib.DefaultConfig())
 	// this should never fail
 	if err != nil {
 		panic(fmt.Errorf("failed to load inbuilt config: %v", err))
 	}
-	log.WithField("path", "inbuilt-default").Debug("Loaded config")
+	c.log.Debug("Loaded config", zap.String("path", "inbuilt-default"))
 	for _, path := range paths {
 		err := c.LoadConfigFromFile(path)
 		if err != nil {
-			log.WithError(err).Info("failed to load config, skipping")
+			c.log.Info("failed to load config, skipping", zap.Error(err))
 		}
 	}
 	err = c.fromEnv()
 	if err != nil {
-		log.WithError(err).Info("failed to load env vars")
+		c.log.Info("failed to load env vars", zap.Error(err))
 	}
-	c.configureLogger()
+	c.log = c.BuildLogger()
 }
 
 func (c *Config) LoadConfig(raw []byte) error {
@@ -110,7 +111,7 @@ func (c *Config) LoadConfigFromFile(path string) error {
 	if err != nil {
 		return err
 	}
-	log.WithField("path", path).Debug("Loaded config")
+	c.log.Debug("Loaded config", zap.String("path", path))
 	return nil
 }
 
@@ -121,7 +122,7 @@ func (c *Config) fromEnv() error {
 		return fmt.Errorf("failed to load environment variables: %w", err)
 	}
 	c.walkScheme(c)
-	log.Debug("Loaded config from environment")
+	c.log.Debug("Loaded config from environment")
 	return nil
 }
 
@@ -176,32 +177,4 @@ func (c *Config) parseScheme(rawVal string) string {
 		return strings.TrimSpace(string(d))
 	}
 	return rawVal
-}
-
-func (c *Config) configureLogger() {
-	switch strings.ToLower(c.LogLevel) {
-	case "trace":
-		log.SetLevel(log.TraceLevel)
-	case "debug":
-		log.SetLevel(log.DebugLevel)
-	case "info":
-		log.SetLevel(log.InfoLevel)
-	case "warning":
-		log.SetLevel(log.WarnLevel)
-	case "error":
-		log.SetLevel(log.ErrorLevel)
-	default:
-		log.SetLevel(log.DebugLevel)
-	}
-
-	fm := log.FieldMap{
-		log.FieldKeyMsg:  "event",
-		log.FieldKeyTime: "timestamp",
-	}
-
-	if c.Debug {
-		log.SetFormatter(&log.TextFormatter{FieldMap: fm})
-	} else {
-		log.SetFormatter(&log.JSONFormatter{FieldMap: fm, DisableHTMLEscape: true})
-	}
 }

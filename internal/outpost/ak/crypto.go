@@ -4,14 +4,15 @@ import (
 	"context"
 	"crypto/tls"
 
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 	"goauthentik.io/api/v3"
+	"goauthentik.io/internal/config"
 )
 
 type CryptoStore struct {
 	api *api.CryptoApiService
 
-	log *log.Entry
+	log *zap.Logger
 
 	fingerprints map[string]string
 	certificates map[string]*tls.Certificate
@@ -20,7 +21,7 @@ type CryptoStore struct {
 func NewCryptoStore(cryptoApi *api.CryptoApiService) *CryptoStore {
 	return &CryptoStore{
 		api:          cryptoApi,
-		log:          log.WithField("logger", "authentik.outpost.cryptostore"),
+		log:          config.Get().Logger().Named("authentik.outpost.cryptostore"),
 		fingerprints: make(map[string]string),
 		certificates: make(map[string]*tls.Certificate),
 	}
@@ -44,7 +45,7 @@ func (cs *CryptoStore) AddKeypair(uuid string) error {
 func (cs *CryptoStore) getFingerprint(uuid string) string {
 	kp, _, err := cs.api.CryptoCertificatekeypairsRetrieve(context.Background(), uuid).Execute()
 	if err != nil {
-		cs.log.WithField("uuid", uuid).WithError(err).Warning("Failed to fetch certificate's fingerprint")
+		cs.log.Warn("Failed to fetch certificate's fingerprint", zap.String("uuid", uuid), zap.Error(err))
 		return ""
 	}
 	return kp.GetFingerprintSha256()
@@ -53,10 +54,10 @@ func (cs *CryptoStore) getFingerprint(uuid string) string {
 func (cs *CryptoStore) Fetch(uuid string) error {
 	cfp := cs.getFingerprint(uuid)
 	if cfp == cs.fingerprints[uuid] {
-		cs.log.WithField("uuid", uuid).Debug("Fingerprint hasn't changed, not fetching cert")
+		cs.log.Debug("Fingerprint hasn't changed, not fetching cert", zap.String("uuid", uuid))
 		return nil
 	}
-	cs.log.WithField("uuid", uuid).Info("Fetching certificate and private key")
+	cs.log.Info("Fetching certificate and private key", zap.String("uuid", uuid))
 
 	cert, _, err := cs.api.CryptoCertificatekeypairsViewCertificateRetrieve(context.Background(), uuid).Execute()
 	if err != nil {
@@ -79,7 +80,7 @@ func (cs *CryptoStore) Fetch(uuid string) error {
 func (cs *CryptoStore) Get(uuid string) *tls.Certificate {
 	err := cs.Fetch(uuid)
 	if err != nil {
-		cs.log.WithError(err).Warning("failed to fetch certificate")
+		cs.log.Warn("failed to fetch certificate", zap.Error(err))
 	}
 	return cs.certificates[uuid]
 }

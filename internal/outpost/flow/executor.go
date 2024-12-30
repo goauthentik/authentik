@@ -13,8 +13,9 @@ import (
 	"github.com/getsentry/sentry-go"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 	"goauthentik.io/api/v3"
+	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/constants"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/utils/web"
@@ -43,7 +44,7 @@ type FlowExecutor struct {
 	cip       string
 	api       *api.APIClient
 	flowSlug  string
-	log       *log.Entry
+	log       *zap.Logger
 	token     string
 	session   *http.Cookie
 	transport http.RoundTripper
@@ -51,14 +52,15 @@ type FlowExecutor struct {
 	sp *sentry.Span
 }
 
-func NewFlowExecutor(ctx context.Context, flowSlug string, refConfig *api.Configuration, logFields log.Fields) *FlowExecutor {
+func NewFlowExecutor(ctx context.Context, flowSlug string, refConfig *api.Configuration, logFields []zap.Field) *FlowExecutor {
 	rsp := sentry.StartSpan(ctx, "authentik.outposts.flow_executor")
 	rsp.Description = flowSlug
 
-	l := log.WithField("flow", flowSlug).WithFields(logFields)
+	logFields = append(logFields, zap.String("flow", flowSlug))
+	l := config.Get().Logger().With(logFields...)
 	jar, err := cookiejar.New(nil)
 	if err != nil {
-		l.WithError(err).Warning("Failed to create cookiejar")
+		l.Warn("Failed to create cookiejar", zap.Error(err))
 		panic(err)
 	}
 	transport := web.NewUserAgentTransport(constants.OutpostUserAgent(), web.NewTracingTransport(rsp.Context(), ak.GetTLSTransport()))
@@ -166,7 +168,7 @@ func (fe *FlowExecutor) getInitialChallenge() (*api.ChallengeTypes, error) {
 		return nil, errors.New("response instance was null")
 	}
 	ch := i.(challengeCommon)
-	fe.log.WithField("component", ch.GetComponent()).Debug("Got challenge")
+	fe.log.Debug("Got challenge", zap.String("component", ch.GetComponent()))
 	gcsp.SetTag("authentik.flow.component", ch.GetComponent())
 	gcsp.Finish()
 	FlowTimingGet.With(prometheus.Labels{
@@ -221,7 +223,7 @@ func (fe *FlowExecutor) solveFlowChallenge(challenge *api.ChallengeTypes, depth 
 		return false, errors.New("response instance was null")
 	}
 	ch = i.(challengeCommon)
-	fe.log.WithField("component", ch.GetComponent()).Debug("Got response")
+	fe.log.Debug("Got response", zap.String("component", ch.GetComponent()))
 	scsp.SetTag("authentik.flow.component", ch.GetComponent())
 	scsp.Finish()
 	FlowTimingPost.With(prometheus.Labels{

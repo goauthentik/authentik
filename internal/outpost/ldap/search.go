@@ -7,7 +7,8 @@ import (
 	"beryju.io/ldap"
 	"github.com/getsentry/sentry-go"
 	"github.com/prometheus/client_golang/prometheus"
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
+	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/ldap/constants"
 	"goauthentik.io/internal/outpost/ldap/metrics"
 	"goauthentik.io/internal/outpost/ldap/search"
@@ -23,7 +24,7 @@ func (ls *LDAPServer) Search(bindDN string, searchReq ldap.SearchRequest, conn n
 			"type":         "search",
 			"app":          selectedApp,
 		}).Observe(float64(span.EndTime.Sub(span.StartTime)) / float64(time.Second))
-		req.Log().WithField("attributes", searchReq.Attributes).WithField("took-ms", span.EndTime.Sub(span.StartTime).Milliseconds()).Info("Search request")
+		req.Log().Info("Search request", zap.Any("attributes", searchReq.Attributes), zap.Duration("took-ms", span.EndTime.Sub(span.StartTime)))
 	}()
 
 	defer func() {
@@ -31,7 +32,7 @@ func (ls *LDAPServer) Search(bindDN string, searchReq ldap.SearchRequest, conn n
 		if err == nil {
 			return
 		}
-		log.WithError(err.(error)).Error("recover in search request")
+		req.Log().Error("recover in search request", zap.Error(err.(error)))
 		sentry.CaptureException(err.(error))
 	}()
 
@@ -45,7 +46,7 @@ func (ls *LDAPServer) Search(bindDN string, searchReq ldap.SearchRequest, conn n
 }
 
 func (ls *LDAPServer) fallbackRootDSE(req *search.Request) (ldap.ServerSearchResult, error) {
-	req.Log().Trace("returning fallback Root DSE")
+	req.Log().Debug("returning fallback Root DSE", config.Trace())
 	return ldap.ServerSearchResult{
 		Entries: []*ldap.Entry{
 			{

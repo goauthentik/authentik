@@ -5,8 +5,8 @@ import (
 	"net/url"
 	"os"
 
-	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"go.uber.org/zap"
 
 	"goauthentik.io/internal/common"
 	"goauthentik.io/internal/config"
@@ -25,16 +25,6 @@ Required environment variables:
 
 var rootCmd = &cobra.Command{
 	Long: helpMessage,
-	PersistentPreRun: func(cmd *cobra.Command, args []string) {
-		log.SetLevel(log.DebugLevel)
-		log.SetFormatter(&log.JSONFormatter{
-			FieldMap: log.FieldMap{
-				log.FieldKeyMsg:  "event",
-				log.FieldKeyTime: "timestamp",
-			},
-			DisableHTMLEscape: true,
-		})
-	},
 	Run: func(cmd *cobra.Command, args []string) {
 		debug.EnableDebugServer()
 		akURL := config.Get().AuthentikHost
@@ -76,7 +66,7 @@ var rootCmd = &cobra.Command{
 
 		err = ac.Start()
 		if err != nil {
-			log.WithError(err).Panic("Failed to run server")
+			config.Get().Logger().Panic("Failed to run server", zap.Error(err))
 		}
 
 		for {

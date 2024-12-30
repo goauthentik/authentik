@@ -7,6 +7,8 @@ import (
 	"net/url"
 	"time"
 
+	"go.uber.org/zap"
+	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
 	"golang.org/x/oauth2"
 )
@@ -14,25 +16,25 @@ import (
 func (a *Application) handleAuthCallback(rw http.ResponseWriter, r *http.Request) {
 	state := a.stateFromRequest(r)
 	if state == nil {
-		a.log.Warning("invalid state")
+		a.log.Warn("invalid state")
 		a.redirect(rw, r)
 		return
 	}
 	claims, err := a.redeemCallback(r.URL, r.Context())
 	if err != nil {
-		a.log.WithError(err).Warning("failed to redeem code")
+		a.log.Warn("failed to redeem code", zap.Error(err))
 		a.redirect(rw, r)
 		return
 	}
 	s, err := a.sessions.Get(r, a.SessionName())
 	if err != nil {
-		a.log.WithError(err).Trace("failed to get session")
+		a.log.Debug("failed to get session", zap.Error(err), config.Trace())
 	}
 	s.Options.MaxAge = int(time.Until(time.Unix(int64(claims.Exp), 0)).Seconds())
 	s.Values[constants.SessionClaims] = &claims
 	err = s.Save(r, rw)
 	if err != nil {
-		a.log.WithError(err).Warning("failed to save session")
+		a.log.Warn("failed to save session", zap.Error(err))
 		rw.WriteHeader(400)
 		return
 	}
@@ -53,7 +55,7 @@ func (a *Application) redeemCallback(u *url.URL, c context.Context) (*Claims, er
 	}
 
 	jwt := oauth2Token.AccessToken
-	a.log.WithField("jwt", jwt).Trace("access_token")
+	a.log.Debug("access_token", config.Trace(), zap.String("jwt", jwt))
 
 	// Parse and verify ID Token payload.
 	idToken, err := a.tokenVerifier.Verify(ctx, jwt)
