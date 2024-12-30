@@ -33,7 +33,7 @@ Next, create an application, using the provider you've created above.
 
 ## MeshCentral configuration
 
-Edit the `config.json` for your MeshCentral deployment, and add the following code in the `domains:` subsection:
+Edit the `config.json` file for your MeshCentral deployment, and add the following code in the `domains:` subsection:
 
 :::info  
 For Docker deployments, the `config.json` should be located in the directory on the host machine you mapped to `/opt/meshcentral/meshcentral-data`.
