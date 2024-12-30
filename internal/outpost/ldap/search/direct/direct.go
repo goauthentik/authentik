@@ -195,7 +195,6 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 	}
 
 	err = errs.Wait()
-
 	if err != nil {
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, err
 	}

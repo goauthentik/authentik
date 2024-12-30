@@ -14,7 +14,6 @@ import (
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/pires/go-proxyproto"
-	log "github.com/sirupsen/logrus"
 	"go.uber.org/zap"
 
 	"goauthentik.io/internal/config"
@@ -117,19 +116,19 @@ func (ws *WebServer) attemptStartBackend() {
 			return
 		}
 		err := ws.g.Start()
-		log.WithField("logger", "authentik.router").WithError(err).Warning("gunicorn process died, restarting")
+		ws.log.Warn("gunicorn process died, restarting", zap.Error(err))
 		if err != nil {
-			log.WithField("logger", "authentik.router").WithError(err).Error("gunicorn failed to start, restarting")
+			ws.log.Error("gunicorn failed to start, restarting", zap.Error(err))
 			continue
 		}
 		failedChecks := 0
 		for range time.NewTicker(30 * time.Second).C {
 			if !ws.g.IsRunning() {
-				log.WithField("logger", "authentik.router").Warningf("gunicorn process failed healthcheck %d times", failedChecks)
+				ws.log.Warn("gunicorn process failed healthcheck", zap.Int("times", failedChecks))
 				failedChecks += 1
 			}
 			if failedChecks >= 3 {
-				log.WithField("logger", "authentik.router").WithError(err).Error("gunicorn process failed healthcheck three times, restarting")
+				ws.log.Error("gunicorn process failed healthcheck three times, restarting", zap.Error(err))
 				break
 			}
 		}

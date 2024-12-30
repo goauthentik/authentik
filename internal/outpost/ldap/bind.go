@@ -7,7 +7,6 @@ import (
 	"beryju.io/ldap"
 	"github.com/getsentry/sentry-go"
 	"github.com/prometheus/client_golang/prometheus"
-	log "github.com/sirupsen/logrus"
 	"go.uber.org/zap"
 	"goauthentik.io/internal/outpost/ldap/bind"
 	"goauthentik.io/internal/outpost/ldap/metrics"
@@ -31,7 +30,7 @@ func (ls *LDAPServer) Bind(bindDN string, bindPW string, conn net.Conn) (ldap.LD
 		if err == nil {
 			return
 		}
-		log.WithError(err.(error)).Error("recover in bind request")
+		req.Log().Error("recover in bind request", zap.Error(err.(error)))
 		sentry.CaptureException(err.(error))
 	}()
 

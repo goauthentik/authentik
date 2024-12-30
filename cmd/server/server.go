@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/getsentry/sentry-go"
-	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"go.uber.org/zap"
 
 	"goauthentik.io/internal/common"
 	"goauthentik.io/internal/config"
@@ -26,19 +26,9 @@ var rootCmd = &cobra.Command{
 	Use:     "authentik",
 	Short:   "Start authentik instance",
 	Version: constants.FullVersion(),
-	PersistentPreRun: func(cmd *cobra.Command, args []string) {
-		log.SetLevel(log.DebugLevel)
-		log.SetFormatter(&log.JSONFormatter{
-			FieldMap: log.FieldMap{
-				log.FieldKeyMsg:  "event",
-				log.FieldKeyTime: "timestamp",
-			},
-			DisableHTMLEscape: true,
-		})
-	},
 	Run: func(cmd *cobra.Command, args []string) {
 		debug.EnableDebugServer()
-		l := log.WithField("logger", "authentik.root")
+		l := config.Get().Logger().Named("authentik.server")
 
 		if config.Get().ErrorReporting.Enabled {
 			err := sentry.Init(sentry.ClientOptions{
@@ -54,7 +44,7 @@ var rootCmd = &cobra.Command{
 				},
 			})
 			if err != nil {
-				l.WithError(err).Warning("failed to init sentry")
+				l.Warn("failed to init sentry", zap.Error(err))
 			}
 		}
 
@@ -83,7 +73,7 @@ var rootCmd = &cobra.Command{
 func attemptProxyStart(ws *web.WebServer, u *url.URL) {
 	maxTries := 100
 	attempt := 0
-	l := log.WithField("logger", "authentik.server")
+	l := config.Get().Logger().Named("authentik.server")
 	for {
 		l.Debug("attempting to init outpost")
 		ac := ak.NewAPIController(*u, config.Get().SecretKey)
@@ -110,7 +100,7 @@ func attemptProxyStart(ws *web.WebServer, u *url.URL) {
 		l.Debug("attempting to start outpost")
 		err := ac.StartBackgroundTasks()
 		if err != nil {
-			l.WithError(err).Warning("outpost failed to start")
+			l.Warn("outpost failed to start", zap.Error(err))
 			attempt += 1
 			time.Sleep(15 * time.Second)
 			if attempt > maxTries {

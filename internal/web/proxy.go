@@ -14,9 +14,7 @@ import (
 	"goauthentik.io/internal/utils/sentry"
 )
 
-var (
-	ErrAuthentikStarting = errors.New("authentik starting")
-)
+var ErrAuthentikStarting = errors.New("authentik starting")
 
 func (ws *WebServer) configureProxy() {
 	// Reverse proxy to the application server

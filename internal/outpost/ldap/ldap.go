@@ -7,7 +7,6 @@ import (
 	"sync"
 
 	"github.com/pires/go-proxyproto"
-	log "github.com/sirupsen/logrus"
 	"go.uber.org/zap"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/crypto"
@@ -45,7 +44,7 @@ func NewServer(ac *ak.APIController) *LDAPServer {
 
 	defaultCert, err := crypto.GenerateSelfSignedCert()
 	if err != nil {
-		log.Warning(err)
+		ls.log.Warn("failed to get self-signed certificate", zap.Error(err))
 	}
 	ls.defaultCert = &defaultCert
 	s.BindFunc("", ls)
@@ -63,18 +62,18 @@ func (ls *LDAPServer) StartLDAPServer() error {
 
 	ln, err := net.Listen("tcp", listen)
 	if err != nil {
-		ls.log.WithField("listen", listen).WithError(err).Warning("Failed to listen (SSL)")
+		ls.log.Warn("Failed to listen (SSL)", zap.String("listen", listen), zap.Error(err))
 		return err
 	}
 	proxyListener := &proxyproto.Listener{Listener: ln, ConnPolicy: utils.GetProxyConnectionPolicy()}
 	defer proxyListener.Close()
 
-	ls.log.WithField("listen", listen).Info("Starting LDAP server")
+	ls.log.Info("Starting LDAP server", zap.String("listen", listen))
 	err = ls.s.Serve(proxyListener)
 	if err != nil {
 		return err
 	}
-	ls.log.WithField("listen", listen).Info("Stopping LDAP server")
+	ls.log.Info("Stopping LDAP server", zap.String("listen", listen))
 	return nil
 }
 
@@ -109,7 +108,7 @@ func (ls *LDAPServer) Stop() error {
 
 func (ls *LDAPServer) TimerFlowCacheExpiry(ctx context.Context) {
 	for _, p := range ls.providers {
-		ls.log.WithField("flow", p.authenticationFlowSlug).Debug("Pre-heating flow cache")
+		ls.log.Debug("Pre-heating flow cache", zap.String("flow", p.authenticationFlowSlug))
 		p.binder.TimerFlowCacheExpiry(ctx)
 	}
 }
