@@ -220,7 +220,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, old
 		// denied to reference for final URL
 		rd, ok := a.checkRedirectParam(r)
 		if ok {
-			a.log.Debug("Setting redirect", zap.String("rd", rd))
+			a.log.Debug("Setting redirect", zap.String("rd", rd), config.Trace())
 			fwd = rd
 		}
 		a.handleAuthStart(w, r, fwd)

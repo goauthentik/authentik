@@ -84,7 +84,7 @@ func (a *Application) getTraefikForwardUrl(r *http.Request) (*url.URL, error) {
 	if err != nil {
 		return nil, err
 	}
-	a.log.Debug("traefik forward url", zap.String("url", u.String()))
+	a.log.Debug("traefik forward url", zap.String("url", u.String()), config.Trace())
 	return u, nil
 }
 

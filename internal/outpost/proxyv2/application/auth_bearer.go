@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"go.uber.org/zap"
+	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
 )
 
@@ -56,6 +57,6 @@ func (a *Application) attemptBearerAuth(token string) *TokenIntrospectionRespons
 		return nil
 	}
 	intro.RawToken = token
-	a.log.Debug("successfully introspected bearer token")
+	a.log.Debug("successfully introspected bearer token", config.Trace())
 	return &intro
 }

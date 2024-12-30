@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
 )
 
@@ -27,22 +28,22 @@ func (a *Application) checkAuth(rw http.ResponseWriter, r *http.Request) (*Claim
 	// Check bearer token if set
 	bearer := a.checkAuthHeaderBearer(r)
 	if bearer != "" {
-		a.log.Debug("checking bearer token")
+		a.log.Debug("checking bearer token", config.Trace())
 		tc := a.attemptBearerAuth(bearer)
 		if tc != nil {
 			return a.saveAndCacheClaims(rw, r, tc.Claims)
 		}
-		a.log.Debug("no/invalid bearer token")
+		a.log.Debug("no/invalid bearer token", config.Trace())
 	}
 	// Check basic auth if set
 	username, password, basicSet := r.BasicAuth()
 	if basicSet {
-		a.log.Debug("checking basic auth")
+		a.log.Debug("checking basic auth", config.Trace())
 		tc := a.attemptBasicAuth(username, password)
 		if tc != nil {
 			return a.saveAndCacheClaims(rw, r, *tc)
 		}
-		a.log.Debug("no/invalid basic auth")
+		a.log.Debug("no/invalid basic auth", config.Trace())
 	}
 
 	return nil, fmt.Errorf("failed to get claims from session")

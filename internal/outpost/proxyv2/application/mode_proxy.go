@@ -84,7 +84,7 @@ func (a *Application) proxyModifyRequest(ou *url.URL) func(req *http.Request) {
 				r.URL.Host = u.Host
 			}
 		}
-		a.log.Debug("final upstream url", zap.String("upstream_url", r.URL.String()))
+		a.log.Debug("final upstream url", zap.String("upstream_url", r.URL.String()), config.Trace())
 	}
 }
 
