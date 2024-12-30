@@ -73,6 +73,8 @@ Before the last curly brace, add this part.
 
 :::note It is mandatory to include 'authentik' in lowercase letters. There should also be another curly brace above these lines. Make sure to add a `,` after it to maintain proper formatting. :::
 
+More information on this can be found in the semaphore documentation https://docs.semaphoreui.com/administration-guide/openid/authentik/.
+
 Leave the rest as default.
 
 ## Test the login
