@@ -15,7 +15,7 @@ sidebar_label: What's Up Docker
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `wud.company` is the FQDN of the WUD install.
 - `authentik.company` is the FQDN of the authentik install.

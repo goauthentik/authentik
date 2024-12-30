@@ -15,7 +15,7 @@ sidebar_label: Jenkins
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `jenkins.company` is the FQDN of the Service install.
 - `authentik.company` is the FQDN of the authentik install.

@@ -15,7 +15,7 @@ sidebar_label: Semgrep
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik install.
 - `devcompany` is the organization name on Semgrep Cloud platform.

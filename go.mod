@@ -9,7 +9,7 @@ require (
 	github.com/coreos/go-oidc/v3 v3.11.0
 	github.com/getsentry/sentry-go v0.30.0
 	github.com/go-http-utils/etag v0.0.0-20161124023236-513ea8f21eb1
-	github.com/go-ldap/ldap/v3 v3.4.9
+	github.com/go-ldap/ldap/v3 v3.4.10
 	github.com/go-openapi/runtime v0.28.0
 	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/google/uuid v1.6.0

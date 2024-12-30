@@ -16,7 +16,7 @@ An Apple developer account is required.
 Apple mandates the use of a [registered TLD](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains), as such this source will not work with .local and other non-public TLDs.
 :::
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik install.
 

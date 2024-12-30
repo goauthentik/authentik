@@ -15,7 +15,7 @@ sidebar_label: ArgoCD
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `argocd.company` is the FQDN of the ArgoCD install.
 - `authentik.company` is the FQDN of the authentik install.

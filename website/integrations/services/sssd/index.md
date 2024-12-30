@@ -20,7 +20,7 @@ Kerberos is also not supported.
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik install.
 - `ldap.baseDN` is the Base DN you configure in the LDAP provider.
