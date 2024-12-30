@@ -7,7 +7,6 @@ import (
 	"sort"
 	"strings"
 
-	log "github.com/sirupsen/logrus"
 	"go.uber.org/zap"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/ak"
@@ -19,7 +18,7 @@ func parseCIDRs(raw string) []*net.IPNet {
 	for i, p := range parts {
 		_, ipnet, err := net.ParseCIDR(strings.TrimSpace(p))
 		if err != nil {
-			log.WithError(err).WithField("cidr", p).Error("Failed to parse CIDR")
+			config.Get().Logger().Error("Failed to parse CIDR", zap.Error(err), zap.String("cidr", p))
 			continue
 		}
 		cidrs[i] = ipnet

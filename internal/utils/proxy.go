@@ -4,7 +4,7 @@ import (
 	"net"
 
 	"github.com/pires/go-proxyproto"
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 	"goauthentik.io/internal/config"
 )
 
@@ -17,6 +17,7 @@ func GetProxyConnectionPolicy() proxyproto.ConnPolicyFunc {
 		}
 		nets = append(nets, cidr)
 	}
+	l := config.Get().Logger()
 	return func(connPolicyOptions proxyproto.ConnPolicyOptions) (proxyproto.Policy, error) {
 		host, _, err := net.SplitHostPort(connPolicyOptions.Upstream.String())
 		if err == nil {
@@ -24,7 +25,7 @@ func GetProxyConnectionPolicy() proxyproto.ConnPolicyFunc {
 			remoteAddr := net.ParseIP(host)
 			for _, allowedCidr := range nets {
 				if remoteAddr != nil && allowedCidr.Contains(remoteAddr) {
-					log.WithField("remoteAddr", remoteAddr).WithField("cidr", allowedCidr.String()).Trace("Using remote IP from proxy protocol")
+					l.Debug("Using remote IP from proxy protocol", config.Trace(), zap.String("remoteAddr", remoteAddr.String()), zap.String("cidr", allowedCidr.String()))
 					return proxyproto.USE, nil
 				}
 			}

@@ -46,7 +46,13 @@ func (ws *WebServer) listenTLS() {
 		ws.log.Warn("failed to listen (TLS)", zap.Error(err))
 		return
 	}
-	proxyListener := &proxyproto.Listener{Listener: web.TCPKeepAliveListener{TCPListener: ln.(*net.TCPListener)}, ConnPolicy: utils.GetProxyConnectionPolicy()}
+	proxyListener := &proxyproto.Listener{
+		Listener: web.TCPKeepAliveListener{
+			TCPListener: ln.(*net.TCPListener),
+			Logger:      ws.log,
+		},
+		ConnPolicy: utils.GetProxyConnectionPolicy(),
+	}
 	defer proxyListener.Close()
 
 	tlsListener := tls.NewListener(proxyListener, tlsConfig)
