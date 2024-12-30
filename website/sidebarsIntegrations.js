@@ -127,6 +127,7 @@ module.exports = {
                         "services/immich/index",
                         "services/jellyfin/index",
                         "services/node-red/index",
+                        "services/semaphore/index",
                         "services/sonar-qube/index",
                         "services/sonarr/index",
                         "services/tautulli/index",
