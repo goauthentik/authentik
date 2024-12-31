@@ -27,6 +27,15 @@ class StreamSerializer(ModelSerializer):
     aud = ListField(child=CharField())
 
     def create(self, validated_data):
+        iss = self._context["request"].build_absolute_uri(
+            reverse(
+                "authentik_providers_ssf:configuration",
+                kwargs={
+                    "application_slug": self.provider.application.slug,
+                    "provider": self.provider.pk,
+                },
+            )
+        )
         return super().create(
             {
                 "delivery_method": validated_data["delivery"]["method"],
@@ -35,6 +44,7 @@ class StreamSerializer(ModelSerializer):
                 "provider": validated_data["provider"],
                 "events_requested": validated_data["events_requested"],
                 "aud": validated_data["aud"],
+                "iss": iss,
             }
         )
 
@@ -50,7 +60,7 @@ class StreamSerializer(ModelSerializer):
 
 class StreamResponseSerializer(PassiveSerializer):
     stream_id = CharField(source="pk")
-    iss = SerializerMethodField()
+    iss = CharField()
     aud = ListField(child=CharField())
     delivery = SerializerMethodField()
     format = CharField()
@@ -58,20 +68,6 @@ class StreamResponseSerializer(PassiveSerializer):
     events_requested = ListField(child=CharField())
     events_supported = SerializerMethodField()
     events_delivered = ListField(child=CharField(), source="events_requested")
-
-    def get_iss(self, instance: Stream) -> str:
-        request: Request = self._context["request"]
-        if not instance.provider.application:
-            return None
-        return request.build_absolute_uri(
-            reverse(
-                "authentik_providers_ssf:configuration",
-                kwargs={
-                    "application_slug": instance.provider.application.slug,
-                    "provider": instance.provider.pk,
-                },
-            )
-        )
 
     def get_delivery(self, instance: Stream) -> StreamDeliverySerializer:
         return {
@@ -90,10 +86,10 @@ class StreamView(SSFView):
         instance: Stream = stream.save(provider=self.provider)
         send_ssf_event(
             EventTypes.SET_VERIFICATION,
-            request,
             {
                 "state": None,
             },
+            stream_filter={"pk": instance.uuid},
             sub_id={"format": "opaque", "id": str(instance.uuid)},
         )
         response = StreamResponseSerializer(instance=instance, context={"request": request}).data

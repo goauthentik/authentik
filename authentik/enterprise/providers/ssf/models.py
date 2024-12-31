@@ -7,9 +7,7 @@ from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
-from django.http import HttpRequest
 from django.templatetags.static import static
-from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from jwt import encode
 
@@ -109,12 +107,12 @@ class Stream(models.Model):
 
     user_subjects = models.ManyToManyField(User, "UserStreamSubject")
 
+    iss = models.TextField()
+
     def __str__(self) -> str:
         return "SSF Stream"
 
-    def prepare_event_payload(
-        self, type: EventTypes, request: HttpRequest, event_data: dict, **kwargs
-    ) -> dict:
+    def prepare_event_payload(self, type: EventTypes, event_data: dict, **kwargs) -> dict:
         jti = uuid4()
         return {
             "uuid": jti,
@@ -124,15 +122,7 @@ class Stream(models.Model):
                 "jti": jti.hex,
                 "aud": self.aud,
                 "iat": int(datetime.now().timestamp()),
-                "iss": request.build_absolute_uri(
-                    reverse(
-                        "authentik_providers_ssf:configuration",
-                        kwargs={
-                            "application_slug": self.provider.application.slug,
-                            "provider": self.provider.pk,
-                        },
-                    )
-                ),
+                "iss": self.iss,
                 "events": {type: event_data},
                 **kwargs,
             },

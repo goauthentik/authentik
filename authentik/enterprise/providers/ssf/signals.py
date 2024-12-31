@@ -13,6 +13,7 @@ from authentik.core.models import (
     User,
     UserTypes,
 )
+from authentik.core.signals import password_changed
 from authentik.enterprise.providers.ssf.models import (
     EventTypes,
     SSFProvider,
@@ -51,12 +52,11 @@ def ssf_providers_post_save(sender: type[Model], instance: SSFProvider, created:
 
 
 @receiver(user_logged_out)
-def user_logged_out_session(sender, request: HttpRequest, user: User, **_):
+def ssf_user_logged_out_session_revoked(sender, request: HttpRequest, user: User, **_):
     if not request.session or not request.session.session_key or not user:
         return
     send_ssf_event(
         EventTypes.CAEP_SESSION_REVOKED,
-        request,
         {
             "subject": {
                 "session": {
@@ -69,5 +69,22 @@ def user_logged_out_session(sender, request: HttpRequest, user: User, **_):
                 },
             },
             "initiating_entity": "user",
+        },
+    )
+
+
+@receiver(password_changed)
+def ssf_password_changed_cred_change(sender, user: User, password: str | None, **_):
+    send_ssf_event(
+        EventTypes.CAEP_CREDENTIAL_CHANGE,
+        {
+            "subject": {
+                "user": {
+                    "format": "email",
+                    "email": user.email,
+                },
+            },
+            "credential_type": "password",
+            "change_type": "revoke" if password is None else "update",
         },
     )

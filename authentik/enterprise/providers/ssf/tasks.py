@@ -1,5 +1,4 @@
 from celery import group
-from django.http import HttpRequest
 from requests.exceptions import RequestException
 
 from authentik.enterprise.providers.ssf.models import (
@@ -17,7 +16,6 @@ session = get_http_session()
 
 def send_ssf_event(
     event_type: EventTypes,
-    request: HttpRequest,
     data: dict,
     stream_filter: dict | None = None,
     **extra_data,
@@ -28,7 +26,7 @@ def send_ssf_event(
         stream_filter = {}
     stream_filter["events_requested__in"] = [event_type]
     for stream in Stream.objects.filter(**stream_filter):
-        event_data = stream.prepare_event_payload(event_type, request, data, **extra_data)
+        event_data = stream.prepare_event_payload(event_type, data, **extra_data)
         payload.append((str(stream.uuid), event_data))
     return _send_ssf_event.delay(payload)
 
