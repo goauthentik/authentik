@@ -2,7 +2,7 @@ from hashlib import sha256
 
 from django.contrib.auth.signals import user_logged_out
 from django.db.models import Model
-from django.db.models.signals import post_save
+from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 from django.http.request import HttpRequest
 
@@ -20,6 +20,14 @@ from authentik.enterprise.providers.ssf.models import (
 )
 from authentik.enterprise.providers.ssf.tasks import send_ssf_event
 from authentik.events.middleware import audit_ignore
+from authentik.stages.authenticator.models import Device
+from authentik.stages.authenticator_duo.models import DuoDevice
+from authentik.stages.authenticator_static.models import StaticDevice
+from authentik.stages.authenticator_totp.models import TOTPDevice
+from authentik.stages.authenticator_webauthn.models import (
+    UNKNOWN_DEVICE_TYPE_AAGUID,
+    WebAuthnDevice,
+)
 
 USER_PATH_PROVIDERS_SSF = USER_PATH_SYSTEM_PREFIX + "/providers/ssf"
 
@@ -88,3 +96,57 @@ def ssf_password_changed_cred_change(sender, user: User, password: str | None, *
             "change_type": "revoke" if password is None else "update",
         },
     )
+
+
+device_type_map = {
+    StaticDevice: "pin",
+    TOTPDevice: "pin",
+    WebAuthnDevice: "fido-u2f",
+    DuoDevice: "app",
+}
+
+
+@receiver(post_save)
+def ssf_device_post_save(sender: type[Model], instance: Device, created: bool, **_):
+    if not isinstance(instance, Device):
+        return
+    if not instance.confirmed:
+        return
+    device_type = device_type_map.get(instance.__class__)
+    data = {
+        "subject": {
+            "user": {
+                "format": "email",
+                "email": instance.user.email,
+            },
+        },
+        "credential_type": device_type,
+        "change_type": "create" if created else "update",
+        "friendly_name": instance.name,
+    }
+    if isinstance(instance, WebAuthnDevice) and instance.aaguid != UNKNOWN_DEVICE_TYPE_AAGUID:
+        data["fido2_aaguid"] = instance.aaguid
+    send_ssf_event(EventTypes.CAEP_CREDENTIAL_CHANGE, data)
+
+
+@receiver(post_delete)
+def ssf_device_post_delete(sender: type[Model], instance: Device, created: bool, **_):
+    if not isinstance(instance, Device):
+        return
+    if not instance.confirmed:
+        return
+    device_type = device_type_map.get(instance.__class__)
+    data = {
+        "subject": {
+            "user": {
+                "format": "email",
+                "email": instance.user.email,
+            },
+        },
+        "credential_type": device_type,
+        "change_type": "delete",
+        "friendly_name": instance.name,
+    }
+    if isinstance(instance, WebAuthnDevice) and instance.aaguid != UNKNOWN_DEVICE_TYPE_AAGUID:
+        data["fido2_aaguid"] = instance.aaguid
+    send_ssf_event(EventTypes.CAEP_CREDENTIAL_CHANGE, data)
