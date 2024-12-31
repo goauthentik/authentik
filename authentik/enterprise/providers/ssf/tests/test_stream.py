@@ -3,7 +3,7 @@ from rest_framework.test import APITestCase
 
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_cert
-from authentik.enterprise.providers.ssf.models import SSFProvider
+from authentik.enterprise.providers.ssf.models import SSFProvider, Stream
 from authentik.lib.generators import generate_id
 
 
@@ -41,6 +41,17 @@ class TestStream(APITestCase):
             },
             HTTP_AUTHORIZATION=f"Bearer {self.provider.token.key}",
         )
-        print(res)
-        print(res.content)
         self.assertEqual(res.status_code, 201)
+
+    def test_stream_delete(self):
+        """delete stream"""
+        stream = Stream.objects.create(provider=self.provider)
+        res = self.client.delete(
+            reverse(
+                "authentik_providers_ssf:stream",
+                kwargs={"application_slug": self.application.slug, "provider": self.provider.pk},
+            ),
+            HTTP_AUTHORIZATION=f"Bearer {self.provider.token.key}",
+        )
+        self.assertEqual(res.status_code, 204)
+        self.assertFalse(Stream.objects.filter(pk=stream.pk).exists())

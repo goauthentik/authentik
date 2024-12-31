@@ -27,12 +27,12 @@ class StreamSerializer(ModelSerializer):
     aud = ListField(child=CharField())
 
     def create(self, validated_data):
-        iss = self._context["request"].build_absolute_uri(
+        iss = self.context["request"].build_absolute_uri(
             reverse(
                 "authentik_providers_ssf:configuration",
                 kwargs={
-                    "application_slug": self.provider.application.slug,
-                    "provider": self.provider.pk,
+                    "application_slug": validated_data["provider"].application.slug,
+                    "provider": validated_data["provider"].pk,
                 },
             )
         )
@@ -81,7 +81,7 @@ class StreamResponseSerializer(PassiveSerializer):
 
 class StreamView(SSFView):
     def post(self, request: Request, *args, **kwargs) -> Response:
-        stream = StreamSerializer(data=request.data)
+        stream = StreamSerializer(data=request.data, context={"request": request})
         stream.is_valid(raise_exception=True)
         instance: Stream = stream.save(provider=self.provider)
         send_ssf_event(

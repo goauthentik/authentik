@@ -157,9 +157,3 @@ class StreamEvent(models.Model):
 
     def __str__(self):
         return f"Stream event {self.type}"
-
-    def queue(self):
-        """Queue event to be sent"""
-        from authentik.enterprise.providers.ssf.tasks import send_single_ssf_event
-
-        return send_single_ssf_event.delay(str(self.stream.uuid), str(self.uuid))

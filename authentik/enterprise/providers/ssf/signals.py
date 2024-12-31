@@ -130,7 +130,7 @@ def ssf_device_post_save(sender: type[Model], instance: Device, created: bool, *
 
 
 @receiver(post_delete)
-def ssf_device_post_delete(sender: type[Model], instance: Device, created: bool, **_):
+def ssf_device_post_delete(sender: type[Model], instance: Device, **_):
     if not isinstance(instance, Device):
         return
     if not instance.confirmed:
