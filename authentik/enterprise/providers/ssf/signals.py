@@ -52,7 +52,7 @@ def ssf_providers_post_save(sender: type[Model], instance: SSFProvider, created:
 
 @receiver(user_logged_out)
 def user_logged_out_session(sender, request: HttpRequest, user: User, **_):
-    if not request.session or not request.session.session_key:
+    if not request.session or not request.session.session_key or not user:
         return
     send_ssf_event(
         EventTypes.CAEP_SESSION_REVOKED,

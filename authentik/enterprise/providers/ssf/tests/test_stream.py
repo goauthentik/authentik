@@ -43,4 +43,4 @@ class TestStream(APITestCase):
         )
         print(res)
         print(res.content)
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 201)

@@ -33,7 +33,7 @@ def send_ssf_event(
     return _send_ssf_event.delay(payload)
 
 
-@CELERY_APP.task(bind=True)
+@CELERY_APP.task()
 def _send_ssf_event(event_data: list[tuple[str, dict]]):
     tasks = []
     for stream, data in event_data:
