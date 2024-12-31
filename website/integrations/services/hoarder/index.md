@@ -41,6 +41,7 @@ Optionally apply access restrictions to the application.
 In Hoarder, you'll need to add these environment variables:
 
 ```sh
+NEXTAUTH_URL_INTERNAL=http://localhost:DEFAULT_HOARDER_PORT
 NEXTAUTH_URL=https://hoarder.company
 OAUTH_CLIENT_ID=<Client ID from authentik>
 OAUTH_CLIENT_SECRET=<Client secret from authentik>
