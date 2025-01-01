@@ -291,7 +291,7 @@ export function renderForm(
 
                 ${showHttpBasic ? renderHttpBasic(provider) : nothing}
                 <ak-form-element-horizontal
-                    label=${msg("Trusted OIDC Sources")}
+                    label=${msg("Federated OIDC Sources")}
                     name="jwtFederationSources"
                 >
                     <ak-dual-select-dynamic-selected
