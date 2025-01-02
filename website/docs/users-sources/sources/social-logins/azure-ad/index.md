@@ -6,7 +6,7 @@ title: Azure AD
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik install.
 

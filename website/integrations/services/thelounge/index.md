@@ -20,7 +20,7 @@ If you made any changes, e.g. using a different name for the user, make sure to 
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik install.
 - `dc=company,dc=com` the Base DN of the LDAP outpost. If you followed the LDAP provider guide this is: `dc=goauthentik,dc=io`

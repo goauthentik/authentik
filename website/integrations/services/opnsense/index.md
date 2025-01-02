@@ -19,7 +19,7 @@ This is based on authentik 2024.2.2 and OPNsense 24.1.3_1-amd64 installed using 
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of authentik.
 - `opnsense` is the name of the authentik Service account we'll create.

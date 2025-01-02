@@ -15,7 +15,7 @@ sidebar_label: NetBox
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `netbox.company` is the FQDN of the NetBox install.
 - `authentik.company` is the FQDN of the authentik install.

@@ -15,7 +15,7 @@ From https://en.wikipedia.org/wiki/DokuWiki
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `dokuwiki.company` is the FQDN of the DokiWiki install.
 - `authentik.company` is the FQDN of the authentik install.

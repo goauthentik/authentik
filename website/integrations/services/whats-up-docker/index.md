@@ -11,11 +11,11 @@ sidebar_label: What's Up Docker
 
 > What's Up Docker (WUD) is an easy-to-use tool that alerts you whenever a new version of your Docker containers is released.
 >
-> -- https://fmartinou.github.io/whats-up-docker/
+> -- https://getwud.github.io/wud/
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `wud.company` is the FQDN of the WUD install.
 - `authentik.company` is the FQDN of the authentik install.

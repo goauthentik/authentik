@@ -15,7 +15,7 @@ sidebar_label: Veeam Enterprise Manager
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `veeam.company` is the FQDN of the Veeam Enterprise Manager install.
 - `authentik.company` is the FQDN of the authentik install.

@@ -15,7 +15,7 @@ sidebar_label: PowerDNS-Admin
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `pdns-admin.company` is the FQDN of the PowerDNS-Admin install.
 - `authentik.company` is the FQDN of the authentik install.

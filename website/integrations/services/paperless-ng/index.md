@@ -21,7 +21,7 @@ The author of Paperless-ng recommends you do not expose Paperless outside your n
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `paperless.company` is the FQDN of the Paperless-ng install.
 

@@ -21,7 +21,7 @@ sidebar_label: GitHub Enterprise Cloud EMU
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `github.com/enterprises/foo` is your GitHub organization, where `foo` is the name of your enterprise
 - `authentik.company` is the FQDN of the authentik Install

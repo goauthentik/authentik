@@ -15,7 +15,7 @@ sidebar_label: Hoarder
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `hoarder.company` is the FQDN of the Hoarder install.
 - `authentik.company` is the FQDN of the authentik install.
