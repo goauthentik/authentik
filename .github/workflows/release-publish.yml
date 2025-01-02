@@ -182,11 +182,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: prepare variables
+        uses: ./.github/actions/docker-push-variables
+        id: ev
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        with:
+          image-name: authentik # doesn't really matter, we don't use it here
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: "arn:aws:iam::016170277896:role/github_goauthentik_authentik"
           aws-region: ${{ env.AWS_REGION }}
       - name: Upload template
+        if: ${{ steps.ev.outputs.prerelease != 'true' }}
         run: |
           aws s3 cp website/docs/install-config/install/aws/template.yaml s3://authentik-cloudformation-templates/authentik.ecs.${{ github.ref }}.yaml
           aws s3 cp website/docs/install-config/install/aws/template.yaml s3://authentik-cloudformation-templates/authentik.ecs.latest.yaml
