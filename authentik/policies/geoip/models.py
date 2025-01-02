@@ -28,7 +28,8 @@ class GeoIPPolicy(Policy):
     countries = CountryField(multiple=True, blank=True)
 
     distance_tolerance_km = models.PositiveIntegerField(default=50)
-    check_history = models.BooleanField(default=False)
+
+    check_history_distance = models.BooleanField(default=False)
     history_max_distance_km = models.PositiveBigIntegerField(default=100)
     history_login_count = models.PositiveIntegerField(default=5)
 
@@ -59,7 +60,7 @@ class GeoIPPolicy(Policy):
         if self.countries:
             static_results.append(self.passes_country(request))
 
-        if self.check_history or self.check_impossible_travel:
+        if self.check_history_distance or self.check_impossible_travel:
             dynamic_results.append(self.passes_distance(request))
 
         if not static_results and not dynamic_results:
@@ -126,7 +127,7 @@ class GeoIPPolicy(Policy):
                 (previous_login_geoip["lat"], previous_login_geoip["long"]),
                 (geoip_data["lat"], geoip_data["long"]),
             )
-            if self.check_history and dist.km >= (
+            if self.check_history_distance and dist.km >= (
                 self.history_max_distance_km - self.distance_tolerance_km
             ):
                 return PolicyResult(

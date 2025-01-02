@@ -5233,9 +5233,9 @@
                     "maxItems": 249,
                     "title": "Countries"
                 },
-                "check_history": {
+                "check_history_distance": {
                     "type": "boolean",
-                    "title": "Check history"
+                    "title": "Check history distance"
                 },
                 "history_max_distance_km": {
                     "type": "integer",
@@ -5254,6 +5254,16 @@
                     "minimum": 0,
                     "maximum": 2147483647,
                     "title": "History login count"
+                },
+                "check_impossible_travel": {
+                    "type": "boolean",
+                    "title": "Check impossible travel"
+                },
+                "impossible_tolerance_km": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "title": "Impossible tolerance km"
                 }
             },
             "required": []

@@ -142,7 +142,7 @@ class TestGeoIPPolicy(TestCase):
         # Random location in Poland
         self.request.context["geoip"] = {"lat": 50.950613, "long": 20.363679}
 
-        policy = GeoIPPolicy.objects.create(check_history=True)
+        policy = GeoIPPolicy.objects.create(check_history_distance=True)
 
         result: PolicyResult = policy.passes(self.request)
         self.assertFalse(result.passing)
@@ -158,7 +158,7 @@ class TestGeoIPPolicy(TestCase):
             },
         )
 
-        policy = GeoIPPolicy.objects.create(check_history=True)
+        policy = GeoIPPolicy.objects.create(check_history_distance=True)
 
         result: PolicyResult = policy.passes(self.request)
         self.assertFalse(result.passing)
@@ -191,7 +191,7 @@ class TestGeoIPPolicy(TestCase):
         # Random location in Poland
         self.request.context["geoip"] = {"lat": 50.950613, "long": 20.363679}
 
-        policy = GeoIPPolicy.objects.create(check_history=True)
+        policy = GeoIPPolicy.objects.create(check_history_distance=True)
 
         result: PolicyResult = policy.passes(self.request)
         self.assertFalse(result.passing)
