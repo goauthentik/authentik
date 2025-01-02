@@ -1,10 +1,10 @@
 """GeoIP policy"""
 
 from itertools import chain
-from math import isclose
 
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from django_countries.fields import CountryField
 from geopy import distance
@@ -29,7 +29,7 @@ class GeoIPPolicy(Policy):
 
     distance_tolerance_km = models.PositiveIntegerField(default=50)
     check_history = models.BooleanField(default=False)
-    history_max_distance_km = models.PositiveBigIntegerField(default=0)
+    history_max_distance_km = models.PositiveBigIntegerField(default=100)
     history_login_count = models.PositiveIntegerField(default=5)
 
     check_impossible_travel = models.BooleanField(default=False)
@@ -62,7 +62,7 @@ class GeoIPPolicy(Policy):
         if self.check_history or self.check_impossible_travel:
             dynamic_results.append(self.passes_distance(request))
 
-        if not static_results:
+        if not static_results and not dynamic_results:
             return PolicyResult(True)
 
         passing = any(r.passing for r in static_results) and all(r.passing for r in dynamic_results)
@@ -71,7 +71,7 @@ class GeoIPPolicy(Policy):
         )
 
         result = PolicyResult(passing, *messages)
-        result.source_results = static_results
+        result.source_results = list(chain(static_results, dynamic_results))
 
         return result
 
@@ -111,33 +111,34 @@ class GeoIPPolicy(Policy):
         """Check if current policy execution is out of distance range compared
         to previous authentication requests"""
         # Get previous login event and GeoIP data
-        previous_logins = (
-            Event.objects.filter(
-                action=EventAction.LOGIN.value,
-                user__pk=request.user.pk,
-            )
-            .order_by("-created")
-            .values_list("context")[: self.history_login_count]
-        )
+        previous_logins = Event.objects.filter(
+            action=EventAction.LOGIN, user__pk=request.user.pk, context__geo__isnull=False
+        ).order_by("-created")[: self.history_login_count]
+        _now = now()
+        geoip_data: GeoIPDict | None = request.context.get("geoip")
+        if not geoip_data:
+            return PolicyResult(False)
         for previous_login in previous_logins:
-            previous_login_geoip: GeoIPDict | None = previous_login.context.get("geo")
-            geoip_data: GeoIPDict | None = request.context.get("geoip")
-            if not previous_login_geoip or not geoip_data:
-                return PolicyResult(False)
+            previous_login_geoip: GeoIPDict = previous_login.context.get("geo")
 
             # Figure out distance
             dist = distance.geodesic(
                 (previous_login_geoip["lat"], previous_login_geoip["long"]),
                 (geoip_data["lat"], geoip_data["long"]),
             )
-            if self.check_history and isclose(
-                dist.km, self.history_max_distance_km, abs_tol=self.distance_tolerance_km
+            if self.check_history and dist.km >= (
+                self.history_max_distance_km - self.distance_tolerance_km
             ):
                 return PolicyResult(
                     False, _("Distance from previous authentication is larger than threshold.")
                 )
-            if self.check_impossible_travel and isclose(
-                dist.km, MAX_DISTANCE_HOUR_KM, abs_tol=self.distance_tolerance_km
+            # Check if distance between `previous_login` and now is more
+            # than max distance per hour times the amount of hours since the previous login
+            # (round down to the lowest closest time of hours)
+            # clamped to be at least 1 hour
+            rel_time_hours = max(int((_now - previous_login.created).total_seconds() / 86400), 1)
+            if self.check_impossible_travel and dist.km >= (
+                (MAX_DISTANCE_HOUR_KM * rel_time_hours) - self.distance_tolerance_km
             ):
                 return PolicyResult(False, _("Distance is further than possible."))
         return PolicyResult(True)

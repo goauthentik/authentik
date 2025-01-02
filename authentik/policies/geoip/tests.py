@@ -136,15 +136,62 @@ class TestGeoIPPolicy(TestCase):
             user=get_user(self.user),
             context={
                 # Random location in Canada
-                "geoip": {"lat": 55.868351, "long": -104.441011},
+                "geo": {"lat": 55.868351, "long": -104.441011},
             },
         )
         # Random location in Poland
         self.request.context["geoip"] = {"lat": 50.950613, "long": 20.363679}
 
-        self.enrich_context()
         policy = GeoIPPolicy.objects.create(check_history=True)
 
         result: PolicyResult = policy.passes(self.request)
+        self.assertFalse(result.passing)
 
+    def test_history_no_data(self):
+        """Test history checks (with no geoip data in context)"""
+        Event.objects.create(
+            action=EventAction.LOGIN,
+            user=get_user(self.user),
+            context={
+                # Random location in Canada
+                "geo": {"lat": 55.868351, "long": -104.441011},
+            },
+        )
+
+        policy = GeoIPPolicy.objects.create(check_history=True)
+
+        result: PolicyResult = policy.passes(self.request)
+        self.assertFalse(result.passing)
+
+    def test_history_impossible_travel(self):
+        """Test history checks"""
+        Event.objects.create(
+            action=EventAction.LOGIN,
+            user=get_user(self.user),
+            context={
+                # Random location in Canada
+                "geo": {"lat": 55.868351, "long": -104.441011},
+            },
+        )
+        # Random location in Poland
+        self.request.context["geoip"] = {"lat": 50.950613, "long": 20.363679}
+
+        policy = GeoIPPolicy.objects.create(check_impossible_travel=True)
+
+        result: PolicyResult = policy.passes(self.request)
+        self.assertFalse(result.passing)
+
+    def test_history_no_geoip(self):
+        """Test history checks (previous login with no geoip data)"""
+        Event.objects.create(
+            action=EventAction.LOGIN,
+            user=get_user(self.user),
+            context={},
+        )
+        # Random location in Poland
+        self.request.context["geoip"] = {"lat": 50.950613, "long": 20.363679}
+
+        policy = GeoIPPolicy.objects.create(check_history=True)
+
+        result: PolicyResult = policy.passes(self.request)
         self.assertFalse(result.passing)
