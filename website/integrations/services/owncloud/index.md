@@ -1,5 +1,6 @@
 ---
-title: ownCloud
+title: Integrate with ownCloud
+sidebar_label: ownCloud
 ---
 
 <span class="badge badge--secondary">Support level: Community</span>
@@ -16,7 +17,7 @@ This guide focuses on ownCloud installations that are deployed using Docker. If 
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 -   `owncloud.company` is the FQDN of the ownCloud install.
 -   `authentik.company` is the FQDN of the authentik install.
