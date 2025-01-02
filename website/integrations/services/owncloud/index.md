@@ -19,16 +19,16 @@ This guide focuses on ownCloud installations that are deployed using Docker. If 
 
 The following placeholders are used in this guide:
 
--   `owncloud.company` is the FQDN of the ownCloud install.
--   `authentik.company` is the FQDN of the authentik install.
+- `owncloud.company` is the FQDN of the ownCloud install.
+- `authentik.company` is the FQDN of the authentik install.
 
 ## Authentication
 
 There are ownCloud plugins available that support various authentication methods, including:
 
--   [SAML/SSO](https://doc.owncloud.com/server/latest/admin_manual/enterprise/user_management/user_auth_shibboleth.html)
--   [OAuth2](https://doc.owncloud.com/server/latest/admin_manual/configuration/user/user_oauth2.html)
--   [OpenID Connect](https://doc.owncloud.com/server/latest/admin_manual/configuration/user/oidc/oidc.html)
+- [SAML/SSO](https://doc.owncloud.com/server/latest/admin_manual/enterprise/user_management/user_auth_shibboleth.html)
+- [OAuth2](https://doc.owncloud.com/server/latest/admin_manual/configuration/user/user_oauth2.html)
+- [OpenID Connect](https://doc.owncloud.com/server/latest/admin_manual/configuration/user/oidc/oidc.html)
 
 This guide will focus on OpenID Connect (OIDC).
 
@@ -54,39 +54,39 @@ Parameters not listed here should be left as the default values, or can be custo
 
 The following settings are common for the Web UI, and Desktop/Android/iOS applications:
 
--   General Settings:
-    -   Name: owncloud (or owncloud-desktop, owncloud-android, etc.)
--   Protocol Settings:
-    -   Signing Key: select the signing key you wish to use
--   Advanced Protocol Settings:
-    -   Scopes: email, offline_access, openid, profile
+- General Settings:
+    - Name: owncloud (or owncloud-desktop, owncloud-android, etc.)
+- Protocol Settings:
+    - Signing Key: select the signing key you wish to use
+- Advanced Protocol Settings:
+    - Scopes: email, offline_access, openid, profile
 
 The following settings are different for the different ownCloud applications:
 
--   Web UI
-    -   Protocol Settings:
-        -   Client ID: use generated authentik value (or customize if you wish)
-        -   Client Secret: use generated authentik value (or customize if you wish)
-        -   Redirect URIs: `https://owncloud.company/apps/openidconnect/redirect`
--   Desktop Application:
-    -   Protocol Settings:
-        -   Client ID: use the pre-defined values from [ownCloud](https://doc.owncloud.com/server/latest/admin_manual/configuration/user/oidc/oidc.html#client-id)
-        -   Client Secret: use the pre-defined values from [ownCloud](https://doc.owncloud.com/server/latest/admin_manual/configuration/user/oidc/oidc.html#client-secret)
-        -   Redirect URI:
+- Web UI
+    - Protocol Settings:
+        - Client ID: use generated authentik value (or customize if you wish)
+        - Client Secret: use generated authentik value (or customize if you wish)
+        - Redirect URIs: `https://owncloud.company/apps/openidconnect/redirect`
+- Desktop Application:
+    - Protocol Settings:
+        - Client ID: use the pre-defined values from [ownCloud](https://doc.owncloud.com/server/latest/admin_manual/configuration/user/oidc/oidc.html#client-id)
+        - Client Secret: use the pre-defined values from [ownCloud](https://doc.owncloud.com/server/latest/admin_manual/configuration/user/oidc/oidc.html#client-secret)
+        - Redirect URI:
             ```
             http://localhost:\d+
             http://127.0.0.1:\d+
             ```
--   Android Application:
-    -   Protocol Settings:
-        -   Client ID: use the pre-defined values from [ownCloud](https://doc.owncloud.com/server/latest/admin_manual/configuration/user/oidc/oidc.html#client-id)
-        -   Client Secret: use the pre-defined values from [ownCloud](https://doc.owncloud.com/server/latest/admin_manual/configuration/user/oidc/oidc.html#client-secret)
-        -   Redirect URI: `oc://android.owncloud.com`
--   iOS Application:
-    -   Protocol Settings:
-        -   Client ID: use the pre-defined values from [ownCloud](https://doc.owncloud.com/server/latest/admin_manual/configuration/user/oidc/oidc.html#client-id)
-        -   Client Secret: use the pre-defined values from [ownCloud](https://doc.owncloud.com/server/latest/admin_manual/configuration/user/oidc/oidc.html#client-secret)
-        -   Redirect URI: `oc://ios.owncloud.com`
+- Android Application:
+    - Protocol Settings:
+        - Client ID: use the pre-defined values from [ownCloud](https://doc.owncloud.com/server/latest/admin_manual/configuration/user/oidc/oidc.html#client-id)
+        - Client Secret: use the pre-defined values from [ownCloud](https://doc.owncloud.com/server/latest/admin_manual/configuration/user/oidc/oidc.html#client-secret)
+        - Redirect URI: `oc://android.owncloud.com`
+- iOS Application:
+    - Protocol Settings:
+        - Client ID: use the pre-defined values from [ownCloud](https://doc.owncloud.com/server/latest/admin_manual/configuration/user/oidc/oidc.html#client-id)
+        - Client Secret: use the pre-defined values from [ownCloud](https://doc.owncloud.com/server/latest/admin_manual/configuration/user/oidc/oidc.html#client-secret)
+        - Redirect URI: `oc://ios.owncloud.com`
 
 ##### Applications
 
@@ -94,17 +94,17 @@ The following settings are different for the different ownCloud applications:
 
 In the authentik Admin Interface, go to **Applications -> Applications**, and create a new Application with the following settings for each of the providers defined above:
 
--   Name: owncloud, owncloud-desktop, owncloud-android, or owncloud-ios
--   Slug: same as name
--   Provider: one of the providers you created in the previous section
--   UI Settings:
-    -   Launch URL: You can set this to `blank://blank` to prevent the application from being listed on the authentik
-        home page. This may be useful for the desktop, android and ios applications, since you will not be able
-        to navigate directly to those applications.
-        :::note
-        Sometimes this field glitches out when creating the application, you may need to save the application and then
-        edit it to fill this field.
-        :::
+- Name: owncloud, owncloud-desktop, owncloud-android, or owncloud-ios
+- Slug: same as name
+- Provider: one of the providers you created in the previous section
+- UI Settings:
+    - Launch URL: You can set this to `blank://blank` to prevent the application from being listed on the authentik
+      home page. This may be useful for the desktop, android and ios applications, since you will not be able
+      to navigate directly to those applications.
+      :::note
+      Sometimes this field glitches out when creating the application, you may need to save the application and then
+      edit it to fill this field.
+      :::
 
 ##### Service Discovery
 
