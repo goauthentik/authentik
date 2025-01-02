@@ -11,7 +11,7 @@ sidebar_label: Veeam Enterprise Manager
 
 > Veeam Backup Enterprise Manager (Enterprise Manager) is a management and reporting component that allows you to manage multiple Veeam Backup & Replication installations from a single web console. Veeam Backup Enterprise Manager helps you optimize performance in remote office/branch office (ROBO) and large-scale deployments and maintain a view of your entire virtual environment.
 >
-> -- https://helpcenter.veeam.com/docs/backup/em/introduction.html?ver=100
+> -- https://helpcenter.veeam.com/docs/backup/em/introduction.html
 
 ## Preparation
 
