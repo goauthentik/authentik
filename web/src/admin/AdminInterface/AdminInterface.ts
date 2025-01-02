@@ -8,7 +8,7 @@ import {
 import { configureSentry } from "@goauthentik/common/sentry";
 import { me } from "@goauthentik/common/users";
 import { WebsocketClient } from "@goauthentik/common/ws";
-import { EnterpriseAwareInterface } from "@goauthentik/elements/Interface";
+import { AuthenticatedInterface } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/ak-locale-context";
 import "@goauthentik/elements/enterprise/EnterpriseStatusBanner";
 import "@goauthentik/elements/messages/MessageContainer";
@@ -29,12 +29,12 @@ import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { SessionUser, UiThemeEnum, Version } from "@goauthentik/api";
+import { SessionUser, UiThemeEnum } from "@goauthentik/api";
 
 import "./AdminSidebar";
 
 @customElement("ak-interface-admin")
-export class AdminInterface extends EnterpriseAwareInterface {
+export class AdminInterface extends AuthenticatedInterface {
     @property({ type: Boolean })
     notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
 
@@ -42,9 +42,6 @@ export class AdminInterface extends EnterpriseAwareInterface {
     apiDrawerOpen = getURLParam("apiDrawerOpen", false);
 
     ws: WebsocketClient;
-
-    @state()
-    version?: Version;
 
     @state()
     user?: SessionUser;

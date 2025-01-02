@@ -15,7 +15,7 @@ sidebar_label: HashiCorp Cloud Platform
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of authentik.
 

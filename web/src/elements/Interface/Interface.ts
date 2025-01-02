@@ -20,7 +20,6 @@ export type AkInterface = HTMLElement & {
     brand?: CurrentBrand;
     uiConfig?: UIConfig;
     config?: Config;
-    version?: Version;
 };
 
 const brandContext = Symbol("brandContext");
@@ -29,16 +28,14 @@ const modalController = Symbol("modalController");
 const versionContext = Symbol("versionContext");
 
 export class Interface extends AKElement implements AkInterface {
-    @state()
-    uiConfig?: UIConfig;
-
     [brandContext]!: BrandContextController;
 
     [configContext]!: ConfigContextController;
 
     [modalController]!: ModalOrchestrationController;
 
-    [versionContext]!: VersionContextController;
+    @state()
+    uiConfig?: UIConfig;
 
     @state()
     config?: Config;
@@ -57,7 +54,6 @@ export class Interface extends AKElement implements AkInterface {
         this[brandContext] = new BrandContextController(this);
         this[configContext] = new ConfigContextController(this);
         this[modalController] = new ModalOrchestrationController(this);
-        this[versionContext] = new VersionContextController(this);
     }
 
     _activateTheme(theme: UiThemeEnum, ...roots: DocumentOrShadowRoot[]): void {
@@ -83,20 +79,30 @@ export class Interface extends AKElement implements AkInterface {
     }
 }
 
-export type AkEnterpriseInterface = AkInterface & {
+export type AkAuthenticatedInterface = AkInterface & {
     licenseSummary?: LicenseSummary;
+    version?: Version;
 };
 
 const enterpriseContext = Symbol("enterpriseContext");
 
-export class EnterpriseAwareInterface extends Interface {
+export class AuthenticatedInterface extends Interface {
     [enterpriseContext]!: EnterpriseContextController;
+    [versionContext]!: VersionContextController;
 
     @state()
     licenseSummary?: LicenseSummary;
 
+    @state()
+    version?: Version;
+
     constructor() {
         super();
+    }
+
+    _initContexts(): void {
+        super._initContexts();
         this[enterpriseContext] = new EnterpriseContextController(this);
+        this[versionContext] = new VersionContextController(this);
     }
 }

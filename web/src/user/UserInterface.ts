@@ -11,7 +11,7 @@ import { me } from "@goauthentik/common/users";
 import { WebsocketClient } from "@goauthentik/common/ws";
 import "@goauthentik/components/ak-nav-buttons";
 import { AKElement } from "@goauthentik/elements/Base";
-import { EnterpriseAwareInterface } from "@goauthentik/elements/Interface";
+import { AuthenticatedInterface } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/ak-locale-context";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/enterprise/EnterpriseStatusBanner";
@@ -253,7 +253,7 @@ class UserInterfacePresentation extends AKElement {
 //
 //
 @customElement("ak-interface-user")
-export class UserInterface extends EnterpriseAwareInterface {
+export class UserInterface extends AuthenticatedInterface {
     @property({ type: Boolean })
     notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
 

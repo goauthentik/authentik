@@ -28,7 +28,7 @@ There are 2 ways to configure single sign on (SSO) for GitLab:
 
 #### Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `gitlab.company` is the FQDN of the GitLab Install
 - `authentik.company` is the FQDN of the authentik Install
@@ -83,7 +83,7 @@ Afterwards, either run `gitlab-ctl reconfigure` if you're running GitLab Omnibus
 
 #### Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `gitlab.company` is the FQDN of the GitLab Install
 - `authentik.company` is the FQDN of the authentik Install

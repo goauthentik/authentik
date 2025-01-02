@@ -9,14 +9,14 @@ import type { ReactiveController } from "lit";
 import type { Version } from "@goauthentik/api";
 import { AdminApi } from "@goauthentik/api";
 
-import type { AkInterface } from "./Interface";
+import type { AkAuthenticatedInterface } from "./Interface";
 
 export class VersionContextController implements ReactiveController {
-    host!: ReactiveElementHost<AkInterface>;
+    host!: ReactiveElementHost<AkAuthenticatedInterface>;
 
     context!: ContextProvider<{ __context__: Version | undefined }>;
 
-    constructor(host: ReactiveElementHost<AkInterface>) {
+    constructor(host: ReactiveElementHost<AkAuthenticatedInterface>) {
         this.host = host;
         this.context = new ContextProvider(this.host, {
             context: authentikVersionContext,

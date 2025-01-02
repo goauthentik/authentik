@@ -20,7 +20,7 @@ If you are using the Xen Orchestra Appliance, the OIDC Plugin should be present.
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `xenorchestra.company` is the FQDN of the Xen Orchestra instance.
 - `authentik.company` is the FQDN of the authentik install.

@@ -83,6 +83,7 @@ module.exports = {
                         "services/harbor/index",
                         "services/hashicorp-vault/index",
                         "services/jenkins/index",
+                        "services/meshcentral/index",
                         "services/minio/index",
                         "services/netbox/index",
                         "services/pgadmin/index",
@@ -127,6 +128,7 @@ module.exports = {
                         "services/home-assistant/index",
                         "services/immich/index",
                         "services/jellyfin/index",
+                        "services/komga/index",
                         "services/node-red/index",
                         "services/sonar-qube/index",
                         "services/sonarr/index",
@@ -138,6 +140,7 @@ module.exports = {
                     type: "category",
                     label: "Monitoring",
                     items: [
+                        "services/chronograf/index",
                         "services/gatus/index",
                         "services/glitchtip/index",
                         "services/grafana/index",

@@ -16,7 +16,7 @@ sidebar_label: Sentry
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `sentry.company` is the FQDN of the Sentry install.
 - `authentik.company` is the FQDN of the authentik install.

@@ -15,9 +15,9 @@ sidebar_label: Cloudflare Access
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
-- `mysubdomain.cloudflareaccess.company` is the FQDN of your Cloudflare Access subdomain.
+- `company.cloudflareaccess.com` is the FQDN of your Cloudflare Access subdomain.
 - `authentik.company` is the FQDN of the authentik install.
 
 To proceed, you need to register for a free Cloudflare Access account and have both a Cloudflare account and a publicly accessible authentik instance with a trusted SSL certificate.
@@ -35,7 +35,7 @@ To proceed, you need to register for a free Cloudflare Access account and have b
 4. Choose **OAuth2/OpenID Provider** and then click **Next**.
 5. Set the authorization flow to **Authorize Application** (`default-provider-authorization-explicit-consent`).
 6. Set the client type to **Confidential**.
-7. Set the redirect URI to `https://mysubdomain.cloudflareaccess.company/cdn-cgi/access/callback`.
+7. Set the redirect URI to `https://company.cloudflareaccess.com/cdn-cgi/access/callback`.
 8. Ensure that the signing key is set to **Authentik Self-signed Certificate**.
 9. Click **Finish** to create the provider.
 

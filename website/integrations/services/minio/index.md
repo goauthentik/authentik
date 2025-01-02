@@ -15,7 +15,7 @@ sidebar_label: MinIO
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `minio.company` is the FQDN of the MinIO install.
 - `authentik.company` is the FQDN of the authentik install.
