@@ -92,3 +92,13 @@ def clean_temporary_users(self: SystemTask):
             deleted_users += 1
     messages.append(f"Successfully deleted {deleted_users} users.")
     self.set_status(TaskStatus.SUCCESSFUL, *messages)
+
+
+@CELERY_APP.task(bind=True, base=SystemTask)
+@prefill_task
+def manage_timescaledb_operations(self: SystemTask):
+    """Manage TimescaleDB-specific operations"""
+    messages = []
+    # Add your TimescaleDB-specific operations here
+    # For example, creating hypertables, managing chunks, etc.
+    self.set_status(TaskStatus.SUCCESSFUL, *messages)

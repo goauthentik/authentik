@@ -377,7 +377,29 @@ def django_db_config(config: ConfigLoader | None = None) -> dict:
             "TEST": {
                 "NAME": config.get("postgresql.test.name"),
             },
-        }
+        },
+        "timescaledb": {
+            "ENGINE": "django.db.backends.postgresql",
+            "HOST": config.get("timescaledb.host"),
+            "NAME": config.get("timescaledb.name"),
+            "USER": config.get("timescaledb.user"),
+            "PASSWORD": config.get("timescaledb.password"),
+            "PORT": config.get("timescaledb.port"),
+            "OPTIONS": {
+                "sslmode": config.get("timescaledb.sslmode"),
+                "sslrootcert": config.get("timescaledb.sslrootcert"),
+                "sslcert": config.get("timescaledb.sslcert"),
+                "sslkey": config.get("timescaledb.sslkey"),
+            },
+            "CONN_MAX_AGE": CONFIG.get_optional_int("timescaledb.conn_max_age", 0),
+            "CONN_HEALTH_CHECKS": CONFIG.get_bool("timescaledb.conn_health_checks", False),
+            "DISABLE_SERVER_SIDE_CURSORS": CONFIG.get_bool(
+                "timescaledb.disable_server_side_cursors", False
+            ),
+            "TEST": {
+                "NAME": config.get("timescaledb.test.name"),
+            },
+        },
     }
 
     conn_max_age = CONFIG.get_optional_int("postgresql.conn_max_age", UNSET)

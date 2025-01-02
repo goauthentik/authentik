@@ -266,7 +266,7 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
     path = models.TextField(default="users")
     type = models.TextField(choices=UserTypes.choices, default=UserTypes.INTERNAL)
 
-    sources = models.ManyToManyField("Source", through="UserSourceConnection")
+    sources = models.ManyToManyField("Source", through "UserSourceConnection")
     ak_groups = models.ManyToManyField("Group", related_name="users")
     password_change_date = models.DateTimeField(auto_now_add=True)
 
@@ -1019,3 +1019,18 @@ class AuthenticatedSession(ExpiringModel):
             last_user_agent=request.META.get("HTTP_USER_AGENT", ""),
             expires=request.session.get_expiry_date(),
         )
+
+
+class TimescaleDBModel(models.Model):
+    """Base model for TimescaleDB-specific models"""
+
+    class Meta:
+        abstract = True
+        managed = False
+        db_table = "timescaledb_model"
+
+    @classmethod
+    def create_hypertable(cls):
+        """Create a hypertable for this model"""
+        with connection.cursor() as cursor:
+            cursor.execute(f"SELECT create_hypertable('{cls._meta.db_table}', 'time');")

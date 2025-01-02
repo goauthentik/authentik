@@ -13,6 +13,15 @@ postgresql:
   # 0:
   #   host: replica1.example.com
 
+timescaledb:
+  host: localhost
+  name: authentik_timescale
+  user: authentik
+  port: 5433
+  password: "env://TIMESCALE_PASSWORD"
+  test:
+    name: test_authentik_timescale
+
 listen:
   listen_http: 0.0.0.0:9000
   listen_https: 0.0.0.0:9443

@@ -102,7 +102,7 @@ class TestConfig(TestCase):
         file2, file2_name = mkstemp()
         write(file2, b"{")
         chmod(file2_name, 0o000)  # Remove all permissions so we can't read the file
-        with self.assertRaises(ImproperlyConfigured):
+        with self.assertRaises(ImproperConfigured):
             config.update_from_file(file_name)
         config.update_from_file(file2_name)
         unlink(file_name)
@@ -329,7 +329,7 @@ class TestConfig(TestCase):
                     "HOST": "bar",
                     "NAME": "foo",
                     "OPTIONS": {
-                        "sslcert": "foo",
+                        "sslcert": "bar",
                         "sslkey": "foo",
                         "sslmode": "foo",
                         "sslrootcert": "foo",
@@ -459,6 +459,44 @@ class TestConfig(TestCase):
                     "DISABLE_SERVER_SIDE_CURSORS": False,
                     "CONN_MAX_AGE": 0,
                     "CONN_HEALTH_CHECKS": False,
+                },
+            },
+        )
+
+    def test_timescaledb_config(self):
+        """Test TimescaleDB Config"""
+        config = ConfigLoader()
+        config.set("timescaledb.host", "timescale_host")
+        config.set("timescaledb.name", "timescale_db")
+        config.set("timescaledb.user", "timescale_user")
+        config.set("timescaledb.password", "timescale_password")
+        config.set("timescaledb.port", "timescale_port")
+        config.set("timescaledb.sslmode", "timescale_sslmode")
+        config.set("timescaledb.sslrootcert", "timescale_sslrootcert")
+        config.set("timescaledb.sslcert", "timescale_sslcert")
+        config.set("timescaledb.sslkey", "timescale_sslkey")
+        config.set("timescaledb.test.name", "timescale_test_db")
+        conf = django_db_config(config)
+        self.assertEqual(
+            conf["timescaledb"],
+            {
+                "ENGINE": "django.db.backends.postgresql",
+                "HOST": "timescale_host",
+                "NAME": "timescale_db",
+                "USER": "timescale_user",
+                "PASSWORD": "timescale_password",
+                "PORT": "timescale_port",
+                "OPTIONS": {
+                    "sslmode": "timescale_sslmode",
+                    "sslrootcert": "timescale_sslrootcert",
+                    "sslcert": "timescale_sslcert",
+                    "sslkey": "timescale_sslkey",
+                },
+                "CONN_MAX_AGE": 0,
+                "CONN_HEALTH_CHECKS": False,
+                "DISABLE_SERVER_SIDE_CURSORS": False,
+                "TEST": {
+                    "NAME": "timescale_test_db",
                 },
             },
         )
