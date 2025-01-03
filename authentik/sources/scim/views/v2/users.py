@@ -112,9 +112,15 @@ class UsersView(SCIMObjectView):
 
     def post(self, request: Request, **kwargs) -> Response:
         """Create user handler"""
-        connection = SCIMSourceUser.objects.filter(
-            source=self.source,
-            user__uuid=request.data.get("id"),
+        connection = (
+            SCIMSourceUser.objects.filter(
+                source=self.source,
+                user__uuid=request.data.get("id"),
+            )
+            | SCIMSourceUser.objects.filter(
+                source=self.source,
+                user__username=request.data.get("userName"),
+            )
         ).first()
         if connection:
             self.logger.debug("Found existing user")
