@@ -93,15 +93,15 @@ class TestSCIMUsers(APITestCase):
         user = create_test_user()
         username = generate_id()
         obj1 = {
-                    "userName": username,
-                    "externalId": generate_id(),
-                    "emails": [
-                        {
-                            "primary": True,
-                            "value": user.email,
-                        }
-                    ],
+            "userName": username,
+            "externalId": generate_id(),
+            "emails": [
+                {
+                    "primary": True,
+                    "value": user.email,
                 }
+            ],
+        }
         obj2 = obj1.copy()
         obj2.update({"externalId": generate_id()})
         response = self.client.post(
@@ -116,7 +116,9 @@ class TestSCIMUsers(APITestCase):
             HTTP_AUTHORIZATION=f"Bearer {self.source.token.key}",
         )
         self.assertEqual(response.status_code, 201)
-        self.assertTrue(SCIMSourceUser.objects.filter(source=self.source, user__username=username).exists())
+        self.assertTrue(
+            SCIMSourceUser.objects.filter(source=self.source, user__username=username).exists()
+        )
         self.assertTrue(
             Event.objects.filter(
                 action=EventAction.MODEL_CREATED, user__username=self.source.token.user.username
