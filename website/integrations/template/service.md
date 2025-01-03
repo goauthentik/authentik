@@ -35,3 +35,7 @@ Insert authentik configuration
 1. Write first step here...
 
 2. Continue with steps....
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Service Name, log out and log back in via authentik. Specify the validation method (e.g., clicking a button), including its location and label for clarity.
