@@ -43,7 +43,7 @@ Additional info: [22.1.2. Enabling Password Reset Without Prompting for a Passwo
 
 ## authentik Setup
 
-In authentik, create a new LDAP Source in Resources -> Sources.
+In authentik, create a new LDAP Source in Directory -> Federation & Social login.
 
 Use these settings:
 
