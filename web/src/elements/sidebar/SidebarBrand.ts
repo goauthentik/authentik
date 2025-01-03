@@ -3,6 +3,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import { themeImage } from "@goauthentik/elements/utils/images";
 
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
@@ -86,7 +87,7 @@ export class SidebarBrand extends WithBrandConfig(AKElement) {
                 <div class="pf-c-brand ak-brand">
                     <img
                         src=${themeImage(this.brand?.brandingLogo ?? DefaultBrand.brandingLogo)}
-                        alt="authentik Logo"
+                        alt="${msg("authentik Logo")}"
                         loading="lazy"
                     />
                 </div>
