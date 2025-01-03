@@ -129,6 +129,7 @@ module.exports = {
                         "services/jellyfin/index",
                         "services/komga/index",
                         "services/node-red/index",
+                        "services/semaphore/index",
                         "services/sonar-qube/index",
                         "services/sonarr/index",
                         "services/tautulli/index",

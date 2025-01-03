@@ -8,6 +8,7 @@ import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
 import { themeImage } from "@goauthentik/elements/utils/images";
 import "rapidoc";
 
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -102,7 +103,7 @@ export class APIBrowser extends Interface {
                 >
                     <div slot="nav-logo">
                         <img
-                            alt="authentik Logo"
+                            alt="${msg("authentik Logo")}"
                             class="logo"
                             src="${themeImage(
                                 first(this.brand?.brandingLogo, DefaultBrand.brandingLogo),

@@ -515,7 +515,7 @@ export class FlowExecutor extends Interface implements StageHost {
                                                             DefaultBrand.brandingLogo,
                                                         ),
                                                     )}"
-                                                    alt="authentik Logo"
+                                                    alt="${msg("authentik Logo")}"
                                                 />
                                             </div>
                                             ${until(this.renderChallenge())}
