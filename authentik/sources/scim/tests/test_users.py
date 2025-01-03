@@ -88,6 +88,53 @@ class TestSCIMUsers(APITestCase):
             ).exists()
         )
 
+    def test_user_create_duplicate_by_username(self):
+        """Test user create"""
+        user = create_test_user()
+        username = generate_id()
+        obj1 = {
+                    "userName": username,
+                    "externalId": generate_id(),
+                    "emails": [
+                        {
+                            "primary": True,
+                            "value": user.email,
+                        }
+                    ],
+                }
+        obj2 = obj1.copy()
+        obj2.update({"externalId": generate_id()})
+        response = self.client.post(
+            reverse(
+                "authentik_sources_scim:v2-users",
+                kwargs={
+                    "source_slug": self.source.slug,
+                },
+            ),
+            data=dumps(obj1),
+            content_type=SCIM_CONTENT_TYPE,
+            HTTP_AUTHORIZATION=f"Bearer {self.source.token.key}",
+        )
+        self.assertEqual(response.status_code, 201)
+        self.assertTrue(SCIMSourceUser.objects.filter(source=self.source, user__username=username).exists())
+        self.assertTrue(
+            Event.objects.filter(
+                action=EventAction.MODEL_CREATED, user__username=self.source.token.user.username
+            ).exists()
+        )
+        response = self.client.post(
+            reverse(
+                "authentik_sources_scim:v2-users",
+                kwargs={
+                    "source_slug": self.source.slug,
+                },
+            ),
+            data=dumps(obj2),
+            content_type=SCIM_CONTENT_TYPE,
+            HTTP_AUTHORIZATION=f"Bearer {self.source.token.key}",
+        )
+        self.assertEqual(response.status_code, 409)
+
     def test_user_property_mappings(self):
         """Test user property_mappings"""
         self.source.user_property_mappings.set(
