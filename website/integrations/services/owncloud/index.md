@@ -90,46 +90,13 @@ Configure the following settings differently for each ownCloud application:
   - **Redirect URI**:  
     - Strict: `oc://ios.owncloud.com`
 
-##### Applicationss
+### Service Discovery
 
-#### ownCloud
+To enable ownCloud applications to log in via OIDC, your reverse proxy must be configured to rewrite https://owncloud.company/.well-known/openid-configuration` to `https://owncloud.company/index.php/apps/openidconnect/config`
 
-In the authentik Admin Interface, go to **Applications -> Applications**, and create a new Application with the following settings for each of the providers defined above:
+Refer to the [ownCloud Admin Manual](https://doc.owncloud.com/server/latest/admin_manual/configuration/user/oidc/oidc.html#set-up-service-discovery) for an example configuration using [Apache HTTPD](https://httpd.apache.org/).  
 
-- Name: owncloud, owncloud-desktop, owncloud-android, or owncloud-ios
-- Slug: same as name
-- Provider: one of the providers you created in the previous section
-- UI Settings:
-    - Launch URL: You can set this to `blank://blank` to prevent the application from being listed on the authentik
-      home page. This may be useful for the desktop, android and ios applications, since you will not be able
-      to navigate directly to those applications.
-      :::note
-      Sometimes this field glitches out when creating the application, you may need to save the application and then
-      edit it to fill this field.
-      :::
-
-##### Service Discovery
-
-In order for the ownCloud Applications to be able to login via OIDC, your reverse proxy will have to be configured to rewrite
-
-`https://owncloud.company/.well-known/openid-configuration`
-
-to
-
-`https://owncloud.company/index.php/apps/openidconnect/config`
-
-The ownCloud [documentation](https://doc.owncloud.com/server/latest/admin_manual/configuration/user/oidc/oidc.html#set-up-service-discovery) includes an example for accomplishing this with Apache.
-
-In Traefik, use the [replacepathregex](https://doc.traefik.io/traefik/middlewares/http/replacepathregex/) middleware to accomplish the same thing.
-When using Traefik in docker-compose as your reverse proxy, add the following labels to your container. See examples in the docs linked above to accomplish this for other Traefik configurations.
-
-```yaml
-labels:
-  ... # other labels for this service/router
-  traefik.http.routers.owncloud.middlewares: owncloud-oidc-rewrite
-  traefik.http.middlewares.owncloud-oidc-rewrite.replacepathregex.regex: ^/\.well-known/openid-configuration
-  traefik.http.middlewares.owncloud-oidc-rewrite.replacepathregex.replacement: /index.php/apps/openidconnect/config
-```
+For other reverse proxies, consult the provider-specific documentation for guidance on implementing this rewrite rule.
 
 ##### ownCloud OIDC Plugin
 
