@@ -38,15 +38,17 @@ Follow these steps to configure authentik:
 2. Go to **Applications** > **Applications**.
 3. Create the following **OAuth2/OpenID Connect** applications using the wizard.
 
-### General Settings
+### Configuration
+
+#### General Settings
 
 - **Name**: Use a descriptive name (e.g., `owncloud`, `owncloud-desktop`, `owncloud-android`, `owncloud-ios`).
 
-### Protocol Settings
+#### Protocol Settings
 
 - **Signing Key**: Select the signing key you wish to use.
 
-### Advanced Protocol Settings
+#### Advanced Protocol Settings
 
 - **Scopes**: `email`, `offline_access`, `openid`, `profile`
 
