@@ -3,8 +3,8 @@ Outputs:
   LoadBalancerDNS:
     Value:
       Fn::GetAtt:
-      - AuthentikALB992EAB01
-      - DNSName
+        - AuthentikALB992EAB01
+        - DNSName
 Parameters:
   AuthentikImage:
     Default: ghcr.io/goauthentik/server
@@ -53,7 +53,7 @@ Parameters:
     MinValue: 10
     Type: Number
   DBVersion:
-    Default: '17.1'
+    Default: "17.1"
     Description: RDS PostgreSQL version
     Type: String
   RedisInstanceType:
@@ -61,30 +61,30 @@ Parameters:
     Description: ElastiCache Redis instance type (with the leading cache.)
     Type: String
   RedisVersion:
-    Default: '7.1'
+    Default: "7.1"
     Description: ElastiCache Redis version
     Type: String
 Resources:
   AuthentikALB992EAB01:
     DependsOn:
-    - AuthentikVpcPublicSubnet1DefaultRoute90C4189A
-    - AuthentikVpcPublicSubnet1RouteTableAssociation33E57E0C
-    - AuthentikVpcPublicSubnet2DefaultRoute2E9B0EBA
-    - AuthentikVpcPublicSubnet2RouteTableAssociationDA2BDD26
+      - AuthentikVpcPublicSubnet1DefaultRoute90C4189A
+      - AuthentikVpcPublicSubnet1RouteTableAssociation33E57E0C
+      - AuthentikVpcPublicSubnet2DefaultRoute2E9B0EBA
+      - AuthentikVpcPublicSubnet2RouteTableAssociationDA2BDD26
     Metadata:
       aws:cdk:path: AuthentikStack/AuthentikALB/Resource
     Properties:
       LoadBalancerAttributes:
-      - Key: deletion_protection.enabled
-        Value: 'false'
+        - Key: deletion_protection.enabled
+          Value: "false"
       Scheme: internet-facing
       SecurityGroups:
-      - Fn::GetAtt:
-        - AuthentikALBSecurityGroup2B18FEEF
-        - GroupId
+        - Fn::GetAtt:
+            - AuthentikALBSecurityGroup2B18FEEF
+            - GroupId
       Subnets:
-      - Ref: AuthentikVpcPublicSubnet1Subnet0C75862A
-      - Ref: AuthentikVpcPublicSubnet2Subnet4DFAFA5B
+        - Ref: AuthentikVpcPublicSubnet1Subnet0C75862A
+        - Ref: AuthentikVpcPublicSubnet2Subnet4DFAFA5B
       Type: application
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
   AuthentikALBAuthentikHttpListener6825393B:
@@ -92,10 +92,10 @@ Resources:
       aws:cdk:path: AuthentikStack/AuthentikALB/AuthentikHttpListener/Resource
     Properties:
       DefaultActions:
-      - RedirectConfig:
-          Protocol: HTTPS
-          StatusCode: HTTP_301
-        Type: redirect
+        - RedirectConfig:
+            Protocol: HTTPS
+            StatusCode: HTTP_301
+          Type: redirect
       LoadBalancerArn:
         Ref: AuthentikALB992EAB01
       Port: 80
@@ -106,12 +106,12 @@ Resources:
       aws:cdk:path: AuthentikStack/AuthentikALB/AuthentikHttpsListener/Resource
     Properties:
       Certificates:
-      - CertificateArn:
-          Ref: CertificateARN
+        - CertificateArn:
+            Ref: CertificateARN
       DefaultActions:
-      - TargetGroupArn:
-          Ref: AuthentikALBAuthentikHttpsListenerAuthentikServerTargetGroup345C3479
-        Type: forward
+        - TargetGroupArn:
+            Ref: AuthentikALBAuthentikHttpsListenerAuthentikServerTargetGroup345C3479
+          Type: forward
       LoadBalancerArn:
         Ref: AuthentikALB992EAB01
       Port: 443
@@ -123,12 +123,12 @@ Resources:
     Properties:
       HealthCheckPath: /-/health/live/
       Matcher:
-        HttpCode: '200'
+        HttpCode: "200"
       Port: 9000
       Protocol: HTTP
       TargetGroupAttributes:
-      - Key: stickiness.enabled
-        Value: 'false'
+        - Key: stickiness.enabled
+          Value: "false"
       TargetType: ip
       VpcId:
         Ref: AuthentikVpcA1ABE6C2
@@ -139,16 +139,16 @@ Resources:
     Properties:
       GroupDescription: Automatically created Security Group for ELB AuthentikStackAuthentikALB07C6B2CD
       SecurityGroupIngress:
-      - CidrIp: 0.0.0.0/0
-        Description: Allow from anyone on port 80
-        FromPort: 80
-        IpProtocol: tcp
-        ToPort: 80
-      - CidrIp: 0.0.0.0/0
-        Description: Allow from anyone on port 443
-        FromPort: 443
-        IpProtocol: tcp
-        ToPort: 443
+        - CidrIp: 0.0.0.0/0
+          Description: Allow from anyone on port 80
+          FromPort: 80
+          IpProtocol: tcp
+          ToPort: 80
+        - CidrIp: 0.0.0.0/0
+          Description: Allow from anyone on port 443
+          FromPort: 443
+          IpProtocol: tcp
+          ToPort: 443
       VpcId:
         Ref: AuthentikVpcA1ABE6C2
     Type: AWS::EC2::SecurityGroup
@@ -159,13 +159,13 @@ Resources:
       Description: Load balancer to target
       DestinationSecurityGroupId:
         Fn::GetAtt:
-        - AuthentikSG3040E46F
-        - GroupId
+          - AuthentikSG3040E46F
+          - GroupId
       FromPort: 9000
       GroupId:
         Fn::GetAtt:
-        - AuthentikALBSecurityGroup2B18FEEF
-        - GroupId
+          - AuthentikALBSecurityGroup2B18FEEF
+          - GroupId
       IpProtocol: tcp
       ToPort: 9000
     Type: AWS::EC2::SecurityGroupEgress
@@ -183,9 +183,9 @@ Resources:
       CopyTagsToSnapshot: true
       DBInstanceClass:
         Fn::Join:
-        - ''
-        - - db.
-          - Ref: DBInstanceType
+          - ""
+          - - db.
+            - Ref: DBInstanceType
       DBName: authentik
       DBSubnetGroupName:
         Ref: AuthentikDBSubnetGroup03A9E1C9
@@ -194,23 +194,23 @@ Resources:
         Ref: DBVersion
       MasterUserPassword:
         Fn::Join:
-        - ''
-        - - '{{resolve:secretsmanager:'
-          - Ref: DBPassword67313E91
-          - :SecretString:password::}}
+          - ""
+          - - "{{resolve:secretsmanager:"
+            - Ref: DBPassword67313E91
+            - :SecretString:password::}}
       MasterUsername:
         Fn::Join:
-        - ''
-        - - '{{resolve:secretsmanager:'
-          - Ref: DBPassword67313E91
-          - :SecretString:username::}}
+          - ""
+          - - "{{resolve:secretsmanager:"
+            - Ref: DBPassword67313E91
+            - :SecretString:username::}}
       MultiAZ: true
       PubliclyAccessible: false
       StorageType: gp2
       VPCSecurityGroups:
-      - Fn::GetAtt:
-        - DatabaseSG2A23C222
-        - GroupId
+        - Fn::GetAtt:
+            - DatabaseSG2A23C222
+            - GroupId
     Type: AWS::RDS::DBInstance
     UpdateReplacePolicy: Snapshot
   AuthentikDBSubnetGroup03A9E1C9:
@@ -219,8 +219,8 @@ Resources:
     Properties:
       DBSubnetGroupDescription: Subnet group for AuthentikDB database
       SubnetIds:
-      - Ref: AuthentikVpcPrivateSubnet1Subnet6748EEA3
-      - Ref: AuthentikVpcPrivateSubnet2Subnet6B8E7123
+        - Ref: AuthentikVpcPrivateSubnet1Subnet6748EEA3
+        - Ref: AuthentikVpcPrivateSubnet2Subnet6B8E7123
     Type: AWS::RDS::DBSubnetGroup
   AuthentikMediaEFS4AB06689:
     DeletionPolicy: Retain
@@ -229,8 +229,8 @@ Resources:
     Properties:
       Encrypted: true
       FileSystemTags:
-      - Key: Name
-        Value: AuthentikStack/AuthentikMediaEFS
+        - Key: Name
+          Value: AuthentikStack/AuthentikMediaEFS
       PerformanceMode: generalPurpose
       ThroughputMode: bursting
     Type: AWS::EFS::FileSystem
@@ -240,18 +240,18 @@ Resources:
       aws:cdk:path: AuthentikStack/AuthentikMediaEFS/AuthentikMediaAccessPoint/Resource
     Properties:
       AccessPointTags:
-      - Key: Name
-        Value: AuthentikStack/AuthentikMediaEFS/AuthentikMediaAccessPoint
+        - Key: Name
+          Value: AuthentikStack/AuthentikMediaEFS/AuthentikMediaAccessPoint
       FileSystemId:
         Ref: AuthentikMediaEFS4AB06689
       PosixUser:
-        Gid: '1000'
-        Uid: '1000'
+        Gid: "1000"
+        Uid: "1000"
       RootDirectory:
         CreationInfo:
-          OwnerGid: '1000'
-          OwnerUid: '1000'
-          Permissions: '755'
+          OwnerGid: "1000"
+          OwnerUid: "1000"
+          Permissions: "755"
         Path: /media
     Type: AWS::EFS::AccessPoint
   AuthentikMediaEFSEfsMountTarget1D3A264C1:
@@ -261,9 +261,9 @@ Resources:
       FileSystemId:
         Ref: AuthentikMediaEFS4AB06689
       SecurityGroups:
-      - Fn::GetAtt:
-        - AuthentikMediaEFSSecurityGroup1840BA29
-        - GroupId
+        - Fn::GetAtt:
+            - AuthentikMediaEFSSecurityGroup1840BA29
+            - GroupId
       SubnetId:
         Ref: AuthentikVpcPrivateSubnet1Subnet6748EEA3
     Type: AWS::EFS::MountTarget
@@ -274,9 +274,9 @@ Resources:
       FileSystemId:
         Ref: AuthentikMediaEFS4AB06689
       SecurityGroups:
-      - Fn::GetAtt:
-        - AuthentikMediaEFSSecurityGroup1840BA29
-        - GroupId
+        - Fn::GetAtt:
+            - AuthentikMediaEFSSecurityGroup1840BA29
+            - GroupId
       SubnetId:
         Ref: AuthentikVpcPrivateSubnet2Subnet6B8E7123
     Type: AWS::EFS::MountTarget
@@ -286,9 +286,9 @@ Resources:
     Properties:
       GroupDescription: Security group for authentik media EFS
       SecurityGroupEgress:
-      - CidrIp: 0.0.0.0/0
-        Description: Allow all outbound traffic by default
-        IpProtocol: '-1'
+        - CidrIp: 0.0.0.0/0
+          Description: Allow all outbound traffic by default
+          IpProtocol: "-1"
       VpcId:
         Ref: AuthentikVpcA1ABE6C2
     Type: AWS::EC2::SecurityGroup
@@ -300,13 +300,13 @@ Resources:
       FromPort: 2049
       GroupId:
         Fn::GetAtt:
-        - AuthentikMediaEFSSecurityGroup1840BA29
-        - GroupId
+          - AuthentikMediaEFSSecurityGroup1840BA29
+          - GroupId
       IpProtocol: tcp
       SourceSecurityGroupId:
         Fn::GetAtt:
-        - AuthentikSG3040E46F
-        - GroupId
+          - AuthentikSG3040E46F
+          - GroupId
       ToPort: 2049
     Type: AWS::EC2::SecurityGroupIngress
   AuthentikRedis:
@@ -324,9 +324,9 @@ Resources:
       NumCacheClusters: 2
       ReplicationGroupDescription: Redis cluster for authentik
       SecurityGroupIds:
-      - Fn::GetAtt:
-        - RedisSGEA80AC17
-        - GroupId
+        - Fn::GetAtt:
+            - RedisSGEA80AC17
+            - GroupId
     Type: AWS::ElastiCache::ReplicationGroup
   AuthentikRedisSubnetGroup:
     Metadata:
@@ -334,8 +334,8 @@ Resources:
     Properties:
       Description: Subnet group for authentik ElastiCache Redis
       SubnetIds:
-      - Ref: AuthentikVpcPrivateSubnet1Subnet6748EEA3
-      - Ref: AuthentikVpcPrivateSubnet2Subnet6B8E7123
+        - Ref: AuthentikVpcPrivateSubnet1Subnet6748EEA3
+        - Ref: AuthentikVpcPrivateSubnet2Subnet6B8E7123
     Type: AWS::ElastiCache::SubnetGroup
   AuthentikSG3040E46F:
     Metadata:
@@ -343,9 +343,9 @@ Resources:
     Properties:
       GroupDescription: Security Group for authentik services
       SecurityGroupEgress:
-      - CidrIp: 0.0.0.0/0
-        Description: Allow all outbound traffic by default
-        IpProtocol: '-1'
+        - CidrIp: 0.0.0.0/0
+          Description: Allow all outbound traffic by default
+          IpProtocol: "-1"
       VpcId:
         Ref: AuthentikVpcA1ABE6C2
     Type: AWS::EC2::SecurityGroup
@@ -357,13 +357,13 @@ Resources:
       FromPort: 9000
       GroupId:
         Fn::GetAtt:
-        - AuthentikSG3040E46F
-        - GroupId
+          - AuthentikSG3040E46F
+          - GroupId
       IpProtocol: tcp
       SourceSecurityGroupId:
         Fn::GetAtt:
-        - AuthentikALBSecurityGroup2B18FEEF
-        - GroupId
+          - AuthentikALBSecurityGroup2B18FEEF
+          - GroupId
       ToPort: 9000
     Type: AWS::EC2::SecurityGroupIngress
   AuthentikSecretKeyAC972960:
@@ -378,10 +378,10 @@ Resources:
     UpdateReplacePolicy: Delete
   AuthentikServerService9C845914:
     DependsOn:
-    - AuthentikALBAuthentikHttpsListenerAuthentikServerTargetGroup345C3479
-    - AuthentikALBAuthentikHttpsListener34A9BF12
-    - AuthentikServerTaskTaskRoleDefaultPolicy4C2F360F
-    - AuthentikServerTaskTaskRole5BB06A73
+      - AuthentikALBAuthentikHttpsListenerAuthentikServerTargetGroup345C3479
+      - AuthentikALBAuthentikHttpsListener34A9BF12
+      - AuthentikServerTaskTaskRoleDefaultPolicy4C2F360F
+      - AuthentikServerTaskTaskRole5BB06A73
     Metadata:
       aws:cdk:path: AuthentikStack/AuthentikServerService/Service
     Properties:
@@ -401,20 +401,20 @@ Resources:
       HealthCheckGracePeriodSeconds: 60
       LaunchType: FARGATE
       LoadBalancers:
-      - ContainerName: AuthentikServerContainer
-        ContainerPort: 9000
-        TargetGroupArn:
-          Ref: AuthentikALBAuthentikHttpsListenerAuthentikServerTargetGroup345C3479
+        - ContainerName: AuthentikServerContainer
+          ContainerPort: 9000
+          TargetGroupArn:
+            Ref: AuthentikALBAuthentikHttpsListenerAuthentikServerTargetGroup345C3479
       NetworkConfiguration:
         AwsvpcConfiguration:
           AssignPublicIp: DISABLED
           SecurityGroups:
-          - Fn::GetAtt:
-            - AuthentikSG3040E46F
-            - GroupId
+            - Fn::GetAtt:
+                - AuthentikSG3040E46F
+                - GroupId
           Subnets:
-          - Ref: AuthentikVpcPrivateSubnet1Subnet6748EEA3
-          - Ref: AuthentikVpcPrivateSubnet2Subnet6B8E7123
+            - Ref: AuthentikVpcPrivateSubnet1Subnet6748EEA3
+            - Ref: AuthentikVpcPrivateSubnet2Subnet6B8E7123
       TaskDefinition:
         Ref: AuthentikServerTaskD2D47AE0
     Type: AWS::ECS::Service
@@ -429,91 +429,91 @@ Resources:
       aws:cdk:path: AuthentikStack/AuthentikServerTask/Resource
     Properties:
       ContainerDefinitions:
-      - Command:
-        - server
-        Environment:
-        - Name: AUTHENTIK_POSTGRESQL__HOST
-          Value:
-            Fn::GetAtt:
-            - AuthentikDB6710DB92
-            - Endpoint.Address
-        - Name: AUTHENTIK_POSTGRESQL__USER
-          Value: authentik
-        - Name: AUTHENTIK_REDIS__HOST
-          Value:
-            Fn::GetAtt:
-            - AuthentikRedis
-            - PrimaryEndPoint.Address
-        Essential: true
-        HealthCheck:
-          Command:
-          - CMD
-          - ak
-          - healthcheck
-          Interval: 30
-          Retries: 3
-          StartPeriod: 60
-          Timeout: 30
-        Image:
-          Fn::Join:
-          - ''
-          - - Ref: AuthentikImage
-            - ':'
-            - Ref: AuthentikVersion
-        LogConfiguration:
-          LogDriver: awslogs
-          Options:
-            awslogs-group:
-              Ref: AuthentikServerTaskAuthentikServerContainerLogGroup7E3C6881
-            awslogs-region:
-              Ref: AWS::Region
-            awslogs-stream-prefix: authentik-server
-        MountPoints:
-        - ContainerPath: /media
-          ReadOnly: false
-          SourceVolume: media
-        Name: AuthentikServerContainer
-        PortMappings:
-        - ContainerPort: 9000
-          Protocol: tcp
-        RestartPolicy:
-          Enabled: true
-        Secrets:
-        - Name: AUTHENTIK_POSTGRESQL__PASSWORD
-          ValueFrom:
+        - Command:
+            - server
+          Environment:
+            - Name: AUTHENTIK_POSTGRESQL__HOST
+              Value:
+                Fn::GetAtt:
+                  - AuthentikDB6710DB92
+                  - Endpoint.Address
+            - Name: AUTHENTIK_POSTGRESQL__USER
+              Value: authentik
+            - Name: AUTHENTIK_REDIS__HOST
+              Value:
+                Fn::GetAtt:
+                  - AuthentikRedis
+                  - PrimaryEndPoint.Address
+          Essential: true
+          HealthCheck:
+            Command:
+              - CMD
+              - ak
+              - healthcheck
+            Interval: 30
+            Retries: 3
+            StartPeriod: 60
+            Timeout: 30
+          Image:
             Fn::Join:
-            - ''
-            - - Ref: DBPassword67313E91
-              - ':password::'
-        - Name: AUTHENTIK_SECRET_KEY
-          ValueFrom:
-            Ref: AuthentikSecretKeyAC972960
+              - ""
+              - - Ref: AuthentikImage
+                - ":"
+                - Ref: AuthentikVersion
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group:
+                Ref: AuthentikServerTaskAuthentikServerContainerLogGroup7E3C6881
+              awslogs-region:
+                Ref: AWS::Region
+              awslogs-stream-prefix: authentik-server
+          MountPoints:
+            - ContainerPath: /media
+              ReadOnly: false
+              SourceVolume: media
+          Name: AuthentikServerContainer
+          PortMappings:
+            - ContainerPort: 9000
+              Protocol: tcp
+          RestartPolicy:
+            Enabled: true
+          Secrets:
+            - Name: AUTHENTIK_POSTGRESQL__PASSWORD
+              ValueFrom:
+                Fn::Join:
+                  - ""
+                  - - Ref: DBPassword67313E91
+                    - ":password::"
+            - Name: AUTHENTIK_SECRET_KEY
+              ValueFrom:
+                Ref: AuthentikSecretKeyAC972960
       Cpu:
         Ref: AuthentikServerCPU
       ExecutionRoleArn:
         Fn::GetAtt:
-        - AuthentikServerTaskExecutionRole053E3BF5
-        - Arn
+          - AuthentikServerTaskExecutionRole053E3BF5
+          - Arn
       Family: AuthentikStackAuthentikServerTask23085F62
       Memory:
         Ref: AuthentikServerMemory
       NetworkMode: awsvpc
       RequiresCompatibilities:
-      - FARGATE
+        - FARGATE
       TaskRoleArn:
         Fn::GetAtt:
-        - AuthentikServerTaskTaskRole5BB06A73
-        - Arn
+          - AuthentikServerTaskTaskRole5BB06A73
+          - Arn
       Volumes:
-      - EFSVolumeConfiguration:
-          AuthorizationConfig:
-            AccessPointId:
-              Ref: AuthentikMediaEFSAuthentikMediaAccessPointA60D3CC7
-            IAM: ENABLED
-          FilesystemId:
-            Ref: AuthentikMediaEFS4AB06689
-          TransitEncryption: ENABLED
-        Name: media
+        - EFSVolumeConfiguration:
+            AuthorizationConfig:
+              AccessPointId:
+                Ref: AuthentikMediaEFSAuthentikMediaAccessPointA60D3CC7
+              IAM: ENABLED
+            FilesystemId:
+              Ref: AuthentikMediaEFS4AB06689
+            TransitEncryption: ENABLED
+          Name: media
     Type: AWS::ECS::TaskDefinition
   AuthentikServerTaskExecutionRole053E3BF5:
     Metadata:
@@ -521,11 +521,11 @@ Resources:
     Properties:
       AssumeRolePolicyDocument:
         Statement:
-        - Action: sts:AssumeRole
-          Effect: Allow
-          Principal:
-            Service: ecs-tasks.amazonaws.com
-        Version: '2012-10-17'
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+        Version: "2012-10-17"
     Type: AWS::IAM::Role
   AuthentikServerTaskExecutionRoleDefaultPolicy5AE74030:
     Metadata:
@@ -533,30 +533,30 @@ Resources:
     Properties:
       PolicyDocument:
         Statement:
-        - Action:
-          - logs:CreateLogStream
-          - logs:PutLogEvents
-          Effect: Allow
-          Resource:
-            Fn::GetAtt:
-            - AuthentikServerTaskAuthentikServerContainerLogGroup7E3C6881
-            - Arn
-        - Action:
-          - secretsmanager:GetSecretValue
-          - secretsmanager:DescribeSecret
-          Effect: Allow
-          Resource:
-            Ref: DBPassword67313E91
-        - Action:
-          - secretsmanager:GetSecretValue
-          - secretsmanager:DescribeSecret
-          Effect: Allow
-          Resource:
-            Ref: AuthentikSecretKeyAC972960
-        Version: '2012-10-17'
+          - Action:
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - AuthentikServerTaskAuthentikServerContainerLogGroup7E3C6881
+                - Arn
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: DBPassword67313E91
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: AuthentikSecretKeyAC972960
+        Version: "2012-10-17"
       PolicyName: AuthentikServerTaskExecutionRoleDefaultPolicy5AE74030
       Roles:
-      - Ref: AuthentikServerTaskExecutionRole053E3BF5
+        - Ref: AuthentikServerTaskExecutionRole053E3BF5
     Type: AWS::IAM::Policy
   AuthentikServerTaskTaskRole5BB06A73:
     Metadata:
@@ -564,11 +564,11 @@ Resources:
     Properties:
       AssumeRolePolicyDocument:
         Statement:
-        - Action: sts:AssumeRole
-          Effect: Allow
-          Principal:
-            Service: ecs-tasks.amazonaws.com
-        Version: '2012-10-17'
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+        Version: "2012-10-17"
     Type: AWS::IAM::Role
   AuthentikServerTaskTaskRoleDefaultPolicy4C2F360F:
     Metadata:
@@ -576,26 +576,26 @@ Resources:
     Properties:
       PolicyDocument:
         Statement:
-        - Action:
-          - ssmmessages:CreateControlChannel
-          - ssmmessages:CreateDataChannel
-          - ssmmessages:OpenControlChannel
-          - ssmmessages:OpenDataChannel
-          Effect: Allow
-          Resource: '*'
-        - Action: logs:DescribeLogGroups
-          Effect: Allow
-          Resource: '*'
-        - Action:
-          - logs:CreateLogStream
-          - logs:DescribeLogStreams
-          - logs:PutLogEvents
-          Effect: Allow
-          Resource: '*'
-        Version: '2012-10-17'
+          - Action:
+              - ssmmessages:CreateControlChannel
+              - ssmmessages:CreateDataChannel
+              - ssmmessages:OpenControlChannel
+              - ssmmessages:OpenDataChannel
+            Effect: Allow
+            Resource: "*"
+          - Action: logs:DescribeLogGroups
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - logs:CreateLogStream
+              - logs:DescribeLogStreams
+              - logs:PutLogEvents
+            Effect: Allow
+            Resource: "*"
+        Version: "2012-10-17"
       PolicyName: AuthentikServerTaskTaskRoleDefaultPolicy4C2F360F
       Roles:
-      - Ref: AuthentikServerTaskTaskRole5BB06A73
+        - Ref: AuthentikServerTaskTaskRole5BB06A73
     Type: AWS::IAM::Policy
   AuthentikVpcA1ABE6C2:
     Metadata:
@@ -606,16 +606,16 @@ Resources:
       EnableDnsSupport: true
       InstanceTenancy: default
       Tags:
-      - Key: Name
-        Value: AuthentikStack/AuthentikVpc
+        - Key: Name
+          Value: AuthentikStack/AuthentikVpc
     Type: AWS::EC2::VPC
   AuthentikVpcIGW53CE5190:
     Metadata:
       aws:cdk:path: AuthentikStack/AuthentikVpc/IGW
     Properties:
       Tags:
-      - Key: Name
-        Value: AuthentikStack/AuthentikVpc
+        - Key: Name
+          Value: AuthentikStack/AuthentikVpc
     Type: AWS::EC2::InternetGateway
   AuthentikVpcPrivateSubnet1DefaultRouteE7E61D7D:
     Metadata:
@@ -632,8 +632,8 @@ Resources:
       aws:cdk:path: AuthentikStack/AuthentikVpc/PrivateSubnet1/RouteTable
     Properties:
       Tags:
-      - Key: Name
-        Value: AuthentikStack/AuthentikVpc/PrivateSubnet1
+        - Key: Name
+          Value: AuthentikStack/AuthentikVpc/PrivateSubnet1
       VpcId:
         Ref: AuthentikVpcA1ABE6C2
     Type: AWS::EC2::RouteTable
@@ -652,17 +652,17 @@ Resources:
     Properties:
       AvailabilityZone:
         Fn::Select:
-        - 0
-        - Fn::GetAZs: ''
+          - 0
+          - Fn::GetAZs: ""
       CidrBlock: 10.0.128.0/18
       MapPublicIpOnLaunch: false
       Tags:
-      - Key: aws-cdk:subnet-name
-        Value: Private
-      - Key: aws-cdk:subnet-type
-        Value: Private
-      - Key: Name
-        Value: AuthentikStack/AuthentikVpc/PrivateSubnet1
+        - Key: aws-cdk:subnet-name
+          Value: Private
+        - Key: aws-cdk:subnet-type
+          Value: Private
+        - Key: Name
+          Value: AuthentikStack/AuthentikVpc/PrivateSubnet1
       VpcId:
         Ref: AuthentikVpcA1ABE6C2
     Type: AWS::EC2::Subnet
@@ -681,8 +681,8 @@ Resources:
       aws:cdk:path: AuthentikStack/AuthentikVpc/PrivateSubnet2/RouteTable
     Properties:
       Tags:
-      - Key: Name
-        Value: AuthentikStack/AuthentikVpc/PrivateSubnet2
+        - Key: Name
+          Value: AuthentikStack/AuthentikVpc/PrivateSubnet2
       VpcId:
         Ref: AuthentikVpcA1ABE6C2
     Type: AWS::EC2::RouteTable
@@ -701,23 +701,23 @@ Resources:
     Properties:
       AvailabilityZone:
         Fn::Select:
-        - 1
-        - Fn::GetAZs: ''
+          - 1
+          - Fn::GetAZs: ""
       CidrBlock: 10.0.192.0/18
       MapPublicIpOnLaunch: false
       Tags:
-      - Key: aws-cdk:subnet-name
-        Value: Private
-      - Key: aws-cdk:subnet-type
-        Value: Private
-      - Key: Name
-        Value: AuthentikStack/AuthentikVpc/PrivateSubnet2
+        - Key: aws-cdk:subnet-name
+          Value: Private
+        - Key: aws-cdk:subnet-type
+          Value: Private
+        - Key: Name
+          Value: AuthentikStack/AuthentikVpc/PrivateSubnet2
       VpcId:
         Ref: AuthentikVpcA1ABE6C2
     Type: AWS::EC2::Subnet
   AuthentikVpcPublicSubnet1DefaultRoute90C4189A:
     DependsOn:
-    - AuthentikVpcVPCGW65A49376
+      - AuthentikVpcVPCGW65A49376
     Metadata:
       aws:cdk:path: AuthentikStack/AuthentikVpc/PublicSubnet1/DefaultRoute
     Properties:
@@ -733,33 +733,33 @@ Resources:
     Properties:
       Domain: vpc
       Tags:
-      - Key: Name
-        Value: AuthentikStack/AuthentikVpc/PublicSubnet1
+        - Key: Name
+          Value: AuthentikStack/AuthentikVpc/PublicSubnet1
     Type: AWS::EC2::EIP
   AuthentikVpcPublicSubnet1NATGatewayEBF2B25B:
     DependsOn:
-    - AuthentikVpcPublicSubnet1DefaultRoute90C4189A
-    - AuthentikVpcPublicSubnet1RouteTableAssociation33E57E0C
+      - AuthentikVpcPublicSubnet1DefaultRoute90C4189A
+      - AuthentikVpcPublicSubnet1RouteTableAssociation33E57E0C
     Metadata:
       aws:cdk:path: AuthentikStack/AuthentikVpc/PublicSubnet1/NATGateway
     Properties:
       AllocationId:
         Fn::GetAtt:
-        - AuthentikVpcPublicSubnet1EIP2A4626A0
-        - AllocationId
+          - AuthentikVpcPublicSubnet1EIP2A4626A0
+          - AllocationId
       SubnetId:
         Ref: AuthentikVpcPublicSubnet1Subnet0C75862A
       Tags:
-      - Key: Name
-        Value: AuthentikStack/AuthentikVpc/PublicSubnet1
+        - Key: Name
+          Value: AuthentikStack/AuthentikVpc/PublicSubnet1
     Type: AWS::EC2::NatGateway
   AuthentikVpcPublicSubnet1RouteTable142C1454:
     Metadata:
       aws:cdk:path: AuthentikStack/AuthentikVpc/PublicSubnet1/RouteTable
     Properties:
       Tags:
-      - Key: Name
-        Value: AuthentikStack/AuthentikVpc/PublicSubnet1
+        - Key: Name
+          Value: AuthentikStack/AuthentikVpc/PublicSubnet1
       VpcId:
         Ref: AuthentikVpcA1ABE6C2
     Type: AWS::EC2::RouteTable
@@ -778,23 +778,23 @@ Resources:
     Properties:
       AvailabilityZone:
         Fn::Select:
-        - 0
-        - Fn::GetAZs: ''
+          - 0
+          - Fn::GetAZs: ""
       CidrBlock: 10.0.0.0/18
       MapPublicIpOnLaunch: true
       Tags:
-      - Key: aws-cdk:subnet-name
-        Value: Public
-      - Key: aws-cdk:subnet-type
-        Value: Public
-      - Key: Name
-        Value: AuthentikStack/AuthentikVpc/PublicSubnet1
+        - Key: aws-cdk:subnet-name
+          Value: Public
+        - Key: aws-cdk:subnet-type
+          Value: Public
+        - Key: Name
+          Value: AuthentikStack/AuthentikVpc/PublicSubnet1
       VpcId:
         Ref: AuthentikVpcA1ABE6C2
     Type: AWS::EC2::Subnet
   AuthentikVpcPublicSubnet2DefaultRoute2E9B0EBA:
     DependsOn:
-    - AuthentikVpcVPCGW65A49376
+      - AuthentikVpcVPCGW65A49376
     Metadata:
       aws:cdk:path: AuthentikStack/AuthentikVpc/PublicSubnet2/DefaultRoute
     Properties:
@@ -818,8 +818,8 @@ Resources:
       aws:cdk:path: AuthentikStack/AuthentikVpc/PublicSubnet2/RouteTable
     Properties:
       Tags:
-      - Key: Name
-        Value: AuthentikStack/AuthentikVpc/PublicSubnet2
+        - Key: Name
+          Value: AuthentikStack/AuthentikVpc/PublicSubnet2
       VpcId:
         Ref: AuthentikVpcA1ABE6C2
     Type: AWS::EC2::RouteTable
@@ -829,17 +829,17 @@ Resources:
     Properties:
       AvailabilityZone:
         Fn::Select:
-        - 1
-        - Fn::GetAZs: ''
+          - 1
+          - Fn::GetAZs: ""
       CidrBlock: 10.0.64.0/18
       MapPublicIpOnLaunch: true
       Tags:
-      - Key: aws-cdk:subnet-name
-        Value: Public
-      - Key: aws-cdk:subnet-type
-        Value: Public
-      - Key: Name
-        Value: AuthentikStack/AuthentikVpc/PublicSubnet2
+        - Key: aws-cdk:subnet-name
+          Value: Public
+        - Key: aws-cdk:subnet-type
+          Value: Public
+        - Key: Name
+          Value: AuthentikStack/AuthentikVpc/PublicSubnet2
       VpcId:
         Ref: AuthentikVpcA1ABE6C2
     Type: AWS::EC2::Subnet
@@ -854,8 +854,8 @@ Resources:
     Type: AWS::EC2::VPCGatewayAttachment
   AuthentikWorkerService629E37E2:
     DependsOn:
-    - AuthentikWorkerTaskTaskRoleDefaultPolicy4E74B62D
-    - AuthentikWorkerTaskTaskRole87C41589
+      - AuthentikWorkerTaskTaskRoleDefaultPolicy4E74B62D
+      - AuthentikWorkerTaskTaskRole87C41589
     Metadata:
       aws:cdk:path: AuthentikStack/AuthentikWorkerService/Service
     Properties:
@@ -877,12 +877,12 @@ Resources:
         AwsvpcConfiguration:
           AssignPublicIp: DISABLED
           SecurityGroups:
-          - Fn::GetAtt:
-            - AuthentikSG3040E46F
-            - GroupId
+            - Fn::GetAtt:
+                - AuthentikSG3040E46F
+                - GroupId
           Subnets:
-          - Ref: AuthentikVpcPrivateSubnet1Subnet6748EEA3
-          - Ref: AuthentikVpcPrivateSubnet2Subnet6B8E7123
+            - Ref: AuthentikVpcPrivateSubnet1Subnet6748EEA3
+            - Ref: AuthentikVpcPrivateSubnet2Subnet6B8E7123
       TaskDefinition:
         Ref: AuthentikWorkerTaskF8F277C5
     Type: AWS::ECS::Service
@@ -898,11 +898,11 @@ Resources:
     Properties:
       AssumeRolePolicyDocument:
         Statement:
-        - Action: sts:AssumeRole
-          Effect: Allow
-          Principal:
-            Service: ecs-tasks.amazonaws.com
-        Version: '2012-10-17'
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+        Version: "2012-10-17"
     Type: AWS::IAM::Role
   AuthentikWorkerTaskExecutionRoleDefaultPolicyB028D6C8:
     Metadata:
@@ -910,118 +910,118 @@ Resources:
     Properties:
       PolicyDocument:
         Statement:
-        - Action:
-          - logs:CreateLogStream
-          - logs:PutLogEvents
-          Effect: Allow
-          Resource:
-            Fn::GetAtt:
-            - AuthentikWorkerTaskAuthentikWorkerContainerLogGroupC05B4DFC
-            - Arn
-        - Action:
-          - secretsmanager:GetSecretValue
-          - secretsmanager:DescribeSecret
-          Effect: Allow
-          Resource:
-            Ref: DBPassword67313E91
-        - Action:
-          - secretsmanager:GetSecretValue
-          - secretsmanager:DescribeSecret
-          Effect: Allow
-          Resource:
-            Ref: AuthentikSecretKeyAC972960
-        Version: '2012-10-17'
+          - Action:
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - AuthentikWorkerTaskAuthentikWorkerContainerLogGroupC05B4DFC
+                - Arn
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: DBPassword67313E91
+          - Action:
+              - secretsmanager:GetSecretValue
+              - secretsmanager:DescribeSecret
+            Effect: Allow
+            Resource:
+              Ref: AuthentikSecretKeyAC972960
+        Version: "2012-10-17"
       PolicyName: AuthentikWorkerTaskExecutionRoleDefaultPolicyB028D6C8
       Roles:
-      - Ref: AuthentikWorkerTaskExecutionRole2E56865A
+        - Ref: AuthentikWorkerTaskExecutionRole2E56865A
     Type: AWS::IAM::Policy
   AuthentikWorkerTaskF8F277C5:
     Metadata:
       aws:cdk:path: AuthentikStack/AuthentikWorkerTask/Resource
     Properties:
       ContainerDefinitions:
-      - Command:
-        - worker
-        Environment:
-        - Name: AUTHENTIK_POSTGRESQL__HOST
-          Value:
-            Fn::GetAtt:
-            - AuthentikDB6710DB92
-            - Endpoint.Address
-        - Name: AUTHENTIK_POSTGRESQL__USER
-          Value: authentik
-        - Name: AUTHENTIK_REDIS__HOST
-          Value:
-            Fn::GetAtt:
-            - AuthentikRedis
-            - PrimaryEndPoint.Address
-        Essential: true
-        HealthCheck:
-          Command:
-          - CMD
-          - ak
-          - healthcheck
-          Interval: 30
-          Retries: 3
-          StartPeriod: 60
-          Timeout: 30
-        Image:
-          Fn::Join:
-          - ''
-          - - Ref: AuthentikImage
-            - ':'
-            - Ref: AuthentikVersion
-        LogConfiguration:
-          LogDriver: awslogs
-          Options:
-            awslogs-group:
-              Ref: AuthentikWorkerTaskAuthentikWorkerContainerLogGroupC05B4DFC
-            awslogs-region:
-              Ref: AWS::Region
-            awslogs-stream-prefix: authentik-worker
-        MountPoints:
-        - ContainerPath: /media
-          ReadOnly: false
-          SourceVolume: media
-        Name: AuthentikWorkerContainer
-        RestartPolicy:
-          Enabled: true
-        Secrets:
-        - Name: AUTHENTIK_POSTGRESQL__PASSWORD
-          ValueFrom:
+        - Command:
+            - worker
+          Environment:
+            - Name: AUTHENTIK_POSTGRESQL__HOST
+              Value:
+                Fn::GetAtt:
+                  - AuthentikDB6710DB92
+                  - Endpoint.Address
+            - Name: AUTHENTIK_POSTGRESQL__USER
+              Value: authentik
+            - Name: AUTHENTIK_REDIS__HOST
+              Value:
+                Fn::GetAtt:
+                  - AuthentikRedis
+                  - PrimaryEndPoint.Address
+          Essential: true
+          HealthCheck:
+            Command:
+              - CMD
+              - ak
+              - healthcheck
+            Interval: 30
+            Retries: 3
+            StartPeriod: 60
+            Timeout: 30
+          Image:
             Fn::Join:
-            - ''
-            - - Ref: DBPassword67313E91
-              - ':password::'
-        - Name: AUTHENTIK_SECRET_KEY
-          ValueFrom:
-            Ref: AuthentikSecretKeyAC972960
+              - ""
+              - - Ref: AuthentikImage
+                - ":"
+                - Ref: AuthentikVersion
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group:
+                Ref: AuthentikWorkerTaskAuthentikWorkerContainerLogGroupC05B4DFC
+              awslogs-region:
+                Ref: AWS::Region
+              awslogs-stream-prefix: authentik-worker
+          MountPoints:
+            - ContainerPath: /media
+              ReadOnly: false
+              SourceVolume: media
+          Name: AuthentikWorkerContainer
+          RestartPolicy:
+            Enabled: true
+          Secrets:
+            - Name: AUTHENTIK_POSTGRESQL__PASSWORD
+              ValueFrom:
+                Fn::Join:
+                  - ""
+                  - - Ref: DBPassword67313E91
+                    - ":password::"
+            - Name: AUTHENTIK_SECRET_KEY
+              ValueFrom:
+                Ref: AuthentikSecretKeyAC972960
       Cpu:
         Ref: AuthentikWorkerCPU
       ExecutionRoleArn:
         Fn::GetAtt:
-        - AuthentikWorkerTaskExecutionRole2E56865A
-        - Arn
+          - AuthentikWorkerTaskExecutionRole2E56865A
+          - Arn
       Family: AuthentikStackAuthentikWorkerTask6C7D4E77
       Memory:
         Ref: AuthentikWorkerMemory
       NetworkMode: awsvpc
       RequiresCompatibilities:
-      - FARGATE
+        - FARGATE
       TaskRoleArn:
         Fn::GetAtt:
-        - AuthentikWorkerTaskTaskRole87C41589
-        - Arn
+          - AuthentikWorkerTaskTaskRole87C41589
+          - Arn
       Volumes:
-      - EFSVolumeConfiguration:
-          AuthorizationConfig:
-            AccessPointId:
-              Ref: AuthentikMediaEFSAuthentikMediaAccessPointA60D3CC7
-            IAM: ENABLED
-          FilesystemId:
-            Ref: AuthentikMediaEFS4AB06689
-          TransitEncryption: ENABLED
-        Name: media
+        - EFSVolumeConfiguration:
+            AuthorizationConfig:
+              AccessPointId:
+                Ref: AuthentikMediaEFSAuthentikMediaAccessPointA60D3CC7
+              IAM: ENABLED
+            FilesystemId:
+              Ref: AuthentikMediaEFS4AB06689
+            TransitEncryption: ENABLED
+          Name: media
     Type: AWS::ECS::TaskDefinition
   AuthentikWorkerTaskTaskRole87C41589:
     Metadata:
@@ -1029,11 +1029,11 @@ Resources:
     Properties:
       AssumeRolePolicyDocument:
         Statement:
-        - Action: sts:AssumeRole
-          Effect: Allow
-          Principal:
-            Service: ecs-tasks.amazonaws.com
-        Version: '2012-10-17'
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+        Version: "2012-10-17"
     Type: AWS::IAM::Role
   AuthentikWorkerTaskTaskRoleDefaultPolicy4E74B62D:
     Metadata:
@@ -1041,26 +1041,26 @@ Resources:
     Properties:
       PolicyDocument:
         Statement:
-        - Action:
-          - ssmmessages:CreateControlChannel
-          - ssmmessages:CreateDataChannel
-          - ssmmessages:OpenControlChannel
-          - ssmmessages:OpenDataChannel
-          Effect: Allow
-          Resource: '*'
-        - Action: logs:DescribeLogGroups
-          Effect: Allow
-          Resource: '*'
-        - Action:
-          - logs:CreateLogStream
-          - logs:DescribeLogStreams
-          - logs:PutLogEvents
-          Effect: Allow
-          Resource: '*'
-        Version: '2012-10-17'
+          - Action:
+              - ssmmessages:CreateControlChannel
+              - ssmmessages:CreateDataChannel
+              - ssmmessages:OpenControlChannel
+              - ssmmessages:OpenDataChannel
+            Effect: Allow
+            Resource: "*"
+          - Action: logs:DescribeLogGroups
+            Effect: Allow
+            Resource: "*"
+          - Action:
+              - logs:CreateLogStream
+              - logs:DescribeLogStreams
+              - logs:PutLogEvents
+            Effect: Allow
+            Resource: "*"
+        Version: "2012-10-17"
       PolicyName: AuthentikWorkerTaskTaskRoleDefaultPolicy4E74B62D
       Roles:
-      - Ref: AuthentikWorkerTaskTaskRole87C41589
+        - Ref: AuthentikWorkerTaskTaskRole87C41589
     Type: AWS::IAM::Policy
   DBPassword67313E91:
     DeletionPolicy: Delete
@@ -1090,9 +1090,9 @@ Resources:
     Properties:
       GroupDescription: Security Group for authentik RDS PostgreSQL
       SecurityGroupEgress:
-      - CidrIp: 0.0.0.0/0
-        Description: Allow all outbound traffic by default
-        IpProtocol: '-1'
+        - CidrIp: 0.0.0.0/0
+          Description: Allow all outbound traffic by default
+          IpProtocol: "-1"
       VpcId:
         Ref: AuthentikVpcA1ABE6C2
     Type: AWS::EC2::SecurityGroup
@@ -1104,13 +1104,13 @@ Resources:
       FromPort: 5432
       GroupId:
         Fn::GetAtt:
-        - DatabaseSG2A23C222
-        - GroupId
+          - DatabaseSG2A23C222
+          - GroupId
       IpProtocol: tcp
       SourceSecurityGroupId:
         Fn::GetAtt:
-        - AuthentikSG3040E46F
-        - GroupId
+          - AuthentikSG3040E46F
+          - GroupId
       ToPort: 5432
     Type: AWS::EC2::SecurityGroupIngress
   RedisSGEA80AC17:
@@ -1119,9 +1119,9 @@ Resources:
     Properties:
       GroupDescription: Security Group for authentik ElastiCache Redis
       SecurityGroupEgress:
-      - CidrIp: 0.0.0.0/0
-        Description: Allow all outbound traffic by default
-        IpProtocol: '-1'
+        - CidrIp: 0.0.0.0/0
+          Description: Allow all outbound traffic by default
+          IpProtocol: "-1"
       VpcId:
         Ref: AuthentikVpcA1ABE6C2
     Type: AWS::EC2::SecurityGroup
@@ -1133,12 +1133,12 @@ Resources:
       FromPort: 6379
       GroupId:
         Fn::GetAtt:
-        - RedisSGEA80AC17
-        - GroupId
+          - RedisSGEA80AC17
+          - GroupId
       IpProtocol: tcp
       SourceSecurityGroupId:
         Fn::GetAtt:
-        - AuthentikSG3040E46F
-        - GroupId
+          - AuthentikSG3040E46F
+          - GroupId
       ToPort: 6379
     Type: AWS::EC2::SecurityGroupIngress

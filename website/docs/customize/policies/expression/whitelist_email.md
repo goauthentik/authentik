@@ -33,4 +33,3 @@ if current_domain in allowed_domains:
 else:
   return ak_message("Authentication denied for this email domain")
 ```
-
