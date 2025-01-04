@@ -92,49 +92,61 @@ Configure the following settings differently for each ownCloud application:
 
 ### Service Discovery
 
-To enable ownCloud applications to log in via OIDC, your reverse proxy must be configured to rewrite https://owncloud.company/.well-known/openid-configuration` to `https://owncloud.company/index.php/apps/openidconnect/config`
+To enable ownCloud applications to log in via OIDC, your reverse proxy must be configured to rewrite `https://owncloud.company/.well-known/openid-configuration` to `https://owncloud.company/index.php/apps/openidconnect/config`
 
 Refer to the [ownCloud Admin Manual](https://doc.owncloud.com/server/latest/admin_manual/configuration/user/oidc/oidc.html#set-up-service-discovery) for an example configuration using [Apache HTTPD](https://httpd.apache.org/).  
 
 For other reverse proxies, consult the provider-specific documentation for guidance on implementing this rewrite rule.
 
-##### ownCloud OIDC Plugin
+## ownCloud Configuration
 
-Navigate to the _Market_ in your ownCloud deployment by going to `https://owncloud.company/apps/market/#/` or by clicking the Hamburger menu in the top left of any page in your ownCloud deployment and then clicking _Market_.
-From the Market, search for and enable the OIDC plugin
+To enable OIDC functionality in ownCloud, follow these steps:
 
-The OIDC plugin cannot be configured from the ownCloud UI, it must be done via the either the `config.php` file or by storing the configuration in the ownCloud database.
-Depending on how your ownCloud deployment is set up, the `config.php` file might be exposed in different places.
-The instructions below apply to deployments using Docker. Refer to the setup guide for your chosen deployment method to determine where the file is located within in your installation.
+1. **Navigate to the Market**:
+   - Access the Market by visiting:  
+     `https://owncloud.company/apps/market/#/`  
+     or by clicking the **Hamburger Menu** in the top-left corner of any page in your ownCloud deployment and selecting **Market**.
+   - Search for and enable the **OIDC plugin**.
 
-:::note
-This guide will focus on configuration via the `config.php` mechanism.
+2. **OIDC Plugin Configuration**:
+   The OIDC plugin cannot be configured via the ownCloud UI. Configuration must be performed either:
+   - Through the `config.php` file, or  
+   - By storing the configuration in the ownCloud database.
 
-Details on configuring the OIDC plugin using the ownCloud database are included in the OIDC plugin's [README](https://github.com/owncloud/openidconnect?tab=readme-ov-file#settings-in-database).
-The configuration you end up with will be the same between the two methods, the only difference will be whether they end up in a `php` file or in the database (via an `occ` command).
-:::
+   The location of the `config.php` file depends on your deployment method. Consult the setup guide for your chosen deployment method to identify the file’s location within your installation.
 
-Create a file named `oidc.config.php` in the same directory as the existing `config.php` file in your ownCloud installation. ownCloud will treat files named with this pattern as "override" files, and will override matching configuration keys in the `config.php` file.
+   :::note
+   Instructions for configuring the OIDC plugin using the ownCloud database can be found in the OIDC plugin's [README.md file](https://github.com/owncloud/openidconnect?tab=readme-ov-file#settings-in-database). Both methods produce identical configurations, differing only in whether the settings are stored in a `php` file or in the database (via an `occ` command).
+   :::
 
-The specific location of this file will depend on your Docker configuration. The default location within the container is `/mnt/data/config` which, in the [official setup guide](https://doc.owncloud.com/server/next/admin_manual/installation/docker/#docker-compose), is exposed via the `files` volume.
+3. **Create the `oidc.config.php` File**:
+   - Place a file named `oidc.config.php` in the same directory as the existing `config.php` file in your ownCloud installation.  
+   - Files named with this pattern are treated as "override" files, allowing ownCloud to override matching configuration keys in the `config.php` file.
 
-Minimal contents of `oidc.config.php`:
+   The location of this file depends on your Docker configuration. By default, the file resides in `/mnt/data/config` within the container. This location is exposed via the `files` volume in the [official setup guide](https://doc.owncloud.com/server/next/admin_manual/installation/docker/#docker-compose).
 
-```php
-<?php
-$CONFIG = [
-  'http.cookie.samesite' => 'None',
-  'openid-connect' => [
-    'provider-url' => 'https://authentik.company/application/o/owncloud/', // replace `owncloud` with whatever name you selected for the web ui provider.
-    'client-id' => <client id chosen in authentik provider configuration>,
-    'client-secret' => <client secret chosen in authentik provider configuration>,
-    'loginButtonName' => 'authentik Login', // this is the text that will be shown on the authentik login button. Choose whatever you want.
-    'mode' => 'userid',
-    'search-attribute' => 'preferred_username',
+4. **Minimal Contents of `oidc.config.php`**:  
+   Add the necessary configuration settings to this file. Ensure it includes at least the minimal requirements for your setup:
+
+   :::warning
+  You can configure ownCloud to use either the `sub` or `preferred_username` as the UID field under `search-attribute`. When using `preferred_username` as the user identifier, ensure that the [**Allow users to change username** setting](https://docs.goauthentik.io/docs/sys-mgmt/settings#allow-users-to-change-username) is disabled to prevent authentication issues. The `sub` option uses a unique, stable identifier for the user, while `preferred_username` uses the username configured in authentik.
+  :::
+
+  ```php
+  <?php
+  $CONFIG = [
+    'http.cookie.samesite' => 'None',
+    'openid-connect' => [
+      'provider-url' => 'https://authentik.company/application/o/owncloud/',
+      'client-id' => <client id chosen in authentik provider configuration>,
+      'client-secret' => <client secret chosen in authentik provider configuration>,
+      'loginButtonName' => 'authentik Login',
+      'mode' => 'userid',
+      'search-attribute' => 'preferred_username',
+      ],
     ],
-  ],
-];
-```
+  ];
+  ```
 
 Enable automatic provisioning of new users by augmenting `openid-connect` key in the above configuration with the following options:
 
