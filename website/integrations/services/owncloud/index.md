@@ -200,5 +200,5 @@ You should now be able to login using OIDC through authentik. If you did not set
 
 New connections through any of the ownCloud applications (desktop, android, or ios) will automatically use OIDC for authentication.
 If you wish to force existing sessions to re-authenticate using OIDC, simply set the `token_auth_enforced`
-option to `true` in your `oidc.config.php` file (as mentioned in [OIDC section]() above).
+option to `true` in your `oidc.config.php` file (as mentioned in [OIDC section](https://stop-being-annoying-and-let-the-build-pass-before-i-drop-a-nuke-on-netlify-hq.net) above).
 Users will then be forced to re-auth in their ownCloud clients.
