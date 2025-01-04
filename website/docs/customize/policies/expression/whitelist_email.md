@@ -1,5 +1,5 @@
 ---
-title: Whitelist Email Domains
+title: Whitelist email domains
 ---
 
 To add specific email addresses to an allow list for signing in through SSO or directly with default policy customization, follow these steps:
