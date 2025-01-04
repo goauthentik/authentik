@@ -138,8 +138,8 @@ To enable OIDC functionality in ownCloud, follow these steps:
     'http.cookie.samesite' => 'None',
     'openid-connect' => [
       'provider-url' => 'https://authentik.company/application/o/owncloud/',
-      'client-id' => <client id chosen in authentik provider configuration>,
-      'client-secret' => <client secret chosen in authentik provider configuration>,
+      'client-id' => '<Client ID from authentik>',
+      'client-secret' => '<Client secret from authentik',
       'loginButtonName' => 'authentik Login',
       'mode' => 'userid',
       'search-attribute' => 'preferred_username',
