@@ -128,7 +128,7 @@ To enable OIDC functionality in ownCloud, follow these steps:
     The location of this file depends on your Docker configuration. By default, the file resides in `/mnt/data/config` within the container. This location is exposed via the `files` volume in the [official setup guide](https://doc.owncloud.com/server/next/admin_manual/installation/docker/#docker-compose).
 
 4. **Minimal Contents of `oidc.config.php`**:  
-    Add the necessary configuration settings to this file. Ensure it includes at least the minimal requirements for your setup:
+   Add the necessary configuration settings to this file. Ensure it includes at least the minimal requirements for your setup:
 
     :::warning
     You can configure ownCloud to use either the `sub` or `preferred_username` as the UID field under `search-attribute`. When using `preferred_username` as the user identifier, ensure that the [**Allow users to change username** setting](https://docs.goauthentik.io/docs/sys-mgmt/settings#allow-users-to-change-username) is disabled to prevent authentication issues. The `sub` option uses a unique, stable identifier for the user, while `preferred_username` uses the username configured in authentik.
