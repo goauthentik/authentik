@@ -1009,6 +1009,12 @@
   force = true
 
 [[redirects]]
+  from = "/developer-docs/api/reference/*"
+  to = "/docs/developer-docs/api/reference/:splat"
+  status = 302
+  force = true
+
+[[redirects]]
   from = "/developer-docs/api/flow-executor"
   to = "/docs/developer-docs/api/flow-executor"
   status = 302
