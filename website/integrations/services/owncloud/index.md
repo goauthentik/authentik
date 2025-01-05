@@ -140,7 +140,7 @@ To enable OIDC functionality in ownCloud, follow these steps:
       'provider-url' => 'https://authentik.company/application/o/owncloud/',
       'client-id' => '<Client ID from authentik>',
       'client-secret' => '<Client secret from authentik',
-      'loginButtonName' => 'authentik Login',
+      'loginButtonName' => 'Log in with authentik',
       'mode' => 'userid',
       'search-attribute' => 'preferred_username',
       ],
@@ -148,50 +148,55 @@ To enable OIDC functionality in ownCloud, follow these steps:
   ];
   ```
 
-Enable automatic provisioning of new users by augmenting `openid-connect` key in the above configuration with the following options:
+  To enable automatic provisioning of new users, you can augment the `openid-connect` configuration in your `oidc.config.php` file with the following settings:
 
-```php
-  'openid-connect' => [
-    ... // configuration keys from above
-    'auto-provision' => [
-      'enabled' => true,
-      'email-claim' => 'email',
-      'display-name-claim' => 'given_name',
-      'update' => [
+  ```php
+  <?php
+  $CONFIG = [
+    'http.cookie.samesite' => 'None',
+    'openid-connect' => [
+      'provider-url' => 'https://authentik.company/application/o/owncloud/',
+      'client-id' => '<Client ID from authentik>',
+      'client-secret' => '<Client secret from authentik>',
+      'loginButtonName' => 'Log in with authentik',
+      'mode' => 'userid',
+      'search-attribute' => 'preferred_username',
+      'auto-provision' => [
         'enabled' => true,
+        'email-claim' => 'email',
+        'display-name-claim' => 'given_name',
+        'update' => [
+          'enabled' => true,
+        ],
       ],
     ],
-  ],
-```
+  ];
+  ```
 
 :::note
-The above configuration will result in new ownCloud users having the same username as the authentik user they are created from.
-If you would prefer to use the email address as the ownCloud username, simply remove the `mode` and `search-attributes` from the above configuration.
+The configuration above will result in new ownCloud users being assigned the same username as the authentik username. If you prefer to use the user's email address as the ownCloud username, you can remove the `mode` and `search-attribute` settings.  
 
-This doesn't really impact anything, though if you elect to use the email address as the ownCloud username, the mobile apps will show the user's username as `user@emailaddress.com@owncloud.company` in the menus, which is kind of strange.
+Note that using email as the username may cause mobile app interfaces to display usernames in an unusual format (e.g., `user@email.com@owncloud.company`).
 :::
 
-Some other notable configuration options:
+In addition to the above settings, here are some additional options for configuring the OIDC integration in ownCloud:
 
 ```php
 <?php
 $CONFIG = [
-  'token_auth_enforced' => true,  // desktop/android/ios clients will be forced to login with OIDC,
-                                  // and existing sessions will be disconnected
+  'token_auth_enforced' => true,  // Forces OIDC authentication on all desktop, Android, and iOS clients, and disconnects existing sessions.
   'openid-connect' => [
-    'autoRedirectOnLoginPage' => true,  // automatic redirection to authentik sign-in
-    ],
+    'autoRedirectOnLoginPage' => true,  // Enables automatic redirection to the authentik login page
   ],
 ];
 ```
 
 :::warning
-If you enable the `autoRedirectOnLoginPage` configuration and your OIDC setup breaks, you will have no way of logging in.
-If this happens, simply disable this setting and restart ownCloud to re-enable the standard login page.
+Enabling the `autoRedirectOnLoginPage` setting may lock you out of the system if your OIDC setup is misconfigured. To regain access, you can disable this setting and restart ownCloud, which will restore the standard login page.
 :::
 
 :::tip
-The OIDC plugin's [README](https://github.com/owncloud/openidconnect?tab=readme-ov-file#settings-in-database) contains information about other configuration options.
+For more information on other available configuration options, refer to the OIDC plugin's [README](https://github.com/owncloud/openidconnect?tab=readme-ov-file#settings-in-database).
 :::
 
 ### You're done!
@@ -199,7 +204,7 @@ The OIDC plugin's [README](https://github.com/owncloud/openidconnect?tab=readme-
 You have successfully configured OIDC authentication through authentik. Here's what you can expect next:
 
 - **Login Behavior:**
-  - If the `autoRedirectOnLoginPage` option is **set to false**, navigating to `https://owncloud.company` will present the standard login page, which now includes an "authentik Login" button (or any custom text defined in the `loginButtonName` field).
+  - If the `autoRedirectOnLoginPage` option is **set to false**, navigating to `https://owncloud.company` will present the standard login page, which now includes an "Log in with authentik" button (or any custom text defined in the `loginButtonName` field).
   - If the `autoRedirectOnLoginPage` option is **set to true**, users will be automatically redirected to the authentik login page when attempting to access `https://owncloud.company`.
 
 - **ownCloud Applications:**
