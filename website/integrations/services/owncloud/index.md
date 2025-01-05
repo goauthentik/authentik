@@ -194,11 +194,16 @@ If this happens, simply disable this setting and restart ownCloud to re-enable t
 The OIDC plugin's [README](https://github.com/owncloud/openidconnect?tab=readme-ov-file#settings-in-database) contains information about other configuration options.
 :::
 
-### Done!
+### You're done!
 
-You should now be able to login using OIDC through authentik. If you did not set the `autoRedirectOnLoginPage` option to `true`, when you navigate to `https://owncloud.company` you will be presented with a login page that now includes an "authentik Login" button (or whatever text you chose in the `loginButtonName` field). If you did set it to `true`, when you attempt to access `https://owncloud.company` you will automatically be redirected to the authentik login page.
+You have successfully configured OIDC authentication through authentik. Here's what you can expect next:
 
-New connections through any of the ownCloud applications (desktop, android, or ios) will automatically use OIDC for authentication.
-If you wish to force existing sessions to re-authenticate using OIDC, simply set the `token_auth_enforced`
-option to `true` in your `oidc.config.php` file (as mentioned in [OIDC section](https://stop-being-annoying-and-let-the-build-pass-before-i-drop-a-nuke-on-netlify-hq.net) above).
-Users will then be forced to re-auth in their ownCloud clients.
+- **Login Behavior:**
+  - If the `autoRedirectOnLoginPage` option is **set to false**, navigating to `https://owncloud.company` will present the standard login page, which now includes an "authentik Login" button (or any custom text defined in the `loginButtonName` field).
+  - If the `autoRedirectOnLoginPage` option is **set to true**, users will be automatically redirected to the authentik login page when attempting to access `https://owncloud.company`.
+
+- **ownCloud Applications:**
+  Any new connections through the ownCloud desktop, Android, or iOS applications will automatically use OIDC for authentication.
+
+- **Force Re-authentication:**
+  To enforce re-authentication using OIDC for existing sessions, set the `token_auth_enforced` option to **true** in the `oidc.config.php` file (as detailed in the above section). This will prompt users to re-authenticate on their ownCloud clients.
