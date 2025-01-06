@@ -38,4 +38,6 @@ Insert authentik configuration
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Service Name, log out and log back in via authentik. Specify the validation method (e.g., clicking a button), including its location and label for clarity.
+Template sentence that you can typically use here: "To confirm that authentik is properly configured with <_Service Name_>, log out and log back in via authentik."
+
+If there are more specific validation methods for the Service (e.g., clicking a button), include these instructions for clarity.
