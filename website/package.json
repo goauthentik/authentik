@@ -56,7 +56,7 @@
         "@docusaurus/tsconfig": "^3.6.3",
         "@docusaurus/types": "^3.3.2",
         "@types/react": "^18.3.13",
-        "aws-cdk": "^2.173.2",
+        "aws-cdk": "^2.174.0",
         "cross-env": "^7.0.3",
         "prettier": "3.4.2",
         "typescript": "~5.7.2",

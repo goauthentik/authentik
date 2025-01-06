@@ -6,7 +6,7 @@ title: Active Directory
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `ad.company` is the Name of the Active Directory domain.
 - `authentik.company` is the FQDN of the authentik install.

@@ -16,7 +16,7 @@ sidebar_label: FortiGate Admin Login
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `fgt.company` is the FQDN of the FortiGate install.
 - `authentik.company` is the FQDN of the authentik install.

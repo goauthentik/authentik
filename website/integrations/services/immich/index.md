@@ -15,7 +15,7 @@ sidebar_label: Immich
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `https://immich.company` is the URL used to access the Immich instance.
 - `authentik.company` is the FQDN of the authentik install.

@@ -15,7 +15,7 @@ sidebar_label: ArgoCD
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `argocd.company` is the FQDN of the ArgoCD install.
 - `authentik.company` is the FQDN of the authentik install.
@@ -110,9 +110,9 @@ resource "authentik_provider_oauth2" "argocd" {
   ]
 
   property_mappings = [
-    data.authentik_scope_mapping.scope-email.id,
-    data.authentik_scope_mapping.scope-profile.id,
-    data.authentik_scope_mapping.scope-openid.id,
+    data.authentik_property_mapping_provider_scope.scope-email.id,
+    data.authentik_property_mapping_provider_scope.scope-profile.id,
+    data.authentik_property_mapping_provider_scope.scope-openid.id,
   ]
 }
 

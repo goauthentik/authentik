@@ -19,7 +19,7 @@ This is based on authentik 2024.6.0 and Observium CE 24.4.13528
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `observium.company` is the FQDN of the Observium install.
 - `authentik.company` is the FQDN of the authentik install.

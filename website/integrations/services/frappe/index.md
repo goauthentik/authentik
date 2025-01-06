@@ -1,9 +1,9 @@
 ---
-title: Integrate with Frappe Helpdesk
-sidebar_label: Frappe Helpdesk
+title: Integrate with Frappe
+sidebar_label: Frappe
 ---
 
-# Frappe Helpdesk
+# Frappe
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -11,15 +11,15 @@ sidebar_label: Frappe Helpdesk
 These instructions apply to all projects in the Frappe Family.
 :::
 
-## What is Frappe Helpdesk
+## What is Frappe
 
-> Frappe Helpdesk is an open source ticketing tool based on Frappe Framework.
+> Frappe is a full stack, batteries-included, web framework written in Python and Javascript.
 >
-> -- https://frappe.io/helpdesk
+> -- https://frappe.io/
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `frappe.company` is the FQDN of the Frappe install.
 - `authentik.company` is the FQDN of the authentik install.
@@ -69,7 +69,7 @@ Add a new Social login Key using the black button on top right.
             - In Client URLs section:
             - Authorize URL: `/application/o/authorize/`
             - Access Token URL: `/application/o/token/`
-            - Redirect URL: `/api/method/frappe.integrations.oauth2_logins.custom/provider/`
+            - Redirect URL: `https://frappe.company/api/method/frappe.integrations.oauth2_logins.custom/provider/`
             - API Endpoint: `/application/o/userinfo/`
 
     ![](./frappe3.png)

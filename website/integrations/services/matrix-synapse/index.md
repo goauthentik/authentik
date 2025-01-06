@@ -15,7 +15,7 @@ sidebar_label: Matrix Synapse
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `matrix.company` is the FQDN of the Matrix install.
 - `authentik.company` is the FQDN of the authentik install.
