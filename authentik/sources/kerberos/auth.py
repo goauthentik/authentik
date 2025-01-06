@@ -38,7 +38,9 @@ class KerberosBackend(InbuiltBackend):
         self, username: str, realm: str | None, password: str, **filters
     ) -> tuple[User | None, KerberosSource | None]:
         sources = KerberosSource.objects.filter(enabled=True)
-        user = User.objects.filter(usersourceconnection__source__in=sources, **filters).first()
+        user = User.objects.filter(
+            usersourceconnection__source__in=sources, username=username, **filters
+        ).first()
 
         if user is not None:
             # User found, let's get its connections for the sources that are available
@@ -77,7 +79,7 @@ class KerberosBackend(InbuiltBackend):
                         password, sender=user_source_connection.source
                     )
                     user_source_connection.user.save()
-                return user, user_source_connection.source
+                return user_source_connection.user, user_source_connection.source
             # Password doesn't match, onto next source
             LOGGER.debug(
                 "failed to kinit, password invalid",
