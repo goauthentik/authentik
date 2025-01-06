@@ -188,8 +188,8 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
       - name: Upload template
         run: |
-          aws s3 cp website/docs/install-config/install/aws/template.yaml s3://authentik-cloudformation-templates/authentik.ecs.${{ github.ref }}.yaml
-          aws s3 cp website/docs/install-config/install/aws/template.yaml s3://authentik-cloudformation-templates/authentik.ecs.latest.yaml
+          aws s3 cp --acl=public-read website/docs/install-config/install/aws/template.yaml s3://authentik-cloudformation-templates/authentik.ecs.${{ github.ref }}.yaml
+          aws s3 cp --acl=public-read website/docs/install-config/install/aws/template.yaml s3://authentik-cloudformation-templates/authentik.ecs.latest.yaml
   test-release:
     needs:
       - build-server
