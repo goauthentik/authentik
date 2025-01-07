@@ -8,7 +8,7 @@ Your organization defines the members, their roles, the licenses associated with
 
 ### Create an Organization
 
-1. To create a new organization, log in to the [Customer portal](./get-started.md#access-enterprise).
+1. To create a new organization, log in to the [Customer Portal](./get-started.md#access-enterprise).
 
 2. On the **My organizations** page, click **Create an organization**.
 
@@ -22,12 +22,12 @@ If you need to delete an organization open a ticket in the Support center.
 
 ### Add/remove members of an organization
 
-In the Customer portal you can remove members and invite new members to the organization. When you invite new members, you can specify the role for the new member.
+In the Customer Portal you can remove members and invite new members to the organization. When you invite new members, you can specify the role for the new member.
 
 - **Member**: can view licenses, including the license key.
 - **Owner**: can do everything the Member role can do, plus: add and remove members, order and renew licenses, and edit the organization.
 
-1. To manage membership in an organization, log in to the [Customer portal](./get-started.md#access-enterprise).
+1. To manage membership in an organization, log in to the [Customer Portal](./get-started.md#access-enterprise).
 
 2. On the **My organizations** page, click the name of the organization you want to edit membership in.
 
@@ -41,7 +41,7 @@ In the Customer portal you can remove members and invite new members to the orga
 
 ## License management
 
-Note that a license is associated with a specific Organization in the customer portal and a specific authentik instance (with a unique Install ID), and not with individual users. A single license is purchased for a specified number of users. Additional users can be added to a license, or additional licenses purchased for the same instance, if more users need to be added later.
+Note that a license is associated with a specific Organization in the Customer Portal and a specific authentik instance (with a unique Install ID), and not with individual users. A single license is purchased for a specified number of users. Additional users can be added to a license, or additional licenses purchased for the same instance, if more users need to be added later.
 
 ### Buy a license
 
@@ -53,7 +53,7 @@ Note that a license is associated with a specific Organization in the customer p
 
 !["Admin interface licenses page"](./licenses-page-admin.png)
 
-2. On the **Admin interface**, navigate to **Enterprise → Licenses** in the left menu, and then click **Go to Customer portal** under the **Get a license** section.
+2. On the **Admin interface**, navigate to **Enterprise → Licenses** in the left menu, and then click **Go to Customer Portal** under the **Get a license** section.
 
 3. In the Authentik login screen, sign up and then log in to the Customer Portal.
 
@@ -74,7 +74,7 @@ Note that a license is associated with a specific Organization in the customer p
     When ready, the license displays on the organization's page.
 
 :::info
-If you access the checkout page directly from the Customer portal, and not through the admin interface, you are prompted to provide the Install ID for your authentik installation. This ID can be found in the Admin interface on the **Licenses** page; click **Install** to view the **Install ID** number.
+If you access the checkout page directly from the Customer Portal, and not through the admin interface, you are prompted to provide the Install ID for your authentik installation. This ID can be found in the Admin interface on the **Licenses** page; click **Install** to view the **Install ID** number.
 :::
 
 8. To retrieve your license key, click on **Details** beside the license name and copy the key to your clipboard.
@@ -87,7 +87,7 @@ To verify that the license was successfully installed, confirm that the expriry 
 
 ### How to view your license key
 
-You can view the list of licenses that are applied to your organization on either the Admin interface, on the **Enterprise -> Licenses** page, or in the Customer portal, under your organization's page.
+You can view the list of licenses that are applied to your organization on either the Admin interface, on the **Enterprise -> Licenses** page, or in the Customer Portal, under your organization's page.
 
 ### About the license expiry date
 
@@ -129,7 +129,7 @@ The second way is to [open a support ticket](./entsupport.md) with us and we'll 
 
 Billing is based on each individual organization.
 
-1. To manage your billing, go to the Customer portal and click "My organizations" in the top menu bar.
+1. To manage your billing, go to the Customer Portal and click "My organizations" in the top menu bar.
 
 2. Select the organization for which you want to manage bulling.
 

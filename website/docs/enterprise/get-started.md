@@ -17,7 +17,7 @@ If this is a fresh install, refer to our [technical documentation](../install-co
 
 Access your Enterprise features by first [purchasing a license](./manage-enterprise.md#buy-a-license) for the organization.
 
-To open the Customer portal and buy a license, go to the Admin interface and in the left pane, navigate to **Enterprise -> Licenses**, and then click **Go to Customer portal**.
+To open the Customer Portal and buy a license, go to the Admin interface and in the left pane, navigate to **Enterprise -> Licenses**, and then click **Go to Customer Portal**.
 
 The license key provides direct access to the Customer portal, where you define your organization and its members, manage billing, and access our Support center.
 
