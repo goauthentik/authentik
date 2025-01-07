@@ -38,6 +38,6 @@ Insert authentik configuration
 
 ## Configuration verification
 
-Template sentence that you can typically use here: "To confirm that authentik is properly configured with <Service Name>, log out and log back in via authentik."
+Template sentence that you can typically use here: "To confirm that authentik is properly configured with *Service Name*, log out and log back in via authentik."
 
 If there are more specific validation methods for the Service (e.g., clicking a button), include these instructions for clarity.
