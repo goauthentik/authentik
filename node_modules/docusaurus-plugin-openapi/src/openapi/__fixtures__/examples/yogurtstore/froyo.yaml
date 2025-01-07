@@ -1,0 +1,13 @@
+openapi: 3.0.3
+info:
+  title: Frozen Yogurt Example
+  version: 1.0.0
+  description: Sample description.
+paths:
+  /flavors:
+    get:
+      summary: List All Flavors
+      description: Froyo's the best!
+      responses:
+        200:
+          description: OK

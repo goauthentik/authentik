@@ -1,0 +1,34 @@
+{
+    "name": "@types/hoist-non-react-statics",
+    "version": "3.3.6",
+    "description": "TypeScript definitions for hoist-non-react-statics",
+    "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/hoist-non-react-statics",
+    "license": "MIT",
+    "contributors": [
+        {
+            "name": "JounQin",
+            "githubUsername": "JounQin",
+            "url": "https://github.com/JounQin"
+        },
+        {
+            "name": "James Reggio",
+            "githubUsername": "jamesreggio",
+            "url": "https://github.com/jamesreggio"
+        }
+    ],
+    "main": "",
+    "types": "index.d.ts",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+        "directory": "types/hoist-non-react-statics"
+    },
+    "scripts": {},
+    "dependencies": {
+        "@types/react": "*",
+        "hoist-non-react-statics": "^3.3.0"
+    },
+    "peerDependencies": {},
+    "typesPublisherContentHash": "f828fd090493b00844946121848239611dd37ff529ab0738bdbe126f4576476e",
+    "typeScriptVersion": "5.0"
+}

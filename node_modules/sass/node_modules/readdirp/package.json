@@ -1,0 +1,78 @@
+{
+  "name": "readdirp",
+  "description": "Recursive version of fs.readdir with streaming API.",
+  "version": "4.0.2",
+  "homepage": "https://github.com/paulmillr/readdirp",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/paulmillr/readdirp.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/paulmillr/readdirp/issues"
+  },
+  "author": "Thorsten Lorenz <thlorenz@gmx.de> (thlorenz.com)",
+  "contributors": [
+    "Thorsten Lorenz <thlorenz@gmx.de> (thlorenz.com)",
+    "Paul Miller (https://paulmillr.com)"
+  ],
+  "engines": {
+    "node": ">= 14.16.0"
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "index.d.ts.map",
+    "index.js.map",
+    "esm"
+  ],
+  "main": "./index.js",
+  "module": "./esm/index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./esm/index.js",
+      "require": "./index.js"
+    }
+  },
+  "sideEffects": false,
+  "keywords": [
+    "recursive",
+    "fs",
+    "stream",
+    "streams",
+    "readdir",
+    "filesystem",
+    "find",
+    "filter"
+  ],
+  "scripts": {
+    "build": "tsc && tsc -p tsconfig.esm.json",
+    "nyc": "nyc",
+    "mocha": "mocha --exit",
+    "lint": "prettier --check index.ts",
+    "format": "prettier --write index.ts",
+    "test": "nyc npm run mocha"
+  },
+  "devDependencies": {
+    "@paulmillr/jsbt": "0.2.1",
+    "@types/node": "20.14.8",
+    "chai": "4.3.4",
+    "chai-subset": "1.6.0",
+    "mocha": "10.7.3",
+    "nyc": "15.0.1",
+    "prettier": "3.1.1",
+    "rimraf": "6.0.1",
+    "typescript": "5.5.2"
+  },
+  "nyc": {
+    "reporter": [
+      "html",
+      "text"
+    ]
+  },
+  "funding": {
+    "type": "individual",
+    "url": "https://paulmillr.com/funding/"
+  }
+}

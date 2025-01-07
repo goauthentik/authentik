@@ -1,0 +1,18 @@
+{
+  "type": "string",
+  "allOf": [{
+      "properties": {
+        "lastName": {
+          "type": "string"
+        }
+      }
+    },
+    {
+      "properties": {
+        "lastName": {
+          "type": "string"
+        }
+      }
+    }
+  ]
+}

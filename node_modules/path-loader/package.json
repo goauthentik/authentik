@@ -1,0 +1,69 @@
+{
+  "name": "path-loader",
+  "version": "1.0.12",
+  "description": "Utility that provides a single API for loading the content of a path/URL.",
+  "main": "index.js",
+  "scripts": {
+    "test": "gulp"
+  },
+  "author": {
+    "name": "Jeremy Whitlock",
+    "email": "jwhitlock@apache.org",
+    "url": "https://github.com/whitlockjc"
+  },
+  "bugs": {
+    "url": "https://github.com/whitlockjc/path-loader/issues"
+  },
+  "files": [
+    "dist",
+    "index.d.ts",
+    "index.js",
+    "lib/**/*.js"
+  ],
+  "homepage": "https://github.com/whitlockjc/path-loader",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/whitlockjc/path-loader.git"
+  },
+  "keywords": [
+    "json"
+  ],
+  "browser": {
+    "./lib/loaders/file.js": "./lib/loaders/file-browser.js"
+  },
+  "devDependencies": {
+    "@otris/jsdoc-tsd": "^1.0.4",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.5",
+    "babel-preset-es2015": "^6.24.1",
+    "basic-auth": "^2.0.0",
+    "connect": "^3.7.0",
+    "del": "^3.0.0",
+    "fancy-log": "^2.0.0",
+    "gulp": "~4.0.0",
+    "gulp-eslint": "^6.0.0",
+    "gulp-if": "^3.0.0",
+    "gulp-istanbul": "~1.1.1",
+    "gulp-jsdoc3": "^3.0.0",
+    "gulp-load-plugins": "^1.6.0",
+    "gulp-mocha": "~3.0.1",
+    "gulp-replace": "^1.0.0",
+    "gulp-uglify": "^3.0.2",
+    "jsdoc": "^3.6.4",
+    "jsdoc-to-markdown": "^6.0.1",
+    "karma": "^6.3.20",
+    "karma-chrome-launcher": "^3.1.1",
+    "karma-mocha": "^2.0.1",
+    "karma-mocha-reporter": "^2.2.5",
+    "karma-webpack": "^5.0.0",
+    "mocha": "^10.0.0",
+    "plugin-error": "^1.0.1",
+    "puppeteer": "^14.3.0",
+    "webpack": "^4.43.0"
+  },
+  "dependencies": {
+    "native-promise-only": "^0.8.1",
+    "superagent": "^7.1.6"
+  }
+}

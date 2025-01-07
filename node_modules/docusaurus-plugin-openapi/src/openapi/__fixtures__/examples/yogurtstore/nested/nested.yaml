@@ -1,0 +1,13 @@
+openapi: 3.0.3
+info:
+  title: Nested Folder Example
+  version: 1.0.0
+  description: Sample description.
+paths:
+  /flavors:
+    get:
+      summary: List All
+      description: All
+      responses:
+        200:
+          description: OK

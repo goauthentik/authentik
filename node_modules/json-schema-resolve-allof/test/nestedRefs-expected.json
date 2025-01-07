@@ -1,0 +1,104 @@
+{
+	"definitions": {
+		"Animal": {
+			"type": "object",
+			"required": [
+				"name"
+			],
+			"properties": {
+				"name": {
+					"type": "string"
+				},
+				"type": {
+					"type": "string"
+				}
+			},
+			"discriminator": "type"
+		},
+		"Human": {
+			"type": "object",
+			"properties": {
+				"firstName": {
+					"type": "string"
+				},
+				"lastName": {
+					"type": "string"
+				},
+				"name": {
+					"type": "string"
+				},
+				"type": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"name"
+			],
+			"discriminator": "type",
+			"example": "this is example"
+		},
+		"Pet": {
+			"type": "object",
+			"properties": {
+				"name": {
+					"type": "string"
+				},
+				"type": {
+					"type": "string"
+				},
+				"isDomestic": {
+					"type": "boolean",
+					"default": false
+				}
+			},
+			"discriminator": "type",
+			"required": [
+				"name",
+				"isDomestic",
+				"type"
+			]
+		},
+		"Monster": {
+			"description": "useful information",
+			"type": "object",
+			"properties": {
+				"fangs": {
+					"type": "integer",
+					"format": "int32"
+				},
+				"name": {
+					"type": "string"
+				},
+				"type": {
+					"type": "string"
+				},
+				"isDomestic": {
+					"type": "boolean",
+					"default": false
+				},
+				"hasScales": {
+					"type": "boolean"
+				}
+			},
+			"discriminator": "type",
+			"required": [
+				"fangs",
+				"name",
+				"isDomestic",
+				"type"
+			]
+		},
+		"Ghoul": {
+			"description": "a ghoul",
+			"required": [
+				"fangs"
+			],
+			"properties": {
+				"fangs": {
+					"type": "integer",
+					"format": "int32"
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,10 @@
+{
+    "extends": [
+        "tslint:recommended",
+        "tslint-sonarts"
+    ],
+    "rulesDirectory": [],
+    "rules": {
+        "quotemark": false
+    }
+}

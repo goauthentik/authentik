@@ -1,0 +1,13 @@
+openapi: 3.0.3
+info:
+  title: YAML Example
+  version: 1.0.0
+  description: Sample description.
+paths:
+  /hello:
+    get:
+      summary: Hello World
+      description: Example OpenApi definition with YAML.
+      responses:
+        200:
+          description: OK

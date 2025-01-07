@@ -1,0 +1,79 @@
+{
+  "definitions": {
+    "Animal": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        }
+      },
+      "discriminator": "type"
+    },
+    "Human": {
+      "allOf": [{
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          }
+        }
+      }, {
+        "$ref": "#/definitions/Animal"
+      }],
+      "example": "this is example"
+    },
+    "Pet": {
+      "allOf": [{
+        "$ref": "#/definitions/Animal"
+      }, {
+        "type": "object",
+        "required": [
+          "isDomestic",
+          "name",
+          "type"
+        ],
+        "properties": {
+          "isDomestic": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      }]
+    },
+    "Monster": {
+      "description": "useful information",
+      "allOf": [{
+        "$ref": "#/definitions/Ghoul"
+      }, {
+        "$ref": "#/definitions/Pet"
+      }, {
+        "properties": {
+          "hasScales": {
+            "type": "boolean"
+          }
+        }
+      }]
+    },
+    "Ghoul": {
+      "description": "a ghoul",
+      "required": [
+        "fangs"
+      ],
+      "properties": {
+        "fangs": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    }
+  }
+}

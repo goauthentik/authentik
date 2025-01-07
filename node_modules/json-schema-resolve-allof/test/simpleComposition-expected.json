@@ -1,0 +1,11 @@
+{
+  "type": "string",
+  "properties": {
+    "lastName": {
+      "type": "string"
+    },
+    "lastName": {
+      "type": "string"
+    }
+  }
+}
