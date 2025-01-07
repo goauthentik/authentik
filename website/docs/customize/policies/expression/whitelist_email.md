@@ -4,7 +4,7 @@ title: Whitelist email domains
 
 To add specific email addresses to an allow list for signing in through SSO or directly with default policy customization, follow these steps:
 
-1. From the **authentik admin interface**, navigate to **Customization > Policies** and modify the default policy named `default-source-enrollment-if-sso`.
+1. In the **authentik admin interface**, navigate to **Customization > Policies** and modify the default policy named `default-source-enrollment-if-sso`.
 
 2. Add the following code snippet in the policy-specific settings under **Expression** and then click **Update**.
 
@@ -22,7 +22,7 @@ else:
 
 This configuration specifies the `allowed_domains` list of domains for logging in through SSO, such as Google OAuth2. If your email is not in the available domains, you will receive a 'Permission Denied' message on the login screen.
 
-You can also enforce this for authentication by modifying the policy `default-source-authentication-if-sso` with the following expression:
+You can also enforce your allowed domains policy for authentication by modifying the policy `default-source-authentication-if-sso` with the following expression:
 
 ```python
 allowed_domains = ["example.org", "example.net", "example.com"]
