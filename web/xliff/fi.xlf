@@ -8753,7 +8753,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="sa30c12014e955946">
   <source>Russian</source>
-  <target>Venäjä</target>
+  <target>venäjä</target>
 </trans-unit>
 <trans-unit id="s354405ae02cb262d">
   <source>Last seen: <x id="0" equiv-text="${getRelativeTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</source>
