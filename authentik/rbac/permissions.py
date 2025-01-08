@@ -15,6 +15,17 @@ class ObjectPermissions(DjangoObjectPermissions):
         lookup = getattr(view, "lookup_url_kwarg", None) or getattr(view, "lookup_field", None)
         if lookup and lookup in view.kwargs:
             return True
+        # Legacy behaviour:
+        # Allow creation of objects even without explicit permission
+        queryset = self._queryset(view)
+        required_perms = self.get_required_permissions(request.method, queryset.model)
+        if (
+            len(required_perms) == 1
+            and f"{queryset.model._meta.app_label}.add_{queryset.model._meta.model_name}"
+            in required_perms
+            and getattr(view, "rbac_allow_create_without_perm", False)
+        ):
+            return True
         return super().has_permission(request, view)
 
     def has_object_permission(self, request: Request, view, obj: Model) -> bool:
@@ -24,6 +35,10 @@ class ObjectPermissions(DjangoObjectPermissions):
         # Rank global permissions higher than per-object permissions
         if request.user.has_perms(perms):
             return True
+        # Allow access for owners if configured
+        if owner_field := getattr(view, "owner_field", None):
+            if getattr(obj, owner_field) == request.user:
+                return True
         return super().has_object_permission(request, view, obj)
 
 

@@ -153,7 +153,7 @@ wsproto = "*"
 xmlsec = "*"
 zxcvbn = "*"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 aws-cdk-lib = "*"
 bandit = "*"
 black = "*"
