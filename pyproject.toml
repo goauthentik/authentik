@@ -4,6 +4,9 @@ version = "2024.12.2"
 description = ""
 authors = ["authentik Team <hello@goauthentik.io>"]
 
+[tool.poetry.requires-plugins]
+poetry-plugin-export = ">1.8"
+
 [tool.black]
 line-length = 100
 target-version = ['py312']

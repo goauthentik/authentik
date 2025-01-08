@@ -3392,6 +3392,10 @@ paths:
         schema:
           type: string
       - in: query
+        name: list_rbac
+        schema:
+          type: boolean
+      - in: query
         name: meta_description
         schema:
           type: string
@@ -3439,10 +3443,6 @@ paths:
         name: slug
         schema:
           type: string
-      - in: query
-        name: superuser_full_list
-        schema:
-          type: boolean
       tags:
       - core
       security:
@@ -23205,6 +23205,10 @@ paths:
       description: List accessible endpoints
       parameters:
       - in: query
+        name: list_rbac
+        schema:
+          type: boolean
+      - in: query
         name: name
         schema:
           type: string
@@ -23234,10 +23238,6 @@ paths:
         name: search
         schema:
           type: string
-      - in: query
-        name: superuser_full_list
-        schema:
-          type: boolean
       tags:
       - rac
       security:

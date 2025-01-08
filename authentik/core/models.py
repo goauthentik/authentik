@@ -41,7 +41,6 @@ from authentik.tenants.models import DEFAULT_TOKEN_DURATION, DEFAULT_TOKEN_LENGT
 from authentik.tenants.utils import get_current_tenant, get_unique_identifier
 
 LOGGER = get_logger()
-USER_ATTRIBUTE_DEBUG = "goauthentik.io/user/debug"
 USER_ATTRIBUTE_GENERATED = "goauthentik.io/user/generated"
 USER_ATTRIBUTE_EXPIRES = "goauthentik.io/user/expires"
 USER_ATTRIBUTE_DELETE_ON_LOGOUT = "goauthentik.io/user/delete-on-logout"
@@ -282,6 +281,7 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
             ("unassign_user_permissions", _("Can unassign permissions from users")),
             ("preview_user", _("Can preview user data sent to providers")),
             ("view_user_applications", _("View applications the user has access to")),
+            ("user_view_debug", _("User receives additional details for error messages")),
         ]
         indexes = [
             models.Index(fields=["last_login"]),

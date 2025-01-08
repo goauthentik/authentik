@@ -46,7 +46,7 @@ export class EndpointListPage extends Table<Endpoint> {
         return new RacApi(DEFAULT_CONFIG).racEndpointsList({
             ...(await this.defaultEndpointConfig()),
             provider: this.provider?.pk,
-            superuserFullList: true,
+            listRbac: true,
         });
     }
 

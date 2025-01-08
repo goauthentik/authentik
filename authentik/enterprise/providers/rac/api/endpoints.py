@@ -96,7 +96,7 @@ class EndpointViewSet(UsedByMixin, ModelViewSet):
                 OpenApiTypes.STR,
             ),
             OpenApiParameter(
-                name="superuser_full_list",
+                name="list_rbac",
                 location=OpenApiParameter.QUERY,
                 type=OpenApiTypes.BOOL,
             ),
@@ -110,8 +110,8 @@ class EndpointViewSet(UsedByMixin, ModelViewSet):
         """List accessible endpoints"""
         should_cache = request.GET.get("search", "") == ""
 
-        superuser_full_list = str(request.GET.get("superuser_full_list", "false")).lower() == "true"
-        if superuser_full_list and request.user.is_superuser:
+        list_rbac = str(request.GET.get("list_rbac", "false")).lower() == "true"
+        if list_rbac:
             return super().list(request)
 
         queryset = self._filter_queryset_for_list(self.get_queryset())
