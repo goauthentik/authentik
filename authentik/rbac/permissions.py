@@ -24,6 +24,10 @@ class ObjectPermissions(DjangoObjectPermissions):
         # Rank global permissions higher than per-object permissions
         if request.user.has_perms(perms):
             return True
+        # Allow access for owners if configured
+        if owner_field := getattr(view, "owner_field", None):
+            if getattr(obj, owner_field) == request.user:
+                return True
         return super().has_object_permission(request, view, obj)
 
 

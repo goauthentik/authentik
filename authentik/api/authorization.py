@@ -56,12 +56,3 @@ class OwnerPermissions(BasePermission):
         if owner != request.user:
             return False
         return True
-
-
-class OwnerSuperuserPermissions(OwnerPermissions):
-    """Similar to OwnerPermissions, except always allow access for superusers"""
-
-    def has_object_permission(self, request: Request, view, obj: Model) -> bool:
-        if request.user.is_superuser:
-            return True
-        return super().has_object_permission(request, view, obj)
