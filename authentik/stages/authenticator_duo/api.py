@@ -1,20 +1,17 @@
 """AuthenticatorDuoStage API Views"""
 
 from django.http import Http404
-from django_filters.rest_framework.backends import DjangoFilterBackend
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
 from guardian.shortcuts import get_objects_for_user
 from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, ChoiceField, IntegerField
-from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from structlog.stdlib import get_logger
 
-from authentik.api.authorization import OwnerFilter, OwnerPermissions
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
 from authentik.flows.api.stages import StageSerializer
@@ -189,8 +186,7 @@ class DuoDeviceViewSet(
     search_fields = ["name"]
     filterset_fields = ["name"]
     ordering = ["name"]
-    permission_classes = [OwnerPermissions]
-    filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
+    owner_field = "user"
 
 
 class DuoAdminDeviceViewSet(ModelViewSet):

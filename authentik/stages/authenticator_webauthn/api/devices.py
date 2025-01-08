@@ -1,11 +1,8 @@
 """AuthenticatorWebAuthnStage API Views"""
 
-from django_filters.rest_framework.backends import DjangoFilterBackend
 from rest_framework import mixins
-from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
-from authentik.api.authorization import OwnerFilter, OwnerPermissions
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
 from authentik.stages.authenticator_webauthn.api.device_types import WebAuthnDeviceTypeSerializer
@@ -40,8 +37,7 @@ class WebAuthnDeviceViewSet(
     search_fields = ["name"]
     filterset_fields = ["name"]
     ordering = ["name"]
-    permission_classes = [OwnerPermissions]
-    filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
+    owner_field = "user"
 
 
 class WebAuthnAdminDeviceViewSet(ModelViewSet):

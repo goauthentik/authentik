@@ -58,6 +58,7 @@ class PropertyMappingEvaluator(BaseEvaluator):
             self._context["user"] = user
         if request:
             req.http_request = request
+            self._context["http_request"] = request
         req.context.update(**kwargs)
         self._context["request"] = req
         self._context.update(**kwargs)
