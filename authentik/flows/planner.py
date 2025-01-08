@@ -241,8 +241,8 @@ class FlowPlanner:
                 user = context[PLAN_CONTEXT_PENDING_USER]
             else:
                 user = request.user
+                context.update(self._check_authentication(request, context))
 
-            context.update(self._check_authentication(request, context))
             # First off, check the flow's direct policy bindings
             # to make sure the user even has access to the flow
             engine = PolicyEngine(self.flow, user, request)
