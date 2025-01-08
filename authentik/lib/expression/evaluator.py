@@ -201,15 +201,18 @@ class BaseEvaluator:
             return None
         if not isinstance(provider, OAuth2Provider):
             provider = OAuth2Provider(name=provider)
+        session = None
+        if hasattr(request, "session") and request.session.session_key:
+            session = AuthenticatedSession.objects.filter(
+                session_key=request.session.session_key
+            ).first()
         access_token = AccessToken(
             provider=provider,
             user=user,
             expires=now() + timedelta_from_string(validity),
             scope=scopes,
             auth_time=now(),
-            session=AuthenticatedSession.objects.filter(
-                session_key=request.session.session_key
-            ).first(),
+            session=session,
         )
         access_token.id_token = IDToken.new(provider, access_token, request)
         access_token.save()
