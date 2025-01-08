@@ -19,7 +19,7 @@ Access your Enterprise features by first [purchasing a license](./manage-enterpr
 
 To open the Customer Portal and buy a license, go to the Admin interface and in the left pane, navigate to **Enterprise -> Licenses**, and then click **Go to Customer Portal**.
 
-The license key provides direct access to the Customer portal, where you define your organization and its members, manage billing, and access our Support center.
+In the Customer Portal you define your organization and its members, manage your licenses and billing, and access our Support center.
 
 :::info
 A license is associated with a specific Organization in the customer portal and a specific authentik instance (with a unique Install ID), and not with individual users. A single license is purchased for a specified number of users. Additional users can be added to a license, or additional licenses purchased for the same instance, if more users need to be added later.
@@ -28,5 +28,9 @@ A license is associated with a specific Organization in the customer portal and 
 ## Visit the Support center
 
 Enterprise authentik provides dedicated support, with a Support center where you can open a request and view the progress and communications for your current requests.
+
+:::info
+Access to the Support Center and the ticketing system requires a licensed instance of authentik.
+:::
 
 To learn about our Support center, see ["Enterprise support"](./entsupport.md).

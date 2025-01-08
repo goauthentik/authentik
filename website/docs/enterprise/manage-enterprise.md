@@ -89,6 +89,11 @@ To verify that the license was successfully installed, confirm that the expriry 
 
 You can view the list of licenses that are applied to your organization on either the Admin interface, on the **Enterprise -> Licenses** page, or in the Customer Portal, under your organization's page.
 
+### Update your license
+
+If you purchase a new license, or receive a new one due to a change in the number of users, you will need to remove the old license and add the new one. To do so open the Admin interface, navigate to **Enterprise -> Licenses** page, click on **Install**, paste the new key, and then click **Install**.
+
+
 ### About the license expiry date
 
 The **Enterprise -> Licenses** page shows your current licenses' **Cumulative license expiry**. Expiry date calculation works by verifying the individual expiry date for all valid licenses and then picking the lowest expiry date. After the date of the earliest expiring license, all calculations will be updated without that license, by selecting the next earliest date.
@@ -97,11 +102,9 @@ The **Enterprise -> Licenses** page shows your current licenses' **Cumulative li
 
 The following events occur when a license expires or the internal/external user count is over the licensed user count for the time period below.
 
-- After 2 weeks of the expiry date administrators see a warning banner on the Admin interface
-
-- After another 2 weeks, users get a warning banner
-
-- After another 2 weeks, the authentik Enterprise instance becomes "read-only"
+    - After 2 weeks of the expiry date administrators see a warning banner on the Admin interface
+    - After another 2 weeks, users get a warning banner
+    - After another 2 weeks, the authentik Enterprise instance becomes "read-only"
 
     When an authentik instance is in read-only mode, the following actions are still possible:
 
