@@ -200,7 +200,7 @@ class BaseEvaluator:
         if not request:
             return None
         if not isinstance(provider, OAuth2Provider):
-            provider = OAuth2Provider(name=provider)
+            provider = OAuth2Provider.objects.get(name=provider)
         session = None
         if hasattr(request, "session") and request.session.session_key:
             session = AuthenticatedSession.objects.filter(

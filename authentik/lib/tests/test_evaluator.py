@@ -68,7 +68,7 @@ class TestEvaluator(TestCase):
         evaluator._context = {
             "http_request": rf.get(reverse("authentik_core:root-redirect")),
             "user": user,
-            "provider": provider,
+            "provider": provider.name,
         }
         jwt = evaluator.evaluate(
             "return ak_create_jwt(user, provider, ['openid', 'email', 'profile'])"
