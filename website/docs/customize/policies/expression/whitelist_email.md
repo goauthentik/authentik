@@ -4,7 +4,7 @@ title: Whitelist email domains
 
 To add specific email addresses to an allow list for signing in through SSO or directly with default policy customization, follow these steps:
 
-1. In the authentik admin interface, navigate to **Customization > Policies** and modify the default policy named `default-source-enrollment-if-sso`.
+1. In the authentik Admin interface, navigate to **Customization > Policies** and modify the default policy named `default-source-enrollment-if-sso`.
 
 2. Add the following code snippet in the policy-specific settings under **Expression** and then click **Update**.
 
