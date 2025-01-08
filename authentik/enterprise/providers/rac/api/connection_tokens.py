@@ -1,11 +1,8 @@
 """RAC Provider API Views"""
 
-from django_filters.rest_framework.backends import DjangoFilterBackend
 from rest_framework import mixins
-from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.viewsets import GenericViewSet
 
-from authentik.api.authorization import OwnerFilter, OwnerSuperuserPermissions
 from authentik.core.api.groups import GroupMemberSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
@@ -34,12 +31,6 @@ class ConnectionTokenSerializer(EnterpriseRequiredMixin, ModelSerializer):
         ]
 
 
-class ConnectionTokenOwnerFilter(OwnerFilter):
-    """Owner filter for connection tokens (checks session's user)"""
-
-    owner_key = "session__user"
-
-
 class ConnectionTokenViewSet(
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
@@ -55,10 +46,4 @@ class ConnectionTokenViewSet(
     filterset_fields = ["endpoint", "session__user", "provider"]
     search_fields = ["endpoint__name", "provider__name"]
     ordering = ["endpoint__name", "provider__name"]
-    permission_classes = [OwnerSuperuserPermissions]
-    filter_backends = [
-        ConnectionTokenOwnerFilter,
-        DjangoFilterBackend,
-        OrderingFilter,
-        SearchFilter,
-    ]
+    owner_field = "session__user"

@@ -1,14 +1,11 @@
 """AuthenticatorEndpointGDTCStage API Views"""
 
-from django_filters.rest_framework.backends import DjangoFilterBackend
 from rest_framework import mixins
-from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import IsAdminUser
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from structlog.stdlib import get_logger
 
-from authentik.api.authorization import OwnerFilter, OwnerPermissions
 from authentik.core.api.used_by import UsedByMixin
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.stages.authenticator_endpoint_gdtc.models import (
@@ -67,8 +64,7 @@ class EndpointDeviceViewSet(
     search_fields = ["name"]
     filterset_fields = ["name"]
     ordering = ["name"]
-    permission_classes = [OwnerPermissions]
-    filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
+    owner_field = "user"
 
 
 class EndpointAdminDeviceViewSet(ModelViewSet):
