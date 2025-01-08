@@ -5,6 +5,7 @@ from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.fields import ReadOnlyField
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
@@ -62,7 +63,7 @@ class NotificationViewSet(
             204: OpenApiResponse(description="Marked tasks as read successfully."),
         },
     )
-    @action(detail=False, methods=["post"])
+    @action(detail=False, methods=["post"], permission_classes=[IsAuthenticated])
     def mark_all_seen(self, request: Request) -> Response:
         """Mark all the user's notifications as seen"""
         Notification.objects.filter(user=request.user, seen=False).update(seen=True)
