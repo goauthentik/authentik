@@ -136,6 +136,7 @@ class TokenViewSet(UsedByMixin, ModelViewSet):
     ]
     ordering = ["identifier", "expires"]
     owner_field = "user"
+    rbac_allow_create_without_perm = True
 
     def get_queryset(self):
         user = self.request.user if self.request else get_anonymous_user()
