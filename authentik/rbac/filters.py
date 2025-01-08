@@ -26,15 +26,15 @@ class ObjectFilter(ObjectPermissionsFilter):
         # per-object permissions
         if request.user.has_perm(permission):
             return queryset
+        # User does not have permissions, but we have an owner field defined, so filter by that
+        if owner_field := getattr(view, "owner_field", None):
+            return queryset.filter(**{owner_field: request.user})
         queryset = super().filter_queryset(request, queryset, view)
         # Outposts (which are the only objects using internal service accounts)
         # except requests to return an empty list when they have no objects
         # assigned
         if getattr(request.user, "type", None) == UserTypes.INTERNAL_SERVICE_ACCOUNT:
             return queryset
-        # User does not have permissions, but we have an owner field defined, so filter by that
-        if owner_field := getattr(view, "owner_field", None):
-            return queryset.filter(**{owner_field: request.user})
         if not queryset.exists():
             # User doesn't have direct permission to all objects
             # and also no object permissions assigned (directly or via role)
