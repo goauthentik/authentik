@@ -9,20 +9,25 @@ from typing import Any
 
 from cachetools import TLRUCache, cached
 from django.core.exceptions import FieldError
+from django.http import HttpRequest
 from django.utils.text import slugify
+from django.utils.timezone import now
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.serializers import ValidationError
 from sentry_sdk import start_span
 from sentry_sdk.tracing import Span
 from structlog.stdlib import get_logger
 
-from authentik.core.models import User
+from authentik.core.models import AuthenticatedSession, User
 from authentik.events.models import Event
 from authentik.lib.expression.exceptions import ControlFlowException
 from authentik.lib.utils.http import get_http_session
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import Policy, PolicyBinding
 from authentik.policies.process import PolicyProcess
 from authentik.policies.types import PolicyRequest, PolicyResult
+from authentik.providers.oauth2.id_token import IDToken
+from authentik.providers.oauth2.models import AccessToken, OAuth2Provider
 from authentik.stages.authenticator import devices_for_user
 
 LOGGER = get_logger()
@@ -56,6 +61,7 @@ class BaseEvaluator:
             "ak_logger": get_logger(self._filename).bind(),
             "ak_user_by": BaseEvaluator.expr_user_by,
             "ak_user_has_authenticator": BaseEvaluator.expr_func_user_has_authenticator,
+            "ak_create_jwt": self.expr_create_jwt,
             "ip_address": ip_address,
             "ip_network": ip_network,
             "list_flatten": BaseEvaluator.expr_flatten,
@@ -181,6 +187,33 @@ class BaseEvaluator:
         req.context.update(kwargs)
         proc = PolicyProcess(PolicyBinding(policy=policy), request=req, connection=None)
         return proc.profiling_wrapper()
+
+    def expr_create_jwt(
+        self,
+        user: User,
+        provider: OAuth2Provider | str,
+        scopes: list[str],
+        validity: str = "seconds=60",
+    ) -> str | None:
+        """Issue a JWT for a given provider"""
+        request: HttpRequest = self._context.get("http_request")
+        if not request:
+            return None
+        if not isinstance(provider, OAuth2Provider):
+            provider = OAuth2Provider(name=provider)
+        access_token = AccessToken(
+            provider=provider,
+            user=user,
+            expires=now() + timedelta_from_string(validity),
+            scope=scopes,
+            auth_time=now(),
+            session=AuthenticatedSession.objects.filter(
+                session_key=request.session.session_key
+            ).first(),
+        )
+        access_token.id_token = IDToken.new(provider, access_token, request)
+        access_token.save()
+        return access_token.token
 
     def wrap_expression(self, expression: str) -> str:
         """Wrap expression in a function, call it, and save the result as `result`"""
