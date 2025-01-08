@@ -7,7 +7,7 @@
 # Ville Ranki, 2022
 # Skyler Mäntysaari, 2024
 # Jani Hast, 2024
-# Marko Tukiainen, 2024
+# MarkoTukiainen, 2025
 # 
 #, fuzzy
 msgid ""
@@ -16,7 +16,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-12-20 00:08+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
-"Last-Translator: Marko Tukiainen, 2024\n"
+"Last-Translator: MarkoTukiainen, 2025\n"
 "Language-Team: Finnish (https://app.transifex.com/authentik/teams/119923/fi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2024,11 +2024,11 @@ msgstr "Roolit"
 
 #: authentik/rbac/models.py
 msgid "System permission"
-msgstr "Järjestelmän pääsyoikeus"
+msgstr "Järjestelmän käyttöoikeus"
 
 #: authentik/rbac/models.py
 msgid "System permissions"
-msgstr "Järjestelmän pääsyoikeudet"
+msgstr "Järjestelmän käyttöoikeudet"
 
 #: authentik/rbac/models.py
 msgid "Can view system info"
