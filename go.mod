@@ -6,7 +6,7 @@ toolchain go1.23.0
 
 require (
 	beryju.io/ldap v0.1.0
-	github.com/coreos/go-oidc/v3 v3.11.0
+	github.com/coreos/go-oidc/v3 v3.12.0
 	github.com/getsentry/sentry-go v0.31.1
 	github.com/go-http-utils/etag v0.0.0-20161124023236-513ea8f21eb1
 	github.com/go-ldap/ldap/v3 v3.4.10
@@ -31,7 +31,7 @@ require (
 	github.com/wwt/guac v1.3.2
 	goauthentik.io/api/v3 v3.2024121.3
 	golang.org/x/exp v0.0.0-20230210204819-062eb4c674ab
-	golang.org/x/oauth2 v0.24.0
+	golang.org/x/oauth2 v0.25.0
 	golang.org/x/sync v0.10.0
 	gopkg.in/yaml.v2 v2.4.0
 	layeh.com/radius v0.0.0-20210819152912-ad72663a72ab
