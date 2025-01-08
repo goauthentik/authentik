@@ -1,11 +1,15 @@
 """RBAC API Filter"""
 
+from django.conf import settings
 from django.db.models import QuerySet
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.authentication import get_authorization_header
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.request import Request
 from rest_framework.views import APIView
 from rest_framework_guardian.filters import ObjectPermissionsFilter
 
+from authentik.api.authentication import validate_auth
 from authentik.core.models import UserTypes
 
 
@@ -36,3 +40,17 @@ class ObjectFilter(ObjectPermissionsFilter):
             # and also no object permissions assigned (directly or via role)
             raise PermissionDenied()
         return queryset
+
+
+class SecretKeyFilter(DjangoFilterBackend):
+    """Allow access to all objects when authenticated with secret key as token.
+
+    Replaces both DjangoFilterBackend and ObjectFilter"""
+
+    def filter_queryset(self, request: Request, queryset: QuerySet, view) -> QuerySet:
+        auth_header = get_authorization_header(request)
+        token = validate_auth(auth_header)
+        if token and token == settings.SECRET_KEY:
+            return queryset
+        queryset = ObjectFilter().filter_queryset(request, queryset, view)
+        return super().filter_queryset(request, queryset, view)
