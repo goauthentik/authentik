@@ -28,7 +28,6 @@ from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
-from authentik.api.authorization import SecretKeyFilter
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.crypto.apps import MANAGED_KEY
@@ -36,7 +35,7 @@ from authentik.crypto.builder import CertificateBuilder, PrivateKeyAlg
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
 from authentik.rbac.decorators import permission_required
-from authentik.rbac.filters import ObjectFilter
+from authentik.rbac.filters import ObjectFilter, SecretKeyFilter
 
 LOGGER = get_logger()
 
