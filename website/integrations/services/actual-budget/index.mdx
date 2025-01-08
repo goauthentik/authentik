@@ -10,7 +10,8 @@ sidebar_label: Actual Budget
 ## What is Actual Budget
 
 > Actual Budget is a super-fast and privacy-focused app for managing your finances. At its core is the well-proven and much-loved envelope budgeting methodology.
-You own your data and can do whatever you want with it. It features multi-device sync, optional end-to-end encryption, and much more.
+> You own your data and can do whatever you want with it. It features multi-device sync, optional end-to-end encryption, and much more.
+>
 > -- https://actualbudget.org/
 >
 > This guide explains how to configure Actual Budget to use authentik as the OAuth provider for logging in to the Web GUI.
@@ -31,7 +32,11 @@ The following placeholders are used in this guide:
 - Name: `SP-actual`
 - Client type: `Confidential`
 - Redirect URIs/Origins (RegEx): `https://actual.company/openid/callback`
-- Signing Key: `authentik Self-signed Certificate`
+- Signing Key: Select any available signing keys.
+
+:::info
+Actual Budget supports the RS256 algorithm. Please ensure to consider this when choosing the appropriate signing key.
+:::
 
 Take note of the Client ID and Client Secret; you will need to provide them to Actual Budget in Step 3.
 
@@ -45,7 +50,7 @@ Leave the remaining values as default. Durations can be adjusted as needed.
 
 ## Actual Budget configuration
 
-1. Log into your Actual Budget using a browser of your choice and open your budget.
+1. Sign in to Actual Budget with a browser of your choice and access your budget by clicking on its name.
 
 2. Click your budget in the top-left corner to open the dropdown menu and select `Settings`.
 
@@ -58,11 +63,11 @@ Leave the remaining values as default. Durations can be adjusted as needed.
 6. Enter the variables provided by authentik here.  
     - Set `OpenID Provider` to `Authentik`  
     - Set `OpenID provider URL` to `https://authentik.company/application/o/actual/`  
-    - Set `Client ID` to `<client-id>`  
-    - Set `Client secret` to `<client-secret>`
+    - Set `Client ID` to `<client-id>` from Step 2
+    - Set `Client secret` to `<client-secret>` from Step 2
 
 :::info
-The first user that logs into Actual Budget via OpenID will become the owner of the budget.
+The first user to log into Actual Budget via OpenID will become the owner and administrator with the highest privileges for the budget. Check the info box at the bottom for more information on how to create additional users.
 :::
 
 ## Test the login
