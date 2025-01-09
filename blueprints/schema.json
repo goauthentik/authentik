@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://goauthentik.io/blueprints/schema.json",
     "type": "object",
-    "title": "authentik 2024.12.1 Blueprint schema",
+    "title": "authentik 2024.12.2 Blueprint schema",
     "required": [
         "version",
         "entries"
