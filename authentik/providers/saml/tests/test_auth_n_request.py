@@ -2,6 +2,7 @@
 
 from base64 import b64encode
 
+from defusedxml.lxml import fromstring
 from django.http.request import QueryDict
 from django.test import TestCase
 
@@ -17,6 +18,7 @@ from authentik.providers.saml.processors.authn_request_parser import AuthNReques
 from authentik.sources.saml.exceptions import MismatchedRequestID
 from authentik.sources.saml.models import SAMLSource
 from authentik.sources.saml.processors.constants import (
+    NS_MAP,
     SAML_BINDING_REDIRECT,
     SAML_NAME_ID_FORMAT_EMAIL,
     SAML_NAME_ID_FORMAT_UNSPECIFIED,
@@ -184,6 +186,14 @@ class TestAuthNRequest(TestCase):
         # once as ds:Reference URI)
         self.assertEqual(response.count(response_proc._assertion_id), 2)
         self.assertEqual(response.count(response_proc._response_id), 2)
+
+        response_xml = fromstring(response)
+        self.assertEqual(
+            len(response_xml.xpath("//saml:Assertion/ds:Signature", namespaces=NS_MAP)), 1
+        )
+        self.assertEqual(
+            len(response_xml.xpath("//samlp:Response/ds:Signature", namespaces=NS_MAP)), 1
+        )
 
         # Now parse the response (source)
         http_request.POST = QueryDict(mutable=True)
