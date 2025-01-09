@@ -13,6 +13,7 @@ from rest_framework.fields import (
     ReadOnlyField,
     SerializerMethodField,
 )
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
@@ -93,6 +94,7 @@ class RBACPermissionViewSet(ReadOnlyModelViewSet):
     serializer_class = PermissionSerializer
     ordering = ["name"]
     filterset_class = PermissionFilter
+    permission_classes = [IsAuthenticated]
     search_fields = [
         "codename",
         "content_type__model",
