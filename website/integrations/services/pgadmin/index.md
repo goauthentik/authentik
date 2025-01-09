@@ -32,38 +32,38 @@ The following placeholders are used in this guide:
 
 To configure OAuth in pgAdmin, you can either use the `config_local.py` file or set environment variables if you are deploying pgAdmin in a containerized setup.
 
-
 ### Using `config_local.py`
 
 1. Locate or create the `config_local.py` file in the `/pgadmin4/` directory.
-   - If the file does not exist, create it manually.
+
+    - If the file does not exist, create it manually.
 
 2. Add the following configuration to `config_local.py`:
 
-   ```python
-   AUTHENTICATION_SOURCES = ['oauth2', 'internal']
-   OAUTH2_AUTO_CREATE_USER = True
-   OAUTH2_CONFIG = [{
-       'OAUTH2_NAME': 'authentik',
-       'OAUTH2_DISPLAY_NAME': 'Login with authentik',
-       'OAUTH2_CLIENT_ID': '<Client ID from authentik>',
-       'OAUTH2_CLIENT_SECRET': '<Client secret from authentik>',
-       'OAUTH2_TOKEN_URL': 'https://authentik.company/application/o/token/',
-       'OAUTH2_AUTHORIZATION_URL': 'https://authentik.company/application/o/authorize/',
-       'OAUTH2_API_BASE_URL': 'https://authentik.company/',
-       'OAUTH2_USERINFO_ENDPOINT': 'https://authentik.company/application/o/userinfo/',
-       'OAUTH2_SERVER_METADATA_URL': 'https://authentik.company/application/o/<App Slug>/.well-known/openid-configuration',
-       'OAUTH2_SCOPE': 'openid email profile',
-       'OAUTH2_ICON': '<Fontawesome icon key (e.g., fa-key)>',
-       'OAUTH2_BUTTON_COLOR': '<Hexadecimal color code for the login button>'
-   }]
-   ```
+    ```python
+    AUTHENTICATION_SOURCES = ['oauth2', 'internal']
+    OAUTH2_AUTO_CREATE_USER = True
+    OAUTH2_CONFIG = [{
+        'OAUTH2_NAME': 'authentik',
+        'OAUTH2_DISPLAY_NAME': 'Login with authentik',
+        'OAUTH2_CLIENT_ID': '<Client ID from authentik>',
+        'OAUTH2_CLIENT_SECRET': '<Client secret from authentik>',
+        'OAUTH2_TOKEN_URL': 'https://authentik.company/application/o/token/',
+        'OAUTH2_AUTHORIZATION_URL': 'https://authentik.company/application/o/authorize/',
+        'OAUTH2_API_BASE_URL': 'https://authentik.company/',
+        'OAUTH2_USERINFO_ENDPOINT': 'https://authentik.company/application/o/userinfo/',
+        'OAUTH2_SERVER_METADATA_URL': 'https://authentik.company/application/o/<App Slug>/.well-known/openid-configuration',
+        'OAUTH2_SCOPE': 'openid email profile',
+        'OAUTH2_ICON': '<Fontawesome icon key (e.g., fa-key)>',
+        'OAUTH2_BUTTON_COLOR': '<Hexadecimal color code for the login button>'
+    }]
+    ```
 
-3. Save the file and restart pgAdmin for the changes to take effect. 
+3. Save the file and restart pgAdmin for the changes to take effect.
 
-   :::note
-   You must restart pgAdmin every time you make changes to `config_local.py`.
-   :::
+    :::note
+    You must restart pgAdmin every time you make changes to `config_local.py`.
+    :::
 
 ### Using Environment Variables for Containerized Deployments
 
@@ -71,22 +71,24 @@ For deployments using Docker or Kubernetes, you can configure OAuth using the fo
 
 1. Set these environment variables in your container:
 
-   ```bash
-PGADMIN_CONFIG_AUTHENTICATION_SOURCES="['oauth2', 'internal']" 
+```bash
+PGADMIN_CONFIG_AUTHENTICATION_SOURCES="['oauth2', 'internal']"
 PGADMIN_CONFIG_OAUTH2_AUTO_CREATE_USER=True
 PGADMIN_CONFIG_OAUTH2_CONFIG="[{'OAUTH2_NAME':'authentik','OAUTH2_DISPLAY_NAME':'Login with authentik','OAUTH2_CLIENT_ID':'<Client ID from authentik>','OAUTH2_CLIENT_SECRET':'<Client secret from authentik>','OAUTH2_TOKEN_URL':'https://authentik.company/application/o/token/','OAUTH2_AUTHORIZATION_URL':'https://authentik.company/application/o/authorize/','OAUTH2_API_BASE_URL':'https://authentik.company/','OAUTH2_USERINFO_ENDPOINT':'https://authentik.company/application/o/userinfo/','OAUTH2_SERVER_METADATA_URL':'https://authentik.company/application/o/<App Slug>/.well-known/openid-configuration','OAUTH2_SCOPE':'openid email profile','OAUTH2_ICON':'<Fontawesome icon key (e.g., fa-key)>','OAUTH2_BUTTON_COLOR':'<Hexadecimal color code for the login button>'}]"
-   ```
+```
 
 ### General Notes
 
 - To **only allow OAuth2 login**, set:
-  ```python
-  AUTHENTICATION_SOURCES = ['oauth2']
-  ```
-  Ensure that you promote at least one user to an admin before disabling the internal authentication.
+
+    ```python
+    AUTHENTICATION_SOURCES = ['oauth2']
+    ```
+
+    Ensure that you promote at least one user to an admin before disabling the internal authentication.
 
 - To **disable automatic user creation**, set:
-  ```python
-  OAUTH2_AUTO_CREATE_USER = False
-  ```
-  Setting this value to `False` disables automatic user creation. This ensures that only the first signed-in user is registered. 
+    ```python
+    OAUTH2_AUTO_CREATE_USER = False
+    ```
+    Setting this value to `False` disables automatic user creation. This ensures that only the first signed-in user is registered.
