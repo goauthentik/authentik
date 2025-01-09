@@ -256,7 +256,7 @@ class AssertionProcessor:
         assertion.attrib["IssueInstant"] = self._issue_instant
         assertion.append(self.get_issuer())
 
-        if self.provider.signing_kp:
+        if self.provider.signing_kp and self.provider.sign_assertion:
             sign_algorithm_transform = SIGN_ALGORITHM_TRANSFORM_MAP.get(
                 self.provider.signature_algorithm, xmlsec.constants.TransformRsaSha1
             )
@@ -294,6 +294,18 @@ class AssertionProcessor:
             response.attrib["InResponseTo"] = self.auth_n_request.id
 
         response.append(self.get_issuer())
+
+        if self.provider.signing_kp and self.provider.sign_response:
+            sign_algorithm_transform = SIGN_ALGORITHM_TRANSFORM_MAP.get(
+                self.provider.signature_algorithm, xmlsec.constants.TransformRsaSha1
+            )
+            signature = xmlsec.template.create(
+                response,
+                xmlsec.constants.TransformExclC14N,
+                sign_algorithm_transform,
+                ns=xmlsec.constants.DSigNs,
+            )
+            response.append(signature)
 
         status = SubElement(response, f"{{{NS_SAML_PROTOCOL}}}Status")
         status_code = SubElement(status, f"{{{NS_SAML_PROTOCOL}}}StatusCode")
