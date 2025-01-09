@@ -60,11 +60,11 @@ Leave the remaining values as default. Durations can be adjusted as needed.
 
 5. Scroll up to the new option **Authentication method...** and click **Start using OpenID**.
 
-6. Enter the variables provided by authentik here.
+6. Set the following values from the authentik provider:
     - Set **OpenID Provider** to `authentik`
     - Set **OpenID provider URL** to `https://authentik.company/application/o/actual/`
-    - Set **Client ID** to `<client-id>` (the value shown in the authentik provider)
-    - Set **Client secret** to `<client-secret>` (the value shown in the authentik provider)
+    - Set **Client ID** to `<client-id>`
+    - Set **Client secret** to `<client-secret>`
 
 :::warning
 The first user to log into Actual Budget via OpenID will become the owner and administrator with the highest privileges for the budget. For more information on how to create additional users, see the Note below.
