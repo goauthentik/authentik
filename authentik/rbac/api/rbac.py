@@ -5,6 +5,7 @@ from django.contrib.auth.models import Permission
 from django.db.models import QuerySet
 from django_filters.filters import ModelChoiceFilter
 from django_filters.filterset import FilterSet
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import (
     CharField,
@@ -13,6 +14,7 @@ from rest_framework.fields import (
     ReadOnlyField,
     SerializerMethodField,
 )
+from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
@@ -93,6 +95,7 @@ class RBACPermissionViewSet(ReadOnlyModelViewSet):
     queryset = Permission.objects.none()
     serializer_class = PermissionSerializer
     ordering = ["name"]
+    filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
     filterset_class = PermissionFilter
     permission_classes = [IsAuthenticated]
     search_fields = [
