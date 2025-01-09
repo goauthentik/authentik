@@ -5,6 +5,7 @@ from base64 import b64encode
 from defusedxml.lxml import fromstring
 from django.http.request import QueryDict
 from django.test import TestCase
+from lxml import etree  # nosec
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
@@ -12,6 +13,7 @@ from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import get_request
+from authentik.lib.xml import lxml_from_string
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequestParser
@@ -186,6 +188,11 @@ class TestAuthNRequest(TestCase):
         # once as ds:Reference URI)
         self.assertEqual(response.count(response_proc._assertion_id), 2)
         self.assertEqual(response.count(response_proc._response_id), 2)
+
+        schema = etree.XMLSchema(
+            etree.parse("schemas/saml-schema-protocol-2.0.xsd", parser=etree.XMLParser())  # nosec
+        )
+        self.assertTrue(schema.validate(lxml_from_string(response)))
 
         response_xml = fromstring(response)
         self.assertEqual(
