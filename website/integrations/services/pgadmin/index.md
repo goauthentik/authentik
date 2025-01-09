@@ -38,7 +38,7 @@ To configure OAuth in pgAdmin, you can either use the `config_local.py` file or 
 
     - If the file does not exist, create it manually.
 
-2. Add the following configuration to `config_local.py`:
+2. Add the following configuration settings to `config_local.py`:
 
     ```python
     AUTHENTICATION_SOURCES = ['oauth2', 'internal']
