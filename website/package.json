@@ -59,7 +59,7 @@
         "aws-cdk": "^2.175.0",
         "cross-env": "^7.0.3",
         "prettier": "3.4.2",
-        "typescript": "~5.7.2",
+        "typescript": "~5.7.3",
         "wireit": "^0.14.9"
     },
     "wireit": {
