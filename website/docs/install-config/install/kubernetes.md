@@ -75,7 +75,7 @@ During the installation process, the database migrations will be applied automat
 After the installation is complete, access authentik at `https://<ingress-host-name>/if/flow/initial-setup/`. Here, you can set a password for the default `akadmin` user.
 
 :::info
-User will get a `404 NOT FOUND` if initial setup URL doesn't include the trailing forward slash `/`. Make sure you use the complete url (`http://<your server's IP or hostname>:9000/if/flow/initial-setup/`) including the trailing forward slash.
+User will get `Not found` error if initial setup URL doesn't include the trailing forward slash `/`. Make sure you use the complete url (`http://<ingress-host-name>/if/flow/initial-setup/`) including the trailing forward slash.
 :::
 
 ### Optional step: Configure global email credentials
