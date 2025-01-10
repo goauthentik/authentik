@@ -29,7 +29,7 @@ The following placeholders are used in this guide:
 1. From the Admin interface, navigate to **Applications** -> **Applications**.
 2. Use the wizard to create a new application and provider. During this process:
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-    - Set the redirect URI to `https://pgadmin.company`.
+    - Set a `Strict` redirect URI to `https://pgadmin.company`.
     - Select any available signing key.
 
 ## pgAdmin OAuth Configuration
