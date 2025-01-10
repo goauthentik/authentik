@@ -70,7 +70,7 @@ instructions](https://golangci-lint.run/welcome/install/#other-ci).
 
   </TabItem>
 
-<TabItem value="windows">[We require community input on running the full dev environment under windows]</TabItem>
+<TabItem value="windows">[We request community input on running the full dev environment on Windows]</TabItem>
 
 </Tabs>
 
