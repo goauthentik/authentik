@@ -38,13 +38,13 @@ return ["linux", "windows", "mac"].find((p) => ua.includes(p)) || "mac";
 })() : "mac" }
 
 values={[
-{label: "MacOS", value: "mac"},
+{label: "macOS", value: "mac"},
 {label: "Linux", value: "linux"},
 {label: "Windows", value: "windows"},
 ]}>
 
   <TabItem value="mac">
-    To install the native dependencies on MacOS, run:
+    To install the native dependencies on macOS, run:
     
     ```sh
     $ pip install poetry poetry-plugin-shell
