@@ -13,6 +13,10 @@ sidebar_label: pgAdmin
 >
 > -- https://www.pgadmin.org/
 
+:::note
+This is based on authentik 2024.12.2 and pgAdmin4 8.14
+:::
+
 ## Preparation
 
 The following placeholders are used in this guide:
