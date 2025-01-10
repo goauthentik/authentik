@@ -96,3 +96,7 @@ PGADMIN_CONFIG_OAUTH2_CONFIG="[{'OAUTH2_NAME':'authentik','OAUTH2_DISPLAY_NAME':
     OAUTH2_AUTO_CREATE_USER = False
     ```
     Setting this value to `False` disables automatic user creation. This ensures that only the first signed-in user is registered.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with pgAdmin, log out and log back in via authentik. A new button should have appeared on the login page.
