@@ -48,6 +48,20 @@ class TestAuthenticatorEmailStage(FlowTestCase):
             component="ak-stage-authenticator-email",
         )
 
+    def test_token(self):
+        # Make sure that the token doesn't exist
+        assert self.device.token is None
+        # Create the token
+        self.device.generate_token()
+        # Make sure that the token was generated
+        assert self.device.token is not None
+        # Make sure that the token can be verified and is invalid
+        assert self.device.verify_token("invalid_token") is False
+        # Verify the token
+        assert self.device.verify_token(self.device.token)
+        # Make sure that the token was cleared
+        assert self.device.token is None
+
     def test_stage_send(self):
         # Initialize the flow
         self.client.get(
