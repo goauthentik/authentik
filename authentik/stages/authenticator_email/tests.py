@@ -12,6 +12,7 @@ from authentik.stages.authenticator_email.models import AuthenticatorEmailStage,
 
 LOGGER = get_logger()
 
+
 class TestAuthenticatorEmailStage(FlowTestCase):
     """Test Email Authenticator stage"""
 
@@ -89,13 +90,13 @@ class TestAuthenticatorEmailStage(FlowTestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             data={"component": "ak-stage-authenticator-email"},
         )
-        self.assertEqual(response.status_code, 200)# Test invalid email
+        self.assertEqual(response.status_code, 200)  # Test invalid email
         LOGGER.warn(response.content.decode())
         self.assertStageResponse(
             response,
             self.flow,
             self.user,
             component="ak-stage-authenticator-email",
-            response_errors={'non_field_errors': [{'string': 'email required', 'code': 'invalid'}]},
-            #email_required=False,
+            response_errors={"non_field_errors": [{"string": "email required", "code": "invalid"}]},
+            # email_required=False,
         )

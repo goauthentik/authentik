@@ -14,6 +14,7 @@ from authentik.stages.authenticator.models import SideChannelDevice
 
 LOGGER = get_logger()
 
+
 class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
     """Use Email-based authentication instead of authenticator-based."""
 
@@ -55,6 +56,7 @@ class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
         from authentik.stages.authenticator_email.stage import AuthenticatorEmailStageView
 
         return AuthenticatorEmailStageView
+
     @property
     def component(self) -> str:
         return "ak-stage-authenticator-email"
@@ -106,6 +108,7 @@ class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
 
 class EmailDevice(SerializerModel, SideChannelDevice):
     """Email Device"""
+
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     email = models.EmailField()
     stage = models.ForeignKey(AuthenticatorEmailStage, on_delete=models.CASCADE)
