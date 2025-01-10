@@ -48,8 +48,8 @@ values={[
     
     ```sh
     $ pip install poetry poetry-plugin-shell
-    $ brew install libxmlsec1 libpq krb5 # Required development libraries,
-    $ brew install postgresql redis node@22 golangci-lint # Required CLI tools
+    $ brew install libxmlsec1 libpq krb5   # Required development libraries,
+    $ brew install postgresql redis node@22 golangci-lint   # Required CLI tools
   ```
 
   </TabItem>
@@ -79,14 +79,14 @@ instructions](https://golangci-lint.run/welcome/install/#other-ci).
 1. Create an isolated Python environment. To create the environment and install dependencies, run the following commands in the same directory as your local authentik git repository:
 
 ```shell
-poetry shell # Creates a python virtualenv, and activates it in a new shell
-make install # Installs all required dependencies for Python and Javascript, including development dependencies
+poetry shell   # Creates a python virtualenv, and activates it in a new shell
+make install   # Installs all required dependencies for Python and Javascript, including development dependencies
 ```
 
 2. Configure authentik to use the local databases using a local config file. To generate this file, run the following command in the same directory as your local authentik git repository:
 
 ```shell
-make gen-dev-config # Generates a local config file
+make gen-dev-config   # Generates a local config file
 ```
 
 Generally speaking, authentik is a Django application, ran by gunicorn, proxied by a Go application. The Go application serves static files.
@@ -100,28 +100,29 @@ By default, no compiled bundle of the frontend is included so this step is requi
 The UI requires the authentik API files for Typescript be built and installed:
 
 ```
-$ make migrate # On a fresh install, ensures the API schema file is available
-$ make gen # Generates the API based on the schema file
+$ make migrate   # On a fresh install, ensures the API schema file is available
+$ make gen       # Generates the API based on the schema file
 ```
 
-If you make changes to the authentik API, you must re-run `make gen` so that the corresponding changes are made to API library used by the UI.
+If you make changes to the authentik API, you must re-run `make gen` so that the corresponding
+changes are made to the API library that is used by the UI.
 
 To build the UI once, run the following command in the same directory as your local authentik git repository:
 
 ```shell
-make web-build # Builds the UI once
+make web-build   # Builds the UI once
 ```
 
 If you want to live-edit the UI, you can run the following command in the same directory as your local authentik git repository instead, which will immediately update the UI with any changes you make so you can see the results in real time without needing to rebuild:
 
 ```shell
-make web-watch # Updates the UI with any changes you make
+make web-watch   # Updates the UI with any changes you make
 ```
 
 To format the frontend code, run the following command in the same directory as your authentik git repository:
 
 ```shell
-make web # Formats the frontend code
+make web   # Formats the frontend code
 ```
 
 ## Running authentik
@@ -129,7 +130,7 @@ make web # Formats the frontend code
 Now that the backend and frontend have been setup and built, you can start authentik by running the following command in the same directory as your local authentik git repository:
 
 ```shell
-ak server # Starts authentik server
+ak server   # Starts authentik server
 ```
 
 And now, authentik should now be accessible at `http://localhost:9000`.
@@ -145,6 +146,7 @@ In case of issues in this process, feel free to use `make dev-reset` which drops
 Before submitting a pull request, run the following commands in the same directory as your local authentik git repository:
 
 ```shell
-make lint # Ensures your code is well-formatted
-make gen # Generates an updated OpenAPI Docs for any changes you make
+make lint   # Ensures your code is well-formatted
+make gen    # Generates an updated OpenAPI Docs for any changes you make
+make web    # Formats the front-end code
 ```
