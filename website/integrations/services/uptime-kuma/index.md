@@ -42,6 +42,7 @@ Create an application in authentik. Create a Proxy provider with the following p
     ```
     ^/status/.*
     ^/assets/.*
+    ^/api/push/.*
     ^/api/status-page/heartbeat/.*
     ^/icon.svg
     ^/upload/.*
@@ -52,8 +53,9 @@ Create an application in authentik. Create a Proxy provider with the following p
     ```
     ^/status/<slug>$
     ^/assets/.*
+    ^/api/push/.*
     ^/api/status-page/heartbeat/<slug>$
-    ^/upload/logo1.png$
+    ^/upload/<file>$
     ```
 
 To avoid that all users get admin access to Uptime Kuma create a group in authentik for the admin user. Next set in authentik for the application under `Policy / Group / User Bindings` a group binding with the group created above.
