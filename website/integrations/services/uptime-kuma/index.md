@@ -43,6 +43,7 @@ Create an application in authentik. Create a Proxy provider with the following p
     ^/status/.*
     ^/assets/.*
     ^/api/push/.*
+    ^/api/badge/.*
     ^/api/status-page/heartbeat/.*
     ^/icon.svg
     ^/upload/.*
@@ -54,6 +55,7 @@ Create an application in authentik. Create a Proxy provider with the following p
     ^/status/<slug>$
     ^/assets/.*
     ^/api/push/.*
+    ^/api/badge/.*
     ^/api/status-page/heartbeat/<slug>$
     ^/upload/<file>$
     ```
