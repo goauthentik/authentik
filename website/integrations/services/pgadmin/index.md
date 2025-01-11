@@ -49,7 +49,7 @@ To configure OAuth in pgAdmin, you can either use the `config_local.py` file or 
     OAUTH2_AUTO_CREATE_USER = True
     OAUTH2_CONFIG = [{
         'OAUTH2_NAME': 'authentik',
-        'OAUTH2_DISPLAY_NAME': 'Login with authentik',
+        'OAUTH2_DISPLAY_NAME': 'authentik',
         'OAUTH2_CLIENT_ID': '<Client ID from authentik>',
         'OAUTH2_CLIENT_SECRET': '<Client secret from authentik>',
         'OAUTH2_TOKEN_URL': 'https://authentik.company/application/o/token/',
