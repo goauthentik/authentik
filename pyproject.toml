@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "authentik"
-version = "2024.12.1"
+version = "2024.12.2"
 description = ""
 authors = ["authentik Team <hello@goauthentik.io>"]
 
@@ -131,7 +131,7 @@ pydantic-scim = "*"
 pyjwt = "*"
 pyrad = "*"
 python = "~3.12"
-python-kadmin-rs = "0.5.2"
+python-kadmin-rs = "0.5.3"
 pyyaml = "*"
 requests-oauthlib = "*"
 scim2-filter-parser = "*"
