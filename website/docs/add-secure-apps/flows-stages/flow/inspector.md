@@ -14,11 +14,11 @@ As shown in the screenshot below, the flow inspector displays next to the select
 Be aware that when running a flow with the inspector enabled, the flow is still executed normally. This means that for example, a [User write](../stages/user_write.md) stage _will_ write user data.
 :::
 
-The inspector is accessible to users that have been granted the [permission](../../../users-sources/access-control/permissions.md) **Can inspect a Flow's execution**, either directly or through a role. Superuser can always inspect flow executions.
+The inspector is accessible to users that have been granted the [permission](../../../users-sources/access-control/permissions.md) **Can inspect a Flow's execution**, either directly or through a role. Superusers can always inspect flow executions.
 
 When developing authentik with the debug mode enabled, the inspector is enabled by default and can be accessed by both unauthenticated users and standard users. However the debug mode should only be used for the development of authentik. So unless you are a developer and need the more verbose error information, the best practice for using the flow inspector is to assign the permission, not use debug mode.
 
-Starting with authentik 2025.2, when the user can access the inspector, a button is shown in the top right of the [default flow executor](./executors/if-flow.md) which opens the flow inspector.
+Starting with authentik 2025.2, for users with appropriate permissions to access the inspector a button is shown in the top right of the [default flow executor](./executors/if-flow.md) which opens the flow inspector.
 
 ### Manually running a flow with the inspector
 
