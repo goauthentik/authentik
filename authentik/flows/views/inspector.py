@@ -95,7 +95,7 @@ class FlowInspectorView(APIView):
         plans = []
         for plan in request.session.get(SESSION_KEY_HISTORY, []):
             plan: FlowPlan
-            if plan.flow_pk != self.flow.pk:
+            if plan.flow_pk != self.flow.pk.hex:
                 continue
             plan_serializer = FlowInspectorPlanSerializer(
                 instance=plan, context={"request": request}
