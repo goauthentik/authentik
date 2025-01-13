@@ -7,6 +7,7 @@ import { globalAK } from "@goauthentik/common/global";
 import { UIConfig, UserDisplay, uiConfig } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
 import { AKElement } from "@goauthentik/elements/Base";
+import "@goauthentik/elements/buttons/ActionButton/ak-action-button";
 import { match } from "ts-pattern";
 
 import { msg } from "@lit/localize";
@@ -159,10 +160,9 @@ export class NavigationButtons extends AKElement {
             return nothing;
         }
 
-        const onClick = () => {
-            return new CoreApi(DEFAULT_CONFIG).coreUsersImpersonateEndRetrieve().then(() => {
-                window.location.reload();
-            });
+        const onClick = async () => {
+            await new CoreApi(DEFAULT_CONFIG).coreUsersImpersonateEndRetrieve();
+            window.location.reload();
         };
 
         return html`&nbsp;
