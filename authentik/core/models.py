@@ -846,6 +846,11 @@ class ExpiringModel(models.Model):
 
     class Meta:
         abstract = True
+        indexes = [
+            models.Index(fields=["expires"]),
+            models.Index(fields=["expiring"]),
+            models.Index(fields=["expiring", "expires"]),
+        ]
 
     def expire_action(self, *args, **kwargs):
         """Handler which is called when this object is expired. By
@@ -901,7 +906,7 @@ class Token(SerializerModel, ManagedModel, ExpiringModel):
     class Meta:
         verbose_name = _("Token")
         verbose_name_plural = _("Tokens")
-        indexes = [
+        indexes = ExpiringModel.Meta.indexes + [
             models.Index(fields=["identifier"]),
             models.Index(fields=["key"]),
         ]
@@ -1001,6 +1006,9 @@ class AuthenticatedSession(ExpiringModel):
     class Meta:
         verbose_name = _("Authenticated Session")
         verbose_name_plural = _("Authenticated Sessions")
+        indexes = ExpiringModel.Meta.indexes + [
+            models.Index(fields=["session_key"]),
+        ]
 
     def __str__(self) -> str:
         return f"Authenticated Session {self.session_key[:10]}"
