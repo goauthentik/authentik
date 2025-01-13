@@ -163,13 +163,19 @@ export class FlowExecutor extends Interface implements StageHost {
                 padding: 0 2rem;
                 max-height: inherit;
             }
+            .inspector-toggle {
+                position: absolute;
+                top: 1rem;
+                right: 1rem;
+                z-index: 100;
+            }
         `);
     }
 
     constructor() {
         super();
         this.ws = new WebsocketClient();
-        const inspector = new URL(window.location.toString()).searchParams.get("inspector")
+        const inspector = new URL(window.location.toString()).searchParams.get("inspector");
         if (inspector === "" || inspector === "open") {
             this.inspectorOpen = true;
             this.inspectorAvailable = true;
@@ -238,12 +244,8 @@ export class FlowExecutor extends Interface implements StageHost {
 
     async firstUpdated(): Promise<void> {
         configureSentry();
-        if (
-            this.config?.capabilities.includes(CapabilitiesEnum.CanDebug) &&
-            // Only open inspector automatically in debug when we have enough space for it
-            window.innerWidth >= 768
-        ) {
-            this.inspectorOpen = true;
+        if (this.config?.capabilities.includes(CapabilitiesEnum.CanDebug)) {
+            this.inspectorAvailable = true;
         }
         this.loading = true;
         try {
@@ -552,6 +554,16 @@ export class FlowExecutor extends Interface implements StageHost {
                                 </div>
                             </div>
                         </div>
+                        ${(this.inspectorAvailable ?? !this.inspectorOpen)
+                            ? html`<button
+                                  class="inspector-toggle pf-c-button pf-m-primary"
+                                  @click=${() => {
+                                      this.inspectorOpen = true;
+                                  }}
+                              >
+                                  <i class="fa fa-search-plus" aria-hidden="true"></i>
+                              </button>`
+                            : nothing}
                         ${until(this.renderInspector())}
                     </div>
                 </div>
