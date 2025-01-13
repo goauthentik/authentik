@@ -162,8 +162,8 @@ class FlowPlan:
         get_qs = request.GET.copy()
         if request.user.is_authenticated and (
             # Object-scoped permission or global permission
-            request.user.has_perm("authentik_flow.inspect_flow", flow)
-            or request.user.has_perm("authentik_flow.inspect_flow")
+            request.user.has_perm("authentik_flows.inspect_flow", flow)
+            or request.user.has_perm("authentik_flows.inspect_flow")
         ):
             get_qs["inspector"] = "available"
 
