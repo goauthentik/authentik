@@ -211,3 +211,4 @@ class ConnectionToken(ExpiringModel):
     class Meta:
         verbose_name = _("RAC Connection token")
         verbose_name_plural = _("RAC Connection tokens")
+        indexes = ExpiringModel.Meta.indexes

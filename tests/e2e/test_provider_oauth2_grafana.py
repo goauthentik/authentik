@@ -260,6 +260,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         self.wait_for_url(
             self.url(
                 "authentik_core:if-flow",
+                query={"inspector": "available"},
                 flow_slug=invalidation_flow.slug,
             )
         )

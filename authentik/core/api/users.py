@@ -585,7 +585,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         """Set password for user"""
         user: User = self.get_object()
         try:
-            user.set_password(request.data.get("password"))
+            user.set_password(request.data.get("password"), request=request)
             user.save()
         except (ValidationError, IntegrityError) as exc:
             LOGGER.debug("Failed to set password", exc=exc)
