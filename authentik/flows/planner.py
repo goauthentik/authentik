@@ -159,9 +159,15 @@ class FlowPlan:
             stage = final_stage(request=request, executor=temp_exec)
             return stage.dispatch(request)
 
+        get_qs = request.GET.copy()
+        if request.user.is_authenticated and request.user.has_perm(
+            "authentik_flow.inspect_flow", flow
+        ):
+            get_qs["inspector"] = "available"
+
         return redirect_with_qs(
             "authentik_core:if-flow",
-            request.GET,
+            get_qs,
             flow_slug=flow.slug,
         )
 

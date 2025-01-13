@@ -78,6 +78,9 @@ export class FlowExecutor extends Interface implements StageHost {
     inspectorOpen = false;
 
     @state()
+    inspectorAvailable = false;
+
+    @state()
     flowInfo?: ContextualFlowInfo;
 
     ws: WebsocketClient;
@@ -166,8 +169,12 @@ export class FlowExecutor extends Interface implements StageHost {
     constructor() {
         super();
         this.ws = new WebsocketClient();
-        if (window.location.search.includes("inspector")) {
+        const inspector = new URL(window.location.toString()).searchParams.get("inspector")
+        if (inspector === "" || inspector === "open") {
             this.inspectorOpen = true;
+            this.inspectorAvailable = true;
+        } else if (inspector === "available") {
+            this.inspectorAvailable = true;
         }
         this.addEventListener(EVENT_FLOW_INSPECTOR_TOGGLE, () => {
             this.inspectorOpen = !this.inspectorOpen;
