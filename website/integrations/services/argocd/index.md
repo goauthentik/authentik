@@ -86,6 +86,10 @@ data "authentik_property_mapping_provider_scope" "scope-openid" {
   name = "authentik default OAuth Mapping: OpenID 'openid'"
 }
 
+data "authentik_certificate_key_pair" "generated" {
+  name = "authentik Self-signed Certificate"
+}
+
 resource "authentik_provider_oauth2" "argocd" {
   name          = "ArgoCD"
   #  Required. You can use the output of:
@@ -97,6 +101,8 @@ resource "authentik_provider_oauth2" "argocd" {
 
   authorization_flow = data.authentik_flow.default-provider-authorization-implicit_consent.id
   invalidation_flow  = data.authentik_flow.default-provider-invalidation.id
+
+  signing_key = data.authentik_certificate_key_pair.generated.id
 
   allowed_redirect_uris = [
     {
