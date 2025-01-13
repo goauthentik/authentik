@@ -35,7 +35,7 @@ Alternatively, a user with the correct permission can launch the inspector by ad
 :::info
 Troubleshooting:
 
-- If the flow inspector does not launch and a "Bad request" error displays, this is likely either because you selected a flow that has a policy bound directly to it that prevents access, so the inspector won't open because the flow can't be executed.
+- If the flow inspector does not launch and a "Bad request" error displays, this is likely either because you selected a flow that has a policy bound directly to it that prevents access (so the inspector won't open because the flow can't be executed) or because you do not have view permission on that specific flow.
   :::
 
 ### Flow Inspector Details
