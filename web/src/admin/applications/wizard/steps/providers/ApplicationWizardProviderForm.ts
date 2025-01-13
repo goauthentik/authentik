@@ -25,7 +25,7 @@ export class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKEl
     wizard!: ApplicationWizardState;
 
     @property({ type: Object, attribute: false })
-    errors: Map<string | number | symbol, string> = new Map();
+    errors: Record<string | number | symbol, string> = {};
 
     @query("form#providerform")
     form!: HTMLFormElement;
@@ -41,13 +41,13 @@ export class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKEl
     }
 
     get valid() {
-        this.errors = new Map();
+        this.errors = {};
         return this.form.checkValidity();
     }
 
     errorMessages(name: string) {
-        return this.errors.has(name)
-            ? [this.errors.get(name)]
+        return name in this.errors
+            ? [this.errors[name]]
             : (this.wizard.errors?.provider?.[name] ??
                   this.wizard.errors?.provider?.[camelToSnake(name)] ??
                   []);
@@ -56,7 +56,7 @@ export class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKEl
     isValid(name: keyof T) {
         return !(
             (this.wizard.errors?.provider?.[name as string] ?? []).length > 0 ||
-            this.errors.has(name)
+            this.errors?.[name] !== undefined
         );
     }
 }
