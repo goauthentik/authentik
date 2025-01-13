@@ -126,11 +126,9 @@ class LDAPSource(Source):
     lookup_groups_from_user = models.BooleanField(
         default=False,
         help_text=_(
-            (
-                "Lookup group membership based on a user attribute instead of a group attribute."
-                "This allows nested group resolution on systems like FreeIPA and Active Directory"
-            )
-        )
+            "Lookup group membership based on a user attribute instead of a group attribute."
+            "This allows nested group resolution on systems like FreeIPA and Active Directory"
+        ),
     )
 
     @property

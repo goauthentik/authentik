@@ -428,7 +428,9 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                                     <i class="fas fa-check" aria-hidden="true"></i>
                                 </span>
                             </span>
-                            <span class="pf-c-switch__label">${msg("Lookup using user attribute")}</span>
+                            <span class="pf-c-switch__label"
+                                >${msg("Lookup using user attribute")}</span
+                            >
                         </label>
                         <p class="pf-c-form__helper-text">
                             ${msg(

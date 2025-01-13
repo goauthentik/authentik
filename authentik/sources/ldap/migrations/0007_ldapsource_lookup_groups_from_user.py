@@ -6,7 +6,10 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_sources_ldap", "0006_rename_ldappropertymapping_ldapsourcepropertymapping_and_more"),
+        (
+            "authentik_sources_ldap",
+            "0006_rename_ldappropertymapping_ldapsourcepropertymapping_and_more",
+        ),
     ]
 
     operations = [
