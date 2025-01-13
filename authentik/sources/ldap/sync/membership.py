@@ -28,15 +28,16 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
         if not self._source.sync_groups:
             self.message("Group syncing is disabled for this Source")
             return iter(())
+        
+        attributes = [self._source.object_uniqueness_field, LDAP_DISTINGUISHED_NAME]
+        if not self._source.lookup_groups_from_user:  # If we are looking up groups from users, we don't need to fetch the group membership field
+            attributes.append(self._source.group_membership_field)
+        
         return self.search_paginator(
             search_base=self.base_dn_groups,
             search_filter=self._source.group_object_filter,
             search_scope=SUBTREE,
-            attributes=[
-                self._source.group_membership_field,
-                self._source.object_uniqueness_field,
-                LDAP_DISTINGUISHED_NAME,
-            ],
+            attributes=attributes,
             **kwargs,
         )
 
@@ -50,10 +51,10 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
             if self._source.lookup_groups_from_user:
                 group_dn = group.get("dn", {})
                 group_filter = f"({self._source.group_membership_field}={group_dn})"
-                group_members = self._source.connection.extend.standard.paged_search(
+                group_members = self._source.connection().extend.standard.paged_search(
                     search_base=self.base_dn_users,
                     search_filter=group_filter,
-                    search_scope=ldap3.SUBTREE,
+                    search_scope=SUBTREE,
                     attributes=[
                         self._source.object_uniqueness_field
                     ]
