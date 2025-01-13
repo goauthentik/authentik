@@ -1,4 +1,4 @@
-import { EVENT_SIDEBAR_TOGGLE, VERSION } from "@goauthentik/common/constants";
+import { EVENT_SIDEBAR_TOGGLE } from "@goauthentik/common/constants";
 import { me } from "@goauthentik/common/users";
 import { AKElement } from "@goauthentik/elements/Base";
 import {
@@ -159,20 +159,9 @@ export class AkAdminSidebar extends WithCapabilitiesConfig(WithVersion(AKElement
 
         // prettier-ignore
         return html`
-            ${this.renderNewVersionMessage()}
             ${map(sidebarContent, renderOneSidebarItem)}
             ${this.renderEnterpriseMenu()}
         `;
-    }
-
-    renderNewVersionMessage() {
-        return this.version && this.version.versionCurrent !== VERSION
-            ? html`
-                  <ak-sidebar-item ?highlight=${true}>
-                      <span slot="label">${msg("A newer version of the UI is available.")}</span>
-                  </ak-sidebar-item>
-              `
-            : nothing;
     }
 
     renderEnterpriseMenu() {
