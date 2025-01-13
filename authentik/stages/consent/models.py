@@ -71,3 +71,4 @@ class UserConsent(SerializerModel, ExpiringModel):
         unique_together = (("user", "application", "permissions"),)
         verbose_name = _("User Consent")
         verbose_name_plural = _("User Consents")
+        indexes = ExpiringModel.Meta.indexes
