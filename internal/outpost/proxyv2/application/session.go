@@ -45,15 +45,15 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 				break
 			}
 			ca := config.Get().Redis.TLSCaCert
-			if ca != nil && *ca != "" {
+			if ca != "" {
 				// Get the SystemCertPool, continue with an empty pool on error
 				rootCAs, _ := x509.SystemCertPool()
 				if rootCAs == nil {
 					rootCAs = x509.NewCertPool()
 				}
-				certs, err := os.ReadFile(*ca)
+				certs, err := os.ReadFile(ca)
 				if err != nil {
-					a.log.WithError(err).Fatalf("Failed to append %s to RootCAs", *ca)
+					a.log.WithError(err).Fatalf("Failed to append %s to RootCAs", ca)
 				}
 				// Append our cert to the system pool
 				if ok := rootCAs.AppendCertsFromPEM(certs); !ok {
