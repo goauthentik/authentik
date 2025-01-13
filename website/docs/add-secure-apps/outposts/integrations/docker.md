@@ -39,7 +39,7 @@ To minimise the potential risks of mapping the Docker socket into a container/gi
 - Containers/Create: Create new containers
 - Containers/Kill: Cleanup during upgrades
 - Containers/Remove: Removal of outposts
-- System/Info
+- System/Info: Gather information about the version of Docker running
 
 ## Docker Socket Proxy
 
