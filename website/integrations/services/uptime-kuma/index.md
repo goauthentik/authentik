@@ -48,8 +48,8 @@ Create an application in authentik. Create a Proxy provider with the following p
     ^/icon.svg
     ^/upload/.*
     ```
-    Alternatively, you can get even more specific by analysing the requests for your status pages and modifying the regex rules above accordingly.    
-    For example,
+    Alternatively, you can get even more specific by analyzing the requests for your status pages and modifying the regex rules above accordingly.    
+    For example:
 
     ```
     ^/status/<slug>$
