@@ -32,13 +32,13 @@ To proceed, you need to register for a free Cloudflare Access account and have b
 
 ## Cloudflare Access configuration
 
-1. Open the [Cloudflare Access dashboard](https://one.dash.cloudflare.com) and navigate to **Settings** -> **Authentication**.  
-2. Click on **Login methods**, then select **Add** -> **OpenID Connect**.  
+1. Open the [Cloudflare Access dashboard](https://one.dash.cloudflare.com) and navigate to **Settings** -> **Authentication**.
+2. Click on **Login methods**, then select **Add** -> **OpenID Connect**.
 3. From the authentik provider you created earlier, copy the following details and paste them into the corresponding fields:
-   - **Client ID** -> App ID  
-   - **Client Secret** -> Client Secret  
-   - **Authorize URL** -> Auth URL  
-   - **Token URL** -> Token URL  
-   - **JWKS URL** -> Certificate URL  
-4. Click **Save**.  
-5. Click **Test** to verify the login provider.  
+    - **Client ID** -> App ID
+    - **Client Secret** -> Client Secret
+    - **Authorize URL** -> Auth URL
+    - **Token URL** -> Token URL
+    - **JWKS URL** -> Certificate URL
+4. Click **Save**.
+5. Click **Test** to verify the login provider.
