@@ -866,7 +866,7 @@ Před        <x id="0" equiv-text="${ago}"/>dny</target>
       </trans-unit>
       <trans-unit id="se0adaf83627104fb">
         <source>Always execute the configured bind flow to authenticate the user</source>
-        <target>Always execute the configured bind flow to authenticate the user</target>
+        <target>Vždy provést nakonfigurovaný tok vazby pro ověření uživatele</target>
         
       </trans-unit>
       <trans-unit id="scef3f4ad80abbd22">
