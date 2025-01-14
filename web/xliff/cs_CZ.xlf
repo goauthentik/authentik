@@ -871,7 +871,7 @@ Před        <x id="0" equiv-text="${ago}"/>dny</target>
       </trans-unit>
       <trans-unit id="scef3f4ad80abbd22">
         <source>Configure how the outpost authenticates requests.</source>
-        <target>Configure how the outpost authenticates requests.</target>
+        <target>Konfigurace způsobu ověřování požadavků v outpostu</target>
         
       </trans-unit>
       <trans-unit id="sbcae51a6f06e53d4">
