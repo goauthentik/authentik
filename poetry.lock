@@ -1359,13 +1359,13 @@ dev = ["PyTest", "PyTest-Cov", "bump2version (<1)", "sphinx (<2)", "tox"]
 
 [[package]]
 name = "django"
-version = "5.0.10"
+version = "5.0.11"
 description = "A high-level Python web framework that encourages rapid development and clean, pragmatic design."
 optional = false
 python-versions = ">=3.10"
 files = [
-    {file = "Django-5.0.10-py3-none-any.whl", hash = "sha256:c8fab2c553750933c8e7f5f95e5507e138e6acf6c2b4581cb691e70fe3ed747b"},
-    {file = "Django-5.0.10.tar.gz", hash = "sha256:0f6cbc56cc298b0451d20a5120c6a8731e9073330fb5d84295c23c151a1eb300"},
+    {file = "Django-5.0.11-py3-none-any.whl", hash = "sha256:09e8128f717266bf382d82ffa4933f13da05d82579abf008ede86acb15dec88b"},
+    {file = "Django-5.0.11.tar.gz", hash = "sha256:e7d98fa05ce09cb3e8d5ad6472fb602322acd1740bfdadc29c8404182d664f65"},
 ]
 
 [package.dependencies]
