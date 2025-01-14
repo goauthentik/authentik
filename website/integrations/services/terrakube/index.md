@@ -36,28 +36,28 @@ This guide assumes you have environment variables `$TERRAKUBE_OIDC_CLIENT_ID` an
    Find the Dex configuration file, typically named `config.yaml` or `config.docker.yaml`. It’s usually located in the `/etc/dex` directory or the corresponding directory for a containerized setup.
 
 2. **Update the Dex Configuration**  
-   Open the configuration file and add the following block to define the Terrakube OIDC connector:  
+   Open the configuration file and add the following block to define the Terrakube OIDC connector:
 
-   ```yaml
-   connectors:
-     - type: oidc
-       id: TerrakubeClient
-       name: TerrakubeClient
-       config:
-         issuer: "https://authentik.company/application/o/<Your application slug>/"
-         clientID: $TERRAKUBE_OIDC_CLIENT_ID
-         clientSecret: $TERRAKUBE_OIDC_CLIENT_SECRET
-         redirectURI: "https://terrakube-dex.company/dex/callback"
-         insecureEnableGroups: true
-   ```
+    ```yaml
+    connectors:
+        - type: oidc
+          id: TerrakubeClient
+          name: TerrakubeClient
+          config:
+              issuer: "https://authentik.company/application/o/<Your application slug>/"
+              clientID: $TERRAKUBE_OIDC_CLIENT_ID
+              clientSecret: $TERRAKUBE_OIDC_CLIENT_SECRET
+              redirectURI: "https://terrakube-dex.company/dex/callback"
+              insecureEnableGroups: true
+    ```
 
 3. **Set Environment Variables**  
    Add the following variables to your `.env` file, replacing them with the appropriate values for your Client ID and Client Secret:
 
-   ```env
-   TERRAKUBE_OIDC_CLIENT_ID=<Your Client ID>
-   TERRAKUBE_OIDC_CLIENT_SECRET=<Your Client Secret>
-   ```
+    ```env
+    TERRAKUBE_OIDC_CLIENT_ID=<Your Client ID>
+    TERRAKUBE_OIDC_CLIENT_SECRET=<Your Client Secret>
+    ```
 
 ## Configuration verification
 
