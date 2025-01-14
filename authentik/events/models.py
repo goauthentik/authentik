@@ -306,7 +306,7 @@ class Event(SerializerModel, ExpiringModel):
     class Meta:
         verbose_name = _("Event")
         verbose_name_plural = _("Events")
-        indexes = [
+        indexes = ExpiringModel.Meta.indexes + [
             models.Index(fields=["action"]),
             models.Index(fields=["user"]),
             models.Index(fields=["app"]),
@@ -694,3 +694,4 @@ class SystemTask(SerializerModel, ExpiringModel):
         permissions = [("run_task", _("Run task"))]
         verbose_name = _("System Task")
         verbose_name_plural = _("System Tasks")
+        indexes = ExpiringModel.Meta.indexes

@@ -93,3 +93,4 @@ class LicenseUsage(ExpiringModel):
     class Meta:
         verbose_name = _("License Usage")
         verbose_name_plural = _("License Usage Records")
+        indexes = ExpiringModel.Meta.indexes
