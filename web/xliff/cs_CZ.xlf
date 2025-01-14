@@ -881,7 +881,7 @@ Před        <x id="0" equiv-text="${ago}"/>dny</target>
       </trans-unit>
       <trans-unit id="s9065fcccd837a679">
         <source>Cached querying</source>
-        <target>Cached querying</target>
+        <target>Dotazování z mezipaměti</target>
         
       </trans-unit>
       <trans-unit id="s30d0d0e6c626a234">
