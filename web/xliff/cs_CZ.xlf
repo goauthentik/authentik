@@ -886,7 +886,7 @@ Před        <x id="0" equiv-text="${ago}"/>dny</target>
       </trans-unit>
       <trans-unit id="s30d0d0e6c626a234">
         <source>The outpost holds all users and groups in-memory and will refresh every 5 Minutes</source>
-        <target>The outpost holds all users and groups in-memory and will refresh every 5 Minutes</target>
+        <target>Outpost uchovává všechny uživatele a skupiny v paměti a obnovuje se každých 5 minut</target>
         
       </trans-unit>
       <trans-unit id="sffc14b8200a9f938">
