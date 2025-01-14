@@ -24,7 +24,7 @@ The following placeholders are used in this guide:
 
 ## authentik configuration
 
-Start the wizzard for adding a new application.
+Start the wizard for adding a new application.
 
 **1. Application:**
 
@@ -48,7 +48,7 @@ Leave the rest as default values.
 
 ## Semaphore UI configuration
 
-Log in to your Semaphore UI host via SSH. Edit the `/etc/semaphore/config.json` file with the text editor of your choice. 
+Log in to your Semaphore UI host via SSH. Edit the `/etc/semaphore/config.json` file with the text editor of your choice.
 
 Add the `oidc_providers` configuration:
 
@@ -71,11 +71,11 @@ Add the `oidc_providers` configuration:
 ```
 
 :::info
-The name of the oidc_provider (e.g. `authentik`) need to match the name on the redirect url.
+The name of the oidc_provider (e.g. `authentik`) needs to match the name on the redirect URL.
 :::
 
 :::info
-If there is a `Not Found` error shown after the login and redirect to `https://semaphore.company/api/auth/oidc/authentik/`, it can help to set the web_root to `/`: 
+If a `Not Found` error is displayed after the login, you might need to set the web_root to `/` (see https://github.com/semaphoreui/semaphore/issues/2681): 
 
 ```
 SEMAPHORE_WEB_ROOT: /
