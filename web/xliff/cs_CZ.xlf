@@ -876,7 +876,7 @@ Před        <x id="0" equiv-text="${ago}"/>dny</target>
       </trans-unit>
       <trans-unit id="sbcae51a6f06e53d4">
         <source>Search mode</source>
-        <target>Search mode</target>
+        <target>Režim vyhledávání</target>
         
       </trans-unit>
       <trans-unit id="s9065fcccd837a679">
