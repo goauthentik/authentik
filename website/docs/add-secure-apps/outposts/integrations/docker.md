@@ -51,7 +51,7 @@ To prevent this, many people use projects like [docker-socket-proxy](https://doc
 
 See [permissions](#permissions) for the list of APIs that authentik needs access to.
 
-Note: Connections from authentik to docker socket proxy must be made over HTTP, not TCP, e.g. `http://<docker-socket-proxy hostname/container name>:<port>`.
+Note: Connections from authentik to Docker socket proxy must be made over HTTP, not TCP, e.g. `http://<docker-socket-proxy hostname/container name>:<port>`.
 
 ## Remote hosts (TLS)
 
