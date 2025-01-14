@@ -38,7 +38,7 @@ Create an application in authentik and note the slug, as this will be used later
 - ACS URL: `https://gitlab.company/users/auth/saml/callback`
 - Audience: `https://gitlab.company`
 - Issuer: `https://gitlab.company`
-- Binding: `Redirect`
+- Binding: `Post`
 
 Under _Advanced protocol settings_, set a certificate for _Signing Certificate_.
 
