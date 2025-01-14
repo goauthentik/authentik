@@ -32,7 +32,7 @@ The container is created with the following hardcoded properties:
 
 ## Permissions
 
-To minimise the potential risks of mapping the Docker socket to a container/giving an application access to the Docker API, many people use Projects like [docker-socket-proxy](https://docs.linuxserver.io/images/docker-socket-proxy/). authentik requires the following permissions from the Docker API:
+authentik requires the following permissions from the Docker API:
 
 - Images/Pull: authentik tries to pre-pull the custom image if one is configured, otherwise falling back to the default image.
 - Containers/Read: Gather infos about currently running container
@@ -43,7 +43,15 @@ To minimise the potential risks of mapping the Docker socket to a container/givi
 
 ## Docker Socket Proxy
 
-Connections to a docker socket proxy must be made over HTTP, not TCP, e.g. `http://<docker-socket-proxy hostname/container name>:<port>`.
+Mapping the Docker socket to a container comes with some inherent security risks. Applications inside these containers have unfettered access to the full Docker API, which can be used to gain unauthorized access to sensitive Docker functions.
+
+It can also result in possible root escalation on the host system.
+
+To prevent this, many people use projects like [docker-socket-proxy](https://docs.linuxserver.io/images/docker-socket-proxy/), which limit access to the Docker socket by filtering and restricting API calls that these applications can make.
+
+See [permissions](#permissions) for the list of APIs that authentik needs access to.
+
+Note: Connections from authentik to docker socket proxy must be made over HTTP, not TCP, e.g. `http://<docker-socket-proxy hostname/container name>:<port>`.
 
 ## Remote hosts (TLS)
 
