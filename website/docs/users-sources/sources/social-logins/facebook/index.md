@@ -10,7 +10,7 @@ Adding Facebook as a source allows users to authenticate through authentik using
 
 The following placeholders are used:
 
-- `authentik.company` is the FQDN of the authentik install.
+- `authentik.company` is the FQDN of the authentik installation.
 
 ## Facebook configuration
 

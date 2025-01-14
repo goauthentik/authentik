@@ -26,8 +26,8 @@ built-in authentication.
 
 The following placeholders are used in this guide:
 
-- `inventory.company` is the FQDN of the snipe-it install.
-- `authentik.company` is the FQDN of the authentik install.
+- `inventory.company` is the FQDN of the snipe-it installation.
+- `authentik.company` is the FQDN of the authentik installation.
 - `snipeit-user` is the name of the authentik service account we will create.
 - `DC=ldap,DC=authentik,DC=io` is the Base DN of the LDAP Provider (default)
 

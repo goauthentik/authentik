@@ -18,8 +18,8 @@ sidebar_label: Outline
 
 The following placeholders are used in this guide:
 
-- `outline.company` is the FQDN of the Outline install.
-- `authentik.company` is the FQDN of the authentik install.
+- `outline.company` is the FQDN of the Outline installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 ## authentik configuration
 

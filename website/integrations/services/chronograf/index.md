@@ -17,8 +17,8 @@ sidebar_label: Chronograf
 
 The following placeholders are used in this guide:
 
-- `chronograf.company` is the FQDN of your Chronograf install.
-- `authentik.company` is the FQDN of your authentik install.
+- `chronograf.company` is the FQDN of your Chronograf installation.
+- `authentik.company` is the FQDN of your authentik installation.
 
 ## authentik configuration
 

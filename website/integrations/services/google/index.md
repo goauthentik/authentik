@@ -17,7 +17,7 @@ sidebar_label: Google Workspace
 
 The following placeholders are used in this guide:
 
-- `authentik.company` is the FQDN of the authentik install.
+- `authentik.company` is the FQDN of the authentik installation.
 - `example.com` is the default E-mail address configured in Google workspace.
 
 ## authentik Configuration

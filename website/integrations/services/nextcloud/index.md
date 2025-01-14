@@ -39,8 +39,8 @@ There are 3 ways to setup single sign on (SSO) for Nextcloud:
 
 The following placeholders are used in this guide:
 
-- `nextcloud.company` is the FQDN of the Nextcloud install.
-- `authentik.company` is the FQDN of the authentik install.
+- `nextcloud.company` is the FQDN of the Nextcloud installation.
+- `authentik.company` is the FQDN of the authentik installation.
 - `authentik.local` is the internal FQDN of the authentik install (only relevant when running authentik and Nextcloud behind a reverse proxy)
 
 Lets start by thinking what user attributes need to be available in Nextcloud:
@@ -228,8 +228,8 @@ If you do not have any relying parties accessing authentik from the outside, you
 
 The following placeholders are used in this guide:
 
-- `nextcloud.company` is the FQDN of the Nextcloud install.
-- `authentik.company` is the FQDN of the authentik install.
+- `nextcloud.company` is the FQDN of the Nextcloud installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 Create an application in authentik and note the slug you choose, as this will be used later. In the Admin Interface, go to _Applications_ -> _Providers_. Create a _SAML provider_ with the following parameters:
 

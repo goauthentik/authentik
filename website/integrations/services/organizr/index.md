@@ -19,8 +19,8 @@ This integration leverages authentik's LDAP for the identity provider to achieve
 
 The following placeholders are used in this guide:
 
-- `organizr.company` is the FQDN of the Service install.
-- `authentik.company` is the FQDN of the authentik install.
+- `organizr.company` is the FQDN of the Service installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 Create a new user account _(or reuse an existing)_ for organizr to use for LDAP bind under _Directory_ -> _Users_ -> _Create_, in this example called `ldapservice`.
 

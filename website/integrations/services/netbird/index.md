@@ -17,8 +17,8 @@ sidebar_label: NetBird
 
 The following placeholders are used in this guide:
 
-- `netbird.company` is the FQDN of the NetBird install.
-- `authentik.company` is the FQDN of the authentik install.
+- `netbird.company` is the FQDN of the NetBird installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 ## authentik configuration
 

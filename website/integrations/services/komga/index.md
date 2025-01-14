@@ -17,8 +17,8 @@ sidebar_label: Komga
 
 The following placeholders are used in this guide:
 
-- `komga.company` is the FQDN of the Komga install.
-- `authentik.company` is the FQDN of the authentik install.
+- `komga.company` is the FQDN of the Komga installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 ## authentik configuration
 
