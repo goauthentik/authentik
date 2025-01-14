@@ -891,7 +891,7 @@ Před        <x id="0" equiv-text="${ago}"/>dny</target>
       </trans-unit>
       <trans-unit id="sffc14b8200a9f938">
         <source>Direct querying</source>
-        <target>Direct querying</target>
+        <target>Přímé dotazování</target>
         
       </trans-unit>
       <trans-unit id="sdce4680288083fe3">
