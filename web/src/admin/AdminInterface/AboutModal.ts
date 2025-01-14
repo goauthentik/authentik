@@ -66,6 +66,7 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton))
             class="pf-c-backdrop"
             @click=${(e: PointerEvent) => {
                 e.stopPropagation();
+                this.closeModal();
             }}
         >
             <div class="pf-l-bullseye">
