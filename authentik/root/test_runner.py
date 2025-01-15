@@ -31,6 +31,8 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
 
         if kwargs.get("randomly_seed", None):
             self.args.append(f"--randomly-seed={kwargs['randomly_seed']}")
+        if kwargs.get("no_capture"):
+            self.args.append("-s")
 
         settings.TEST = True
         settings.CELERY["task_always_eager"] = True
@@ -56,6 +58,10 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
     def add_arguments(cls, parser: ArgumentParser):
         """Add more pytest-specific arguments"""
         DiscoverRunner.add_arguments(parser)
+        parser.add_argument(
+            "--no-capture",
+            action="store_true",
+        )
         parser.add_argument(
             "--randomly-seed",
             type=int,
