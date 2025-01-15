@@ -40,14 +40,25 @@ Create an application in authentik. Create a Proxy provider with the following p
     Add the following regex rules to keep the public status page accessible without authentication.
 
     ```
-    ^/$
-    ^/status
-    ^/assets/
-    ^/assets
+    ^/status/.*
+    ^/assets/.*
+    ^/api/push/.*
+    ^/api/badge/.*
+    ^/api/status-page/heartbeat/.*
     ^/icon.svg
-    ^/api/.*
     ^/upload/.*
-    ^/metrics
+    ```
+
+    Alternatively, you can get even more specific by analyzing the requests for your status pages and modifying the regex rules above accordingly.  
+     For example:
+
+    ```
+    ^/status/<slug>$
+    ^/assets/.*
+    ^/api/push/.*
+    ^/api/badge/.*
+    ^/api/status-page/heartbeat/<slug>$
+    ^/upload/<file>$
     ```
 
 To avoid that all users get admin access to Uptime Kuma create a group in authentik for the admin user. Next set in authentik for the application under `Policy / Group / User Bindings` a group binding with the group created above.
