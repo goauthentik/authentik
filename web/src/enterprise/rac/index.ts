@@ -196,6 +196,10 @@ export class RacInterface extends Interface {
         const params = new URLSearchParams();
         params.set("screen_width", Math.floor(RacInterface.domSize().width).toString());
         params.set("screen_height", Math.floor(RacInterface.domSize().height).toString());
+        // https://github.com/goauthentik/authentik/pull/11757
+        // there are DPI issues when using SSH on HiDPi screens
+        // but if we're not setting DPI at all the resolution is not respected at all
+        params.set("screen_dpi", "96");
         this.client.connect(params.toString());
     }
 
