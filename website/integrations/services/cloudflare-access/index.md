@@ -33,7 +33,7 @@ To proceed, you need to register for a free Cloudflare Access account and have b
 ## Cloudflare Access configuration
 
 1. Open the [Cloudflare Access dashboard](https://one.dash.cloudflare.com) and navigate to **Settings** -> **Authentication**.
-2. Click on **Login methods**, then select **Add** -> **OpenID Connect**.
+2. Click **Login methods**, and then select **Add** -> **OpenID Connect**.
 3. From the authentik provider you created earlier, copy the following details and paste them into the corresponding fields:
     - **Client ID** -> App ID
     - **Client Secret** -> Client Secret
