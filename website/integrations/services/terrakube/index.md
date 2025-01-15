@@ -56,7 +56,7 @@ This guide assumes that you have environment variables `$TERRAKUBE_OIDC_CLIENT_I
 
     ```env
     TERRAKUBE_OIDC_CLIENT_ID=<Your Client ID>
-    TERRAKUBE_OIDC_CLIENT_SECRET=<Your Client Secret>
+    TERRAKUBE_OIDC_CLIENT_SECRET=*your Client Secret*
     ```
 
 ## Configuration verification
