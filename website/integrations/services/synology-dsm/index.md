@@ -59,6 +59,12 @@ To configure Synology DSM to utilize authentik as an OpenID Connect 1.0 Provider
 - Username Claim: preferred_username
 - Save the settings.
 
+## Troubleshooting
+
+**not privilege**
+
+The login process could fail with a `not privilege` error, when the sso pup-up is blocked. Allowing pup-ups in the browser config resolves this (see https://github.com/authelia/authelia/discussions/6902#discussioncomment-9756400).
+
 ## See also:
 
 [Synology DSM SSO Client Documentation](https://kb.synology.com/en-af/DSM/help/DSM/AdminCenter/file_directory_service_sso?version=7)
