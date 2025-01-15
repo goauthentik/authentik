@@ -50,9 +50,10 @@ class TestModels(TransactionTestCase):
             {
                 "hostname": self.endpoint.host.split(":")[0],
                 "port": "1324",
-                "client-name": "authentik",
+                "client-name": f"authentik - {self.user}",
                 "drive-path": path,
                 "create-drive-path": "true",
+                "resize-method": "display-update",
             },
         )
         # Set settings in provider
@@ -63,10 +64,11 @@ class TestModels(TransactionTestCase):
             {
                 "hostname": self.endpoint.host.split(":")[0],
                 "port": "1324",
-                "client-name": "authentik",
+                "client-name": f"authentik - {self.user}",
                 "drive-path": path,
                 "create-drive-path": "true",
                 "level": "provider",
+                "resize-method": "display-update",
             },
         )
         # Set settings in endpoint
@@ -79,10 +81,11 @@ class TestModels(TransactionTestCase):
             {
                 "hostname": self.endpoint.host.split(":")[0],
                 "port": "1324",
-                "client-name": "authentik",
+                "client-name": f"authentik - {self.user}",
                 "drive-path": path,
                 "create-drive-path": "true",
                 "level": "endpoint",
+                "resize-method": "display-update",
             },
         )
         # Set settings in token
@@ -95,10 +98,11 @@ class TestModels(TransactionTestCase):
             {
                 "hostname": self.endpoint.host.split(":")[0],
                 "port": "1324",
-                "client-name": "authentik",
+                "client-name": f"authentik - {self.user}",
                 "drive-path": path,
                 "create-drive-path": "true",
                 "level": "token",
+                "resize-method": "display-update",
             },
         )
         # Set settings in property mapping (provider)
@@ -114,10 +118,11 @@ class TestModels(TransactionTestCase):
             {
                 "hostname": self.endpoint.host.split(":")[0],
                 "port": "1324",
-                "client-name": "authentik",
+                "client-name": f"authentik - {self.user}",
                 "drive-path": path,
                 "create-drive-path": "true",
                 "level": "property_mapping_provider",
+                "resize-method": "display-update",
             },
         )
         # Set settings in property mapping (endpoint)
@@ -135,11 +140,12 @@ class TestModels(TransactionTestCase):
             {
                 "hostname": self.endpoint.host.split(":")[0],
                 "port": "1324",
-                "client-name": "authentik",
+                "client-name": f"authentik - {self.user}",
                 "drive-path": path,
                 "create-drive-path": "true",
                 "level": "property_mapping_endpoint",
                 "foo": "true",
                 "bar": "6",
+                "resize-method": "display-update",
             },
         )
