@@ -4,7 +4,7 @@ import "@goauthentik/elements/LoadingOverlay";
 import Guacamole from "guacamole-common-js";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -19,6 +19,23 @@ enum GuacClientState {
     CONNECTED = 3,
     DISCONNECTING = 4,
     DISCONNECTED = 5,
+}
+
+export function GuacStateToString(state: GuacClientState): string {
+    switch (state) {
+        case GuacClientState.IDLE:
+            return msg("Idle");
+        case GuacClientState.CONNECTING:
+            return msg("Connecting");
+        case GuacClientState.WAITING:
+            return msg("Waiting");
+        case GuacClientState.CONNECTED:
+            return msg("Connected");
+        case GuacClientState.DISCONNECTING:
+            return msg("Disconnecting");
+        case GuacClientState.DISCONNECTED:
+            return msg("Disconnected");
+    }
 }
 
 const AUDIO_INPUT_MIMETYPE = "audio/L16;rate=44100,channels=2";
@@ -63,6 +80,9 @@ export class RacInterface extends Interface {
 
     @state()
     clientState?: GuacClientState;
+
+    @state()
+    clientStatus?: Guacamole.Status;
 
     @state()
     reconnectingMessage = "";
@@ -138,6 +158,7 @@ export class RacInterface extends Interface {
         };
         this.client = new Guacamole.Client(this.tunnel);
         this.client.onerror = (err) => {
+            this.clientStatus = err;
             console.debug("authentik/rac: error: ", err);
             this.reconnect();
         };
@@ -221,6 +242,7 @@ export class RacInterface extends Interface {
             return;
         }
         this.hasConnected = true;
+        this.clientStatus = undefined;
         this.container = this.client.getDisplay().getElement();
         this.initMouse(this.container);
         this.client?.sendSize(
@@ -310,19 +332,35 @@ export class RacInterface extends Interface {
         console.debug("authentik/rac: Sent clipboard");
     }
 
+    renderOverlay() {
+        if (!this.clientState || this.clientState == GuacClientState.CONNECTED) {
+            return nothing;
+        }
+        let message = html`${GuacStateToString(this.clientState)}`;
+        if (this.clientState == GuacClientState.WAITING) {
+            message = html`${msg("Connecting...")}`;
+        }
+        if (this.hasConnected) {
+            message = html`${this.reconnectingMessage}`;
+        }
+        if (this.clientStatus?.message) {
+            message = html`${message}<br />${this.clientStatus.message}`;
+        }
+        const isLoading = [
+            GuacClientState.CONNECTING,
+            GuacClientState.DISCONNECTING,
+            GuacClientState.WAITING,
+        ].includes(this.clientState);
+        return html`
+            <ak-loading-overlay ?loading=${isLoading} icon="fa fa-times">
+                <span> ${message} </span>
+            </ak-loading-overlay>
+        `;
+    }
+
     render(): TemplateResult {
         return html`
-            ${this.clientState !== GuacClientState.CONNECTED
-                ? html`
-                      <ak-loading-overlay>
-                          <span>
-                              ${this.hasConnected
-                                  ? html`${this.reconnectingMessage}`
-                                  : html`${msg("Connecting...")}`}
-                          </span>
-                      </ak-loading-overlay>
-                  `
-                : html``}
+            ${this.renderOverlay()}
             <div class="container">${this.container}</div>
         `;
     }
