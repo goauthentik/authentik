@@ -12,8 +12,8 @@ from typing import Any
 from unittest.case import TestCase
 from urllib.parse import urlencode
 
+from channels.testing import ChannelsLiveServerTestCase
 from django.apps import apps
-from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.db import connection
 from django.db.migrations.loader import MigrationLoader
 from django.test.testcases import TransactionTestCase
@@ -35,6 +35,7 @@ from authentik.core.api.users import UserSerializer
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.lib.generators import generate_id
+from tests.e2e._process import TestDatabaseProcess
 
 RETRIES = int(environ.get("RETRIES", "3"))
 IS_CI = "CI" in environ
@@ -152,12 +153,16 @@ class DockerTestCase(TestCase):
         self.__network.remove()
 
 
-class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
-    """StaticLiveServerTestCase which automatically creates a Webdriver instance"""
+class SeleniumTestCase(DockerTestCase, ChannelsLiveServerTestCase):
+    """ChannelsLiveServerTestCase which automatically creates a Webdriver instance"""
+
+    ProtocolServerProcess = TestDatabaseProcess
 
     host = get_local_ip()
     wait_timeout: int
     user: User
+
+    serve_static = True
 
     def setUp(self):
         if IS_CI:
