@@ -36,7 +36,7 @@ This guide assumes that you have environment variables `$TERRAKUBE_OIDC_CLIENT_I
    Find the Dex configuration file, typically named `config.yaml` or `config.docker.yaml`. It’s usually located in the `/etc/dex` directory or the corresponding directory for a containerized setup.
 
 2. **Update the Dex Configuration**  
-   Open the configuration file and add the following block to define the Terrakube OIDC connector:
+   To define the Terrakube OIDC connector, open the configuration file and add the following block:
 
     ```yaml
     connectors:
