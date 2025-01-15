@@ -121,7 +121,7 @@ export class RoleViewPage extends AKElement {
                         <div class="pf-c-card__title">${msg("Changelog")}</div>
                         <div class="pf-c-card__body">
                             <ak-object-changelog
-                                targetModelPk=${this.roleId}
+                                targetModelPk=${this._role.pk}
                                 targetModelApp="authentik_rbac"
                                 targetModelName="role"
                             >
