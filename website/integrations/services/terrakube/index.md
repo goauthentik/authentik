@@ -30,7 +30,7 @@ The following placeholders are used in this guide:
 
 ## Terrakube configuration
 
-This guide assumes you have environment variables `$TERRAKUBE_OIDC_CLIENT_ID` and `$TERRAKUBE_OIDC_CLIENT_SECRET` set up. While you can hardcode values if your setup doesn’t support environment variables, doing so is not recommended for security reasons.
+This guide assumes that you have environment variables `$TERRAKUBE_OIDC_CLIENT_ID` and `$TERRAKUBE_OIDC_CLIENT_SECRET` set up. You can hard-code values if your setup doesn’t support environment variables, but be aware that doing so is not recommended for security reasons.
 
 1. **Locate the Dex Configuration File**  
    Find the Dex configuration file, typically named `config.yaml` or `config.docker.yaml`. It’s usually located in the `/etc/dex` directory or the corresponding directory for a containerized setup.
