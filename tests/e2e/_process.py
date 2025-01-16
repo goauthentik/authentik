@@ -9,6 +9,7 @@ from django import setup as django_setup
 from django.conf import settings
 from django.utils.timezone import now
 
+from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
 
 
@@ -25,16 +26,19 @@ class TestDatabaseProcess(DaphneProcess):
         settings.TEST = True
         from authentik.enterprise.license import LicenseKey
 
-        with patch(
-            "authentik.enterprise.license.LicenseKey.validate",
-            MagicMock(
-                return_value=LicenseKey(
-                    aud="",
-                    exp=int(mktime((now() + timedelta(days=3000)).timetuple())),
-                    name=generate_id(),
-                    internal_users=100,
-                    external_users=100,
-                )
+        with (
+            patch(
+                "authentik.enterprise.license.LicenseKey.validate",
+                MagicMock(
+                    return_value=LicenseKey(
+                        aud="",
+                        exp=int(mktime((now() + timedelta(days=3000)).timetuple())),
+                        name=generate_id(),
+                        internal_users=100,
+                        external_users=100,
+                    )
+                ),
             ),
+            CONFIG.patch("email.port", 1025),
         ):
             return super().run()

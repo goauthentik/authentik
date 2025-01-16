@@ -419,7 +419,6 @@ class TestSourceSAML(SeleniumTestCase):
         # Wait until we're logged in
         self.wait_for_url(self.if_user_url())
 
-        # sleep(999999)
         self.assert_user(
             User.objects.exclude(username="akadmin")
             .exclude(username__startswith="ak-outpost")
