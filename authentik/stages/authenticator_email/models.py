@@ -114,6 +114,11 @@ class EmailDevice(SerializerModel, SideChannelDevice):
     stage = models.ForeignKey(AuthenticatorEmailStage, on_delete=models.CASCADE)
     last_used = models.DateTimeField(auto_now=True)
 
+    @property
+    def serializer(self) -> type[BaseSerializer]:
+        from authentik.stages.authenticator_email.api import EmailDeviceSerializer
+
+        return EmailDeviceSerializer
     class Meta:
         verbose_name = _("Email Device")
         verbose_name_plural = _("Email Devices")
