@@ -113,41 +113,9 @@ You must sync your LDAP database with Snipe-IT. Go to People on the sidebar menu
 - Select your Location
 - Click Synchronize
   :::note
-  Snipe-IT will only import users with both a first and last name set. If you do not have first and last names stored in your users attributes, you can create a property mapping to set first and last name.
+  Snipe-IT will only import users with both a first and last name set. You need to create user attributes with first and last names.
   :::
 
-## authentik Property Mapping
-
-To create a policy mapping, go to _Customization/Property Mappings_, click `Create` then `LDAP Property Mapping`. Name is 'sn' and set Object field to sn:
-
-```ini
-def getLastName():
-    if len(request.user.name) >= 1:
-     return request.user.name.split(" ")[1]
-    elif len(request.user.name) == 1:
-     return request.user.name.split(" ")[1]
-    else:
-      return ""
-
-return {
-    "sn": getLastName(),
-}
-
-```
-
-Create a second policy mapping, name it 'givenname' and set Object field to 'givenname'
-
-```
-def getFirstName():
-    if len(request.user.name) >= 1:
-     return request.user.name.split(" ")[0]
-    else:
-      return f"N/A"
-
-return {
-    "givenname": getFirstName(),
-}
-```
 
 ## authentik SAML Config
 
