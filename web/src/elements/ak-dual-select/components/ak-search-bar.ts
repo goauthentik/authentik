@@ -1,5 +1,4 @@
 import { AKElement } from "@goauthentik/elements/Base";
-import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -9,12 +8,12 @@ import type { Ref } from "lit/directives/ref.js";
 import { globalVariables, searchStyles } from "./search.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import type { SearchbarEvent } from "../types";
+import { DualSelectPanelSearchEvent } from "../events";
 
 const styles = [PFBase, globalVariables, searchStyles];
 
 @customElement("ak-search-bar")
-export class AkSearchbar extends CustomEmitterElement(AKElement) {
+export class AkSearchbar extends AKElement {
     static get styles() {
         return styles;
     }
@@ -40,10 +39,7 @@ export class AkSearchbar extends CustomEmitterElement(AKElement) {
         if (this.input.value) {
             this.value = this.input.value.value;
         }
-        this.dispatchCustomEvent<SearchbarEvent>("ak-search", {
-            source: this.name,
-            value: this.value,
-        });
+        this.dispatchEvent(new DualSelectPanelSearchEvent(this.name, this.value));
     }
 
     render() {

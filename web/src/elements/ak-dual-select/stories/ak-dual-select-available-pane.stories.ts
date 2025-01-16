@@ -6,6 +6,7 @@ import { TemplateResult, html } from "lit";
 
 import "../components/ak-dual-select-available-pane";
 import { AkDualSelectAvailablePane } from "../components/ak-dual-select-available-pane";
+import { DualSelectMoveSelectedEvent } from "../events";
 import "./sb-host-provider";
 
 const metadata: Meta<AkDualSelectAvailablePane> = {
@@ -53,15 +54,15 @@ const container = (testItem: TemplateResult) =>
     </div>`;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const handleMoveChanged = (result: any) => {
+const handleMoveChanged = (result: DualSelectMoveSelectedEvent) => {
     const target = document.querySelector("#action-button-message-pad");
     target!.innerHTML = "";
-    result.detail.forEach((key: string) => {
+    result.keys.forEach((key: string) => {
         target!.append(new DOMParser().parseFromString(`<li>${key}</li>`, "text/xml").firstChild!);
     });
 };
 
-window.addEventListener("ak-dual-select-available-move-changed", handleMoveChanged);
+window.addEventListener(DualSelectMoveSelectedEvent.eventName, handleMoveChanged);
 
 type Story = StoryObj;
 

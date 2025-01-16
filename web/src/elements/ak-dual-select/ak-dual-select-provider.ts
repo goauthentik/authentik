@@ -1,6 +1,5 @@
 import { AkControlElement } from "@goauthentik/elements/AkControlElement.js";
 import { debounce } from "@goauthentik/elements/utils/debounce";
-import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
 
 import { msg } from "@lit/localize";
 import { PropertyValues, html } from "lit";
@@ -12,6 +11,11 @@ import type { Pagination } from "@goauthentik/api";
 
 import "./ak-dual-select";
 import { AkDualSelect } from "./ak-dual-select";
+import {
+    DualSelectChangeEvent,
+    DualSelectPaginatorNavEvent,
+    DualSelectSearchEvent,
+} from "./events";
 import type { DataProvider, DualSelectPair } from "./types";
 
 /**
@@ -26,7 +30,7 @@ import type { DataProvider, DualSelectPair } from "./types";
  */
 
 @customElement("ak-dual-select-provider")
-export class AkDualSelectProvider extends CustomListenerElement(AkControlElement) {
+export class AkDualSelectProvider extends AkControlElement {
     /** A function that takes a page and returns the DualSelectPair[] collection with which to update
      * the "Available" pane.
      *
@@ -86,9 +90,9 @@ export class AkDualSelectProvider extends CustomListenerElement(AkControlElement
         this.onNav = this.onNav.bind(this);
         this.onChange = this.onChange.bind(this);
         this.onSearch = this.onSearch.bind(this);
-        this.addCustomListener("ak-pagination-nav-to", this.onNav);
-        this.addCustomListener("ak-dual-select-change", this.onChange);
-        this.addCustomListener("ak-dual-select-search", this.onSearch);
+        this.addEventListener(DualSelectPaginatorNavEvent.eventName, this.onNav);
+        this.addEventListener(DualSelectSearchEvent.eventName, this.onSearch);
+        this.addEventListener(DualSelectChangeEvent.eventName, this.onChange);
     }
 
     willUpdate(changedProperties: PropertyValues<this>) {
@@ -122,26 +126,16 @@ export class AkDualSelectProvider extends CustomListenerElement(AkControlElement
         this.isLoading = false;
     }
 
-    onNav(event: Event) {
-        if (!(event instanceof CustomEvent)) {
-            throw new Error(`Expecting a CustomEvent for navigation, received ${event} instead`);
-        }
-        this.fetch(event.detail);
+    onNav(event: DualSelectPaginatorNavEvent) {
+        this.fetch(event.page);
     }
 
-    onChange(event: Event) {
-        if (!(event instanceof CustomEvent)) {
-            throw new Error(`Expecting a CustomEvent for change, received ${event} instead`);
-        }
-        this.internalSelected = event.detail.value;
-        this.selected = this.internalSelected;
+    onChange(event: DualSelectChangeEvent) {
+        this.selected = this.internalSelected = event.selected;
     }
 
-    onSearch(event: Event) {
-        if (!(event instanceof CustomEvent)) {
-            throw new Error(`Expecting a CustomEvent for change, received ${event} instead`);
-        }
-        this.doSearch(event.detail);
+    onSearch(event: DualSelectSearchEvent) {
+        this.doSearch(event.search);
     }
 
     doSearch(search: string) {

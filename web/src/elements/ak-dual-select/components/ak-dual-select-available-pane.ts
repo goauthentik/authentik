@@ -1,26 +1,19 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
+import { bound } from "@goauthentik/elements/decorators/bound";
 
 import { html, nothing } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { map } from "lit/directives/map.js";
 
-import { availablePaneStyles, listStyles } from "./styles.css";
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFDualListSelector from "@patternfly/patternfly/components/DualListSelector/dual-list-selector.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import { availablePaneStyles } from "./styles.css";
 
-import { EVENT_ADD_ONE } from "../constants";
+import {
+    DualSelectMoveAvailableEvent,
+    DualSelectMoveRequestEvent,
+    DualSelectUpdateEvent,
+} from "../events";
 import type { DualSelectPair } from "../types";
-
-const styles = [PFBase, PFButton, PFDualListSelector, listStyles, availablePaneStyles];
-
-const hostAttributes = [
-    ["aria-labelledby", "dual-list-selector-available-pane-status"],
-    ["aria-multiselectable", "true"],
-    ["role", "listbox"],
-];
+import { AkDualSelectAbstractPane } from "./ak-dual-select-pane";
 
 /**
  * @element ak-dual-select-available-panel
@@ -40,9 +33,9 @@ const hostAttributes = [
  *
  */
 @customElement("ak-dual-select-available-pane")
-export class AkDualSelectAvailablePane extends CustomEmitterElement(AKElement) {
+export class AkDualSelectAvailablePane extends AkDualSelectAbstractPane {
     static get styles() {
-        return styles;
+        return [...AkDualSelectAbstractPane.styles, availablePaneStyles];
     }
 
     /* The array of key/value pairs this pane is currently showing */
@@ -56,60 +49,23 @@ export class AkDualSelectAvailablePane extends CustomEmitterElement(AKElement) {
     @property({ type: Object })
     readonly selected: Set<string> = new Set();
 
-    /* This is the only mutator for this object. It collects the list of objects the user has
-     * clicked on *in this pane*. It is explicitly marked as "public" to emphasize that the parent
-     * orchestrator for the dual-select widget can and will access it to get the list of keys to be
-     * moved (removed) if the user so requests.
-     *
-     */
-    @state()
-    public toMove: Set<string> = new Set();
-
-    constructor() {
-        super();
-        this.onClick = this.onClick.bind(this);
-        this.onMove = this.onMove.bind(this);
-    }
-
-    connectedCallback() {
-        super.connectedCallback();
-        hostAttributes.forEach(([attr, value]) => {
-            if (!this.hasAttribute(attr)) {
-                this.setAttribute(attr, value);
-            }
-        });
-    }
-
-    clearMove() {
-        this.toMove = new Set();
-    }
-
+    @bound
     onClick(key: string) {
         if (this.selected.has(key)) {
             return;
         }
-        if (this.toMove.has(key)) {
-            this.toMove.delete(key);
-        } else {
-            this.toMove.add(key);
-        }
-        this.dispatchCustomEvent(
-            "ak-dual-select-available-move-changed",
-            Array.from(this.toMove.values()).sort(),
-        );
-        this.dispatchCustomEvent("ak-dual-select-move");
+        this.move(key);
+        this.dispatchEvent(new DualSelectMoveAvailableEvent(this.moveable.sort()));
+        this.dispatchEvent(new DualSelectUpdateEvent());
         // Necessary because updating a map won't trigger a state change
         this.requestUpdate();
     }
 
+    @bound
     onMove(key: string) {
         this.toMove.delete(key);
-        this.dispatchCustomEvent(EVENT_ADD_ONE, key);
+        this.dispatchEvent(new DualSelectMoveRequestEvent("add-one", key));
         this.requestUpdate();
-    }
-
-    get moveable() {
-        return Array.from(this.toMove.values());
     }
 
     // DO NOT use `Array.map()` instead of Lit's `map()` function. Lit's `map()` is object-aware and
@@ -117,7 +73,7 @@ export class AkDualSelectAvailablePane extends CustomEmitterElement(AKElement) {
     // change; this allows the available pane to illustrate selected items with the checkmark
     // without causing the list to scroll back up to the top.
 
-    render() {
+    override render() {
         return html`
             <div class="pf-c-dual-list-selector__menu">
                 <ul class="pf-c-dual-list-selector__list">
