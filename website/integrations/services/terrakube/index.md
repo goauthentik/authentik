@@ -1,5 +1,5 @@
 ---
-title: Terrakube
+title: Integrate with Terrakube
 sidebar_label: Terrakube
 ---
 
