@@ -1,6 +1,0 @@
-{
-  "root": true,
-  "extends": "airbnb-base",
-  "parser": "@babel/eslint-parser",
-  "ignorePatterns": ["build/"],
-}
