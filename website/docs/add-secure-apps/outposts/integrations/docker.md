@@ -4,7 +4,7 @@ title: Docker
 
 The Docker integration automatically deploys and manages outpost containers using the Docker HTTP API.
 
-This integration has the advantage over manual deployments of automatic updates (whenever authentik is updated, it updates the outposts), and authentik can (in a future version) automatically rotate the token that the outpost uses to communicate with the core authentik server.
+This integration has the advantage over manual deployments of automatic updates that whenever authentik is upgraded to a later version, it also upgrades the outposts.
 
 The following outpost settings are used:
 
