@@ -1969,6 +1969,86 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_stages_authenticator_email.authenticatoremailstage"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_stages_authenticator_email.authenticatoremailstage_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_stages_authenticator_email.authenticatoremailstage"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_stages_authenticator_email.authenticatoremailstage"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
+                                "const": "authentik_stages_authenticator_email.emaildevice"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_stages_authenticator_email.emaildevice_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_stages_authenticator_email.emaildevice"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_stages_authenticator_email.emaildevice"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_stages_authenticator_sms.authenticatorsmsstage"
                             },
                             "id": {
@@ -4556,6 +4636,7 @@
                         "authentik.sources.scim",
                         "authentik.stages.authenticator",
                         "authentik.stages.authenticator_duo",
+                        "authentik.stages.authenticator_email",
                         "authentik.stages.authenticator_sms",
                         "authentik.stages.authenticator_static",
                         "authentik.stages.authenticator_totp",
@@ -4645,6 +4726,8 @@
                         "authentik_sources_scim.scimsourcepropertymapping",
                         "authentik_stages_authenticator_duo.authenticatorduostage",
                         "authentik_stages_authenticator_duo.duodevice",
+                        "authentik_stages_authenticator_email.authenticatoremailstage",
+                        "authentik_stages_authenticator_email.emaildevice",
                         "authentik_stages_authenticator_sms.authenticatorsmsstage",
                         "authentik_stages_authenticator_sms.smsdevice",
                         "authentik_stages_authenticator_static.authenticatorstaticstage",
@@ -6793,6 +6876,14 @@
                             "authentik_stages_authenticator_duo.delete_duodevice",
                             "authentik_stages_authenticator_duo.view_authenticatorduostage",
                             "authentik_stages_authenticator_duo.view_duodevice",
+                            "authentik_stages_authenticator_email.add_authenticatoremailstage",
+                            "authentik_stages_authenticator_email.add_emaildevice",
+                            "authentik_stages_authenticator_email.change_authenticatoremailstage",
+                            "authentik_stages_authenticator_email.change_emaildevice",
+                            "authentik_stages_authenticator_email.delete_authenticatoremailstage",
+                            "authentik_stages_authenticator_email.delete_emaildevice",
+                            "authentik_stages_authenticator_email.view_authenticatoremailstage",
+                            "authentik_stages_authenticator_email.view_emaildevice",
                             "authentik_stages_authenticator_endpoint_gdtc.add_authenticatorendpointgdtcstage",
                             "authentik_stages_authenticator_endpoint_gdtc.add_endpointdevice",
                             "authentik_stages_authenticator_endpoint_gdtc.add_endpointdeviceconnection",
@@ -8918,6 +9009,235 @@
                 }
             }
         },
+        "model_authentik_stages_authenticator_email.authenticatoremailstage": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "flow_set": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "minLength": 1,
+                                "title": "Name"
+                            },
+                            "slug": {
+                                "type": "string",
+                                "maxLength": 50,
+                                "minLength": 1,
+                                "pattern": "^[-a-zA-Z0-9_]+$",
+                                "title": "Slug",
+                                "description": "Visible in the URL."
+                            },
+                            "title": {
+                                "type": "string",
+                                "minLength": 1,
+                                "title": "Title",
+                                "description": "Shown as the Title in Flow pages."
+                            },
+                            "designation": {
+                                "type": "string",
+                                "enum": [
+                                    "authentication",
+                                    "authorization",
+                                    "invalidation",
+                                    "enrollment",
+                                    "unenrollment",
+                                    "recovery",
+                                    "stage_configuration"
+                                ],
+                                "title": "Designation",
+                                "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
+                            },
+                            "policy_engine_mode": {
+                                "type": "string",
+                                "enum": [
+                                    "all",
+                                    "any"
+                                ],
+                                "title": "Policy engine mode"
+                            },
+                            "compatibility_mode": {
+                                "type": "boolean",
+                                "title": "Compatibility mode",
+                                "description": "Enable compatibility mode, increases compatibility with password managers on mobile devices."
+                            },
+                            "layout": {
+                                "type": "string",
+                                "enum": [
+                                    "stacked",
+                                    "content_left",
+                                    "content_right",
+                                    "sidebar_left",
+                                    "sidebar_right"
+                                ],
+                                "title": "Layout"
+                            },
+                            "denied_action": {
+                                "type": "string",
+                                "enum": [
+                                    "message_continue",
+                                    "message",
+                                    "continue"
+                                ],
+                                "title": "Denied action",
+                                "description": "Configure what should happen when a flow denies access to a user."
+                            }
+                        },
+                        "required": [
+                            "name",
+                            "slug",
+                            "title",
+                            "designation"
+                        ]
+                    },
+                    "title": "Flow set"
+                },
+                "configure_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Configure flow",
+                    "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
+                },
+                "friendly_name": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "minLength": 1,
+                    "title": "Friendly name"
+                },
+                "use_global_settings": {
+                    "type": "boolean",
+                    "title": "Use global settings",
+                    "description": "When enabled, global Email connection settings will be used and connection settings below will be ignored."
+                },
+                "host": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Host"
+                },
+                "port": {
+                    "type": "integer",
+                    "minimum": -2147483648,
+                    "maximum": 2147483647,
+                    "title": "Port"
+                },
+                "username": {
+                    "type": "string",
+                    "title": "Username"
+                },
+                "password": {
+                    "type": "string",
+                    "title": "Password"
+                },
+                "use_tls": {
+                    "type": "boolean",
+                    "title": "Use tls"
+                },
+                "use_ssl": {
+                    "type": "boolean",
+                    "title": "Use ssl"
+                },
+                "timeout": {
+                    "type": "integer",
+                    "minimum": -2147483648,
+                    "maximum": 2147483647,
+                    "title": "Timeout"
+                },
+                "from_address": {
+                    "type": "string",
+                    "format": "email",
+                    "maxLength": 254,
+                    "minLength": 1,
+                    "title": "From address"
+                },
+                "subject": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Subject"
+                },
+                "token_expiry": {
+                    "type": "integer",
+                    "minimum": -2147483648,
+                    "maximum": 2147483647,
+                    "title": "Token expiry",
+                    "description": "Time in minutes the token sent is valid."
+                }
+            },
+            "required": []
+        },
+        "model_authentik_stages_authenticator_email.authenticatoremailstage_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_authenticatoremailstage",
+                            "change_authenticatoremailstage",
+                            "delete_authenticatoremailstage",
+                            "view_authenticatoremailstage"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_stages_authenticator_email.emaildevice": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "maxLength": 64,
+                    "minLength": 1,
+                    "title": "Name",
+                    "description": "The human-readable name of this device."
+                }
+            },
+            "required": []
+        },
+        "model_authentik_stages_authenticator_email.emaildevice_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_emaildevice",
+                            "change_emaildevice",
+                            "delete_emaildevice",
+                            "view_emaildevice"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model_authentik_stages_authenticator_sms.authenticatorsmsstage": {
             "type": "object",
             "properties": {
@@ -9607,7 +9927,8 @@
                             "totp",
                             "webauthn",
                             "duo",
-                            "sms"
+                            "sms",
+                            "email"
                         ],
                         "title": "Device classes"
                     },
@@ -13042,6 +13363,14 @@
                             "authentik_stages_authenticator_duo.delete_duodevice",
                             "authentik_stages_authenticator_duo.view_authenticatorduostage",
                             "authentik_stages_authenticator_duo.view_duodevice",
+                            "authentik_stages_authenticator_email.add_authenticatoremailstage",
+                            "authentik_stages_authenticator_email.add_emaildevice",
+                            "authentik_stages_authenticator_email.change_authenticatoremailstage",
+                            "authentik_stages_authenticator_email.change_emaildevice",
+                            "authentik_stages_authenticator_email.delete_authenticatoremailstage",
+                            "authentik_stages_authenticator_email.delete_emaildevice",
+                            "authentik_stages_authenticator_email.view_authenticatoremailstage",
+                            "authentik_stages_authenticator_email.view_emaildevice",
                             "authentik_stages_authenticator_endpoint_gdtc.add_authenticatorendpointgdtcstage",
                             "authentik_stages_authenticator_endpoint_gdtc.add_endpointdevice",
                             "authentik_stages_authenticator_endpoint_gdtc.add_endpointdeviceconnection",
