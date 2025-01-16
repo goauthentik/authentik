@@ -66,7 +66,7 @@ Create an integration with `Docker CA` as _TLS Verification Certificate_ and `Do
 
 ## Remote hosts (SSH)
 
-You can connect to remote Docker hosts using SSH. To configure this, create a new SSH keypair using these commands:
+authentik can connect to remote Docker hosts using SSH. To configure this, create a new SSH keypair using these commands:
 
 ```
 # Generate the keypair itself, using RSA keys in the PEM format
