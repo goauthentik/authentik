@@ -82,7 +82,7 @@ html > form > input {
     width: 35rem;
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: space-between;
 }
 .pf-c-login__header {
     flex-grow: 1;

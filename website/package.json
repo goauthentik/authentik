@@ -29,7 +29,7 @@
         "disqus-react": "^1.1.5",
         "docusaurus-plugin-openapi-docs": "^4.3.1",
         "docusaurus-theme-openapi-docs": "^4.3.1",
-        "postcss": "^8.4.49",
+        "postcss": "^8.5.1",
         "prism-react-renderer": "^2.4.1",
         "react": "^18.3.1",
         "react-before-after-slider-component": "^1.1.8",
@@ -56,10 +56,10 @@
         "@docusaurus/tsconfig": "^3.7.0",
         "@docusaurus/types": "^3.3.2",
         "@types/react": "^18.3.13",
-        "aws-cdk": "^2.174.0",
+        "aws-cdk": "^2.175.1",
         "cross-env": "^7.0.3",
         "prettier": "3.4.2",
-        "typescript": "~5.7.2",
+        "typescript": "~5.7.3",
         "wireit": "^0.14.9"
     },
     "wireit": {

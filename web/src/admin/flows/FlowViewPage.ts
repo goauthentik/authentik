@@ -191,7 +191,7 @@ export class FlowViewPage extends AKElement {
                                                                 const finalURL = `${
                                                                     link.link
                                                                 }?${encodeURI(
-                                                                    `inspector&next=/#${window.location.hash}`,
+                                                                    `inspector=open&next=/#${window.location.hash}`,
                                                                 )}`;
                                                                 window.open(finalURL, "_blank");
                                                             })

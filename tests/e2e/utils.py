@@ -10,6 +10,7 @@ from sys import stderr
 from time import sleep
 from typing import Any
 from unittest.case import TestCase
+from urllib.parse import urlencode
 
 from django.apps import apps
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
@@ -209,9 +210,12 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
             f"URL {self.driver.current_url} doesn't match expected URL {desired_url}",
         )
 
-    def url(self, view, **kwargs) -> str:
+    def url(self, view, query: dict | None = None, **kwargs) -> str:
         """reverse `view` with `**kwargs` into full URL using live_server_url"""
-        return self.live_server_url + reverse(view, kwargs=kwargs)
+        url = self.live_server_url + reverse(view, kwargs=kwargs)
+        if query:
+            return url + "?" + urlencode(query)
+        return url
 
     def if_user_url(self, path: str | None = None) -> str:
         """same as self.url() but show URL in shell"""
