@@ -1,7 +1,6 @@
 """Radius e2e tests"""
 
 from dataclasses import asdict
-from time import sleep
 
 from pyrad.client import Client
 from pyrad.dictionary import Dictionary
@@ -50,17 +49,7 @@ class TestProviderRadius(SeleniumTestCase):
         outpost.providers.add(radius)
 
         self.start_radius(outpost)
-
-        # Wait until outpost healthcheck succeeds
-        healthcheck_retries = 0
-        while healthcheck_retries < 50:  # noqa: PLR2004
-            if len(outpost.state) > 0:
-                state = outpost.state[0]
-                if state.last_seen:
-                    break
-            healthcheck_retries += 1
-            sleep(0.5)
-        sleep(5)
+        self.wait_for_outpost(outpost)
         return outpost
 
     @retry()

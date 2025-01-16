@@ -35,6 +35,7 @@ from authentik.core.api.users import UserSerializer
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.lib.generators import generate_id
+from authentik.outposts.models import Outpost
 from tests.e2e._process import TestDatabaseProcess
 
 RETRIES = int(environ.get("RETRIES", "3"))
@@ -269,6 +270,18 @@ class SeleniumTestCase(DockerTestCase, ChannelsLiveServerTestCase):
         self.assertEqual(user["username"].value, expected_user.username)
         self.assertEqual(user["name"].value, expected_user.name)
         self.assertEqual(user["email"].value, expected_user.email)
+
+    def wait_for_outpost(self, outpost: Outpost, tries=50):
+        """Wait until outpost healthcheck succeeds"""
+        healthcheck_retries = 0
+        while healthcheck_retries < tries:
+            if len(outpost.state) > 0:
+                state = outpost.state[0]
+                if state.last_seen:
+                    return
+            healthcheck_retries += 1
+            sleep(0.5)
+        raise self.failureException("Outpost failed to become healthy")
 
 
 @lru_cache

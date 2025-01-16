@@ -76,17 +76,7 @@ class TestProviderProxyForward(SeleniumTestCase):
         outpost.build_user_permissions(outpost.user)
 
         self.start_outpost(outpost)
-
-        # Wait until outpost healthcheck succeeds
-        healthcheck_retries = 0
-        while healthcheck_retries < 50:  # noqa: PLR2004
-            if len(outpost.state) > 0:
-                state = outpost.state[0]
-                if state.last_seen:
-                    break
-            healthcheck_retries += 1
-            sleep(0.5)
-        sleep(5)
+        self.wait_for_outpost(outpost)
 
     @retry()
     def test_traefik(self):

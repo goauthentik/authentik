@@ -7,7 +7,6 @@ from sys import platform
 from time import sleep
 from unittest.case import skip, skipUnless
 
-from channels.testing import ChannelsLiveServerTestCase
 from jwt import decode
 from selenium.webdriver.common.by import By
 
@@ -87,17 +86,7 @@ class TestProviderProxy(SeleniumTestCase):
         outpost.build_user_permissions(outpost.user)
 
         self.start_proxy(outpost)
-
-        # Wait until outpost healthcheck succeeds
-        healthcheck_retries = 0
-        while healthcheck_retries < 50:  # noqa: PLR2004
-            if len(outpost.state) > 0:
-                state = outpost.state[0]
-                if state.last_seen:
-                    break
-            healthcheck_retries += 1
-            sleep(0.5)
-        sleep(5)
+        self.wait_for_outpost(outpost)
 
         self.driver.get("http://localhost:9000/api")
         self.login()
@@ -168,17 +157,7 @@ class TestProviderProxy(SeleniumTestCase):
         outpost.build_user_permissions(outpost.user)
 
         self.start_proxy(outpost)
-
-        # Wait until outpost healthcheck succeeds
-        healthcheck_retries = 0
-        while healthcheck_retries < 50:  # noqa: PLR2004
-            if len(outpost.state) > 0:
-                state = outpost.state[0]
-                if state.last_seen:
-                    break
-            healthcheck_retries += 1
-            sleep(0.5)
-        sleep(5)
+        self.wait_for_outpost(outpost)
 
         self.driver.get("http://localhost:9000/api")
         self.login()
@@ -202,7 +181,7 @@ class TestProviderProxy(SeleniumTestCase):
 # TODO: Fix flaky test
 @skip("Flaky test")
 @skipUnless(platform.startswith("linux"), "requires local docker")
-class TestProviderProxyConnect(ChannelsLiveServerTestCase):
+class TestProviderProxyConnect(SeleniumTestCase):
     """Test Proxy connectivity over websockets"""
 
     @retry(exceptions=[AssertionError])
@@ -239,16 +218,7 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
         )
         outpost.providers.add(proxy)
         outpost.build_user_permissions(outpost.user)
-
-        # Wait until outpost healthcheck succeeds
-        healthcheck_retries = 0
-        while healthcheck_retries < 50:  # noqa: PLR2004
-            if len(outpost.state) > 0:
-                state = outpost.state[0]
-                if state.last_seen and state.version:
-                    break
-            healthcheck_retries += 1
-            sleep(0.5)
+        self.wait_for_outpost(outpost)
 
         state = outpost.state
         self.assertGreaterEqual(len(state), 1)
