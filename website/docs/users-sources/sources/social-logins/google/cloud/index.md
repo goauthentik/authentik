@@ -1,5 +1,6 @@
 ---
-title: Google
+title: Integrate with Google Cloud
+sidebar_label: Google Cloud OAuth
 ---
 
 <span class="badge badge--secondary">Support level: Community</span>

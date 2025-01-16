@@ -538,7 +538,14 @@ export default {
                                 "users-sources/sources/social-logins/discord/index",
                                 "users-sources/sources/social-logins/facebook/index",
                                 "users-sources/sources/social-logins/github/index",
-                                "users-sources/sources/social-logins/google/index",
+                                {
+                                    type: "category",
+                                    label: "Google",
+                                    items: [
+                                        "users-sources/sources/social-logins/google/cloud/index",
+                                        "users-sources/sources/social-logins/google/workspace/index",
+                                    ],
+                                },
                                 "users-sources/sources/social-logins/mailcow/index",
                                 "users-sources/sources/social-logins/twitch/index",
                                 "users-sources/sources/social-logins/plex/index",
