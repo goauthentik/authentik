@@ -25,8 +25,8 @@ AWX is the open-source version of RHAAP. The term "AWX" will be used interchange
 
 The following placeholders are used in this guide:
 
-- `awx.company` is the FQDN of the AWX/RHAAP install.
-- `authentik.company` is the FQDN of the authentik install.
+- `awx.company` is the FQDN of the AWX/RHAAP installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 Create an application in authentik and note the slug, as this will be used later. Create a SAML provider with the following parameters:
 

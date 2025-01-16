@@ -18,7 +18,7 @@ sidebar_label: Zulip
 
 The following placeholders are used in this guide:
 
-- `authentik.company` is the FQDN of the authentik install.
+- `authentik.company` is the FQDN of the authentik installation.
 - `zulip.company` is the FQDN of the Zulip instance.
 
 Create an application in authentik and note the slug, as this will be used later. Create a SAML provider with the following parameters:

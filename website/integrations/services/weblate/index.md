@@ -17,8 +17,8 @@ sidebar_label: Weblate
 
 The following placeholders are used in this guide:
 
-- `weblate.company` is the FQDN of the Weblate install.
-- `authentik.company` is the FQDN of the authentik install.
+- `weblate.company` is the FQDN of the Weblate installation.
+- `authentik.company` is the FQDN of the authentik installation.
 - `weblate-slug` is the slug of the Weblate application
 
 Create an application in authentik and note the slug, as this will be used later. Create a SAML provider with the following parameters:

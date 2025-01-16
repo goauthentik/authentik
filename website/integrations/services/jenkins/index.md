@@ -17,8 +17,8 @@ sidebar_label: Jenkins
 
 The following placeholders are used in this guide:
 
-- `jenkins.company` is the FQDN of the Service install.
-- `authentik.company` is the FQDN of the authentik install.
+- `jenkins.company` is the FQDN of the Service installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 Create an OAuth2/OpenID provider with the following parameters:
 

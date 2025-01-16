@@ -17,8 +17,8 @@ sidebar_label: Mastodon
 
 The following placeholders are used in this guide:
 
-- `mastodon.company` is the FQDN of the mastodon install.
-- `authentik.company` is the FQDN of the authentik install.
+- `mastodon.company` is the FQDN of the mastodon installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 ## authentik Configuration
 

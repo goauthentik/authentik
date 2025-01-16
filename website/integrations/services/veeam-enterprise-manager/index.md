@@ -17,8 +17,8 @@ sidebar_label: Veeam Enterprise Manager
 
 The following placeholders are used in this guide:
 
-- `veeam.company` is the FQDN of the Veeam Enterprise Manager install.
-- `authentik.company` is the FQDN of the authentik install.
+- `veeam.company` is the FQDN of the Veeam Enterprise Manager installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 You will need an existing group or multiple in authentik to assign roles in Veeam Enterprise Manager to.
 
