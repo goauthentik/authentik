@@ -4,12 +4,12 @@ title: Docker
 
 The Docker integration automatically deploys and manages outpost containers using the Docker HTTP API.
 
-This integration has the advantage over manual deployments of automatic updates (whenever authentik is updated, it updates the outposts), and authentik can (in a future version) automatically rotate the token that the outpost uses to communicate with the core authentik server.
+This integration has the advantage over manual deployments of automatic updates that whenever authentik is upgraded to a later version, it also upgrades the outposts.
 
 The following outpost settings are used:
 
-- `object_naming_template`: Configures how the container is called
-- `container_image`: Optionally overwrites the standard container image (see [Configuration](../../../install-config/configuration/configuration.mdx#authentik_outposts) to configure the global default)
+- `object_naming_template`: Configures how the container is called.
+- `container_image`: Optionally overwrites the standard container image (see [Configuration](../../../install-config/configuration/configuration.mdx#authentik_outposts) to configure the global default).
 - `docker_network`: The Docker network the container should be added to. This needs to be modified if you plan to connect to authentik using the internal hostname.
 - `docker_map_ports`: Enable/disable the mapping of ports. When using a proxy outpost with Traefik for example, you might not want to bind ports as they are routed through Traefik.
 - `docker_labels`: Optional additional labels that can be applied to the container.
@@ -66,7 +66,7 @@ Create an integration with `Docker CA` as _TLS Verification Certificate_ and `Do
 
 ## Remote hosts (SSH)
 
-Starting with authentik 2021.12.5, you can connect to remote Docker hosts using SSH. To configure this, create a new SSH keypair using these commands:
+authentik can connect to remote Docker hosts using SSH. To configure this, create a new SSH keypair using these commands:
 
 ```
 # Generate the keypair itself, using RSA keys in the PEM format
