@@ -17,8 +17,8 @@ sidebar_label: SonarQube
 
 The following placeholders are used in this guide:
 
-- `sonarqube.company` is the FQDN of the sonarqube install.
-- `authentik.company` is the FQDN of the authentik install.
+- `sonarqube.company` is the FQDN of the sonarqube installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 ## Terraform provider
 

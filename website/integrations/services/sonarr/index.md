@@ -21,8 +21,8 @@ These instructions apply to all projects in the \*arr Family. If you use multipl
 
 The following placeholders are used in this guide:
 
-- `sonarr.company` is the FQDN of the Sonarr install.
-- `authentik.company` is the FQDN of the authentik install.
+- `sonarr.company` is the FQDN of the Sonarr installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 Create a Proxy Provider with the following values
 

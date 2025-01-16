@@ -17,8 +17,8 @@ sidebar_label: Tautulli
 
 The following placeholders are used in this guide:
 
-- `tautulli.company` is the FQDN of the Tautulli install.
-- `authentik.company` is the FQDN of the authentik install.
+- `tautulli.company` is the FQDN of the Tautulli installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 ## authentik Setup
 

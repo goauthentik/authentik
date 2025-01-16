@@ -17,8 +17,8 @@ sidebar_label: PowerDNS-Admin
 
 The following placeholders are used in this guide:
 
-- `pdns-admin.company` is the FQDN of the PowerDNS-Admin install.
-- `authentik.company` is the FQDN of the authentik install.
+- `pdns-admin.company` is the FQDN of the PowerDNS-Admin installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 Create a SAML provider with the following parameters:
 
