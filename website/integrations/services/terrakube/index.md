@@ -17,7 +17,7 @@ sidebar_label: Terrakube
 
 The following placeholders are used in this guide:
 
-- `terrakube-dex.company` is the FQDN of the [Dex](https://dexidp.io/) container of the Terrakube install.
+- `terrakube-dex.company` is the FQDN of the [Dex](https://dexidp.io/) container of the Terrakube installation.
 - `authentik.company` is the FQDN of the authentik install.
 
 ## authentik configuration
