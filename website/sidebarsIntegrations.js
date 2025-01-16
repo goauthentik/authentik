@@ -96,6 +96,7 @@ module.exports = {
                         "services/skyhigh/index",
                         "services/snipe-it/index",
                         "services/sssd/index",
+                        "services/terrakube/index",
                         "services/truecommand/index",
                         "services/veeam-enterprise-manager/index",
                         "services/zammad/index",
