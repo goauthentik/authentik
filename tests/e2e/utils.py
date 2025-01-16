@@ -66,7 +66,7 @@ class ContainerException(Exception): ...
 class DockerTestCase(TestCase):
     """Mixin for dealing with containers"""
 
-    max_healthcheck_attempts = 30
+    max_healthcheck_attempts = 50
 
     __client: DockerClient
     __network: Network
