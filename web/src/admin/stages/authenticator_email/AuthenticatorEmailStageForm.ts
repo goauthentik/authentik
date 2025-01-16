@@ -12,7 +12,7 @@ import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import {
-    AuthenticatorSMSStage,
+    AuthenticatorEmailStage,
     Flow,
     FlowsApi,
     FlowsInstancesListDesignationEnum,
@@ -23,22 +23,22 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-email-form")
-export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorSMSStage> {
-    loadInstance(pk: string): Promise<AuthenticatorSMSStage> {
+export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmailStage> {
+    loadInstance(pk: string): Promise<AuthenticatorEmailStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorSmsRetrieve({
             stageUuid: pk,
         });
     }
 
-    async send(data: AuthenticatorSMSStage): Promise<AuthenticatorSMSStage> {
+    async send(data: AuthenticatorEmailStage): Promise<AuthenticatorEmailStage> {
         if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorSmsUpdate({
+            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorEmailUpdate({
                 stageUuid: this.instance.pk || "",
-                authenticatorSMSStageRequest: data,
+                authenticatorEmailStageRequest: data,
             });
         } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorSmsCreate({
-                authenticatorSMSStageRequest: data,
+            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorEmailCreate({
+                authenticatorEmailStageRequest: data,
             });
         }
     }
@@ -79,7 +79,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorSMSS
                     >
                         <input
                             type="email"
-                            value="${first(this.instance?.fromNumber, "")}"
+                            value="${first(this.instance?.fromAddress, "")}"
                             class="pf-c-form-control"
                             required
                         />
@@ -92,7 +92,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorSMSS
                         ?required=${true}
                         name="subject"
                     >
-                        input type="text" value="${first(this.instance?.fromNumber, "")}"
+                        input type="text" value="${first(this.instance?.fromAddress, "")}"
                         class="pf-c-form-control" required />
                         <p class="pf-c-form__helper-text">
                             ${msg("Subject of the verification email.")}
@@ -104,7 +104,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorSMSS
                         name="template"
                     >
                         <textarea class="pf-c-form-control" required>
-${first(this.instance?.fromNumber, "")}</textarea
+${first(this.instance?.fromAddress, "")}</textarea
                         >
                         <p class="pf-c-form__helper-text">
                             ${msg(
@@ -112,25 +112,26 @@ ${first(this.instance?.fromNumber, "")}</textarea
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal name="verifyOnly">
+                    <!-- <ak-form-element-horizontal name="verifyOnly">
                         <label class="pf-c-switch">
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${first(this.instance?.verifyOnly, false)}
+                                ?checked=first(this.instance?.verifyOnly, false)
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">
                                     <i class="fas fa-check" aria-hidden="true"></i>
                                 </span>
                             </span>
-                            <span class="pf-c-switch__label">${msg("Hash email address")}</span>
+                            <span class="pf-c-switch__label">{msg("Hash email address")}</span>
                         </label>
                         <p class="pf-c-form__helper-text">
-                            ${msg(
+                            {msg(
                                 "If enabled, only a hash of the email address will be saved. This can be done for data-protection reasons. Devices created from a stage with this enabled cannot be used with the authenticator validation stage.",
                             )}
                         </p>
+                    -->
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Configuration flow")}

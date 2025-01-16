@@ -17,14 +17,14 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
-    AuthenticatorSMSChallenge,
-    AuthenticatorSMSChallengeResponseRequest,
+    AuthenticatorEmailChallenge,
+    AuthenticatorEmailChallengeResponseRequest,
 } from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-email")
 export class AuthenticatorEmailStage extends BaseStage<
-    AuthenticatorSMSChallenge,
-    AuthenticatorSMSChallengeResponseRequest
+    AuthenticatorEmailChallenge,
+    AuthenticatorEmailChallengeResponseRequest
 > {
     static get styles(): CSSResult[] {
         return [PFBase, PFAlert, PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
