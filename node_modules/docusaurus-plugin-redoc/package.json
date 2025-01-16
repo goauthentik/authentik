@@ -1,0 +1,52 @@
+{
+  "name": "docusaurus-plugin-redoc",
+  "version": "2.2.1",
+  "description": "Redoc Plugin for DocusaurusV2",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc && echo \"built plugin\"",
+    "dev": "tsc -w",
+    "prepublish": "rm -rf .tsbuild.info",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rohit-gohri/redocusaurus.git"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "keywords": [
+    "docusaurus",
+    "docusaurus-plugin"
+  ],
+  "author": "Rohit Gohri <code@rohit.page>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rohit-gohri/redocusaurus/issues"
+  },
+  "homepage": "https://github.com/rohit-gohri/redocusaurus/tree/main/packages/docusaurus-plugin-redoc#readme",
+  "dependencies": {
+    "@redocly/openapi-core": "1.16.0",
+    "redoc": "2.1.5"
+  },
+  "devDependencies": {
+    "@docusaurus/types": "^3.6.0",
+    "@docusaurus/utils": "^3.6.0",
+    "core-js": "^3.36.0",
+    "mobx": "^6.12.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-is": "^18.3.1",
+    "styled-components": "^6.1.11",
+    "typescript": "^5.5.2"
+  },
+  "peerDependencies": {
+    "@docusaurus/utils": "^3.6.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

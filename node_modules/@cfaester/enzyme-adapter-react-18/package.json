@@ -1,0 +1,58 @@
+{
+  "name": "@cfaester/enzyme-adapter-react-18",
+  "version": "0.8.0",
+  "description": "An unofficial React 18 adapter for Enzyme, that you probably shouldn't use.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cfaester/enzyme-adapter-react-18.git"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "/dist"
+  ],
+  "author": "Jordan Harband <ljharb@gmail.com>",
+  "contributors": [
+    "Wojciech Maj <kontakt@wojtekmaj.pl>",
+    "Christian Fæster <hello@cfaester.dk>"
+  ],
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [
+    "enzyme",
+    "react 18",
+    "unofficial",
+    "shallow rendering",
+    "testing"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "enzyme-shallow-equal": "^1.0.0",
+    "react-is": "^18.2.0",
+    "has": "^1.0.4",
+    "react-shallow-renderer": "^16.15.0",
+    "function.prototype.name": "^1.1.6"
+  },
+  "devDependencies": {
+    "@types/enzyme": "^3.10.13",
+    "@types/node": "^17.0.23",
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.0",
+    "@types/react-is": "^18.3.0",
+    "enzyme": "^3.11.0",
+    "prop-types": "^15.8.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.3.1",
+    "typescript": "^5.4.5"
+  },
+  "overrides": {
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.0"
+  },
+  "peerDependencies": {
+    "enzyme": "^3.11.0",
+    "react": ">=18",
+    "react-dom": ">=18"
+  }
+}

@@ -11,7 +11,7 @@ sidebar_label: RustDesk-Pro
 
 > RustDesk Server Pro is a premium self-hosted solution for managing remote desktop connections securely and efficiently.  
 > It offers enhanced performance, advanced security features, and customization options like branding to meet professional needs.  
-> Ideal for businesses, it provides full control over data while ensuring scalable and reliable remote access.  
+> Ideal for businesses, it provides full control over data while ensuring scalable and reliable remote access.
 >
 > -- https://rustdesk.com/
 
@@ -49,7 +49,7 @@ This guide uses the following placeholders:
     - **Token Endpoint**: https://_authentik.company_/application/o/token/
     - **Userinfo Endpoint**: https://_authentik.company_/application/o/userinfo/
     - **JWKS Endpoint**: https://_authentik.company_/application/o/_slug_/jwks/
-  
+
 :::info
 Users are created automatically on login. Permissions must be assigned by an administrator after user creation.
 :::
@@ -59,4 +59,4 @@ Users are created automatically on login. Permissions must be assigned by an adm
 - Open a browser and navigate to https://_rustdesk.company_.
 - Click **Continue with SSO-Login**.
 - You should be redirected to authentik (with the login flows you configured). After logging in, authentik will redirect you back to https://_rustdesk.company_.
-- If you are redirected back to https://_rustdesk.company_ and see the budget file selection page, the setup was successful.
+- If you are redirected back to https://_rustdesk.company_ and can read the username in the top right corner, the setup was successful.

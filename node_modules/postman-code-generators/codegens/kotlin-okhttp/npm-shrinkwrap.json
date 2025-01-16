@@ -1,0 +1,25 @@
+{
+  "name": "@postman/codegen-kotlin-okhttp",
+  "version": "0.0.1",
+  "lockfileVersion": 3,
+  "requires": true,
+  "packages": {
+    "": {
+      "name": "@postman/codegen-kotlin-okhttp",
+      "version": "0.0.1",
+      "license": "Apache-2.0",
+      "dependencies": {
+        "lodash": "4.17.21"
+      },
+      "devDependencies": {},
+      "engines": {
+        "node": ">=12"
+      }
+    },
+    "node_modules/lodash": {
+      "version": "4.17.21",
+      "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz",
+      "integrity": "sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg=="
+    }
+  }
+}

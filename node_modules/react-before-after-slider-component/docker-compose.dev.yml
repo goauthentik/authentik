@@ -1,0 +1,13 @@
+version: "3.9"
+services:
+  web:
+    image: node:16
+    ports:
+      - "9000:9000"
+    volumes:
+      - ".:/app"
+    environment:
+      NODE_ENV: development
+      HOST: 0.0.0.0
+    working_dir: /app
+    command: sh -c "cd /app; npm install; npm run build:githubPages:serve"

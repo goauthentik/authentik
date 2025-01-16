@@ -1,0 +1,24 @@
+{
+  "name": "@emotion/unitless",
+  "version": "0.8.1",
+  "description": "An object of css properties that don't accept values with units",
+  "main": "dist/emotion-unitless.cjs.js",
+  "module": "dist/emotion-unitless.esm.js",
+  "license": "MIT",
+  "repository": "https://github.com/emotion-js/emotion/tree/main/packages/unitless",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "src",
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "module": "./dist/emotion-unitless.esm.js",
+      "import": "./dist/emotion-unitless.cjs.mjs",
+      "default": "./dist/emotion-unitless.cjs.js"
+    },
+    "./package.json": "./package.json"
+  }
+}
