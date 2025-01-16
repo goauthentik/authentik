@@ -1,3 +1,5 @@
+/*#region root*/
+
 :root {
     --ifm-color-primary: #fd4b2d;
     --ifm-color-primary-dark: #fd320f;
@@ -11,6 +13,10 @@
     --ifm-navbar-link-hover-color: var(--ifm-color-gray-1000);
 }
 
+/*#endregion*/
+
+/*#region Buttons*/
+
 .button.button--outline {
     color: var(--white) !important;
     --ifm-button-border-color: var(--white) !important;
@@ -20,6 +26,10 @@
     color: var(--ifm-color-gray-1000) !important;
     --ifm-button-background-color: var(--white);
 }
+
+/*#endregion*/
+
+/*#region Navbar*/
 
 .navbar {
     background-color: var(--ifm-color-primary);
@@ -36,6 +46,10 @@
     color: var(--white);
     stroke: var(--white);
 }
+
+/*#endregion*/
+
+/*#region Header*/
 
 .header-github-link:hover {
     opacity: 0.6;
@@ -62,6 +76,8 @@
     background: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20127.14%2096.36%22%3E%3Cdefs%3E%3Cstyle%3E.cls-1%7Bfill%3A%23fff%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22%E5%9B%BE%E5%B1%82_2%22%20data-name%3D%22%E5%9B%BE%E5%B1%82%202%22%3E%3Cg%20id%3D%22Discord_Logos%22%20data-name%3D%22Discord%20Logos%22%3E%3Cg%20id%3D%22Discord_Logo_-_Large_-_White%22%20data-name%3D%22Discord%20Logo%20-%20Large%20-%20White%22%3E%3Cpath%20class%3D%22cls-1%22%20d%3D%22M107.7%2C8.07A105.15%2C105.15%2C0%2C0%2C0%2C81.47%2C0a72.06%2C72.06%2C0%2C0%2C0-3.36%2C6.83A97.68%2C97.68%2C0%2C0%2C0%2C49%2C6.83%2C72.37%2C72.37%2C0%2C0%2C0%2C45.64%2C0%2C105.89%2C105.89%2C0%2C0%2C0%2C19.39%2C8.09C2.79%2C32.65-1.71%2C56.6.54%2C80.21h0A105.73%2C105.73%2C0%2C0%2C0%2C32.71%2C96.36%2C77.7%2C77.7%2C0%2C0%2C0%2C39.6%2C85.25a68.42%2C68.42%2C0%2C0%2C1-10.85-5.18c.91-.66%2C1.8-1.34%2C2.66-2a75.57%2C75.57%2C0%2C0%2C0%2C64.32%2C0c.87.71%2C1.76%2C1.39%2C2.66%2C2a68.68%2C68.68%2C0%2C0%2C1-10.87%2C5.19%2C77%2C77%2C0%2C0%2C0%2C6.89%2C11.1A105.25%2C105.25%2C0%2C0%2C0%2C126.6%2C80.22h0C129.24%2C52.84%2C122.09%2C29.11%2C107.7%2C8.07ZM42.45%2C65.69C36.18%2C65.69%2C31%2C60%2C31%2C53s5-12.74%2C11.43-12.74S54%2C46%2C53.89%2C53%2C48.84%2C65.69%2C42.45%2C65.69Zm42.24%2C0C78.41%2C65.69%2C73.25%2C60%2C73.25%2C53s5-12.74%2C11.44-12.74S96.23%2C46%2C96.12%2C53%2C91.08%2C65.69%2C84.69%2C65.69Z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E")
         no-repeat;
 }
+
+/*#endregion*/
 
 @media (min-width: 1600px) {
     #__docusaurus_skipToContent_fallback > div {
@@ -132,4 +148,26 @@ body {
     --ifm-badge-border-color: var(--ifm-badge-background-color);
     font-size: 0.75rem;
     vertical-align: middle;
+}
+
+/*#endregion*/
+
+/*#region Mermaid*/
+
+.docusaurus-mermaid-container {
+    /* Improve contrast. */
+    & .messageText {
+        stroke: var(--ifm-background-color) !important;
+        stroke-width: 10;
+        fill: var(--ifm-color-content) !important;
+        paint-order: stroke;
+    }
+}
+/*#endregion*/
+
+.markdown {
+    /* Remove empty table headers. */
+    & table > thead:has(> tr > th:empty):not(:has(> tr > th:not(:empty))) {
+        display: none;
+    }
 }
