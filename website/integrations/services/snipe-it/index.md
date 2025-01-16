@@ -116,7 +116,6 @@ You must sync your LDAP database with Snipe-IT. Go to People on the sidebar menu
   Snipe-IT will only import users with both a first and last name set. You need to create user attributes with first and last names.
   :::
 
-
 ## authentik SAML Config
 
 ### Step 1
