@@ -60,6 +60,9 @@ def get_local_ip() -> str:
     return ip_addr
 
 
+class ContainerException(Exception): ...
+
+
 class DockerTestCase(TestCase):
     """Mixin for dealing with containers"""
 
@@ -97,7 +100,7 @@ class DockerTestCase(TestCase):
             sleep(1)
             attempt += 1
             if attempt >= self.max_healthcheck_attempts:
-                raise self.failureException("Container failed to start")
+                raise ContainerException("Container failed to start")
 
     def get_container_image(self, base: str) -> str:
         """Try to pull docker image based on git branch, fallback to main if not found."""
@@ -281,7 +284,7 @@ class SeleniumTestCase(DockerTestCase, ChannelsLiveServerTestCase):
                     return
             healthcheck_retries += 1
             sleep(0.5)
-        raise self.failureException("Outpost failed to become healthy")
+        raise ContainerException("Outpost failed to become healthy")
 
 
 @lru_cache
@@ -295,7 +298,12 @@ def retry(max_retires=RETRIES, exceptions=None):
     """Retry test multiple times. Default to catching Selenium Timeout Exception"""
 
     if not exceptions:
-        exceptions = [WebDriverException, TimeoutException, NoSuchElementException]
+        exceptions = [
+            WebDriverException,
+            TimeoutException,
+            NoSuchElementException,
+            ContainerException,
+        ]
 
     logger = get_logger()
 
