@@ -20,7 +20,7 @@ Integration with authentik requires VMware vCenter 8.03 or newer.
 The following placeholders will be used in the examples below:
 
 - `vcenter.company` is the FQDN of the vCenter server.
-- `authentik.company` is the FQDN of the authentik install.
+- `authentik.company` is the FQDN of the authentik installation.
 
 ## authentik configuration
 

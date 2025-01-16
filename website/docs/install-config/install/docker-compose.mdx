@@ -117,6 +117,10 @@ The `docker-compose.yml` file statically references the latest version available
 
 To start the initial setup, navigate to `http://<your server's IP or hostname>:9000/if/flow/initial-setup/`.
 
+:::info
+You will get `Not Found` error if initial setup URL doesn't include the trailing forward slash `/`. Make sure you use the complete url (`http://<your server's IP or hostname>:9000/if/flow/initial-setup/`) including the trailing forward slash.
+:::
+
 There you are prompted to set a password for the `akadmin` user (the default user).
 
 For an explanation about what each service in the docker compose file does, see [Architecture](../../core/architecture.md).

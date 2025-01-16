@@ -17,8 +17,8 @@ sidebar_label: Matrix Synapse
 
 The following placeholders are used in this guide:
 
-- `matrix.company` is the FQDN of the Matrix install.
-- `authentik.company` is the FQDN of the authentik install.
+- `matrix.company` is the FQDN of the Matrix installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 Create an application in authentik. Create an OAuth2/OpenID provider with the following parameters:
 

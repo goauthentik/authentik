@@ -22,7 +22,7 @@ This is tested with DSM 7.1 or newer.
 The following placeholders are used in this guide:
 
 - `synology.company` is the FQDN of the Synology DSM server.
-- `authentik.company` is the FQDN of the authentik install.
+- `authentik.company` is the FQDN of the authentik installation.
 
 ## authentik configuration
 

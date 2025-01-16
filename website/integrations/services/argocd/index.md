@@ -17,8 +17,8 @@ sidebar_label: ArgoCD
 
 The following placeholders are used in this guide:
 
-- `argocd.company` is the FQDN of the ArgoCD install.
-- `authentik.company` is the FQDN of the authentik install.
+- `argocd.company` is the FQDN of the ArgoCD installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 :::note
 Only settings that have been modified from default have been listed.

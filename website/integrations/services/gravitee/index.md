@@ -19,8 +19,8 @@ sidebar_label: Gravitee
 
 The following placeholders are used in this guide:
 
-- `gravitee.company` is the FQDN of the Gravitee install.
-- `authentik.company` is the FQDN of the authentik install.
+- `gravitee.company` is the FQDN of the Gravitee installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 ## authentik configuration
 

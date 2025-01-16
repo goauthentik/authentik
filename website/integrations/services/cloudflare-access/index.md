@@ -18,7 +18,7 @@ sidebar_label: Cloudflare Access
 The following placeholders are used in this guide:
 
 - `company.cloudflareaccess.com` is the FQDN of your Cloudflare Access subdomain.
-- `authentik.company` is the FQDN of the authentik install.
+- `authentik.company` is the FQDN of the authentik installation.
 
 To proceed, you need to register for a free Cloudflare Access account and have both a Cloudflare account and a publicly accessible authentik instance with a trusted SSL certificate.
 

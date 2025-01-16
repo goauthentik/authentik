@@ -21,7 +21,7 @@ The mail server must support XOAUTH2 for both SMTPD and IMAP/POP. Postfix SMTP s
 
 The following placeholders are used in this guide:
 
-- `authentik.company` is the FQDN of the authentik install.
+- `authentik.company` is the FQDN of the authentik installation.
 
 Create a new oauth2 Scope Mapping which does not return the 'group' values and associate this mapping
 in the provider settings instead of the default oauth mapping.

@@ -17,8 +17,8 @@ sidebar_label: Aruba Orchestrator
 
 The following placeholders are used in this guide:
 
-- `arubaorchestrator.company` is the FQDN of the Aruba Orchestrator install.
-- `authentik.company` is the FQDN of the authentik install.
+- `arubaorchestrator.company` is the FQDN of the Aruba Orchestrator installation.
+- `authentik.company` is the FQDN of the authentik installation.
 - `SSL Certificate` is the name of the SSL certificate used to sign outgoing responses.
 
 ## authentik Configuration

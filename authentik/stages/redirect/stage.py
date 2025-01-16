@@ -83,7 +83,7 @@ class RedirectStageView(ChallengeStageView):
         target_url_override = self.executor.plan.context.get(PLAN_CONTEXT_REDIRECT_STAGE_TARGET, "")
         if target_url_override:
             target = self.parse_target(target_url_override)
-        # `target` is falsy if the override was to a Flow but that Flow doesn't exist.
+        # `target` is false if the override was to a Flow but that Flow doesn't exist.
         if not target:
             if current_stage.mode == RedirectMode.STATIC:
                 target = current_stage.target_static

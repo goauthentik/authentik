@@ -17,9 +17,9 @@ sidebar_label: FreshRSS
 
 The following placeholders are used in this guide:
 
-- `freshrss.company` is the FQDN of the FreshRSS install.
+- `freshrss.company` is the FQDN of the FreshRSS installation.
 - `port` is the port on which the FreshRSS install is running (usually 443)
-- `authentik.company` is the FQDN of the authentik install.
+- `authentik.company` is the FQDN of the authentik installation.
 
 ## authentik configuration
 
