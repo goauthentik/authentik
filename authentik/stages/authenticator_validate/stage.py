@@ -184,6 +184,22 @@ class AuthenticatorValidateStageView(ChallengeStageView):
 
         has_webauthn_filters_set = stage.webauthn_allowed_device_types.exists()
 
+        # TODO: Fix this implementation, now is a placeholder
+        # self.logger.warning("$$$$$$$$$$$$$", device_classes=stage.device_classes)
+        if "emailotp" in stage.device_classes:
+
+            challenge = DeviceChallenge(
+                data={
+                    "device_class": "emailotp",
+                    "device_uid": "invalid",
+                    #"challenge": get_challenge_for_device(self.request, stage, device),
+                    "last_used": None,
+                }
+            )
+            challenge.is_valid()
+            challenges.append(challenge.data)
+
+
         for device in user_devices:
             device_class = device.__class__.__name__.lower().replace("device", "")
             if device_class not in stage.device_classes:
