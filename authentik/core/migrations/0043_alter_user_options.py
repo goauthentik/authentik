@@ -9,6 +9,8 @@ def migrate_user_debug_attribute(apps: Apps, schema_editor: BaseDatabaseSchemaEd
     from django.apps import apps as real_apps
     from django.contrib.auth.management import create_permissions
 
+    db_alias = schema_editor.connection.alias
+
     User = apps.get_model("authentik_core", "User")
     USER_ATTRIBUTE_DEBUG = "goauthentik.io/user/debug"
 
@@ -31,7 +33,7 @@ def migrate_user_debug_attribute(apps: Apps, schema_editor: BaseDatabaseSchemaEd
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_core", "0041_applicationentitlement"),
+        ("authentik_core", "0042_authenticatedsession_authentik_c_expires_08251d_idx_and_more"),
     ]
 
     operations = [
