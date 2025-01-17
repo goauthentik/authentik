@@ -56,10 +56,10 @@ config :mobilizon, :auth,
 config :ueberauth, Ueberauth.Strategy.Keycloak.OAuth,
   client_id: "<Client ID>",
   client_secret: "<Client Secret>",
-  site: "https://mobilizon.company",
-  authorize_url: "https://mobilizon.company/application/o/authorize/",
-  token_url: "https://mobilizon.company/application/o/token/",
-  userinfo_url: "https://mobilizon.company/application/o/userinfo/",
+  site: "https://authentik.company",
+  authorize_url: "https://authentik.company/application/o/authorize/",
+  token_url: "https://authentik.company/application/o/token/",
+  userinfo_url: "https://authentik.company/application/o/userinfo/",
   token_method: :post
 ```
 
