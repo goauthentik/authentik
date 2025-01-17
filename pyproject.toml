@@ -109,7 +109,7 @@ docker = "*"
 drf-orjson-renderer = "*"
 drf-spectacular = "*"
 dumb-init = "*"
-duo-client = { git = "http://github.com/duosecurity/duo_client_python.git", branch = "master" }
+duo-client = "*"
 fido2 = "*"
 flower = "*"
 geoip2 = "*"
@@ -143,7 +143,6 @@ swagger-spec-validator = "*"
 tenant-schemas-celery = "*"
 twilio = "*"
 ua-parser = "*"
-ua-parser-builtins = "0.18.0.post1"
 unidecode = "*"
 # Pinned because of botocore https://github.com/orgs/python-poetry/discussions/7937
 urllib3 = { extras = ["secure"], version = "<3" }
