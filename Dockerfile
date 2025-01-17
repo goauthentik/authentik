@@ -94,7 +94,7 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     /bin/sh -c "/usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
 
 # Stage 5: Python dependencies
-FROM ghcr.io/goauthentik/fips-python:3.12.7-slim-bookworm-fips-full AS python-deps
+FROM ghcr.io/goauthentik/fips-python:3.12.7-slim-bookworm-fips AS python-deps
 
 ARG TARGETARCH
 ARG TARGETVARIANT
@@ -116,15 +116,27 @@ RUN --mount=type=bind,target=./pyproject.toml,src=./pyproject.toml \
     --mount=type=bind,target=./poetry.lock,src=./poetry.lock \
     --mount=type=cache,target=/root/.cache/pip \
     --mount=type=cache,target=/root/.cache/pypoetry \
+    pip install --no-cache cffi && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
+        build-essential libffi-dev \
+        # Required for cryptography
+        curl pkg-config \
+        # Required for lxml
+        libxslt-dev zlib1g-dev \
+        # Required for xmlsec
+        libltdl-dev && \
+    curl https://sh.rustup.rs -sSf | sh -s -- -y && \
+    . "$HOME/.cargo/env" && \
     python -m venv /ak-root/venv/ && \
     bash -c "source ${VENV_PATH}/bin/activate && \
     pip3 install --upgrade pip && \
     pip3 install poetry && \
-    poetry install --only=main --no-ansi --no-interaction --no-root && \
-    pip install --force-reinstall /wheels/*"
+    poetry config --local installer.no-binary :all: && \
+    poetry install --only=main --no-ansi --no-interaction --no-root"
 
 # Stage 6: Run
-FROM ghcr.io/goauthentik/fips-python:3.12.7-slim-bookworm-fips-full AS final-image
+FROM ghcr.io/goauthentik/fips-python:3.12.7-slim-bookworm-fips AS final-image
 
 ARG VERSION
 ARG GIT_BUILD_HASH
@@ -141,7 +153,7 @@ WORKDIR /
 # We cannot cache this layer otherwise we'll end up with a bigger image
 RUN apt-get update && \
     # Required for runtime
-    apt-get install -y --no-install-recommends libpq5 libmaxminddb0 ca-certificates libkrb5-3 libkadm5clnt-mit12 libkdb5-10 && \
+    apt-get install -y --no-install-recommends libpq5 libmaxminddb0 ca-certificates libkrb5-3 libkadm5clnt-mit12 libkdb5-10 libltdl7 libxslt1.1 && \
     # Required for bootstrap & healtcheck
     apt-get install -y --no-install-recommends runit && \
     apt-get clean && \
@@ -176,9 +188,8 @@ ENV TMPDIR=/dev/shm/ \
     PYTHONUNBUFFERED=1 \
     PATH="/ak-root/venv/bin:/lifecycle:$PATH" \
     VENV_PATH="/ak-root/venv" \
-    POETRY_VIRTUALENVS_CREATE=false
-
-ENV GOFIPS=1
+    POETRY_VIRTUALENVS_CREATE=false \
+    GOFIPS=1
 
 HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 CMD [ "ak", "healthcheck" ]
 
