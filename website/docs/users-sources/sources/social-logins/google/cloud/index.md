@@ -2,9 +2,8 @@
 title: Google Cloud (with OAuth)
 sidebar_label: Google Cloud (OAuth)
 tags: [integration, oauth, google]
+support_level: community
 ---
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 Allows users to authenticate using their Google credentials
 

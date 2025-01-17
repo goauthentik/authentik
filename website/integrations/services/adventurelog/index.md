@@ -1,11 +1,8 @@
 ---
 title: Integrate with AdventureLog
 sidebar_label: AdventureLog
+support_level: community
 ---
-
-# Integrate with AdventureLog
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is AdventureLog
 

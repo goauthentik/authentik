@@ -1,11 +1,8 @@
 ---
 title: Integrate with Slack
 sidebar_label: Slack
+support_level: authentik
 ---
-
-# Integrate with Slack
-
-<span class="badge badge--primary">Support level: authentik</span>
 
 ## What is Slack
 

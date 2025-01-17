@@ -1,8 +1,7 @@
 ---
 title: Azure AD
+support_level: community
 ---
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## Preparation
 
@@ -112,9 +111,9 @@ return True
 
 Try to login with a **_new_** user. You should see no prompts and the user should have the correct information.
 
-### Machine-to-machine authentication <span class="badge badge--version">authentik 2024.12+</span>
+### Machine-to-machine authentication:ak-version[2024.12]
 
-If using [Machine-to-Machine](../../../../add-secure-apps/providers/oauth2/client_credentials.md#jwt-authentication) authentication, some specific steps need to be considered.
+If using [Machine-to-Machine](../../../../add-secure-apps/providers/oauth2/client_credentials.mdx#jwt-authentication) authentication, some specific steps need to be considered.
 
 When getting the JWT token from Azure AD, set the scope to the Application ID URI, and _not_ the Graph URL; otherwise the JWT will be in an invalid format.
 
