@@ -25,7 +25,7 @@ import {
 @customElement("ak-stage-authenticator-email-form")
 export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmailStage> {
     loadInstance(pk: string): Promise<AuthenticatorEmailStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorSmsRetrieve({
+        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorEmailRetrieve({
             stageUuid: pk,
         });
     }
@@ -131,8 +131,8 @@ ${first(this.instance?.fromAddress, "")}</textarea
                                 "If enabled, only a hash of the email address will be saved. This can be done for data-protection reasons. Devices created from a stage with this enabled cannot be used with the authenticator validation stage.",
                             )}
                         </p>
-                    -->
-                    </ak-form-element-horizontal>
+
+                    </ak-form-element-horizontal> -->
                     <ak-form-element-horizontal
                         label=${msg("Configuration flow")}
                         name="configureFlow"

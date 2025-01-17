@@ -383,6 +383,12 @@ export class FlowExecutor extends Interface implements StageHost {
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-authenticator-webauthn>`;
+                case "ak-stage-authenticator-email":
+                    await import("@goauthentik/flow/stages/authenticator_email/AuthenticatorEmailStage");
+                    return html`<ak-stage-authenticator-email
+                        .host=${this as StageHost}
+                        .challenge=${this.challenge}
+                    ></ak-stage-authenticator-email>`;
             case "ak-stage-authenticator-sms":
                 await import("@goauthentik/flow/stages/authenticator_sms/AuthenticatorSMSStage");
                 return html`<ak-stage-authenticator-sms
