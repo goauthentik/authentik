@@ -109,7 +109,7 @@ docker = "*"
 drf-orjson-renderer = "*"
 drf-spectacular = "*"
 dumb-init = "*"
-duo-client = "*"
+duo-client = { git = "http://github.com/duosecurity/duo_client_python.git", branch = "master" }
 fido2 = "*"
 flower = "*"
 geoip2 = "*"
