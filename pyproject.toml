@@ -143,6 +143,7 @@ swagger-spec-validator = "*"
 tenant-schemas-celery = "*"
 twilio = "*"
 ua-parser = "*"
+ua-parser-builtins = "0.18.0.post1"
 unidecode = "*"
 # Pinned because of botocore https://github.com/orgs/python-poetry/discussions/7937
 urllib3 = { extras = ["secure"], version = "<3" }

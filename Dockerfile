@@ -131,7 +131,7 @@ RUN --mount=type=bind,target=./pyproject.toml,src=./pyproject.toml \
     python -m venv /ak-root/venv/ && \
     bash -c "source ${VENV_PATH}/bin/activate && \
     pip3 install --upgrade pip && \
-    pip3 install poetry && \
+    pip3 install poetry ua-parser && \
     poetry config --local installer.no-binary :all: && \
     poetry install --only=main --no-ansi --no-interaction --no-root"
 
