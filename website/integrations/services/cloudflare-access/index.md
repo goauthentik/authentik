@@ -1,11 +1,8 @@
 ---
 title: Integrate with Cloudflare Access
 sidebar_label: Cloudflare Access
+support_level: community
 ---
-
-# Integrate with Cloudflare Access
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Cloudflare Access
 

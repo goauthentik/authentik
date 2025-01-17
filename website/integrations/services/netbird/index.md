@@ -1,11 +1,8 @@
 ---
 title: Integrate with NetBird
 sidebar_label: NetBird
+support_level: community
 ---
-
-# Integrate with NetBird
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is NetBird?
 

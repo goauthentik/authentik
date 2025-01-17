@@ -1,11 +1,8 @@
 ---
 title: Integrate with Nextcloud
 sidebar_label: Nextcloud
+support_level: community
 ---
-
-# Integrate with Nextcloud
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Nextcloud
 

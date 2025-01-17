@@ -1,11 +1,8 @@
 ---
 title: Integrate with Jenkins
 sidebar_label: Jenkins
+support_level: community
 ---
-
-# Integrate with Jenkins
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Jenkins
 

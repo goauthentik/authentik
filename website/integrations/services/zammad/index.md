@@ -1,11 +1,8 @@
 ---
 title: Integrate with Zammad
 sidebar_label: Zammad
+support_level: community
 ---
-
-# Integrate with Zammad
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Zammad
 
