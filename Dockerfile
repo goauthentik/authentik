@@ -125,7 +125,9 @@ RUN --mount=type=bind,target=./pyproject.toml,src=./pyproject.toml \
         # Required for lxml
         libxslt-dev zlib1g-dev \
         # Required for xmlsec
-        libltdl-dev && \
+        libltdl-dev \
+        # Required for kadmin
+        sccache clang && \
     curl https://sh.rustup.rs -sSf | sh -s -- -y && \
     . "$HOME/.cargo/env" && \
     python -m venv /ak-root/venv/ && \
