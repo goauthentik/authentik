@@ -159,9 +159,9 @@ class ConnectionToken(ExpiringModel):
             default_settings["port"] = str(port)
         else:
             default_settings["hostname"] = self.endpoint.host
-        default_settings["client-name"] = "authentik"
-        # default_settings["enable-drive"] = "true"
-        # default_settings["drive-name"] = "authentik"
+        if self.endpoint.protocol == Protocols.RDP:
+            default_settings["resize-method"] = "display-update"
+        default_settings["client-name"] = f"authentik - {self.session.user}"
         settings = {}
         always_merger.merge(settings, default_settings)
         always_merger.merge(settings, self.endpoint.provider.settings)

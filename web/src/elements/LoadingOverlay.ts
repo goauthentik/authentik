@@ -18,6 +18,12 @@ export class LoadingOverlay extends AKElement implements ILoadingOverlay {
     @property({ type: Boolean, attribute: "topmost" })
     topmost = false;
 
+    @property({ type: Boolean })
+    loading = true;
+
+    @property({ type: String })
+    icon = "";
+
     static get styles() {
         return [
             PFBase,
@@ -40,7 +46,7 @@ export class LoadingOverlay extends AKElement implements ILoadingOverlay {
     }
 
     render() {
-        return html`<ak-empty-state loading header="">
+        return html`<ak-empty-state ?loading=${this.loading} header="" icon=${this.icon}>
             <span slot="body"><slot></slot></span>
         </ak-empty-state>`;
     }
