@@ -1,3 +1,7 @@
+from os import R_OK, access
+from pathlib import Path
+
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.mail.backends.base import BaseEmailBackend
 from django.core.mail.backends.smtp import EmailBackend
@@ -11,8 +15,37 @@ from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 from authentik.lib.config import CONFIG
 from authentik.lib.models import SerializerModel
 from authentik.stages.authenticator.models import SideChannelDevice
+from authentik.stages.email.tasks import send_mails
 
 LOGGER = get_logger()
+
+
+class EmailTemplates(models.TextChoices):
+    """Templates used for rendering the Email"""
+
+    EMAIL_OTP = (
+        "email/email_otp.html",
+        _("Email OTP"),
+    )  # nosec
+
+
+def get_template_choices():
+    """Get all available Email templates, including dynamically mounted ones.
+    Directories are taken from TEMPLATES.DIR setting"""
+    static_choices = EmailTemplates.choices
+
+    dirs = [Path(x) for x in settings.TEMPLATES[0]["DIRS"]]
+    for template_dir in dirs:
+        if not template_dir.exists() or not template_dir.is_dir():
+            continue
+        for template in template_dir.glob("**/*.html"):
+            path = str(template)
+            if not access(path, R_OK):
+                LOGGER.warning("Custom template file is not readable, check permissions", path=path)
+                continue
+            rel_path = template.relative_to(template_dir)
+            static_choices.append((str(rel_path), f"Custom Template: {rel_path}"))
+    return static_choices
 
 
 class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
@@ -43,7 +76,7 @@ class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
         default=30, help_text=_("Time in minutes the token sent is valid.")
     )
     subject = models.TextField(default="authentik")
-    # verify_only ??
+    template = models.TextField(default=EmailTemplates.EMAIL_OTP)
 
     @property
     def serializer(self) -> type[BaseSerializer]:
@@ -91,6 +124,7 @@ class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
         )
 
     def send(self, message: str, device: "EmailDevice"):
+        return send_mails(self, message, device.email)
         return self.backend.send_mail(
             subject=self.subject,
             message=message,
@@ -119,6 +153,7 @@ class EmailDevice(SerializerModel, SideChannelDevice):
         from authentik.stages.authenticator_email.api import EmailDeviceSerializer
 
         return EmailDeviceSerializer
+
     class Meta:
         verbose_name = _("Email Device")
         verbose_name_plural = _("Email Devices")
