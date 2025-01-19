@@ -84,7 +84,9 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
 
     def validate_code(self, code: str) -> str:
         """Validate code-based response, raise error if code isn't allowed"""
-        self._challenge_allowed([DeviceClasses.TOTP, DeviceClasses.STATIC, DeviceClasses.SMS])
+        self._challenge_allowed(
+            [DeviceClasses.TOTP, DeviceClasses.STATIC, DeviceClasses.SMS, DeviceClasses.EMAIL]
+        )
         self.device = validate_challenge_code(code, self.stage, self.stage.get_pending_user())
         return code
 
@@ -192,13 +194,12 @@ class AuthenticatorValidateStageView(ChallengeStageView):
                 data={
                     "device_class": "emailotp",
                     "device_uid": "invalid",
-                    #"challenge": get_challenge_for_device(self.request, stage, device),
+                    # "challenge": get_challenge_for_device(self.request, stage, device),
                     "last_used": None,
                 }
             )
             challenge.is_valid()
             challenges.append(challenge.data)
-
 
         for device in user_devices:
             device_class = device.__class__.__name__.lower().replace("device", "")
