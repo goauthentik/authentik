@@ -4341,7 +4341,8 @@
                         "proxy",
                         "ldap",
                         "radius",
-                        "rac"
+                        "rac",
+                        "scim"
                     ],
                     "title": "Type"
                 },

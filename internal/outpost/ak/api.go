@@ -95,7 +95,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 		time.Sleep(time.Second * 3)
 	}
 	if len(outposts.Results) < 1 {
-		panic("No outposts found with given token, ensure the given token corresponds to an authenitk Outpost")
+		panic("No outposts found with given token, ensure the given token corresponds to an authentik Outpost")
 	}
 	outpost := outposts.Results[0]
 
