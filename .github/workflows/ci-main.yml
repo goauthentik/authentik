@@ -227,10 +227,12 @@ jobs:
       fail-fast: false
       matrix:
         arch:
-          - amd64
-          - arm64
+          - container: amd64
+            host: ubuntu-latest
+          - container: arm64
+            host: ubuntu-22.04-arm
     needs: ci-core-mark
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.arch.host }}
     permissions:
       # Needed to upload contianer images to ghcr.io
       packages: write
@@ -277,7 +279,7 @@ jobs:
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
           cache-from: type=registry,ref=ghcr.io/goauthentik/dev-server:buildcache
           cache-to: ${{ steps.ev.outputs.shouldPush == 'true' && 'type=registry,ref=ghcr.io/goauthentik/dev-server:buildcache,mode=max' || '' }}
-          platforms: linux/${{ matrix.arch }}
+          platforms: linux/${{ matrix.arch.container }}
       - uses: actions/attest-build-provenance@v2
         id: attest
         if: ${{ steps.ev.outputs.shouldPush == 'true' }}
