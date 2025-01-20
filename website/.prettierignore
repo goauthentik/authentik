@@ -5,5 +5,3 @@ coverage
 node_modules
 help
 static
-docs/install-config/install/aws/template.yaml
-docs/install-config/install/aws/cdk.out
