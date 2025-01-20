@@ -31,7 +31,7 @@ runs:
 
             ```shell
             AUTHENTIK_IMAGE=ghcr.io/goauthentik/dev-server
-            AUTHENTIK_TAG=${{ inputs.tag }}
+            AUTHENTIK_TAG=${{ inputs.tag }}-amd64
             AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE=ghcr.io/goauthentik/dev-%(type)s:gh-%(build_hash)s
             ```
 
@@ -57,7 +57,7 @@ runs:
             global:
                 image:
                     repository: ghcr.io/goauthentik/dev-server
-                    tag: ${{ inputs.tag }}
+                    tag: ${{ inputs.tag }}-amd64
             ```
 
             For arm64, use these values:

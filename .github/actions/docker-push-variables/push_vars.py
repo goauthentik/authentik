@@ -48,7 +48,7 @@ if is_release:
             ]
 else:
     suffix = ""
-    if image_arch and image_arch != "amd64":
+    if image_arch:
         suffix = f"-{image_arch}"
     for name in image_names:
         image_tags += [
