@@ -4,7 +4,7 @@
     "private": true,
     "license": "MIT",
     "scripts": {
-        "aws-cfn": "cd docs/install-config/install/aws && cdk synth --version-reporting=false > template.yaml && ./fix_template.py",
+        "aws-cfn": "cd docs/install-config/install/aws && cdk synth --version-reporting=false > template.yaml",
         "build": "cp ../docker-compose.yml static/docker-compose.yml && cp ../schema.yml static/schema.yaml && docusaurus gen-api-docs all && cross-env NODE_OPTIONS='--max_old_space_size=65536' docusaurus build",
         "build-bundled": "cp ../schema.yml static/schema.yaml && docusaurus gen-api-docs all && cross-env NODE_OPTIONS='--max_old_space_size=65536' docusaurus build",
         "deploy": "docusaurus deploy",
