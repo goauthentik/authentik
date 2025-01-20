@@ -327,6 +327,7 @@ class AuthentikStack(Stack):
             security_groups=[authentik_security_group],
             vpc_subnets=ec2.SubnetSelection(subnet_type=ec2.SubnetType.PRIVATE_WITH_EGRESS),
             enable_execute_command=True,
+            min_healthy_percent=50,
         )
 
         worker_task = ecs.FargateTaskDefinition(
@@ -376,6 +377,7 @@ class AuthentikStack(Stack):
             security_groups=[authentik_security_group],
             vpc_subnets=ec2.SubnetSelection(subnet_type=ec2.SubnetType.PRIVATE_WITH_EGRESS),
             enable_execute_command=True,
+            min_healthy_percent=50,
         )
 
         # Load balancer
