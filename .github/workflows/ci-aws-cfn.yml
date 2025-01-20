@@ -25,10 +25,10 @@ jobs:
         uses: ./.github/actions/setup
       - uses: actions/setup-node@v4
         with:
-          node-version-file: website/package.json
+          node-version-file: lifecycle/aws/package.json
           cache: "npm"
-          cache-dependency-path: website/package-lock.json
-      - working-directory: website/
+          cache-dependency-path: lifecycle/aws/package-lock.json
+      - working-directory: lifecycle/aws/
         run: |
           npm ci
       - name: Check changes have been applied
