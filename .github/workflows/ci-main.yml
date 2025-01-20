@@ -235,7 +235,7 @@ jobs:
     name: build ${{ matrix.arch.container }}
     runs-on: ${{ matrix.arch.host }}
     permissions:
-      # Needed to upload contianer images to ghcr.io
+      # Needed to upload container images to ghcr.io
       packages: write
       # Needed for attestation
       id-token: write

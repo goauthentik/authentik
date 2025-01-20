@@ -50,7 +50,7 @@ jobs:
   build-outpost:
     runs-on: ubuntu-latest
     permissions:
-      # Needed to upload contianer images to ghcr.io
+      # Needed to upload container images to ghcr.io
       packages: write
       # Needed for attestation
       id-token: write

@@ -17,7 +17,7 @@ jobs:
     outputs:
       image-digest: ${{ steps.push.outputs.digest }}
     permissions:
-      # Needed to upload contianer images to ghcr.io
+      # Needed to upload container images to ghcr.io
       packages: write
       # Needed for attestation
       id-token: write
