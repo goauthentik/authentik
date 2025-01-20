@@ -255,7 +255,7 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         with:
           image-name: ghcr.io/goauthentik/dev-server
-          image-arch: ${{ matrix.arch }}
+          image-arch: ${{ matrix.arch.container }}
       - name: Login to Container Registry
         if: ${{ steps.ev.outputs.shouldPush == 'true' }}
         uses: docker/login-action@v3
