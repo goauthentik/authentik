@@ -10,6 +10,7 @@ jobs:
     uses: ./.github/workflows/_reusable-docker-build.yaml
     with:
       image_name: ghcr.io/goauthentik/server,beryju/authentik
+      release: true
   build-outpost:
     runs-on: ubuntu-latest
     permissions:

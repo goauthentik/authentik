@@ -223,71 +223,17 @@ jobs:
         with:
           jobs: ${{ toJSON(needs) }}
   build:
-    strategy:
-      fail-fast: false
-      matrix:
-        arch:
-          - container: amd64
-            host: ubuntu-latest
-          - container: arm64
-            host: ubuntu-22.04-arm
-    needs: ci-core-mark
-    name: build ${{ matrix.arch.container }}
-    runs-on: ${{ matrix.arch.host }}
     permissions:
       # Needed to upload container images to ghcr.io
       packages: write
       # Needed for attestation
       id-token: write
       attestations: write
-    timeout-minutes: 120
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3.3.0
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - name: prepare variables
-        uses: ./.github/actions/docker-push-variables
-        id: ev
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        with:
-          image-name: ghcr.io/goauthentik/dev-server
-          image-arch: ${{ matrix.arch.container }}
-      - name: Login to Container Registry
-        if: ${{ steps.ev.outputs.shouldPush == 'true' }}
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: generate ts client
-        run: make gen-client-ts
-      - name: Build Docker Image
-        uses: docker/build-push-action@v6
-        id: push
-        with:
-          context: .
-          secrets: |
-            GEOIPUPDATE_ACCOUNT_ID=${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}
-            GEOIPUPDATE_LICENSE_KEY=${{ secrets.GEOIPUPDATE_LICENSE_KEY }}
-          tags: ${{ steps.ev.outputs.imageTags }}
-          push: ${{ steps.ev.outputs.shouldPush == 'true' }}
-          build-args: |
-            GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
-          cache-from: type=registry,ref=ghcr.io/goauthentik/dev-server:buildcache
-          cache-to: ${{ steps.ev.outputs.shouldPush == 'true' && 'type=registry,ref=ghcr.io/goauthentik/dev-server:buildcache,mode=max' || '' }}
-          platforms: linux/${{ matrix.arch.container }}
-      - uses: actions/attest-build-provenance@v2
-        id: attest
-        if: ${{ steps.ev.outputs.shouldPush == 'true' }}
-        with:
-          subject-name: ${{ steps.ev.outputs.attestImageNames }}
-          subject-digest: ${{ steps.push.outputs.digest }}
-          push-to-registry: true
+    needs: ci-core-mark
+    uses: ./.github/workflows/_reusable-docker-build.yaml
+    with:
+      image_name: ghcr.io/goauthentik/dev-server
+      release: false
   pr-comment:
     needs:
       - build

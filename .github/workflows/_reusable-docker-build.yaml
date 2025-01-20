@@ -13,6 +13,9 @@ on:
       registry_ghcr:
         default: true
         type: boolean
+      release:
+        default: false
+        type: boolean
     outputs: {}
 
 jobs:
@@ -24,6 +27,7 @@ jobs:
       runs-on: ubuntu-latest
       registry_dockerhub: ${{ inputs.registry_dockerhub }}
       registry_ghcr: ${{ inputs.registry_ghcr }}
+      release: ${{ inputs.release }}
   build-server-arm64:
     uses: ./.github/workflows/_reusable-docker-build-single.yaml
     with:
@@ -32,6 +36,7 @@ jobs:
       runs-on: ubuntu-22.04-arm
       registry_dockerhub: ${{ inputs.registry_dockerhub }}
       registry_ghcr: ${{ inputs.registry_ghcr }}
+      release: ${{ inputs.release }}
   merge-server:
     runs-on: ubuntu-latest
     needs:
