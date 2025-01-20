@@ -4,12 +4,21 @@ name: Single-arch Container build
 on:
   workflow_call:
     inputs:
-      arch:
+      image_name:
+        required: true
+        type: string
+      image_arch:
         required: true
         type: string
       runs-on:
         required: true
         type: string
+      registry_dockerhub:
+        default: false
+        type: boolean
+      registry_ghcr:
+        default: false
+        type: boolean
     outputs:
       image-digest:
         value: ${{ jobs.build.outputs.image-digest }}
@@ -35,14 +44,16 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         with:
-          image-name: ghcr.io/goauthentik/server,beryju/authentik
-          image-arch: ${{ inputs.arch }}
+          image-name: ${{ inputs.image_name }}
+          image-arch: ${{ inputs.image_arch }}
       - name: Login to Docker Hub
+        if: ${{ inputs.registry_dockerhub }}
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Login to GitHub Container Registry
+        if: ${{ inputs.registry_ghcr }}
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -64,7 +75,7 @@ jobs:
           build-args: |
             VERSION=${{ github.ref }}
           tags: ${{ steps.ev.outputs.imageTags }}
-          platforms: linux/${{ inputs.arch }}
+          platforms: linux/${{ inputs.image_arch }}
       - uses: actions/attest-build-provenance@v2
         id: attest
         with:

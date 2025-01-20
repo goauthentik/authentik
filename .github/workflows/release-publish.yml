@@ -8,6 +8,8 @@ on:
 jobs:
   build-server:
     uses: ./.github/workflows/_reusable-docker-build.yaml
+    with:
+      image_name: ghcr.io/goauthentik/server,beryju/authentik
   build-outpost:
     runs-on: ubuntu-latest
     permissions:
