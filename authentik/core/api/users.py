@@ -427,7 +427,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     queryset = User.objects.none()
     ordering = ["username"]
     serializer_class = UserSerializer
-    search_fields = ["username", "name", "is_active", "email", "uuid"]
+    search_fields = ["username", "name", "is_active", "email", "uuid", "attributes"]
     filterset_class = UsersFilter
 
     def get_queryset(self):
