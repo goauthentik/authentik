@@ -232,6 +232,7 @@ jobs:
           - container: arm64
             host: ubuntu-22.04-arm
     needs: ci-core-mark
+    name: build ${{ matrix.arch.container }}
     runs-on: ${{ matrix.arch.host }}
     permissions:
       # Needed to upload contianer images to ghcr.io

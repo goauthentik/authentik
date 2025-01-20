@@ -6,20 +6,22 @@ on:
     types: [published, created]
 
 jobs:
-  build-server:
+  build-server-amd64:
+    uses: ./.github/workflows/reusable--docker-build.yaml
+    with:
+      arch: amd64
+      runs-on: ubuntu-latest
+  build-server-arm64:
+    uses: ./.github/workflows/reusable--docker-build.yaml
+    with:
+      arch: arm64
+      runs-on: ubuntu-22.04-arm
+  merge-server:
     runs-on: ubuntu-latest
-    permissions:
-      # Needed to upload contianer images to ghcr.io
-      packages: write
-      # Needed for attestation
-      id-token: write
-      attestations: write
+    needs:
+      - build-server-amd64
+      - build-server-arm64
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3.3.0
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
       - name: prepare variables
         uses: ./.github/actions/docker-push-variables
         id: ev
@@ -38,29 +40,13 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: make empty clients
-        run: |
-          mkdir -p ./gen-ts-api
-          mkdir -p ./gen-go-api
-      - name: Build Docker Image
-        uses: docker/build-push-action@v6
-        id: push
+      - uses: int128/docker-manifest-create-action@v2
+        id: build
         with:
-          context: .
-          push: true
-          secrets: |
-            GEOIPUPDATE_ACCOUNT_ID=${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}
-            GEOIPUPDATE_LICENSE_KEY=${{ secrets.GEOIPUPDATE_LICENSE_KEY }}
-          build-args: |
-            VERSION=${{ github.ref }}
           tags: ${{ steps.ev.outputs.imageTags }}
-          platforms: linux/amd64,linux/arm64
-      - uses: actions/attest-build-provenance@v2
-        id: attest
-        with:
-          subject-name: ${{ steps.ev.outputs.attestImageNames }}
-          subject-digest: ${{ steps.push.outputs.digest }}
-          push-to-registry: true
+          sources: |
+            ghcr.io/goauthentik/server}@${{ needs.build-server-amd64.outputs.image-digest }}
+            ghcr.io/goauthentik/server}@${{ needs.build-server-amd64.outputs.image-digest }}
   build-outpost:
     runs-on: ubuntu-latest
     permissions:
@@ -175,7 +161,7 @@ jobs:
       id-token: write
       contents: read
     needs:
-      - build-server
+      - merge-server
       - build-outpost
     env:
       AWS_REGION: eu-central-1
@@ -192,7 +178,7 @@ jobs:
           aws s3 cp --acl=public-read lifecycle/aws/template.yaml s3://authentik-cloudformation-templates/authentik.ecs.latest.yaml
   test-release:
     needs:
-      - build-server
+      - merge-server
       - build-outpost
       - build-outpost-binary
     runs-on: ubuntu-latest
@@ -208,7 +194,7 @@ jobs:
           docker compose run -u root server test-all
   sentry-release:
     needs:
-      - build-server
+      - merge-server
       - build-outpost
       - build-outpost-binary
     runs-on: ubuntu-latest
