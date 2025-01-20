@@ -4,12 +4,13 @@
     "private": true,
     "license": "MIT",
     "scripts": {
-        "aws-cfn": "cd docs/install-config/install/aws && cross-env CI=false cdk synth --version-reporting=false > template.yaml"
+        "aws-cfn": "cross-env CI=false cdk synth --version-reporting=false > template.yaml"
     },
     "engines": {
         "node": ">=20"
     },
     "devDependencies": {
-        "aws-cdk": "^2.176.0"
+        "aws-cdk": "^2.176.0",
+        "cross-env": "^7.0.3"
     }
 }
