@@ -132,12 +132,11 @@ RUN --mount=type=bind,target=./pyproject.toml,src=./pyproject.toml \
     . "$HOME/.cargo/env" && \
     python -m venv /ak-root/venv/ && \
     bash -c "source ${VENV_PATH}/bin/activate && \
-    pip3 install --upgrade pip && \
-    pip3 install poetry && \
+    pip3 install --upgrade pip poetry && \
+    poetry config --local installer.no-binary cryptography,xmlsec,lxml,python-kadmin-rs && \
     poetry install --only=main --no-ansi --no-interaction --no-root && \
-    pip freeze | grep -E 'cryptography|xmlsec|lxml|python-kadmin-rs' > /tmp/req.txt && \
-    pip install --no-cache --force-reinstall --no-binary :all: -r /tmp/req.txt && \
-    rm /tmp/req.txt"
+    pip uninstall cryptography -y && \
+    poetry install --only=main --no-ansi --no-interaction --no-root"
 
 # Stage 6: Run
 FROM ghcr.io/goauthentik/fips-python:3.12.7-slim-bookworm-fips AS final-image
