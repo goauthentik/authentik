@@ -13,13 +13,13 @@ from structlog.stdlib import get_logger
 from authentik.events.models import Event, EventAction, TaskStatus
 from authentik.events.system_tasks import SystemTask
 from authentik.root.celery import CELERY_APP
-from authentik.stages.email.models import EmailStage
+from authentik.stages.authenticator_email.models import AuthenticatorEmailStage
 from authentik.stages.email.utils import logo_data
 
 LOGGER = get_logger()
 
 
-def send_mails(stage: EmailStage, *messages: list[EmailMultiAlternatives]):
+def send_mails(stage: AuthenticatorEmailStage, *messages: list[EmailMultiAlternatives]):
     """Wrapper to convert EmailMessage to dict and send it from worker"""
     tasks = []
     for message in messages:
@@ -54,16 +54,16 @@ def send_mail(self: SystemTask, message: dict[Any, Any], email_stage_pk: str | N
     self.set_uid(slugify(message_id.replace(".", "_").replace("@", "_")))
     try:
         if not email_stage_pk:
-            stage: EmailStage = EmailStage(use_global_settings=True)
+            stage: AuthenticatorEmailStage = AuthenticatorEmailStage(use_global_settings=True)
         else:
-            stages = EmailStage.objects.filter(pk=email_stage_pk)
+            stages = AuthenticatorEmailStage.objects.filter(pk=email_stage_pk)
             if not stages.exists():
                 self.set_status(
                     TaskStatus.WARNING,
-                    "Email stage does not exist anymore. Discarding message.",
+                    "Authenticator Email stage does not exist anymore. Discarding message.",
                 )
                 return
-            stage: EmailStage = stages.first()
+            stage: AuthenticatorEmailStage = stages.first()
         try:
             backend = stage.backend
         except ValueError as exc:
@@ -85,7 +85,7 @@ def send_mail(self: SystemTask, message: dict[Any, Any], email_stage_pk: str | N
         # can't be converted to json)
         message_object.attach(logo_data())
 
-        LOGGER.debug("Sending mail", to=message_object.to)
+        LOGGER.debug("Sending mail!!!!", to=message_object.to)
         backend.send_messages([message_object])
         Event.new(
             EventAction.EMAIL_SENT,
