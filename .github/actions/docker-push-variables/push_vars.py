@@ -74,7 +74,10 @@ def get_attest_image_names(image_with_tags: list[str]):
 # Generate `cache-to` param
 cache_to = ""
 if should_push:
-    cache_to = f"type=registry,ref={get_attest_image_names(image_tags)}:buildcache,mode=max"
+    _cache_tag = "buildcache"
+    if image_arch:
+        _cache_tag += f"-{image_arch}"
+    cache_to = f"type=registry,ref={get_attest_image_names(image_tags)}:{_cache_tag},mode=max"
 
 
 with open(os.environ["GITHUB_OUTPUT"], "a+", encoding="utf-8") as _output:
