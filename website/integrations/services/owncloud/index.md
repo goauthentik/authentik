@@ -44,6 +44,7 @@ Follow these steps to create the required application/provider pairs. You will n
     - **Configure the Provider**: Provide a name (the default name will suffice for most users), the authorization flow to use for this provider, and the following required configurations. The settings for each of the four application/provider pairs are shown below:
 
         - **Protocol settings:**
+          
           **Web UI:**
 
             - **Signing Key**: Select any available signing key.
