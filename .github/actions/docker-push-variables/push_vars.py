@@ -2,6 +2,7 @@
 
 import configparser
 import os
+from json import dumps
 from time import time
 
 parser = configparser.ConfigParser()
@@ -48,7 +49,7 @@ if is_release:
             ]
 else:
     suffix = ""
-    if image_arch and image_arch != "amd64":
+    if image_arch:
         suffix = f"-{image_arch}"
     for name in image_names:
         image_tags += [
@@ -70,12 +71,23 @@ def get_attest_image_names(image_with_tags: list[str]):
     return ",".join(set(image_tags))
 
 
+# Generate `cache-to` param
+cache_to = ""
+if should_push:
+    _cache_tag = "buildcache"
+    if image_arch:
+        _cache_tag += f"-{image_arch}"
+    cache_to = f"type=registry,ref={get_attest_image_names(image_tags)}:{_cache_tag},mode=max"
+
+
 with open(os.environ["GITHUB_OUTPUT"], "a+", encoding="utf-8") as _output:
     print(f"shouldPush={str(should_push).lower()}", file=_output)
     print(f"sha={sha}", file=_output)
     print(f"version={version}", file=_output)
     print(f"prerelease={prerelease}", file=_output)
     print(f"imageTags={','.join(image_tags)}", file=_output)
+    print(f"imageTagsJSON={dumps(image_tags)}", file=_output)
     print(f"attestImageNames={get_attest_image_names(image_tags)}", file=_output)
     print(f"imageMainTag={image_main_tag}", file=_output)
     print(f"imageMainName={image_tags[0]}", file=_output)
+    print(f"cacheTo={cache_to}", file=_output)
