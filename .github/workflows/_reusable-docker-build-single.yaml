@@ -28,6 +28,7 @@ on:
 
 jobs:
   build:
+    name: Build ${{ inputs.image_arch }}
     runs-on: ${{ inputs.runs-on }}
     outputs:
       image-digest: ${{ steps.push.outputs.digest }}
