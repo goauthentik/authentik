@@ -5,7 +5,7 @@ PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
 NPM_VERSION = $(shell python -m scripts.npm_version)
-PY_SOURCES = authentik tests scripts lifecycle .github website/docs/install-config/install/aws
+PY_SOURCES = authentik tests scripts lifecycle .github
 DOCKER_IMAGE ?= "authentik:test"
 
 GEN_API_TS = "gen-ts-api"
@@ -77,6 +77,9 @@ migrate: ## Run the Authentik Django server's migrations
 	python -m lifecycle.migrate
 
 i18n-extract: core-i18n-extract web-i18n-extract  ## Extract strings that require translation into files to send to a translation service
+
+aws-cfn:
+	cd lifecycle/aws && npm run aws-cfn
 
 core-i18n-extract:
 	ak makemessages \
@@ -251,9 +254,6 @@ website-build:
 
 website-watch:  ## Build and watch the documentation website, updating automatically
 	cd website && npm run watch
-
-aws-cfn:
-	cd website && npm run aws-cfn
 
 #########################
 ## Docker
