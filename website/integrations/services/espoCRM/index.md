@@ -21,8 +21,8 @@ This guide does _not_ cover Team Mapping. Please refer to EspoCRM's [documentati
 
 The following placeholders are used in this guide:
 
-- `crm.<your_company>` is the FQDN of the EspoCRM install.
-- `authentik.<your_company>` is the FQDN of the authentik install.
+- `crm.<your_company>` is the FQDN of the EspoCRM installation.
+- `authentik.<your_company>` is the FQDN of the authentik installation.
 - `_SLUG_` is the slug you choose upon application create in authentik.
 
 ## authentik configuration

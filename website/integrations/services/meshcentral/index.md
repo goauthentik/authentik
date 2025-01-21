@@ -15,8 +15,8 @@ sidebar_label: MeshCentral
 
 The following placeholders are used in this guide:
 
-- `meshcentral.company` is the FQDN of the MeshCentral install.
-- `authentik.company` is the FQDN of the authentik install.
+- `meshcentral.company` is the FQDN of the MeshCentral installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 ## authentik configuration
 

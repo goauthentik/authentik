@@ -22,7 +22,7 @@ Requires Proxmox VE 7.0 or newer.
 The following placeholders are used in this guide:
 
 - `proxmox.company` is the FQDN of the Proxmox VE server.
-- `authentik.company` is the FQDN of the authentik install.
+- `authentik.company` is the FQDN of the authentik installation.
 
 ## authentik configuration
 

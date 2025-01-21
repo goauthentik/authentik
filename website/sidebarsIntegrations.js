@@ -96,6 +96,7 @@ module.exports = {
                         "services/skyhigh/index",
                         "services/snipe-it/index",
                         "services/sssd/index",
+                        "services/terrakube/index",
                         "services/truecommand/index",
                         "services/veeam-enterprise-manager/index",
                         "services/zammad/index",
@@ -119,6 +120,7 @@ module.exports = {
                     type: "category",
                     label: "Miscellaneous",
                     items: [
+                        "services/actual-budget/index",
                         "services/engomo/index",
                         "services/frappe/index",
                         "services/freshrss/index",

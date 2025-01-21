@@ -17,8 +17,8 @@ sidebar_label: Gatus
 
 The following placeholders are used in this guide:
 
-- `gatus.company` is the FQDN of the Gatus install.
-- `authentik.company` is the FQDN of the authentik install.
+- `gatus.company` is the FQDN of the Gatus installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 ## authentik configuration
 

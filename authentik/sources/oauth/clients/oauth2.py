@@ -81,7 +81,12 @@ class OAuth2Client(BaseOAuthClient):
             if self.source.source_type.urls_customizable and self.source.access_token_url:
                 access_token_url = self.source.access_token_url
             response = self.do_request(
-                "post", access_token_url, data=args, headers=self._default_headers, **request_kwargs
+                "post",
+                access_token_url,
+                auth=(self.get_client_id(), self.get_client_secret()),
+                data=args,
+                headers=self._default_headers,
+                **request_kwargs,
             )
             response.raise_for_status()
         except RequestException as exc:

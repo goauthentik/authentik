@@ -19,8 +19,8 @@ sidebar_label: Zabbix
 
 The following placeholders are used in this guide:
 
-- `zabbix.company` is the FQDN of the Zabbix install.
-- `authentik.company` is the FQDN of the authentik install.
+- `zabbix.company` is the FQDN of the Zabbix installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 Create an application in authentik and note the slug, as this will be used later. Create a SAML provider with the following parameters:
 

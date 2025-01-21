@@ -22,7 +22,7 @@ Skyhigh has multiple points for SAML integration:
 
 The following placeholder will be used throughout this document.
 
-- `authentik.company` is the FQDN of the authentik install.
+- `authentik.company` is the FQDN of the authentik installation.
 
 ## Integration for Dashboard Administrator login
 
