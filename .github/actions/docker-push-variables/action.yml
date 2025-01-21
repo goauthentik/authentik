@@ -32,6 +32,9 @@ outputs:
   attestImageNames:
     description: "Docker image names used for attestation"
     value: ${{ steps.ev.outputs.attestImageNames }}
+  cacheTo:
+    description: "cache-to value for the docker build step"
+    value: ${{ steps.ev.outputs.cacheTo }}
   imageMainTag:
     description: "Docker image main tag"
     value: ${{ steps.ev.outputs.imageMainTag }}

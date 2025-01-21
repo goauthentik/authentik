@@ -84,7 +84,7 @@ jobs:
           tags: ${{ steps.ev.outputs.imageTags }}
           platforms: linux/${{ inputs.image_arch }}
           cache-from: type=registry,ref=${{ steps.ev.outputs.attestImageNames }}:buildcache
-          cache-to: ${{ steps.ev.outputs.shouldPush == 'true' && 'type=registry,ref=${{ steps.ev.outputs.attestImageNames }}:buildcache,mode=max' || '' }}
+          cache-to: ${{ steps.ev.outputs.cacheTo }}
       - uses: actions/attest-build-provenance@v2
         id: attest
         with:
