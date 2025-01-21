@@ -90,6 +90,9 @@ class SSFProvider(BackchannelProvider):
     class Meta:
         verbose_name = _("SSF Provider")
         verbose_name_plural = _("SSF Providers")
+        permissions = [
+            ("add_stream", _("Add stream to SSF provider")),
+        ]
 
 
 class Stream(models.Model):
@@ -108,6 +111,11 @@ class Stream(models.Model):
     user_subjects = models.ManyToManyField(User, "UserStreamSubject")
 
     iss = models.TextField()
+
+    class Meta:
+        verbose_name = _("SSF Stream")
+        verbose_name_plural = _("SSF Streams")
+        default_permissions = ["change", "delete", "view"]
 
     def __str__(self) -> str:
         return "SSF Stream"

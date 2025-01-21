@@ -5,6 +5,7 @@ from django.db.models import Model
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 from django.http.request import HttpRequest
+from guardian.shortcuts import assign_perm
 
 from authentik.core.models import (
     USER_PATH_SYSTEM_PREFIX,
@@ -44,6 +45,7 @@ def ssf_providers_post_save(sender: type[Model], instance: SSFProvider, created:
             "path": USER_PATH_PROVIDERS_SSF,
         },
     )
+    assign_perm("add_stream", user, instance)
     token, token_created = Token.objects.update_or_create(
         identifier=identifier,
         defaults={

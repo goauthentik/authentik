@@ -32,6 +32,7 @@ class StreamSerializer(ModelSerializer):
     aud = ListField(child=CharField())
 
     def create(self, validated_data):
+        # todo: rbac check
         provider: SSFProvider = validated_data["provider"]
         iss = self.context["request"].build_absolute_uri(
             reverse(
