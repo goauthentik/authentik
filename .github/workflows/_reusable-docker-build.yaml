@@ -43,6 +43,7 @@ jobs:
       - build-server-amd64
       - build-server-arm64
     steps:
+      - uses: actions/checkout@v4
       - name: prepare variables
         uses: ./.github/actions/docker-push-variables
         id: ev
