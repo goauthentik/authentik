@@ -9,12 +9,11 @@ from authentik.lib.generators import generate_id
 
 class TestStream(APITestCase):
     def setUp(self):
+        self.application = Application.objects.create(name=generate_id(), slug=generate_id())
         self.provider = SSFProvider.objects.create(
             name=generate_id(),
             signing_key=create_test_cert(),
-        )
-        self.application = Application.objects.create(
-            name=generate_id(), slug=generate_id(), provider=self.provider
+            backchannel_application=self.application,
         )
 
     def test_stream_add(self):
@@ -22,7 +21,7 @@ class TestStream(APITestCase):
         res = self.client.post(
             reverse(
                 "authentik_providers_ssf:stream",
-                kwargs={"application_slug": self.application.slug, "provider": self.provider.pk},
+                kwargs={"application_slug": self.application.slug},
             ),
             data={
                 "iss": "https://screw-fotos-bracelets-longitude.trycloudflare.com/.well-known/ssf-configuration/abm-ssf/5",
@@ -49,7 +48,7 @@ class TestStream(APITestCase):
         res = self.client.delete(
             reverse(
                 "authentik_providers_ssf:stream",
-                kwargs={"application_slug": self.application.slug, "provider": self.provider.pk},
+                kwargs={"application_slug": self.application.slug},
             ),
             HTTP_AUTHORIZATION=f"Bearer {self.provider.token.key}",
         )

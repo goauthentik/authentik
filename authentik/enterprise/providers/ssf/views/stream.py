@@ -6,7 +6,12 @@ from rest_framework.serializers import ModelSerializer
 from structlog.stdlib import get_logger
 
 from authentik.core.api.utils import PassiveSerializer
-from authentik.enterprise.providers.ssf.models import DeliveryMethods, EventTypes, Stream
+from authentik.enterprise.providers.ssf.models import (
+    DeliveryMethods,
+    EventTypes,
+    SSFProvider,
+    Stream,
+)
 from authentik.enterprise.providers.ssf.tasks import send_ssf_event
 from authentik.enterprise.providers.ssf.views.base import SSFView
 
@@ -27,11 +32,12 @@ class StreamSerializer(ModelSerializer):
     aud = ListField(child=CharField())
 
     def create(self, validated_data):
+        provider: SSFProvider = validated_data["provider"]
         iss = self.context["request"].build_absolute_uri(
             reverse(
                 "authentik_providers_ssf:configuration",
                 kwargs={
-                    "application_slug": validated_data["provider"].application.slug,
+                    "application_slug": provider.backchannel_application.slug,
                 },
             )
         )

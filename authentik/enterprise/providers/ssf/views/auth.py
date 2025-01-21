@@ -1,15 +1,14 @@
 """SSF Token auth"""
 
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
+from django.db.models import Q
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 from rest_framework.request import Request
-from rest_framework.views import APIView
 
 from authentik.core.models import Token, TokenIntents, User
 from authentik.enterprise.providers.ssf.models import SSFProvider
 from authentik.providers.oauth2.models import AccessToken
-
 
 if TYPE_CHECKING:
     from authentik.enterprise.providers.ssf.views.base import SSFView
@@ -32,16 +31,20 @@ class SSFTokenAuth(BaseAuthentication):
         provider: SSFProvider = token.ssfprovider_set.first()
         if not provider:
             return None
-        self.view.application = provider.application
+        self.view.application = provider.backchannel_application
         self.view.provider = provider
         return token
 
-    def check_jwt(self, jwt: str, provider_pk: int) -> AccessToken | None:
+    def check_jwt(self, jwt: str) -> AccessToken | None:
+        """Check JWT-based authentication, this supports tokens issued either by providers
+        configured directly in the provider, and by providers assigned to the application
+        that the SSF provider is a backchannel provider of."""
         token = AccessToken.filter_not_expired(token=jwt, revoked=False).first()
         if not token:
             return None
         ssf_provider = SSFProvider.objects.filter(
-            pk=provider_pk, oidc_auth_providers__in=[token.provider]
+            Q(oidc_auth_providers__in=[token.provider])
+            | Q(backchannel_application__provider__in=[token.provider]),
         ).first()
         if not ssf_provider:
             return None
@@ -50,8 +53,6 @@ class SSFTokenAuth(BaseAuthentication):
         return token
 
     def authenticate(self, request: Request) -> tuple[User, Any] | None:
-        kwargs = request._request.resolver_match.kwargs
-        provider = kwargs.get("provider", None)
         auth = get_authorization_header(request).decode()
         auth_type, _, key = auth.partition(" ")
         if auth_type != "Bearer":
@@ -59,7 +60,7 @@ class SSFTokenAuth(BaseAuthentication):
         token = self.check_token(key)
         if token:
             return (token.user, token)
-        jwt_token = self.check_jwt(key, provider)
+        jwt_token = self.check_jwt(key)
         if jwt_token:
             return (jwt_token.user, token)
         return None
