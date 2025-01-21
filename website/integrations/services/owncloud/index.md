@@ -23,7 +23,7 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::info
-This guide will focus on setting up ownCloud using the [official OIDC plugin](https://github.com/owncloud/openidconnect). Advanced configuration details can be found in the [ownCloud admin manual](https://doc.owncloud.com/server/latest/admin_manual/configuration/user/oidc/oidc.html).
+This guide focuses on setting up ownCloud using the [official OIDC plugin](https://github.com/owncloud/openidconnect). Advanced configuration details can be found in the [ownCloud admin manual](https://doc.owncloud.com/server/latest/admin_manual/configuration/user/oidc/oidc.html).
 :::
 
 ## authentik configuration
