@@ -229,7 +229,7 @@ jobs:
       # Needed for attestation
       id-token: write
       attestations: write
-    # needs: ci-core-mark
+    needs: ci-core-mark
     uses: ./.github/workflows/_reusable-docker-build.yaml
     secrets: inherit
     with:
