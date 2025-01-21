@@ -1,7 +1,8 @@
-from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.http import Http404, HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views import View
 
+from authentik.core.models import Application
 from authentik.crypto.models import CertificateKeyPair
 from authentik.enterprise.providers.ssf.models import SSFProvider
 from authentik.providers.oauth2.views.jwks import JWKSView as OAuthJWKSView
@@ -9,9 +10,12 @@ from authentik.providers.oauth2.views.jwks import JWKSView as OAuthJWKSView
 
 class JWKSview(View):
 
-    def get(self, request: HttpRequest, provider: int) -> HttpResponse:
+    def get(self, request: HttpRequest, application_slug: str) -> HttpResponse:
         """Show JWK Key data for Provider"""
-        provider: SSFProvider = get_object_or_404(SSFProvider, pk=provider)
+        application = get_object_or_404(Application, slug=application_slug)
+        provider = application.backchannel_provider_for(SSFProvider)
+        if not provider:
+            raise Http404
         signing_key: CertificateKeyPair = provider.signing_key
 
         response_data = {}

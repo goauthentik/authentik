@@ -20,14 +20,13 @@ class SSFProviderSerializer(EnterpriseRequiredMixin, ProviderSerializer):
 
     def get_ssf_url(self, instance: SSFProvider) -> str | None:
         request: Request = self._context["request"]
-        if not instance.application:
+        if not instance.backchannel_application:
             return None
         return request.build_absolute_uri(
             reverse(
                 "authentik_providers_ssf:configuration",
                 kwargs={
-                    "application_slug": instance.application.slug,
-                    "provider": instance.pk,
+                    "application_slug": instance.backchannel_application.slug,
                 },
             )
         )

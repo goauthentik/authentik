@@ -9,17 +9,17 @@ from authentik.enterprise.providers.ssf.views.stream import StreamView
 
 urlpatterns = [
     path(
-        "application/ssf/<int:provider>/ssf-jwks/",
+        "application/ssf/<slug:application_slug>/ssf-jwks/",
         JWKSview.as_view(),
         name="jwks",
     ),
     path(
-        ".well-known/ssf-configuration/<slug:application_slug>/<int:provider>",
+        ".well-known/ssf-configuration/<slug:application_slug>",
         ConfigurationView.as_view(),
         name="configuration",
     ),
     path(
-        "application/ssf/<slug:application_slug>/<int:provider>/stream/",
+        "application/ssf/<slug:application_slug>/stream/",
         StreamView.as_view(),
         name="stream",
     ),

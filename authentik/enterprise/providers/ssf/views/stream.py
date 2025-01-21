@@ -32,7 +32,6 @@ class StreamSerializer(ModelSerializer):
                 "authentik_providers_ssf:configuration",
                 kwargs={
                     "application_slug": validated_data["provider"].application.slug,
-                    "provider": validated_data["provider"].pk,
                 },
             )
         )

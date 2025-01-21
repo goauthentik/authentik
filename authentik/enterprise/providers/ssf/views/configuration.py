@@ -1,4 +1,4 @@
-from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.http import Http404, HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from rest_framework.permissions import AllowAny
@@ -14,11 +14,11 @@ class ConfigurationView(SSFView):
     def get_authenticators(self):
         return []
 
-    def get(
-        self, request: HttpRequest, application_slug: str, provider: int, *args, **kwargs
-    ) -> HttpResponse:
+    def get(self, request: HttpRequest, application_slug: str, *args, **kwargs) -> HttpResponse:
         application = get_object_or_404(Application, slug=application_slug)
-        provider = get_object_or_404(SSFProvider, pk=provider)
+        provider = application.backchannel_provider_for(SSFProvider)
+        if not provider:
+            raise Http404
         data = {
             "spec_version": "1_0-ID2",
             "issuer": self.request.build_absolute_uri(

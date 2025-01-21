@@ -1,6 +1,6 @@
 """SSF Token auth"""
 
-from typing import Any
+from typing import Any, TYPE_CHECKING
 
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 from rest_framework.request import Request
@@ -11,15 +11,21 @@ from authentik.enterprise.providers.ssf.models import SSFProvider
 from authentik.providers.oauth2.models import AccessToken
 
 
+if TYPE_CHECKING:
+    from authentik.enterprise.providers.ssf.views.base import SSFView
+
+
 class SSFTokenAuth(BaseAuthentication):
     """SCIM Token auth"""
 
-    def __init__(self, view: APIView) -> None:
+    view: "SSFView"
+
+    def __init__(self, view: "SSFView") -> None:
         super().__init__()
         self.view = view
 
     def check_token(self, key: str) -> Token | None:
-        """Check that a token exists, is not expired, and is assigned to the correct source"""
+        """Check that a token exists, is not expired, and is assigned to the correct provider"""
         token = Token.filter_not_expired(key=key, intent=TokenIntents.INTENT_API).first()
         if not token:
             return None
@@ -39,7 +45,7 @@ class SSFTokenAuth(BaseAuthentication):
         ).first()
         if not ssf_provider:
             return None
-        self.view.application = ssf_provider.application
+        self.view.application = ssf_provider.backchannel_application
         self.view.provider = ssf_provider
         return token
 
