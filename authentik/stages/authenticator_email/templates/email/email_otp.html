@@ -25,7 +25,7 @@
       </tr>
       <tr>
         <td align="center" class="btn btn-primary">
-          {{ code }}
+          {{ token }}
         </td>
       </tr>
     </table>
@@ -36,8 +36,8 @@
 {% block sub_content %}
 <tr>
   <td style="padding: 20px; font-size: 12px; color: #212124;" align="center">
-    {% blocktrans with expires=expires|naturaltime %}
-    If you did not request this code, please ignore this email. The link above is valid for {{ expires }}.
+    {% blocktrans with expires=expires|timeuntil %}
+    If you did not request this code, please ignore this email. The code above is valid for {{ expires }}.
     {% endblocktrans %}
   </td>
 </tr>

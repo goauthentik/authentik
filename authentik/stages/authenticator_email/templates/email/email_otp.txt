@@ -3,9 +3,9 @@
 {% blocktrans %}
 Email MFA code
 {% endblocktrans %}
-{{ code }}
-{% blocktrans with expires=expires|naturaltime %}
-If you did not request this code, please ignore this email. The link above is valid for {{ expires }}.
+{{ token }}
+{% blocktrans with expires=expires|timeuntil %}
+If you did not request this code, please ignore this email. The code above is valid for {{ expires }}.
 {% endblocktrans %}
 
 --
