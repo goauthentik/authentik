@@ -30579,6 +30579,108 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /ssf/streams/:
+    get:
+      operationId: ssf_streams_list
+      description: SSFStream Viewset
+      parameters:
+      - in: query
+        name: delivery_method
+        schema:
+          type: string
+          enum:
+          - https://schemas.openid.net/secevent/risc/delivery-method/poll
+          - https://schemas.openid.net/secevent/risc/delivery-method/push
+      - in: query
+        name: endpoint_url
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: provider
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - ssf
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSSFStreamList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /ssf/streams/{uuid}/:
+    get:
+      operationId: ssf_streams_retrieve
+      description: SSFStream Viewset
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this stream.
+        required: true
+      tags:
+      - ssf
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SSFStream'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /stages/all/:
     get:
       operationId: stages_all_list
@@ -41026,6 +41128,11 @@ components:
       - matched_domain
       - ui_footer_links
       - ui_theme
+    DeliveryMethodEnum:
+      enum:
+      - https://schemas.openid.net/secevent/risc/delivery-method/push
+      - https://schemas.openid.net/secevent/risc/delivery-method/poll
+      type: string
     DeniedActionEnum:
       enum:
       - message_continue
@@ -42064,6 +42171,12 @@ components:
       - application
       - counted_events
       - unique_users
+    EventsRequestedEnum:
+      enum:
+      - https://schemas.openid.net/secevent/caep/event-type/session-revoked
+      - https://schemas.openid.net/secevent/caep/event-type/credential-change
+      - https://schemas.openid.net/secevent/ssf/event-type/verification
+      type: string
     ExpiringBaseGrantModel:
       type: object
       description: Serializer for BaseGrantModel and ExpiringBaseGrant
@@ -47828,6 +47941,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SSFProvider'
+      required:
+      - pagination
+      - results
+    PaginatedSSFStreamList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SSFStream'
       required:
       - pagination
       - results
@@ -54999,6 +55124,45 @@ components:
             type: integer
       required:
       - name
+    SSFStream:
+      type: object
+      description: SSFStream Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Uuid
+        provider:
+          type: integer
+        provider_obj:
+          allOf:
+          - $ref: '#/components/schemas/SSFProvider'
+          readOnly: true
+        delivery_method:
+          $ref: '#/components/schemas/DeliveryMethodEnum'
+        endpoint_url:
+          type: string
+          nullable: true
+        events_requested:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventsRequestedEnum'
+        format:
+          type: string
+        aud:
+          type: array
+          items:
+            type: string
+        iss:
+          type: string
+      required:
+      - delivery_method
+      - format
+      - iss
+      - pk
+      - provider
+      - provider_obj
     ScopeMapping:
       type: object
       description: ScopeMapping Serializer
