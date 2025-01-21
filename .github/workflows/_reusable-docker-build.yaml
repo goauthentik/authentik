@@ -39,11 +39,32 @@ jobs:
       registry_dockerhub: ${{ inputs.registry_dockerhub }}
       registry_ghcr: ${{ inputs.registry_ghcr }}
       release: ${{ inputs.release }}
-  merge-server:
+  get-tags:
     runs-on: ubuntu-latest
     needs:
       - build-server-amd64
       - build-server-arm64
+    outputs:
+      tags: ${{ steps.ev.outputs.imageTagsJSON }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: prepare variables
+        uses: ./.github/actions/docker-push-variables
+        id: ev
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        with:
+          image-name: ${{ inputs.image_name }}
+  merge-server:
+    runs-on: ubuntu-latest
+    needs:
+      - get-tags
+      - build-server-amd64
+      - build-server-arm64
+    strategy:
+      fail-fast: false
+      matrix:
+        tag: ${{ fromJson(needs.get-tags.outputs.tags) }}
     steps:
       - uses: actions/checkout@v4
       - name: prepare variables
@@ -69,10 +90,10 @@ jobs:
       - uses: int128/docker-manifest-create-action@v2
         id: build
         with:
-          tags: ${{ steps.ev.outputs.imageTags }}
+          tags: ${{ matrix.tag }}
           sources: |
             ${{ steps.ev.outputs.attestImageNames }}@${{ needs.build-server-amd64.outputs.image-digest }}
-            ${{ steps.ev.outputs.attestImageNames }}@${{ needs.build-server-amd64.outputs.image-digest }}
+            ${{ steps.ev.outputs.attestImageNames }}@${{ needs.build-server-arm64.outputs.image-digest }}
       - uses: actions/attest-build-provenance@v2
         id: attest
         with:

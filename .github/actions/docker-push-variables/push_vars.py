@@ -2,6 +2,7 @@
 
 import configparser
 import os
+from json import dumps
 from time import time
 
 parser = configparser.ConfigParser()
@@ -82,6 +83,7 @@ with open(os.environ["GITHUB_OUTPUT"], "a+", encoding="utf-8") as _output:
     print(f"version={version}", file=_output)
     print(f"prerelease={prerelease}", file=_output)
     print(f"imageTags={','.join(image_tags)}", file=_output)
+    print(f"imageTagsJSON={dumps(image_tags)}", file=_output)
     print(f"attestImageNames={get_attest_image_names(image_tags)}", file=_output)
     print(f"imageMainTag={image_main_tag}", file=_output)
     print(f"imageMainName={image_tags[0]}", file=_output)
