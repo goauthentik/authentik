@@ -6,6 +6,7 @@ from aws_cdk import (
     App,
     CfnOutput,
     CfnParameter,
+    DefaultStackSynthesizer,
     Duration,
     RemovalPolicy,
     Stack,
@@ -38,7 +39,7 @@ from authentik import __version__
 
 class AuthentikStack(Stack):
     def __init__(self, scope: Construct, id: str, **kwargs):
-        super().__init__(scope, id, *kwargs)
+        super().__init__(scope, id, **kwargs)
 
         ### Inputs
 
@@ -327,6 +328,7 @@ class AuthentikStack(Stack):
             security_groups=[authentik_security_group],
             vpc_subnets=ec2.SubnetSelection(subnet_type=ec2.SubnetType.PRIVATE_WITH_EGRESS),
             enable_execute_command=True,
+            min_healthy_percent=50,
         )
 
         worker_task = ecs.FargateTaskDefinition(
@@ -376,6 +378,7 @@ class AuthentikStack(Stack):
             security_groups=[authentik_security_group],
             vpc_subnets=ec2.SubnetSelection(subnet_type=ec2.SubnetType.PRIVATE_WITH_EGRESS),
             enable_execute_command=True,
+            min_healthy_percent=50,
         )
 
         # Load balancer
@@ -417,5 +420,9 @@ class AuthentikStack(Stack):
 
 
 app = App()
-AuthentikStack(app, "AuthentikStack")
+AuthentikStack(
+    app,
+    "AuthentikStack",
+    synthesizer=DefaultStackSynthesizer(generate_bootstrap_version_rule=False),
+)
 app.synth()
