@@ -15,6 +15,7 @@ go.mod                          @goauthentik/backend
 go.sum                          @goauthentik/backend
 # Infrastructure
 .github/                        @goauthentik/infrastructure
+lifecycle/aws/                  @goauthentik/infrastructure
 Dockerfile                      @goauthentik/infrastructure
 *Dockerfile                     @goauthentik/infrastructure
 .dockerignore                   @goauthentik/infrastructure

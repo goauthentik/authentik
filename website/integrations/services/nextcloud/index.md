@@ -116,7 +116,7 @@ Create a provider for Nextcloud. In the Admin Interface, go to _Applications_ ->
         - `Nextcloud Profile` (or `authentik default Oauth Mapping profile` if you skipped the [custom profile scope](#custom-profile-scope) section)
     - Subject mode: Based on the User's UUID
       :::danger
-      Nextcloud will use the UUID as username. However, mapping the subject mode to authentik usernames is **not recommended** due to their mutable nature. This can lead to security issues such as user impersonation. If you still wish to map the subject mode to an username, [disable username changing](https://docs.goauthentik.io/sys-mgmt/settings.md#allow-users-to-change-username) in authentik and set this to `Based on the User's username`.
+      Nextcloud will use the UUID as username. However, mapping the subject mode to authentik usernames is **not recommended** due to their mutable nature. This can lead to security issues such as user impersonation. If you still wish to map the subject mode to an username, [disable username changing](https://docs.goauthentik.io/docs/sys-mgmt/settings#allow-users-to-change-username) in authentik and set this to `Based on the User's username`.
       :::
     - Include claims in ID token: ✔️
 
@@ -254,7 +254,7 @@ Set the following values:
 
 - Attribute to map the UID to: `http://schemas.goauthentik.io/2021/02/saml/uid`
   :::danger
-  Nextcloud uses the UID attribute as username. However, mapping it to authentik usernames is **not recommended** due to their mutable nature. This can lead to security issues such as user impersonation. If you still wish to map the UID to an username, [disable username changing](https://docs.goauthentik.io/sys-mgmt/settings.md#allow-users-to-change-username) in authentik and set the UID attribute to "http://schemas.goauthentik.io/2021/02/saml/username".
+  Nextcloud uses the UID attribute as username. However, mapping it to authentik usernames is **not recommended** due to their mutable nature. This can lead to security issues such as user impersonation. If you still wish to map the UID to an username, [disable username changing](https://docs.goauthentik.io/docs/sys-mgmt/settings#allow-users-to-change-username) in authentik and set the UID attribute to "http://schemas.goauthentik.io/2021/02/saml/username".
   :::
 - Optional display name of the identity provider (default: "SSO & SAML log in"): `authentik`
 - Identifier of the IdP entity (must be a URI): `https://authentik.company`
