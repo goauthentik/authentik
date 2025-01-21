@@ -37,7 +37,7 @@ The configuration for each application is nearly identical, except for the **Cli
 Follow these steps to create the required application/provider pairs. You will need to repeat the process four times: once for the Desktop application, once for the Web UI, once for the Android application, and once for the iOS application.
 
 1. In the Admin interface, navigate to **Applications** > **Applications**.
-2. Use the new application wizard to create the application and provider, with the following settings:
+2. Use the wizard to create the application and provider, with the following settings:
 
     - **Application**: Provide a descriptive name (e.g., `owncloud`, `owncloud-desktop`, `owncloud-android`, `owncloud-ios`), an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: Select **OAuth2/OpenID Provider** as the provider type.
