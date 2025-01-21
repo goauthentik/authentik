@@ -254,7 +254,7 @@ Set the following values:
 
 - Attribute to map the UID to: `http://schemas.goauthentik.io/2021/02/saml/uid`
   :::danger
-  Nextcloud uses the UID attribute as username. However, mapping it to authentik usernames is **not recommended** due to their mutable nature. This can lead to security issues such as user impersonation. If you still wish to map the UID to an username, [disable username changing](https://docs.goauthentik.io/sys-mgmt/settings.md#allow-users-to-change-username) in authentik and set the UID attribute to "http://schemas.goauthentik.io/2021/02/saml/username".
+  Nextcloud uses the UID attribute as username. However, mapping it to authentik usernames is **not recommended** due to their mutable nature. This can lead to security issues such as user impersonation. If you still wish to map the UID to an username, [disable username changing](https://docs.goauthentik.io/docs/sys-mgmt/settings#allow-users-to-change-username) in authentik and set the UID attribute to "http://schemas.goauthentik.io/2021/02/saml/username".
   :::
 - Optional display name of the identity provider (default: "SSO & SAML log in"): `authentik`
 - Identifier of the IdP entity (must be a URI): `https://authentik.company`
