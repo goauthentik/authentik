@@ -118,8 +118,12 @@ export class SyncObjectForm extends Form<SyncObjectRequest> {
     }
 
     renderForm() {
-        return html` ${this.model === SyncObjectModelEnum.User ? this.renderSelectUser() : nothing}
-        ${this.model === SyncObjectModelEnum.Group ? this.renderSelectGroup() : nothing}
+        return html` ${this.model === SyncObjectModelEnum.AuthentikCoreModelsUser
+            ? this.renderSelectUser()
+            : nothing}
+        ${this.model === SyncObjectModelEnum.AuthentikCoreModelsGroup
+            ? this.renderSelectGroup()
+            : nothing}
         ${this.result ? this.renderResult() : html``}`;
     }
 }

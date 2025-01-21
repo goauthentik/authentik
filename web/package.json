@@ -125,6 +125,7 @@
         "lint:nightmare": "wireit",
         "lint:package": "wireit",
         "lint:precommit": "wireit",
+        "lint:types": "wireit",
         "lit-analyse": "wireit",
         "postinstall": "bash scripts/patch-spotlight.sh",
         "precommit": "wireit",
