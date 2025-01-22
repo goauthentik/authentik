@@ -56,6 +56,11 @@ export class ToggledSidebarHelp extends AKElement {
     }
 
     render() {
+        // The eslint-disable commands are necessary because we're sending signals up the stack that
+        // the component's dimensions are being set in a very specific and concrete way. This is
+        // probably not a good use; it violates the principle that a parent class ought to dictate
+        // the layout of its components.
+
         if (!this.showing) {
             // eslint-disable-next-line wc/no-self-class
             this.classList.remove(this.activeStyle);
@@ -94,6 +99,8 @@ export class ToggledSidebarHelp extends AKElement {
     }
 
     updated() {
+        // Setting this up after a `requestAnimationFrame` means the button's dimensions are
+        // well-calculated, and the space the button needs can be adjusted accordingly.
         requestAnimationFrame(() => {
             if (this.showing) {
                 this.style.removeProperty("width");
