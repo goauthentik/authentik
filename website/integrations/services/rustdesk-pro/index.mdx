@@ -1,0 +1,62 @@
+---
+title: Integrate with RustDesk Server Pro
+sidebar_label: RustDesk Server Pro
+---
+
+# RustDesk Server Pro
+
+<span class="badge badge--secondary">Support level: Community</span>
+
+## What is RustDesk Server Pro?
+
+> RustDesk Server Pro is a premium self-hosted solution for managing remote desktop connections securely and efficiently.  
+> It offers enhanced performance, advanced security features, and customization options like branding to meet professional needs.  
+> Ideal for businesses, it provides full control over data while ensuring scalable and reliable remote access.
+>
+> -- https://rustdesk.com/
+
+## Preparation
+
+This guide uses the following placeholders:
+
+- `rustdesk.company` is the FQDN of the RustDesk Server Pro installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+## authentik configuration
+
+1. In the authentik Admin interface, navigate to **Applications** -> **Applications**.
+2. Use the wizard to create a new application and provider. During this process:
+    - Note the **Client ID**, **Client Secret**, and **slug** values for later use.
+    - Set the redirect URI to https://_rustdesk.company_/api/oidc/callback.
+    - Select any available signing key.
+
+## RustDesk Server Pro configuration
+
+1. Sign in to RustDesk Server Pro using a browser.
+
+2. In the left menu, select **Settings** and then **OIDC**.
+
+3. Click **+ New Auth Provider**.
+
+4. In the popup window, select **custom** as the **Auth Type** and click **OK**.
+
+5. Configure the following values using information from the authentik provider:
+    - **Name**: _SSO-Login_
+    - **Client ID**: _client-id_
+    - **Client Secret**: _client-secret_
+    - **Issuer**: https://_authentik.company_/application/o/_slug_/
+    - **Authorization Endpoint**: https://_authentik.company_/application/o/authorize/
+    - **Token Endpoint**: https://_authentik.company_/application/o/token/
+    - **Userinfo Endpoint**: https://_authentik.company_/application/o/userinfo/
+    - **JWKS Endpoint**: https://_authentik.company_/application/o/_slug_/jwks/
+
+:::info
+Users are created automatically on login. Permissions must be assigned by an administrator after user creation.
+:::
+
+## Test the Login
+
+- Open a browser and navigate to https://_rustdesk.company_.
+- Click **Continue with SSO-Login**.
+- You should be redirected to authentik (with the login flows you configured). After logging in, authentik will redirect you back to https://_rustdesk.company_.
+- If you are redirected back to https://_rustdesk.company_ and can read the username in the top right corner, the setup was successful.

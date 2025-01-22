@@ -99,7 +99,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
                 </ak-forms-modal>
 
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.EventsNotificationrule}
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikEventsNotificationrule}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>`,

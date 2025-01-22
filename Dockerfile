@@ -132,9 +132,10 @@ RUN --mount=type=bind,target=./pyproject.toml,src=./pyproject.toml \
     . "$HOME/.cargo/env" && \
     python -m venv /ak-root/venv/ && \
     bash -c "source ${VENV_PATH}/bin/activate && \
-    pip3 install --upgrade pip && \
-    pip3 install poetry && \
+    pip3 install --upgrade pip poetry && \
     poetry config --local installer.no-binary cryptography,xmlsec,lxml,python-kadmin-rs && \
+    poetry install --only=main --no-ansi --no-interaction --no-root && \
+    pip uninstall cryptography -y && \
     poetry install --only=main --no-ansi --no-interaction --no-root"
 
 # Stage 6: Run
@@ -154,10 +155,12 @@ WORKDIR /
 
 # We cannot cache this layer otherwise we'll end up with a bigger image
 RUN apt-get update && \
+    apt-get upgrade -y && \
     # Required for runtime
     apt-get install -y --no-install-recommends libpq5 libmaxminddb0 ca-certificates libkrb5-3 libkadm5clnt-mit12 libkdb5-10 libltdl7 libxslt1.1 && \
     # Required for bootstrap & healtcheck
     apt-get install -y --no-install-recommends runit && \
+    pip3 install --no-cache-dir --upgrade pip && \
     apt-get clean && \
     rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/ && \
     adduser --system --no-create-home --uid 1000 --group --home /authentik authentik && \

@@ -117,7 +117,7 @@ When your PostgreSQL database(s) are running behind a connection pooler, like Pg
 
     Using a connection pooler in transaction pool mode (e.g. PgPool, or PgBouncer in transaction or statement pool mode) requires disabling server-side cursors, so this setting must be set to `false`.
 
-Additionally, you can set `AUTHENTIK_POSTGRESQL__CONN_HEALTH_CHECK` to perform health checks on persistent database connections before they are re-used.
+Additionally, you can set `AUTHENTIK_POSTGRESQL__CONN_HEALTH_CHECK` to perform health checks on persistent database connections before they are reused.
 
 ## Redis Settings
 

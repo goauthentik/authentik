@@ -142,11 +142,11 @@ function renderLDAPOverview(rawProvider: OneOfProvider) {
 const providerName = (p: ProviderModelEnum): string => p.toString().split(".")[1];
 
 export const providerRenderers = new Map([
-    [providerName(ProviderModelEnum.SamlSamlprovider), renderSAMLOverview],
-    [providerName(ProviderModelEnum.ScimScimprovider), renderSCIMOverview],
-    [providerName(ProviderModelEnum.RadiusRadiusprovider), renderRadiusOverview],
-    [providerName(ProviderModelEnum.RacRacprovider), renderRACOverview],
-    [providerName(ProviderModelEnum.ProxyProxyprovider), renderProxyOverview],
-    [providerName(ProviderModelEnum.Oauth2Oauth2provider), renderOAuth2Overview],
-    [providerName(ProviderModelEnum.LdapLdapprovider), renderLDAPOverview],
+    [providerName(ProviderModelEnum.AuthentikProvidersSamlSamlprovider), renderSAMLOverview],
+    [providerName(ProviderModelEnum.AuthentikProvidersScimScimprovider), renderSCIMOverview],
+    [providerName(ProviderModelEnum.AuthentikProvidersRadiusRadiusprovider), renderRadiusOverview],
+    [providerName(ProviderModelEnum.AuthentikProvidersRacRacprovider), renderRACOverview],
+    [providerName(ProviderModelEnum.AuthentikProvidersProxyProxyprovider), renderProxyOverview],
+    [providerName(ProviderModelEnum.AuthentikProvidersOauth2Oauth2provider), renderOAuth2Overview],
+    [providerName(ProviderModelEnum.AuthentikProvidersLdapLdapprovider), renderLDAPOverview],
 ]);
