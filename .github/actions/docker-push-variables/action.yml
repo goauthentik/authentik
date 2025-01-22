@@ -9,6 +9,9 @@ inputs:
   image-arch:
     required: false
     description: "Docker image arch"
+  release:
+    required: true
+    description: "True if this is a release build, false if this is a dev/PR build"
 
 outputs:
   shouldPush:
@@ -44,6 +47,9 @@ outputs:
   imageMainName:
     description: "Docker image main name"
     value: ${{ steps.ev.outputs.imageMainName }}
+  imageBuildArgs:
+    description: "Docker image build args"
+    value: ${{ steps.ev.outputs.imageBuildArgs }}
 
 runs:
   using: "composite"
@@ -54,6 +60,8 @@ runs:
       env:
         IMAGE_NAME: ${{ inputs.image-name }}
         IMAGE_ARCH: ${{ inputs.image-arch }}
+        RELEASE: ${{ inputs.release }}
         PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        REF: ${{ github.ref }}
       run: |
         python3 ${{ github.action_path }}/push_vars.py
