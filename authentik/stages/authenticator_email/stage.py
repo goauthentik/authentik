@@ -40,6 +40,7 @@ class AuthenticatorEmailChallenge(WithUserInfoChallenge):
 
     # Set to true if no previous prompt stage set the email
     # this stage will also check prompt_data.email
+    email = CharField(default=None, allow_blank=True, allow_null=True)
     email_required = BooleanField(default=True)
     component = CharField(default="ak-stage-authenticator-email")
     response_status = CharField(default="pending")
@@ -113,21 +114,62 @@ class AuthenticatorEmailStageView(ChallengeStageView):
 
     def _has_email(self) -> str | None:
         context = self.executor.plan.context
+        LOGGER.debug(f"{context=}")
         if PLAN_CONTEXT_EMAIL in context.get(PLAN_CONTEXT_PROMPT, {}):
             self.logger.debug("got email from plan context")
             return context.get(PLAN_CONTEXT_PROMPT, {}).get(PLAN_CONTEXT_EMAIL)
         if SESSION_KEY_EMAIL_DEVICE in self.request.session:
             self.logger.debug("got email from device in session")
+            LOGGER.debug(f"{self.request.session=}")
+            LOGGER.debug(f"{self.request.session[SESSION_KEY_EMAIL_DEVICE]=}")
             device: EmailDevice = self.request.session[SESSION_KEY_EMAIL_DEVICE]
+            LOGGER.debug(f"{device=}")
+            LOGGER.debug(f"{device.email=}")
             if device.email == "":
                 return None
             return device.email
         return None
 
+    def mask_email(self, email: str | None) -> str | None:
+        """Mask email address for privacy
+
+        Args:
+            email: Email address to mask
+
+        Returns:
+            Masked email address or None if input is None
+
+        Example:
+            >>> mask_email("myname@company.org")
+            'm****e@c*****t.org'
+        """
+        if not email:
+            return None
+
+        local, domain = email.split("@")
+        domain_parts = domain.split(".")
+
+        # Mask local part (keep first and last char)
+        if len(local) <= 2:
+            masked_local = local
+        else:
+            masked_local = local[0] + "*" * (len(local)-2) + local[-1]
+
+        # Mask domain (keep first and last char of first part)
+        main_domain = domain_parts[0]
+        if len(main_domain) <= 2:
+            masked_domain = main_domain
+        else:
+            masked_domain = main_domain[0] + "*" * (len(main_domain)-2) + main_domain[-1]
+
+        return f"{masked_local}@{masked_domain}.{'.'.join(domain_parts[1:])}"
+
     def get_challenge(self, *args, **kwargs) -> Challenge:
+        email = self._has_email()
         return AuthenticatorEmailChallenge(
             data={
-                "email_required": self._has_email() is None,
+                "email": self.mask_email(email),
+                "email_required": email is None,
                 "responseStatus": "pending",
             }
         )
@@ -144,7 +186,8 @@ class AuthenticatorEmailStageView(ChallengeStageView):
 
         if SESSION_KEY_EMAIL_DEVICE not in self.request.session:
             device = EmailDevice(user=user, confirmed=False, stage=stage, name="Email Device")
-            device.generate_token(commit=False)
+            valid_secs : int = stage.token_expiry * 60  # token_expiry is in minutes
+            device.generate_token(valid_secs=valid_secs, commit=False)
             self.request.session[SESSION_KEY_EMAIL_DEVICE] = device
             if email := self._has_email():
                 device.email = email

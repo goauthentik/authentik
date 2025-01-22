@@ -31412,6 +31412,10 @@ paths:
         schema:
           type: string
       - in: query
+        name: template
+        schema:
+          type: string
+      - in: query
         name: timeout
         schema:
           type: integer
@@ -39629,6 +39633,9 @@ components:
           type: string
         pending_user_avatar:
           type: string
+        email:
+          type: string
+          format: email
         email_required:
           type: boolean
           default: true
@@ -39724,6 +39731,8 @@ components:
           maximum: 2147483647
           minimum: -2147483648
           description: Time in minutes the token sent is valid.
+        template:
+          type: string
       required:
       - component
       - meta_model_name
@@ -39788,6 +39797,9 @@ components:
           maximum: 2147483647
           minimum: -2147483648
           description: Time in minutes the token sent is valid.
+        template:
+          type: string
+          minLength: 1
       required:
       - name
     AuthenticatorEndpointGDTCStage:
@@ -49367,6 +49379,9 @@ components:
           maximum: 2147483647
           minimum: -2147483648
           description: Time in minutes the token sent is valid.
+        template:
+          type: string
+          minLength: 1
     PatchedAuthenticatorEndpointGDTCStageRequest:
       type: object
       description: AuthenticatorEndpointGDTCStage Serializer

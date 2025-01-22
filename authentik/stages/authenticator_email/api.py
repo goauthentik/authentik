@@ -28,6 +28,7 @@ class AuthenticatorEmailStageSerializer(StageSerializer):
             "from_address",
             "subject",
             "token_expiry",
+            "template",
         ]
 
 
