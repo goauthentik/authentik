@@ -31,6 +31,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
     }
 
     async send(data: AuthenticatorEmailStage): Promise<AuthenticatorEmailStage> {
+        console.debug("HEY! send data", data);
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorEmailUpdate({
                 stageUuid: this.instance.pk || "",
@@ -44,6 +45,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
     }
 
     renderForm(): TemplateResult {
+        console.debug("HEY!");
         return html` <span> ${msg("Stage used to configure an Email-based authenticator.")} </span>
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
@@ -92,8 +94,12 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                         ?required=${true}
                         name="subject"
                     >
-                        input type="text" value="${first(this.instance?.fromAddress, "")}"
-                        class="pf-c-form-control" required />
+                        <input
+                            type="text"
+                            value="${first(this.instance?.subject, "")}"
+                            class="pf-c-form-control"
+                            required
+                        />
                         <p class="pf-c-form__helper-text">
                             ${msg("Subject of the verification email.")}
                         </p>
@@ -103,36 +109,42 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                         ?required=${true}
                         name="template"
                     >
-                        <textarea class="pf-c-form-control" required>
-${first(this.instance?.fromAddress, "")}</textarea
-                        >
+                        <textarea
+                            class="pf-c-form-control"
+                            required
+                        >${first(this.instance?.template, "")}</textarea>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Template of the verification email. Supports HTML and Django-template syntax.",
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <!-- <ak-form-element-horizontal name="verifyOnly">
+                    <!--
+                    <ak-form-element-horizontal name="verifyOnly">
                         <label class="pf-c-switch">
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=first(this.instance?.verifyOnly, false)
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">
                                     <i class="fas fa-check" aria-hidden="true"></i>
                                 </span>
                             </span>
-                            <span class="pf-c-switch__label">{msg("Hash email address")}</span>
                         </label>
                         <p class="pf-c-form__helper-text">
-                            {msg(
-                                "If enabled, only a hash of the email address will be saved. This can be done for data-protection reasons. Devices created from a stage with this enabled cannot be used with the authenticator validation stage.",
-                            )}
-                        </p>
 
-                    </ak-form-element-horizontal> -->
+                        </p>
+                    </ak-form-element-horizontal>
+                    -->
+                    <ak-form-element-horizontal label=${msg("Token expiration time(in minutes)")} ?required=${true} name="token_expiry">
+                    <input
+                        type="number"
+                        value="${first(this.instance?.tokenExpiry, 10)}"
+                        class="pf-c-form-control"
+                        required
+                    />
+                </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Configuration flow")}
                         name="configureFlow"

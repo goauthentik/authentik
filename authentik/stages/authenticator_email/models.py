@@ -92,7 +92,7 @@ class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
 
     @property
     def component(self) -> str:
-        return "ak-stage-authenticator-email"
+        return "ak-stage-authenticator-email-form"
 
     @property
     def backend_class(self) -> type[BaseEmailBackend]:
