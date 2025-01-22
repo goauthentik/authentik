@@ -81,7 +81,8 @@ jobs:
           secrets: |
             GEOIPUPDATE_ACCOUNT_ID=${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}
             GEOIPUPDATE_LICENSE_KEY=${{ secrets.GEOIPUPDATE_LICENSE_KEY }}
-          build-args: ${{ fromJson(steps.ev.outputs.imageBuildArgs) }}
+          build-args: |
+            ${{ steps.ev.outputs.imageBuildArgs }}
           tags: ${{ steps.ev.outputs.imageTags }}
           platforms: linux/${{ inputs.image_arch }}
           cache-from: type=registry,ref=${{ steps.ev.outputs.attestImageNames }}:buildcache-${{ inputs.image_arch }}

@@ -85,6 +85,7 @@ if os.getenv("RELEASE", "false").lower() == "true":
     image_build_args = [f"VERSION={os.getenv('REF')}"]
 else:
     image_build_args = [f"GIT_BUILD_HASH={sha}"]
+image_build_args = "\n".join(image_build_args)
 
 with open(os.environ["GITHUB_OUTPUT"], "a+", encoding="utf-8") as _output:
     print(f"shouldPush={str(should_push).lower()}", file=_output)
@@ -97,4 +98,4 @@ with open(os.environ["GITHUB_OUTPUT"], "a+", encoding="utf-8") as _output:
     print(f"imageMainTag={image_main_tag}", file=_output)
     print(f"imageMainName={image_tags[0]}", file=_output)
     print(f"cacheTo={cache_to}", file=_output)
-    print(f"imageBuildArgs={dumps(image_build_args)}", file=_output)
+    print(f"imageBuildArgs={image_build_args}", file=_output)
