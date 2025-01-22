@@ -53,7 +53,7 @@ export class AuthenticatorEmailStage extends BaseStage<
                         </div>
                     </ak-form-static>
                     <ak-form-element
-                        label="${msg("Email")}"
+                        label="${msg("Configure your email")}"
                         required
                         class="pf-c-form__group"
                         .errors=${(this.challenge?.responseErrors || {})["email"]}
@@ -82,11 +82,72 @@ export class AuthenticatorEmailStage extends BaseStage<
     }
 
     render(): TemplateResult {
-        return html`<div class="pf-c-login">
-            <div class="pf-c-login__container">
-                <div class="pf-c-login__main">${this.renderEmailInput()}</div>
-            </div>
-        </div>`;
+        console.debug("AAA");
+        console.debug("AuthenticatorEmailStage:", this.challenge ? this.challenge.emailRequired : undefined);
+
+        // if (!this.challenge) {
+        //     console.debug("AuthenticatorEmailStage.render() called without challenge");
+
+
+        //     return html`<ak-empty-state loading> </ak-empty-state>`;
+        // }
+        if (this.challenge.emailRequired) {
+            console.debug("AuthenticatorEmailStage.render() called with challenge", this.challenge);
+
+
+            return this.renderEmailInput();
+        }
+        //return this.renderCode();
+            console.debug("AuthenticatorEmailStage.render() called without emailRequired challenge", this.challenge);
+
+
+        //return html`<h1>HELP!</h1>`;${this.renderEmailInput()}
+        return html`<header class="pf-c-login__main-header">
+        <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
+    </header>
+    <div class="pf-c-login__main-body">
+    <ak-form-static
+    class="pf-c-form__group"
+    userAvatar="${this.challenge.pendingUserAvatar}"
+    user=${this.challenge.pendingUser}
+>
+    <div slot="link">
+        <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
+            >${msg("Not you?")}</a
+        >
+    </div>
+</ak-form-static>
+    A verification token has been sent to your configured email address
+                 <form
+                    class="pf-c-form"
+                    @submit=${(e: Event) => {
+                        this.submitForm(e);
+                    }}
+                >
+        <ak-form-element
+        label="${msg("Token")}"
+        required
+        class="pf-c-form__group"
+        .errors=${(this.challenge?.responseErrors || {})["email"]}
+    >
+        <input
+            type="email"
+            name="email"
+            placeholder="${msg("Please enter the code.")}"
+            autofocus=""
+            autocomplete="email"
+            class="pf-c-form-control"
+            required
+        />
+    </ak-form-element>
+    <div class="pf-c-form__group pf-m-action">
+    <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+        ${msg("Continue")}
+    </button>
+</div>
+</form>
+</div>
+    `;
     }
 }
 
