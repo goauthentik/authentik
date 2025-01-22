@@ -4,6 +4,7 @@ import MDApplication from "@goauthentik/docs/add-secure-apps/applications/index.
 import "@goauthentik/elements/AppIcon.js";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import "@goauthentik/elements/Markdown";
+import "@goauthentik/elements/SidebarHelpToggle.js";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
@@ -37,6 +38,21 @@ export const applicationListStyle = css`
     }
     .pf-c-sidebar.pf-m-gutter > .pf-c-sidebar__main > * + * {
         margin-left: calc(var(--pf-c-sidebar__main--child--MarginLeft) / 2);
+    }
+
+    ak-sidebar-help-toggle {
+        display: none;
+    }
+
+    @media screen and (min-width: 768px) {
+        ak-sidebar-help-toggle {
+            display: block;
+        }
+    }
+
+    ak-sidebar-help-toggle.pf-m-width-default {
+        background-color: inherit;
+        max-width: 3rem;
     }
 `;
 
@@ -90,13 +106,12 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     }
 
     renderSidebarAfter(): TemplateResult {
-        return html`<div class="pf-c-sidebar__panel pf-m-width-25">
-            <div class="pf-c-card">
-                <div class="pf-c-card__body">
-                    <ak-markdown .md=${MDApplication} meta="applications/index.md"></ak-markdown>
-                </div>
-            </div>
-        </div>`;
+        return html`<ak-sidebar-help-toggle
+            label=${msg("Applications Documentation")}
+            .content=${MDApplication}
+            class="pf-c-sidebar__panel"
+            active-style="pf-m-width-25"
+        ></ak-sidebar-help-toggle>`;
     }
 
     renderToolbarSelected(): TemplateResult {
