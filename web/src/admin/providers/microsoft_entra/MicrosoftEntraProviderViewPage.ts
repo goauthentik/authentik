@@ -147,7 +147,7 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.ProvidersMicrosoftEntraMicrosoftentraprovider}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersMicrosoftEntraMicrosoftentraprovider}
                 objectPk=${this.provider.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;

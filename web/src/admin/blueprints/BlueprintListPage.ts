@@ -155,7 +155,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.BlueprintsBlueprintinstance}
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikBlueprintsBlueprintinstance}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>

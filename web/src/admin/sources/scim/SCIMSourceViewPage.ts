@@ -207,7 +207,7 @@ export class SCIMSourceViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.SourcesScimScimsource}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikSourcesScimScimsource}
                 objectPk=${this.source.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;

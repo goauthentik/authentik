@@ -280,7 +280,7 @@ export class FlowViewPage extends AKElement {
                 <ak-rbac-object-permission-page
                     slot="page-permissions"
                     data-tab-title="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.FlowsFlow}
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikFlowsFlow}
                     objectPk=${this.flow.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>`;
