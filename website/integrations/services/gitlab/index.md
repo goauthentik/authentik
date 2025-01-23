@@ -30,8 +30,8 @@ There are 2 ways to configure single sign on (SSO) for GitLab:
 
 The following placeholders are used in this guide:
 
-- `gitlab.company` is the FQDN of the GitLab Install
-- `authentik.company` is the FQDN of the authentik Install
+- `gitlab.company` is the FQDN of the GitLab installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 Create an application in authentik and note the slug, as this will be used later. Create a SAML provider with the following parameters:
 
@@ -41,6 +41,10 @@ Create an application in authentik and note the slug, as this will be used later
 - Binding: `Redirect`
 
 Under _Advanced protocol settings_, set a certificate for _Signing Certificate_.
+
+:::note
+This documentation lists only the settings that have been changed from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 #### GitLab Configuration
 

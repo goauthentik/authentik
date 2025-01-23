@@ -20,6 +20,10 @@ The following placeholders are used in this guide:
 - `netbox.company` is the FQDN of the NetBox installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
+:::note
+This documentation lists only the settings that have been changed from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
 Create an application in authentik and note the slug you choose, as this will be used later. In the Admin Interface, go to _Applications_ -> _Providers_. Create a _OAuth2/OpenID provider_ with the following parameters:
 
 - Client Type: `Confidential`

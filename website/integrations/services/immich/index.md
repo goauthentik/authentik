@@ -20,6 +20,10 @@ The following placeholders are used in this guide:
 - `https://immich.company` is the URL used to access the Immich instance.
 - `authentik.company` is the FQDN of the authentik installation.
 
+:::note
+This documentation lists only the settings that have been changed from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
 ## authentik configuration
 
 1. Create a new OAuth2/OpenID Provider under **Applications** > **Providers** using the following settings:

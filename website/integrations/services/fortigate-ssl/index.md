@@ -36,6 +36,10 @@ The following placeholders are used in this guide:
 - `fgt.user.group` = This will be the name of the user group in your Fortigate that you will use in your SSLVPN portal mapping and Firewall rules
 - `ak.user.group` = This is the user group name that you will use in authentik if you plan on limiting access to the sslvpn via groups.
 
+:::note
+This documentation lists only the settings that have been changed from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
 ## FortiGate configuration
 
 ### Preparation

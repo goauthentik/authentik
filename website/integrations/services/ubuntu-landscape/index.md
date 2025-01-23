@@ -24,6 +24,10 @@ The following placeholders are used in this guide:
 - `landscape.company` is the FQDN of the Landscape server.
 - `authentik.company` is the FQDN of the authentik installation.
 
+:::note
+This documentation lists only the settings that have been changed from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
 Landscape uses the OpenID-Connect Protocol for single-sign on.
 
 ## authentik Setup

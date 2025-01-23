@@ -21,8 +21,12 @@ This is based on authentik 2022.10.1 and Gitea 1.17.3 installed using the offici
 
 The following placeholders are used in this guide:
 
-- `authentik.company` is the FQDN of authentik.
-- `gitea.company` is the FQDN of Gitea.
+- `authentik.company` is the FQDN of authentik installation.
+- `gitea.company` is the FQDN of Gitea installation.
+
+:::note
+This documentation lists only the settings that have been changed from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ### Step 1
 

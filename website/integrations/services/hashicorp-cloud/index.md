@@ -17,7 +17,11 @@ sidebar_label: HashiCorp Cloud Platform
 
 The following placeholders are used in this guide:
 
-- `authentik.company` is the FQDN of authentik.
+- `authentik.company` is the FQDN of authentik installation.
+
+:::note
+This documentation lists only the settings that have been changed from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ### Step 1 - HashiCorp Cloud
 

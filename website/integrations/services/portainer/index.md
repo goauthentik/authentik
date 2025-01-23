@@ -21,8 +21,12 @@ This is based on authentik 2021.7.3 and Portainer 2.6.x-CE. Portainer 2.6 suppor
 
 The following placeholders are used in this guide:
 
-- `portainer.company` is the FQDN of Portainer.
-- `authentik.company` is the FQDN of authentik.
+- `portainer.company` is the FQDN of Portainer installation.
+- `authentik.company` is the FQDN of authentik installation.
+
+:::note
+This documentation lists only the settings that have been changed from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik configuration
 

@@ -25,6 +25,10 @@ The following placeholders are used in this guide:
 - `pfsense-user` is the name of the authentik Service account we'll create.
 - `DC=ldap,DC=goauthentik,DC=io` is the Base DN of the LDAP Provider (default)
 
+:::note
+This documentation lists only the settings that have been changed from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
 ### Step 1 - Service account
 
 In authentik, create a service account (under _Directory/Users_) for pfSense to use as the LDAP Binder and take note of the password generated.

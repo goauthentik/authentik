@@ -25,6 +25,10 @@ The following placeholders are used in this guide:
 - `authentik.<your_company>` is the FQDN of the authentik installation.
 - `_SLUG_` is the slug you choose upon application create in authentik.
 
+:::note
+This documentation lists only the settings that have been changed from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
 ## authentik configuration
 
 1. Log into authentik as an admin, and navigate to **Applications** --> **Applications**.

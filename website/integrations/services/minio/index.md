@@ -20,6 +20,10 @@ The following placeholders are used in this guide:
 - `minio.company` is the FQDN of the MinIO installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
+:::note
+This documentation lists only the settings that have been changed from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
 ### Mapping to MinIO policies
 
 The primary way to manage access in MinIO is via [policies](https://min.io/docs/minio/linux/administration/identity-access-management/policy-based-access-control.html#minio-policy). We need to configure authentik to return a list of which MinIO policies should be applied to a user.

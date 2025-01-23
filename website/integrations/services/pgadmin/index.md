@@ -21,8 +21,12 @@ This is based on authentik 2024.12.2 and pgAdmin4 8.14
 
 The following placeholders are used in this guide:
 
-- `pgadmin.company` is the FQDN of pgAdmin.
-- `authentik.company` is the FQDN of authentik.
+- `pgadmin.company` is the FQDN of pgAdmin installation.
+- `authentik.company` is the FQDN of authentik installation.
+
+:::note
+This documentation lists only the settings that have been changed from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 # authentik configuration
 

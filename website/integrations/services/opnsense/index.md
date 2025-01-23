@@ -25,6 +25,10 @@ The following placeholders are used in this guide:
 - `opnsense` is the name of the authentik Service account we'll create.
 - `DC=ldap,DC=goauthentik,DC=io` is the Base DN of the LDAP Provider (default)
 
+:::note
+This documentation lists only the settings that have been changed from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
 ### Step 1
 
 In authentik, go and 'Create Service account' (under _Directory/Users_) for OPNsense to use as the LDAP Binder, leaving 'Create group' ticked as we'll need that group for the provider.

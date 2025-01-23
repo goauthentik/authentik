@@ -21,8 +21,12 @@ This is based on authentik 2022.3.1 and Rocket.chat 4.5.1 using the [Docker-Comp
 
 The following placeholders are used in this guide:
 
-- `rocket.company` is the FQDN of Rocket.chat.
-- `authentik.company` is the FQDN of authentik.
+- `rocket.company` is the FQDN of Rocket.chat installation.
+- `authentik.company` is the FQDN of authentik installation.
+
+:::note
+This documentation lists only the settings that have been changed from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ### Step 1
 

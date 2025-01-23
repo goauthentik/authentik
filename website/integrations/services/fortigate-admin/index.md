@@ -23,6 +23,10 @@ The following placeholders are used in this guide:
 - `fgt.mapping` is the name of the SAML Property Mapping.
 - `ak.cert` = The authentik self-signed certificate you use for the service provider.
 
+:::note
+This documentation lists only the settings that have been changed from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
 > [!IMPORTANT]
 > If you have changed the port of the admin login from 443 to anything else you have to append it behind `fgt.company`. So f.e. `fgt.company:10443`.
 
