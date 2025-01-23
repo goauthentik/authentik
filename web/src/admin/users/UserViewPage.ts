@@ -458,7 +458,7 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.CoreUser}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreUser}
                 objectPk=${this.user.pk}
             >
             </ak-rbac-object-permission-page>

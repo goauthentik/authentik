@@ -130,7 +130,7 @@ export class SCIMProviderViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.ProvidersScimScimprovider}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersScimScimprovider}
                 objectPk=${this.provider.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;

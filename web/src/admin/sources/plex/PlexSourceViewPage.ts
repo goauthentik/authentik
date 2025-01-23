@@ -143,7 +143,7 @@ export class PlexSourceViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.SourcesPlexPlexsource}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikSourcesPlexPlexsource}
                 objectPk=${this.source.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;

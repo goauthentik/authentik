@@ -152,7 +152,7 @@ gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescri
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
-		docker.io/openapitools/openapi-generator-cli:v6.5.0 generate \
+		docker.io/openapitools/openapi-generator-cli:v7.11.0 generate \
 		-i /local/schema.yml \
 		-g typescript-fetch \
 		-o /local/${GEN_API_TS} \
