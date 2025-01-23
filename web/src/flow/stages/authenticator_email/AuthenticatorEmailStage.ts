@@ -120,7 +120,7 @@ export class AuthenticatorEmailStage extends BaseStage<
                         >
                     </div>
                 </ak-form-static>
-                A verification token has been sent to your configured email address
+                A verification token has been sent to your configured email address ${this.challenge.email}
                 <form
                     class="pf-c-form"
                     @submit=${(e: Event) => {

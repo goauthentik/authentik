@@ -151,18 +151,23 @@ class AuthenticatorEmailStageView(ChallengeStageView):
 
         # Mask local part (keep first and last char)
         if len(local) <= 2:
-            masked_local = local
+            masked_local = "*" * len(local)
         else:
-            masked_local = local[0] + "*" * (len(local)-2) + local[-1]
+            masked_local = local[0] + "*" * (len(local)-1)
 
-        # Mask domain (keep first and last char of first part)
-        main_domain = domain_parts[0]
-        if len(main_domain) <= 2:
-            masked_domain = main_domain
-        else:
-            masked_domain = main_domain[0] + "*" * (len(main_domain)-2) + main_domain[-1]
+        # Mask each domain part except the last one (TLD)
+        masked_domain_parts = []
+        for i, part in enumerate(domain_parts[:-1]):  # Process all parts except TLD
+            if len(part) <= 2:
+                masked_part = "*" * len(part)
+            else:
+                masked_part = part[0] + "*" * (len(part)-1)
+            masked_domain_parts.append(masked_part)
 
-        return f"{masked_local}@{masked_domain}.{'.'.join(domain_parts[1:])}"
+        # Add TLD unchanged
+        masked_domain_parts.append(domain_parts[-1])
+
+        return f"{masked_local}@{'.'.join(masked_domain_parts)}"
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
         email = self._has_email()
@@ -189,6 +194,7 @@ class AuthenticatorEmailStageView(ChallengeStageView):
             valid_secs : int = stage.token_expiry * 60  # token_expiry is in minutes
             device.generate_token(valid_secs=valid_secs, commit=False)
             self.request.session[SESSION_KEY_EMAIL_DEVICE] = device
+            LOGGER.debug(f"!!! {device.token=}, {device.valid_until=}")
             if email := self._has_email():
                 device.email = email
                 try:
