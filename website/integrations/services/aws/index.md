@@ -3,7 +3,7 @@ title: Integrate with Amazon Web Services
 sidebar_label: Amazon Web Services
 ---
 
-# Amazon Web Services
+# Integrate with Amazon Web Services
 
 <span class="badge badge--primary">Support level: authentik</span>
 
@@ -148,8 +148,8 @@ Go back to your authentik instance
 - As the expression, enter:
 
 ```python
-# This expression strips the default mapping from its 'photos' attribute,
-# which is a forbidden property in AWS IAM.
+# Integrate with This expression strips the default mapping from its 'photos' attribute,
+# Integrate with which is a forbidden property in AWS IAM.
 return {
     "photos": None,
 }

@@ -3,7 +3,7 @@ title: Integrate with pgAdmin
 sidebar_label: pgAdmin
 ---
 
-# pgAdmin
+# Integrate with pgAdmin
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -24,7 +24,7 @@ The following placeholders are used in this guide:
 - `pgadmin.company` is the FQDN of pgAdmin.
 - `authentik.company` is the FQDN of authentik.
 
-# authentik configuration
+# Integrate with authentik configuration
 
 1. From the Admin interface, navigate to **Applications** -> **Applications**.
 2. Use the wizard to create a new application and provider. During this process:

@@ -3,7 +3,7 @@ title: Integrate with GitHub Enterprise Cloud - Enterprise Managed Users
 sidebar_label: GitHub Enterprise Cloud EMU
 ---
 
-# GitHub Enterprise Cloud - Enterprise Managed Users
+# Integrate with GitHub Enterprise Cloud - Enterprise Managed Users
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -77,9 +77,9 @@ Before we create a SCIM provider, we also have to create a new Property Mapping.
 
 ```python
 roles = []
-# Edit this if statement if you need to add more GitHub roles.
-# Valid roles include:
-# user, guest_collaborator, enterprise_owner, billing_manager
+# Integrate with Edit this if statement if you need to add more GitHub roles.
+# Integrate with Valid roles include:
+# Integrate with user, guest_collaborator, enterprise_owner, billing_manager
 if ak_is_group_member(request.user, name='GitHub Admins'):
     roles.append({'value': 'enterprise_owner', 'primary': True})
 else:

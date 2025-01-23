@@ -3,7 +3,7 @@ title: Integrate with FortiManager
 sidebar_label: FortiManager
 ---
 
-# FortiManager
+# Integrate with FortiManager
 
 <span class="badge badge--secondary">Support level: Community</span>
 

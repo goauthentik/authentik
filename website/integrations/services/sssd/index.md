@@ -3,7 +3,7 @@ title: Integrate with sssd
 sidebar_label: sssd
 ---
 
-# sssd
+# Integrate with sssd
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -102,7 +102,7 @@ ldap_user_name = cn
 ldap_group_object_class = group
 ldap_group_name = cn
 
-# Optionally, filter logins to only a specific group
+# Integrate with Optionally, filter logins to only a specific group
 #ldap_access_order = filter
 #ldap_access_filter = memberOf=cn=authentik Admins,ou=groups,${ldap.baseDN}
 

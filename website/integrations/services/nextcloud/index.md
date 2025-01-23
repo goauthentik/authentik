@@ -3,7 +3,7 @@ title: Integrate with Nextcloud
 sidebar_label: Nextcloud
 ---
 
-# Nextcloud
+# Integrate with Nextcloud
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -68,13 +68,13 @@ However, if you want to be able to control how much storage users in Nextcloud c
 - Expression:
 
 ```python
-# Extract all groups the user is a member of
+# Integrate with Extract all groups the user is a member of
 groups = [group.name for group in user.ak_groups.all()]
 
-# Nextcloud admins must be members of a group called "admin".
-# This is static and cannot be changed.
-# We append a fictional "admin" group to the user's groups if they are an admin in authentik.
-# This group would only be visible in Nextcloud and does not exist in authentik.
+# Integrate with Nextcloud admins must be members of a group called "admin".
+# Integrate with This is static and cannot be changed.
+# Integrate with We append a fictional "admin" group to the user's groups if they are an admin in authentik.
+# Integrate with This group would only be visible in Nextcloud and does not exist in authentik.
 if user.is_superuser and "admin" not in groups:
     groups.append("admin")
 

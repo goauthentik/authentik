@@ -3,7 +3,7 @@ title: Integrate with QNAP NAS
 sidebar_label: QNAP NAS
 ---
 
-# QNAP NAS
+# Integrate with QNAP NAS
 
 ## What is QNAP NAS
 
@@ -140,20 +140,20 @@ ssl                         on
 rootbinddn                  cn=${qnap.serviceAccount},ou=users,${ldap.baseDN}
 nss_schema                  rfc2307bis
 
-# remap object classes to authentik ones
+# Integrate with remap object classes to authentik ones
 nss_map_objectclass         posixAccount    user
 nss_map_objectclass         shadowAccount   user
 nss_map_objectclass         posixGroup      group
 
-# remap attributes
-# uid to cn is essential otherwise only id usernames will occur
+# Integrate with remap attributes
+# Integrate with uid to cn is essential otherwise only id usernames will occur
 nss_map_attribute           uid             cn
-# map displayName information into comments field
+# Integrate with map displayName information into comments field
 nss_map_attribute           gecos           displayName
-# see https://ldapwiki.com/wiki/GroupOfUniqueNames%20vs%20groupOfNames
+# Integrate with see https://ldapwiki.com/wiki/GroupOfUniqueNames%20vs%20groupOfNames
 nss_map_attribute           uniqueMember    member
 
-# configure scope per search filter
+# Integrate with configure scope per search filter
 nss_base_passwd             ou=users,${ldap.baseDN}?one
 nss_base_shadow             ou=users,${ldap.baseDN}?one
 nss_base_group              ou=groups,${ldap.baseDN}?one
@@ -176,14 +176,14 @@ Now start the LDAP Service:
 To see if connection is working, type
 
 ```bash
-# list users
+# Integrate with list users
 $ getent passwd
 ```
 
 The output should list local users and authentik accounts.
 
 ```bash
-# list groups
+# Integrate with list groups
 $ getent group
 ```
 

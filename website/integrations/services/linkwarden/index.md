@@ -3,7 +3,7 @@ title: Integrate with Linkwarden
 sidebar_label: Linkwarden
 ---
 
-# Linkwarden
+# Integrate with Linkwarden
 
 <span class="badge badge--secondary">Support level: Community</span>
 

@@ -3,7 +3,7 @@ title: Integrate with Budibase
 sidebar_label: Budibase
 ---
 
-# Budibase
+# Integrate with Budibase
 
 <span class="badge badge--secondary">Support level: Community</span>
 
