@@ -109,10 +109,9 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                         ?required=${true}
                         name="template"
                     >
-                        <textarea
-                            class="pf-c-form-control"
-                            required
-                        >${first(this.instance?.template, "")}</textarea>
+                        <textarea class="pf-c-form-control" required>
+${first(this.instance?.template, "")}</textarea
+                        >
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Template of the verification email. Supports HTML and Django-template syntax.",
@@ -137,14 +136,18 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                         </p>
                     </ak-form-element-horizontal>
                     -->
-                    <ak-form-element-horizontal label=${msg("Token expiration time(in minutes)")} ?required=${true} name="token_expiry">
-                    <input
-                        type="number"
-                        value="${first(this.instance?.tokenExpiry, 10)}"
-                        class="pf-c-form-control"
-                        required
-                    />
-                </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Token expiration time(in minutes)")}
+                        ?required=${true}
+                        name="token_expiry"
+                    >
+                        <input
+                            type="number"
+                            value="${first(this.instance?.tokenExpiry, 10)}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                    </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Configuration flow")}
                         name="configureFlow"
