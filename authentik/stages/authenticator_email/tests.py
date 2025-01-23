@@ -50,17 +50,18 @@ class TestAuthenticatorEmailStage(FlowTestCase):
 
     def test_token(self):
         # Make sure that the token doesn't exist
-        assert self.device.token is None
+        self.assertIsNone(self.device.token)
         # Create the token
         self.device.generate_token()
         # Make sure that the token was generated
-        assert self.device.token is not None
+        self.assertIsNotNone(self.device.token)
         # Make sure that the token can be verified and is invalid
-        assert self.device.verify_token("invalid_token") is False
+        self.assertFalse(self.device.verify_token("invalid_token"))
         # Verify the token
-        assert self.device.verify_token(self.device.token)
+        self.assertTrue(self.device.verify_token(self.device.token))
         # Make sure that the token was cleared
-        assert self.device.token is None
+        self.device.clear_token()
+        self.assertIsNone(self.device.token)
 
     def test_stage_send(self):
         # Initialize the flow
