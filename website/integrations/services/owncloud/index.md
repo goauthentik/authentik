@@ -11,10 +11,6 @@ sidebar_label: ownCloud
 >
 > -- https://owncloud.com
 
-:::note
-This guide focuses on ownCloud installations that are deployed using Docker. If you deployed ownCloud using a different mechanism, there might be some differences in the process.
-:::
-
 ## Preparation
 
 The following placeholders are used in this guide:
@@ -44,7 +40,7 @@ Follow these steps to create the required application/provider pairs. You will n
     - **Configure the Provider**: Provide a name (the default name will suffice for most users), the authorization flow to use for this provider, and the following required configurations. The settings for each of the four application/provider pairs are shown below:
 
         - **Protocol settings:**
-          
+
           **Web UI:**
 
             - **Signing Key**: Select any available signing key.
@@ -97,8 +93,8 @@ To enable OIDC functionality in ownCloud, follow these steps:
 
 1. **Navigate to the Market**:
 
-    - Access the Market by visiting:  
-      `https://owncloud.company/apps/market/#/`  
+    - Access the Market by visiting:
+      `https://owncloud.company/apps/market/#/`
       or by clicking the **Hamburger Menu** in the top-left corner of any page in your ownCloud deployment and selecting **Market**.
     - Search for and enable the **OIDC plugin**.
 
@@ -121,7 +117,7 @@ To enable OIDC functionality in ownCloud, follow these steps:
 
     The location of this file depends on your Docker configuration. By default, the file resides in `/mnt/data/config` within the container. This location is exposed via the `files` volume in the [official setup guide](https://doc.owncloud.com/server/next/admin_manual/installation/docker/#docker-compose).
 
-4. **Minimal Contents of `oidc.config.php`**:  
+4. **Minimal Contents of `oidc.config.php`**:
    Add the necessary configuration settings to this file. Ensure it includes at least the minimal requirements for your setup:
 
     :::warning
