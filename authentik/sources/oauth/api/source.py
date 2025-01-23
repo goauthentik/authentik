@@ -16,6 +16,7 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
+from authentik.lib.api import MultipleFieldLookupMixin
 from authentik.lib.utils.http import get_http_session
 from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.registry import SourceType, registry
@@ -170,12 +171,13 @@ class OAuthSourceFilter(FilterSet):
         ]
 
 
-class OAuthSourceViewSet(UsedByMixin, ModelViewSet):
+class OAuthSourceViewSet(MultipleFieldLookupMixin, UsedByMixin, ModelViewSet):
     """Source Viewset"""
 
     queryset = OAuthSource.objects.all()
     serializer_class = OAuthSourceSerializer
     lookup_field = "slug"
+    lookup_fields = ["slug", "pbm_uuid"]
     filterset_class = OAuthSourceFilter
     search_fields = ["name", "slug"]
     ordering = ["name"]

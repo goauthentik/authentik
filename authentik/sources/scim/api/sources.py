@@ -7,6 +7,7 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.tokens import TokenSerializer
 from authentik.core.api.used_by import UsedByMixin
+from authentik.lib.api import MultipleFieldLookupMixin
 from authentik.sources.scim.models import SCIMSource
 
 
@@ -47,12 +48,13 @@ class SCIMSourceSerializer(SourceSerializer):
         ]
 
 
-class SCIMSourceViewSet(UsedByMixin, ModelViewSet):
+class SCIMSourceViewSet(MultipleFieldLookupMixin, UsedByMixin, ModelViewSet):
     """SCIMSource Viewset"""
 
     queryset = SCIMSource.objects.all()
     serializer_class = SCIMSourceSerializer
     lookup_field = "slug"
+    lookup_fields = ["slug", "pbm_uuid"]
     filterset_fields = ["name", "slug"]
     search_fields = ["name", "slug", "token__identifier", "token__user__username"]
     ordering = ["name"]

@@ -4,7 +4,7 @@ import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types";
 import { OAuthSource, SourcesApi } from "@goauthentik/api";
 
 const sourceToSelect = (source: OAuthSource) => [
-    source.slug,
+    source.pk,
     `${source.name} (${source.slug})`,
     source.name,
     source,

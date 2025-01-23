@@ -18,6 +18,7 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.flows.challenge import RedirectChallenge
 from authentik.flows.views.executor import to_stage_response
+from authentik.lib.api import MultipleFieldLookupMixin
 from authentik.rbac.decorators import permission_required
 from authentik.sources.plex.models import PlexSource, UserPlexSourceConnection
 from authentik.sources.plex.plex import PlexAuth, PlexSourceFlowManager
@@ -45,12 +46,13 @@ class PlexTokenRedeemSerializer(PassiveSerializer):
     plex_token = CharField()
 
 
-class PlexSourceViewSet(UsedByMixin, ModelViewSet):
+class PlexSourceViewSet(MultipleFieldLookupMixin, UsedByMixin, ModelViewSet):
     """Plex source Viewset"""
 
     queryset = PlexSource.objects.all()
     serializer_class = PlexSourceSerializer
     lookup_field = "slug"
+    lookup_fields = ["slug", "pbm_uuid"]
     filterset_fields = [
         "name",
         "slug",

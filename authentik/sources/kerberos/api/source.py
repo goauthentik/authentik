@@ -13,6 +13,7 @@ from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.events.api.tasks import SystemTaskSerializer
+from authentik.lib.api import MultipleFieldLookupMixin
 from authentik.sources.kerberos.models import KerberosSource
 from authentik.sources.kerberos.tasks import CACHE_KEY_STATUS
 
@@ -59,12 +60,13 @@ class KerberosSyncStatusSerializer(PassiveSerializer):
     tasks = SystemTaskSerializer(many=True, read_only=True)
 
 
-class KerberosSourceViewSet(UsedByMixin, ModelViewSet):
+class KerberosSourceViewSet(MultipleFieldLookupMixin, UsedByMixin, ModelViewSet):
     """Kerberos Source Viewset"""
 
     queryset = KerberosSource.objects.all()
     serializer_class = KerberosSourceSerializer
     lookup_field = "slug"
+    lookup_fields = ["slug", "pbm_uuid"]
     filterset_fields = [
         "name",
         "slug",
