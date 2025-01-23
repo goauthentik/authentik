@@ -30,7 +30,7 @@ The configuration for each application is nearly identical, except for the **Cli
 
 ### Create applications/providers
 
-Follow these steps to create the required application/provider pairs. You will need to repeat the process four times: once for the Desktop application, once for the Web UI, once for the Android application, and once for the iOS application.
+Follow these steps to create the required application/provider pairs. You will need to repeat the process four times: once each for the Desktop application, Web UI, Android application, and iOS application
 
 1. In the Admin interface, navigate to **Applications** > **Applications**.
 2. Use the wizard to create the application and provider, with the following settings:
