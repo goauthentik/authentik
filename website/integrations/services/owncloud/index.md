@@ -101,8 +101,9 @@ To enable OIDC functionality in ownCloud, follow these steps:
 2. **OIDC Plugin Configuration**:
    The OIDC plugin cannot be configured via the ownCloud UI. Configuration must be performed either:
 
-    - Through the `config.php` file, or
-    - By storing the configuration in the ownCloud database.
+    - by editing the `config.php` file
+    OR
+    - by storing the configuration in the ownCloud database
 
     The location of the `config.php` file depends on your deployment method. Consult the setup guide for your chosen deployment method to identify the file’s location within your installation.
 
