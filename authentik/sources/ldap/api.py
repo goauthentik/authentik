@@ -18,6 +18,7 @@ from authentik.core.api.property_mappings import PropertyMappingFilterSet, Prope
 from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.crypto.models import CertificateKeyPair
+from authentik.lib.api import MultipleFieldLookupMixin
 from authentik.lib.sync.outgoing.api import SyncStatusSerializer
 from authentik.sources.ldap.models import LDAPSource, LDAPSourcePropertyMapping
 from authentik.sources.ldap.tasks import CACHE_KEY_STATUS, SYNC_CLASSES
@@ -103,12 +104,13 @@ class LDAPSourceSerializer(SourceSerializer):
         extra_kwargs = {"bind_password": {"write_only": True}}
 
 
-class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
+class LDAPSourceViewSet(MultipleFieldLookupMixin, UsedByMixin, ModelViewSet):
     """LDAP Source Viewset"""
 
     queryset = LDAPSource.objects.all()
     serializer_class = LDAPSourceSerializer
     lookup_field = "slug"
+    lookup_fields = ["slug", "pbm_uuid"]
     filterset_fields = [
         "name",
         "slug",

@@ -9,6 +9,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
+from authentik.lib.api import MultipleFieldLookupMixin
 from authentik.providers.saml.api.providers import SAMLMetadataSerializer
 from authentik.sources.saml.models import SAMLSource
 from authentik.sources.saml.processors.metadata import MetadataProcessor
@@ -37,12 +38,13 @@ class SAMLSourceSerializer(SourceSerializer):
         ]
 
 
-class SAMLSourceViewSet(UsedByMixin, ModelViewSet):
+class SAMLSourceViewSet(MultipleFieldLookupMixin, UsedByMixin, ModelViewSet):
     """SAMLSource Viewset"""
 
     queryset = SAMLSource.objects.all()
     serializer_class = SAMLSourceSerializer
     lookup_field = "slug"
+    lookup_fields = ["slug", "pbm_uuid"]
     filterset_fields = [
         "name",
         "slug",
