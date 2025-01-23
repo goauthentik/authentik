@@ -189,7 +189,7 @@ The following PowerShell script must be updated according to your environment an
 ```PowerShell
 Add-PSSnapin microsoft.sharepoint.powershell
 
-# Integrate with Setup farm properties to work with OIDC
+# Setup farm properties to work with OIDC
 $cert = New-SelfSignedCertificate -CertStoreLocation Cert:\LocalMachine\My -Provider 'Microsoft Enhanced RSA and AES Cryptographic Provider' -Subject "CN=SharePoint Cookie Cert"
 $rsaCert = [System.Security.Cryptography.X509Certificates.RSACertificateExtensions]::GetRSAPrivateKey($cert)
 $fileName = $rsaCert.key.UniqueName
@@ -240,13 +240,13 @@ The following PowerShell script must be updated according to your environment an
 ```PowerShell
 Add-PSSnapin microsoft.sharepoint.powershell
 
-# Integrate with OIDC Settings
+# OIDC Settings
 $metadataendpointurl = "auth.providerConfigURL"
 $clientIdentifier = "auth.providerClientID"
 $trustedTokenIssuerName = "sp.issuerName"
 $trustedTokenIssuerDescription = "sp.issuerDesc"
 
-# Integrate with OIDC Claims Mapping
+# OIDC Claims Mapping
 ## Identity claim: oid => defined within the Authentik scope mapping
 $idClaim = New-SPClaimTypeMapping "http://schemas.microsoft.com/identity/claims/objectidentifier" -IncomingClaimTypeDisplayName "oid" -SameAsIncoming
 
@@ -264,11 +264,11 @@ $claims = @(
 
 )
 
-# Integrate with Trust 3rd party identity token issuer
+# Trust 3rd party identity token issuer
 $trustedTokenIssuer = New-SPTrustedIdentityTokenIssuer -Name $trustedTokenIssuerName -Description $trustedTokenIssuerDescription -ClaimsMappings $claims -IdentifierClaim $idClaim.InputClaimType -DefaultClientIdentifier $clientIdentifier -MetadataEndPoint $metadataendpointurl -Scope "openid email profile"
 #Note: Remove the profile scope if you plan to use the LDAPCP claims augmentation.
 
-# Integrate with Create the SharePoint authentication provider based on the trusted token issuer
+# Create the SharePoint authentication provider based on the trusted token issuer
 New-SPAuthenticationProvider -TrustedIdentityTokenIssuer $trustedTokenIssuer
 
 ```

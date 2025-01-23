@@ -140,20 +140,20 @@ ssl                         on
 rootbinddn                  cn=${qnap.serviceAccount},ou=users,${ldap.baseDN}
 nss_schema                  rfc2307bis
 
-# Integrate with remap object classes to authentik ones
+# remap object classes to authentik ones
 nss_map_objectclass         posixAccount    user
 nss_map_objectclass         shadowAccount   user
 nss_map_objectclass         posixGroup      group
 
-# Integrate with remap attributes
-# Integrate with uid to cn is essential otherwise only id usernames will occur
+# remap attributes
+# uid to cn is essential otherwise only id usernames will occur
 nss_map_attribute           uid             cn
 # Integrate with map displayName information into comments field
 nss_map_attribute           gecos           displayName
-# Integrate with see https://ldapwiki.com/wiki/GroupOfUniqueNames%20vs%20groupOfNames
+# see https://ldapwiki.com/wiki/GroupOfUniqueNames%20vs%20groupOfNames
 nss_map_attribute           uniqueMember    member
 
-# Integrate with configure scope per search filter
+# configure scope per search filter
 nss_base_passwd             ou=users,${ldap.baseDN}?one
 nss_base_shadow             ou=users,${ldap.baseDN}?one
 nss_base_group              ou=groups,${ldap.baseDN}?one
