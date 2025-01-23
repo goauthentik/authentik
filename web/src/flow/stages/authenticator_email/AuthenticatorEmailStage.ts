@@ -85,12 +85,12 @@ export class AuthenticatorEmailStage extends BaseStage<
         console.debug("AAA");
         console.debug("AuthenticatorEmailStage:", this.challenge ? this.challenge.emailRequired : undefined);
 
-        // if (!this.challenge) {
-        //     console.debug("AuthenticatorEmailStage.render() called without challenge");
+        if (!this.challenge) {
+            console.debug("AuthenticatorEmailStage.render() called without challenge");
 
 
-        //     return html`<ak-empty-state loading> </ak-empty-state>`;
-        // }
+            return html`<ak-empty-state loading> </ak-empty-state>`;
+        }
         if (this.challenge.emailRequired) {
             console.debug("AuthenticatorEmailStage.render() called with challenge", this.challenge);
 
@@ -124,27 +124,30 @@ export class AuthenticatorEmailStage extends BaseStage<
                         this.submitForm(e);
                     }}
                 >
-        <ak-form-element
-        label="${msg("Token")}"
-        required
-        class="pf-c-form__group"
-        .errors=${(this.challenge?.responseErrors || {})["email"]}
-    >
-        <input
-            type="email"
-            name="email"
-            placeholder="${msg("Please enter the code.")}"
-            autofocus=""
-            autocomplete="email"
-            class="pf-c-form-control"
-            required
-        />
-    </ak-form-element>
-    <div class="pf-c-form__group pf-m-action">
-    <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-        ${msg("Continue")}
-    </button>
-</div>
+                <ak-form-element
+                label="${msg("Code")}"
+                required
+                class="pf-c-form__group"
+                .errors=${(this.challenge?.responseErrors || {})["code"]}
+            >
+                <input
+                    type="text"
+                    name="code"
+                    inputmode="numeric"
+                    pattern="[0-9]*"
+                    placeholder="${msg("Please enter the code you received via Email")}"
+                    autofocus=""
+                    autocomplete="one-time-code"
+                    class="pf-c-form-control"
+                    required
+                />
+            </ak-form-element>
+            ${this.renderNonFieldErrors()}
+            <div class="pf-c-form__group pf-m-action">
+                <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+                    ${msg("Continue")}
+                </button>
+            </div>
 </form>
 </div>
     `;
