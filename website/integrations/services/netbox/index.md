@@ -38,11 +38,11 @@ This setup was tested and developed with NetBox Docker. For a non-Docker install
 The following Docker env vars are required for the configuration.
 
 ```env
-# Integrate with Enable python-social-auth
+# Enable python-social-auth
 REMOTE_AUTH_ENABLED='true'
 REMOTE_AUTH_BACKEND='social_core.backends.open_id_connect.OpenIdConnectAuth'
 
-# Integrate with python-social-auth config
+# python-social-auth config
 SOCIAL_AUTH_OIDC_ENDPOINT='https://authentik.company/application/o/<Application slug>/'
 SOCIAL_AUTH_OIDC_KEY='<Client ID>'
 SOCIAL_AUTH_OIDC_SECRET='<Client Secret>'
@@ -56,10 +56,10 @@ The Netbox configuration needs to be extended, for this you can create a new fil
 from os import environ
 
 #############
-# Integrate with Docker
+# Docker
 #############
 
-# Integrate with python-social-auth configuration
+# python-social-auth configuration
 SOCIAL_AUTH_OIDC_ENDPOINT = environ.get('SOCIAL_AUTH_OIDC_ENDPOINT')
 SOCIAL_AUTH_OIDC_KEY = environ.get('SOCIAL_AUTH_OIDC_KEY')
 SOCIAL_AUTH_OIDC_SECRET = environ.get('SOCIAL_AUTH_OIDC_SECRET')
@@ -68,14 +68,14 @@ LOGOUT_REDIRECT_URL = environ.get('LOGOUT_REDIRECT_URL')
 
 
 #############
-# Integrate with non Docker
+# non Docker
 #############
 
-# Integrate with NetBox settings
+# NetBox settings
 #REMOTE_AUTH_ENABLED = True
 #REMOTE_AUTH_BACKEND = 'social_core.backends.open_id_connect.OpenIdConnectAuth'
 
-# Integrate with python-social-auth configuration
+# python-social-auth configuration
 #SOCIAL_AUTH_OIDC_ENDPOINT = 'https://authentik.company/application/o/<Application
 #SOCIAL_AUTH_OIDC_KEY = '<Client ID>'
 #SOCIAL_AUTH_OIDC_SECRET = '<Client Secret>'
@@ -91,7 +91,7 @@ From Netbox version 4.0.0 Netbox add the custom `Group` models. The following co
 :::
 
 ```python
-# Integrate with from django.contrib.auth.models import Group # For Netbox < 4.0.0
+# from django.contrib.auth.models import Group # For Netbox < 4.0.0
 from netbox.authentication import Group # For Netbox >= 4.0.0
 
 class AuthFailed(Exception):

@@ -24,7 +24,7 @@ The following placeholders are used in this guide:
 - `pgadmin.company` is the FQDN of pgAdmin.
 - `authentik.company` is the FQDN of authentik.
 
-# Integrate with authentik configuration
+# authentik configuration
 
 1. From the Admin interface, navigate to **Applications** -> **Applications**.
 2. Use the wizard to create a new application and provider. During this process:

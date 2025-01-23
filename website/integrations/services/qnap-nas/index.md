@@ -148,7 +148,7 @@ nss_map_objectclass         posixGroup      group
 # remap attributes
 # uid to cn is essential otherwise only id usernames will occur
 nss_map_attribute           uid             cn
-# Integrate with map displayName information into comments field
+# map displayName information into comments field
 nss_map_attribute           gecos           displayName
 # see https://ldapwiki.com/wiki/GroupOfUniqueNames%20vs%20groupOfNames
 nss_map_attribute           uniqueMember    member
@@ -176,14 +176,14 @@ Now start the LDAP Service:
 To see if connection is working, type
 
 ```bash
-# Integrate with list users
+# list users
 $ getent passwd
 ```
 
 The output should list local users and authentik accounts.
 
 ```bash
-# Integrate with list groups
+# list groups
 $ getent group
 ```
 

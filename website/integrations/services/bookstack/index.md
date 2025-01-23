@@ -70,34 +70,34 @@ Edit the `.env` file inside of the `www` folder of Bookstack.
 Modify the following Example SAML config and paste incorporate into your `.env` file
 
 ```bash
-# Integrate with Set authentication method to be saml2
+# Set authentication method to be saml2
 AUTH_METHOD=saml2
-# Integrate with Control if BookStack automatically initiates login via your SAML system if it's the only authentication method.
-# Integrate with Prevents the need for the user to click the "Login with x" button on the login page.
-# Integrate with Setting this to true enables auto-initiation.
+# Control if BookStack automatically initiates login via your SAML system if it's the only authentication method.
+# Prevents the need for the user to click the "Login with x" button on the login page.
+# Setting this to true enables auto-initiation.
 AUTH_AUTO_INITIATE=true
-# Integrate with Set the display name to be shown on the login button.
-# Integrate with (Login with <name>)
+# Set the display name to be shown on the login button.
+# (Login with <name>)
 SAML2_NAME=authentik
-# Integrate with Name of the attribute which provides the user's email address
+# Name of the attribute which provides the user's email address
 SAML2_EMAIL_ATTRIBUTE=email
-# Integrate with Name of the attribute to use as an ID for the SAML user.
+# Name of the attribute to use as an ID for the SAML user.
 SAML2_EXTERNAL_ID_ATTRIBUTE=uid
-# Integrate with Enable SAML group sync.
+# Enable SAML group sync.
 SAML2_USER_TO_GROUPS=true
-# Integrate with Set the attribute from which BookStack will read groups names from.
-# Integrate with You will need to rename your roles in Bookstack to match your groups in authentik.
+# Set the attribute from which BookStack will read groups names from.
+# You will need to rename your roles in Bookstack to match your groups in authentik.
 SAML2_GROUP_ATTRIBUTE=http://schemas.xmlsoap.org/claims/Group
-# Integrate with Name of the attribute(s) to use for the user's display name
-# Integrate with Can have multiple attributes listed, separated with a '|' in which
-# Integrate with case those values will be joined with a space.
-# Integrate with Example: SAML2_DISPLAY_NAME_ATTRIBUTES=firstName|lastName
-# Integrate with Defaults to the ID value if not found.
+# Name of the attribute(s) to use for the user's display name
+# Can have multiple attributes listed, separated with a '|' in which
+# case those values will be joined with a space.
+# Example: SAML2_DISPLAY_NAME_ATTRIBUTES=firstName|lastName
+# Defaults to the ID value if not found.
 SAML2_DISPLAY_NAME_ATTRIBUTES=http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname
-# Integrate with Identity Provider entityID URL
+# Identity Provider entityID URL
 SAML2_IDP_ENTITYID=METADATAURL
-# Integrate with Auto-load metadata from the IDP
-# Integrate with Setting this to true negates the need to specify the next three options
+# Auto-load metadata from the IDP
+# Setting this to true negates the need to specify the next three options
 SAML2_AUTOLOAD_METADATA=true
 
 ```

@@ -148,8 +148,8 @@ Go back to your authentik instance
 - As the expression, enter:
 
 ```python
-# Integrate with This expression strips the default mapping from its 'photos' attribute,
-# Integrate with which is a forbidden property in AWS IAM.
+# This expression strips the default mapping from its 'photos' attribute,
+# which is a forbidden property in AWS IAM.
 return {
     "photos": None,
 }

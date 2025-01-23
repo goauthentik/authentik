@@ -39,11 +39,11 @@ Paste the following block in your `local.yaml` file, after replacing the placeho
 To get the value for `x509cert`, go to _System_ > _Certificates_, and download the public Signing Certificate. To avoid further problems, concat it into "string format" using e.g.: https://www.samltool.com/format_x509cert.php
 
 ```yaml
-# Integrate with Optionally add this for docker debug-logging
-# Integrate with monolog:
-# Integrate with   handlers:
-# Integrate with     main:
-# Integrate with       path: php://stderr
+# Optionally add this for docker debug-logging
+# monolog:
+#   handlers:
+#     main:
+#       path: php://stderr
 
 kimai:
     saml:

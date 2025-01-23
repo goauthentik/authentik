@@ -47,10 +47,10 @@ OAUTH_CLIENT_SECRET=<Client secret from authentik>
 OAUTH_WELLKNOWN_URL=https://authentik.company/application/o/hoarder/.well-known/openid-configuration
 OAUTH_PROVIDER_NAME=authentik
 OAUTH_ALLOW_DANGEROUS_EMAIL_ACCOUNT_LINKING=true
-# Integrate with Optional: You can add this if you only want to allow login with Authentik
-# Integrate with DISABLE_PASSWORD_AUTH=true
-# Integrate with Optional but highly recommended:
-# Integrate with DISABLE_SIGNUPS=true
+# Optional: You can add this if you only want to allow login with Authentik
+# DISABLE_PASSWORD_AUTH=true
+# Optional but highly recommended:
+# DISABLE_SIGNUPS=true
 ```
 
 Finally, restart the Hoarder server and test your configuration.
