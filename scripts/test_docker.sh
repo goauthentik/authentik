@@ -3,6 +3,7 @@ set -e -x -o pipefail
 
 export PG_PASS=$(openssl rand -base64 36 | tr -d '\n')
 export AUTHENTIK_SECRET_KEY=$(openssl rand -base64 60 | tr -d '\n')
+export AUTHENTIK_IMAGE="xghcr.io/goauthentik/server"
 export AUTHENTIK_TAG=$(git rev-parse HEAD | cut -c1-15)
 export COMPOSE_PROJECT_NAME="authentik-test-${AUTHENTIK_TAG}"
 

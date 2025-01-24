@@ -1,4 +1,5 @@
-#!/usr/bin/env -S bash -e
+#!/usr/bin/env -S bash
+set -e -o pipefail
 MODE_FILE="${TMPDIR}/authentik-mode"
 
 function log {
