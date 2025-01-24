@@ -9,7 +9,8 @@ import "@goauthentik/elements/forms/SearchSelect";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
     AuthenticatorEmailStage,
@@ -24,11 +25,16 @@ import {
 
 @customElement("ak-stage-authenticator-email-form")
 export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmailStage> {
-    loadInstance(pk: string): Promise<AuthenticatorEmailStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorEmailRetrieve({
+    async loadInstance(pk: string): Promise<AuthenticatorEmailStage> {
+        const stage = await new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorEmailRetrieve({
             stageUuid: pk,
         });
+        this.showConnectionSettings = !stage.useGlobalSettings;
+        return stage;
     }
+
+    @property({ type: Boolean })
+    showConnectionSettings = false;
 
     async send(data: AuthenticatorEmailStage): Promise<AuthenticatorEmailStage> {
         if (this.instance) {
@@ -41,6 +47,104 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                 authenticatorEmailStageRequest: data,
             });
         }
+    }
+
+    renderConnectionSettings(): TemplateResult {
+        if (!this.showConnectionSettings) {
+            return html``;
+        }
+        return html`<ak-form-group>
+            <span slot="header"> ${msg("Connection settings")} </span>
+            <div slot="body" class="pf-c-form">
+                <ak-form-element-horizontal label=${msg("SMTP Host")} ?required=${true} name="host">
+                    <input
+                        type="text"
+                        value="${ifDefined(this.instance?.host || "")}"
+                        class="pf-c-form-control"
+                        required
+                    />
+                </ak-form-element-horizontal>
+                <ak-form-element-horizontal label=${msg("SMTP Port")} ?required=${true} name="port">
+                    <input
+                        type="number"
+                        value="${first(this.instance?.port, 25)}"
+                        class="pf-c-form-control"
+                        required
+                    />
+                </ak-form-element-horizontal>
+                <ak-form-element-horizontal label=${msg("SMTP Username")} name="username">
+                    <input
+                        type="text"
+                        value="${ifDefined(this.instance?.username || "")}"
+                        class="pf-c-form-control"
+                    />
+                </ak-form-element-horizontal>
+                <ak-form-element-horizontal
+                    label=${msg("SMTP Password")}
+                    ?writeOnly=${this.instance !== undefined}
+                    name="password"
+                >
+                    <input type="text" value="" class="pf-c-form-control" />
+                </ak-form-element-horizontal>
+                <ak-form-element-horizontal name="useTls">
+                    <label class="pf-c-switch">
+                        <input
+                            class="pf-c-switch__input"
+                            type="checkbox"
+                            ?checked=${first(this.instance?.useTls, true)}
+                        />
+                        <span class="pf-c-switch__toggle">
+                            <span class="pf-c-switch__toggle-icon">
+                                <i class="fas fa-check" aria-hidden="true"></i>
+                            </span>
+                        </span>
+                        <span class="pf-c-switch__label">${msg("Use TLS")}</span>
+                    </label>
+                </ak-form-element-horizontal>
+                <ak-form-element-horizontal name="useSsl">
+                    <label class="pf-c-switch">
+                        <input
+                            class="pf-c-switch__input"
+                            type="checkbox"
+                            ?checked=${first(this.instance?.useSsl, false)}
+                        />
+                        <span class="pf-c-switch__toggle">
+                            <span class="pf-c-switch__toggle-icon">
+                                <i class="fas fa-check" aria-hidden="true"></i>
+                            </span>
+                        </span>
+                        <span class="pf-c-switch__label">${msg("Use SSL")}</span>
+                    </label>
+                </ak-form-element-horizontal>
+                <ak-form-element-horizontal
+                    label=${msg("Timeout")}
+                    ?required=${true}
+                    name="timeout"
+                >
+                    <input
+                        type="number"
+                        value="${first(this.instance?.timeout, 30)}"
+                        class="pf-c-form-control"
+                        required
+                    />
+                </ak-form-element-horizontal>
+                <ak-form-element-horizontal
+                    label=${msg("From address")}
+                    ?required=${true}
+                    name="fromAddress"
+                >
+                    <input
+                        type="text"
+                        value="${ifDefined(this.instance?.fromAddress || "system@authentik.local")}"
+                        class="pf-c-form-control"
+                        required
+                    />
+                    <p class="pf-c-form__helper-text">
+                        ${msg("Email address the verification email will be sent from.")}
+                    </p>
+                </ak-form-element-horizontal>
+            </div>
+        </ak-form-group>`;
     }
 
     renderForm(): TemplateResult {
@@ -73,21 +177,6 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${msg("From address")}
-                        ?required=${true}
-                        name="fromAddress"
-                    >
-                        <input
-                            type="email"
-                            value="${first(this.instance?.fromAddress, "")}"
-                            class="pf-c-form-control"
-                            required
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Email address the verification email will be sent from.")}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
                         label=${msg("Subject")}
                         ?required=${true}
                         name="subject"
@@ -103,7 +192,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${msg("Token expiration time(in minutes)")}
+                        label=${msg("Token expiration time")}
                         ?required=${true}
                         name="tokenExpiry"
                     >
@@ -113,6 +202,9 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                             class="pf-c-form-control"
                             required
                         />
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Time in minutes the token sent is valid.")}
+                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Configuration flow")}
@@ -154,8 +246,35 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                             )}
                         </p>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal name="useGlobalSettings">
+                        <label class="pf-c-switch">
+                            <input
+                                class="pf-c-switch__input"
+                                type="checkbox"
+                                ?checked=${first(this.instance?.useGlobalSettings, true)}
+                                @change=${(ev: Event) => {
+                                    const target = ev.target as HTMLInputElement;
+                                    this.showConnectionSettings = !target.checked;
+                                }}
+                            />
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label"
+                                >${msg("Use global connection settings")}</span
+                            >
+                        </label>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "When enabled, global Email connection settings will be used and connection settings below will be ignored.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>`;
+            </ak-form-group>
+            ${this.renderConnectionSettings()}`;
     }
 }
 
