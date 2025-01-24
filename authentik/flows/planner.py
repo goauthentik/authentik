@@ -159,7 +159,10 @@ class FlowPlan:
             temp_exec.current_stage_view = final_stage
             temp_exec.setup(request, flow.slug)
             stage = final_stage(request=request, executor=temp_exec)
-            return stage.dispatch(request)
+            response = stage.dispatch(request)
+            # Ensure we clean the flow state we have in the session before we redirect away
+            temp_exec.stage_ok()
+            return response
 
         get_qs = request.GET.copy()
         if request.user.is_authenticated and (

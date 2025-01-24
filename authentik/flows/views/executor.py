@@ -103,7 +103,7 @@ class FlowExecutorView(APIView):
 
     permission_classes = [AllowAny]
 
-    flow: Flow
+    flow: Flow = None
 
     plan: FlowPlan | None = None
     current_binding: FlowStageBinding | None = None
