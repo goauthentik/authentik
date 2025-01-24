@@ -63,7 +63,7 @@ To configure Synology DSM to utilize authentik as an OpenID Connect 1.0 Provider
 
 **Error `not privilege`**
 
-The log in process could fail with a `not privilege` error, when the sso pup-up is blocked. Allowing pup-ups in the browser configuration resolves this (see https://github.com/authelia/authelia/discussions/6902#discussioncomment-9756400).
+The log in process could fail with a `not privilege` error, when the SSO pop-up is blocked. Allowing pop-ups in the browser configuration resolves this (see https://github.com/authelia/authelia/discussions/6902#discussioncomment-9756400).
 
 ## See also:
 
