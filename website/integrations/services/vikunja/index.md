@@ -3,7 +3,7 @@ title: Integrate with Vikunja
 sidebar_label: Vikunja
 ---
 
-# Vikunja
+# Integrate with Vikunja
 
 <span class="badge badge--secondary">Support level: Community</span>
 

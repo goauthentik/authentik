@@ -3,7 +3,7 @@ title: Integrate with Gatus
 sidebar_label: Gatus
 ---
 
-# Gatus
+# Integrate with Gatus
 
 <span class="badge badge--secondary">Support level: Community</span>
 

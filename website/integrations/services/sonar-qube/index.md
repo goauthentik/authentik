@@ -3,7 +3,7 @@ title: Integrate with SonarQube
 sidebar_label: SonarQube
 ---
 
-# SonarQube
+# Integrate with SonarQube
 
 <span class="badge badge--primary">Support level: Community</span>
 

@@ -3,7 +3,7 @@ title: Integrate with QNAP NAS
 sidebar_label: QNAP NAS
 ---
 
-# QNAP NAS
+# Integrate with QNAP NAS
 
 ## What is QNAP NAS
 
