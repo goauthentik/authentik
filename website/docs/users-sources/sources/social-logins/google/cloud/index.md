@@ -1,5 +1,7 @@
 ---
-title: Google
+title: Google Cloud (with OAuth)
+sidebar_label: Google Cloud (OAuth)
+tags: [integration, oauth, google]
 ---
 
 <span class="badge badge--secondary">Support level: Community</span>
@@ -79,7 +81,7 @@ Here is an example of a complete authentik Google OAuth Source
 Save, and you now have Google as a source.
 
 :::note
-For more details on how-to have the new source display on the Login Page see [here](../../index.md#add-sources-to-default-login-page).
+For more details on how to have the new source display on the Login Page see [here](../../../index.md#add-sources-to-default-login-page).
 :::
 
 ## Username mapping
@@ -99,4 +101,4 @@ return False
 
 Afterwards, edit the source's enrollment flow (by default _default-source-enrollment_), expand the policies bound to the first stage (_default-source-enrollment-prompt_), and bind the policy created above. Make sure the newly created policy comes before _default-source-enrollment-if-username_. Afterwards, any new logins will automatically have their google email address used as their username.
 
-This can be combined with disallowing users from changing their usernames, see [Configuration](../../../../sys-mgmt/settings.md#allow-users-to-change-username).
+This can be combined with disallowing users from changing their usernames, see [Configuration](../../../../../sys-mgmt/settings.md#allow-users-to-change-username).
