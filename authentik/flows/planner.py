@@ -156,6 +156,8 @@ class FlowPlan:
             final_stage: type[StageView] = self.bindings[-1].stage.view
             temp_exec = FlowExecutorView(flow=flow, request=request, plan=self)
             temp_exec.current_stage = self.bindings[-1].stage
+            temp_exec.current_stage_view = final_stage
+            temp_exec.setup(request, flow.slug)
             stage = final_stage(request=request, executor=temp_exec)
             return stage.dispatch(request)
 
