@@ -2,26 +2,34 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: PDB attach Server",
-            "type": "python",
+            "name": "Debug: Attach Server Core",
+            "type": "debugpy",
             "request": "attach",
             "connect": {
                 "host": "localhost",
-                "port": 6800
+                "port": 9901
+            },
+            "justMyCode": true,
+            "django": true,
+        },
+        {
+            "name": "Debug: Attach Worker",
+            "type": "debugpy",
+            "request": "attach",
+            "connect": {
+                "host": "localhost",
+                "port": 9901
             },
             "justMyCode": true,
             "django": true
         },
         {
-            "name": "Python: PDB attach Worker",
-            "type": "python",
-            "request": "attach",
-            "connect": {
-                "host": "localhost",
-                "port": 6900
-            },
-            "justMyCode": true,
-            "django": true
+            "name": "Debug: Attach Server Router",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/server",
+            "cwd": "${workspaceFolder}"
         }
     ]
 }

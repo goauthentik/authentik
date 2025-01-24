@@ -63,7 +63,7 @@ function prepare_debug {
     chown authentik:authentik /unittest.xml
 }
 
-if [[ "${AUTHENTIK_REMOTE_DEBUG}" == "true" ]]; then
+if [[ "$(python -m authentik.lib.config debug 2> /dev/null)" == "True" ]]; then
     prepare_debug
 fi
 
@@ -92,7 +92,7 @@ elif [[ "$1" == "test-all" ]]; then
 elif [[ "$1" == "healthcheck" ]]; then
     run_authentik healthcheck $(cat $MODE_FILE)
 elif [[ "$1" == "dump_config" ]]; then
-    exec python -m authentik.lib.config
+    exec python -m authentik.lib.config $@
 elif [[ "$1" == "debug" ]]; then
     exec sleep infinity
 else
