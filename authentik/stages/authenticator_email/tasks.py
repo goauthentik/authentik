@@ -60,7 +60,7 @@ def send_mail(self: SystemTask, message: dict[Any, Any], email_stage_pk: str | N
             if not stages.exists():
                 self.set_status(
                     TaskStatus.WARNING,
-                    "Authenticator Email stage does not exist anymore. Discarding message.",
+                    f"AuthenticatorEmail stage does not exist anymore. Discarding message {stages}",
                 )
                 return
             stage: AuthenticatorEmailStage = stages.first()

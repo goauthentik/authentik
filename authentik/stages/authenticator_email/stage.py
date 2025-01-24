@@ -36,7 +36,7 @@ PLAN_CONTEXT_EMAIL_OVERRIDE = "email"
 
 
 class AuthenticatorEmailChallenge(WithUserInfoChallenge):
-    """Email Setup challenge"""
+    """Authenticator Email Setup challenge"""
 
     # Set to true if no previous prompt stage set the email
     # this stage will also check prompt_data.email
@@ -47,7 +47,7 @@ class AuthenticatorEmailChallenge(WithUserInfoChallenge):
 
 
 class AuthenticatorEmailChallengeResponse(ChallengeResponse):
-    """Email Challenge response, device is set by get_response_instance"""
+    """Authenticator Email Challenge response, device is set by get_response_instance"""
 
     device: EmailDevice
 
@@ -71,7 +71,7 @@ class AuthenticatorEmailChallengeResponse(ChallengeResponse):
 
 
 class AuthenticatorEmailStageView(ChallengeStageView):
-    """Email Setup stage"""
+    """Authenticator Email Setup stage"""
 
     response_class = AuthenticatorEmailChallengeResponse
 
@@ -135,33 +135,32 @@ class AuthenticatorEmailStageView(ChallengeStageView):
 
         Args:
             email: Email address to mask
-
         Returns:
             Masked email address or None if input is None
-
         Example:
-            >>> mask_email("myname@company.org")
-            'm****e@c*****t.org'
+            self.mask_email("myname@company.org")
+            'm*****@c******.org'
         """
         if not email:
             return None
 
         local, domain = email.split("@")
         domain_parts = domain.split(".")
+        limit = 2
 
-        # Mask local part (keep first and last char)
-        if len(local) <= 2:
+        # Mask local part (keep first char)
+        if len(local) <= limit:
             masked_local = "*" * len(local)
         else:
-            masked_local = local[0] + "*" * (len(local)-1)
+            masked_local = local[0] + "*" * (len(local) - 1)
 
         # Mask each domain part except the last one (TLD)
         masked_domain_parts = []
-        for i, part in enumerate(domain_parts[:-1]):  # Process all parts except TLD
-            if len(part) <= 2:
+        for _i, part in enumerate(domain_parts[:-1]):  # Process all parts except TLD
+            if len(part) <= limit:
                 masked_part = "*" * len(part)
             else:
-                masked_part = part[0] + "*" * (len(part)-1)
+                masked_part = part[0] + "*" * (len(part) - 1)
             masked_domain_parts.append(masked_part)
 
         # Add TLD unchanged
@@ -191,7 +190,7 @@ class AuthenticatorEmailStageView(ChallengeStageView):
 
         if SESSION_KEY_EMAIL_DEVICE not in self.request.session:
             device = EmailDevice(user=user, confirmed=False, stage=stage, name="Email Device")
-            valid_secs : int = stage.token_expiry * 60  # token_expiry is in minutes
+            valid_secs: int = stage.token_expiry * 60  # token_expiry is in minutes
             device.generate_token(valid_secs=valid_secs, commit=False)
             self.request.session[SESSION_KEY_EMAIL_DEVICE] = device
             LOGGER.debug(f"!!! {device.token=}, {device.valid_until=}")
