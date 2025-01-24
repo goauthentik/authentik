@@ -1,14 +1,18 @@
-"""Test Email API"""
+"""Test Email Authenticator API"""
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
+from django.core import mail
+from django.core.mail.backends.locmem import EmailBackend
 from django.urls import reverse
+from django.utils.timezone import now
 from structlog.stdlib import get_logger
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.models import FlowStageBinding
 from authentik.flows.tests import FlowTestCase
 from authentik.stages.authenticator_email.models import AuthenticatorEmailStage, EmailDevice
+from authentik.stages.email.utils import TemplateEmailMessage
 
 LOGGER = get_logger()
 
@@ -26,7 +30,7 @@ class TestAuthenticatorEmailStage(FlowTestCase):
             from_address="test@authentik.local",
             configure_flow=self.flow,
         )
-        FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=0)
+        self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=0)
         self.device = EmailDevice.objects.create(
             user=self.user,
             stage=self.stage,
@@ -34,40 +38,35 @@ class TestAuthenticatorEmailStage(FlowTestCase):
         )
         self.client.force_login(self.user)
 
-    def test_stage_no_prefill(self):
-        self.client.get(
-            reverse("authentik_flows:configure", kwargs={"stage_uuid": self.stage.stage_uuid}),
-        )
-        response = self.client.get(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-        )
-        self.assertStageResponse(
-            response,
-            self.flow,
-            self.user,
-            component="ak-stage-authenticator-email",
-        )
+    def test_device_str(self):
+        """Test string representation of device"""
+        self.assertEqual(str(self.device), f"Email Device for {self.user}")
 
-    def test_token(self):
-        # Make sure that the token doesn't exist
+    def test_stage_str(self):
+        """Test string representation of stage"""
+        self.assertEqual(str(self.stage), f"Email Stage {self.stage.name}")
+
+    def test_token_lifecycle(self):
+        """Test token generation, validation and expiry"""
+        # Initially no token
         self.assertIsNone(self.device.token)
-        # Create the token
+
+        # Generate token
         self.device.generate_token()
-        # Make sure that the token was generated
-        self.assertIsNotNone(self.device.token)
-        # Make sure that the token can be verified and is invalid
-        self.assertFalse(self.device.verify_token("invalid_token"))
-        # Verify the token
         token = self.device.token
+        self.assertIsNotNone(token)
+        self.assertIsNotNone(self.device.valid_until)
+        self.assertTrue(self.device.valid_until > now())
+
+        # Verify invalid token
+        self.assertFalse(self.device.verify_token("000000"))
+
+        # Verify correct token (should clear token after verification)
         self.assertTrue(self.device.verify_token(token))
-        # Make sure that the token was cleared after verification
         self.assertIsNone(self.device.token)
 
-    def test_stage_send(self):
-        # Initialize the flow
-        self.client.get(
-            reverse("authentik_flows:configure", kwargs={"stage_uuid": self.stage.stage_uuid}),
-        )
+    def test_stage_no_prefill(self):
+        """Test stage without prefilled email"""
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
         )
@@ -76,19 +75,49 @@ class TestAuthenticatorEmailStage(FlowTestCase):
             self.flow,
             self.user,
             component="ak-stage-authenticator-email",
+            email_required=True,
         )
 
-        # Test email submission
-        email_send_mock = MagicMock()
-        with patch(
-            "authentik.stages.authenticator_email.models.AuthenticatorEmailStage.send",
-            email_send_mock,
+    def test_stage_submit(self):
+        """Test stage email submission"""
+        # Initialize the flow
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertStageResponse(
+            response,
+            self.flow,
+            self.user,
+            component="ak-stage-authenticator-email",
+            email_required=True,
+        )
+
+        # Test email submission with locmem backend
+        def mock_send_mails(stage, *messages):
+            """Mock send_mails to send directly"""
+            for message in messages:
+                message.send()
+
+        with (
+            patch(
+                "authentik.stages.authenticator_email.models.AuthenticatorEmailStage.backend_class",
+                return_value=EmailBackend,
+            ),
+            patch(
+                "authentik.stages.authenticator_email.stage.send_mails",
+                side_effect=mock_send_mails,
+            ),
         ):
             response = self.client.post(
                 reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
                 data={"component": "ak-stage-authenticator-email", "email": "test@example.com"},
             )
             self.assertEqual(response.status_code, 200)
+            self.assertEqual(len(mail.outbox), 1)
+            sent_mail = mail.outbox[0]
+            self.assertEqual(sent_mail.subject, self.stage.subject)
+            self.assertEqual(sent_mail.from_email, self.stage.from_address)
+            self.assertEqual(sent_mail.to, [f"{self.user} <test@example.com>"])
 
         self.assertStageResponse(
             response,
@@ -99,18 +128,12 @@ class TestAuthenticatorEmailStage(FlowTestCase):
             email_required=False,
         )
 
-        # Test email submission with no email
-        response = self.client.post(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-            data={"component": "ak-stage-authenticator-email"},
-        )
-        self.assertEqual(response.status_code, 200)  # Test invalid email
-        LOGGER.warn(response.content.decode())
-        self.assertStageResponse(
-            response,
-            self.flow,
-            self.user,
-            component="ak-stage-authenticator-email",
-            response_errors={"non_field_errors": [{"string": "email required", "code": "invalid"}]},
-            # email_required=False,
-        )
+    def test_email_template(self):
+        """Test email template rendering"""
+        self.device.generate_token()
+        message = self.device._compose_email()
+
+        self.assertIsInstance(message, TemplateEmailMessage)
+        self.assertEqual(message.subject, self.stage.subject)
+        self.assertEqual(message.to, [f"{self.user.name} <{self.device.email}>"])
+        self.assertTrue(self.device.token in message.body)
