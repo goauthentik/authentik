@@ -167,6 +167,7 @@ Additionally, you can set `AUTHENTIK_POSTGRESQL__CONN_HEALTH_CHECK` to perform h
 - `AUTHENTIK_LISTEN__LDAPS`: Listening address:port (e.g. `0.0.0.0:6636`) for LDAPS (Applies to LDAP outpost)
 - `AUTHENTIK_LISTEN__METRICS`: Listening address:port (e.g. `0.0.0.0:9300`) for Prometheus metrics (Applies to All)
 - `AUTHENTIK_LISTEN__DEBUG`: Listening address:port (e.g. `0.0.0.0:9900`) for Go Debugging metrics (Applies to All)
+- `AUTHENTIK_LISTEN__DEBUG_PY`: Listening address:port (e.g. `0.0.0.0:9901`) for Python debugging server (Applies to Server, see [Debugging](../../developer-docs/setup/debugging.md))
 - `AUTHENTIK_LISTEN__TRUSTED_PROXY_CIDRS`: List of comma-separated CIDRs that proxy headers should be accepted from (Applies to Server)
 
     Defaults to `127.0.0.0/8`, `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`, `fe80::/10`, `::1/128`.
