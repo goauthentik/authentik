@@ -39616,7 +39616,7 @@ components:
       - name
     AuthenticatorEmailChallenge:
       type: object
-      description: Email Setup challenge
+      description: Authenticator Email Setup challenge
       properties:
         flow_info:
           $ref: '#/components/schemas/ContextualFlowInfo'
@@ -39635,7 +39635,7 @@ components:
           type: string
         email:
           type: string
-          format: email
+          nullable: true
         email_required:
           type: boolean
           default: true
@@ -39647,7 +39647,7 @@ components:
       - pending_user_avatar
     AuthenticatorEmailChallengeResponseRequest:
       type: object
-      description: Email Challenge response, device is set by get_response_instance
+      description: Authenticator Email Challenge response, device is set by get_response_instance
       properties:
         component:
           type: string
