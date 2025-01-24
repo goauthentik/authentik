@@ -88,7 +88,6 @@ elif [[ "$1" == "bash" ]]; then
 elif [[ "$1" == "test-all" ]]; then
     prepare_debug
     chmod 777 /root
-    pip install --force-reinstall /wheels/*
     check_if_root "python -m manage test authentik"
 elif [[ "$1" == "healthcheck" ]]; then
     run_authentik healthcheck $(cat $MODE_FILE)
