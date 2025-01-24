@@ -105,41 +105,9 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${msg("Template")}
-                        ?required=${true}
-                        name="template"
-                    >
-                        <textarea class="pf-c-form-control" required>
-${first(this.instance?.template, "")}</textarea
-                        >
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "Template of the verification email. Supports HTML and Django-template syntax.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <!--
-                    <ak-form-element-horizontal name="verifyOnly">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                        </label>
-                        <p class="pf-c-form__helper-text">
-
-                        </p>
-                    </ak-form-element-horizontal>
-                    -->
-                    <ak-form-element-horizontal
                         label=${msg("Token expiration time(in minutes)")}
                         ?required=${true}
-                        name="token_expiry"
+                        name="tokenExpiry"
                     >
                         <input
                             type="number"
