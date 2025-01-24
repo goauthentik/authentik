@@ -109,6 +109,8 @@ class FlowPlan:
 
     def pop(self):
         """Pop next pending stage from bottom of list"""
+        if not self.markers and not self.bindings:
+            return
         self.markers.pop(0)
         self.bindings.pop(0)
 
