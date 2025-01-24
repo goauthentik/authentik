@@ -10,7 +10,8 @@ import { me } from "@goauthentik/common/users";
 import { WebsocketClient } from "@goauthentik/common/ws";
 import { AuthenticatedInterface } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/ak-locale-context";
-import "@goauthentik/elements/enterprise/EnterpriseStatusBanner";
+import "@goauthentik/elements/banner/EnterpriseStatusBanner";
+import "@goauthentik/elements/banner/VersionBanner";
 import "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/elements/notifications/APIDrawer";
@@ -72,7 +73,8 @@ export class AdminInterface extends AuthenticatedInterface {
                 :host([theme="dark"]) .pf-c-page {
                     --pf-c-page--BackgroundColor: var(--ak-dark-background);
                 }
-                ak-enterprise-status {
+                ak-enterprise-status,
+                ak-version-banner {
                     grid-area: header;
                 }
                 ak-admin-sidebar {
@@ -128,6 +130,7 @@ export class AdminInterface extends AuthenticatedInterface {
         return html` <ak-locale-context>
             <div class="pf-c-page">
                 <ak-enterprise-status interface="admin"></ak-enterprise-status>
+                <ak-version-banner></ak-version-banner>
                 <ak-admin-sidebar
                     class="pf-c-page__sidebar ${classMap(sidebarClasses)}"
                 ></ak-admin-sidebar>

@@ -20,7 +20,7 @@ sidebar_label: GlobalProtect
 The following placeholders are used in this guide:
 
 - `gp.company` is the FQDN of the GlobalProtect portal.
-- `authentik.company` is the FQDN of the authentik install.
+- `authentik.company` is the FQDN of the authentik installation.
 
 :::caution
 A trusted web certificate is required to be bound to the GlobalProtect Portal. This can be signed by a trusted internal Root Certificate Authority (CA); however, a self signed certificate, a certificate outside of its validity, or a non-standard confirming certificate (such as a lifespan not trusted by modern browsers) will error out on SAML authentication.

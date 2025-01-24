@@ -17,8 +17,8 @@ sidebar_label: HedgeDoc
 
 The following placeholders are used in this guide:
 
-- `hedgedoc.company` is the FQDN of the HedgeDoc install.
-- `authentik.company` is the FQDN of the authentik install.
+- `hedgedoc.company` is the FQDN of the HedgeDoc installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 Create an OAuth2/OpenID provider with the following parameters:
 

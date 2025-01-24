@@ -22,7 +22,7 @@ This requires authentik 0.10.3 or newer.
 The following placeholders are used in this guide:
 
 - `landscape.company` is the FQDN of the Landscape server.
-- `authentik.company` is the FQDN of the authentik install.
+- `authentik.company` is the FQDN of the authentik installation.
 
 Landscape uses the OpenID-Connect Protocol for single-sign on.
 

@@ -19,8 +19,8 @@ sidebar_label: FortiManager
 
 The following placeholders are used in this guide:
 
-- `fgm.company` is the FQDN of the FortiManager install.
-- `authentik.company` is the FQDN of the authentik install.
+- `fgm.company` is the FQDN of the FortiManager installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 Create an application and Provider in authentik, note the slug, as this will be used later. Create a SAML provider with the following parameters:
 

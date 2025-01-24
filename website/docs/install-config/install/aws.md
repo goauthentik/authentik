@@ -31,4 +31,4 @@ The stack will output the endpoint of the ALB that to which you can point your D
 
 ### Further customization
 
-If you require further customization, we recommend you install authentik via [Docker Compose](../docker-compose.mdx) or [Kubernetes](../kubernetes.md).
+If you require further customization, we recommend you install authentik via [Docker Compose](./docker-compose.mdx) or [Kubernetes](./kubernetes.md).

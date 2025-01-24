@@ -17,8 +17,8 @@ sidebar_label: Service Name
 
 The following placeholders are used in this guide:
 
-- `service.company` is the FQDN of the Service install. (Remove this for SaaS)
-- `authentik.company` is the FQDN of the authentik install.
+- `service.company` is the FQDN of the Service installation. (Remove this for SaaS)
+- `authentik.company` is the FQDN of the authentik installation.
 
 ## Service configuration
 
@@ -35,3 +35,9 @@ Insert authentik configuration
 1. Write first step here...
 
 2. Continue with steps....
+
+## Configuration verification
+
+Template sentence that you can typically use here: "To confirm that authentik is properly configured with _Service Name_, log out and log back in via authentik."
+
+If there are more specific validation methods for the Service (e.g., clicking a button), include these instructions for clarity.

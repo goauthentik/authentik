@@ -3,6 +3,7 @@ import {
     EVENT_WS_MESSAGE,
     TITLE_DEFAULT,
 } from "@goauthentik/common/constants";
+import { globalAK } from "@goauthentik/common/global";
 import { currentInterface } from "@goauthentik/common/sentry";
 import { UIConfig, UserDisplay, uiConfig } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
@@ -182,7 +183,15 @@ export class PageHeader extends WithBrandConfig(AKElement) {
             </section>
             <div class="pf-c-page__header-tools">
                 <div class="pf-c-page__header-tools-group">
-                    <ak-nav-buttons .uiConfig=${this.uiConfig} .me=${this.me}></ak-nav-buttons>
+                    <ak-nav-buttons .uiConfig=${this.uiConfig} .me=${this.me}>
+                        <a
+                            class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none pf-u-display-block-on-md"
+                            href="${globalAK().api.base}if/user/"
+                            slot="extra"
+                        >
+                            ${msg("User interface")}
+                        </a>
+                    </ak-nav-buttons>
                 </div>
             </div>
         </div>`;

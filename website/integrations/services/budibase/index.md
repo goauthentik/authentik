@@ -17,8 +17,8 @@ sidebar_label: Budibase
 
 The following placeholders are used in this guide:
 
-- `budibase.company` is the FQDN of the Budibase install.
-- `authentik.company` is the FQDN of the authentik install.
+- `budibase.company` is the FQDN of the Budibase installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 Create an application in authentik. Create an OAuth2/OpenID provider with the following parameters:
 

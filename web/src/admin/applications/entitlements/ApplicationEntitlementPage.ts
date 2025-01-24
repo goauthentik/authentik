@@ -86,7 +86,7 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.CoreApplicationentitlement}
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreApplicationentitlement}
                     objectPk=${item.pbmUuid}
                 >
                 </ak-rbac-object-permission-modal>`,
