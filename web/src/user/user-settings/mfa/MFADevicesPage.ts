@@ -94,6 +94,8 @@ export class MFADevicesPage extends Table<Device> {
         switch (device.type) {
             case "authentik_stages_authenticator_duo.DuoDevice":
                 return api.authenticatorsDuoDestroy(id);
+            case "authentik_stages_authenticator_email.EmailDevice":
+                return api.authenticatorsEmailDestroy(id);
             case "authentik_stages_authenticator_sms.SMSDevice":
                 return api.authenticatorsSmsDestroy(id);
             case "authentik_stages_authenticator_totp.TOTPDevice":

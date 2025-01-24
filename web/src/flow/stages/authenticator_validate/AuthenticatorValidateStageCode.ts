@@ -33,6 +33,8 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
 
     deviceMessage(): string {
         switch (this.deviceChallenge?.deviceClass) {
+            case DeviceClassesEnum.Email:
+                return msg("A code has been sent to you via Email.");
             case DeviceClassesEnum.Sms:
                 return msg("A code has been sent to you via SMS.");
             case DeviceClassesEnum.Totp:
@@ -48,6 +50,8 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
 
     deviceIcon(): string {
         switch (this.deviceChallenge?.deviceClass) {
+            case DeviceClassesEnum.Email:
+                return "fa-key";
             case DeviceClassesEnum.Sms:
                 return "fa-key";
             case DeviceClassesEnum.Totp:
