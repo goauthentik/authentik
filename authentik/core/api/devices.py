@@ -3,6 +3,7 @@
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
+from guardian.shortcuts import get_objects_for_user
 from rest_framework.fields import (
     BooleanField,
     CharField,
@@ -16,7 +17,6 @@ from rest_framework.viewsets import ViewSet
 
 from authentik.core.api.utils import MetaNameSerializer
 from authentik.enterprise.stages.authenticator_endpoint_gdtc.models import EndpointDevice
-from authentik.rbac.decorators import permission_required
 from authentik.stages.authenticator import device_classes, devices_for_user
 from authentik.stages.authenticator.models import Device
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
@@ -73,7 +73,9 @@ class AdminDeviceViewSet(ViewSet):
     def get_devices(self, **kwargs):
         """Get all devices in all child classes"""
         for model in device_classes():
-            device_set = model.objects.filter(**kwargs)
+            device_set = get_objects_for_user(
+                self.request.user, f"{model._meta.app_label}.view_{model._meta.model_name}", model
+            ).filter(**kwargs)
             yield from device_set
 
     @extend_schema(
@@ -85,10 +87,6 @@ class AdminDeviceViewSet(ViewSet):
             )
         ],
         responses={200: DeviceSerializer(many=True)},
-    )
-    @permission_required(
-        None,
-        [f"{model._meta.app_label}.view_{model._meta.model_name}" for model in device_classes()],
     )
     def list(self, request: Request) -> Response:
         """Get all devices for current user"""
