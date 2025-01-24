@@ -165,6 +165,7 @@ class EmailDevice(SerializerModel, SideChannelDevice):
 
             message = TemplateEmailMessage(
                 subject=_(stage.subject),
+                from_email=stage.from_address,
                 to=[(pending_user.name, email)],
                 template_name=stage.template,
                 template_context={
