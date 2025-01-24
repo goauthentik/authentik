@@ -81,30 +81,7 @@ export class AuthenticatorEmailStage extends BaseStage<
             </footer>`;
     }
 
-    render(): TemplateResult {
-        console.debug("AAA");
-        console.debug(
-            "AuthenticatorEmailStage:",
-            this.challenge ? this.challenge.emailRequired : undefined,
-        );
-
-        if (!this.challenge) {
-            console.debug("AuthenticatorEmailStage.render() called without challenge");
-
-            return html`<ak-empty-state loading> </ak-empty-state>`;
-        }
-        if (this.challenge.emailRequired) {
-            console.debug("AuthenticatorEmailStage.render() called with challenge", this.challenge);
-
-            return this.renderEmailInput();
-        }
-        //return this.renderCode();
-        console.debug(
-            "AuthenticatorEmailStage.render() called without emailRequired challenge",
-            this.challenge,
-        );
-
-        //return html`<h1>HELP!</h1>`;${this.renderEmailInput()}
+    renderEmailOTPInput(): TemplateResult {
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
             </header>
@@ -153,7 +130,31 @@ export class AuthenticatorEmailStage extends BaseStage<
                         </button>
                     </div>
                 </form>
-            </div> `;
+            </div>`;
+    }
+
+    render(): TemplateResult {
+        console.debug(
+            "AuthenticatorEmailStage:",
+            this.challenge ? this.challenge.emailRequired : undefined,
+        );
+
+        if (!this.challenge) {
+            console.debug("AuthenticatorEmailStage.render() called without challenge");
+
+            return html`<ak-empty-state loading> </ak-empty-state>`;
+        }
+        if (this.challenge.emailRequired) {
+            console.debug("AuthenticatorEmailStage.render() called with challenge", this.challenge);
+
+            return this.renderEmailInput();
+        }
+        console.debug(
+            "AuthenticatorEmailStage.render() called without emailRequired challenge",
+            this.challenge,
+        );
+
+        return this.renderEmailOTPInput();
     }
 }
 
