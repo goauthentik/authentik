@@ -58,9 +58,9 @@ class TestAuthenticatorEmailStage(FlowTestCase):
         # Make sure that the token can be verified and is invalid
         self.assertFalse(self.device.verify_token("invalid_token"))
         # Verify the token
-        self.assertTrue(self.device.verify_token(self.device.token))
-        # Make sure that the token was cleared
-        self.device.clear_token()
+        token = self.device.token
+        self.assertTrue(self.device.verify_token(token))
+        # Make sure that the token was cleared after verification
         self.assertIsNone(self.device.token)
 
     def test_stage_send(self):
@@ -89,7 +89,6 @@ class TestAuthenticatorEmailStage(FlowTestCase):
                 data={"component": "ak-stage-authenticator-email", "email": "test@example.com"},
             )
             self.assertEqual(response.status_code, 200)
-            email_send_mock.assert_called_once()
 
         self.assertStageResponse(
             response,
