@@ -77,17 +77,14 @@ class AuthenticatorEmailStageView(ChallengeStageView):
 
     def validate_and_send(self, email: str):
         """Validate email and send message"""
-        LOGGER.warning("VALIDATE_AND_SEND_EMAIL! 1")
         pending_user = self.get_pending_user()
 
         stage: AuthenticatorEmailStage = self.executor.current_stage
-        LOGGER.warning(f"{stage=}")
         if EmailDevice.objects.filter(Q(email=email), stage=stage.pk).exists():
             raise ValidationError(_("Invalid email"))
-        # No code yet, but we have an email, so send a verification message
+
         device: EmailDevice = self.request.session[SESSION_KEY_EMAIL_DEVICE]
-        # stage.send(device.token, device)
-        LOGGER.warning("VALIDATE_AND_SEND_EMAIL! 2")
+
         try:
             message = TemplateEmailMessage(
                 subject=_(stage.subject),
@@ -101,8 +98,7 @@ class AuthenticatorEmailStageView(ChallengeStageView):
                     "token": device.token,
                 },
             )
-            LOGGER.warning("VALIDATE_AND_SEND_EMAIL! 3")
-            LOGGER.warning(f"{message=}")
+
             send_mails(stage, message)
         except TemplateSyntaxError as exc:
             Event.new(
@@ -115,17 +111,13 @@ class AuthenticatorEmailStageView(ChallengeStageView):
 
     def _has_email(self) -> str | None:
         context = self.executor.plan.context
-        LOGGER.debug(f"{context=}")
+
         if PLAN_CONTEXT_EMAIL in context.get(PLAN_CONTEXT_PROMPT, {}):
             self.logger.debug("got email from plan context")
             return context.get(PLAN_CONTEXT_PROMPT, {}).get(PLAN_CONTEXT_EMAIL)
         if SESSION_KEY_EMAIL_DEVICE in self.request.session:
             self.logger.debug("got email from device in session")
-            LOGGER.debug(f"{self.request.session=}")
-            LOGGER.debug(f"{self.request.session[SESSION_KEY_EMAIL_DEVICE]=}")
             device: EmailDevice = self.request.session[SESSION_KEY_EMAIL_DEVICE]
-            LOGGER.debug(f"{device=}")
-            LOGGER.debug(f"{device.email=}")
             if device.email == "":
                 return None
             return device.email
@@ -194,7 +186,6 @@ class AuthenticatorEmailStageView(ChallengeStageView):
             valid_secs: int = stage.token_expiry * 60  # token_expiry is in minutes
             device.generate_token(valid_secs=valid_secs, commit=False)
             self.request.session[SESSION_KEY_EMAIL_DEVICE] = device
-            LOGGER.debug(f"!!! {device.token=}, {device.valid_until=}")
             if email := self._has_email():
                 device.email = email
                 try:

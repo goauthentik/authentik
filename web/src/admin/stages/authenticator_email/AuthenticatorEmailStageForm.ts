@@ -31,7 +31,6 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
     }
 
     async send(data: AuthenticatorEmailStage): Promise<AuthenticatorEmailStage> {
-        console.debug("HEY! send data", data);
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorEmailUpdate({
                 stageUuid: this.instance.pk || "",
@@ -45,7 +44,6 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
     }
 
     renderForm(): TemplateResult {
-        console.debug("HEY!");
         return html` <span> ${msg("Stage used to configure an Email-based authenticator.")} </span>
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
