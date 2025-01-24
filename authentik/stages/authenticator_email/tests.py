@@ -1,9 +1,12 @@
 """Test Email Authenticator API"""
 
+from datetime import timedelta
 from unittest.mock import patch
 
 from django.core import mail
 from django.core.mail.backends.locmem import EmailBackend
+from django.db.utils import IntegrityError
+from django.template.exceptions import TemplateDoesNotExist
 from django.urls import reverse
 from django.utils.timezone import now
 from structlog.stdlib import get_logger
@@ -137,3 +140,36 @@ class TestAuthenticatorEmailStage(FlowTestCase):
         self.assertEqual(message.subject, self.stage.subject)
         self.assertEqual(message.to, [f"{self.user.name} <{self.device.email}>"])
         self.assertTrue(self.device.token in message.body)
+
+    def test_duplicate_email(self):
+        """Test attempting to use same email twice"""
+        email = "test2@authentik.local"
+        # First device
+        EmailDevice.objects.create(
+            user=self.user,
+            stage=self.stage,
+            email=email,
+        )
+        # Attempt to create second device with same email
+        with self.assertRaises(IntegrityError):
+            EmailDevice.objects.create(
+                user=self.user,
+                stage=self.stage,
+                email=email,
+            )
+
+    def test_token_expiry(self):
+        """Test token expiration behavior"""
+        self.device.generate_token()
+        token = self.device.token
+        # Set token as expired
+        self.device.valid_until = now() - timedelta(minutes=1)
+        self.device.save()
+        # Verify expired token fails
+        self.assertFalse(self.device.verify_token(token))
+
+    def test_template_errors(self):
+        """Test handling of template errors"""
+        self.stage.template = "{% invalid template %}"
+        with self.assertRaises(TemplateDoesNotExist):
+            self.stage.send(self.device)
