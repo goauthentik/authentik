@@ -3,7 +3,7 @@ title: Integrate with Harbor
 sidebar_label: Harbor
 ---
 
-# Harbor
+# Integrate with Harbor
 
 <span class="badge badge--secondary">Support level: Community</span>
 

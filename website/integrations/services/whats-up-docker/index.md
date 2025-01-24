@@ -3,7 +3,7 @@ title: Integrate with What's Up Docker
 sidebar_label: What's Up Docker
 ---
 
-# What's Up Docker
+# Integrate with What's Up Docker
 
 <span class="badge badge--secondary">Support level: Community</span>
 

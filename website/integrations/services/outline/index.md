@@ -3,7 +3,7 @@ title: Integrate with Outline
 sidebar_label: Outline
 ---
 
-# Outline
+# Integrate with Outline
 
 <span class="badge badge--secondary">Support level: Community</span>
 

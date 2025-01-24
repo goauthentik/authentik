@@ -499,11 +499,11 @@ class OAuthFulfillmentStage(StageView):
             )
 
             challenge.is_valid()
-
+            self.executor.stage_ok()
             return HttpChallengeResponse(
                 challenge=challenge,
             )
-
+        self.executor.stage_ok()
         return HttpResponseRedirectScheme(uri, allowed_schemes=[parsed.scheme])
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
