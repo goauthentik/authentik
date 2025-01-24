@@ -61,7 +61,7 @@ Additional settings that might need to be adjusted based on the setup of your do
 - User object filter: Which objects should be considered users. For Active Directory set it to `(&(objectClass=user)(!(objectClass=computer)))` to exclude Computer accounts.
 - Group object filter: Which objects should be considered groups.
 - Group membership field: Which user field saves the group membership
-- Lookup using user attribute: Lookup group memberships from a user object attribute instead of a group attribute (`memberOf` instead of `member`). It can be useful for looking up nested group memberships, for which you'd want to use `memberOf:1.2.840.113556.1.4.1941:` as the group membership field, to tell Active Directory to follow DNs.
+- Look up using a user attribute: Look up group memberships based on a user object attribute instead of a group attribute (`memberOf` instead of `member`). It can be useful for looking up nested group memberships, for which you'd want to use `memberOf:1.2.840.113556.1.4.1941:` as the group membership field, to tell Active Directory to follow DNs.
 - Object uniqueness field: A user field which contains a unique Identifier
 
 After you save the source, a synchronization will start in the background. When its done, you can see the summary under Dashboards -> System Tasks.
