@@ -6,16 +6,20 @@ from django.contrib.auth import get_user_model
 from django.core.mail.backends.base import BaseEmailBackend
 from django.core.mail.backends.smtp import EmailBackend
 from django.db import models
+from django.template import TemplateSyntaxError
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
 
+from authentik.events.models import Event, EventAction
+from authentik.flows.exceptions import StageInvalidException
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 from authentik.lib.config import CONFIG
 from authentik.lib.models import SerializerModel
+from authentik.lib.utils.errors import exception_to_string
 from authentik.stages.authenticator.models import SideChannelDevice
-from authentik.stages.email.tasks import send_mails
+from authentik.stages.email.utils import TemplateEmailMessage
 
 LOGGER = get_logger()
 
@@ -123,14 +127,13 @@ class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
             timeout=self.timeout,
         )
 
-    def send(self, message: str, device: "EmailDevice"):
-        return send_mails(self, message, device.email)
-        return self.backend.send_mail(
-            subject=self.subject,
-            message=message,
-            from_email=self.from_address,
-            recipient_list=[device.email],
-        )
+    def send(self, device: "EmailDevice"):
+        # Compose the message using templates
+        message = device._compose_email()
+        # Lazy import here to avoid circular import
+        from authentik.stages.authenticator_email.tasks import send_mails
+
+        return send_mails(device.stage, message)
 
     def __str__(self):
         return f"Email Stage {self.name}"
@@ -154,10 +157,36 @@ class EmailDevice(SerializerModel, SideChannelDevice):
 
         return EmailDeviceSerializer
 
+    def _compose_email(self) -> TemplateEmailMessage:
+        try:
+            pending_user = self.user
+            stage = self.stage
+            email = self.email
+
+            message = TemplateEmailMessage(
+                subject=_(stage.subject),
+                to=[(pending_user.name, email)],
+                template_name=stage.template,
+                template_context={
+                    "user": pending_user,
+                    "expires": self.valid_until,
+                    "token": self.token,
+                },
+            )
+            return message
+        except TemplateSyntaxError as exc:
+            Event.new(
+                EventAction.CONFIGURATION_ERROR,
+                message=_("Exception occurred while rendering E-mail template"),
+                error=exception_to_string(exc),
+                template=stage.template,
+            ).from_http(self.request)
+            raise StageInvalidException from exc
+
+    def __str__(self):
+        return f"Email Device for {self.user}"
+
     class Meta:
         verbose_name = _("Email Device")
         verbose_name_plural = _("Email Devices")
         unique_together = (("user", "email"),)
-
-    def __str__(self):
-        return f"Email Device for {self.user}"

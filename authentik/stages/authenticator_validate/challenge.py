@@ -30,6 +30,7 @@ from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.authenticator import match_token
 from authentik.stages.authenticator.models import Device
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
+from authentik.stages.authenticator_email.models import EmailDevice
 from authentik.stages.authenticator_sms.models import SMSDevice
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 from authentik.stages.authenticator_webauthn.models import UserVerification, WebAuthnDevice
@@ -103,12 +104,20 @@ def select_challenge(request: HttpRequest, device: Device):
     """Callback when the user selected a challenge in the frontend."""
     if isinstance(device, SMSDevice):
         select_challenge_sms(request, device)
+    elif isinstance(device, EmailDevice):
+        select_challenge_email(request, device)
 
 
 def select_challenge_sms(request: HttpRequest, device: SMSDevice):
     """Send SMS"""
     device.generate_token()
     device.stage.send(device.token, device)
+
+
+def select_challenge_email(request: HttpRequest, device: EmailDevice):
+    """Send Email"""
+    device.generate_token()
+    device.stage.send(device)
 
 
 def validate_challenge_code(code: str, stage_view: StageView, user: User) -> Device:
