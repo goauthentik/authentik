@@ -31376,10 +31376,6 @@ paths:
       description: AuthenticatorEmailStage Viewset
       parameters:
       - in: query
-        name: activate_user_on_success
-        schema:
-          type: boolean
-      - in: query
         name: configure_flow
         schema:
           type: string

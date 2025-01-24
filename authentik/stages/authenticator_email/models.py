@@ -72,10 +72,6 @@ class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
     timeout = models.IntegerField(default=10)
     from_address = models.EmailField(default="system@authentik.local")
 
-    activate_user_on_success = models.BooleanField(
-        default=False, help_text=_("Activate users upon completion of stage.")
-    )
-
     token_expiry = models.IntegerField(
         default=30, help_text=_("Time in minutes the token sent is valid.")
     )
