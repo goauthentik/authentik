@@ -4,7 +4,8 @@ import MDApplication from "@goauthentik/docs/add-secure-apps/applications/index.
 import "@goauthentik/elements/AppIcon.js";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import "@goauthentik/elements/Markdown";
-import "@goauthentik/elements/SidebarHelpToggle.js";
+import "@goauthentik/elements/SidebarHelp/SidebarHelp.js";
+import { SidebarHelpController } from "@goauthentik/elements/SidebarHelp/SidebarHelpController.js";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
@@ -19,6 +20,7 @@ import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
+import SidebarHelp from "@goauthentik/elements/SidebarHelp/SidebarHelp.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
 import { Application, CoreApi } from "@goauthentik/api";
@@ -38,21 +40,6 @@ export const applicationListStyle = css`
     }
     .pf-c-sidebar.pf-m-gutter > .pf-c-sidebar__main > * + * {
         margin-left: calc(var(--pf-c-sidebar__main--child--MarginLeft) / 2);
-    }
-
-    ak-sidebar-help-toggle {
-        display: none;
-    }
-
-    @media screen and (min-width: 768px) {
-        ak-sidebar-help-toggle {
-            display: block;
-        }
-    }
-
-    ak-sidebar-help-toggle.pf-m-width-default {
-        background-color: inherit;
-        max-width: 3rem;
     }
 `;
 
@@ -79,6 +66,8 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     @property()
     order = "name";
 
+    sidebarHelpController = new SidebarHelpController(this);
+
     async apiEndpoint(): Promise<PaginatedResponse<Application>> {
         return new CoreApi(DEFAULT_CONFIG).coreApplicationsList({
             ...(await this.defaultEndpointConfig()),
@@ -87,7 +76,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     }
 
     static get styles(): CSSResult[] {
-        return super.styles.concat(PFCard, applicationListStyle);
+        return super.styles.concat(PFCard, SidebarHelp, applicationListStyle);
     }
 
     columns(): TableColumn[] {
@@ -106,12 +95,12 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     }
 
     renderSidebarAfter(): TemplateResult {
-        return html`<ak-sidebar-help-toggle
+        return html`<ak-sidebar-help
             label=${msg("Applications Documentation")}
             .content=${MDApplication}
             class="pf-c-sidebar__panel"
             active-style="pf-m-width-25"
-        ></ak-sidebar-help-toggle>`;
+        ></ak-sidebar-help>`;
     }
 
     renderToolbarSelected(): TemplateResult {

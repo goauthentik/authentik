@@ -1,5 +1,6 @@
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Markdown";
+import { bound } from "@goauthentik/elements/decorators/bound";
 
 import { msg } from "@lit/localize";
 import { css, html } from "lit";
@@ -11,10 +12,28 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
 import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
-import { bound } from "./decorators/bound";
+import { SidebarHelpToggleEvent } from "./events.js";
 
-@customElement("ak-sidebar-help-toggle")
-export class ToggledSidebarHelp extends AKElement {
+/**
+ * A "Display documentation for this page" element.
+ *
+ * Based on the Patternfly "sidebar" pattern, this shows a vertically rotated button with a label to
+ * indicate that it leads to documentation; when pressed, the button is replaced with the
+ * documentation, rendered as a Markdown document.
+ *
+ * The SidebarHelp feature uses some fairly fiddly CSS to rotate the "Documentation" button in a way
+ * that doesn't take up too much screen real-estate, because the rotation is purely visual; the
+ * layout flow is still driven by the size of the button as if it were horizontal. Using the
+ * SidebarHelp means enabling a special SidebarHelpController on the container to adjust the width
+ * of the container to the *height* of the button when the button is rotated into place.
+ *
+ * @element ak-sidebar-help
+ *
+ * The events fired by this component are not for general use.
+ */
+
+@customElement("ak-sidebar-help")
+export class SidebarHelp extends AKElement {
     static get styles() {
         return [
             PFCard,
@@ -25,8 +44,8 @@ export class ToggledSidebarHelp extends AKElement {
             css`
                 .vert {
                     transform-origin: bottom left;
-                    rotate: 90deg;
                     translate: 0 -100%;
+                    rotate: 90deg;
                 }
                 .ak-fit-text {
                     width: fit-content;
@@ -35,12 +54,21 @@ export class ToggledSidebarHelp extends AKElement {
         ];
     }
 
+    /*
+     * @attr The content of the documentation to be shown
+     */
     @property({ attribute: false })
     content: string = "";
 
+    /*
+     * @attr The style to use when the content is visible
+     */
     @property({ attribute: "active-style" })
     activeStyle = "pf-m-width-25";
 
+    /*
+     * @attr The label on the button when the content is not visible.
+     */
     @property()
     label: string = msg("Documentation");
 
@@ -56,16 +84,7 @@ export class ToggledSidebarHelp extends AKElement {
     }
 
     render() {
-        // The eslint-disable commands are necessary because we're sending signals up the stack that
-        // the component's dimensions are being set in a very specific and concrete way. This is
-        // probably not a good use; it violates the principle that a parent class ought to dictate
-        // the layout of its components.
-
         if (!this.showing) {
-            // eslint-disable-next-line wc/no-self-class
-            this.classList.remove(this.activeStyle);
-            // eslint-disable-next-line wc/no-self-class
-            this.classList.add("pf-m-width-default");
             return html`<button
                 type="button"
                 id="toggle"
@@ -76,10 +95,6 @@ export class ToggledSidebarHelp extends AKElement {
             </button>`;
         }
 
-        // eslint-disable-next-line wc/no-self-class
-        this.classList.remove("pf-m-width-default");
-        // eslint-disable-next-line wc/no-self-class
-        this.classList.add(this.activeStyle);
         return html`
             <div class="pf-c-card">
                 <div class="pf-u-display-flex pf-u-justify-content-flex-end">
@@ -99,17 +114,6 @@ export class ToggledSidebarHelp extends AKElement {
     }
 
     updated() {
-        // Setting this up after a `requestAnimationFrame` means the button's dimensions are
-        // well-calculated, and the space the button needs can be adjusted accordingly.
-        requestAnimationFrame(() => {
-            if (this.showing) {
-                this.style.removeProperty("width");
-            } else {
-                if (this.button) {
-                    const { width } = this.button.getBoundingClientRect();
-                    this.style.setProperty("width", `${width}px`);
-                }
-            }
-        });
+        this.dispatchEvent(new SidebarHelpToggleEvent(this));
     }
 }

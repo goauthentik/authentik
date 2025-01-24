@@ -1,0 +1,14 @@
+ak-sidebar-help-toggle {
+    display: none;
+}
+
+@media screen and (min-width: 768px) {
+    ak-sidebar-help-toggle {
+        display: block;
+    }
+}
+
+ak-sidebar-help-toggle.pf-m-width-default {
+    background-color: inherit;
+    max-width: 3rem;
+}
