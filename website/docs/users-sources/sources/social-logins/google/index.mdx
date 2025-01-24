@@ -1,0 +1,25 @@
+---
+title: Google Identity Providers
+sidebar_label: Google
+tags: [integration, google, saml]
+---
+
+Google provides several services that can be used as identity providers in authentik.
+This page provides an overview of how to configure each protocol as a federated identity provider.
+
+:::info{title="authentik as a third-party IdP"}
+authentik can also be configuration to authenticate users into Google services.
+
+For more information, see the [Google Workspace Integration](../../../../../integrations/services/google/) guide.
+
+## Google Cloud (OAuth)
+
+Google Cloud Identity Platform provides OAuth 2.0 as a federated identity provider. This configuration guide shows how to set up OAuth 2.0 as the authentication method between Google and authentik.
+
+[Configure Google Cloud with authentik ›](./cloud/index.md)
+
+## Google Workspace (SAML)
+
+Google Workspace (formerly G Suite) allows users to authenticate into applications using their company email addresses. This configuration guide shows how to set up Security Assertion Markup Language (SAML) as the authentication method between Google Workspace and authentik.
+
+[Configure Google Workspace with authentik ›](./workspace/index.md)
