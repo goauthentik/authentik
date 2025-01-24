@@ -36,7 +36,7 @@ Under _Advanced protocol settings_, set a certificate for _Signing Certificate_.
 Once the provider is created, it is advised to download the signing certificate as you will need it later.
 
 :::note
-This documentation lists only the settings that have been changed from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
 ## GitHub Configuration

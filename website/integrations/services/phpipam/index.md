@@ -25,7 +25,7 @@ The following placeholders are used in this guide:
 - `guest-permission-group` in place of your company naming convention
 
 :::note
-This documentation lists only the settings that have been changed from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
 :::note

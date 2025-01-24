@@ -24,7 +24,7 @@ The following placeholders are used in this guide:
 - `ak.cert` = The authentik self-signed certificate you use for the service provider.
 
 :::note
-This documentation lists only the settings that have been changed from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
 > [!IMPORTANT]

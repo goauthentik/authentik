@@ -33,7 +33,7 @@ Note that in order to use the EMU Enterprise, you _must_ set up both SAML and SC
 First, create the two groups, in authentik, go to _Groups_, click _Create_ and put in `GitHub Users`, or your chosen user group name. Repeat this step with your Admin group as well.
 
 :::note
-This documentation lists only the settings that have been changed from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
 ## SAML Provider
