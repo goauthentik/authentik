@@ -3,7 +3,7 @@ title: Integrate with NetBox
 sidebar_label: NetBox
 ---
 
-# NetBox
+# Integrate with NetBox
 
 <span class="badge badge--secondary">Support level: Community</span>
 
