@@ -3,7 +3,7 @@ title: Integrate with engomo
 sidebar_label: engomo
 ---
 
-# engomo
+# Integrate with engomo
 
 <span class="badge badge--secondary">Support level: Community</span>
 

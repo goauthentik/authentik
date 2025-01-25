@@ -3,7 +3,7 @@ title: Integrate with Oracle Cloud
 sidebar_label: Oracle Cloud
 ---
 
-# Oracle Cloud
+# Integrate with Oracle Cloud
 
 <span class="badge badge--secondary">Support level: Community</span>
 

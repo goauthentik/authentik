@@ -3,7 +3,7 @@ title: Integrate with pgAdmin
 sidebar_label: pgAdmin
 ---
 
-# pgAdmin
+# Integrate with pgAdmin
 
 <span class="badge badge--secondary">Support level: Community</span>
 

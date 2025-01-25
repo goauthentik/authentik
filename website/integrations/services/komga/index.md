@@ -3,7 +3,7 @@ title: Integrate with Komga
 sidebar_label: Komga
 ---
 
-# Komga
+# Integrate with Komga
 
 <span class="badge badge--secondary">Support level: Community</span>
 

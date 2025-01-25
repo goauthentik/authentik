@@ -3,7 +3,7 @@ title: Integrate with pfSense
 sidebar_label: pfSense
 ---
 
-# pfSense
+# Integrate with pfSense
 
 <span class="badge badge--secondary">Support level: Community</span>
 

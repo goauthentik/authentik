@@ -3,7 +3,7 @@ title: Integrate with Frappe
 sidebar_label: Frappe
 ---
 
-# Frappe
+# Integrate with Frappe
 
 <span class="badge badge--secondary">Support level: Community</span>
 

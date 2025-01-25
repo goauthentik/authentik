@@ -3,7 +3,7 @@ title: Integrate with Veeam Enterprise Manager
 sidebar_label: Veeam Enterprise Manager
 ---
 
-# Veeam Enterprise Manager
+# Integrate with Veeam Enterprise Manager
 
 <span class="badge badge--secondary">Support level: Community</span>
 

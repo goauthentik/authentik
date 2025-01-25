@@ -3,7 +3,7 @@ title: Integrate with Chronograf
 sidebar_label: Chronograf
 ---
 
-# Chronograf
+# Integrate with Chronograf
 
 <span class="badge badge--secondary">Support level: Community</span>
 

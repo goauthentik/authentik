@@ -3,7 +3,7 @@ title: Integrate with Uptime Kuma
 sidebar_label: Uptime Kuma
 ---
 
-# Uptime Kuma
+# Integrate with Uptime Kuma
 
 <span class="badge badge--secondary">Support level: Community</span>
 

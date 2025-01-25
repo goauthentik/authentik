@@ -3,7 +3,7 @@ title: Integrate with Roundcube
 sidebar_label: Roundcube
 ---
 
-# Roundcube
+# Integrate with Roundcube
 
 <span class="badge badge--secondary">Support level: Community</span>
 

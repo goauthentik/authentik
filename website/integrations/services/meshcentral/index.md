@@ -3,6 +3,8 @@ title: Integrate with MeshCentral
 sidebar_label: MeshCentral
 ---
 
+# Integrate with MeshCentral
+
 <span class="badge badge--secondary">Support level: Community</span>
 
 ## What is MeshCentral
@@ -39,7 +41,7 @@ Next, create an application, using the provider you've created above.
 
 Edit the `config.json` file for your MeshCentral deployment, and add the following code in the `domains:` subsection:
 
-:::info  
+:::info
 For Docker deployments, the `config.json` should be located in the directory on the host machine you mapped to `/opt/meshcentral/meshcentral-data`.
 :::
 

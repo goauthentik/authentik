@@ -3,7 +3,7 @@ title: Integrate with Rocket.chat
 sidebar_label: Rocket.chat
 ---
 
-# Rocket.chat
+# Integrate with Rocket.chat
 
 <span class="badge badge--secondary">Support level: Community</span>
 

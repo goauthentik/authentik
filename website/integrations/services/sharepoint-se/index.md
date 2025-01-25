@@ -3,7 +3,7 @@ title: Integrate with SharePoint Server SE
 sidebar_label: SharePoint Server SE
 ---
 
-# SharePoint Server SE
+# Integrate with SharePoint Server SE
 
 <span class="badge badge--secondary">Support level: Community</span>
 

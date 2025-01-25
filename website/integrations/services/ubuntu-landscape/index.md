@@ -3,7 +3,7 @@ title: Integrate with Ubuntu Landscape
 sidebar_label: Ubuntu Landscape
 ---
 
-# Ubuntu Landscape
+# Integrate with Ubuntu Landscape
 
 <span class="badge badge--secondary">Support level: Community</span>
 

@@ -3,7 +3,7 @@ title: Integrate with GlobalProtect
 sidebar_label: GlobalProtect
 ---
 
-# GlobalProtect
+# Integrate with GlobalProtect
 
 <span class="badge badge--secondary">Support level: Community</span>
 

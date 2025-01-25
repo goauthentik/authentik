@@ -3,7 +3,7 @@ title: Integrate with Zabbix
 sidebar_label: Zabbix
 ---
 
-# Zabbix
+# Integrate with Zabbix
 
 <span class="badge badge--secondary">Support level: Community</span>
 

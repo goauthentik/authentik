@@ -3,7 +3,7 @@ title: Integrate with OnlyOffice
 sidebar_label: OnlyOffice
 ---
 
-# OnlyOffice
+# Integrate with OnlyOffice
 
 <span class="badge badge--secondary">Support level: Community</span>
 

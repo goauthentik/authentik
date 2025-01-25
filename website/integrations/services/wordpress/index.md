@@ -3,7 +3,7 @@ title: Integrate with WordPress
 sidebar_label: WordPress
 ---
 
-# WordPress
+# Integrate with WordPress
 
 <span class="badge badge--secondary">Support level: Community</span>
 

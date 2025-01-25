@@ -3,7 +3,7 @@ title: Integrate with Proxmox VE
 sidebar_label: Proxmox VE
 ---
 
-# Proxmox VE
+# Integrate with Proxmox VE
 
 <span class="badge badge--secondary">Support level: Community</span>
 

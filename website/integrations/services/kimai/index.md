@@ -3,7 +3,7 @@ title: Integrate with Kimai
 sidebar_label: Kimai
 ---
 
-# Kimai
+# Integrate with Kimai
 
 <span class="badge badge--secondary">Support level: Community</span>
 

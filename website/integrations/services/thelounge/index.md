@@ -3,7 +3,7 @@ title: Integrate with The Lounge
 sidebar_label: The Lounge
 ---
 
-# The Lounge
+# Integrate with The Lounge
 
 <span class="badge badge--secondary">Support level: Community</span>
 

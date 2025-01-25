@@ -3,7 +3,7 @@ title: Integrate with Semgrep
 sidebar_label: Semgrep
 ---
 
-# Semgrep
+# Integrate with Semgrep
 
 <span class="badge badge--secondary">Support level: Community</span>
 
