@@ -45,15 +45,6 @@ help:  ## Show this help
 go-test:
 	go test -timeout 0 -v -race -cover ./...
 
-test-docker:  ## Run all tests in a docker-compose
-	echo "PG_PASS=$(shell openssl rand 32 | base64 -w 0)" >> .env
-	echo "AUTHENTIK_SECRET_KEY=$(shell openssl rand 32 | base64 -w 0)" >> .env
-	docker compose pull -q
-	docker compose up --no-start
-	docker compose start postgresql redis
-	docker compose run -u root server test-all
-	rm -f .env
-
 test: ## Run the server tests and produce a coverage report (locally)
 	coverage run manage.py test --keepdb authentik
 	coverage html
@@ -262,6 +253,9 @@ aws-cfn:
 docker:  ## Build a docker image of the current source tree
 	mkdir -p ${GEN_API_TS}
 	DOCKER_BUILDKIT=1 docker build . --progress plain --tag ${DOCKER_IMAGE}
+
+test-docker:
+	./scripts/test_docker.sh
 
 #########################
 ## CI

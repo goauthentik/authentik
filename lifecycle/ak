@@ -1,4 +1,5 @@
-#!/usr/bin/env -S bash -e
+#!/usr/bin/env -S bash
+set -e -o pipefail
 MODE_FILE="${TMPDIR}/authentik-mode"
 
 function log {
@@ -87,7 +88,6 @@ elif [[ "$1" == "bash" ]]; then
 elif [[ "$1" == "test-all" ]]; then
     prepare_debug
     chmod 777 /root
-    pip install --force-reinstall /wheels/*
     check_if_root "python -m manage test authentik"
 elif [[ "$1" == "healthcheck" ]]; then
     run_authentik healthcheck $(cat $MODE_FILE)
