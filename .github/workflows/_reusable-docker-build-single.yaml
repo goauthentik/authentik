@@ -77,7 +77,7 @@ jobs:
         id: push
         with:
           context: .
-          push: true
+          push: ${{ steps.ev.outputs.shouldPush == 'true' }}
           secrets: |
             GEOIPUPDATE_ACCOUNT_ID=${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}
             GEOIPUPDATE_LICENSE_KEY=${{ secrets.GEOIPUPDATE_LICENSE_KEY }}
@@ -89,6 +89,7 @@ jobs:
           cache-to: ${{ steps.ev.outputs.cacheTo }}
       - uses: actions/attest-build-provenance@v2
         id: attest
+        if: ${{ steps.ev.outputs.shouldPush == 'true' }}
         with:
           subject-name: ${{ steps.ev.outputs.attestImageNames }}
           subject-digest: ${{ steps.push.outputs.digest }}
