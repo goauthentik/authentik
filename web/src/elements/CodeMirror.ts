@@ -49,10 +49,13 @@ export class CodeMirrorTextarea<T> extends AKElement {
 
     _value?: string;
 
-    theme: Compartment;
+    theme: Compartment = new Compartment();
+    syntaxHighlighting: Compartment = new Compartment();
 
     themeLight: Extension;
     themeDark: Extension;
+    syntaxHighlightingLight: Extension;
+    syntaxHighlightingDark: Extension;
 
     static get styles(): CSSResult[] {
         return [
@@ -122,7 +125,6 @@ export class CodeMirrorTextarea<T> extends AKElement {
 
     constructor() {
         super();
-        this.theme = new Compartment();
         this.themeLight = EditorView.theme(
             {
                 "&": {
@@ -132,6 +134,8 @@ export class CodeMirrorTextarea<T> extends AKElement {
             { dark: false },
         );
         this.themeDark = oneDark;
+        this.syntaxHighlightingLight = syntaxHighlighting(defaultHighlightStyle);
+        this.syntaxHighlightingDark = syntaxHighlighting(oneDarkHighlightStyle);
     }
 
     private getInnerValue(): string {
@@ -161,11 +165,17 @@ export class CodeMirrorTextarea<T> extends AKElement {
         this.addEventListener(EVENT_THEME_CHANGE, ((ev: CustomEvent<UiThemeEnum>) => {
             if (ev.detail === UiThemeEnum.Dark) {
                 this.editor?.dispatch({
-                    effects: this.theme.reconfigure(this.themeDark),
+                    effects: [
+                        this.theme.reconfigure(this.themeDark),
+                        this.syntaxHighlighting.reconfigure(this.syntaxHighlightingDark),
+                    ],
                 });
             } else {
                 this.editor?.dispatch({
-                    effects: this.theme.reconfigure(this.themeLight),
+                    effects: [
+                        this.theme.reconfigure(this.themeLight),
+                        this.syntaxHighlighting.reconfigure(this.syntaxHighlightingLight),
+                    ],
                 });
             }
         }) as EventListener);
@@ -175,7 +185,6 @@ export class CodeMirrorTextarea<T> extends AKElement {
         const extensions = [
             history(),
             keymap.of([...defaultKeymap, ...historyKeymap]),
-            syntaxHighlighting(dark ? oneDarkHighlightStyle : defaultHighlightStyle),
             this.getLanguageExtension(),
             lineNumbers(),
             drawSelection(),
@@ -192,6 +201,9 @@ export class CodeMirrorTextarea<T> extends AKElement {
             }),
             EditorState.readOnly.of(this.readOnly),
             EditorState.tabSize.of(2),
+            this.syntaxHighlighting.of(
+                dark ? this.syntaxHighlightingDark : this.syntaxHighlightingLight,
+            ),
             this.theme.of(dark ? this.themeDark : this.themeLight),
         ];
         this.editor = new EditorView({
