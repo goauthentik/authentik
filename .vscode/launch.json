@@ -24,11 +24,43 @@
             "django": true
         },
         {
-            "name": "Debug: Attach Server Router",
+            "name": "Debug: Start Server Router",
             "type": "go",
             "request": "launch",
             "mode": "auto",
             "program": "${workspaceFolder}/cmd/server",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Debug: Start LDAP Outpost",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/ldap",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Debug: Start Proxy Outpost",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/proxy",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Debug: Start RAC Outpost",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/rac",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Debug: Start Radius Outpost",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/radius",
             "cwd": "${workspaceFolder}"
         }
     ]
