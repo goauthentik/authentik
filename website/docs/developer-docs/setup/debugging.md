@@ -26,11 +26,14 @@ When debugging an authentik instance running in containers, there are some addit
 
 A local clone of the authentik repository is required to be able to set breakpoints in the code. The locally checked out repository must be on the same version/commit as the authentik version running in the containers. To checkout version 2024.12.3 for example, you can run `git checkout version/2024.12.3`.
 
-The debug port needs to be accessible on the local machine. By default, this is port 9901. When running in docker compose, a file `docker-compose.override.yml` can be created next to the authentik docker-compose.yml file to expose the ports.
+The debug port needs to be accessible on the local machine. By default, this is port 9901. Additionally, the container being debugged must be started as root as additional dependencies need to be installed on startup.
+
+When running in docker compose, a file `docker-compose.override.yml` can be created next to the authentik docker-compose.yml file to expose the port and change the user.
 
 ```yaml
 services:
     server:
+        user: root
         ports:
             - 9901:9901
 ```
