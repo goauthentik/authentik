@@ -46,6 +46,7 @@ jobs:
       - build-server-arm64
     outputs:
       tags: ${{ steps.ev.outputs.imageTagsJSON }}
+      shouldPush: ${{ steps.ev.outputs.shouldPush }}
     steps:
       - uses: actions/checkout@v4
       - name: prepare variables
@@ -57,6 +58,7 @@ jobs:
           image-name: ${{ inputs.image_name }}
   merge-server:
     runs-on: ubuntu-latest
+    if: ${{ needs.get-tags.outputs.shouldPush == 'true' }}
     needs:
       - get-tags
       - build-server-amd64
