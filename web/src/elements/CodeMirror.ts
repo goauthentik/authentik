@@ -11,7 +11,7 @@ import {
 } from "@codemirror/language";
 import * as yamlMode from "@codemirror/legacy-modes/mode/yaml";
 import { Compartment, EditorState, Extension } from "@codemirror/state";
-import { oneDark } from "@codemirror/theme-one-dark";
+import { oneDark, oneDarkHighlightStyle } from "@codemirror/theme-one-dark";
 import { ViewUpdate } from "@codemirror/view";
 import { EditorView, drawSelection, keymap, lineNumbers } from "@codemirror/view";
 import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
@@ -169,10 +169,13 @@ export class CodeMirrorTextarea<T> extends AKElement {
                 });
             }
         }) as EventListener);
+
+        const dark = this.activeTheme === UiThemeEnum.Dark;
+
         const extensions = [
             history(),
             keymap.of([...defaultKeymap, ...historyKeymap]),
-            syntaxHighlighting(defaultHighlightStyle),
+            syntaxHighlighting(dark ? oneDarkHighlightStyle : defaultHighlightStyle),
             this.getLanguageExtension(),
             lineNumbers(),
             drawSelection(),
@@ -189,7 +192,7 @@ export class CodeMirrorTextarea<T> extends AKElement {
             }),
             EditorState.readOnly.of(this.readOnly),
             EditorState.tabSize.of(2),
-            this.theme.of(this.activeTheme === UiThemeEnum.Dark ? this.themeDark : this.themeLight),
+            this.theme.of(dark ? this.themeDark : this.themeLight),
         ];
         this.editor = new EditorView({
             extensions: extensions.filter((p) => p) as Extension[],
