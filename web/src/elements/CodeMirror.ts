@@ -52,10 +52,17 @@ export class CodeMirrorTextarea<T> extends AKElement {
     theme: Compartment = new Compartment();
     syntaxHighlighting: Compartment = new Compartment();
 
-    themeLight: Extension;
-    themeDark: Extension;
-    syntaxHighlightingLight: Extension;
-    syntaxHighlightingDark: Extension;
+    themeLight = EditorView.theme(
+        {
+            "&": {
+                backgroundColor: "var(--pf-global--BackgroundColor--light-300)",
+            },
+        },
+        { dark: false },
+    );
+    themeDark = oneDark;
+    syntaxHighlightingLight = syntaxHighlighting(defaultHighlightStyle);
+    syntaxHighlightingDark = syntaxHighlighting(oneDarkHighlightStyle);
 
     static get styles(): CSSResult[] {
         return [
@@ -121,21 +128,6 @@ export class CodeMirrorTextarea<T> extends AKElement {
         } catch (_e: unknown) {
             return this.getInnerValue();
         }
-    }
-
-    constructor() {
-        super();
-        this.themeLight = EditorView.theme(
-            {
-                "&": {
-                    backgroundColor: "var(--pf-global--BackgroundColor--light-300)",
-                },
-            },
-            { dark: false },
-        );
-        this.themeDark = oneDark;
-        this.syntaxHighlightingLight = syntaxHighlighting(defaultHighlightStyle);
-        this.syntaxHighlightingDark = syntaxHighlighting(oneDarkHighlightStyle);
     }
 
     private getInnerValue(): string {
