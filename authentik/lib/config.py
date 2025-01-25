@@ -283,7 +283,8 @@ class ConfigLoader:
     def get_optional_int(self, path: str, default=None) -> int | None:
         """Wrapper for get that converts value into int or None if set"""
         value = self.get(path, default)
-
+        if value is UNSET:
+            return default
         try:
             return int(value)
         except (ValueError, TypeError) as exc:
