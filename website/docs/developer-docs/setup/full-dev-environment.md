@@ -8,7 +8,7 @@ import ExecutionEnvironment from '@docusaurus/ExecutionEnvironment';
 
 ## Requirements
 
-- [Python](https://www.python.org/) 3.12
+- [Python](https://www.python.org/) 3.13
 - [Poetry](https://python-poetry.org/), which is used to manage dependencies
     - Poetry 2.0 or higher also requires the [poetry-plugin-shell](https://github.com/python-poetry/poetry-plugin-shell) extension.
 - [Go](https://go.dev/) 1.23 or newer
