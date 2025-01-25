@@ -28,12 +28,16 @@ A local clone of the authentik repository is required to be able to set breakpoi
 
 The debug port needs to be accessible on the local machine. By default, this is port 9901. Additionally, the container being debugged must be started as root as additional dependencies need to be installed on startup.
 
-When running in docker compose, a file `docker-compose.override.yml` can be created next to the authentik docker-compose.yml file to expose the port and change the user.
+When running in docker compose, a file `docker-compose.override.yml` can be created next to the authentik docker-compose.yml file to expose the port, change the user and enable debug mode.
 
 ```yaml
 services:
+    # Replace `server` with `worker` to debug the worker container.
     server:
         user: root
+        environment:
+            AUTHENTIK_DEBUG: "true"
+            AUTHENTIK_LOG_LEVEL: "debug"
         ports:
             - 9901:9901
 ```
