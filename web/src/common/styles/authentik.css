@@ -125,6 +125,11 @@ html > form > input {
     margin-bottom: 6px;
 }
 
+.pf-m-pressable {
+    cursor: pointer;
+    user-select: none;
+}
+
 /* Flow-card adjustments for static pages */
 .pf-c-brand {
     padding-top: calc(
