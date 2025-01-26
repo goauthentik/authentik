@@ -10,7 +10,7 @@ The majority of the authentik codebase is in Python, running in gunicorn for the
 
 Note that authentik uses [debugpy](https://github.com/microsoft/debugpy), which relies on the "Debug Adapter Protocol". These instructions demonstrate debugging using [Visual Studio Code](https://code.visualstudio.com/), however they should be adaptable to other editors which support DAP.
 
-To enable the debugging server, set the environment variable `AUTHENTIK_DEBUG` to `true`. This will launch the debugging server (by default on port _9901_).
+To enable the debugging server, set the environment variable `AUTHENTIK_DEBUGGER` to `true`. This will launch the debugging server (by default on port _9901_).
 
 With this setup in place, you can set Breakpoints in VS Code. To connect to the debugging server, run the command `> Debug: Start Debugging" in VS Code.
 
@@ -36,13 +36,13 @@ services:
     server:
         user: root
         environment:
-            AUTHENTIK_DEBUG: "true"
+            AUTHENTIK_DEBUGGER: "true"
             AUTHENTIK_LOG_LEVEL: "debug"
         ports:
             - 9901:9901
 ```
 
-After re-creating the containers with `AUTHENTIK_DEBUG` set to `true` and the port mapped, the steps are identical to the steps above.
+After re-creating the containers with `AUTHENTIK_DEBUGGER` set to `true` and the port mapped, the steps are identical to the steps above.
 
 If the authentik instance is running on a remote server, the `.vscode/launch.json` file needs to be adjusted to point to the IP of the remote server. Alternatively, it is also possible to forward the debug port via an SSH tunnel, using `-L 9901:127.0.0.1:9901`.
 
