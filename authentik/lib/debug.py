@@ -8,7 +8,7 @@ LOGGER = get_logger()
 def start_debug_server(**kwargs) -> bool:
     """Attempt to start a debugpy server in the current process.
     Returns true if the server was started successfully, otherwise false"""
-    if not CONFIG.get_bool("debug"):
+    if not CONFIG.get_bool("debug") and not CONFIG.get_bool("debugger"):
         return
     try:
         import debugpy

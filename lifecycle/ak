@@ -67,7 +67,7 @@ function prepare_debug {
     chown authentik:authentik /unittest.xml
 }
 
-if [[ "$(python -m authentik.lib.config debug 2> /dev/null)" == "True" ]]; then
+if [[ "$(python -m authentik.lib.config debugger 2> /dev/null)" == "True" ]]; then
     prepare_debug
 fi
 

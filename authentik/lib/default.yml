@@ -58,6 +58,7 @@ cache:
 #   transport_options: ""
 
 debug: false
+debugger: false
 
 log_level: info
 
