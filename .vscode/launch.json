@@ -9,8 +9,13 @@
                 "host": "localhost",
                 "port": 9901
             },
-            "justMyCode": true,
-            "django": true,
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}",
+                    "remoteRoot": "."
+                }
+            ],
+            "django": true
         },
         {
             "name": "Debug: Attach Worker",
@@ -20,7 +25,12 @@
                 "host": "localhost",
                 "port": 9901
             },
-            "justMyCode": true,
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}",
+                    "remoteRoot": "."
+                }
+            ],
             "django": true
         },
         {
