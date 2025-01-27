@@ -166,7 +166,6 @@ class AuthenticatorEmailStageView(ChallengeStageView):
             data={
                 "email": self.mask_email(email),
                 "email_required": email is None,
-                "responseStatus": "pending",
             }
         )
 
