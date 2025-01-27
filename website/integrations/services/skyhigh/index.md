@@ -3,7 +3,7 @@ title: Integrate with Skyhigh Security
 sidebar_label: Skyhigh Security
 ---
 
-# Skyhigh Security
+# Integrate with Skyhigh Security
 
 <span class="badge badge--secondary">Support level: Community</span>
 
