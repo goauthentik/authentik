@@ -31530,7 +31530,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Email Autherenticator Stage.
+        description: A UUID string identifying this Email Authenticator Stage.
         required: true
       tags:
       - stages
@@ -31564,7 +31564,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Email Autherenticator Stage.
+        description: A UUID string identifying this Email Authenticator Stage.
         required: true
       tags:
       - stages
@@ -31604,7 +31604,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Email Autherenticator Stage.
+        description: A UUID string identifying this Email Authenticator Stage.
         required: true
       tags:
       - stages
@@ -31643,7 +31643,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Email Autherenticator Stage.
+        description: A UUID string identifying this Email Authenticator Stage.
         required: true
       tags:
       - stages
@@ -31674,7 +31674,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Email Autherenticator Stage.
+        description: A UUID string identifying this Email Authenticator Stage.
         required: true
       tags:
       - stages
@@ -39665,9 +39665,6 @@ components:
         email_required:
           type: boolean
           default: true
-        response_status:
-          type: string
-          default: pending
       required:
       - pending_user
       - pending_user_avatar
@@ -42316,10 +42313,15 @@ components:
           type: string
           format: email
           readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/GroupMember'
+          readOnly: true
       required:
       - email
       - name
       - pk
+      - user
     EmailDeviceRequest:
       type: object
       description: Serializer for email authenticator devices

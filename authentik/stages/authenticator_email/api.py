@@ -45,10 +45,12 @@ class AuthenticatorEmailStageViewSet(UsedByMixin, ModelViewSet):
 
 class EmailDeviceSerializer(ModelSerializer):
     """Serializer for email authenticator devices"""
+
     user = GroupMemberSerializer(read_only=True)
+
     class Meta:
         model = EmailDevice
-        fields = ["name", "pk", "email"]
+        fields = ["name", "pk", "email", "user"]
         depth = 2
         extra_kwargs = {
             "email": {"read_only": True},
