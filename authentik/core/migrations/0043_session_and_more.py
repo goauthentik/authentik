@@ -25,25 +25,25 @@ def migrate_redis_sessions(apps, schema_editor):
     if not hasattr(cache, "keys"):
         return
     print("\nMigration Redis sessions to database, this might take a couple of minutes...")
-    sessions_to_create = []
-    batch = 0
+    # sessions_to_create = []
+    # batch = 0
     for key, session_data in progress_bar(cache.get_many(cache.keys(f"{KEY_PREFIX}*")).items()):
         print(key, session_data)
         session_key = key.removeprefix(KEY_PREFIX)
-        sessions_to_create.append(
-            Session(
-                uuid=uuid4(),
-                session_key=session_key,
-                session_data=pickle.dumps(session_data, pickle.HIGHEST_PROTOCOL),
-                expires=now() + timedelta(cache.ttl(key)),
-            )
+        # sessions_to_create.append(
+        Session.objects.using(db_alias).create(
+            uuid=uuid4(),
+            session_key=session_key,
+            session_data=pickle.dumps(session_data, pickle.HIGHEST_PROTOCOL),
+            expires=now() + timedelta(cache.ttl(key)),
         )
-        batch += 1
-        if batch >= 500:
-            Session.objects.using(db_alias).bulk_create(sessions_to_create)
-            sessions_to_create = []
-            batch = 0
-    Session.objects.using(db_alias).bulk_create(sessions_to_create)
+        # )
+    #     batch += 1
+    #     if batch >= 500:
+    #         Session.objects.using(db_alias).bulk_create(sessions_to_create)
+    #         sessions_to_create = []
+    #         batch = 0
+    # Session.objects.using(db_alias).bulk_create(sessions_to_create)
 
 
 def migrate_database_sessions(apps, schema_editor):
