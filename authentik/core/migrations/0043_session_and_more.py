@@ -2,6 +2,77 @@
 
 import authentik.core.models
 from django.db import migrations, models
+import authentik.core.models
+import django.db.models.deletion
+from django.conf import settings
+from django.contrib.sessions.backends.cache import KEY_PREFIX
+from django.utils.timezone import now
+from authentik.lib.migrations import progress_bar
+
+
+SESSION_CACHE_ALIAS = "default"
+
+
+def migrate_redis_sessions(apps, schema_editor):
+    from django.core.cache import caches
+
+    Session = apps.get_model("authentik_core", "Session")
+    db_alias = schema_editor.connection.alias
+    cache = caches[SESSION_CACHE_ALIAS]
+    # Not a redis cache, skipping
+    if not hasattr("keys", cache):
+        return
+    print("\nMigration Redis sessions to database, this might take a couple of minutes...")
+    sessions_to_create = []
+    batch = 0
+    for key, session_data in progress_bar(cache.get_many(cache.keys(f"{KEY_PREFIX}*")).items()):
+        session_key = key.removeprefix(KEY_PREFIX)
+        sessions_to_create.append(Session(session_key=session_key, session_data=session_data, expires=now() + cache.ttl(key)))
+        batch += 1
+        if batch >= 500:
+            Session.objects.using(db_alias).bulk_create(sessions_to_create)
+            sessions_to_create = []
+            batch = 0
+    Session.objects.using(db_alias).bulk_create(sessions_to_create)
+
+
+def migrate_database_sessions(apps, schema_editor):
+    DjangoSession = apps.get_model("sessions", "Session")
+    Session = apps.get_model("authentik_core", "Session")
+    db_alias = schema_editor.connection.alias
+
+    print("\nMigration database sessions, this might take a couple of minutes...")
+    sessions_to_create = []
+    batch = 0
+    for django_session in progress_bar(DjangoSession.objects.using(db_alias).all()):
+        sessions_to_create.append(Session(session_key=django_session.session_key, session_data=django_session.session_data, expires=django_session.expire_date))
+        batch += 1
+        if batch >= 500:
+            Session.objects.using(db_alias).bulk_create(sessions_to_create)
+            sessions_to_create = []
+            batch = 0
+    Session.objects.using(db_alias).bulk_create(sessions_to_create)
+
+
+def migrate_authenticated_sessions(apps, schema_editor):
+    OldAuthenticatedSession = apps.get_model("authentik_core", "OldAuthenticatedSession")
+    AuthenticatedSession = apps.get_model("authentik_core", "AuthenticatedSession")
+    Session = apps.get_model("authentik_core", "Session")
+    db_alias = schema_editor.connection.alias
+
+    print("\nMigration database sessions, this might take a couple of minutes...")
+    sessions_to_create = []
+    batch = 0
+    for old_session in progress_bar(OldAuthenticatedSession.objects.using(db_alias).all()):
+        if not Session.objects.using(db_alias).filter(session_key=old_session.session_key).exists():
+            continue
+        sessions_to_create.append(AuthenticatedSession(session_ptr=old_session.session_key, last_ip=old_session.last_ip, last_user_agent=old_session.last_user_agent, last_used=old_session.last_used))
+        batch += 1
+        if batch >= 500:
+            AuthenticatedSession.objects.using(db_alias).bulk_create(sessions_to_create)
+            sessions_to_create = []
+            batch = 0
+    AuthenticatedSession.objects.using(db_alias).bulk_create(sessions_to_create)
 
 
 class Migration(migrations.Migration):
@@ -13,27 +84,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.CreateModel(
-            name="Session",
-            fields=[
-                (
-                    "session_key",
-                    models.CharField(
-                        max_length=40, primary_key=True, serialize=False, verbose_name="session key"
-                    ),
-                ),
-                ("session_data", models.TextField(verbose_name="session data")),
-                ("expires", models.DateTimeField(default=None, null=True)),
-                ("expiring", models.BooleanField(default=True)),
-            ],
-            options={
-                "verbose_name": "Session",
-                "verbose_name_plural": "Sessions",
-            },
-            managers=[
-                ("objects", authentik.core.models.SessionManager()),
-            ],
-        ),
+        # Rename AuthenticatedSession to OldAuthenticatedSession
         migrations.RenameModel(
             old_name="AuthenticatedSession",
             new_name="OldAuthenticatedSession",
@@ -58,6 +109,29 @@ class Migration(migrations.Migration):
             new_name="authentik_c_session_a44819_idx",
             old_name="authentik_c_session_d0f005_idx",
         ),
+
+        # Create new Session and AuthenticatedSession models
+        migrations.CreateModel(
+            name="Session",
+            fields=[
+                (
+                    "session_key",
+                    models.CharField(
+                        max_length=40, primary_key=True, serialize=False, verbose_name="session key"
+                    ),
+                ),
+                ("session_data", models.TextField(verbose_name="session data")),
+                ("expires", models.DateTimeField(default=None, null=True)),
+                ("expiring", models.BooleanField(default=True)),
+            ],
+            options={
+                "verbose_name": "Session",
+                "verbose_name_plural": "Sessions",
+            },
+            managers=[
+                ("objects", authentik.core.models.SessionManager()),
+            ],
+        ),
         migrations.AddIndex(
             model_name="session",
             index=models.Index(fields=["expires"], name="authentik_c_expires_d2f607_idx"),
@@ -72,4 +146,40 @@ class Migration(migrations.Migration):
                 fields=["expiring", "expires"], name="authentik_c_expirin_1ab2e4_idx"
             ),
         ),
+        migrations.CreateModel(
+            name="AuthenticatedSession",
+            fields=[
+                (
+                    "session_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="authentik_core.session",
+                    ),
+                ),
+                ("last_ip", models.TextField()),
+                ("last_user_agent", models.TextField(blank=True)),
+                ("last_used", models.DateTimeField(auto_now=True)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
+                    ),
+                ),
+            ],
+            options={
+                "verbose_name": "Authenticated Session",
+                "verbose_name_plural": "Authenticated Sessions",
+            },
+            bases=("authentik_core.session",),
+            managers=[
+                ("objects", authentik.core.models.SessionManager()),
+            ],
+        ),
+        migrations.RunPython(code=migrate_redis_sessions),
+        migrations.RunPython(code=migrate_database_sessions),
+        migrations.RunPython(code=migrate_authenticated_sessions),
     ]
