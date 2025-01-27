@@ -29,7 +29,9 @@ def migrate_redis_sessions(apps, schema_editor):
         session_key = key.removeprefix(KEY_PREFIX)
         sessions_to_create.append(
             Session(
-                session_key=session_key, session_data=session_data, expires=now() + timedelta(cache.ttl(key))
+                session_key=session_key,
+                session_data=session_data,
+                expires=now() + timedelta(cache.ttl(key)),
             )
         )
         batch += 1

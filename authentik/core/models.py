@@ -1025,6 +1025,9 @@ class Session(ExpiringModel, AbstractBaseSession):
         verbose_name_plural = _("Sessions")
         indexes = ExpiringModel.Meta.indexes
 
+    def __str__(self):
+        return self.session_key
+
     @classmethod
     def get_session_store_class(cls):
         from authentik.core.sessions import SessionStore
