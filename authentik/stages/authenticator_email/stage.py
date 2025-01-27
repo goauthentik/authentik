@@ -23,7 +23,7 @@ from authentik.stages.authenticator_email.models import (
     AuthenticatorEmailStage,
     EmailDevice,
 )
-from authentik.stages.authenticator_email.tasks import send_mails
+from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
