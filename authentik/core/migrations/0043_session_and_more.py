@@ -20,7 +20,7 @@ def migrate_redis_sessions(apps, schema_editor):
     db_alias = schema_editor.connection.alias
     cache = caches[SESSION_CACHE_ALIAS]
     # Not a redis cache, skipping
-    if not hasattr("keys", cache):
+    if not hasattr(cache, "keys"):
         return
     print("\nMigration Redis sessions to database, this might take a couple of minutes...")
     sessions_to_create = []

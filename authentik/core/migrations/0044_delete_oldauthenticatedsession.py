@@ -9,7 +9,7 @@ def delete_redis_sessions(apps, schema_editor):
 
     cache = caches["default"]
     # Not a redis cache, skipping
-    if not hasattr("keys", cache):
+    if not hasattr(cache, "keys"):
         return
     cache.delete_many(cache.keys(f"{KEY_PREFIX}*"))
 
