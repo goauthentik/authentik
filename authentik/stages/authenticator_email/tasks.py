@@ -48,7 +48,7 @@ def get_email_body(email: EmailMultiAlternatives) -> str:
     base=SystemTask,
 )
 def send_mail(self: SystemTask, message: dict[Any, Any], email_stage_pk: str | None = None):
-    """Send Email for Email Stage. Retries are scheduled automatically."""
+    """Send email for Email Authenticator Stage. Retries are scheduled automatically."""
     self.save_on_success = False
     message_id = make_msgid(domain=DNS_NAME)
     self.set_uid(slugify(message_id.replace(".", "_").replace("@", "_")))

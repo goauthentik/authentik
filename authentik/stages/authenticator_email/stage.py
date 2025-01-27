@@ -43,7 +43,6 @@ class AuthenticatorEmailChallenge(WithUserInfoChallenge):
     email = CharField(default=None, allow_blank=True, allow_null=True)
     email_required = BooleanField(default=True)
     component = CharField(default="ak-stage-authenticator-email")
-    response_status = CharField(default="pending")
 
 
 class AuthenticatorEmailChallengeResponse(ChallengeResponse):

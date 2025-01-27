@@ -75,7 +75,7 @@ class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
     token_expiry = models.IntegerField(
         default=30, help_text=_("Time in minutes the token sent is valid.")
     )
-    subject = models.TextField(default="authentik")
+    subject = models.TextField(default="authentik Sign-in code")
     template = models.TextField(default=EmailTemplates.EMAIL_OTP)
 
     @property
@@ -124,18 +124,18 @@ class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
         )
 
     def send(self, device: "EmailDevice"):
-        # Compose the message using templates
-        message = device._compose_email()
-        # Lazy import here to avoid circular import
+         # Lazy import here to avoid circular import
         from authentik.stages.authenticator_email.tasks import send_mails
 
+        # Compose the message using templates
+        message = device._compose_email()
         return send_mails(device.stage, message)
 
     def __str__(self):
         return f"Email Stage {self.name}"
 
     class Meta:
-        verbose_name = _("Email Autherenticator Stage")
+        verbose_name = _("Email Authenticator Stage")
         verbose_name_plural = _("Email Authenticator Stages")
 
 
