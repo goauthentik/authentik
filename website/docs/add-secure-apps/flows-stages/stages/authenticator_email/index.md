@@ -41,6 +41,7 @@ To use the Email authenticator in a flow:
 3. Configure the stage settings as described above
 
 When a user goes through this flow, they will:
+
 1. Be prompted for their email address (if not already set)
 2. Receive an email with a one-time code
 3. Need to enter the code to complete the setup
