@@ -17,9 +17,7 @@ import {
     Flow,
     FlowsApi,
     FlowsInstancesListDesignationEnum,
-    FlowsInstancesListRequest, // NotificationWebhookMapping,
-    // PropertymappingsApi,
-    // PropertymappingsNotificationListRequest,
+    FlowsInstancesListRequest,
     StagesApi,
 } from "@goauthentik/api";
 
@@ -148,7 +146,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
     }
 
     renderForm(): TemplateResult {
-        return html` <span> ${msg("Stage used to configure an Email-based authenticator.")} </span>
+        return html` <span> ${msg("Stage used to configure an email-based authenticator.")} </span>
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
@@ -268,7 +266,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                         </label>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "When enabled, global Email connection settings will be used and connection settings below will be ignored.",
+                                "When enabled, global email connection settings will be used and connection settings below will be ignored.",
                             )}
                         </p>
                     </ak-form-element-horizontal>

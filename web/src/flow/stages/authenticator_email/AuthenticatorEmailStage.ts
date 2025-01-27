@@ -98,7 +98,7 @@ export class AuthenticatorEmailStage extends BaseStage<
                     </div>
                 </ak-form-static>
                 A verification token has been sent to your configured email address
-                ${this.challenge.email}
+                ${ifDefined(this.challenge.email)}
                 <form
                     class="pf-c-form"
                     @submit=${(e: Event) => {
@@ -116,7 +116,7 @@ export class AuthenticatorEmailStage extends BaseStage<
                             name="code"
                             inputmode="numeric"
                             pattern="[0-9]*"
-                            placeholder="${msg("Please enter the code you received via Email")}"
+                            placeholder="${msg("Please enter the code you received via email")}"
                             autofocus=""
                             autocomplete="one-time-code"
                             class="pf-c-form-control"
@@ -130,27 +130,30 @@ export class AuthenticatorEmailStage extends BaseStage<
                         </button>
                     </div>
                 </form>
-            </div>`;
+                </div>
+                <footer class="pf-c-login__main-footer">
+                    <ul class="pf-c-login__main-footer-links"></ul>
+                </footer>`;
     }
 
     render(): TemplateResult {
         console.debug(
-            "AuthenticatorEmailStage:",
+            "authentik/stages/authenticator_email:",
             this.challenge ? this.challenge.emailRequired : undefined,
         );
 
         if (!this.challenge) {
-            console.debug("AuthenticatorEmailStage.render() called without challenge");
+            console.debug("authentik/stages/authenticator_email: AuthenticatorEmailStage.render() called without challenge");
 
             return html`<ak-empty-state loading> </ak-empty-state>`;
         }
         if (this.challenge.emailRequired) {
-            console.debug("AuthenticatorEmailStage.render() called with challenge", this.challenge);
+            console.debug("authentik/stages/authenticator_email: AuthenticatorEmailStage.render() called with challenge", this.challenge);
 
             return this.renderEmailInput();
         }
         console.debug(
-            "AuthenticatorEmailStage.render() called without emailRequired challenge",
+            "authentik/stages/authenticator_email: AuthenticatorEmailStage.render() called without emailRequired challenge",
             this.challenge,
         );
 

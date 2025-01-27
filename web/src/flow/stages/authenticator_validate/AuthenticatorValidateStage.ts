@@ -189,7 +189,7 @@ export class AuthenticatorValidateStage
                 return html`<i class="fas fa-mobile-alt"></i>
                     <div class="right">
                         <p>${msg("Email")}</p>
-                        <small>${msg("Tokens sent via Email.")}</small>
+                        <small>${msg("Tokens sent via email.")}</small>
                     </div>`;
             default:
                 break;
