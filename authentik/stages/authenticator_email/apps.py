@@ -1,11 +1,10 @@
-"""Email"""
+"""Email Authenticator"""
 
-from django.apps import AppConfig
+from authentik.blueprints.apps import ManagedAppConfig
 
 
-class AuthentikStageAuthenticatorEmailConfig(AppConfig):
-    """Email App config"""
-
+class AuthentikStageAuthenticatorEmailConfig(ManagedAppConfig):
+    """Email Authenticator App config"""
     name = "authentik.stages.authenticator_email"
     label = "authentik_stages_authenticator_email"
     verbose_name = "authentik Stages.Authenticator.Email"
