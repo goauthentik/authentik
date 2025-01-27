@@ -29,9 +29,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.DeleteModel(
-            name="OldAuthenticatedSession",
-        ),
-        migrations.RunPython(code=delete_redis_sessions),
-        migrations.RunPython(code=delete_old_database_sessions),
+        # migrations.DeleteModel(
+        #     name="OldAuthenticatedSession",
+        # ),
+        # migrations.RunPython(code=delete_redis_sessions),
+        # migrations.RunPython(code=delete_old_database_sessions),
     ]

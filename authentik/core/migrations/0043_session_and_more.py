@@ -30,12 +30,16 @@ def migrate_redis_sessions(apps, schema_editor):
     for key, session_data in progress_bar(cache.get_many(cache.keys(f"{KEY_PREFIX}*")).items()):
         print(key, session_data)
         session_key = key.removeprefix(KEY_PREFIX)
+        print(session_key)
+        print(cache.ttl(key))
+        expires = now() + timedelta(seconds=cache.ttl(key))
+        print(expires)
         # sessions_to_create.append(
         s = Session.objects.using(db_alias).create(
             uuid=uuid4(),
             session_key=session_key,
             session_data=pickle.dumps(session_data, pickle.HIGHEST_PROTOCOL),
-            expires=now() + timedelta(cache.ttl(key)),
+            expires=expires,
         )
         print(s)
         # )
