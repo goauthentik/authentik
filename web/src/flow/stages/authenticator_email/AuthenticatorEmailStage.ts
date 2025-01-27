@@ -130,10 +130,10 @@ export class AuthenticatorEmailStage extends BaseStage<
                         </button>
                     </div>
                 </form>
-                </div>
-                <footer class="pf-c-login__main-footer">
-                    <ul class="pf-c-login__main-footer-links"></ul>
-                </footer>`;
+            </div>
+            <footer class="pf-c-login__main-footer">
+                <ul class="pf-c-login__main-footer-links"></ul>
+            </footer>`;
     }
 
     render(): TemplateResult {
@@ -143,12 +143,17 @@ export class AuthenticatorEmailStage extends BaseStage<
         );
 
         if (!this.challenge) {
-            console.debug("authentik/stages/authenticator_email: AuthenticatorEmailStage.render() called without challenge");
+            console.debug(
+                "authentik/stages/authenticator_email: AuthenticatorEmailStage.render() called without challenge",
+            );
 
             return html`<ak-empty-state loading> </ak-empty-state>`;
         }
         if (this.challenge.emailRequired) {
-            console.debug("authentik/stages/authenticator_email: AuthenticatorEmailStage.render() called with challenge", this.challenge);
+            console.debug(
+                "authentik/stages/authenticator_email: AuthenticatorEmailStage.render() called with challenge",
+                this.challenge,
+            );
 
             return this.renderEmailInput();
         }

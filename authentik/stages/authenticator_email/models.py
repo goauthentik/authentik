@@ -124,7 +124,7 @@ class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
         )
 
     def send(self, device: "EmailDevice"):
-         # Lazy import here to avoid circular import
+        # Lazy import here to avoid circular import
         from authentik.stages.authenticator_email.tasks import send_mails
 
         # Compose the message using templates
