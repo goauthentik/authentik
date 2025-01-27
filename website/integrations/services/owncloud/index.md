@@ -108,7 +108,7 @@ To enable OIDC functionality in ownCloud, follow these steps:
     The location of the `config.php` file depends on your deployment method. Consult the setup guide for your chosen deployment method to identify the file’s location within your installation.
 
     :::note
-    Instructions for configuring the OIDC plugin using the ownCloud database can be found in the OIDC plugin's [README.md file](https://github.com/owncloud/openidconnect?tab=readme-ov-file#settings-in-database). Both methods produce identical configurations, differing only in whether the settings are stored in a `php` file or in the database (via an `occ` command).
+Instructions for configuring the OIDC plugin using the ownCloud database can be found in the OIDC plugin's [README.md file](https://github.com/owncloud/openidconnect?tab=readme-ov-file#settings-in-database). Both methods produce identical configurations, differing only in whether the settings are stored in a `php` file or in the database (via an `occ` command).
     :::
 
 3. **Create the `oidc.config.php` File**:
