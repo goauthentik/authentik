@@ -1,7 +1,3 @@
-from os import R_OK, access
-from pathlib import Path
-
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.mail.backends.base import BaseEmailBackend
 from django.core.mail.backends.smtp import EmailBackend
@@ -31,25 +27,6 @@ class EmailTemplates(models.TextChoices):
         "email/email_otp.html",
         _("Email OTP"),
     )  # nosec
-
-
-def get_template_choices():
-    """Get all available Email templates, including dynamically mounted ones.
-    Directories are taken from TEMPLATES.DIR setting"""
-    static_choices = EmailTemplates.choices
-
-    dirs = [Path(x) for x in settings.TEMPLATES[0]["DIRS"]]
-    for template_dir in dirs:
-        if not template_dir.exists() or not template_dir.is_dir():
-            continue
-        for template in template_dir.glob("**/*.html"):
-            path = str(template)
-            if not access(path, R_OK):
-                LOGGER.warning("Custom template file is not readable, check permissions", path=path)
-                continue
-            rel_path = template.relative_to(template_dir)
-            static_choices.append((str(rel_path), f"Custom Template: {rel_path}"))
-    return static_choices
 
 
 class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
