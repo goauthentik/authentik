@@ -2,22 +2,16 @@
 
 from datetime import datetime, timedelta
 
-from django.conf import ImproperlyConfigured
-from django.contrib.sessions.backends.cache import KEY_PREFIX
-from django.contrib.sessions.backends.db import SessionStore as DBSessionStore
-from django.core.cache import cache
 from django.utils.timezone import now
 from structlog.stdlib import get_logger
 
 from authentik.core.models import (
     USER_ATTRIBUTE_EXPIRES,
     USER_ATTRIBUTE_GENERATED,
-    AuthenticatedSession,
     ExpiringModel,
     User,
 )
 from authentik.events.system_tasks import SystemTask, TaskStatus, prefill_task
-from authentik.lib.config import CONFIG
 from authentik.root.celery import CELERY_APP
 
 LOGGER = get_logger()

@@ -8,7 +8,7 @@ from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext as _
 from rest_framework.fields import BooleanField, CharField
 
-from authentik.core.models import AuthenticatedSession, User
+from authentik.core.models import Session, User
 from authentik.events.middleware import audit_ignore
 from authentik.flows.challenge import ChallengeResponse, WithUserInfoChallenge
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, PLAN_CONTEXT_SOURCE
@@ -112,7 +112,7 @@ class UserLoginStageView(ChallengeStageView):
         if not self.executor.plan.context.get(PLAN_CONTEXT_SOURCE, None):
             messages.success(self.request, _("Successfully logged in!"))
         if self.executor.current_stage.terminate_other_sessions:
-            AuthenticatedSession.objects.filter(
+            Session.objects.filter(
                 user=user,
             ).exclude(session_key=self.request.session.session_key).delete()
         return self.executor.stage_ok()

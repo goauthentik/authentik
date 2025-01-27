@@ -733,8 +733,7 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         choices=SourceGroupMatchingModes.choices,
         default=SourceGroupMatchingModes.IDENTIFIER,
         help_text=_(
-            "How the source determines if an existing group should be used or "
-            "a new group created."
+            "How the source determines if an existing group should be used or a new group created."
         ),
     )
 
@@ -1029,6 +1028,10 @@ class Session(ExpiringModel, AbstractBaseSession):
     class Meta:
         verbose_name = _("Session")
         verbose_name_plural = _("Sessions")
+        indexes = ExpiringModel.Meta.indexes
+
+    def __str__(self) -> str:
+        return f"Session {self.session_key[:10]}"
 
 
 class AuthenticatedSession(Session):
@@ -1053,7 +1056,7 @@ class AuthenticatedSession(Session):
         if not hasattr(request, "session") or not request.session.session_key:
             return None
         return AuthenticatedSession(
-            session_key=request.session.session_key,
+            session_ptr=request.session.session_obj,
             user=user,
             last_ip=ClientIPMiddleware.get_client_ip(request),
             last_user_agent=request.META.get("HTTP_USER_AGENT", ""),

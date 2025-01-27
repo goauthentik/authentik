@@ -1,16 +1,14 @@
 """authentik events signal listener"""
 
-from importlib import import_module
 from typing import Any
 
-from django.conf import settings
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from django.http import HttpRequest
 from rest_framework.request import Request
 
-from authentik.core.models import AuthenticatedSession, User
+from authentik.core.models import Session, User
 from authentik.core.signals import login_failed, password_changed
 from authentik.events.apps import SYSTEM_TASK_STATUS
 from authentik.events.models import Event, EventAction, SystemTask
@@ -24,9 +22,9 @@ from authentik.stages.invitation.signals import invitation_used
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 from authentik.stages.user_write.signals import user_write
 from authentik.tenants.utils import get_current_tenant
+from authentik.core.sessions import SessionStore
 
 SESSION_LOGIN_EVENT = "login_event"
-_session_engine = import_module(settings.SESSION_ENGINE)
 
 
 @receiver(user_logged_in)
@@ -50,16 +48,15 @@ def on_user_logged_in(sender, request: HttpRequest, user: User, **_):
     request.session.save()
 
 
-def get_login_event(request_or_session: HttpRequest | AuthenticatedSession | None) -> Event | None:
+def get_login_event(request_or_session: HttpRequest | Session | None) -> Event | None:
     """Wrapper to get login event that can be mocked in tests"""
     session = None
     if not request_or_session:
         return None
     if isinstance(request_or_session, HttpRequest | Request):
         session = request_or_session.session
-    if isinstance(request_or_session, AuthenticatedSession):
-        SessionStore = _session_engine.SessionStore
-        session = SessionStore(request_or_session.session_key)
+    if isinstance(request_or_session, Session):
+        session = SessionStore.from_session_obj(request_or_session)
     return session.get(SESSION_LOGIN_EVENT, None)
 
 
