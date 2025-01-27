@@ -38671,6 +38671,7 @@ components:
       - last_used
       - user
       - user_agent
+      - uuid
     AuthenticationEnum:
       enum:
       - none

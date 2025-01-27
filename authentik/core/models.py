@@ -1015,6 +1015,8 @@ class SessionManager(BaseSessionManager):
 
 
 class Session(ExpiringModel, AbstractBaseSession):
+    uuid = models.UUIDField(primary_key=True)
+    session_key = models.CharField(_("session key"), max_length=40, db_index=True)
     # Remove upstream field because we're using our own ExpiringModel
     expire_date = None
 

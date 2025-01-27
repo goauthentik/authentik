@@ -128,9 +128,13 @@ class Migration(migrations.Migration):
             name="Session",
             fields=[
                 (
+                    "uuid",
+                    models.UUIDField(primary_key=True, serialize=False),
+                ),
+                (
                     "session_key",
                     models.CharField(
-                        max_length=40, primary_key=True, serialize=False, verbose_name="session key"
+                        max_length=40, db_index=True, serialize=False, verbose_name="session key"
                     ),
                 ),
                 ("session_data", models.TextField(verbose_name="session data")),
