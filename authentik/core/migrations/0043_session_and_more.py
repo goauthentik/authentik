@@ -129,7 +129,8 @@ class Migration(migrations.Migration):
             old_name="authentik_c_session_d0f005_idx",
         ),
         migrations.RunSQL(
-            "ALTER INDEX authentik_core_authenticatedsession_user_id_5055b6cf RENAME TO authentik_core_oldauthenticatedsession_user_id_5055b6cf"
+            "ALTER INDEX authentik_core_authenticatedsession_user_id_5055b6cf RENAME TO authentik_core_oldauthenticatedsession_user_id_5055b6cf",
+            "ALTER INDEX authentik_core_oldauthenticatedsession_user_id_5055b6cf RENAME TO authentik_core_authenticatedsession_user_id_5055b6cf",
         ),
         # Create new Session and AuthenticatedSession models
         migrations.CreateModel(
@@ -204,7 +205,7 @@ class Migration(migrations.Migration):
                 ("objects", authentik.core.models.SessionManager()),
             ],
         ),
-        migrations.RunPython(code=migrate_redis_sessions),
-        migrations.RunPython(code=migrate_database_sessions),
-        migrations.RunPython(code=migrate_authenticated_sessions),
+        migrations.RunPython(migrate_redis_sessions, migrations.RunPython.noop),
+        migrations.RunPython(migrate_database_sessions, migrations.RunPython.noop),
+        migrations.RunPython(migrate_authenticated_sessions, migrations.RunPython.noop),
     ]
