@@ -8,6 +8,7 @@ from django.conf import settings
 from django.contrib.sessions.backends.cache import KEY_PREFIX
 from django.utils.timezone import now, timedelta
 from authentik.lib.migrations import progress_bar
+from uuid import uuid4
 
 
 SESSION_CACHE_ALIAS = "default"
@@ -29,6 +30,7 @@ def migrate_redis_sessions(apps, schema_editor):
         session_key = key.removeprefix(KEY_PREFIX)
         sessions_to_create.append(
             Session(
+                uuid=uuid4(),
                 session_key=session_key,
                 session_data=session_data,
                 expires=now() + timedelta(cache.ttl(key)),
@@ -53,6 +55,7 @@ def migrate_database_sessions(apps, schema_editor):
     for django_session in progress_bar(DjangoSession.objects.using(db_alias).all()):
         sessions_to_create.append(
             Session(
+                uuid=uuid4(),
                 session_key=django_session.session_key,
                 session_data=django_session.session_data,
                 expires=django_session.expire_date,
