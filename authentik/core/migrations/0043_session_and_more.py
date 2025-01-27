@@ -31,12 +31,13 @@ def migrate_redis_sessions(apps, schema_editor):
         print(key, session_data)
         session_key = key.removeprefix(KEY_PREFIX)
         # sessions_to_create.append(
-        Session.objects.using(db_alias).create(
+        s = Session.objects.using(db_alias).create(
             uuid=uuid4(),
             session_key=session_key,
             session_data=pickle.dumps(session_data, pickle.HIGHEST_PROTOCOL),
             expires=now() + timedelta(cache.ttl(key)),
         )
+        print(s)
         # )
     #     batch += 1
     #     if batch >= 500:
