@@ -1,7 +1,7 @@
 """authentik sessions engine"""
 
-from django.core.exceptions import SuspiciousOperation
 from django.contrib.sessions.backends.db import SessionStore as SessionBase
+from django.core.exceptions import SuspiciousOperation
 from django.utils import timezone
 from structlog.stdlib import get_logger
 

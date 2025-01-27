@@ -9,6 +9,7 @@ from django.http import HttpRequest
 from rest_framework.request import Request
 
 from authentik.core.models import Session, User
+from authentik.core.sessions import SessionStore
 from authentik.core.signals import login_failed, password_changed
 from authentik.events.apps import SYSTEM_TASK_STATUS
 from authentik.events.models import Event, EventAction, SystemTask
@@ -22,7 +23,6 @@ from authentik.stages.invitation.signals import invitation_used
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 from authentik.stages.user_write.signals import user_write
 from authentik.tenants.utils import get_current_tenant
-from authentik.core.sessions import SessionStore
 
 SESSION_LOGIN_EVENT = "login_event"
 

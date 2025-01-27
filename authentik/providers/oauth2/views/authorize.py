@@ -613,7 +613,7 @@ class OAuthFulfillmentStage(StageView):
             expires=access_token_expiry,
             provider=self.provider,
             auth_time=auth_event.created if auth_event else now,
-            session=request.session.authenticated_session,
+            session=self.request.session.authenticated_session,
         )
 
         id_token = IDToken.new(self.provider, token, self.request)

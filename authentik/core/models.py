@@ -4,12 +4,12 @@ from datetime import datetime
 from hashlib import sha256
 from typing import Any, Optional, Self
 from uuid import uuid4
-from django.contrib.sessions.base_session import AbstractBaseSession, BaseSessionManager
 
 from deepmerge import always_merger
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UserManager as DjangoUserManager
+from django.contrib.sessions.base_session import AbstractBaseSession, BaseSessionManager
 from django.db import models
 from django.db.models import Q, QuerySet, options
 from django.db.models.constants import LOOKUP_SEP
@@ -647,7 +647,8 @@ class SourceUserMatchingModes(models.TextChoices):
     EMAIL_DENY = (
         "email_deny",
         _(
-            "Use the user's email address, but deny enrollment when the email address already exists."
+            "Use the user's email address, but deny enrollment when the email address already "
+            "exists."
         ),
     )
     USERNAME_LINK = (
@@ -1019,12 +1020,6 @@ class Session(ExpiringModel, AbstractBaseSession):
 
     objects = SessionManager()
 
-    @classmethod
-    def get_session_store_class(cls):
-        from authentik.core.sessions import SessionStore
-
-        return SessionStore
-
     class Meta:
         verbose_name = _("Session")
         verbose_name_plural = _("Sessions")
@@ -1032,6 +1027,12 @@ class Session(ExpiringModel, AbstractBaseSession):
 
     def __str__(self) -> str:
         return f"Session {self.session_key[:10]}"
+
+    @classmethod
+    def get_session_store_class(cls):
+        from authentik.core.sessions import SessionStore
+
+        return SessionStore
 
 
 class AuthenticatedSession(Session):

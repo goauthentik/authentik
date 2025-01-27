@@ -11,7 +11,11 @@ def migrate_sessions(apps, schema_editor):
     db_alias = schema_editor.connection.alias
 
     for token in ConnectionToken.objects.using(db_alias).all():
-        token.session = AuthenticatedSession.objects.using(db_alias).filter(session_key=token.old_session.session_key).first()
+        token.session = (
+            AuthenticatedSession.objects.using(db_alias)
+            .filter(session_key=token.old_session.session_key)
+            .first()
+        )
         token.save()
     ConnectionToken.objects.using(db_alias).filter(session=None).delete()
 

@@ -11,5 +11,4 @@ class Migration(migrations.Migration):
         ("authentik_providers_rac", "0007_migrate_session"),
     ]
 
-    operations = [
-    ]
+    operations = []

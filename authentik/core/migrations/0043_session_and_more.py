@@ -27,7 +27,11 @@ def migrate_redis_sessions(apps, schema_editor):
     batch = 0
     for key, session_data in progress_bar(cache.get_many(cache.keys(f"{KEY_PREFIX}*")).items()):
         session_key = key.removeprefix(KEY_PREFIX)
-        sessions_to_create.append(Session(session_key=session_key, session_data=session_data, expires=now() + cache.ttl(key)))
+        sessions_to_create.append(
+            Session(
+                session_key=session_key, session_data=session_data, expires=now() + cache.ttl(key)
+            )
+        )
         batch += 1
         if batch >= 500:
             Session.objects.using(db_alias).bulk_create(sessions_to_create)
@@ -45,7 +49,13 @@ def migrate_database_sessions(apps, schema_editor):
     sessions_to_create = []
     batch = 0
     for django_session in progress_bar(DjangoSession.objects.using(db_alias).all()):
-        sessions_to_create.append(Session(session_key=django_session.session_key, session_data=django_session.session_data, expires=django_session.expire_date))
+        sessions_to_create.append(
+            Session(
+                session_key=django_session.session_key,
+                session_data=django_session.session_data,
+                expires=django_session.expire_date,
+            )
+        )
         batch += 1
         if batch >= 500:
             Session.objects.using(db_alias).bulk_create(sessions_to_create)
@@ -66,7 +76,14 @@ def migrate_authenticated_sessions(apps, schema_editor):
     for old_session in progress_bar(OldAuthenticatedSession.objects.using(db_alias).all()):
         if not Session.objects.using(db_alias).filter(session_key=old_session.session_key).exists():
             continue
-        sessions_to_create.append(AuthenticatedSession(session_ptr=old_session.session_key, last_ip=old_session.last_ip, last_user_agent=old_session.last_user_agent, last_used=old_session.last_used))
+        sessions_to_create.append(
+            AuthenticatedSession(
+                session_ptr=old_session.session_key,
+                last_ip=old_session.last_ip,
+                last_user_agent=old_session.last_user_agent,
+                last_used=old_session.last_used,
+            )
+        )
         batch += 1
         if batch >= 500:
             AuthenticatedSession.objects.using(db_alias).bulk_create(sessions_to_create)
@@ -109,7 +126,6 @@ class Migration(migrations.Migration):
             new_name="authentik_c_session_a44819_idx",
             old_name="authentik_c_session_d0f005_idx",
         ),
-
         # Create new Session and AuthenticatedSession models
         migrations.CreateModel(
             name="Session",

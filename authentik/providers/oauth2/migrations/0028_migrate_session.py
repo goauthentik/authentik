@@ -14,7 +14,9 @@ def migrate_sessions(apps, schema_editor, model):
     for obj in Model.objects.using(db_alias).all():
         if not obj.old_session:
             continue
-        obj.session = AuthenticatedSession.objects.using(db_alias).filter(session_key=obj.old_session.session_key)
+        obj.session = AuthenticatedSession.objects.using(db_alias).filter(
+            session_key=obj.old_session.session_key
+        )
         obj.save()
 
 
