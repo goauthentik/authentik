@@ -8,6 +8,6 @@ Email MFA code
 If you did not request this code, please ignore this email. The code above is valid for {{ expires }}.
 {% endblocktrans %}
 
---
+-- 
 Powered by goauthentik.io.
 {% endautoescape %}
