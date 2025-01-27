@@ -2,19 +2,23 @@
 title: Email authenticator setup stage
 ---
 
-This stage configures an email-based authenticator that sends one-time codes to users' email addresses for authentication.
+This stage configures an email-based authenticator that sends a one-time codes to a user's email address for authentication.
 
 ## Configuration
 
 ### Email Settings
 
 The stage can be configured in two ways:
+- global settings
+or
+- stage-specific settings
 
-#### Global Settings
 
-Enable the _Use global settings_ option to use authentik's global email configuration. This is recommended if you already have email configured in authentik.
+#### Global settings
 
-#### Stage-specific Settings
+Enable the **Use global settings** option to use authentik's global email configuration. This is recommended if you already have email configured in authentik.
+
+#### Stage-specific settings
 
 If you need different email settings for this stage, disable _Use global settings_ and configure the following:
 
