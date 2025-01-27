@@ -3,7 +3,7 @@ title: Integrate with Grafana
 sidebar_label: Grafana
 ---
 
-# Grafana
+# Integrate with Grafana
 
 <span class="badge badge--primary">Support level: authentik</span>
 
@@ -15,10 +15,10 @@ sidebar_label: Grafana
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
-- `grafana.company` is the FQDN of the Grafana install.
-- `authentik.company` is the FQDN of the authentik install.
+- `grafana.company` is the FQDN of the Grafana installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 Create an OAuth2/OpenID provider with the following parameters:
 
@@ -38,15 +38,15 @@ data "authentik_flow" "default-provider-authorization-implicit-consent" {
   slug = "default-provider-authorization-implicit-consent"
 }
 
-data "authentik_scope_mapping" "scope-email" {
+data "authentik_property_mapping_provider_scope" "scope-email" {
   name = "authentik default OAuth Mapping: OpenID 'email'"
 }
 
-data "authentik_scope_mapping" "scope-profile" {
+data "authentik_property_mapping_provider_scope" "scope-profile" {
   name = "authentik default OAuth Mapping: OpenID 'profile'"
 }
 
-data "authentik_scope_mapping" "scope-openid" {
+data "authentik_property_mapping_provider_scope" "scope-openid" {
   name = "authentik default OAuth Mapping: OpenID 'openid'"
 }
 
@@ -64,9 +64,9 @@ resource "authentik_provider_oauth2" "grafana" {
   redirect_uris = ["https://grafana.company/login/generic_oauth"]
 
   property_mappings = [
-    data.authentik_scope_mapping.scope-email.id,
-    data.authentik_scope_mapping.scope-profile.id,
-    data.authentik_scope_mapping.scope-openid.id,
+    data.authentik_property_mapping_provider_scope.scope-email.id,
+    data.authentik_property_mapping_provider_scope.scope-profile.id,
+    data.authentik_property_mapping_provider_scope.scope-openid.id,
   ]
 }
 

@@ -3,7 +3,7 @@ title: Integrate with sssd
 sidebar_label: sssd
 ---
 
-# sssd
+# Integrate with sssd
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -20,9 +20,9 @@ Kerberos is also not supported.
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
-- `authentik.company` is the FQDN of the authentik install.
+- `authentik.company` is the FQDN of the authentik installation.
 - `ldap.baseDN` is the Base DN you configure in the LDAP provider.
 - `ldap.domain` is (typically) an FQDN for your domain. Usually
   it is just the components of your base DN. For example, if

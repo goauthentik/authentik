@@ -20,7 +20,7 @@ from authentik.flows.planner import (
     FlowPlanner,
 )
 from authentik.flows.stage import ChallengeStageView
-from authentik.flows.views.executor import SESSION_KEY_PLAN, InvalidStageError
+from authentik.flows.views.executor import SESSION_KEY_GET, SESSION_KEY_PLAN, InvalidStageError
 from authentik.lib.utils.urls import reverse_with_qs
 from authentik.stages.redirect.models import RedirectMode, RedirectStage
 
@@ -72,7 +72,9 @@ class RedirectStageView(ChallengeStageView):
         self.request.session[SESSION_KEY_PLAN] = plan
         kwargs = self.executor.kwargs
         kwargs.update({"flow_slug": flow.slug})
-        return reverse_with_qs("authentik_core:if-flow", self.request.GET, kwargs=kwargs)
+        return reverse_with_qs(
+            "authentik_core:if-flow", self.request.session[SESSION_KEY_GET], kwargs=kwargs
+        )
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
         """Get the redirect target. Prioritize `redirect_stage_target` if present."""
@@ -83,7 +85,7 @@ class RedirectStageView(ChallengeStageView):
         target_url_override = self.executor.plan.context.get(PLAN_CONTEXT_REDIRECT_STAGE_TARGET, "")
         if target_url_override:
             target = self.parse_target(target_url_override)
-        # `target` is falsy if the override was to a Flow but that Flow doesn't exist.
+        # `target` is false if the override was to a Flow but that Flow doesn't exist.
         if not target:
             if current_stage.mode == RedirectMode.STATIC:
                 target = current_stage.target_static

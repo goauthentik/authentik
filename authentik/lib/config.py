@@ -280,9 +280,25 @@ class ConfigLoader:
             self.log("warning", "Failed to parse config as int", path=path, exc=str(exc))
             return default
 
+    def get_optional_int(self, path: str, default=None) -> int | None:
+        """Wrapper for get that converts value into int or None if set"""
+        value = self.get(path, default)
+        if value is UNSET:
+            return default
+        try:
+            return int(value)
+        except (ValueError, TypeError) as exc:
+            if value is None or (isinstance(value, str) and value.lower() == "null"):
+                return None
+            self.log("warning", "Failed to parse config as int", path=path, exc=str(exc))
+            return default
+
     def get_bool(self, path: str, default=False) -> bool:
         """Wrapper for get that converts value into boolean"""
-        return str(self.get(path, default)).lower() == "true"
+        value = self.get(path, UNSET)
+        if value is UNSET:
+            return default
+        return str(self.get(path)).lower() == "true"
 
     def get_keys(self, path: str, sep=".") -> list[str]:
         """List attribute keys by using yaml path"""
@@ -354,20 +370,33 @@ def django_db_config(config: ConfigLoader | None = None) -> dict:
                 "sslcert": config.get("postgresql.sslcert"),
                 "sslkey": config.get("postgresql.sslkey"),
             },
+            "CONN_MAX_AGE": CONFIG.get_optional_int("postgresql.conn_max_age", 0),
+            "CONN_HEALTH_CHECKS": CONFIG.get_bool("postgresql.conn_health_checks", False),
+            "DISABLE_SERVER_SIDE_CURSORS": CONFIG.get_bool(
+                "postgresql.disable_server_side_cursors", False
+            ),
             "TEST": {
                 "NAME": config.get("postgresql.test.name"),
             },
         }
     }
 
+    conn_max_age = CONFIG.get_optional_int("postgresql.conn_max_age", UNSET)
+    disable_server_side_cursors = CONFIG.get_bool("postgresql.disable_server_side_cursors", UNSET)
     if config.get_bool("postgresql.use_pgpool", False):
         db["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
+        if disable_server_side_cursors is not UNSET:
+            db["default"]["DISABLE_SERVER_SIDE_CURSORS"] = disable_server_side_cursors
 
     if config.get_bool("postgresql.use_pgbouncer", False):
         # https://docs.djangoproject.com/en/4.0/ref/databases/#transaction-pooling-server-side-cursors
         db["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
         # https://docs.djangoproject.com/en/4.0/ref/databases/#persistent-connections
         db["default"]["CONN_MAX_AGE"] = None  # persistent
+        if disable_server_side_cursors is not UNSET:
+            db["default"]["DISABLE_SERVER_SIDE_CURSORS"] = disable_server_side_cursors
+        if conn_max_age is not UNSET:
+            db["default"]["CONN_MAX_AGE"] = conn_max_age
 
     for replica in config.get_keys("postgresql.read_replicas"):
         _database = deepcopy(db["default"])

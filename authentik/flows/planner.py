@@ -109,6 +109,8 @@ class FlowPlan:
 
     def pop(self):
         """Pop next pending stage from bottom of list"""
+        if not self.markers and not self.bindings:
+            return
         self.markers.pop(0)
         self.bindings.pop(0)
 
@@ -156,12 +158,25 @@ class FlowPlan:
             final_stage: type[StageView] = self.bindings[-1].stage.view
             temp_exec = FlowExecutorView(flow=flow, request=request, plan=self)
             temp_exec.current_stage = self.bindings[-1].stage
+            temp_exec.current_stage_view = final_stage
+            temp_exec.setup(request, flow.slug)
             stage = final_stage(request=request, executor=temp_exec)
-            return stage.dispatch(request)
+            response = stage.dispatch(request)
+            # Ensure we clean the flow state we have in the session before we redirect away
+            temp_exec.stage_ok()
+            return response
+
+        get_qs = request.GET.copy()
+        if request.user.is_authenticated and (
+            # Object-scoped permission or global permission
+            request.user.has_perm("authentik_flows.inspect_flow", flow)
+            or request.user.has_perm("authentik_flows.inspect_flow")
+        ):
+            get_qs["inspector"] = "available"
 
         return redirect_with_qs(
             "authentik_core:if-flow",
-            request.GET,
+            get_qs,
             flow_slug=flow.slug,
         )
 

@@ -3,7 +3,7 @@ title: Integrate with NetBird
 sidebar_label: NetBird
 ---
 
-# NetBird
+# Integrate with NetBird
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -15,10 +15,10 @@ sidebar_label: NetBird
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
-- `netbird.company` is the FQDN of the NetBird install.
-- `authentik.company` is the FQDN of the authentik install.
+- `netbird.company` is the FQDN of the NetBird installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 ## authentik configuration
 

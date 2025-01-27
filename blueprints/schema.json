@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://goauthentik.io/blueprints/schema.json",
     "type": "object",
-    "title": "authentik 2024.10.5 Blueprint schema",
+    "title": "authentik 2024.12.2 Blueprint schema",
     "required": [
         "version",
         "entries"
@@ -3884,8 +3884,7 @@
                     {
                         "type": "object",
                         "required": [
-                            "model",
-                            "identifiers"
+                            "model"
                         ],
                         "properties": {
                             "model": {
@@ -3914,9 +3913,6 @@
                                 "$ref": "#/$defs/model_authentik_blueprints.metaapplyblueprint_permissions"
                             },
                             "attrs": {
-                                "$ref": "#/$defs/model_authentik_blueprints.metaapplyblueprint"
-                            },
-                            "identifiers": {
                                 "$ref": "#/$defs/model_authentik_blueprints.metaapplyblueprint"
                             }
                         }
@@ -4163,7 +4159,7 @@
                 "re_evaluate_policies": {
                     "type": "boolean",
                     "title": "Re evaluate policies",
-                    "description": "Evaluate policies when the Stage is present to the user."
+                    "description": "Evaluate policies when the Stage is presented to the user."
                 },
                 "order": {
                     "type": "integer",

@@ -3,7 +3,7 @@ title: Integrate with Veeam Enterprise Manager
 sidebar_label: Veeam Enterprise Manager
 ---
 
-# Veeam Enterprise Manager
+# Integrate with Veeam Enterprise Manager
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -11,14 +11,14 @@ sidebar_label: Veeam Enterprise Manager
 
 > Veeam Backup Enterprise Manager (Enterprise Manager) is a management and reporting component that allows you to manage multiple Veeam Backup & Replication installations from a single web console. Veeam Backup Enterprise Manager helps you optimize performance in remote office/branch office (ROBO) and large-scale deployments and maintain a view of your entire virtual environment.
 >
-> -- https://helpcenter.veeam.com/docs/backup/em/introduction.html?ver=100
+> -- https://helpcenter.veeam.com/docs/backup/em/introduction.html
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
-- `veeam.company` is the FQDN of the Veeam Enterprise Manager install.
-- `authentik.company` is the FQDN of the authentik install.
+- `veeam.company` is the FQDN of the Veeam Enterprise Manager installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 You will need an existing group or multiple in authentik to assign roles in Veeam Enterprise Manager to.
 

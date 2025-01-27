@@ -3,7 +3,7 @@ title: Integrate with Kimai
 sidebar_label: Kimai
 ---
 
-# Kimai
+# Integrate with Kimai
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -15,7 +15,7 @@ sidebar_label: Kimai
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `kimai.company` is the FQDN of the Kimai Install
 - `authentik.company` is the FQDN of the authentik Install

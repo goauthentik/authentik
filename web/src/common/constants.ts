@@ -3,7 +3,7 @@ export const SUCCESS_CLASS = "pf-m-success";
 export const ERROR_CLASS = "pf-m-danger";
 export const PROGRESS_CLASS = "pf-m-in-progress";
 export const CURRENT_CLASS = "pf-m-current";
-export const VERSION = "2024.10.5";
+export const VERSION = "2024.12.2";
 export const TITLE_DEFAULT = "authentik";
 export const ROUTE_SEPARATOR = ";";
 

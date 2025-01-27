@@ -2,9 +2,10 @@
 
 from django.apps import apps
 from django.contrib.auth.models import Permission
-from django.db.models import QuerySet
+from django.db.models import Q, QuerySet
 from django_filters.filters import ModelChoiceFilter
 from django_filters.filterset import FilterSet
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import (
     CharField,
@@ -13,8 +14,11 @@ from rest_framework.fields import (
     ReadOnlyField,
     SerializerMethodField,
 )
+from rest_framework.filters import OrderingFilter, SearchFilter
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
+from authentik.blueprints.v1.importer import excluded_models
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import User
 from authentik.lib.validators import RequiredTogetherValidator
@@ -92,7 +96,9 @@ class RBACPermissionViewSet(ReadOnlyModelViewSet):
     queryset = Permission.objects.none()
     serializer_class = PermissionSerializer
     ordering = ["name"]
+    filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
     filterset_class = PermissionFilter
+    permission_classes = [IsAuthenticated]
     search_fields = [
         "codename",
         "content_type__model",
@@ -100,13 +106,13 @@ class RBACPermissionViewSet(ReadOnlyModelViewSet):
     ]
 
     def get_queryset(self) -> QuerySet:
-        return (
-            Permission.objects.all()
-            .select_related("content_type")
-            .filter(
-                content_type__app_label__startswith="authentik",
+        query = Q()
+        for model in excluded_models():
+            query |= Q(
+                content_type__app_label=model._meta.app_label,
+                content_type__model=model._meta.model_name,
             )
-        )
+        return Permission.objects.all().select_related("content_type").exclude(query)
 
 
 class PermissionAssignSerializer(PassiveSerializer):

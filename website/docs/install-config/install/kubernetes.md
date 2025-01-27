@@ -74,6 +74,10 @@ During the installation process, the database migrations will be applied automat
 
 After the installation is complete, access authentik at `https://<ingress-host-name>/if/flow/initial-setup/`. Here, you can set a password for the default `akadmin` user.
 
+:::info
+You will get `Not Found` error if initial setup URL doesn't include the trailing forward slash `/`. Make sure you use the complete url (`http://<ingress-host-name>/if/flow/initial-setup/`) including the trailing forward slash.
+:::
+
 ### Optional step: Configure global email credentials
 
 It is recommended to configure global email credentials as well. These are used by authentik to notify you about alerts and configuration issues. Additionally, they can be utilized by [Email stages](../../add-secure-apps/flows-stages/stages/email/index.mdx) to send verification and recovery emails.

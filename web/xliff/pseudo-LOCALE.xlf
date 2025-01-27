@@ -1532,14 +1532,6 @@
   <target>Ćĺĩēńţ Ńēţŵōŕķś</target>
 
       </trans-unit>
-      <trans-unit id="s7f2dcf01f7a8c0b7">
-        <source>List of CIDRs (comma-seperated) that clients can connect from. A more specific
-                            CIDR will match before a looser one. Clients connecting from a non-specified CIDR
-                            will be dropped.</source>
-  <target>Ĺĩśţ ōƒ ĆĨĎŔś (ćōḿḿà-śēƥēŕàţēď) ţĥàţ ćĺĩēńţś ćàń ćōńńēćţ ƒŕōḿ. À ḿōŕē śƥēćĩƒĩć
-                            ĆĨĎŔ ŵĩĺĺ ḿàţćĥ ƀēƒōŕē à ĺōōśēŕ ōńē. Ćĺĩēńţś ćōńńēćţĩńĝ ƒŕōḿ à ńōń-śƥēćĩƒĩēď ĆĨĎŔ
-                            ŵĩĺĺ ƀē ďŕōƥƥēď.</target>
-      </trans-unit>
       <trans-unit id="s61eacb19db252f5e">
         <source>URL</source>
   <target>ŨŔĹ</target>
@@ -2137,19 +2129,9 @@
   <target>Ŕũń śŷńć àĝàĩń</target>
 
       </trans-unit>
-      <trans-unit id="sc2cedfb22488ccb2">
-        <source>Modern applications, APIs and Single-page applications.</source>
-  <target>Ḿōďēŕń àƥƥĺĩćàţĩōńś, ÀƤĨś àńď Śĩńĝĺē-ƥàĝē àƥƥĺĩćàţĩōńś.</target>
-
-      </trans-unit>
       <trans-unit id="sc3259eb55cf91e8c">
         <source>LDAP</source>
   <target>ĹĎÀƤ</target>
-
-      </trans-unit>
-      <trans-unit id="sffd5481034a1bd41">
-        <source>Provide an LDAP interface for applications and users to authenticate against.</source>
-  <target>Ƥŕōvĩďē àń ĹĎÀƤ ĩńţēŕƒàćē ƒōŕ àƥƥĺĩćàţĩōńś àńď ũśēŕś ţō àũţĥēńţĩćàţē àĝàĩńśţ.</target>
 
       </trans-unit>
       <trans-unit id="s0c9670f429e74283">
@@ -2619,23 +2601,18 @@ doesn't pass when either or both of the selected options are equal or above the 
   <target>Ƥàţĥ</target>
 
       </trans-unit>
-      <trans-unit id="s67560d7e37d984c3">
-        <source>Policy / User / Group</source>
-  <target>Ƥōĺĩćŷ / Ũśēŕ / Ĝŕōũƥ</target>
-
-      </trans-unit>
       <trans-unit id="s030ac0829bb50a49">
-        <source>Policy <x id="0" equiv-text="${item.policyObj?.name}"/></source>
+        <source>Policy <x id="0" equiv-text="${v.policyObj?.name}"/></source>
   <target>Ƥōĺĩćŷ <x id="0" equiv-text="${item.policyObj?.name}"/></target>
 
       </trans-unit>
       <trans-unit id="s2a64d2dca3da9b0e">
-        <source>Group <x id="0" equiv-text="${item.groupObj?.name}"/></source>
+        <source>Group <x id="0" equiv-text="${v.groupObj?.name}"/></source>
   <target>Ĝŕōũƥ <x id="0" equiv-text="${item.groupObj?.name}"/></target>
 
       </trans-unit>
       <trans-unit id="se5dc026819a32ff8">
-        <source>User <x id="0" equiv-text="${item.userObj?.name}"/></source>
+        <source>User <x id="0" equiv-text="${v.userObj?.name}"/></source>
   <target>Ũśēŕ <x id="0" equiv-text="${item.userObj?.name}"/></target>
 
       </trans-unit>
@@ -4937,16 +4914,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <target>Àĺŵàŷś ŕēǫũĩŕē ćōńśēńţ</target>
 
       </trans-unit>
-      <trans-unit id="s8ce8bdc9cc9c8604">
-        <source>Consent given last indefinitely</source>
-  <target>Ćōńśēńţ ĝĩvēń ĺàśţ ĩńďēƒĩńĩţēĺŷ</target>
-
-      </trans-unit>
-      <trans-unit id="sb986f15fa9b17805">
-        <source>Consent expires.</source>
-  <target>Ćōńśēńţ ēxƥĩŕēś.</target>
-
-      </trans-unit>
       <trans-unit id="s6f328f2d8382d998">
         <source>Consent expires in</source>
   <target>Ćōńśēńţ ēxƥĩŕēś ĩń</target>
@@ -5445,16 +5412,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s7b105164d209f670">
         <source>Require authentication</source>
   <target>Ŕēǫũĩŕē àũţĥēńţĩćàţĩōń</target>
-
-      </trans-unit>
-      <trans-unit id="s239c2a351cde6d39">
-        <source>Require no authentication.</source>
-  <target>Ŕēǫũĩŕē ńō àũţĥēńţĩćàţĩōń.</target>
-
-      </trans-unit>
-      <trans-unit id="s98beadfeeb3acb66">
-        <source>Require superuser.</source>
-  <target>Ŕēǫũĩŕē śũƥēŕũśēŕ.</target>
 
       </trans-unit>
       <trans-unit id="sfad9279cc42c6b61">
@@ -7281,30 +7238,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>UI Settings</source>
   <target>ŨĨ Śēţţĩńĝś</target>
 </trans-unit>
-<trans-unit id="s836148f721d8913b">
-  <source>Transparent Reverse Proxy</source>
-  <target>Ţŕàńśƥàŕēńţ Ŕēvēŕśē Ƥŕōxŷ</target>
-</trans-unit>
-<trans-unit id="s945a6b94361ee45b">
-  <source>For transparent reverse proxies with required authentication</source>
-  <target>Ƒōŕ ţŕàńśƥàŕēńţ ŕēvēŕśē ƥŕōxĩēś ŵĩţĥ ŕēǫũĩŕēď àũţĥēńţĩćàţĩōń</target>
-</trans-unit>
-<trans-unit id="s40830ec037f34626">
-  <source>Configure SAML provider manually</source>
-  <target>Ćōńƒĩĝũŕē ŚÀḾĹ ƥŕōvĩďēŕ ḿàńũàĺĺŷ</target>
-</trans-unit>
-<trans-unit id="sea9fc40dfd1d18b1">
-  <source>Configure RADIUS provider manually</source>
-  <target>Ćōńƒĩĝũŕē ŔÀĎĨŨŚ ƥŕōvĩďēŕ ḿàńũàĺĺŷ</target>
-</trans-unit>
-<trans-unit id="sa1b0052ae095b9b3">
-  <source>Configure SCIM provider manually</source>
-  <target>Ćōńƒĩĝũŕē ŚĆĨḾ ƥŕōvĩďēŕ ḿàńũàĺĺŷ</target>
-</trans-unit>
-<trans-unit id="s15831fa50a116545">
-  <source>Saving Application...</source>
-  <target>Śàvĩńĝ Àƥƥĺĩćàţĩōń...</target>
-</trans-unit>
 <trans-unit id="s848288f8c2265aad">
   <source>Your application has been saved</source>
   <target>Ŷōũŕ àƥƥĺĩćàţĩōń ĥàś ƀēēń śàvēď</target>
@@ -7312,16 +7245,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s67d858051b34c38b">
   <source>Method's display Name.</source>
   <target>Ḿēţĥōď'ś ďĩśƥĺàŷ Ńàḿē.</target>
-</trans-unit>
-<trans-unit id="h10ef80d434185070">
-  <source>Use this provider with nginx's <x id="0" equiv-text="&lt;code&gt;"/>auth_request<x id="1" equiv-text="&lt;/code&gt;"/> or traefik's
-                    <x id="2" equiv-text="&lt;code&gt;"/>forwardAuth<x id="3" equiv-text="&lt;/code&gt;"/>. Each application/domain needs its own provider.
-                    Additionally, on each domain, <x id="4" equiv-text="&lt;code&gt;"/>/outpost.goauthentik.io<x id="5" equiv-text="&lt;/code&gt;"/> must be
-                    routed to the outpost (when using a managed outpost, this is done for you).</source>
-  <target>Ũśē ţĥĩś ƥŕōvĩďēŕ ŵĩţĥ ńĝĩńx'ś <x id="0" equiv-text="&lt;code&gt;"/>àũţĥ_ŕēǫũēśţ<x id="1" equiv-text="&lt;/code&gt;"/> ōŕ ţŕàēƒĩķ'ś
-                    <x id="2" equiv-text="&lt;code&gt;"/>ƒōŕŵàŕďÀũţĥ<x id="3" equiv-text="&lt;/code&gt;"/>. Ēàćĥ àƥƥĺĩćàţĩōń/ďōḿàĩń ńēēďś ĩţś ōŵń ƥŕōvĩďēŕ.
-                    Àďďĩţĩōńàĺĺŷ, ōń ēàćĥ ďōḿàĩń, <x id="4" equiv-text="&lt;code&gt;"/>/ōũţƥōśţ.ĝōàũţĥēńţĩķ.ĩō<x id="5" equiv-text="&lt;/code&gt;"/> ḿũśţ ƀē
-                    ŕōũţēď ţō ţĥē ōũţƥōśţ (ŵĥēń ũśĩńĝ à ḿàńàĝēď ōũţƥōśţ, ţĥĩś ĩś ďōńē ƒōŕ ŷōũ).</target>
 </trans-unit>
 <trans-unit id="sd18b18f91b804c3f">
   <source>Custom attributes</source>
@@ -7467,10 +7390,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Role Info</source>
   <target>Ŕōĺē Ĩńƒō</target>
 </trans-unit>
-<trans-unit id="s4bd386db7302bb22">
-  <source>Create With Wizard</source>
-  <target>Ćŕēàţē Ŵĩţĥ Ŵĩźàŕď</target>
-</trans-unit>
 <trans-unit id="s070fdfb03034ca9b">
   <source>One hint, 'New Application Wizard', is currently hidden</source>
   <target>Ōńē ĥĩńţ, 'Ńēŵ Àƥƥĺĩćàţĩōń Ŵĩźàŕď', ĩś ćũŕŕēńţĺŷ ĥĩďďēń</target>
@@ -7482,46 +7401,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s6985c401e1100122">
   <source>Message shown when this stage is run.</source>
   <target>Ḿēśśàĝē śĥōŵń ŵĥēń ţĥĩś śţàĝē ĩś ŕũń.</target>
-</trans-unit>
-<trans-unit id="s09f0c100d0ad2fec">
-  <source>Open Wizard</source>
-  <target>Ōƥēń Ŵĩźàŕď</target>
-</trans-unit>
-<trans-unit id="sf2ef885f7d0a101d">
-  <source>Demo Wizard</source>
-  <target>Ďēḿō Ŵĩźàŕď</target>
-</trans-unit>
-<trans-unit id="s77505ee5d2e45e53">
-  <source>Run the demo wizard</source>
-  <target>Ŕũń ţĥē ďēḿō ŵĩźàŕď</target>
-</trans-unit>
-<trans-unit id="s4498e890d47a8066">
-  <source>OAuth2/OIDC (Open Authorization/OpenID Connect)</source>
-  <target>ŌÀũţĥ2/ŌĨĎĆ (Ōƥēń Àũţĥōŕĩźàţĩōń/ŌƥēńĨĎ Ćōńńēćţ)</target>
-</trans-unit>
-<trans-unit id="s4f2e195d09e2868c">
-  <source>LDAP (Lightweight Directory Access Protocol)</source>
-  <target>ĹĎÀƤ (Ĺĩĝĥţŵēĩĝĥţ Ďĩŕēćţōŕŷ Àććēśś Ƥŕōţōćōĺ)</target>
-</trans-unit>
-<trans-unit id="s7f5bb0c9923315ed">
-  <source>Forward Auth (Single Application)</source>
-  <target>Ƒōŕŵàŕď Àũţĥ (Śĩńĝĺē Àƥƥĺĩćàţĩōń)</target>
-</trans-unit>
-<trans-unit id="sf8008d2d6b064b95">
-  <source>Forward Auth (Domain Level)</source>
-  <target>Ƒōŕŵàŕď Àũţĥ (Ďōḿàĩń Ĺēvēĺ)</target>
-</trans-unit>
-<trans-unit id="sfa8a1ffa9fee07d3">
-  <source>SAML (Security Assertion Markup Language)</source>
-  <target>ŚÀḾĹ (Śēćũŕĩţŷ Àśśēŕţĩōń Ḿàŕķũƥ Ĺàńĝũàĝē)</target>
-</trans-unit>
-<trans-unit id="s848a23972e388662">
-  <source>RADIUS (Remote Authentication Dial-In User Service)</source>
-  <target>ŔÀĎĨŨŚ (Ŕēḿōţē Àũţĥēńţĩćàţĩōń Ďĩàĺ-Ĩń Ũśēŕ Śēŕvĩćē)</target>
-</trans-unit>
-<trans-unit id="s3e902999ddf7b50e">
-  <source>SCIM (System for Cross-domain Identity Management)</source>
-  <target>ŚĆĨḾ (Śŷśţēḿ ƒōŕ Ćŕōśś-ďōḿàĩń Ĩďēńţĩţŷ Ḿàńàĝēḿēńţ)</target>
 </trans-unit>
 <trans-unit id="sdc5690be4a342985">
   <source>The token has been copied to your clipboard</source>
@@ -7566,14 +7445,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s0924f51b028233a3">
   <source>&lt;No name set&gt;</source>
   <target>&lt;Ńō ńàḿē śēţ&gt;</target>
-</trans-unit>
-<trans-unit id="sdc9a6ad1af30572c">
-  <source>For nginx's auth_request or traefik's forwardAuth</source>
-  <target>Ƒōŕ ńĝĩńx'ś àũţĥ_ŕēǫũēśţ ōŕ ţŕàēƒĩķ'ś ƒōŕŵàŕďÀũţĥ</target>
-</trans-unit>
-<trans-unit id="sfc31264ef7ff86ef">
-  <source>For nginx's auth_request or traefik's forwardAuth per root domain</source>
-  <target>Ƒōŕ ńĝĩńx'ś àũţĥ_ŕēǫũēśţ ōŕ ţŕàēƒĩķ'ś ƒōŕŵàŕďÀũţĥ ƥēŕ ŕōōţ ďōḿàĩń</target>
 </trans-unit>
 <trans-unit id="s32babfed740fd3c1">
   <source>User type used for newly created users.</source>
@@ -7667,10 +7538,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Review the provider.</source>
   <target>Ŕēvĩēŵ ţĥē ƥŕōvĩďēŕ.</target>
 </trans-unit>
-<trans-unit id="s9fd39a5cb20b4e61">
-  <source>There was an error</source>
-  <target>Ţĥēŕē ŵàś àń ēŕŕōŕ</target>
-</trans-unit>
 <trans-unit id="s7a6b3453209e1066">
   <source>There was an error creating the application, but no error message was sent. Please review the server logs.</source>
   <target>Ţĥēŕē ŵàś àń ēŕŕōŕ ćŕēàţĩńĝ ţĥē àƥƥĺĩćàţĩōń, ƀũţ ńō ēŕŕōŕ ḿēśśàĝē ŵàś śēńţ. Ƥĺēàśē ŕēvĩēŵ ţĥē śēŕvēŕ ĺōĝś.</target>
@@ -7678,10 +7545,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s1a711c19cda48375">
   <source>Configure LDAP Provider</source>
   <target>Ćōńƒĩĝũŕē ĹĎÀƤ Ƥŕōvĩďēŕ</target>
-</trans-unit>
-<trans-unit id="s9368e965b5c292ab">
-  <source>Configure OAuth2/OpenId Provider</source>
-  <target>Ćōńƒĩĝũŕē ŌÀũţĥ2/ŌƥēńĨď Ƥŕōvĩďēŕ</target>
 </trans-unit>
 <trans-unit id="sf5cbccdc6254c8dc">
   <source>Configure Proxy Provider</source>
@@ -7695,25 +7558,13 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Configure SAML Provider</source>
   <target>Ćōńƒĩĝũŕē ŚÀḾĹ Ƥŕōvĩďēŕ</target>
 </trans-unit>
-<trans-unit id="sb3defbacd01ad972">
-  <source>Property mappings used for user mapping.</source>
-  <target>Ƥŕōƥēŕţŷ ḿàƥƥĩńĝś ũśēď ƒōŕ ũśēŕ ḿàƥƥĩńĝ.</target>
-</trans-unit>
 <trans-unit id="s7ccce0ec8d228db6">
   <source>Configure SCIM Provider</source>
   <target>Ćōńƒĩĝũŕē ŚĆĨḾ Ƥŕōvĩďēŕ</target>
 </trans-unit>
-<trans-unit id="sd7728d2b6e1d25e9">
-  <source>Property mappings used for group creation.</source>
-  <target>Ƥŕōƥēŕţŷ ḿàƥƥĩńĝś ũśēď ƒōŕ ĝŕōũƥ ćŕēàţĩōń.</target>
-</trans-unit>
 <trans-unit id="s7513372fe60f6387">
   <source>Event volume</source>
   <target>Ēvēńţ vōĺũḿē</target>
-</trans-unit>
-<trans-unit id="s047a5f0211fedc72">
-  <source>Require Outpost (flow can only be executed from an outpost).</source>
-  <target>Ŕēǫũĩŕē Ōũţƥōśţ (ƒĺōŵ ćàń ōńĺŷ ƀē ēxēćũţēď ƒŕōḿ àń ōũţƥōśţ).</target>
 </trans-unit>
 <trans-unit id="s3271da6c18c25b18">
   <source>Connection settings.</source>
@@ -8152,18 +8003,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="se16b4d412ad1aba9">
   <source>Brand name</source>
   <target>ßŕàńď ńàḿē</target>
-</trans-unit>
-<trans-unit id="sb7e68dcad68a638c">
-  <source>Remote Access Provider</source>
-  <target>Ŕēḿōţē Àććēśś Ƥŕōvĩďēŕ</target>
-</trans-unit>
-<trans-unit id="sfb1980a471b7dfb6">
-  <source>Remotely access computers/servers via RDP/SSH/VNC</source>
-  <target>Ŕēḿōţēĺŷ àććēśś ćōḿƥũţēŕś/śēŕvēŕś vĩà ŔĎƤ/ŚŚĤ/VŃĆ</target>
-</trans-unit>
-<trans-unit id="s9ffdea131dddb3c5">
-  <source>Configure Remote Access Provider Provider</source>
-  <target>Ćōńƒĩĝũŕē Ŕēḿōţē Àććēśś Ƥŕōvĩďēŕ Ƥŕōvĩďēŕ</target>
 </trans-unit>
 <trans-unit id="s56bc67239b9255a2">
   <source>Delete authorization on disconnect</source>
@@ -8653,18 +8492,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Pagination</source>
   <target>Ƥàĝĩńàţĩōń</target>
 </trans-unit>
-<trans-unit id="s6d46b842e227be57">
-  <source>Application Details</source>
-  <target>Àƥƥĺĩćàţĩōń Ďēţàĩĺś</target>
-</trans-unit>
-<trans-unit id="s76415a60e548cafe">
-  <source>Provider Configuration</source>
-  <target>Ƥŕōvĩďēŕ Ćōńƒĩĝũŕàţĩōń</target>
-</trans-unit>
-<trans-unit id="sde59c64619570b57">
-  <source>Submit Application</source>
-  <target>Śũƀḿĩţ Àƥƥĺĩćàţĩōń</target>
-</trans-unit>
 <trans-unit id="sf2da0e95c78f2cb7">
   <source>Restore Application Wizard Hint</source>
   <target>Ŕēśţōŕē Àƥƥĺĩćàţĩōń Ŵĩźàŕď Ĥĩńţ</target>
@@ -8993,10 +8820,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
   <target><x id="0" equiv-text="${prompt.name}"/> ("<x id="1" equiv-text="${prompt.fieldKey}"/>", ōƒ ţŷƥē <x id="2" equiv-text="${prompt.type}"/>)</target>
 </trans-unit>
-<trans-unit id="sa38c5a2731be3a46">
-  <source>authentik was unable to save this application:</source>
-  <target>àũţĥēńţĩķ ŵàś ũńàƀĺē ţō śàvē ţĥĩś àƥƥĺĩćàţĩōń:</target>
-</trans-unit>
 <trans-unit id="s25bacc19d98b444e">
   <source>Parent Group</source>
   <target>Ƥàŕēńţ Ĝŕōũƥ</target>
@@ -9184,9 +9007,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s4c49d27de60a532b">
   <source>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</source>
 </trans-unit>
-<trans-unit id="s43f899a86c6a3484">
-  <source>Redirect URIs/Origins</source>
-</trans-unit>
 <trans-unit id="sa52bf79fe1ccb13e">
   <source>Federated OIDC Sources</source>
 </trans-unit>
@@ -9201,5 +9021,197 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s4f8a3f7792e6b940">
   <source>JWTs signed by the selected providers can be used to authenticate to this provider.</source>
+</trans-unit>
+<trans-unit id="s3cc2b33d2a8000d3">
+  <source>KAdmin type</source>
+</trans-unit>
+<trans-unit id="s624e1c8739507529">
+  <source>MIT krb5 kadmin</source>
+</trans-unit>
+<trans-unit id="s6d225d9e74dfff6f">
+  <source>Heimdal kadmin</source>
+</trans-unit>
+<trans-unit id="sc9e494c8346b7cb5">
+  <source>Other</source>
+</trans-unit>
+<trans-unit id="sbf6c78047e8ec8f8">
+  <source>Other type of kadmin</source>
+</trans-unit>
+<trans-unit id="sb53d0b77abef2316">
+  <source>To let a user directly reset their password, configure a recovery flow on the currently active brand.</source>
+</trans-unit>
+<trans-unit id="s2e5226fcf269689b">
+  <source>Consent given lasts indefinitely</source>
+</trans-unit>
+<trans-unit id="s7eff620292ed9349">
+  <source>Consent expires</source>
+</trans-unit>
+<trans-unit id="s1cc032bcc50b2942">
+  <source>Available Policies</source>
+</trans-unit>
+<trans-unit id="s3ad64193ad5f4a5e">
+  <source>Selected Policies</source>
+</trans-unit>
+<trans-unit id="sc487e11d5987dbb4">
+  <source>Redirect the user to another flow, potentially with all gathered context</source>
+</trans-unit>
+<trans-unit id="sad9d5481474d4f5b">
+  <source>Static</source>
+</trans-unit>
+<trans-unit id="se87a96950464bc89">
+  <source>Target URL</source>
+</trans-unit>
+<trans-unit id="s7f3097955b19736a">
+  <source>Redirect the user to a static URL.</source>
+</trans-unit>
+<trans-unit id="s9bdee1c5130c8240">
+  <source>Target Flow</source>
+</trans-unit>
+<trans-unit id="sa5d1405b8d6529c7">
+  <source>Redirect the user to a Flow.</source>
+</trans-unit>
+<trans-unit id="s7c9db337d14d42b3">
+  <source>Keep flow context</source>
+</trans-unit>
+<trans-unit id="s0d7dea184036a74d">
+  <source>Require no authentication</source>
+</trans-unit>
+<trans-unit id="s66f533986ba6182c">
+  <source>Require superuser</source>
+</trans-unit>
+<trans-unit id="s26c0a8789930b5fd">
+  <source>Require being redirected from another flow</source>
+</trans-unit>
+<trans-unit id="sbfaee8cfbf4e44e8">
+  <source>Require Outpost (flow can only be executed from an outpost)</source>
+</trans-unit>
+<trans-unit id="sb80507bed88545a6">
+  <source>An application name is required</source>
+</trans-unit>
+<trans-unit id="s39c052006b2b141a">
+  <source>Not a valid URL</source>
+</trans-unit>
+<trans-unit id="s317f3ab0da3d068a">
+  <source>Not a valid slug</source>
+</trans-unit>
+<trans-unit id="s177577c23ed3ca7e">
+  <source>Configure The Application</source>
+</trans-unit>
+<trans-unit id="s030ed8a3f12c23ff">
+  <source>Configure Bindings</source>
+</trans-unit>
+<trans-unit id="sc387b20e6d629087">
+  <source>Configure Policy/User/Group Bindings</source>
+</trans-unit>
+<trans-unit id="s71c3ec95efe723ca">
+  <source>No bound policies.</source>
+</trans-unit>
+<trans-unit id="sab1786ef3c0383ba">
+  <source>Bind policy/group/user</source>
+</trans-unit>
+<trans-unit id="s082ea0f3c0a854ff">
+  <source>Configure Policy Bindings</source>
+</trans-unit>
+<trans-unit id="sac315d5bd28d4efa">
+  <source>Don't Pass</source>
+</trans-unit>
+<trans-unit id="s54a37223ce938349">
+  <source>Save Binding</source>
+</trans-unit>
+<trans-unit id="s931754aabd4a6a47">
+  <source>Create a Policy/User/Group Binding</source>
+</trans-unit>
+<trans-unit id="s10ba15343fe64890">
+  <source>Choose A Provider</source>
+</trans-unit>
+<trans-unit id="sb7be945aa799b8d7">
+  <source>Please choose a provider type before proceeding.</source>
+</trans-unit>
+<trans-unit id="s2289ff3b411251d8">
+  <source>Choose a Provider Type</source>
+</trans-unit>
+<trans-unit id="sde0ad51b14f77cf6">
+  <source>Redirect URIs/Origins (RegEx)</source>
+</trans-unit>
+<trans-unit id="s89ae85c3a9df8a6f">
+  <source>Configure OAuth2 Provider</source>
+</trans-unit>
+<trans-unit id="s881271a499c9db98">
+  <source>Configure Remote Access Provider</source>
+</trans-unit>
+<trans-unit id="s9b6bf63fddc7362f">
+  <source>List of CIDRs (comma-seperated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.</source>
+</trans-unit>
+<trans-unit id="s19907c16eb319618">
+  <source>Configure Provider</source>
+</trans-unit>
+<trans-unit id="s7055edd8fab866f4">
+  <source>strict</source>
+</trans-unit>
+<trans-unit id="s5e57ca23b946c1b8">
+  <source>regexp</source>
+</trans-unit>
+<trans-unit id="sd226dc54c414585a">
+  <source>Review and Submit Application</source>
+</trans-unit>
+<trans-unit id="s828ded9ade500ffc">
+  <source>There was an error. Please go back and review the application.</source>
+</trans-unit>
+<trans-unit id="s9fdda682893624a1">
+  <source>There was an error:</source>
+</trans-unit>
+<trans-unit id="s201ee6bc6d9f97da">
+  <source>Please go back and review the application.</source>
+</trans-unit>
+<trans-unit id="s9c09ef16900241fa">
+  <source>Review the Application and Provider</source>
+</trans-unit>
+<trans-unit id="s0a0a21f7bcf9d865">
+  <source>Saving application...</source>
+</trans-unit>
+<trans-unit id="se669a4b939be0891">
+  <source>authentik was unable to complete this process.</source>
+</trans-unit>
+<trans-unit id="s8aac845c63f45ca2">
+  <source>Create with wizard</source>
+</trans-unit>
+<trans-unit id="s080af72866b69b3d">
+  <source>Bind existing <x id="0" equiv-text="${this.allowedTypesLabel}"/></source>
+</trans-unit>
+<trans-unit id="sa36117e97f49c86e">
+  <source>Successfully updated entitlement.</source>
+</trans-unit>
+<trans-unit id="s86bee999b735111f">
+  <source>Successfully created entitlement.</source>
+</trans-unit>
+<trans-unit id="s8a48455905fc14e6">
+  <source>Application entitlement(s)</source>
+</trans-unit>
+<trans-unit id="sae971cbff672090b">
+  <source>Update Entitlement</source>
+</trans-unit>
+<trans-unit id="s537a58ae0ff50f1c">
+  <source>These bindings control which users have access to this entitlement.</source>
+</trans-unit>
+<trans-unit id="s05849efeac672dc7">
+  <source>No app entitlements created.</source>
+</trans-unit>
+<trans-unit id="sdc8a8f29af6aa411">
+  <source>This application does currently not have any application entitlement defined.</source>
+</trans-unit>
+<trans-unit id="sf0bd204ce3fea1de">
+  <source>Create Entitlement</source>
+</trans-unit>
+<trans-unit id="s55d8e42d0a1c057e">
+  <source>Create entitlement</source>
+</trans-unit>
+<trans-unit id="sc6479479c936939f">
+  <source>Application entitlements</source>
+</trans-unit>
+<trans-unit id="sfafbd9bddb38d172">
+  <source>Application entitlements are in preview.</source>
+</trans-unit>
+<trans-unit id="s8e1c375a007d1839">
+  <source>These entitlements can be used to configure user access in this application.</source>
 </trans-unit>
 </body></file></xliff>

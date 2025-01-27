@@ -2,7 +2,7 @@
 
 from os import environ
 
-__version__ = "2024.10.5"
+__version__ = "2024.12.2"
 ENV_GIT_HASH_KEY = "GIT_BUILD_HASH"
 
 
@@ -16,5 +16,5 @@ def get_full_version() -> str:
     """Get full version, with build hash appended"""
     version = __version__
     if (build_hash := get_build_hash()) != "":
-        version += "." + build_hash
+        return f"{version}+{build_hash}"
     return version

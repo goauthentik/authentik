@@ -3,7 +3,7 @@ title: Integrate with Jenkins
 sidebar_label: Jenkins
 ---
 
-# Jenkins
+# Integrate with Jenkins
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -15,10 +15,10 @@ sidebar_label: Jenkins
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
-- `jenkins.company` is the FQDN of the Service install.
-- `authentik.company` is the FQDN of the authentik install.
+- `jenkins.company` is the FQDN of the Service installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 Create an OAuth2/OpenID provider with the following parameters:
 

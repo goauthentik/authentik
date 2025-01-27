@@ -96,7 +96,7 @@ const baseArgs = {
 function getVersion() {
     let version = rootPackage.version;
     if (process.env[envGitHashKey]) {
-        version = `${version}.${process.env[envGitHashKey]}`;
+        version = `${version}+${process.env[envGitHashKey]}`;
     }
     return version;
 }

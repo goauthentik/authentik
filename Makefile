@@ -5,7 +5,7 @@ PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
 NPM_VERSION = $(shell python -m scripts.npm_version)
-PY_SOURCES = authentik tests scripts lifecycle .github website/docs/install-config/install/aws
+PY_SOURCES = authentik tests scripts lifecycle .github
 DOCKER_IMAGE ?= "authentik:test"
 
 GEN_API_TS = "gen-ts-api"
@@ -45,15 +45,6 @@ help:  ## Show this help
 go-test:
 	go test -timeout 0 -v -race -cover ./...
 
-test-docker:  ## Run all tests in a docker-compose
-	echo "PG_PASS=$(shell openssl rand 32 | base64 -w 0)" >> .env
-	echo "AUTHENTIK_SECRET_KEY=$(shell openssl rand 32 | base64 -w 0)" >> .env
-	docker compose pull -q
-	docker compose up --no-start
-	docker compose start postgresql redis
-	docker compose run -u root server test-all
-	rm -f .env
-
 test: ## Run the server tests and produce a coverage report (locally)
 	coverage run manage.py test --keepdb authentik
 	coverage html
@@ -77,6 +68,9 @@ migrate: ## Run the Authentik Django server's migrations
 	python -m lifecycle.migrate
 
 i18n-extract: core-i18n-extract web-i18n-extract  ## Extract strings that require translation into files to send to a translation service
+
+aws-cfn:
+	cd lifecycle/aws && npm run aws-cfn
 
 core-i18n-extract:
 	ak makemessages \
@@ -149,7 +143,7 @@ gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescri
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
-		docker.io/openapitools/openapi-generator-cli:v6.5.0 generate \
+		docker.io/openapitools/openapi-generator-cli:v7.11.0 generate \
 		-i /local/schema.yml \
 		-g typescript-fetch \
 		-o /local/${GEN_API_TS} \
@@ -252,9 +246,6 @@ website-build:
 website-watch:  ## Build and watch the documentation website, updating automatically
 	cd website && npm run watch
 
-aws-cfn:
-	cd website && npm run aws-cfn
-
 #########################
 ## Docker
 #########################
@@ -262,6 +253,9 @@ aws-cfn:
 docker:  ## Build a docker image of the current source tree
 	mkdir -p ${GEN_API_TS}
 	DOCKER_BUILDKIT=1 docker build . --progress plain --tag ${DOCKER_IMAGE}
+
+test-docker:
+	./scripts/test_docker.sh
 
 #########################
 ## CI

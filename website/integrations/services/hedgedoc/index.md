@@ -3,7 +3,7 @@ title: Integrate with HedgeDoc
 sidebar_label: HedgeDoc
 ---
 
-# HedgeDoc
+# Integrate with HedgeDoc
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -15,10 +15,10 @@ sidebar_label: HedgeDoc
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
-- `hedgedoc.company` is the FQDN of the HedgeDoc install.
-- `authentik.company` is the FQDN of the authentik install.
+- `hedgedoc.company` is the FQDN of the HedgeDoc installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 Create an OAuth2/OpenID provider with the following parameters:
 

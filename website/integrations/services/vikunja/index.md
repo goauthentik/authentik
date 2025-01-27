@@ -3,7 +3,7 @@ title: Integrate with Vikunja
 sidebar_label: Vikunja
 ---
 
-# Vikunja
+# Integrate with Vikunja
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -19,7 +19,7 @@ This is based on authentik 2021.7.3 and Vikunja V0.17.1 using the Docker-Compose
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `vik.company` is the FQDN of Vikunja.
 - `authentik.company` is the FQDN of authentik.

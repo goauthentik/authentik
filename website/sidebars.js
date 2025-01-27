@@ -98,7 +98,7 @@ export default {
                     items: [
                         "install-config/install/docker-compose",
                         "install-config/install/kubernetes",
-                        "install-config/install/aws/index",
+                        "install-config/install/aws",
                     ],
                 },
                 {
@@ -304,6 +304,17 @@ export default {
                                 "add-secure-apps/flows-stages/stages/user_login/index",
                                 "add-secure-apps/flows-stages/stages/user_logout",
                                 "add-secure-apps/flows-stages/stages/user_write",
+                            ],
+                        },
+                        {
+                            type: "category",
+                            label: "Bindings",
+                            link: {
+                                type: "doc",
+                                id: "add-secure-apps/flows-stages/bindings/index",
+                            },
+                            items: [
+                                "add-secure-apps/flows-stages/bindings/work_with_bindings",
                             ],
                         },
                     ],
@@ -520,14 +531,29 @@ export default {
                         },
                         {
                             type: "category",
-                            label: "Social Logins",
+                            label: "Identity Providers",
+                            link: {
+                                type: "doc",
+                                id: "users-sources/sources/social-logins/index",
+                            },
                             items: [
                                 "users-sources/sources/social-logins/apple/index",
                                 "users-sources/sources/social-logins/azure-ad/index",
                                 "users-sources/sources/social-logins/discord/index",
                                 "users-sources/sources/social-logins/facebook/index",
                                 "users-sources/sources/social-logins/github/index",
-                                "users-sources/sources/social-logins/google/index",
+                                {
+                                    type: "category",
+                                    label: "Google",
+                                    link: {
+                                        type: "doc",
+                                        id: "users-sources/sources/social-logins/google/index",
+                                    },
+                                    items: [
+                                        "users-sources/sources/social-logins/google/cloud/index",
+                                        "users-sources/sources/social-logins/google/workspace/index",
+                                    ],
+                                },
                                 "users-sources/sources/social-logins/mailcow/index",
                                 "users-sources/sources/social-logins/twitch/index",
                                 "users-sources/sources/social-logins/plex/index",

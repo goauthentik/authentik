@@ -3,7 +3,7 @@ title: Integrate with Harbor
 sidebar_label: Harbor
 ---
 
-# Harbor
+# Integrate with Harbor
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -15,10 +15,10 @@ sidebar_label: Harbor
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
-- `harbor.company` is the FQDN of the Harbor install.
-- `authentik.company` is the FQDN of the authentik install.
+- `harbor.company` is the FQDN of the Harbor installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 Create an OAuth2/OpenID provider with the following parameters:
 

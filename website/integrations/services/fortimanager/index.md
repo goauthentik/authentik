@@ -3,7 +3,7 @@ title: Integrate with FortiManager
 sidebar_label: FortiManager
 ---
 
-# FortiManager
+# Integrate with FortiManager
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -17,10 +17,10 @@ sidebar_label: FortiManager
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
-- `fgm.company` is the FQDN of the FortiManager install.
-- `authentik.company` is the FQDN of the authentik install.
+- `fgm.company` is the FQDN of the FortiManager installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 Create an application and Provider in authentik, note the slug, as this will be used later. Create a SAML provider with the following parameters:
 

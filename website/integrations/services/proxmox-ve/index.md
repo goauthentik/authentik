@@ -3,7 +3,7 @@ title: Integrate with Proxmox VE
 sidebar_label: Proxmox VE
 ---
 
-# Proxmox VE
+# Integrate with Proxmox VE
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -19,10 +19,10 @@ Requires Proxmox VE 7.0 or newer.
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `proxmox.company` is the FQDN of the Proxmox VE server.
-- `authentik.company` is the FQDN of the authentik install.
+- `authentik.company` is the FQDN of the authentik installation.
 
 ## authentik configuration
 

@@ -3,7 +3,7 @@ title: Integrate with Writefreely
 sidebar_label: Writefreely
 ---
 
-# Writefreely
+# Integrate with Writefreely
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -19,10 +19,10 @@ Currently it is not possible to connect writefreely to authentik without making 
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
-- `writefreely.company` is the FQDN of the writefreely install.
-- `authentik.company` is the FQDN of the authentik install.
+- `writefreely.company` is the FQDN of the writefreely installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 ## authentik Configuration
 

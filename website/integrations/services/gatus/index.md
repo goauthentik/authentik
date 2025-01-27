@@ -3,7 +3,7 @@ title: Integrate with Gatus
 sidebar_label: Gatus
 ---
 
-# Gatus
+# Integrate with Gatus
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -15,10 +15,10 @@ sidebar_label: Gatus
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
-- `gatus.company` is the FQDN of the Gatus install.
-- `authentik.company` is the FQDN of the authentik install.
+- `gatus.company` is the FQDN of the Gatus installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 ## authentik configuration
 

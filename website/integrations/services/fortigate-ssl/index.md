@@ -3,7 +3,7 @@ title: Integrate with FortiGate SSLVPN
 sidebar_label: FortiGate SSLVPN
 ---
 
-# FortiGate SSLVPN
+# Integrate with FortiGate SSLVPN
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -25,7 +25,7 @@ sidebar_label: FortiGate SSLVPN
 - You already have a certificate for signing and encryption uploaded to both authentik and the FortiGate.
 - You already have a working SSLVPN (either portal or tunnel) and is just changing authentication from what you are using today to authentik SAML.
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `saml.sp.name` = The name that will be the SAML SP configuration in the FortiGate
 - `fgt.cert` = Fortigate certificate for signing and encrypting

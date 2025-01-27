@@ -3,7 +3,7 @@ title: Integrate with Jellyfin
 sidebar_label: Jellyfin
 ---
 
-# Jellyfin
+# Integrate with Jellyfin
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -27,10 +27,10 @@ An LDAP outpost must be deployed to use the Jellyfin LDAP plugin
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
-- `jellyfin.company` is the FQDN of the Jellyfin install.
-- `authentik.company` is the FQDN of the authentik install.
+- `jellyfin.company` is the FQDN of the Jellyfin installation.
+- `authentik.company` is the FQDN of the authentik installation.
 - `ldap.company` the FQDN of the LDAP outpost.
 - `dc=company,dc=com` the Base DN of the LDAP outpost.
 - `ldap_bind_user` the username of the desired LDAP Bind User

@@ -33,7 +33,7 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
                 <span slot="header">${msg("Sync Group")}</span>
                 <ak-sync-object-form
                     .provider=${this.providerId}
-                    model=${SyncObjectModelEnum.Group}
+                    model=${SyncObjectModelEnum.AuthentikCoreModelsGroup}
                     .sync=${(data: ProvidersScimSyncObjectCreateRequest) => {
                         return new ProvidersApi(DEFAULT_CONFIG).providersScimSyncObjectCreate(data);
                     }}

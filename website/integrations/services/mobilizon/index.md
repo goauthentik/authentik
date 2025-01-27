@@ -3,7 +3,7 @@ title: Integrate with Mobilizon
 sidebar_label: Mobilizon
 ---
 
-# Mobilizon
+# Integrate with Mobilizon
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -15,10 +15,10 @@ sidebar_label: Mobilizon
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
-- `mobilizon.company` is the FQDN of the mobilizon install.
-- `authentik.company` is the FQDN of the authentik install.
+- `mobilizon.company` is the FQDN of the mobilizon installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 ## authentik Configuration
 
@@ -56,10 +56,10 @@ config :mobilizon, :auth,
 config :ueberauth, Ueberauth.Strategy.Keycloak.OAuth,
   client_id: "<Client ID>",
   client_secret: "<Client Secret>",
-  site: "https://mobilizon.company",
-  authorize_url: "https://mobilizon.company/application/o/authorize/",
-  token_url: "https://mobilizon.company/application/o/token/",
-  userinfo_url: "https://mobilizon.company/application/o/userinfo/",
+  site: "https://authentik.company",
+  authorize_url: "https://authentik.company/application/o/authorize/",
+  token_url: "https://authentik.company/application/o/token/",
+  userinfo_url: "https://authentik.company/application/o/userinfo/",
   token_method: :post
 ```
 

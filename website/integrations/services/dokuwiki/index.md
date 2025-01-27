@@ -3,7 +3,7 @@ title: Integrate with DokuWiki
 sidebar_label: DokuWiki
 ---
 
-# DokuWiki
+# Integrate with DokuWiki
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -15,10 +15,10 @@ From https://en.wikipedia.org/wiki/DokuWiki
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
-- `dokuwiki.company` is the FQDN of the DokiWiki install.
-- `authentik.company` is the FQDN of the authentik install.
+- `dokuwiki.company` is the FQDN of the DokiWiki installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 ## DokuWiki configuration
 

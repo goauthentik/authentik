@@ -1,4 +1,4 @@
-<?xml version="1.0"?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<?xml version="1.0" ?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
   <file target-language="fr" source-language="en" original="lit-localize-inputs" datatype="plaintext">
     <body>
       <trans-unit id="s4caed5b7a7e5d89b">
@@ -596,9 +596,9 @@
         
       </trans-unit>
       <trans-unit id="saa0e2675da69651b">
-        <source>The URL "<x id="0" equiv-text="${this.url}"/>" was not found.</source>
-        <target>L'URL "
-        <x id="0" equiv-text="${this.url}"/>" n'a pas été trouvée.</target>
+        <source>The URL &quot;<x id="0" equiv-text="${this.url}"/>&quot; was not found.</source>
+        <target>L'URL &quot;
+        <x id="0" equiv-text="${this.url}"/>&quot; n'a pas été trouvée.</target>
         
       </trans-unit>
       <trans-unit id="s58cd9c2fe836d9c6">
@@ -1545,12 +1545,6 @@
         <target>Réseaux du client</target>
         
       </trans-unit>
-      <trans-unit id="s7f2dcf01f7a8c0b7">
-        <source>List of CIDRs (comma-seperated) that clients can connect from. A more specific
-                            CIDR will match before a looser one. Clients connecting from a non-specified CIDR
-                            will be dropped.</source>
-        <target>Liste des CIDRs (séparés par des virgules) à partir desquels les clients peuvent se connecter. Un CIDR plus spécifique sera pris en compte avant un CIDR plus général. Les clients se connectant à partir d'un CIDR non spécifié seront refusés.</target>
-      </trans-unit>
       <trans-unit id="s61eacb19db252f5e">
         <source>URL</source>
         <target>URL</target>
@@ -1568,7 +1562,7 @@
       </trans-unit>
       <trans-unit id="s33ed903c210a6209">
         <source>Token to authenticate with. Currently only bearer authentication is supported.</source>
-        <target>Jeton d'authentification à utiliser. Actuellement, seule l'authentification "bearer authentication" est prise en charge.</target>
+        <target>Jeton d'authentification à utiliser. Actuellement, seule l'authentification &quot;bearer authentication&quot; est prise en charge.</target>
         
       </trans-unit>
       <trans-unit id="sfc8bb104e2c05af8">
@@ -1736,8 +1730,8 @@
         
       </trans-unit>
       <trans-unit id="sa90b7809586c35ce">
-        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".</source>
-        <target>Entrez une URL complète, un chemin relatif ou utilisez 'fa://fa-test' pour utiliser l'icône Font Awesome "fa-test".</target>
+        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon &quot;fa-test&quot;.</source>
+        <target>Entrez une URL complète, un chemin relatif ou utilisez 'fa://fa-test' pour utiliser l'icône Font Awesome &quot;fa-test&quot;.</target>
         
       </trans-unit>
       <trans-unit id="s0410779cb47de312">
@@ -2155,19 +2149,9 @@
         <target>Relancer la synchro</target>
         
       </trans-unit>
-      <trans-unit id="sc2cedfb22488ccb2">
-        <source>Modern applications, APIs and Single-page applications.</source>
-        <target>Applications modernes, API et applications à page unique.</target>
-        
-      </trans-unit>
       <trans-unit id="sc3259eb55cf91e8c">
         <source>LDAP</source>
         <target>LDAP</target>
-        
-      </trans-unit>
-      <trans-unit id="sffd5481034a1bd41">
-        <source>Provide an LDAP interface for applications and users to authenticate against.</source>
-        <target>Fournir une interface LDAP permettant aux applications et aux utilisateurs de s'authentifier.</target>
         
       </trans-unit>
       <trans-unit id="s0c9670f429e74283">
@@ -2635,25 +2619,20 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>Chemin</target>
         
       </trans-unit>
-      <trans-unit id="s67560d7e37d984c3">
-        <source>Policy / User / Group</source>
-        <target>Politique / Utilisateur / Groupe</target>
-        
-      </trans-unit>
       <trans-unit id="s030ac0829bb50a49">
-        <source>Policy <x id="0" equiv-text="${item.policyObj?.name}"/></source>
+        <source>Policy <x id="0" equiv-text="${v.policyObj?.name}"/></source>
         <target>Politique
         <x id="0" equiv-text="${item.policyObj?.name}"/></target>
         
       </trans-unit>
       <trans-unit id="s2a64d2dca3da9b0e">
-        <source>Group <x id="0" equiv-text="${item.groupObj?.name}"/></source>
+        <source>Group <x id="0" equiv-text="${v.groupObj?.name}"/></source>
         <target>Groupe
         <x id="0" equiv-text="${item.groupObj?.name}"/></target>
         
       </trans-unit>
       <trans-unit id="se5dc026819a32ff8">
-        <source>User <x id="0" equiv-text="${item.userObj?.name}"/></source>
+        <source>User <x id="0" equiv-text="${v.userObj?.name}"/></source>
         <target>Utilisateur
         <x id="0" equiv-text="${item.userObj?.name}"/></target>
         
@@ -2815,7 +2794,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s33683c3b1dbaf264">
         <source>To use SSL instead, use 'ldaps://' and disable this option.</source>
-        <target>Pour utiliser SSL à la base, utilisez "ldaps://" et désactviez cette option.</target>
+        <target>Pour utiliser SSL à la base, utilisez &quot;ldaps://&quot; et désactviez cette option.</target>
         
       </trans-unit>
       <trans-unit id="s2221fef80f4753a2">
@@ -2899,8 +2878,8 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="s76768bebabb7d543">
-        <source>Field which contains members of a group. Note that if using the "memberUid" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'</source>
-        <target>Champ qui contient les membres d'un groupe. Si vous utilisez le champ "memberUid", la valeur est censée contenir un nom distinctif relatif, par exemple 'memberUid=un-utilisateur' au lieu de 'memberUid=cn=un-utilisateur,ou=groups,...'</target>
+        <source>Field which contains members of a group. Note that if using the &quot;memberUid&quot; field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'</source>
+        <target>Champ qui contient les membres d'un groupe. Si vous utilisez le champ &quot;memberUid&quot;, la valeur est censée contenir un nom distinctif relatif, par exemple 'memberUid=un-utilisateur' au lieu de 'memberUid=cn=un-utilisateur,ou=groups,...'</target>
         
       </trans-unit>
       <trans-unit id="s026555347e589f0e">
@@ -3195,7 +3174,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s3198c384c2f68b08">
         <source>Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually.</source>
-        <target>Moment où les utilisateurs temporaires doivent être supprimés. Cela ne s'applique que si votre IDP utilise le format NameID "transient" et que l'utilisateur ne se déconnecte pas manuellement.</target>
+        <target>Moment où les utilisateurs temporaires doivent être supprimés. Cela ne s'applique que si votre IDP utilise le format NameID &quot;transient&quot; et que l'utilisateur ne se déconnecte pas manuellement.</target>
         
       </trans-unit>
       <trans-unit id="sb32e9c1faa0b8673">
@@ -3337,7 +3316,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s9f8aac89fe318acc">
         <source>Optionally set the 'FriendlyName' value of the Assertion attribute.</source>
-        <target>Indiquer la valeur "FriendlyName" de l'attribut d'assertion (optionnel)</target>
+        <target>Indiquer la valeur &quot;FriendlyName&quot; de l'attribut d'assertion (optionnel)</target>
         
       </trans-unit>
       <trans-unit id="s851c108679653d2a">
@@ -3646,8 +3625,8 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="s7b1fba26d245cb1c">
-        <source>When using an external logging solution for archiving, this can be set to "minutes=5".</source>
-        <target>En cas d'utilisation d'une solution de journalisation externe pour l'archivage, cette valeur peut être fixée à "minutes=5".</target>
+        <source>When using an external logging solution for archiving, this can be set to &quot;minutes=5&quot;.</source>
+        <target>En cas d'utilisation d'une solution de journalisation externe pour l'archivage, cette valeur peut être fixée à &quot;minutes=5&quot;.</target>
         
       </trans-unit>
       <trans-unit id="s44536d20bb5c8257">
@@ -3823,10 +3802,10 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="sa95a538bfbb86111">
-        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> "<x id="1" equiv-text="${this.obj?.name}"/>"?</source>
+        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> &quot;<x id="1" equiv-text="${this.obj?.name}"/>&quot;?</source>
         <target>Êtes-vous sûr de vouloir mettre à jour
-        <x id="0" equiv-text="${this.objectLabel}"/>"
-        <x id="1" equiv-text="${this.obj?.name}"/>"?</target>
+        <x id="0" equiv-text="${this.objectLabel}"/>&quot;
+        <x id="1" equiv-text="${this.obj?.name}"/>&quot;?</target>
         
       </trans-unit>
       <trans-unit id="sc92d7cfb6ee1fec6">
@@ -4902,8 +4881,8 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="sdf1d8edef27236f0">
-        <source>A "roaming" authenticator, like a YubiKey</source>
-        <target>Un authentificateur "itinérant", comme une YubiKey</target>
+        <source>A &quot;roaming&quot; authenticator, like a YubiKey</source>
+        <target>Un authentificateur &quot;itinérant&quot;, comme une YubiKey</target>
         
       </trans-unit>
       <trans-unit id="sfffba7b23d8fb40c">
@@ -4964,16 +4943,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s26513c9dd154f041">
         <source>Always require consent</source>
         <target>Toujours exiger l'approbation</target>
-        
-      </trans-unit>
-      <trans-unit id="s8ce8bdc9cc9c8604">
-        <source>Consent given last indefinitely</source>
-        <target>L'approbation dure indéfiniment</target>
-        
-      </trans-unit>
-      <trans-unit id="sb986f15fa9b17805">
-        <source>Consent expires.</source>
-        <target>L'approbation expire.</target>
         
       </trans-unit>
       <trans-unit id="s6f328f2d8382d998">
@@ -5228,7 +5197,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s5170f9ef331949c0">
         <source>Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the 'prompt_data' variable.</source>
-        <target>Afficher des champs de saisie arbitraires à l'utilisateur, par exemple pendant l'inscription. Les données sont enregistrées dans le contexte du flux sous la variable "prompt_data".</target>
+        <target>Afficher des champs de saisie arbitraires à l'utilisateur, par exemple pendant l'inscription. Les données sont enregistrées dans le contexte du flux sous la variable &quot;prompt_data&quot;.</target>
         
       </trans-unit>
       <trans-unit id="s36cb242ac90353bc">
@@ -5281,8 +5250,8 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="s1608b2f94fa0dbd4">
-        <source>If set to a duration above 0, the user will have the option to choose to "stay signed in", which will extend their session by the time specified here.</source>
-        <target>Si défini à une durée supérieure à 0, l'utilisateur aura la possibilité de choisir de "rester connecté", ce qui prolongera sa session jusqu'à la durée spécifiée ici.</target>
+        <source>If set to a duration above 0, the user will have the option to choose to &quot;stay signed in&quot;, which will extend their session by the time specified here.</source>
+        <target>Si défini à une durée supérieure à 0, l'utilisateur aura la possibilité de choisir de &quot;rester connecté&quot;, ce qui prolongera sa session jusqu'à la durée spécifiée ici.</target>
         
       </trans-unit>
       <trans-unit id="s542a71bb8f41e057">
@@ -5475,16 +5444,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s7b105164d209f670">
         <source>Require authentication</source>
         <target>Requiert une authentification</target>
-        
-      </trans-unit>
-      <trans-unit id="s239c2a351cde6d39">
-        <source>Require no authentication.</source>
-        <target>Requiert l'absence d'authentification</target>
-        
-      </trans-unit>
-      <trans-unit id="s98beadfeeb3acb66">
-        <source>Require superuser.</source>
-        <target>Requiert un super-utilisateur</target>
         
       </trans-unit>
       <trans-unit id="sfad9279cc42c6b61">
@@ -6050,7 +6009,7 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
       </trans-unit>
       <trans-unit id="sa7fcf026bd25f231">
         <source>Can be in the format of 'unix://' when connecting to a local docker daemon, using 'ssh://' to connect via SSH, or 'https://:2376' when connecting to a remote system.</source>
-        <target>Peut être au format "unix://" pour une connexion à un service docker local, "ssh://" pour une connexion via SSH, ou "https://:2376" pour une connexion à un système distant.</target>
+        <target>Peut être au format &quot;unix://&quot; pour une connexion à un service docker local, &quot;ssh://&quot; pour une connexion via SSH, ou &quot;https://:2376&quot; pour une connexion à un système distant.</target>
         
       </trans-unit>
       <trans-unit id="saf1d289e3137c2ea">
@@ -7302,7 +7261,7 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="sff0ac1ace2d90709">
   <source>Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /outpost.goauthentik.io must be routed to the outpost (when using a managed outpost, this is done for you).</source>
-  <target>Utilisez ce fournisseur avec l'option "auth_request" de Nginx ou "forwardAuth" de Traefik. Chaque application/domaine a besoin de son propre fournisseur. De plus, sur chaque domaine, "/outpost.goauthentik.io" doit être routé vers le poste avancé (lorsque vous utilisez un poste avancé géré, cela est fait pour vous).</target>
+  <target>Utilisez ce fournisseur avec l'option &quot;auth_request&quot; de Nginx ou &quot;forwardAuth&quot; de Traefik. Chaque application/domaine a besoin de son propre fournisseur. De plus, sur chaque domaine, &quot;/outpost.goauthentik.io&quot; doit être routé vers le poste avancé (lorsque vous utilisez un poste avancé géré, cela est fait pour vous).</target>
 </trans-unit>
 <trans-unit id="scb58b8a60cad8762">
   <source>Default relay state</source>
@@ -7333,30 +7292,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>UI Settings</source>
   <target>Paramètres d'UI</target>
 </trans-unit>
-<trans-unit id="s836148f721d8913b">
-  <source>Transparent Reverse Proxy</source>
-  <target>Reverse Proxy Transparent</target>
-</trans-unit>
-<trans-unit id="s945a6b94361ee45b">
-  <source>For transparent reverse proxies with required authentication</source>
-  <target>Pour les reverses proxy transparents avec authentification requise</target>
-</trans-unit>
-<trans-unit id="s40830ec037f34626">
-  <source>Configure SAML provider manually</source>
-  <target>Configurer le fournisseur SAML manuellement</target>
-</trans-unit>
-<trans-unit id="sea9fc40dfd1d18b1">
-  <source>Configure RADIUS provider manually</source>
-  <target>Configurer le fournisseur RADIUS manuellement</target>
-</trans-unit>
-<trans-unit id="sa1b0052ae095b9b3">
-  <source>Configure SCIM provider manually</source>
-  <target>Configurer le fournisseur SCIM manuellement</target>
-</trans-unit>
-<trans-unit id="s15831fa50a116545">
-  <source>Saving Application...</source>
-  <target>Enregistrement de l'application...</target>
-</trans-unit>
 <trans-unit id="s848288f8c2265aad">
   <source>Your application has been saved</source>
   <target>L'application a été sauvegardée</target>
@@ -7364,16 +7299,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="s67d858051b34c38b">
   <source>Method's display Name.</source>
   <target>Nom d'affichage de la méthode.</target>
-</trans-unit>
-<trans-unit id="h10ef80d434185070">
-  <source>Use this provider with nginx's <x id="0" equiv-text="&lt;code&gt;"/>auth_request<x id="1" equiv-text="&lt;/code&gt;"/> or traefik's
-                    <x id="2" equiv-text="&lt;code&gt;"/>forwardAuth<x id="3" equiv-text="&lt;/code&gt;"/>. Each application/domain needs its own provider.
-                    Additionally, on each domain, <x id="4" equiv-text="&lt;code&gt;"/>/outpost.goauthentik.io<x id="5" equiv-text="&lt;/code&gt;"/> must be
-                    routed to the outpost (when using a managed outpost, this is done for you).</source>
-  <target>Utiliser ce fournisseur avec nginx <x id="0" equiv-text="&lt;code&gt;"/>auth_request<x id="1" equiv-text="&lt;/code&gt;"/> ou traefik
-                    <x id="2" equiv-text="&lt;code&gt;"/>forwardAuth<x id="3" equiv-text="&lt;/code&gt;"/>. Chaque application/domaine a besoin de son fournisseur.
-                    De plus, sur chaque domaine, <x id="4" equiv-text="&lt;code&gt;"/>/outpost.goauthentik.io<x id="5" equiv-text="&lt;/code&gt;"/> doit être
-                    routé vers l'avant-post (lors de l'utilisation d'un avant-poste managé, cela est fait automatiquement).</target>
 </trans-unit>
 <trans-unit id="sd18b18f91b804c3f">
   <source>Custom attributes</source>
@@ -7519,10 +7444,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Pseudolocale (for testing)</source>
   <target>Pseudolocale (pour tests)</target>
 </trans-unit>
-<trans-unit id="s4bd386db7302bb22">
-  <source>Create With Wizard</source>
-  <target>Créer avec l'assistant</target>
-</trans-unit>
 <trans-unit id="s070fdfb03034ca9b">
   <source>One hint, 'New Application Wizard', is currently hidden</source>
   <target>Un indice, l'assistant nouvelle application est actuellement caché</target>
@@ -7534,46 +7455,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="s6985c401e1100122">
   <source>Message shown when this stage is run.</source>
   <target>Message affiché lorsque cette étape est exécutée.</target>
-</trans-unit>
-<trans-unit id="s09f0c100d0ad2fec">
-  <source>Open Wizard</source>
-  <target>Lancer l'assistant</target>
-</trans-unit>
-<trans-unit id="sf2ef885f7d0a101d">
-  <source>Demo Wizard</source>
-  <target>Assistant de démo</target>
-</trans-unit>
-<trans-unit id="s77505ee5d2e45e53">
-  <source>Run the demo wizard</source>
-  <target>Lancer l'assistant de démo</target>
-</trans-unit>
-<trans-unit id="s4498e890d47a8066">
-  <source>OAuth2/OIDC (Open Authorization/OpenID Connect)</source>
-  <target>OAuth2/OIDC (Open Authorization/OpenID Connect)</target>
-</trans-unit>
-<trans-unit id="s4f2e195d09e2868c">
-  <source>LDAP (Lightweight Directory Access Protocol)</source>
-  <target>LDAP (Lightweight Directory Access Protocol)</target>
-</trans-unit>
-<trans-unit id="s7f5bb0c9923315ed">
-  <source>Forward Auth (Single Application)</source>
-  <target>Transférer l'authentification (application unique)</target>
-</trans-unit>
-<trans-unit id="sf8008d2d6b064b95">
-  <source>Forward Auth (Domain Level)</source>
-  <target>Transférer l'authentification (niveau domaine)</target>
-</trans-unit>
-<trans-unit id="sfa8a1ffa9fee07d3">
-  <source>SAML (Security Assertion Markup Language)</source>
-  <target>SAML (Security Assertion Markup Language)</target>
-</trans-unit>
-<trans-unit id="s848a23972e388662">
-  <source>RADIUS (Remote Authentication Dial-In User Service)</source>
-  <target>RADIUS (Remote Authentication Dial-In User Service)</target>
-</trans-unit>
-<trans-unit id="s3e902999ddf7b50e">
-  <source>SCIM (System for Cross-domain Identity Management)</source>
-  <target>SCIM (System for Cross-domain Identity Management)</target>
 </trans-unit>
 <trans-unit id="sdc5690be4a342985">
   <source>The token has been copied to your clipboard</source>
@@ -7618,14 +7499,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="s0924f51b028233a3">
   <source>&lt;No name set&gt;</source>
   <target>&lt;No name set&gt;</target>
-</trans-unit>
-<trans-unit id="sdc9a6ad1af30572c">
-  <source>For nginx's auth_request or traefik's forwardAuth</source>
-  <target>Pour nginx auth_request ou traefik forwardAuth</target>
-</trans-unit>
-<trans-unit id="sfc31264ef7ff86ef">
-  <source>For nginx's auth_request or traefik's forwardAuth per root domain</source>
-  <target>Pour nginx auth_request ou traefik forwardAuth par domaine racine</target>
 </trans-unit>
 <trans-unit id="s32babfed740fd3c1">
   <source>User type used for newly created users.</source>
@@ -7692,7 +7565,7 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <target>Utilisateur créé et ajouté au groupe <x id="0" equiv-text="${this.group.name}"/> avec succès</target>
 </trans-unit>
 <trans-unit id="s824e0943a7104668">
-  <source>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</source>
+  <source>This user will be added to the group &quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&quot;.</source>
   <target>Cet utilisateur sera ajouté au groupe &amp;quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&amp;quot;.</target>
 </trans-unit>
 <trans-unit id="s62e7f6ed7d9cb3ca">
@@ -7719,10 +7592,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Review the provider.</source>
   <target>Passer en revue le fournisseur.</target>
 </trans-unit>
-<trans-unit id="s9fd39a5cb20b4e61">
-  <source>There was an error</source>
-  <target>Il y a eu une erreur</target>
-</trans-unit>
 <trans-unit id="s7a6b3453209e1066">
   <source>There was an error creating the application, but no error message was sent. Please review the server logs.</source>
   <target>Il y a eu une erreur lors de la création de l'application, mais aucun message d'erreur n'a été envoyé. Veuillez consulter les logs du serveur.</target>
@@ -7730,10 +7599,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="s1a711c19cda48375">
   <source>Configure LDAP Provider</source>
   <target>Configurer le fournisseur LDAP</target>
-</trans-unit>
-<trans-unit id="s9368e965b5c292ab">
-  <source>Configure OAuth2/OpenId Provider</source>
-  <target>Configurer le fournisseur OAuth2/OpenID</target>
 </trans-unit>
 <trans-unit id="sf5cbccdc6254c8dc">
   <source>Configure Proxy Provider</source>
@@ -7747,25 +7612,13 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Configure SAML Provider</source>
   <target>Configurer le fournisseur SAML</target>
 </trans-unit>
-<trans-unit id="sb3defbacd01ad972">
-  <source>Property mappings used for user mapping.</source>
-  <target>Mappages de propriété utilisés pour la correspondance des utilisateurs.</target>
-</trans-unit>
 <trans-unit id="s7ccce0ec8d228db6">
   <source>Configure SCIM Provider</source>
   <target>Configurer le fournisseur SCIM</target>
 </trans-unit>
-<trans-unit id="sd7728d2b6e1d25e9">
-  <source>Property mappings used for group creation.</source>
-  <target>Mappages de propriétés utilisés lors de la création des groupe</target>
-</trans-unit>
 <trans-unit id="s7513372fe60f6387">
   <source>Event volume</source>
   <target>Volume d'événements</target>
-</trans-unit>
-<trans-unit id="s047a5f0211fedc72">
-  <source>Require Outpost (flow can only be executed from an outpost).</source>
-  <target>Forcer l'utilisation d'un avant-poste (le flux ne pourrait être exécuter que depuis un outpost).</target>
 </trans-unit>
 <trans-unit id="s3271da6c18c25b18">
   <source>Connection settings.</source>
@@ -8204,18 +8057,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="se16b4d412ad1aba9">
   <source>Brand name</source>
   <target>Nom de la marque</target>
-</trans-unit>
-<trans-unit id="sb7e68dcad68a638c">
-  <source>Remote Access Provider</source>
-  <target>Fournisseur d'accès distant</target>
-</trans-unit>
-<trans-unit id="sfb1980a471b7dfb6">
-  <source>Remotely access computers/servers via RDP/SSH/VNC</source>
-  <target>Accéder à des ordinateurs/serveurs via RDP/SSH/VNC</target>
-</trans-unit>
-<trans-unit id="s9ffdea131dddb3c5">
-  <source>Configure Remote Access Provider Provider</source>
-  <target>Configurer le fournisseur d'accès distant</target>
 </trans-unit>
 <trans-unit id="s56bc67239b9255a2">
   <source>Delete authorization on disconnect</source>
@@ -8709,18 +8550,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Pagination</source>
   <target>Pagination</target>
 </trans-unit>
-<trans-unit id="s6d46b842e227be57">
-  <source>Application Details</source>
-  <target>Détails de l'application</target>
-</trans-unit>
-<trans-unit id="s76415a60e548cafe">
-  <source>Provider Configuration</source>
-  <target>Configuration du fournisseur</target>
-</trans-unit>
-<trans-unit id="sde59c64619570b57">
-  <source>Submit Application</source>
-  <target>Soumettre l'application</target>
-</trans-unit>
 <trans-unit id="sf2da0e95c78f2cb7">
   <source>Restore Application Wizard Hint</source>
   <target>Restaurer l'indice de l'assistant de création d'application</target>
@@ -9042,12 +8871,8 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <target>Synchroniser le groupe</target>
 </trans-unit>
 <trans-unit id="s2d5f69929bb7221d">
-  <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
+  <source><x id="0" equiv-text="${p.name}"/> (&quot;<x id="1" equiv-text="${p.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${p.type}"/>)</source>
   <target><x id="0" equiv-text="${p.name}"/> (&amp;quot;<x id="1" equiv-text="${p.fieldKey}"/>&amp;quot;, de type <x id="2" equiv-text="${p.type}"/>)</target>
-</trans-unit>
-<trans-unit id="sa38c5a2731be3a46">
-  <source>authentik was unable to save this application:</source>
-  <target>authentik n'a pas pu sauvegarder cette application :</target>
 </trans-unit>
 <trans-unit id="s25bacc19d98b444e">
   <source>Parent Group</source>
@@ -9294,12 +9119,8 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <target>URLs de redirection autorisées après un flux d'autorisation réussi. Indiquez également toute origine ici pour les flux implicites.</target>
 </trans-unit>
 <trans-unit id="s4c49d27de60a532b">
-  <source>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</source>
-  <target>Pour permettre n'importe quelle URI de redirection, définissez cette valeur sur ".*". Soyez conscient des possibles implications de sécurité que cela peut avoir.</target>
-</trans-unit>
-<trans-unit id="s43f899a86c6a3484">
-  <source>Redirect URIs/Origins</source>
-  <target>URLs de redirection/Origines</target>
+  <source>To allow any redirect URI, set the mode to Regex and the value to &quot;.*&quot;. Be aware of the possible security implications this can have.</source>
+  <target>Pour permettre n'importe quelle URI de redirection, définissez cette valeur sur &quot;.*&quot;. Soyez conscient des possibles implications de sécurité que cela peut avoir.</target>
 </trans-unit>
 <trans-unit id="sa52bf79fe1ccb13e">
   <source>Federated OIDC Sources</source>
@@ -9320,6 +9141,262 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="s4f8a3f7792e6b940">
   <source>JWTs signed by the selected providers can be used to authenticate to this provider.</source>
   <target>Les JWTs signés par les fournisseurs sélectionnés peuvent être utilisés pour s'authentifier auprès de ce fournisseur.</target>
+</trans-unit>
+<trans-unit id="s3cc2b33d2a8000d3">
+  <source>KAdmin type</source>
+  <target>Type KAdmin</target>
+</trans-unit>
+<trans-unit id="s624e1c8739507529">
+  <source>MIT krb5 kadmin</source>
+  <target>MIT krb5 kadmin</target>
+</trans-unit>
+<trans-unit id="s6d225d9e74dfff6f">
+  <source>Heimdal kadmin</source>
+  <target>Heimdal kadmin</target>
+</trans-unit>
+<trans-unit id="sc9e494c8346b7cb5">
+  <source>Other</source>
+  <target>Autre</target>
+</trans-unit>
+<trans-unit id="sbf6c78047e8ec8f8">
+  <source>Other type of kadmin</source>
+  <target>Autre type de kadmin</target>
+</trans-unit>
+<trans-unit id="sb53d0b77abef2316">
+  <source>To let a user directly reset their password, configure a recovery flow on the currently active brand.</source>
+  <target>Pour laisser les utilisateurs réinitialiser leur mot de passe, configurez un flux de récupération sur la marque actuelle.</target>
+</trans-unit>
+<trans-unit id="s2e5226fcf269689b">
+  <source>Consent given lasts indefinitely</source>
+  <target>L'approbation donnée dure indéfiniment</target>
+</trans-unit>
+<trans-unit id="s7eff620292ed9349">
+  <source>Consent expires</source>
+  <target>L'approbation expire</target>
+</trans-unit>
+<trans-unit id="s1cc032bcc50b2942">
+  <source>Available Policies</source>
+  <target>Politiques disponibles</target>
+</trans-unit>
+<trans-unit id="s3ad64193ad5f4a5e">
+  <source>Selected Policies</source>
+  <target>Politiques sélectionnées</target>
+</trans-unit>
+<trans-unit id="sc487e11d5987dbb4">
+  <source>Redirect the user to another flow, potentially with all gathered context</source>
+  <target>Rediriger l'utilisateur vers un autre flux, éventuellement avec le contexte</target>
+</trans-unit>
+<trans-unit id="sad9d5481474d4f5b">
+  <source>Static</source>
+  <target>Statique</target>
+</trans-unit>
+<trans-unit id="se87a96950464bc89">
+  <source>Target URL</source>
+  <target>URL destination</target>
+</trans-unit>
+<trans-unit id="s7f3097955b19736a">
+  <source>Redirect the user to a static URL.</source>
+  <target>Rediriger l'utilisateur vers une URL statique.</target>
+</trans-unit>
+<trans-unit id="s9bdee1c5130c8240">
+  <source>Target Flow</source>
+  <target>Flux destination</target>
+</trans-unit>
+<trans-unit id="sa5d1405b8d6529c7">
+  <source>Redirect the user to a Flow.</source>
+  <target>Rediriger l'utilisateur vers un flux.</target>
+</trans-unit>
+<trans-unit id="s7c9db337d14d42b3">
+  <source>Keep flow context</source>
+  <target>Conserver le contexte du flux</target>
+</trans-unit>
+<trans-unit id="s0d7dea184036a74d">
+  <source>Require no authentication</source>
+  <target>Requiert l'absence d'authentification</target>
+</trans-unit>
+<trans-unit id="s66f533986ba6182c">
+  <source>Require superuser</source>
+  <target>Requiert un super-utilisateur</target>
+</trans-unit>
+<trans-unit id="s26c0a8789930b5fd">
+  <source>Require being redirected from another flow</source>
+  <target>Requiert d'être redirigé depuis un autre flux</target>
+</trans-unit>
+<trans-unit id="sbfaee8cfbf4e44e8">
+  <source>Require Outpost (flow can only be executed from an outpost)</source>
+  <target>Forcer l'utilisation d'un avant-poste (le flux ne pourrait être exécuter que depuis un avant-poste)</target>
+</trans-unit>
+<trans-unit id="sb80507bed88545a6">
+  <source>An application name is required</source>
+  <target>Un nom d'application est requis</target>
+</trans-unit>
+<trans-unit id="s39c052006b2b141a">
+  <source>Not a valid URL</source>
+  <target>URL invalide</target>
+</trans-unit>
+<trans-unit id="s317f3ab0da3d068a">
+  <source>Not a valid slug</source>
+  <target>Slug invalide</target>
+</trans-unit>
+<trans-unit id="s177577c23ed3ca7e">
+  <source>Configure The Application</source>
+  <target>Configurer l'application</target>
+</trans-unit>
+<trans-unit id="s030ed8a3f12c23ff">
+  <source>Configure Bindings</source>
+  <target>Configurer les liaisons</target>
+</trans-unit>
+<trans-unit id="sc387b20e6d629087">
+  <source>Configure Policy/User/Group Bindings</source>
+  <target>Configurer les liaisons vers politique/utilisateur/groupe</target>
+</trans-unit>
+<trans-unit id="s71c3ec95efe723ca">
+  <source>No bound policies.</source>
+  <target>Aucune politique liée.</target>
+</trans-unit>
+<trans-unit id="sab1786ef3c0383ba">
+  <source>Bind policy/group/user</source>
+  <target>Lier politique/groupe/utilisateur</target>
+</trans-unit>
+<trans-unit id="s082ea0f3c0a854ff">
+  <source>Configure Policy Bindings</source>
+  <target>Configurer les liaisons de politiques</target>
+</trans-unit>
+<trans-unit id="sac315d5bd28d4efa">
+  <source>Don't Pass</source>
+  <target>Échouer</target>
+</trans-unit>
+<trans-unit id="s54a37223ce938349">
+  <source>Save Binding</source>
+  <target>Sauvegarder la liaison</target>
+</trans-unit>
+<trans-unit id="s931754aabd4a6a47">
+  <source>Create a Policy/User/Group Binding</source>
+  <target>Créer une liaison vers politique/utilisateur/groupe</target>
+</trans-unit>
+<trans-unit id="s10ba15343fe64890">
+  <source>Choose A Provider</source>
+  <target>Choisir un fournisseur</target>
+</trans-unit>
+<trans-unit id="sb7be945aa799b8d7">
+  <source>Please choose a provider type before proceeding.</source>
+  <target>Veuillez choisir un type de fournisseur avant de continuer.</target>
+</trans-unit>
+<trans-unit id="s2289ff3b411251d8">
+  <source>Choose a Provider Type</source>
+  <target>Choisir un type de fournisseur</target>
+</trans-unit>
+<trans-unit id="sde0ad51b14f77cf6">
+  <source>Redirect URIs/Origins (RegEx)</source>
+  <target>URI/Origines de redirection (RegEx)</target>
+</trans-unit>
+<trans-unit id="s89ae85c3a9df8a6f">
+  <source>Configure OAuth2 Provider</source>
+  <target>Configurer un fournisseur OAuth2</target>
+</trans-unit>
+<trans-unit id="s881271a499c9db98">
+  <source>Configure Remote Access Provider</source>
+  <target>Configurer un fournisseur d'accès distant</target>
+</trans-unit>
+<trans-unit id="s9b6bf63fddc7362f">
+  <source>List of CIDRs (comma-seperated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.</source>
+  <target>Liste de CIRDs (séparés par des virgules) depuis lesquels les clients peuvent se connecter. Un préfixe plus spécifique matchera avant un préfixe moins spécifique. Les clients se connectant depuis un CIDR non spécifié seront rejetés.</target>
+</trans-unit>
+<trans-unit id="s19907c16eb319618">
+  <source>Configure Provider</source>
+  <target>Configurer le fournisseur</target>
+</trans-unit>
+<trans-unit id="s7055edd8fab866f4">
+  <source>strict</source>
+  <target>strict</target>
+</trans-unit>
+<trans-unit id="s5e57ca23b946c1b8">
+  <source>regexp</source>
+  <target>regexp</target>
+</trans-unit>
+<trans-unit id="sd226dc54c414585a">
+  <source>Review and Submit Application</source>
+  <target>Passer en revue et soumettre l'application</target>
+</trans-unit>
+<trans-unit id="s828ded9ade500ffc">
+  <source>There was an error. Please go back and review the application.</source>
+  <target>Une erreur a été rencontrée. Merci de revenir en arrière et de passer en revue l'application.</target>
+</trans-unit>
+<trans-unit id="s9fdda682893624a1">
+  <source>There was an error:</source>
+  <target>Une erreur a été rencontrée :</target>
+</trans-unit>
+<trans-unit id="s201ee6bc6d9f97da">
+  <source>Please go back and review the application.</source>
+  <target>Merci de revenir en arrière et de passer en revue l'application.</target>
+</trans-unit>
+<trans-unit id="s9c09ef16900241fa">
+  <source>Review the Application and Provider</source>
+  <target>Passer en revue l'application et le fournisseur.</target>
+</trans-unit>
+<trans-unit id="s0a0a21f7bcf9d865">
+  <source>Saving application...</source>
+  <target>Enregistrement de l'application...</target>
+</trans-unit>
+<trans-unit id="se669a4b939be0891">
+  <source>authentik was unable to complete this process.</source>
+  <target>authentik n'a pas pu compléter cette opération.</target>
+</trans-unit>
+<trans-unit id="s8aac845c63f45ca2">
+  <source>Create with wizard</source>
+  <target>Créer avec l'assistant</target>
+</trans-unit>
+<trans-unit id="s080af72866b69b3d">
+  <source>Bind existing <x id="0" equiv-text="${this.allowedTypesLabel}"/></source>
+  <target>Lier un(e) <x id="0" equiv-text="${this.allowedTypesLabel}"/> existant(e)</target>
+</trans-unit>
+<trans-unit id="sa36117e97f49c86e">
+  <source>Successfully updated entitlement.</source>
+  <target>Droit mis à jour avec succès.</target>
+</trans-unit>
+<trans-unit id="s86bee999b735111f">
+  <source>Successfully created entitlement.</source>
+  <target>Droit créé avec succès.</target>
+</trans-unit>
+<trans-unit id="s8a48455905fc14e6">
+  <source>Application entitlement(s)</source>
+  <target>Droit(s) applicatif(s)</target>
+</trans-unit>
+<trans-unit id="sae971cbff672090b">
+  <source>Update Entitlement</source>
+  <target>Mettre à jour le droit</target>
+</trans-unit>
+<trans-unit id="s537a58ae0ff50f1c">
+  <source>These bindings control which users have access to this entitlement.</source>
+  <target>Ces liaisons contrôlent les utilisateurs qui peuvent accéder à ce droit.</target>
+</trans-unit>
+<trans-unit id="s05849efeac672dc7">
+  <source>No app entitlements created.</source>
+  <target>Aucun droit applicatif créé.</target>
+</trans-unit>
+<trans-unit id="sdc8a8f29af6aa411">
+  <source>This application does currently not have any application entitlement defined.</source>
+  <target>Cette application n'a actuellement pas de droit applicatif défini.</target>
+</trans-unit>
+<trans-unit id="sf0bd204ce3fea1de">
+  <source>Create Entitlement</source>
+  <target>Créer un droit</target>
+</trans-unit>
+<trans-unit id="s55d8e42d0a1c057e">
+  <source>Create entitlement</source>
+  <target>Créer un droit</target>
+</trans-unit>
+<trans-unit id="sc6479479c936939f">
+  <source>Application entitlements</source>
+  <target>Droits applicatifs</target>
+</trans-unit>
+<trans-unit id="sfafbd9bddb38d172">
+  <source>Application entitlements are in preview.</source>
+  <target>Les droits applicatifs sont en aperçu technique.</target>
+</trans-unit>
+<trans-unit id="s8e1c375a007d1839">
+  <source>These entitlements can be used to configure user access in this application.</source>
+  <target>Ces droits peuvent être utilisés pour configurer les accès d'un utilisateur au sein de cette application.</target>
 </trans-unit>
     </body>
   </file>

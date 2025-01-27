@@ -3,7 +3,7 @@ title: Integrate with pfSense
 sidebar_label: pfSense
 ---
 
-# pfSense
+# Integrate with pfSense
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -19,7 +19,7 @@ This is based on authentik 2022.3.31 and pfSense 2.6.0-amd64
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of authentik.
 - `pfsense-user` is the name of the authentik Service account we'll create.

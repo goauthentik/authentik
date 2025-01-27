@@ -58,7 +58,7 @@ class TokenBackend(InbuiltBackend):
         except User.DoesNotExist:
             # Run the default password hasher once to reduce the timing
             # difference between an existing and a nonexistent user (#20760).
-            User().set_password(password)
+            User().set_password(password, request=request)
             return None
 
         tokens = Token.filter_not_expired(

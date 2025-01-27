@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2024.10.5
+  version: 2024.12.2
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -349,7 +349,7 @@ paths:
           description: ''
   /admin/workers/:
     get:
-      operationId: admin_workers_retrieve
+      operationId: admin_workers_list
       description: Get currently connected worker count.
       tags:
       - admin
@@ -360,7 +360,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Workers'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Worker'
           description: ''
         '400':
           content:
@@ -22088,6 +22090,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SAMLMetadata'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/SAMLMetadata'
           description: ''
         '404':
           description: Provider has no application assigned
@@ -26244,6 +26249,11 @@ paths:
         schema:
           type: boolean
       - in: query
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: realm
         schema:
           type: string
@@ -26615,6 +26625,11 @@ paths:
         name: password_login_update_internal_password
         schema:
           type: boolean
+      - in: query
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
       - in: query
         name: peer_certificate
         schema:
@@ -27045,6 +27060,11 @@ paths:
         schema:
           type: integer
       - in: query
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: policy_engine_mode
         schema:
           type: string
@@ -27413,6 +27433,11 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
       - in: query
         name: policy_engine_mode
         schema:
@@ -27817,6 +27842,11 @@ paths:
         schema:
           type: integer
       - in: query
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: policy_engine_mode
         schema:
           type: string
@@ -28179,6 +28209,11 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
       - name: search
         required: false
         in: query
@@ -41221,9 +41256,14 @@ components:
           type: string
           description: The human-readable name of this device.
           maxLength: 64
+        user:
+          allOf:
+          - $ref: '#/components/schemas/GroupMember'
+          readOnly: true
       required:
       - name
       - pk
+      - user
     DuoDeviceEnrollmentStatus:
       type: object
       properties:
@@ -42391,7 +42431,7 @@ components:
           description: Evaluate policies during the Flow planning process.
         re_evaluate_policies:
           type: boolean
-          description: Evaluate policies when the Stage is present to the user.
+          description: Evaluate policies when the Stage is presented to the user.
         order:
           type: integer
           maximum: 2147483647
@@ -42427,7 +42467,7 @@ components:
           description: Evaluate policies during the Flow planning process.
         re_evaluate_policies:
           type: boolean
-          description: Evaluate policies when the Stage is present to the user.
+          description: Evaluate policies when the Stage is presented to the user.
         order:
           type: integer
           maximum: 2147483647
@@ -48949,7 +48989,7 @@ components:
           description: Evaluate policies during the Flow planning process.
         re_evaluate_policies:
           type: boolean
-          description: Evaluate policies when the Stage is present to the user.
+          description: Evaluate policies when the Stage is presented to the user.
         order:
           type: integer
           maximum: 2147483647
@@ -54565,10 +54605,15 @@ components:
         phone_number:
           type: string
           readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/GroupMember'
+          readOnly: true
       required:
       - name
       - phone_number
       - pk
+      - user
     SMSDeviceRequest:
       type: object
       description: Serializer for sms authenticator devices
@@ -55270,10 +55315,15 @@ components:
           type: integer
           readOnly: true
           title: ID
+        user:
+          allOf:
+          - $ref: '#/components/schemas/GroupMember'
+          readOnly: true
       required:
       - name
       - pk
       - token_set
+      - user
     StaticDeviceRequest:
       type: object
       description: Serializer for static authenticator devices
@@ -55502,9 +55552,14 @@ components:
           type: integer
           readOnly: true
           title: ID
+        user:
+          allOf:
+          - $ref: '#/components/schemas/GroupMember'
+          readOnly: true
       required:
       - name
       - pk
+      - user
     TOTPDeviceRequest:
       type: object
       description: Serializer for totp authenticator devices
@@ -56946,12 +57001,17 @@ components:
         aaguid:
           type: string
           readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/GroupMember'
+          readOnly: true
       required:
       - aaguid
       - created_on
       - device_type
       - name
       - pk
+      - user
     WebAuthnDeviceRequest:
       type: object
       description: Serializer for WebAuthn authenticator devices
@@ -56987,13 +57047,19 @@ components:
       required:
       - aaguid
       - description
-    Workers:
+    Worker:
       type: object
       properties:
-        count:
-          type: integer
+        worker_id:
+          type: string
+        version:
+          type: string
+        version_matching:
+          type: boolean
       required:
-      - count
+      - version
+      - version_matching
+      - worker_id
     modelRequest:
       oneOf:
       - $ref: '#/components/schemas/GoogleWorkspaceProviderRequest'

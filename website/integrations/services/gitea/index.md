@@ -3,7 +3,7 @@ title: Integrate with Gitea
 sidebar_label: Gitea
 ---
 
-# Gitea
+# Integrate with Gitea
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -19,7 +19,7 @@ This is based on authentik 2022.10.1 and Gitea 1.17.3 installed using the offici
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of authentik.
 - `gitea.company` is the FQDN of Gitea.

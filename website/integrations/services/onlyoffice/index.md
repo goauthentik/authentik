@@ -3,7 +3,7 @@ title: Integrate with OnlyOffice
 sidebar_label: OnlyOffice
 ---
 
-# OnlyOffice
+# Integrate with OnlyOffice
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -19,7 +19,7 @@ This is based on authentik 2021.10.4 and OnlyOffice 11.5.4.1582. Instructions ma
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of authentik.
 - `onlyoffice.company` is the FQDN of the OnlyOffice instance.

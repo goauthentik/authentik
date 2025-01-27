@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "authentik"
-version = "2024.10.5"
+version = "2024.12.2"
 description = ""
 authors = ["authentik Team <hello@goauthentik.io>"]
 
@@ -131,7 +131,7 @@ pydantic-scim = "*"
 pyjwt = "*"
 pyrad = "*"
 python = "~3.12"
-python-kadmin-rs = "0.5.2"
+python-kadmin-rs = "0.5.3"
 pyyaml = "*"
 requests-oauthlib = "*"
 scim2-filter-parser = "*"
@@ -143,6 +143,7 @@ swagger-spec-validator = "*"
 tenant-schemas-celery = "*"
 twilio = "*"
 ua-parser = "*"
+unidecode = "*"
 # Pinned because of botocore https://github.com/orgs/python-poetry/discussions/7937
 urllib3 = { extras = ["secure"], version = "<3" }
 uvicorn = { extras = ["standard"], version = "*" }
@@ -152,7 +153,7 @@ wsproto = "*"
 xmlsec = "*"
 zxcvbn = "*"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 aws-cdk-lib = "*"
 bandit = "*"
 black = "*"

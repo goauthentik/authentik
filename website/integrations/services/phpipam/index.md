@@ -3,7 +3,7 @@ title: Integrate with phpIPAM
 sidebar_label: phpIPAM
 ---
 
-# phpIPAM
+# Integrate with phpIPAM
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -15,7 +15,7 @@ sidebar_label: phpIPAM
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `phpipam.company` is the FQDN of the phpipam.
 - `authentik.company` is the FQDN of the authentik installation.

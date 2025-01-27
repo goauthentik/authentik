@@ -3,7 +3,7 @@ title: Integrate with Observium
 sidebar_label: Observium
 ---
 
-# Observium
+# Integrate with Observium
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -19,10 +19,10 @@ This is based on authentik 2024.6.0 and Observium CE 24.4.13528
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
-- `observium.company` is the FQDN of the Observium install.
-- `authentik.company` is the FQDN of the authentik install.
+- `observium.company` is the FQDN of the Observium installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 This guide assumes you already have a working Observium instance. It is recommended to install it with the install script, following the [instructions](https://docs.observium.org/) on Observium's website.
 

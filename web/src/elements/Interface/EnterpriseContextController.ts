@@ -9,14 +9,14 @@ import type { ReactiveController } from "lit";
 import type { LicenseSummary } from "@goauthentik/api";
 import { EnterpriseApi } from "@goauthentik/api";
 
-import type { AkEnterpriseInterface } from "./Interface";
+import type { AkAuthenticatedInterface } from "./Interface";
 
 export class EnterpriseContextController implements ReactiveController {
-    host!: ReactiveElementHost<AkEnterpriseInterface>;
+    host!: ReactiveElementHost<AkAuthenticatedInterface>;
 
     context!: ContextProvider<{ __context__: LicenseSummary | undefined }>;
 
-    constructor(host: ReactiveElementHost<AkEnterpriseInterface>) {
+    constructor(host: ReactiveElementHost<AkAuthenticatedInterface>) {
         this.host = host;
         this.context = new ContextProvider(this.host, {
             context: authentikEnterpriseContext,

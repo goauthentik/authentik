@@ -3,7 +3,7 @@ title: Integrate with Xen Orchestra
 sidebar_label: Xen Orchestra
 ---
 
-# Xen Orchestra
+# Integrate with Xen Orchestra
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -20,10 +20,10 @@ If you are using the Xen Orchestra Appliance, the OIDC Plugin should be present.
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `xenorchestra.company` is the FQDN of the Xen Orchestra instance.
-- `authentik.company` is the FQDN of the authentik install.
+- `authentik.company` is the FQDN of the authentik installation.
 
 ## authentik configuration
 

@@ -1,5 +1,7 @@
 """Test Redirect stage"""
 
+from urllib.parse import urlencode
+
 from django.urls.base import reverse
 from rest_framework.exceptions import ValidationError
 
@@ -56,6 +58,23 @@ class TestRedirectStage(FlowTestCase):
 
         self.assertStageRedirects(
             response, reverse("authentik_core:if-flow", kwargs={"flow_slug": self.target_flow.slug})
+        )
+
+    def test_flow_query(self):
+        self.stage.mode = RedirectMode.FLOW
+        self.stage.save()
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+            + "?"
+            + urlencode({"query": urlencode({"test": "foo"})})
+        )
+
+        self.assertStageRedirects(
+            response,
+            reverse("authentik_core:if-flow", kwargs={"flow_slug": self.target_flow.slug})
+            + "?"
+            + urlencode({"test": "foo"}),
         )
 
     def test_override_static(self):

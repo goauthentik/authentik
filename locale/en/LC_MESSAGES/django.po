@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-26 00:09+0000\n"
+"POT-Creation-Date: 2024-12-20 00:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -99,6 +99,10 @@ msgstr ""
 
 #: authentik/brands/models.py
 msgid "Brands"
+msgstr ""
+
+#: authentik/core/api/application_entitlements.py
+msgid "User does not have access to application."
 msgstr ""
 
 #: authentik/core/api/devices.py
@@ -223,6 +227,14 @@ msgstr ""
 
 #: authentik/core/models.py
 msgid "Applications"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Application Entitlement"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Application Entitlements"
 msgstr ""
 
 #: authentik/core/models.py
@@ -1874,6 +1886,10 @@ msgid "Custom krb5.conf to use. Uses the system one by default"
 msgstr ""
 
 #: authentik/sources/kerberos/models.py
+msgid "KAdmin server type"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
 msgid "Sync users from Kerberos into authentik"
 msgstr ""
 
@@ -2812,7 +2828,7 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-"    If you did not request a password change, please ignore this Email. The "
+"    If you did not request a password change, please ignore this email. The "
 "link above is valid for %(expires)s.\n"
 "    "
 msgstr ""
@@ -2833,7 +2849,7 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-"If you did not request a password change, please ignore this Email. The link "
+"If you did not request a password change, please ignore this email. The link "
 "above is valid for %(expires)s.\n"
 msgstr ""
 
@@ -3096,6 +3112,22 @@ msgstr ""
 
 #: authentik/stages/prompt/stage.py
 msgid "Passwords don't match."
+msgstr ""
+
+#: authentik/stages/redirect/api.py
+msgid "Target URL should be present when mode is Static."
+msgstr ""
+
+#: authentik/stages/redirect/api.py
+msgid "Target Flow should be present when mode is Flow."
+msgstr ""
+
+#: authentik/stages/redirect/models.py
+msgid "Redirect Stage"
+msgstr ""
+
+#: authentik/stages/redirect/models.py
+msgid "Redirect Stages"
 msgstr ""
 
 #: authentik/stages/user_delete/models.py

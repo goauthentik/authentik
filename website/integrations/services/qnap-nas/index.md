@@ -3,7 +3,7 @@ title: Integrate with QNAP NAS
 sidebar_label: QNAP NAS
 ---
 
-# QNAP NAS
+# Integrate with QNAP NAS
 
 ## What is QNAP NAS
 
@@ -15,7 +15,7 @@ Connecting a QNAP NAS to an LDAP Directory is a little bit special as it is **no
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `ldap.baseDN` is the Base DN you configure in the LDAP provider.
 - `ldap.domain` is (typically) a FQDN for your domain. Usually

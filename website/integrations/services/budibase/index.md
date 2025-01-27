@@ -3,7 +3,7 @@ title: Integrate with Budibase
 sidebar_label: Budibase
 ---
 
-# Budibase
+# Integrate with Budibase
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -15,10 +15,10 @@ sidebar_label: Budibase
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
-- `budibase.company` is the FQDN of the Budibase install.
-- `authentik.company` is the FQDN of the authentik install.
+- `budibase.company` is the FQDN of the Budibase installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 Create an application in authentik. Create an OAuth2/OpenID provider with the following parameters:
 

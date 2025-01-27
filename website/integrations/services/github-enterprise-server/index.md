@@ -3,7 +3,7 @@ title: Integrate with GitHub Enterprise Server
 sidebar_label: GitHub Enterprise Server
 ---
 
-# GitHub Enterprise Server
+# Integrate with GitHub Enterprise Server
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -15,7 +15,7 @@ sidebar_label: GitHub Enterprise Server
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `https://github.company` is your GitHub Enterprise Server installation
 - `authentik.company` is the FQDN of the authentik Install

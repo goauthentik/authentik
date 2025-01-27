@@ -3,7 +3,7 @@ title: Integrate with Matrix Synapse
 sidebar_label: Matrix Synapse
 ---
 
-# Matrix Synapse
+# Integrate with Matrix Synapse
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -15,10 +15,10 @@ sidebar_label: Matrix Synapse
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
-- `matrix.company` is the FQDN of the Matrix install.
-- `authentik.company` is the FQDN of the authentik install.
+- `matrix.company` is the FQDN of the Matrix installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 Create an application in authentik. Create an OAuth2/OpenID provider with the following parameters:
 

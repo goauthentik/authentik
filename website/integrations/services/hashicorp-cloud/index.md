@@ -3,7 +3,7 @@ title: Integrate with HashiCorp Cloud Platform
 sidebar_label: HashiCorp Cloud Platform
 ---
 
-# HashiCorp Cloud Platform
+# Integrate with HashiCorp Cloud Platform
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -15,7 +15,7 @@ sidebar_label: HashiCorp Cloud Platform
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of authentik.
 

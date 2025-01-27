@@ -1,0 +1,99 @@
+---
+title: Integrate with Semaphore UI
+sidebar_label: Semaphore
+---
+
+# Integrate with Semaphore UI
+
+<span class="badge badge--secondary">Support level: Community</span>
+
+## What is Semaphore UI
+
+> Semaphore UI is a modern web interface for managing popular DevOps tools.
+>
+> -- https://semaphoreui.com/
+>
+> This guide explains how to configure Semaphore UI to use authentik as the OAuth provider for logging in to the Web GUI.
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `semaphore.company` is the FQDN of the Semaphore installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+## authentik configuration
+
+Start the wizard for adding a new application.
+
+**1. Application:**
+
+- Name: `Semaphore UI`
+- Slug: `semaphore`
+
+**2. Choose a Provider**
+
+Select `OAuth2/OpenID Provider`
+
+**3. Configure Provider**
+
+Select implicit or explicit authorization flow as desired.
+
+Take note of the Client ID and Client Secret, you'll need to give them to Semaphore UI later.
+
+- Redirect URIs/Origins (RegEx): `https://semaphore.company/api/auth/oidc/authentik/redirect/`
+- Signing Key: `authentik Self-signed Certificate`
+
+Leave the rest as default values.
+
+## Semaphore UI configuration
+
+Log in to your Semaphore UI host via SSH. Edit the `/etc/semaphore/config.json` file with the text editor of your choice.
+
+Add the `oidc_providers` configuration:
+
+```
+{
+  "oidc_providers": {
+    "authentik": {
+      "display_name": "Sign in with Authentik",
+      "provider_url": "https://authentik.company/application/o/<slug>/",
+      "client_id": "<client-id>",
+      "client_secret": "<client-secret>",
+      "redirect_url": "https://semaphore.company/api/auth/oidc/authentik/redirect/",
+      "username_claim": "username",
+      "name_claim": "name",
+      "email_claim": "email",
+      "scopes": ["openid", "profile", "email"]
+  },
+  ...
+}
+```
+
+:::info
+The name of the oidc_provider (e.g. `authentik`) needs to match the name on the redirect URL.
+:::
+
+:::info
+If a `Not Found` error is displayed after the login, you might need to set the web_root to `/` (see https://github.com/semaphoreui/semaphore/issues/2681):
+
+```
+SEMAPHORE_WEB_ROOT: /
+```
+
+:::
+
+More information on this can be found in the Semaphore documentation https://docs.semaphoreui.com/administration-guide/openid/authentik/.
+
+Leave the rest as default.
+
+## Test the login
+
+- Open a browser of your choice and open the URL `https://semaphore.company`.
+- Click on the SSO-Login button.
+- You should be redirected to authentik (with the login flows you created) and then authentik should redirect you back to `https://semaphore.company` URL.
+- If you are redirected back to the `https://semaphore.company` URL you did everything correct.
+
+:::info
+Users are created upon logging in with authentik. They will not have the rights to create anything initially. These permissions must be assigned later by the local admin created during the first login to the Semaphore UI.
+:::

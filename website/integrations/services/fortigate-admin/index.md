@@ -3,7 +3,7 @@ title: Integrate with FortiGate Admin Login
 sidebar_label: FortiGate Admin Login
 ---
 
-# FortiGate Admin Login
+# Integrate with FortiGate Admin Login
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -16,10 +16,10 @@ sidebar_label: FortiGate Admin Login
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
-- `fgt.company` is the FQDN of the FortiGate install.
-- `authentik.company` is the FQDN of the authentik install.
+- `fgt.company` is the FQDN of the FortiGate installation.
+- `authentik.company` is the FQDN of the authentik installation.
 - `fgt.mapping` is the name of the SAML Property Mapping.
 - `ak.cert` = The authentik self-signed certificate you use for the service provider.
 

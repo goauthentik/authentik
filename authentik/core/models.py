@@ -357,13 +357,13 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
         """superuser == staff user"""
         return self.is_superuser  # type: ignore
 
-    def set_password(self, raw_password, signal=True, sender=None):
+    def set_password(self, raw_password, signal=True, sender=None, request=None):
         if self.pk and signal:
             from authentik.core.signals import password_changed
 
             if not sender:
                 sender = self
-            password_changed.send(sender=sender, user=self, password=raw_password)
+            password_changed.send(sender=sender, user=self, password=raw_password, request=request)
         self.password_change_date = now()
         return super().set_password(raw_password)
 
@@ -861,6 +861,11 @@ class ExpiringModel(models.Model):
 
     class Meta:
         abstract = True
+        indexes = [
+            models.Index(fields=["expires"]),
+            models.Index(fields=["expiring"]),
+            models.Index(fields=["expiring", "expires"]),
+        ]
 
     def expire_action(self, *args, **kwargs):
         """Handler which is called when this object is expired. By
@@ -916,7 +921,7 @@ class Token(SerializerModel, ManagedModel, ExpiringModel):
     class Meta:
         verbose_name = _("Token")
         verbose_name_plural = _("Tokens")
-        indexes = [
+        indexes = ExpiringModel.Meta.indexes + [
             models.Index(fields=["identifier"]),
             models.Index(fields=["key"]),
         ]
@@ -1077,6 +1082,9 @@ class OldAuthenticatedSession(ExpiringModel):
     class Meta:
         verbose_name = _("Authenticated Session")
         verbose_name_plural = _("Authenticated Sessions")
+        indexes = ExpiringModel.Meta.indexes + [
+            models.Index(fields=["session_key"]),
+        ]
 
     def __str__(self) -> str:
         return f"Authenticated Session {self.session_key[:10]}"
