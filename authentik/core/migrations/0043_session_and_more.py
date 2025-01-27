@@ -79,8 +79,6 @@ def migrate_authenticated_sessions(apps, schema_editor):
 
     print("\nMigration database sessions, this might take a couple of minutes...")
     for old_session in progress_bar(OldAuthenticatedSession.objects.using(db_alias).all()):
-        if not Session.objects.using(db_alias).filter(session_key=old_session.session_key).exists():
-            continue
         AuthenticatedSession.objects.create(
             session_ptr=Session.objects.get(session_key=old_session.session_key),
             user=old_session.user,
