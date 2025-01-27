@@ -6,7 +6,7 @@ import authentik.core.models
 import django.db.models.deletion
 from django.conf import settings
 from django.contrib.sessions.backends.cache import KEY_PREFIX
-from django.utils.timezone import now
+from django.utils.timezone import now, timedelta
 from authentik.lib.migrations import progress_bar
 
 
@@ -29,7 +29,7 @@ def migrate_redis_sessions(apps, schema_editor):
         session_key = key.removeprefix(KEY_PREFIX)
         sessions_to_create.append(
             Session(
-                session_key=session_key, session_data=session_data, expires=now() + cache.ttl(key)
+                session_key=session_key, session_data=session_data, expires=now() + timedelta(cache.ttl(key))
             )
         )
         batch += 1
@@ -71,30 +71,22 @@ def migrate_authenticated_sessions(apps, schema_editor):
     db_alias = schema_editor.connection.alias
 
     print("\nMigration database sessions, this might take a couple of minutes...")
-    sessions_to_create = []
-    batch = 0
     for old_session in progress_bar(OldAuthenticatedSession.objects.using(db_alias).all()):
         if not Session.objects.using(db_alias).filter(session_key=old_session.session_key).exists():
             continue
-        sessions_to_create.append(
-            AuthenticatedSession(
-                session_ptr=old_session.session_key,
-                last_ip=old_session.last_ip,
-                last_user_agent=old_session.last_user_agent,
-                last_used=old_session.last_used,
-            )
+        AuthenticatedSession.objects.create(
+            session_ptr=Session.objects.get(session_key=old_session.session_key),
+            user=old_session.user,
+            last_ip=old_session.last_ip,
+            last_user_agent=old_session.last_user_agent,
+            last_used=old_session.last_used,
         )
-        batch += 1
-        if batch >= 500:
-            AuthenticatedSession.objects.using(db_alias).bulk_create(sessions_to_create)
-            sessions_to_create = []
-            batch = 0
-    AuthenticatedSession.objects.using(db_alias).bulk_create(sessions_to_create)
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
+        ("sessions", "0001_initial"),
         ("authentik_core", "0042_authenticatedsession_authentik_c_expires_08251d_idx_and_more"),
         ("authentik_providers_oauth2", "0027_accesstoken_authentik_p_expires_9f24a5_idx_and_more"),
         ("authentik_providers_rac", "0006_connectiontoken_authentik_p_expires_91f148_idx_and_more"),
@@ -125,6 +117,9 @@ class Migration(migrations.Migration):
             model_name="oldauthenticatedsession",
             new_name="authentik_c_session_a44819_idx",
             old_name="authentik_c_session_d0f005_idx",
+        ),
+        migrations.RunSQL(
+            "ALTER INDEX authentik_core_authenticatedsession_user_id_5055b6cf RENAME TO authentik_core_oldauthenticatedsession_user_id_5055b6cf"
         ),
         # Create new Session and AuthenticatedSession models
         migrations.CreateModel(
