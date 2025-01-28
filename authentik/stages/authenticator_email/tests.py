@@ -1,7 +1,7 @@
 """Test Email Authenticator API"""
 
 from datetime import timedelta
-from unittest.mock import patch
+from unittest.mock import PropertyMock, patch
 
 from django.core import mail
 from django.core.mail.backends.locmem import EmailBackend
@@ -11,7 +11,7 @@ from django.urls import reverse
 from django.utils.timezone import now
 from structlog.stdlib import get_logger
 
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_user
 from authentik.flows.models import FlowStageBinding
 from authentik.flows.tests import FlowTestCase
 from authentik.stages.authenticator_email.models import AuthenticatorEmailStage, EmailDevice
@@ -27,6 +27,7 @@ class TestAuthenticatorEmailStage(FlowTestCase):
         super().setUp()
         self.flow = create_test_flow()
         self.user = create_test_admin_user()
+        self.user_noemail = create_test_user(email="")
         self.stage = AuthenticatorEmailStage.objects.create(
             name="email-authenticator",
             use_global_settings=True,
@@ -70,16 +71,22 @@ class TestAuthenticatorEmailStage(FlowTestCase):
 
     def test_stage_no_prefill(self):
         """Test stage without prefilled email"""
-        response = self.client.get(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-        )
-        self.assertStageResponse(
-            response,
-            self.flow,
-            self.user,
-            component="ak-stage-authenticator-email",
-            email_required=True,
-        )
+        self.client.force_login(self.user_noemail)
+        with patch(
+            "authentik.stages.authenticator_email.models.AuthenticatorEmailStage.backend_class",
+            PropertyMock(return_value=EmailBackend),
+        ):
+            response = self.client.get(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            )
+            LOGGER.debug(response)
+            self.assertStageResponse(
+                response,
+                self.flow,
+                self.user_noemail,
+                component="ak-stage-authenticator-email",
+                email_required=True,
+            )
 
     def test_stage_submit(self):
         """Test stage email submission"""
@@ -92,7 +99,7 @@ class TestAuthenticatorEmailStage(FlowTestCase):
             self.flow,
             self.user,
             component="ak-stage-authenticator-email",
-            email_required=True,
+            email_required=False,
         )
 
         # Test email submission with locmem backend
