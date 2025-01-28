@@ -69,25 +69,32 @@ html > form > input {
     position: relative;
     width: 100%;
 }
+
 .ak-login-container {
     height: calc(100vh - var(--pf-global--spacer--lg) - var(--pf-global--spacer--lg));
-    width: 35rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    max-width: 35rem;
+    width: max(35rem, 0.95vw);
+    display: grid;
+    grid-template-rows: repeat(32, 1fr);
+    grid-template-columns: 100%;
 }
-.pf-c-login__header {
-    flex-grow: 1;
+
+/* Use all the rows for the login */
+.ak-login-container > .pf-c-login__main {
+    align-self: center;
+    grid-row: 1 / -1;
+    grid-column: 1 / -1;
 }
-.pf-c-login__footer {
-    flex-grow: 2;
-    display: flex;
-    justify-content: end;
-    flex-direction: column;
+
+/* Use only the last row for the footer. On very small monitors (those with less that 640px height),
+ * this does mean the footer will end up behind the dialog. That's not fatal. */
+.ak-login-container > .pf-c-login__footer {
+    grid-row: -2 / -1;
+    grid-column: 1 / -1;
 }
+
 .pf-c-login__footer ul.pf-c-list.pf-m-inline {
     justify-content: center;
-    padding: 2rem 0;
 }
 /*****************************
 * End Login adjustments
@@ -143,12 +150,6 @@ html > form > input {
 .ak-brand img {
     padding: 0 2rem;
     max-height: inherit;
-}
-
-@media (min-height: 60rem) {
-    .pf-c-login.stacked .pf-c-login__main {
-        margin-top: 13rem;
-    }
 }
 
 .pf-c-data-list {
