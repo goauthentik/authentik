@@ -51,8 +51,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "token_expiry",
-                    models.IntegerField(
-                        default=30, help_text="Time in minutes the token sent is valid."
+                    models.TextField(
+                        default="minutes=30",
+                        help_text="Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).",
                     ),
                 ),
                 ("subject", models.TextField(default="authentik Sign-in code")),

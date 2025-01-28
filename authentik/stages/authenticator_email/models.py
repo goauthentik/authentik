@@ -14,6 +14,7 @@ from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 from authentik.lib.config import CONFIG
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.errors import exception_to_string
+from authentik.lib.utils.time import timedelta_string_validator
 from authentik.stages.authenticator.models import SideChannelDevice
 from authentik.stages.email.utils import TemplateEmailMessage
 
@@ -49,8 +50,10 @@ class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
     timeout = models.IntegerField(default=10)
     from_address = models.EmailField(default="system@authentik.local")
 
-    token_expiry = models.IntegerField(
-        default=30, help_text=_("Time in minutes the token sent is valid.")
+    token_expiry = models.TextField(
+        default="minutes=30",
+        validators=[timedelta_string_validator],
+        help_text=_("Time the token sent is valid (Format: hours=3,minutes=17,seconds=300)."),
     )
     subject = models.TextField(default="authentik Sign-in code")
     template = models.TextField(default=EmailTemplates.EMAIL_OTP)

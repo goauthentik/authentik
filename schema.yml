@@ -31448,7 +31448,7 @@ paths:
       - in: query
         name: token_expiry
         schema:
-          type: integer
+          type: string
       - in: query
         name: use_global_settings
         schema:
@@ -39750,10 +39750,8 @@ components:
         subject:
           type: string
         token_expiry:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-          description: Time in minutes the token sent is valid.
+          type: string
+          description: 'Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).'
         template:
           type: string
       required:
@@ -39816,10 +39814,9 @@ components:
           type: string
           minLength: 1
         token_expiry:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-          description: Time in minutes the token sent is valid.
+          type: string
+          minLength: 1
+          description: 'Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).'
         template:
           type: string
           minLength: 1
@@ -49408,10 +49405,9 @@ components:
           type: string
           minLength: 1
         token_expiry:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-          description: Time in minutes the token sent is valid.
+          type: string
+          minLength: 1
+          description: 'Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).'
         template:
           type: string
           minLength: 1

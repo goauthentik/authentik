@@ -27,6 +27,7 @@ from authentik.events.models import Event, EventAction
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE
 from authentik.lib.utils.email import mask_email
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.authenticator import match_token
 from authentik.stages.authenticator.models import Device
@@ -119,7 +120,8 @@ def select_challenge_sms(request: HttpRequest, device: SMSDevice):
 
 def select_challenge_email(request: HttpRequest, device: EmailDevice):
     """Send Email"""
-    device.generate_token()
+    valid_secs: int = timedelta_from_string(device.stage.token_expiry).total_seconds()
+    device.generate_token(valid_secs=valid_secs)
     device.stage.send(device)
 
 
