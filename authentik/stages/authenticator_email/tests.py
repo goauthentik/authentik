@@ -192,7 +192,7 @@ class TestAuthenticatorEmailStage(FlowTestCase):
         with patch(
             "authentik.stages.authenticator_email.models.AuthenticatorEmailStage.backend_class",
             PropertyMock(return_value=EmailBackend),
-            ):
+        ):
             response = self.client.get(
                 reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             )
@@ -231,7 +231,7 @@ class TestAuthenticatorEmailStage(FlowTestCase):
         with patch(
             "authentik.stages.authenticator_email.models.AuthenticatorEmailStage.backend_class",
             PropertyMock(return_value=EmailBackend),
-            ):
+        ):
             response = self.client.get(
                 reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             )
@@ -265,7 +265,7 @@ class TestAuthenticatorEmailStage(FlowTestCase):
         with patch(
             "authentik.stages.authenticator_email.models.AuthenticatorEmailStage.backend_class",
             PropertyMock(return_value=EmailBackend),
-                ):
+        ):
             response = self.client.get(
                 reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             )
