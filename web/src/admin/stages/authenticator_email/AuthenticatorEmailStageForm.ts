@@ -171,6 +171,31 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                     )}
                 </p>
             </ak-form-element-horizontal>
+            <ak-form-element-horizontal name="useGlobalSettings">
+                <label class="pf-c-switch">
+                    <input
+                        class="pf-c-switch__input"
+                        type="checkbox"
+                        ?checked=${first(this.instance?.useGlobalSettings, true)}
+                        @change=${(ev: Event) => {
+                            const target = ev.target as HTMLInputElement;
+                            this.showConnectionSettings = !target.checked;
+                        }}
+                    />
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label">${msg("Use global connection settings")}</span>
+                </label>
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "When enabled, global email connection settings will be used and connection settings below will be ignored.",
+                    )}
+                </p>
+            </ak-form-element-horizontal>
+            ${this.renderConnectionSettings()}
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
@@ -246,35 +271,8 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal name="useGlobalSettings">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${first(this.instance?.useGlobalSettings, true)}
-                                @change=${(ev: Event) => {
-                                    const target = ev.target as HTMLInputElement;
-                                    this.showConnectionSettings = !target.checked;
-                                }}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label"
-                                >${msg("Use global connection settings")}</span
-                            >
-                        </label>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "When enabled, global email connection settings will be used and connection settings below will be ignored.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-            ${this.renderConnectionSettings()}`;
+            </ak-form-group>`;
     }
 }
 
