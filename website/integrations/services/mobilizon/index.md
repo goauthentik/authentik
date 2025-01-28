@@ -3,7 +3,7 @@ title: Integrate with Mobilizon
 sidebar_label: Mobilizon
 ---
 
-# Mobilizon
+# Integrate with Mobilizon
 
 <span class="badge badge--secondary">Support level: Community</span>
 

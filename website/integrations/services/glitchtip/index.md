@@ -3,7 +3,7 @@ title: Integrate with Glitchtip
 sidebar_label: Glitchtip
 ---
 
-# Glitchtip
+# Integrate with Glitchtip
 
 <span class="badge badge--secondary">Support level: Community</span>
 
