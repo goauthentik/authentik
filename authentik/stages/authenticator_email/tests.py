@@ -14,7 +14,11 @@ from structlog.stdlib import get_logger
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_user
 from authentik.flows.models import FlowStageBinding
 from authentik.flows.tests import FlowTestCase
+from authentik.lib.utils.email import mask_email
 from authentik.stages.authenticator_email.models import AuthenticatorEmailStage, EmailDevice
+from authentik.stages.authenticator_email.stage import (
+    SESSION_KEY_EMAIL_DEVICE,
+)
 from authentik.stages.email.utils import TemplateEmailMessage
 
 LOGGER = get_logger()
@@ -33,6 +37,7 @@ class TestAuthenticatorEmailStage(FlowTestCase):
             use_global_settings=True,
             from_address="test@authentik.local",
             configure_flow=self.flow,
+            token_expiry="minutes=30",
         )
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=0)
         self.device = EmailDevice.objects.create(
@@ -79,7 +84,6 @@ class TestAuthenticatorEmailStage(FlowTestCase):
             response = self.client.get(
                 reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             )
-            LOGGER.debug(response)
             self.assertStageResponse(
                 response,
                 self.flow,
@@ -180,3 +184,105 @@ class TestAuthenticatorEmailStage(FlowTestCase):
         self.stage.template = "{% invalid template %}"
         with self.assertRaises(TemplateDoesNotExist):
             self.stage.send(self.device)
+
+    def test_challenge_response_validation(self):
+        """Test challenge response validation"""
+        # Initialize the flow
+        self.client.force_login(self.user_noemail)
+        with patch(
+            "authentik.stages.authenticator_email.models.AuthenticatorEmailStage.backend_class",
+            PropertyMock(return_value=EmailBackend),
+            ):
+            response = self.client.get(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            )
+
+            # Test missing code and email
+            response = self.client.post(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+                data={"component": "ak-stage-authenticator-email"},
+            )
+            self.assertIn("email required", str(response.content))
+
+            # Test invalid code
+            response = self.client.post(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+                data={"component": "ak-stage-authenticator-email", "code": "000000"},
+            )
+            self.assertIn("Code does not match", str(response.content))
+
+            # Test valid code
+            self.client.force_login(self.user)
+            response = self.client.get(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            )
+            device = self.device
+            token = device.token
+            response = self.client.post(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+                data={"component": "ak-stage-authenticator-email", "code": token},
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(device.confirmed)
+
+    def test_challenge_generation(self):
+        """Test challenge generation"""
+        # Test with masked email
+        with patch(
+            "authentik.stages.authenticator_email.models.AuthenticatorEmailStage.backend_class",
+            PropertyMock(return_value=EmailBackend),
+            ):
+            response = self.client.get(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            )
+            self.assertStageResponse(
+                response,
+                self.flow,
+                self.user,
+                component="ak-stage-authenticator-email",
+                email_required=False,
+            )
+            masked_email = mask_email(self.user.email)
+            self.assertEqual(masked_email, response.json()["email"])
+
+            # Test without email
+            self.client.force_login(self.user_noemail)
+            response = self.client.get(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            )
+            self.assertStageResponse(
+                response,
+                self.flow,
+                self.user_noemail,
+                component="ak-stage-authenticator-email",
+                email_required=True,
+            )
+            self.assertIsNone(response.json()["email"])
+
+    def test_session_management(self):
+        """Test session device management"""
+        # Test device creation in session
+        with patch(
+            "authentik.stages.authenticator_email.models.AuthenticatorEmailStage.backend_class",
+            PropertyMock(return_value=EmailBackend),
+                ):
+            response = self.client.get(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            )
+            self.assertIn(SESSION_KEY_EMAIL_DEVICE, self.client.session)
+            device = self.client.session[SESSION_KEY_EMAIL_DEVICE]
+            self.assertIsInstance(device, EmailDevice)
+            self.assertFalse(device.confirmed)
+            self.assertEqual(device.user, self.user)
+
+            # Test device confirmation and cleanup
+            device.confirmed = True
+            self.client.session[SESSION_KEY_EMAIL_DEVICE] = device
+            self.client.session.save()
+            response = self.client.post(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+                data={"component": "ak-stage-authenticator-email", "code": device.token},
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertNotIn(SESSION_KEY_EMAIL_DEVICE, self.client.session)
+            self.assertTrue(device.confirmed)
