@@ -61,7 +61,7 @@ def get_email_body(email: EmailMultiAlternatives) -> str:
 def send_mail(
     self: SystemTask,
     message: dict[Any, Any],
-    stage_class: EmailStage | AuthenticatorEmailStage,
+    stage_class: EmailStage | AuthenticatorEmailStage = EmailStage,
     email_stage_pk: str | None = None,
 ):
     """Send Email for Email Stage. Retries are scheduled automatically."""
