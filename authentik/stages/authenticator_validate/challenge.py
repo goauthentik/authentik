@@ -26,6 +26,7 @@ from authentik.events.middleware import audit_ignore
 from authentik.events.models import Event, EventAction
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE
+from authentik.lib.utils.email import mask_email
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.authenticator import match_token
 from authentik.stages.authenticator.models import Device
@@ -55,6 +56,8 @@ def get_challenge_for_device(
     """Generate challenge for a single device"""
     if isinstance(device, WebAuthnDevice):
         return get_webauthn_challenge(request, stage, device)
+    if isinstance(device, EmailDevice):
+        return {"email": mask_email(device.email)}
     # Code-based challenges have no hints
     return {}
 
