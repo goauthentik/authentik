@@ -42,23 +42,14 @@ def migrate_database_sessions(apps, schema_editor):
     db_alias = schema_editor.connection.alias
 
     print("\nMigration database sessions, this might take a couple of minutes...")
-    sessions_to_create = []
-    batch = 0
-    for django_session in progress_bar(DjangoSession.objects.using(db_alias).all()):
-        sessions_to_create.append(
-            Session(
-                uuid=uuid4(),
-                session_key=django_session.session_key,
-                session_data=django_session.session_data,
-                expires=django_session.expire_date,
-            )
+    Session.objects.using(db_alias).bulk_create([
+        Session(
+            session_key=django_session.session_key,
+            session_data=django_session.session_data,
+            expires=django_session.expire_date,
         )
-        batch += 1
-        if batch >= 500:
-            Session.objects.using(db_alias).bulk_create(sessions_to_create)
-            sessions_to_create = []
-            batch = 0
-    Session.objects.using(db_alias).bulk_create(sessions_to_create)
+        for django_session in progress_bar(DjangoSession.objects.using(db_alias).all())
+    ])
 
 
 def migrate_authenticated_sessions(apps, schema_editor):
@@ -194,5 +185,5 @@ class Migration(migrations.Migration):
         ),
         migrations.RunPython(migrate_redis_sessions, migrations.RunPython.noop),
         migrations.RunPython(migrate_database_sessions, migrations.RunPython.noop),
-        # migrations.RunPython(migrate_authenticated_sessions, migrations.RunPython.noop),
+        migrations.RunPython(migrate_authenticated_sessions, migrations.RunPython.noop),
     ]
