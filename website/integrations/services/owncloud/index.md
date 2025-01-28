@@ -26,7 +26,7 @@ This guide focuses on deploying ownCloud installations using Docker. If you depl
 
 To support all ownCloud applications, multiple application/provider pairs are required—one each for the Web UI, Desktop application, Android application, and iOS application.
 
-The configuration for each application is nearly identical, except for the **Client ID**, **Client Secret**, and the **Redirect URI**, which are [predefined](https://doc.owncloud.com/server/latest/admin_manual/configuration/user/oidc/oidc.html#client-ids-secrets-and-redirect-uris) by ownCloud for the Desktop, Android, and iOS applications.
+The configuration for each application is nearly identical, except for the **Client ID**, **Client Secret**, and the **Redirect URI** values, which are [predefined](https://doc.owncloud.com/server/latest/admin_manual/configuration/user/oidc/oidc.html#client-ids-secrets-and-redirect-uris) by ownCloud for the Desktop, Android, and iOS applications.
 
 ### Create applications/providers
 
