@@ -47,7 +47,7 @@ class Migration(migrations.Migration):
                 ("timeout", models.IntegerField(default=10)),
                 (
                     "from_address",
-                    models.EmailField(default="system@authentik.local", max_length=254),
+                    models.EmailField(blank=True, default="", max_length=254),
                 ),
                 (
                     "token_expiry",

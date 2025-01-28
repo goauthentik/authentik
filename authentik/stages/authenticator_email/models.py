@@ -47,7 +47,7 @@ class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
     use_tls = models.BooleanField(default=False)
     use_ssl = models.BooleanField(default=False)
     timeout = models.IntegerField(default=10)
-    from_address = models.EmailField(default="system@authentik.local")
+    from_address = models.EmailField(default="", blank=True)
 
     token_expiry = models.IntegerField(
         default=30, help_text=_("Time in minutes the token sent is valid.")
