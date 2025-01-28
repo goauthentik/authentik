@@ -66,6 +66,32 @@ export class UserSettingsPage extends AKElement {
                         margin-right: auto;
                     }
                 }
+                @media screen and (max-width: 768px) {
+                    :host {
+                        width: 100%;
+                        padding: 0 1rem;
+                    }
+                    ak-tabs[vertical] {
+                        --pf-c-tabs--m-vertical--MaxWidth: 100%;
+                        flex-direction: column;
+                    }
+                    ak-tabs[vertical] [role="tablist"] {
+                        max-width: 100%;
+                        border-right: none;
+                        border-bottom: var(--pf-c-tabs--before--BorderWidth) solid var(--pf-c-tabs--before--BorderColor);
+                        margin-bottom: 1rem;
+                    }
+                    .pf-c-card {
+                        --pf-c-card--BoxShadow: none;
+                        border: 1px solid var(--pf-global--BorderColor--100);
+                    }
+                    .pf-c-card__body {
+                        padding: var(--pf-global--spacer--sm);
+                    }
+                    .pf-l-stack {
+                        --pf-l-stack--m-gutter--Gap: var(--pf-global--spacer--sm);
+                    }
+                }
             `,
         ];
     }
