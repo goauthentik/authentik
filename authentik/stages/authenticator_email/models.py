@@ -112,11 +112,11 @@ class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
         return send_mails(device.stage, message)
 
     def __str__(self):
-        return f"Email Stage {self.name}"
+        return f"Email Authenticator Stage {self.name}"
 
     class Meta:
-        verbose_name = _("Email Authenticator Stage")
-        verbose_name_plural = _("Email Authenticator Stages")
+        verbose_name = _("Email Authenticator Setup Stage")
+        verbose_name_plural = _("Email Authenticator Setup Stages")
 
 
 class EmailDevice(SerializerModel, SideChannelDevice):

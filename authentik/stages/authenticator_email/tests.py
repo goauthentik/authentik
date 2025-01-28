@@ -60,7 +60,7 @@ class TestAuthenticatorEmailStage(FlowTestCase):
 
     def test_stage_str(self):
         """Test string representation of stage"""
-        self.assertEqual(str(self.stage), f"Email Stage {self.stage.name}")
+        self.assertEqual(str(self.stage), f"Email Authenticator Stage {self.stage.name}")
 
     def test_token_lifecycle(self):
         """Test token generation, validation and expiry"""
