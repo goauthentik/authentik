@@ -161,6 +161,8 @@ class EmailDevice(SerializerModel, SideChannelDevice):
             raise StageInvalidException from exc
 
     def __str__(self):
+        if not self.pk:
+            return "New Email Device"
         return f"Email Device for {self.user}"
 
     class Meta:
