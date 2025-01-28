@@ -38,7 +38,7 @@ class TestAuthenticatorEmailStage(FlowTestCase):
             from_address="test@authentik.local",
             configure_flow=self.flow,
             token_expiry="minutes=30",
-        )
+        )  # nosec
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=0)
         self.device = EmailDevice.objects.create(
             user=self.user,
