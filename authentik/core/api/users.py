@@ -84,6 +84,7 @@ from authentik.flows.models import FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.lib.avatars import get_avatar
+from authentik.providers.oauth2.models import DeviceToken, RefreshToken
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.models import get_permission_choices
 from authentik.stages.email.models import EmailStage
@@ -765,6 +766,8 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         response = super().partial_update(request, *args, **kwargs)
         instance: User = self.get_object()
         if not instance.is_active:
+            RefreshToken.objects.filter(session__user=instance).delete()
+            DeviceToken.objects.filter(session__user=instance).delete()
             sessions = AuthenticatedSession.objects.filter(user=instance)
             session_ids = sessions.values_list("session_key", flat=True)
             cache.delete_many(f"{KEY_PREFIX}{session}" for session in session_ids)
