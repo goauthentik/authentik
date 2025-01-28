@@ -33,11 +33,10 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
 
     deviceMessage(): string {
         switch (this.deviceChallenge?.deviceClass) {
-            case DeviceClassesEnum.Email:
-                {
-                    const email = this.deviceChallenge.challenge?.email;
-                    return msg(`A code has been sent to you via email${email ? ` ${email}` : ""}`);
-                }
+            case DeviceClassesEnum.Email: {
+                const email = this.deviceChallenge.challenge?.email;
+                return msg(`A code has been sent to you via email${email ? ` ${email}` : ""}`);
+            }
             case DeviceClassesEnum.Sms:
                 return msg("A code has been sent to you via SMS.");
             case DeviceClassesEnum.Totp:

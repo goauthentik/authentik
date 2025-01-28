@@ -79,7 +79,7 @@ def send_mail(
                     "Email stage does not exist anymore. Discarding message.",
                 )
                 return
-            stage:  EmailStage | AuthenticatorEmailStage = stages.first()
+            stage: EmailStage | AuthenticatorEmailStage = stages.first()
         try:
             backend = stage.backend
         except ValueError as exc:
