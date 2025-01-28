@@ -112,9 +112,16 @@ class AuthenticatorEmailStageView(ChallengeStageView):
     def _has_email(self) -> str | None:
         context = self.executor.plan.context
 
+        # Check user's email attribute
+        user = self.get_pending_user()
+        if user.email:
+            self.logger.debug("got email from user attributes")
+            return user.email
+        # Check plan context for email
         if PLAN_CONTEXT_EMAIL in context.get(PLAN_CONTEXT_PROMPT, {}):
             self.logger.debug("got email from plan context")
             return context.get(PLAN_CONTEXT_PROMPT, {}).get(PLAN_CONTEXT_EMAIL)
+        # Check device for email
         if SESSION_KEY_EMAIL_DEVICE in self.request.session:
             self.logger.debug("got email from device in session")
             device: EmailDevice = self.request.session[SESSION_KEY_EMAIL_DEVICE]
