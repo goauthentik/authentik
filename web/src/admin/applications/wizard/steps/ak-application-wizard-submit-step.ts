@@ -328,7 +328,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
         if (!(this.wizard && app && provider)) {
             throw new Error("Submit step received uninitialized wizard context");
         }
-        // An empty object is truthy, an empty array is falsey. *WAT Javascript*.
+        // An empty object is truthy, an empty array is falsey. *WAT JavaScript*.
         const keys = Object.keys(this.wizard.errors);
         return match([this.state, keys])
             .with(["submitted", P._], () =>
