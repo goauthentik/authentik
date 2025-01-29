@@ -2,6 +2,7 @@
 set -e -x -o pipefail
 hash="$(git rev-parse HEAD || openssl rand -base64 36)"
 
+AUTHENTIK_IMAGE="xghcr.io/goauthentik/server"
 AUTHENTIK_TAG="$(echo "$hash" | cut -c1-15)"
 
 if [ -f .env ]; then
@@ -11,7 +12,7 @@ fi
 
 echo PG_PASS="$(openssl rand -base64 36 | tr -d '\n')" >.env
 echo AUTHENTIK_SECRET_KEY="$(openssl rand -base64 60 | tr -d '\n')" >>.env
-echo AUTHENTIK_IMAGE="xghcr.io/goauthentik/server" >>.env
+echo AUTHENTIK_IMAGE="${AUTHENTIK_IMAGE}" >>.env
 echo AUTHENTIK_TAG="${AUTHENTIK_TAG}" >>.env
 export COMPOSE_PROJECT_NAME="authentik-test-${AUTHENTIK_TAG}"
 
