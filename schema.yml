@@ -31530,7 +31530,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Email Authenticator Stage.
+        description: A UUID string identifying this Email Authenticator Setup Stage.
         required: true
       tags:
       - stages
@@ -31564,7 +31564,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Email Authenticator Stage.
+        description: A UUID string identifying this Email Authenticator Setup Stage.
         required: true
       tags:
       - stages
@@ -31604,7 +31604,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Email Authenticator Stage.
+        description: A UUID string identifying this Email Authenticator Setup Stage.
         required: true
       tags:
       - stages
@@ -31643,7 +31643,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Email Authenticator Stage.
+        description: A UUID string identifying this Email Authenticator Setup Stage.
         required: true
       tags:
       - stages
@@ -31674,7 +31674,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Email Authenticator Stage.
+        description: A UUID string identifying this Email Authenticator Setup Stage.
         required: true
       tags:
       - stages
