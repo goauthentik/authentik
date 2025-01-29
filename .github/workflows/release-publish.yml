@@ -18,6 +18,8 @@ jobs:
     with:
       image_name: ghcr.io/goauthentik/server,beryju/authentik
       release: true
+      registry_dockerhub: true
+      registry_ghcr: true
   build-outpost:
     runs-on: ubuntu-latest
     permissions:
