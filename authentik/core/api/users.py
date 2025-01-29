@@ -78,7 +78,6 @@ from authentik.core.models import (
     User,
     UserTypes,
 )
-from authentik.core.signals import user_deactivated
 from authentik.events.models import Event, EventAction
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import FlowToken
@@ -766,7 +765,6 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         response = super().partial_update(request, *args, **kwargs)
         instance: User = self.get_object()
         if not instance.is_active:
-            user_deactivated.send(sender=self, user=instance)
             sessions = AuthenticatedSession.objects.filter(user=instance)
             session_ids = sessions.values_list("session_key", flat=True)
             cache.delete_many(f"{KEY_PREFIX}{session}" for session in session_ids)
