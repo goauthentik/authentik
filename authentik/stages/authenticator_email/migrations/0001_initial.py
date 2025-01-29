@@ -73,8 +73,8 @@ class Migration(migrations.Migration):
                 ),
             ],
             options={
-                "verbose_name": "Email Authenticator Stage",
-                "verbose_name_plural": "Email Authenticator Stages",
+                "verbose_name": "Email Authenticator Setup Stage",
+                "verbose_name_plural": "Email Authenticator Setup Stages",
             },
             bases=("authentik_flows.stage", models.Model),
         ),
