@@ -2,7 +2,7 @@
 set -e -x -o pipefail
 hash="$(git rev-parse HEAD || openssl rand -base64 36)"
 
-AUTHENTIK_TAG="$(echo "$hash" | cut -c1-15)" >.env
+AUTHENTIK_TAG="$(echo "$hash" | cut -c1-15)"
 
 if [ -f .env ]; then
     echo "Existing .env file, aborting"
