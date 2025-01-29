@@ -1,12 +1,12 @@
 ---
-title: Email authenticator setup stage
+title: Email Authenticator Setup stage
 ---
 
-This stage configures an email-based authenticator that sends a one-time codes to a user's email address for authentication.
+This stage configures an email-based authenticator that sends a one-time code to a user's email address for authentication.
 
 ## Configuration
 
-### Email Settings
+### Email settings
 
 The stage can be configured in two ways:
 - global settings
@@ -16,11 +16,11 @@ or
 
 #### Global settings
 
-Enable the **Use global settings** option to use authentik's global email configuration. This is recommended if you already have email configured in authentik.
+Select the **Use global settings** option to use authentik's global email configuration. Note that you must already have configured your environment variables to use the global settings. See instructions for [Docker Compose](../../install-config/install/docker-compose#email-configuration-optional-but-recommended) and for [Kubernetes](../../../install-config/install/kubernetes#optional-step-configure-global-email-credentials).
 
 #### Stage-specific settings
 
-If you need different email settings for this stage, disable _Use global settings_ and configure the following:
+If you need different email settings for this stage, unselect **Use global settings** and configure the following settings:
 
 - **Host**: SMTP server hostname (default: localhost)
 - **Port**: SMTP server port (default: 25)
@@ -33,15 +33,16 @@ If you need different email settings for this stage, disable _Use global setting
 
 ### Message Configuration
 
-- **Token Expiry**: Time in minutes the sent token is valid (default: 30)
+- **Token Expiry**: Time in minutes that the sent token is valid (default: 30)
 - **Subject**: Email subject line (default: "authentik Sign-in code")
 
-## Flow Integration
+## Flow integration
 
-To use the Email authenticator in a flow:
+To use the Email Authenticator Setup stage in a flow:
 
-1. Create a new flow or edit an existing one
-2. Add the Email Authenticator Setup Stage
+1. [Create](../..//stages/#create-a-stage) a new Email Authenticator Setup stage (or verify that there is already one).
+2. [Create](../../flow/#create-a-custom-flow) a new flow or edit an existing one.
+2. On the flow's **Stage Bindings** tab, add the Email Authenticator Setup stage.
 3. Configure the stage settings as described above
 
 When a user goes through this flow, they will:
