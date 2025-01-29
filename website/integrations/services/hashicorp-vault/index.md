@@ -21,7 +21,7 @@ This is based on authentik 2022.2.1 and Vault 1.9.3. Instructions may differ bet
 
 The following placeholders are used in this guide:
 
-- `authentik.company` is the FQDN of authentik installation.
+- `authentik.company` is the FQDN of the authentik installation.
 - `vault.company` is the FQDN of Vault installation.
 
 :::note
