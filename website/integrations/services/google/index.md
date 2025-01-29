@@ -20,6 +20,10 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of the authentik installation.
 - `example.com` is the default E-mail address configured in Google workspace.
 
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
 ## authentik Configuration
 
 Create an application in authentik and note the slug, as this will be used later. Set the _Launch URL_ to `https://mail.google.com/a/example.com`.

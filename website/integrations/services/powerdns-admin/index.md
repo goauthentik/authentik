@@ -20,6 +20,10 @@ The following placeholders are used in this guide:
 - `pdns-admin.company` is the FQDN of the PowerDNS-Admin installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
 Create a SAML provider with the following parameters:
 
 - ACS URL: `https://pdns-admin.company/saml/authorized`

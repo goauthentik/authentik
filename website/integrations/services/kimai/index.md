@@ -32,6 +32,10 @@ Create a SAML provider with the following parameters:
 
 Under _Advanced protocol settings_, set a certificate for _Signing Certificate_.
 
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
 ## Kimai Configuration
 
 Paste the following block in your `local.yaml` file, after replacing the placeholder values from above. The file is usually located in `/opt/kimai/config/packages/local.yaml`.

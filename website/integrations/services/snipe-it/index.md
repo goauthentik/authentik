@@ -31,6 +31,10 @@ The following placeholders are used in this guide:
 - `snipeit-user` is the name of the authentik service account we will create.
 - `DC=ldap,DC=authentik,DC=io` is the Base DN of the LDAP Provider (default)
 
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
 ## authentik Configuration
 
 ### Step 1 - Service account

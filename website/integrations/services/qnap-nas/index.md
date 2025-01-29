@@ -28,6 +28,10 @@ The following placeholders are used in this guide:
 - `qnap.serviceAccountToken` is the service account token generated
   by authentik.
 
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
 Create an LDAP Provider if you don't already have one setup.
 This guide assumes you will be running with TLS. See the [ldap provider docs](https://docs.goauthentik.io/docs/add-secure-apps/providers/ldap) for setting up SSL on the authentik side.
 
