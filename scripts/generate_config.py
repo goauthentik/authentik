@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Generate config for development"""
 
 from yaml import safe_dump
