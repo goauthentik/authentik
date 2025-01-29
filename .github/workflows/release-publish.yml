@@ -9,9 +9,17 @@ jobs:
   build-server:
     uses: ./.github/workflows/_reusable-docker-build.yaml
     secrets: inherit
+    permissions:
+      # Needed to upload container images to ghcr.io
+      packages: write
+      # Needed for attestation
+      id-token: write
+      attestations: write
     with:
       image_name: ghcr.io/goauthentik/server,beryju/authentik
       release: true
+      registry_dockerhub: true
+      registry_ghcr: true
   build-outpost:
     runs-on: ubuntu-latest
     permissions:
