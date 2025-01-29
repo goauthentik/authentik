@@ -18,7 +18,7 @@ sidebar_label: Zammad
 
 The following placeholders are used in this guide:
 
-- `zammad.company` is the FQDN of the zammad installation.
+- `zammad.company` is the FQDN of the Zammad installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::note
