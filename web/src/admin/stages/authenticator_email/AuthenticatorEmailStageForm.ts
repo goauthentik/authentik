@@ -206,7 +206,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                     >
                         <input
                             type="text"
-                            value="${first(this.instance?.subject, "")}"
+                            value="${first(this.instance?.subject, "authentik Sign-in code")}"
                             class="pf-c-form-control"
                             required
                         />
