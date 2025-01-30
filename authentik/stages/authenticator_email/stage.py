@@ -89,7 +89,6 @@ class AuthenticatorEmailStageView(ChallengeStageView):
         try:
             message = TemplateEmailMessage(
                 subject=_(stage.subject),
-                from_email=stage.from_address,
                 to=[(pending_user.name, email)],
                 language=pending_user.locale(self.request),
                 template_name=stage.template,

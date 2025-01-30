@@ -14,6 +14,7 @@ from structlog.stdlib import get_logger
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_user
 from authentik.flows.models import FlowStageBinding
 from authentik.flows.tests import FlowTestCase
+from authentik.lib.config import CONFIG
 from authentik.lib.utils.email import mask_email
 from authentik.stages.authenticator_email.api import (
     AuthenticatorEmailStageSerializer,
@@ -141,8 +142,10 @@ class TestAuthenticatorEmailStage(FlowTestCase):
             self.assertEqual(len(mail.outbox), 1)
             sent_mail = mail.outbox[0]
             self.assertEqual(sent_mail.subject, self.stage.subject)
-            self.assertEqual(sent_mail.from_email, self.stage.from_address)
             self.assertEqual(sent_mail.to, [f"{self.user} <test@example.com>"])
+            # Get from_address from global email config to test if global settings are being used
+            from_address_global = CONFIG.get("email.from")
+            self.assertEqual(sent_mail.from_email, from_address_global)
 
         self.assertStageResponse(
             response,
