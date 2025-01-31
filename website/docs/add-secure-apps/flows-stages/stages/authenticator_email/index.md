@@ -16,7 +16,7 @@ The email device will be saved and can be used with the [Authenticator validatio
 
 To use the Email Authenticator Setup stage in a flow, follow these steps:
 
-1. [Create](../../flow/#create-a-custom-flow) a new flow or edit an existing one.
+1. [Create](../../flow/index.md#create-a-custom-flow) a new flow or edit an existing one.
 2. On the flow's **Stage Bindings** tab, click **Create and bind stage** to create and add the Email Authenticator Setup stage. (If the stage already exists, click **Bind existing stage**.)
 3. Configure the stage settings as described below.
 
@@ -24,11 +24,11 @@ To use the Email Authenticator Setup stage in a flow, follow these steps:
     - **Authenticator type name**: define the display name for this stage.
     - **Use global connection settings**: the stage can be configured in two ways: global settings or stage-specific settings.
 
-        - Enable (toggle on) the **Use global connection settings** option to use authentik's global email configuration. Note that you must already have configured your environment variables to use the global settings. See instructions for [Docker Compose](../../install-config/install/docker-compose#email-configuration-optional-but-recommended) and for [Kubernetes](../../../install-config/install/kubernetes#optional-step-configure-global-email-credentials).
+        - Enable (toggle on) the **Use global connection settings** option to use authentik's global email configuration. Note that you must already have configured your environment variables to use the global settings. See instructions for [Docker Compose](../../../../install-config/install/docker-compose#email-configuration-optional-but-recommended) and for [Kubernetes](../../../../install-config/install/kubernetes#optional-step-configure-global-email-credentials).
 
         - If you need different email settings for this stage, disable (toggle off) the **Use global connection settings** and configure the following options:
 
-        - **Conection settings**:
+        - **Connection settings**:
 
             - **SMTP Host**: SMTP server hostname (default: localhost)
             - **SMTP Port**: SMTP server port number(default: 25)
@@ -47,6 +47,4 @@ To use the Email Authenticator Setup stage in a flow, follow these steps:
 
 4. Click **Update** to complete the creation and binding if the stage to the flow.
 
-
-
-
+The new Email Authenticator Setup stage now appears on the **Stage Bindings** tab for the flow.
