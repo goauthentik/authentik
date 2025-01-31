@@ -21,6 +21,10 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of the authentik installation.
 - `SSL Certificate` is the name of the SSL certificate used to sign outgoing responses.
 
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
 ## authentik Configuration
 
 1. Log in to authentik as an admin, and go to the Admin interface.

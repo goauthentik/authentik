@@ -26,6 +26,10 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of authentik.
 - `nodred.company` is the FQDN of Node-RED.
 
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
 ### Step 1
 
 In authentik, create an _OAuth2/OpenID Provider_ (under _Applications/Providers_) with these settings:
