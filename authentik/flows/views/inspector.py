@@ -78,7 +78,9 @@ class FlowInspectorView(APIView):
         self.flow = get_object_or_404(Flow.objects.select_related(), slug=flow_slug)
         if settings.DEBUG:
             return
-        if request.user.has_perm("authentik_flow.inspect_flow", self.flow):
+        if request.user.has_perm("authentik_flows.inspect_flow") or request.user.has_perm(
+            "authentik_flows.inspect_flow", self.flow
+        ):
             return
         raise Http404
 
