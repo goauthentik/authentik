@@ -16,60 +16,65 @@ from uuid import uuid4
 SESSION_CACHE_ALIAS = "default"
 
 
+def _migrate_session(db_alias, Session, OldAuthenticatedSession, AuthenticatedSession, session_key, **data):
+    old_auth_session = OldAuthenticatedSession.objects.using(db_alias).filter(session_key=session_key).first()
+    if old_auth_session:
+        AuthenticatedSession.objects.using(db_alias).create(
+            session_key=session_key,
+            **data,
+            user=old_auth_session.user,
+            last_ip=old_auth_session.last_ip,
+            last_user_agent=old_auth_session.last_user_agent,
+            last_used=old_auth_session.last_used,
+        )
+    else:
+        Session.objects.using(db_alias).create(session_key=session_key, **data)
+
+
 def migrate_redis_sessions(apps, schema_editor):
     from django.core.cache import caches
 
     Session = apps.get_model("authentik_core", "Session")
+    OldAuthenticatedSession = apps.get_model("authentik_core", "OldAuthenticatedSession")
+    AuthenticatedSession = apps.get_model("authentik_core", "AuthenticatedSession")
     db_alias = schema_editor.connection.alias
     cache = caches[SESSION_CACHE_ALIAS]
+
     # Not a redis cache, skipping
     if not hasattr(cache, "keys"):
         return
-    print("\nMigration Redis sessions to database, this might take a couple of minutes...")
-    Session.objects.using(db_alias).bulk_create([
-        Session(
+
+    print("\nMigrating Redis sessions to database, this might take a couple of minutes...")
+    for key, session_data in progress_bar(cache.get_many(cache.keys(f"{KEY_PREFIX}*")).items()):
+        _migrate_session(
+            db_alias=db_alias,
+            Session=Session,
+            OldAuthenticatedSession=OldAuthenticatedSession,
+            AuthenticatedSession=AuthenticatedSession,
             session_key=key.removeprefix(KEY_PREFIX),
             session_data=pickle.dumps(session_data, pickle.HIGHEST_PROTOCOL),
             expires=now() + timedelta(seconds=cache.ttl(key)),
         )
-        for key, session_data in progress_bar(cache.get_many(cache.keys(f"{KEY_PREFIX}*")).items())
-    ])
 
 
 def migrate_database_sessions(apps, schema_editor):
     DjangoSession = apps.get_model("sessions", "Session")
     Session = apps.get_model("authentik_core", "Session")
+    OldAuthenticatedSession = apps.get_model("authentik_core", "OldAuthenticatedSession")
+    AuthenticatedSession = apps.get_model("authentik_core", "AuthenticatedSession")
     db_alias = schema_editor.connection.alias
 
     print("\nMigration database sessions, this might take a couple of minutes...")
-    Session.objects.using(db_alias).bulk_create([
-        Session(
+    for django_session in progress_bar(DjangoSession.objects.using(db_alias).all()):
+        _migrate_session(
+            db_alias=db_alias,
+            Session=Session,
+            OldAuthenticatedSession=OldAuthenticatedSession,
+            AuthenticatedSession=AuthenticatedSession,
             session_key=django_session.session_key,
             session_data=django_session.session_data,
             expires=django_session.expire_date,
         )
-        for django_session in progress_bar(DjangoSession.objects.using(db_alias).all())
-    ])
-
-
-def migrate_authenticated_sessions(apps, schema_editor):
-    OldAuthenticatedSession = apps.get_model("authentik_core", "OldAuthenticatedSession")
-    AuthenticatedSession = apps.get_model("authentik_core", "AuthenticatedSession")
-    Session = apps.get_model("authentik_core", "Session")
-    db_alias = schema_editor.connection.alias
-
-    print("\nMigration database sessions, this might take a couple of minutes...")
-    for old_session in progress_bar(OldAuthenticatedSession.objects.using(db_alias).all()):
-        session = AuthenticatedSession(
-            user=old_session.user,
-            last_ip=old_session.last_ip,
-            last_user_agent=old_session.last_user_agent,
-            last_used=old_session.last_used,
-        )
-        for field in old_session._meta.fields:
-            setattr(session, field.name, getattr(old_session, field.name))
-        session.save(force_insert=True)
-        old_session.delete()
 
 
 class Migration(migrations.Migration):
@@ -188,5 +193,4 @@ class Migration(migrations.Migration):
         ),
         migrations.RunPython(migrate_redis_sessions, migrations.RunPython.noop),
         migrations.RunPython(migrate_database_sessions, migrations.RunPython.noop),
-        migrations.RunPython(migrate_authenticated_sessions, migrations.RunPython.noop),
     ]
