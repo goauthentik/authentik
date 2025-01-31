@@ -21,6 +21,7 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import MetaNameSerializer, ModelSerializer
 from authentik.core.models import GroupSourceConnection, Source, UserSourceConnection
 from authentik.core.types import UserSettingSerializer
+from authentik.lib.api import MultipleFieldLookupMixin
 from authentik.lib.utils.file import (
     FilePathSerializer,
     FileUploadSerializer,
@@ -75,6 +76,7 @@ class SourceSerializer(ModelSerializer, MetaNameSerializer):
 
 
 class SourceViewSet(
+    MultipleFieldLookupMixin,
     TypesMixin,
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
@@ -87,6 +89,7 @@ class SourceViewSet(
     queryset = Source.objects.none()
     serializer_class = SourceSerializer
     lookup_field = "slug"
+    lookup_fields = ["slug", "pbm_uuid"]
     search_fields = ["slug", "name"]
     filterset_fields = ["slug", "name", "managed"]
 
