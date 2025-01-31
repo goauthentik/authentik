@@ -4,13 +4,9 @@ title: Email Authenticator Setup stage
 
 This stage configures an email-based authenticator that sends a one-time code to a user's email address for authentication.
 
-When a user goes through a flow that has this stage in the flow, they will:
+When a user goes through a flow that includes this stage, they are prompted for their email address (if not already set). The user then receives an email with a one-time code, which they enter into the authentik Login panel.
 
-1. Be prompted for their email address (if not already set).
-2. Receive an email with a one-time code.
-3. Need to enter the code to complete the setup.
-
-The email device will be saved and can be used with the [Authenticator validation](../authenticator_validate/index.md) stage for future authentications.
+The email address will be saved and can be used with the [Authenticator validation](../authenticator_validate/index.md) stage for future authentications.
 
 ## Flow integration
 
