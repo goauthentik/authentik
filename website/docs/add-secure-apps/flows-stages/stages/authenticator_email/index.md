@@ -22,7 +22,7 @@ To use the Email Authenticator Setup stage in a flow, follow these steps:
 
         - Enable (toggle on) the **Use global connection settings** option to use authentik's global email configuration. Note that you must already have configured your environment variables to use the global settings. See instructions for [Docker Compose](../../../../install-config/install/docker-compose#email-configuration-optional-but-recommended) and for [Kubernetes](../../../../install-config/install/kubernetes#optional-step-configure-global-email-credentials).
 
-        - If you need different email settings for this stage, disable (toggle off) the **Use global connection settings** and configure the following options:
+        - If you need different email settings for this stage, disable (toggle off) **Use global connection settings** and configure the following options:
 
         - **Connection settings**:
 
@@ -41,6 +41,6 @@ To use the Email Authenticator Setup stage in a flow, follow these steps:
             - **Token Expiration**: Time in minutes that the sent token is valid (default: 30)
             - **Configuration flow**: select the flow to which you are binding this stage.
 
-4. Click **Update** to complete the creation and binding if the stage to the flow.
+4. Click **Update** to complete the creation and binding of the stage to the flow.
 
 The new Email Authenticator Setup stage now appears on the **Stage Bindings** tab for the flow.
