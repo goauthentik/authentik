@@ -16,8 +16,12 @@ from uuid import uuid4
 SESSION_CACHE_ALIAS = "default"
 
 
-def _migrate_session(db_alias, Session, OldAuthenticatedSession, AuthenticatedSession, session_key, **data):
-    old_auth_session = OldAuthenticatedSession.objects.using(db_alias).filter(session_key=session_key).first()
+def _migrate_session(
+    db_alias, Session, OldAuthenticatedSession, AuthenticatedSession, session_key, **data
+):
+    old_auth_session = (
+        OldAuthenticatedSession.objects.using(db_alias).filter(session_key=session_key).first()
+    )
     if old_auth_session:
         AuthenticatedSession.objects.using(db_alias).create(
             session_key=session_key,
@@ -128,15 +132,14 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "session_key",
-                    models.CharField(
-                        max_length=40, db_index=True, verbose_name="session key"
-                    ),
+                    models.CharField(max_length=40, db_index=True, verbose_name="session key"),
                 ),
                 ("session_data", models.TextField(verbose_name="session data")),
                 ("expires", models.DateTimeField(default=None, null=True)),
                 ("expiring", models.BooleanField(default=True)),
             ],
             options={
+                "default_permissions": [],
                 "verbose_name": "Session",
                 "verbose_name_plural": "Sessions",
             },

@@ -38540,6 +38540,7 @@ components:
         uuid:
           type: string
           format: uuid
+          readOnly: true
         current:
           type: boolean
           description: Check if session is currently active session

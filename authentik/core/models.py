@@ -1026,6 +1026,7 @@ class Session(ExpiringModel, AbstractBaseSession):
         verbose_name = _("Session")
         verbose_name_plural = _("Sessions")
         indexes = ExpiringModel.Meta.indexes
+        default_permissions = []
 
     def __str__(self):
         return self.session_key
