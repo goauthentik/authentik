@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e -x -o pipefail
-hash="$(git rev-parse HEAD || openssl rand -base64 36)"
+hash="$(git rev-parse HEAD || openssl rand -base64 36 | sha256sum)"
 
 AUTHENTIK_IMAGE="xghcr.io/goauthentik/server"
 AUTHENTIK_TAG="$(echo "$hash" | cut -c1-15)"
