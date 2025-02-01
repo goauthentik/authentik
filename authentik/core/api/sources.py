@@ -30,7 +30,6 @@ from authentik.rbac.decorators import permission_required
 
 LOGGER = get_logger()
 
-
 class SourceSerializer(ModelSerializer, MetaNameSerializer):
     """Source Serializer"""
 
