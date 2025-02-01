@@ -2,11 +2,11 @@
 title: Debugging authentik
 ---
 
-This page describes how to debug different components of an authentik instance, running either in production or in a development setup. To learn more about the structure of authentik, refer to our [architecture documentation](../../core/architecture.).
+This page describes how to debug different components of an authentik instance, running either in production or in a development setup. To learn more about the structure of authentik, refer to our [architecture documentation](../../core/architecture).
 
 ## authentik Server & Worker (Python)
 
-The majority of the authentik codebase is in Python, running in Gunicorn for the server and Celery for the worker. These instructions show how this code can be debugged/inspected.
+The majority of the authentik codebase is in Python, running in Gunicorn for the server and Celery for the worker. These instructions show how this code can be debugged/inspected. The local debugging setup requires a setup as described in [Full development environment](./full-dev-environment.mdx)
 
 Note that authentik uses [debugpy](https://github.com/microsoft/debugpy), which relies on the "Debug Adapter Protocol" (DAP). These instructions demonstrate debugging using [Visual Studio Code](https://code.visualstudio.com/), however they should be adaptable to other editors that support DAP.
 
@@ -35,6 +35,8 @@ services:
     # Replace `server` with `worker` to debug the worker container.
     server:
         user: root
+        healthcheck:
+            disable: true
         environment:
             AUTHENTIK_DEBUGGER: "true"
             AUTHENTIK_LOG_LEVEL: "debug"
