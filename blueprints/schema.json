@@ -14097,6 +14097,7 @@
                     "permission": {
                         "type": "string",
                         "enum": [
+                            "add_stream",
                             "add_ssfprovider",
                             "change_ssfprovider",
                             "delete_ssfprovider",

@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 
 class SSFTokenAuth(BaseAuthentication):
-    """SCIM Token auth"""
+    """SSF Token auth"""
 
     view: "SSFView"
 

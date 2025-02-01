@@ -39,7 +39,8 @@ class SSFEventStatus(models.TextChoices):
 
 
 class SSFProvider(BackchannelProvider):
-    """Shared Signals Framework"""
+    """Shared Signals Framework provider to allow applications to
+    receive user events from authentik."""
 
     signing_key = models.ForeignKey(
         CertificateKeyPair,
@@ -81,7 +82,7 @@ class SSFProvider(BackchannelProvider):
 
     @property
     def icon_url(self) -> str | None:
-        return static("authentik/sources/scim.png")
+        return static("authentik/sources/ssf.svg")
 
     @property
     def component(self) -> str:

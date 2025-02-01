@@ -30656,7 +30656,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this stream.
+        description: A UUID string identifying this SSF Stream.
         required: true
       tags:
       - ssf
