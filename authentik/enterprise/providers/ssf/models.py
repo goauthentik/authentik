@@ -89,9 +89,11 @@ class SSFProvider(BackchannelProvider):
         return "ak-provider-ssf-form"
 
     class Meta:
-        verbose_name = _("SSF Provider")
-        verbose_name_plural = _("SSF Providers")
+        verbose_name = _("Shared Signals Framework Provider")
+        verbose_name_plural = _("Shared Signals Framework Providers")
         permissions = [
+            # This overrides the default "add_stream" permission of the Stream object,
+            # as the user requesting to add a stream must have the permission on the provider
             ("add_stream", _("Add stream to SSF provider")),
         ]
 

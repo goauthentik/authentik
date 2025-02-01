@@ -99,7 +99,7 @@ export class SSFProviderViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.ProvidersSsfSsfprovider}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersSsfSsfprovider}
                 objectPk=${this.provider.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;
