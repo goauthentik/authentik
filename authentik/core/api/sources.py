@@ -5,12 +5,12 @@ from collections.abc import Iterable
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import mixins
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, ReadOnlyField, SerializerMethodField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
-from rest_framework.exceptions import ValidationError
 from structlog.stdlib import get_logger
 
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
@@ -28,8 +28,8 @@ from authentik.lib.utils.file import (
 from authentik.policies.engine import PolicyEngine
 from authentik.rbac.decorators import permission_required
 
-
 LOGGER = get_logger()
+
 
 class SourceSerializer(ModelSerializer, MetaNameSerializer):
     """Source Serializer"""
