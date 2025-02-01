@@ -28,6 +28,7 @@ from authentik.lib.utils.file import (
 from authentik.policies.engine import PolicyEngine
 from authentik.rbac.decorators import permission_required
 
+
 LOGGER = get_logger()
 
 class SourceSerializer(ModelSerializer, MetaNameSerializer):
