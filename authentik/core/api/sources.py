@@ -10,6 +10,7 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
+from rest_framework.exceptions import ValidationError
 from structlog.stdlib import get_logger
 
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
@@ -153,6 +154,17 @@ class SourceViewSet(
                 LOGGER.warning(source_settings.errors)
             matching_sources.append(source_settings.validated_data)
         return Response(matching_sources)
+
+    def destroy(self, request: Request, *args, **kwargs):
+        """Prevent deletion of built-in sources"""
+        instance = self.get_object()
+
+        if instance.slug.startswith("authentik-built-in"):
+            raise ValidationError(
+                {"detail": "Built-in sources cannot be deleted"}, code="protected"
+            )
+
+        return super().destroy(request, *args, **kwargs)
 
 
 class UserSourceConnectionSerializer(SourceSerializer):
