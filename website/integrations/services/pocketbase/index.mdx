@@ -15,7 +15,7 @@ sidebar_label: PocketBase
 >
 > -- https://pocketbase.io/
 >
-> This guide explains how to configure PocketBase to use authentik as the OAuth provider for logging in to the Web GUI.
+> This guide explains how to configure PocketBase so that your application uses it in the backend, enabling authentik as the OAuth provider for login.
 
 :::note
 If you are using an application that relies on PocketBase as its backend, you can replace the placeholders used here with the application's name.
@@ -51,7 +51,7 @@ Select implicit or explicit authorization flow as desired.
 
 Take note of the Client ID and Client Secret, you'll need to give them to PocketBase later.
 
-- Redirect URIs/Origins (RegEx): `https://_pocketbase.company_/api/oauth2-redirect`
+- Redirect URIs/Origins (RegEx): <kbd>https://<em>pocketbase.company</em>/api/oauth2-redirect</kbd>
 - Signing Key: Select any available signing keys.
 
 Leave the rest as default values.
@@ -77,10 +77,3 @@ Leave the rest as default values.
     - Set **Auth URL** to <kbd>https://<em>authentik.company</em>/application/o/authorize/</kbd>.
     - Set **Token URL** to <kbd>https://<em>authentik.company</em>/application/o/token/</kbd>.
     - Make sure **Fetch user info from** is set to `User info URL`, then set **User info URL** to <kbd>https://<em>authentik.company</em>/application/o/userinfo/</kbd>
-
-## Test the login
-
-- Open your web browser and go to: https://_pocketbase.company_/#/login.
-- Click **authentik** to log in.
-- You should be redirected to authentik (following the login flow you configured). After logging in, authentik will redirect you back to https://_pocketbase.company_.
-- If you successfully return to the PocketBase WebGUI, the login is working correctly.
