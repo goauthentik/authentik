@@ -1,4 +1,5 @@
 from django.urls import reverse
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.fields import CharField, ChoiceField, ListField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -32,7 +33,6 @@ class StreamSerializer(ModelSerializer):
     aud = ListField(child=CharField())
 
     def create(self, validated_data):
-        # todo: rbac check
         provider: SSFProvider = validated_data["provider"]
         iss = self.context["request"].build_absolute_uri(
             reverse(
@@ -42,6 +42,8 @@ class StreamSerializer(ModelSerializer):
                 },
             )
         )
+        # Ensure that streams always get SET verification events sent to them
+        validated_data["events_requested"].append(EventTypes.SET_VERIFICATION)
         return super().create(
             {
                 "delivery_method": validated_data["delivery"]["method"],
@@ -89,6 +91,10 @@ class StreamView(SSFView):
     def post(self, request: Request, *args, **kwargs) -> Response:
         stream = StreamSerializer(data=request.data, context={"request": request})
         stream.is_valid(raise_exception=True)
+        if not request.user.has_perm("authentik_providers_ssf.add_stream", self.provider):
+            raise PermissionDenied(
+                "User does not have permission to create stream for this provider."
+            )
         instance: Stream = stream.save(provider=self.provider)
         send_ssf_event(
             EventTypes.SET_VERIFICATION,

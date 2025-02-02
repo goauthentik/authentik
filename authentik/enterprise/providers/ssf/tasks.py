@@ -24,7 +24,7 @@ def send_ssf_event(
     payload = []
     if not stream_filter:
         stream_filter = {}
-    stream_filter["events_requested__in"] = [event_type]
+    stream_filter["events_requested__contains"] = [event_type]
     for stream in Stream.objects.filter(**stream_filter):
         event_data = stream.prepare_event_payload(event_type, data, **extra_data)
         payload.append((str(stream.uuid), event_data))
@@ -36,7 +36,7 @@ def _send_ssf_event(event_data: list[tuple[str, dict]]):
     tasks = []
     for stream, data in event_data:
         event = StreamEvent.objects.create(**data)
-        tasks.append(send_single_ssf_event.si(str(stream.uuid), str(event.id)))
+        tasks.append(send_single_ssf_event.si(stream, str(event.uuid)))
     main_task = group(*tasks)
     main_task()
 

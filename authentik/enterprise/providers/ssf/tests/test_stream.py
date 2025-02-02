@@ -26,11 +26,11 @@ class TestStream(APITestCase):
             data={
                 "iss": "https://screw-fotos-bracelets-longitude.trycloudflare.com/.well-known/ssf-configuration/abm-ssf/5",
                 "aud": [
-                    "https://federation.apple.com/feeds/business/caep/2034455812/871ada94-90f6-4cdc-9996-a9dd8d62ef14"
+                    "https://app.authentik.company"
                 ],
                 "delivery": {
                     "method": "https://schemas.openid.net/secevent/risc/delivery-method/push",
-                    "endpoint_url": "https://federation.apple.com/feeds/business/caep/2034455812/871ada94-90f6-4cdc-9996-a9dd8d62ef14",
+                    "endpoint_url": "https://app.authentik.company",
                 },
                 "events_requested": [
                     "https://schemas.openid.net/secevent/caep/event-type/credential-change",

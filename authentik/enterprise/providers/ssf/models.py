@@ -127,7 +127,7 @@ class Stream(models.Model):
         jti = uuid4()
         return {
             "uuid": jti,
-            "stream": self,
+            "stream_id": str(self.pk),
             "type": type,
             "payload": {
                 "jti": jti.hex,
