@@ -31,44 +31,25 @@ This documentation lists only the settings that you need to change from their de
 
 [Create](https://docs.goauthentik.io/docs/add-secure-apps/applications/manage_apps#add-new-applications) an OAuth2/OpenID provider and an application in authentik. Use the following parameters for the OAuth2/OpenID provider:
 
-**Provider:**
-
-- Name: _SP-actual_
-- Client type: _Confidential_
-- Redirect URIs/Origins (RegEx): https://_actual.company_/openid/callback
-- Signing Key: Select any available signing keys.
-
-:::info
-Actual Budget supports the RS256 algorithm. Be aware of this when choosing the appropriate signing key.
-:::
-
-Take note of the Client ID and Client Secret; you will need to provide them to Actual Budget in the last step.
-
-Leave the remaining values as default. Durations can be adjusted as needed.
-
-**Application:**
-
-- Name: _Actual Budget_
-- Slug: _actual_
-- Launch URL: https://_actual.company_/
+1. In the authentik Admin interface, navigate to **Applications** -> **Applications**.
+2. Use the wizard to create a new application and provider. During this process:
+    - Note the **Client ID**, **Client Secret**, and **slug** values for later use.
+    - Select implicit or explicit authorization flow as desired.
+    - Set the redirect URI to <kbd>https://<em>actual.company</em>/openid/callback</kbd>.
+    - Select any available signing key.
 
 ## Actual Budget configuration
 
 1. Sign in to Actual Budget with a browser of your choice and access your budget by clicking on its name.
-
 2. Click your budget in the top-left corner to open the dropdown menu and select **Settings**.
-
 3. Scroll to the bottom and select **Show advanced settings**. Scroll again and select **I understand the risks, show experimental features**.
-
 4. To enable the option **OpenID authentication method** select the checkbox next to it.
-
 5. Scroll up to the new option **Authentication method...** and click **Start using OpenID**.
-
 6. Set the following values from the authentik provider:
     - Set **OpenID Provider** to **authentik**
-    - Set **OpenID provider URL** to https://_authentik.company_/application/o/_actual_/
-    - Set **Client ID** to _client-id_
-    - Set **Client secret** to _client-secret_
+    - Set **OpenID provider URL** to <kbd>https://<em>authentik.company</em>/application/o/<em>actual</em>/</kbd>
+    - Set **Client ID** to the Client ID copied from authentik.
+    - Set **Client secret** to the Client Secret copied from authentik.
 
 :::warning
 The first user to log into Actual Budget via OpenID will become the owner and administrator with the highest privileges for the budget. For more information on how to create additional users, see the Note below.
@@ -76,10 +57,10 @@ The first user to log into Actual Budget via OpenID will become the owner and ad
 
 ## Test the login
 
-- Open a browser of your choice and navigate to https://_actual.company_.
+- Open a browser of your choice and navigate to <kbd>https://<em>actual.company</em></kbd>.
 - Select the OpenID login method in the dropdown menu and click **Sign in with OpenID**.
-- You should be redirected to authentik (with the login flows you created), and then authentik will redirect you back to the https://_actual.company_ URL.
-- If you are redirected back to the https://_actual.company_ URL and can see the budget file selection page, the setup was successful.
+- You should be redirected to authentik (with the login flows you created), and then authentik will redirect you back to the <kbd>https://<em>actual.company</em></kbd> URL.
+- If you are redirected back to the <kbd>https://<em>actual.company</em></kbd> URL and can see the budget file selection page, the setup was successful.
 
 :::info
 Users are not automatically created when logging in with authentik. The owner must manually create each user in Actual Budget. To do so, click **Server online** at the top next to your name and select **User Directory**. Add a new user. The `Username` must match the one in authentik. You can now grant the new user access to your budget by clicking **Server online** next to your name at the top and selecting **User Access**.
