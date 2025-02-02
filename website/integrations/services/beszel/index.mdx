@@ -19,66 +19,23 @@ sidebar_label: Beszel
 
 ## Preparation
 
-The following placeholders are used in this guide:
+Since Beszel uses PocketBase as its backend, you only need to replace the PocketBase placeholders with the placeholders found on this page.
+You can find the PocketBase documentation here: https://docs.goauthentik.io/integrations/services/pocketbase/.
 
 - `beszel.company` is the FQDN of the Beszel installation.
 - `authentik.company` is the FQDN of the authentik installation.
+- `Beszel` is the Name of the authentik application.
+- `beszel` is the Slug of the authentik application.
 
 :::note
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-## authentik configuration
-
-Start the wizard for adding a new application.
-
-**1. Application:**
-
-- Name: `Beszel`
-- Slug: `beszel`
-
-**2. Choose a Provider**
-
-Select `OAuth2/OpenID Provider`
-
-**3. Configure Provider**
-
-Select implicit or explicit authorization flow as desired.
-
-Take note of the Client ID and Client Secret, you'll need to give them to Beszel later.
-
-- Redirect URIs/Origins (RegEx): `https://_beszel.company_/api/oauth2-redirect`
-- Signing Key: Select any available signing keys.
-
-Leave the rest as default values.
-
-## Beszel configuration
-
-1. Sign in to Beszel with a browser of your choice and access the system setting by using this URL https://_beszel.company_/\_/#/settings.
-
-2. Disable **Hide collection create and edit controls** and click **Save changes**.
-
-3. Open the **users** submenu by clicking the **Collections** icon in the left menu or by accessing this URL: https://beszel.company/_/#/collections?collection=pb_users_auth.
-
-4. Click the gear icon next to **users**, then select the **Options** tab.
-
-5. Enable **OAuth2** by toggling the corresponding switch.
-
-6. Click **+ Add provider** and select **OpenID Connect**.
-
-7. Enter the following details from the authentik provider:
-    - Set **Client ID** to _client-id_
-    - Set **Client secret** to _client-secret_
-    - Set **Display name** to **authentik**
-    - Set **Auth URL** to https://_authentik.company_/application/o/authorize/
-    - Set **Token URL** to https://_authentik.company_/application/o/token/
-    - Set **User info URL** to https://_authentik.company_/application/o/userinfo/
-
 ## Test the login
 
-- Open your web browser and go to: https://_beszel.company_.
+- Open your web browser and go to: <kbd>https://<em>beszel.company</em></kbd>.
 - Click **authentik** to log in.
-- You should be redirected to authentik (following the login flow you configured). After logging in, authentik will redirect you back to https://_beszel.company_.
+- You should be redirected to authentik (following the login flow you configured). After logging in, authentik will redirect you back to <kbd>https://<em>beszel.company</em></kbd>.
 - If you successfully return to the Beszel WebGUI, the login is working correctly.
 
 ## User Creation
@@ -87,7 +44,7 @@ Leave the rest as default values.
 
     - Users are not created automatically when logging in with authentik. The owner must manually create each user in Beszel.
     - To create users, go to the System Settings where you configured OpenID Connect.
-    - The URL for user creation is: https://_beszel.company_/\_/#/collections?collection=pb_users_auth.
+    - The URL for user creation is: <kbd>https://<em>beszel.company</em>>/\_/#/collections?collection=pb_users_auth</kbd>.
     - Click **+ New record** and enter the user's **email** (must match the authentik email address).
 
 2. Automatically Creating Users:
