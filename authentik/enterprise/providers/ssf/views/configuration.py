@@ -9,6 +9,8 @@ from authentik.enterprise.providers.ssf.views.base import SSFView
 
 
 class ConfigurationView(SSFView):
+    """SSF configuration endpoint"""
+
     permission_classes = [AllowAny]
 
     def get_authenticators(self):

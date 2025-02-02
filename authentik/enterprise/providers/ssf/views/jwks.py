@@ -9,6 +9,7 @@ from authentik.providers.oauth2.views.jwks import JWKSView as OAuthJWKSView
 
 
 class JWKSview(View):
+    """SSF JWKS endpoint, similar to the OAuth2 provider's endpoint"""
 
     def get(self, request: HttpRequest, application_slug: str) -> HttpResponse:
         """Show JWK Key data for Provider"""
