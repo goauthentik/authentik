@@ -3,7 +3,12 @@ from rest_framework.test import APITestCase
 
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_cert
-from authentik.enterprise.providers.ssf.models import SSFProvider, Stream
+from authentik.enterprise.providers.ssf.models import (
+    SSFEventStatus,
+    SSFProvider,
+    Stream,
+    StreamEvent,
+)
 from authentik.lib.generators import generate_id
 
 
@@ -25,9 +30,7 @@ class TestStream(APITestCase):
             ),
             data={
                 "iss": "https://screw-fotos-bracelets-longitude.trycloudflare.com/.well-known/ssf-configuration/abm-ssf/5",
-                "aud": [
-                    "https://app.authentik.company"
-                ],
+                "aud": ["https://app.authentik.company"],
                 "delivery": {
                     "method": "https://schemas.openid.net/secevent/risc/delivery-method/push",
                     "endpoint_url": "https://app.authentik.company",
@@ -41,6 +44,15 @@ class TestStream(APITestCase):
             HTTP_AUTHORIZATION=f"Bearer {self.provider.token.key}",
         )
         self.assertEqual(res.status_code, 201)
+        stream = Stream.objects.filter(provider=self.provider).first()
+        self.assertIsNotNone(stream)
+        event = StreamEvent.objects.filter(stream=stream).first()
+        self.assertIsNotNone(event)
+        self.assertEqual(event.status, SSFEventStatus.PENDING_FAILED)
+        self.assertEqual(
+            event.payload["events"],
+            {"https://schemas.openid.net/secevent/ssf/event-type/verification": {"state": None}},
+        )
 
     def test_stream_delete(self):
         """delete stream"""

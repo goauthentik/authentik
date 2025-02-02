@@ -8,11 +8,13 @@ from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.templatetags.static import static
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from jwt import encode
 
-from authentik.core.models import BackchannelProvider, Token, User
+from authentik.core.models import BackchannelProvider, ExpiringModel, Token
 from authentik.crypto.models import CertificateKeyPair
+from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.providers.oauth2.models import JWTAlgorithms, OAuth2Provider
 
 
@@ -34,7 +36,8 @@ class DeliveryMethods(models.TextChoices):
 class SSFEventStatus(models.TextChoices):
     """SSF Event status"""
 
-    PENDING = "pending"
+    PENDING_NEW = "pending_new"
+    PENDING_FAILED = "pending_failed"
     SENT = "sent"
 
 
@@ -55,6 +58,11 @@ class SSFProvider(BackchannelProvider):
     oidc_auth_providers = models.ManyToManyField(OAuth2Provider, blank=True, default=None)
 
     token = models.ForeignKey(Token, on_delete=models.CASCADE, null=True, default=None)
+
+    event_retention = models.TextField(
+        default="days=30",
+        validators=[timedelta_string_validator],
+    )
 
     @cached_property
     def jwt_key(self) -> tuple[str | PrivateKeyTypes, str]:
@@ -111,8 +119,6 @@ class Stream(models.Model):
     format = models.TextField()
     aud = ArrayField(models.TextField(), default=list)
 
-    user_subjects = models.ManyToManyField(User, "UserStreamSubject")
-
     iss = models.TextField()
 
     class Meta:
@@ -125,10 +131,14 @@ class Stream(models.Model):
 
     def prepare_event_payload(self, type: EventTypes, event_data: dict, **kwargs) -> dict:
         jti = uuid4()
+        _now = now()
         return {
             "uuid": jti,
             "stream_id": str(self.pk),
             "type": type,
+            "expiring": True,
+            "status": SSFEventStatus.PENDING_NEW,
+            "expires": _now + timedelta_from_string(self.provider.event_retention),
             "payload": {
                 "jti": jti.hex,
                 "aud": self.aud,
@@ -147,15 +157,7 @@ class Stream(models.Model):
         return encode(data, key, algorithm=alg, headers=headers)
 
 
-class UserStreamSubject(models.Model):
-    stream = models.ForeignKey(Stream, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    def __str__(self) -> str:
-        return f"Stream subject {self.stream_id} to {self.user_id}"
-
-
-class StreamEvent(models.Model):
+class StreamEvent(ExpiringModel):
     """Single stream event to be sent"""
 
     uuid = models.UUIDField(default=uuid4, primary_key=True, editable=False)
@@ -166,5 +168,15 @@ class StreamEvent(models.Model):
     type = models.TextField(choices=EventTypes.choices)
     payload = models.JSONField(default=dict)
 
+    def expire_action(self, *args, **kwargs):
+        """Only allow automatic cleanup of successfully sent event"""
+        if self.status != SSFEventStatus.SENT:
+            return
+        return super().expire_action(*args, **kwargs)
+
     def __str__(self):
         return f"Stream event {self.type}"
+
+    class Meta:
+        verbose_name = _("SSF Stream Event")
+        verbose_name_plural = _("SSF Stream Events")

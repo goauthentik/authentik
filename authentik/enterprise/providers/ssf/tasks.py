@@ -1,5 +1,6 @@
 from celery import group
 from requests.exceptions import RequestException
+from structlog.stdlib import get_logger
 
 from authentik.enterprise.providers.ssf.models import (
     DeliveryMethods,
@@ -8,10 +9,13 @@ from authentik.enterprise.providers.ssf.models import (
     Stream,
     StreamEvent,
 )
+from authentik.events.models import TaskStatus
+from authentik.events.system_tasks import SystemTask
 from authentik.lib.utils.http import get_http_session
 from authentik.root.celery import CELERY_APP
 
 session = get_http_session()
+LOGGER = get_logger()
 
 
 def send_ssf_event(
@@ -36,13 +40,12 @@ def _send_ssf_event(event_data: list[tuple[str, dict]]):
     tasks = []
     for stream, data in event_data:
         event = StreamEvent.objects.create(**data)
-        tasks.append(send_single_ssf_event.si(stream, str(event.uuid)))
+        tasks.extend(send_single_ssf_event(stream, str(event.uuid)))
     main_task = group(*tasks)
     main_task()
 
 
-@CELERY_APP.task(bind=True, autoretry=True, autoretry_for=(RequestException,), retry_backoff=True)
-def send_single_ssf_event(self, stream_id: str, evt_id: str):
+def send_single_ssf_event(stream_id: str, evt_id: str):
     stream = Stream.objects.filter(pk=stream_id).first()
     if not stream:
         return
@@ -52,15 +55,33 @@ def send_single_ssf_event(self, stream_id: str, evt_id: str):
     if event.status == SSFEventStatus.SENT:
         return
     if stream.delivery_method == DeliveryMethods.RISC_PUSH:
-        ssf_push_request(event)
-    event.status = SSFEventStatus.SENT
-    event.save()
+        return [ssf_push_event.si(str(event.pk))]
+    return []
 
 
-def ssf_push_request(event: StreamEvent):
-    response = session.post(
-        event.stream.endpoint_url,
-        data=event.stream.encode(event.payload),
-        headers={"Content-Type": "application/secevent+jwt", "Accept": "application/json"},
-    )
-    response.raise_for_status()
+@CELERY_APP.task(bind=True, base=SystemTask)
+def ssf_push_event(self: SystemTask, event_id: str):
+    self.save_on_success = False
+    event = StreamEvent.objects.filter(pk=event_id).first()
+    if not event:
+        return
+    self.set_uid(event)
+    if event.status == SSFEventStatus.SENT:
+        self.set_status(TaskStatus.SUCCESSFUL)
+        return
+    try:
+        response = session.post(
+            event.stream.endpoint_url,
+            data=event.stream.encode(event.payload),
+            headers={"Content-Type": "application/secevent+jwt", "Accept": "application/json"},
+        )
+        response.raise_for_status()
+        event.status = SSFEventStatus.SENT
+        event.save()
+        self.set_status(TaskStatus.SUCCESSFUL)
+        return
+    except RequestException as exc:
+        LOGGER.warning("Failed to send SSF event", exc=exc)
+        self.set_error(exc)
+        event.status = SSFEventStatus.PENDING_FAILED
+        event.save()
