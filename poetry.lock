@@ -5491,13 +5491,13 @@ files = [
 
 [[package]]
 name = "webauthn"
-version = "2.5.0"
+version = "2.5.1"
 description = "Pythonic WebAuthn"
 optional = false
 python-versions = "*"
 files = [
-    {file = "webauthn-2.5.0-py3-none-any.whl", hash = "sha256:d978b40bee53a3b283e4a867718ff8269b049c9d66c184eff137338810e98be6"},
-    {file = "webauthn-2.5.0.tar.gz", hash = "sha256:6b3d2e2a5636686829f528227865e19582700d6c107ef0a1256ef150b5bd4599"},
+    {file = "webauthn-2.5.1-py3-none-any.whl", hash = "sha256:86d1faa11ec26ebe49b9388d8c3d09bff4dca6c23d3c7e2dd066e99896d694f0"},
+    {file = "webauthn-2.5.1.tar.gz", hash = "sha256:f1b7447bae1056e110a9e71ff287f639d05d4d14589911d75fea255c3a03aff0"},
 ]
 
 [package.dependencies]
