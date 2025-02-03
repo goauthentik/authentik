@@ -5197,13 +5197,13 @@ files = [
 
 [[package]]
 name = "ua-parser"
-version = "1.0.0"
+version = "1.0.1"
 description = "Python port of Browserscope's user agent parser"
 optional = false
 python-versions = ">=3.9"
 files = [
-    {file = "ua_parser-1.0.0-py3-none-any.whl", hash = "sha256:5b31133606a781f56692caa11a9671a9f330c22604b3c4957a7ba18c152212d0"},
-    {file = "ua_parser-1.0.0.tar.gz", hash = "sha256:a9740f53f4fbb72b7a03d304cae32a2785cafc55e8207efb74877bba17c35324"},
+    {file = "ua_parser-1.0.1-py3-none-any.whl", hash = "sha256:b059f2cb0935addea7e551251cbbf42e9a8872f86134163bc1a4f79e0945ffea"},
+    {file = "ua_parser-1.0.1.tar.gz", hash = "sha256:f9d92bf19d4329019cef91707aecc23c6d65143ad7e29a233f0580fb0d15547d"},
 ]
 
 [package.dependencies]
@@ -5491,13 +5491,13 @@ files = [
 
 [[package]]
 name = "webauthn"
-version = "2.5.0"
+version = "2.5.1"
 description = "Pythonic WebAuthn"
 optional = false
 python-versions = "*"
 files = [
-    {file = "webauthn-2.5.0-py3-none-any.whl", hash = "sha256:d978b40bee53a3b283e4a867718ff8269b049c9d66c184eff137338810e98be6"},
-    {file = "webauthn-2.5.0.tar.gz", hash = "sha256:6b3d2e2a5636686829f528227865e19582700d6c107ef0a1256ef150b5bd4599"},
+    {file = "webauthn-2.5.1-py3-none-any.whl", hash = "sha256:86d1faa11ec26ebe49b9388d8c3d09bff4dca6c23d3c7e2dd066e99896d694f0"},
+    {file = "webauthn-2.5.1.tar.gz", hash = "sha256:f1b7447bae1056e110a9e71ff287f639d05d4d14589911d75fea255c3a03aff0"},
 ]
 
 [package.dependencies]
