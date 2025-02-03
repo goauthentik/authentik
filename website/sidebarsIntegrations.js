@@ -161,6 +161,7 @@ module.exports = {
                     label: "Platforms",
                     items: [
                         "services/budibase/index",
+                        "services/drupal/index",
                         "services/wordpress/index",
                     ],
                 },
