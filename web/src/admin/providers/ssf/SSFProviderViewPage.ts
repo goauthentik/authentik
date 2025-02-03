@@ -1,5 +1,6 @@
 import "@goauthentik/admin/providers/RelatedApplicationButton";
 import "@goauthentik/admin/providers/ssf/SSFProviderFormPage";
+import "@goauthentik/admin/providers/ssf/StreamTable";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/events/ObjectChangelog";
@@ -112,9 +113,7 @@ export class SSFProviderViewPage extends AKElement {
         return html`<div
             class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
         >
-            <div
-                class="pf-c-card pf-l-grid__item pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl pf-m-4-col-on-2xl"
-            >
+            <div class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl pf-m-4-col-on-2xl">
                 <div class="pf-c-card__body">
                     <dl class="pf-c-description-list">
                         <div class="pf-c-description-list__group">
@@ -131,7 +130,12 @@ export class SSFProviderViewPage extends AKElement {
                             </dt>
                             <dd class="pf-c-description-list__description">
                                 <div class="pf-c-description-list__text">
-                                    ${this.provider.ssfUrl}
+                                    <input
+                                        class="pf-c-form-control"
+                                        readonly
+                                        type="text"
+                                        value=${this.provider.ssfUrl || ""}
+                                    />
                                 </div>
                             </dd>
                         </div>
@@ -148,6 +152,10 @@ export class SSFProviderViewPage extends AKElement {
                         </button>
                     </ak-forms-modal>
                 </div>
+            </div>
+            <div class="pf-c-card pf-l-grid__item pf-m-8-col-on-2xl">
+                <ak-provider-ssf-stream-list .providerId=${this.providerID}>
+                </ak-provider-ssf-stream-list>
             </div>
         </div>`;
     }
