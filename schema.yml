@@ -51347,6 +51347,9 @@ components:
           type: array
           items:
             type: integer
+        event_retention:
+          type: string
+          minLength: 1
     PatchedScopeMappingRequest:
       type: object
       description: ScopeMapping Serializer
@@ -55101,6 +55104,8 @@ components:
           type: string
           nullable: true
           readOnly: true
+        event_retention:
+          type: string
       required:
       - component
       - meta_model_name
@@ -55127,6 +55132,9 @@ components:
           type: array
           items:
             type: integer
+        event_retention:
+          type: string
+          minLength: 1
       required:
       - name
     SSFStream:

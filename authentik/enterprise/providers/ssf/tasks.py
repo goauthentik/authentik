@@ -1,4 +1,5 @@
 from celery import group
+from django.utils.timezone import now
 from requests.exceptions import RequestException
 from structlog.stdlib import get_logger
 
@@ -12,6 +13,7 @@ from authentik.enterprise.providers.ssf.models import (
 from authentik.events.models import TaskStatus
 from authentik.events.system_tasks import SystemTask
 from authentik.lib.utils.http import get_http_session
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.root.celery import CELERY_APP
 
 session = get_http_session()
@@ -83,5 +85,7 @@ def ssf_push_event(self: SystemTask, event_id: str):
     except RequestException as exc:
         LOGGER.warning("Failed to send SSF event", exc=exc)
         self.set_error(exc)
+        # Re-up the expiry of the stream event
+        event.expires = now() + timedelta_from_string(self.provider.event_retention)
         event.status = SSFEventStatus.PENDING_FAILED
         event.save()

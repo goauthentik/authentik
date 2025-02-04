@@ -44,6 +44,7 @@ class SSFProviderSerializer(EnterpriseRequiredMixin, ProviderSerializer):
             "token_obj",
             "oidc_auth_providers",
             "ssf_url",
+            "event_retention",
         ]
         extra_kwargs = {}
 

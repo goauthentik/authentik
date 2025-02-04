@@ -14074,6 +14074,11 @@
                         "type": "integer"
                     },
                     "title": "Oidc auth providers"
+                },
+                "event_retention": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Event retention"
                 }
             },
             "required": []
