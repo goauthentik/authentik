@@ -34,11 +34,11 @@ default values. Be aware that any changes other than those explicitly mentioned
 in this guide could cause issues accessing your application.
 :::
 
-## Setup
 
-### Authentik
+## authentik configuration
 
-#### Provider
+### Provider
+
 - Go to Applications -> Providers
   https://authentik.company/if/admin/#/core/providers
 - Create an OAuth2/OpenID Provider
@@ -51,38 +51,39 @@ in this guide could cause issues accessing your application.
   https://drupal.ddev.site/openid-connect/generic
 - Leave everything else as-is
 
-#### Application
+### Application
 
 - Go to Applications -> Applications
   https://authentik.company/if/admin/#/core/applications
 - Create an application e.g. "Drupal" and set the Provider field to the provider
   created above
 
-#### 2FA (optional)
+### 2FA (optional)
 
- - Go to Flows & Stages -> Flows
- - Open the default-authentication-flow (click the link with the flow name, not
-   the edit button)
- - Go to "Stage Bindings"
- - Edit default-authentication-mfa-validation
- - Select "TOTP Authenticators" in "Device classes" and
-   "default-authenticator-totp-setup (TOTP Authenticator Setup Stage" in
-   "Configuration stages"
-   ![](./drupal_2fa.png)
+- Go to Flows & Stages -> Flows
+- Open the default-authentication-flow (click the link with the flow name, not
+  the edit button)
+- Go to "Stage Bindings"
+- Edit default-authentication-mfa-validation
+- Select "TOTP Authenticators" in "Device classes" and
+  "default-authenticator-totp-setup (TOTP Authenticator Setup Stage" in
+  "Configuration stages"
+  ![](./drupal_2fa.png)
 
-### Drupal
+## Service configuration
 
--  Go to https://drupal.ddev.site/admin/config/services/openid-connect
--  Input the Client ID and Secret you noted above
--  Fill out the following endpoints:
--  Authorization endpoint: https://authentik.company/application/o/authorize/
--  Token endpoint: https://authentik.company/application/o/token/
-   if Authentik is running locally, use http://host.docker.internal:9000/application/o/token/
--  UserInfo endpoint: https://authentik.company/application/o/userinfo/
-   if Authentik is running locally, use http://host.docker.internal:9000/application/o/userinfo/
--  Select the "Override registration settings" checkbox
--  Enable the OpenID button on user login form
+- Go to https://drupal.ddev.site/admin/config/services/openid-connect
+- Input the Client ID and Secret you noted above
+- Fill out the following endpoints:
+- Authorization endpoint: https://authentik.company/application/o/authorize/
+- Token endpoint: https://authentik.company/application/o/token/
+  if Authentik is running locally, use http://host.docker.internal:9000/application/o/token/
+- UserInfo endpoint: https://authentik.company/application/o/userinfo/
+  if Authentik is running locally, use http://host.docker.internal:9000/application/o/userinfo/
+- Select the "Override registration settings" checkbox
+- Enable the OpenID button on user login form
 
+## Configuration verification
 Once logged in for the first time, depending on your user registration settings
 you may get a message saying you've successfully logged in but your account is
 blocked and needs to be approved by an administrator, so unblock the user in the
