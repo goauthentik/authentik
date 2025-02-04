@@ -28,7 +28,6 @@ class ConfigurationView(SSFView):
                     "authentik_providers_ssf:configuration",
                     kwargs={
                         "application_slug": application.slug,
-                        "provider": provider.pk,
                     },
                 )
             ),
@@ -36,7 +35,7 @@ class ConfigurationView(SSFView):
                 reverse(
                     "authentik_providers_ssf:jwks",
                     kwargs={
-                        "provider": provider.pk,
+                        "application_slug": application.slug,
                     },
                 )
             ),
@@ -45,7 +44,6 @@ class ConfigurationView(SSFView):
                     "authentik_providers_ssf:stream",
                     kwargs={
                         "application_slug": application.slug,
-                        "provider": provider.pk,
                     },
                 )
             ),
