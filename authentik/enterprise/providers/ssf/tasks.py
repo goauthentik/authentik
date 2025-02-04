@@ -86,6 +86,6 @@ def ssf_push_event(self: SystemTask, event_id: str):
         LOGGER.warning("Failed to send SSF event", exc=exc)
         self.set_error(exc)
         # Re-up the expiry of the stream event
-        event.expires = now() + timedelta_from_string(self.provider.event_retention)
+        event.expires = now() + timedelta_from_string(event.stream.provider.event_retention)
         event.status = SSFEventStatus.PENDING_FAILED
         event.save()
