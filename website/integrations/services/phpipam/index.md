@@ -25,6 +25,10 @@ The following placeholders are used in this guide:
 - `guest-permission-group` in place of your company naming convention
 
 :::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+:::note
 This is based on authentik 2023.3.1 and phpIPAM 1.5.2
 Only settings that have been modified from default have been listed.
 :::

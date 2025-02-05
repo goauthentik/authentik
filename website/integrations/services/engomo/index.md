@@ -23,6 +23,10 @@ The following placeholders are used in this guide:
 - `engomo.mapping` is the name of the Scope Mapping.
 - `ak.cert` is the self-signed certificate that will be used for the service provider.
 
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
 ## authentik configuration
 
 In authentik, create a new scope mapping. To do so, log in and navigate to the Admin interface, then go to **Customization --> Property Mapping** and click **Create**.

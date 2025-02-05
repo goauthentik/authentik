@@ -20,6 +20,10 @@ The following placeholders are used in this guide:
 - `veeam.company` is the FQDN of the Veeam Enterprise Manager installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
 You will need an existing group or multiple in authentik to assign roles in Veeam Enterprise Manager to.
 
 ## In Veeam Enterprise Manager

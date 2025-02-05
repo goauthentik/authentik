@@ -26,6 +26,10 @@ The following placeholders are used in this guide:
 - `dc=company,dc=com` the Base DN of the LDAP outpost. If you followed the LDAP provider guide this is: `dc=goauthentik,dc=io`
 - `ldap_bind_user` the username of the desired LDAP Bind User. If you followed the LDAP provider guide this is: `ldapservice`
 
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
 ## LDAP Configuration
 
 ### authentik Configuration

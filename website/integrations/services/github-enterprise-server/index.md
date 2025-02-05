@@ -18,7 +18,7 @@ sidebar_label: GitHub Enterprise Server
 The following placeholders are used in this guide:
 
 - `https://github.company` is your GitHub Enterprise Server installation
-- `authentik.company` is the FQDN of the authentik Install
+- `authentik.company` is the FQDN of the authentik installation.
 - `GitHub Users` is an authentik group used for holding GitHub users.
 - `GitHub Admins` is an authentik group used for indicating GitHub administrators.
 
@@ -36,6 +36,10 @@ Under _Advanced protocol settings_, set a certificate for _Signing Certificate_.
 Once the provider is created, it is advised to download the signing certificate as you will need it later.
 
 Create a matching application for your SAML provider.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## SAML Configuration
 

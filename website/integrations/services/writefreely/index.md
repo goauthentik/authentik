@@ -21,8 +21,12 @@ Currently it is not possible to connect writefreely to authentik without making 
 
 The following placeholders are used in this guide:
 
-- `writefreely.company` is the FQDN of the writefreely installation.
+- `writefreely.company` is the FQDN of the Writefreely installation.
 - `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik Configuration
 

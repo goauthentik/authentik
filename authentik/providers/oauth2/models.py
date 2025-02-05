@@ -281,7 +281,6 @@ class OAuth2Provider(WebfingerProvider, Provider):
                 },
             )
             return request.build_absolute_uri(url)
-
         except Provider.application.RelatedObjectDoesNotExist:
             return None
 

@@ -21,8 +21,12 @@ There are many different plugins for WordPress that allow you to setup SSO using
 
 The following placeholders are used in this guide:
 
-- `wp.company` is the FQDN of WordPress.
-- `authentik.company` is the FQDN of authentik.
+- `wp.company` is the FQDN of WordPress installation.
+- `authentik.company` is the FQDN of authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ### Step 1 - authentik
 
