@@ -1,5 +1,6 @@
 from celery import group
 from django.utils.timezone import now
+from django.utils.translation import gettext_lazy as _
 from requests.exceptions import RequestException
 from structlog.stdlib import get_logger
 
@@ -10,6 +11,7 @@ from authentik.enterprise.providers.ssf.models import (
     Stream,
     StreamEvent,
 )
+from authentik.events.logs import LogEvent
 from authentik.events.models import TaskStatus
 from authentik.events.system_tasks import SystemTask
 from authentik.lib.utils.http import get_http_session
@@ -67,7 +69,7 @@ def ssf_push_event(self: SystemTask, event_id: str):
     event = StreamEvent.objects.filter(pk=event_id).first()
     if not event:
         return
-    self.set_uid(event)
+    self.set_uid(event_id)
     if event.status == SSFEventStatus.SENT:
         self.set_status(TaskStatus.SUCCESSFUL)
         return
@@ -84,7 +86,22 @@ def ssf_push_event(self: SystemTask, event_id: str):
         return
     except RequestException as exc:
         LOGGER.warning("Failed to send SSF event", exc=exc)
-        self.set_error(exc)
+        self.set_status()
+        attrs = {}
+        if exc.response:
+            attrs["response"] = {
+                "content": exc.response.text,
+                "status": exc.response.status_code,
+            }
+        self.set_error(
+            exc,
+            LogEvent(
+                _("Failed to send request"),
+                log_level="warning",
+                logger=self.__name__,
+                attributes=attrs,
+            ),
+        )
         # Re-up the expiry of the stream event
         event.expires = now() + timedelta_from_string(event.stream.provider.event_retention)
         event.status = SSFEventStatus.PENDING_FAILED
