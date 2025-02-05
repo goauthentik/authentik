@@ -1,6 +1,6 @@
 from django.http import HttpRequest
 from django.urls import reverse
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.fields import CharField, ChoiceField, ListField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -22,7 +22,19 @@ LOGGER = get_logger()
 
 class StreamDeliverySerializer(PassiveSerializer):
     method = ChoiceField(choices=[(x.value, x.value) for x in DeliveryMethods])
-    endpoint_url = CharField(allow_null=True)
+    endpoint_url = CharField(required=False)
+
+    def validate_method(self, method: DeliveryMethods):
+        """Currently only push is supported"""
+        if method == DeliveryMethods.RISC_POLL:
+            raise ValidationError("Polling for SSF events is not currently supported.")
+        return method
+
+    def validate(self, attrs: dict) -> dict:
+        if attrs["method"] == DeliveryMethods.RISC_PUSH:
+            if not attrs.get("endpoint_url"):
+                raise ValidationError("Endpoint URL is required when using push.")
+        return attrs
 
 
 class StreamSerializer(ModelSerializer):

@@ -60,6 +60,33 @@ class TestStream(APITestCase):
             {"https://schemas.openid.net/secevent/ssf/event-type/verification": {"state": None}},
         )
 
+    def test_stream_add_poll(self):
+        """test stream add - poll method"""
+        res = self.client.post(
+            reverse(
+                "authentik_providers_ssf:stream",
+                kwargs={"application_slug": self.application.slug},
+            ),
+            data={
+                "iss": "https://authentik.company/.well-known/ssf-configuration/foo/5",
+                "aud": ["https://app.authentik.company"],
+                "delivery": {
+                    "method": "https://schemas.openid.net/secevent/risc/delivery-method/poll",
+                },
+                "events_requested": [
+                    "https://schemas.openid.net/secevent/caep/event-type/credential-change",
+                    "https://schemas.openid.net/secevent/caep/event-type/session-revoked",
+                ],
+                "format": "iss_sub",
+            },
+            HTTP_AUTHORIZATION=f"Bearer {self.provider.token.key}",
+        )
+        self.assertEqual(res.status_code, 400)
+        self.assertJSONEqual(
+            res.content,
+            {"delivery": {"method": ["Polling for SSF events is not currently supported."]}},
+        )
+
     def test_stream_add_oidc(self):
         """test stream add (oidc auth)"""
         provider = OAuth2Provider.objects.create(
