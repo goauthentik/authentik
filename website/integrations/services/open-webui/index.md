@@ -35,7 +35,7 @@ Provide a name (or accept the auto-provided name), the authorization flow to use
 
 ## Open WebUI configuration
 
-You need to set the environment variables according to your deployment method—either.
+You need to set the environment variables according to your deployment method.
 
 Enter the following details from the authentik provider:
 - Set **OAUTH_CLIENT_ID** to the Client ID copied from authentik.
