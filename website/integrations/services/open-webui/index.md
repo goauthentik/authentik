@@ -45,7 +45,7 @@ Enter the following details from the authentik provider:
 
 ## Configuration verification
 
-- Open your web browser and go to: <kbd>https://<em>openwebui.company</em></kbd>.
+- Open your web browser and go to <kbd>https://<em>openwebui.company</em></kbd>.
 - Make sure you are logged off any previous session.
 - Click **Continue with authentik** to log in.
 - After logging in, authentik will redirect you back to <kbd>https://<em>openwebui.company</em></kbd>.
