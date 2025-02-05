@@ -1,0 +1,28 @@
+version: 1
+metadata:
+  name: Default - Email MFA setup flow
+entries:
+- attrs:
+    designation: stage_configuration
+    name: default-authenticator-email-setup
+    title: Setup Email Two-Factor Authentication
+    authentication: require_authenticated
+  identifiers:
+    slug: default-authenticator-email-setup
+  model: authentik_flows.flow
+  id: flow
+- attrs:
+    configure_flow: !KeyOf flow
+    friendly_name: Email Authenticator
+    use_global_settings: true
+    token_expiry: minutes=30
+    subject: authentik Sign-in code
+  identifiers:
+    name: default-authenticator-email-setup
+  id: default-authenticator-email-setup
+  model: authentik_stages_authenticator_email.authenticatoremailstage
+- identifiers:
+    order: 0
+    stage: !KeyOf default-authenticator-email-setup
+    target: !KeyOf flow
+  model: authentik_flows.flowstagebinding
