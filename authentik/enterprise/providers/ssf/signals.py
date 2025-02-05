@@ -2,13 +2,14 @@ from hashlib import sha256
 
 from django.contrib.auth.signals import user_logged_out
 from django.db.models import Model
-from django.db.models.signals import post_delete, post_save
+from django.db.models.signals import post_delete, post_save, pre_delete
 from django.dispatch import receiver
 from django.http.request import HttpRequest
 from guardian.shortcuts import assign_perm
 
 from authentik.core.models import (
     USER_PATH_SYSTEM_PREFIX,
+    AuthenticatedSession,
     Token,
     TokenIntents,
     User,
@@ -63,6 +64,7 @@ def ssf_providers_post_save(sender: type[Model], instance: SSFProvider, created:
 
 @receiver(user_logged_out)
 def ssf_user_logged_out_session_revoked(sender, request: HttpRequest, user: User, **_):
+    """Session revoked trigger (user logged out)"""
     if not request.session or not request.session.session_key or not user:
         return
     send_ssf_event(
@@ -80,11 +82,34 @@ def ssf_user_logged_out_session_revoked(sender, request: HttpRequest, user: User
             },
             "initiating_entity": "user",
         },
+        request=request,
+    )
+
+
+@receiver(pre_delete, sender=AuthenticatedSession)
+def ssf_user_session_delete_session_revoked(sender, instance: AuthenticatedSession, **_):
+    """Session revoked trigger (admin has deleted a users' session)"""
+    send_ssf_event(
+        EventTypes.CAEP_SESSION_REVOKED,
+        {
+            "subject": {
+                "session": {
+                    "format": "opaque",
+                    "id": sha256(instance.session_key.encode("ascii")).hexdigest(),
+                },
+                "user": {
+                    "format": "email",
+                    "email": instance.user.email,
+                },
+            },
+            "initiating_entity": "admin",
+        },
     )
 
 
 @receiver(password_changed)
 def ssf_password_changed_cred_change(sender, user: User, password: str | None, **_):
+    """Credential change trigger (password changed)"""
     send_ssf_event(
         EventTypes.CAEP_CREDENTIAL_CHANGE,
         {
