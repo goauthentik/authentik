@@ -17,7 +17,7 @@ sidebar_label: Open WebUI
 
 The following placeholders are used in this guide:
 
-- `openwebui.company` is the FQDN of the Service installation.
+- `openwebui.company` is the FQDN of the Open WebUI installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::note
