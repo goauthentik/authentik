@@ -1,3 +1,4 @@
+from django.http import HttpRequest
 from django.urls import reverse
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.fields import CharField, ChoiceField, ListField, SerializerMethodField
@@ -34,7 +35,8 @@ class StreamSerializer(ModelSerializer):
 
     def create(self, validated_data):
         provider: SSFProvider = validated_data["provider"]
-        iss = self.context["request"].build_absolute_uri(
+        request: HttpRequest = self.context["request"]
+        iss = request.build_absolute_uri(
             reverse(
                 "authentik_providers_ssf:configuration",
                 kwargs={
@@ -42,6 +44,8 @@ class StreamSerializer(ModelSerializer):
                 },
             )
         )
+        if request.is_secure():
+            iss = iss.replace(":443", "")
         # Ensure that streams always get SET verification events sent to them
         validated_data["events_requested"].append(EventTypes.SET_VERIFICATION)
         return super().create(
