@@ -44,8 +44,6 @@ class StreamSerializer(ModelSerializer):
                 },
             )
         )
-        if request.is_secure():
-            iss = iss.replace(":443", "")
         # Ensure that streams always get SET verification events sent to them
         validated_data["events_requested"].append(EventTypes.SET_VERIFICATION)
         return super().create(

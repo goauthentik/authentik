@@ -271,23 +271,18 @@ class OAuth2Provider(WebfingerProvider, Provider):
 
     def get_issuer(self, request: HttpRequest) -> str | None:
         """Get issuer, based on request"""
-        full_url = ""
         if self.issuer_mode == IssuerMode.GLOBAL:
-            full_url = request.build_absolute_uri(reverse("authentik_core:root-redirect"))
-        else:
-            try:
-                url = reverse(
-                    "authentik_providers_oauth2:provider-root",
-                    kwargs={
-                        "application_slug": self.application.slug,
-                    },
-                )
-                full_url = request.build_absolute_uri(url)
-            except Provider.application.RelatedObjectDoesNotExist:
-                return None
-        if request.is_secure():
-            return full_url.replace(":443", "")
-        return full_url
+            return request.build_absolute_uri(reverse("authentik_core:root-redirect"))
+        try:
+            url = reverse(
+                "authentik_providers_oauth2:provider-root",
+                kwargs={
+                    "application_slug": self.application.slug,
+                },
+            )
+            return request.build_absolute_uri(url)
+        except Provider.application.RelatedObjectDoesNotExist:
+            return None
 
     @property
     def redirect_uris(self) -> list[RedirectURI]:
