@@ -175,7 +175,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                   </div>`}
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div
-                    class="pf-c-card pf-l-grid__item pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl pf-m-4-col-on-2xl"
+                    class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl pf-m-4-col-on-2xl"
                 >
                     <div class="pf-c-card__body">
                         <dl class="pf-c-description-list">
@@ -369,7 +369,6 @@ export class OAuth2ProviderViewPage extends AKElement {
                             ]}
                             .md=${MDProviderOAuth2}
                             meta="providers/oauth2/index.md"
-                            ;
                         ></ak-markdown>
                     </div>
                 </div>
