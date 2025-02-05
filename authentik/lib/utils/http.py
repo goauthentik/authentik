@@ -42,6 +42,8 @@ class DebugSession(Session):
 
 def get_http_session() -> Session:
     """Get a requests session with common headers"""
-    session = DebugSession() if CONFIG.get_bool("debug") else Session()
+    session = Session()
+    if CONFIG.get_bool("debug") or CONFIG.get("log_level") == "trace":
+        session = DebugSession()
     session.headers["User-Agent"] = authentik_user_agent()
     return session
