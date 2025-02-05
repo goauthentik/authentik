@@ -1,4 +1,5 @@
 from celery import group
+from django.http import HttpRequest
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from requests.exceptions import RequestException
@@ -26,6 +27,7 @@ def send_ssf_event(
     event_type: EventTypes,
     data: dict,
     stream_filter: dict | None = None,
+    request: HttpRequest | None = None,
     **extra_data,
 ):
     """Wrapper to send an SSF event to multiple streams"""
@@ -33,6 +35,8 @@ def send_ssf_event(
     if not stream_filter:
         stream_filter = {}
     stream_filter["events_requested__contains"] = [event_type]
+    if request and request.request_id:
+        data.setdefault("txn", request.request_id)
     for stream in Stream.objects.filter(**stream_filter):
         event_data = stream.prepare_event_payload(event_type, data, **extra_data)
         payload.append((str(stream.uuid), event_data))
