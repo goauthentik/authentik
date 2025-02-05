@@ -88,7 +88,10 @@ def ssf_user_logged_out_session_revoked(sender, request: HttpRequest, user: User
 
 @receiver(pre_delete, sender=AuthenticatedSession)
 def ssf_user_session_delete_session_revoked(sender, instance: AuthenticatedSession, **_):
-    """Session revoked trigger (admin has deleted a users' session)"""
+    """Session revoked trigger (users' session has been deleted)
+
+    As this signal is also triggered with a regular logout, we can't be sure
+    if the session has been deleted by an admin or by the user themselves."""
     send_ssf_event(
         EventTypes.CAEP_SESSION_REVOKED,
         {
@@ -102,7 +105,7 @@ def ssf_user_session_delete_session_revoked(sender, instance: AuthenticatedSessi
                     "email": instance.user.email,
                 },
             },
-            "initiating_entity": "admin",
+            "initiating_entity": "user",
         },
     )
 
