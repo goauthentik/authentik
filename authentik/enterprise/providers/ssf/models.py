@@ -49,11 +49,8 @@ class SSFProvider(BackchannelProvider):
     signing_key = models.ForeignKey(
         CertificateKeyPair,
         verbose_name=_("Signing Key"),
-        on_delete=models.SET_NULL,
-        null=True,
-        help_text=_(
-            "Key used to sign the tokens. Only required when JWT Algorithm is set to RS256."
-        ),
+        on_delete=models.CASCADE,
+        help_text=_("Key used to sign the SSF Events."),
     )
 
     oidc_auth_providers = models.ManyToManyField(OAuth2Provider, blank=True, default=None)
@@ -66,11 +63,8 @@ class SSFProvider(BackchannelProvider):
     )
 
     @cached_property
-    def jwt_key(self) -> tuple[str | PrivateKeyTypes, str]:
+    def jwt_key(self) -> tuple[PrivateKeyTypes, str]:
         """Get either the configured certificate or the client secret"""
-        if not self.signing_key:
-            # No Certificate at all, assume HS256
-            return self.client_secret, JWTAlgorithms.HS256
         key: CertificateKeyPair = self.signing_key
         private_key = key.private_key
         if isinstance(private_key, RSAPrivateKey):

@@ -21,10 +21,9 @@ class JWKSview(View):
 
         response_data = {}
 
-        if signing_key:
-            jwk = OAuthJWKSView.get_jwk_for_key(signing_key, "sig")
-            if jwk:
-                response_data["keys"] = [jwk]
+        jwk = OAuthJWKSView.get_jwk_for_key(signing_key, "sig")
+        if jwk:
+            response_data["keys"] = [jwk]
 
         response = JsonResponse(response_data)
         response["Access-Control-Allow-Origin"] = "*"

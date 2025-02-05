@@ -51340,9 +51340,7 @@ components:
         signing_key:
           type: string
           format: uuid
-          nullable: true
-          description: Key used to sign the tokens. Only required when JWT Algorithm
-            is set to RS256.
+          description: Key used to sign the SSF Events.
         oidc_auth_providers:
           type: array
           items:
@@ -55089,9 +55087,7 @@ components:
         signing_key:
           type: string
           format: uuid
-          nullable: true
-          description: Key used to sign the tokens. Only required when JWT Algorithm
-            is set to RS256.
+          description: Key used to sign the SSF Events.
         token_obj:
           allOf:
           - $ref: '#/components/schemas/Token'
@@ -55111,6 +55107,7 @@ components:
       - meta_model_name
       - name
       - pk
+      - signing_key
       - ssf_url
       - token_obj
       - verbose_name
@@ -55125,9 +55122,7 @@ components:
         signing_key:
           type: string
           format: uuid
-          nullable: true
-          description: Key used to sign the tokens. Only required when JWT Algorithm
-            is set to RS256.
+          description: Key used to sign the SSF Events.
         oidc_auth_providers:
           type: array
           items:
@@ -55137,6 +55132,7 @@ components:
           minLength: 1
       required:
       - name
+      - signing_key
     SSFStream:
       type: object
       description: SSFStream Serializer
