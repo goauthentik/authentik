@@ -56,7 +56,8 @@ class SystemTask(TenantTask):
     def set_error(self, exception: Exception, *messages: LogEvent):
         """Set result to error and save exception"""
         self._status = TaskStatus.ERROR
-        self._messages = list(messages).extend(
+        self._messages = list(messages)
+        self._messages.extend(
             [LogEvent(exception_to_string(exception), logger=self.__name__, log_level="error")]
         )
 
