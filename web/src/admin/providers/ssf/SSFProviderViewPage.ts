@@ -154,6 +154,7 @@ export class SSFProviderViewPage extends AKElement {
                 </div>
             </div>
             <div class="pf-c-card pf-l-grid__item pf-m-8-col-on-2xl">
+                <div class="pf-c-card__title">${msg("Streams")}</div>
                 <ak-provider-ssf-stream-list .providerId=${this.providerID}>
                 </ak-provider-ssf-stream-list>
             </div>
