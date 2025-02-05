@@ -35,7 +35,7 @@ def send_ssf_event(
     if not stream_filter:
         stream_filter = {}
     stream_filter["events_requested__contains"] = [event_type]
-    if request and request.request_id:
+    if request and hasattr(request, "request_id"):
         data.setdefault("txn", request.request_id)
     for stream in Stream.objects.filter(**stream_filter):
         event_data = stream.prepare_event_payload(event_type, data, **extra_data)
