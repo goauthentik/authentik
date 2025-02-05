@@ -86,7 +86,7 @@ def ssf_push_event(self: SystemTask, event_id: str):
         return
     except RequestException as exc:
         LOGGER.warning("Failed to send SSF event", exc=exc)
-        self.set_status()
+        self.set_status(TaskStatus.ERROR)
         attrs = {}
         if exc.response:
             attrs["response"] = {
