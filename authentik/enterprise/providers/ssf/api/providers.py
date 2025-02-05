@@ -19,7 +19,9 @@ class SSFProviderSerializer(EnterpriseRequiredMixin, ProviderSerializer):
     token_obj = TokenSerializer(source="token", required=False, read_only=True)
 
     def get_ssf_url(self, instance: SSFProvider) -> str | None:
-        request: Request = self._context["request"]
+        request: Request = self._context.get("request")
+        if not request:
+            return None
         if not instance.backchannel_application:
             return None
         return request.build_absolute_uri(
