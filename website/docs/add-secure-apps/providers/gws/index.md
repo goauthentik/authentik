@@ -3,7 +3,6 @@ title: Google Workspace provider
 ---
 
 <span class="badge badge--primary">Enterprise</span>
-<span class="badge badge--preview">Preview</span>
 
 ---
 
