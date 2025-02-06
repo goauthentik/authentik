@@ -3609,6 +3609,46 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_providers_ssf.ssfprovider"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_providers_ssf.ssfprovider_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_providers_ssf.ssfprovider"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_providers_ssf.ssfprovider"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage"
                             },
                             "id": {
@@ -4583,6 +4623,7 @@
                         "authentik.enterprise.providers.google_workspace",
                         "authentik.enterprise.providers.microsoft_entra",
                         "authentik.enterprise.providers.rac",
+                        "authentik.enterprise.providers.ssf",
                         "authentik.enterprise.stages.authenticator_endpoint_gdtc",
                         "authentik.enterprise.stages.source",
                         "authentik.events"
@@ -4686,6 +4727,7 @@
                         "authentik_providers_rac.racprovider",
                         "authentik_providers_rac.endpoint",
                         "authentik_providers_rac.racpropertymapping",
+                        "authentik_providers_ssf.ssfprovider",
                         "authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage",
                         "authentik_stages_source.sourcestage",
                         "authentik_events.event",
@@ -6687,6 +6729,18 @@
                             "authentik_providers_scim.view_scimprovider",
                             "authentik_providers_scim.view_scimprovidergroup",
                             "authentik_providers_scim.view_scimprovideruser",
+                            "authentik_providers_ssf.add_ssfprovider",
+                            "authentik_providers_ssf.add_stream",
+                            "authentik_providers_ssf.add_streamevent",
+                            "authentik_providers_ssf.change_ssfprovider",
+                            "authentik_providers_ssf.change_stream",
+                            "authentik_providers_ssf.change_streamevent",
+                            "authentik_providers_ssf.delete_ssfprovider",
+                            "authentik_providers_ssf.delete_stream",
+                            "authentik_providers_ssf.delete_streamevent",
+                            "authentik_providers_ssf.view_ssfprovider",
+                            "authentik_providers_ssf.view_stream",
+                            "authentik_providers_ssf.view_streamevent",
                             "authentik_rbac.access_admin_interface",
                             "authentik_rbac.add_role",
                             "authentik_rbac.assign_role_permissions",
@@ -12936,6 +12990,18 @@
                             "authentik_providers_scim.view_scimprovider",
                             "authentik_providers_scim.view_scimprovidergroup",
                             "authentik_providers_scim.view_scimprovideruser",
+                            "authentik_providers_ssf.add_ssfprovider",
+                            "authentik_providers_ssf.add_stream",
+                            "authentik_providers_ssf.add_streamevent",
+                            "authentik_providers_ssf.change_ssfprovider",
+                            "authentik_providers_ssf.change_stream",
+                            "authentik_providers_ssf.change_streamevent",
+                            "authentik_providers_ssf.delete_ssfprovider",
+                            "authentik_providers_ssf.delete_stream",
+                            "authentik_providers_ssf.delete_streamevent",
+                            "authentik_providers_ssf.view_ssfprovider",
+                            "authentik_providers_ssf.view_stream",
+                            "authentik_providers_ssf.view_streamevent",
                             "authentik_rbac.access_admin_interface",
                             "authentik_rbac.add_role",
                             "authentik_rbac.assign_role_permissions",
@@ -13977,6 +14043,62 @@
                             "change_racpropertymapping",
                             "delete_racpropertymapping",
                             "view_racpropertymapping"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_providers_ssf.ssfprovider": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "signing_key": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Signing Key",
+                    "description": "Key used to sign the SSF Events."
+                },
+                "oidc_auth_providers": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "title": "Oidc auth providers"
+                },
+                "event_retention": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Event retention"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_providers_ssf.ssfprovider_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_stream",
+                            "add_ssfprovider",
+                            "change_ssfprovider",
+                            "delete_ssfprovider",
+                            "view_ssfprovider"
                         ]
                     },
                     "user": {

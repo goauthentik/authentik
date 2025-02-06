@@ -6,6 +6,8 @@ UID = $(shell id -u)
 GID = $(shell id -g)
 NPM_VERSION = $(shell python -m scripts.npm_version)
 PY_SOURCES = authentik tests scripts lifecycle .github
+GO_SOURCES = cmd internal
+WEB_SOURCES = web/src web/packages
 DOCKER_IMAGE ?= "authentik:test"
 
 GEN_API_TS = "gen-ts-api"
@@ -19,11 +21,12 @@ pg_name := $(shell python -m authentik.lib.config postgresql.name 2>/dev/null)
 CODESPELL_ARGS = -D - -D .github/codespell-dictionary.txt \
 		-I .github/codespell-words.txt \
 		-S 'web/src/locales/**' \
-		-S 'website/docs/developer-docs/api/reference/**' \
-		authentik \
-		internal \
-		cmd \
-		web/src \
+		-S 'website/developer-docs/api/reference/**' \
+		-S '**/node_modules/**' \
+		-S '**/dist/**' \
+		$(PY_SOURCES) \
+		$(GO_SOURCES) \
+		$(WEB_SOURCES) \
 		website/src \
 		website/blog \
 		website/docs \

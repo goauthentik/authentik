@@ -599,6 +599,14 @@ class Application(SerializerModel, PolicyBindingModel):
             return None
         return candidates[-1]
 
+    def backchannel_provider_for[T: Provider](self, provider_type: type[T], **kwargs) -> T | None:
+        """Get Backchannel provider for a specific type"""
+        providers = self.backchannel_providers.filter(
+            **{f"{provider_type._meta.model_name}__isnull": False},
+            **kwargs,
+        )
+        return getattr(providers.first(), provider_type._meta.model_name)
+
     def __str__(self):
         return str(self.name)
 
