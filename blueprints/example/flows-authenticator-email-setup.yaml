@@ -1,10 +1,12 @@
 version: 1
 metadata:
-  name: Default - Email MFA setup flow
+  labels:
+    blueprints.goauthentik.io/instantiate: "false"
+  name: Example - Email MFA setup flow
 entries:
 - attrs:
     designation: stage_configuration
-    name: default-authenticator-email-setup
+    name: Default Email Authenticator Flow
     title: Setup Email Two-Factor Authentication
     authentication: require_authenticated
   identifiers:
