@@ -1239,13 +1239,13 @@ test-randomorder = ["pytest-randomly"]
 
 [[package]]
 name = "dacite"
-version = "1.9.1"
+version = "1.9.2"
 description = "Simple creation of data classes from dictionaries."
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "dacite-1.9.1-py3-none-any.whl", hash = "sha256:55a5ac04207d34a92d7951d2d1ccaa642bf340b29db6399848a1e41ff6e0f48f"},
-    {file = "dacite-1.9.1.tar.gz", hash = "sha256:50e97b408f9fdc5619f341c5415c4ad1cf771a3dbd85626cda44db78ee45df8c"},
+    {file = "dacite-1.9.2-py3-none-any.whl", hash = "sha256:053f7c3f5128ca2e9aceb66892b1a3c8936d02c686e707bee96e19deef4bc4a0"},
+    {file = "dacite-1.9.2.tar.gz", hash = "sha256:6ccc3b299727c7aa17582f0021f6ae14d5de47c7227932c47fec4cdfefd26f09"},
 ]
 
 [package.extras]
