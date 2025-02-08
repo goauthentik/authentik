@@ -244,6 +244,7 @@ export class OAuthSourceViewPage extends AKElement {
                             <ak-bound-policies-list
                                 .target=${this.source.pk}
                                 .typeNotices=${sourceBindingTypeNotices()}
+                                .policyEngineMode=${this.source.policyEngineMode}
                             >
                             </ak-bound-policies-list>
                         </div>

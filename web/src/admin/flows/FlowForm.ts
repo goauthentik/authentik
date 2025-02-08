@@ -1,4 +1,5 @@
 import { DesignationToLabel, LayoutToLabel } from "@goauthentik/admin/flows/utils";
+import { policyEngineModes } from "@goauthentik/admin/policies/PolicyEngineModes";
 import { AuthenticationEnum } from "@goauthentik/api/dist/models/AuthenticationEnum";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
@@ -22,7 +23,6 @@ import {
     FlowDesignationEnum,
     FlowLayoutEnum,
     FlowsApi,
-    PolicyEngineMode,
 } from "@goauthentik/api";
 
 @customElement("ak-flow-form")
@@ -285,23 +285,7 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
                         name="policyEngineMode"
                     >
                         <ak-radio
-                            .options=${[
-                                {
-                                    label: "any",
-                                    value: PolicyEngineMode.Any,
-                                    default: true,
-                                    description: html`${msg(
-                                        "Any policy must match to grant access",
-                                    )}`,
-                                },
-                                {
-                                    label: "all",
-                                    value: PolicyEngineMode.All,
-                                    description: html`${msg(
-                                        "All policies must match to grant access",
-                                    )}`,
-                                },
-                            ]}
+                            .options=${policyEngineModes}
                             .value=${this.instance?.policyEngineMode}
                         >
                         </ak-radio>

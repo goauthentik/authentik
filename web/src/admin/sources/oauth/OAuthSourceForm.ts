@@ -1,5 +1,6 @@
 import "@goauthentik/admin/common/ak-flow-search/ak-source-flow-search";
 import { iconHelperText, placeholderHelperText } from "@goauthentik/admin/helperText";
+import { policyEngineModes } from "@goauthentik/admin/policies/PolicyEngineModes";
 import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
 import {
     GroupMatchingModeToLabel,
@@ -502,6 +503,22 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                         <p class="pf-c-form__helper-text">
                             ${msg("Flow to use when enrolling new users.")}
                         </p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+            <ak-form-group>
+                <span slot="header"> ${msg("Advanced settings")} </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("Policy engine mode")}
+                        ?required=${true}
+                        name="policyEngineMode"
+                    >
+                        <ak-radio
+                            .options=${policyEngineModes}
+                            .value=${this.instance?.policyEngineMode}
+                        >
+                        </ak-radio>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>`;
