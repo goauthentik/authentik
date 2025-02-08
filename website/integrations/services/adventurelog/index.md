@@ -17,7 +17,7 @@ sidebar_label: AdventureLog
 
 The following placeholders are used in this guide:
 
-- `https://adventurelog.company` is the FQDN used to access the AdventureLog **server** instance.
+- `https://adventurelog.company` is the FQDN of the AdventureLog server installation.
 - `https://authentik.company` is the FQDN of the authentik installation.
 
 :::note
@@ -62,7 +62,7 @@ Alternatively, navigate to `/admin` on your AdventureLog server.
     - Name: authentik
     - Client ID: authentik Client ID
     - Secret Key: authentik Client Secret
-    - Key: can be left blank
+    - Key: _should be left blank_
     - Settings: (make sure http/https is set correctly)
 
     ```json
@@ -71,13 +71,13 @@ Alternatively, navigate to `/admin` on your AdventureLog server.
     }
     ```
 
+    - Sites: move over the sites you want to enable authentik on, usually `example.com` and `www.example.com` unless you renamed your sites.
+
 :::warning
 `localhost` is most likely not a valid `server_url` for authentik in this instance because `localhost` is the server running AdventureLog, not authentik. You should use the IP address of the server running authentik or the domain name if you have one.
 :::
 
-- Sites: move over the sites you want to enable authentik on, usually `example.com` and `www.example.com` unless you renamed your sites.
-
-4. Save the configuration.
+2. Save the configuration.
 
 Ensure that the authentik server is running and accessible by AdventureLog. Users should now be able to log in to AdventureLog using their authentik account.
 
@@ -93,8 +93,8 @@ If a user has an existing AdventureLog account and wants to link it to their aut
 
 ### 404 error when logging in.
 
-Ensure the `https://adventurelog.company/accounts` path is routed to the backend, as it shouldn't hit the frontend when it's properly configured.
+Ensure the `https://adventurelog.company/accounts` path is routed to the backend, as it shouldn't hit the frontend when it's properly configured. For information on how to configure this, refer to the AdventureLog documentation on reverse proxy configuration [here](https://adventurelog.app/docs/install/getting_started.html).
 
 ### authentik - No Permission
 
-In the authentik instance, check access to the AdventureLog application from a specific user by using the Check Access/Test button on the Application dashboard. If the user doesn't have access, you can add an existing user/group policy to give your specific user/group access to the AdventureLog application.
+Launch your authentik dashboard as an admin and find the AdventureLog app. Click **More details** then **Edit**. In the admin interface, click **Test** under **Check Access**. If you get a 403 error, you need to grant the user the correct permissions. This can be done by going to the user's profile and adding the correct permissions.
