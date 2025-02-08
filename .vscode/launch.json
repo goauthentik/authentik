@@ -12,7 +12,7 @@
             "pathMappings": [
                 {
                     "localRoot": "${workspaceFolder}",
-                    "remoteRoot": "/"
+                    "remoteRoot": "."
                 }
             ],
             "django": true
@@ -28,7 +28,7 @@
             "pathMappings": [
                 {
                     "localRoot": "${workspaceFolder}",
-                    "remoteRoot": "/"
+                    "remoteRoot": "."
                 }
             ],
             "django": true
