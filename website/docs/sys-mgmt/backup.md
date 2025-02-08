@@ -13,13 +13,13 @@ Run the following command using Docker or Kubernetes to create a backup of all d
 **Docker:**
 
 ```sh
-docker exec authentik-postgresql su - postgres -c "pg_dumpall --clean --file /var/lib/postgresql/backup.sql --verbose --exclude-database=postgres --exclude-database=template0 --exclude-database=template1"
+docker exec authentik-postgresql pg_dumpall -U authentik  --clean --file /var/lib/postgresql/backup.sql --verbose --exclude-database=postgres --exclude-database=template0 --exclude-database=template1
 ```
 
 **Kubernetes:**
 
 ```sh
-kubectl exec -it authentik-postgresql -n authentik -- su - postgres -c "pg_dumpall --clean --file /var/lib/postgresql/backup.sql --verbose --exclude-database=postgres --exclude-database=template0 --exclude-database=template1"
+kubectl exec -it authentik-postgresql -n authentik -- pg_dumpall -U authentik  --clean --file /var/lib/postgresql/backup.sql --verbose --exclude-database=postgres --exclude-database=template0 --exclude-database=template1
 ```
 
 ### Moving the Backup to Your Host System
