@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
             name="lookup_groups_from_user",
             field=models.BooleanField(
                 default=False,
-                help_text="Lookup group membership based on a user attribute instead of a group attribute.This allows nested group resolution on systems like FreeIPA",
+                help_text="Lookup group membership based on a user attribute instead of a group attribute. This allows nested group resolution on systems like FreeIPA",
             ),
         ),
     ]

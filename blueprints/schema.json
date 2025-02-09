@@ -7891,7 +7891,7 @@
                 "lookup_groups_from_user": {
                     "type": "boolean",
                     "title": "Lookup groups from user",
-                    "description": "Lookup group membership based on a user attribute instead of a group attribute.This allows nested group resolution on systems like FreeIPA and Active Directory"
+                    "description": "Lookup group membership based on a user attribute instead of a group attribute. This allows nested group resolution on systems like FreeIPA and Active Directory"
                 }
             },
             "required": []
