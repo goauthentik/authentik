@@ -289,7 +289,9 @@ class ConfigLoader:
             return int(value)
         except (ValueError, TypeError) as exc:
             if value is None or (isinstance(value, str) and value.lower() == "null"):
-                return None
+                return default
+            if value is UNSET:
+                return default
             self.log("warning", "Failed to parse config as int", path=path, exc=str(exc))
             return default
 

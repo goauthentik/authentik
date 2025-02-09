@@ -11,7 +11,7 @@
         "@floating-ui/dom": "^1.6.11",
         "@formatjs/intl-listformat": "^7.5.7",
         "@fortawesome/fontawesome-free": "^6.6.0",
-        "@goauthentik/api": "^2024.12.3-1738190128",
+        "@goauthentik/api": "^2024.12.3-1738774356",
         "@lit-labs/ssr": "^3.2.2",
         "@lit/context": "^1.1.2",
         "@lit/localize": "^0.12.2",

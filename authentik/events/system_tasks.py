@@ -53,12 +53,13 @@ class SystemTask(TenantTask):
             if not isinstance(msg, LogEvent):
                 self._messages[idx] = LogEvent(msg, logger=self.__name__, log_level="info")
 
-    def set_error(self, exception: Exception):
+    def set_error(self, exception: Exception, *messages: LogEvent):
         """Set result to error and save exception"""
         self._status = TaskStatus.ERROR
-        self._messages = [
-            LogEvent(exception_to_string(exception), logger=self.__name__, log_level="error")
-        ]
+        self._messages = list(messages)
+        self._messages.extend(
+            [LogEvent(exception_to_string(exception), logger=self.__name__, log_level="error")]
+        )
 
     def before_start(self, task_id, args, kwargs):
         self._start_precise = perf_counter()
