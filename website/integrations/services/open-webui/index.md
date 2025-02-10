@@ -36,7 +36,7 @@ Provide a name (or accept the auto-provided name), the authorization flow to use
 
 ## Open WebUI configuration
 
-You need to set the environment variables according to your deployment method.
+You need to set the environment variables in the appropriate place based on your deployment method—either in the .env file or as Docker environment variables. The values themselves remain the same, only their location differs.
 
 Enter the following details from the authentik provider:
 
