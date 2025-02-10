@@ -73,7 +73,7 @@
         "@wdio/spec-reporter": "^9.1.2",
         "chokidar": "^4.0.1",
         "chromedriver": "^131.0.1",
-        "esbuild": "^0.24.0",
+        "esbuild": "^0.25.0",
         "eslint": "^9.11.1",
         "eslint-plugin-lit": "^1.15.0",
         "eslint-plugin-wc": "^2.1.1",
