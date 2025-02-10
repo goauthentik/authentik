@@ -29,6 +29,7 @@ This documentation lists only the settings that you need to change from their de
 [Create](https://docs.goauthentik.io/docs/add-secure-apps/applications/manage_apps#add-new-applications) an OAuth2/OpenID provider and an application in authentik using the wizard.
 
 Provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+
 - Note the **Client ID**, **Client Secret**, and **slug** values for later use.
 - Set the redirect URI to <kbd>https://<em>openwebui.company</em>/oauth/oidc/callback</kbd>.
 - Select any available signing key.
@@ -38,6 +39,7 @@ Provide a name (or accept the auto-provided name), the authorization flow to use
 You need to set the environment variables according to your deployment method.
 
 Enter the following details from the authentik provider:
+
 - Set **OAUTH_CLIENT_ID** to the Client ID copied from authentik.
 - Set **OAUTH_CLIENT_SECRET** to the Client Secret copied from authentik.
 - Set **OAUTH_PROVIDER_NAME** to `authentik`.
