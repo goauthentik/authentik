@@ -171,7 +171,9 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
 
         return html`
             <div class="pf-c-card__title">${msg("User Info")}</div>
-            <div class="pf-c-card__body">${renderDescriptionList(userInfo)}</div>
+            <div class="pf-c-card__body">
+                ${renderDescriptionList(userInfo, { twocolumn: true })}
+            </div>
         `;
     }
 
@@ -382,12 +384,12 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
             >
                 <div class="pf-l-grid pf-m-gutter">
                     <div
-                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-3-col-on-xl pf-m-3-col-on-2xl"
+                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl pf-m-4-col-on-2xl"
                     >
                         ${this.renderUserCard()}
                     </div>
                     <div
-                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl"
+                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-8-col-on-xl pf-m-8-col-on-2xl"
                     >
                         <div class="pf-c-card__title">
                             ${msg("Actions over the last week (per 8 hours)")}
