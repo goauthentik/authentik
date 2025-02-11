@@ -56494,11 +56494,16 @@ components:
           type: string
           format: uuid
           readOnly: true
+        password_change_date:
+          type: string
+          format: date-time
+          readOnly: true
       required:
       - avatar
       - groups_obj
       - is_superuser
       - name
+      - password_change_date
       - pk
       - uid
       - username

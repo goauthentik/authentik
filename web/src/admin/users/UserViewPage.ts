@@ -158,6 +158,10 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                 ? html`<div>${getRelativeTime(user.lastLogin)}</div>
                       <small>${user.lastLogin.toLocaleString()}</small>`
                 : html`${msg("-")}`],
+            [msg("Last password change"), user.passwordChangeDate
+                ? html`<div>${getRelativeTime(user.passwordChangeDate)}</div>
+                      <small>${user.passwordChangeDate.toLocaleString()}</small>`
+                : html`${msg("-")}`],
             [msg("Active"), html`<ak-status-label type="warning" ?good=${user.isActive}></ak-status-label>`],
             [msg("Type"), userTypeToLabel(user.type)],
             [msg("Superuser"), html`<ak-status-label type="warning" ?good=${user.isSuperuser}></ak-status-label>`],

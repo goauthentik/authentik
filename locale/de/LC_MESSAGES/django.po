@@ -30,6 +30,7 @@
 # Stefan Werner, 2024
 # Alexander Möbius, 2025
 # Jonas, 2025
+# Niklas Kroese, 2025
 # 
 #, fuzzy
 msgid ""
@@ -38,7 +39,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-12-20 00:08+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
-"Last-Translator: Jonas, 2025\n"
+"Last-Translator: Niklas Kroese, 2025\n"
 "Language-Team: German (https://app.transifex.com/authentik/teams/119923/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2367,7 +2368,7 @@ msgstr "Zugriffstoken-URL"
 
 #: authentik/sources/oauth/models.py
 msgid "URL used by authentik to retrieve tokens."
-msgstr "URL, die von Authentik zum Abrufen von Token verwendet wird."
+msgstr "URL, die von Authentik zum Abrufen von Tokens verwendet wird."
 
 #: authentik/sources/oauth/models.py
 msgid "Profile URL"

@@ -16,7 +16,6 @@ import { msg } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -51,7 +50,6 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
         return [
             PFBase,
             PFButton,
-            PFBanner,
             PFForm,
             PFFormControl,
             PFStack,
@@ -157,11 +155,7 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
         if (!this.provider) {
             return html``;
         }
-        return html`<div slot="header" class="pf-c-banner pf-m-info">
-                ${msg("Google Workspace Provider is in preview.")}
-                <a href="mailto:hello+feature/gws@goauthentik.io">${msg("Send us feedback!")}</a>
-            </div>
-            ${!this.provider?.assignedBackchannelApplicationName
+        return html`${!this.provider?.assignedBackchannelApplicationName
                 ? html`<div slot="header" class="pf-c-banner pf-m-warning">
                       ${msg(
                           "Warning: Provider is not assigned to an application as backchannel provider.",
