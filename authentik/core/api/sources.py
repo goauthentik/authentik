@@ -83,7 +83,7 @@ class SourceViewSet(
 
     queryset = Source.objects.none()
     serializer_class = SourceSerializer
-    lookup_field = "slug"
+    lookup_field = "pk"
     search_fields = ["slug", "name"]
     filterset_fields = ["slug", "name", "managed"]
 
