@@ -55,10 +55,10 @@ def _check_app_access(stream_uuid: str, event_data: dict) -> bool:
     sub_id = event_data.get("payload", {}).get("sub_id", {})
     email = sub_id.get("user", {}).get("email", None)
     if not email:
-        return False
+        return True
     user = User.objects.filter(email=email).first()
     if not user:
-        return False
+        return True
     engine = PolicyEngine(stream.provider.backchannel_application, user)
     engine.use_cache = False
     engine.build()
