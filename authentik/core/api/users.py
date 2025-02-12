@@ -236,9 +236,11 @@ class UserSerializer(ModelSerializer):
             "path",
             "type",
             "uuid",
+            "password_change_date",
         ]
         extra_kwargs = {
             "name": {"allow_blank": True},
+            "password_change_date": {"read_only": True},
         }
 
 

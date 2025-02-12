@@ -241,7 +241,7 @@ docker:  ## Build a docker image of the current source tree
 	DOCKER_BUILDKIT=1 docker build . --progress plain --tag ${DOCKER_IMAGE}
 
 test-docker:
-	./scripts/test_docker.sh
+	BUILD=true ./scripts/test_docker.sh
 
 #########################
 ## CI

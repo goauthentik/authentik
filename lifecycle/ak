@@ -55,6 +55,10 @@ function cleanup {
 }
 
 function prepare_debug {
+    # Only attempt to install debug dependencies if we're running in a container
+    if [ ! -d /ak-root ]; then
+        return
+    fi
     export DEBIAN_FRONTEND=noninteractive
     apt-get update
     apt-get install -y --no-install-recommends krb5-kdc krb5-user krb5-admin-server libkrb5-dev gcc
@@ -63,7 +67,7 @@ function prepare_debug {
     chown authentik:authentik /unittest.xml
 }
 
-if [[ "${AUTHENTIK_REMOTE_DEBUG}" == "true" ]]; then
+if [[ "$(python -m authentik.lib.config debugger 2> /dev/null)" == "True" ]]; then
     prepare_debug
 fi
 
@@ -92,7 +96,7 @@ elif [[ "$1" == "test-all" ]]; then
 elif [[ "$1" == "healthcheck" ]]; then
     run_authentik healthcheck $(cat $MODE_FILE)
 elif [[ "$1" == "dump_config" ]]; then
-    exec python -m authentik.lib.config
+    exec python -m authentik.lib.config $@
 elif [[ "$1" == "debug" ]]; then
     exec sleep infinity
 else

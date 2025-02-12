@@ -2,26 +2,76 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: PDB attach Server",
-            "type": "python",
+            "name": "Debug: Attach Server Core",
+            "type": "debugpy",
             "request": "attach",
             "connect": {
                 "host": "localhost",
-                "port": 6800
+                "port": 9901
             },
-            "justMyCode": true,
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}",
+                    "remoteRoot": "/"
+                }
+            ],
             "django": true
         },
         {
-            "name": "Python: PDB attach Worker",
-            "type": "python",
+            "name": "Debug: Attach Worker",
+            "type": "debugpy",
             "request": "attach",
             "connect": {
                 "host": "localhost",
-                "port": 6900
+                "port": 9901
             },
-            "justMyCode": true,
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}",
+                    "remoteRoot": "/"
+                }
+            ],
             "django": true
+        },
+        {
+            "name": "Debug: Start Server Router",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/server",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Debug: Start LDAP Outpost",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/ldap",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Debug: Start Proxy Outpost",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/proxy",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Debug: Start RAC Outpost",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/rac",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Debug: Start Radius Outpost",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/radius",
+            "cwd": "${workspaceFolder}"
         }
     ]
 }

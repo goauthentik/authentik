@@ -51,6 +51,7 @@ from authentik.enterprise.providers.microsoft_entra.models import (
     MicrosoftEntraProviderUser,
 )
 from authentik.enterprise.providers.rac.models import ConnectionToken
+from authentik.enterprise.providers.ssf.models import StreamEvent
 from authentik.enterprise.stages.authenticator_endpoint_gdtc.models import (
     EndpointDevice,
     EndpointDeviceConnection,
@@ -131,6 +132,7 @@ def excluded_models() -> list[type[Model]]:
         EndpointDevice,
         EndpointDeviceConnection,
         DeviceToken,
+        StreamEvent,
     )
 
 

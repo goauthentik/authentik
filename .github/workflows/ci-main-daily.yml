@@ -1,0 +1,28 @@
+---
+name: authentik-ci-main-daily
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Every night at 3am
+    - cron: "0 3 * * *"
+
+jobs:
+  test-container:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        version:
+          - docs
+          - version-2024-12
+          - version-2024-10
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          current="$(pwd)"
+          dir="/tmp/authentik/${{ matrix.version }}"
+          mkdir -p $dir
+          cd $dir
+          wget https://${{ matrix.version }}.goauthentik.io/docker-compose.yml
+          ${current}/scripts/test_docker.sh

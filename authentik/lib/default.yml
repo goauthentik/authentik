@@ -21,6 +21,7 @@ listen:
   listen_radius: 0.0.0.0:1812
   listen_metrics: 0.0.0.0:9300
   listen_debug: 0.0.0.0:9900
+  listen_debug_py: 0.0.0.0:9901
   trusted_proxy_cidrs:
     - 127.0.0.0/8
     - 10.0.0.0/8
@@ -57,7 +58,7 @@ cache:
 #   transport_options: ""
 
 debug: false
-remote_debug: false
+debugger: false
 
 log_level: info
 
