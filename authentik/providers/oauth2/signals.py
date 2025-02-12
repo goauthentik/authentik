@@ -20,5 +20,6 @@ def user_deactivated(sender, instance: User, **_):
     """Remove user tokens when deactivated"""
     if instance.is_active:
         return
+    AccessToken.objects.filter(session__user=instance).delete()
     RefreshToken.objects.filter(session__user=instance).delete()
     DeviceToken.objects.filter(session__user=instance).delete()
