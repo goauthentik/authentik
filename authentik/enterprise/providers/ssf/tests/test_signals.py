@@ -65,9 +65,10 @@ class TestSignals(APITestCase):
             "https://schemas.openid.net/secevent/caep/event-type/session-revoked"
         ]
         self.assertEqual(event_payload["initiating_entity"], "user")
-        self.assertEqual(event_payload["subject"]["session"]["format"], "opaque")
-        self.assertEqual(event_payload["subject"]["user"]["format"], "email")
-        self.assertEqual(event_payload["subject"]["user"]["email"], user.email)
+        self.assertEqual(event.payload["sub_id"]["format"], "complex")
+        self.assertEqual(event.payload["sub_id"]["session"]["format"], "opaque")
+        self.assertEqual(event.payload["sub_id"]["user"]["format"], "email")
+        self.assertEqual(event.payload["sub_id"]["user"]["email"], user.email)
 
     def test_signal_password_change(self):
         """Test user password change"""
@@ -86,8 +87,9 @@ class TestSignals(APITestCase):
         ]
         self.assertEqual(event_payload["change_type"], "update")
         self.assertEqual(event_payload["credential_type"], "password")
-        self.assertEqual(event_payload["subject"]["user"]["format"], "email")
-        self.assertEqual(event_payload["subject"]["user"]["email"], user.email)
+        self.assertEqual(event.payload["sub_id"]["format"], "complex")
+        self.assertEqual(event.payload["sub_id"]["user"]["format"], "email")
+        self.assertEqual(event.payload["sub_id"]["user"]["email"], user.email)
 
     def test_signal_authenticator_added(self):
         """Test authenticator creation signal"""
@@ -113,8 +115,9 @@ class TestSignals(APITestCase):
         self.assertEqual(event_payload["fido2_aaguid"], dev.aaguid)
         self.assertEqual(event_payload["friendly_name"], dev.name)
         self.assertEqual(event_payload["credential_type"], "fido-u2f")
-        self.assertEqual(event_payload["subject"]["user"]["format"], "email")
-        self.assertEqual(event_payload["subject"]["user"]["email"], user.email)
+        self.assertEqual(event.payload["sub_id"]["format"], "complex")
+        self.assertEqual(event.payload["sub_id"]["user"]["format"], "email")
+        self.assertEqual(event.payload["sub_id"]["user"]["email"], user.email)
 
     def test_signal_authenticator_deleted(self):
         """Test authenticator deletion signal"""
@@ -141,5 +144,6 @@ class TestSignals(APITestCase):
         self.assertEqual(event_payload["fido2_aaguid"], dev.aaguid)
         self.assertEqual(event_payload["friendly_name"], dev.name)
         self.assertEqual(event_payload["credential_type"], "fido-u2f")
-        self.assertEqual(event_payload["subject"]["user"]["format"], "email")
-        self.assertEqual(event_payload["subject"]["user"]["email"], user.email)
+        self.assertEqual(event.payload["sub_id"]["format"], "complex")
+        self.assertEqual(event.payload["sub_id"]["user"]["format"], "email")
+        self.assertEqual(event.payload["sub_id"]["user"]["email"], user.email)
