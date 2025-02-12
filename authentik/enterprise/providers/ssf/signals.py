@@ -70,17 +70,18 @@ def ssf_user_logged_out_session_revoked(sender, request: HttpRequest, user: User
     send_ssf_event(
         EventTypes.CAEP_SESSION_REVOKED,
         {
-            "subject": {
-                "session": {
-                    "format": "opaque",
-                    "id": sha256(request.session.session_key.encode("ascii")).hexdigest(),
-                },
-                "user": {
-                    "format": "email",
-                    "email": user.email,
-                },
-            },
             "initiating_entity": "user",
+        },
+        sub_id={
+            "format": "complex",
+            "session": {
+                "format": "opaque",
+                "id": sha256(request.session.session_key.encode("ascii")).hexdigest(),
+            },
+            "user": {
+                "format": "email",
+                "email": user.email,
+            },
         },
         request=request,
     )
@@ -95,17 +96,18 @@ def ssf_user_session_delete_session_revoked(sender, instance: AuthenticatedSessi
     send_ssf_event(
         EventTypes.CAEP_SESSION_REVOKED,
         {
-            "subject": {
-                "session": {
-                    "format": "opaque",
-                    "id": sha256(instance.session_key.encode("ascii")).hexdigest(),
-                },
-                "user": {
-                    "format": "email",
-                    "email": instance.user.email,
-                },
-            },
             "initiating_entity": "user",
+        },
+        sub_id={
+            "format": "complex",
+            "session": {
+                "format": "opaque",
+                "id": sha256(instance.session_key.encode("ascii")).hexdigest(),
+            },
+            "user": {
+                "format": "email",
+                "email": instance.user.email,
+            },
         },
     )
 
@@ -116,14 +118,15 @@ def ssf_password_changed_cred_change(sender, user: User, password: str | None, *
     send_ssf_event(
         EventTypes.CAEP_CREDENTIAL_CHANGE,
         {
-            "subject": {
-                "user": {
-                    "format": "email",
-                    "email": user.email,
-                },
-            },
             "credential_type": "password",
             "change_type": "revoke" if password is None else "update",
+        },
+        sub_id={
+            "format": "complex",
+            "user": {
+                "format": "email",
+                "email": user.email,
+            },
         },
     )
 
@@ -144,19 +147,23 @@ def ssf_device_post_save(sender: type[Model], instance: Device, created: bool, *
         return
     device_type = device_type_map.get(instance.__class__)
     data = {
-        "subject": {
-            "user": {
-                "format": "email",
-                "email": instance.user.email,
-            },
-        },
         "credential_type": device_type,
         "change_type": "create" if created else "update",
         "friendly_name": instance.name,
     }
     if isinstance(instance, WebAuthnDevice) and instance.aaguid != UNKNOWN_DEVICE_TYPE_AAGUID:
         data["fido2_aaguid"] = instance.aaguid
-    send_ssf_event(EventTypes.CAEP_CREDENTIAL_CHANGE, data)
+    send_ssf_event(
+        EventTypes.CAEP_CREDENTIAL_CHANGE,
+        data,
+        sub_id={
+            "format": "complex",
+            "user": {
+                "format": "email",
+                "email": instance.user.email,
+            },
+        },
+    )
 
 
 @receiver(post_delete)
@@ -167,16 +174,20 @@ def ssf_device_post_delete(sender: type[Model], instance: Device, **_):
         return
     device_type = device_type_map.get(instance.__class__)
     data = {
-        "subject": {
-            "user": {
-                "format": "email",
-                "email": instance.user.email,
-            },
-        },
         "credential_type": device_type,
         "change_type": "delete",
         "friendly_name": instance.name,
     }
     if isinstance(instance, WebAuthnDevice) and instance.aaguid != UNKNOWN_DEVICE_TYPE_AAGUID:
         data["fido2_aaguid"] = instance.aaguid
-    send_ssf_event(EventTypes.CAEP_CREDENTIAL_CHANGE, data)
+    send_ssf_event(
+        EventTypes.CAEP_CREDENTIAL_CHANGE,
+        data,
+        sub_id={
+            "format": "complex",
+            "user": {
+                "format": "email",
+                "email": instance.user.email,
+            },
+        },
+    )

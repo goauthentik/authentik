@@ -130,6 +130,7 @@ TENANT_DOMAIN_MODEL = "authentik_tenants.Domain"
 
 TENANT_CREATION_FAKES_MIGRATIONS = True
 TENANT_BASE_SCHEMA = "template"
+PUBLIC_SCHEMA_NAME = CONFIG.get("postgresql.default_schema")
 
 GUARDIAN_MONKEY_PATCH = False
 
