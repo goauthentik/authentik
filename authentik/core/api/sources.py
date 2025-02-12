@@ -157,9 +157,9 @@ class SourceViewSet(
 
     def destroy(self, request: Request, *args, **kwargs):
         """Prevent deletion of built-in sources"""
-        instance = self.get_object()
+        instance: Source = self.get_object()
 
-        if instance.slug.startswith("authentik-built-in"):
+        if instance.managed == "goauthentik.io/sources/inbuilt":
             raise ValidationError(
                 {"detail": "Built-in sources cannot be deleted"}, code="protected"
             )
