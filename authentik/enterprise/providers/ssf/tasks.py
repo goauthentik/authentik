@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from requests.exceptions import RequestException
 from structlog.stdlib import get_logger
 
+from authentik.core.models import User
 from authentik.enterprise.providers.ssf.models import (
     DeliveryMethods,
     EventTypes,
@@ -17,6 +18,7 @@ from authentik.events.models import TaskStatus
 from authentik.events.system_tasks import SystemTask
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.time import timedelta_from_string
+from authentik.policies.engine import PolicyEngine
 from authentik.root.celery import CELERY_APP
 
 session = get_http_session()
@@ -43,10 +45,32 @@ def send_ssf_event(
     return _send_ssf_event.delay(payload)
 
 
+def _check_app_access(stream_uuid: str, event_data: dict) -> bool:
+    """Check if event is related to user and if so, check
+    if the user has access to the application"""
+    stream = Stream.objects.filter(pk=stream_uuid).first()
+    if not stream:
+        return False
+    # `event_data` is a dict version of a StreamEvent
+    sub_id = event_data.get("payload", {}).get("sub_id", {})
+    email = sub_id.get("user", {}).get("email", None)
+    if not email:
+        return True
+    user = User.objects.filter(email=email).first()
+    if not user:
+        return True
+    engine = PolicyEngine(stream.provider.backchannel_application, user)
+    engine.use_cache = False
+    engine.build()
+    return engine.passing
+
+
 @CELERY_APP.task()
 def _send_ssf_event(event_data: list[tuple[str, dict]]):
     tasks = []
     for stream, data in event_data:
+        if not _check_app_access(stream, data):
+            continue
         event = StreamEvent.objects.create(**data)
         tasks.extend(send_single_ssf_event(stream, str(event.uuid)))
     main_task = group(*tasks)

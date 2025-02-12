@@ -3,18 +3,20 @@ from uuid import uuid4
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
-from authentik.core.models import Application
+from authentik.core.models import Application, Group
 from authentik.core.tests.utils import (
     create_test_cert,
     create_test_user,
 )
 from authentik.enterprise.providers.ssf.models import (
+    EventTypes,
     SSFEventStatus,
     SSFProvider,
     Stream,
     StreamEvent,
 )
 from authentik.lib.generators import generate_id
+from authentik.policies.models import PolicyBinding
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 
 
@@ -147,3 +149,20 @@ class TestSignals(APITestCase):
         self.assertEqual(event.payload["sub_id"]["format"], "complex")
         self.assertEqual(event.payload["sub_id"]["user"]["format"], "email")
         self.assertEqual(event.payload["sub_id"]["user"]["email"], user.email)
+
+    def test_signal_policy_ignore(self):
+        """Test event not being created for user that doesn't have access to the application"""
+        PolicyBinding.objects.create(
+            target=self.application, group=Group.objects.create(name=generate_id()), order=0
+        )
+        user = create_test_user()
+        self.client.force_login(user)
+        user.set_password(generate_id())
+        user.save()
+
+        stream = Stream.objects.filter(provider=self.provider).first()
+        self.assertIsNotNone(stream)
+        event = StreamEvent.objects.filter(
+            stream=stream, type=EventTypes.CAEP_CREDENTIAL_CHANGE
+        ).first()
+        self.assertIsNone(event)
