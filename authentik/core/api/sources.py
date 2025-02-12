@@ -159,7 +159,7 @@ class SourceViewSet(
         """Prevent deletion of built-in sources"""
         instance: Source = self.get_object()
 
-        if instance.managed == "goauthentik.io/sources/inbuilt":
+        if instance.managed == Source.MANAGED_INBUILT:
             raise ValidationError(
                 {"detail": "Built-in sources cannot be deleted"}, code="protected"
             )
