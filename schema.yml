@@ -25207,6 +25207,11 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
       - name: search
         required: false
         in: query
@@ -56494,11 +56499,16 @@ components:
           type: string
           format: uuid
           readOnly: true
+        password_change_date:
+          type: string
+          format: date-time
+          readOnly: true
       required:
       - avatar
       - groups_obj
       - is_superuser
       - name
+      - password_change_date
       - pk
       - uid
       - username
