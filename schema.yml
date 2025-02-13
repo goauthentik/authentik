@@ -25207,6 +25207,11 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
       - name: search
         required: false
         in: query

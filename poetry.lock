@@ -408,13 +408,13 @@ typeguard = ">=2.13.3,<4.3.0"
 
 [[package]]
 name = "aws-cdk-lib"
-version = "2.178.1"
+version = "2.178.2"
 description = "Version 2 of the AWS Cloud Development Kit library"
 optional = false
 python-versions = "~=3.8"
 files = [
-    {file = "aws_cdk_lib-2.178.1-py3-none-any.whl", hash = "sha256:882feb0ae77fadc8fb8951649d12608bd2d776f6730e1c21cd6655615a234ae2"},
-    {file = "aws_cdk_lib-2.178.1.tar.gz", hash = "sha256:c5ae0305d0c20093941ab77e7c6847d5ec8baaf98469c4b04901a0d2a3746f32"},
+    {file = "aws_cdk_lib-2.178.2-py3-none-any.whl", hash = "sha256:624383e57fe2b32f7d0fc098b78b4cd21d19ae3af3f24b01f32ec4795baaee25"},
+    {file = "aws_cdk_lib-2.178.2.tar.gz", hash = "sha256:c00757885b74023350bb34f388f6447155e802ecf827e595bda917098a4925fe"},
 ]
 
 [package.dependencies]
@@ -4611,13 +4611,13 @@ websocket-client = ">=1.8,<2.0"
 
 [[package]]
 name = "sentry-sdk"
-version = "2.20.0"
+version = "2.21.0"
 description = "Python client for Sentry (https://sentry.io)"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "sentry_sdk-2.20.0-py2.py3-none-any.whl", hash = "sha256:c359a1edf950eb5e80cffd7d9111f3dbeef57994cb4415df37d39fda2cf22364"},
-    {file = "sentry_sdk-2.20.0.tar.gz", hash = "sha256:afa82713a92facf847df3c6f63cec71eb488d826a50965def3d7722aa6f0fdab"},
+    {file = "sentry_sdk-2.21.0-py2.py3-none-any.whl", hash = "sha256:7623cfa9e2c8150948a81ca253b8e2bfe4ce0b96ab12f8cd78e3ac9c490fd92f"},
+    {file = "sentry_sdk-2.21.0.tar.gz", hash = "sha256:a6d38e0fb35edda191acf80b188ec713c863aaa5ad8d5798decb8671d02077b6"},
 ]
 
 [package.dependencies]
