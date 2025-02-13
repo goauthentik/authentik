@@ -25,8 +25,8 @@ This integration works only with additional administrator accounts. It does not 
 
 Replace these placeholders in the guide with your values:
 
-- _plesk.company_: The FQDN of your Plesk installation
-- _authentik.company_: The FQDN of your authentik installation
+- `plesk.company`: The FQDN of your Plesk installation
+- `authentik.company`: The FQDN of your authentik installation
 
 ## authentik configuration
 
