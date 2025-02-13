@@ -3,7 +3,7 @@ title: Integrate with Red Hat Ansible Automation Platform / AWX
 sidebar_label: Red Hat Ansible Automation Platform / AWX
 ---
 
-# Red Hat Ansible Automation Platform / AWX
+# Integrate with Red Hat Ansible Automation Platform / AWX
 
 <span class="badge badge--secondary"></span>
 
@@ -27,6 +27,10 @@ The following placeholders are used in this guide:
 
 - `awx.company` is the FQDN of the AWX/RHAAP installation.
 - `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 Create an application in authentik and note the slug, as this will be used later. Create a SAML provider with the following parameters:
 

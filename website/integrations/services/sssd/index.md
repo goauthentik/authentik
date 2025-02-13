@@ -3,7 +3,7 @@ title: Integrate with sssd
 sidebar_label: sssd
 ---
 
-# sssd
+# Integrate with sssd
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -33,6 +33,10 @@ The following placeholders are used in this guide:
 - `sssd.serviceAccount` is a service account created in authentik
 - `sssd.serviceAccountToken` is the service account token generated
   by authentik.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 Create an LDAP Provider if you don't already have one setup.
 This guide assumes you will be running with TLS and that you've

@@ -3,7 +3,7 @@ title: Integrate with Firezone
 sidebar_label: Firezone
 ---
 
-# Firezone
+# Integrate with Firezone
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -20,6 +20,10 @@ The following placeholders are used in this guide:
 - `firezone.company` is the FQDN of the Firezone installation.
 - `authentik` is the unique ID used to generate logins for this provider.
 - `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 Create an OAuth2/OpenID provider with the following parameters:
 

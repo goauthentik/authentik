@@ -3,7 +3,7 @@ title: Integrate with Gravitee
 sidebar_label: Gravitee
 ---
 
-# Gravitee
+# Integrate with Gravitee
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -21,6 +21,10 @@ The following placeholders are used in this guide:
 
 - `gravitee.company` is the FQDN of the Gravitee installation.
 - `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik configuration
 

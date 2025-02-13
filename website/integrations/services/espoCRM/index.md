@@ -3,7 +3,7 @@ title: Integrate with EspoCRM
 sidebar_label: EspoCRM
 ---
 
-# EspoCRM
+# Integrate with EspoCRM
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -24,6 +24,10 @@ The following placeholders are used in this guide:
 - `crm.<your_company>` is the FQDN of the EspoCRM installation.
 - `authentik.<your_company>` is the FQDN of the authentik installation.
 - `_SLUG_` is the slug you choose upon application create in authentik.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik configuration
 

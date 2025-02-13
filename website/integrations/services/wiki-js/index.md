@@ -3,7 +3,7 @@ title: Integrate with Wiki.js
 sidebar_label: Wiki.js
 ---
 
-# Wiki.js
+# Integrate with Wiki.js
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -21,8 +21,12 @@ This is based on authentik 2022.11 and Wiki.js 2.5. Instructions may differ betw
 
 The following placeholders are used in this guide:
 
-- `wiki.company` is the FQDN of Wiki.js.
-- `authentik.company` is the FQDN of authentik.
+- `wiki.company` is the FQDN of Wiki.js installation.
+- `authentik.company` is the FQDN of authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ### Step 1
 

@@ -3,7 +3,7 @@ title: Integrate with Node-RED
 sidebar_label: Node-RED
 ---
 
-# Node-RED
+# Integrate with Node-RED
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -25,6 +25,10 @@ The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of authentik.
 - `nodred.company` is the FQDN of Node-RED.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ### Step 1
 

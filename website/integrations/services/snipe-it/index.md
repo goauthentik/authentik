@@ -3,7 +3,7 @@ title: Integrate with Snipe-IT
 sidebar_label: Snipe-IT
 ---
 
-# Snipe-IT
+# Integrate with Snipe-IT
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -30,6 +30,10 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of the authentik installation.
 - `snipeit-user` is the name of the authentik service account we will create.
 - `DC=ldap,DC=authentik,DC=io` is the Base DN of the LDAP Provider (default)
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik Configuration
 

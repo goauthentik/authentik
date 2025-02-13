@@ -283,12 +283,15 @@ class ConfigLoader:
     def get_optional_int(self, path: str, default=None) -> int | None:
         """Wrapper for get that converts value into int or None if set"""
         value = self.get(path, default)
-
+        if value is UNSET:
+            return default
         try:
             return int(value)
         except (ValueError, TypeError) as exc:
             if value is None or (isinstance(value, str) and value.lower() == "null"):
-                return None
+                return default
+            if value is UNSET:
+                return default
             self.log("warning", "Failed to parse config as int", path=path, exc=str(exc))
             return default
 
@@ -421,4 +424,4 @@ if __name__ == "__main__":
     if len(argv) < 2:  # noqa: PLR2004
         print(dumps(CONFIG.raw, indent=4, cls=AttrEncoder))
     else:
-        print(CONFIG.get(argv[1]))
+        print(CONFIG.get(argv[-1]))

@@ -3,7 +3,7 @@ title: Integrate with engomo
 sidebar_label: engomo
 ---
 
-# engomo
+# Integrate with engomo
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -22,6 +22,10 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of the authentik installation.
 - `engomo.mapping` is the name of the Scope Mapping.
 - `ak.cert` is the self-signed certificate that will be used for the service provider.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik configuration
 

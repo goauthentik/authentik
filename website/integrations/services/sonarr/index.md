@@ -3,7 +3,7 @@ title: Integrate with Sonarr
 sidebar_label: Sonarr
 ---
 
-# Sonarr
+# Integrate with Sonarr
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -23,6 +23,10 @@ The following placeholders are used in this guide:
 
 - `sonarr.company` is the FQDN of the Sonarr installation.
 - `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 Create a Proxy Provider with the following values
 

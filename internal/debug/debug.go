@@ -15,7 +15,6 @@ import (
 func EnableDebugServer() {
 	l := log.WithField("logger", "authentik.go_debugger")
 	if !config.Get().Debug {
-		l.Info("not enabling debug server, set `AUTHENTIK_DEBUG` to `true` to enable it.")
 		return
 	}
 	h := mux.NewRouter()

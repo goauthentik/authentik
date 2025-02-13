@@ -3,7 +3,7 @@ title: Integrate with OnlyOffice
 sidebar_label: OnlyOffice
 ---
 
-# OnlyOffice
+# Integrate with OnlyOffice
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -31,6 +31,10 @@ In the new tab, click on _SSO_ in the sidebar.
 Click the _Enable Single Sign-on Authentication_ checkbox to enable SSO.
 
 Scroll down to _ONLYOFFICE SP Metadata_, and copy the _SP Entity ID (link to metadata XML)_ URL. Open this URL in a new tab, and download the XML file.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik Setup
 

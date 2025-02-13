@@ -3,7 +3,7 @@ title: Integrate with Nextcloud
 sidebar_label: Nextcloud
 ---
 
-# Nextcloud
+# Integrate with Nextcloud
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -42,6 +42,10 @@ The following placeholders are used in this guide:
 - `nextcloud.company` is the FQDN of the Nextcloud installation.
 - `authentik.company` is the FQDN of the authentik installation.
 - `authentik.local` is the internal FQDN of the authentik install (only relevant when running authentik and Nextcloud behind a reverse proxy)
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 Lets start by thinking what user attributes need to be available in Nextcloud:
 
@@ -230,6 +234,10 @@ The following placeholders are used in this guide:
 
 - `nextcloud.company` is the FQDN of the Nextcloud installation.
 - `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 Create an application in authentik and note the slug you choose, as this will be used later. In the Admin Interface, go to _Applications_ -> _Providers_. Create a _SAML provider_ with the following parameters:
 

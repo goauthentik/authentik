@@ -3,7 +3,7 @@ title: Integrate with Cloudflare Access
 sidebar_label: Cloudflare Access
 ---
 
-# Cloudflare Access
+# Integrate with Cloudflare Access
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -21,6 +21,10 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of the authentik installation.
 
 To proceed, you need to register for a free Cloudflare Access account and have both a Cloudflare account and a publicly accessible authentik instance with a trusted SSL certificate.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik configuration
 
