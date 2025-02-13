@@ -3,18 +3,20 @@ from uuid import uuid4
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
-from authentik.core.models import Application
+from authentik.core.models import Application, Group
 from authentik.core.tests.utils import (
     create_test_cert,
     create_test_user,
 )
 from authentik.enterprise.providers.ssf.models import (
+    EventTypes,
     SSFEventStatus,
     SSFProvider,
     Stream,
     StreamEvent,
 )
 from authentik.lib.generators import generate_id
+from authentik.policies.models import PolicyBinding
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 
 
@@ -65,9 +67,10 @@ class TestSignals(APITestCase):
             "https://schemas.openid.net/secevent/caep/event-type/session-revoked"
         ]
         self.assertEqual(event_payload["initiating_entity"], "user")
-        self.assertEqual(event_payload["subject"]["session"]["format"], "opaque")
-        self.assertEqual(event_payload["subject"]["user"]["format"], "email")
-        self.assertEqual(event_payload["subject"]["user"]["email"], user.email)
+        self.assertEqual(event.payload["sub_id"]["format"], "complex")
+        self.assertEqual(event.payload["sub_id"]["session"]["format"], "opaque")
+        self.assertEqual(event.payload["sub_id"]["user"]["format"], "email")
+        self.assertEqual(event.payload["sub_id"]["user"]["email"], user.email)
 
     def test_signal_password_change(self):
         """Test user password change"""
@@ -86,8 +89,9 @@ class TestSignals(APITestCase):
         ]
         self.assertEqual(event_payload["change_type"], "update")
         self.assertEqual(event_payload["credential_type"], "password")
-        self.assertEqual(event_payload["subject"]["user"]["format"], "email")
-        self.assertEqual(event_payload["subject"]["user"]["email"], user.email)
+        self.assertEqual(event.payload["sub_id"]["format"], "complex")
+        self.assertEqual(event.payload["sub_id"]["user"]["format"], "email")
+        self.assertEqual(event.payload["sub_id"]["user"]["email"], user.email)
 
     def test_signal_authenticator_added(self):
         """Test authenticator creation signal"""
@@ -113,8 +117,9 @@ class TestSignals(APITestCase):
         self.assertEqual(event_payload["fido2_aaguid"], dev.aaguid)
         self.assertEqual(event_payload["friendly_name"], dev.name)
         self.assertEqual(event_payload["credential_type"], "fido-u2f")
-        self.assertEqual(event_payload["subject"]["user"]["format"], "email")
-        self.assertEqual(event_payload["subject"]["user"]["email"], user.email)
+        self.assertEqual(event.payload["sub_id"]["format"], "complex")
+        self.assertEqual(event.payload["sub_id"]["user"]["format"], "email")
+        self.assertEqual(event.payload["sub_id"]["user"]["email"], user.email)
 
     def test_signal_authenticator_deleted(self):
         """Test authenticator deletion signal"""
@@ -141,5 +146,23 @@ class TestSignals(APITestCase):
         self.assertEqual(event_payload["fido2_aaguid"], dev.aaguid)
         self.assertEqual(event_payload["friendly_name"], dev.name)
         self.assertEqual(event_payload["credential_type"], "fido-u2f")
-        self.assertEqual(event_payload["subject"]["user"]["format"], "email")
-        self.assertEqual(event_payload["subject"]["user"]["email"], user.email)
+        self.assertEqual(event.payload["sub_id"]["format"], "complex")
+        self.assertEqual(event.payload["sub_id"]["user"]["format"], "email")
+        self.assertEqual(event.payload["sub_id"]["user"]["email"], user.email)
+
+    def test_signal_policy_ignore(self):
+        """Test event not being created for user that doesn't have access to the application"""
+        PolicyBinding.objects.create(
+            target=self.application, group=Group.objects.create(name=generate_id()), order=0
+        )
+        user = create_test_user()
+        self.client.force_login(user)
+        user.set_password(generate_id())
+        user.save()
+
+        stream = Stream.objects.filter(provider=self.provider).first()
+        self.assertIsNotNone(stream)
+        event = StreamEvent.objects.filter(
+            stream=stream, type=EventTypes.CAEP_CREDENTIAL_CHANGE
+        ).first()
+        self.assertIsNone(event)
