@@ -23,21 +23,21 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-To support the integration of *Service* with authentik, you need to create an application/provider pair in authentik.
+To support the integration of _Service_ with authentik, you need to create an application/provider pair in authentik.
 
-*Any specific info about this integration can go here.*
+_Any specific info about this integration can go here._
 
 **Create an application and provider in authentik**
 
 In the authentik Admin Interface, navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can create only an application, without a provider, by clicking **Create.)**
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
-    - *If there are any specific settings required, list them here. Refer to the [ownCloud integration documentation](https://github.com/goauthentik/authentik/blob/main/website/integrations/services/owncloud/index.md) for a complex requirements example.*
+    - _If there are any specific settings required, list them here. Refer to the [ownCloud integration documentation](https://github.com/goauthentik/authentik/blob/main/website/integrations/services/owncloud/index.md) for a complex requirements example._
 - **Choose a Provider type**
-    - *If there is a specific provider type required, state that here.*
+    - _If there is a specific provider type required, state that here._
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - *If there are any specific settings required, list them here. Refer to the [ownCloud integration documentation](https://github.com/goauthentik/authentik/blob/main/website/integrations/services/owncloud/index.md) for a complex requirements example.*
-- **Configure Bindings** *(optional):* you can create a [binding](https://docs.goauthentik.io/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user’s **My applications** page.
+    - _If there are any specific settings required, list them here. Refer to the [ownCloud integration documentation](https://github.com/goauthentik/authentik/blob/main/website/integrations/services/owncloud/index.md) for a complex requirements example._
+- **Configure Bindings** _(optional):_ you can create a [binding](https://docs.goauthentik.io/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user’s **My applications** page.
 
 ## Service configuration
 
