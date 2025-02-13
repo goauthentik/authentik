@@ -36,26 +36,26 @@ Replace these placeholders in the guide with your values:
     - **Redirect URI**: <kbd>https://<em>plesk.company</em>/modules/oauth/public/login.php</kbd>
     - **Signing Key**: Select any available key
 
-2. Create an application using the provider:
-    - Navigate to **Applications** > **Applications**
-    - Create a new application and configure it to use the provider from step 1
-    - Optionally, apply access restrictions to the application
-    - Set the **Launch URL** to <kbd>https://<em>plesk.company</em></kbd>
+2. Create an application using the provider that you just created:
+    - Navigate to **Applications** > **Applications**.
+    - Create a new application and configure it to use the provider from step 1.
+    - Optionally, apply access restrictions to the application.
+    - Set the **Launch URL** to <kbd>https://<em>plesk.company</em></kbd>.
 
 ## Plesk configuration
 
 1. Install the OAuth login extension:
 
-    - Log in to your Plesk installation
-    - Navigate to **Extensions** in the left sidebar
-    - Select **Extensions Catalog**
-    - Search for "OAuth login"
-    - Click **Install** next to the OAuth login extension
+    - Log in to your Plesk installation.
+    - Navigate to **Extensions** in the left sidebar.
+    - Select **Extensions Catalog**.
+    - Search for "OAuth login".
+    - Click **Install** next to the OAuth login extension.
 
 2. Enable and configure OAuth authentication:
 
-    - After installation, select **Extensions** > **OAuth Login** in the left sidebar
-    - Enable OAuth authentication using the toggle switch in the main configuration panel
+    - After installation, select **Extensions** > **OAuth Login** in the left sidebar.
+    - Enable OAuth authentication using the toggle switch in the main configuration panel.
 
 3. In the same panel, configure these OAuth settings:
 
@@ -76,10 +76,10 @@ Replace these placeholders in the guide with your values:
 
 To confirm that authentik is properly configured with Plesk:
 
-1. Log out of Plesk
-2. Look for the OAuth login button on the login page
-3. Click the OAuth login button
-4. Verify that you are redirected to authentik for authentication
-5. After successful authentication, confirm that you can log in to your Plesk administrator account
+1. Log out of Plesk.
+2. Look for the OAuth login button on the login page.
+3. Click the OAuth login button.
+4. Verify that you are redirected to authentik for authentication.
+5. After successful authentication, confirm that you can log in to your Plesk administrator account.
 
 ![Plesk Login Page with OAuth Button](plesk-login-page.png)
