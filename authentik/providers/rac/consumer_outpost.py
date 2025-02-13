@@ -3,7 +3,7 @@
 from channels.exceptions import ChannelFull
 from channels.generic.websocket import AsyncWebsocketConsumer
 
-from authentik.enterprise.providers.rac.consumer_client import RAC_CLIENT_GROUP
+from authentik.providers.rac.consumer_client import RAC_CLIENT_GROUP
 
 
 class RACOutpostConsumer(AsyncWebsocketConsumer):

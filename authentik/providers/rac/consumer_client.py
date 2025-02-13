@@ -7,9 +7,9 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from django.http.request import QueryDict
 from structlog.stdlib import BoundLogger, get_logger
 
-from authentik.enterprise.providers.rac.models import ConnectionToken, RACProvider
 from authentik.outposts.consumer import OUTPOST_GROUP_INSTANCE
 from authentik.outposts.models import Outpost, OutpostState, OutpostType
+from authentik.providers.rac.models import ConnectionToken, RACProvider
 
 # Global broadcast group, which messages are sent to when the outpost connects back
 # to authentik for a specific connection

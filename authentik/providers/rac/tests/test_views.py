@@ -13,11 +13,11 @@ from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.enterprise.license import LicenseKey
 from authentik.enterprise.models import License
-from authentik.enterprise.providers.rac.models import Endpoint, Protocols, RACProvider
 from authentik.lib.generators import generate_id
 from authentik.policies.denied import AccessDeniedResponse
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
+from authentik.providers.rac.models import Endpoint, Protocols, RACProvider
 
 
 class TestRACViews(APITestCase):

@@ -6,7 +6,7 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.enterprise.api import EnterpriseRequiredMixin
-from authentik.enterprise.providers.rac.models import RACProvider
+from authentik.providers.rac.models import RACProvider
 
 
 class RACProviderSerializer(EnterpriseRequiredMixin, ProviderSerializer):
