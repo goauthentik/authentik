@@ -2,81 +2,35 @@
 title: Backup authentik
 ---
 
-This guide provides steps to back up authentik, including its PostgreSQL database, Redis data, and some important directories. These instructions cover both Kubernetes and Docker environments.
+This guide outlines the critical components to back up in authentik.
 
-## PostgreSQL Database Backup
+## PostgreSQL Database
 
-### Dump the PostgreSQL Database
+- **Role:** Stores all persistent data (users, policies, configurations, etc.).
+- **Impact of Loss:** Complete data loss, requiring full restoration to recover authentik's functionality.
+- **Backup Guidance:**
+    - Use PostgreSQL's native tools (e.g., [`pg_dump`](https://www.postgresql.org/docs/current/app-pgdump.html), [`pg_dumpall`](https://www.postgresql.org/docs/current/app-pg-dumpall.html), or continuous archiving).
+    - Exclude system databases (`postgres`, `template0`, `template1`).
+- **Official Documentation:** [PostgreSQL Backup and Restore](https://www.postgresql.org/docs/current/backup.html)
 
-Run the following command using Docker or Kubernetes to create a backup of all databases, excluding system ones:
+## Redis Database
 
-**Docker:**
+- **Role:** Manages temporary data:
+    - User sessions (lost data = users must reauthenticate).
+    - Reputation scores (saved hourly to PostgreSQL).
+    - Pending tasks (e.g., queued emails, outpost syncs).
+- **Impact of Loss:** Service interruptions (e.g., users logged out, pending task loss), but no permanent data loss.
+- **Backup Guidance:**
+    - Use Redis' native tools (e.g., [`SAVE`](https://redis.io/commands/save) or [`BGSAVE`](https://redis.io/commands/bgsave)).
+- **Official Documentation:** [Redis Persistence](https://redis.io/docs/management/persistence/)
 
-```sh
-docker exec authentik-postgresql pg_dumpall -U authentik  --clean --file /var/lib/postgresql/backup.sql --verbose --exclude-database=postgres --exclude-database=template0 --exclude-database=template1
-```
+## Static Directories
 
-**Kubernetes:**
+These directories are mounted as volumes in containerized installations:
 
-```sh
-kubectl exec -it authentik-postgresql -n authentik -- pg_dumpall -U authentik  --clean --file /var/lib/postgresql/backup.sql --verbose --exclude-database=postgres --exclude-database=template0 --exclude-database=template1
-```
-
-### Moving the Backup to Your Host System
-
-If you want to move the backup file from the container to your host system, use the following commands:
-
-**Docker:**
-
-```sh
-docker cp authentik-postgresql:/var/lib/postgresql/backup.sql ./backup.sql
-```
-
-**Kubernetes:**
-
-```sh
-kubectl cp authentik-postgresql:/var/lib/postgresql/backup.sql ./backup.sql -n authentik
-```
-
-## Redis Backup
-
-Redis data can be dumped using:
-
-**Docker:**
-
-```sh
-docker exec authentik-redis redis-cli save
-```
-
-**Kubernetes:**
-
-```sh
-kubectl exec -it authentik-redis -n authentik -- redis-cli save
-```
-
-This saves the Redis dump to `/data/dump.rdb`.
-
-### Moving the Backup to Your Host System
-
-If you want to move the backup file from the container to your host system, use the following commands:
-
-**Docker:**
-
-```sh
-docker cp authentik-redis:/data/dump.rdb ./dump.rdb
-```
-
-**Kubernetes:**
-
-```sh
-kubectl cp authentik-redis:/data/dump.rdb ./dump.rdb -n authentik
-```
-
-## Important Directories to Back Up
-
-The following directories are mounted automatically in the **Docker Compose** and **Kubernetes manifests**, so ensure they are backed up:
-
-- **`/media`**: Stores icons, flow backgrounds, and other media files (if not using S3 or external URLs).
-- **`/certs`**: Contains only externally provided certificates.
-- **`/custom-templates`**: Stores custom templates.
-- **`/blueprints`**: Optional directory for blueprints.
+| Directory               | Purpose                                                         | Backup Notes                                                            |
+| ----------------------- | --------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| **`/media`**            | Stores application icons, flow backgrounds, and uploaded files. | Only required if not using external storage (e.g., S3).                 |
+| **`/certs`**            | Custom TLS certificates (if provided externally).               | Backup if you manage certificates through authentik.                    |
+| **`/custom-templates`** | Custom branch templates                                         | Critical if you modified authentik's default appearance.                |
+| **`/blueprints`**       | Stores blueprints                                               | Optional but recommended if using blueprints for deployment automation. |
