@@ -91,7 +91,9 @@ export class UserForm extends ModelForm<User, number> {
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.username)}"
-                    class="pf-c-form-control"
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
                     required
                 />
                 <p class="pf-c-form__helper-text">
