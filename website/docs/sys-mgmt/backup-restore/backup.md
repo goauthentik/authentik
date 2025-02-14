@@ -28,9 +28,9 @@ This guide outlines the critical components to back up in authentik.
 
 These directories are mounted as volumes in containerized installations:
 
-| Directory               | Purpose                                                         | Backup Notes                                                            |
-| ----------------------- | --------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| **`/media`**            | Stores application icons, flow backgrounds, and uploaded files. | Only required if not using external storage (e.g., S3).                 |
-| **`/certs`**            | Custom TLS certificates (if provided externally).               | Backup if you manage certificates through authentik.                    |
-| **`/custom-templates`** | Custom branch templates                                         | Critical if you modified authentik's default appearance.                |
-| **`/blueprints`**       | Stores blueprints                                               | Optional but recommended if using blueprints for deployment automation. |
+| Directory               | Purpose                                                         | Backup Notes                                             |
+| ----------------------- | --------------------------------------------------------------- | -------------------------------------------------------- |
+| **`/media`**            | Stores application icons, flow backgrounds, and uploaded files. | Only required if not using external storage (e.g., S3).  |
+| **`/certs`**            | Custom TLS certificates (if provided externally).               | Backup if you manage certificates through authentik.     |
+| **`/custom-templates`** | Custom branch templates                                         | Critical if you modified authentik's default appearance. |
+| **`/blueprints`**       | Stores blueprints                                               | Optional but recommended if using custom blueprints.     |
