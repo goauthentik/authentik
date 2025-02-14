@@ -6980,7 +6980,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s0dd031b58ed4017c">
   <source>Internal: <x id="0" equiv-text="${item.internalUsers}"/></source>
-  <target>Intern:</target>
 </trans-unit>
 <trans-unit id="s57b07e524f8f5c2a">
   <source>External: <x id="0" equiv-text="${item.externalUsers}"/></source>
