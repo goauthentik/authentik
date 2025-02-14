@@ -11,6 +11,7 @@
 # Alex Kruidenberg <alexkruidenberg@hotmail.com>, 2024
 # Wilmer, 2024
 # Sjors Wortelboer, 2024
+# Marc Schmitt, 2025
 # 
 #, fuzzy
 msgid ""
@@ -19,7 +20,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-02-14 14:49+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
-"Last-Translator: Sjors Wortelboer, 2024\n"
+"Last-Translator: Marc Schmitt, 2025\n"
 "Language-Team: Dutch (https://app.transifex.com/authentik/teams/119923/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -801,7 +802,7 @@ msgstr "Taak is nog niet uitgevoerd."
 #: authentik/flows/api/flows.py
 #, python-brace-format
 msgid "Flow not applicable to current user/request: {messages}"
-msgstr "Flow is niet toepasbaar op huidige gebruiker/verzoek: {message}"
+msgstr "Flow is niet toepasbaar op huidige gebruiker/verzoek: {messages}"
 
 #: authentik/flows/api/flows_diagram.py
 #, python-brace-format
@@ -3024,6 +3025,7 @@ msgid ""
 msgstr ""
 "\n"
 "    Als dat niet werkt, kopieer en plak de volgende link in uw browser: %(url)s\n"
+"    "
 
 #: authentik/stages/email/templates/email/account_confirmation.txt
 msgid ""
@@ -3111,6 +3113,7 @@ msgid ""
 msgstr ""
 "\n"
 "                    Dit is een test-e-mail om u te informeren dat u authentik-e-mails succesvol heeft geconfigureerd.\n"
+"                    "
 
 #: authentik/stages/email/templates/email/setup.txt
 msgid ""
