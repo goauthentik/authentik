@@ -6983,7 +6983,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s57b07e524f8f5c2a">
   <source>External: <x id="0" equiv-text="${item.externalUsers}"/></source>
-  <target>Extern:</target>
 </trans-unit>
 <trans-unit id="s7f68101a50f526ee">
   <source>Statically deny the flow. To use this stage effectively, disable *Evaluate when flow is planned* on the respective binding.</source>
