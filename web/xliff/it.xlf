@@ -3993,8 +3993,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="sb4c9ed2a487b238f">
         <source>Are you sure you want to remove user <x id="0" equiv-text="${this.targetUser?.username}"/> from the following groups?</source>
-        <target>Sei sicuro di voler rimuovere l'utente
-            dai seguenti gruppi?</target>
         
       </trans-unit>
       <trans-unit id="s964f6725aeb7662f">
@@ -5882,7 +5880,6 @@ Bindings to groups/users are checked against the user of the event.</source>
       </trans-unit>
       <trans-unit id="s1ac2653a6492b435">
         <source><x id="0" equiv-text="${this.outpostHealth.version}"/>, should be <x id="1" equiv-text="${this.outpostHealth.versionShould}"/></source>
-        <target>, dovrebbe essere</target>
         
       </trans-unit>
       <trans-unit id="s1e176e35c828318c">
@@ -6692,7 +6689,6 @@ Bindings to groups/users are checked against the user of the event.</source>
       </trans-unit>
       <trans-unit id="s9d95f09deb601f34">
         <source>Server validation of credential failed: <x id="0" equiv-text="${err}"/></source>
-        <target>Convalida del server di credenziali non riuscita:</target>
         
       </trans-unit>
       <trans-unit id="s3fb39fc45e840f78">
@@ -6730,8 +6726,6 @@ Bindings to groups/users are checked against the user of the event.</source>
       </trans-unit>
       <trans-unit id="saf63d34c8601dd41">
         <source><x id="0" equiv-text="${prompt.label}"/></source>
-        <target><x id="0" equiv-text="${prompt.label}"/>
-        </target>
         
       </trans-unit>
       <trans-unit id="s33f85f24c0f5f008">
@@ -7003,9 +6997,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sde9a3f41977ec1f8">
   <source>Estimated user count one year from now based on <x id="0" equiv-text="${this.forecast?.internalUsers}"/> current internal users and <x id="1" equiv-text="${this.forecast?.forecastedInternalUsers}"/> forecasted internal users.</source>
-  <target>Conteggio degli utenti stimato tra un anno in base a
-            utenti interni attuali e
-            utenti interni previsti.</target>
 </trans-unit>
 <trans-unit id="s4557b6b9da258643">
   <source>Forecast external users</source>
@@ -7013,9 +7004,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sf52479d6daa0a4a8">
   <source>Estimated user count one year from now based on <x id="0" equiv-text="${this.forecast?.externalUsers}"/> current external users and <x id="1" equiv-text="${this.forecast?.forecastedExternalUsers}"/> forecasted external users.</source>
-  <target>Conteggio degli utenti stimato tra un anno in base a
-            utenti esterni attuali e
-            utenti esterni previsti.</target>
 </trans-unit>
 <trans-unit id="s6196153c4b0c1ea0">
   <source>Install</source>
@@ -7516,12 +7504,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s3d2a8b86a4f5a810">
   <source>Successfully created user and added to group <x id="0" equiv-text="${this.group.name}"/></source>
-  <target>Utente creato correttamente e aggiunto al gruppo</target>
 </trans-unit>
 <trans-unit id="s824e0943a7104668">
   <source>This user will be added to the group &quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&quot;.</source>
-  <target>Questo utente verrà aggiunto al gruppo &quot;
-            &quot;.</target>
 </trans-unit>
 <trans-unit id="s62e7f6ed7d9cb3ca">
   <source>Pretend user exists</source>
@@ -7840,11 +7825,6 @@ Bindings to groups/users are checked against the user of the event.</source>
                                     <x id="0" equiv-text="&lt;code&gt;"/>attributes.something.avatar<x id="1" equiv-text="&lt;/code&gt;"/>, which can be used in
                                     combination with the file field to allow users to upload custom
                                     avatars for themselves.</source>
-  <target>Un percorso di attributo come
-            attributi.something.avatar
-            , che può essere usato in
- Combinazione con il campo File per consentire agli utenti di caricare personalizzati
- avatar per se stessi.</target>
 </trans-unit>
 <trans-unit id="s4c80c34a67a6f1c9">
   <source>Multiple values can be set, comma-separated, and authentik will fallback to the next mode when no avatar could be found.</source>
@@ -7854,11 +7834,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>For example, setting this to <x id="0" equiv-text="&lt;code&gt;"/>gravatar,initials<x id="1" equiv-text="&lt;/code&gt;"/> will
                                 attempt to get an avatar from Gravatar, and if the user has not
                                 configured on there, it will fallback to a generated avatar.</source>
-  <target>Ad esempio, impostarlo su
-            gravatar, iniziali
-            Volere
- tentare di ottenere un avatar da Gravatar e se l'utente non ha
- Configurato lì, ricadrà in un avatar generato.</target>
 </trans-unit>
 <trans-unit id="s5faec5eb5faf62ac">
   <source>Allow users to change name</source>
@@ -8702,9 +8677,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s354405ae02cb262d">
   <source>Last seen: <x id="0" equiv-text="${getRelativeTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</source>
-  <target>Ultimo visto:
-             (
-            )</target>
 </trans-unit>
 <trans-unit id="s5aebe06e3ddf6ca9">
   <source>Sign assertions</source>
@@ -8800,7 +8772,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s087d6f07b52b30ec">
   <source><x id="0" equiv-text="${internalUserPercentage &lt; Infinity ? internalUserPercentage : &quot;∞&quot;}"/>%</source>
-  <target>%</target>
+  <target><x id="0" equiv-text="${internalUserPercentage &lt; Infinity ? internalUserPercentage : &quot;∞&quot;}"/>%</target>
 </trans-unit>
 <trans-unit id="sae72e1569d34fb02">
   <source>External user usage</source>
@@ -8843,8 +8815,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sac88482c48453fc8">
   <source>You've logged out of <x id="0" equiv-text="${this.challenge.applicationName}"/>. You can go back to the overview to launch another application, or log out of your authentik account.</source>
-  <target>Hai disconnesso
-            . Puoi tornare alla panoramica per avviare un'altra applicazione o disconnettersi dal tuo account Authenk.</target>
 </trans-unit>
 <trans-unit id="s3108167b562674e2">
   <source>Go back to overview</source>
@@ -8852,11 +8822,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sdb749e793de55478">
   <source>Log out of <x id="0" equiv-text="${this.challenge.brandName}"/></source>
-  <target>Disconnettersi da</target>
 </trans-unit>
 <trans-unit id="s521681ed1d5ff814">
   <source>Log back into <x id="0" equiv-text="${this.challenge.applicationName}"/></source>
-  <target>Restituire a</target>
 </trans-unit>
 <trans-unit id="sc991a35f5e88d1d3">
   <source>Encryption Key</source>
@@ -8868,8 +8836,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sbfee780fa0a2c83e">
   <source>Device type <x id="0" equiv-text="${device.verboseName}"/> cannot be deleted</source>
-  <target>Tipo di dispositivo
-            non può essere eliminato</target>
 </trans-unit>
 <trans-unit id="s336936629cdeb3e5">
   <source>Stage used to verify users' browsers using Google Chrome Device Trust. This stage can be used in authentication/authorization flows.</source>
@@ -8881,8 +8847,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s013620384af7c8b4">
   <source>Device type <x id="0" equiv-text="${device.verboseName}"/> cannot be edited</source>
-  <target>Tipo di dispositivo
-            non può essere modificato</target>
 </trans-unit>
 <trans-unit id="s4347135696fc7cde">
   <source>Advanced flow settings</source>
