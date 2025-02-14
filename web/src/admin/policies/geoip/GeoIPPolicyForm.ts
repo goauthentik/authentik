@@ -86,7 +86,9 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                         <input
                             type="text"
                             value="${this.instance?.asns ?? ""}"
-                            class="pf-c-form-control"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
                         />
                         <p class="pf-c-form__helper-text">
                             ${msg(
