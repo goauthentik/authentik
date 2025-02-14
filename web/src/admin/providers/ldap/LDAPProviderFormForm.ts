@@ -127,6 +127,7 @@ export function renderForm(
                     label=${msg("Base DN")}
                     required
                     value="${provider?.baseDn ?? "DC=ldap,DC=goauthentik,DC=io"}"
+                    inputHint="code"
                     .errorMessages=${errors?.baseDn ?? []}
                     help=${msg(
                         "LDAP DN under which bind requests and search requests can be made.",
@@ -153,6 +154,7 @@ export function renderForm(
                     value="${provider?.tlsServerName ?? ""}"
                     .errorMessages=${errors?.tlsServerName ?? []}
                     help=${tlsServerNameHelp}
+                    inputHint="code"
                 ></ak-text-input>
 
                 <ak-number-input

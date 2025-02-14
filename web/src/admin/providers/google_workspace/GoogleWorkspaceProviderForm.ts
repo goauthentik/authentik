@@ -82,7 +82,7 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                         <input
                             type="email"
                             value="${first(this.instance?.delegatedSubject, "")}"
-                            class="pf-c-form-control"
+                            class="pf-c-form-control pf-m-monospace"
                             required
                         />
                         <p class="pf-c-form__helper-text">
@@ -99,7 +99,7 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                         <input
                             type="text"
                             value="${first(this.instance?.defaultGroupEmailDomain, "")}"
-                            class="pf-c-form-control"
+                            class="pf-c-form-control pf-m-monospace"
                             required
                         />
                         <p class="pf-c-form__helper-text">
