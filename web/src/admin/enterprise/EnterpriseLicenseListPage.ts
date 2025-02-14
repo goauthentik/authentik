@@ -254,7 +254,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
 
         const renderCard = (installID: string) => html`
             <div class="pf-c-card__title">${msg("Your Install ID")}</div>
-            <div class="pf-c-card__body install-id">${installID}</div>
+            <div class="pf-c-card__body install-id pf-m-monospace">${installID}</div>
             <div class="pf-c-card__body">
                 <a
                     target="_blank"

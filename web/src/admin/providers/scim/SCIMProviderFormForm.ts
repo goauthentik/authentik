@@ -40,6 +40,7 @@ export function renderForm(provider?: Partial<SCIMProvider>, errors: ValidationE
                     .errorMessages=${errors?.url ?? []}
                     required
                     help=${msg("SCIM base url, usually ends in /v2.")}
+                    inputHint="code"
                 ></ak-text-input>
 
                 <ak-switch-input
@@ -58,6 +59,7 @@ export function renderForm(provider?: Partial<SCIMProvider>, errors: ValidationE
                     help=${msg(
                         "Token to authenticate with. Currently only bearer authentication is supported.",
                     )}
+                    inputHint="code"
                 ></ak-text-input>
             </div>
         </ak-form-group>

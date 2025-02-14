@@ -56,7 +56,9 @@ export class UserTokenForm extends ModelForm<Token, string> {
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.identifier)}"
-                    class="pf-c-form-control"
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
                     required
                 />
             </ak-form-element-horizontal>

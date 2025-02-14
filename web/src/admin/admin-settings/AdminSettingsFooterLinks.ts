@@ -74,10 +74,11 @@ export class FooterLinkInput extends AkControlElement<FooterLink> {
                 tabindex="1"
             />
             <input
-                type="text"
+                type="url"
                 @change=${onChange}
                 value="${ifDefined(this.footerLink.href ?? undefined)}"
-                class="pf-c-form-control ak-form-control"
+                class="pf-c-form-control ak-form-control pf-m-monospace"
+                autocomplete="off"
                 required
                 placeholder=${msg("URL")}
                 name="href"

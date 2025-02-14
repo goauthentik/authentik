@@ -134,6 +134,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                 label=${msg("Slug")}
                 required
                 help=${msg("Internal application name used in URLs.")}
+                inputHint="code"
             ></ak-text-input>
             <ak-text-input
                 name="group"
@@ -142,6 +143,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                 help=${msg(
                     "Optionally enter a group name. Applications with identical groups are shown grouped together.",
                 )}
+                inputHint="code"
             ></ak-text-input>
             <ak-provider-search-input
                 name="provider"
@@ -182,6 +184,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                         help=${msg(
                             "If left empty, authentik will try to extract the launch URL based on the selected provider.",
                         )}
+                        inputHint="code"
                     ></ak-text-input>
                     <ak-switch-input
                         name="openInNewTab"

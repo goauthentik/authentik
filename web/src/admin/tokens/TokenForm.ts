@@ -64,7 +64,9 @@ export class TokenForm extends ModelForm<Token, string> {
                 <input
                     type="text"
                     value="${first(this.instance?.identifier, "")}"
-                    class="pf-c-form-control"
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
                     required
                 />
                 <p class="pf-c-form__helper-text">
