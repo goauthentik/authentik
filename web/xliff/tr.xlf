@@ -6078,7 +6078,8 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
       </trans-unit>
       <trans-unit id="sef50d248448e0df1">
         <source>Yes (<x id="0" equiv-text="${item.privateKeyType?.toUpperCase()}"/>)</source>
-        <target>Evet (</target>
+        <target>Evet (
+        <x id="0" equiv-text="${item.privateKeyType?.toUpperCase()}"/>)</target>
         
       </trans-unit>
       <trans-unit id="s09205907b5b56cda">
