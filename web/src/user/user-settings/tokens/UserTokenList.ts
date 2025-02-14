@@ -151,7 +151,7 @@ export class UserTokenList extends Table<Token> {
 
     row(item: Token): TemplateResult[] {
         return [
-            html`${item.identifier}`,
+            html`<span class="pf-m-monospace">${item.identifier}</span>`,
             html`
                 <ak-forms-modal>
                     <span slot="submit"> ${msg("Update")} </span>

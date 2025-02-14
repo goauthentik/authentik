@@ -5,6 +5,7 @@ import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { Ref, createRef, ref } from "lit/directives/ref.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -21,6 +22,8 @@ export enum TypeCreateWizardPageLayouts {
 
 @customElement("ak-wizard-page-type-create")
 export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
+    //#region Properties
+
     @property({ attribute: false })
     types: TypeCreate[] = [];
 
@@ -29,6 +32,8 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
 
     @property({ type: String })
     layout: TypeCreateWizardPageLayouts = TypeCreateWizardPageLayouts.list;
+
+    //#endregion
 
     static get styles(): CSSResult[] {
         return [
@@ -49,10 +54,25 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
         ];
     }
 
-    sidebarLabel = () => msg("Select type");
+    //#region Refs
 
-    activeCallback: () => Promise<void> = async () => {
-        this.host.isValid = false;
+    formRef: Ref<HTMLFormElement> = createRef();
+
+    //#endregion
+
+    public sidebarLabel = () => msg("Select type");
+
+    public reset = () => {
+        super.reset();
+        this.selectedType = undefined;
+        this.formRef.value?.reset();
+    };
+
+    activeCallback = (): void => {
+        const form = this.formRef.value;
+
+        this.host.isValid = form?.checkValidity() ?? false;
+
         if (this.selectedType) {
             this.selectDispatch(this.selectedType);
         }
@@ -92,9 +112,8 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
                     data-ouid-component-type="ak-type-create-grid-card"
                     data-ouid-component-name=${componentName}
                     @click=${() => {
-                        if (requiresEnterprise) {
-                            return;
-                        }
+                        if (requiresEnterprise) return;
+
                         this.selectDispatch(type);
                         this.selectedType = type;
                     }}
@@ -120,11 +139,13 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
 
     renderList(): TemplateResult {
         return html`<form
+            ${ref(this.formRef)}
             class="pf-c-form pf-m-horizontal"
             data-ouid-component-type="ak-type-create-list"
         >
             ${this.types.map((type) => {
                 const requiresEnterprise = type.requiresEnterprise && !this.hasEnterpriseLicense;
+
                 return html`<div
                     class="pf-c-radio"
                     data-ouid-component-type="ak-type-create-list-card"
@@ -160,6 +181,8 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
                 return this.renderGrid();
             case TypeCreateWizardPageLayouts.list:
                 return this.renderList();
+            default:
+                throw new Error(`Unknown layout: ${this.layout}`) as never;
         }
     }
 }
