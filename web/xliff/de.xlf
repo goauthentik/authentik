@@ -613,8 +613,8 @@
       </trans-unit>
       <trans-unit id="s6dfd15978586d05f">
         <source>Welcome, <x id="0" equiv-text="${name || &quot;&quot;}"/>.</source>
-        <target>Willkommen,
-<x id="0" equiv-text="${name}"/>.</target>
+        <target>Welcome,
+        <x id="0" equiv-text="${name}"/>.</target>
         
       </trans-unit>
       <trans-unit id="sc381422c585b867f">
