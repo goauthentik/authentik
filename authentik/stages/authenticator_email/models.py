@@ -162,7 +162,7 @@ class EmailDevice(SerializerModel, SideChannelDevice):
     def __str__(self):
         if not self.pk:
             return "New Email Device"
-        return f"Email Device for {self.user}"
+        return f"Email Device for {self.user_pk}"
 
     class Meta:
         verbose_name = _("Email Device")
