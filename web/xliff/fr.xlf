@@ -1,4 +1,4 @@
-<?xml version="1.0"?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<?xml version="1.0" ?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
   <file target-language="fr" source-language="en" original="lit-localize-inputs" datatype="plaintext">
     <body>
       <trans-unit id="s4caed5b7a7e5d89b">
@@ -596,9 +596,9 @@
         
       </trans-unit>
       <trans-unit id="saa0e2675da69651b">
-        <source>The URL "<x id="0" equiv-text="${this.url}"/>" was not found.</source>
-        <target>L'URL "
-        <x id="0" equiv-text="${this.url}"/>" n'a pas été trouvée.</target>
+        <source>The URL &quot;<x id="0" equiv-text="${this.url}"/>&quot; was not found.</source>
+        <target>L'URL &quot;
+        <x id="0" equiv-text="${this.url}"/>&quot; n'a pas été trouvée.</target>
         
       </trans-unit>
       <trans-unit id="s58cd9c2fe836d9c6">
@@ -1547,7 +1547,7 @@
       </trans-unit>
       <trans-unit id="s33ed903c210a6209">
         <source>Token to authenticate with. Currently only bearer authentication is supported.</source>
-        <target>Jeton d'authentification à utiliser. Actuellement, seule l'authentification "bearer authentication" est prise en charge.</target>
+        <target>Jeton d'authentification à utiliser. Actuellement, seule l'authentification &quot;bearer authentication&quot; est prise en charge.</target>
         
       </trans-unit>
       <trans-unit id="sfc8bb104e2c05af8">
@@ -1715,8 +1715,8 @@
         
       </trans-unit>
       <trans-unit id="sa90b7809586c35ce">
-        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".</source>
-        <target>Entrez une URL complète, un chemin relatif ou utilisez 'fa://fa-test' pour utiliser l'icône Font Awesome "fa-test".</target>
+        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon &quot;fa-test&quot;.</source>
+        <target>Entrez une URL complète, un chemin relatif ou utilisez 'fa://fa-test' pour utiliser l'icône Font Awesome &quot;fa-test&quot;.</target>
         
       </trans-unit>
       <trans-unit id="s0410779cb47de312">
@@ -2779,7 +2779,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s33683c3b1dbaf264">
         <source>To use SSL instead, use 'ldaps://' and disable this option.</source>
-        <target>Pour utiliser SSL à la base, utilisez "ldaps://" et désactviez cette option.</target>
+        <target>Pour utiliser SSL à la base, utilisez &quot;ldaps://&quot; et désactviez cette option.</target>
         
       </trans-unit>
       <trans-unit id="s2221fef80f4753a2">
@@ -2863,8 +2863,8 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="s76768bebabb7d543">
-        <source>Field which contains members of a group. Note that if using the "memberUid" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'</source>
-        <target>Champ qui contient les membres d'un groupe. Si vous utilisez le champ "memberUid", la valeur est censée contenir un nom distinctif relatif, par exemple 'memberUid=un-utilisateur' au lieu de 'memberUid=cn=un-utilisateur,ou=groups,...'</target>
+        <source>Field which contains members of a group. Note that if using the &quot;memberUid&quot; field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'</source>
+        <target>Champ qui contient les membres d'un groupe. Si vous utilisez le champ &quot;memberUid&quot;, la valeur est censée contenir un nom distinctif relatif, par exemple 'memberUid=un-utilisateur' au lieu de 'memberUid=cn=un-utilisateur,ou=groups,...'</target>
         
       </trans-unit>
       <trans-unit id="s026555347e589f0e">
@@ -3159,7 +3159,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s3198c384c2f68b08">
         <source>Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually.</source>
-        <target>Moment où les utilisateurs temporaires doivent être supprimés. Cela ne s'applique que si votre IDP utilise le format NameID "transient" et que l'utilisateur ne se déconnecte pas manuellement.</target>
+        <target>Moment où les utilisateurs temporaires doivent être supprimés. Cela ne s'applique que si votre IDP utilise le format NameID &quot;transient&quot; et que l'utilisateur ne se déconnecte pas manuellement.</target>
         
       </trans-unit>
       <trans-unit id="sb32e9c1faa0b8673">
@@ -3301,7 +3301,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s9f8aac89fe318acc">
         <source>Optionally set the 'FriendlyName' value of the Assertion attribute.</source>
-        <target>Indiquer la valeur "FriendlyName" de l'attribut d'assertion (optionnel)</target>
+        <target>Indiquer la valeur &quot;FriendlyName&quot; de l'attribut d'assertion (optionnel)</target>
         
       </trans-unit>
       <trans-unit id="s851c108679653d2a">
@@ -3782,10 +3782,10 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="sa95a538bfbb86111">
-        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> "<x id="1" equiv-text="${this.obj?.name}"/>"?</source>
+        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> &quot;<x id="1" equiv-text="${this.obj?.name}"/>&quot;?</source>
         <target>Êtes-vous sûr de vouloir mettre à jour
-        <x id="0" equiv-text="${this.objectLabel}"/>"
-        <x id="1" equiv-text="${this.obj?.name}"/>"?</target>
+        <x id="0" equiv-text="${this.objectLabel}"/>&quot;
+        <x id="1" equiv-text="${this.obj?.name}"/>&quot;?</target>
         
       </trans-unit>
       <trans-unit id="sc92d7cfb6ee1fec6">
@@ -4856,8 +4856,8 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="sdf1d8edef27236f0">
-        <source>A "roaming" authenticator, like a YubiKey</source>
-        <target>Un authentificateur "itinérant", comme une YubiKey</target>
+        <source>A &quot;roaming&quot; authenticator, like a YubiKey</source>
+        <target>Un authentificateur &quot;itinérant&quot;, comme une YubiKey</target>
         
       </trans-unit>
       <trans-unit id="sfffba7b23d8fb40c">
@@ -5172,7 +5172,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s5170f9ef331949c0">
         <source>Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the 'prompt_data' variable.</source>
-        <target>Afficher des champs de saisie arbitraires à l'utilisateur, par exemple pendant l'inscription. Les données sont enregistrées dans le contexte du flux sous la variable "prompt_data".</target>
+        <target>Afficher des champs de saisie arbitraires à l'utilisateur, par exemple pendant l'inscription. Les données sont enregistrées dans le contexte du flux sous la variable &quot;prompt_data&quot;.</target>
         
       </trans-unit>
       <trans-unit id="s36cb242ac90353bc">
@@ -5225,8 +5225,8 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="s1608b2f94fa0dbd4">
-        <source>If set to a duration above 0, the user will have the option to choose to "stay signed in", which will extend their session by the time specified here.</source>
-        <target>Si défini à une durée supérieure à 0, l'utilisateur aura la possibilité de choisir de "rester connecté", ce qui prolongera sa session jusqu'à la durée spécifiée ici.</target>
+        <source>If set to a duration above 0, the user will have the option to choose to &quot;stay signed in&quot;, which will extend their session by the time specified here.</source>
+        <target>Si défini à une durée supérieure à 0, l'utilisateur aura la possibilité de choisir de &quot;rester connecté&quot;, ce qui prolongera sa session jusqu'à la durée spécifiée ici.</target>
         
       </trans-unit>
       <trans-unit id="s542a71bb8f41e057">
@@ -7216,7 +7216,7 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="sff0ac1ace2d90709">
   <source>Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /outpost.goauthentik.io must be routed to the outpost (when using a managed outpost, this is done for you).</source>
-  <target>Utilisez ce fournisseur avec l'option "auth_request" de Nginx ou "forwardAuth" de Traefik. Chaque application/domaine a besoin de son propre fournisseur. De plus, sur chaque domaine, "/outpost.goauthentik.io" doit être routé vers le poste avancé (lorsque vous utilisez un poste avancé géré, cela est fait pour vous).</target>
+  <target>Utilisez ce fournisseur avec l'option &quot;auth_request&quot; de Nginx ou &quot;forwardAuth&quot; de Traefik. Chaque application/domaine a besoin de son propre fournisseur. De plus, sur chaque domaine, &quot;/outpost.goauthentik.io&quot; doit être routé vers le poste avancé (lorsque vous utilisez un poste avancé géré, cela est fait pour vous).</target>
 </trans-unit>
 <trans-unit id="scb58b8a60cad8762">
   <source>Default relay state</source>
@@ -7520,7 +7520,7 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <target>Utilisateur créé et ajouté au groupe <x id="0" equiv-text="${this.group.name}"/> avec succès</target>
 </trans-unit>
 <trans-unit id="s824e0943a7104668">
-  <source>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</source>
+  <source>This user will be added to the group &quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&quot;.</source>
   <target>Cet utilisateur sera ajouté au groupe &amp;quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&amp;quot;.</target>
 </trans-unit>
 <trans-unit id="s62e7f6ed7d9cb3ca">
@@ -8814,7 +8814,7 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <target>Synchroniser le groupe</target>
 </trans-unit>
 <trans-unit id="s2d5f69929bb7221d">
-  <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
+  <source><x id="0" equiv-text="${p.name}"/> (&quot;<x id="1" equiv-text="${p.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${p.type}"/>)</source>
   <target><x id="0" equiv-text="${p.name}"/> (&amp;quot;<x id="1" equiv-text="${p.fieldKey}"/>&amp;quot;, de type <x id="2" equiv-text="${p.type}"/>)</target>
 </trans-unit>
 <trans-unit id="s25bacc19d98b444e">
@@ -9062,8 +9062,8 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <target>URLs de redirection autorisées après un flux d'autorisation réussi. Indiquez également toute origine ici pour les flux implicites.</target>
 </trans-unit>
 <trans-unit id="s4c49d27de60a532b">
-  <source>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</source>
-  <target>Pour permettre n'importe quelle URI de redirection, définissez cette valeur sur ".*". Soyez conscient des possibles implications de sécurité que cela peut avoir.</target>
+  <source>To allow any redirect URI, set the mode to Regex and the value to &quot;.*&quot;. Be aware of the possible security implications this can have.</source>
+  <target>Pour permettre n'importe quelle URI de redirection, définissez cette valeur sur &quot;.*&quot;. Soyez conscient des possibles implications de sécurité que cela peut avoir.</target>
 </trans-unit>
 <trans-unit id="sa52bf79fe1ccb13e">
   <source>Federated OIDC Sources</source>
@@ -9343,108 +9343,145 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="s82cced87e15e0665">
   <source>Worker with incorrect version connected.</source>
+  <target>Worker avec une version incorrecte connecté.</target>
 </trans-unit>
 <trans-unit id="ha8e91858b300a3b7">
   <source>(Format: <x id="0" equiv-text="&lt;code&gt;"/>hours=-1;minutes=-2;seconds=-3)<x id="1" equiv-text="&lt;/code&gt;"/>.</source>
+  <target>(Format: <x id="0" equiv-text="&lt;code&gt;"/>hours=-1;minutes=-2;seconds=-3)<x id="1" equiv-text="&lt;/code&gt;"/>.</target>
 </trans-unit>
 <trans-unit id="hbe8e6353371ecb22">
   <source>(Format: <x id="0" equiv-text="&lt;code&gt;"/>hours=1;minutes=2;seconds=3).<x id="1" equiv-text="&lt;/code&gt;"/></source>
+  <target>(Format: <x id="0" equiv-text="&lt;code&gt;"/>hours=1;minutes=2;seconds=3).<x id="1" equiv-text="&lt;/code&gt;"/></target>
 </trans-unit>
 <trans-unit id="se8dd47dfaf01d6c9">
   <source>Key used to sign the events.</source>
+  <target>Clé utilisée pour signer les évènements.</target>
 </trans-unit>
 <trans-unit id="sd1b31f8fba05d429">
   <source>Event Retention</source>
+  <target>Rétention des évènements</target>
 </trans-unit>
 <trans-unit id="sd760b123cced4675">
   <source>Determines how long events are stored for. If an event could not be sent correctly, its expiration is also increased by this duration.</source>
+  <target>Détermine pendant combien de temps les évènements sont stockés. Si un évènement n'a pas pu être correctement envoyé, son expiration est également augmentée de cette valeur.</target>
 </trans-unit>
 <trans-unit id="s1aa62e1bf258e88a">
   <source>OIDC Providers</source>
+  <target>Fournisseurs OIDC</target>
 </trans-unit>
 <trans-unit id="sb9d947872397ca07">
   <source>SSF Provider is in preview.</source>
+  <target>Le fournisseur SSF est en aperçu.</target>
 </trans-unit>
 <trans-unit id="s78302d097a608b99">
   <source>Update SSF Provider</source>
+  <target>Mettre à jour le fournisseur SSF</target>
 </trans-unit>
 <trans-unit id="sa412f34efd88e962">
   <source>Streams</source>
+  <target>Flux</target>
 </trans-unit>
 <trans-unit id="s91ae4b6bf981682b">
   <source>authentik Logo</source>
+  <target>Logo authentik</target>
 </trans-unit>
 <trans-unit id="s1cdeecda0baf365e">
   <source>Release</source>
+  <target>Version</target>
 </trans-unit>
 <trans-unit id="s35429c9dc2319aea">
   <source>Development</source>
+  <target>Développement</target>
 </trans-unit>
 <trans-unit id="s5937938934a777ab">
   <source>UI Version</source>
+  <target>Version de l'UI</target>
 </trans-unit>
 <trans-unit id="s3fe3ff490adaaa63">
   <source>Build</source>
+  <target>Build</target>
 </trans-unit>
 <trans-unit id="s42aea5c6d3d1fce7">
   <source>Python version</source>
+  <target>Version de Python</target>
 </trans-unit>
 <trans-unit id="s5c67b6c66029e5b2">
   <source>Platform</source>
+  <target>Platforme</target>
 </trans-unit>
 <trans-unit id="se8574bce64d9c1f8">
   <source>Kernel</source>
+  <target>Noyau</target>
 </trans-unit>
 <trans-unit id="s3fbe63b7fcfe3e91">
   <source>OpenSSL</source>
+  <target>OpenSSL</target>
 </trans-unit>
 <trans-unit id="s1381314790b50b1f">
   <source>A newer version (<x id="0" equiv-text="${this.version.versionCurrent}"/>) of the UI is available.</source>
+  <target>Une nouvelle version (<x id="0" equiv-text="${this.version.versionCurrent}"/>) de l'UI est disponible.</target>
 </trans-unit>
 <trans-unit id="s61ffea061fae0af4">
   <source>No notifications found.</source>
+  <target>Aucune notification trouvée.</target>
 </trans-unit>
 <trans-unit id="scf8d5cdc8b434982">
   <source>You don't have any notifications currently.</source>
+  <target>Vous n'avez actuellement pas de notification.</target>
 </trans-unit>
 <trans-unit id="s358e08de4fbebf51">
   <source>Version <x id="0" equiv-text="${this.version?.versionCurrent || &quot;&quot;}"/></source>
+  <target>Version <x id="0" equiv-text="${this.version?.versionCurrent || &quot;&quot;}"/></target>
 </trans-unit>
 <trans-unit id="sfb95ad8c25db95ba">
   <source>Last password change</source>
+  <target>Dernier changement de mot de passe</target>
 </trans-unit>
 <trans-unit id="s37e1bad4bf0e9241">
   <source>Evaluate policies before the Stage is presented to the user.</source>
+  <target>Évaluer les politiques avant la présentation de l'étape à l'utilisateur</target>
 </trans-unit>
 <trans-unit id="h8c1aa2d523f94f36">
   <source>Can be in the format of <x id="0" equiv-text="&lt;code&gt;"/>unix://<x id="1" equiv-text="&lt;/code&gt;"/> when connecting to a local
                             docker daemon, using <x id="2" equiv-text="&lt;code&gt;"/>ssh://<x id="3" equiv-text="&lt;/code&gt;"/> to connect via SSH, or
                             <x id="4" equiv-text="&lt;code&gt;"/>https://:2376<x id="5" equiv-text="&lt;/code&gt;"/> when connecting to a remote system.</source>
+  <target>Peut être du format <x id="0" equiv-text="&lt;code&gt;"/>unix://<x id="1" equiv-text="&lt;/code&gt;"/> lors de la connection à un daemon
+                            docker local, utiliser <x id="2" equiv-text="&lt;code&gt;"/>ssh://<x id="3" equiv-text="&lt;/code&gt;"/> pour se connecter via SSH, ou
+                            <x id="4" equiv-text="&lt;code&gt;"/>https://:2376<x id="5" equiv-text="&lt;/code&gt;"/> pour se connecter à un système distant.</target>
 </trans-unit>
 <trans-unit id="h3ac79dc5cc553329">
   <source>When using an external logging solution for archiving, this can be
                                 set to <x id="0" equiv-text="&lt;code&gt;"/>minutes=5<x id="1" equiv-text="&lt;/code&gt;"/>.</source>
+  <target>Lors de l'utilisation d'un système de logging externe pour de l'archivage, cela peut être
+                                défini à <x id="0" equiv-text="&lt;code&gt;"/>minutes=5<x id="1" equiv-text="&lt;/code&gt;"/>.</target>
 </trans-unit>
 <trans-unit id="sc92905d14a9421f3">
   <source>Idle</source>
+  <target>Inactif</target>
 </trans-unit>
 <trans-unit id="s4b052cb287d81da7">
   <source>Connecting</source>
+  <target>Connexion en cours</target>
 </trans-unit>
 <trans-unit id="s123b7254b44dd148">
   <source>Waiting</source>
+  <target>En attente</target>
 </trans-unit>
 <trans-unit id="s82a4e28ab5b56670">
   <source>Connected</source>
+  <target>Connecté</target>
 </trans-unit>
 <trans-unit id="sd669c8ff49c068ad">
   <source>Disconnecting</source>
+  <target>Déconnexion en cours</target>
 </trans-unit>
 <trans-unit id="sfc2c3bd345c0128a">
   <source>Disconnected</source>
+  <target>Déconnecté</target>
 </trans-unit>
 <trans-unit id="s47b7ce63a543564c">
   <source>Fewer details</source>
+  <target>Moins de détails</target>
 </trans-unit>
     </body>
   </file>
