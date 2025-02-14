@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-20 00:08+0000\n"
+"POT-Creation-Date: 2025-02-14 14:49+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Marc Schmitt, 2025\n"
 "Language-Team: Finnish (https://app.transifex.com/authentik/teams/119923/fi/)\n"
@@ -595,6 +595,47 @@ msgstr "Yhteyksien enimmäismäärä saavutettu."
 msgid "(You are already connected in another tab/window)"
 msgstr "(Olet jo yhteydessä toisen selainvälilehden tai -ikkunan kautta)"
 
+#: authentik/enterprise/providers/ssf/models.py
+#: authentik/providers/oauth2/models.py
+msgid "Signing Key"
+msgstr "Allekirjoitusavain"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Key used to sign the SSF Events."
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Shared Signals Framework Provider"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Shared Signals Framework Providers"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Add stream to SSF provider"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Stream"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Streams"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Stream Event"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Stream Events"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/tasks.py
+msgid "Failed to send request"
+msgstr ""
+
 #: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
 msgid "Endpoint Authenticator Google Device Trust Connector Stage"
 msgstr "Päätepisteen todentaja Google Device Trust Connector -vaihe"
@@ -885,8 +926,8 @@ msgid "Evaluate policies during the Flow planning process."
 msgstr "Suorita käytännöt prosessin suunnitteluvaiheen aikana."
 
 #: authentik/flows/models.py
-msgid "Evaluate policies when the Stage is present to the user."
-msgstr "Suorita käytännöt kun vaihe näytetään käyttäjälle."
+msgid "Evaluate policies when the Stage is presented to the user."
+msgstr ""
 
 #: authentik/flows/models.py
 msgid ""
@@ -1559,10 +1600,6 @@ msgstr ""
 #: authentik/providers/oauth2/models.py
 msgid "Configure how the issuer field of the ID Token should be filled."
 msgstr "Määritä, miten myöntäjän ID-tunnisteen kenttä täytetään."
-
-#: authentik/providers/oauth2/models.py
-msgid "Signing Key"
-msgstr "Allekirjoitusavain"
 
 #: authentik/providers/oauth2/models.py
 msgid "Key used to sign the tokens."
