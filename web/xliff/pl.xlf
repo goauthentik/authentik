@@ -1,4 +1,4 @@
-<?xml version="1.0" ?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<?xml version="1.0"?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
   <file target-language="pl" source-language="en" original="lit-localize-inputs" datatype="plaintext">
     <body>
       <trans-unit id="s4caed5b7a7e5d89b">
@@ -596,9 +596,9 @@
         
       </trans-unit>
       <trans-unit id="saa0e2675da69651b">
-        <source>The URL &quot;<x id="0" equiv-text="${this.url}"/>&quot; was not found.</source>
-        <target>Nie znaleziono &quot;
-        <x id="0" equiv-text="${this.url}"/>&quot; adresu URL.</target>
+        <source>The URL "<x id="0" equiv-text="${this.url}"/>" was not found.</source>
+        <target>Nie znaleziono "
+        <x id="0" equiv-text="${this.url}"/>" adresu URL.</target>
         
       </trans-unit>
       <trans-unit id="s58cd9c2fe836d9c6">
@@ -1715,7 +1715,7 @@
         
       </trans-unit>
       <trans-unit id="sa90b7809586c35ce">
-        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon &quot;fa-test&quot;.</source>
+        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".</source>
         <target>Wprowadź pełny adres URL, ścieżkę względną lub użyj „fa://fa-test”, aby użyć ikony Font Awesome „fa-test”.</target>
         
       </trans-unit>
@@ -2865,7 +2865,7 @@ nie przechodzi, gdy jedna lub obie wybrane opcje są równe lub wyższe od progu
         
       </trans-unit>
       <trans-unit id="s76768bebabb7d543">
-        <source>Field which contains members of a group. Note that if using the &quot;memberUid&quot; field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'</source>
+        <source>Field which contains members of a group. Note that if using the "memberUid" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'</source>
         <target>Pole zawierające członków grupy. Należy zauważyć, że w przypadku korzystania z pola „memberUid” zakłada się, że wartość zawiera względną nazwę wyróżniającą. np. 'memberUid=jakiś-użytkownik' zamiast 'memberUid=cn=jakiś-użytkownik,ou=grupy,...'</target>
         
       </trans-unit>
@@ -3784,9 +3784,9 @@ Można tu używać tylko zasad, ponieważ dostęp jest sprawdzany przed uwierzyt
         
       </trans-unit>
       <trans-unit id="sa95a538bfbb86111">
-        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> &quot;<x id="1" equiv-text="${this.obj?.name}"/>&quot;?</source>
+        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> "<x id="1" equiv-text="${this.obj?.name}"/>"?</source>
         <target>Czy na pewno chcesz zaktualizować 
-        <x id="0" equiv-text="${this.objectLabel}"/>&quot; 
+        <x id="0" equiv-text="${this.objectLabel}"/>" 
         <x id="1" equiv-text="${this.obj?.name}"/>”?</target>
         
       </trans-unit>
@@ -4858,7 +4858,7 @@ Można tu używać tylko zasad, ponieważ dostęp jest sprawdzany przed uwierzyt
         
       </trans-unit>
       <trans-unit id="sdf1d8edef27236f0">
-        <source>A &quot;roaming&quot; authenticator, like a YubiKey</source>
+        <source>A "roaming" authenticator, like a YubiKey</source>
         <target>„Mobilne” uwierzytelniacz, taki jak YubiKey</target>
         
       </trans-unit>
@@ -5227,7 +5227,7 @@ Można tu używać tylko zasad, ponieważ dostęp jest sprawdzany przed uwierzyt
         
       </trans-unit>
       <trans-unit id="s1608b2f94fa0dbd4">
-        <source>If set to a duration above 0, the user will have the option to choose to &quot;stay signed in&quot;, which will extend their session by the time specified here.</source>
+        <source>If set to a duration above 0, the user will have the option to choose to "stay signed in", which will extend their session by the time specified here.</source>
         <target>W przypadku ustawienia czasu trwania powyżej 0, użytkownik będzie mógł wybrać opcję „pozostania zalogowanym”, co spowoduje przedłużenie jego sesji o określony tutaj czas.</target>
         
       </trans-unit>
@@ -7522,7 +7522,7 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
   <target>Pomyślnie utworzono użytkownika i dodano go do grupy <x id="0" equiv-text="${this.group.name}"/></target>
 </trans-unit>
 <trans-unit id="s824e0943a7104668">
-  <source>This user will be added to the group &quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&quot;.</source>
+  <source>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</source>
   <target>Ten użytkownik zostanie dodany do grupy &amp;quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&amp;quot;.</target>
 </trans-unit>
 <trans-unit id="s62e7f6ed7d9cb3ca">
@@ -8650,7 +8650,7 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 </trans-unit>
 <trans-unit id="s9dda0789d278f5c5">
   <source>Provide users with a 'show password' button.</source>
-  <target>Udostępnij użytkownikom przycisk &quot;pokaż hasło&quot;.</target>
+  <target>Udostępnij użytkownikom przycisk "pokaż hasło".</target>
 </trans-unit>
 <trans-unit id="s2f7f35f6a5b733f5">
   <source>Show password</source>
@@ -8756,7 +8756,7 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
   <source>Sync Group</source>
 </trans-unit>
 <trans-unit id="s2d5f69929bb7221d">
-  <source><x id="0" equiv-text="${p.name}"/> (&quot;<x id="1" equiv-text="${p.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${p.type}"/>)</source>
+  <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
 </trans-unit>
 <trans-unit id="s25bacc19d98b444e">
   <source>Parent Group</source>
@@ -8942,7 +8942,7 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
   <source>Valid redirect URIs after a successful authorization flow. Also specify any origins here for Implicit flows.</source>
 </trans-unit>
 <trans-unit id="s4c49d27de60a532b">
-  <source>To allow any redirect URI, set the mode to Regex and the value to &quot;.*&quot;. Be aware of the possible security implications this can have.</source>
+  <source>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</source>
 </trans-unit>
 <trans-unit id="sa52bf79fe1ccb13e">
   <source>Federated OIDC Sources</source>
