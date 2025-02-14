@@ -1,4 +1,4 @@
-<?xml version="1.0"?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<?xml version="1.0" ?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
   <file target-language="pl" source-language="en" original="lit-localize-inputs" datatype="plaintext">
     <body>
       <trans-unit id="s4caed5b7a7e5d89b">
@@ -596,9 +596,9 @@
         
       </trans-unit>
       <trans-unit id="saa0e2675da69651b">
-        <source>The URL "<x id="0" equiv-text="${this.url}"/>" was not found.</source>
-        <target>Nie znaleziono "
-        <x id="0" equiv-text="${this.url}"/>" adresu URL.</target>
+        <source>The URL &quot;<x id="0" equiv-text="${this.url}"/>&quot; was not found.</source>
+        <target>Nie znaleziono &quot;
+        <x id="0" equiv-text="${this.url}"/>&quot; adresu URL.</target>
         
       </trans-unit>
       <trans-unit id="s58cd9c2fe836d9c6">
@@ -944,16 +944,6 @@
         <target>Początek gidNumbers, liczba ta jest dodawana do liczby wygenerowanej z group.Pk, aby upewnić się, że liczby nie są zbyt niskie dla grup POSIX. Wartość domyślna to 4000, aby upewnić się, że nie kolidujemy z lokalnymi grupami lub użytkownikami podstawowymi grupami gidNumber</target>
         
       </trans-unit>
-      <trans-unit id="s2236dc563c2dbf76">
-        <source>(Format: hours=-1;minutes=-2;seconds=-3).</source>
-        <target>(Format: hours=-1;minutes=-2;seconds=-3).</target>
-        
-      </trans-unit>
-      <trans-unit id="sbec40ef4e6f139b7">
-        <source>(Format: hours=1;minutes=2;seconds=3).</source>
-        <target>(Format: hours=1;minutes=2;seconds=3).</target>
-        
-      </trans-unit>
       <trans-unit id="sbb8ad22c83d375b1">
         <source>The following keywords are supported:</source>
         <target>Obsługiwane są następujące słowa kluczowe:</target>
@@ -1157,11 +1147,6 @@
       <trans-unit id="se2adaf0371ffcd65">
         <source>Machine-to-Machine authentication settings</source>
         <target>Ustawienia uwierzytelniania typu maszyna-maszyna</target>
-        
-      </trans-unit>
-      <trans-unit id="s33318837e6c54a9b">
-        <source>Trusted OIDC Sources</source>
-        <target>Zaufane źródła OIDC</target>
         
       </trans-unit>
       <trans-unit id="s22e566052f7bec81">
@@ -1730,7 +1715,7 @@
         
       </trans-unit>
       <trans-unit id="sa90b7809586c35ce">
-        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".</source>
+        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon &quot;fa-test&quot;.</source>
         <target>Wprowadź pełny adres URL, ścieżkę względną lub użyj „fa://fa-test”, aby użyć ikony Font Awesome „fa-test”.</target>
         
       </trans-unit>
@@ -2880,7 +2865,7 @@ nie przechodzi, gdy jedna lub obie wybrane opcje są równe lub wyższe od progu
         
       </trans-unit>
       <trans-unit id="s76768bebabb7d543">
-        <source>Field which contains members of a group. Note that if using the "memberUid" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'</source>
+        <source>Field which contains members of a group. Note that if using the &quot;memberUid&quot; field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'</source>
         <target>Pole zawierające członków grupy. Należy zauważyć, że w przypadku korzystania z pola „memberUid” zakłada się, że wartość zawiera względną nazwę wyróżniającą. np. 'memberUid=jakiś-użytkownik' zamiast 'memberUid=cn=jakiś-użytkownik,ou=grupy,...'</target>
         
       </trans-unit>
@@ -3626,11 +3611,6 @@ Można tu używać tylko zasad, ponieważ dostęp jest sprawdzany przed uwierzyt
         <target>Czas, po którym zdarzenia zostaną usunięte z bazy danych.</target>
         
       </trans-unit>
-      <trans-unit id="s7b1fba26d245cb1c">
-        <source>When using an external logging solution for archiving, this can be set to "minutes=5".</source>
-        <target>W przypadku korzystania z zewnętrznego rozwiązania rejestrującego do archiwizacji można to ustawić na „minuty=5”.</target>
-        
-      </trans-unit>
       <trans-unit id="s44536d20bb5c8257">
         <source>This setting only affects new Events, as the expiration is saved per-event.</source>
         <target>To ustawienie ma wpływ tylko na nowe zdarzenia, ponieważ data wygaśnięcia jest zapisywana dla każdego zdarzenia.</target>
@@ -3804,9 +3784,9 @@ Można tu używać tylko zasad, ponieważ dostęp jest sprawdzany przed uwierzyt
         
       </trans-unit>
       <trans-unit id="sa95a538bfbb86111">
-        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> "<x id="1" equiv-text="${this.obj?.name}"/>"?</source>
+        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> &quot;<x id="1" equiv-text="${this.obj?.name}"/>&quot;?</source>
         <target>Czy na pewno chcesz zaktualizować 
-        <x id="0" equiv-text="${this.objectLabel}"/>" 
+        <x id="0" equiv-text="${this.objectLabel}"/>&quot; 
         <x id="1" equiv-text="${this.obj?.name}"/>”?</target>
         
       </trans-unit>
@@ -4526,11 +4506,6 @@ Można tu używać tylko zasad, ponieważ dostęp jest sprawdzany przed uwierzyt
         <target>Oceń, kiedy etap jest uruchomiony</target>
         
       </trans-unit>
-      <trans-unit id="sff3b708e23bb96b2">
-        <source>Evaluate policies before the Stage is present to the user.</source>
-        <target>Oceń zasady, zanim etap jest obecny dla użytkownika.</target>
-        
-      </trans-unit>
       <trans-unit id="s0dc46deb8f181baf">
         <source>Invalid response behavior</source>
         <target>Nieprawidłowe zachowanie odpowiedzi</target>
@@ -4883,7 +4858,7 @@ Można tu używać tylko zasad, ponieważ dostęp jest sprawdzany przed uwierzyt
         
       </trans-unit>
       <trans-unit id="sdf1d8edef27236f0">
-        <source>A "roaming" authenticator, like a YubiKey</source>
+        <source>A &quot;roaming&quot; authenticator, like a YubiKey</source>
         <target>„Mobilne” uwierzytelniacz, taki jak YubiKey</target>
         
       </trans-unit>
@@ -5252,7 +5227,7 @@ Można tu używać tylko zasad, ponieważ dostęp jest sprawdzany przed uwierzyt
         
       </trans-unit>
       <trans-unit id="s1608b2f94fa0dbd4">
-        <source>If set to a duration above 0, the user will have the option to choose to "stay signed in", which will extend their session by the time specified here.</source>
+        <source>If set to a duration above 0, the user will have the option to choose to &quot;stay signed in&quot;, which will extend their session by the time specified here.</source>
         <target>W przypadku ustawienia czasu trwania powyżej 0, użytkownik będzie mógł wybrać opcję „pozostania zalogowanym”, co spowoduje przedłużenie jego sesji o określony tutaj czas.</target>
         
       </trans-unit>
@@ -6009,11 +5984,6 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
         <target>URL Dockera</target>
         
       </trans-unit>
-      <trans-unit id="sa7fcf026bd25f231">
-        <source>Can be in the format of 'unix://' when connecting to a local docker daemon, using 'ssh://' to connect via SSH, or 'https://:2376' when connecting to a remote system.</source>
-        <target>Może mieć format „unix://” podczas łączenia się z lokalnym demonem dockera, używając „ssh://” do łączenia się przez SSH lub „https://:2376” podczas łączenia się z systemem zdalnym.</target>
-        
-      </trans-unit>
       <trans-unit id="saf1d289e3137c2ea">
         <source>CA which the endpoint's Certificate is verified against. Can be left empty for no validation.</source>
         <target>CA względem którego weryfikowany jest certyfikat. Można pozostawić puste, aby nie sprawdzać poprawności.</target>
@@ -6314,17 +6284,6 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
       <trans-unit id="s8cda828dac449ea5">
         <source>Clear all</source>
         <target>Wyczyść wszystko</target>
-        
-      </trans-unit>
-      <trans-unit id="s4207178ba0b99418">
-        <source>A newer version of the frontend is available.</source>
-        <target>Dostępna jest nowsza wersja frontendu.</target>
-        
-      </trans-unit>
-      <trans-unit id="s96b3cddf33e1c853">
-        <source>You're currently impersonating <x id="0" equiv-text="${this.impersonation}"/>. Click to stop.</source>
-        <target>Obecnie podszywasz się pod
-        <x id="0" equiv-text="${this.impersonation}"/>. Kliknij, aby zatrzymać.</target>
         
       </trans-unit>
       <trans-unit id="s7031e6928c44cedd">
@@ -7081,10 +7040,6 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
   <source>Service accounts should be used for machine-to-machine authentication or other automations.</source>
   <target>Konta usług powinny być używane do uwierzytelniania maszyna-maszyna lub innych automatyzacji.</target>
 </trans-unit>
-<trans-unit id="s28cbd874ba450b4e">
-  <source>Less details</source>
-  <target>Mniej szczegółów</target>
-</trans-unit>
 <trans-unit id="s8fa26f65aed77c96">
   <source>More details</source>
   <target>Więcej szczegółów</target>
@@ -7567,7 +7522,7 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
   <target>Pomyślnie utworzono użytkownika i dodano go do grupy <x id="0" equiv-text="${this.group.name}"/></target>
 </trans-unit>
 <trans-unit id="s824e0943a7104668">
-  <source>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</source>
+  <source>This user will be added to the group &quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&quot;.</source>
   <target>Ten użytkownik zostanie dodany do grupy &amp;quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&amp;quot;.</target>
 </trans-unit>
 <trans-unit id="s62e7f6ed7d9cb3ca">
@@ -8256,10 +8211,6 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
   <source>Select permissions to assign</source>
   <target>Wybierz uprawnienia do przypisania</target>
 </trans-unit>
-<trans-unit id="s676d94e7e31a8075">
-  <source>SCIM Source is in preview.</source>
-  <target>SCIM Source jest w wersji zapoznawczej.</target>
-</trans-unit>
 <trans-unit id="s31f1afc0a81977c1">
   <source>Update SCIM Source</source>
   <target>Aktualizuj źródło SCIM</target>
@@ -8392,10 +8343,6 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
   <source>Determines what authentik will do when a Group is deleted.</source>
   <target>Określa, co zrobi authentik, gdy grupa zostanie usunięta.</target>
 </trans-unit>
-<trans-unit id="sa5f28f1ad0bee45b">
-  <source>Google Workspace Provider is in preview.</source>
-  <target>Google Workspace Provider jest w wersji zapoznawczej.</target>
-</trans-unit>
 <trans-unit id="s958928ab6208d748">
   <source>Microsoft Entra Provider</source>
   <target>Dostawca Microsoft Entra</target>
@@ -8423,10 +8370,6 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 <trans-unit id="s89e4e698cdb1187f">
   <source>ID of the tenant accounts will be synced into.</source>
   <target>Identyfikator kont najemców, z którymi będą synchronizowane.</target>
-</trans-unit>
-<trans-unit id="sf341f5dfc7a11633">
-  <source>Microsoft Entra Provider is in preview.</source>
-  <target>Microsoft Entra Provider jest w wersji zapoznawczej.</target>
 </trans-unit>
 <trans-unit id="s79dd6df244c05ae9">
   <source>Update Microsoft Entra Provider</source>
@@ -8518,30 +8461,39 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 </trans-unit>
 <trans-unit id="s35f47dbd321aaf15">
   <source>FIPS compliance: passing</source>
+  <target>Zgodność z FIPS: pozytywna</target>
 </trans-unit>
 <trans-unit id="sc94578030c702562">
   <source>Unverified</source>
+  <target>Niezweryfikowany</target>
 </trans-unit>
 <trans-unit id="s16749cce7c4c1589">
   <source>FIPS compliance: unverified</source>
+  <target>Zgodność z FIPS: niezweryfikowana</target>
 </trans-unit>
 <trans-unit id="s0b2ad58c3deaa8dd">
   <source>FIPS Status</source>
+  <target>Stan FIPS</target>
 </trans-unit>
 <trans-unit id="s4facec1106c91cf9">
   <source>Search returned no results.</source>
+  <target>Wyszukiwanie nie zwróciło żadnych wyników.</target>
 </trans-unit>
 <trans-unit id="s23446284b56ca0cc">
   <source>Reputation score(s)</source>
+  <target>Punkt(y) reputacji  </target>
 </trans-unit>
 <trans-unit id="s7a64ac07061f85b2">
   <source>See documentation</source>
+  <target>Zobacz dokumentację</target>
 </trans-unit>
 <trans-unit id="se166e95fe447ebcd">
   <source>Close dialog</source>
+  <target>Zamknij okno dialogowe</target>
 </trans-unit>
 <trans-unit id="s3dc14a4b8129f989">
   <source>Pagination</source>
+  <target>Paginacja</target>
 </trans-unit>
 <trans-unit id="sf2da0e95c78f2cb7">
   <source>Restore Application Wizard Hint</source>
@@ -8602,39 +8554,51 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 </trans-unit>
 <trans-unit id="s77fbb0a6d145442d">
   <source>Countries</source>
+  <target>Kraje</target>
 </trans-unit>
 <trans-unit id="sdd277e10884a7272">
   <source>Available Countries</source>
+  <target>Dostępne kraje</target>
 </trans-unit>
 <trans-unit id="s7a93139fb12ebf96">
   <source>Selected Countries</source>
+  <target>Wybrane kraje</target>
 </trans-unit>
 <trans-unit id="s375a13497266db93">
   <source>Bind existing policy/group/user</source>
+  <target>Przypisz istniejącą politykę/grupę/użytkownika</target>
 </trans-unit>
 <trans-unit id="s8e2de27afeb78e5a">
   <source>Property mappings for user creation.</source>
+  <target>Mapowania właściwości dla tworzenia użytkownika.</target>
 </trans-unit>
 <trans-unit id="s045cf2d851164d5a">
   <source>Property mappings for group creation.</source>
+  <target>Mapowania właściwości dla tworzenia grupy.</target>
 </trans-unit>
 <trans-unit id="s9642f1d8ee6e787d">
   <source>Link to a group with identical name. Can have security implications when a group is used with another source</source>
+  <target>Połącz z grupą o identycznej nazwie. Może mieć implikacje bezpieczeństwa, gdy grupa jest używana z innym źródłem</target>
 </trans-unit>
 <trans-unit id="s485964f83b5ed044">
   <source>Use the group's name, but deny enrollment when the name already exists</source>
+  <target>Użyj nazwy grupy, ale odmów rejestracji, gdy nazwa już istnieje</target>
 </trans-unit>
 <trans-unit id="s2b1b532c5271b296">
   <source>Group matching mode</source>
+  <target>Tryb dopasowywania grup</target>
 </trans-unit>
 <trans-unit id="s704381cea57e5a12">
   <source>OAuth Attribute mapping</source>
+  <target>Mapowanie atrybutów OAuth</target>
 </trans-unit>
 <trans-unit id="s4b9501c321dc4922">
   <source>Plex Attribute mapping</source>
+  <target>Mapowanie atrybutów Plex</target>
 </trans-unit>
 <trans-unit id="s6135938c50ad8a4b">
   <source>Encryption Certificate</source>
+  <target>Certyfikat szyfrowania</target>
 </trans-unit>
 <trans-unit id="s37b8d48b9416fc25">
   <source>When selected, encrypted assertions will be decrypted using this keypair.</source>
@@ -8674,30 +8638,38 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 </trans-unit>
 <trans-unit id="s4ae42fa672dd72bc">
   <source>Created at</source>
+  <target>Utworzono o</target>
 </trans-unit>
 <trans-unit id="see1f8a5c8e11c5ab">
   <source>Last updated at</source>
+  <target>Ostatnia aktualizacja o</target>
 </trans-unit>
 <trans-unit id="s82dd7087cd1471ab">
   <source>Last used at</source>
+  <target>Ostatnio używane o</target>
 </trans-unit>
 <trans-unit id="s9dda0789d278f5c5">
   <source>Provide users with a 'show password' button.</source>
+  <target>Udostępnij użytkownikom przycisk &quot;pokaż hasło&quot;.</target>
 </trans-unit>
 <trans-unit id="s2f7f35f6a5b733f5">
   <source>Show password</source>
+  <target>Pokaż hasło</target>
 </trans-unit>
 <trans-unit id="s452f791e0ff6a13e">
   <source>Hide password</source>
+  <target>Ukryj hasło</target>
 </trans-unit>
 <trans-unit id="s08272eeeddfd244e">
   <source>An outpost is on an incorrect version!</source>
 </trans-unit>
 <trans-unit id="sa30c12014e955946">
   <source>Russian</source>
+  <target>Rosyjski</target>
 </trans-unit>
 <trans-unit id="s354405ae02cb262d">
   <source>Last seen: <x id="0" equiv-text="${getRelativeTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</source>
+  <target>Ostatnio widziany: <x id="0" equiv-text="${getRelativeTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</target>
 </trans-unit>
 <trans-unit id="s5aebe06e3ddf6ca9">
   <source>Sign assertions</source>
@@ -8784,7 +8756,7 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
   <source>Sync Group</source>
 </trans-unit>
 <trans-unit id="s2d5f69929bb7221d">
-  <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
+  <source><x id="0" equiv-text="${p.name}"/> (&quot;<x id="1" equiv-text="${p.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${p.type}"/>)</source>
 </trans-unit>
 <trans-unit id="s25bacc19d98b444e">
   <source>Parent Group</source>
@@ -8970,7 +8942,7 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
   <source>Valid redirect URIs after a successful authorization flow. Also specify any origins here for Implicit flows.</source>
 </trans-unit>
 <trans-unit id="s4c49d27de60a532b">
-  <source>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</source>
+  <source>To allow any redirect URI, set the mode to Regex and the value to &quot;.*&quot;. Be aware of the possible security implications this can have.</source>
 </trans-unit>
 <trans-unit id="sa52bf79fe1ccb13e">
   <source>Federated OIDC Sources</source>
@@ -9097,6 +9069,7 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 </trans-unit>
 <trans-unit id="sde0ad51b14f77cf6">
   <source>Redirect URIs/Origins (RegEx)</source>
+  <target>URIs/Origins przekierowania (RegEx)</target>
 </trans-unit>
 <trans-unit id="s89ae85c3a9df8a6f">
   <source>Configure OAuth2 Provider</source>
@@ -9178,6 +9151,111 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 </trans-unit>
 <trans-unit id="s8e1c375a007d1839">
   <source>These entitlements can be used to configure user access in this application.</source>
+</trans-unit>
+<trans-unit id="s82cced87e15e0665">
+  <source>Worker with incorrect version connected.</source>
+</trans-unit>
+<trans-unit id="ha8e91858b300a3b7">
+  <source>(Format: <x id="0" equiv-text="&lt;code&gt;"/>hours=-1;minutes=-2;seconds=-3)<x id="1" equiv-text="&lt;/code&gt;"/>.</source>
+</trans-unit>
+<trans-unit id="hbe8e6353371ecb22">
+  <source>(Format: <x id="0" equiv-text="&lt;code&gt;"/>hours=1;minutes=2;seconds=3).<x id="1" equiv-text="&lt;/code&gt;"/></source>
+</trans-unit>
+<trans-unit id="se8dd47dfaf01d6c9">
+  <source>Key used to sign the events.</source>
+</trans-unit>
+<trans-unit id="sd1b31f8fba05d429">
+  <source>Event Retention</source>
+</trans-unit>
+<trans-unit id="sd760b123cced4675">
+  <source>Determines how long events are stored for. If an event could not be sent correctly, its expiration is also increased by this duration.</source>
+</trans-unit>
+<trans-unit id="s1aa62e1bf258e88a">
+  <source>OIDC Providers</source>
+</trans-unit>
+<trans-unit id="sb9d947872397ca07">
+  <source>SSF Provider is in preview.</source>
+</trans-unit>
+<trans-unit id="s78302d097a608b99">
+  <source>Update SSF Provider</source>
+</trans-unit>
+<trans-unit id="sa412f34efd88e962">
+  <source>Streams</source>
+</trans-unit>
+<trans-unit id="s91ae4b6bf981682b">
+  <source>authentik Logo</source>
+</trans-unit>
+<trans-unit id="s1cdeecda0baf365e">
+  <source>Release</source>
+</trans-unit>
+<trans-unit id="s35429c9dc2319aea">
+  <source>Development</source>
+</trans-unit>
+<trans-unit id="s5937938934a777ab">
+  <source>UI Version</source>
+</trans-unit>
+<trans-unit id="s3fe3ff490adaaa63">
+  <source>Build</source>
+</trans-unit>
+<trans-unit id="s42aea5c6d3d1fce7">
+  <source>Python version</source>
+</trans-unit>
+<trans-unit id="s5c67b6c66029e5b2">
+  <source>Platform</source>
+</trans-unit>
+<trans-unit id="se8574bce64d9c1f8">
+  <source>Kernel</source>
+</trans-unit>
+<trans-unit id="s3fbe63b7fcfe3e91">
+  <source>OpenSSL</source>
+</trans-unit>
+<trans-unit id="s1381314790b50b1f">
+  <source>A newer version (<x id="0" equiv-text="${this.version.versionCurrent}"/>) of the UI is available.</source>
+</trans-unit>
+<trans-unit id="s61ffea061fae0af4">
+  <source>No notifications found.</source>
+</trans-unit>
+<trans-unit id="scf8d5cdc8b434982">
+  <source>You don't have any notifications currently.</source>
+</trans-unit>
+<trans-unit id="s358e08de4fbebf51">
+  <source>Version <x id="0" equiv-text="${this.version?.versionCurrent || &quot;&quot;}"/></source>
+</trans-unit>
+<trans-unit id="sfb95ad8c25db95ba">
+  <source>Last password change</source>
+</trans-unit>
+<trans-unit id="s37e1bad4bf0e9241">
+  <source>Evaluate policies before the Stage is presented to the user.</source>
+</trans-unit>
+<trans-unit id="h8c1aa2d523f94f36">
+  <source>Can be in the format of <x id="0" equiv-text="&lt;code&gt;"/>unix://<x id="1" equiv-text="&lt;/code&gt;"/> when connecting to a local
+                            docker daemon, using <x id="2" equiv-text="&lt;code&gt;"/>ssh://<x id="3" equiv-text="&lt;/code&gt;"/> to connect via SSH, or
+                            <x id="4" equiv-text="&lt;code&gt;"/>https://:2376<x id="5" equiv-text="&lt;/code&gt;"/> when connecting to a remote system.</source>
+</trans-unit>
+<trans-unit id="h3ac79dc5cc553329">
+  <source>When using an external logging solution for archiving, this can be
+                                set to <x id="0" equiv-text="&lt;code&gt;"/>minutes=5<x id="1" equiv-text="&lt;/code&gt;"/>.</source>
+</trans-unit>
+<trans-unit id="sc92905d14a9421f3">
+  <source>Idle</source>
+</trans-unit>
+<trans-unit id="s4b052cb287d81da7">
+  <source>Connecting</source>
+</trans-unit>
+<trans-unit id="s123b7254b44dd148">
+  <source>Waiting</source>
+</trans-unit>
+<trans-unit id="s82a4e28ab5b56670">
+  <source>Connected</source>
+</trans-unit>
+<trans-unit id="sd669c8ff49c068ad">
+  <source>Disconnecting</source>
+</trans-unit>
+<trans-unit id="sfc2c3bd345c0128a">
+  <source>Disconnected</source>
+</trans-unit>
+<trans-unit id="s47b7ce63a543564c">
+  <source>Fewer details</source>
 </trans-unit>
     </body>
   </file>
