@@ -730,7 +730,7 @@ msgstr "Zadanie nie zostało jeszcze uruchomione."
 #, python-brace-format
 msgid "Flow not applicable to current user/request: {messages}"
 msgstr ""
-"Przepływ nie ma zastosowania do bieżącego użytkownika/żądania: {komunikaty}"
+"Przepływ nie ma zastosowania do bieżącego użytkownika/żądania: {messages}"
 
 #: authentik/flows/api/flows_diagram.py
 #, python-brace-format
