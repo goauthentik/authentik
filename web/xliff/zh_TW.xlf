@@ -933,16 +933,6 @@
         <target>對於 gidNumbers 的起始值，這個數字會加到從 group.Pk 生成的數字上，以確保對於 POSIX 群組來說，這個數字不會太低。預設值是 4000，以確保我們不會和本地群組或使用者的主要群組的 gidNumber 產生衝突</target>
 
       </trans-unit>
-      <trans-unit id="s2236dc563c2dbf76">
-        <source>(Format: hours=-1;minutes=-2;seconds=-3).</source>
-        <target>(格式： hours=-1;minutes=-2;seconds=-3).</target>
-
-      </trans-unit>
-      <trans-unit id="sbec40ef4e6f139b7">
-        <source>(Format: hours=1;minutes=2;seconds=3).</source>
-        <target>(格式： hours=1;minutes=2;seconds=3).</target>
-
-      </trans-unit>
       <trans-unit id="sbb8ad22c83d375b1">
         <source>The following keywords are supported:</source>
         <target>支援以下的關鍵字：</target>
@@ -1146,11 +1136,6 @@
       <trans-unit id="se2adaf0371ffcd65">
         <source>Machine-to-Machine authentication settings</source>
         <target>機器對機器的認證設定</target>
-
-      </trans-unit>
-      <trans-unit id="s33318837e6c54a9b">
-        <source>Trusted OIDC Sources</source>
-        <target>受信任的 OIDC 來源</target>
 
       </trans-unit>
       <trans-unit id="s22e566052f7bec81">
@@ -3601,11 +3586,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>事件紀錄在被從資料庫刪除前的時長。</target>
 
       </trans-unit>
-      <trans-unit id="s7b1fba26d245cb1c">
-        <source>When using an external logging solution for archiving, this can be set to "minutes=5".</source>
-        <target>如果使用外部日誌紀錄解決方案時，可以設定為「minutes=5」。</target>
-
-      </trans-unit>
       <trans-unit id="s44536d20bb5c8257">
         <source>This setting only affects new Events, as the expiration is saved per-event.</source>
         <target>此設定僅會影響新的事件紀錄，舊的紀錄到期時間已經設定。</target>
@@ -4482,11 +4462,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s6336fa345e96dde9">
         <source>Evaluate when stage is run</source>
         <target>在執行階段時進行評估</target>
-
-      </trans-unit>
-      <trans-unit id="sff3b708e23bb96b2">
-        <source>Evaluate policies before the Stage is present to the user.</source>
-        <target>在階段呈現給使用者前評估政策。</target>
 
       </trans-unit>
       <trans-unit id="s0dc46deb8f181baf">
@@ -5958,11 +5933,6 @@ Bindings to groups/users are checked against the user of the event.</source>
         <target>Docker 網址</target>
 
       </trans-unit>
-      <trans-unit id="sa7fcf026bd25f231">
-        <source>Can be in the format of 'unix://' when connecting to a local docker daemon, using 'ssh://' to connect via SSH, or 'https://:2376' when connecting to a remote system.</source>
-        <target>當連接到本機 Docker 常駐程式時，將會是「unix: //」的格式，通過 SSH 連線時使用「ssh: //」，或者當連接到遠端系統時，將會是「https://:2376」的格式。</target>
-
-      </trans-unit>
       <trans-unit id="saf1d289e3137c2ea">
         <source>CA which the endpoint's Certificate is verified against. Can be left empty for no validation.</source>
         <target>驗證終端節點的憑證所需的 CA 憑證。如果為空則不驗證憑證。</target>
@@ -6261,17 +6231,6 @@ Bindings to groups/users are checked against the user of the event.</source>
       <trans-unit id="s8cda828dac449ea5">
         <source>Clear all</source>
         <target>清除全部</target>
-
-      </trans-unit>
-      <trans-unit id="s4207178ba0b99418">
-        <source>A newer version of the frontend is available.</source>
-        <target>有可用的新版本前端網頁。</target>
-
-      </trans-unit>
-      <trans-unit id="s96b3cddf33e1c853">
-        <source>You're currently impersonating <x id="0" equiv-text="${this.impersonation}"/>. Click to stop.</source>
-        <target>您現在正在模擬
-<x id="0" equiv-text="${this.impersonation}"/>。點擊停止模擬。</target>
 
       </trans-unit>
       <trans-unit id="s7031e6928c44cedd">
@@ -7022,10 +6981,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s77e8668a27dbc402">
   <source>Service accounts should be used for machine-to-machine authentication or other automations.</source>
   <target>服務帳號應用於機器對機器的身份認證或其他自動化操作。</target>
-</trans-unit>
-<trans-unit id="s28cbd874ba450b4e">
-  <source>Less details</source>
-  <target>顯示更少資訊</target>
 </trans-unit>
 <trans-unit id="s8fa26f65aed77c96">
   <source>More details</source>
@@ -8029,9 +7984,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s0ca04e397298bc43">
   <source>Select permissions to assign</source>
 </trans-unit>
-<trans-unit id="s676d94e7e31a8075">
-  <source>SCIM Source is in preview.</source>
-</trans-unit>
 <trans-unit id="s31f1afc0a81977c1">
   <source>Update SCIM Source</source>
 </trans-unit>
@@ -8131,9 +8083,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sdb872a9f425937fa">
   <source>Determines what authentik will do when a Group is deleted.</source>
 </trans-unit>
-<trans-unit id="sa5f28f1ad0bee45b">
-  <source>Google Workspace Provider is in preview.</source>
-</trans-unit>
 <trans-unit id="s958928ab6208d748">
   <source>Microsoft Entra Provider</source>
 </trans-unit>
@@ -8154,9 +8103,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s89e4e698cdb1187f">
   <source>ID of the tenant accounts will be synced into.</source>
-</trans-unit>
-<trans-unit id="sf341f5dfc7a11633">
-  <source>Microsoft Entra Provider is in preview.</source>
 </trans-unit>
 <trans-unit id="s79dd6df244c05ae9">
   <source>Update Microsoft Entra Provider</source>
@@ -8886,6 +8832,111 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s8e1c375a007d1839">
   <source>These entitlements can be used to configure user access in this application.</source>
+</trans-unit>
+<trans-unit id="s82cced87e15e0665">
+  <source>Worker with incorrect version connected.</source>
+</trans-unit>
+<trans-unit id="ha8e91858b300a3b7">
+  <source>(Format: <x id="0" equiv-text="&lt;code&gt;"/>hours=-1;minutes=-2;seconds=-3)<x id="1" equiv-text="&lt;/code&gt;"/>.</source>
+</trans-unit>
+<trans-unit id="hbe8e6353371ecb22">
+  <source>(Format: <x id="0" equiv-text="&lt;code&gt;"/>hours=1;minutes=2;seconds=3).<x id="1" equiv-text="&lt;/code&gt;"/></source>
+</trans-unit>
+<trans-unit id="se8dd47dfaf01d6c9">
+  <source>Key used to sign the events.</source>
+</trans-unit>
+<trans-unit id="sd1b31f8fba05d429">
+  <source>Event Retention</source>
+</trans-unit>
+<trans-unit id="sd760b123cced4675">
+  <source>Determines how long events are stored for. If an event could not be sent correctly, its expiration is also increased by this duration.</source>
+</trans-unit>
+<trans-unit id="s1aa62e1bf258e88a">
+  <source>OIDC Providers</source>
+</trans-unit>
+<trans-unit id="sb9d947872397ca07">
+  <source>SSF Provider is in preview.</source>
+</trans-unit>
+<trans-unit id="s78302d097a608b99">
+  <source>Update SSF Provider</source>
+</trans-unit>
+<trans-unit id="sa412f34efd88e962">
+  <source>Streams</source>
+</trans-unit>
+<trans-unit id="s91ae4b6bf981682b">
+  <source>authentik Logo</source>
+</trans-unit>
+<trans-unit id="s1cdeecda0baf365e">
+  <source>Release</source>
+</trans-unit>
+<trans-unit id="s35429c9dc2319aea">
+  <source>Development</source>
+</trans-unit>
+<trans-unit id="s5937938934a777ab">
+  <source>UI Version</source>
+</trans-unit>
+<trans-unit id="s3fe3ff490adaaa63">
+  <source>Build</source>
+</trans-unit>
+<trans-unit id="s42aea5c6d3d1fce7">
+  <source>Python version</source>
+</trans-unit>
+<trans-unit id="s5c67b6c66029e5b2">
+  <source>Platform</source>
+</trans-unit>
+<trans-unit id="se8574bce64d9c1f8">
+  <source>Kernel</source>
+</trans-unit>
+<trans-unit id="s3fbe63b7fcfe3e91">
+  <source>OpenSSL</source>
+</trans-unit>
+<trans-unit id="s1381314790b50b1f">
+  <source>A newer version (<x id="0" equiv-text="${this.version.versionCurrent}"/>) of the UI is available.</source>
+</trans-unit>
+<trans-unit id="s61ffea061fae0af4">
+  <source>No notifications found.</source>
+</trans-unit>
+<trans-unit id="scf8d5cdc8b434982">
+  <source>You don't have any notifications currently.</source>
+</trans-unit>
+<trans-unit id="s358e08de4fbebf51">
+  <source>Version <x id="0" equiv-text="${this.version?.versionCurrent || &quot;&quot;}"/></source>
+</trans-unit>
+<trans-unit id="sfb95ad8c25db95ba">
+  <source>Last password change</source>
+</trans-unit>
+<trans-unit id="s37e1bad4bf0e9241">
+  <source>Evaluate policies before the Stage is presented to the user.</source>
+</trans-unit>
+<trans-unit id="h8c1aa2d523f94f36">
+  <source>Can be in the format of <x id="0" equiv-text="&lt;code&gt;"/>unix://<x id="1" equiv-text="&lt;/code&gt;"/> when connecting to a local
+                            docker daemon, using <x id="2" equiv-text="&lt;code&gt;"/>ssh://<x id="3" equiv-text="&lt;/code&gt;"/> to connect via SSH, or
+                            <x id="4" equiv-text="&lt;code&gt;"/>https://:2376<x id="5" equiv-text="&lt;/code&gt;"/> when connecting to a remote system.</source>
+</trans-unit>
+<trans-unit id="h3ac79dc5cc553329">
+  <source>When using an external logging solution for archiving, this can be
+                                set to <x id="0" equiv-text="&lt;code&gt;"/>minutes=5<x id="1" equiv-text="&lt;/code&gt;"/>.</source>
+</trans-unit>
+<trans-unit id="sc92905d14a9421f3">
+  <source>Idle</source>
+</trans-unit>
+<trans-unit id="s4b052cb287d81da7">
+  <source>Connecting</source>
+</trans-unit>
+<trans-unit id="s123b7254b44dd148">
+  <source>Waiting</source>
+</trans-unit>
+<trans-unit id="s82a4e28ab5b56670">
+  <source>Connected</source>
+</trans-unit>
+<trans-unit id="sd669c8ff49c068ad">
+  <source>Disconnecting</source>
+</trans-unit>
+<trans-unit id="sfc2c3bd345c0128a">
+  <source>Disconnected</source>
+</trans-unit>
+<trans-unit id="s47b7ce63a543564c">
+  <source>Fewer details</source>
 </trans-unit>
     </body>
   </file>
