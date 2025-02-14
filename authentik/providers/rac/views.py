@@ -10,7 +10,6 @@ from django.utils.translation import gettext as _
 
 from authentik.core.models import Application, AuthenticatedSession
 from authentik.core.views.interface import InterfaceView
-from authentik.enterprise.policy import EnterprisePolicyAccessView
 from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import RedirectChallenge
 from authentik.flows.exceptions import FlowNonApplicableException
@@ -19,10 +18,11 @@ from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, FlowPlanner
 from authentik.flows.stage import RedirectStage
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.engine import PolicyEngine
+from authentik.policies.views import PolicyAccessView
 from authentik.providers.rac.models import ConnectionToken, Endpoint, RACProvider
 
 
-class RACStartView(EnterprisePolicyAccessView):
+class RACStartView(PolicyAccessView):
     """Start a RAC connection by checking access and creating a connection token"""
 
     endpoint: Endpoint

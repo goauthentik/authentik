@@ -4,7 +4,7 @@ from django.apps import AppConfig
 
 
 class AuthentikProviderRAC(AppConfig):
-    """authentik enterprise rac app config"""
+    """authentik rac app config"""
 
     name = "authentik.providers.rac"
     label = "authentik_providers_rac"

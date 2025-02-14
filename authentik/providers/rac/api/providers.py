@@ -5,11 +5,10 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
-from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.providers.rac.models import RACProvider
 
 
-class RACProviderSerializer(EnterpriseRequiredMixin, ProviderSerializer):
+class RACProviderSerializer(ProviderSerializer):
     """RACProvider Serializer"""
 
     outpost_set = ListField(child=CharField(), read_only=True, source="outpost_set.all")

@@ -15,14 +15,14 @@ from authentik.providers.rac.models import ConnectionToken, RACProvider
 # to authentik for a specific connection
 # The `RACClientConsumer` consumer adds itself to this group on connection,
 # and removes itself once it has been assigned a specific outpost channel
-RAC_CLIENT_GROUP = "group_enterprise_rac_client"
+RAC_CLIENT_GROUP = "group_rac_client"
 # A group for all connections in a given authentik session ID
 # A disconnect message is sent to this group when the session expires/is deleted
-RAC_CLIENT_GROUP_SESSION = "group_enterprise_rac_client_%(session)s"
+RAC_CLIENT_GROUP_SESSION = "group_rac_client_%(session)s"
 # A group for all connections with a specific token, which in almost all cases
 # is just one connection, however this is used to disconnect the connection
 # when the token is deleted
-RAC_CLIENT_GROUP_TOKEN = "group_enterprise_rac_token_%(token)s"  # nosec
+RAC_CLIENT_GROUP_TOKEN = "group_rac_token_%(token)s"  # nosec
 
 # Step 1: Client connects to this websocket endpoint
 # Step 2: We prepare all the connection args for Guac
