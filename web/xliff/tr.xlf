@@ -1,4 +1,4 @@
-<?xml version="1.0"?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<?xml version="1.0" ?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
   <file target-language="tr" source-language="en" original="lit-localize-inputs" datatype="plaintext">
     <body>
       <trans-unit id="s4caed5b7a7e5d89b">
@@ -587,7 +587,7 @@
         
       </trans-unit>
       <trans-unit id="saa0e2675da69651b">
-        <source>The URL "<x id="0" equiv-text="${this.url}"/>" was not found.</source>
+        <source>The URL &quot;<x id="0" equiv-text="${this.url}"/>&quot; was not found.</source>
         <target><x id="0" equiv-text="${this.url}"/> URL adresi bulunamadı.</target>
         
       </trans-unit>
@@ -1695,7 +1695,7 @@
         
       </trans-unit>
       <trans-unit id="sa90b7809586c35ce">
-        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".</source>
+        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon &quot;fa-test&quot;.</source>
         <target>Ya tam bir URL, göreli bir yol girin ya da 'fa://fa-test' Yazı Tipi Awesome simgesini “fa-test” kullanmak için kullanın.</target>
         
       </trans-unit>
@@ -2842,7 +2842,7 @@ Belirlenen seçeneklerden biri veya her ikisi de eşiğe eşit veya eşiğin üz
         
       </trans-unit>
       <trans-unit id="s76768bebabb7d543">
-        <source>Field which contains members of a group. Note that if using the "memberUid" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'</source>
+        <source>Field which contains members of a group. Note that if using the &quot;memberUid&quot; field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'</source>
         <target>Bir grubun üyelerini içeren alan. “memberUid” alanını kullanıyorsanız, değerin göreli bir ayırt edici ad içerdiği varsayılır. örn. 'memberUid=cn=some-user yerine 'memberUid=some-user, ou=groups,...'</target>
         
       </trans-unit>
@@ -3756,8 +3756,8 @@ Belirlenen seçeneklerden biri veya her ikisi de eşiğe eşit veya eşiğin üz
         
       </trans-unit>
       <trans-unit id="sa95a538bfbb86111">
-        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> "<x id="1" equiv-text="${this.obj?.name}"/>"?</source>
-        <target><x id="0" equiv-text="${this.objectLabel}"/> "<x id="1" equiv-text="${this.obj?.name}"/>" Güncellemek istediğinizden emin misiniz?</target>
+        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> &quot;<x id="1" equiv-text="${this.obj?.name}"/>&quot;?</source>
+        <target><x id="0" equiv-text="${this.objectLabel}"/> &quot;<x id="1" equiv-text="${this.obj?.name}"/>&quot; Güncellemek istediğinizden emin misiniz?</target>
         
       </trans-unit>
       <trans-unit id="sc92d7cfb6ee1fec6">
@@ -4825,8 +4825,8 @@ Belirlenen seçeneklerden biri veya her ikisi de eşiğe eşit veya eşiğin üz
         
       </trans-unit>
       <trans-unit id="sdf1d8edef27236f0">
-        <source>A "roaming" authenticator, like a YubiKey</source>
-        <target>YubiKey gibi bir "dolaşımda" kimlik doğrulayıcı</target>
+        <source>A &quot;roaming&quot; authenticator, like a YubiKey</source>
+        <target>YubiKey gibi bir &quot;dolaşımda&quot; kimlik doğrulayıcı</target>
         
       </trans-unit>
       <trans-unit id="sfffba7b23d8fb40c">
@@ -5194,8 +5194,8 @@ Belirlenen seçeneklerden biri veya her ikisi de eşiğe eşit veya eşiğin üz
         
       </trans-unit>
       <trans-unit id="s1608b2f94fa0dbd4">
-        <source>If set to a duration above 0, the user will have the option to choose to "stay signed in", which will extend their session by the time specified here.</source>
-        <target>0'ın üzerinde bir süreye ayarlanırsa, kullanıcı "oturumu açık kalsın" seçeneğini seçebilir ve bu da oturumunu burada belirtilen süre kadar uzatır.</target>
+        <source>If set to a duration above 0, the user will have the option to choose to &quot;stay signed in&quot;, which will extend their session by the time specified here.</source>
+        <target>0'ın üzerinde bir süreye ayarlanırsa, kullanıcı &quot;oturumu açık kalsın&quot; seçeneğini seçebilir ve bu da oturumunu burada belirtilen süre kadar uzatır.</target>
         
       </trans-unit>
       <trans-unit id="s542a71bb8f41e057">
@@ -6074,6 +6074,11 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
       <trans-unit id="sf53a78d889b6c775">
         <source>Managed by authentik (Discovered)</source>
         <target>Auentik tarafından yönetilen (Keşfedildi)</target>
+        
+      </trans-unit>
+      <trans-unit id="sef50d248448e0df1">
+        <source>Yes (<x id="0" equiv-text="${item.privateKeyType?.toUpperCase()}"/>)</source>
+        <target>Evet (</target>
         
       </trans-unit>
       <trans-unit id="s09205907b5b56cda">
@@ -7472,8 +7477,8 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
   <target>Kullanıcı başarıyla oluşturuldu ve <x id="0" equiv-text="${this.group.name}"/> grubuna eklendi.</target>
 </trans-unit>
 <trans-unit id="s824e0943a7104668">
-  <source>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</source>
-  <target>Bu kullanıcı "<x id="0" equiv-text="${this.targetGroup.name}"/>" grubuna eklenecek.</target>
+  <source>This user will be added to the group &quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&quot;.</source>
+  <target>Bu kullanıcı &quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&quot; grubuna eklenecek.</target>
 </trans-unit>
 <trans-unit id="s62e7f6ed7d9cb3ca">
   <source>Pretend user exists</source>
@@ -8766,8 +8771,7 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
   <target>Grubu Eşitle</target>
 </trans-unit>
 <trans-unit id="s2d5f69929bb7221d">
-  <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
-  <target><x id="0" equiv-text="${prompt.name}"/> ("<x id="1" equiv-text="${prompt.fieldKey}"/>", of type <x id="2" equiv-text="${prompt.type}"/>)</target>
+  <source><x id="0" equiv-text="${p.name}"/> (&quot;<x id="1" equiv-text="${p.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${p.type}"/>)</source>
 </trans-unit>
 <trans-unit id="s25bacc19d98b444e">
   <source>Parent Group</source>
@@ -8887,7 +8891,7 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 </trans-unit>
 <trans-unit id="s95722900b0c9026f">
   <source>Credentials cache used to authenticate to the KDC for syncing. Optional if Sync password or Sync keytab is provided. Must be in the form TYPE:residual.</source>
-  <target>Eşitleme için KDC'de kimlik doğrulaması yapmak için kullanılan kimlik bilgileri önbelleği. Senkronizasyon şifresi veya Senkronizasyon tuşu sekmesi sağlanmışsa isteğe bağlıdır. TYPE:residual" şeklinde olmalıdır.</target>
+  <target>Eşitleme için KDC'de kimlik doğrulaması yapmak için kullanılan kimlik bilgileri önbelleği. Senkronizasyon şifresi veya Senkronizasyon tuşu sekmesi sağlanmışsa isteğe bağlıdır. TYPE:residual&quot; şeklinde olmalıdır.</target>
 </trans-unit>
 <trans-unit id="sf9c055db98d7994a">
   <source>SPNEGO settings</source>
@@ -8915,7 +8919,7 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 </trans-unit>
 <trans-unit id="sd9757c345e4062f8">
   <source>Credentials cache used for SPNEGO. Optional if SPNEGO keytab is provided. Must be in the form TYPE:residual.</source>
-  <target>SPNEGO için kullanılan kimlik bilgileri önbelleği. SPNEGO tuş sekmesi sağlanmışsa isteğe bağlıdır. TYPE:residual" şeklinde olmalıdır.</target>
+  <target>SPNEGO için kullanılan kimlik bilgileri önbelleği. SPNEGO tuş sekmesi sağlanmışsa isteğe bağlıdır. TYPE:residual&quot; şeklinde olmalıdır.</target>
 </trans-unit>
 <trans-unit id="s734ab8fbcae0b69e">
   <source>Kerberos Attribute mapping</source>
@@ -8956,9 +8960,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 <trans-unit id="sabf8a430d504f8c8">
   <source>Endpoint Google Chrome Device Trust is in preview.</source>
   <target>Uç nokta Google Chrome Cihaz Güvenilirliği önizleme aşamasındadır.</target>
-</trans-unit>
-<trans-unit id="sef50d248448e0df1">
-  <source>Yes (<x id="0" equiv-text="${item.privateKeyType?.toUpperCase()}"/>)</source>
 </trans-unit>
 <trans-unit id="s6f4f35a5a4b9b3cb">
   <source>Interactive</source>
@@ -9003,7 +9004,7 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
   <source>Valid redirect URIs after a successful authorization flow. Also specify any origins here for Implicit flows.</source>
 </trans-unit>
 <trans-unit id="s4c49d27de60a532b">
-  <source>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</source>
+  <source>To allow any redirect URI, set the mode to Regex and the value to &quot;.*&quot;. Be aware of the possible security implications this can have.</source>
 </trans-unit>
 <trans-unit id="sa52bf79fe1ccb13e">
   <source>Federated OIDC Sources</source>
@@ -9130,6 +9131,7 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 </trans-unit>
 <trans-unit id="sde0ad51b14f77cf6">
   <source>Redirect URIs/Origins (RegEx)</source>
+  <target>Yeniden Yönlendirme URI'leri/Kökenleri (RegEx)</target>
 </trans-unit>
 <trans-unit id="s89ae85c3a9df8a6f">
   <source>Configure OAuth2 Provider</source>
