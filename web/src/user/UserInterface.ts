@@ -278,11 +278,17 @@ export class UserInterface extends AuthenticatedInterface {
         this.fetchConfigurationDetails = this.fetchConfigurationDetails.bind(this);
     }
 
-    connectedCallback() {
+    async connectedCallback() {
         super.connectedCallback();
         window.addEventListener(EVENT_NOTIFICATION_DRAWER_TOGGLE, this.toggleNotificationDrawer);
         window.addEventListener(EVENT_API_DRAWER_TOGGLE, this.toggleApiDrawer);
         window.addEventListener(EVENT_WS_MESSAGE, this.fetchConfigurationDetails);
+
+        if (process.env.NODE_ENV === "development" && process.env.WATCHER_URL) {
+            const { ESBuildObserver } = await import("@goauthentik/common/client");
+
+            new ESBuildObserver(process.env.WATCHER_URL);
+        }
     }
 
     disconnectedCallback() {
