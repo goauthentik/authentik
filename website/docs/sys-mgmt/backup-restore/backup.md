@@ -4,7 +4,7 @@ title: Backup authentik
 
 This guide outlines the critical components to back up in authentik.
 
-## PostgreSQL Database
+## PostgreSQL database
 
 - **Role:** Stores all persistent data (users, policies, configurations, etc.).
 - **Impact of Loss:** Complete data loss, requiring full restoration to recover authentik's functionality.
@@ -13,7 +13,7 @@ This guide outlines the critical components to back up in authentik.
     - Exclude system databases (`postgres`, `template0`, `template1`).
 - **Official Documentation:** [PostgreSQL Backup and Restore](https://www.postgresql.org/docs/current/backup.html)
 
-## Redis Database
+## Redis database
 
 - **Role:** Manages temporary data:
     - User sessions (lost data = users must reauthenticate).
@@ -24,7 +24,7 @@ This guide outlines the critical components to back up in authentik.
     - Use Redis' native tools (e.g., [`SAVE`](https://redis.io/commands/save) or [`BGSAVE`](https://redis.io/commands/bgsave)).
 - **Official Documentation:** [Redis Persistence](https://redis.io/docs/management/persistence/)
 
-## Static Directories
+## Static directories
 
 These directories are mounted as volumes in containerized installations:
 

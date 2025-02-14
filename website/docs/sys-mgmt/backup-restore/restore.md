@@ -4,14 +4,14 @@ title: Restore authentik
 
 This guide outlines the critical components to restore authentik.
 
-## PostgreSQL Database
+## PostgreSQL database
 
 - **Role:** Stores all persistent data (users, policies, configurations, etc.).
 - **Restoration Importance:** Essential for full recovery; authentik will not function without it.
 - **Restoration Guidance:**
     - Use PostgreSQL’s official restore commands (e.g., [`pg_restore`](https://www.postgresql.org/docs/current/app-pgrestore.html)) to restore backups.
 
-## Redis Database
+## Redis database
 
 - **Role:** Manages temporary data:
     - User sessions (users must reauthenticate after restoration).
@@ -21,7 +21,7 @@ This guide outlines the critical components to restore authentik.
 - **Restoration Guidance:**
     - Follow Redis’ official documentation to import your backup by restoring an RDB file using the provided guidelines in the [Import Data into Redis](https://redis.io/learn/guides/import#restore-an-rdb-file) guide.
 
-## Static Directories
+## Static directories
 
 These directories must be restored if they were part of the backup to maintain authentik’s expected functionality.
 
