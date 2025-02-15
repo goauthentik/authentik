@@ -50,7 +50,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     }
     pageDescription(): string {
         return msg(
-            str`External applications that use ${this.brand.brandingTitle || "authentik"} as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.`,
+            str`External applications that use ${this.brand?.brandingTitle ?? "authentik"} as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.`,
         );
     }
     pageIcon(): string {
@@ -83,10 +83,6 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
             new TableColumn(msg("Provider Type")),
             new TableColumn(msg("Actions")),
         ];
-    }
-
-    renderSectionBefore(): TemplateResult {
-        return html`<ak-application-wizard-hint></ak-application-wizard-hint>`;
     }
 
     renderSidebarAfter(): TemplateResult {
@@ -160,12 +156,21 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     }
 
     renderObjectCreate(): TemplateResult {
-        return html`<ak-forms-modal .open=${getURLParam("createForm", false)}>
-            <span slot="submit"> ${msg("Create")} </span>
-            <span slot="header"> ${msg("Create Application")} </span>
-            <ak-application-form slot="form"> </ak-application-form>
-            <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
-        </ak-forms-modal>`;
+        return html` <ak-application-wizard .open=${getURLParam("createWizard", false)}>
+                <button
+                    slot="trigger"
+                    class="pf-c-button pf-m-primary"
+                    data-ouia-component-id="start-application-wizard"
+                >
+                    ${msg("Create with Provider")}
+                </button>
+            </ak-application-wizard>
+            <ak-forms-modal .open=${getURLParam("createForm", false)}>
+                <span slot="submit"> ${msg("Create")} </span>
+                <span slot="header"> ${msg("Create Application")} </span>
+                <ak-application-form slot="form"> </ak-application-form>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+            </ak-forms-modal>`;
     }
 }
 
