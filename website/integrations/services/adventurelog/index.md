@@ -45,7 +45,7 @@ This documentation lists only the settings that you need to change from their de
     - Leave everything else as default
 2. Open the new provider you've just created.
 3. Make a note of the **OpenID Configuration Issuer**.
-4. Create a new application that uses the provider you've just created
+4. Navigate to **Applications -> Applications** and create a new application that uses the provider you just created.
 
 ## AdventureLog configuration
 
@@ -55,7 +55,7 @@ This configuration is done in the Admin Panel. Launch the panel by clicking your
 
 Alternatively, navigate to `/admin` on your AdventureLog server.
 
-1. In the admin panel, scroll down to the **Social Accounts** section and click the add button next to **Social applications**. Fill in the following fields:
+1. In the admin panel, scroll down to the **Social Accounts** section and click **Add** next to **Social applications**. Fill in the following fields:
 
     - Provider: OpenID Connect
     - Provider ID: authentik Client ID
@@ -81,7 +81,7 @@ Alternatively, navigate to `/admin` on your AdventureLog server.
 
 Ensure that the authentik server is running and accessible by AdventureLog. Users should now be able to log in to AdventureLog using their authentik account.
 
-## Configuration Validation
+## Configuration validation
 
 To validate the configuration, either link to an existing account as described below or naviage to the AdventureLog login page and click the **authentik** button to log in. You should be redirected to the authentik login page. After logging in, you should be redirected back to AdventureLog.
 
