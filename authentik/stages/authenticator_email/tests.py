@@ -54,7 +54,7 @@ class TestAuthenticatorEmailStage(FlowTestCase):
 
     def test_device_str(self):
         """Test string representation of device"""
-        self.assertEqual(str(self.device), f"Email Device for {self.user}")
+        self.assertEqual(str(self.device), f"Email Device for {self.user.pk}")
         # Test unsaved device
         unsaved_device = EmailDevice(
             user=self.user,
