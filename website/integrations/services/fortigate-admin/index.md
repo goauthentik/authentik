@@ -77,6 +77,9 @@ Under **IdP Details**, set the following values:
 - **IdP Login URL**: <kbd>https://<em>authentik.company</em>/application/saml/<em>slug-from-authentik</em>/sso/binding/redirect/</kbd>
 - **IdP Logout URL**: <kbd>https://<em>authentik.company</em>/application/saml/<em>slug-from-authentik</em>/slo/binding/redirect/</kbd>
 
+
+
+
 FortiGate creates a new user by default if one does not exist, so you will need to set the Default Admin Profile to the permissions you want any new users to have. (I have created a `no_permissions` profile to assign by default.)
 
 Under `SP Details` set the **SP entity ID** to `https`. Note it for later use (this is your Audience value of the authentik SP-provider).
