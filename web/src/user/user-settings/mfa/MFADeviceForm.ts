@@ -34,6 +34,12 @@ export class MFADeviceForm extends ModelForm<Device, string> {
                     duoDeviceRequest: device,
                 });
                 break;
+            case "authentik_stages_authenticator_email.EmailDevice":
+                await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsEmailUpdate({
+                    id: parseInt(this.instance?.pk, 10),
+                    emailDeviceRequest: device,
+                });
+                break;
             case "authentik_stages_authenticator_sms.SMSDevice":
                 await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsSmsUpdate({
                     id: parseInt(this.instance?.pk, 10),
