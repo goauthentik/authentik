@@ -43,15 +43,26 @@ jobs:
         uses: ./.github/actions/setup
       - name: run migrations
         run: poetry run python -m lifecycle.migrate
-  test-migrations-from-stable:
-    name: test-migrations-from-stable - PostgreSQL ${{ matrix.psql }}
+  test-make-seed:
     runs-on: ubuntu-latest
+    steps:
+      - id: seed
+        run: |
+          echo "seed=$(printf "%d\n" "0x$(openssl rand -hex 4)")" >> "$GITHUB_OUTPUT"
+    outputs:
+      seed: ${{ steps.seed.outputs.seed }}
+  test-migrations-from-stable:
+    name: test-migrations-from-stable - PostgreSQL ${{ matrix.psql }} - Run ${{ matrix.run_id }}/5
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: test-make-seed
     strategy:
       fail-fast: false
       matrix:
         psql:
           - 15-alpine
           - 16-alpine
+        run_id: [1, 2, 3, 4, 5]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -93,18 +104,23 @@ jobs:
         env:
           # Test in the main database that we just migrated from the previous stable version
           AUTHENTIK_POSTGRESQL__TEST__NAME: authentik
+          CI_TEST_SEED: ${{ needs.test-make-seed.outputs.seed }}
+          CI_RUN_ID: ${{ matrix.run_id }}
+          CI_TOTAL_RUNS: "5"
         run: |
-          poetry run make test
+          poetry run make ci-test
   test-unittest:
-    name: test-unittest - PostgreSQL ${{ matrix.psql }}
+    name: test-unittest - PostgreSQL ${{ matrix.psql }} - Run ${{ matrix.run_id }}/5
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
+    needs: test-make-seed
     strategy:
       fail-fast: false
       matrix:
         psql:
           - 15-alpine
           - 16-alpine
+        run_id: [1, 2, 3, 4, 5]
     steps:
       - uses: actions/checkout@v4
       - name: Setup authentik env
@@ -112,9 +128,12 @@ jobs:
         with:
           postgresql_version: ${{ matrix.psql }}
       - name: run unittest
+        env:
+          CI_TEST_SEED: ${{ needs.test-make-seed.outputs.seed }}
+          CI_RUN_ID: ${{ matrix.run_id }}
+          CI_TOTAL_RUNS: "5"
         run: |
-          poetry run make test
-          poetry run coverage xml
+          poetry run make ci-test
       - if: ${{ always() }}
         uses: codecov/codecov-action@v5
         with:
