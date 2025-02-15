@@ -74,7 +74,7 @@ class RACProvider(Provider):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.enterprise.providers.rac.api.providers import RACProviderSerializer
+        from authentik.providers.rac.api.providers import RACProviderSerializer
 
         return RACProviderSerializer
 
@@ -100,7 +100,7 @@ class Endpoint(SerializerModel, PolicyBindingModel):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.enterprise.providers.rac.api.endpoints import EndpointSerializer
+        from authentik.providers.rac.api.endpoints import EndpointSerializer
 
         return EndpointSerializer
 
@@ -129,7 +129,7 @@ class RACPropertyMapping(PropertyMapping):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.enterprise.providers.rac.api.property_mappings import (
+        from authentik.providers.rac.api.property_mappings import (
             RACPropertyMappingSerializer,
         )
 

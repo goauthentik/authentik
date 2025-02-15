@@ -4,14 +4,14 @@ from channels.auth import AuthMiddleware
 from channels.sessions import CookieMiddleware
 from django.urls import path
 
-from authentik.enterprise.providers.rac.api.connection_tokens import ConnectionTokenViewSet
-from authentik.enterprise.providers.rac.api.endpoints import EndpointViewSet
-from authentik.enterprise.providers.rac.api.property_mappings import RACPropertyMappingViewSet
-from authentik.enterprise.providers.rac.api.providers import RACProviderViewSet
-from authentik.enterprise.providers.rac.consumer_client import RACClientConsumer
-from authentik.enterprise.providers.rac.consumer_outpost import RACOutpostConsumer
-from authentik.enterprise.providers.rac.views import RACInterface, RACStartView
 from authentik.outposts.channels import TokenOutpostMiddleware
+from authentik.providers.rac.api.connection_tokens import ConnectionTokenViewSet
+from authentik.providers.rac.api.endpoints import EndpointViewSet
+from authentik.providers.rac.api.property_mappings import RACPropertyMappingViewSet
+from authentik.providers.rac.api.providers import RACProviderViewSet
+from authentik.providers.rac.consumer_client import RACClientConsumer
+from authentik.providers.rac.consumer_outpost import RACOutpostConsumer
+from authentik.providers.rac.views import RACInterface, RACStartView
 from authentik.root.asgi_middleware import SessionMiddleware
 from authentik.root.middleware import ChannelsLoggingMiddleware
 
