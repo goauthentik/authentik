@@ -581,6 +581,15 @@ export default {
                 },
                 {
                     type: "category",
+                    label: "Backup & Restore",
+                    collapsed: true,
+                    items: [
+                        "sys-mgmt/backup-restore/backup",
+                        "sys-mgmt/backup-restore/restore",
+                    ],
+                },
+                {
+                    type: "category",
                     label: "Events",
                     collapsed: true,
                     link: {
