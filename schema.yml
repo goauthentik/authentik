@@ -38923,6 +38923,7 @@ components:
         uuid:
           type: string
           format: uuid
+          readOnly: true
         current:
           type: boolean
           description: Check if session is currently active session
@@ -39054,6 +39055,7 @@ components:
       - last_used
       - user
       - user_agent
+      - uuid
     AuthenticationEnum:
       enum:
       - none

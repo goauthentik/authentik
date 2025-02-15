@@ -18,7 +18,7 @@ from sentry_sdk import start_span
 from sentry_sdk.tracing import Span
 from structlog.stdlib import get_logger
 
-from authentik.core.models import AuthenticatedSession, User
+from authentik.core.models import User
 from authentik.events.models import Event
 from authentik.lib.expression.exceptions import ControlFlowException
 from authentik.lib.utils.http import get_http_session
@@ -203,9 +203,7 @@ class BaseEvaluator:
             provider = OAuth2Provider.objects.get(name=provider)
         session = None
         if hasattr(request, "session") and request.session.session_key:
-            session = AuthenticatedSession.objects.filter(
-                session_key=request.session.session_key
-            ).first()
+            session = request.session.authenticated_session
         access_token = AccessToken(
             provider=provider,
             user=user,
