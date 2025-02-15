@@ -7,7 +7,6 @@ from django.template.exceptions import TemplateSyntaxError
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import BooleanField, CharField, IntegerField
-from structlog.stdlib import get_logger
 
 from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import (
@@ -27,9 +26,6 @@ from authentik.stages.authenticator_email.models import (
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
-
-LOGGER = get_logger()
-
 
 SESSION_KEY_EMAIL_DEVICE = "authentik/stages/authenticator_email/email_device"
 PLAN_CONTEXT_EMAIL = "email"
