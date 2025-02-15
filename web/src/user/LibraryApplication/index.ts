@@ -96,7 +96,7 @@ export class LibraryApplication extends AKElement {
         if (!this.application) {
             return html``;
         }
-        if (this.application?.launchUrl === "goauthentik.io://providers/rac/launch") {
+        if (this.application?.providerObj.component === "ak-provider-rac-form") {
             return html`<ak-library-rac-endpoint-launch .app=${this.application}>
                 </ak-library-rac-endpoint-launch>
                 <div class="pf-c-card__title">
