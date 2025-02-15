@@ -209,7 +209,7 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
     @extend_schema(
         parameters=[
             OpenApiParameter(
-                name="superuser_full_list",
+                name="list_rbac",
                 location=OpenApiParameter.QUERY,
                 type=OpenApiTypes.BOOL,
             ),
@@ -229,10 +229,8 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         """Custom list method that checks Policy based access instead of guardian"""
         should_cache = request.query_params.get("search", "") == ""
 
-        superuser_full_list = (
-            str(request.query_params.get("superuser_full_list", "false")).lower() == "true"
-        )
-        if superuser_full_list and request.user.is_superuser:
+        list_rbac = str(request.query_params.get("list_rbac", "false")).lower() == "true"
+        if list_rbac:
             return super().list(request)
 
         only_with_launch_url = str(

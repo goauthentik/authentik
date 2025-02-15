@@ -97,12 +97,9 @@ class FlowErrorChallenge(Challenge):
         if not request or not error:
             return
         self.initial_data["request_id"] = request.request_id
-        from authentik.core.models import USER_ATTRIBUTE_DEBUG
 
         if request.user and request.user.is_authenticated:
-            if request.user.is_superuser or request.user.group_attributes(request).get(
-                USER_ATTRIBUTE_DEBUG, False
-            ):
+            if request.user.has_perm("authentik_core.user_view_debug"):
                 self.initial_data["error"] = str(error)
                 self.initial_data["traceback"] = exception_to_string(error)
 

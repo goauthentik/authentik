@@ -13,6 +13,7 @@ from paramiko.ssh_exception import SSHException
 from structlog.stdlib import get_logger
 from yaml import safe_dump
 
+from authentik import __version__
 from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.controllers.base import BaseClient, BaseController, ControllerException
 from authentik.outposts.docker_ssh import DockerInlineSSH, SSHManagedExternallyException
@@ -182,10 +183,16 @@ class DockerController(BaseController):
         `outposts.container_image_base`, but fall back to known-good images"""
         image = self.get_container_image()
         try:
-            self.client.images.pull(image)
-        except DockerException:  # pragma: no cover
-            image = f"ghcr.io/goauthentik/{self.outpost.type}:latest"
-            self.client.images.pull(image)
+            # See if the image exists...
+            self.client.images.get(image)
+        except DockerException:
+            try:
+                # ...otherwise try to pull it...
+                self.client.images.pull(image)
+            except DockerException:
+                # ...and as a fallback to that default to a sane standard
+                image = f"ghcr.io/goauthentik/{self.outpost.type}:{__version__}"
+                self.client.images.pull(image)
         return image
 
     def _get_container(self) -> tuple[Container, bool]:
