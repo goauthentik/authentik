@@ -37,7 +37,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-20 00:08+0000\n"
+"POT-Creation-Date: 2025-02-14 14:49+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Niklas Kroese, 2025\n"
 "Language-Team: German (https://app.transifex.com/authentik/teams/119923/de/)\n"
@@ -626,6 +626,47 @@ msgstr "Maximale Verbindungsgrenze erreicht."
 msgid "(You are already connected in another tab/window)"
 msgstr "(Sie sind bereits in einem anderen Tab/Fenster verbunden)"
 
+#: authentik/enterprise/providers/ssf/models.py
+#: authentik/providers/oauth2/models.py
+msgid "Signing Key"
+msgstr "Signaturschlüssel"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Key used to sign the SSF Events."
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Shared Signals Framework Provider"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Shared Signals Framework Providers"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Add stream to SSF provider"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Stream"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Streams"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Stream Event"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Stream Events"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/tasks.py
+msgid "Failed to send request"
+msgstr ""
+
 #: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
 msgid "Endpoint Authenticator Google Device Trust Connector Stage"
 msgstr "Endpunkt-Authenticator für Google Gerätevertrauen Verbindungs Stage"
@@ -923,9 +964,8 @@ msgstr ""
 "Evaluierung der Richtlinien während des Planungsprozesses für den Flow."
 
 #: authentik/flows/models.py
-msgid "Evaluate policies when the Stage is present to the user."
+msgid "Evaluate policies when the Stage is presented to the user."
 msgstr ""
-"Bewerten Sie die Richtlinien, wenn die Stufe für den Benutzer sichtbar ist."
 
 #: authentik/flows/models.py
 msgid ""
@@ -1606,10 +1646,6 @@ msgid "Configure how the issuer field of the ID Token should be filled."
 msgstr ""
 "Konfigurieren Sie, wie der Flow-Executor mit einer ungültigen Antwort auf "
 "eine Abfrage umgehen soll."
-
-#: authentik/providers/oauth2/models.py
-msgid "Signing Key"
-msgstr "Signaturschlüssel"
 
 #: authentik/providers/oauth2/models.py
 msgid "Key used to sign the tokens."
