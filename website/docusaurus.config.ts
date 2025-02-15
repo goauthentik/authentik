@@ -134,7 +134,7 @@ module.exports = async function (): Promise<Config> {
                     docsPluginId: "docs",
                     config: {
                         authentik: {
-                            specPath: "static/schema.yaml",
+                            specPath: "static/schema.yml",
                             outputDir: "docs/developer-docs/api/reference/",
                             hideSendButton: true,
                             sidebarOptions: {

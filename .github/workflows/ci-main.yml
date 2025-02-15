@@ -34,7 +34,7 @@ jobs:
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: run job
-        run: poetry run make ci-${{ matrix.job }}
+        run: make ci-${{ matrix.job }}
   test-migrations:
     runs-on: ubuntu-latest
     steps:
@@ -94,7 +94,7 @@ jobs:
           # Test in the main database that we just migrated from the previous stable version
           AUTHENTIK_POSTGRESQL__TEST__NAME: authentik
         run: |
-          poetry run make test
+          make test
   test-unittest:
     name: test-unittest - PostgreSQL ${{ matrix.psql }}
     runs-on: ubuntu-latest
@@ -113,7 +113,7 @@ jobs:
           postgresql_version: ${{ matrix.psql }}
       - name: run unittest
         run: |
-          poetry run make test
+          make test
           poetry run coverage xml
       - if: ${{ always() }}
         uses: codecov/codecov-action@v5
