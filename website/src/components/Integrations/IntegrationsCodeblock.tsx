@@ -1,6 +1,8 @@
 import React, { ReactNode, useState, isValidElement, useCallback } from "react";
 import createDOMPurify from "dompurify";
 
+declare const require: any;
+
 type IntegrationsMultilineCodeblockProps = {
     children: ReactNode;
     className?: string;
