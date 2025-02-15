@@ -209,3 +209,6 @@ source_docs/
 
 ### Golang ###
 /vendor/
+
+### Docker ###
+docker-compose.override.yml

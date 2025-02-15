@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-20 00:08+0000\n"
+"POT-Creation-Date: 2025-02-14 14:49+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2024\n"
 "Language-Team: Chinese Simplified (https://app.transifex.com/authentik/teams/119923/zh-Hans/)\n"
@@ -561,6 +561,47 @@ msgstr "已达到最大连接数。"
 msgid "(You are already connected in another tab/window)"
 msgstr "（您已经在另一个标签页/窗口连接了）"
 
+#: authentik/enterprise/providers/ssf/models.py
+#: authentik/providers/oauth2/models.py
+msgid "Signing Key"
+msgstr "签名密钥"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Key used to sign the SSF Events."
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Shared Signals Framework Provider"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Shared Signals Framework Providers"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Add stream to SSF provider"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Stream"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Streams"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Stream Event"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Stream Events"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/tasks.py
+msgid "Failed to send request"
+msgstr ""
+
 #: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
 msgid "Endpoint Authenticator Google Device Trust Connector Stage"
 msgstr "端点身份验证器 Google 设备信任连接器阶段"
@@ -836,8 +877,8 @@ msgid "Evaluate policies during the Flow planning process."
 msgstr "在流程规划过程中评估策略。"
 
 #: authentik/flows/models.py
-msgid "Evaluate policies when the Stage is present to the user."
-msgstr "在阶段呈现给用户时评估策略。"
+msgid "Evaluate policies when the Stage is presented to the user."
+msgstr ""
 
 #: authentik/flows/models.py
 msgid ""
@@ -1449,10 +1490,6 @@ msgstr "配置应将哪些数据用作唯一用户标识符。在大多数情况
 #: authentik/providers/oauth2/models.py
 msgid "Configure how the issuer field of the ID Token should be filled."
 msgstr "配置如何填写 ID 令牌的颁发者字段。"
-
-#: authentik/providers/oauth2/models.py
-msgid "Signing Key"
-msgstr "签名密钥"
 
 #: authentik/providers/oauth2/models.py
 msgid "Key used to sign the tokens."
