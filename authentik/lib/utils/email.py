@@ -15,7 +15,6 @@ def mask_email(email: str | None) -> str | None:
     if not email:
         return None
 
-
     try:
         # Basic email format validation
         if email.count("@") != 1:
