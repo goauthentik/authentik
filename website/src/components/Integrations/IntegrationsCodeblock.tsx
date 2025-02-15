@@ -1,6 +1,5 @@
 import React, { ReactNode, useState, isValidElement, useCallback } from "react";
 import createDOMPurify from "dompurify";
-import { JSDOM } from "jsdom";
 
 type IntegrationsMultilineCodeblockProps = {
     children: ReactNode;
@@ -20,7 +19,8 @@ const getDOMPurify = () => {
     if (typeof window !== "undefined") {
         return createDOMPurify(window);
     }
-    const dom = new JSDOM("<body></body>");
+    const { JSDOM } = require("jsdom");
+    const dom = new JSDOM("<!DOCTYPE html><html><body></body></html>");
     return createDOMPurify(dom.window);
 };
 
