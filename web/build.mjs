@@ -91,6 +91,15 @@ const baseArgs = {
     loader: { ".css": "text", ".md": "text" },
     define: definitions,
     format: "esm",
+    logOverride: {
+        /**
+         * HACK: Silences issue originating in ESBuild.
+         *
+         * @see {@link https://github.com/evanw/esbuild/blob/b914dd30294346aa15fcc04278f4b4b51b8b43b5/internal/logger/msg_ids.go#L211 ESBuild source}
+         * @expires 2025-08-11
+         */
+        "invalid-source-url": "silent",
+    },
 };
 
 function getVersion() {
