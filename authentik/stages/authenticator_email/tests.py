@@ -9,7 +9,6 @@ from django.db.utils import IntegrityError
 from django.template.exceptions import TemplateDoesNotExist
 from django.urls import reverse
 from django.utils.timezone import now
-from structlog.stdlib import get_logger
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_user
 from authentik.flows.models import FlowStageBinding
@@ -25,8 +24,6 @@ from authentik.stages.authenticator_email.stage import (
     SESSION_KEY_EMAIL_DEVICE,
 )
 from authentik.stages.email.utils import TemplateEmailMessage
-
-LOGGER = get_logger()
 
 
 class TestAuthenticatorEmailStage(FlowTestCase):
