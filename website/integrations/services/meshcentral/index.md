@@ -1,11 +1,8 @@
 ---
 title: Integrate with MeshCentral
 sidebar_label: MeshCentral
+support_level: community
 ---
-
-# Integrate with MeshCentral
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is MeshCentral
 

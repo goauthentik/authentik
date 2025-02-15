@@ -16,6 +16,6 @@ import Objects from "../../../expressions/\_objects.md";
 
 ## Available Functions
 
-import Functions from "../../../expressions/\_functions.md";
+import Functions from "../../../expressions/\_functions.mdx";
 
 <Functions />

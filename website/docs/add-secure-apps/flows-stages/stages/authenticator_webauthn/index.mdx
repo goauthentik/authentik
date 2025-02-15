@@ -12,13 +12,13 @@ Configure if authentik should require, prefer or discourage user verification fo
 
 #### Resident key requirement
 
-Configure if the created authenticator is stored in the encrypted memory on the device or in persistent memory. When configuring [passwordless login](../identification/index.md#passwordless-flow), this should be set to either _Preferred_ or _Required_, otherwise the authenticator cannot be used for passwordless authentication.
+Configure if the created authenticator is stored in the encrypted memory on the device or in persistent memory. When configuring [passwordless login](../identification/index.mdx#passwordless-flow), this should be set to either _Preferred_ or _Required_, otherwise the authenticator cannot be used for passwordless authentication.
 
 #### Authenticator Attachment
 
 Configure if authentik will require either a removable device (like a YubiKey, Google Titan, etc) or a non-removable device (like Windows Hello, TouchID or password managers), or not send a requirement.
 
-#### Device type restrictions <span class="badge badge--version">authentik 2024.4+</span>
+#### Device type restrictions:ak-version[2024.4]
 
 Optionally restrict the types of devices allowed to be enrolled. This option can be used to ensure users are only able to enroll FIPS-compliant devices for example.
 

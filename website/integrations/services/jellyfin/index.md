@@ -1,11 +1,8 @@
 ---
 title: Integrate with Jellyfin
 sidebar_label: Jellyfin
+support_level: community
 ---
-
-# Integrate with Jellyfin
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Jellyfin
 

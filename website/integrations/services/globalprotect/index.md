@@ -1,11 +1,8 @@
 ---
 title: Integrate with GlobalProtect
 sidebar_label: GlobalProtect
+support_level: community
 ---
-
-# Integrate with GlobalProtect
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is GlobalProtect
 
