@@ -37,24 +37,20 @@ class JSONSearchField(StrField):
     def get_nested_options(self):
         """Get keys of all nested objects to show autocomplete"""
         keys = (
-            # self.model.objects.annotate(
-            #     keys=models.Func(models.F("user"), function="jsonb_object_keys"),
-            #     values=models.Func(models.Expression(), function="jsonb_each"),
-            # )
-            # .values("keys")
-            # .distinct("keys")
-            # .order_by("keys")
-            # .values_list("keys", flat=True)
-            self.model.objects.raw(
-                'SELECT event_uuid, key, context->key AS value FROM authentik_events_event, jsonb_object_keys("context") as key;'
+            self.model.objects.annotate(
+                keys=models.Func(models.F(self.name), function="jsonb_object_keys"),
             )
+            .values("keys")
+            .distinct("keys")
+            .order_by("keys")
+            .values_list("keys", flat=True)
         )
         fields = {}
         for evt in keys:
-            fields[evt.key] = {
+            fields[evt] = {
                 "type": "str",
                 "nullable": False,
-                "options": evt.value,
+                "options": [],
             }
         return fields
 
@@ -156,4 +152,4 @@ class QLSearch(SearchFilter):
             return apply_search(queryset, search_query, schema=schema)
         except DjangoQLError as exc:
             LOGGER.warning(exc)
-            return SearchFilter().filter_queryset(request, queryset, view)
+            return queryset
