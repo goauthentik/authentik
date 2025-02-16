@@ -49,7 +49,7 @@ class TestFlowInspector(APITestCase):
                 "captcha_stage": None,
                 "component": "ak-stage-identification",
                 "flow_info": {
-                    "background": flow.background_url,
+                    "background": "/static/dist/assets/images/flow_background.jpg",
                     "cancel_url": reverse("authentik_flows:cancel"),
                     "title": flow.title,
                     "layout": "stacked",
