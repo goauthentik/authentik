@@ -5,7 +5,7 @@ import { me } from "@goauthentik/common/users";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/LoadingOverlay";
+import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import YAML from "yaml";
@@ -186,53 +186,65 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
                             </ak-codemirror>
                         </ak-form-element-horizontal>
                     </div>
+                    <div class="pf-c-card__footer">
+                        <button
+                            class="pf-c-button pf-m-primary"
+                            @click=${() => {
+                                this.refreshPreview();
+                            }}
+                        >
+                            ${msg("Execute")}
+                        </button>
+                    </div>
                 </div>
                 <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                     <div class="pf-c-card__title">${msg("Test results")}</div>
-                    <div class="pf-c-card__body pf-c-form pf-m-horizontal">
-                        <ak-form-element-horizontal label=${msg("Passing")}>
-                            <div class="pf-c-form__group-label">
-                                <div class="c-form__horizontal-group">
-                                    <span class="pf-c-form__label-text">
-                                        <ak-status-label
-                                            ?good=${this.preview?.passing}
-                                        ></ak-status-label>
-                                    </span>
-                                </div>
-                            </div>
-                        </ak-form-element-horizontal>
-                        <ak-form-element-horizontal label=${msg("Messages")}>
-                            <div class="pf-c-form__group-label">
-                                <div class="c-form__horizontal-group">
-                                    <ul>
-                                        ${(this.preview?.messages || []).length > 0
-                                            ? this.preview?.messages?.map((m) => {
-                                                  return html`<li>
-                                                      <span class="pf-c-form__label-text"
-                                                          >${m}</span
-                                                      >
-                                                  </li>`;
-                                              })
-                                            : html`<li>
-                                                  <span class="pf-c-form__label-text">-</span>
-                                              </li>`}
-                                    </ul>
-                                </div>
-                            </div>
-                        </ak-form-element-horizontal>
+                    ${this.previewLoading
+                        ? html`<ak-empty-state loading></ak-empty-state>`
+                        : html`<div class="pf-c-card__body pf-c-form pf-m-horizontal">
+                              <ak-form-element-horizontal label=${msg("Passing")}>
+                                  <div class="pf-c-form__group-label">
+                                      <div class="c-form__horizontal-group">
+                                          <span class="pf-c-form__label-text">
+                                              <ak-status-label
+                                                  ?good=${this.preview?.passing}
+                                              ></ak-status-label>
+                                          </span>
+                                      </div>
+                                  </div>
+                              </ak-form-element-horizontal>
+                              <ak-form-element-horizontal label=${msg("Messages")}>
+                                  <div class="pf-c-form__group-label">
+                                      <div class="c-form__horizontal-group">
+                                          <ul>
+                                              ${(this.preview?.messages || []).length > 0
+                                                  ? this.preview?.messages?.map((m) => {
+                                                        return html`<li>
+                                                            <span class="pf-c-form__label-text"
+                                                                >${m}</span
+                                                            >
+                                                        </li>`;
+                                                    })
+                                                  : html`<li>
+                                                        <span class="pf-c-form__label-text">-</span>
+                                                    </li>`}
+                                          </ul>
+                                      </div>
+                                  </div>
+                              </ak-form-element-horizontal>
 
-                        <ak-form-element-horizontal label=${msg("Log messages")}>
-                            <div class="pf-c-form__group-label">
-                                <div class="c-form__horizontal-group">
-                                    <dl class="pf-c-description-list pf-m-horizontal">
-                                        <ak-log-viewer
-                                            .logs=${this.preview?.logMessages}
-                                        ></ak-log-viewer>
-                                    </dl>
-                                </div>
-                            </div>
-                        </ak-form-element-horizontal>
-                    </div>
+                              <ak-form-element-horizontal label=${msg("Log messages")}>
+                                  <div class="pf-c-form__group-label">
+                                      <div class="c-form__horizontal-group">
+                                          <dl class="pf-c-description-list pf-m-horizontal">
+                                              <ak-log-viewer
+                                                  .logs=${this.preview?.logMessages}
+                                              ></ak-log-viewer>
+                                          </dl>
+                                      </div>
+                                  </div>
+                              </ak-form-element-horizontal>
+                          </div>`}
                 </div>
                 ${this.previewError
                     ? html`
