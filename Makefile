@@ -284,3 +284,8 @@ ci-bandit: ci--meta-debug
 
 ci-pending-migrations: ci--meta-debug
 	ak makemigrations --check
+
+ci-test: ci--meta-debug
+	coverage run manage.py test --keepdb --randomly-seed ${CI_TEST_SEED} authentik
+	coverage report
+	coverage xml
