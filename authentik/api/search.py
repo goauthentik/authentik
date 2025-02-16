@@ -2,7 +2,7 @@
 
 from collections import OrderedDict
 
-from django.db import models
+from django.db import connection, models
 from django.db.models import QuerySet
 from djangoql.ast import Name
 from djangoql.compat import text_type
@@ -10,6 +10,7 @@ from djangoql.exceptions import DjangoQLError
 from djangoql.queryset import apply_search
 from djangoql.schema import DjangoQLSchema, StrField
 from djangoql.serializers import DjangoQLSchemaSerializer
+from orjson import loads
 from rest_framework.filters import SearchFilter
 from rest_framework.request import Request
 from structlog.stdlib import get_logger
@@ -36,21 +37,22 @@ class JSONSearchField(StrField):
 
     def get_nested_options(self):
         """Get keys of all nested objects to show autocomplete"""
-        keys = (
-            self.model.objects.annotate(
-                keys=models.Func(models.F(self.name), function="jsonb_object_keys"),
-            )
-            .values("keys")
-            .distinct("keys")
-            .order_by("keys")
-            .values_list("keys", flat=True)
-        )
+        with connection.cursor() as cursor:
+            cursor.execute(f"""SELECT key, jsonb_agg(DISTINCT value) AS values
+FROM (
+    SELECT key, value
+    FROM {self.model._meta.db_table}, jsonb_each("{self.name}")
+) AS extracted
+GROUP BY key;
+""")
+            row = cursor.fetchall()
         fields = {}
-        for evt in keys:
-            fields[evt] = {
+        for key, r_values in row:
+            values = loads(r_values)
+            fields[key] = {
                 "type": "str",
                 "nullable": False,
-                "options": [],
+                "options": values,
             }
         return fields
 
@@ -59,7 +61,6 @@ class JSONSearchField(StrField):
 
 
 class ChoiceSearchField(StrField):
-
     def __init__(self, model=None, name=None, nullable=None):
         super().__init__(model, name, nullable, suggest_options=True)
 
@@ -95,7 +96,6 @@ class BaseSchema(DjangoQLSchema):
 
 
 class JSONDjangoQLSchemaSerializer(DjangoQLSchemaSerializer):
-
     def serialize(self, schema):
         serialization = super().serialize(schema)
         for _, fields in schema.models.items():
