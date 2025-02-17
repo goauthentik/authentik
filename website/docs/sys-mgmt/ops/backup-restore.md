@@ -1,10 +1,10 @@
 ---
-title: Backup and Restore authentik
+title: Backup & Restore
 ---
 
 This guide outlines the critical components to back up and restore in authentik.
 
-## PostgreSQL Database
+## PostgreSQL database
 
 ### Backup
 
@@ -21,7 +21,7 @@ This guide outlines the critical components to back up and restore in authentik.
 - **Restoration Guidance:**
     - Use PostgreSQL's [`pg_restore`](https://www.postgresql.org/docs/current/app-pgrestore.html) or other official methods.
 
-## Redis Database
+## Redis database
 
 ### Backup
 
@@ -39,13 +39,13 @@ This guide outlines the critical components to back up and restore in authentik.
 - **Restoration Guidance:**
     - Follow [Redis' Import Data Guide](https://redis.io/learn/guides/import#restore-an-rdb-file) to restore an RDB file.
 
-## Static Directories
+## Static directories
 
-These directories are mounted as volumes in containerized installations:
+These directories are mounted as volumes in containerized installations and must be restored if they were part of the backup to maintain authentik’s expected functionality.
 
-| Directory               | Purpose                                  | Backup and Restore Notes                                                                                                                                                                                                                                                                            |
-| ----------------------- | ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **`/media`**            | Icons, flow backgrounds, uploaded files. | - Only required if not using S3 external storage<br>- External storage should ideally be backed up using the [AWS S3 Sync](https://docs.aws.amazon.com/cli/latest/reference/s3/sync.html) CLI utility<br>- Restore if not using external storage                                                    |
-| **`/certs`**            | Custom TLS certificates.                 | - Backup if you rely on those certificates existing on the file system<br>- authentik doesn't need them to persist after they've been imported, as certificates managed by authentik get always stored in the database<br>- Restore only if you previously relied on certificates in this directory |
-| **`/custom-templates`** | Custom branch templates.                 | - Critical if you modified authentik's default appearance<br>- Required for custom UI modifications                                                                                                                                                                                                 |
-| **`/blueprints`**       | Blueprints.                              | - Optional but recommended if using custom blueprints<br>- Recommended to restore blueprints                                                                                                                                                                                                        |
+| Directory               | Purpose                                                         | Backup and Restore Notes                                                                                                                                                             |
+| ----------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **`/media`**            | Stores application icons, flow backgrounds, and uploaded files. | Only required if not using S3 external storage. External storage should be backed up using the [AWS S3 Sync](https://docs.aws.amazon.com/cli/latest/reference/s3/sync.html) utility. |
+| **`/certs`**            | Stores TLS certificates in the filesystem.                      | Backup if you rely on these certificates present in the filesystem.. Not needed if authentik has already imported them, as certificates are stored in the database.                  |
+| **`/custom-templates`** | Stores custom changes to the authentik UI.                      | Required if you modified authentik's default appearance.                                                                                                                             |
+| **`/blueprints`**       | Stores blueprints.                                              | Optional but recommended if using custom blueprints.                                                                                                                                 |
