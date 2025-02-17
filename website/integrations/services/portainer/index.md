@@ -27,29 +27,22 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-### Step 1
+To support the integration of Portainer with authentik, you need to create an application/provider pair in authentik.
 
-In the Admin interface of authentik, under _Providers_, create an _OAuth2/OpenID Provider_ with these settings:
+### Create an application and provider in authentik
 
-:::note
-Only settings that have been modified from default have been listed.
-:::
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can create only an application, without a provider, by clicking **Create.)**
 
-**Protocol Settings**
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Set a `Strict` redirect URI to <kbd>https://<em>portainer.company</em>/</kbd>.
+    - Select any available signing key.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
-- Name: Portainer
-- Client ID: Copy and Save this for Later
-- Client Secret: Copy and Save this for later
-- Redirect URIs/Origins: `https://portainer.company/`
-
-### Step 2
-
-Create an application which uses this provider. Optionally apply access restrictions to the application.
-
-- Name: Portainer
-- Slug: portainer
-- Provider: Portainer
-- Launch URL: https://portainer.company
+3. Click **Submit** to save the new application and provider.
 
 ## Portainer configuration
 

@@ -28,26 +28,22 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-### 1. Provider
+To support the integration of Xen Orchestra with authentik, you need to create an application/provider pair in authentik.
 
-Under _Providers_, create an OAuth2/OpenID provider with these settings:
+### Create an application and provider in authentik
 
-- Name: Provider for XenOrchestra
-- Authorization Flow: Select one of the available Flows.
-- Client type: Confidential
-- Redirect URIs/Origins: `https://xenorchestra.company/signin/oidc/callback`
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can create only an application, without a provider, by clicking **Create.)**
 
-Take note of the Client ID and the Client Secret, because we need them for the configuration of Xen Orchestra.
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Set a `Strict` redirect URI to <kbd>https://<em>xenorchestra.company</em>/signin/oidc/callback</kbd>.
+    - Select any available signing key.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
-### 2. Application
-
-Create an application with the following details:
-
-- Slug: `xenorchestra` (If you want to choose a different slug, your URLs for the Xen Orchestra Configuration may vary.)
-- Provider: Select the one we have created in Step 1
-- Set the Launch URL to `https://xenorchestra.company/`
-
-Optionally apply access restrictions to the application.
+3. Click **Submit** to save the new application and provider.
 
 ## Xen Orchestra configuration
 
