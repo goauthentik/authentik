@@ -19,7 +19,6 @@ The following placeholders are used in this guide:
 
 - `arubaorchestrator.company` is the FQDN of the Aruba Orchestrator installation.
 - `authentik.company` is the FQDN of the authentik installation.
-- `SSL Certificate` is the name of the SSL certificate used to sign outgoing responses.
 
 :::note
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
@@ -27,35 +26,24 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik Configuration
 
-1. Log in to authentik as an admin, and go to the Admin interface.
-2. Create a new SAML Property Mapping under **Customisation** -> **Property Mappings**:
-
-    - **Name**: `Aruba Orchestrator RBAC`
-    - **SAML Attribute Name**: `sp-roles`
-    - **Expression**: Use the expression below but amend the group name as desired.
-
-    ```
-    if ak_is_group_member(request.user, name="authentik Admins"):
-              result = "superAdmin"
-         return result
-    ```
-
-    - Save the settings.
-
-3. Create a new SAML Provider under **Applications** -> **Providers** using the following settings:
-    - **Name**: Aruba Orchestrator
-    - **Authentication Flow**: Use your preferred authentication flow (e.g., default-authentication-flow`)
-    - **Authorization Flow ID**: `default-provider-authorization-explicit-consent (Authorize Application)`
-    - Protocol settings:
-    -   - **ACS URL**: `https://arubaorchestrator.company/gms/rest/authentication/saml2/consume`
-    -   - **Issuer**: `https://arubaorchestrator.company/gms/rest/authentication/saml2/consume`
-    -   - **Service Provider Binding**: Post
-    - Advanced protocol settings:
-    -   - **Signing Certificate**:`SSL Certificate`
-    -   - **Property Mappings**:`default` + `sp-roles`
-    - Leave everything else as default and save the settings.
-4. Download the signing certificate under **Applications** -> **Providers** -> **Aruba Orchestrator** .
-5. Create a new application under **Applications** -> **Applications**, pick a name and a slug, and assign the provider that you have just created.
+1. From the **authentik Admin interface** and go to **Customization** -> **Property Mappings**, then click **Create**.
+2. Choose **SAML Provider Property Mapping**, and click **Next**.
+3. Configure the following:
+    - Set **Name** to `Aruba Orchestrator RBAC`.
+    - Set **SAML Attribute Name** to `sp-roles`.
+    - Add the expression below, modifying the group name if necessary:
+        ```python
+        if ak_is_group_member(request.user, name="authentik Admins"):
+            result = "superAdmin"
+        return result
+        ```
+4. When satisfied with the expression, click **Create**.
+5. Navigate to **Applications** -> **Applications** in the **authentik Admin interface**, and create a new application with a **SAML** provider using the wizard. During the setup:
+    - Set the **ACS URL** and **Issuer** to `https://arubaorchestrator.company/gms/rest/authentication/saml2/consume`.
+    - Choose `Post` for the **Service Provider Binding**.
+    - Under **Advanced protocol settings**, select an available signing certificate.
+    - Add the `sp-roles` property mapping under the **Proprety Mappins** section of **Advanced protocol settings**.
+6. Go to **Applications** -> **Providers** -> **Provider for _Your application name_**, and download the signing certificate.
 
 ## Aruba Orchestrator Configuration
 
