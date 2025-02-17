@@ -26,9 +26,9 @@
         "@mdx-js/react": "^3.1.0",
         "clsx": "^2.1.1",
         "disqus-react": "^1.1.5",
-        "docusaurus-plugin-openapi-docs": "^4.3.3",
-        "docusaurus-theme-openapi-docs": "^4.3.3",
-        "postcss": "^8.5.1",
+        "docusaurus-plugin-openapi-docs": "^4.3.4",
+        "docusaurus-theme-openapi-docs": "^4.3.4",
+        "postcss": "^8.5.2",
         "prism-react-renderer": "^2.4.1",
         "react": "^18.3.1",
         "react-before-after-slider-component": "^1.1.8",
@@ -56,9 +56,9 @@
         "@docusaurus/types": "^3.3.2",
         "@types/react": "^18.3.13",
         "cross-env": "^7.0.3",
-        "prettier": "3.4.2",
+        "prettier": "3.5.1",
         "typescript": "~5.7.3",
-        "wireit": "^0.14.9"
+        "wireit": "^0.14.11"
     },
     "wireit": {
         "lint:lockfile": {

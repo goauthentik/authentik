@@ -125,7 +125,9 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                         <input
                             type="text"
                             value="${this.instance?.lastAuthThreshold || "seconds=0"}"
-                            class="pf-c-form-control"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
                             required
                         />
                         <p class="pf-c-form__helper-text">
