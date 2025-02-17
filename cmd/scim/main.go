@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"time"
 
 	"github.com/mitchellh/mapstructure"
 	log "github.com/sirupsen/logrus"
@@ -126,15 +127,21 @@ func (s *SCIMOutpost) Start() error {
 			return
 		}
 		s.log.WithField("rd", rd).WithField("raw", args).Debug("request data")
-		req, err := http.NewRequest(rd.Request.Method, rd.Request.URL, nil)
+		ctx, canc := context.WithTimeout(ctx, time.Duration(rd.Request.Timeout)*time.Second)
+		defer canc()
+
+		req, err := http.NewRequestWithContext(ctx, rd.Request.Method, rd.Request.URL, nil)
 		if err != nil {
 			s.log.WithError(err).Warning("failed to create request")
 			return
 		}
 
 		tr := &http.Transport{
-			TLSClientConfig: &tls.Config{InsecureSkipVerify: !rd.Request.SSLVerify},
-			// todo: timeout
+			TLSClientConfig:       &tls.Config{InsecureSkipVerify: !rd.Request.SSLVerify},
+			TLSHandshakeTimeout:   time.Duration(rd.Request.Timeout) * time.Second,
+			IdleConnTimeout:       time.Duration(rd.Request.Timeout) * time.Second,
+			ResponseHeaderTimeout: time.Duration(rd.Request.Timeout) * time.Second,
+			ExpectContinueTimeout: time.Duration(rd.Request.Timeout) * time.Second,
 		}
 		c := &http.Client{
 			Transport: tr,
