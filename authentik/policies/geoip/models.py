@@ -120,7 +120,7 @@ class GeoIPPolicy(Policy):
         if not geoip_data:
             return PolicyResult(False)
         for previous_login in previous_logins:
-            previous_login_geoip: GeoIPDict = previous_login.context.get("geo")
+            previous_login_geoip: GeoIPDict = previous_login.context["geo"]
 
             # Figure out distance
             dist = distance.geodesic(
@@ -137,7 +137,7 @@ class GeoIPPolicy(Policy):
             # than max distance per hour times the amount of hours since the previous login
             # (round down to the lowest closest time of hours)
             # clamped to be at least 1 hour
-            rel_time_hours = max(int((_now - previous_login.created).total_seconds() / 86400), 1)
+            rel_time_hours = max(int((_now - previous_login.created).total_seconds() / 3600), 1)
             if self.check_impossible_travel and dist.km >= (
                 (MAX_DISTANCE_HOUR_KM * rel_time_hours) - self.distance_tolerance_km
             ):
