@@ -286,11 +286,12 @@ export default {
                             items: [
                                 "add-secure-apps/flows-stages/stages/authenticator_duo/index",
                                 "add-secure-apps/flows-stages/stages/authenticator_endpoint_gdtc/index",
+                                "add-secure-apps/flows-stages/stages/authenticator_email/index",
                                 "add-secure-apps/flows-stages/stages/authenticator_sms/index",
                                 "add-secure-apps/flows-stages/stages/authenticator_static/index",
                                 "add-secure-apps/flows-stages/stages/authenticator_totp/index",
-                                "add-secure-apps/flows-stages/stages/authenticator_validate/index",
                                 "add-secure-apps/flows-stages/stages/authenticator_webauthn/index",
+                                "add-secure-apps/flows-stages/stages/authenticator_validate/index",
                                 "add-secure-apps/flows-stages/stages/captcha/index",
                                 "add-secure-apps/flows-stages/stages/deny",
                                 "add-secure-apps/flows-stages/stages/email/index",
