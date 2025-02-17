@@ -5232,6 +5232,38 @@
                     },
                     "maxItems": 249,
                     "title": "Countries"
+                },
+                "check_history_distance": {
+                    "type": "boolean",
+                    "title": "Check history distance"
+                },
+                "history_max_distance_km": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9223372036854775807,
+                    "title": "History max distance km"
+                },
+                "distance_tolerance_km": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "title": "Distance tolerance km"
+                },
+                "history_login_count": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "title": "History login count"
+                },
+                "check_impossible_travel": {
+                    "type": "boolean",
+                    "title": "Check impossible travel"
+                },
+                "impossible_tolerance_km": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "title": "Impossible tolerance km"
                 }
             },
             "required": []
