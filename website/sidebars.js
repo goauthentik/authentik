@@ -577,15 +577,7 @@ export default {
                         "sys-mgmt/ops/monitoring",
                         "sys-mgmt/ops/storage-s3",
                         "sys-mgmt/ops/geoip",
-                    ],
-                },
-                {
-                    type: "category",
-                    label: "Backup & Restore",
-                    collapsed: true,
-                    items: [
-                        "sys-mgmt/backup-restore/backup",
-                        "sys-mgmt/backup-restore/restore",
+                        "sys-mgmt/ops/backup-restore",
                     ],
                 },
                 {
