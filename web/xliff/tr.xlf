@@ -6076,6 +6076,12 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
         <target>Auentik tarafından yönetilen (Keşfedildi)</target>
         
       </trans-unit>
+      <trans-unit id="sef50d248448e0df1">
+        <source>Yes (<x id="0" equiv-text="${item.privateKeyType?.toUpperCase()}"/>)</source>
+        <target>Evet (
+        <x id="0" equiv-text="${item.privateKeyType?.toUpperCase()}"/>)</target>
+        
+      </trans-unit>
       <trans-unit id="s09205907b5b56cda">
         <source>No</source>
         <target>Hayır</target>
@@ -8767,7 +8773,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 </trans-unit>
 <trans-unit id="s2d5f69929bb7221d">
   <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
-  <target><x id="0" equiv-text="${prompt.name}"/> ("<x id="1" equiv-text="${prompt.fieldKey}"/>", of type <x id="2" equiv-text="${prompt.type}"/>)</target>
 </trans-unit>
 <trans-unit id="s25bacc19d98b444e">
   <source>Parent Group</source>
@@ -8957,9 +8962,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
   <source>Endpoint Google Chrome Device Trust is in preview.</source>
   <target>Uç nokta Google Chrome Cihaz Güvenilirliği önizleme aşamasındadır.</target>
 </trans-unit>
-<trans-unit id="sef50d248448e0df1">
-  <source>Yes (<x id="0" equiv-text="${item.privateKeyType?.toUpperCase()}"/>)</source>
-</trans-unit>
 <trans-unit id="s6f4f35a5a4b9b3cb">
   <source>Interactive</source>
 </trans-unit>
@@ -9130,6 +9132,7 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 </trans-unit>
 <trans-unit id="sde0ad51b14f77cf6">
   <source>Redirect URIs/Origins (RegEx)</source>
+  <target>Yeniden Yönlendirme URI'leri/Kökenleri (RegEx)</target>
 </trans-unit>
 <trans-unit id="s89ae85c3a9df8a6f">
   <source>Configure OAuth2 Provider</source>
