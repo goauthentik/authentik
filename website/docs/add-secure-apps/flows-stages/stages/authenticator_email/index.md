@@ -2,6 +2,8 @@
 title: Email Authenticator Setup stage
 ---
 
+<span class="badge badge--version">authentik 2025.2+</span>
+
 This stage configures an email-based authenticator that sends a one-time code to a user's email address for authentication.
 
 When a user goes through a flow that includes this stage, they are prompted for their email address (if not already set). The user then receives an email with a one-time code, which they enter into the authentik Login panel.
