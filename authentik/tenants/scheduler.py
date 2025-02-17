@@ -1,13 +1,17 @@
 """Tenant-aware Celery beat scheduler"""
 
-from tenant_schemas_celery.scheduler import (
-    TenantAwarePersistentScheduler as BaseTenantAwarePersistentScheduler,
-)
-from tenant_schemas_celery.scheduler import TenantAwareScheduleEntry
+from django_celery_beat.schedulers import DatabaseScheduler, ModelEntry
+from tenant_schemas_celery.scheduler import TenantAwareScheduleEntry, TenantAwareSchedulerMixin
 
 
-class TenantAwarePersistentScheduler(BaseTenantAwarePersistentScheduler):
+class SchedulerEntry(ModelEntry, TenantAwareScheduleEntry):
+    pass
+
+
+class TenantAwarePersistentScheduler(TenantAwareSchedulerMixin, DatabaseScheduler):
     """Tenant-aware Celery beat scheduler"""
+
+    Entry = SchedulerEntry
 
     @classmethod
     def get_queryset(cls):
