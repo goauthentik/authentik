@@ -6,13 +6,12 @@ from rest_framework.viewsets import GenericViewSet
 from authentik.core.api.groups import GroupMemberSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
-from authentik.enterprise.api import EnterpriseRequiredMixin
-from authentik.enterprise.providers.rac.api.endpoints import EndpointSerializer
-from authentik.enterprise.providers.rac.api.providers import RACProviderSerializer
-from authentik.enterprise.providers.rac.models import ConnectionToken
+from authentik.providers.rac.api.endpoints import EndpointSerializer
+from authentik.providers.rac.api.providers import RACProviderSerializer
+from authentik.providers.rac.models import ConnectionToken
 
 
-class ConnectionTokenSerializer(EnterpriseRequiredMixin, ModelSerializer):
+class ConnectionTokenSerializer(ModelSerializer):
     """ConnectionToken Serializer"""
 
     provider_obj = RACProviderSerializer(source="provider", read_only=True)

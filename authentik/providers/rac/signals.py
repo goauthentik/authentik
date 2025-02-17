@@ -10,12 +10,12 @@ from django.dispatch import receiver
 from django.http import HttpRequest
 
 from authentik.core.models import User
-from authentik.enterprise.providers.rac.api.endpoints import user_endpoint_cache_key
-from authentik.enterprise.providers.rac.consumer_client import (
+from authentik.providers.rac.api.endpoints import user_endpoint_cache_key
+from authentik.providers.rac.consumer_client import (
     RAC_CLIENT_GROUP_SESSION,
     RAC_CLIENT_GROUP_TOKEN,
 )
-from authentik.enterprise.providers.rac.models import ConnectionToken, Endpoint
+from authentik.providers.rac.models import ConnectionToken, Endpoint
 
 
 @receiver(user_logged_out)
