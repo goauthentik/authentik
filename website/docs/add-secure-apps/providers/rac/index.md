@@ -1,9 +1,6 @@
 ---
 title: Remote Access Control (RAC) Provider
----
-
-<span class="badge badge--primary">Enterprise</span>
-
+authentik_enterprise: true
 ---
 
 :::info

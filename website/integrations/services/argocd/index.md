@@ -1,11 +1,8 @@
 ---
 title: Integrate with ArgoCD
 sidebar_label: ArgoCD
+support_level: community
 ---
-
-# Integrate with ArgoCD
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is ArgoCD
 
