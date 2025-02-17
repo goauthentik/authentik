@@ -103,6 +103,7 @@ django-redis = "*"
 django-storages = { extras = ["s3"], version = "*" }
 # See https://github.com/django-tenants/django-tenants/pull/997
 django-tenants = { git = "https://github.com/rissson/django-tenants.git", branch = "authentik-fixes" }
+djangoql = "*"
 djangorestframework = "3.14.0"
 djangorestframework-guardian = "*"
 docker = "*"
