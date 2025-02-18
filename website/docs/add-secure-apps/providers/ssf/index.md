@@ -7,11 +7,11 @@ sidebar_label: SSF Provider
 <span class="badge badge--version">authentik 2025.2+</span>
 &nbsp;
 
-SSF (Shared Signal Framework) is a common standard for sharing asynchronous real-time security signals and events across multiple applications and an identity provider. The framework is a collection of standards and communication processes, documented in a [specification](https://openid.net/specs/openid-sharedsignals-framework-1_0-ID3.html). SSF leverages the API of the application and the IdP, using privacy-protected, secure webhooks.
+SSF (Shared Signal Framework) is a common standard for sharing asynchronous real-time security signals and events across multiple applications and an identity provider. The framework is a collection of standards and communication processes, documented in a [specification](https://openid.net/specs/openid-sharedsignals-framework-1_0-ID3.html). SSF leverages the APIs of the application and the IdP, using privacy-protected, secure webhooks.
 
 ## About SSF (Shared Signal Framework)
 
-In authentik, an SSF provider allows applications to subscribe to certain types of security events (known as signals) that are captured by authentik (the IdP), and then respond to each event. In this scenario, authentik acts as the *transmitter* and the application as the *receiver* of the events.
+In authentik, an SSF provider allows applications to subscribe to certain types of security signals (which are then translated into SETs, or Security Event Tokens) that are captured by authentik (the IdP), and then the applicatin can respond to each event. In this scenario, authentik acts as the *transmitter* and the application as the *receiver* of the events.
 
 Events in authentik that are tracked via SSF include when an MFA device is added or removed, logouts, sessions being revoked by Admin or user clicking logout, or credentials changed.
 
