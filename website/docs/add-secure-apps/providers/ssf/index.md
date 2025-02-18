@@ -21,9 +21,13 @@ A common use case for SSF is when an Admin wants to know if a user logs out of a
 
 Another example use case is when an application uses SSF to subscribe to authorization events because the application needs to know if a user changed their password in authentik. If a user did change their password, then the application receives a POST request to write the fact that the password was changed.
 
-## Using SSF in authentik
+## About using SSF in authentik
 
-Let's look at a few details about using SSF in authentik, breaking it down to the application (the receiver) and authentik (the IdP and the transmitter). When an authentik Admin [creates an SSF provider](./create-ssf-provider), they need to configure both the both the application subscribing to the events and authentik.
+Let's look at a few details about using SSF in authentik.
+
+The SSF provider in authentik serves as a [backchannel provider](../../applications/manage_apps#backchannel-providers). Backchannel providers are used to augment the functionality of the main provider for an application. Thus you will still need to [create a typical application/provider pair](../../applications/manage_apps#instructions) (using an OIDC provider), and when creating the application, assign the SSF provider as a backchannel provider.
+
+When an authentik Admin [creates an SSF provider](./create-ssf-provider), they need to configure both the both application (the receiver) and authentik (the IdP and the transmitter).
 
 ### The application (the receiver)
 
