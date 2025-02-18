@@ -43,6 +43,6 @@ The workflow to implement an SSF provider as a [backchannel provider](../../appl
     -   **Provider**: select the OIDC provider that you created.
     -   **Backchannel Providers**: select the SSF provider you created.
     -   **Policy engine mode**: define policy-based access.
-    -   **UI Settings**: optionally define a launch URL, icon, and other UI elements.
+    -   **UI Settings**: optionally define a launch URL, an icon, and other UI elements.
 
 5. Click **Create** to save the new application.
