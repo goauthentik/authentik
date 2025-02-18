@@ -1,53 +1,45 @@
 ---
-title: SFF (Shared Signal Framework) Provider
+title: SSF (Shared Signal Framework) Provider
+sidebar_label: SSF Provider
 ---
 
-SFF (Shared Signal Framework) provides a common [specification](https://openid.net/specs/openid-sharedsignals-framework-1_0-ID3.html) for sharing security signals and events across multiple applications on multiple devices and a identity provider.
+<span class="badge badge--preview">Preview</span>
+<span class="badge badge--version">authentik 2025.2+</span>
+&nbsp;
 
-In authentik, an SFF provider allows applications to subscribe to certain types of security events (known as signals) that are captured by authentik (the IdP), and then respond to each event. In this scenario, authentik acts as the *transmitter* and the application as the *receiver* of the events.
-
-## Example use cases
-
-As an Admin, I want to know if a user logs out of authentik, because I then want to also log them out of all other work-focused applications.
-
-Another example use case is when application uses SSF to subscribe to authorization events because the application needs to know if a user changed their password in authentik. If a user did change their password, then the application receives a POST request to write the fact that the password was changed.
-
-Other events that are tracked via SSF include when an MFA device is added or removed, logouts, sessions being revoked by Admin or user clicking logout, or credentials changed.)
+SSF (Shared Signal Framework) is a common standard for sharing asynchronous real-time security signals and events across multiple applications and an identity provider. The framework is a collection of standards and communication processes, documented in a [specification](https://openid.net/specs/openid-sharedsignals-framework-1_0-ID3.html). SSF leverages the API of the application and the IdP, using privacy-protected, secure webhooks.
 
 ## About SSF (Shared Signal Framework)
 
-Let's look at a few details about using SSF in authentik.
+In authentik, an SSF provider allows applications to subscribe to certain types of security events (known as signals) that are captured by authentik (the IdP), and then respond to each event. In this scenario, authentik acts as the *transmitter* and the application as the *receiver* of the events.
 
-When an authentik Admin creates an SSF provider, both the both the application subscribing to the events and authentik are configured.
+Events in authentik that are tracked via SSF include when an MFA device is added or removed, logouts, sessions being revoked by Admin or user clicking logout, or credentials changed.
 
--   Application (receiver):
-    -   The “stream” is all the stuff that the app wants to listen to… the app creates a stream in authentik, and during creation of stream, the app defines which to subscribe/listen to… and that defined list is the stream.
-    To create a stream, it’s basically an API request to authentik how that request is sent varies from app to app. An app can change or delete the stream… this cannot be done in authetnik, we are basically a dashboard of all the events.
--   authentik
-    -   the authentik Admin doesn't need to select which events to subscribe to, we offer a full menu, then the app has to say which they want to listen to.
+## Example use cases
 
+A common use case for SSF is when an Admin wants to know if a user logs out of authentik, so that the user is then also automaticlaly logged  out of all other work-focused applications.
 
+Another example use case is when an application uses SSF to subscribe to authorization events because the application needs to know if a user changed their password in authentik. If a user did change their password, then the application receives a POST request to write the fact that the password was changed.
 
+## Using SSF in authentik
 
+Let's look at a few details about using SSF in authentik, breaking it down to the application (the receiver) and authentik (the IdP and the transmitter). When an authentik Admin [creates an SSF provider](./create-ssf-provider), they need to configure both the both the application subscribing to the events and authentik.
 
-The term “audience” is from the spec… `aud`
+### The application (the receiver)
 
+Within the application, the admin creates an SSF stream (which comprises all the signals that the app wants to subscribe to) and defines the audience, called `aud` in the specification (the URL that identifies the stream). A stream is basically an API request to authentik, which asks for a POST of all events. How that request is sent varies from application to application. An application can change or delete the stream.
 
+Note that authentik doesn't specify which events to subscribe to; instead the application defines which they want to listen for.
 
-On our UI, there is a setting for Event retention: this means authetnik will go through all streams and filter out a specific event type, then create a new “event” (where?)… authentik then sends these collected events via POST… if that fails to send to requesting URL, then the retry happens… the rentention period is how long to hold on those “SET events”, the one we created from the stream.
+### authentik (the transmitter)
 
-CAUTION: signal versus event
+To configure authentik as a shared signal transmitter, the authentik Admin [creates a new provider](./create-ssf-provider), selecting the type "SSF".
 
-SSF really subscribes to signals, and then creates an event. Parallel but similar to how in our UI we  list all “Events”… which are also created from listening to signals. Jens says might be worth noting that these are different types of Events.
+The authentik admin does have to configure a signing key; this is required when creating the SSF provider. This is the key that the Security Event Tokens (SET) is signed with.
 
-### Reference section
+Optionally, you can specify a Event retention time period: this value determines how long events are stored for. If an event could not be sent correctly, and retries occur, the event's expiration is also increased by this duration.
 
-### Procedural
+:::info
+Be aware that the SET events are different events than those displayed in the authetnik Admin nterface under **Events**.
+:::
 
-They do have to configure a signing key, same as OAUTH provider, except here it is required. This is the key that the SET is signed with…. (for ABM it might have to be a specific one, but no need to mention here).
-
-Other than signing key, there is nothing too special beyond creating a regular provider.
-
-Right now we only support push (using POST) not pull… authentik pushes to the app.. the app cannot call (pull) us for data.
-
-How often does the push happen? Jens says it is asynch close to real-time. Not a scheduled event.

@@ -238,8 +238,15 @@ export default {
                         "add-secure-apps/providers/radius/index",
                         "add-secure-apps/providers/saml/index",
                         "add-secure-apps/providers/scim/index",
-                        "add-secure-apps/providers/ssf/index",
-
+                        {
+                            type: "category",
+                            label: "SSF (Shared Signals Framework) Provider",
+                            link: {
+                                type: "doc",
+                                id: "add-secure-apps/providers/ssf/index",
+                            },
+                            items: ["add-secure-apps/providers/ssf/create-ssf-provider"],
+                        },
                     ],
                 },
                 {
