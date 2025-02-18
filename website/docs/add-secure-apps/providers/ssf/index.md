@@ -11,7 +11,7 @@ SSF (Shared Signal Framework) is a common standard for sharing asynchronous real
 
 ## About SSF (Shared Signal Framework)
 
-In authentik, an SSF provider allows applications to subscribe to certain types of security signals (which are then translated into SETs, or Security Event Tokens) that are captured by authentik (the IdP), and then the applicatin can respond to each event. In this scenario, authentik acts as the *transmitter* and the application as the *receiver* of the events.
+In authentik, an SSF provider allows applications to subscribe to certain types of security signals (which are then translated into SETs, or Security Event Tokens) that are captured by authentik (the IdP), and then the application can respond to each event. In this scenario, authentik acts as the *transmitter* and the application as the *receiver* of the events.
 
 Events in authentik that are tracked via SSF include when an MFA device is added or removed, logouts, sessions being revoked by Admin or user clicking logout, or credentials changed.
 
@@ -40,6 +40,6 @@ The authentik admin does have to configure a signing key; this is required when 
 Optionally, you can specify a Event retention time period: this value determines how long events are stored for. If an event could not be sent correctly, and retries occur, the event's expiration is also increased by this duration.
 
 :::info
-Be aware that the SET events are different events than those displayed in the authetnik Admin nterface under **Events**.
+Be aware that the SET events are different events than those displayed in the authentik Admin interface under **Events**.
 :::
 
