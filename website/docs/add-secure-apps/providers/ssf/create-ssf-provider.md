@@ -2,7 +2,7 @@
 title: Create an SSF provider
 ---
 
-To add an SSF [backchannel provider](../../applications/manage_apps#backchannel-providers) follow thses steps:
+To add an SSF [backchannel provider](../../applications/manage_apps#backchannel-providers) follow these steps:
 
 1. Log into authentik as an admin, and in the Admin interface navigate to **Applications -> Providers**.
 
