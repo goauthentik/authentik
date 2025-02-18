@@ -25,6 +25,8 @@ To create a super-user, you need to add the user to a group that has super-user 
 
 ## Modify a group
 
+To edit the group's name, parent group, if the group grants superuser permissions, associated roles, and any custom attributes, click the Edit icon beside the role's name. Make the changes, and then click **Update**.
+
 Starting with authentik version 2025.2, the permission to change super-user status has been separated from the permission required to change the group. Now, the `Enable superuser status` and `Disable superuser status` permissions are explicitly required to enable and disable the super-user status.
 
 To [add or remove users](../user/user_basic_operations.md#add-a-user-to-a-group) from the group, or to manage permissions assigned to the group, click on the name of the group to go to the group's detail page, and then click on the **Permissions** tab.
