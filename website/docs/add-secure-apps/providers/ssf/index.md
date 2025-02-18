@@ -1,5 +1,5 @@
 ---
-title: SSF (Shared Signal Framework) Provider
+title: Shared Signals Framework (SSF) Provider
 sidebar_label: SSF Provider
 ---
 
@@ -7,11 +7,11 @@ sidebar_label: SSF Provider
 <span class="badge badge--version">authentik 2025.2+</span>
 &nbsp;
 
-SSF (Shared Signal Framework) is a common standard for sharing asynchronous real-time security signals and events across multiple applications and an identity provider. The framework is a collection of standards and communication processes, documented in a [specification](https://openid.net/specs/openid-sharedsignals-framework-1_0-ID3.html). SSF leverages the APIs of the application and the IdP, using privacy-protected, secure webhooks.
+ (Shared Signals Framework (SSF) is a common standard for sharing asynchronous real-time security signals and events across multiple applications and an identity provider. The framework is a collection of standards and communication processes, documented in a [specification](https://openid.net/specs/openid-sharedsignals-framework-1_0-ID3.html). SSF leverages the APIs of the application and the IdP, using privacy-protected, secure webhooks.
 
-## About SSF (Shared Signal Framework)
+## About Shared Signals Framework
 
-In authentik, an SSF provider allows applications to subscribe to certain types of security signals (which are then translated into SETs, or Security Event Tokens) that are captured by authentik (the IdP), and then the application can respond to each event. In this scenario, authentik acts as the *transmitter* and the application as the *receiver* of the events.
+In authentik, an SSF provider allows applications to subscribe to certain types of security signals (which are then translated into SETs, or Security Event Tokens) that are captured by authentik (the IdP), and then the application can respond to each event. In this scenario, authentik acts as the *transmitter* and the application acts as the *receiver* of the events.
 
 Events in authentik that are tracked via SSF include when an MFA device is added or removed, logouts, sessions being revoked by Admin or user clicking logout, or credentials changed.
 
@@ -27,7 +27,7 @@ Let's look at a few details about using SSF in authentik.
 
 The SSF provider in authentik serves as a [backchannel provider](../../applications/manage_apps#backchannel-providers). Backchannel providers are used to augment the functionality of the main provider for an application. Thus you will still need to [create a typical application/provider pair](../../applications/manage_apps#instructions) (using an OIDC provider), and when creating the application, assign the SSF provider as a backchannel provider.
 
-When an authentik Admin [creates an SSF provider](./create-ssf-provider), they need to configure both the both application (the receiver) and authentik (the IdP and the transmitter).
+When an authentik Admin [creates an SSF provider](./create-ssf-provider), they need to configure both the application (the receiver) and authentik (the IdP and the transmitter).
 
 ### The application (the receiver)
 
@@ -37,11 +37,11 @@ Note that authentik doesn't specify which events to subscribe to; instead the ap
 
 ### authentik (the transmitter)
 
-To configure authentik as a shared signal transmitter, the authentik Admin [creates a new provider](./create-ssf-provider), selecting the type "SSF".
+To configure authentik as a shared signals transmitter, the authentik Admin [creates a new provider](./create-ssf-provider), selecting the type "SSF", to serve as the backchannelprovider for the application.
 
-The authentik admin does have to configure a signing key; this is required when creating the SSF provider. This is the key that the Security Event Tokens (SET) is signed with.
+When creating the SSF provider you will need to select a signing key. This is the key that the Security Event Tokens (SET) is signed with.
 
-Optionally, you can specify a Event retention time period: this value determines how long events are stored for. If an event could not be sent correctly, and retries occur, the event's expiration is also increased by this duration.
+Optionally, you can specify a event retention time period: this value determines how long events are stored for. If an event could not be sent correctly, and retries occur, the event's expiration is also increased by this duration.
 
 :::info
 Be aware that the SET events are different events than those displayed in the authentik Admin interface under **Events**.

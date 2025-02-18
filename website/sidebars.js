@@ -240,7 +240,7 @@ export default {
                         "add-secure-apps/providers/scim/index",
                         {
                             type: "category",
-                            label: "SSF (Shared Signals Framework) Provider",
+                            label: "SSF Provider",
                             link: {
                                 type: "doc",
                                 id: "add-secure-apps/providers/ssf/index",
