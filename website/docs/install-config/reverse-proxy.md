@@ -15,6 +15,8 @@ If you want to access authentik behind a reverse proxy, there are a few headers 
 
 It is also recommended to use a [modern TLS configuration](https://ssl-config.mozilla.org/) and disable SSL/TLS protocols older than TLS 1.3.
 
+If your reverse proxy isn't accessing authentik from a private IP address, [trusted proxy CIDRs configuration](./configuration/configuration.mdx#listen-settings) needs to be set on the authentik server to allow client IP address detection.
+
 The following nginx configuration can be used as a starting point for your own configuration.
 
 ```

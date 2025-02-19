@@ -92,8 +92,8 @@ export class PromptStageForm extends BaseStageForm<PromptStage> {
                         <ak-dual-select-dynamic-selected
                             .provider=${policiesProvider}
                             .selector=${policiesSelector(this.instance?.validationPolicies)}
-                            available-label="${msg("Available Fields")}"
-                            selected-label="${msg("Selected Fields")}"
+                            available-label="${msg("Available Policies")}"
+                            selected-label="${msg("Selected Policies")}"
                         ></ak-dual-select-dynamic-selected>
                         <p class="pf-c-form__helper-text">
                             ${msg(

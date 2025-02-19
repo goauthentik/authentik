@@ -47,6 +47,10 @@ class PolicyBindingModel(models.Model):
     def __str__(self) -> str:
         return f"PolicyBindingModel {self.pbm_uuid}"
 
+    def supported_policy_binding_targets(self):
+        """Return the list of objects that can be bound to this object."""
+        return ["policy", "user", "group"]
+
 
 class PolicyBinding(SerializerModel):
     """Relationship between a Policy and a PolicyBindingModel."""
@@ -81,7 +85,9 @@ class PolicyBinding(SerializerModel):
         blank=True,
     )
 
-    target = InheritanceForeignKey(PolicyBindingModel, on_delete=models.CASCADE, related_name="+")
+    target = InheritanceForeignKey(
+        PolicyBindingModel, on_delete=models.CASCADE, related_name="bindings"
+    )
     negate = models.BooleanField(
         default=False,
         help_text=_("Negates the outcome of the policy. Messages are unaffected."),

@@ -16,7 +16,8 @@ For VS Code, for example, add these entries to your `settings.json`:
         "!If sequence",
         "!Index scalar",
         "!KeyOf scalar",
-        "!Value scalar"
+        "!Value scalar",
+        "!AtIndex scalar"
     ]
 }
 ```
@@ -299,3 +300,23 @@ The above example will resolve to something like this:
     - "bar: (index: 1, letter: a)"
     - "bar: (index: 2, letter: r)"
 ```
+
+#### `!AtIndex` <span class="badge badge--version">authentik 2024.12+</span>
+
+Minimal example:
+
+```yaml
+value_in_sequence: !AtIndex [["first", "second"], 0] # Resolves to "first"
+value_in_mapping: !AtIndex [{ "foo": "bar", "other": "value" }, "foo"] # Resolves to "bar"
+```
+
+Example with default value:
+
+```yaml
+default_value: !AtIndex [["first"], 100, "default"]  # Resolves to "default"
+default_value: !AtIndex [["first"], 100]  # Throws an error
+```
+
+Resolves to the value at a specific index in a sequence or a mapping.
+
+If no value can be found at the specified index and no default is provided, an error is raised and the blueprint is invalid.

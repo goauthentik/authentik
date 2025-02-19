@@ -4,7 +4,6 @@
     "private": true,
     "license": "MIT",
     "scripts": {
-        "aws-cfn": "cd docs/install-config/install/aws && cdk synth > template.yaml && ./fix_template.py",
         "build": "cp ../docker-compose.yml static/docker-compose.yml && cp ../schema.yml static/schema.yaml && docusaurus gen-api-docs all && cross-env NODE_OPTIONS='--max_old_space_size=65536' docusaurus build",
         "build-bundled": "cp ../schema.yml static/schema.yaml && docusaurus gen-api-docs all && cross-env NODE_OPTIONS='--max_old_space_size=65536' docusaurus build",
         "deploy": "docusaurus deploy",
@@ -18,18 +17,18 @@
         "watch": "docusaurus gen-api-docs all && docusaurus start"
     },
     "dependencies": {
-        "@docusaurus/core": "^3.6.3",
-        "@docusaurus/plugin-client-redirects": "^3.6.3",
-        "@docusaurus/plugin-content-docs": "^3.6.3",
-        "@docusaurus/preset-classic": "^3.6.3",
-        "@docusaurus/theme-common": "^3.6.3",
-        "@docusaurus/theme-mermaid": "^3.6.3",
+        "@docusaurus/core": "^3.7.0",
+        "@docusaurus/plugin-client-redirects": "^3.7.0",
+        "@docusaurus/plugin-content-docs": "^3.7.0",
+        "@docusaurus/preset-classic": "^3.7.0",
+        "@docusaurus/theme-common": "^3.7.0",
+        "@docusaurus/theme-mermaid": "^3.7.0",
         "@mdx-js/react": "^3.1.0",
         "clsx": "^2.1.1",
         "disqus-react": "^1.1.5",
-        "docusaurus-plugin-openapi-docs": "^4.3.0",
-        "docusaurus-theme-openapi-docs": "^4.3.0",
-        "postcss": "^8.4.49",
+        "docusaurus-plugin-openapi-docs": "^4.3.4",
+        "docusaurus-theme-openapi-docs": "^4.3.4",
+        "postcss": "^8.5.2",
         "prism-react-renderer": "^2.4.1",
         "react": "^18.3.1",
         "react-before-after-slider-component": "^1.1.8",
@@ -53,14 +52,13 @@
     },
     "devDependencies": {
         "@docusaurus/module-type-aliases": "^3.3.2",
-        "@docusaurus/tsconfig": "^3.6.3",
+        "@docusaurus/tsconfig": "^3.7.0",
         "@docusaurus/types": "^3.3.2",
         "@types/react": "^18.3.13",
-        "aws-cdk": "^2.173.0",
         "cross-env": "^7.0.3",
-        "prettier": "3.4.2",
-        "typescript": "~5.7.2",
-        "wireit": "^0.14.9"
+        "prettier": "3.5.1",
+        "typescript": "~5.7.3",
+        "wireit": "^0.14.11"
     },
     "wireit": {
         "lint:lockfile": {

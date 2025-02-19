@@ -15,14 +15,23 @@ go.mod                          @goauthentik/backend
 go.sum                          @goauthentik/backend
 # Infrastructure
 .github/                        @goauthentik/infrastructure
+lifecycle/aws/                  @goauthentik/infrastructure
 Dockerfile                      @goauthentik/infrastructure
 *Dockerfile                     @goauthentik/infrastructure
 .dockerignore                   @goauthentik/infrastructure
 docker-compose.yml              @goauthentik/infrastructure
+Makefile                        @goauthentik/infrastructure
+.editorconfig                   @goauthentik/infrastructure
+CODEOWNERS                      @goauthentik/infrastructure
 # Web
 web/                            @goauthentik/frontend
 tests/wdio/                     @goauthentik/frontend
+# Locale
+locale/                         @goauthentik/backend @goauthentik/frontend
+web/xliff/                      @goauthentik/backend @goauthentik/frontend
 # Docs & Website
 website/                        @goauthentik/docs
+CODE_OF_CONDUCT.md              @goauthentik/docs
 # Security
-website/docs/security/          @goauthentik/security
+SECURITY.md                     @goauthentik/security @goauthentik/docs
+website/docs/security/          @goauthentik/security @goauthentik/docs

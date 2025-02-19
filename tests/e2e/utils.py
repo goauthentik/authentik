@@ -10,6 +10,7 @@ from sys import stderr
 from time import sleep
 from typing import Any
 from unittest.case import TestCase
+from urllib.parse import urlencode
 
 from django.apps import apps
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
@@ -112,7 +113,6 @@ class DockerTestCase(TestCase):
             specs["network"] = self.__network.name
         specs["labels"] = self.docker_labels
         specs["detach"] = True
-        specs["auto_remove"] = True
         if hasattr(self, "live_server_url"):
             specs.setdefault("environment", {})
             specs["environment"]["AUTHENTIK_HOST"] = self.live_server_url
@@ -136,13 +136,17 @@ class DockerTestCase(TestCase):
             print("::endgroup::")
 
     def tearDown(self):
-        containers = self.docker_client.containers.list(
+        containers: list[Container] = self.docker_client.containers.list(
             filters={"label": ",".join(f"{x}={y}" for x, y in self.docker_labels.items())}
         )
         for container in containers:
             self.output_container_logs(container)
             try:
                 container.kill()
+            except DockerException:
+                pass
+            try:
+                container.remove(force=True)
             except DockerException:
                 pass
         self.__network.remove()
@@ -206,9 +210,12 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
             f"URL {self.driver.current_url} doesn't match expected URL {desired_url}",
         )
 
-    def url(self, view, **kwargs) -> str:
+    def url(self, view, query: dict | None = None, **kwargs) -> str:
         """reverse `view` with `**kwargs` into full URL using live_server_url"""
-        return self.live_server_url + reverse(view, kwargs=kwargs)
+        url = self.live_server_url + reverse(view, kwargs=kwargs)
+        if query:
+            return url + "?" + urlencode(query)
+        return url
 
     def if_user_url(self, path: str | None = None) -> str:
         """same as self.url() but show URL in shell"""

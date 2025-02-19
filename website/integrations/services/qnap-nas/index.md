@@ -3,7 +3,7 @@ title: Integrate with QNAP NAS
 sidebar_label: QNAP NAS
 ---
 
-# QNAP NAS
+# Integrate with QNAP NAS
 
 ## What is QNAP NAS
 
@@ -15,7 +15,7 @@ Connecting a QNAP NAS to an LDAP Directory is a little bit special as it is **no
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `ldap.baseDN` is the Base DN you configure in the LDAP provider.
 - `ldap.domain` is (typically) a FQDN for your domain. Usually
@@ -27,6 +27,10 @@ The following placeholders will be used:
 - `qnap.serviceAccount` is a service account created in authentik
 - `qnap.serviceAccountToken` is the service account token generated
   by authentik.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 Create an LDAP Provider if you don't already have one setup.
 This guide assumes you will be running with TLS. See the [ldap provider docs](https://docs.goauthentik.io/docs/add-secure-apps/providers/ldap) for setting up SSL on the authentik side.

@@ -281,7 +281,6 @@ class OAuth2Provider(WebfingerProvider, Provider):
                 },
             )
             return request.build_absolute_uri(url)
-
         except Provider.application.RelatedObjectDoesNotExist:
             return None
 
@@ -396,7 +395,7 @@ class BaseGrantModel(models.Model):
     _scope = models.TextField(default="", verbose_name=_("Scopes"))
     auth_time = models.DateTimeField(verbose_name="Authentication time")
     session = models.ForeignKey(
-        AuthenticatedSession, null=True, on_delete=models.SET_DEFAULT, default=None
+        AuthenticatedSession, null=True, on_delete=models.CASCADE, default=None
     )
 
     class Meta:
@@ -425,6 +424,7 @@ class AuthorizationCode(SerializerModel, ExpiringModel, BaseGrantModel):
     class Meta:
         verbose_name = _("Authorization Code")
         verbose_name_plural = _("Authorization Codes")
+        indexes = ExpiringModel.Meta.indexes
 
     def __str__(self):
         return f"Authorization code for {self.provider_id} for user {self.user_id}"
@@ -453,7 +453,7 @@ class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
     _id_token = models.TextField()
 
     class Meta:
-        indexes = [
+        indexes = ExpiringModel.Meta.indexes + [
             HashIndex(fields=["token"]),
         ]
         verbose_name = _("OAuth2 Access Token")
@@ -497,9 +497,14 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
 
     token = models.TextField(default=generate_client_secret)
     _id_token = models.TextField(verbose_name=_("ID Token"))
+    # Shadow the `session` field from `BaseGrantModel` as we want refresh tokens to persist even
+    # when the session is terminated.
+    session = models.ForeignKey(
+        AuthenticatedSession, null=True, on_delete=models.SET_DEFAULT, default=None
+    )
 
     class Meta:
-        indexes = [
+        indexes = ExpiringModel.Meta.indexes + [
             HashIndex(fields=["token"]),
         ]
         verbose_name = _("OAuth2 Refresh Token")
@@ -551,6 +556,7 @@ class DeviceToken(ExpiringModel):
     class Meta:
         verbose_name = _("Device Token")
         verbose_name_plural = _("Device Tokens")
+        indexes = ExpiringModel.Meta.indexes
 
     def __str__(self):
         return f"Device Token for {self.provider_id}"

@@ -74,7 +74,7 @@ html > form > input {
     width: 35rem;
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: space-between;
 }
 .pf-c-login__header {
     flex-grow: 1;
@@ -120,9 +120,22 @@ html > form > input {
     color: var(--pf-global--danger-color--100);
 }
 
+/* #region Fonts */
+
+.pf-m-monospace {
+    font-family: var(--pf-global--FontFamily--monospace);
+}
+
+/* #endregion */
+
 .pf-c-description-list__description .pf-c-button {
     margin-right: 6px;
     margin-bottom: 6px;
+}
+
+.pf-m-pressable {
+    cursor: pointer;
+    user-select: none;
 }
 
 /* Flow-card adjustments for static pages */

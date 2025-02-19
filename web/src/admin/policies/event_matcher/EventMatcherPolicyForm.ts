@@ -113,7 +113,9 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                         <input
                             type="text"
                             value="${ifDefined(this.instance?.clientIp || "")}"
-                            class="pf-c-form-control"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
                         />
                         <p class="pf-c-form__helper-text">
                             ${msg(

@@ -27,8 +27,6 @@ AUTHENTIK_TAG=gh-next
 AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE=ghcr.io/goauthentik/dev-%(type)s:gh-%(build_hash)s
 ```
 
-The Beta image is amd64 only. For arm64 platforms, append `-arm64` to the tag name (no spaces).
-
 Next, run the upgrade commands below.
 
   </TabItem>
@@ -46,8 +44,6 @@ image:
     # pullPolicy: Always to ensure you always get the latest version
     pullPolicy: Always
 ```
-
-The Beta image is amd64 only. For arm64 platforms, append `-arm64` to the tag name (no spaces).
 
 Next, run the upgrade commands below.
 

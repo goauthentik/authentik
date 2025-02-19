@@ -3,7 +3,7 @@ title: Integrate with Zammad
 sidebar_label: Zammad
 ---
 
-# Zammad
+# Integrate with Zammad
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -16,10 +16,14 @@ sidebar_label: Zammad
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
-- `zammad.company` is the FQDN of the zammad install.
-- `authentik.company` is the FQDN of the authentik install.
+- `zammad.company` is the FQDN of the Zammad installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik Configuration
 

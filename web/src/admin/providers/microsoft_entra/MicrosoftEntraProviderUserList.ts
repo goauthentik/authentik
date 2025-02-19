@@ -35,7 +35,7 @@ export class MicrosoftEntraProviderUserList extends Table<MicrosoftEntraProvider
                 <span slot="header">${msg("Sync User")}</span>
                 <ak-sync-object-form
                     .provider=${this.providerId}
-                    model=${SyncObjectModelEnum.User}
+                    model=${SyncObjectModelEnum.AuthentikCoreModelsUser}
                     .sync=${(data: ProvidersMicrosoftEntraSyncObjectCreateRequest) => {
                         return new ProvidersApi(
                             DEFAULT_CONFIG,

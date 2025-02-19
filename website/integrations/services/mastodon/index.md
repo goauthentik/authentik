@@ -3,7 +3,7 @@ title: Integrate with Mastodon
 sidebar_label: Mastodon
 ---
 
-# Mastodon
+# Integrate with Mastodon
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -15,10 +15,14 @@ sidebar_label: Mastodon
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
-- `mastodon.company` is the FQDN of the mastodon install.
-- `authentik.company` is the FQDN of the authentik install.
+- `mastodon.company` is the FQDN of the mastodon installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik Configuration
 

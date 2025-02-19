@@ -43,6 +43,13 @@ LABEL org.opencontainers.image.source=https://github.com/goauthentik/authentik
 LABEL org.opencontainers.image.version=${VERSION}
 LABEL org.opencontainers.image.revision=${GIT_BUILD_HASH}
 
+USER root
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get clean && \
+    rm -rf /tmp/* /var/lib/apt/lists/*
+USER 1000
+
 COPY --from=builder /go/rac /
 
 HEALTHCHECK --interval=5s --retries=20 --start-period=3s CMD [ "/rac", "healthcheck" ]

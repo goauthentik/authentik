@@ -3,7 +3,7 @@ title: Integrate with Immich
 sidebar_label: Immich
 ---
 
-# Immich
+# Integrate with Immich
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -15,10 +15,14 @@ sidebar_label: Immich
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `https://immich.company` is the URL used to access the Immich instance.
-- `authentik.company` is the FQDN of the authentik install.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik configuration
 

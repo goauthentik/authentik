@@ -126,7 +126,7 @@ class Command(BaseCommand):
         def_name_perm = f"model_{model_path}_permissions"
         def_path_perm = f"#/$defs/{def_name_perm}"
         self.schema["$defs"][def_name_perm] = self.model_permissions(model)
-        return {
+        template = {
             "type": "object",
             "required": ["model", "identifiers"],
             "properties": {
@@ -143,6 +143,11 @@ class Command(BaseCommand):
                 "identifiers": {"$ref": def_path},
             },
         }
+        # Meta models don't require identifiers, as there's no matching database model to find
+        if issubclass(model, BaseMetaModel):
+            del template["properties"]["identifiers"]
+            template["required"].remove("identifiers")
+        return template
 
     def field_to_jsonschema(self, field: Field) -> dict:
         """Convert a single field to json schema"""

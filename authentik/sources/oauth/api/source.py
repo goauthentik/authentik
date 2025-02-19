@@ -152,6 +152,7 @@ class OAuthSourceFilter(FilterSet):
     class Meta:
         model = OAuthSource
         fields = [
+            "pbm_uuid",
             "name",
             "slug",
             "enabled",

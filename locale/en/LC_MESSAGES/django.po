@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-26 00:09+0000\n"
+"POT-Creation-Date: 2025-02-14 14:49+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -99,6 +99,10 @@ msgstr ""
 
 #: authentik/brands/models.py
 msgid "Brands"
+msgstr ""
+
+#: authentik/core/api/application_entitlements.py
+msgid "User does not have access to application."
 msgstr ""
 
 #: authentik/core/api/devices.py
@@ -223,6 +227,14 @@ msgstr ""
 
 #: authentik/core/models.py
 msgid "Applications"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Application Entitlement"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Application Entitlements"
 msgstr ""
 
 #: authentik/core/models.py
@@ -539,6 +551,47 @@ msgstr ""
 msgid "(You are already connected in another tab/window)"
 msgstr ""
 
+#: authentik/enterprise/providers/ssf/models.py
+#: authentik/providers/oauth2/models.py
+msgid "Signing Key"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Key used to sign the SSF Events."
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Shared Signals Framework Provider"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Shared Signals Framework Providers"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Add stream to SSF provider"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Stream"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Streams"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Stream Event"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Stream Events"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/tasks.py
+msgid "Failed to send request"
+msgstr ""
+
 #: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
 msgid "Endpoint Authenticator Google Device Trust Connector Stage"
 msgstr ""
@@ -814,7 +867,7 @@ msgid "Evaluate policies during the Flow planning process."
 msgstr ""
 
 #: authentik/flows/models.py
-msgid "Evaluate policies when the Stage is present to the user."
+msgid "Evaluate policies when the Stage is presented to the user."
 msgstr ""
 
 #: authentik/flows/models.py
@@ -1416,10 +1469,6 @@ msgid "Configure how the issuer field of the ID Token should be filled."
 msgstr ""
 
 #: authentik/providers/oauth2/models.py
-msgid "Signing Key"
-msgstr ""
-
-#: authentik/providers/oauth2/models.py
 msgid "Key used to sign the tokens."
 msgstr ""
 
@@ -1871,6 +1920,10 @@ msgstr ""
 
 #: authentik/sources/kerberos/models.py
 msgid "Custom krb5.conf to use. Uses the system one by default"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "KAdmin server type"
 msgstr ""
 
 #: authentik/sources/kerberos/models.py
@@ -2812,7 +2865,7 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-"    If you did not request a password change, please ignore this Email. The "
+"    If you did not request a password change, please ignore this email. The "
 "link above is valid for %(expires)s.\n"
 "    "
 msgstr ""
@@ -2833,7 +2886,7 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-"If you did not request a password change, please ignore this Email. The link "
+"If you did not request a password change, please ignore this email. The link "
 "above is valid for %(expires)s.\n"
 msgstr ""
 
@@ -3096,6 +3149,22 @@ msgstr ""
 
 #: authentik/stages/prompt/stage.py
 msgid "Passwords don't match."
+msgstr ""
+
+#: authentik/stages/redirect/api.py
+msgid "Target URL should be present when mode is Static."
+msgstr ""
+
+#: authentik/stages/redirect/api.py
+msgid "Target Flow should be present when mode is Flow."
+msgstr ""
+
+#: authentik/stages/redirect/models.py
+msgid "Redirect Stage"
+msgstr ""
+
+#: authentik/stages/redirect/models.py
+msgid "Redirect Stages"
 msgstr ""
 
 #: authentik/stages/user_delete/models.py

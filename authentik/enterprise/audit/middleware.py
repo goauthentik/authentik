@@ -97,6 +97,8 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
         thread_kwargs: dict | None = None,
         **_,
     ):
+        if not self.enabled:
+            return super().post_save_handler(request, sender, instance, created, thread_kwargs, **_)
         if not should_log_model(instance):
             return None
         thread_kwargs = {}
@@ -122,6 +124,8 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
     ):
         thread_kwargs = {}
         m2m_field = None
+        if not self.enabled:
+            return super().m2m_changed_handler(request, sender, instance, action, thread_kwargs)
         # For the audit log we don't care about `pre_` or `post_` so we trim that part off
         _, _, action_direction = action.partition("_")
         # resolve the "through" model to an actual field

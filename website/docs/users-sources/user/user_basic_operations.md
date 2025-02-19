@@ -74,21 +74,29 @@ For more information, review ["Permissions"](../access-control/permissions.md).
 
 If a user has lost their credentials, there are several options.
 
-### Email them a recovery link
+### Generate a recovery link
+
+:::info
+This option is only available if a default recovery flow was configured for the currently active brand.
+:::
 
 1. In the Admin interface, navigate to **Directory > Users** to display all users.
 2. Either click the name of the user to display the full User details page, or click the chevron (the › symbol) beside their name to expand the options.
-3. To generate a recovery link, which you can then copy and paste into an email, click **View recovery link**.
+3. To generate a recovery link, which you can then copy and paste into an email, click **Create recovery link**.
 
 A pop-up will appear on your browser with the link for you to copy and to send to the user.
 
-### Automate email to a user
+### Email them a recovery link
 
-You can use our automated email to send a link with the URL for the user to reset their password. This option will only work if you have properly [configured a SMTP server during the installation](../../install-config/install/docker-compose.mdx#email-configuration-optional-but-recommended) and set an email address for the user.
+:::info
+This option is only available if a default recovery flow was configured for the currently active brand and if the configured flow has an [Email Stage](../../add-secure-apps/flows-stages/stages/email/index.mdx) bound to it.
+:::
+
+You can send a link with the URL for the user to reset their password via Email. This option will only work if you have properly [configured a SMTP server during the installation](../../install-config/install/docker-compose.mdx#email-configuration-optional-but-recommended) and set an email address for the user.
 
 1. In the Admin interface, navigate to **Directory > Users** to display all users.
 2. Either click the name of the user to display the full User details page, or click the chevron beside their name to expand the toptions.
-3. To send the automated email to the user, click **Email recovery link**.
+3. To send the email to the user, click **Email recovery link**.
 
 If the user does not receive the email, check if the mail server parameters [are properly configured](../../troubleshooting/emails.md).
 
@@ -97,7 +105,7 @@ If the user does not receive the email, check if the mail server parameters [are
 As an Admin, you can simply reset the password for the user.
 
 1. In the Admin interface, navigate to **Directory > Users** to display all users.
-2. Either click the name of the user to display the full User details page, or click the chevron beside their name to expand the toptions.
+2. Either click the name of the user to display the full User details page, or click the chevron beside their name to expand the options.
 3. To reset the user's password, click **Reset password**, and then define the new value.
 
 ## Deactivate or Delete user
@@ -120,3 +128,18 @@ You may instead deactivate the account to preserve identity data.
 2. Review the changes and click **Delete**.
 
 The user list refreshes and no longer displays the removed users.
+
+## Impersonate a user
+
+With authentik, an Admin can impersonate a user, meaning that the Admin temporarily assumes the identity of the user.
+
+1. In the Admin interface, navigate to **Directory > Users** to display all users.
+2. Click the name of the user to display the full User details page.
+3. On the Overview tab, beneath **User Details**, in the **Actions** area, click **Impersonate**.
+4. At the prompt, provide a reason why you are impersonating this user, and then click **Impersonate**.
+
+:::info
+An Admin can globally enable or disable impersonation in the [System Settings](../../sys-mgmt/settings.md#impersonation). By default, this option is set to true, meaning all users can be impersonated.
+
+An Admin can also configure whether inputting a reason for impersonation is required in the [System Settings](../../sys-mgmt/settings.md#require-reason-for-impersonation).
+:::

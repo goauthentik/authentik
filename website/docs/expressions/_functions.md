@@ -101,6 +101,30 @@ Example:
 ak_create_event("my_custom_event", foo=request.user)
 ```
 
+### `ak_create_jwt(user: User, provider: OAuth2Provider | str, scopes: list[str], validity = "seconds=60") -> str | None` <span class="badge badge--version">authentik 2025.2+</span>
+
+Create a new JWT signed by the given `provider` for `user`.
+
+The `provider` parameter can either be an instance of `OAuth2Provider` or a the name of a provider instance as a string. Scopes is an array of all scopes that the JWT should have.
+
+The JWT is valid for 60 seconds by default, this can be customized using the `validity` parameter. The syntax of the parameter is `hours=1,minutes=2,seconds=3`. The following keys are allowed:
+
+    - Microseconds
+    - Milliseconds
+    - Seconds
+    - Minutes
+    - Hours
+    - Days
+    - Weeks
+
+    All values accept floating-point values.
+
+Example:
+
+```python
+jwt = ak_create_jwt(request.user, "my-oauth2-provider-name", ["openid", "profile", "email"])
+```
+
 ## Comparing IP Addresses
 
 To compare IP Addresses or check if an IP Address is within a given subnet, you can use the functions `ip_address('192.0.2.1')` and `ip_network('192.0.2.0/24')`. With these objects you can do [arithmetic operations](https://docs.python.org/3/library/ipaddress.html#operators).

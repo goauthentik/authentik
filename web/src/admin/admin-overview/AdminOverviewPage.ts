@@ -96,7 +96,7 @@ export class AdminOverviewPage extends AdminOverviewBase {
     render(): TemplateResult {
         const name = this.user?.user.name ?? this.user?.user.username;
 
-        return html`<ak-page-header icon="" header="" description=${msg("General system status")}>
+        return html`<ak-page-header description=${msg("General system status")} ?hasIcon=${false}>
                 <span slot="header"> ${msg(str`Welcome, ${name || ""}.`)} </span>
             </ak-page-header>
             <section class="pf-c-page__main-section">

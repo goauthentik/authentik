@@ -3,7 +3,7 @@ title: Integrate with Aruba Orchestrator
 sidebar_label: Aruba Orchestrator
 ---
 
-# Aruba Orchestrator
+# Integrate with Aruba Orchestrator
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -17,9 +17,13 @@ sidebar_label: Aruba Orchestrator
 
 The following placeholders are used in this guide:
 
-- `arubaorchestrator.company` is the FQDN of the Aruba Orchestrator install.
-- `authentik.company` is the FQDN of the authentik install.
+- `arubaorchestrator.company` is the FQDN of the Aruba Orchestrator installation.
+- `authentik.company` is the FQDN of the authentik installation.
 - `SSL Certificate` is the name of the SSL certificate used to sign outgoing responses.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik Configuration
 

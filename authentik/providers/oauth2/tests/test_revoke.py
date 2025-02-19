@@ -12,6 +12,7 @@ from authentik.core.tests.utils import create_test_admin_user, create_test_cert,
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.models import (
     AccessToken,
+    ClientTypes,
     IDToken,
     OAuth2Provider,
     RedirectURI,
@@ -108,3 +109,29 @@ class TesOAuth2Revoke(OAuthTestCase):
             },
         )
         self.assertEqual(res.status_code, 401)
+
+    def test_revoke_public(self):
+        """Test revoke public client"""
+        self.provider.client_type = ClientTypes.PUBLIC
+        self.provider.save()
+        token: AccessToken = AccessToken.objects.create(
+            provider=self.provider,
+            user=self.user,
+            token=generate_id(),
+            auth_time=timezone.now(),
+            _scope="openid user profile",
+            _id_token=json.dumps(
+                asdict(
+                    IDToken("foo", "bar"),
+                )
+            ),
+        )
+        auth_public = b64encode(f"{self.provider.client_id}:{generate_id()}".encode()).decode()
+        res = self.client.post(
+            reverse("authentik_providers_oauth2:token-revoke"),
+            HTTP_AUTHORIZATION=f"Basic {auth_public}",
+            data={
+                "token": token.token,
+            },
+        )
+        self.assertEqual(res.status_code, 200)

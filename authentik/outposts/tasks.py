@@ -18,8 +18,6 @@ from kubernetes.config.kube_config import KUBE_CONFIG_DEFAULT_LOCATION
 from structlog.stdlib import get_logger
 from yaml import safe_load
 
-from authentik.enterprise.providers.rac.controllers.docker import RACDockerController
-from authentik.enterprise.providers.rac.controllers.kubernetes import RACKubernetesController
 from authentik.events.models import TaskStatus
 from authentik.events.system_tasks import SystemTask, prefill_task
 from authentik.lib.config import CONFIG
@@ -41,6 +39,8 @@ from authentik.providers.ldap.controllers.docker import LDAPDockerController
 from authentik.providers.ldap.controllers.kubernetes import LDAPKubernetesController
 from authentik.providers.proxy.controllers.docker import ProxyDockerController
 from authentik.providers.proxy.controllers.kubernetes import ProxyKubernetesController
+from authentik.providers.rac.controllers.docker import RACDockerController
+from authentik.providers.rac.controllers.kubernetes import RACKubernetesController
 from authentik.providers.radius.controllers.docker import RadiusDockerController
 from authentik.providers.radius.controllers.kubernetes import RadiusKubernetesController
 from authentik.root.celery import CELERY_APP

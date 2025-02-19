@@ -3,7 +3,7 @@ title: Integrate with OPNsense
 sidebar_label: OPNsense
 ---
 
-# OPNsense
+# Integrate with OPNsense
 
 <span class="badge badge--secondary">Support level: Community</span>
 
@@ -19,11 +19,15 @@ This is based on authentik 2024.2.2 and OPNsense 24.1.3_1-amd64 installed using 
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of authentik.
 - `opnsense` is the name of the authentik Service account we'll create.
 - `DC=ldap,DC=goauthentik,DC=io` is the Base DN of the LDAP Provider (default)
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ### Step 1
 

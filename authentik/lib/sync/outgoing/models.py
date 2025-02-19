@@ -22,9 +22,9 @@ class OutgoingSyncProvider(Model):
     class Meta:
         abstract = True
 
-    def client_for_model[
-        T: User | Group
-    ](self, model: type[T]) -> BaseOutgoingSyncClient[T, Any, Any, Self]:
+    def client_for_model[T: User | Group](
+        self, model: type[T]
+    ) -> BaseOutgoingSyncClient[T, Any, Any, Self]:
         raise NotImplementedError
 
     def get_object_qs[T: User | Group](self, type: type[T]) -> QuerySet[T]:
