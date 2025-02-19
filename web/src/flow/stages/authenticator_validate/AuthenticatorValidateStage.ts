@@ -185,6 +185,12 @@ export class AuthenticatorValidateStage
                         <p>${msg("SMS")}</p>
                         <small>${msg("Tokens sent via SMS.")}</small>
                     </div>`;
+            case DeviceClassesEnum.Email:
+                return html`<i class="fas fa-envelope-o"></i>
+                    <div class="right">
+                        <p>${msg("Email")}</p>
+                        <small>${msg("Tokens sent via email.")}</small>
+                    </div>`;
             default:
                 break;
         }
@@ -240,6 +246,7 @@ export class AuthenticatorValidateStage
         switch (this.selectedDeviceChallenge?.deviceClass) {
             case DeviceClassesEnum.Static:
             case DeviceClassesEnum.Totp:
+            case DeviceClassesEnum.Email:
             case DeviceClassesEnum.Sms:
                 return html` <ak-stage-authenticator-validate-code
                     .host=${this}

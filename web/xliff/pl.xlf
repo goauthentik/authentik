@@ -8461,30 +8461,39 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 </trans-unit>
 <trans-unit id="s35f47dbd321aaf15">
   <source>FIPS compliance: passing</source>
+  <target>Zgodność z FIPS: pozytywna</target>
 </trans-unit>
 <trans-unit id="sc94578030c702562">
   <source>Unverified</source>
+  <target>Niezweryfikowany</target>
 </trans-unit>
 <trans-unit id="s16749cce7c4c1589">
   <source>FIPS compliance: unverified</source>
+  <target>Zgodność z FIPS: niezweryfikowana</target>
 </trans-unit>
 <trans-unit id="s0b2ad58c3deaa8dd">
   <source>FIPS Status</source>
+  <target>Stan FIPS</target>
 </trans-unit>
 <trans-unit id="s4facec1106c91cf9">
   <source>Search returned no results.</source>
+  <target>Wyszukiwanie nie zwróciło żadnych wyników.</target>
 </trans-unit>
 <trans-unit id="s23446284b56ca0cc">
   <source>Reputation score(s)</source>
+  <target>Punkt(y) reputacji  </target>
 </trans-unit>
 <trans-unit id="s7a64ac07061f85b2">
   <source>See documentation</source>
+  <target>Zobacz dokumentację</target>
 </trans-unit>
 <trans-unit id="se166e95fe447ebcd">
   <source>Close dialog</source>
+  <target>Zamknij okno dialogowe</target>
 </trans-unit>
 <trans-unit id="s3dc14a4b8129f989">
   <source>Pagination</source>
+  <target>Paginacja</target>
 </trans-unit>
 <trans-unit id="sf2da0e95c78f2cb7">
   <source>Restore Application Wizard Hint</source>
@@ -8545,39 +8554,51 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 </trans-unit>
 <trans-unit id="s77fbb0a6d145442d">
   <source>Countries</source>
+  <target>Kraje</target>
 </trans-unit>
 <trans-unit id="sdd277e10884a7272">
   <source>Available Countries</source>
+  <target>Dostępne kraje</target>
 </trans-unit>
 <trans-unit id="s7a93139fb12ebf96">
   <source>Selected Countries</source>
+  <target>Wybrane kraje</target>
 </trans-unit>
 <trans-unit id="s375a13497266db93">
   <source>Bind existing policy/group/user</source>
+  <target>Przypisz istniejącą politykę/grupę/użytkownika</target>
 </trans-unit>
 <trans-unit id="s8e2de27afeb78e5a">
   <source>Property mappings for user creation.</source>
+  <target>Mapowania właściwości dla tworzenia użytkownika.</target>
 </trans-unit>
 <trans-unit id="s045cf2d851164d5a">
   <source>Property mappings for group creation.</source>
+  <target>Mapowania właściwości dla tworzenia grupy.</target>
 </trans-unit>
 <trans-unit id="s9642f1d8ee6e787d">
   <source>Link to a group with identical name. Can have security implications when a group is used with another source</source>
+  <target>Połącz z grupą o identycznej nazwie. Może mieć implikacje bezpieczeństwa, gdy grupa jest używana z innym źródłem</target>
 </trans-unit>
 <trans-unit id="s485964f83b5ed044">
   <source>Use the group's name, but deny enrollment when the name already exists</source>
+  <target>Użyj nazwy grupy, ale odmów rejestracji, gdy nazwa już istnieje</target>
 </trans-unit>
 <trans-unit id="s2b1b532c5271b296">
   <source>Group matching mode</source>
+  <target>Tryb dopasowywania grup</target>
 </trans-unit>
 <trans-unit id="s704381cea57e5a12">
   <source>OAuth Attribute mapping</source>
+  <target>Mapowanie atrybutów OAuth</target>
 </trans-unit>
 <trans-unit id="s4b9501c321dc4922">
   <source>Plex Attribute mapping</source>
+  <target>Mapowanie atrybutów Plex</target>
 </trans-unit>
 <trans-unit id="s6135938c50ad8a4b">
   <source>Encryption Certificate</source>
+  <target>Certyfikat szyfrowania</target>
 </trans-unit>
 <trans-unit id="s37b8d48b9416fc25">
   <source>When selected, encrypted assertions will be decrypted using this keypair.</source>
@@ -8617,30 +8638,38 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 </trans-unit>
 <trans-unit id="s4ae42fa672dd72bc">
   <source>Created at</source>
+  <target>Utworzono o</target>
 </trans-unit>
 <trans-unit id="see1f8a5c8e11c5ab">
   <source>Last updated at</source>
+  <target>Ostatnia aktualizacja o</target>
 </trans-unit>
 <trans-unit id="s82dd7087cd1471ab">
   <source>Last used at</source>
+  <target>Ostatnio używane o</target>
 </trans-unit>
 <trans-unit id="s9dda0789d278f5c5">
   <source>Provide users with a 'show password' button.</source>
+  <target>Udostępnij użytkownikom przycisk "pokaż hasło".</target>
 </trans-unit>
 <trans-unit id="s2f7f35f6a5b733f5">
   <source>Show password</source>
+  <target>Pokaż hasło</target>
 </trans-unit>
 <trans-unit id="s452f791e0ff6a13e">
   <source>Hide password</source>
+  <target>Ukryj hasło</target>
 </trans-unit>
 <trans-unit id="s08272eeeddfd244e">
   <source>An outpost is on an incorrect version!</source>
 </trans-unit>
 <trans-unit id="sa30c12014e955946">
   <source>Russian</source>
+  <target>Rosyjski</target>
 </trans-unit>
 <trans-unit id="s354405ae02cb262d">
   <source>Last seen: <x id="0" equiv-text="${getRelativeTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</source>
+  <target>Ostatnio widziany: <x id="0" equiv-text="${getRelativeTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</target>
 </trans-unit>
 <trans-unit id="s5aebe06e3ddf6ca9">
   <source>Sign assertions</source>
@@ -9040,6 +9069,7 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 </trans-unit>
 <trans-unit id="sde0ad51b14f77cf6">
   <source>Redirect URIs/Origins (RegEx)</source>
+  <target>URIs/Origins przekierowania (RegEx)</target>
 </trans-unit>
 <trans-unit id="s89ae85c3a9df8a6f">
   <source>Configure OAuth2 Provider</source>

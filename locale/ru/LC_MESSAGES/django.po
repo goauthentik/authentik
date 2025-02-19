@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-18 00:08+0000\n"
+"POT-Creation-Date: 2025-02-14 14:49+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Anton Babenko, 2024\n"
 "Language-Team: Russian (https://app.transifex.com/authentik/teams/119923/ru/)\n"
@@ -25,6 +25,15 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: authentik/admin/models.py
+msgid "Version history"
+msgstr ""
+
+#: authentik/admin/tasks.py
+#, python-brace-format
+msgid "New version {version} available!"
+msgstr ""
 
 #: authentik/api/schema.py
 msgid "Generic API Error"
@@ -39,9 +48,8 @@ msgid "Blueprint file does not exist"
 msgstr "Файл чертежа не существует"
 
 #: authentik/blueprints/api.py
-#, python-brace-format
-msgid "Failed to validate blueprint: {logs}"
-msgstr "Ошибка валидации чертежа:  {logs}"
+msgid "Failed to validate blueprint"
+msgstr ""
 
 #: authentik/blueprints/api.py
 msgid "Either path or content must be set."
@@ -77,9 +85,9 @@ msgid "authentik Export - {date}"
 msgstr "authentik Экспорт - {date}"
 
 #: authentik/blueprints/v1/tasks.py authentik/crypto/tasks.py
-#, python-format
-msgid "Successfully imported %(count)d files."
-msgstr "Удачно импортировано %(count)d файлов."
+#, python-brace-format
+msgid "Successfully imported {count} files."
+msgstr ""
 
 #: authentik/brands/models.py
 msgid ""
@@ -109,6 +117,14 @@ msgstr "Бренд"
 msgid "Brands"
 msgstr "Бренды"
 
+#: authentik/core/api/application_entitlements.py
+msgid "User does not have access to application."
+msgstr ""
+
+#: authentik/core/api/devices.py
+msgid "Extra description not available"
+msgstr ""
+
 #: authentik/core/api/providers.py
 msgid ""
 "When not set all providers are returned. When set to true, only backchannel "
@@ -118,6 +134,11 @@ msgstr ""
 "Если значение не установлено, возвращаются все провайдеры. Если установлено "
 "значение true, возвращаются только провайдеры обратного канала. При значении"
 " false провайдеры обратного канала исключаются."
+
+#: authentik/core/api/transactional_applications.py
+#, python-brace-format
+msgid "User lacks permission to create {model}"
+msgstr ""
 
 #: authentik/core/api/users.py
 msgid "No leading or trailing slashes allowed."
@@ -201,6 +222,10 @@ msgid "Flow used when authorizing this provider."
 msgstr "Поток, используемый при авторизации данного провайдера."
 
 #: authentik/core/models.py
+msgid "Flow used ending the session from a provider."
+msgstr ""
+
+#: authentik/core/models.py
 msgid ""
 "Accessed from applications; optional backchannel providers for protocols "
 "like LDAP and SCIM."
@@ -227,6 +252,14 @@ msgstr "Приложение"
 #: authentik/core/models.py
 msgid "Applications"
 msgstr "Приложения"
+
+#: authentik/core/models.py
+msgid "Application Entitlement"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Application Entitlements"
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Use the source-specific identifier"
@@ -367,56 +400,6 @@ msgstr "Успешно связано с {source}!"
 #: authentik/core/sources/flow_manager.py
 msgid "Source is not configured for enrollment."
 msgstr "Источник не настроен для зачисления."
-
-#: authentik/core/templates/if/end_session.html
-msgid "End session"
-msgstr "Завершение сессии"
-
-#: authentik/core/templates/if/end_session.html
-#, python-format
-msgid ""
-"\n"
-"You've logged out of %(application)s.\n"
-msgstr ""
-"\n"
-"Вы вышли из %(application)s.\n"
-
-#: authentik/core/templates/if/end_session.html
-#, python-format
-msgid ""
-"\n"
-"            You've logged out of %(application)s. You can go back to the overview to launch another application, or log out of your %(branding_title)s account.\n"
-"        "
-msgstr ""
-"\n"
-"            Вы вышли из %(application)s. Вы можете вернуться к обзору, чтобы запустить другое приложение, или выйти из учетной записи %(branding_title)s.\n"
-"        "
-
-#: authentik/core/templates/if/end_session.html
-msgid "Go back to overview"
-msgstr "Вернуться к обзору"
-
-#: authentik/core/templates/if/end_session.html
-#, python-format
-msgid ""
-"\n"
-"            Log out of %(branding_title)s\n"
-"        "
-msgstr ""
-"\n"
-"            Выйти из %(branding_title)s\n"
-"        "
-
-#: authentik/core/templates/if/end_session.html
-#, python-format
-msgid ""
-"\n"
-"            Log back into %(application)s\n"
-"        "
-msgstr ""
-"\n"
-"            Опять войти в %(application)s\n"
-"        "
 
 #: authentik/core/templates/if/error.html
 msgid "Go home"
@@ -618,6 +601,67 @@ msgstr "Достигнут максимальный лимит соединен�
 #: authentik/enterprise/providers/rac/views.py
 msgid "(You are already connected in another tab/window)"
 msgstr "(Вы уже подключены в другой вкладке/окне)"
+
+#: authentik/enterprise/providers/ssf/models.py
+#: authentik/providers/oauth2/models.py
+msgid "Signing Key"
+msgstr "Подписывающий ключ"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Key used to sign the SSF Events."
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Shared Signals Framework Provider"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Shared Signals Framework Providers"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Add stream to SSF provider"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Stream"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Streams"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Stream Event"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Stream Events"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/tasks.py
+msgid "Failed to send request"
+msgstr ""
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Authenticator Google Device Trust Connector Stage"
+msgstr ""
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Authenticator Google Device Trust Connector Stages"
+msgstr ""
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Device"
+msgstr ""
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Devices"
+msgstr ""
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/stage.py
+msgid "Verifying your browser..."
+msgstr ""
 
 #: authentik/enterprise/stages/source/models.py
 msgid ""
@@ -890,8 +934,8 @@ msgid "Evaluate policies during the Flow planning process."
 msgstr "Оценка политик во время процесса планирования потока."
 
 #: authentik/flows/models.py
-msgid "Evaluate policies when the Stage is present to the user."
-msgstr "Оценивайте политики, когда этап предоставлен пользователю."
+msgid "Evaluate policies when the Stage is presented to the user."
+msgstr ""
 
 #: authentik/flows/models.py
 msgid ""
@@ -938,14 +982,14 @@ msgid "Starting full provider sync"
 msgstr "Запуск полной синхронизации провайдера"
 
 #: authentik/lib/sync/outgoing/tasks.py
-#, python-format
-msgid "Syncing page %(page)d of users"
-msgstr "Синхронизация %(page)d страницы пользователей"
+#, python-brace-format
+msgid "Syncing page {page} of users"
+msgstr ""
 
 #: authentik/lib/sync/outgoing/tasks.py
-#, python-format
-msgid "Syncing page %(page)d of groups"
-msgstr "Синхронизация %(page)d страницы групп"
+#, python-brace-format
+msgid "Syncing page {page} of groups"
+msgstr ""
 
 #: authentik/lib/sync/outgoing/tasks.py
 #, python-brace-format
@@ -1118,9 +1162,9 @@ msgid "Event Matcher Policies"
 msgstr "Политики сопоставления событий"
 
 #: authentik/policies/expiry/models.py
-#, python-format
-msgid "Password expired %(days)d days ago. Please update your password."
-msgstr "Пароль истёк %(days)d дней назад. Пожалуйста, обновите его."
+#, python-brace-format
+msgid "Password expired {days} days ago. Please update your password."
+msgstr ""
 
 #: authentik/policies/expiry/models.py
 msgid "Password has expired."
@@ -1247,9 +1291,13 @@ msgid "Password not set in context"
 msgstr "Пароль не задан в контексте"
 
 #: authentik/policies/password/models.py
-#, python-format
-msgid "Password exists on %(count)d online lists."
-msgstr "Пароль существует в %(count)d онлайн-списках."
+msgid "Invalid password."
+msgstr ""
+
+#: authentik/policies/password/models.py
+#, python-brace-format
+msgid "Password exists on {count} online lists."
+msgstr ""
 
 #: authentik/policies/password/models.py
 msgid "Password is too weak."
@@ -1375,6 +1423,11 @@ msgstr "LDAP Провайдеры"
 msgid "Search full LDAP directory"
 msgstr "Поиск по всему каталогу LDAP"
 
+#: authentik/providers/oauth2/api/providers.py
+#, python-brace-format
+msgid "Invalid Regex Pattern: {url}"
+msgstr ""
+
 #: authentik/providers/oauth2/id_token.py
 msgid "Based on the Hashed User ID"
 msgstr "На основе хэшированного идентификатора пользователя"
@@ -1423,6 +1476,14 @@ msgid "Each provider has a different issuer, based on the application slug."
 msgstr ""
 "У каждого провайдера есть свой эмитент, основанный на идентификаторе "
 "приложения."
+
+#: authentik/providers/oauth2/models.py
+msgid "Strict URL comparison"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Regular Expression URL matching"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "code (Authorization Code Flow)"
@@ -1505,10 +1566,6 @@ msgid "Redirect URIs"
 msgstr "Ссылка перенаправления"
 
 #: authentik/providers/oauth2/models.py
-msgid "Enter each URI on a new line."
-msgstr "Введите каждый URI с новой строки."
-
-#: authentik/providers/oauth2/models.py
 msgid "Include claims in id_token"
 msgstr "Включить утверждения в id_token"
 
@@ -1550,16 +1607,18 @@ msgid "Configure how the issuer field of the ID Token should be filled."
 msgstr "Настройте, как должно быть заполнено поле эмитента ID-токена."
 
 #: authentik/providers/oauth2/models.py
-msgid "Signing Key"
-msgstr "Подписывающий ключ"
+msgid "Key used to sign the tokens."
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Encryption Key"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid ""
-"Key used to sign the tokens. Only required when JWT Algorithm is set to "
-"RS256."
+"Key used to encrypt the tokens. When set, tokens will be encrypted and "
+"returned as JWEs."
 msgstr ""
-"Ключ, используемый для подписи токенов. Требуется только в том случае, если "
-"для алгоритма JWT установлено значение RS256."
 
 #: authentik/providers/oauth2/models.py
 msgid ""
@@ -2039,6 +2098,115 @@ msgstr ""
 #: authentik/recovery/views.py
 msgid "Used recovery-link to authenticate."
 msgstr "Для аутентификации использована ссылка для восстановления "
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos realm"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "Custom krb5.conf to use. Uses the system one by default"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "KAdmin server type"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "Sync users from Kerberos into authentik"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "When a user changes their password, sync it back to Kerberos"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "Principal to authenticate to kadmin for sync."
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "Password to authenticate to kadmin for sync"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"Keytab to authenticate to kadmin for sync. Must be base64-encoded or in the "
+"form TYPE:residual"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"Credentials cache to authenticate to kadmin for sync. Must be in the form "
+"TYPE:residual"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"Force the use of a specific server name for SPNEGO. Must be in the form "
+"HTTP@hostname"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "SPNEGO keytab base64-encoded or path to keytab in the form FILE:path"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "Credential cache to use for SPNEGO in form type:residual"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"If enabled, the authentik-stored password will be updated upon login with "
+"the Kerberos password backend"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Source"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Sources"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Source Property Mapping"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Source Property Mappings"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "User Kerberos Source Connection"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "User Kerberos Source Connections"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "Group Kerberos Source Connection"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "Group Kerberos Source Connections"
+msgstr ""
+
+#: authentik/sources/kerberos/views.py
+msgid "SPNEGO authentication required"
+msgstr ""
+
+#: authentik/sources/kerberos/views.py
+msgid ""
+"\n"
+"                    Make sure you have valid tickets (obtainable via kinit)\n"
+"                    and configured the browser correctly.\n"
+"                    Please contact your administrator.\n"
+"                "
+msgstr ""
+
+#: authentik/sources/ldap/api.py
+msgid "Only a single LDAP Source with password synchronization is allowed"
+msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "Server URI"
@@ -2752,13 +2920,8 @@ msgid "Captcha Stages"
 msgstr "Этапы с каптчей"
 
 #: authentik/stages/captcha/stage.py
-msgid "Unknown error"
-msgstr "Неизвестная ошибка"
-
-#: authentik/stages/captcha/stage.py
-#, python-brace-format
-msgid "Failed to validate token: {error}"
-msgstr "Ошибка валидации токена: {error}"
+msgid "Invalid captcha response. Retrying may solve this issue."
+msgstr ""
 
 #: authentik/stages/captcha/stage.py
 msgid "Invalid captcha response"
@@ -2953,12 +3116,9 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-"    If you did not request a password change, please ignore this Email. The link above is valid for %(expires)s.\n"
+"    If you did not request a password change, please ignore this email. The link above is valid for %(expires)s.\n"
 "    "
 msgstr ""
-"\n"
-"    Если вы не запрашивали смену пароля, проигнорируйте это письмо. Приведенная выше ссылка действительна до %(expires)s.\n"
-"    "
 
 #: authentik/stages/email/templates/email/password_reset.txt
 #, python-format
@@ -2977,10 +3137,8 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-"If you did not request a password change, please ignore this Email. The link above is valid for %(expires)s.\n"
+"If you did not request a password change, please ignore this email. The link above is valid for %(expires)s.\n"
 msgstr ""
-"\n"
-"Если вы не запрашивали смену пароля, проигнорируйте это письмо. Приведенная выше ссылка действительна до %(expires)s.\n"
 
 #: authentik/stages/email/templates/email/setup.html
 msgid "authentik Test-Email"
@@ -3139,6 +3297,10 @@ msgid "User database + LDAP password"
 msgstr "База данных пользователей + пароль LDAP"
 
 #: authentik/stages/password/models.py
+msgid "User database + Kerberos password"
+msgstr ""
+
+#: authentik/stages/password/models.py
 msgid "Selection of backends to test the password against."
 msgstr "Выбор бэкендов для проверки пароля."
 
@@ -3287,6 +3449,22 @@ msgstr "Этапы запроса"
 msgid "Passwords don't match."
 msgstr "Пароли не соответствуют."
 
+#: authentik/stages/redirect/api.py
+msgid "Target URL should be present when mode is Static."
+msgstr ""
+
+#: authentik/stages/redirect/api.py
+msgid "Target Flow should be present when mode is Flow."
+msgstr ""
+
+#: authentik/stages/redirect/models.py
+msgid "Redirect Stage"
+msgstr ""
+
+#: authentik/stages/redirect/models.py
+msgid "Redirect Stages"
+msgstr ""
+
 #: authentik/stages/user_delete/models.py
 msgid "User Delete Stage"
 msgstr "Этап удаления пользователя"
@@ -3429,6 +3607,10 @@ msgstr ""
 #: authentik/tenants/models.py
 msgid "Globally enable/disable impersonation."
 msgstr "Глобально включить/отключить имитацию пользователей."
+
+#: authentik/tenants/models.py
+msgid "Require administrators to provide a reason for impersonating a user."
+msgstr ""
 
 #: authentik/tenants/models.py
 msgid "Default token duration"

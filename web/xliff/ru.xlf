@@ -1366,7 +1366,7 @@
       </trans-unit>
       <trans-unit id="sb357ea19a722d827">
         <source>Post</source>
-        <target>Почта</target>
+        <target>Post</target>
         
       </trans-unit>
       <trans-unit id="s4e28e2899e08a5f8">
@@ -5771,7 +5771,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s98c3bdf4fd5cdf65">
         <source>Notification Rules</source>
-        <target>Правила уведомления</target>
+        <target>Правила уведомлений</target>
         
       </trans-unit>
       <trans-unit id="s107bf77afb93c9b8">
@@ -8719,9 +8719,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s876e75cf2c07b38e">
   <source>Selected Sources</source>
+  <target>Выбранные Источники</target>
 </trans-unit>
 <trans-unit id="s3b579c4bb6b447ae">
   <source>Successfully triggered sync.</source>
+  <target>Синхронизация успешно запущена.</target>
 </trans-unit>
 <trans-unit id="s05073d2537b45d1a">
   <source>Sync</source>
@@ -9100,6 +9102,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sde0ad51b14f77cf6">
   <source>Redirect URIs/Origins (RegEx)</source>
+  <target>Перенаправляющие URI/Источники (RegEx)</target>
 </trans-unit>
 <trans-unit id="s89ae85c3a9df8a6f">
   <source>Configure OAuth2 Provider</source>
