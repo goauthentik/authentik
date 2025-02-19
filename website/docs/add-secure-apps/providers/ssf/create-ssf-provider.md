@@ -48,4 +48,4 @@ The workflow to implement an SSF provider as a [backchannel provider](../../appl
 
 4. Click **Create** to save the new application.
 
-The new application, with its OIDC provider and the backchannel SFF rpvier, should now appear in your list of Applications.
+The new application, with its OIDC provider and the backchannel SFF provider, should now appear in your list of Applications.

@@ -7,7 +7,7 @@ sidebar_label: SSF Provider
 <span class="badge badge--version">authentik 2025.2+</span>
 &nbsp;
 
-(Shared Signals Framework (SSF) is a common standard for sharing asynchronous real-time security signals and events across multiple applications and an identity provider. The framework is a collection of standards and communication processes, documented in a [specification](https://openid.net/specs/openid-sharedsignals-framework-1_0-ID3.html). SSF leverages the APIs of the application and the IdP, using privacy-protected, secure webhooks.
+Shared Signals Framework (SSF) is a common standard for sharing asynchronous real-time security signals and events across multiple applications and an identity provider. The framework is a collection of standards and communication processes, documented in a [specification](https://openid.net/specs/openid-sharedsignals-framework-1_0-ID3.html). SSF leverages the APIs of the application and the IdP, using privacy-protected, secure webhooks.
 
 ## About Shared Signals Framework
 
