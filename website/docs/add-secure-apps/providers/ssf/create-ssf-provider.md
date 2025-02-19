@@ -39,7 +39,7 @@ The workflow to implement an SSF provider as a [backchannel provider](../../appl
 3. Define the settings for the application:
     -   **Name**: define a descriptive name ofr the application.
     -   **Slug**: optionally define the internal application name used in URLs.
-    -   **Group**: optionally select a group that will have access to this application.
+    -   **Group**: optionally select a group that you want to have access to this application.
     -   **Provider**: select the OIDC provider that you created.
     -   **Backchannel Providers**: select the SSF provider you created.
     -   **Policy engine mode**: define policy-based access.
