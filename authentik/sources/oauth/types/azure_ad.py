@@ -18,11 +18,7 @@ class AzureADOAuthRedirect(OAuthRedirect):
 
     def get_additional_parameters(self, source):  # pragma: no cover
         return {
-            "scope": [
-                "openid",
-                "https://graph.microsoft.com/User.Read",
-                "https://graph.microsoft.com/GroupMember.Read.All",
-            ],
+            "scope": ["openid", "https://graph.microsoft.com/User.Read"],
         }
 
 
@@ -31,6 +27,8 @@ class AzureADClient(UserprofileHeaderAuthClient):
 
     def get_profile_info(self, token):
         profile_data = super().get_profile_info(token)
+        if "https://graph.microsoft.com/GroupMember.Read.All" not in self.source.additional_scopes:
+            return profile_data
         group_response = self.session.request(
             "get",
             "https://graph.microsoft.com/v1.0/me/memberOf",
