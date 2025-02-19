@@ -26,6 +26,10 @@ See [Expression Policy](./expression.mdx).
 
 Use this policy for simple GeoIP lookups, such as country or ASN matching. (For a more advanced GeoIP lookup, use an [Expression policy](./expression.mdx).)
 
+With the GeoIP policy, you can also use the **Distance Settings** to define travel "expectations" such as maximum distance (in kilometers) away from last login(s) that a new login is allowed.
+
+The **Impossible travel** setting, when enabled, uses the GeoIP data of the user attempting to log in and compares it to the specified number of historical logins to determine if the travel would have been possible in the amount of time since the previous login event. You can define a **Impossible travel tolerance** value (in kilometers), which specifies the distance that is deemed acceptable.
+
 ### Password-Expiry Policy
 
 This policy can enforce regular password rotation by expiring set passwords after a finite amount of time. This forces users to set a new password.
