@@ -4,7 +4,7 @@ Some models behave differently and allow for access to different API fields when
 
 ## `authentik_core.token`
 
-### `key` <span class="badge badge--version">authentik 2023.4+</span>
+### `key`
 
 Via the standard API, a token's key cannot be changed, it can only be rotated. This is to ensure a high entropy in it's key, and to prevent insecure data from being used. However, when provisioning tokens via a blueprint, it may be required to set a token to an existing value.
 
@@ -26,7 +26,7 @@ For example:
 
 ## `authentik_core.user`
 
-### `password` <span class="badge badge--version">authentik 2023.6+</span>
+### `password`
 
 Via the standard API, a user's password can only be set via the separate `/api/v3/core/users/<id>/set_password/` endpoint. In blueprints, the password of a user can be set using the `password` field.
 
@@ -63,7 +63,7 @@ For example:
 
 ## `authentik_core.application`
 
-### `icon` <span class="badge badge--version">authentik 2023.5+</span>
+### `icon`
 
 Application icons can be directly set to URLs with the `icon` field.
 
@@ -81,7 +81,7 @@ For example:
 
 ## `authentik_sources_oauth.oauthsource`, `authentik_sources_saml.samlsource`, `authentik_sources_plex.plexsource`
 
-### `icon` <span class="badge badge--version">authentik 2023.5+</span>
+### `icon`
 
 Source icons can be directly set to URLs with the `icon` field.
 
@@ -99,7 +99,7 @@ For example:
 
 ## `authentik_flows.flow`
 
-### `icon` <span class="badge badge--version">authentik 2023.5+</span>
+### `icon`
 
 Flow backgrounds can be directly set to URLs with the `background` field.
 

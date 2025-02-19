@@ -14,7 +14,7 @@ The User object has the following properties:
 - `is_active` Boolean field if user is active.
 - `date_joined` Date user joined/was created.
 - `password_change_date` Date password was last changed.
-- `path` User's path, see [Path](#path-authentik-20227)
+- `path` User's path, see [Path](#path)
 - `attributes` Dynamic attributes, see [Attributes](#attributes)
 - `group_attributes()` Merged attributes of all groups the user is member of and the user's own attributes.
 - `ak_groups` This is a queryset of all the user's groups.
@@ -42,7 +42,7 @@ for group in user.ak_groups.all():
     yield group.name
 ```
 
-## Path <span class="badge badge--version">authentik 2022.7+</span>
+## Path
 
 Paths can be used to organize users into folders depending on which source created them or organizational structure. Paths may not start or end with a slash, but they can contain any other character as path segments. The paths are currently purely used for organization, it does not affect their permissions, group memberships, or anything else.
 
