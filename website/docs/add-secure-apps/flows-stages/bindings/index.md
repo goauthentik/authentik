@@ -24,7 +24,7 @@ A _policy binding_ connects a specific policy to a flow or to a stage. With the 
 
 You can also bind groups and users to another component (a policy, a stage, a flow, etc.). For example, you can create a binding for a specific group, and then [bind that to a stage binding](../stages/index.md#bind-users-and-groups-to-a-flows-stage-binding), with the result that everyone in that group now will see that stage (and any policies bound to that stage) as part of their flow. Or more specifically, and going one step deeper, you can also _bind a binding to a binding_.
 
-Bindings are also used for [Application Entitlements](../../applications/manage_apps.md#application-entitlements), where you can bind specific users or groups to an application as a way to manage who has access to the application.
+Bindings are also used for [Application Entitlements](../../applications/manage_apps.mdx#application-entitlements), where you can bind specific users or groups to an application as a way to manage who has access to the application.
 
 It's important to remember that bindings are instantiated objects themselves, and conceptually can be considered as a "connector" between two components. This is why you might read about "binding a binding", because technically, a binding is "spliced" into another binding, in order to intercept and enforce the criteria defined in the second binding.
 

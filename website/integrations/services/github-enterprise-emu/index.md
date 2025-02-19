@@ -1,11 +1,8 @@
 ---
 title: Integrate with GitHub Enterprise Cloud - Enterprise Managed Users
 sidebar_label: GitHub Enterprise Cloud EMU
+support_level: community
 ---
-
-# Integrate with GitHub Enterprise Cloud - Enterprise Managed Users
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is GitHub Enterprise Cloud - Enterprise Managed Users
 

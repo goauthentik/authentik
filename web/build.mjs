@@ -88,7 +88,11 @@ const baseArgs = {
     treeShaking: true,
     external: ["*.woff", "*.woff2"],
     tsconfig: "./tsconfig.json",
-    loader: { ".css": "text", ".md": "text" },
+    loader: {
+        ".css": "text",
+        ".md": "text",
+        ".mdx": "text",
+    },
     define: definitions,
     format: "esm",
     logOverride: {

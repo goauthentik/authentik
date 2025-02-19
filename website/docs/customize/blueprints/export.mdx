@@ -2,7 +2,7 @@
 title: Export
 ---
 
-## Global export <span class="badge badge--version">authentik 2022.8.2+</span>
+## Global export
 
 To migrate existing configurations to blueprints, run `ak export_blueprint` within any authentik Worker container. This will output a blueprint for most currently created objects. Some objects will not be exported as they might have dependencies on other things.
 
