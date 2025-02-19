@@ -10,7 +10,7 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.core.api.property_mappings import PropertyMappingSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import JSONDictField
-from authentik.enterprise.providers.rac.models import RACPropertyMapping
+from authentik.providers.rac.models import RACPropertyMapping
 
 
 class RACPropertyMappingSerializer(PropertyMappingSerializer):
