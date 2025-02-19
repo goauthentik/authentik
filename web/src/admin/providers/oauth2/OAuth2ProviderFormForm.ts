@@ -163,6 +163,7 @@ export function renderForm(
                     label=${msg("Client ID")}
                     value="${first(provider?.clientId, randomString(40, ascii_letters + digits))}"
                     required
+                    inputHint="code"
                 >
                 </ak-text-input>
                 <ak-text-input
@@ -172,6 +173,7 @@ export function renderForm(
                         provider?.clientSecret,
                         randomString(128, ascii_letters + digits),
                     )}"
+                    inputHint="code"
                     ?hidden=${!showClientSecret}
                 >
                 </ak-text-input>
@@ -253,6 +255,7 @@ export function renderForm(
                 <ak-text-input
                     name="accessCodeValidity"
                     label=${msg("Access code validity")}
+                    inputHint="code"
                     required
                     value="${first(provider?.accessCodeValidity, "minutes=1")}"
                     .bighelp=${html`<p class="pf-c-form__helper-text">
@@ -265,6 +268,7 @@ export function renderForm(
                     name="accessTokenValidity"
                     label=${msg("Access Token validity")}
                     value="${first(provider?.accessTokenValidity, "minutes=5")}"
+                    inputHint="code"
                     required
                     .bighelp=${html` <p class="pf-c-form__helper-text">
                             ${msg("Configure how long access tokens are valid for.")}
@@ -277,6 +281,7 @@ export function renderForm(
                     name="refreshTokenValidity"
                     label=${msg("Refresh Token validity")}
                     value="${first(provider?.refreshTokenValidity, "days=30")}"
+                    inputHint="code"
                     ?required=${true}
                     .bighelp=${html` <p class="pf-c-form__helper-text">
                             ${msg("Configure how long refresh tokens are valid for.")}

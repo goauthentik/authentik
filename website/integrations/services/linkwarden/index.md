@@ -1,11 +1,8 @@
 ---
 title: Integrate with Linkwarden
 sidebar_label: Linkwarden
+support_level: community
 ---
-
-# Integrate with Linkwarden
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Linkwarden
 

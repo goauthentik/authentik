@@ -217,7 +217,9 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.fieldKey)}"
-                    class="pf-c-form-control"
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
                     required
                     @input=${() => {
                         this._shouldRefresh = true;

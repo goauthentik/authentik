@@ -102,7 +102,7 @@ const entryPoints = [
     ["user/UserInterface.ts", "user"],
     ["flow/FlowInterface.ts", "flow"],
     ["standalone/api-browser/index.ts", "standalone/api-browser"],
-    ["enterprise/rac/index.ts", "enterprise/rac"],
+    ["rac/index.ts", "rac"],
     ["standalone/loading/index.ts", "standalone/loading"],
     ["polyfill/poly.ts", "."],
 ];
@@ -119,7 +119,11 @@ const BASE_ESBUILD_OPTIONS = {
     treeShaking: true,
     external: ["*.woff", "*.woff2"],
     tsconfig: "./tsconfig.json",
-    loader: { ".css": "text", ".md": "text" },
+    loader: {
+        ".css": "text",
+        ".md": "text",
+        ".mdx": "text",
+    },
     define: definitions,
     format: "esm",
     plugins: [],

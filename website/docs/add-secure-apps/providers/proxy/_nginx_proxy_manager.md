@@ -1,4 +1,4 @@
-```
+```nginx
 # Increase buffer size for large headers
 # This is needed only if you get 'upstream sent too big header while reading response
 # header from upstream' error when trying to access an application protected by goauthentik
