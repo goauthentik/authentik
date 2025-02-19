@@ -39482,6 +39482,7 @@ components:
       - authentik.providers.ldap
       - authentik.providers.oauth2
       - authentik.providers.proxy
+      - authentik.providers.rac
       - authentik.providers.radius
       - authentik.providers.saml
       - authentik.providers.scim
@@ -39522,7 +39523,6 @@ components:
       - authentik.enterprise.audit
       - authentik.enterprise.providers.google_workspace
       - authentik.enterprise.providers.microsoft_entra
-      - authentik.enterprise.providers.rac
       - authentik.enterprise.providers.ssf
       - authentik.enterprise.stages.authenticator_endpoint_gdtc
       - authentik.enterprise.stages.source
@@ -46625,6 +46625,9 @@ components:
       - authentik_providers_oauth2.scopemapping
       - authentik_providers_oauth2.oauth2provider
       - authentik_providers_proxy.proxyprovider
+      - authentik_providers_rac.racprovider
+      - authentik_providers_rac.endpoint
+      - authentik_providers_rac.racpropertymapping
       - authentik_providers_radius.radiusprovider
       - authentik_providers_radius.radiusproviderpropertymapping
       - authentik_providers_saml.samlprovider
@@ -46694,9 +46697,6 @@ components:
       - authentik_providers_google_workspace.googleworkspaceprovidermapping
       - authentik_providers_microsoft_entra.microsoftentraprovider
       - authentik_providers_microsoft_entra.microsoftentraprovidermapping
-      - authentik_providers_rac.racprovider
-      - authentik_providers_rac.endpoint
-      - authentik_providers_rac.racpropertymapping
       - authentik_providers_ssf.ssfprovider
       - authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage
       - authentik_stages_source.sourcestage

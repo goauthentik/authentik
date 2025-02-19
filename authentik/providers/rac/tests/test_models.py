@@ -4,14 +4,14 @@ from django.test import TransactionTestCase
 
 from authentik.core.models import Application, AuthenticatedSession
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.enterprise.providers.rac.models import (
+from authentik.lib.generators import generate_id
+from authentik.providers.rac.models import (
     ConnectionToken,
     Endpoint,
     Protocols,
     RACPropertyMapping,
     RACProvider,
 )
-from authentik.lib.generators import generate_id
 
 
 class TestModels(TransactionTestCase):
