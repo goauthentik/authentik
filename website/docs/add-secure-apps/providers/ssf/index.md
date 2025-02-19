@@ -7,17 +7,17 @@ sidebar_label: SSF Provider
 <span class="badge badge--version">authentik 2025.2+</span>
 &nbsp;
 
- (Shared Signals Framework (SSF) is a common standard for sharing asynchronous real-time security signals and events across multiple applications and an identity provider. The framework is a collection of standards and communication processes, documented in a [specification](https://openid.net/specs/openid-sharedsignals-framework-1_0-ID3.html). SSF leverages the APIs of the application and the IdP, using privacy-protected, secure webhooks.
+(Shared Signals Framework (SSF) is a common standard for sharing asynchronous real-time security signals and events across multiple applications and an identity provider. The framework is a collection of standards and communication processes, documented in a [specification](https://openid.net/specs/openid-sharedsignals-framework-1_0-ID3.html). SSF leverages the APIs of the application and the IdP, using privacy-protected, secure webhooks.
 
 ## About Shared Signals Framework
 
-In authentik, an SSF provider allows applications to subscribe to certain types of security signals (which are then translated into SETs, or Security Event Tokens) that are captured by authentik (the IdP), and then the application can respond to each event. In this scenario, authentik acts as the *transmitter* and the application acts as the *receiver* of the events.
+In authentik, an SSF provider allows applications to subscribe to certain types of security signals (which are then translated into SETs, or Security Event Tokens) that are captured by authentik (the IdP), and then the application can respond to each event. In this scenario, authentik acts as the _transmitter_ and the application acts as the _receiver_ of the events.
 
 Events in authentik that are tracked via SSF include when an MFA device is added or removed, logouts, sessions being revoked by Admin or user clicking logout, or credentials changed.
 
 ## Example use cases
 
-A common use case for SSF is when an Admin wants to know if a user logs out of authentik, so that the user is then also automaticlaly logged  out of all other work-focused applications.
+A common use case for SSF is when an Admin wants to know if a user logs out of authentik, so that the user is then also automaticlaly logged out of all other work-focused applications.
 
 Another example use case is when an application uses SSF to subscribe to authorization events because the application needs to know if a user changed their password in authentik. If a user did change their password, then the application receives a POST request to write the fact that the password was changed.
 
@@ -46,4 +46,3 @@ Optionally, you can specify a event retention time period: this value determines
 :::info
 Be aware that the SET events are different events than those displayed in the authentik Admin interface under **Events**.
 :::
-

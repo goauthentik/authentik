@@ -16,9 +16,9 @@ The workflow to implement an SSF provider as a [backchannel provider](../../appl
 
 3. In the modal, select the **Provider Type** of **SSF**, and then click **Next**.
 
-5. On the **New provider** page, provide the configuration settings. Be sure to select a **Signing Key**.
+4. On the **New provider** page, provide the configuration settings. Be sure to select a **Signing Key**.
 
-6. Click **Finish** to create and save the provider.
+5. Click **Finish** to create and save the provider.
 
 ## Create the OIDC provider
 
@@ -37,14 +37,15 @@ The workflow to implement an SSF provider as a [backchannel provider](../../appl
 2. Click **Create**.
 
 3. Define the settings for the application:
-    -   **Name**: define a descriptive name ofr the application.
-    -   **Slug**: optionally define the internal application name used in URLs.
-    -   **Group**: optionally select a group that you want to have access to this application.
-    -   **Provider**: select the OIDC provider that you created.
-    -   **Backchannel Providers**: select the SSF provider you created.
-    -   **Policy engine mode**: define policy-based access.
-    -   **UI Settings**: optionally define a launch URL, an icon, and other UI elements.
 
-5. Click **Create** to save the new application.
+    - **Name**: define a descriptive name ofr the application.
+    - **Slug**: optionally define the internal application name used in URLs.
+    - **Group**: optionally select a group that you want to have access to this application.
+    - **Provider**: select the OIDC provider that you created.
+    - **Backchannel Providers**: select the SSF provider you created.
+    - **Policy engine mode**: define policy-based access.
+    - **UI Settings**: optionally define a launch URL, an icon, and other UI elements.
 
-The new application, with its OIDC provider and the backchannel SFF rpvier, shoudl now appear in your list of Applications.
+4. Click **Create** to save the new application.
+
+The new application, with its OIDC provider and the backchannel SFF rpvier, should now appear in your list of Applications.

@@ -245,7 +245,9 @@ export default {
                                 type: "doc",
                                 id: "add-secure-apps/providers/ssf/index",
                             },
-                            items: ["add-secure-apps/providers/ssf/create-ssf-provider"],
+                            items: [
+                                "add-secure-apps/providers/ssf/create-ssf-provider",
+                            ],
                         },
                     ],
                 },
