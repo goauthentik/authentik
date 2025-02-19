@@ -46,3 +46,5 @@ The workflow to implement an SSF provider as a [backchannel provider](../../appl
     -   **UI Settings**: optionally define a launch URL, an icon, and other UI elements.
 
 5. Click **Create** to save the new application.
+
+The new application, with its OIDC provider and the backchannel SFF rpvier, shoudl now appear in your list of Applications.
