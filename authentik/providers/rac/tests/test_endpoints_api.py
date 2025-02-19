@@ -5,10 +5,10 @@ from rest_framework.test import APITestCase
 
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.enterprise.providers.rac.models import Endpoint, Protocols, RACProvider
 from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
+from authentik.providers.rac.models import Endpoint, Protocols, RACProvider
 
 
 class TestEndpointsAPI(APITestCase):
