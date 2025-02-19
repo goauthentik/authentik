@@ -43,7 +43,7 @@ COPY ./gen-ts-api /work/web/node_modules/@goauthentik/api
 RUN npm run build
 
 # Stage 3: Build go proxy
-FROM --platform=${BUILDPLATFORM} mcr.microsoft.com/oss/go/microsoft/golang:1.24-fips-bookworm AS go-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.24-bookworm AS go-builder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -76,7 +76,7 @@ COPY ./go.sum /go/src/goauthentik.io/go.sum
 RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     --mount=type=cache,id=go-build-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/root/.cache/go-build \
     if [ "$TARGETARCH" = "arm64" ]; then export CC=aarch64-linux-gnu-gcc && export CC_FOR_TARGET=gcc-aarch64-linux-gnu; fi && \
-    CGO_ENABLED=1 GOEXPERIMENT="systemcrypto" GOFLAGS="-tags=requirefips" GOARM="${TARGETVARIANT#v}" \
+    CGO_ENABLED=1 GOFIPS140=latest GOARM="${TARGETVARIANT#v}" \
     go build -o /go/authentik ./cmd/server
 
 # Stage 4: MaxMind GeoIP
