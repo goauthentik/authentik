@@ -46,7 +46,7 @@ Note: The `default-authentication-flow` validates MFA by default, and currently 
 
 ### Create LDAP Application & Provider
 
-1. Create the LDAP Application under _Applications_ -> _Applications_ -> _Create With Wizard_ and name it `LDAP`.
+1. Create the LDAP Application under _Applications_ -> _Applications_ -> _Create With provider_ and name it `LDAP`.
    ![](./general_setup14.png)
    ![](./general_setup15.png)
 

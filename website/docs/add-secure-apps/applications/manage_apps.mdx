@@ -4,37 +4,21 @@ title: Manage applications
 
 Managing the applications that your team uses involves several tasks, from initially adding the application and provider, to controlling access and visibility of the application, to providing access URLs.
 
-## Add new applications
-
-Learn how to add new applications from our video or follow the instructions below.
-
-### Video
-
-<iframe
-    width="560"
-    height="315"
-    src="https://www.youtube.com/embed/broUAWrIWDI;start=22"
-    title="YouTube video player"
-    frameborder="0"
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-    allowfullscreen
-></iframe>
-
 ### Instructions
 
-To add an application to authentik and have it display on users' **My applications** page, you can use the Application Wizard, which creates both the new application and the required provider at the same time.
+To add an application to authentik and have it display on users' **My applications** page, follow these steps:
 
-1. Log into authentik as an admin, and navigate to **Applications --> Applications**.
+1. Log in to authentik as an admin, and open the authentik Admin interface.
 
-2. Click **Create with Wizard**. (Alternatively, use our legacy process and click **Create**. The legacy process requires that the application and its authentication provider be configured separately.)
+2. Navigate to **Applications -> Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can create only an application, without a provider, by clicking **Create.)**
 
-3. In the **New application** wizard, define the application details, the provider type, bindings for the application.
+3. In the **New application** modal, define the application details, the provider type and configuration settings, bindings for the application.
 
     - **Application**: provide a name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 
     - **Choose a Provider**: select the provider types for this application.
 
-    - **Configure a Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and any additional required configurations.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and any additional required configurations.
 
     - **Configure Bindings**: to manage the listing and access to applications on a user's **My applications** page, you can optionally create a [binding](../flows-stages/bindings/index.md) between the application and a specific policy, group, or user. Note that if you do not define any bindings, then all users have access to the application. For more information about user access, refer to our documentation about [authorization](#policy-driven-authorization) and [hiding an application](#hide-applications).
 
