@@ -7,6 +7,7 @@ import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";
+import "@goauthentik/elements/Alert.js";
 import {
     CapabilitiesEnum,
     WithCapabilitiesConfig,
@@ -120,7 +121,12 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
     }
 
     renderForm(): TemplateResult {
+        const alertMsg = msg(
+            "Using this form will only create an Application. In order to authenticate with the application, you will have to manually pair it with a Provider.",
+        );
+
         return html`<form class="pf-c-form pf-m-horizontal">
+            <ak-alert level="pf-m-info">${alertMsg}</ak-alert>
             <ak-text-input
                 name="name"
                 value=${ifDefined(this.instance?.name)}
