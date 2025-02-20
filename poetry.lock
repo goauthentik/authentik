@@ -5854,12 +5854,13 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 
 [[package]]
 name = "zxcvbn"
-version = "4.4.28"
+version = "4.5.0"
 description = ""
 optional = false
 python-versions = "*"
 files = [
-    {file = "zxcvbn-4.4.28.tar.gz", hash = "sha256:151bd816817e645e9064c354b13544f85137ea3320ca3be1fb6873ea75ef7dc1"},
+    {file = "zxcvbn-4.5.0-py2.py3-none-any.whl", hash = "sha256:2b6eed621612ce6d65e6e4c7455b966acee87d0280e257956b1f06ccc66bd5ff"},
+    {file = "zxcvbn-4.5.0.tar.gz", hash = "sha256:70392c0fff39459d7f55d0211151401e79e76fcc6e2c22b61add62900359c7c1"},
 ]
 
 [metadata]
