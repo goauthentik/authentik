@@ -26,15 +26,21 @@ See [Expression Policy](./expression.mdx).
 
 Use this policy for simple GeoIP lookups, such as country or ASN matching. (For a more advanced GeoIP lookup, use an [Expression policy](./expression.mdx).)
 
-With the GeoIP policy, you can use the **Distance Settings** options to set travel "expectations" to control login attempts based on GeoIP location. The GeoIP policy calculates the values you define for travel distances (in kilometers), and then either passes or fails based on the results.
+With the GeoIP policy, you can use the **Distance Settings** options to set travel "expectations" to control login attempts based on GeoIP location. The GeoIP policy calculates the values you define for travel distances (in kilometers), and then either passes or fails based on the results. If the GeoIP policy failed, the current login attempt is not allowed.
 
-    -   **Maximum distance**: define the maximum distance allowed between a login's initial GeoIP location and the GeoIP location of the subsequent login attempt.
+    -   **Maximum distance**: define the allowed maximum distance  between a login's initial GeoIP location and the GeoIP location of a subsequent login attempt.
 
-    -   **Distance tolerance**:
+    -   **Distance tolerance**: optionally, add an additional "tolerance" distance. This value is added to the **Maximum distance** value, then the total is used in the calculations that determine if the policy fails or passes.
 
-    -   **Historical Login Count**: define the number of login events that you want to use for the distance calculations. For example, with the default value of 5, the policy will check the distnace between each of the past 5 login attempts, and if any of those distances exceed the **Maximum distance** PLUS the **Distance tolerance**, then the policy will fail and the current login attempt will not be allowed.
+    -   **Historical Login Count**: define the number of login events that you want to use for the distance calculations. For example, with the default value of 5, the policy will check the distance between each of the past 5 login attempts, and if any of those distances exceed the **Maximum distance** PLUS the **Distance tolerance**, then the policy will fail and the current login attempt will not be allowed.
 
-    -   **Impossible travel**: when enabled the policy calculates the GeoIP data of the user attempting to log in and compares it to the specified number of historical logins to determine if the travel would have been possible in the amount of time since the previous login event. You can define a **Impossible travel tolerance** value (in kilometers), which specifies the distance that is deemed acceptable.
+    -   **Check impossible travel**: this option, when enabled, provides an additional layer of calculations to the policy.
+
+    -   **Impossible travel tolerance**: calculates the GeoIP data of the user attempting to log in and compares it to the specified number of historical logins to determine if the travel would have been possible in the amount of time since the previous login event. You can define a **Impossible travel tolerance** value (in kilometers), which specifies the distance that is deemed acceptable.
+
+:::info
+GeoIP is included in every release of authentik and does not require any additional setup for creating GeoIP policies. For information about advanced uses (configuring your own database, etc.) and system management of GeoIP data, refer to our [GeoIP documentation](../../sys-mgmt/ops/geoip.mdx).
+:::
 
 ### Password-Expiry Policy
 
