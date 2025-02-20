@@ -57,7 +57,7 @@ _I'm only going to list the mandatory/important fields to complete._
 
 21. **Application Type:** Web Application
 22. **Name:** Choose a name
-23. **Authorized redirect URIs:** `https://authentik.company/source/oauth/callback/google/`
+23. **Authorized redirect URIs:** `https://authentik.company/source/oauth/callback/google-auth/`
 
 ![](./googledeveloper6.png)
 
