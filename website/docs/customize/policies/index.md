@@ -26,9 +26,15 @@ See [Expression Policy](./expression.mdx).
 
 Use this policy for simple GeoIP lookups, such as country or ASN matching. (For a more advanced GeoIP lookup, use an [Expression policy](./expression.mdx).)
 
-With the GeoIP policy, you can use the **Distance Settings** to define travel "expectations" such as maximum distance (in kilometers) away from the GeoIP location of the last login(s) that a new login is allowed.
+With the GeoIP policy, you can use the **Distance Settings** options to set travel "expectations" to control login attempts based on GeoIP location. The GeoIP policy calculates the values you define for travel distances (in kilometers), and then either passes or fails based on the results.
 
-The **Impossible travel** setting, when enabled, uses the GeoIP data of the user attempting to log in and compares it to the specified number of historical logins to determine if the travel would have been possible in the amount of time since the previous login event. You can define a **Impossible travel tolerance** value (in kilometers), which specifies the distance that is deemed acceptable.
+    -   **Maximum distance**: define the maximum distance allowed between a login's initial GeoIP location and the GeoIP location of the subsequent login attempt.
+
+    -   **Distance tolerance**:
+
+    -   **Historical Login Count**: define the number of login events that you want to use for the distance calculations. For example, with the default value of 5, the policy will check the distnace between each of the past 5 login attempts, and if any of those distances exceed the **Maximum distance** PLUS the **Distance tolerance**, then the policy will fail and the current login attempt will not be allowed.
+
+    -   **Impossible travel**: when enabled the policy calculates the GeoIP data of the user attempting to log in and compares it to the specified number of historical logins to determine if the travel would have been possible in the amount of time since the previous login event. You can define a **Impossible travel tolerance** value (in kilometers), which specifies the distance that is deemed acceptable.
 
 ### Password-Expiry Policy
 
