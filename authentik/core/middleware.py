@@ -5,7 +5,6 @@ from contextvars import ContextVar
 from functools import partial
 from uuid import uuid4
 
-from django.contrib.auth import load_backend
 from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ImproperlyConfigured
 from django.http import HttpRequest, HttpResponse
