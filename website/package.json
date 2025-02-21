@@ -17,7 +17,7 @@
         "watch": "docusaurus gen-api-docs all && docusaurus start"
     },
     "dependencies": {
-        "semver": "^7.7.0",
+        "semver": "^7.7.1",
         "@docusaurus/core": "^3.7.0",
         "@docusaurus/plugin-client-redirects": "^3.7.0",
         "@docusaurus/plugin-content-docs": "^3.7.0",
