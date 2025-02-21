@@ -16,15 +16,17 @@ def migrate_sessions(apps, schema_editor):
             .filter(session_key=token.old_session.session_key)
             .first()
         )
-        token.save()
-    ConnectionToken.objects.using(db_alias).filter(session=None).delete()
+        if token.session:
+            token.save()
+        else:
+            token.delete()
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
         ("authentik_providers_rac", "0006_connectiontoken_authentik_p_expires_91f148_idx_and_more"),
-        ("authentik_core", "0043_session_and_more"),
+        ("authentik_core", "0044_session_and_more"),
     ]
 
     operations = [

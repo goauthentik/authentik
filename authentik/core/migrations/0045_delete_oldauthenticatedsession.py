@@ -23,7 +23,7 @@ def delete_old_database_sessions(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_core", "0043_session_and_more"),
+        ("authentik_core", "0044_session_and_more"),
         ("authentik_providers_rac", "0007_migrate_session"),
         ("authentik_providers_oauth2", "0028_migrate_session"),
     ]
@@ -32,6 +32,6 @@ class Migration(migrations.Migration):
         migrations.DeleteModel(
             name="OldAuthenticatedSession",
         ),
-        migrations.RunPython(code=delete_redis_sessions),
-        migrations.RunPython(code=delete_old_database_sessions),
+        migrations.RunPython(code=delete_redis_sessions, reverse_code=migrations.RunPython.noop),
+        migrations.RunPython(code=delete_old_database_sessions, reverse_code=migrations.RunPython.noop),
     ]

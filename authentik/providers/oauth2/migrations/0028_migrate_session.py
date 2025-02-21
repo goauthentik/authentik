@@ -15,16 +15,19 @@ def migrate_sessions(apps, schema_editor, model):
         if not obj.old_session:
             continue
         obj.session = AuthenticatedSession.objects.using(db_alias).filter(
-            session_key=obj.old_session.session_key
-        )
-        obj.save()
+            session__session_key=obj.old_session.session_key
+        ).first()
+        if obj.session:
+            obj.save()
+        else:
+            obj.delete()
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
         ("authentik_providers_oauth2", "0027_accesstoken_authentik_p_expires_9f24a5_idx_and_more"),
-        ("authentik_core", "0043_session_and_more"),
+        ("authentik_core", "0044_session_and_more"),
     ]
 
     operations = [

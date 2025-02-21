@@ -89,12 +89,9 @@ class SessionStore(SessionBase):
     def load(self):
         s = self._get_session_from_db()
         if s:
-            # TODO: automate
             return {
-                "last_ip": s.last_ip,
-                "last_user_agent": s.last_user_agent,
-                "last_used": s.last_used,
                 "authenticatedsession": getattr(s, "authenticatedsession", None),
+                **{k: getattr(s, k) for k in self.model_fields()},
                 **self.decode(s.session_data),
             }
         else:
@@ -103,12 +100,9 @@ class SessionStore(SessionBase):
     async def aload(self):
         s = await self._aget_session_from_db()
         if s:
-            # TODO: automate
             return {
-                "last_ip": s.last_ip,
-                "last_user_agent": s.last_user_agent,
-                "last_used": s.last_used,
                 "authenticatedsession": getattr(s, "authenticatedsession", None),
+                **{k: getattr(s, k) for k in self.model_fields()},
                 **self.decode(s.session_data),
             }
         else:
