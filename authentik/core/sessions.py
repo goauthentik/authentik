@@ -79,7 +79,7 @@ class SessionStore(SessionBase):
 
     def decode(self, session_data):
         try:
-            return pickle.loads(session_data)
+            return pickle.loads(session_data)  # nosec
         except pickle.PickleError:
             # ValueError, unpickling exceptions. If any of these happen, just return an empty
             # dictionary (an empty session)

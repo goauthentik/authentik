@@ -316,7 +316,7 @@ class OAuthAuthorizationParams:
             expires=now + timedelta_from_string(self.provider.access_code_validity),
             scope=self.scope,
             nonce=self.nonce,
-            session=request.session.authenticated_session,
+            session=request.session["authenticatedsession"],
         )
 
         if self.code_challenge and self.code_challenge_method:
@@ -613,7 +613,7 @@ class OAuthFulfillmentStage(StageView):
             expires=access_token_expiry,
             provider=self.provider,
             auth_time=auth_event.created if auth_event else now,
-            session=self.request.session.authenticated_session,
+            session=self.request.session["authenticatedsession"],
         )
 
         id_token = IDToken.new(self.provider, token, self.request)
