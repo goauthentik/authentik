@@ -204,6 +204,8 @@ class Group(SerializerModel, AttributesMixin):
         permissions = [
             ("add_user_to_group", _("Add user to group")),
             ("remove_user_from_group", _("Remove user from group")),
+            ("enable_group_superuser", _("Enable superuser status")),
+            ("disable_group_superuser", _("Disable superuser status")),
         ]
 
     def __str__(self):
@@ -598,6 +600,14 @@ class Application(SerializerModel, PolicyBindingModel):
         if not candidates:
             return None
         return candidates[-1]
+
+    def backchannel_provider_for[T: Provider](self, provider_type: type[T], **kwargs) -> T | None:
+        """Get Backchannel provider for a specific type"""
+        providers = self.backchannel_providers.filter(
+            **{f"{provider_type._meta.model_name}__isnull": False},
+            **kwargs,
+        )
+        return getattr(providers.first(), provider_type._meta.model_name)
 
     def __str__(self):
         return str(self.name)

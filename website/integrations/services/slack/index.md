@@ -1,11 +1,8 @@
 ---
 title: Integrate with Slack
 sidebar_label: Slack
+support_level: authentik
 ---
-
-# Slack
-
-<span class="badge badge--primary">Support level: authentik</span>
 
 ## What is Slack
 
@@ -17,6 +14,10 @@ The following placeholder will be used:
 
 - You can use <kbd>slack.<em>company</em>></kbd> or <kbd><em>my-workspace</em>.slack.com</kbd> as the FQDN of your Slack instance.
 - You can use <kbd>authentik.company</kbd> as the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 For additional information about integrating with Slack, refer to their [documentation](https://slack.com/help/articles/205168057-Custom-SAML-single-sign-on).
 

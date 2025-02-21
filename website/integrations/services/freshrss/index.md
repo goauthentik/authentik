@@ -1,11 +1,8 @@
 ---
 title: Integrate with FreshRSS
 sidebar_label: FreshRSS
+support_level: community
 ---
-
-# FreshRSS
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is FreshRSS
 
@@ -20,6 +17,10 @@ The following placeholders are used in this guide:
 - `freshrss.company` is the FQDN of the FreshRSS installation.
 - `port` is the port on which the FreshRSS install is running (usually 443)
 - `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik configuration
 

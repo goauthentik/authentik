@@ -1,11 +1,8 @@
 ---
 title: Integrate with Glitchtip
 sidebar_label: Glitchtip
+support_level: community
 ---
-
-# Glitchtip
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Glitchtip
 
@@ -19,6 +16,10 @@ The following placeholders are used in this guide:
 
 - `glitchtip.company` is the FQDN of the Glitchtip installation.
 - `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik configuration
 

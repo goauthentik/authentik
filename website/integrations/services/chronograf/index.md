@@ -1,11 +1,8 @@
 ---
 title: Integrate with Chronograf
 sidebar_label: Chronograf
+support_level: community
 ---
-
-# Chronograf
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Chronograf
 
@@ -20,6 +17,10 @@ The following placeholders are used in this guide:
 - `chronograf.company` is the FQDN of your Chronograf installation.
 - `authentik.company` is the FQDN of your authentik installation.
 
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
 ## authentik configuration
 
 1. From the authentik Admin interface navigate to **Applications** -> **Applications** on the left sidebar.
@@ -33,8 +34,8 @@ The following placeholders are used in this guide:
 
 Add the following environment variables to your Chronograf setup. If you are using a configuration file for Chronograf, these settings can also be included there. You may modify the values for `GENERIC_SCOPES` and `GENERIC_API_KEY` to suit your specific requirements.
 
-:::info  
-Refer to the [Chronograf configuration options documentation](https://docs.influxdata.com/chronograf/v1/administration/config-options/) for more information.  
+:::info
+Refer to the [Chronograf configuration options documentation](https://docs.influxdata.com/chronograf/v1/administration/config-options/) for more information.
 :::
 
 ```

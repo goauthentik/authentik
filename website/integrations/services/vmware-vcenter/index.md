@@ -1,11 +1,8 @@
 ---
 title: Integrate with VMware vCenter
 sidebar_label: VMware vCenter
+support_level: community
 ---
-
-# VMware vCenter
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is vCenter
 
@@ -21,6 +18,10 @@ The following placeholders will be used in the examples below:
 
 - `vcenter.company` is the FQDN of the vCenter server.
 - `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik configuration
 

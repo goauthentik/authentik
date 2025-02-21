@@ -1,11 +1,8 @@
 ---
 title: Integrate with Vikunja
 sidebar_label: Vikunja
+support_level: community
 ---
-
-# Vikunja
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Vikunja
 
@@ -24,6 +21,10 @@ The following placeholders are used in this guide:
 - `vik.company` is the FQDN of Vikunja.
 - `authentik.company` is the FQDN of authentik.
 - `authentik Login` is the name shown on Vikunja set in config.yml, and used for the Redirect URI. If the name set in config.yml has capitalization or spaces like in this example, they will be set to lowercase and no spaces in the callback URL, like `authentiklogin`.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ### Step 1
 

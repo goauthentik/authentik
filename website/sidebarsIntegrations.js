@@ -28,6 +28,7 @@ module.exports = {
                         "services/nextcloud/index",
                         "services/onlyoffice/index",
                         "services/outline/index",
+                        "services/owncloud/index",
                         "services/paperless-ng/index",
                         "services/paperless-ngx/index",
                         "services/rocketchat/index",
@@ -122,6 +123,7 @@ module.exports = {
                     label: "Miscellaneous",
                     items: [
                         "services/actual-budget/index",
+                        "services/adventurelog/index",
                         "services/engomo/index",
                         "services/frappe/index",
                         "services/freshrss/index",
@@ -132,6 +134,7 @@ module.exports = {
                         "services/jellyfin/index",
                         "services/komga/index",
                         "services/node-red/index",
+                        "services/open-webui/index",
                         "services/semaphore/index",
                         "services/sonar-qube/index",
                         "services/sonarr/index",

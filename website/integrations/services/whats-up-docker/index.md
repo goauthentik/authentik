@@ -1,11 +1,8 @@
 ---
 title: Integrate with What's Up Docker
 sidebar_label: What's Up Docker
+support_level: community
 ---
-
-# What's Up Docker
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is What's Up Docker
 
@@ -19,6 +16,10 @@ The following placeholders are used in this guide:
 
 - `wud.company` is the FQDN of the WUD installation.
 - `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## WUD configuration
 

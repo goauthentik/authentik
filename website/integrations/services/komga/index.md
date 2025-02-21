@@ -1,11 +1,8 @@
 ---
 title: Integrate with Komga
 sidebar_label: Komga
+support_level: community
 ---
-
-# Komga
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Komga
 
@@ -19,6 +16,10 @@ The following placeholders are used in this guide:
 
 - `komga.company` is the FQDN of the Komga installation.
 - `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik configuration
 

@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://goauthentik.io/blueprints/schema.json",
     "type": "object",
-    "title": "authentik 2024.12.2 Blueprint schema",
+    "title": "authentik 2024.12.3 Blueprint schema",
     "required": [
         "version",
         "entries"
@@ -798,6 +798,126 @@
                             },
                             "identifiers": {
                                 "$ref": "#/$defs/model_authentik_providers_proxy.proxyprovider"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
+                                "const": "authentik_providers_rac.racprovider"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_providers_rac.racprovider_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_providers_rac.racprovider"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_providers_rac.racprovider"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
+                                "const": "authentik_providers_rac.endpoint"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_providers_rac.endpoint_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_providers_rac.endpoint"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_providers_rac.endpoint"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
+                                "const": "authentik_providers_rac.racpropertymapping"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_providers_rac.racpropertymapping_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_providers_rac.racpropertymapping"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_providers_rac.racpropertymapping"
                             }
                         }
                     },
@@ -1958,6 +2078,86 @@
                             },
                             "identifiers": {
                                 "$ref": "#/$defs/model_authentik_stages_authenticator_duo.duodevice"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
+                                "const": "authentik_stages_authenticator_email.authenticatoremailstage"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_stages_authenticator_email.authenticatoremailstage_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_stages_authenticator_email.authenticatoremailstage"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_stages_authenticator_email.authenticatoremailstage"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
+                                "const": "authentik_stages_authenticator_email.emaildevice"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_stages_authenticator_email.emaildevice_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_stages_authenticator_email.emaildevice"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_stages_authenticator_email.emaildevice"
                             }
                         }
                     },
@@ -3489,7 +3689,7 @@
                         ],
                         "properties": {
                             "model": {
-                                "const": "authentik_providers_rac.racprovider"
+                                "const": "authentik_providers_ssf.ssfprovider"
                             },
                             "id": {
                                 "type": "string"
@@ -3511,93 +3711,13 @@
                                 }
                             },
                             "permissions": {
-                                "$ref": "#/$defs/model_authentik_providers_rac.racprovider_permissions"
+                                "$ref": "#/$defs/model_authentik_providers_ssf.ssfprovider_permissions"
                             },
                             "attrs": {
-                                "$ref": "#/$defs/model_authentik_providers_rac.racprovider"
+                                "$ref": "#/$defs/model_authentik_providers_ssf.ssfprovider"
                             },
                             "identifiers": {
-                                "$ref": "#/$defs/model_authentik_providers_rac.racprovider"
-                            }
-                        }
-                    },
-                    {
-                        "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
-                        "properties": {
-                            "model": {
-                                "const": "authentik_providers_rac.endpoint"
-                            },
-                            "id": {
-                                "type": "string"
-                            },
-                            "state": {
-                                "type": "string",
-                                "enum": [
-                                    "absent",
-                                    "present",
-                                    "created",
-                                    "must_created"
-                                ],
-                                "default": "present"
-                            },
-                            "conditions": {
-                                "type": "array",
-                                "items": {
-                                    "type": "boolean"
-                                }
-                            },
-                            "permissions": {
-                                "$ref": "#/$defs/model_authentik_providers_rac.endpoint_permissions"
-                            },
-                            "attrs": {
-                                "$ref": "#/$defs/model_authentik_providers_rac.endpoint"
-                            },
-                            "identifiers": {
-                                "$ref": "#/$defs/model_authentik_providers_rac.endpoint"
-                            }
-                        }
-                    },
-                    {
-                        "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
-                        "properties": {
-                            "model": {
-                                "const": "authentik_providers_rac.racpropertymapping"
-                            },
-                            "id": {
-                                "type": "string"
-                            },
-                            "state": {
-                                "type": "string",
-                                "enum": [
-                                    "absent",
-                                    "present",
-                                    "created",
-                                    "must_created"
-                                ],
-                                "default": "present"
-                            },
-                            "conditions": {
-                                "type": "array",
-                                "items": {
-                                    "type": "boolean"
-                                }
-                            },
-                            "permissions": {
-                                "$ref": "#/$defs/model_authentik_providers_rac.racpropertymapping_permissions"
-                            },
-                            "attrs": {
-                                "$ref": "#/$defs/model_authentik_providers_rac.racpropertymapping"
-                            },
-                            "identifiers": {
-                                "$ref": "#/$defs/model_authentik_providers_rac.racpropertymapping"
+                                "$ref": "#/$defs/model_authentik_providers_ssf.ssfprovider"
                             }
                         }
                     },
@@ -4543,6 +4663,7 @@
                         "authentik.providers.ldap",
                         "authentik.providers.oauth2",
                         "authentik.providers.proxy",
+                        "authentik.providers.rac",
                         "authentik.providers.radius",
                         "authentik.providers.saml",
                         "authentik.providers.scim",
@@ -4556,6 +4677,7 @@
                         "authentik.sources.scim",
                         "authentik.stages.authenticator",
                         "authentik.stages.authenticator_duo",
+                        "authentik.stages.authenticator_email",
                         "authentik.stages.authenticator_sms",
                         "authentik.stages.authenticator_static",
                         "authentik.stages.authenticator_totp",
@@ -4582,7 +4704,7 @@
                         "authentik.enterprise.audit",
                         "authentik.enterprise.providers.google_workspace",
                         "authentik.enterprise.providers.microsoft_entra",
-                        "authentik.enterprise.providers.rac",
+                        "authentik.enterprise.providers.ssf",
                         "authentik.enterprise.stages.authenticator_endpoint_gdtc",
                         "authentik.enterprise.stages.source",
                         "authentik.events"
@@ -4616,6 +4738,9 @@
                         "authentik_providers_oauth2.scopemapping",
                         "authentik_providers_oauth2.oauth2provider",
                         "authentik_providers_proxy.proxyprovider",
+                        "authentik_providers_rac.racprovider",
+                        "authentik_providers_rac.endpoint",
+                        "authentik_providers_rac.racpropertymapping",
                         "authentik_providers_radius.radiusprovider",
                         "authentik_providers_radius.radiusproviderpropertymapping",
                         "authentik_providers_saml.samlprovider",
@@ -4645,6 +4770,8 @@
                         "authentik_sources_scim.scimsourcepropertymapping",
                         "authentik_stages_authenticator_duo.authenticatorduostage",
                         "authentik_stages_authenticator_duo.duodevice",
+                        "authentik_stages_authenticator_email.authenticatoremailstage",
+                        "authentik_stages_authenticator_email.emaildevice",
                         "authentik_stages_authenticator_sms.authenticatorsmsstage",
                         "authentik_stages_authenticator_sms.smsdevice",
                         "authentik_stages_authenticator_static.authenticatorstaticstage",
@@ -4683,9 +4810,7 @@
                         "authentik_providers_google_workspace.googleworkspaceprovidermapping",
                         "authentik_providers_microsoft_entra.microsoftentraprovider",
                         "authentik_providers_microsoft_entra.microsoftentraprovidermapping",
-                        "authentik_providers_rac.racprovider",
-                        "authentik_providers_rac.endpoint",
-                        "authentik_providers_rac.racpropertymapping",
+                        "authentik_providers_ssf.ssfprovider",
                         "authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage",
                         "authentik_stages_source.sourcestage",
                         "authentik_events.event",
@@ -5107,6 +5232,38 @@
                     },
                     "maxItems": 249,
                     "title": "Countries"
+                },
+                "check_history_distance": {
+                    "type": "boolean",
+                    "title": "Check history distance"
+                },
+                "history_max_distance_km": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9223372036854775807,
+                    "title": "History max distance km"
+                },
+                "distance_tolerance_km": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "title": "Distance tolerance km"
+                },
+                "history_login_count": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "title": "History login count"
+                },
+                "check_impossible_travel": {
+                    "type": "boolean",
+                    "title": "Check impossible travel"
+                },
+                "impossible_tolerance_km": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "title": "Impossible tolerance km"
                 }
             },
             "required": []
@@ -5889,6 +6046,216 @@
                 }
             }
         },
+        "model_authentik_providers_rac.racprovider": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "authentication_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Authentication flow",
+                    "description": "Flow used for authentication when the associated application is accessed by an un-authenticated user."
+                },
+                "authorization_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Authorization flow",
+                    "description": "Flow used when authorizing this provider."
+                },
+                "property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Property mappings"
+                },
+                "settings": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "Settings"
+                },
+                "connection_expiry": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Connection expiry",
+                    "description": "Determines how long a session lasts. Default of 0 means that the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)"
+                },
+                "delete_token_on_disconnect": {
+                    "type": "boolean",
+                    "title": "Delete token on disconnect",
+                    "description": "When set to true, connection tokens will be deleted upon disconnect."
+                }
+            },
+            "required": []
+        },
+        "model_authentik_providers_rac.racprovider_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_racprovider",
+                            "change_racprovider",
+                            "delete_racprovider",
+                            "view_racprovider"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_providers_rac.endpoint": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "provider": {
+                    "type": "integer",
+                    "title": "Provider"
+                },
+                "protocol": {
+                    "type": "string",
+                    "enum": [
+                        "rdp",
+                        "vnc",
+                        "ssh"
+                    ],
+                    "title": "Protocol"
+                },
+                "host": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Host"
+                },
+                "settings": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "Settings"
+                },
+                "property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Property mappings"
+                },
+                "auth_mode": {
+                    "type": "string",
+                    "enum": [
+                        "static",
+                        "prompt"
+                    ],
+                    "title": "Auth mode"
+                },
+                "maximum_connections": {
+                    "type": "integer",
+                    "minimum": -2147483648,
+                    "maximum": 2147483647,
+                    "title": "Maximum connections"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_providers_rac.endpoint_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_endpoint",
+                            "change_endpoint",
+                            "delete_endpoint",
+                            "view_endpoint"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_providers_rac.racpropertymapping": {
+            "type": "object",
+            "properties": {
+                "managed": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "minLength": 1,
+                    "title": "Managed by authentik",
+                    "description": "Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update."
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "expression": {
+                    "type": "string",
+                    "title": "Expression"
+                },
+                "static_settings": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "Static settings"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_providers_rac.racpropertymapping_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_racpropertymapping",
+                            "change_racpropertymapping",
+                            "delete_racpropertymapping",
+                            "view_racpropertymapping"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model_authentik_providers_radius.radiusprovider": {
             "type": "object",
             "properties": {
@@ -6440,6 +6807,8 @@
                             "authentik_core.delete_token",
                             "authentik_core.delete_user",
                             "authentik_core.delete_usersourceconnection",
+                            "authentik_core.disable_group_superuser",
+                            "authentik_core.enable_group_superuser",
                             "authentik_core.impersonate",
                             "authentik_core.preview_user",
                             "authentik_core.remove_user_from_group",
@@ -6687,6 +7056,18 @@
                             "authentik_providers_scim.view_scimprovider",
                             "authentik_providers_scim.view_scimprovidergroup",
                             "authentik_providers_scim.view_scimprovideruser",
+                            "authentik_providers_ssf.add_ssfprovider",
+                            "authentik_providers_ssf.add_stream",
+                            "authentik_providers_ssf.add_streamevent",
+                            "authentik_providers_ssf.change_ssfprovider",
+                            "authentik_providers_ssf.change_stream",
+                            "authentik_providers_ssf.change_streamevent",
+                            "authentik_providers_ssf.delete_ssfprovider",
+                            "authentik_providers_ssf.delete_stream",
+                            "authentik_providers_ssf.delete_streamevent",
+                            "authentik_providers_ssf.view_ssfprovider",
+                            "authentik_providers_ssf.view_stream",
+                            "authentik_providers_ssf.view_streamevent",
                             "authentik_rbac.access_admin_interface",
                             "authentik_rbac.add_role",
                             "authentik_rbac.assign_role_permissions",
@@ -6793,6 +7174,14 @@
                             "authentik_stages_authenticator_duo.delete_duodevice",
                             "authentik_stages_authenticator_duo.view_authenticatorduostage",
                             "authentik_stages_authenticator_duo.view_duodevice",
+                            "authentik_stages_authenticator_email.add_authenticatoremailstage",
+                            "authentik_stages_authenticator_email.add_emaildevice",
+                            "authentik_stages_authenticator_email.change_authenticatoremailstage",
+                            "authentik_stages_authenticator_email.change_emaildevice",
+                            "authentik_stages_authenticator_email.delete_authenticatoremailstage",
+                            "authentik_stages_authenticator_email.delete_emaildevice",
+                            "authentik_stages_authenticator_email.view_authenticatoremailstage",
+                            "authentik_stages_authenticator_email.view_emaildevice",
                             "authentik_stages_authenticator_endpoint_gdtc.add_authenticatorendpointgdtcstage",
                             "authentik_stages_authenticator_endpoint_gdtc.add_endpointdevice",
                             "authentik_stages_authenticator_endpoint_gdtc.add_endpointdeviceconnection",
@@ -8918,6 +9307,239 @@
                 }
             }
         },
+        "model_authentik_stages_authenticator_email.authenticatoremailstage": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "flow_set": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "minLength": 1,
+                                "title": "Name"
+                            },
+                            "slug": {
+                                "type": "string",
+                                "maxLength": 50,
+                                "minLength": 1,
+                                "pattern": "^[-a-zA-Z0-9_]+$",
+                                "title": "Slug",
+                                "description": "Visible in the URL."
+                            },
+                            "title": {
+                                "type": "string",
+                                "minLength": 1,
+                                "title": "Title",
+                                "description": "Shown as the Title in Flow pages."
+                            },
+                            "designation": {
+                                "type": "string",
+                                "enum": [
+                                    "authentication",
+                                    "authorization",
+                                    "invalidation",
+                                    "enrollment",
+                                    "unenrollment",
+                                    "recovery",
+                                    "stage_configuration"
+                                ],
+                                "title": "Designation",
+                                "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
+                            },
+                            "policy_engine_mode": {
+                                "type": "string",
+                                "enum": [
+                                    "all",
+                                    "any"
+                                ],
+                                "title": "Policy engine mode"
+                            },
+                            "compatibility_mode": {
+                                "type": "boolean",
+                                "title": "Compatibility mode",
+                                "description": "Enable compatibility mode, increases compatibility with password managers on mobile devices."
+                            },
+                            "layout": {
+                                "type": "string",
+                                "enum": [
+                                    "stacked",
+                                    "content_left",
+                                    "content_right",
+                                    "sidebar_left",
+                                    "sidebar_right"
+                                ],
+                                "title": "Layout"
+                            },
+                            "denied_action": {
+                                "type": "string",
+                                "enum": [
+                                    "message_continue",
+                                    "message",
+                                    "continue"
+                                ],
+                                "title": "Denied action",
+                                "description": "Configure what should happen when a flow denies access to a user."
+                            }
+                        },
+                        "required": [
+                            "name",
+                            "slug",
+                            "title",
+                            "designation"
+                        ]
+                    },
+                    "title": "Flow set"
+                },
+                "configure_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Configure flow",
+                    "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
+                },
+                "friendly_name": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "minLength": 1,
+                    "title": "Friendly name"
+                },
+                "use_global_settings": {
+                    "type": "boolean",
+                    "title": "Use global settings",
+                    "description": "When enabled, global Email connection settings will be used and connection settings below will be ignored."
+                },
+                "host": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Host"
+                },
+                "port": {
+                    "type": "integer",
+                    "minimum": -2147483648,
+                    "maximum": 2147483647,
+                    "title": "Port"
+                },
+                "username": {
+                    "type": "string",
+                    "title": "Username"
+                },
+                "password": {
+                    "type": "string",
+                    "title": "Password"
+                },
+                "use_tls": {
+                    "type": "boolean",
+                    "title": "Use tls"
+                },
+                "use_ssl": {
+                    "type": "boolean",
+                    "title": "Use ssl"
+                },
+                "timeout": {
+                    "type": "integer",
+                    "minimum": -2147483648,
+                    "maximum": 2147483647,
+                    "title": "Timeout"
+                },
+                "from_address": {
+                    "type": "string",
+                    "format": "email",
+                    "maxLength": 254,
+                    "minLength": 1,
+                    "title": "From address"
+                },
+                "subject": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Subject"
+                },
+                "token_expiry": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Token expiry",
+                    "description": "Time the token sent is valid (Format: hours=3,minutes=17,seconds=300)."
+                },
+                "template": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Template"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_stages_authenticator_email.authenticatoremailstage_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_authenticatoremailstage",
+                            "change_authenticatoremailstage",
+                            "delete_authenticatoremailstage",
+                            "view_authenticatoremailstage"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_stages_authenticator_email.emaildevice": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "maxLength": 64,
+                    "minLength": 1,
+                    "title": "Name",
+                    "description": "The human-readable name of this device."
+                }
+            },
+            "required": []
+        },
+        "model_authentik_stages_authenticator_email.emaildevice_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_emaildevice",
+                            "change_emaildevice",
+                            "delete_emaildevice",
+                            "view_emaildevice"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model_authentik_stages_authenticator_sms.authenticatorsmsstage": {
             "type": "object",
             "properties": {
@@ -9607,7 +10229,8 @@
                             "totp",
                             "webauthn",
                             "duo",
-                            "sms"
+                            "sms",
+                            "email"
                         ],
                         "title": "Device classes"
                     },
@@ -12557,6 +13180,8 @@
                         "enum": [
                             "add_user_to_group",
                             "remove_user_from_group",
+                            "enable_group_superuser",
+                            "disable_group_superuser",
                             "add_group",
                             "change_group",
                             "delete_group",
@@ -12689,6 +13314,8 @@
                             "authentik_core.delete_token",
                             "authentik_core.delete_user",
                             "authentik_core.delete_usersourceconnection",
+                            "authentik_core.disable_group_superuser",
+                            "authentik_core.enable_group_superuser",
                             "authentik_core.impersonate",
                             "authentik_core.preview_user",
                             "authentik_core.remove_user_from_group",
@@ -12936,6 +13563,18 @@
                             "authentik_providers_scim.view_scimprovider",
                             "authentik_providers_scim.view_scimprovidergroup",
                             "authentik_providers_scim.view_scimprovideruser",
+                            "authentik_providers_ssf.add_ssfprovider",
+                            "authentik_providers_ssf.add_stream",
+                            "authentik_providers_ssf.add_streamevent",
+                            "authentik_providers_ssf.change_ssfprovider",
+                            "authentik_providers_ssf.change_stream",
+                            "authentik_providers_ssf.change_streamevent",
+                            "authentik_providers_ssf.delete_ssfprovider",
+                            "authentik_providers_ssf.delete_stream",
+                            "authentik_providers_ssf.delete_streamevent",
+                            "authentik_providers_ssf.view_ssfprovider",
+                            "authentik_providers_ssf.view_stream",
+                            "authentik_providers_ssf.view_streamevent",
                             "authentik_rbac.access_admin_interface",
                             "authentik_rbac.add_role",
                             "authentik_rbac.assign_role_permissions",
@@ -13042,6 +13681,14 @@
                             "authentik_stages_authenticator_duo.delete_duodevice",
                             "authentik_stages_authenticator_duo.view_authenticatorduostage",
                             "authentik_stages_authenticator_duo.view_duodevice",
+                            "authentik_stages_authenticator_email.add_authenticatoremailstage",
+                            "authentik_stages_authenticator_email.add_emaildevice",
+                            "authentik_stages_authenticator_email.change_authenticatoremailstage",
+                            "authentik_stages_authenticator_email.change_emaildevice",
+                            "authentik_stages_authenticator_email.delete_authenticatoremailstage",
+                            "authentik_stages_authenticator_email.delete_emaildevice",
+                            "authentik_stages_authenticator_email.view_authenticatoremailstage",
+                            "authentik_stages_authenticator_email.view_emaildevice",
                             "authentik_stages_authenticator_endpoint_gdtc.add_authenticatorendpointgdtcstage",
                             "authentik_stages_authenticator_endpoint_gdtc.add_endpointdevice",
                             "authentik_stages_authenticator_endpoint_gdtc.add_endpointdeviceconnection",
@@ -13778,7 +14425,7 @@
                 }
             }
         },
-        "model_authentik_providers_rac.racprovider": {
+        "model_authentik_providers_ssf.ssfprovider": {
             "type": "object",
             "properties": {
                 "name": {
@@ -13786,128 +14433,28 @@
                     "minLength": 1,
                     "title": "Name"
                 },
-                "authentication_flow": {
+                "signing_key": {
                     "type": "string",
                     "format": "uuid",
-                    "title": "Authentication flow",
-                    "description": "Flow used for authentication when the associated application is accessed by an un-authenticated user."
+                    "title": "Signing Key",
+                    "description": "Key used to sign the SSF Events."
                 },
-                "authorization_flow": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Authorization flow",
-                    "description": "Flow used when authorizing this provider."
-                },
-                "property_mappings": {
+                "oidc_auth_providers": {
                     "type": "array",
                     "items": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "title": "Property mappings"
-                },
-                "settings": {
-                    "type": "object",
-                    "additionalProperties": true,
-                    "title": "Settings"
-                },
-                "connection_expiry": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Connection expiry",
-                    "description": "Determines how long a session lasts. Default of 0 means that the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)"
-                },
-                "delete_token_on_disconnect": {
-                    "type": "boolean",
-                    "title": "Delete token on disconnect",
-                    "description": "When set to true, connection tokens will be deleted upon disconnect."
-                }
-            },
-            "required": []
-        },
-        "model_authentik_providers_rac.racprovider_permissions": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "required": [
-                    "permission"
-                ],
-                "properties": {
-                    "permission": {
-                        "type": "string",
-                        "enum": [
-                            "add_racprovider",
-                            "change_racprovider",
-                            "delete_racprovider",
-                            "view_racprovider"
-                        ]
-                    },
-                    "user": {
                         "type": "integer"
                     },
-                    "role": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
-        "model_authentik_providers_rac.endpoint": {
-            "type": "object",
-            "properties": {
-                "name": {
+                    "title": "Oidc auth providers"
+                },
+                "event_retention": {
                     "type": "string",
                     "minLength": 1,
-                    "title": "Name"
-                },
-                "provider": {
-                    "type": "integer",
-                    "title": "Provider"
-                },
-                "protocol": {
-                    "type": "string",
-                    "enum": [
-                        "rdp",
-                        "vnc",
-                        "ssh"
-                    ],
-                    "title": "Protocol"
-                },
-                "host": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Host"
-                },
-                "settings": {
-                    "type": "object",
-                    "additionalProperties": true,
-                    "title": "Settings"
-                },
-                "property_mappings": {
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "title": "Property mappings"
-                },
-                "auth_mode": {
-                    "type": "string",
-                    "enum": [
-                        "static",
-                        "prompt"
-                    ],
-                    "title": "Auth mode"
-                },
-                "maximum_connections": {
-                    "type": "integer",
-                    "minimum": -2147483648,
-                    "maximum": 2147483647,
-                    "title": "Maximum connections"
+                    "title": "Event retention"
                 }
             },
             "required": []
         },
-        "model_authentik_providers_rac.endpoint_permissions": {
+        "model_authentik_providers_ssf.ssfprovider_permissions": {
             "type": "array",
             "items": {
                 "type": "object",
@@ -13918,65 +14465,11 @@
                     "permission": {
                         "type": "string",
                         "enum": [
-                            "add_endpoint",
-                            "change_endpoint",
-                            "delete_endpoint",
-                            "view_endpoint"
-                        ]
-                    },
-                    "user": {
-                        "type": "integer"
-                    },
-                    "role": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
-        "model_authentik_providers_rac.racpropertymapping": {
-            "type": "object",
-            "properties": {
-                "managed": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "minLength": 1,
-                    "title": "Managed by authentik",
-                    "description": "Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update."
-                },
-                "name": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Name"
-                },
-                "expression": {
-                    "type": "string",
-                    "title": "Expression"
-                },
-                "static_settings": {
-                    "type": "object",
-                    "additionalProperties": true,
-                    "title": "Static settings"
-                }
-            },
-            "required": []
-        },
-        "model_authentik_providers_rac.racpropertymapping_permissions": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "required": [
-                    "permission"
-                ],
-                "properties": {
-                    "permission": {
-                        "type": "string",
-                        "enum": [
-                            "add_racpropertymapping",
-                            "change_racpropertymapping",
-                            "delete_racpropertymapping",
-                            "view_racpropertymapping"
+                            "add_stream",
+                            "add_ssfprovider",
+                            "change_ssfprovider",
+                            "delete_ssfprovider",
+                            "view_ssfprovider"
                         ]
                     },
                     "user": {

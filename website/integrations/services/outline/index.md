@@ -1,11 +1,8 @@
 ---
 title: Integrate with Outline
 sidebar_label: Outline
+support_level: community
 ---
-
-# Outline
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Outline
 
@@ -20,6 +17,10 @@ The following placeholders are used in this guide:
 
 - `outline.company` is the FQDN of the Outline installation.
 - `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik configuration
 

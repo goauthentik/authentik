@@ -1,11 +1,8 @@
 ---
 title: Integrate with MinIO
 sidebar_label: MinIO
+support_level: authentik
 ---
-
-# MinIO
-
-<span class="badge badge--primary">Support level: authentik</span>
 
 ## What is MinIO
 
@@ -19,6 +16,10 @@ The following placeholders are used in this guide:
 
 - `minio.company` is the FQDN of the MinIO installation.
 - `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ### Mapping to MinIO policies
 

@@ -1,11 +1,8 @@
 ---
 title: Integrate with Jellyfin
 sidebar_label: Jellyfin
+support_level: community
 ---
-
-# Jellyfin
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Jellyfin
 
@@ -34,6 +31,10 @@ The following placeholders are used in this guide:
 - `ldap.company` the FQDN of the LDAP outpost.
 - `dc=company,dc=com` the Base DN of the LDAP outpost.
 - `ldap_bind_user` the username of the desired LDAP Bind User
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## LDAP Configuration
 

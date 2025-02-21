@@ -6,6 +6,8 @@ UID = $(shell id -u)
 GID = $(shell id -g)
 NPM_VERSION = $(shell python -m scripts.npm_version)
 PY_SOURCES = authentik tests scripts lifecycle .github
+GO_SOURCES = cmd internal
+WEB_SOURCES = web/src web/packages
 DOCKER_IMAGE ?= "authentik:test"
 
 GEN_API_TS = "gen-ts-api"
@@ -20,10 +22,11 @@ CODESPELL_ARGS = -D - -D .github/codespell-dictionary.txt \
 		-I .github/codespell-words.txt \
 		-S 'web/src/locales/**' \
 		-S 'website/docs/developer-docs/api/reference/**' \
-		authentik \
-		internal \
-		cmd \
-		web/src \
+		-S '**/node_modules/**' \
+		-S '**/dist/**' \
+		$(PY_SOURCES) \
+		$(GO_SOURCES) \
+		$(WEB_SOURCES) \
 		website/src \
 		website/blog \
 		website/docs \
@@ -44,15 +47,6 @@ help:  ## Show this help
 
 go-test:
 	go test -timeout 0 -v -race -cover ./...
-
-test-docker:  ## Run all tests in a docker-compose
-	echo "PG_PASS=$(shell openssl rand 32 | base64 -w 0)" >> .env
-	echo "AUTHENTIK_SECRET_KEY=$(shell openssl rand 32 | base64 -w 0)" >> .env
-	docker compose pull -q
-	docker compose up --no-start
-	docker compose start postgresql redis
-	docker compose run -u root server test-all
-	rm -f .env
 
 test: ## Run the server tests and produce a coverage report (locally)
 	coverage run manage.py test --keepdb authentik
@@ -263,6 +257,9 @@ docker:  ## Build a docker image of the current source tree
 	mkdir -p ${GEN_API_TS}
 	DOCKER_BUILDKIT=1 docker build . --progress plain --tag ${DOCKER_IMAGE}
 
+test-docker:
+	BUILD=true ./scripts/test_docker.sh
+
 #########################
 ## CI
 #########################
@@ -287,3 +284,8 @@ ci-bandit: ci--meta-debug
 
 ci-pending-migrations: ci--meta-debug
 	ak makemigrations --check
+
+ci-test: ci--meta-debug
+	coverage run manage.py test --keepdb --randomly-seed ${CI_TEST_SEED} authentik
+	coverage report
+	coverage xml

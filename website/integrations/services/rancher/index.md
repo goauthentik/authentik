@@ -1,11 +1,8 @@
 ---
 title: Integrate with Rancher
 sidebar_label: Rancher
+support_level: authentik
 ---
-
-# Rancher
-
-<span class="badge badge--primary">Support level: authentik</span>
 
 ## What is Rancher
 
@@ -20,6 +17,10 @@ The following placeholders are used in this guide:
 
 - `rancher.company` is the FQDN of the Rancher installation.
 - `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 Under _Customization_ -> _Property Mappings_, create a _SAML Property Mapping_. Give it a name like "SAML Rancher User ID". Set the SAML name to `rancherUidUsername` and the expression to the following
 

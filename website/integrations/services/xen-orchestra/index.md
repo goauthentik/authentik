@@ -1,11 +1,8 @@
 ---
 title: Integrate with Xen Orchestra
 sidebar_label: Xen Orchestra
+support_level: community
 ---
-
-# Xen Orchestra
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Xen Orchestra
 
@@ -24,6 +21,10 @@ The following placeholders are used in this guide:
 
 - `xenorchestra.company` is the FQDN of the Xen Orchestra instance.
 - `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik configuration
 

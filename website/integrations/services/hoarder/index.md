@@ -1,11 +1,8 @@
 ---
 title: Integrate with Hoarder
 sidebar_label: Hoarder
+support_level: community
 ---
-
-# Hoarder
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Hoarder
 
@@ -19,6 +16,10 @@ The following placeholders are used in this guide:
 
 - `hoarder.company` is the FQDN of the Hoarder installation.
 - `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik configuration
 

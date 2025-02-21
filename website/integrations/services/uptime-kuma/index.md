@@ -1,11 +1,8 @@
 ---
 title: Integrate with Uptime Kuma
 sidebar_label: Uptime Kuma
+support_level: community
 ---
-
-# Uptime Kuma
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Uptime Kuma
 
@@ -21,6 +18,10 @@ The following placeholders are used in this guide:
 
 - `uptime-kuma.company` is the FQDN of the Uptime Kuma installation.
 - `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 Create an application in authentik. Create a Proxy provider with the following parameters:
 
@@ -49,8 +50,8 @@ Create an application in authentik. Create a Proxy provider with the following p
     ^/upload/.*
     ```
 
-    Alternatively, you can get even more specific by analyzing the requests for your status pages and modifying the regex rules above accordingly.  
-     For example:
+    Alternatively, you can get even more specific by analyzing the requests for your status pages and modifying the regex rules above accordingly.
+    For example:
 
     ```
     ^/status/<slug>$

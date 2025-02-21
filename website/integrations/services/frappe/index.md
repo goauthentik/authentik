@@ -1,11 +1,8 @@
 ---
 title: Integrate with Frappe
 sidebar_label: Frappe
+support_level: community
 ---
-
-# Frappe
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 :::note
 These instructions apply to all projects in the Frappe Family.
@@ -24,6 +21,10 @@ The following placeholders are used in this guide:
 - `frappe.company` is the FQDN of the Frappe installation.
 - `authentik.company` is the FQDN of the authentik installation.
 - `provider` is the name for the social login provider in Frappe.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik configuration
 

@@ -1,11 +1,8 @@
 ---
 title: Integrate with Bookstack
 sidebar_label: Bookstack
+support_level: community
 ---
-
-# Bookstack
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Bookstack
 
@@ -24,6 +21,10 @@ The following placeholders are used in this guide:
 - `book.company` is the FQDN of BookStack.
 - `authentik.company` is the FQDN of authentik.
 - `METADATAURL` is the url for the SAML metadata from authentik
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ### Step 1
 
