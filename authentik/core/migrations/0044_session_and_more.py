@@ -200,7 +200,6 @@ class Migration(migrations.Migration):
                 "verbose_name": "Authenticated Session",
                 "verbose_name_plural": "Authenticated Sessions",
             },
-            bases=("authentik_core.session",),
         ),
         migrations.RunPython(
             code=migrate_redis_sessions,
