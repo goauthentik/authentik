@@ -67,7 +67,7 @@ authentik already provides some default _scopes_ with _claims_, such as:
 
 If you do not need storage quota, group information, or to manage already existing users in Nextcloud, [skip to the next step](#provider-and-application).
 
-If you want to control user storage and designate Nextcloud administrators, create a custom `profile` scope. Go to _Customization_ → _Property mappings_ and create a _Scope mapping_ with:
+If you want to control user storage and designate Nextcloud administrators, create a custom `profile` scope. Go to _Customization_ > _Property mappings_ and create a _Scope mapping_ with:
 
 - **Name:** Nextcloud Profile
 - **Scope name:** profile
@@ -104,7 +104,7 @@ To connect to an existing Nextcloud user, set the `nextcloud_user_id` attribute 
 ### Provider and Application
 
 1. **Create a provider:**  
-   In the authentik Admin Interface, navigate to **Applications → Providers**. Create an **OAuth2/OpenID Provider** with the following settings:
+   In the authentik Admin Interface, navigate to **Applications > Providers**. Create an **OAuth2/OpenID Provider** with the following settings:
 
     - **Name:** Nextcloud
     - **Client type:** Confidential
@@ -137,12 +137,12 @@ Depending on your Nextcloud configuration, you might need to use `https://nextcl
 :::
 
 3. **Link the provider to an application:**  
-   In **Applications → Applications**, create an application and select the provider you just created. Note the _application slug_ for later use.
+   In **Applications > Applications**, create an application and select the provider you just created. Note the _application slug_ for later use.
 
 ### Nextcloud configuration
 
 1. **Install the app:**  
-   In Nextcloud, ensure the **OpenID Connect user backend** app is installed. Then navigate to **Settings → OpenID Connect**.
+   In Nextcloud, ensure the **OpenID Connect user backend** app is installed. Then navigate to **Settings > OpenID Connect**.
 
 2. **Add a provider:**  
    Click the **+** button and enter the following:
@@ -202,7 +202,7 @@ This documentation lists only the settings you need to change from their default
    Note the chosen slug as it will be used later.
 
 2. **Create a SAML provider:**  
-   In authentik, navigate to **Applications → Providers** and create a **SAML provider** with the following settings:
+   In authentik, navigate to **Applications > Providers** and create a **SAML provider** with the following settings:
 
     - **ACS URL:**  
       `https://nextcloud.company/apps/user_saml/saml/acs`
@@ -222,7 +222,7 @@ Depending on your Nextcloud configuration, you might need to use `https://nextcl
 #### Nextcloud configuration
 
 1. **Install the app:**  
-   In Nextcloud, ensure the **SSO & SAML Authentication** app is installed. Then navigate to **Settings → SSO & SAML Authentication**.
+   In Nextcloud, ensure the **SSO & SAML Authentication** app is installed. Then navigate to **Settings > SSO & SAML Authentication**.
 
 2. **Configure the following settings:**
 
@@ -275,7 +275,7 @@ If Nextcloud is behind a reverse proxy, force HTTPS by adding `'overwriteprotoco
         (Here, `"1 GB"` is the default if no quota is set.)
 
 3. **Configure Nextcloud:**  
-   In Nextcloud under **Settings → SSO & SAML Authentication**, set the **Attribute to map the quota to** as `nextcloud_quota`.
+   In Nextcloud under **Settings > SSO & SAML Authentication**, set the **Attribute to map the quota to** as `nextcloud_quota`.
 
 #### Admin group
 
