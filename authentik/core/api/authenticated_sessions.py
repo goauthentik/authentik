@@ -55,10 +55,10 @@ class UserAgentDict(TypedDict):
 class AuthenticatedSessionSerializer(ModelSerializer):
     """AuthenticatedSession Serializer"""
 
-    expires = DateTimeField(source="session.expires")
-    last_ip = IPAddressField(source="session.last_ip")
-    last_user_agent = CharField(source="session.last_user_agent")
-    last_used = DateTimeField(source="session.last_used")
+    expires = DateTimeField(source="session.expires", read_only=True)
+    last_ip = IPAddressField(source="session.last_ip", read_only=True)
+    last_user_agent = CharField(source="session.last_user_agent", read_only=True)
+    last_used = DateTimeField(source="session.last_used", read_only=True)
 
     current = SerializerMethodField()
     user_agent = SerializerMethodField()
@@ -96,6 +96,7 @@ class AuthenticatedSessionSerializer(ModelSerializer):
             "last_used",
             "expires",
         ]
+        extra_args = {"uuid": {"read_only": True}}
 
 
 class AuthenticatedSessionViewSet(
@@ -107,6 +108,7 @@ class AuthenticatedSessionViewSet(
 ):
     """AuthenticatedSession Viewset"""
 
+    lookup_field = "uuid"
     queryset = AuthenticatedSession.objects.select_related("session").all()
     serializer_class = AuthenticatedSessionSerializer
     search_fields = ["user__username", "session__last_ip", "session__last_user_agent"]
