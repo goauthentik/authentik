@@ -243,7 +243,9 @@ SESSION_CACHE_ALIAS = "default"
 # Configured via custom SessionMiddleware
 # SESSION_COOKIE_SAMESITE = "None"
 # SESSION_COOKIE_SECURE = True
-SESSION_COOKIE_AGE = timedelta_from_string(CONFIG.get("sessions.unauthenticated_age", "days=1"))
+SESSION_COOKIE_AGE = timedelta_from_string(
+    CONFIG.get("sessions.unauthenticated_age", "days=1")
+).total_seconds
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 MESSAGE_STORAGE = "authentik.root.messages.storage.ChannelsStorage"
