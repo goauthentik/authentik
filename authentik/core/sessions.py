@@ -2,6 +2,7 @@
 
 import pickle  # nosec
 
+from django.contrib.auth import BACKEND_SESSION_KEY, HASH_SESSION_KEY, SESSION_KEY
 from django.contrib.sessions.backends.db import SessionStore as SessionBase
 from django.core.exceptions import SuspiciousOperation
 from django.utils import timezone
@@ -33,9 +34,18 @@ class SessionStore(SessionBase):
 
     def _get_session_from_db(self):
         try:
-            return self.model.objects.get(
-                session_key=self.session_key,
-                expires__gt=timezone.now(),
+            return (
+                self.model.objects.select_related(
+                    "authenticatedsession",
+                    "authenticatedsession__user",
+                )
+                .prefetch_related(
+                    "authenticatedsession__user__groups",
+                )
+                .get(
+                    session_key=self.session_key,
+                    expires__gt=timezone.now(),
+                )
             )
         except (self.model.DoesNotExist, SuspiciousOperation) as exc:
             if isinstance(exc, SuspiciousOperation):
@@ -44,9 +54,18 @@ class SessionStore(SessionBase):
 
     async def _aget_session_from_db(self):
         try:
-            return await self.model.objects.aget(
-                session_key=self.session_key,
-                expires__gt=timezone.now(),
+            return (
+                await self.model.objects.select_related(
+                    "authenticatedsession",
+                    "authenticatedsession__user",
+                )
+                .prefetch_related(
+                    "authenticatedsession__user__groups",
+                )
+                .aget(
+                    session_key=self.session_key,
+                    expires__gt=timezone.now(),
+                )
             )
         except (self.model.DoesNotExist, SuspiciousOperation) as exc:
             if isinstance(exc, SuspiciousOperation):
@@ -101,10 +120,13 @@ class SessionStore(SessionBase):
             **self._create_kwargs,
         }
         for k, v in data.items():
-            if k in self.model_fields:
-                args[k] = v
-            elif k == "authenticatedsession":
+            # Don't save:
+            # - unused auth data
+            # - related models
+            if k in [SESSION_KEY, BACKEND_SESSION_KEY, HASH_SESSION_KEY, "authenticatedsession"]:
                 pass
+            elif k in self.model_fields:
+                args[k] = v
             else:
                 args["session_data"][k] = v
         args["session_data"] = self.encode(args["session_data"])
@@ -118,10 +140,13 @@ class SessionStore(SessionBase):
             **self._create_kwargs,
         }
         for k, v in data.items():
-            if k in self.model_fields:
-                args[k] = v
-            elif k == "authenticatedsession":
+            # Don't save:
+            # - unused auth data
+            # - related models
+            if k in [SESSION_KEY, BACKEND_SESSION_KEY, HASH_SESSION_KEY, "authenticatedsession"]:
                 pass
+            elif k in self.model_fields:
+                args[k] = v
             else:
                 args["session_data"][k] = v
         args["session_data"] = self.encode(args["session_data"])
