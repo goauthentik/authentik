@@ -227,7 +227,6 @@ DJANGO_REDIS_SCAN_ITERSIZE = 1000
 DJANGO_REDIS_IGNORE_EXCEPTIONS = True
 DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = True
 SESSION_ENGINE = "authentik.core.sessions"
-SESSION_SERIALIZER = "authentik.root.sessions.pickle.PickleSerializer"
 # Configured via custom SessionMiddleware
 # SESSION_COOKIE_SAMESITE = "None"
 # SESSION_COOKIE_SECURE = True

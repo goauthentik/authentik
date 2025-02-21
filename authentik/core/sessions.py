@@ -1,6 +1,6 @@
 """authentik sessions engine"""
 
-import pickle
+import pickle  # nosec
 
 from django.contrib.sessions.backends.db import SessionStore as SessionBase
 from django.core.exceptions import SuspiciousOperation
