@@ -85,7 +85,7 @@ class SourceViewSet(
     serializer_class = SourceSerializer
     lookup_field = "slug"
     search_fields = ["slug", "name"]
-    filterset_fields = ["slug", "name", "managed"]
+    filterset_fields = ["slug", "name", "managed", "pbm_uuid"]
 
     def get_queryset(self):  # pragma: no cover
         return Source.objects.select_subclasses()

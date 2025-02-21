@@ -1,11 +1,8 @@
 ---
 title: Integrate with FortiGate Admin Login
 sidebar_label: FortiGate Admin Login
+support_level: community
 ---
-
-# Integrate with FortiGate Admin Login
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is FortiGate
 

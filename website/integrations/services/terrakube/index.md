@@ -1,11 +1,8 @@
 ---
 title: Integrate with Terrakube
 sidebar_label: Terrakube
+support_level: community
 ---
-
-# Integrate with Terrakube
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Terrakube
 
@@ -36,10 +33,10 @@ This documentation lists only the settings that you need to change from their de
 
 This guide assumes that you have environment variables `$TERRAKUBE_OIDC_CLIENT_ID` and `$TERRAKUBE_OIDC_CLIENT_SECRET` set up. You can hard-code values if your setup doesn’t support environment variables, but be aware that doing so is not recommended for security reasons.
 
-1. **Locate the Dex Configuration File**  
+1. **Locate the Dex Configuration File**
    Find the Dex configuration file, typically named `config.yaml` or `config.docker.yaml`. It’s usually located in the `/etc/dex` directory or the corresponding directory for a containerized setup.
 
-2. **Update the Dex Configuration**  
+2. **Update the Dex Configuration**
    To define the Terrakube OIDC connector, open the configuration file and add the following block:
 
     ```yaml
@@ -55,7 +52,7 @@ This guide assumes that you have environment variables `$TERRAKUBE_OIDC_CLIENT_I
               insecureEnableGroups: true
     ```
 
-3. **Set Environment Variables**  
+3. **Set Environment Variables**
    Add the following variables to your `.env` file, replacing them with the appropriate values for your Client ID and Client Secret:
 
     ```env

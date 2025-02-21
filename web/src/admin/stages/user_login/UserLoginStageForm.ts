@@ -54,7 +54,9 @@ export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
                         <input
                             type="text"
                             value="${first(this.instance?.sessionDuration, "seconds=0")}"
-                            class="pf-c-form-control"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
                             required
                         />
                         <p class="pf-c-form__helper-text">
@@ -83,7 +85,9 @@ export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
                         <input
                             type="text"
                             value="${first(this.instance?.rememberMeOffset, "seconds=0")}"
-                            class="pf-c-form-control"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
                             required
                         />
                         <p class="pf-c-form__helper-text">

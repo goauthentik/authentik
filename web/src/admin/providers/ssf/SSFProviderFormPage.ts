@@ -1,5 +1,4 @@
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
-import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 import {
     oauth2ProvidersProvider,
@@ -7,14 +6,11 @@ import {
 } from "@goauthentik/admin/providers/oauth2/OAuth2ProvidersProvider";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
-import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-text-input";
-import "@goauthentik/components/ak-textarea-input";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
 
@@ -75,9 +71,9 @@ export class SSFProviderFormPage extends BaseProviderForm<SSFProvider> {
                         <p class="pf-c-form__helper-text">${msg("Key used to sign the events.")}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${msg("Session duration")}
-                        ?required=${true}
-                        name="sessionDuration"
+                        label=${msg("Event Retention")}
+                        required
+                        name="eventRetention"
                     >
                         <input
                             type="text"

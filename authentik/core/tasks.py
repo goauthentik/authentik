@@ -67,6 +67,8 @@ def clean_expired_models(self: SystemTask):
                 raise ImproperlyConfigured(
                     "Invalid session_storage setting, allowed values are db and cache"
                 )
+    if CONFIG.get("session_storage", "cache") == "db":
+        DBSessionStore.clear_expired()
     LOGGER.debug("Expired sessions", model=AuthenticatedSession, amount=amount)
 
     messages.append(f"Expired {amount} {AuthenticatedSession._meta.verbose_name_plural}")

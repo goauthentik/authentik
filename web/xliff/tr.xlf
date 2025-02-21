@@ -931,16 +931,6 @@
         <target>gidNumbers'ın başlangıcı, bu sayı group.Pk öğesinden oluşturulan bir sayıya eklenir ve sayıların POSIX grupları için çok düşük olmamasını sağlar. Yerel gruplar veya kullanıcıların birincil grupların gidNumber'ıyla çakışmaması için varsayılan 4000'dir</target>
         
       </trans-unit>
-      <trans-unit id="s2236dc563c2dbf76">
-        <source>(Format: hours=-1;minutes=-2;seconds=-3).</source>
-        <target>(Biçim: saat=-1; dakika=-2; ikincil=-3).</target>
-        
-      </trans-unit>
-      <trans-unit id="sbec40ef4e6f139b7">
-        <source>(Format: hours=1;minutes=2;seconds=3).</source>
-        <target>(Biçim: saat=1; dakika=2; saniye= 3).</target>
-        
-      </trans-unit>
       <trans-unit id="sbb8ad22c83d375b1">
         <source>The following keywords are supported:</source>
         <target>Aşağıdaki anahtar sözcükler desteklenir:</target>
@@ -1144,11 +1134,6 @@
       <trans-unit id="se2adaf0371ffcd65">
         <source>Machine-to-Machine authentication settings</source>
         <target>Makineden Makineye kimlik doğrulama ayarları</target>
-        
-      </trans-unit>
-      <trans-unit id="s33318837e6c54a9b">
-        <source>Trusted OIDC Sources</source>
-        <target>Güvenilir OIDC Kaynakları</target>
         
       </trans-unit>
       <trans-unit id="s22e566052f7bec81">
@@ -3602,11 +3587,6 @@ Belirlenen seçeneklerden biri veya her ikisi de eşiğe eşit veya eşiğin üz
         <target>Olayların veritabanından silineceği süre.</target>
         
       </trans-unit>
-      <trans-unit id="s7b1fba26d245cb1c">
-        <source>When using an external logging solution for archiving, this can be set to "minutes=5".</source>
-        <target>Arşivleme için harici bir günlük çözümü kullanırken, bu “Dakika = 5" olarak ayarlanabilir.</target>
-        
-      </trans-unit>
       <trans-unit id="s44536d20bb5c8257">
         <source>This setting only affects new Events, as the expiration is saved per-event.</source>
         <target>Bu ayar, süre sonu olay başına kaydedildiğinden, yalnızca yeni Olayları etkiler.</target>
@@ -4491,11 +4471,6 @@ Belirlenen seçeneklerden biri veya her ikisi de eşiğe eşit veya eşiğin üz
       <trans-unit id="s6336fa345e96dde9">
         <source>Evaluate when stage is run</source>
         <target>Aşamanın ne zaman çalıştırıldığını değerlendirin</target>
-        
-      </trans-unit>
-      <trans-unit id="sff3b708e23bb96b2">
-        <source>Evaluate policies before the Stage is present to the user.</source>
-        <target>Aşama kullanıcıya sunulmadan önce ilkeleri değerlendirin.</target>
         
       </trans-unit>
       <trans-unit id="s0dc46deb8f181baf">
@@ -5971,11 +5946,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
         <target>Docker URL'si</target>
         
       </trans-unit>
-      <trans-unit id="sa7fcf026bd25f231">
-        <source>Can be in the format of 'unix://' when connecting to a local docker daemon, using 'ssh://' to connect via SSH, or 'https://:2376' when connecting to a remote system.</source>
-        <target>SSH üzerinden bağlanmak için 'ssh: //' veya uzak bir sisteme bağlanırken 'https://:2376' kullanarak yerel bir docker daemonuna bağlanırken 'unix: //' biçiminde olabilir.</target>
-        
-      </trans-unit>
       <trans-unit id="saf1d289e3137c2ea">
         <source>CA which the endpoint's Certificate is verified against. Can be left empty for no validation.</source>
         <target>Uç noktanın Sertifikası karşı doğrulanan CA. Doğrulama yapılmadan boş bırakılabilir.</target>
@@ -6104,6 +6074,12 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
       <trans-unit id="sf53a78d889b6c775">
         <source>Managed by authentik (Discovered)</source>
         <target>Auentik tarafından yönetilen (Keşfedildi)</target>
+        
+      </trans-unit>
+      <trans-unit id="sef50d248448e0df1">
+        <source>Yes (<x id="0" equiv-text="${item.privateKeyType?.toUpperCase()}"/>)</source>
+        <target>Evet (
+        <x id="0" equiv-text="${item.privateKeyType?.toUpperCase()}"/>)</target>
         
       </trans-unit>
       <trans-unit id="s09205907b5b56cda">
@@ -6269,16 +6245,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
       <trans-unit id="s8cda828dac449ea5">
         <source>Clear all</source>
         <target>Hepsini temizle</target>
-        
-      </trans-unit>
-      <trans-unit id="s4207178ba0b99418">
-        <source>A newer version of the frontend is available.</source>
-        <target>Ön yüzün daha yeni bir sürümü mevcuttur.</target>
-        
-      </trans-unit>
-      <trans-unit id="s96b3cddf33e1c853">
-        <source>You're currently impersonating <x id="0" equiv-text="${this.impersonation}"/>. Click to stop.</source>
-        <target>Şu anda kimliğe bürünüyorsunuz. <x id="0" equiv-text="${this.impersonation}"/> Durdurmak için tıklayın.</target>
         
       </trans-unit>
       <trans-unit id="s7031e6928c44cedd">
@@ -7029,10 +6995,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 <trans-unit id="s77e8668a27dbc402">
   <source>Service accounts should be used for machine-to-machine authentication or other automations.</source>
   <target>Hizmet hesapları, makineler arası kimlik doğrulaması veya diğer otomasyonlar için kullanılmalıdır.</target>
-</trans-unit>
-<trans-unit id="s28cbd874ba450b4e">
-  <source>Less details</source>
-  <target>Daha az detay</target>
 </trans-unit>
 <trans-unit id="s8fa26f65aed77c96">
   <source>More details</source>
@@ -8205,10 +8167,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
   <source>Select permissions to assign</source>
   <target>Atanacak izinleri seçme</target>
 </trans-unit>
-<trans-unit id="s676d94e7e31a8075">
-  <source>SCIM Source is in preview.</source>
-  <target>SCIM Kaynağı önizleme aşamasındadır.</target>
-</trans-unit>
 <trans-unit id="s31f1afc0a81977c1">
   <source>Update SCIM Source</source>
   <target>SCIM Kaynağını Güncelleştirme</target>
@@ -8341,10 +8299,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
   <source>Determines what authentik will do when a Group is deleted.</source>
   <target>Bir Grup silindiğinde authentik'in ne yapacağını belirler.</target>
 </trans-unit>
-<trans-unit id="sa5f28f1ad0bee45b">
-  <source>Google Workspace Provider is in preview.</source>
-  <target>Google Workspace Sağlayıcı önizleme aşamasındadır.</target>
-</trans-unit>
 <trans-unit id="s958928ab6208d748">
   <source>Microsoft Entra Provider</source>
   <target>Microsoft Entra Sağlayıcısı</target>
@@ -8372,10 +8326,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 <trans-unit id="s89e4e698cdb1187f">
   <source>ID of the tenant accounts will be synced into.</source>
   <target>Kiracı hesaplarının kimliği eşitlenir.</target>
-</trans-unit>
-<trans-unit id="sf341f5dfc7a11633">
-  <source>Microsoft Entra Provider is in preview.</source>
-  <target>Microsoft Entra Sağlayıcısı önizleme aşamasındadır.</target>
 </trans-unit>
 <trans-unit id="s79dd6df244c05ae9">
   <source>Update Microsoft Entra Provider</source>
@@ -8823,7 +8773,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 </trans-unit>
 <trans-unit id="s2d5f69929bb7221d">
   <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
-  <target><x id="0" equiv-text="${prompt.name}"/> ("<x id="1" equiv-text="${prompt.fieldKey}"/>", of type <x id="2" equiv-text="${prompt.type}"/>)</target>
 </trans-unit>
 <trans-unit id="s25bacc19d98b444e">
   <source>Parent Group</source>
@@ -9013,9 +8962,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
   <source>Endpoint Google Chrome Device Trust is in preview.</source>
   <target>Uç nokta Google Chrome Cihaz Güvenilirliği önizleme aşamasındadır.</target>
 </trans-unit>
-<trans-unit id="sef50d248448e0df1">
-  <source>Yes (<x id="0" equiv-text="${item.privateKeyType?.toUpperCase()}"/>)</source>
-</trans-unit>
 <trans-unit id="s6f4f35a5a4b9b3cb">
   <source>Interactive</source>
 </trans-unit>
@@ -9186,6 +9132,7 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 </trans-unit>
 <trans-unit id="sde0ad51b14f77cf6">
   <source>Redirect URIs/Origins (RegEx)</source>
+  <target>Yeniden Yönlendirme URI'leri/Kökenleri (RegEx)</target>
 </trans-unit>
 <trans-unit id="s89ae85c3a9df8a6f">
   <source>Configure OAuth2 Provider</source>
@@ -9267,6 +9214,111 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 </trans-unit>
 <trans-unit id="s8e1c375a007d1839">
   <source>These entitlements can be used to configure user access in this application.</source>
+</trans-unit>
+<trans-unit id="s82cced87e15e0665">
+  <source>Worker with incorrect version connected.</source>
+</trans-unit>
+<trans-unit id="ha8e91858b300a3b7">
+  <source>(Format: <x id="0" equiv-text="&lt;code&gt;"/>hours=-1;minutes=-2;seconds=-3)<x id="1" equiv-text="&lt;/code&gt;"/>.</source>
+</trans-unit>
+<trans-unit id="hbe8e6353371ecb22">
+  <source>(Format: <x id="0" equiv-text="&lt;code&gt;"/>hours=1;minutes=2;seconds=3).<x id="1" equiv-text="&lt;/code&gt;"/></source>
+</trans-unit>
+<trans-unit id="se8dd47dfaf01d6c9">
+  <source>Key used to sign the events.</source>
+</trans-unit>
+<trans-unit id="sd1b31f8fba05d429">
+  <source>Event Retention</source>
+</trans-unit>
+<trans-unit id="sd760b123cced4675">
+  <source>Determines how long events are stored for. If an event could not be sent correctly, its expiration is also increased by this duration.</source>
+</trans-unit>
+<trans-unit id="s1aa62e1bf258e88a">
+  <source>OIDC Providers</source>
+</trans-unit>
+<trans-unit id="sb9d947872397ca07">
+  <source>SSF Provider is in preview.</source>
+</trans-unit>
+<trans-unit id="s78302d097a608b99">
+  <source>Update SSF Provider</source>
+</trans-unit>
+<trans-unit id="sa412f34efd88e962">
+  <source>Streams</source>
+</trans-unit>
+<trans-unit id="s91ae4b6bf981682b">
+  <source>authentik Logo</source>
+</trans-unit>
+<trans-unit id="s1cdeecda0baf365e">
+  <source>Release</source>
+</trans-unit>
+<trans-unit id="s35429c9dc2319aea">
+  <source>Development</source>
+</trans-unit>
+<trans-unit id="s5937938934a777ab">
+  <source>UI Version</source>
+</trans-unit>
+<trans-unit id="s3fe3ff490adaaa63">
+  <source>Build</source>
+</trans-unit>
+<trans-unit id="s42aea5c6d3d1fce7">
+  <source>Python version</source>
+</trans-unit>
+<trans-unit id="s5c67b6c66029e5b2">
+  <source>Platform</source>
+</trans-unit>
+<trans-unit id="se8574bce64d9c1f8">
+  <source>Kernel</source>
+</trans-unit>
+<trans-unit id="s3fbe63b7fcfe3e91">
+  <source>OpenSSL</source>
+</trans-unit>
+<trans-unit id="s1381314790b50b1f">
+  <source>A newer version (<x id="0" equiv-text="${this.version.versionCurrent}"/>) of the UI is available.</source>
+</trans-unit>
+<trans-unit id="s61ffea061fae0af4">
+  <source>No notifications found.</source>
+</trans-unit>
+<trans-unit id="scf8d5cdc8b434982">
+  <source>You don't have any notifications currently.</source>
+</trans-unit>
+<trans-unit id="s358e08de4fbebf51">
+  <source>Version <x id="0" equiv-text="${this.version?.versionCurrent || &quot;&quot;}"/></source>
+</trans-unit>
+<trans-unit id="sfb95ad8c25db95ba">
+  <source>Last password change</source>
+</trans-unit>
+<trans-unit id="s37e1bad4bf0e9241">
+  <source>Evaluate policies before the Stage is presented to the user.</source>
+</trans-unit>
+<trans-unit id="h8c1aa2d523f94f36">
+  <source>Can be in the format of <x id="0" equiv-text="&lt;code&gt;"/>unix://<x id="1" equiv-text="&lt;/code&gt;"/> when connecting to a local
+                            docker daemon, using <x id="2" equiv-text="&lt;code&gt;"/>ssh://<x id="3" equiv-text="&lt;/code&gt;"/> to connect via SSH, or
+                            <x id="4" equiv-text="&lt;code&gt;"/>https://:2376<x id="5" equiv-text="&lt;/code&gt;"/> when connecting to a remote system.</source>
+</trans-unit>
+<trans-unit id="h3ac79dc5cc553329">
+  <source>When using an external logging solution for archiving, this can be
+                                set to <x id="0" equiv-text="&lt;code&gt;"/>minutes=5<x id="1" equiv-text="&lt;/code&gt;"/>.</source>
+</trans-unit>
+<trans-unit id="sc92905d14a9421f3">
+  <source>Idle</source>
+</trans-unit>
+<trans-unit id="s4b052cb287d81da7">
+  <source>Connecting</source>
+</trans-unit>
+<trans-unit id="s123b7254b44dd148">
+  <source>Waiting</source>
+</trans-unit>
+<trans-unit id="s82a4e28ab5b56670">
+  <source>Connected</source>
+</trans-unit>
+<trans-unit id="sd669c8ff49c068ad">
+  <source>Disconnecting</source>
+</trans-unit>
+<trans-unit id="sfc2c3bd345c0128a">
+  <source>Disconnected</source>
+</trans-unit>
+<trans-unit id="s47b7ce63a543564c">
+  <source>Fewer details</source>
 </trans-unit>
     </body>
   </file>

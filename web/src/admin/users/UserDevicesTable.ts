@@ -58,6 +58,8 @@ export class UserDeviceTable extends Table<Device> {
         switch (device.type) {
             case "authentik_stages_authenticator_duo.DuoDevice":
                 return api.authenticatorsAdminDuoDestroy({ id: parseInt(device.pk, 10) });
+            case "authentik_stages_authenticator_email.EmailDevice":
+                return api.authenticatorsAdminEmailDestroy({ id: parseInt(device.pk, 10) });
             case "authentik_stages_authenticator_sms.SMSDevice":
                 return api.authenticatorsAdminSmsDestroy({ id: parseInt(device.pk, 10) });
             case "authentik_stages_authenticator_totp.TOTPDevice":

@@ -30,7 +30,7 @@ export class ApplicationWizardStep extends WizardStep {
     // As recommended in [WizardStep](../../../components/ak-wizard/WizardStep.ts), we override
     // these fields and provide them to all the child classes.
     wizardTitle = msg("New application");
-    wizardDescription = msg("Create a new application");
+    wizardDescription = msg("Create a new application and configure a provider for it.");
     canCancel = true;
 
     // This should be overridden in the children for more precise targeting.

@@ -7,16 +7,16 @@
 # Chen Zhikai, 2022
 # 刘松, 2022
 # Jens L. <jens@goauthentik.io>, 2024
-# deluxghost, 2024
+# deluxghost, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-20 00:08+0000\n"
+"POT-Creation-Date: 2025-02-14 14:49+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
-"Last-Translator: deluxghost, 2024\n"
+"Last-Translator: deluxghost, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/authentik/teams/119923/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -560,6 +560,47 @@ msgstr "已达到最大连接数。"
 msgid "(You are already connected in another tab/window)"
 msgstr "（您已经在另一个标签页/窗口连接了）"
 
+#: authentik/enterprise/providers/ssf/models.py
+#: authentik/providers/oauth2/models.py
+msgid "Signing Key"
+msgstr "签名密钥"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Key used to sign the SSF Events."
+msgstr "用于签名 SSF 时间的密钥。"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Shared Signals Framework Provider"
+msgstr "Shared Signals Framework 提供程序"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Shared Signals Framework Providers"
+msgstr "Shared Signals Framework 提供程序"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Add stream to SSF provider"
+msgstr "向 SSF 提供程序添加流"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Stream"
+msgstr "SSF 流"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Streams"
+msgstr "SSF 流"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Stream Event"
+msgstr "SSF 流事件"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Stream Events"
+msgstr "SSF 流事件"
+
+#: authentik/enterprise/providers/ssf/tasks.py
+msgid "Failed to send request"
+msgstr "发送请求失败"
+
 #: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
 msgid "Endpoint Authenticator Google Device Trust Connector Stage"
 msgstr "端点身份验证器 Google 设备信任连接器阶段"
@@ -835,7 +876,7 @@ msgid "Evaluate policies during the Flow planning process."
 msgstr "在流程规划过程中评估策略。"
 
 #: authentik/flows/models.py
-msgid "Evaluate policies when the Stage is present to the user."
+msgid "Evaluate policies when the Stage is presented to the user."
 msgstr "在阶段呈现给用户时评估策略。"
 
 #: authentik/flows/models.py
@@ -1448,10 +1489,6 @@ msgstr "配置应将哪些数据用作唯一用户标识符。在大多数情况
 #: authentik/providers/oauth2/models.py
 msgid "Configure how the issuer field of the ID Token should be filled."
 msgstr "配置如何填写 ID 令牌的颁发者字段。"
-
-#: authentik/providers/oauth2/models.py
-msgid "Signing Key"
-msgstr "签名密钥"
 
 #: authentik/providers/oauth2/models.py
 msgid "Key used to sign the tokens."

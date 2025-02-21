@@ -161,7 +161,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         super.disconnectedCallback();
     }
 
-    get captchaDocumentContainer() {
+    get captchaDocumentContainer(): HTMLDivElement {
         if (this._captchaDocumentContainer) {
             return this._captchaDocumentContainer;
         }
@@ -170,7 +170,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         return this._captchaDocumentContainer;
     }
 
-    get captchaFrame() {
+    get captchaFrame(): HTMLIFrameElement {
         if (this._captchaFrame) {
             return this._captchaFrame;
         }
@@ -326,7 +326,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
             .exhaustive();
     }
 
-    updated(changedProperties: PropertyValues<this>) {
+    firstUpdated(changedProperties: PropertyValues<this>) {
         if (!(changedProperties.has("challenge") && this.challenge !== undefined)) {
             return;
         }

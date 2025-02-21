@@ -59,7 +59,10 @@ export class BrandForm extends ModelForm<Brand, string> {
                 <input
                     type="text"
                     value="${first(this.instance?.domain, window.location.host)}"
-                    class="pf-c-form-control"
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
+                    inputmode="url"
                     required
                 />
                 <p class="pf-c-form__helper-text">
@@ -116,7 +119,9 @@ export class BrandForm extends ModelForm<Brand, string> {
                         <input
                             type="text"
                             value="${first(this.instance?.brandingLogo, DefaultBrand.brandingLogo)}"
-                            class="pf-c-form-control"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
                             required
                         />
                         <p class="pf-c-form__helper-text">
@@ -134,7 +139,9 @@ export class BrandForm extends ModelForm<Brand, string> {
                                 this.instance?.brandingFavicon,
                                 DefaultBrand.brandingFavicon,
                             )}"
-                            class="pf-c-form-control"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
                             required
                         />
                         <p class="pf-c-form__helper-text">

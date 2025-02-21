@@ -8,7 +8,7 @@ This page is an overview of how property mappings work. For information about sp
 
 - [Kerberos](../protocols/kerberos/#kerberos-source-property-mappings)
 - [LDAP](../protocols/ldap/index.md#ldap-source-property-mappings)
-- [OAuth](../protocols/oauth/index.md#oauth-source-property-mappings)
+- [OAuth](../protocols/oauth/index.mdx#oauth-source-property-mappings)
 - [SAML](../protocols/saml/index.md#saml-source-property-mappings)
 - [SCIM](../protocols/scim/index.md#scim-source-property-mappings)
 
@@ -36,7 +36,7 @@ return {
 }
 ```
 
-You can see that the expression returns a Python dictionary. The dictionary keys must match [User properties](../../user/user_ref.md#object-properties) or [Group properties](../../groups/group_ref.md#object-properties). Note that for users, `ak_groups` and `group_attributes` cannot be set.
+You can see that the expression returns a Python dictionary. The dictionary keys must match [User properties](../../user/user_ref.mdx#object-properties) or [Group properties](../../groups/group_ref.md#object-properties). Note that for users, `ak_groups` and `group_attributes` cannot be set.
 
 See each source documentation for a reference of the available data. See the authentik [expressions documentation](./expressions.md) for available data and functions.
 

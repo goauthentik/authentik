@@ -1,9 +1,6 @@
 ---
 title: Add an Entra ID provider
----
-
-<span class="badge badge--primary">Enterprise</span>
-
+authentik_enterprise: true
 ---
 
 For more information about using an Entra ID provider, see the [Overview](./index.md) documentation.

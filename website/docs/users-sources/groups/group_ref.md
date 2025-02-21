@@ -13,4 +13,4 @@ The Group object has the following properties:
 
 ## Attributes
 
-See [the user reference](../user/user_ref.md#attributes) for well-known attributes.
+See [the user reference](../user/user_ref.mdx#attributes) for well-known attributes.

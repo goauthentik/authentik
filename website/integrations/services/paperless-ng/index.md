@@ -1,11 +1,8 @@
 ---
 title: Integrate with Paperless-ng
 sidebar_label: Paperless-ng
+support_level: community
 ---
-
-# Integrate with Paperless-ng
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Paperless-ng
 
