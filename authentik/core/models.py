@@ -1070,7 +1070,7 @@ class AuthenticatedSession(SerializerModel):
         verbose_name_plural = _("Authenticated Sessions")
 
     def __str__(self) -> str:
-        return self.session_id
+        return f"{self.session_id}"
 
     @staticmethod
     def from_request(request: HttpRequest, user: User) -> Optional["AuthenticatedSession"]:
