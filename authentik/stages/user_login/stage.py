@@ -72,8 +72,8 @@ class UserLoginStageView(ChallengeStageView):
         """Set the sessions' last IP and session bindings"""
         stage: UserLoginStage = self.executor.current_stage
 
-        self.request.session[request.session.model.Keys.LAST_IP] = ClientIPMiddleware.get_client_ip(
-            self.request
+        self.request.session[self.request.session.model.Keys.LAST_IP] = (
+            ClientIPMiddleware.get_client_ip(self.request)
         )
         self.request.session[SESSION_KEY_BINDING_NET] = stage.network_binding
         self.request.session[SESSION_KEY_BINDING_GEO] = stage.geoip_binding

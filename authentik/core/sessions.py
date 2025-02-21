@@ -1,12 +1,12 @@
 """authentik sessions engine"""
 
 import pickle
+
+from django.contrib.sessions.backends.db import SessionStore as SessionBase
+from django.core.exceptions import SuspiciousOperation
 from django.utils import timezone
 from django.utils.functional import cached_property
 from structlog.stdlib import get_logger
-from django.core.exceptions import SuspiciousOperation
-from django.contrib.sessions.backends.db import SessionStore as SessionBase
-
 
 LOGGER = get_logger()
 
@@ -55,7 +55,8 @@ class SessionStore(SessionBase):
         try:
             return pickle.loads(session_data)
         except Exception:
-            # ValueError, unpickling exceptions. If any of these happen, just return an empty dictionary (an empty session)
+            # ValueError, unpickling exceptions. If any of these happen, just return an empty
+            # dictionary (an empty session)
             pass
         return {}
 
