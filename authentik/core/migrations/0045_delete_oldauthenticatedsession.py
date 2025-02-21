@@ -33,5 +33,7 @@ class Migration(migrations.Migration):
             name="OldAuthenticatedSession",
         ),
         migrations.RunPython(code=delete_redis_sessions, reverse_code=migrations.RunPython.noop),
-        migrations.RunPython(code=delete_old_database_sessions, reverse_code=migrations.RunPython.noop),
+        migrations.RunPython(
+            code=delete_old_database_sessions, reverse_code=migrations.RunPython.noop
+        ),
     ]

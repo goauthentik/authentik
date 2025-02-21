@@ -15,7 +15,13 @@ SESSION_CACHE_ALIAS = "default"
 
 
 def _migrate_session(
-    db_alias, Session, OldAuthenticatedSession, AuthenticatedSession, session_key, session_data, expires
+    db_alias,
+    Session,
+    OldAuthenticatedSession,
+    AuthenticatedSession,
+    session_key,
+    session_data,
+    expires,
 ):
     old_auth_session = (
         OldAuthenticatedSession.objects.using(db_alias).filter(session_key=session_key).first()
