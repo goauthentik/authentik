@@ -91,7 +91,7 @@ class SessionStore(SessionBase):
         if s:
             return {
                 "authenticatedsession": getattr(s, "authenticatedsession", None),
-                **{k: getattr(s, k) for k in self.model_fields()},
+                **{k: getattr(s, k) for k in self.model_fields},
                 **self.decode(s.session_data),
             }
         else:
@@ -102,7 +102,7 @@ class SessionStore(SessionBase):
         if s:
             return {
                 "authenticatedsession": getattr(s, "authenticatedsession", None),
-                **{k: getattr(s, k) for k in self.model_fields()},
+                **{k: getattr(s, k) for k in self.model_fields},
                 **self.decode(s.session_data),
             }
         else:
