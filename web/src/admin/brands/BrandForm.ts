@@ -148,6 +148,26 @@ export class BrandForm extends ModelForm<Brand, string> {
                             ${msg("Icon shown in the browser tab.")}
                         </p>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Default flow background")}
+                        ?required=${true}
+                        name="brandingDefaultFlowBackground"
+                    >
+                        <input
+                            type="text"
+                            value="${first(
+                                this.instance?.brandingDefaultFlowBackground,
+                                "/static/dist/assets/images/flow_background.jpg",
+                            )}"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Default background used during flow execution. Can be overridden per flow.")}
+                        </p>
+                    </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
 
