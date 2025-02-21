@@ -23,7 +23,7 @@ from django.contrib.sessions.backends.cache import KEY_PREFIX
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_core", "0042_authenticatedsession_authentik_c_expires_08251d_idx_and_more"),
+        ("authentik_core", "0043_alter_group_options"),
         # ("authentik_providers_rac", "0007_migrate_session"),
         # ("authentik_providers_oauth2", "0028_migrate_session"),
     ]
