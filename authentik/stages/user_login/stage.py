@@ -114,6 +114,6 @@ class UserLoginStageView(ChallengeStageView):
             messages.success(self.request, _("Successfully logged in!"))
         if self.executor.current_stage.terminate_other_sessions:
             Session.objects.filter(
-                user=user,
+                authenticatedsession__user=user,
             ).exclude(session_key=self.request.session.session_key).delete()
         return self.executor.stage_ok()
