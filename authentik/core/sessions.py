@@ -8,13 +8,18 @@ from django.utils import timezone
 from django.utils.functional import cached_property
 from structlog.stdlib import get_logger
 
+from authentik.root.middleware import ClientIPMiddleware
+
 LOGGER = get_logger()
 
 
 class SessionStore(SessionBase):
-    def __init__(self, session_key=None, **create_kwargs):
+    def __init__(self, session_key=None, last_ip=None, last_user_agent=""):
         super().__init__(session_key)
-        self._create_kwargs = create_kwargs
+        self._create_kwargs = {
+            "last_ip": last_ip or ClientIPMiddleware.default_ip,
+            "last_user_agent": last_user_agent,
+        }
 
     @classmethod
     def get_model_class(cls):

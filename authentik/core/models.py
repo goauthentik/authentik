@@ -1040,6 +1040,7 @@ class Session(ExpiringModel, AbstractBaseSession):
 
         If a field is added here that needs to be initialized when the session is initialized,
         it must also be reflected in authentik.root.middleware.SessionMiddleware.process_request
+        and in authentik.core.sessions.SessionStore.__init__
         """
 
         LAST_IP = "last_ip"
