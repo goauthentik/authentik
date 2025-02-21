@@ -3,8 +3,6 @@
 from time import sleep
 from unittest.mock import patch
 
-from django.contrib.sessions.backends.cache import KEY_PREFIX
-from django.core.cache import cache
 from django.urls import reverse
 from django.utils.timezone import now
 
@@ -74,7 +72,7 @@ class TestUserLoginStage(FlowTestCase):
         session.save()
 
         key = generate_id()
-        other_session = AuthenticatedSession.objects.create(
+        AuthenticatedSession.objects.create(
             session=Session.objects.create(
                 session_key=key,
                 last_ip=ClientIPMiddleware.default_ip,
