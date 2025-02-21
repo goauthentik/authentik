@@ -2,13 +2,13 @@
 title: Create an OAuth2 provider
 ---
 
-To add a provider (and the application that uses the provider for authentication) use the Application Wizard, which creates both the new application and the required provider at the same time. For typical scenarios, authentik recommends that you use the Wizard to create both the application and the provider together. (Alternatively, use our legacy process: navigate to **Applications --> Providers**, and then click **Create**.)
+To add a provider (and the application that uses the provider for authentication) use the Application modal, which creates both the new application and the required provider at the same time. For typical scenarios, authentik recommends that you use the modal to create both the application and the provider together. (Alternatively, use our legacy process: navigate to **Applications --> Providers**, and then click **Create**.)
 
-1. Log into authentik as an admin, and navigate to **Applications --> Applications**.
+1. Log in to authentik as an admin, and open the authentik Admin interface.
 
-2. Click **Create with Wizard**.
+2. Navigate to **Applications -> Applications** and click **Create with provider** to create an application and provider pair. (Alternatively you can create only an application, without a provider, by clicking **Create.)**
 
-3. In the **New application** wizard, define the application details, and then click **Next**.
+3. In the **New application** modal, define the application details, and then click **Next**.
 
 4. Select the **Provider Type** of **OAuth2/OIDC**, and then click **Next**.
 

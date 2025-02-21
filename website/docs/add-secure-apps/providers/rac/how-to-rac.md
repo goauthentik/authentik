@@ -26,7 +26,7 @@ The first step is to create the RAC app and provider.
 
 2. In the Admin interface, navigate to **Applications -> Applications**.
 
-3. Click **Create with Wizard**. Follow the [instructions](../../applications/manage_apps.mdx#instructions) to create your RAC application and provider.
+3. Click **Create with provider**. Follow the [instructions](../../applications/manage_apps.mdx#instructions) to create your RAC application and provider.
 
 ### Step 2. Create RAC property mapping
 
