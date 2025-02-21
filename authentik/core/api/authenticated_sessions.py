@@ -5,6 +5,7 @@ from typing import TypedDict
 from rest_framework import mixins
 from rest_framework.fields import SerializerMethodField
 from rest_framework.request import Request
+from rest_framework.serializers import CharField, DateTimeField, IPAddressField
 from rest_framework.viewsets import GenericViewSet
 from ua_parser import user_agent_parser
 
@@ -54,6 +55,11 @@ class UserAgentDict(TypedDict):
 class AuthenticatedSessionSerializer(ModelSerializer):
     """AuthenticatedSession Serializer"""
 
+    expires = DateTimeField(source="session.expires")
+    last_ip = IPAddressField(source="session.last_ip")
+    last_user_agent = CharField(source="session.last_user_agent")
+    last_used = DateTimeField(source="session.last_used")
+
     current = SerializerMethodField()
     user_agent = SerializerMethodField()
     geo_ip = SerializerMethodField()
@@ -62,19 +68,19 @@ class AuthenticatedSessionSerializer(ModelSerializer):
     def get_current(self, instance: AuthenticatedSession) -> bool:
         """Check if session is currently active session"""
         request: Request = self.context["request"]
-        return request._request.session.session_key == instance.session_key
+        return request._request.session.session_key == instance.session.session_key
 
     def get_user_agent(self, instance: AuthenticatedSession) -> UserAgentDict:
         """Get parsed user agent"""
-        return user_agent_parser.Parse(instance.last_user_agent)
+        return user_agent_parser.Parse(instance.session.last_user_agent)
 
     def get_geo_ip(self, instance: AuthenticatedSession) -> GeoIPDict | None:  # pragma: no cover
         """Get GeoIP Data"""
-        return GEOIP_CONTEXT_PROCESSOR.city_dict(instance.last_ip)
+        return GEOIP_CONTEXT_PROCESSOR.city_dict(instance.session.last_ip)
 
     def get_asn(self, instance: AuthenticatedSession) -> ASNDict | None:  # pragma: no cover
         """Get ASN Data"""
-        return ASN_CONTEXT_PROCESSOR.asn_dict(instance.last_ip)
+        return ASN_CONTEXT_PROCESSOR.asn_dict(instance.session.last_ip)
 
     class Meta:
         model = AuthenticatedSession
@@ -101,9 +107,9 @@ class AuthenticatedSessionViewSet(
 ):
     """AuthenticatedSession Viewset"""
 
-    queryset = AuthenticatedSession.objects.all()
+    queryset = AuthenticatedSession.objects.select_related("session").all()
     serializer_class = AuthenticatedSessionSerializer
-    search_fields = ["user__username", "last_ip", "last_user_agent"]
-    filterset_fields = ["user__username", "last_ip", "last_user_agent"]
+    search_fields = ["user__username", "session__last_ip", "session__last_user_agent"]
+    filterset_fields = ["user__username", "session__last_ip", "session__last_user_agent"]
     ordering = ["user__username"]
     owner_field = "user"
