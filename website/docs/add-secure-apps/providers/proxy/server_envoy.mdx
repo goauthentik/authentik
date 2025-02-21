@@ -1,12 +1,13 @@
 ---
 title: Envoy
-hide_title: true
 ---
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import Placeholders from "./__placeholders.md";
+import EnvoyIstio from "./_envoy_istio.md";
 
-# Envoy <span class="badge badge--version">authentik 2022.6+</span>
+# Envoy
 
 The configuration template shown below apply to both single-application and domain-level forward auth.
 
@@ -14,20 +15,18 @@ The configuration template shown below apply to both single-application and doma
 If you are using Istio and Kubernetes, use the port number that is exposed for your cluster.
 :::
 
-import Placeholders from "./__placeholders.md";
-
 <Placeholders />
 
 <Tabs
-  defaultValue="envoy-istio"
-  values={[
-    {label: 'Envoy (Istio)', value: 'envoy-istio'},
-  ]}>
-  <TabItem value="envoy-istio">
-
-import EnvoyIstio from "./_envoy_istio.md";
-
-<EnvoyIstio />
-
-  </TabItem>
+    defaultValue="envoy-istio"
+    values={[
+        {
+            label: "Envoy (Istio)",
+            value: "envoy-istio",
+        },
+    ]}
+>
+    <TabItem value="envoy-istio">
+        <EnvoyIstio />
+    </TabItem>
 </Tabs>

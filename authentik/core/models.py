@@ -206,6 +206,8 @@ class Group(SerializerModel, AttributesMixin):
         permissions = [
             ("add_user_to_group", _("Add user to group")),
             ("remove_user_from_group", _("Remove user from group")),
+            ("enable_group_superuser", _("Enable superuser status")),
+            ("disable_group_superuser", _("Disable superuser status")),
         ]
 
     def __str__(self):

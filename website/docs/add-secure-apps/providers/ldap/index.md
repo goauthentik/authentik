@@ -78,9 +78,9 @@ All bind modes rely on flows.
 
 The following stages are supported:
 
-- [Identification](../../flows-stages/stages/identification/index.md)
+- [Identification](../../flows-stages/stages/identification/index.mdx)
 - [Password](../../flows-stages/stages/password/index.md)
-- [Authenticator validation](../../flows-stages/stages/authenticator_validate/index.md)
+- [Authenticator validation](../../flows-stages/stages/authenticator_validate/index.mdx)
 
     Note: Authenticator validation currently only supports DUO, TOTP and static authenticators.
 

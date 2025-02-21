@@ -1,11 +1,8 @@
 ---
 title: Integrate with Open WebUI
 sidebar_label: Open WebUI
+support_level: community
 ---
-
-# Integrate with Open WebUI
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Open WebUI
 
