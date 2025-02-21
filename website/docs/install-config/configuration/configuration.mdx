@@ -355,6 +355,12 @@ Defaults to `86400`.
 
 Configure if the sessions are stored in the cache or the database. Defaults to `cache`. Allowed values are `cache` and `db`. Note that changing this value will invalidate all previous sessions.
 
+### `AUTHENTIK_SESSIONS__UNAUTHENTICATED_AGE`:ak-version[2025.4]
+
+Configure how long unauthenticated sessions last for. Does not impact how long authenticated sessions are valid for. See [../../add-secure-apps/flows-stages/stages/user_login/index.md](the User login stage) for session validity.
+
+Defaults to `days=1`.
+
 ### `AUTHENTIK_WEB__WORKERS`
 
 Configure how many gunicorn worker processes should be started (see https://docs.gunicorn.org/en/stable/design.html).
