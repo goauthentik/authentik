@@ -203,7 +203,7 @@ class BaseEvaluator:
             provider = OAuth2Provider.objects.get(name=provider)
         session = None
         if hasattr(request, "session") and request.session.session_key:
-            session = request.session.authenticated_session
+            session = request.session["authenticatedsession"]
         access_token = AccessToken(
             provider=provider,
             user=user,
