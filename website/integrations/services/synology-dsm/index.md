@@ -1,11 +1,8 @@
 ---
 title: Integrate with Synology DSM (DiskStation Manager)
 sidebar_label: Synology DSM (DiskStation Manager)
+support_level: community
 ---
-
-# Synology DSM (DiskStation Manager)
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Synology DSM
 
@@ -19,10 +16,14 @@ This is tested with DSM 7.1 or newer.
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `synology.company` is the FQDN of the Synology DSM server.
-- `authentik.company` is the FQDN of the authentik install.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik configuration
 
@@ -58,6 +59,12 @@ To configure Synology DSM to utilize authentik as an OpenID Connect 1.0 Provider
 - Authorization Scope: openid profile email
 - Username Claim: preferred_username
 - Save the settings.
+
+## Troubleshooting
+
+**Error `not privilege`**
+
+The log in process could fail with a `not privilege` error, when the SSO pop-up is blocked. Allowing pop-ups in the browser configuration resolves this (see https://github.com/authelia/authelia/discussions/6902#discussioncomment-9756400).
 
 ## See also:
 

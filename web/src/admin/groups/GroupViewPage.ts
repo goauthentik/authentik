@@ -203,7 +203,7 @@ export class GroupViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.CoreGroup}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreGroup}
                 objectPk=${this.group.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;

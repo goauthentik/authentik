@@ -1,11 +1,8 @@
 ---
 title: Integrate with sssd
 sidebar_label: sssd
+support_level: community
 ---
-
-# sssd
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is sssd
 
@@ -20,9 +17,9 @@ Kerberos is also not supported.
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
-- `authentik.company` is the FQDN of the authentik install.
+- `authentik.company` is the FQDN of the authentik installation.
 - `ldap.baseDN` is the Base DN you configure in the LDAP provider.
 - `ldap.domain` is (typically) an FQDN for your domain. Usually
   it is just the components of your base DN. For example, if
@@ -33,6 +30,10 @@ The following placeholders will be used:
 - `sssd.serviceAccount` is a service account created in authentik
 - `sssd.serviceAccountToken` is the service account token generated
   by authentik.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 Create an LDAP Provider if you don't already have one setup.
 This guide assumes you will be running with TLS and that you've

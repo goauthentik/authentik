@@ -9,7 +9,7 @@ The main settings that brands influence are flows and branding.
 
 ## Flows
 
-You can explicitly select, in your instance's Brand settings, the default flow to use for the following configurations:
+You can explicitly select, in your instance's Brand settings, the _default flows_ to use for the current brand. To do so, log in as an administrator, open the Admin interface, and navigate to **System -> Brands**. There you can optionally configure these default flows:
 
 - Authentication flow: the flow used to authenticate users. If left empty, the first applicable flow sorted by the slug is used.
 - Invalidation flow: for typical use cases, select the `default-invalidation-flow` (Logout) flow. This flow logs the user out of authentik when the application session ends (user logs out of the app).

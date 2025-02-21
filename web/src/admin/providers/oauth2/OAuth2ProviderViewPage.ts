@@ -4,7 +4,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import renderDescriptionList from "@goauthentik/components/DescriptionList";
 import "@goauthentik/components/events/ObjectChangelog";
-import MDProviderOAuth2 from "@goauthentik/docs/add-secure-apps/providers/oauth2/index.md";
+import MDProviderOAuth2 from "@goauthentik/docs/add-secure-apps/providers/oauth2/index.mdx";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/EmptyState";
@@ -158,7 +158,7 @@ export class OAuth2ProviderViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.ProvidersOauth2Oauth2provider}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersOauth2Oauth2provider}
                 objectPk=${this.provider.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;
@@ -175,7 +175,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                   </div>`}
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div
-                    class="pf-c-card pf-l-grid__item pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl pf-m-4-col-on-2xl"
+                    class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl pf-m-4-col-on-2xl"
                 >
                     <div class="pf-c-card__body">
                         <dl class="pf-c-description-list">
@@ -369,7 +369,6 @@ export class OAuth2ProviderViewPage extends AKElement {
                             ]}
                             .md=${MDProviderOAuth2}
                             meta="providers/oauth2/index.md"
-                            ;
                         ></ak-markdown>
                     </div>
                 </div>

@@ -1,16 +1,15 @@
 ---
 title: Discord
+support_level: authentik
 ---
-
-<span class="badge badge--primary">Support level: authentik</span>
 
 Allows users to authenticate using their Discord credentials
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
-- `authentik.company` is the FQDN of the authentik install.
+- `authentik.company` is the FQDN of the authentik installation.
 
 ## Discord
 
@@ -22,7 +21,7 @@ The following placeholders will be used:
 
 ![Name App](./discord2.png)
 
-3. Select **OAuth2** from the left Menu
+3. Select **OAuth2** from the left menu
 
 4. Copy the **Client ID** and _save it for later_
 
@@ -38,8 +37,8 @@ Here is an example of a completed OAuth2 screen for Discord.
 
 8. Under _Directory -> Federation & Social login_ Click **Create Discord OAuth Source**
 
-9. **Name:** Choose a name (For the example I used Discord)
-10. **Slug:** discord (You can choose a different slug, if you do you will need to update the Discord redirect URLand point it to the correct slug.)
+9. **Name:** Choose a name (For the example I used `Discord`)
+10. **Slug:** discord (You can choose a different slug, if you do you will need to update the Discord redirect URL and point it to the correct slug.)
 11. **Consumer Key:** Client ID from step 4
 12. **Consumer Secret:** Client Secret from step 5
 
@@ -162,13 +161,13 @@ Ensure that the Discord OAuth source in **Federation & Social login** has the ad
 :::
 
 :::info
-Any authentik role that you want to sync with a Discord role needs to have the **attribute** `discord_role_id` with a value of the Discord role's ID set.  
-This setting can be found under `Authentik > Admin Interface > Directory > Groups > YOUR_GROUP > Attributes`  
+Any authentik role that you want to sync with a Discord role needs to have the **attribute** `discord_role_id` with a value of the Discord role's ID set.
+This setting can be found under `Authentik > Admin Interface > Directory > Groups > YOUR_GROUP > Attributes`
 Example: `discord_role_id: "<ROLE ID>"`
 :::
 
-The following two policies allow you to synchronize roles in a Discord guild with roles in authentik.  
-Whenever a user enrolls or signs in to authentik via a Discord source, these policies will check the user's Discord roles and apply the user's authentik roles accordingly.  
+The following two policies allow you to synchronize roles in a Discord guild with roles in authentik.
+Whenever a user enrolls or signs in to authentik via a Discord source, these policies will check the user's Discord roles and apply the user's authentik roles accordingly.
 All roles with the attribute `discord_role_id` defined will be added or removed depending on whether the user is a member of the defined Discord role.
 
 Create a new **Expression Policy** with the content below, adjusting the variables where required.

@@ -1,11 +1,8 @@
 ---
 title: Integrate with Hashicorp Vault
 sidebar_label: Hashicorp Vault
+support_level: authentik
 ---
-
-# Hashicorp Vault
-
-<span class="badge badge--primary">Support level: authentik</span>
 
 ## What is Vault
 
@@ -19,10 +16,14 @@ This is based on authentik 2022.2.1 and Vault 1.9.3. Instructions may differ bet
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
-- `authentik.company` is the FQDN of authentik.
-- `vault.company` is the FQDN of Vault.
+- `authentik.company` is the FQDN of the authentik installation.
+- `vault.company` is the FQDN of the Vault installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ### Step 1
 

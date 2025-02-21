@@ -1,11 +1,8 @@
 ---
 title: Integrate with GlobalProtect
 sidebar_label: GlobalProtect
+support_level: community
 ---
-
-# GlobalProtect
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is GlobalProtect
 
@@ -17,10 +14,14 @@ sidebar_label: GlobalProtect
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `gp.company` is the FQDN of the GlobalProtect portal.
-- `authentik.company` is the FQDN of the authentik install.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 :::caution
 A trusted web certificate is required to be bound to the GlobalProtect Portal. This can be signed by a trusted internal Root Certificate Authority (CA); however, a self signed certificate, a certificate outside of its validity, or a non-standard confirming certificate (such as a lifespan not trusted by modern browsers) will error out on SAML authentication.

@@ -10,18 +10,19 @@
 # Enrico Campani, 2024
 # Marco Vitale, 2024
 # Kowalski Dragon (kowalski7cc) <kowalski.7cc@gmail.com>, 2024
-# albanobattistella <albanobattistella@gmail.com>, 2024
 # Nicola Mersi, 2024
-# tom max, 2024
+# tmassimi, 2024
+# Marc Schmitt, 2024
+# albanobattistella <albanobattistella@gmail.com>, 2024
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-18 00:09+0000\n"
+"POT-Creation-Date: 2025-02-14 14:49+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
-"Last-Translator: tom max, 2024\n"
+"Last-Translator: albanobattistella <albanobattistella@gmail.com>, 2024\n"
 "Language-Team: Italian (https://app.transifex.com/authentik/teams/119923/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -89,9 +90,9 @@ msgid "authentik Export - {date}"
 msgstr "Esportazione authentik - {date}"
 
 #: authentik/blueprints/v1/tasks.py authentik/crypto/tasks.py
-#, python-format
-msgid "Successfully imported %(count)d files."
-msgstr "Importato con successo %(count)d file."
+#, python-brace-format
+msgid "Successfully imported {count} files."
+msgstr "Importato con successo {count} file."
 
 #: authentik/brands/models.py
 msgid ""
@@ -120,6 +121,10 @@ msgstr "Brand"
 #: authentik/brands/models.py
 msgid "Brands"
 msgstr "Brands"
+
+#: authentik/core/api/application_entitlements.py
+msgid "User does not have access to application."
+msgstr "L'utente non ha accesso all'applicazione."
 
 #: authentik/core/api/devices.py
 msgid "Extra description not available"
@@ -252,6 +257,14 @@ msgstr "Applicazione"
 #: authentik/core/models.py
 msgid "Applications"
 msgstr "Applicazioni"
+
+#: authentik/core/models.py
+msgid "Application Entitlement"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Application Entitlements"
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Use the source-specific identifier"
@@ -594,6 +607,47 @@ msgstr "Limite massimo di connessioni raggiunto."
 msgid "(You are already connected in another tab/window)"
 msgstr "(Sei già connesso in un'altra scheda/finestra)"
 
+#: authentik/enterprise/providers/ssf/models.py
+#: authentik/providers/oauth2/models.py
+msgid "Signing Key"
+msgstr "Chiave di firma"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Key used to sign the SSF Events."
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Shared Signals Framework Provider"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Shared Signals Framework Providers"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Add stream to SSF provider"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Stream"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Streams"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Stream Event"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Stream Events"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/tasks.py
+msgid "Failed to send request"
+msgstr ""
+
 #: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
 msgid "Endpoint Authenticator Google Device Trust Connector Stage"
 msgstr ""
@@ -635,7 +689,7 @@ msgstr "Fasi Sorgenti"
 #: authentik/events/api/tasks.py
 #, python-brace-format
 msgid "Successfully started task {name}."
-msgstr "Attività {nome} avviata correttamente."
+msgstr "Attività {name} avviata correttamente."
 
 #: authentik/events/models.py
 msgid "Event"
@@ -889,8 +943,8 @@ msgstr ""
 "Valutare le politiche durante il processo di pianificazione del flusso."
 
 #: authentik/flows/models.py
-msgid "Evaluate policies when the Stage is present to the user."
-msgstr "Valutare le policy quando lo stage è presente all'utente."
+msgid "Evaluate policies when the Stage is presented to the user."
+msgstr ""
 
 #: authentik/flows/models.py
 msgid ""
@@ -937,14 +991,14 @@ msgid "Starting full provider sync"
 msgstr "Avvio della sincronizzazione completa del provider"
 
 #: authentik/lib/sync/outgoing/tasks.py
-#, python-format
-msgid "Syncing page %(page)d of users"
-msgstr "Sincronizzando pagina %(page)d degli utenti"
+#, python-brace-format
+msgid "Syncing page {page} of users"
+msgstr "Sincronizzando pagina {page} degli utenti"
 
 #: authentik/lib/sync/outgoing/tasks.py
-#, python-format
-msgid "Syncing page %(page)d of groups"
-msgstr "Sincronizzando pagina %(page)d dei gruppi"
+#, python-brace-format
+msgid "Syncing page {page} of groups"
+msgstr "Sincronizzando pagina {page} dei gruppi"
 
 #: authentik/lib/sync/outgoing/tasks.py
 #, python-brace-format
@@ -1117,10 +1171,10 @@ msgid "Event Matcher Policies"
 msgstr "Criteri Corrispondenza Evento"
 
 #: authentik/policies/expiry/models.py
-#, python-format
-msgid "Password expired %(days)d days ago. Please update your password."
+#, python-brace-format
+msgid "Password expired {days} days ago. Please update your password."
 msgstr ""
-"Password scaduta %(days)d giorni fa. Si prega di aggiornare la password."
+"Password scaduta {days} giorni fa. Si prega di aggiornare la password."
 
 #: authentik/policies/expiry/models.py
 msgid "Password has expired."
@@ -1254,9 +1308,9 @@ msgid "Invalid password."
 msgstr "Password invalida."
 
 #: authentik/policies/password/models.py
-#, python-format
-msgid "Password exists on %(count)d online lists."
-msgstr "Password esistente in %(count)d lite online."
+#, python-brace-format
+msgid "Password exists on {count} online lists."
+msgstr "Password esistente in {count} lite online."
 
 #: authentik/policies/password/models.py
 msgid "Password is too weak."
@@ -1383,6 +1437,11 @@ msgstr "Providers LDAP"
 msgid "Search full LDAP directory"
 msgstr "Ricerca completa nella directory LDAP"
 
+#: authentik/providers/oauth2/api/providers.py
+#, python-brace-format
+msgid "Invalid Regex Pattern: {url}"
+msgstr "Modello Regex non valido: {url}"
+
 #: authentik/providers/oauth2/id_token.py
 msgid "Based on the Hashed User ID"
 msgstr "Basato sull'ID utente hashato"
@@ -1427,6 +1486,14 @@ msgstr "Stesso identificatore usato su tutti i providers"
 msgid "Each provider has a different issuer, based on the application slug."
 msgstr ""
 "Ogni provider ha un issuer differente, basato sullo slug dell'applicazione."
+
+#: authentik/providers/oauth2/models.py
+msgid "Strict URL comparison"
+msgstr "Confronto URL rigoroso"
+
+#: authentik/providers/oauth2/models.py
+msgid "Regular Expression URL matching"
+msgstr "Corrispondenza URL espressione regolare"
 
 #: authentik/providers/oauth2/models.py
 msgid "code (Authorization Code Flow)"
@@ -1509,10 +1576,6 @@ msgid "Redirect URIs"
 msgstr "URL di reindirizzamento"
 
 #: authentik/providers/oauth2/models.py
-msgid "Enter each URI on a new line."
-msgstr "Inserisci ogni URI su una nuova riga."
-
-#: authentik/providers/oauth2/models.py
 msgid "Include claims in id_token"
 msgstr "Includere le richieste in id_token"
 
@@ -1553,10 +1616,6 @@ msgstr ""
 msgid "Configure how the issuer field of the ID Token should be filled."
 msgstr ""
 "Configurare come il campo emittente dell'ID Token dovrebbe essere compilato."
-
-#: authentik/providers/oauth2/models.py
-msgid "Signing Key"
-msgstr "Chiave di firma"
 
 #: authentik/providers/oauth2/models.py
 msgid "Key used to sign the tokens."
@@ -2063,6 +2122,10 @@ msgid "Custom krb5.conf to use. Uses the system one by default"
 msgstr ""
 "krb5.conf personalizzato da usare. Usa la configurazione di sistema per "
 "default"
+
+#: authentik/sources/kerberos/models.py
+msgid "KAdmin server type"
+msgstr ""
 
 #: authentik/sources/kerberos/models.py
 msgid "Sync users from Kerberos into authentik"
@@ -3088,12 +3151,12 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-"    If you did not request a password change, please ignore this Email. The link above is valid for %(expires)s.\n"
+"    If you did not request a password change, please ignore this email. The link above is valid for %(expires)s.\n"
 "    "
 msgstr ""
 "\n"
-"     Se non hai richiesto una modifica della password, ignora questa email. Il link sopra è valido \n"
-"per %(expires)s."
+"   Se non hai richiesto una modifica della password, ignora questa e-mail. Il link sopra è valido per %(expires)s.\n"
+"    "
 
 #: authentik/stages/email/templates/email/password_reset.txt
 #, python-format
@@ -3112,10 +3175,10 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-"If you did not request a password change, please ignore this Email. The link above is valid for %(expires)s.\n"
+"If you did not request a password change, please ignore this email. The link above is valid for %(expires)s.\n"
 msgstr ""
 "\n"
-"Se non hai richiesto la modifica della password, ignora questa email. Il collegamento sopra è valido per %(expires)s.\n"
+"Se non hai richiesto una modifica della password, ignora questa e-mail. Il link sopra è valido per %(expires)s.\n"
 
 #: authentik/stages/email/templates/email/setup.html
 msgid "authentik Test-Email"
@@ -3420,6 +3483,23 @@ msgstr "Fasi Richiesta"
 #: authentik/stages/prompt/stage.py
 msgid "Passwords don't match."
 msgstr "Le password non corrispondono."
+
+#: authentik/stages/redirect/api.py
+msgid "Target URL should be present when mode is Static."
+msgstr ""
+"L'URL di destinazione deve essere presente quando la modalità è Statica."
+
+#: authentik/stages/redirect/api.py
+msgid "Target Flow should be present when mode is Flow."
+msgstr ""
+
+#: authentik/stages/redirect/models.py
+msgid "Redirect Stage"
+msgstr "Fase di reindirizzamento"
+
+#: authentik/stages/redirect/models.py
+msgid "Redirect Stages"
+msgstr "Fasi di reindirizzamento"
 
 #: authentik/stages/user_delete/models.py
 msgid "User Delete Stage"

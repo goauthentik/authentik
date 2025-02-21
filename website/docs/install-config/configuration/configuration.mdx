@@ -70,14 +70,25 @@ To check if your config has been applied correctly, you can run the following co
 - `AUTHENTIK_POSTGRESQL__USER`: Database user
 - `AUTHENTIK_POSTGRESQL__PORT`: Database port, defaults to 5432
 - `AUTHENTIK_POSTGRESQL__PASSWORD`: Database password, defaults to the environment variable `POSTGRES_PASSWORD`
-- `AUTHENTIK_POSTGRESQL__USE_PGBOUNCER`: Adjust configuration to support connection to PgBouncer
-- `AUTHENTIK_POSTGRESQL__USE_PGPOOL`: Adjust configuration to support connection to Pgpool
+- `AUTHENTIK_POSTGRESQL__USE_PGBOUNCER`: Adjust configuration to support connection to PgBouncer. Deprecated, see below
+- `AUTHENTIK_POSTGRESQL__USE_PGPOOL`: Adjust configuration to support connection to Pgpool. Deprecated, see below
 - `AUTHENTIK_POSTGRESQL__SSLMODE`: Strictness of ssl verification. Defaults to `"verify-ca"`
 - `AUTHENTIK_POSTGRESQL__SSLROOTCERT`: CA root for server ssl verification
 - `AUTHENTIK_POSTGRESQL__SSLCERT`: Path to x509 client certificate to authenticate to server
 - `AUTHENTIK_POSTGRESQL__SSLKEY`: Path to private key of `SSLCERT` certificate
+- `AUTHENTIK_POSTGRESQL__CONN_MAX_AGE`: Database connection lifetime. Defaults to `0` (no persistent connections). Can be set to `null` for unlimited persistent connections. See [Django's documentation](https://docs.djangoproject.com/en/stable/ref/settings/#conn-max-age) for more details.
+- `AUTHENTIK_POSTGRESQL__CONN_HEALTH_CHECK`: Existing persistent database connections will be health checked before they are reused if set to `true`. Defaults to `false`. See [Django's documentation](https://docs.djangoproject.com/en/stable/ref/settings/#conn-health-checks) for more details.
+- `AUTHENTIK_POSTGRESQL__DISABLE_SERVER_SIDE_CURSORS`: Disable server side cursors when set to `true`. Defaults to `false`. See [Django's documentation](https://docs.djangoproject.com/en/stable/ref/settings/#disable-server-side-cursors) for more details.
 
-All PostgreSQL settings, apart from `USE_PGBOUNCER` and `USE_PGPOOL`, support hot-reloading. Adding and removing read replicas doesn't support hot-reloading.
+The PostgreSQL settings `HOST`, `PORT`, `USER`, and `PASSWORD` support hot-reloading. Adding and removing read replicas doesn't support hot-reloading.
+
+- `AUTHENTIK_POSTGRESQL__DEFAULT_SCHEMA`:ak-version[2024.12]
+
+    The name of the schema used by default in the database. Defaults to `public`.
+
+    It is only supported to change this value before the initial start of authentik.
+
+    When setting this value to any non-standard value, the schema must already exist in the database, and the user authentik connects with must have access to it. Additionally the `search_path` of the authentik database must be set to include this schema.
 
 ### Read replicas
 
@@ -96,8 +107,25 @@ The same PostgreSQL settings as described above are used for each read replica.
 - `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__SSLROOTCERT`
 - `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__SSLCERT`
 - `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__SSLKEY`
+- `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__CONN_MAX_AGE`
+- `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__CONN_HEALTH_CHECK`
+- `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__DISABLE_SERVER_SIDE_CURSORS`
 
-Note that `USE_PGBOUNCER` and `USE_PGPOOL` are inherited from the main database configuration and are _not_ overridable on read replicas.
+### Using a PostgreSQL connection pooler (PgBouncer or PgPool)
+
+When your PostgreSQL database(s) are running behind a connection pooler, like PgBouncer or PgPool, two settings need to be overridden:
+
+- `AUTHENTIK_POSTGRESQL__CONN_MAX_AGE`
+
+    A connection pooler running in session pool mode (PgBouncer default) can be incompatible with unlimited persistent connections enabled by setting this to `null`: If the connection from the connection pooler to the database server is dropped, the connection pooler will wait for the client to disconnect before releasing the connection; however this will **never** happen as authentik is configured to keep the connection to the connection pooler forever.
+
+    To address this incompatibility, either configure the connection pooler to run in transaction pool mode, or update this setting to a value lower than any timeouts that may cause the connection to the database to be dropped (up to `0`).
+
+- `AUTHENTIK_POSTGRESQL__DISABLE_SERVER_SIDE_CURSORS`
+
+    Using a connection pooler in transaction pool mode (e.g. PgPool, or PgBouncer in transaction or statement pool mode) requires disabling server-side cursors, so this setting must be set to `false`.
+
+Additionally, you can set `AUTHENTIK_POSTGRESQL__CONN_HEALTH_CHECK` to perform health checks on persistent database connections before they are reused.
 
 ## Redis Settings
 
@@ -123,7 +151,7 @@ Note that `USE_PGBOUNCER` and `USE_PGPOOL` are inherited from the main database 
 - `AUTHENTIK_CACHE__TIMEOUT_REPUTATION`: Timeout for cached reputation until they expire in seconds, defaults to 300
 
     :::info
-    `AUTHENTIK_CACHE__TIMEOUT_REPUTATION` only applies to the cache expiry, see [`AUTHENTIK_REPUTATION__EXPIRY`](#authentik_reputation__expiry-authentik-202382) to control how long reputation is persisted for.
+    `AUTHENTIK_CACHE__TIMEOUT_REPUTATION` only applies to the cache expiry, see [`AUTHENTIK_REPUTATION__EXPIRY`](#authentik_reputation__expiry) to control how long reputation is persisted for.
     :::
 
 ## Channel Layer Settings (inter-instance communication)
@@ -136,7 +164,7 @@ Note that `USE_PGBOUNCER` and `USE_PGPOOL` are inherited from the main database 
 - `AUTHENTIK_BROKER__TRANSPORT_OPTIONS`: Base64-encoded broker transport options
 
     :::info
-    `AUTHENTIK_REDIS__CACHE_TIMEOUT_REPUTATION` only applies to the cache expiry, see [`AUTHENTIK_REPUTATION__EXPIRY`](#authentik_reputation__expiry-authentik-202382) to control how long reputation is persisted for.
+    `AUTHENTIK_REDIS__CACHE_TIMEOUT_REPUTATION` only applies to the cache expiry, see [`AUTHENTIK_REPUTATION__EXPIRY`](#authentik_reputation__expiry) to control how long reputation is persisted for.
     :::
 
 ## Listen Settings
@@ -299,53 +327,53 @@ Disable the inbuilt update-checker. Defaults to `false`.
     - Kubeconfig
     - Existence of a docker socket
 
-### `AUTHENTIK_LDAP__TASK_TIMEOUT_HOURS` <span class="badge badge--version">authentik 2023.1+</span>
+### `AUTHENTIK_LDAP__TASK_TIMEOUT_HOURS`
 
 Timeout in hours for LDAP synchronization tasks.
 
 Defaults to `2`.
 
-### `AUTHENTIK_LDAP__PAGE_SIZE` <span class="badge badge--version">authentik 2023.6.1+</span>
+### `AUTHENTIK_LDAP__PAGE_SIZE`
 
 Page size for LDAP synchronization. Controls the number of objects created in a single task.
 
 Defaults to `50`.
 
-### `AUTHENTIK_LDAP__TLS__CIPHERS` <span class="badge badge--version">authentik 2022.7+</span>
+### `AUTHENTIK_LDAP__TLS__CIPHERS`
 
 Allows configuration of TLS Cliphers for LDAP connections used by LDAP sources. Setting applies to all sources.
 
 Defaults to `null`.
 
-### `AUTHENTIK_REPUTATION__EXPIRY` <span class="badge badge--version">authentik 2023.8.2+</span>
+### `AUTHENTIK_REPUTATION__EXPIRY`
 
 Configure how long reputation scores should be saved for in seconds. Note that this is different than [`AUTHENTIK_REDIS__CACHE_TIMEOUT_REPUTATION`](#redis-settings), as reputation is saved to the database every 5 minutes.
 
 Defaults to `86400`.
 
-### `AUTHENTIK_SESSION_STORAGE` <span class="badge badge--version">authentik 2024.4+</span>
+### `AUTHENTIK_SESSION_STORAGE`:ak-version[2024.4]
 
 Configure if the sessions are stored in the cache or the database. Defaults to `cache`. Allowed values are `cache` and `db`. Note that changing this value will invalidate all previous sessions.
 
-### `AUTHENTIK_SESSIONS__COOKIE_AGE` <span class="badge badge--version">authentik 2024.12+</span>
+### `AUTHENTIK_SESSIONS__UNAUTHENTICATED_AGE`:ak-version[2025.4]
 
-Configure how long the session cookie is valid. Does not impact how long sessions are valid for. See [../../add-secure-apps/flows-stages/stages/user_login/index.md](the User login stage) for session validity.
+Configure how long unauthenticated sessions last for. Does not impact how long authenticated sessions are valid for. See [../../add-secure-apps/flows-stages/stages/user_login/index.md](the User login stage) for session validity.
 
-Defaults to `days=14`.
+Defaults to `days=1`.
 
-### `AUTHENTIK_WEB__WORKERS` <span class="badge badge--version">authentik 2022.9+</span>
+### `AUTHENTIK_WEB__WORKERS`
 
 Configure how many gunicorn worker processes should be started (see https://docs.gunicorn.org/en/stable/design.html).
 
 Defaults to 2. A value below 2 workers is not recommended. In environments where scaling with multiple replicas of the authentik server is not possible, this number can be increased to handle higher loads.
 
-### `AUTHENTIK_WEB__THREADS` <span class="badge badge--version">authentik 2022.9+</span>
+### `AUTHENTIK_WEB__THREADS`
 
 Configure how many gunicorn threads a worker processes should have (see https://docs.gunicorn.org/en/stable/design.html).
 
 Defaults to 4.
 
-### `AUTHENTIK_WORKER__CONCURRENCY` <span class="badge badge--version">authentik 2023.9+</span>
+### `AUTHENTIK_WORKER__CONCURRENCY`
 
 Configure Celery worker concurrency for authentik worker (see https://docs.celeryq.dev/en/latest/userguide/configuration.html#worker-concurrency). This essentially defines the number of worker processes spawned for a single worker.
 
@@ -361,7 +389,7 @@ Configure the path under which authentik is serverd. For example to access authe
 
 Defaults to `/`.
 
-## System settings <span class="badge badge--version">authentik 2024.2+</span>
+## System settings:ak-version[2024.2]
 
 Additional settings are configurable using the Admin interface, under **System** -> **Settings** or using the API.
 

@@ -88,6 +88,7 @@ TENANT_APPS = [
     "authentik.providers.ldap",
     "authentik.providers.oauth2",
     "authentik.providers.proxy",
+    "authentik.providers.rac",
     "authentik.providers.radius",
     "authentik.providers.saml",
     "authentik.providers.scim",
@@ -101,6 +102,7 @@ TENANT_APPS = [
     "authentik.sources.scim",
     "authentik.stages.authenticator",
     "authentik.stages.authenticator_duo",
+    "authentik.stages.authenticator_email",
     "authentik.stages.authenticator_sms",
     "authentik.stages.authenticator_static",
     "authentik.stages.authenticator_totp",
@@ -130,6 +132,7 @@ TENANT_DOMAIN_MODEL = "authentik_tenants.Domain"
 
 TENANT_CREATION_FAKES_MIGRATIONS = True
 TENANT_BASE_SCHEMA = "template"
+PUBLIC_SCHEMA_NAME = CONFIG.get("postgresql.default_schema")
 
 GUARDIAN_MONKEY_PATCH = False
 
@@ -240,7 +243,7 @@ SESSION_CACHE_ALIAS = "default"
 # Configured via custom SessionMiddleware
 # SESSION_COOKIE_SAMESITE = "None"
 # SESSION_COOKIE_SECURE = True
-SESSION_COOKIE_AGE = timedelta_from_string(CONFIG.get("sessions.cookie_age", "days=14"))
+SESSION_COOKIE_AGE = timedelta_from_string(CONFIG.get("sessions.unauthenticated_age", "days=1"))
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 MESSAGE_STORAGE = "authentik.root.messages.storage.ChannelsStorage"

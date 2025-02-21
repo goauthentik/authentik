@@ -1,11 +1,8 @@
 ---
 title: Integrate with GitLab
 sidebar_label: GitLab
+support_level: authentik
 ---
-
-# GitLab
-
-<span class="badge badge--primary">Support level: authentik</span>
 
 ## What is GitLab
 
@@ -28,19 +25,23 @@ There are 2 ways to configure single sign on (SSO) for GitLab:
 
 #### Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
-- `gitlab.company` is the FQDN of the GitLab Install
-- `authentik.company` is the FQDN of the authentik Install
+- `gitlab.company` is the FQDN of the GitLab installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 Create an application in authentik and note the slug, as this will be used later. Create a SAML provider with the following parameters:
 
 - ACS URL: `https://gitlab.company/users/auth/saml/callback`
 - Audience: `https://gitlab.company`
 - Issuer: `https://gitlab.company`
-- Binding: `Redirect`
+- Binding: `Post`
 
 Under _Advanced protocol settings_, set a certificate for _Signing Certificate_.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 #### GitLab Configuration
 
@@ -83,7 +84,7 @@ Afterwards, either run `gitlab-ctl reconfigure` if you're running GitLab Omnibus
 
 #### Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
 - `gitlab.company` is the FQDN of the GitLab Install
 - `authentik.company` is the FQDN of the authentik Install

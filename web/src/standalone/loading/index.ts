@@ -28,6 +28,16 @@ export class Loading extends Interface {
         ];
     }
 
+    _initContexts(): void {
+        // Stub function to avoid making API requests for things we don't need. The `Interface` base class loads
+        // a bunch of data that is used globally by various things, however this is an interface that is shown
+        // very briefly and we don't need any of that data.
+    }
+
+    async _initCustomCSS(): Promise<void> {
+        // Stub function to avoid fetching custom CSS.
+    }
+
     async getTheme(): Promise<UiThemeEnum> {
         return globalAK()?.brand.uiTheme || UiThemeEnum.Automatic;
     }

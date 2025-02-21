@@ -1,11 +1,8 @@
 ---
 title: Integrate with ArgoCD
 sidebar_label: ArgoCD
+support_level: community
 ---
-
-# ArgoCD
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is ArgoCD
 
@@ -15,13 +12,13 @@ sidebar_label: ArgoCD
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
-- `argocd.company` is the FQDN of the ArgoCD install.
-- `authentik.company` is the FQDN of the authentik install.
+- `argocd.company` is the FQDN of the ArgoCD installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 :::note
-Only settings that have been modified from default have been listed.
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
 ## authentik Configuration
@@ -70,16 +67,24 @@ data "authentik_flow" "default-provider-authorization-implicit-consent" {
   slug = "default-provider-authorization-implicit-consent"
 }
 
-data "authentik_scope_mapping" "scope-email" {
+data "authentik_flow" "default-provider-invalidation" {
+  slug = "default-invalidation-flow"
+}
+
+data "authentik_property_mapping_provider_scope" "scope-email" {
   name = "authentik default OAuth Mapping: OpenID 'email'"
 }
 
-data "authentik_scope_mapping" "scope-profile" {
+data "authentik_property_mapping_provider_scope" "scope-profile" {
   name = "authentik default OAuth Mapping: OpenID 'profile'"
 }
 
-data "authentik_scope_mapping" "scope-openid" {
+data "authentik_property_mapping_provider_scope" "scope-openid" {
   name = "authentik default OAuth Mapping: OpenID 'openid'"
+}
+
+data "authentik_certificate_key_pair" "generated" {
+  name = "authentik Self-signed Certificate"
 }
 
 resource "authentik_provider_oauth2" "argocd" {
@@ -91,17 +96,26 @@ resource "authentik_provider_oauth2" "argocd" {
   # Optional: will be generated if not provided
   # client_secret = "my_client_secret"
 
-  authorization_flow  = data.authentik_flow.default-provider-authorization-implicit-consent.id
+  authorization_flow = data.authentik_flow.default-provider-authorization-implicit_consent.id
+  invalidation_flow  = data.authentik_flow.default-provider-invalidation.id
 
-  redirect_uris = [
-    "https://argocd.company/api/dex/callback",
-    "http://localhost:8085/auth/callback"
+  signing_key = data.authentik_certificate_key_pair.generated.id
+
+  allowed_redirect_uris = [
+    {
+      matching_mode = "strict",
+      url           = "https://argocd.company/api/dex/callback",
+    },
+    {
+      matching_mode = "strict",
+      url           = "http://localhost:8085/auth/callback",
+    }
   ]
 
   property_mappings = [
-    data.authentik_scope_mapping.scope-email.id,
-    data.authentik_scope_mapping.scope-profile.id,
-    data.authentik_scope_mapping.scope-openid.id,
+    data.authentik_property_mapping_provider_scope.scope-email.id,
+    data.authentik_property_mapping_provider_scope.scope-profile.id,
+    data.authentik_property_mapping_provider_scope.scope-openid.id,
   ]
 }
 
@@ -114,7 +128,6 @@ resource "authentik_application" "argocd" {
 resource "authentik_group" "argocd_admins" {
   name    = "ArgoCD Admins"
 }
-
 
 resource "authentik_group" "argocd_viewers" {
   name    = "ArgoCD Viewers"

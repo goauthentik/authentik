@@ -1,11 +1,8 @@
 ---
 title: Integrate with Rocket.chat
 sidebar_label: Rocket.chat
+support_level: community
 ---
-
-# Rocket.chat
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Rocket.chat
 
@@ -19,10 +16,14 @@ This is based on authentik 2022.3.1 and Rocket.chat 4.5.1 using the [Docker-Comp
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
-- `rocket.company` is the FQDN of Rocket.chat.
-- `authentik.company` is the FQDN of authentik.
+- `rocket.company` is the FQDN of Rocket.chat installation.
+- `authentik.company` is the FQDN of authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ### Step 1
 

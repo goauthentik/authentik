@@ -18,6 +18,7 @@ import { styleMap } from "lit/directives/style-map.js";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFLabel from "@patternfly/patternfly/components/Label/label.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 const closeButtonIcon = html`<svg
     fill="currentColor"
@@ -37,13 +38,16 @@ const closeButtonIcon = html`<svg
 export class AkApplicationWizardHint extends AKElement implements ShowHintControllerHost {
     static get styles() {
         return [
+            PFBase,
             PFButton,
             PFPage,
             PFLabel,
             css`
                 .pf-c-page__main-section {
-                    padding-top: 0;
                     padding-bottom: 0;
+                }
+                .ak-hint-text {
+                    padding-bottom: var(--pf-global--spacer--md);
                 }
             `,
         ];
@@ -101,16 +105,20 @@ export class AkApplicationWizardHint extends AKElement implements ShowHintContro
         return html` <section class="pf-c-page__main-section pf-m-no-padding-mobile">
             <ak-hint>
                 <ak-hint-body>
-                    <p>
+                    <p class="ak-hint-text">
                         You can now configure both an application and its authentication provider at
                         the same time with our new Application Wizard.
                         <!-- <a href="(link to docs)">Learn more about the wizard here.</a> -->
                     </p>
-
-                    <ak-application-wizard
-                        .open=${getURLParam("createWizard", false)}
-                        .showButton=${false}
-                    ></ak-application-wizard>
+                    <ak-application-wizard .open=${getURLParam("createWizard", false)}>
+                        <button
+                            slot="trigger"
+                            class="pf-c-button pf-m-primary"
+                            data-ouia-component-id="start-application-wizard"
+                        >
+                            ${msg("Create with wizard")}
+                        </button>
+                    </ak-application-wizard>
                 </ak-hint-body>
                 ${this.showHintController.render()}
             </ak-hint>

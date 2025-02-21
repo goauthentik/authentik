@@ -231,7 +231,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.EnterpriseLicense}
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikEnterpriseLicense}
                     objectPk=${item.licenseUuid}
                 >
                 </ak-rbac-object-permission-modal> `,
@@ -254,7 +254,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
 
         const renderCard = (installID: string) => html`
             <div class="pf-c-card__title">${msg("Your Install ID")}</div>
-            <div class="pf-c-card__body install-id">${installID}</div>
+            <div class="pf-c-card__body install-id pf-m-monospace">${installID}</div>
             <div class="pf-c-card__body">
                 <a
                     target="_blank"

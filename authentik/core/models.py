@@ -204,6 +204,8 @@ class Group(SerializerModel, AttributesMixin):
         permissions = [
             ("add_user_to_group", _("Add user to group")),
             ("remove_user_from_group", _("Remove user from group")),
+            ("enable_group_superuser", _("Enable superuser status")),
+            ("disable_group_superuser", _("Disable superuser status")),
         ]
 
     def __str__(self):
@@ -314,6 +316,32 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
         always_merger.merge(final_attributes, self.attributes)
         return final_attributes
 
+    def app_entitlements(self, app: "Application | None") -> QuerySet["ApplicationEntitlement"]:
+        """Get all entitlements this user has for `app`."""
+        if not app:
+            return []
+        all_groups = self.all_groups()
+        qs = app.applicationentitlement_set.filter(
+            Q(
+                Q(bindings__user=self) | Q(bindings__group__in=all_groups),
+                bindings__negate=False,
+            )
+            | Q(
+                Q(~Q(bindings__user=self), bindings__user__isnull=False)
+                | Q(~Q(bindings__group__in=all_groups), bindings__group__isnull=False),
+                bindings__negate=True,
+            ),
+            bindings__enabled=True,
+        ).order_by("name")
+        return qs
+
+    def app_entitlements_attributes(self, app: "Application | None") -> dict:
+        """Get a dictionary containing all merged attributes from app entitlements for `app`."""
+        final_attributes = {}
+        for attrs in self.app_entitlements(app).values_list("attributes", flat=True):
+            always_merger.merge(final_attributes, attrs)
+        return final_attributes
+
     @property
     def serializer(self) -> Serializer:
         from authentik.core.api.users import UserSerializer
@@ -330,13 +358,13 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
         """superuser == staff user"""
         return self.is_superuser  # type: ignore
 
-    def set_password(self, raw_password, signal=True, sender=None):
+    def set_password(self, raw_password, signal=True, sender=None, request=None):
         if self.pk and signal:
             from authentik.core.signals import password_changed
 
             if not sender:
                 sender = self
-            password_changed.send(sender=sender, user=self, password=raw_password)
+            password_changed.send(sender=sender, user=self, password=raw_password, request=request)
         self.password_change_date = now()
         return super().set_password(raw_password)
 
@@ -573,12 +601,45 @@ class Application(SerializerModel, PolicyBindingModel):
             return None
         return candidates[-1]
 
+    def backchannel_provider_for[T: Provider](self, provider_type: type[T], **kwargs) -> T | None:
+        """Get Backchannel provider for a specific type"""
+        providers = self.backchannel_providers.filter(
+            **{f"{provider_type._meta.model_name}__isnull": False},
+            **kwargs,
+        )
+        return getattr(providers.first(), provider_type._meta.model_name)
+
     def __str__(self):
         return str(self.name)
 
     class Meta:
         verbose_name = _("Application")
         verbose_name_plural = _("Applications")
+
+
+class ApplicationEntitlement(AttributesMixin, SerializerModel, PolicyBindingModel):
+    """Application-scoped entitlement to control authorization in an application"""
+
+    name = models.TextField()
+
+    app = models.ForeignKey(Application, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = _("Application Entitlement")
+        verbose_name_plural = _("Application Entitlements")
+        unique_together = (("app", "name"),)
+
+    def __str__(self):
+        return f"Application Entitlement {self.name} for app {self.app_id}"
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.core.api.application_entitlements import ApplicationEntitlementSerializer
+
+        return ApplicationEntitlementSerializer
+
+    def supported_policy_binding_targets(self):
+        return ["group", "user"]
 
 
 class SourceUserMatchingModes(models.TextChoices):
@@ -795,6 +856,11 @@ class ExpiringModel(models.Model):
 
     class Meta:
         abstract = True
+        indexes = [
+            models.Index(fields=["expires"]),
+            models.Index(fields=["expiring"]),
+            models.Index(fields=["expiring", "expires"]),
+        ]
 
     def expire_action(self, *args, **kwargs):
         """Handler which is called when this object is expired. By
@@ -850,7 +916,7 @@ class Token(SerializerModel, ManagedModel, ExpiringModel):
     class Meta:
         verbose_name = _("Token")
         verbose_name_plural = _("Tokens")
-        indexes = [
+        indexes = ExpiringModel.Meta.indexes + [
             models.Index(fields=["identifier"]),
             models.Index(fields=["key"]),
         ]
@@ -950,6 +1016,9 @@ class AuthenticatedSession(ExpiringModel):
     class Meta:
         verbose_name = _("Authenticated Session")
         verbose_name_plural = _("Authenticated Sessions")
+        indexes = ExpiringModel.Meta.indexes + [
+            models.Index(fields=["session_key"]),
+        ]
 
     def __str__(self) -> str:
         return f"Authenticated Session {self.session_key[:10]}"

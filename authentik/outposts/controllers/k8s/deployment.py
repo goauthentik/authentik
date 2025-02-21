@@ -94,7 +94,7 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
         meta = self.get_object_meta(name=self.name)
         image_name = self.controller.get_container_image()
         image_pull_secrets = self.outpost.config.kubernetes_image_pull_secrets
-        version = get_full_version()
+        version = get_full_version().replace("+", "-")
         return V1Deployment(
             metadata=meta,
             spec=V1DeploymentSpec(
