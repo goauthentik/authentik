@@ -41,6 +41,7 @@ class SessionStore(SessionBase):
                 )
                 .prefetch_related(
                     "authenticatedsession__user__groups",
+                    "authenticatedsession__user__user_permissions",
                 )
                 .get(
                     session_key=self.session_key,
@@ -61,6 +62,7 @@ class SessionStore(SessionBase):
                 )
                 .prefetch_related(
                     "authenticatedsession__user__groups",
+                    "authenticatedsession__user__user_permissions",
                 )
                 .aget(
                     session_key=self.session_key,
