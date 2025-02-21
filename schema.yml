@@ -6095,16 +6095,25 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /core/users/{id}/recovery/:
+  /core/users/{id}/recovery_link/:
     post:
-      operationId: core_users_recovery_create
+      operationId: core_users_recovery_link_create
       description: Create a temporary link that a user can use to recover their accounts
       parameters:
+      - in: query
+        name: email_stage
+        schema:
+          type: string
       - in: path
         name: id
         schema:
           type: integer
         description: A unique integer value identifying this User.
+        required: true
+      - in: query
+        name: token_duration
+        schema:
+          type: string
         required: true
       tags:
       - core
@@ -6117,41 +6126,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Link'
           description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /core/users/{id}/recovery_email/:
-    post:
-      operationId: core_users_recovery_email_create
-      description: Create a temporary link that a user can use to recover their accounts
-      parameters:
-      - in: query
-        name: email_stage
-        schema:
-          type: string
-        required: true
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this User.
-        required: true
-      tags:
-      - core
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: Successfully sent recover email
         '400':
           content:
             application/json:
