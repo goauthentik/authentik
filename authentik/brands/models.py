@@ -33,6 +33,7 @@ class Brand(SerializerModel):
 
     branding_logo = models.TextField(default="/static/dist/assets/icons/icon_left_brand.svg")
     branding_favicon = models.TextField(default="/static/dist/assets/icons/icon.png")
+    branding_custom_css = models.TextField(default="", blank=True)
 
     flow_authentication = models.ForeignKey(
         Flow, null=True, on_delete=models.SET_NULL, related_name="brand_authentication"
