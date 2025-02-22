@@ -21,7 +21,7 @@ const styles = css`
     }
 `;
 
-const salesMark: FooterLink = { name: msg("Powered by authentik"), href: "" };
+const poweredBy: FooterLink = { name: msg("Powered by authentik"), href: null };
 
 @customElement("ak-brand-links")
 export class BrandLinks extends AKElement {
@@ -33,7 +33,7 @@ export class BrandLinks extends AKElement {
     links: FooterLink[] = [];
 
     render() {
-        const links = [...(this.links ?? []), salesMark];
+        const links = [...(this.links ?? []), poweredBy];
         return html` <ul class="pf-c-list pf-m-inline">
             ${map(links, (link) =>
                 link.href
