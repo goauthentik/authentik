@@ -26,10 +26,10 @@ This documentation lists only the settings that you need to change from their de
 
 To support the integration of Zammad with authentik, you need to create an application/provider pair in authentik.
 
-### Create proprety mappings
+### Create property mappings
 
 1. Log in to authentik as an admin, and open the authentik Admin interface.
-2. Navigate to **Customization** > **Proprety Mappings** and click **Create**. Create two **SAML Provider Property Mapping**s with the following settings:
+2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create two **SAML Provider Property Mapping**s with the following settings:
     - **Name Mapping:**
         - **Name**: Choose a descriptive name
         - **SAML Attribute Name**: <kbd>name</kbd>
@@ -53,7 +53,7 @@ To support the integration of Zammad with authentik, you need to create an appli
     - Set the **Issuer** to <kbd>https://<em>zammad.company</em>/auth/saml/metadata</kbd>.
     - Set the **Audience** to <kbd>https://<em>zammad.company</em>/auth/saml/metadata</kbd>.
     - Set the **Service Provider Binding** to `Post`.
-    - Under **Advanced protocol settings**, add the two **Proprety Mappings** you created in the previous section, then set the **NameID Proprety Mapping** to the name proprety mapping created in the previous section.
+    - Under **Advanced protocol settings**, add the two **Property Mappings** you created in the previous section, then set the **NameID Property Mapping** to the name property mapping created in the previous section.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
