@@ -6,7 +6,6 @@ import "@openlayers-elements/maps/ol-control";
 import "@openlayers-elements/maps/ol-layer-openstreetmap";
 import "@openlayers-elements/maps/ol-marker-icon";
 
-import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -34,8 +33,6 @@ export class EventMap extends AKElement {
 
     render(): TemplateResult {
         return html`<div class="pf-c-card">
-            <div class="pf-c-card__title">${msg("Event map")}</div>
-            <div class="pf-c-card__body">
                 <ol-map>
                     <ol-layer-openstreetmap></ol-layer-openstreetmap>
                     <ol-layer-vector>
@@ -57,7 +54,6 @@ export class EventMap extends AKElement {
                             : nothing}
                     </ol-layer-vector>
                 </ol-map>
-            </div>
         </div>`;
     }
 }
