@@ -24,24 +24,39 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-1. From the **authentik Admin interface** and go to **Customization** -> **Property Mappings**, then click **Create**.
-2. Choose **SAML Provider Property Mapping**, and click **Next**.
-3. Configure the following:
-    - Set **Name** to `Aruba Orchestrator RBAC`.
-    - Set **SAML Attribute Name** to `sp-roles`.
-    - Add the expression below, modifying the group name if necessary:
+To support the integration of Aruba Orchestrator with authentik, you need to create an application/provider pair in authentik.
+
+### Create proprety mappings
+
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Customization** > **Proprety Mappings** and click **Create**. Create a **SAML Provider Property Mapping** with the following settings:
+    - **Name**: Set an apropriate name
+    - **SAML Attribute Name**: <kbd>sp-roles</kbd>
+    - **Friendly Name**: Leave blank
+    - **Expression**: (You can modify the <kbd>authentik Admins</kbd> group as needed)
         ```python
         if ak_is_group_member(request.user, name="authentik Admins"):
             result = "superAdmin"
         return result
         ```
-4. When satisfied with the expression, click **Create**.
-5. Navigate to **Applications** -> **Applications** in the **authentik Admin interface**, and create a new application with a **SAML** provider using the wizard. During the setup:
+
+### Create an application and provider in authentik
+
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can create only an application, without a provider, by clicking **Create**.)
+
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
+- **Choose a Provider type**: select **SAML Provider** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Set the **ACS URL** and **Issuer** to <kbd>https://<em>arubaorchestrator.company</em>/gms/rest/authentication/saml2/consume</kbd>.
-    - Choose `Post` for the **Service Provider Binding**.
+    - Set the **Service Provider Binding** to `Post`.
     - Under **Advanced protocol settings**, select an available signing certificate.
-    - Add the `sp-roles` property mapping under the **Proprety Mappins** section of **Advanced protocol settings**.
-6. Go to **Applications** -> **Providers** -> **Provider for _Your application name_**, and download the signing certificate.
+    - Under **Advanced protocol settings**, add the newly created proprety mapping under **Proprety Mappings**.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+
+3. Click **Submit** to save the new application and provider.
+
+4. Navigate to **Applications** > **Providers** > **Provider for _Application Name_**, and download the signing certificate.
 
 ## Aruba Orchestrator Configuration
 
