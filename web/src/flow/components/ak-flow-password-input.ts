@@ -193,6 +193,9 @@ export class InputPassword extends AKElement {
      * the `autofocus` attribute isn't enough, due to timing within shadow doms and such.
      */
     observeInputFocus(): void {
+        if (!this.grabFocus) {
+            return;
+        }
         this.inputFocusIntervalID = setInterval(() => {
             const input = this.inputRef.value;
 
@@ -219,7 +222,9 @@ export class InputPassword extends AKElement {
     }
 
     disconnectedCallback() {
-        clearInterval(this.inputFocusIntervalID);
+        if (this.inputFocusIntervalID) {
+            clearInterval(this.inputFocusIntervalID);
+        }
 
         super.disconnectedCallback();
 
