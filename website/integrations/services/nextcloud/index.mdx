@@ -156,6 +156,7 @@ Depending on your Nextcloud configuration, you might need to use `https://nextcl
         ```
     - **Scope:** `email profile` (omit `openid` if preferred)
     - **Attribute mappings:**
+
         - **User ID mapping:** `sub` (or `user_id` for existing users)
         - **Display name mapping:** `name`
         - **Email mapping:** `email`
@@ -165,11 +166,12 @@ Depending on your Nextcloud configuration, you might need to use `https://nextcl
             :::tip
             Enable **Use group provisioning** to allow writing to this field.
             :::
+
     - **Use unique user ID:**  
       If deselected, Nextcloud uses the mapped user ID in the Federated Cloud ID.
-        :::tip
-        To avoid a hashed Federated Cloud ID, deselect **Use unique user ID** and use `user_id` for the User ID mapping.
-        :::
+      :::tip
+      To avoid a hashed Federated Cloud ID, deselect **Use unique user ID** and use `user_id` for the User ID mapping.
+      :::
 
 3. **Log in:**  
    Once configured, single sign-on (SSO) login via authentik becomes available.
