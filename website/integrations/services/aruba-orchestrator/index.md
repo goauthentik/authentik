@@ -30,7 +30,7 @@ To support the integration of Aruba Orchestrator with authentik, you need to cre
 
 1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **SAML Provider Property Mapping** with the following settings:
-    - **Name**: Set an apropriate name
+    - **Name**: Set an appropriate name
     - **SAML Attribute Name**: <kbd>sp-roles</kbd>
     - **Friendly Name**: Leave blank
     - **Expression**: (You can modify the <kbd>authentik Admins</kbd> group as needed)

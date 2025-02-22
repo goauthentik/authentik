@@ -30,9 +30,33 @@ To support the integration of MinIO with authentik, you need to create an applic
 1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **Scope Mapping** with the following settings:
 
-- **Name**: Set an appropriate name.
-- **Scope Name**: Set an appropriate name.
-- **Description**: Set an appropriate description, if desired.
+- **Name**: Set an appropriate name
+- **Scope Name**: `minio`
+- **Description**: Set an appropriate description, if desired
+- **Expression**:
+  The following expression gives read and write permissions to all users:
+
+    ```python
+    return {
+      "policy": "readwrite",
+    }
+    ```
+
+    If you wish to create a more franular mapping based on the user's groups in authentik, you can use an expression similar to:
+
+    ```python
+    if ak_is_group_member(request.user, name="Minio admins"):
+      return {
+        "policy": "consoleAdmin",
+    }
+    elif ak_is_group_member(request.user, name="Minio users"):
+      return {
+        "policy": ["readonly", "my-custom-policy"]
+    }
+    return None
+    ```
+
+You can assign multiple policies to a user by returning a list, and returning `None` will map no policies to the user, which will stop the user from accessing the MinIO instance. For more information on writing expressions, see [Expressions](/docs/add-secure-apps/providers/property-mappings/expression) and [User](/docs/users-sources/user/user_ref#object-properties) docs.
 
 ### Create an application and provider in authentik
 
@@ -43,52 +67,12 @@ To support the integration of MinIO with authentik, you need to create an applic
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` redirect URI to <kbd>https://<em>meshcentral.company</em>/auth-oidc-callback</kbd>.
+    - Set a `Strict` redirect URI to <kbd>https://<em>minio.company</em>/oauth_callback</kbd>.
     - Select any available signing key.
+    - Under **Advanced protocol settings**, add the **Scope** you just created to the list of selected scopes.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
-
-### Mapping to MinIO policies
-
-The primary way to manage access in MinIO is via [policies](https://min.io/docs/minio/linux/administration/identity-access-management/policy-based-access-control.html#minio-policy). We need to configure authentik to return a list of which MinIO policies should be applied to a user.
-
-Create a Scope Mapping: in the authentik Admin interface, navigate to **Customization -> Property Mappings**, click **Create**, and then select **Scope Mapping**. Give the property mapping a name like "OIDC-Scope-minio". Set the scope name to `minio` and the **Expression** to the following:
-
-```python
-return {
-    "policy": "readwrite",
-}
-```
-
-This mapping applies the default MinIO `readwrite` policy to all users. If you want to create a more granular mapping based on authentik groups, use an expression like this:
-
-```python
-if ak_is_group_member(request.user, name="Minio admins"):
-  return {
-      "policy": "consoleAdmin",
-}
-elif ak_is_group_member(request.user, name="Minio users"):
-  return {
-      "policy": ["readonly", "my-custom-policy"]
-}
-return None
-```
-
-Note that you can assign multiple policies to a user by returning a list, and returning `None` will map no policies to the user, resulting in no access to the MinIO instance. For more information on writing expressions, see [Expressions](/docs/add-secure-apps/providers/property-mappings/expression) and [User](/docs/users-sources/user/user_ref#object-properties) docs.
-
-### Creating application and provider
-
-Create an application in authentik. Create an OAuth2/OpenID provider with the following parameters:
-
-- Client Type: `Confidential`
-- Scopes: OpenID, Email, Profile, and the scope you created above
-- Signing Key: Select any available key
-- Redirect URIs: `https://minio.company/oauth_callback`
-
-Set the scope of the MinIO scope mapping that you created in the provider (previous step) in the **Advanced** area under **Protocol Settings -> Scopes**.
-
-Note the Client ID and Client Secret values. Create an application, using the provider you've created above. Note the slug of the application you've created.
 
 ## MinIO configuration
 
