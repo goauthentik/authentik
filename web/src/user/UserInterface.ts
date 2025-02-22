@@ -4,15 +4,17 @@ import {
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
     EVENT_WS_MESSAGE,
 } from "@goauthentik/common/constants";
+import { globalAK } from "@goauthentik/common/global";
 import { configureSentry } from "@goauthentik/common/sentry";
-import { UIConfig, UserDisplay } from "@goauthentik/common/ui/config";
+import { UIConfig } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
 import { WebsocketClient } from "@goauthentik/common/ws";
+import "@goauthentik/components/ak-nav-buttons";
 import { AKElement } from "@goauthentik/elements/Base";
-import { EnterpriseAwareInterface } from "@goauthentik/elements/Interface";
+import { AuthenticatedInterface } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/ak-locale-context";
+import "@goauthentik/elements/banner/EnterpriseStatusBanner";
 import "@goauthentik/elements/buttons/ActionButton";
-import "@goauthentik/elements/enterprise/EnterpriseStatusBanner";
 import "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/elements/notifications/APIDrawer";
 import "@goauthentik/elements/notifications/NotificationDrawer";
@@ -24,7 +26,6 @@ import "@goauthentik/elements/sidebar/SidebarItem";
 import { themeImage } from "@goauthentik/elements/utils/images";
 import { ROUTES } from "@goauthentik/user/Routes";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-import { match } from "ts-pattern";
 
 import { msg } from "@lit/localize";
 import { css, html, nothing } from "lit";
@@ -40,7 +41,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
-import { CoreApi, CurrentBrand, EventsApi, SessionUser } from "@goauthentik/api";
+import { CurrentBrand, EventsApi, SessionUser } from "@goauthentik/api";
 
 const customStyles = css`
     .pf-c-page__main,
@@ -54,12 +55,7 @@ const customStyles = css`
         box-shadow: none !important;
         color: black !important;
     }
-    :host([theme="dark"]) .pf-c-page__header {
-        color: var(--ak-dark-foreground) !important;
-    }
-    :host([theme="light"]) .pf-c-page__header-tools-item .fas,
-    :host([theme="light"]) .pf-c-notification-badge__count,
-    :host([theme="light"]) .pf-c-page__header-tools-group .pf-c-button {
+    :host([theme="light"]) .pf-c-button.pf-m-secondary {
         color: var(--ak-global--Color--100) !important;
     }
     .pf-c-page {
@@ -151,14 +147,6 @@ class UserInterfacePresentation extends AKElement {
     @property({ type: Object })
     brand!: CurrentBrand;
 
-    get userDisplayName() {
-        return match<UserDisplay, string>(this.uiConfig.navbar.userDisplay)
-            .with(UserDisplay.username, () => this.me.user.username)
-            .with(UserDisplay.name, () => this.me.user.name)
-            .with(UserDisplay.email, () => this.me.user.email || "")
-            .otherwise(() => this.me.user.username);
-    }
-
     get canAccessAdmin() {
         return (
             this.me.user.isSuperuser ||
@@ -171,6 +159,19 @@ class UserInterfacePresentation extends AKElement {
         return Boolean(this.uiConfig && this.me && this.brand);
     }
 
+    renderAdminInterfaceLink() {
+        if (!this.canAccessAdmin) {
+            return nothing;
+        }
+
+        return html`<a
+            class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none pf-u-display-block-on-md"
+            href="${globalAK().api.base}if/admin/"
+            slot="extra"
+        >
+            ${msg("Admin interface")}
+        </a>`;
+    }
     render() {
         // The `!` in the field definitions above only re-assure typescript and eslint that the
         // values *should* be available, not that they *are*. Thus this contract check; it asserts
@@ -180,7 +181,7 @@ class UserInterfacePresentation extends AKElement {
             throw new Error("ak-interface-user-presentation misused; no valid values passed");
         }
 
-        return html` <ak-locale-context>
+        return html`<ak-locale-context>
             <ak-enterprise-status interface="user"></ak-enterprise-status>
             <div class="pf-c-page">
                 <div class="background-wrapper" style="${this.uiConfig.theme.background}">
@@ -198,39 +199,9 @@ class UserInterfacePresentation extends AKElement {
                             />
                         </a>
                     </div>
-                    <div class="pf-c-page__header-tools">
-                        <div class="pf-c-page__header-tools-group">
-                            ${this.renderApiDrawerTrigger()}
-                            <!-- -->
-                            ${this.renderNotificationDrawerTrigger()}
-                            <!-- -->
-                            ${this.renderSettings()}
-                            <div class="pf-c-page__header-tools-item">
-                                <a
-                                    href="/flows/-/default/invalidation/"
-                                    class="pf-c-button pf-m-plain"
-                                >
-                                    <pf-tooltip position="top" content=${msg("Sign out")}>
-                                        <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
-                                    </pf-tooltip>
-                                </a>
-                            </div>
-                            ${this.renderAdminInterfaceLink()}
-                        </div>
-                        ${this.renderImpersonation()}
-                        <div class="pf-c-page__header-tools-group">
-                            <div
-                                class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-md"
-                            >
-                                ${this.userDisplayName}
-                            </div>
-                        </div>
-                        <img
-                            class="pf-c-avatar"
-                            src=${this.me.user.avatar}
-                            alt="${msg("Avatar image")}"
-                        />
-                    </div>
+                    <ak-nav-buttons .uiConfig=${this.uiConfig} .me=${this.me}
+                        >${this.renderAdminInterfaceLink()}</ak-nav-buttons
+                    >
                 </header>
                 <div class="pf-c-page__drawer">
                     <div
@@ -273,108 +244,6 @@ class UserInterfacePresentation extends AKElement {
             </div>
         </ak-locale-context>`;
     }
-
-    renderApiDrawerTrigger() {
-        if (!this.uiConfig.enabledFeatures.apiDrawer) {
-            return nothing;
-        }
-
-        const onClick = (ev: Event) => {
-            ev.stopPropagation();
-            this.dispatchEvent(
-                new Event(EVENT_API_DRAWER_TOGGLE, { bubbles: true, composed: true }),
-            );
-        };
-
-        return html`<div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg">
-            <button class="pf-c-button pf-m-plain" type="button" @click=${onClick}>
-                <pf-tooltip position="top" content=${msg("Open API drawer")}>
-                    <i class="fas fa-code" aria-hidden="true"></i>
-                </pf-tooltip>
-            </button>
-        </div>`;
-    }
-
-    renderNotificationDrawerTrigger() {
-        if (!this.uiConfig.enabledFeatures.notificationDrawer) {
-            return nothing;
-        }
-
-        const onClick = (ev: Event) => {
-            ev.stopPropagation();
-            this.dispatchEvent(
-                new Event(EVENT_NOTIFICATION_DRAWER_TOGGLE, { bubbles: true, composed: true }),
-            );
-        };
-
-        return html`<div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg">
-            <button
-                class="pf-c-button pf-m-plain"
-                type="button"
-                aria-label="${msg("Unread notifications")}"
-                @click=${onClick}
-            >
-                <span
-                    class="pf-c-notification-badge ${this.notificationsCount > 0
-                        ? "pf-m-unread"
-                        : ""}"
-                >
-                    <pf-tooltip position="top" content=${msg("Open Notification drawer")}>
-                        <i class="fas fa-bell" aria-hidden="true"></i>
-                    </pf-tooltip>
-                    <span class="pf-c-notification-badge__count">${this.notificationsCount}</span>
-                </span>
-            </button>
-        </div> `;
-    }
-
-    renderSettings() {
-        if (!this.uiConfig.enabledFeatures.settings) {
-            return nothing;
-        }
-
-        return html` <div class="pf-c-page__header-tools-item">
-            <a class="pf-c-button pf-m-plain" type="button" href="#/settings">
-                <pf-tooltip position="top" content=${msg("Settings")}>
-                    <i class="fas fa-cog" aria-hidden="true"></i>
-                </pf-tooltip>
-            </a>
-        </div>`;
-    }
-
-    renderAdminInterfaceLink() {
-        if (!this.canAccessAdmin) {
-            return nothing;
-        }
-
-        return html`<a
-            class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none pf-u-display-block-on-md"
-            href="/if/admin/"
-        >
-            ${msg("Admin interface")}
-        </a>`;
-    }
-
-    renderImpersonation() {
-        if (!this.me.original) {
-            return nothing;
-        }
-
-        const onClick = () => {
-            return new CoreApi(DEFAULT_CONFIG).coreUsersImpersonateEndRetrieve().then(() => {
-                window.location.reload();
-            });
-        };
-
-        return html`&nbsp;
-            <div class="pf-c-page__header-tools">
-                <div class="pf-c-page__header-tools-group">
-                    <ak-action-button class="pf-m-warning pf-m-small" .apiRequest=${onClick}>
-                        ${msg("Stop impersonation")}
-                    </ak-action-button>
-                </div>
-            </div>`;
-    }
 }
 
 //  ___         _
@@ -384,7 +253,7 @@ class UserInterfacePresentation extends AKElement {
 //
 //
 @customElement("ak-interface-user")
-export class UserInterface extends EnterpriseAwareInterface {
+export class UserInterface extends AuthenticatedInterface {
     @property({ type: Boolean })
     notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
 

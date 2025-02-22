@@ -1,11 +1,8 @@
 ---
 title: Integrate with MinIO
 sidebar_label: MinIO
+support_level: authentik
 ---
-
-# MinIO
-
-<span class="badge badge--primary">Support level: authentik</span>
 
 ## What is MinIO
 
@@ -15,10 +12,14 @@ sidebar_label: MinIO
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `minio.company` is the FQDN of the MinIO install.
--   `authentik.company` is the FQDN of the authentik install.
+- `minio.company` is the FQDN of the MinIO installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ### Mapping to MinIO policies
 
@@ -52,10 +53,10 @@ Note that you can assign multiple policies to a user by returning a list, and re
 
 Create an application in authentik. Create an OAuth2/OpenID provider with the following parameters:
 
--   Client Type: `Confidential`
--   Scopes: OpenID, Email, Profile, and the scope you created above
--   Signing Key: Select any available key
--   Redirect URIs: `https://minio.company/oauth_callback`
+- Client Type: `Confidential`
+- Scopes: OpenID, Email, Profile, and the scope you created above
+- Signing Key: Select any available key
+- Redirect URIs: `https://minio.company/oauth_callback`
 
 Set the scope of the MinIO scope mapping that you created in the provider (previous step) in the **Advanced** area under **Protocol Settings -> Scopes**.
 
@@ -69,12 +70,12 @@ You can set up OpenID in two different ways: via the web interface or the comman
 
 From the sidebar of the main page, go to **Identity -> OpenID**, click **Create**, and then define the configuration as follows:
 
--   Name: MinIO
--   Config URL: `https://authentik.company/application/o/<minio slug>/.well-known/openid-configuration`
--   Client ID: Your client ID from the previous step
--   Client Secret: Your client secret from the previous step
--   Scopes: `openid, email, profile, minio`
--   Redirect URI: `https://minio.company/oauth_callback`
+- Name: MinIO
+- Config URL: `https://authentik.company/application/o/<minio slug>/.well-known/openid-configuration`
+- Client ID: Your client ID from the previous step
+- Client Secret: Your client secret from the previous step
+- Scopes: `openid, email, profile, minio`
+- Redirect URI: `https://minio.company/oauth_callback`
 
 Finally, click **Save** and follow the instructions in the popup to restart your instance.
 

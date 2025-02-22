@@ -33,13 +33,13 @@ type WebServer struct {
 	ProxyServer *proxyv2.ProxyServer
 	BrandTLS    *brand_tls.Watcher
 
-	g   *gounicorn.GoUnicorn
-	gr  bool
-	m   *mux.Router
-	lh  *mux.Router
-	log *log.Entry
-	uc  *http.Client
-	ul  *url.URL
+	g              *gounicorn.GoUnicorn
+	gunicornReady  bool
+	mainRouter     *mux.Router
+	loggingRouter  *mux.Router
+	log            *log.Entry
+	upstreamClient *http.Client
+	upstreamURL    *url.URL
 }
 
 const UnixSocketName = "authentik-core.sock"
@@ -73,17 +73,22 @@ func NewWebServer() *WebServer {
 	u, _ := url.Parse("http://localhost:8000")
 
 	ws := &WebServer{
-		m:   mainHandler,
-		lh:  loggingHandler,
-		log: l,
-		gr:  true,
-		uc:  upstreamClient,
-		ul:  u,
+		mainRouter:     mainHandler,
+		loggingRouter:  loggingHandler,
+		log:            l,
+		gunicornReady:  true,
+		upstreamClient: upstreamClient,
+		upstreamURL:    u,
 	}
 	ws.configureStatic()
 	ws.configureProxy()
+	// Redirect for sub-folder
+	if sp := config.Get().Web.Path; sp != "/" {
+		ws.mainRouter.Path("/").Handler(http.RedirectHandler(sp, http.StatusFound))
+	}
+	hcUrl := fmt.Sprintf("%s%s-/health/live/", ws.upstreamURL.String(), config.Get().Web.Path)
 	ws.g = gounicorn.New(func() bool {
-		req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("%s/-/health/live/", ws.ul.String()), nil)
+		req, err := http.NewRequest(http.MethodGet, hcUrl, nil)
 		if err != nil {
 			ws.log.WithError(err).Warning("failed to create request for healthcheck")
 			return false
@@ -107,7 +112,7 @@ func (ws *WebServer) Start() {
 
 func (ws *WebServer) attemptStartBackend() {
 	for {
-		if !ws.gr {
+		if !ws.gunicornReady {
 			return
 		}
 		err := ws.g.Start()
@@ -135,7 +140,7 @@ func (ws *WebServer) Core() *gounicorn.GoUnicorn {
 }
 
 func (ws *WebServer) upstreamHttpClient() *http.Client {
-	return ws.uc
+	return ws.upstreamClient
 }
 
 func (ws *WebServer) Shutdown() {
@@ -160,7 +165,7 @@ func (ws *WebServer) listenPlain() {
 
 func (ws *WebServer) serve(listener net.Listener) {
 	srv := &http.Server{
-		Handler: ws.m,
+		Handler: ws.mainRouter,
 	}
 
 	// See https://golang.org/pkg/net/http/#Server.Shutdown

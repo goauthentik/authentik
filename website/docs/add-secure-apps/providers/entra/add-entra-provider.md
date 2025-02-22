@@ -1,10 +1,6 @@
 ---
 title: Add an Entra ID provider
----
-
-<span class="badge badge--primary">Enterprise</span>
-<span class="badge badge--preview">Preview</span>
-
+authentik_enterprise: true
 ---
 
 For more information about using an Entra ID provider, see the [Overview](./index.md) documentation.
@@ -24,15 +20,15 @@ As detailed in the steps below, when you add an Entra ID provider in authentik y
 3.  Click **Create**, and in the **New provider** modal box select **Microsoft Entra Provider** as the type and click **Next**.
 4.  Define the following fields:
 
-    -   **Name**: define a descriptive name, such as "Entra provider".
+    - **Name**: define a descriptive name, such as "Entra provider".
 
-    -   **Protocol settings**
+    - **Protocol settings**
 
-        -   **Client ID**: enter the Client ID that you [copied from your Entra app](./setup-entra.md).
-        -   **Client Secret**: enter the secret from Entra.
-        -   **Tenant ID**: enter the Tenant ID from Entra.
-        -   **User deletion action**: determines what authentik will do when a user is deleted from the Entra ID system.
-        -   **Group deletion action**: determines what authentik will do when a group is deleted from the Entra ID system.
+        - **Client ID**: enter the Client ID that you [copied from your Entra app](./setup-entra.md).
+        - **Client Secret**: enter the secret from Entra.
+        - **Tenant ID**: enter the Tenant ID from Entra.
+        - **User deletion action**: determines what authentik will do when a user is deleted from the Entra ID system.
+        - **Group deletion action**: determines what authentik will do when a group is deleted from the Entra ID system.
 
     **User filtering**
 

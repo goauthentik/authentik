@@ -6,10 +6,10 @@ An outpost is a single deployment of an authentik component, essentially a servi
 
 An outpost is required if you use any of the following types of providers with your application:
 
--   [LDAP Provider](../providers/ldap/index.md)
--   [Proxy Provider](../providers/proxy/index.md)
--   [RADIUS Provider](../providers/radius/index.mdx)
--   [RAC Provider](../providers/rac/index.md)
+- [LDAP Provider](../providers/ldap/index.md)
+- [Proxy Provider](../providers/proxy/index.md)
+- [RADIUS Provider](../providers/radius/index.mdx)
+- [RAC Provider](../providers/rac/index.md)
 
 These types of providers use an outpost for increased flexibility and speed. Instead of the provider logic being implemented in authentik Core, these providers use an outpost to handle the logic, which provides improved performance.
 
@@ -43,15 +43,15 @@ Upon creation, a service account and a token is generated. The service account o
 
 authentik can manage the deployment, updating, and general lifecycle of an outpost. To communicate with the underlying platforms on which the outpost is deployed, authentik has several built-in integrations.
 
--   If you've deployed authentik on Docker Compose, authentik automatically creates an integration for the local docker socket (See [Docker](./integrations/docker.md)).
--   If you've deployed authentik on Kubernetes, with `kubernetesIntegration` set to true (default), authentik automatically creates an integrations for the local Kubernetes Cluster (see [Kubernetes](./integrations/kubernetes.md)).
+- If you've deployed authentik on Docker Compose, authentik automatically creates an integration for the local docker socket (See [Docker](./integrations/docker.md)).
+- If you've deployed authentik on Kubernetes, with `kubernetesIntegration` set to true (default), authentik automatically creates an integrations for the local Kubernetes Cluster (see [Kubernetes](./integrations/kubernetes.md)).
 
 To deploy an outpost with these integrations, select them during the creation of an outpost. A background task is started, which creates the container/deployment. The outpost deployment can be monitored from the **Dashboards -> System Tasks** page in the Admin interface.
 
 To deploy an outpost manually, see:
 
--   [Kubernetes](./manual-deploy-kubernetes.md)
--   [Docker Compose](./manual-deploy-docker-compose.md)
+- [Kubernetes](./manual-deploy-kubernetes.md)
+- [Docker Compose](./manual-deploy-docker-compose.md)
 
 ### Configuration
 

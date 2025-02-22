@@ -10,7 +10,7 @@ See [examples](https://github.com/search?q=repo%3Agoauthentik%2Fauthentik+path%3
 
 #### Attributes
 
--   `identifiers`: Key-value attributes used to match the blueprint instance
+- `identifiers`: Key-value attributes used to match the blueprint instance
 
     Example:
 
@@ -20,6 +20,6 @@ See [examples](https://github.com/search?q=repo%3Agoauthentik%2Fauthentik+path%3
             name: Default - Password change flow
     ```
 
--   `required`: (Default: `true`) Configure if the blueprint instance must exist
+- `required`: (Default: `true`) Configure if the blueprint instance must exist
 
     If this is set to `true` and no blueprint instance matches the query above, an error will be thrown. Otherwise, execution will continue without applying anything extra.

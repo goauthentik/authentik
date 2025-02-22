@@ -1,11 +1,8 @@
 ---
 title: Integrate with Oracle Cloud
 sidebar_label: Oracle Cloud
+support_level: community
 ---
-
-# Oracle Cloud
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Oracle Cloud
 
@@ -15,9 +12,13 @@ sidebar_label: Oracle Cloud
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `authentik.company` is the FQDN of authentik.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ### Step 1 - authentik
 
@@ -29,16 +30,16 @@ Only settings that have been modified from default have been listed.
 
 **Protocol Settings**
 
--   Name: Oracle Cloud
--   Client ID: Copy and Save this for Later
--   Client Secret: Copy and Save this for later
--   Signing Key: Select any available key
+- Name: Oracle Cloud
+- Client ID: Copy and Save this for Later
+- Client Secret: Copy and Save this for later
+- Signing Key: Select any available key
 
 Create an application which uses this provider. Optionally apply access restrictions to the application using policy bindings.
 
--   Name: Oracle Cloud
--   Slug: oracle-cloud
--   Provider: Oracle Cloud
+- Name: Oracle Cloud
+- Slug: oracle-cloud
+- Provider: Oracle Cloud
 
 ### Step 2 - Oracle Cloud
 

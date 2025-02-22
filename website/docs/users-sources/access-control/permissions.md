@@ -15,8 +15,8 @@ For instructions to add, remove, and manage permissions, refer to [Manage Permis
 
 There are two main types of permissions in authentik:
 
--   [**Global permissions**](#global-permissions)
--   [**Object permissions**](#object-permissions)
+- [**Global permissions**](#global-permissions)
+- [**Object permissions**](#object-permissions)
 
 ### Global permissions
 
@@ -28,8 +28,8 @@ You can assign _global permissions_ to individual [users](../user/index.mdx) or 
 
 Object permissions have two categories:
 
--   **_User_ object permissions**: defines WHO (which user) can change the **_object_**
--   **_Role_ object permissions**: defines which ROLE can change the **_object_**
+- **_User_ object permissions**: defines WHO (which user) can change the **_object_**
+- **_Role_ object permissions**: defines which ROLE can change the **_object_**
 
 Object permissions are assigned, as the name indicates, to an object ([users](../user/index.mdx), [groups](../groups/index.mdx), [roles](../roles/index.md), [flows](../../add-secure-apps/flows-stages/flow/index.md), and stages), and the assigned permissions state exactly what a user or role can do TO the object (i.e. what permissions does the user or role have on that object).
 

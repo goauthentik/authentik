@@ -20,8 +20,8 @@ When adding the SCIM provider, you must define the **Backchannel provider using 
 
 Data is synchronized in multiple ways:
 
--   When a user/group is created/modified/deleted, that action is sent to all SCIM providers
--   Periodically (once an hour), all SCIM providers are fully synchronized
+- When a user/group is created/modified/deleted, that action is sent to all SCIM providers
+- Periodically (once an hour), all SCIM providers are fully synchronized
 
 The actual synchronization process is run in the authentik worker. To allow this process to better to scale, a task is started for each 100 users and groups, so when multiple workers are available the workload will be distributed.
 
@@ -39,7 +39,7 @@ By default, service accounts are excluded from being synchronized. This can be c
 
 SCIM defines multiple optional features, some of which are supported by the SCIM provider.
 
--   Patch updates
+- Patch updates
 
     If the service provider supports patch updates, authentik will use patch requests to add/remove members of groups. For all other updates, such as user updates and other group updates, PUT requests are used.
 

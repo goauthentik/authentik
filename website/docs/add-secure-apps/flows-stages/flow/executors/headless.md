@@ -6,6 +6,6 @@ The headless flow executor is used by clients that don't have access to the web 
 
 The following stages are supported:
 
--   [**Identification stage**](../../stages/identification/index.md)
--   [**Password stage**](../../stages/password/index.md)
--   [**Authenticator Validation Stage**](../../stages/authenticator_validate/index.md)
+- [**Identification stage**](../../stages/identification/index.mdx)
+- [**Password stage**](../../stages/password/index.md)
+- [**Authenticator Validation Stage**](../../stages/authenticator_validate/index.mdx)

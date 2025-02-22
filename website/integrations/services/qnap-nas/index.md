@@ -3,8 +3,6 @@ title: Integrate with QNAP NAS
 sidebar_label: QNAP NAS
 ---
 
-# QNAP NAS
-
 ## What is QNAP NAS
 
 > QNAP Systems, Inc. is a Taiwanese corporation that specializes in network-attached storage appliances used for file sharing, virtualization, storage management and surveillance applications.
@@ -15,18 +13,22 @@ Connecting a QNAP NAS to an LDAP Directory is a little bit special as it is **no
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `ldap.baseDN` is the Base DN you configure in the LDAP provider.
--   `ldap.domain` is (typically) a FQDN for your domain. Usually
-    it is just the components of your base DN. For example, if
-    `ldap.baseDN` is `dc=ldap,dc=goauthentik,dc=io` then the domain
-    might be `ldap.goauthentik.io`.
--   `ldap.searchGroup` is the "Search Group" that can can see all
-    users and groups in authentik.
--   `qnap.serviceAccount` is a service account created in authentik
--   `qnap.serviceAccountToken` is the service account token generated
-    by authentik.
+- `ldap.baseDN` is the Base DN you configure in the LDAP provider.
+- `ldap.domain` is (typically) a FQDN for your domain. Usually
+  it is just the components of your base DN. For example, if
+  `ldap.baseDN` is `dc=ldap,dc=goauthentik,dc=io` then the domain
+  might be `ldap.goauthentik.io`.
+- `ldap.searchGroup` is the "Search Group" that can can see all
+  users and groups in authentik.
+- `qnap.serviceAccount` is a service account created in authentik
+- `qnap.serviceAccountToken` is the service account token generated
+  by authentik.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 Create an LDAP Provider if you don't already have one setup.
 This guide assumes you will be running with TLS. See the [ldap provider docs](https://docs.goauthentik.io/docs/add-secure-apps/providers/ldap) for setting up SSL on the authentik side.

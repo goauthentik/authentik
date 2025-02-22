@@ -71,7 +71,7 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
 
     renderExampleButtons() {
         return this.mapping?.metaModelName ===
-            RbacPermissionsAssignedByUsersListModelEnum.SourcesLdapLdapsourcepropertymapping
+            RbacPermissionsAssignedByUsersListModelEnum.AuthentikSourcesLdapLdapsourcepropertymapping
             ? html`<p>${msg("Example context data")}</p>
                   ${this.renderExampleLDAP()}`
             : nothing;

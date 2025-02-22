@@ -43,8 +43,10 @@ class KerberosSync:
         self._messages = []
         self._logger = get_logger().bind(source=self._source, syncer=self.__class__.__name__)
         self.mapper = SourceMapper(self._source)
-        self.user_manager = self.mapper.get_manager(User, ["principal"])
-        self.group_manager = self.mapper.get_manager(Group, ["group_id", "principal"])
+        self.user_manager = self.mapper.get_manager(User, ["principal", "principal_obj"])
+        self.group_manager = self.mapper.get_manager(
+            Group, ["group_id", "principal", "principal_obj"]
+        )
         self.matcher = SourceMatcher(
             self._source, UserKerberosSourceConnection, GroupKerberosSourceConnection
         )
@@ -67,12 +69,16 @@ class KerberosSync:
 
     def _handle_principal(self, principal: str) -> bool:
         try:
+            # TODO: handle permission error
+            principal_obj = self._connection.get_principal(principal)
+
             defaults = self.mapper.build_object_properties(
                 object_type=User,
                 manager=self.user_manager,
                 user=None,
                 request=None,
                 principal=principal,
+                principal_obj=principal_obj,
             )
             self._logger.debug("Writing user with attributes", **defaults)
             if "username" not in defaults:
@@ -91,6 +97,7 @@ class KerberosSync:
                     request=None,
                     group_id=group_id,
                     principal=principal,
+                    principal_obj=principal_obj,
                 )
                 for group_id in defaults.pop("groups", [])
             }

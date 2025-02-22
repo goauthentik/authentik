@@ -26,6 +26,7 @@ from authentik.flows.models import FlowDesignation
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, ChallengeStageView
 from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE, SESSION_KEY_GET
+from authentik.lib.avatars import DEFAULT_AVATAR
 from authentik.lib.utils.reflection import all_subclasses
 from authentik.lib.utils.urls import reverse_with_qs
 from authentik.root.middleware import ClientIPMiddleware
@@ -76,7 +77,7 @@ class IdentificationChallenge(Challenge):
     allow_show_password = BooleanField(default=False)
     application_pre = CharField(required=False)
     flow_designation = ChoiceField(FlowDesignation.choices)
-    captcha_stage = CaptchaChallenge(required=False)
+    captcha_stage = CaptchaChallenge(required=False, allow_null=True)
 
     enroll_url = CharField(required=False)
     recovery_url = CharField(required=False)
@@ -224,6 +225,8 @@ class IdentificationStageView(ChallengeStageView):
                         "js_url": current_stage.captcha_stage.js_url,
                         "site_key": current_stage.captcha_stage.public_key,
                         "interactive": current_stage.captcha_stage.interactive,
+                        "pending_user": "",
+                        "pending_user_avatar": DEFAULT_AVATAR,
                     }
                     if current_stage.captcha_stage
                     else None

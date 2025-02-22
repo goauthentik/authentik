@@ -42,8 +42,10 @@ class ImpersonateMiddleware:
             # Ensure that the user is active, otherwise nothing will work
             request.user.is_active = True
 
-        with override(locale_to_set):
-            return self.get_response(request)
+        if locale_to_set:
+            with override(locale_to_set):
+                return self.get_response(request)
+        return self.get_response(request)
 
 
 class RequestIDMiddleware:

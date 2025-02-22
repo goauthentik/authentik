@@ -82,7 +82,7 @@ class SyncTasks:
                 return
             try:
                 for page in users_paginator.page_range:
-                    messages.append(_("Syncing page %(page)d of users" % {"page": page}))
+                    messages.append(_("Syncing page {page} of users".format(page=page)))
                     for msg in sync_objects.apply_async(
                         args=(class_to_path(User), page, provider_pk),
                         time_limit=PAGE_TIMEOUT,
@@ -90,7 +90,7 @@ class SyncTasks:
                     ).get():
                         messages.append(LogEvent(**msg))
                 for page in groups_paginator.page_range:
-                    messages.append(_("Syncing page %(page)d of groups" % {"page": page}))
+                    messages.append(_("Syncing page {page} of groups".format(page=page)))
                     for msg in sync_objects.apply_async(
                         args=(class_to_path(Group), page, provider_pk),
                         time_limit=PAGE_TIMEOUT,

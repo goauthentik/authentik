@@ -463,13 +463,25 @@
 
 [[redirects]]
   from = "/docs/policies/working_with_policies/unique_email"
-  to = "/docs/customize/policies/working_with_policies/unique_email"
+  to = "/docs/customize/policies/expression/unique_email"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/docs/customize/policies/working_with_policies/unique_email"
+  to = "/docs/customize/policies/expression/unique_email"
   status = 302
   force = true
 
 [[redirects]]
   from = "/docs/policies/working_with_policies/whitelist_email"
-  to = "/docs/customize/policies/working_with_policies/whitelist_email"
+  to = "/docs/customize/policies/expression/whitelist_email"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/docs/customize/policies/working_with_policies/whitelist_email"
+  to = "/docs/customize/policies/expression/whitelist_email"
   status = 302
   force = true
 
@@ -716,6 +728,12 @@
 [[redirects]]
   from = "/docs/security/CVE-2022-46172"
   to = "/docs/security/cves/CVE-2022-46172"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/docs/security/CVE-2024-42490"
+  to = "/docs/security/cves/CVE-2024-42490"
   status = 302
   force = true
 
@@ -987,6 +1005,12 @@
 [[redirects]]
   from = "/developer-docs/api/api"
   to = "/docs/developer-docs/api/api"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/developer-docs/api/reference/*"
+  to = "/docs/developer-docs/api/reference/:splat"
   status = 302
   force = true
 

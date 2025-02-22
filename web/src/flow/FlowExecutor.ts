@@ -78,6 +78,9 @@ export class FlowExecutor extends Interface implements StageHost {
     inspectorOpen = false;
 
     @state()
+    inspectorAvailable = false;
+
+    @state()
     flowInfo?: ContextualFlowInfo;
 
     ws: WebsocketClient;
@@ -160,14 +163,24 @@ export class FlowExecutor extends Interface implements StageHost {
                 padding: 0 2rem;
                 max-height: inherit;
             }
+            .inspector-toggle {
+                position: absolute;
+                top: 1rem;
+                right: 1rem;
+                z-index: 100;
+            }
         `);
     }
 
     constructor() {
         super();
         this.ws = new WebsocketClient();
-        if (window.location.search.includes("inspector")) {
+        const inspector = new URL(window.location.toString()).searchParams.get("inspector");
+        if (inspector === "" || inspector === "open") {
             this.inspectorOpen = true;
+            this.inspectorAvailable = true;
+        } else if (inspector === "available") {
+            this.inspectorAvailable = true;
         }
         this.addEventListener(EVENT_FLOW_INSPECTOR_TOGGLE, () => {
             this.inspectorOpen = !this.inspectorOpen;
@@ -232,7 +245,7 @@ export class FlowExecutor extends Interface implements StageHost {
     async firstUpdated(): Promise<void> {
         configureSentry();
         if (this.config?.capabilities.includes(CapabilitiesEnum.CanDebug)) {
-            this.inspectorOpen = true;
+            this.inspectorAvailable = true;
         }
         this.loading = true;
         try {
@@ -379,6 +392,14 @@ export class FlowExecutor extends Interface implements StageHost {
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-authenticator-webauthn>`;
+            case "ak-stage-authenticator-email":
+                await import(
+                    "@goauthentik/flow/stages/authenticator_email/AuthenticatorEmailStage"
+                );
+                return html`<ak-stage-authenticator-email
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-stage-authenticator-email>`;
             case "ak-stage-authenticator-sms":
                 await import("@goauthentik/flow/stages/authenticator_sms/AuthenticatorSMSStage");
                 return html`<ak-stage-authenticator-sms
@@ -461,6 +482,7 @@ export class FlowExecutor extends Interface implements StageHost {
         await import("@goauthentik/flow/FlowInspector");
         return html`<ak-flow-inspector
             class="pf-c-drawer__panel pf-m-width-33"
+            .flowSlug=${this.flowSlug}
         ></ak-flow-inspector>`;
     }
 
@@ -510,7 +532,7 @@ export class FlowExecutor extends Interface implements StageHost {
                                                             DefaultBrand.brandingLogo,
                                                         ),
                                                     )}"
-                                                    alt="authentik Logo"
+                                                    alt="${msg("authentik Logo")}"
                                                 />
                                             </div>
                                             ${until(this.renderChallenge())}
@@ -524,6 +546,16 @@ export class FlowExecutor extends Interface implements StageHost {
                                 </div>
                             </div>
                         </div>
+                        ${(this.inspectorAvailable ?? !this.inspectorOpen)
+                            ? html`<button
+                                  class="inspector-toggle pf-c-button pf-m-primary"
+                                  @click=${() => {
+                                      this.inspectorOpen = true;
+                                  }}
+                              >
+                                  <i class="fa fa-search-plus" aria-hidden="true"></i>
+                              </button>`
+                            : nothing}
                         ${until(this.renderInspector())}
                     </div>
                 </div>

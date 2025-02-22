@@ -1,8 +1,7 @@
 ---
 title: Facebook
+support_level: community
 ---
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 Adding Facebook as a source allows users to authenticate through authentik using their Facebook credentials.
 
@@ -10,7 +9,7 @@ Adding Facebook as a source allows users to authenticate through authentik using
 
 The following placeholders are used:
 
--   `authentik.company` is the FQDN of the authentik install.
+- `authentik.company` is the FQDN of the authentik installation.
 
 ## Facebook configuration
 

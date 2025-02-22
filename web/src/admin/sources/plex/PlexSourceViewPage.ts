@@ -1,6 +1,7 @@
 import "@goauthentik/admin/policies/BoundPoliciesList";
 import "@goauthentik/admin/rbac/ObjectPermissionsPage";
 import "@goauthentik/admin/sources/plex/PlexSourceForm";
+import { sourceBindingTypeNotices } from "@goauthentik/admin/sources/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/events/ObjectChangelog";
@@ -130,7 +131,10 @@ export class PlexSourceViewPage extends AKElement {
                             )}
                         </div>
                         <div class="pf-c-card__body">
-                            <ak-bound-policies-list .target=${this.source.pk} ?policyOnly=${true}>
+                            <ak-bound-policies-list
+                                .target=${this.source.pk}
+                                .typeNotices=${sourceBindingTypeNotices()}
+                            >
                             </ak-bound-policies-list>
                         </div>
                     </div>
@@ -139,7 +143,7 @@ export class PlexSourceViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.SourcesPlexPlexsource}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikSourcesPlexPlexsource}
                 objectPk=${this.source.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;

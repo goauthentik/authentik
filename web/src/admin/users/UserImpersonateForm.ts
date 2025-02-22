@@ -1,4 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { globalAK } from "@goauthentik/common/global";
 import "@goauthentik/components/ak-text-input";
 import { Form } from "@goauthentik/elements/forms/Form";
 
@@ -20,7 +21,7 @@ export class UserImpersonateForm extends Form<ImpersonationRequest> {
                 impersonationRequest: data,
             })
             .then(() => {
-                window.location.href = "/";
+                window.location.href = globalAK().api.base;
             });
     }
 

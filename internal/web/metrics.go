@@ -46,7 +46,7 @@ func (ws *WebServer) runMetricsServer() {
 		).ServeHTTP(rw, r)
 
 		// Get upstream metrics
-		re, err := http.NewRequest("GET", fmt.Sprintf("%s/-/metrics/", ws.ul.String()), nil)
+		re, err := http.NewRequest("GET", fmt.Sprintf("%s%s-/metrics/", ws.upstreamURL.String(), config.Get().Web.Path), nil)
 		if err != nil {
 			l.WithError(err).Warning("failed to get upstream metrics")
 			return

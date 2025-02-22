@@ -14,6 +14,7 @@ from structlog.stdlib import get_logger
 from authentik.core.models import Token
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.challenge import FlowLayout
+from authentik.lib.config import CONFIG
 from authentik.lib.models import InheritanceForeignKey, SerializerModel
 from authentik.lib.utils.reflection import class_to_path
 from authentik.policies.models import PolicyBindingModel
@@ -32,6 +33,7 @@ class FlowAuthenticationRequirement(models.TextChoices):
     REQUIRE_AUTHENTICATED = "require_authenticated"
     REQUIRE_UNAUTHENTICATED = "require_unauthenticated"
     REQUIRE_SUPERUSER = "require_superuser"
+    REQUIRE_REDIRECT = "require_redirect"
     REQUIRE_OUTPOST = "require_outpost"
 
 
@@ -100,8 +102,12 @@ class Stage(SerializerModel):
         user settings are available, or a challenge."""
         return None
 
+    @property
+    def is_in_memory(self):
+        return hasattr(self, "__in_memory_type")
+
     def __str__(self):
-        if hasattr(self, "__in_memory_type"):
+        if self.is_in_memory:
             return f"In-memory Stage {getattr(self, '__in_memory_type')}"
         return f"Stage {self.name}"
 
@@ -177,9 +183,13 @@ class Flow(SerializerModel, PolicyBindingModel):
         """Get the URL to the background image. If the name is /static or starts with http
         it is returned as-is"""
         if not self.background:
-            return "/static/dist/assets/images/flow_background.jpg"
-        if self.background.name.startswith("http") or self.background.name.startswith("/static"):
+            return (
+                CONFIG.get("web.path", "/")[:-1] + "/static/dist/assets/images/flow_background.jpg"
+            )
+        if self.background.name.startswith("http"):
             return self.background.name
+        if self.background.name.startswith("/static"):
+            return CONFIG.get("web.path", "/")[:-1] + self.background.name
         return self.background.url
 
     stages = models.ManyToManyField(Stage, through="FlowStageBinding", blank=True)
@@ -221,7 +231,7 @@ class FlowStageBinding(SerializerModel, PolicyBindingModel):
     )
     re_evaluate_policies = models.BooleanField(
         default=True,
-        help_text=_("Evaluate policies when the Stage is present to the user."),
+        help_text=_("Evaluate policies when the Stage is presented to the user."),
     )
 
     invalid_response_action = models.TextField(

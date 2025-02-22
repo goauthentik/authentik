@@ -1,11 +1,8 @@
 ---
 title: Integrate with Home Assistant
 sidebar_label: Home Assistant
+support_level: community
 ---
-
-# Home Assistant
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Home Assistant
 
@@ -16,16 +13,23 @@ sidebar_label: Home Assistant
 :::caution
 You might run into CSRF errors, this is caused by a technology Home-assistant uses and not authentik, see [this GitHub issue](https://github.com/goauthentik/authentik/issues/884#issuecomment-851542477).
 :::
+:::caution
+Only prefixes starting with `/auth` need to be proxied (excluding prefixes starting with `/auth/token`), see [this GitHub issue](https://github.com/BeryJu/hass-auth-header/issues/212). This can be configured in the reverse proxy (e.g. nginx, Traefik) or in authentik Provider's **Unauthorized Paths**.
+:::
 :::note
 For Home Assistant to work with authentik, a custom integration needs to be installed for Home Assistant.
 :::
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `hass.company` is the FQDN of the Home Assistant install.
--   `authentik.company` is the FQDN of the authentik install.
+- `hass.company` is the FQDN of the Home Assistant installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik configuration
 

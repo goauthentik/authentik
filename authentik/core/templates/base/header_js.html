@@ -9,6 +9,9 @@
         versionFamily: "{{ version_family }}",
         versionSubdomain: "{{ version_subdomain }}",
         build: "{{ build }}",
+        api: {
+            base: "{{ base_url }}",
+        },
     };
     window.addEventListener("DOMContentLoaded", function () {
         {% for message in messages %}

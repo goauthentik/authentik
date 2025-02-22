@@ -10,13 +10,13 @@ Upgrading to the latest version of authentik, whether a new major release or a p
 authentik does not support downgrading. Make sure to back up your database in case you need to revert an upgrade.
 :::
 
--   Be sure to carefully read the [Release Notes](../releases/) for the specific version to which you plan to upgrade. The release might have special requirements or actions or contain breaking changes.
+- Be sure to carefully read the [Release Notes](../releases/) for the specific version to which you plan to upgrade. The release might have special requirements or actions or contain breaking changes.
 
--   Make a backup of your PostgreSQL database before upgrading. You can dump your existing database to get a backup file. For more information about dumping and backing up your database, refer to [Upgrade PostgreSQL on Docker Compose](../troubleshooting/postgres/upgrade_docker.md) or [Upgrade PostgreSQL on Kubernetes](../troubleshooting/postgres/upgrade_kubernetes.md).
+- Make a backup of your PostgreSQL database before upgrading. You can dump your existing database to get a backup file. For more information about dumping and backing up your database, refer to [Upgrade PostgreSQL on Docker Compose](../troubleshooting/postgres/upgrade_docker.md) or [Upgrade PostgreSQL on Kubernetes](../troubleshooting/postgres/upgrade_kubernetes.md).
 
--   You need to upgrade in sequence of the major releases; do not skip directly from an older major version to the most recent version. For example, if you are currently running 2023.10.3, you will need to first upgrade to 2024.2.x, then 2024.4.x, and then 2024.6.x, in sequence.
+- You need to upgrade in sequence of the major releases; do not skip directly from an older major version to the most recent version. For example, if you are currently running 2023.10.3, you will need to first upgrade to 2024.2.x, then 2024.4.x, and then 2024.6.x, in sequence.
 
--   The version of the authentik instance and any outposts must be the same. We recommended that you always upgrade any outposts at the same time you upgrade your authentik instance.
+- The version of the authentik instance and any outposts must be the same. We recommended that you always upgrade any outposts at the same time you upgrade your authentik instance.
 
 ## Upgrade authentik
 
@@ -39,13 +39,21 @@ import TabItem from "@theme/TabItem";
     ```
 
   </TabItem>
-<TabItem value="kubernetes" label="Kubernetes">
+  <TabItem value="kubernetes" label="Kubernetes">
     In your terminal, navigate to your installation directory and run the following commands:
 
     ```
     helm repo update
     helm upgrade --install authentik authentik/authentik -f values.yaml
     ```
+
+  </TabItem>
+  <TabItem value="aws-cloudformation-ecs" label="AWS Cloudformation ECS">
+    Navigate to your authentik AWS Cloudformation stack. Click on the **Changesets** tab and **Create changeset**.
+
+    Select **Use existing template** and follow the prompts to upgrade.
+
+    To upgrade to a specific version, select **Replace existing template** and use the following URL: `https://authentik-cloudformation-templates.s3.amazonaws.com/authentik.ecs.VERSION.yaml` replacing `VERSION` with the version you want to upgrade to. You can use `latest` to upgrade to the latest version.
 
   </TabItem>
 </Tabs>

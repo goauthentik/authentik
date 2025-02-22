@@ -1,11 +1,8 @@
 ---
 title: Integrate with phpIPAM
 sidebar_label: phpIPAM
+support_level: community
 ---
-
-# phpIPAM
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is phpIPAM
 
@@ -15,14 +12,18 @@ sidebar_label: phpIPAM
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `phpipam.company` is the FQDN of the phpipam.
--   `authentik.company` is the FQDN of the authentik installation.
--   `test-user[0-2]` in place of actual usernames
--   `admin-permission-group` in place of your company naming convention
--   `operator-permission-group` in place of your company naming convention
--   `guest-permission-group` in place of your company naming convention
+- `phpipam.company` is the FQDN of the phpipam.
+- `authentik.company` is the FQDN of the authentik installation.
+- `test-user[0-2]` in place of actual usernames
+- `admin-permission-group` in place of your company naming convention
+- `operator-permission-group` in place of your company naming convention
+- `guest-permission-group` in place of your company naming convention
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 :::note
 This is based on authentik 2023.3.1 and phpIPAM 1.5.2
@@ -86,8 +87,8 @@ The groups are used for property mappings later to give the user the correct per
 
 In order to support automatic user provisioning (JIT) with phpIPAM, additional SAML attributes need to be passed. See [phpipam docs](https://github.com/phpipam/phpipam/blob/master/doc/Authentication/SAML2.md#automatic-user-jit-provisioning) for more details about specific attributes to pass.
 
--   Select Property Mappings
--   Select Create -> SAML Property Mapping -> Next
+- Select Property Mappings
+- Select Create -> SAML Property Mapping -> Next
 
 1. display_name
 
@@ -147,19 +148,19 @@ In order to support automatic user provisioning (JIT) with phpIPAM, additional S
 
 ### Step 3 - Provider creation
 
--   Select Create -> SAML Provider
-    -   Name: phpipam-saml
-    -   Authorization flow: `default-provider-authorization-explicit-consent`
-    -   Protocol Settings:
-        -   ACS URL: https://phpipam.company/saml2/
-        -   Issuer: https://authentik.company
-        -   Service Provider Binding: Post
-        -   Audience: https://phpipam.company/
-    -   Advanced Protocol Settings:
-        -   Signing Certificate: authentik: Self-signed Certificate
-        -   Verification certificate: Leave Blank
-        -   Property Mappings: Select All Available
-        -   NameID Property Mapping: authentik default SAML Mapping: Username
+- Select Create -> SAML Provider
+    - Name: phpipam-saml
+    - Authorization flow: `default-provider-authorization-explicit-consent`
+    - Protocol Settings:
+        - ACS URL: https://phpipam.company/saml2/
+        - Issuer: https://authentik.company
+        - Service Provider Binding: Post
+        - Audience: https://phpipam.company/
+    - Advanced Protocol Settings:
+        - Signing Certificate: authentik: Self-signed Certificate
+        - Verification certificate: Leave Blank
+        - Property Mappings: Select All Available
+        - NameID Property Mapping: authentik default SAML Mapping: Username
 
 ![](./phpipam-saml-provider-protocol-settings.png)
 ![](./phpipam-saml-advanced-provider-protocol-settings.png)
@@ -168,17 +169,17 @@ In order to support automatic user provisioning (JIT) with phpIPAM, additional S
 
 Select Create
 
--   Name: phpipam-saml
--   Provider: phpipam-saml
+- Name: phpipam-saml
+- Provider: phpipam-saml
 
 Edit Policy Bindings to only allow users who have the groups assigned to them, access to login. Without this, any user can login and be given default no permissions in phpIPAM.
 
 Select ipam-saml application
 
--   Select Policy / Group / User Bindings
-    -   Add `admin-permission-group`
-    -   Add `operator-permission-group`
-    -   Add `guest-permission-group`
+- Select Policy / Group / User Bindings
+    - Add `admin-permission-group`
+    - Add `operator-permission-group`
+    - Add `guest-permission-group`
 
 Leave all other settings as default
 ![](./ipam-saml-application-bindings.png)
@@ -189,20 +190,20 @@ Login as the local administrator account at `phpipam.company`
 Select Authentication Methods
 Select Create New -> SAML2 Authentication
 
--   Description: authentik
--   Enable JIT: On
--   Use advanced settings: Off
--   Client ID: https://phpipam.company/
--   Strict Mode: Off
--   IDP Issuer: https://authentik.company
--   IDP Login url: https://authentik.company/application/saml/*application_name*/sso/binding/redirect/
--   IDP Logout url: https://authentik.company/application/saml/*application_name*/slo/binding/redirect/
--   IDP X.509 public cert: This will be the .pem contents of the cert used as the signing certificate
+- Description: authentik
+- Enable JIT: On
+- Use advanced settings: Off
+- Client ID: https://phpipam.company/
+- Strict Mode: Off
+- IDP Issuer: https://authentik.company
+- IDP Login url: https://authentik.company/application/saml/*application_name*/sso/binding/redirect/
+- IDP Logout url: https://authentik.company/application/saml/*application_name*/slo/binding/redirect/
+- IDP X.509 public cert: This will be the .pem contents of the cert used as the signing certificate
     1. To get this cert, access the authentik installation at authentik.company
     2. Select Applications -> Providers -> phpipam-saml
     3. Select Download signing certificate
     4. Paste in the contents of the signing certificate into if IDP X.509 field
--   Sign Authn requests: Off
+- Sign Authn requests: Off
 
 Leave everything else as default. Save changes
 ![](./phpipam-auth-method-config.png)

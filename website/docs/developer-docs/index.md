@@ -22,12 +22,12 @@ Either [create a question on GitHub](https://github.com/goauthentik/authentik/is
 
 authentik consists of a few larger components:
 
--   _authentik_ the actual application server, is described below.
--   _outpost-proxy_ is a Go application based on a forked version of oauth2_proxy, which does identity-aware reverse proxying.
--   _outpost-ldap_ is a Go LDAP server that uses the _authentik_ application server as its backend
--   _outpost-radius_ is a Go RADIUS server that uses the _authentik_ application server as its backend
--   _web_ is the web frontend, both for administrating and using authentik. It is written in TypeScript using lit-html and the PatternFly CSS Library.
--   _website_ is the Website/documentation, which uses docusaurus.
+- _authentik_ the actual application server, is described below.
+- _outpost-proxy_ is a Go application based on a forked version of oauth2_proxy, which does identity-aware reverse proxying.
+- _outpost-ldap_ is a Go LDAP server that uses the _authentik_ application server as its backend
+- _outpost-radius_ is a Go RADIUS server that uses the _authentik_ application server as its backend
+- _web_ is the web frontend, both for administrating and using authentik. It is written in TypeScript using lit-html and the PatternFly CSS Library.
+- _website_ is the Website/documentation, which uses docusaurus.
 
 ### authentik's structure
 
@@ -128,10 +128,10 @@ Please be sure to refer to our [Style Guide](../developer-docs/docs/style-guide.
 
 The process described here has several goals:
 
--   Maintain authentik's quality
--   Fix problems that are important to users
--   Engage the community in working toward the best possible authentik
--   Enable a sustainable system for authentik's maintainers to review contributions
+- Maintain authentik's quality
+- Fix problems that are important to users
+- Engage the community in working toward the best possible authentik
+- Enable a sustainable system for authentik's maintainers to review contributions
 
 Please follow these steps to have your contribution considered by the maintainers:
 
@@ -145,19 +145,19 @@ While the prerequisites above must be satisfied prior to having your pull reques
 
 ### PR naming
 
--   Use the format of `<package>: <verb> <description>`
-    -   See [here](#authentiks-structure) for `package`
-    -   Examples:
-        `providers/saml2: fix parsing of requests`
-        `website/docs: add config info for GWS`
+- Use the format of `<package>: <verb> <description>`
+    - See [here](#authentiks-structure) for `package`
+    - Examples:
+      `providers/saml2: fix parsing of requests`
+      `website/docs: add config info for GWS`
 
 ### Git Commit Messages
 
--   Use the format of `<package>: <verb> <description>`
-    -   See [here](#authentiks-structure) for `package`
-    -   Example: `providers/saml2: fix parsing of requests`
--   Reference issues and pull requests liberally after the first line
--   Naming of commits within a PR does not need to adhere to the guidelines as we squash merge PRs
+- Use the format of `<package>: <verb> <description>`
+    - See [here](#authentiks-structure) for `package`
+    - Example: `providers/saml2: fix parsing of requests`
+- Reference issues and pull requests liberally after the first line
+- Naming of commits within a PR does not need to adhere to the guidelines as we squash merge PRs
 
 ### Python Style Guide
 
@@ -165,19 +165,19 @@ All Python code is linted with [black](https://black.readthedocs.io/en/stable/) 
 
 authentik runs on Python 3.12 at the time of writing this.
 
--   Use native type-annotations wherever possible.
--   Add meaningful docstrings when possible.
--   Ensure any database migrations work properly from the last stable version (this is checked via CI)
--   If your code changes central functions, make sure nothing else is broken.
+- Use native type-annotations wherever possible.
+- Add meaningful docstrings when possible.
+- Ensure any database migrations work properly from the last stable version (this is checked via CI)
+- If your code changes central functions, make sure nothing else is broken.
 
 ### Documentation Style Guide
 
 Refer to the full [Style Guide](../developer-docs/docs/style-guide.mdx) for details, but here are some important highlights:
 
--   Our product name is authentik, with a lower-case "a" and a "k" on the end. Our company name is Authentik Security.
+- Our product name is authentik, with a lower-case "a" and a "k" on the end. Our company name is Authentik Security.
 
--   We use sentence style case in our titles and headings.
+- We use sentence style case in our titles and headings.
 
--   We use **bold** text to name UI components, and _italic_ text for variables.
+- We use **bold** text to name UI components, and _italic_ text for variables.
 
--   Use [MDX](https://mdxjs.com/) whenever appropriate. MDX, which uses React components, is useful for creating tabs, action buttons, and advanced content formatting.
+- Use [MDX](https://mdxjs.com/) whenever appropriate. MDX, which uses React components, is useful for creating tabs, action buttons, and advanced content formatting.

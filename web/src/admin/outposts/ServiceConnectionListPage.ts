@@ -46,7 +46,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
         const connections = await new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsAllList(
             await this.defaultEndpointConfig(),
         );
-        Promise.all(
+        await Promise.all(
             connections.results.map((connection) => {
                 return new OutpostsApi(DEFAULT_CONFIG)
                     .outpostsServiceConnectionsAllStateRetrieve({

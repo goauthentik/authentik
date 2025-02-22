@@ -19,7 +19,8 @@ import { FlowInspection, FlowsApi, ResponseError, Stage } from "@goauthentik/api
 
 @customElement("ak-flow-inspector")
 export class FlowInspector extends AKElement {
-    flowSlug: string;
+    @property()
+    flowSlug?: string;
 
     @property({ attribute: false })
     state?: FlowInspection;
@@ -55,7 +56,6 @@ export class FlowInspector extends AKElement {
 
     constructor() {
         super();
-        this.flowSlug = window.location.pathname.split("/")[3];
         window.addEventListener(EVENT_FLOW_ADVANCE, this.advanceHandler as EventListener);
     }
 
@@ -67,7 +67,7 @@ export class FlowInspector extends AKElement {
     advanceHandler = (): void => {
         new FlowsApi(DEFAULT_CONFIG)
             .flowsInspectorGet({
-                flowSlug: this.flowSlug,
+                flowSlug: this.flowSlug || "",
             })
             .then((state) => {
                 this.error = undefined;
@@ -87,16 +87,37 @@ export class FlowInspector extends AKElement {
         return stage;
     }
 
+    renderHeader() {
+        return html` <div class="pf-c-notification-drawer__header">
+            <div class="text">
+                <h1 class="pf-c-notification-drawer__header-title">${msg("Flow inspector")}</h1>
+            </div>
+            <div class="pf-c-notification-drawer__header-action">
+                <div class="pf-c-notification-drawer__header-action-close">
+                    <button
+                        @click=${() => {
+                            this.dispatchEvent(
+                                new CustomEvent(EVENT_FLOW_INSPECTOR_TOGGLE, {
+                                    bubbles: true,
+                                    composed: true,
+                                }),
+                            );
+                        }}
+                        class="pf-c-button pf-m-plain"
+                        type="button"
+                        aria-label=${msg("Close")}
+                    >
+                        <i class="fas fa-times" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+        </div>`;
+    }
+
     renderAccessDenied(): TemplateResult {
         return html`<div class="pf-c-drawer__body pf-m-no-padding">
             <div class="pf-c-notification-drawer">
-                <div class="pf-c-notification-drawer__header">
-                    <div class="text">
-                        <h1 class="pf-c-notification-drawer__header-title">
-                            ${msg("Flow inspector")}
-                        </h1>
-                    </div>
-                </div>
+                ${this.renderHeader()}
                 <div class="pf-c-notification-drawer__body">
                     <div class="pf-l-stack pf-m-gutter">
                         <div class="pf-l-stack__item">
@@ -116,36 +137,17 @@ export class FlowInspector extends AKElement {
         }
         if (!this.state) {
             this.advanceHandler();
-            return html`<ak-empty-state loading> </ak-empty-state>`;
+            return html`<div class="pf-c-drawer__body pf-m-no-padding">
+                <div class="pf-c-notification-drawer">
+                    ${this.renderHeader()}
+                    <div class="pf-c-notification-drawer__body"></div>
+                    <ak-empty-state loading> </ak-empty-state>
+                </div>
+            </div>`;
         }
         return html`<div class="pf-c-drawer__body pf-m-no-padding">
             <div class="pf-c-notification-drawer">
-                <div class="pf-c-notification-drawer__header">
-                    <div class="text">
-                        <h1 class="pf-c-notification-drawer__header-title">
-                            ${msg("Flow inspector")}
-                        </h1>
-                    </div>
-                    <div class="pf-c-notification-drawer__header-action">
-                        <div class="pf-c-notification-drawer__header-action-close">
-                            <button
-                                @click=${() => {
-                                    this.dispatchEvent(
-                                        new CustomEvent(EVENT_FLOW_INSPECTOR_TOGGLE, {
-                                            bubbles: true,
-                                            composed: true,
-                                        }),
-                                    );
-                                }}
-                                class="pf-c-button pf-m-plain"
-                                type="button"
-                                aria-label=${msg("Close")}
-                            >
-                                <i class="fas fa-times" aria-hidden="true"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                ${this.renderHeader()}
                 <div class="pf-c-notification-drawer__body">
                     <div class="pf-l-stack pf-m-gutter">
                         <div class="pf-l-stack__item">

@@ -35,10 +35,10 @@ The prompt can be any of the following types:
 
 Some types have special behaviors:
 
--   _Username_: Input is validated against other usernames to ensure a unique value is provided.
--   _Password_: All prompts with the type password within the same stage are compared and must be equal. If they are not equal, an error is shown
--   _Hidden_ and _Static_: Their initial values are defaults and are not user-changeable.
--   _Radio Button Group_ and _Dropdown_: Only allow the user to select one of a set of predefined values.
+- _Username_: Input is validated against other usernames to ensure a unique value is provided.
+- _Password_: All prompts with the type password within the same stage are compared and must be equal. If they are not equal, an error is shown
+- _Hidden_ and _Static_: Their initial values are defaults and are not user-changeable.
+- _Radio Button Group_ and _Dropdown_: Only allow the user to select one of a set of predefined values.
 
 A prompt has the following attributes:
 

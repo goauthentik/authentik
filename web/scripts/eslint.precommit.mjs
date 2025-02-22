@@ -29,6 +29,7 @@ export default [
     wcconf.configs["flat/recommended"],
     litconf.configs["flat/recommended"],
     ...tseslint.configs.recommended,
+    //    sonar.configs.recommended,
     {
         languageOptions: {
             parser: tsparser,
@@ -41,6 +42,11 @@ export default [
         rules: {
             "no-unused-vars": "off",
             "no-console": ["error", { allow: ["debug", "warn", "error"] }],
+            // SonarJS is not yet compatible with ESLint 9.  Commenting these out
+            // until it is.
+            //    "sonarjs/cognitive-complexity": ["off", 9],
+            //    "sonarjs/no-duplicate-string": "off",
+            //    "sonarjs/no-nested-template-literals": "off",
             "@typescript-eslint/ban-ts-comment": "off",
             "@typescript-eslint/no-unused-vars": [
                 "error",

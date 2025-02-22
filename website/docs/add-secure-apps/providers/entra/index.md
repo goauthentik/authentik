@@ -1,16 +1,12 @@
 ---
 title: Microsoft Entra ID provider
----
-
-<span class="badge badge--primary">Enterprise</span>
-<span class="badge badge--preview">Preview</span>
-
+authentik_enterprise: true
 ---
 
 With the Microsoft Entra ID provider, authentik serves as the single source of truth for all users and groups. Configuring Entra ID as a provider allows for auto-discovery of user and group accounts, on-going synchronization of user data such as email address, name, and status, and integrated data mapping of field names and values.
 
--   For instructions to configure your Entra ID tenant to integrate with authentik, refer to [Configure Entra ID](./setup-entra.md).
--   For instructions to add Entra ID as a provider in authentik, refer to [Create a Entra ID provider](./add-entra-provider.md).
+- For instructions to configure your Entra ID tenant to integrate with authentik, refer to [Configure Entra ID](./setup-entra.md).
+- For instructions to add Entra ID as a provider in authentik, refer to [Create a Entra ID provider](./add-entra-provider.md).
 
 ## About using Entra ID with authentik
 
@@ -38,10 +34,10 @@ When a property mapping has an invalid expression, it will cause the sync to sto
 
 There are a couple of considerations in regard to how authentik data is mapped to Entra ID user/group data by default.
 
--   For users, authentik only saves the full display name, not separate first and family names.
--   By default, authentik synchs a user’s email, a user’s name, and their active status between Entra ID and authentik. For groups, the name is synced.
+- For users, authentik only saves the full display name, not separate first and family names.
+- By default, authentik synchs a user’s email, a user’s name, and their active status between Entra ID and authentik. For groups, the name is synced.
 
 Refer to Microsoft documentation for further details.
 
--   https://learn.microsoft.com/en-us/graph/api/user-post-users?view=graph-rest-1.0&tabs=http#request-body
--   https://learn.microsoft.com/en-us/graph/api/group-post-groups?view=graph-rest-1.0&tabs=http#request-body
+- https://learn.microsoft.com/en-us/graph/api/user-post-users?view=graph-rest-1.0&tabs=http#request-body
+- https://learn.microsoft.com/en-us/graph/api/group-post-groups?view=graph-rest-1.0&tabs=http#request-body

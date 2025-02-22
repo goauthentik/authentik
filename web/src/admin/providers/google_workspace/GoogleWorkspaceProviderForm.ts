@@ -1,8 +1,8 @@
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 import {
-    googleWorkspacePropertyMappingsProvider,
-    makeGoogleWorkspacePropertyMappingsSelector,
-} from "@goauthentik/admin/providers/google_workspace/GoogleWorkspaceProviderPropertyMappings";
+    propertyMappingsProvider,
+    propertyMappingsSelector,
+} from "@goauthentik/admin/providers/google_workspace/GoogleWorkspaceProviderFormHelpers.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
@@ -82,7 +82,7 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                         <input
                             type="email"
                             value="${first(this.instance?.delegatedSubject, "")}"
-                            class="pf-c-form-control"
+                            class="pf-c-form-control pf-m-monospace"
                             required
                         />
                         <p class="pf-c-form__helper-text">
@@ -99,7 +99,7 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                         <input
                             type="text"
                             value="${first(this.instance?.defaultGroupEmailDomain, "")}"
-                            class="pf-c-form-control"
+                            class="pf-c-form-control pf-m-monospace"
                             required
                         />
                         <p class="pf-c-form__helper-text">
@@ -224,8 +224,8 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                         name="propertyMappings"
                     >
                         <ak-dual-select-dynamic-selected
-                            .provider=${googleWorkspacePropertyMappingsProvider}
-                            .selector=${makeGoogleWorkspacePropertyMappingsSelector(
+                            .provider=${propertyMappingsProvider}
+                            .selector=${propertyMappingsSelector(
                                 this.instance?.propertyMappings,
                                 "goauthentik.io/providers/google_workspace/user",
                             )}
@@ -241,8 +241,8 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                         name="propertyMappingsGroup"
                     >
                         <ak-dual-select-dynamic-selected
-                            .provider=${googleWorkspacePropertyMappingsProvider}
-                            .selector=${makeGoogleWorkspacePropertyMappingsSelector(
+                            .provider=${propertyMappingsProvider}
+                            .selector=${propertyMappingsSelector(
                                 this.instance?.propertyMappingsGroup,
                                 "goauthentik.io/providers/google_workspace/group",
                             )}

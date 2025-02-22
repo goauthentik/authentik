@@ -1,11 +1,8 @@
 ---
 title: Integrate with FortiManager
 sidebar_label: FortiManager
+support_level: community
 ---
-
-# FortiManager
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is FortiManager
 
@@ -17,24 +14,28 @@ sidebar_label: FortiManager
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `fgm.company` is the FQDN of the FortiManager install.
--   `authentik.company` is the FQDN of the authentik install.
+- `fgm.company` is the FQDN of the FortiManager installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 Create an application and Provider in authentik, note the slug, as this will be used later. Create a SAML provider with the following parameters:
 
 Provider:
 
--   ACS URL: `https://fgm.company/saml/?acs`
--   Issuer: `https://authentik.company/application/saml/fgm/sso/binding/redirect/`
--   Service Provider Binding: Post
+- ACS URL: `https://fgm.company/saml/?acs`
+- Issuer: `https://authentik.company/application/saml/fgm/sso/binding/redirect/`
+- Service Provider Binding: Post
 
 You can of course use a custom signing certificate, and adjust durations.
 
 Application:
 
--   Launch URL: 'https://fgm.company/p/sso_sp/'
+- Launch URL: 'https://fgm.company/p/sso_sp/'
 
 ## FortiManager Configuration
 

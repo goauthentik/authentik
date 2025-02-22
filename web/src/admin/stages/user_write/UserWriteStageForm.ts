@@ -150,7 +150,9 @@ export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
                         <input
                             type="text"
                             value="${first(this.instance?.userPathTemplate, "")}"
-                            class="pf-c-form-control"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
                             required
                         />
                         <p class="pf-c-form__helper-text">

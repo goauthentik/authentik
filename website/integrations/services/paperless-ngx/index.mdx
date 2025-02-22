@@ -1,11 +1,8 @@
 ---
 title: Integrate with Paperless-ngx
 sidebar_label: Paperless-ngx
+support_level: community
 ---
-
-# Paperless-ngx
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Paperless-ngx
 
@@ -15,10 +12,14 @@ sidebar_label: Paperless-ngx
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `paperless.company` is the FQDN of the Paperless-ngx install.
--   `authentik.company` is the FQDN of the authentik install.
+- `paperless.company` is the FQDN of the Paperless-ngx installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik Configuration
 
@@ -81,16 +82,17 @@ Now restart your container:
 
 You need to update your `paperless.conf` configuration file. Paperless will search for this configuration file in the following locations and use the first one it finds:
 
--   The environment variable `PAPERLESS_CONFIGURATION_PATH`
--   `/path/to/paperless/paperless.conf`
--   `/etc/paperless.conf`
--   `/usr/local/etc/paperless.conf`
+- The environment variable `PAPERLESS_CONFIGURATION_PATH`
+- `/path/to/paperless/paperless.conf`
+- `/etc/paperless.conf`
+- `/usr/local/etc/paperless.conf`
 
 Edit your `paperless.conf` and add the following:
 
 ```ini
+PAPERLESS_ENABLE_ALLAUTH=true
 PAPERLESS_APPS=allauth.socialaccount.providers.openid_connect
-PAPERLESS_SOCIALACCOUNT_PROVIDERS={"openid_connect":{"OAUTH_PKCE_ENABLED":true,"APPS":[{"provider_id":"authentik","name":"Authentik","client_id":"<Client ID>","secret":<Client Secret>","settings":{"server_url":"https://authentik.company/application/o/paperless/.well-known/openid-configuration"}}]}}
+PAPERLESS_SOCIALACCOUNT_PROVIDERS={"openid_connect":{"OAUTH_PKCE_ENABLED":true,"APPS":[{"provider_id":"authentik","name":"authentik","client_id":"<Client ID>","secret":"<Client Secret>","settings":{"server_url":"https://authentik.company/application/o/paperless/.well-known/openid-configuration"}}]}}
 ```
 
 Now restart your Paperless services using `sudo systemctl restart paperless-*`

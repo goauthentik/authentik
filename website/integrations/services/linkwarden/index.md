@@ -1,11 +1,8 @@
 ---
 title: Integrate with Linkwarden
 sidebar_label: Linkwarden
+support_level: community
 ---
-
-# Linkwarden
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Linkwarden
 
@@ -15,10 +12,14 @@ sidebar_label: Linkwarden
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `linkwarden.company` is the FQDN of the Linkwarden install.
--   `authentik.company` is the FQDN of the authentik install.
+- `linkwarden.company` is the FQDN of the Linkwarden installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## Linkwarden configuration
 
@@ -36,7 +37,7 @@ After making these changes, restart your Docker containers to apply the new conf
 
 ## authentik configuration
 
-1. Access the **Admin Interface** in on your authentik install.
+1. Access the **Admin Interface** in on your authentik installation.
 2. Create a new **OAuth2 / OpenID Provider**.
 3. Note the generated **Client ID** and **Client Secret**.
 4. In the provider settings, add this redirect URL under **Redirect URIs/Origins (RegEx)**: `https://linkwarden.company/api/v1/auth/callback/authentik`

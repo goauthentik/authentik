@@ -29,7 +29,7 @@ Similar to [other outposts](../add-secure-apps/outposts/index.mdx), this outpost
 
 #### Persistence
 
--   `/media` is used to store icons and such, but not required, and if not mounted, authentik will allow you to set a URL to icons in place of a file upload
+- `/media` is used to store icons and such, but not required, and if not mounted, authentik will allow you to set a URL to icons in place of a file upload
 
 ### Background Worker
 
@@ -37,8 +37,8 @@ This container executes background tasks, such as sending emails, the event noti
 
 #### Persistence
 
--   `/certs` is used for authentik to import external certs, which in most cases shouldn't be used for SAML, but rather if you use authentik without a reverse proxy, this can be used for example for the [Let's Encrypt integration](../sys-mgmt/certificates.md#lets-encrypt)
--   `/templates` is used for [custom email templates](../add-secure-apps/flows-stages/stages/email/index.mdx#custom-templates), and as with the other ones fully optional
+- `/certs` is used for authentik to import external certs, which in most cases shouldn't be used for SAML, but rather if you use authentik without a reverse proxy, this can be used for example for the [Let's Encrypt integration](../sys-mgmt/certificates.md#lets-encrypt)
+- `/templates` is used for [custom email templates](../add-secure-apps/flows-stages/stages/email/index.mdx#custom-templates), and as with the other ones fully optional
 
 ### PostgreSQL
 
@@ -46,7 +46,7 @@ authentik uses PostgreSQL to store all of its configuration and other data (excl
 
 #### Persistence
 
--   `/var/lib/postgresql/data` is used to store the PostgreSQL database
+- `/var/lib/postgresql/data` is used to store the PostgreSQL database
 
 On Kubernetes, with the default Helm chart and using the packaged PostgreSQL sub-chart, persistent data is stored in a PVC.
 
@@ -56,6 +56,6 @@ authentik uses Redis as a message-queue and a cache. Data in Redis is not requir
 
 #### Persistence
 
--   `/data` is used to store the Redis data
+- `/data` is used to store the Redis data
 
 On Kubernetes, with the default Helm chart and using the packaged Redis sub-chart, persistent data is stored in a PVC.

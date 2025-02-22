@@ -32,6 +32,7 @@ class KerberosSourceSerializer(SourceSerializer):
             "group_matching_mode",
             "realm",
             "krb5_conf",
+            "kadmin_type",
             "sync_users",
             "sync_users_password",
             "sync_principal",
@@ -65,10 +66,12 @@ class KerberosSourceViewSet(UsedByMixin, ModelViewSet):
     serializer_class = KerberosSourceSerializer
     lookup_field = "slug"
     filterset_fields = [
+        "pbm_uuid",
         "name",
         "slug",
         "enabled",
         "realm",
+        "kadmin_type",
         "sync_users",
         "sync_users_password",
         "sync_principal",

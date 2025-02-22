@@ -1,15 +1,14 @@
 ---
 title: Active Directory
+support_level: community
 ---
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `ad.company` is the Name of the Active Directory domain.
--   `authentik.company` is the FQDN of the authentik install.
+- `ad.company` is the Name of the Active Directory domain.
+- `authentik.company` is the FQDN of the authentik install.
 
 ## Active Directory setup
 
@@ -41,7 +40,7 @@ In authentik, create a new LDAP Source in Directory -> Federation & Social login
 
 Use these settings:
 
--   Server URI: `ldap://ad.company`
+- Server URI: `ldap://ad.company`
 
     For authentik to be able to write passwords back to Active Directory, make sure to use `ldaps://`. You can test to verify LDAPS is working using `ldp.exe`.
 
@@ -49,20 +48,20 @@ Use these settings:
 
     When using a DNS entry with multiple Records, authentik will select a random entry when first connecting.
 
--   Bind CN: `<name of your service user>@ad.company`
--   Bind Password: The password you've given the user above
--   Base DN: The base DN which you want authentik to sync
--   Property mappings: Control/Command-select all Mappings which start with "authentik default LDAP" and "authentik default Active Directory"
--   Group property mappings: Select "authentik default LDAP Mapping: Name"
+- Bind CN: `<name of your service user>@ad.company`
+- Bind Password: The password you've given the user above
+- Base DN: The base DN which you want authentik to sync
+- Property mappings: Control/Command-select all Mappings which start with "authentik default LDAP" and "authentik default Active Directory"
+- Group property mappings: Select "authentik default LDAP Mapping: Name"
 
 Additional settings that might need to be adjusted based on the setup of your domain:
 
--   Group: If enabled, all synchronized groups will be given this group as a parent.
--   Addition User/Group DN: Additional DN which is _prepended_ to your Base DN configured above to limit the scope of synchronization for Users and Groups
--   User object filter: Which objects should be considered users. For Active Directory set it to `(&(objectClass=user)(!(objectClass=computer)))` to exclude Computer accounts.
--   Group object filter: Which objects should be considered groups.
--   Group membership field: Which user field saves the group membership
--   Object uniqueness field: A user field which contains a unique Identifier
+- Group: If enabled, all synchronized groups will be given this group as a parent.
+- Addition User/Group DN: Additional DN which is _prepended_ to your Base DN configured above to limit the scope of synchronization for Users and Groups
+- User object filter: Which objects should be considered users. For Active Directory set it to `(&(objectClass=user)(!(objectClass=computer)))` to exclude Computer accounts.
+- Group object filter: Which objects should be considered groups.
+- Group membership field: Which user field saves the group membership
+- Object uniqueness field: A user field which contains a unique Identifier
 
 After you save the source, a synchronization will start in the background. When its done, you can see the summary under Dashboards -> System Tasks.
 

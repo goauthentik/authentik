@@ -20,10 +20,10 @@ Prizes? Why, Yes! We've got a total prize pool of $5000 and a bunch of cool auth
 
 July 26-30, 2023
 
--   Kickoff meeting is on Wednesday, July 26th, at 8:00am Pacific USA (UTC -7), 5:00pm in Central Europe (UTC +2), and 8:30pm in Mumbai (UTC +5.30)
--   Check-in calls on Thursday and Friday, for one hour, at the same times as above.
--   Wrap-up and first demos on Saturday, starting at same times as above.
--   Final demos, voting, and awards on Sunday! Yep, same times as above.
+- Kickoff meeting is on Wednesday, July 26th, at 8:00am Pacific USA (UTC -7), 5:00pm in Central Europe (UTC +2), and 8:30pm in Mumbai (UTC +5.30)
+- Check-in calls on Thursday and Friday, for one hour, at the same times as above.
+- Wrap-up and first demos on Saturday, starting at same times as above.
+- Final demos, voting, and awards on Sunday! Yep, same times as above.
 
 ## Where
 
@@ -35,20 +35,20 @@ If you already know what you and/or your team want to work on, you can open an [
 
 During the Kickoff call, there will be time to peruse existing Issues and add emotes to indicate your interest in working on it (or having it worked on!)
 
--   🚀 I want to work on this
--   ❤️ I want to see this worked on
+- 🚀 I want to work on this
+- ❤️ I want to see this worked on
 
 ## Agenda
 
--   **Wednesday, July 26th**: Kickoff, voting for topics to work on, teams formed, participants select the Issue/team they are going to work on, and get their environment set up. After the online kickoff, you can start your work at any time.
+- **Wednesday, July 26th**: Kickoff, voting for topics to work on, teams formed, participants select the Issue/team they are going to work on, and get their environment set up. After the online kickoff, you can start your work at any time.
 
--   **Thursday July 27th**: HackDay #1: participants working on their PRs, a one-hour Check-in call
+- **Thursday July 27th**: HackDay #1: participants working on their PRs, a one-hour Check-in call
 
--   **Friday, July 28th**: HackDay #2: participants working on their PRs, a one-hour Check-in call
+- **Friday, July 28th**: HackDay #2: participants working on their PRs, a one-hour Check-in call
 
--   **Saturday, July 29th**: an online “meeting” to do wrap-up, participants sign-up for demo slots (Saturday and Sunday slots available), then some demos
+- **Saturday, July 29th**: an online “meeting” to do wrap-up, participants sign-up for demo slots (Saturday and Sunday slots available), then some demos
 
--   **Sunday, July 30th**: rest of the demos, votes, and awards
+- **Sunday, July 30th**: rest of the demos, votes, and awards
 
 ## About that money...
 

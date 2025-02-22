@@ -1,11 +1,8 @@
 ---
 title: Integrate with VMware vCenter
 sidebar_label: VMware vCenter
+support_level: community
 ---
-
-# VMware vCenter
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is vCenter
 
@@ -19,8 +16,12 @@ Integration with authentik requires VMware vCenter 8.03 or newer.
 
 The following placeholders will be used in the examples below:
 
--   `vcenter.company` is the FQDN of the vCenter server.
--   `authentik.company` is the FQDN of the authentik install.
+- `vcenter.company` is the FQDN of the vCenter server.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik configuration
 
@@ -32,8 +33,8 @@ Create an application and an OAuth2/OpenID provider, using the authentik Wizard.
 
     Create the application with these settings:
 
-    -   Select OIDC as the provider type.
-    -   Ensure that the **Redirect URI Setting** is left empty.
+    - Select OIDC as the provider type.
+    - Ensure that the **Redirect URI Setting** is left empty.
 
     Create the provider with these settings:
 

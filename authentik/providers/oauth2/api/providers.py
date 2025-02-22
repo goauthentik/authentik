@@ -73,7 +73,8 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             "sub_mode",
             "property_mappings",
             "issuer_mode",
-            "jwks_sources",
+            "jwt_federation_sources",
+            "jwt_federation_providers",
         ]
         extra_kwargs = ProviderSerializer.Meta.extra_kwargs
 

@@ -1,0 +1,96 @@
+# Re-usable workflow for a single-architecture build
+name: Single-arch Container build
+
+on:
+  workflow_call:
+    inputs:
+      image_name:
+        required: true
+        type: string
+      image_arch:
+        required: true
+        type: string
+      runs-on:
+        required: true
+        type: string
+      registry_dockerhub:
+        default: false
+        type: boolean
+      registry_ghcr:
+        default: false
+        type: boolean
+      release:
+        default: false
+        type: boolean
+    outputs:
+      image-digest:
+        value: ${{ jobs.build.outputs.image-digest }}
+
+jobs:
+  build:
+    name: Build ${{ inputs.image_arch }}
+    runs-on: ${{ inputs.runs-on }}
+    outputs:
+      image-digest: ${{ steps.push.outputs.digest }}
+    permissions:
+      # Needed to upload container images to ghcr.io
+      packages: write
+      # Needed for attestation
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-qemu-action@v3.4.0
+      - uses: docker/setup-buildx-action@v3
+      - name: prepare variables
+        uses: ./.github/actions/docker-push-variables
+        id: ev
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        with:
+          image-name: ${{ inputs.image_name }}
+          image-arch: ${{ inputs.image_arch }}
+          release: ${{ inputs.release }}
+      - name: Login to Docker Hub
+        if: ${{ inputs.registry_dockerhub }}
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Login to GitHub Container Registry
+        if: ${{ inputs.registry_ghcr }}
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: make empty clients
+        if: ${{ inputs.release }}
+        run: |
+          mkdir -p ./gen-ts-api
+          mkdir -p ./gen-go-api
+      - name: generate ts client
+        if: ${{ !inputs.release }}
+        run: make gen-client-ts
+      - name: Build Docker Image
+        uses: docker/build-push-action@v6
+        id: push
+        with:
+          context: .
+          push: ${{ steps.ev.outputs.shouldPush == 'true' }}
+          secrets: |
+            GEOIPUPDATE_ACCOUNT_ID=${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}
+            GEOIPUPDATE_LICENSE_KEY=${{ secrets.GEOIPUPDATE_LICENSE_KEY }}
+          build-args: |
+            ${{ steps.ev.outputs.imageBuildArgs }}
+          tags: ${{ steps.ev.outputs.imageTags }}
+          platforms: linux/${{ inputs.image_arch }}
+          cache-from: type=registry,ref=${{ steps.ev.outputs.attestImageNames }}:buildcache-${{ inputs.image_arch }}
+          cache-to: ${{ steps.ev.outputs.cacheTo }}
+      - uses: actions/attest-build-provenance@v2
+        id: attest
+        if: ${{ steps.ev.outputs.shouldPush == 'true' }}
+        with:
+          subject-name: ${{ steps.ev.outputs.attestImageNames }}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true

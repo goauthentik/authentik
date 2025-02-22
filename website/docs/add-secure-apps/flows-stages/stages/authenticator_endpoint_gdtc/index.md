@@ -1,11 +1,8 @@
 ---
 title: Endpoint Authenticator Google Device Trust Connector Stage
----
-
-<span class="badge badge--primary">Enterprise</span>
-<span class="badge badge--preview">Preview</span>
-<span class="badge badge--version">authentik 2024.10+</span>
-
+authentik_version: "2024.10"
+authentik_preview: true
+authentik_enterprise: true
 ---
 
 With this stage, authentik can validate users' Chrome browsers and ensure that users' devices are compliant and up-to-date.
@@ -18,10 +15,11 @@ This stage only works with Google Chrome, as it relies on the [Chrome Verified A
 
 The main steps to set up your Google workspace are as follows:
 
-1. [Create your Google Cloud Project](#create-a-google-cloud-project)
-2. [Create a service account](#create-a-service-account)
-3. [Set credentials for the service account](#set-credentials-for-the-service-account)
-4. [Define access and scope in the Admin Console](#set-credentials-for-the-service-account)
+- [Configuration](#configuration)
+    - [Create a Google cloud project](#create-a-google-cloud-project)
+    - [Create a service account](#create-a-service-account)
+    - [Set credentials for the service account](#set-credentials-for-the-service-account)
+    - [Create the stage](#create-the-stage)
 
 For detailed instructions, refer to Google documentation.
 
@@ -41,9 +39,9 @@ For detailed instructions, refer to Google documentation.
 3. On the **IAM** page, click **Service Accounts** in the left navigation pane.
 4. At the top of the **Service Accounts** page, click **Create Service Account**.
 
--   Under **Service account details** page, define the **Name** and **Description** for the new service account, and then click **Create and Continue**.
--   Under **Grant this service account access to project** you do not need to define a role, so click **Continue**.
--   Under **Grant users access to project** you do not need to define a role, so click **Done** to complete the creation of the service account.
+- Under **Service account details** page, define the **Name** and **Description** for the new service account, and then click **Create and Continue**.
+- Under **Grant this service account access to project** you do not need to define a role, so click **Continue**.
+- Under **Grant users access to project** you do not need to define a role, so click **Done** to complete the creation of the service account.
 
 ### Set credentials for the service account
 
@@ -76,4 +74,4 @@ For detailed instructions, refer to Google documentation.
 
 4. Click **Finish**.
 
-After creating the stage, it can be used in any flow. Compared to other Authenticator stages, this stage does not require enrollment. Instead of adding an [Authenticator Validation Stage](../authenticator_validate/index.md), this stage only verifies the users' browser.
+After creating the stage, it can be used in any flow. Compared to other Authenticator stages, this stage does not require enrollment. Instead of adding an [Authenticator Validation Stage](../authenticator_validate/index.mdx), this stage only verifies the users' browser.

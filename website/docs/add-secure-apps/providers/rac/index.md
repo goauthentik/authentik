@@ -1,9 +1,6 @@
 ---
 title: Remote Access Control (RAC) Provider
----
-
-<span class="badge badge--primary">Enterprise</span>
-
+authentik_enterprise: true
 ---
 
 :::info
@@ -56,6 +53,6 @@ A new connection is created every time an endpoint is selected in the [User Inte
 
 The following features are currently supported:
 
--   Bi-directional clipboard
--   Audio redirection (from remote machine to browser)
--   Resizing
+- Bi-directional clipboard
+- Audio redirection (from remote machine to browser)
+- Resizing

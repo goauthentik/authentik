@@ -6,11 +6,11 @@ Source property mappings allow you to modify or gather extra information from so
 
 This page is an overview of how property mappings work. For information about specific protocol, please refer to each protocol page:
 
--   [Kerberos](../protocols/kerberos/#kerberos-source-property-mappings)
--   [LDAP](../protocols/ldap/index.md#ldap-source-property-mappings)
--   [OAuth](../protocols/oauth/index.md#oauth-source-property-mappings)
--   [SAML](../protocols/saml/index.md#saml-source-property-mappings)
--   [SCIM](../protocols/scim/index.md#scim-source-property-mappings)
+- [Kerberos](../protocols/kerberos/#kerberos-source-property-mappings)
+- [LDAP](../protocols/ldap/index.md#ldap-source-property-mappings)
+- [OAuth](../protocols/oauth/index.mdx#oauth-source-property-mappings)
+- [SAML](../protocols/saml/index.md#saml-source-property-mappings)
+- [SCIM](../protocols/scim/index.md#scim-source-property-mappings)
 
 ## Create a custom source property mapping
 
@@ -36,7 +36,7 @@ return {
 }
 ```
 
-You can see that the expression returns a Python dictionary. The dictionary keys must match [User properties](../../user/user_ref.md#object-properties) or [Group properties](../../groups/group_ref.md#object-properties). Note that for users, `ak_groups` and `group_attributes` cannot be set.
+You can see that the expression returns a Python dictionary. The dictionary keys must match [User properties](../../user/user_ref.mdx#object-properties) or [Group properties](../../groups/group_ref.md#object-properties). Note that for users, `ak_groups` and `group_attributes` cannot be set.
 
 See each source documentation for a reference of the available data. See the authentik [expressions documentation](./expressions.md) for available data and functions.
 
@@ -57,8 +57,8 @@ A user or group object is constructed as follows:
 
 1.  The source provides initial properties based on commonly used data.
 2.  Each property mapping associated with the source is run and results are merged into the previous properties.
-    -   If a property mapping throws an error, the process is aborted. If that happens inside a synchronization process, the object is skipped. If it happens during an enrollment or authentication flow, the flow is cancelled.
-    -   If a property mapping sets one attribute to `None`, that attribute is then discarded.
+    - If a property mapping throws an error, the process is aborted. If that happens inside a synchronization process, the object is skipped. If it happens during an enrollment or authentication flow, the flow is cancelled.
+    - If a property mapping sets one attribute to `None`, that attribute is then discarded.
 3.  If the `username` field is not set for user objects, or the `name` field is not set for group objects, the process is aborted.
 4.  The object is created or updated. The `attributes` property is merged with existing data if the object already exists.
 

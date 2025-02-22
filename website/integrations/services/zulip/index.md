@@ -1,11 +1,8 @@
 ---
 title: Integrate with Zulip
 sidebar_label: Zulip
+support_level: community
 ---
-
-# Zulip
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Zulip
 
@@ -16,18 +13,22 @@ sidebar_label: Zulip
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `authentik.company` is the FQDN of the authentik install.
--   `zulip.company` is the FQDN of the Zulip instance.
+- `zulip.company` is the FQDN of the Zulip instance.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 Create an application in authentik and note the slug, as this will be used later. Create a SAML provider with the following parameters:
 
--   ACS URL: `https://zulip.company/complete/saml/`
--   Issuer: `https://authentik.company`
--   Service Provider Binding: `Post`
--   Signing Keypair: Select any certificate you have.
--   Property mappings: Select all Managed mappings.
+- ACS URL: `https://zulip.company/complete/saml/`
+- Issuer: `https://authentik.company`
+- Service Provider Binding: `Post`
+- Signing Keypair: Select any certificate you have.
+- Property mappings: Select all Managed mappings.
 
 ## Zulip Configuration
 
@@ -71,6 +72,6 @@ Remember to restart Zulip.
 
 Please refer to the following for further information:
 
--   https://zulip.com/
--   https://zulip.readthedocs.io
--   https://chat.zulip.org/ (Official public Zulip Chat instance)
+- https://zulip.com/
+- https://zulip.readthedocs.io
+- https://chat.zulip.org/ (Official public Zulip Chat instance)

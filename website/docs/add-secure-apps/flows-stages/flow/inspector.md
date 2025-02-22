@@ -2,7 +2,7 @@
 title: Flow Inspector
 ---
 
-The flow inspector, introduced in 2021.10, allows administrators to visually determine how custom flows work, inspect the current [flow context](./context/index.md), and investigate issues.
+The flow inspector, introduced in 2021.10, allows administrators to visually determine how custom flows work, inspect the current [flow context](./context/index.mdx), and investigate issues.
 
 As shown in the screenshot below, the flow inspector displays next to the selected flow (in this case, "Change Password"), with [information](#flow-inspector-details) about that specific flow and flow context.
 
@@ -14,13 +14,13 @@ As shown in the screenshot below, the flow inspector displays next to the select
 Be aware that when running a flow with the inspector enabled, the flow is still executed normally. This means that for example, a [User write](../stages/user_write.md) stage _will_ write user data.
 :::
 
-### Permissions and debug mode
-
-By default, the inspector is only enabled when the currently authenticated user is a superuser, OR if a user has been granted the [permission](../../../users-sources/access-control/permissions.md) **Can inspect a Flow's execution** (or is a user assigned to role with the permission).
+The inspector is accessible to users that have been granted the [permission](../../../users-sources/access-control/permissions.md) **Can inspect a Flow's execution**, either directly or through a role. Superusers can always inspect flow executions.
 
 When developing authentik with the debug mode enabled, the inspector is enabled by default and can be accessed by both unauthenticated users and standard users. However the debug mode should only be used for the development of authentik. So unless you are a developer and need the more verbose error information, the best practice for using the flow inspector is to assign the permission, not use debug mode.
 
-### Open the Flow Inspector
+Starting with authentik 2025.2, for users with appropriate permissions to access the inspector a button is shown in the top right of the [default flow executor](./executors/if-flow.md) which opens the flow inspector.
+
+### Manually running a flow with the inspector
 
 1. To access the inspector, open the Admin interface and navigate to **Flows and Stages -> Flows**.
 
@@ -35,10 +35,8 @@ Alternatively, a user with the correct permission can launch the inspector by ad
 :::info
 Troubleshooting:
 
--   If the flow inspector does not launch and a "Bad request" error displays, this is likely either because you selected a flow that is not defined in your instance or the flow has a policy bound directly to it that prevents access, so the inspector won't open because the flow can't run results.
--   If the flow inspector launches but is empty, you can refresh the browser or advance the flow to load the inspector. This can occur when a race condition happens (the inspector tries to fetch the data before the flow plan is fully planned and as such the panel just shows blank).
-
-:::
+- If the flow inspector does not launch and a "Bad request" error displays, this is likely either because you selected a flow that has a policy bound directly to it that prevents access (so the inspector won't open because the flow can't be executed) or because you do not have view permission on that specific flow.
+  :::
 
 ### Flow Inspector Details
 

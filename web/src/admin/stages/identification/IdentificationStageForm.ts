@@ -4,7 +4,6 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first, groupBy } from "@goauthentik/common/utils";
 import "@goauthentik/elements/ak-checkbox-group/ak-checkbox-group.js";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -17,8 +16,6 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import {
     FlowsInstancesListDesignationEnum,
     IdentificationStage,
-    Source,
-    SourcesApi,
     Stage,
     StagesApi,
     StagesCaptchaListRequest,
@@ -26,31 +23,7 @@ import {
     UserFieldsEnum,
 } from "@goauthentik/api";
 
-async function sourcesProvider(page = 1, search = "") {
-    const sources = await new SourcesApi(DEFAULT_CONFIG).sourcesAllList({
-        ordering: "slug",
-        pageSize: 20,
-        search: search.trim(),
-        page,
-    });
-
-    return {
-        pagination: sources.pagination,
-        options: sources.results
-            .filter((source) => source.component !== "")
-            .map((source) => [source.pk, source.name, source.name, source]),
-    };
-}
-
-function makeSourcesSelector(instanceSources: string[] | undefined) {
-    const localSources = instanceSources ? new Set(instanceSources) : undefined;
-
-    return localSources
-        ? ([pk, _]: DualSelectPair) => localSources.has(pk)
-        : // Creating a new instance, auto-select built-in source only when no other sources exist
-          ([_0, _1, _2, source]: DualSelectPair<Source>) =>
-              source !== undefined && source.component === "";
-}
+import { sourcesProvider, sourcesSelector } from "./IdentificationStageFormHelpers.js";
 
 @customElement("ak-stage-identification-form")
 export class IdentificationStageForm extends BaseStageForm<IdentificationStage> {
@@ -259,7 +232,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                     >
                         <ak-dual-select-dynamic-selected
                             .provider=${sourcesProvider}
-                            .selector=${makeSourcesSelector(this.instance?.sources)}
+                            .selector=${sourcesSelector(this.instance?.sources)}
                             available-label="${msg("Available Sources")}"
                             selected-label="${msg("Selected Sources")}"
                         ></ak-dual-select-dynamic-selected>

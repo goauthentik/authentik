@@ -45,6 +45,9 @@ export class HorizontalLightComponent<T> extends AKElement {
     @property({ attribute: false })
     value?: T;
 
+    @property({ type: String })
+    inputHint = "";
+
     renderControl() {
         throw new Error("Must be implemented in a subclass");
     }
@@ -69,7 +72,7 @@ export class HorizontalLightComponent<T> extends AKElement {
             .errorMessages=${this.errorMessages}
             ?invalid=${this.invalid}
             >
-              ${this.renderControl()} 
+              ${this.renderControl()}
               ${this.renderHelp()}
         </ak-form-element-horizontal> `;
     }

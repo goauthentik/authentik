@@ -56,10 +56,10 @@ type APIController struct {
 func NewAPIController(akURL url.URL, token string) *APIController {
 	rsp := sentry.StartSpan(context.Background(), "authentik.outposts.init")
 
-	config := api.NewConfiguration()
-	config.Host = akURL.Host
-	config.Scheme = akURL.Scheme
-	config.HTTPClient = &http.Client{
+	apiConfig := api.NewConfiguration()
+	apiConfig.Host = akURL.Host
+	apiConfig.Scheme = akURL.Scheme
+	apiConfig.HTTPClient = &http.Client{
 		Transport: web.NewUserAgentTransport(
 			constants.OutpostUserAgent(),
 			web.NewTracingTransport(
@@ -68,10 +68,15 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 			),
 		),
 	}
-	config.AddDefaultHeader("Authorization", fmt.Sprintf("Bearer %s", token))
+	apiConfig.Servers = api.ServerConfigurations{
+		{
+			URL: fmt.Sprintf("%sapi/v3", akURL.Path),
+		},
+	}
+	apiConfig.AddDefaultHeader("Authorization", fmt.Sprintf("Bearer %s", token))
 
 	// create the API client, with the transport
-	apiClient := api.NewAPIClient(config)
+	apiClient := api.NewAPIClient(apiConfig)
 
 	log := log.WithField("logger", "authentik.outpost.ak-api-controller")
 

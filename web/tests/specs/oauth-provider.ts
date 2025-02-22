@@ -22,13 +22,13 @@ describe("Configure Oauth2 Providers", () => {
 
         await reachTheProvider();
 
-        await $("ak-wizard-page-type-create").waitForDisplayed();
-        await $('div[data-ouid-component-name="oauth2provider"]').scrollIntoView();
-        await $('div[data-ouid-component-name="oauth2provider"]').click();
+        await $(">>>ak-wizard-page-type-create").waitForDisplayed();
+        await $('>>>div[data-ouid-component-name="oauth2provider"]').scrollIntoView();
+        await $('>>>div[data-ouid-component-name="oauth2provider"]').click();
         await ProviderWizardView.nextButton.click();
         await ProviderWizardView.pause();
 
-        return await $('ak-form-element-horizontal[name="name"]').$("input");
+        return await $('>>>ak-form-element-horizontal[name="name"]').$(">>>input");
         await ProviderWizardView.oauth.setAuthorizationFlow(
             "default-provider-authorization-explicit-consent",
         );

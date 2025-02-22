@@ -1,11 +1,8 @@
 ---
 title: Integrate with pgAdmin
 sidebar_label: pgAdmin
+support_level: community
 ---
-
-# pgAdmin
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is pgAdmin
 
@@ -14,88 +11,93 @@ sidebar_label: pgAdmin
 > -- https://www.pgadmin.org/
 
 :::note
-This is based on authentik 2022.3.3 and pgAdmin4 6.19
+This is based on authentik 2024.12.2 and pgAdmin4 8.14
 :::
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `pgadmin.company` is the FQDN of pgAdmin.
--   `authentik.company` is the FQDN of authentik.
-
-### Step 1: Create authentik Provider
-
-In authentik, under _Providers_, create an _OAuth2/OpenID Provider_ with these settings:
-
-**Provider Settings**
-
--   Name: pgAdmin
--   Client ID: Copy and Save this for Later
--   Client Secret: Copy and Save this for later
--   Redirect URIs/Origins: `http://pgadmin.company/oauth2/authorize`
--   Signing Key: Select any available key
-
-### Step 2: Create authentik Application
-
-In authentik, create an application which uses this provider. Optionally apply access restrictions to the application using policy bindings.
-
--   Name: pgAdmin
--   Slug: pgadmin
--   Provider: pgAdmin
--   Launch URL: https://pgadmin.company
-
-### Step 3: Configure pgAdmin
-
-All settings for OAuth in pgAdmin are configured in the `config_local.py` file. This file can usually be found in the path `/pgadmin4/config_local.py`
+- `pgadmin.company` is the FQDN of the pgAdmin installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 :::note
-More information on that file can be found in the official pgAdmin [documentation](https://www.pgadmin.org/docs/pgadmin4/development/config_py.html)
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-Copy the following code into the `config_local.py` file and replace all placeholders and FQDN placeholders
-:::note
-If the `config_local.py` file does not exist, it needs to be created in the `/pgadmin4/` directory.
-:::
+# authentik configuration
 
-```py
-AUTHENTICATION_SOURCES = ['oauth2', 'internal']
-OAUTH2_AUTO_CREATE_USER = True
-OAUTH2_CONFIG = [{
-	'OAUTH2_NAME' : 'authentik',
-	'OAUTH2_DISPLAY_NAME' : '<display-name>',
-	'OAUTH2_CLIENT_ID' : '<client-id>',
-	'OAUTH2_CLIENT_SECRET' : '<client-secret>',
-	'OAUTH2_TOKEN_URL' : 'https://authentik.company/application/o/token/',
-	'OAUTH2_AUTHORIZATION_URL' : 'https://authentik.company/application/o/authorize/',
-	'OAUTH2_API_BASE_URL' : 'https://authentik.company/',
-	'OAUTH2_USERINFO_ENDPOINT' : 'https://authentik.company/application/o/userinfo/',
-	'OAUTH2_SERVER_METADATA_URL' : 'https://authentik.company/application/o/<app-slug>/.well-known/openid-configuration',
-	'OAUTH2_SCOPE' : 'openid email profile',
-	'OAUTH2_ICON' : '<fontawesome-icon>',
-	'OAUTH2_BUTTON_COLOR' : '<button-color>'
-}]
+1. From the Admin interface, navigate to **Applications** -> **Applications**.
+2. Use the wizard to create a new application and provider. During this process:
+    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
+    - Set a `Strict` redirect URI to `https://pgadmin.company/oauth2/authorize`.
+    - Select any available signing key.
+
+## pgAdmin OAuth Configuration
+
+To configure OAuth in pgAdmin, you can either use the `config_local.py` file or set environment variables if you are deploying pgAdmin in a containerized setup.
+
+### Using `config_local.py`
+
+1. Locate or create the `config_local.py` file in the `/pgadmin4/` directory.
+
+    - If the file does not exist, create it manually.
+
+2. Add the following configuration settings to `config_local.py`:
+
+    ```python
+    AUTHENTICATION_SOURCES = ['oauth2', 'internal']
+    OAUTH2_AUTO_CREATE_USER = True
+    OAUTH2_CONFIG = [{
+        'OAUTH2_NAME': 'authentik',
+        'OAUTH2_DISPLAY_NAME': 'authentik',
+        'OAUTH2_CLIENT_ID': '<Client ID from authentik>',
+        'OAUTH2_CLIENT_SECRET': '<Client secret from authentik>',
+        'OAUTH2_TOKEN_URL': 'https://authentik.company/application/o/token/',
+        'OAUTH2_AUTHORIZATION_URL': 'https://authentik.company/application/o/authorize/',
+        'OAUTH2_API_BASE_URL': 'https://authentik.company/',
+        'OAUTH2_USERINFO_ENDPOINT': 'https://authentik.company/application/o/userinfo/',
+        'OAUTH2_SERVER_METADATA_URL': 'https://authentik.company/application/o/<App Slug>/.well-known/openid-configuration',
+        'OAUTH2_SCOPE': 'openid email profile',
+        'OAUTH2_ICON': '<Fontawesome icon key (e.g., fa-key)>',
+        'OAUTH2_BUTTON_COLOR': '<Hexadecimal color code for the login button>'
+    }]
+    ```
+
+3. Save the file and restart pgAdmin for the changes to take effect.
+
+    :::note
+    You must restart pgAdmin every time you make changes to `config_local.py`.
+    :::
+
+### Using Environment Variables for Containerized Deployments
+
+For deployments using Docker or Kubernetes, you can configure OAuth using the following environment variables:
+
+1. Set these environment variables in your container:
+
+```bash
+PGADMIN_CONFIG_AUTHENTICATION_SOURCES="['oauth2', 'internal']"
+PGADMIN_CONFIG_OAUTH2_AUTO_CREATE_USER=True
+PGADMIN_CONFIG_OAUTH2_CONFIG="[{'OAUTH2_NAME':'authentik','OAUTH2_DISPLAY_NAME':'Login with authentik','OAUTH2_CLIENT_ID':'<Client ID from authentik>','OAUTH2_CLIENT_SECRET':'<Client secret from authentik>','OAUTH2_TOKEN_URL':'https://authentik.company/application/o/token/','OAUTH2_AUTHORIZATION_URL':'https://authentik.company/application/o/authorize/','OAUTH2_API_BASE_URL':'https://authentik.company/','OAUTH2_USERINFO_ENDPOINT':'https://authentik.company/application/o/userinfo/','OAUTH2_SERVER_METADATA_URL':'https://authentik.company/application/o/<App Slug>/.well-known/openid-configuration','OAUTH2_SCOPE':'openid email profile','OAUTH2_ICON':'<Fontawesome icon key (e.g., fa-key)>','OAUTH2_BUTTON_COLOR':'<Hexadecimal color code for the login button>'}]"
 ```
 
-In the code above the following placeholders have been used:
+### General Notes
 
--   `<display-name>`: The name that is displayed on the Login Button
--   `<client-id>`: The Client ID from step 1
--   `<client-secret>`: The Client Secret from step 1
--   `<app-slug>`: The App Slug from step 2, it should be `pgadmin` if you did not change it
--   `<fontawesome-icon>`: An icon name from [fontawesome](https://fontawesome.com). Only brand icons seem to be supported. This icon is displayed in front of the `<display-name>`. E.g.: _fa-github_.
--   `<button-color>`: Sets the color of the Login Button. Should be in Hex format, E.g.: _#fd4b2d_
+- To **only allow OAuth2 login**, set:
 
-:::note
-To only allow authentication via authentik set `AUTHENTICATION_SOURCES` to _['oauth2']_. This should **only** be done once at least one user registered via authentik has been made an admin in pgAdmin.
-:::
+    ```python
+    AUTHENTICATION_SOURCES = ['oauth2']
+    ```
 
-:::note
-To disable user creation on pgAdmin, set `OAUTH2_AUTO_CREATE_USER` to _False_
-:::
+    Ensure that you promote at least one user to an admin before disabling the internal authentication.
 
-Finally, restart pgAdmin to apply the changes.
+- To **disable automatic user creation**, set:
+    ```python
+    OAUTH2_AUTO_CREATE_USER = False
+    ```
+    Setting this value to `False` disables automatic user creation. This ensures that only the first signed-in user is registered.
 
-:::note
-pgAdmin needs to be restarted **every** time changes to `config_local.py` are made
-:::
+## Configuration verification
+
+To confirm that authentik is properly configured with pgAdmin, log out and log back in via authentik. A new button should have appeared on the login page.

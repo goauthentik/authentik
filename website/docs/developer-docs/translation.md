@@ -18,9 +18,9 @@ To simplify translation you can use https://www.transifex.com/authentik/authenti
 
 ### Prerequisites
 
--   Node (any recent version should work, we use 16.x to build)
--   Make (again, any recent version should work)
--   Docker
+- Node (any recent version should work, we use 16.x to build)
+- Make (again, any recent version should work)
+- Docker
 
 Run `npm i` in the `/web` folder to install all dependencies.
 

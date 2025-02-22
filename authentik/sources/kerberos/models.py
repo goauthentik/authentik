@@ -12,8 +12,9 @@ from django.db.models.fields import b64decode
 from django.http import HttpRequest
 from django.shortcuts import reverse
 from django.templatetags.static import static
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
-from kadmin import KAdmin
+from kadmin import KAdmin, KAdminApiVersion
 from kadmin.exceptions import PyKAdminException
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
@@ -36,6 +37,12 @@ LOGGER = get_logger()
 _kadmin_connections: dict[str, Any] = {}
 
 
+class KAdminType(models.TextChoices):
+    MIT = "MIT"
+    HEIMDAL = "Heimdal"
+    OTHER = "other"
+
+
 class KerberosSource(Source):
     """Federate Kerberos realm with authentik"""
 
@@ -43,6 +50,9 @@ class KerberosSource(Source):
     krb5_conf = models.TextField(
         blank=True,
         help_text=_("Custom krb5.conf to use. Uses the system one by default"),
+    )
+    kadmin_type = models.TextField(
+        choices=KAdminType.choices, default=KAdminType.OTHER, help_text=_("KAdmin server type")
     )
 
     sync_users = models.BooleanField(
@@ -164,11 +174,17 @@ class KerberosSource(Source):
     def get_base_user_properties(self, principal: str, **kwargs):
         localpart, _ = principal.rsplit("@", 1)
 
-        return {
+        properties = {
             "username": localpart,
             "type": UserTypes.INTERNAL,
             "path": self.get_user_path(),
         }
+
+        if "principal_obj" in kwargs:
+            princ_expiry = kwargs["principal_obj"].expire_time
+            properties["is_active"] = princ_expiry is None or princ_expiry > now()
+
+        return properties
 
     def get_base_group_properties(self, group_id: str, **kwargs):
         return {
@@ -199,6 +215,14 @@ class KerberosSource(Source):
         return str(conf_path)
 
     def _kadmin_init(self) -> KAdmin | None:
+        api_version = None
+        match self.kadmin_type:
+            case KAdminType.MIT:
+                api_version = KAdminApiVersion.Version4
+            case KAdminType.HEIMDAL:
+                api_version = KAdminApiVersion.Version2
+            case KAdminType.OTHER:
+                api_version = KAdminApiVersion.Version2
         # kadmin doesn't use a ccache for its connection
         # as such, we don't need to create a separate ccache for each source
         if not self.sync_principal:
@@ -207,6 +231,7 @@ class KerberosSource(Source):
             return KAdmin.with_password(
                 self.sync_principal,
                 self.sync_password,
+                api_version=api_version,
             )
         if self.sync_keytab:
             keytab = self.sync_keytab
@@ -218,11 +243,13 @@ class KerberosSource(Source):
             return KAdmin.with_keytab(
                 self.sync_principal,
                 keytab,
+                api_version=api_version,
             )
         if self.sync_ccache:
             return KAdmin.with_ccache(
                 self.sync_principal,
                 self.sync_ccache,
+                api_version=api_version,
             )
         return None
 

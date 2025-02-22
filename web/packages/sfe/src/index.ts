@@ -20,6 +20,9 @@ interface GlobalAuthentik {
     brand: {
         branding_logo: string;
     };
+    api: {
+        base: string;
+    };
 }
 
 function ak(): GlobalAuthentik {
@@ -41,7 +44,7 @@ class SimpleFlowExecutor {
     }
 
     get apiURL() {
-        return `/api/v3/flows/executor/${this.flowSlug}/?query=${encodeURIComponent(window.location.search.substring(1))}`;
+        return `${ak().api.base}api/v3/flows/executor/${this.flowSlug}/?query=${encodeURIComponent(window.location.search.substring(1))}`;
     }
 
     start() {
@@ -165,7 +168,7 @@ class IdentificationStage extends Stage<IdentificationChallenge> {
                 ${
                     this.challenge.applicationPre
                         ? `<p>
-                              Login to continue to ${this.challenge.applicationPre}.
+                              Log in to continue to ${this.challenge.applicationPre}.
                           </p>`
                         : ""
                 }

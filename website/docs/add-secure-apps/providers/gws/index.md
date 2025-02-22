@@ -1,16 +1,12 @@
 ---
 title: Google Workspace provider
----
-
-<span class="badge badge--primary">Enterprise</span>
-<span class="badge badge--preview">Preview</span>
-
+authentik_enterprise: true
 ---
 
 With the Google Workspace provider, authentik serves as the single source of truth for all users and groups, when using Google products like Gmail.
 
--   For instructions to configure your Google Workspace to integrate with authentik, refer to [Configure Google Workspace](./setup-gws.md).
--   For instructions to add Google Workspace as a provider, refer to [Create a Google Workspace provider](./add-gws-provider.md).
+- For instructions to configure your Google Workspace to integrate with authentik, refer to [Configure Google Workspace](./setup-gws.md).
+- For instructions to add Google Workspace as a provider, refer to [Create a Google Workspace provider](./add-gws-provider.md).
 
 ## About using Google Workspace with authentik
 
@@ -38,13 +34,13 @@ When a property mapping has an invalid expression, it will cause the sync to sto
 
 There are a couple of considerations in regard to how authentik data is mapped to google workspace user/group data by default.
 
--   For users, authentik only saves the full display name, while Google requires given/family name separately, and as such authentik attempts to separate the full name automatically with the default User property mapping.
+- For users, authentik only saves the full display name, while Google requires given/family name separately, and as such authentik attempts to separate the full name automatically with the default User property mapping.
 
--   For groups, Google groups require an email address. Thus in authentik the provider configuration has an option **Default group email domain**, which will be used in conjunction with the group’s name to generate an email address. This can be customized with a property mapping.
+- For groups, Google groups require an email address. Thus in authentik the provider configuration has an option **Default group email domain**, which will be used in conjunction with the group’s name to generate an email address. This can be customized with a property mapping.
 
--   By default, authentik maps a user’s email, a user’s name, and their active status. For groups, the name is synced.
+- By default, authentik maps a user’s email, a user’s name, and their active status. For groups, the name is synced.
 
 Refer to Google documentation for further details on which fields data can be mapped to:
 
--   https://developers.google.com/admin-sdk/directory/reference/rest/v1/users#User
--   https://developers.google.com/admin-sdk/directory/reference/rest/v1/groups#Group
+- https://developers.google.com/admin-sdk/directory/reference/rest/v1/users#User
+- https://developers.google.com/admin-sdk/directory/reference/rest/v1/groups#Group

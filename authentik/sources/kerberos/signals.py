@@ -45,8 +45,10 @@ def kerberos_sync_password(sender, user: User, password: str, **_):
             continue
         with Krb5ConfContext(source):
             try:
-                source.connection().getprinc(user_source_connection.identifier).change_password(
-                    password
+                kadm = source.connection()
+                kadm.get_principal(user_source_connection.identifier).change_password(
+                    kadm,
+                    password,
                 )
             except PyKAdminException as exc:
                 LOGGER.warning("failed to set Kerberos password", exc=exc, source=source)

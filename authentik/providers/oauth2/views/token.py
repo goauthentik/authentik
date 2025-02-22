@@ -362,23 +362,9 @@ class TokenParams:
             },
         ).from_http(request, user=user)
 
-    def __post_init_client_credentials_jwt(self, request: HttpRequest):
-        assertion_type = request.POST.get(CLIENT_ASSERTION_TYPE, "")
-        if assertion_type != CLIENT_ASSERTION_TYPE_JWT:
-            LOGGER.warning("Invalid assertion type", assertion_type=assertion_type)
-            raise TokenError("invalid_grant")
-
-        client_secret = request.POST.get("client_secret", None)
-        assertion = request.POST.get(CLIENT_ASSERTION, client_secret)
-        if not assertion:
-            LOGGER.warning("Missing client assertion")
-            raise TokenError("invalid_grant")
-
-        token = None
-
-        source: OAuthSource | None = None
-        parsed_key: PyJWK | None = None
-
+    def __validate_jwt_from_source(
+        self, assertion: str
+    ) -> tuple[dict, OAuthSource] | tuple[None, None]:
         # Fully decode the JWT without verifying the signature, so we can get access to
         # the header.
         # Get the Key ID from the header, and use that to optimise our source query to only find
@@ -393,19 +379,23 @@ class TokenParams:
             LOGGER.warning("failed to parse JWT for kid lookup", exc=exc)
             raise TokenError("invalid_grant") from None
         expected_kid = decode_unvalidated["header"]["kid"]
-        for source in self.provider.jwks_sources.filter(
+        fallback_alg = decode_unvalidated["header"]["alg"]
+        token = source = None
+        for source in self.provider.jwt_federation_sources.filter(
             oidc_jwks__keys__contains=[{"kid": expected_kid}]
         ):
             LOGGER.debug("verifying JWT with source", source=source.slug)
             keys = source.oidc_jwks.get("keys", [])
             for key in keys:
+                if key.get("kid") and key.get("kid") != expected_kid:
+                    continue
                 LOGGER.debug("verifying JWT with key", source=source.slug, key=key.get("kid"))
                 try:
-                    parsed_key = PyJWK.from_dict(key)
+                    parsed_key = PyJWK.from_dict(key).key
                     token = decode(
                         assertion,
-                        parsed_key.key,
-                        algorithms=[key.get("alg")],
+                        parsed_key,
+                        algorithms=[key.get("alg")] if "alg" in key else [fallback_alg],
                         options={
                             "verify_aud": False,
                         },
@@ -414,12 +404,60 @@ class TokenParams:
                 # and not a public key
                 except (PyJWTError, ValueError, TypeError, AttributeError) as exc:
                     LOGGER.warning("failed to verify JWT", exc=exc, source=source.slug)
+        if token:
+            LOGGER.info("successfully verified JWT with source", source=source.slug)
+        return token, source
+
+    def __validate_jwt_from_provider(
+        self, assertion: str
+    ) -> tuple[dict, OAuth2Provider] | tuple[None, None]:
+        token = provider = _key = None
+        federated_token = AccessToken.objects.filter(
+            token=assertion, provider__in=self.provider.jwt_federation_providers.all()
+        ).first()
+        if federated_token:
+            _key, _alg = federated_token.provider.jwt_key
+            try:
+                token = decode(
+                    assertion,
+                    _key.public_key(),
+                    algorithms=[_alg],
+                    options={
+                        "verify_aud": False,
+                    },
+                )
+                provider = federated_token.provider
+                self.user = federated_token.user
+            except (PyJWTError, ValueError, TypeError, AttributeError) as exc:
+                LOGGER.warning(
+                    "failed to verify JWT", exc=exc, provider=federated_token.provider.name
+                )
+
+        if token:
+            LOGGER.info("successfully verified JWT with provider", provider=provider.name)
+        return token, provider
+
+    def __post_init_client_credentials_jwt(self, request: HttpRequest):
+        assertion_type = request.POST.get(CLIENT_ASSERTION_TYPE, "")
+        if assertion_type != CLIENT_ASSERTION_TYPE_JWT:
+            LOGGER.warning("Invalid assertion type", assertion_type=assertion_type)
+            raise TokenError("invalid_grant")
+
+        client_secret = request.POST.get("client_secret", None)
+        assertion = request.POST.get(CLIENT_ASSERTION, client_secret)
+        if not assertion:
+            LOGGER.warning("Missing client assertion")
+            raise TokenError("invalid_grant")
+
+        source = provider = None
+
+        token, source = self.__validate_jwt_from_source(assertion)
+        if not token:
+            token, provider = self.__validate_jwt_from_provider(assertion)
 
         if not token:
             LOGGER.warning("No token could be verified")
             raise TokenError("invalid_grant")
-
-        LOGGER.info("successfully verified JWT with source", source=source.slug)
 
         if "exp" in token:
             exp = datetime.fromtimestamp(token["exp"])
@@ -434,15 +472,16 @@ class TokenParams:
             raise TokenError("invalid_grant")
 
         self.__check_policy_access(app, request, oauth_jwt=token)
-        self.__create_user_from_jwt(token, app, source)
+        if not provider:
+            self.__create_user_from_jwt(token, app, source)
 
         method_args = {
             "jwt": token,
         }
         if source:
             method_args["source"] = source
-        if parsed_key:
-            method_args["jwk_id"] = parsed_key.key_id
+        if provider:
+            method_args["provider"] = provider
         Event.new(
             action=EventAction.LOGIN,
             **{
@@ -588,6 +627,7 @@ class TokenView(View):
         response = {
             "access_token": access_token.token,
             "token_type": TOKEN_TYPE,
+            "scope": " ".join(access_token.scope),
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),
@@ -671,6 +711,7 @@ class TokenView(View):
             "access_token": access_token.token,
             "refresh_token": refresh_token.token,
             "token_type": TOKEN_TYPE,
+            "scope": " ".join(access_token.scope),
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),
@@ -697,6 +738,7 @@ class TokenView(View):
         return {
             "access_token": access_token.token,
             "token_type": TOKEN_TYPE,
+            "scope": " ".join(access_token.scope),
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),
@@ -728,6 +770,7 @@ class TokenView(View):
         response = {
             "access_token": access_token.token,
             "token_type": TOKEN_TYPE,
+            "scope": " ".join(access_token.scope),
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),

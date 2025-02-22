@@ -1,10 +1,10 @@
 """Flows Planner"""
 
 from dataclasses import dataclass, field
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from django.core.cache import cache
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse
 from sentry_sdk import start_span
 from sentry_sdk.tracing import Span
 from structlog.stdlib import BoundLogger, get_logger
@@ -23,9 +23,14 @@ from authentik.flows.models import (
     in_memory_stage,
 )
 from authentik.lib.config import CONFIG
+from authentik.lib.utils.urls import redirect_with_qs
 from authentik.outposts.models import Outpost
 from authentik.policies.engine import PolicyEngine
 from authentik.root.middleware import ClientIPMiddleware
+
+if TYPE_CHECKING:
+    from authentik.flows.stage import StageView
+
 
 LOGGER = get_logger()
 PLAN_CONTEXT_PENDING_USER = "pending_user"
@@ -37,6 +42,8 @@ PLAN_CONTEXT_OUTPOST = "outpost"
 # Is set by the Flow Planner when a FlowToken was used, and the currently active flow plan
 # was restored.
 PLAN_CONTEXT_IS_RESTORED = "is_restored"
+PLAN_CONTEXT_IS_REDIRECTED = "is_redirected"
+PLAN_CONTEXT_REDIRECT_STAGE_TARGET = "redirect_stage_target"
 CACHE_TIMEOUT = CONFIG.get_int("cache.timeout_flows")
 CACHE_PREFIX = "goauthentik.io/flows/planner/"
 
@@ -102,6 +109,8 @@ class FlowPlan:
 
     def pop(self):
         """Pop next pending stage from bottom of list"""
+        if not self.markers and not self.bindings:
+            return
         self.markers.pop(0)
         self.bindings.pop(0)
 
@@ -109,6 +118,67 @@ class FlowPlan:
     def has_stages(self) -> bool:
         """Check if there are any stages left in this plan"""
         return len(self.markers) + len(self.bindings) > 0
+
+    def requires_flow_executor(
+        self,
+        allowed_silent_types: list["StageView"] | None = None,
+    ):
+        # Check if we actually need to show the Flow executor, or if we can jump straight to the end
+        found_unskippable = True
+        if allowed_silent_types:
+            LOGGER.debug("Checking if we can skip the flow executor...")
+            # Policies applied to the flow have already been evaluated, so we're checking for stages
+            # allow-listed or bindings that require a policy re-eval
+            found_unskippable = False
+            for binding, marker in zip(self.bindings, self.markers, strict=True):
+                if binding.stage.view not in allowed_silent_types:
+                    found_unskippable = True
+                if marker and isinstance(marker, ReevaluateMarker):
+                    found_unskippable = True
+        LOGGER.debug("Required flow executor status", status=found_unskippable)
+        return found_unskippable
+
+    def to_redirect(
+        self,
+        request: HttpRequest,
+        flow: Flow,
+        allowed_silent_types: list["StageView"] | None = None,
+    ) -> HttpResponse:
+        """Redirect to the flow executor for this flow plan"""
+        from authentik.flows.views.executor import (
+            SESSION_KEY_PLAN,
+            FlowExecutorView,
+        )
+
+        request.session[SESSION_KEY_PLAN] = self
+        requires_flow_executor = self.requires_flow_executor(allowed_silent_types)
+
+        if not requires_flow_executor:
+            # No unskippable stages found, so we can directly return the response of the last stage
+            final_stage: type[StageView] = self.bindings[-1].stage.view
+            temp_exec = FlowExecutorView(flow=flow, request=request, plan=self)
+            temp_exec.current_stage = self.bindings[-1].stage
+            temp_exec.current_stage_view = final_stage
+            temp_exec.setup(request, flow.slug)
+            stage = final_stage(request=request, executor=temp_exec)
+            response = stage.dispatch(request)
+            # Ensure we clean the flow state we have in the session before we redirect away
+            temp_exec.stage_ok()
+            return response
+
+        get_qs = request.GET.copy()
+        if request.user.is_authenticated and (
+            # Object-scoped permission or global permission
+            request.user.has_perm("authentik_flows.inspect_flow", flow)
+            or request.user.has_perm("authentik_flows.inspect_flow")
+        ):
+            get_qs["inspector"] = "available"
+
+        return redirect_with_qs(
+            "authentik_core:if-flow",
+            get_qs,
+            flow_slug=flow.slug,
+        )
 
 
 class FlowPlanner:
@@ -128,7 +198,7 @@ class FlowPlanner:
         self.flow = flow
         self._logger = get_logger().bind(flow_slug=flow.slug)
 
-    def _check_authentication(self, request: HttpRequest):
+    def _check_authentication(self, request: HttpRequest, context: dict[str, Any]):
         """Check the flow's authentication level is matched by `request`"""
         if (
             self.flow.authentication == FlowAuthenticationRequirement.REQUIRE_AUTHENTICATED
@@ -143,6 +213,11 @@ class FlowPlanner:
         if (
             self.flow.authentication == FlowAuthenticationRequirement.REQUIRE_SUPERUSER
             and not request.user.is_superuser
+        ):
+            raise FlowNonApplicableException()
+        if (
+            self.flow.authentication == FlowAuthenticationRequirement.REQUIRE_REDIRECT
+            and context.get(PLAN_CONTEXT_IS_REDIRECTED) is None
         ):
             raise FlowNonApplicableException()
         outpost_user = ClientIPMiddleware.get_outpost_user(request)
@@ -176,18 +251,13 @@ class FlowPlanner:
             )
             context = default_context or {}
             # Bit of a workaround here, if there is a pending user set in the default context
-            # we use that user for our cache key
-            # to make sure they don't get the generic response
+            # we use that user for our cache key to make sure they don't get the generic response
             if context and PLAN_CONTEXT_PENDING_USER in context:
                 user = context[PLAN_CONTEXT_PENDING_USER]
             else:
                 user = request.user
-                # We only need to check the flow authentication if it's planned without a user
-                # in the context, as a user in the context can only be set via the explicit code API
-                # or if a flow is restarted due to `invalid_response_action` being set to
-                # `restart_with_context`, which can only happen if the user was already authorized
-                # to use the flow
-                context.update(self._check_authentication(request))
+
+            context.update(self._check_authentication(request, context))
             # First off, check the flow's direct policy bindings
             # to make sure the user even has access to the flow
             engine = PolicyEngine(self.flow, user, request)

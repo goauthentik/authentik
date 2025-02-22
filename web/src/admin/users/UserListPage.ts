@@ -131,9 +131,10 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
 
     constructor() {
         super();
-        this.activePath = getURLParam<string>("path", "/");
+        const defaultPath = new DefaultUIConfig().defaults.userPath;
+        this.activePath = getURLParam<string>("path", defaultPath);
         uiConfig().then((c) => {
-            if (c.defaults.userPath !== new DefaultUIConfig().defaults.userPath) {
+            if (c.defaults.userPath !== defaultPath) {
                 this.activePath = c.defaults.userPath;
             }
         });
@@ -377,7 +378,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                                           `
                                         : html` <p>
                                               ${msg(
-                                                  "To let a user directly reset a their password, configure a recovery flow on the currently active brand.",
+                                                  "To let a user directly reset their password, configure a recovery flow on the currently active brand.",
                                               )}
                                           </p>`}
                                 </div>

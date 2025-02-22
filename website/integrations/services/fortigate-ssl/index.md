@@ -1,11 +1,8 @@
 ---
 title: Integrate with FortiGate SSLVPN
 sidebar_label: FortiGate SSLVPN
+support_level: community
 ---
-
-# FortiGate SSLVPN
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## FortiGate SSLVPN
 
@@ -16,31 +13,35 @@ sidebar_label: FortiGate SSLVPN
 >
 > This guide has been created using the following software versions. Instructions may differ between versions.
 >
-> -   Fortigate: 7.2.8
-> -   authentik: 2024.2.2
+> - Fortigate: 7.2.8
+> - authentik: 2024.2.2
 
 ## Assumptions
 
--   You know how to configure an SSLVPN in a FortiGate.
--   You already have a certificate for signing and encryption uploaded to both authentik and the FortiGate.
--   You already have a working SSLVPN (either portal or tunnel) and is just changing authentication from what you are using today to authentik SAML.
+- You know how to configure an SSLVPN in a FortiGate.
+- You already have a certificate for signing and encryption uploaded to both authentik and the FortiGate.
+- You already have a working SSLVPN (either portal or tunnel) and is just changing authentication from what you are using today to authentik SAML.
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `saml.sp.name` = The name that will be the SAML SP configuration in the FortiGate
--   `fgt.cert` = Fortigate certificate for signing and encrypting
--   `service.company` = This is the FQDN of the firewall, if your sslvpn portal is not on TCP port 443, then add the port like: fortigate.mydomain.tld:10233
--   `authentik.company` = This is the FQDN of your authentik installation
--   `app.slug.name` = The application slug that you decided upon
--   `ak.cert` = The authentik remote certificate you have uploaded before starting the guide.
--   `fgt.user.group` = This will be the name of the user group in your Fortigate that you will use in your SSLVPN portal mapping and Firewall rules
--   `ak.user.group` = This is the user group name that you will use in authentik if you plan on limiting access to the sslvpn via groups.
+- `saml.sp.name` = The name that will be the SAML SP configuration in the FortiGate
+- `fgt.cert` = Fortigate certificate for signing and encrypting
+- `service.company` = This is the FQDN of the firewall, if your sslvpn portal is not on TCP port 443, then add the port like: fortigate.mydomain.tld:10233
+- `authentik.company` = This is the FQDN of your authentik installation
+- `app.slug.name` = The application slug that you decided upon
+- `ak.cert` = The authentik remote certificate you have uploaded before starting the guide.
+- `fgt.user.group` = This will be the name of the user group in your Fortigate that you will use in your SSLVPN portal mapping and Firewall rules
+- `ak.user.group` = This is the user group name that you will use in authentik if you plan on limiting access to the sslvpn via groups.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## FortiGate configuration
 
 ### Preparation
 
--   Decide on an application name (slug) e.g. fgtsslvpn that you will use in authentik later.
+- Decide on an application name (slug) e.g. fgtsslvpn that you will use in authentik later.
 
 ### Setup SAML SP
 
@@ -105,34 +106,34 @@ Let's set up the provider using the SAML metadata from the FortiGate.
 
 ### Setup the provider using metadata
 
--   Go to **Applications -> Providers**.
--   Click **Create**.
--   Select **SAML Provider from Metadata** at the bottom.
-    -   Name: Name it something appropriate e.g. FGT SSL SAML Provider
-    -   Authorization flow: default-provider-authorization-implicit-consent (Authorize Application)
-    -   Metadata: upload the fgt-metadata.xml you created previously
--   Click **Finish**.
+- Go to **Applications -> Providers**.
+- Click **Create**.
+- Select **SAML Provider from Metadata** at the bottom.
+    - Name: Name it something appropriate e.g. FGT SSL SAML Provider
+    - Authorization flow: default-provider-authorization-implicit-consent (Authorize Application)
+    - Metadata: upload the fgt-metadata.xml you created previously
+- Click **Finish**.
 
 ### Validate and change settings for provider
 
--   Click the Edit icon to the right of the provider you just created, under the **Actions** column..
-    -   Authentication flow = default-authentication-flow (Welcome to authentik!)
-    -   ACS URL = https://service.company/remote/saml/login
-    -   Issuer = https://authentik.company
-    -   Service Provider Binding = POST
-    -   Audience = http://service.company/remote/saml/metadata/
-    -   Signing certificate = ak.cert
-    -   Verification Certificate = Should already be filled with the certificate from the metadata you uploaded.
-    -   Property mapping:
-        -   authentik default SAML Mapping: Username
-        -   authentik default SAML Mapping: Groups
-    -   Named Property Mapping: Empty (------)
-    -   Assertion valid not before = minutes=5
-    -   Assertion valid not on or after = minutes=5
-    -   Session valid not on or after = (Set how long you want the user's session to be valid)
-    -   Default relay state = empty
-    -   Digest algorithm = sha256
-    -   Signature algorithm = sha256
+- Click the Edit icon to the right of the provider you just created, under the **Actions** column..
+    - Authentication flow = default-authentication-flow (Welcome to authentik!)
+    - ACS URL = https://service.company/remote/saml/login
+    - Issuer = https://authentik.company
+    - Service Provider Binding = POST
+    - Audience = http://service.company/remote/saml/metadata/
+    - Signing certificate = ak.cert
+    - Verification Certificate = Should already be filled with the certificate from the metadata you uploaded.
+    - Property mapping:
+        - authentik default SAML Mapping: Username
+        - authentik default SAML Mapping: Groups
+    - Named Property Mapping: Empty (------)
+    - Assertion valid not before = minutes=5
+    - Assertion valid not on or after = minutes=5
+    - Session valid not on or after = (Set how long you want the user's session to be valid)
+    - Default relay state = empty
+    - Digest algorithm = sha256
+    - Signature algorithm = sha256
 
 ## Application section
 
@@ -142,43 +143,43 @@ Lets create the application and link it to the provider.
 
 This is the user group that you matched on in the FortiGate "firewall group" above.
 
--   Go to **Directory -> Groups**.
--   Click **Create**.
--   Name = `ak.user.group`.
--   Open ak.user.group and add the users whom should have access to the sslvpn.
--   Save the group.
+- Go to **Directory -> Groups**.
+- Click **Create**.
+- Name = `ak.user.group`.
+- Open ak.user.group and add the users whom should have access to the sslvpn.
+- Save the group.
 
 ### Create the application
 
 > [!NOTE]
 > The Launch URL = blank://blank will prevent authentik from displaying it on the user's login page in authentik.
 
--   Go to **Applications -> Applications**.
--   Name = Whatever you fancy e.g. FGT-SSLVPN
--   Slug = app.slug.name
--   Group = empty (------)
--   Provider = The provider you created before e.g. "FGT SSL SAML Provider"
--   Backchannel Provider = empty (-----)
--   Policy engine mode = any
--   Launch URL = blank://blank
--   Open in new tab = disabled
--   icon = None
--   Publisher = None
--   Description = None
--   Click **Save**.
+- Go to **Applications -> Applications**.
+- Name = Whatever you fancy e.g. FGT-SSLVPN
+- Slug = app.slug.name
+- Group = empty (------)
+- Provider = The provider you created before e.g. "FGT SSL SAML Provider"
+- Backchannel Provider = empty (-----)
+- Policy engine mode = any
+- Launch URL = blank://blank
+- Open in new tab = disabled
+- icon = None
+- Publisher = None
+- Description = None
+- Click **Save**.
 
 ### Limiting the access based on authentik group
 
--   Open the application again
--   Click on "Policy / Group / User Binding"
--   Click **Bind existing policy**.
--   Click on **Group** in the tabs at the top.
--   In the **Group** drop-down menu, select `ak.user.group`.
--   Make sure that **Enabled** is chosen.
--   Order = 10
--   Timeout = 30
--   Failure result = Don't pass
--   Click **Create**.
+- Open the application again
+- Click on "Policy / Group / User Binding"
+- Click **Bind existing policy**.
+- Click on **Group** in the tabs at the top.
+- In the **Group** drop-down menu, select `ak.user.group`.
+- Make sure that **Enabled** is chosen.
+- Order = 10
+- Timeout = 30
+- Failure result = Don't pass
+- Click **Create**.
 
 You should now be able to log in by selecting SSO login either on the portal or in FortiClient, depending on your portal configuration.
 

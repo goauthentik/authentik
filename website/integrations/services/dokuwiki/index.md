@@ -1,11 +1,8 @@
 ---
 title: Integrate with DokuWiki
 sidebar_label: DokuWiki
+support_level: community
 ---
-
-# DokuWiki
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is DokuWiki
 
@@ -15,38 +12,42 @@ From https://en.wikipedia.org/wiki/DokuWiki
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `dokuwiki.company` is the FQDN of the DokiWiki install.
--   `authentik.company` is the FQDN of the authentik install.
+- `dokuwiki.company` is the FQDN of the DokiWiki installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## DokuWiki configuration
 
 In DokuWiki, navigate to the _Extension Manager_ section in the _Administration_ interface and install
 
--   https://www.dokuwiki.org/plugin:oauth
--   https://www.dokuwiki.org/plugin:oauthgeneric
+- https://www.dokuwiki.org/plugin:oauth
+- https://www.dokuwiki.org/plugin:oauthgeneric
 
 Navigate to _Configuration Settings_ section in the _Administration_ interface and change _Oauth_ and _Oauthgeneric_ options:
 
 For _Oauth_:
 
--   Check the _plugin»oauth»register-on-auth_ option
+- Check the _plugin»oauth»register-on-auth_ option
 
 For _Oauthgeneric_:
 
--   plugin»oauthgeneric»key: The Application UID
--   plugin»oauthgeneric»secret: The Application Secret
--   plugin»oauthgeneric»authurl: https://authentik.company/application/o/authorize/
--   plugin»oauthgeneric»tokenurl: https://authentik.company/application/o/token/
--   plugin»oauthgeneric»userurl: https://authentik.company/application/o/userinfo/
--   plugin»oauthgeneric»authmethod: Bearer Header
--   plugin»oauthgeneric»scopes: email, openid, profile, offline_access
--   plugin»oauthgeneric»needs-state: checked
--   plugin»oauthgeneric»json-user: preferred_username
--   plugin»oauthgeneric»json-name: name
--   plugin»oauthgeneric»json-mail: email
--   plugin»oauthgeneric»json-grps: groups
+- plugin»oauthgeneric»key: The Application UID
+- plugin»oauthgeneric»secret: The Application Secret
+- plugin»oauthgeneric»authurl: https://authentik.company/application/o/authorize/
+- plugin»oauthgeneric»tokenurl: https://authentik.company/application/o/token/
+- plugin»oauthgeneric»userurl: https://authentik.company/application/o/userinfo/
+- plugin»oauthgeneric»authmethod: Bearer Header
+- plugin»oauthgeneric»scopes: email, openid, profile, offline_access
+- plugin»oauthgeneric»needs-state: checked
+- plugin»oauthgeneric»json-user: preferred_username
+- plugin»oauthgeneric»json-name: name
+- plugin»oauthgeneric»json-mail: email
+- plugin»oauthgeneric»json-grps: groups
 
 ![](./dokuwiki_oauth_generic.png)
 
@@ -58,8 +59,8 @@ In the _Configuration Settings_ section in the _Administration_ interface naviga
 
 In authentik, under _Providers_, create an _OAuth2/OpenID Provider_ with these settings:
 
--   Redirect URI: The _Callback URL / Redirect URI_ from _plugin»oauth»info_, usually `dokuwiki.company/doku.php`
--   Signing Key: Select any available key
+- Redirect URI: The _Callback URL / Redirect URI_ from _plugin»oauth»info_, usually `dokuwiki.company/doku.php`
+- Signing Key: Select any available key
 
 Note the _client ID_ and _client secret_, then save the provider. If you need to retrieve these values, you can do so by editing the provider.
 

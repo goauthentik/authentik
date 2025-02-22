@@ -50,7 +50,7 @@ from authentik.enterprise.providers.microsoft_entra.models import (
     MicrosoftEntraProviderGroup,
     MicrosoftEntraProviderUser,
 )
-from authentik.enterprise.providers.rac.models import ConnectionToken
+from authentik.enterprise.providers.ssf.models import StreamEvent
 from authentik.enterprise.stages.authenticator_endpoint_gdtc.models import (
     EndpointDevice,
     EndpointDeviceConnection,
@@ -65,7 +65,13 @@ from authentik.lib.utils.reflection import get_apps
 from authentik.outposts.models import OutpostServiceConnection
 from authentik.policies.models import Policy, PolicyBindingModel
 from authentik.policies.reputation.models import Reputation
-from authentik.providers.oauth2.models import AccessToken, AuthorizationCode, RefreshToken
+from authentik.providers.oauth2.models import (
+    AccessToken,
+    AuthorizationCode,
+    DeviceToken,
+    RefreshToken,
+)
+from authentik.providers.rac.models import ConnectionToken
 from authentik.providers.scim.models import SCIMProviderGroup, SCIMProviderUser
 from authentik.rbac.models import Role
 from authentik.sources.scim.models import SCIMSourceGroup, SCIMSourceUser
@@ -125,6 +131,8 @@ def excluded_models() -> list[type[Model]]:
         MicrosoftEntraProviderGroup,
         EndpointDevice,
         EndpointDeviceConnection,
+        DeviceToken,
+        StreamEvent,
     )
 
 

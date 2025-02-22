@@ -4,11 +4,11 @@ title: Certificates
 
 Certificates in authentik are used for the following use cases:
 
--   Signing and verifying SAML Requests and Responses
--   Signing JSON Web Tokens for OAuth and OIDC
--   Connecting to remote docker hosts using the Docker integration
--   Verifying LDAP Servers' certificates
--   Encrypting outposts' endpoints
+- Signing and verifying SAML Requests and Responses
+- Signing JSON Web Tokens for OAuth and OIDC
+- Connecting to remote docker hosts using the Docker integration
+- Verifying LDAP Servers' certificates
+- Encrypting outposts' endpoints
 
 ## Default certificate
 
@@ -30,17 +30,17 @@ For Kubernetes, you can map custom secrets/volumes under `/certs`.
 
 You can also bind mount single files into the folder, as long as they fall under this naming schema.
 
--   Files in the root directory will be imported based on their filename.
+- Files in the root directory will be imported based on their filename.
 
     `/foo.pem` Will be imported as the keypair `foo`. Based on its content, the file is either imported as a certificate or a private key:
 
-    -   Files containing `PRIVATE KEY` will imported as private keys.
+    - Files containing `PRIVATE KEY` will imported as private keys.
 
-    -   Otherwise the file will be imported as a certificate.
+    - Otherwise the file will be imported as a certificate.
 
--   If the file is called `fullchain.pem` or `privkey.pem` (the output naming of certbot), it will get the name of the parent folder.
--   Files can be in any arbitrary file structure, and can have any extension.
--   If the path contains `archive`, the files will be ignored (to better support certbot setups).
+- If the file is called `fullchain.pem` or `privkey.pem` (the output naming of certbot), it will get the name of the parent folder.
+- Files can be in any arbitrary file structure, and can have any extension.
+- If the path contains `archive`, the files will be ignored (to better support certbot setups).
 
 ```shell
 certs/

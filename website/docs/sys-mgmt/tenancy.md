@@ -1,9 +1,6 @@
 ---
 title: Tenancy
----
-
-<span class="badge badge--primary">Enterprise</span>
-
+authentik_enterprise: true
 ---
 
 ::::warning
@@ -32,17 +29,17 @@ For each additional tenant (beyond the default one), one or more licenses is req
 
 A single tenant and its corresponding installation can have multiple license keys. For example, a company might purchase one license for 50 users, and then later in the same year need to buy another license for 50 more users, due to company growth. Both licenses are associated to the one installation, the one tenant.
 
-Learn more in our documentation about [Enterprise licenses](../enterprise/manage-enterprise.md#license-management).
+Learn more in our documentation about [Enterprise licenses](../enterprise/manage-enterprise.mdx#license-management).
 
 ### Important considerations
 
--   Upon creating another tenant, a new schema will be created by cloning the `template` schema. This special schema is like a tenant with no data created in it. Cloning an existing schema instead of creating a new one and running migrations on it is done for efficiency purposes.
+- Upon creating another tenant, a new schema will be created by cloning the `template` schema. This special schema is like a tenant with no data created in it. Cloning an existing schema instead of creating a new one and running migrations on it is done for efficiency purposes.
 
--   In a typical deployment, all data stored in Redis (such as tasks, locks, and cached objects) will have its keys prefixed by the `schema_name`.
+- In a typical deployment, all data stored in Redis (such as tasks, locks, and cached objects) will have its keys prefixed by the `schema_name`.
 
--   Files are isolated on a per-tenant basis, with each tenant folder named according to the schema_name. For example, `/media/t_example`. The same is true regardless of the storage backend.
+- Files are isolated on a per-tenant basis, with each tenant folder named according to the schema_name. For example, `/media/t_example`. The same is true regardless of the storage backend.
 
--   Using an [embedded outpost](../add-secure-apps/outposts/embedded/embedded.mdx) with multi-tenancy is not currently supported. Disable the embedded outpost with `AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true` configuration setting.
+- Using an [embedded outpost](../add-secure-apps/outposts/embedded/embedded.mdx) with multi-tenancy is not currently supported. Disable the embedded outpost with `AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true` configuration setting.
 
 ## Usage
 
