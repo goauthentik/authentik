@@ -13016,6 +13016,10 @@
                     "minLength": 1,
                     "title": "Branding favicon"
                 },
+                "branding_custom_css": {
+                    "type": "string",
+                    "title": "Branding custom css"
+                },
                 "flow_authentication": {
                     "type": "string",
                     "format": "uuid",
