@@ -42,7 +42,7 @@ To support the integration of Zulip with authentik, you need to create an applic
 
 3. Click **Submit** to save the new application and provider.
 
-## Zulip Configuration
+## Zulip configuration
 
 Zulip is a Django application and is configured using `/etc/zulip/settings.py`. Only settings that differ
 from the defaults are displayed below. Please make sure you have the latest `settings.py` file as more settings
