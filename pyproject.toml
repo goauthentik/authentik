@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "authentik"
-version = "2024.4.2"
+version = "2024.12.3"
 description = ""
 authors = ["authentik Team <hello@goauthentik.io>"]
 
@@ -32,7 +32,7 @@ select = [
     "PL",
 ]
 ignore = [
-    "DJ001" # Avoid using `null=True` on string-based fields,
+    "DJ001", # Avoid using `null=True` on string-based fields,
 ]
 [tool.ruff.lint.pylint]
 max-args = 7
@@ -85,48 +85,54 @@ filterwarnings = [
 [tool.poetry.dependencies]
 argon2-cffi = "*"
 celery = "*"
-channels = { version = "*", extras = ["daphne"] }
+channels = "*"
 channels-redis = "*"
-codespell = "*"
-colorama = "*"
 cryptography = "*"
 dacite = "*"
 deepmerge = "*"
 defusedxml = "*"
 django = "*"
+django-countries = "*"
+django-cte = "*"
 django-filter = "*"
 django-guardian = "*"
 django-model-utils = "*"
+django-pglock = "*"
 django-prometheus = "*"
 django-redis = "*"
 django-storages = { extras = ["s3"], version = "*" }
 # See https://github.com/django-tenants/django-tenants/pull/997
-django-tenants = { git = "https://github.com/rissson/django-tenants.git", branch="authentik-fixes" }
+django-tenants = { git = "https://github.com/rissson/django-tenants.git", branch = "authentik-fixes" }
 djangorestframework = "3.14.0"
 djangorestframework-guardian = "*"
 docker = "*"
+drf-orjson-renderer = "*"
 drf-spectacular = "*"
 dumb-init = "*"
 duo-client = "*"
-facebook-sdk = "*"
 fido2 = "*"
 flower = "*"
 geoip2 = "*"
+geopy = "*"
 google-api-python-client = "*"
 gunicorn = "*"
+gssapi = "*"
 jsonpatch = "*"
+jwcrypto = "*"
 kubernetes = "*"
 ldap3 = "*"
 lxml = "*"
 msgraph-sdk = "*"
-opencontainers = { extras = ["reggie"], version = "*" }
+opencontainers = { git = "https://github.com/vsoch/oci-python", rev = "20d69d9cc50a0fef31605b46f06da0c94f1ec3cf", extras = ["reggie"] }
 packaging = "*"
 paramiko = "*"
 psycopg = { extras = ["c"], version = "*" }
 pydantic = "*"
 pydantic-scim = "*"
 pyjwt = "*"
+pyrad = "*"
 python = "~3.12"
+python-kadmin-rs = "0.5.3"
 pyyaml = "*"
 requests-oauthlib = "*"
 scim2-filter-parser = "*"
@@ -137,8 +143,8 @@ structlog = "*"
 swagger-spec-validator = "*"
 tenant-schemas-celery = "*"
 twilio = "*"
-twisted = "*"
 ua-parser = "*"
+unidecode = "*"
 # Pinned because of botocore https://github.com/orgs/python-poetry/discussions/7937
 urllib3 = { extras = ["secure"], version = "<3" }
 uvicorn = { extras = ["standard"], version = "*" }
@@ -148,18 +154,22 @@ wsproto = "*"
 xmlsec = "*"
 zxcvbn = "*"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
+aws-cdk-lib = "*"
 bandit = "*"
 black = "*"
 bump2version = "*"
+channels = { version = "*", extras = ["daphne"] }
+codespell = "*"
 colorama = "*"
+constructs = "*"
 coverage = { extras = ["toml"], version = "*" }
 debugpy = "*"
 drf-jsonschema-serializer = "*"
 freezegun = "*"
 importlib-metadata = "*"
+k5test = "*"
 pdoc = "*"
-pyrad = "*"
 pytest = "*"
 pytest-django = "*"
 pytest-github-actions-annotate-failures = "*"

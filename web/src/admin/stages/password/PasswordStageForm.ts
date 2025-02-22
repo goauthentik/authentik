@@ -1,7 +1,7 @@
 import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
+import "@goauthentik/components/ak-switch-input.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -9,7 +9,6 @@ import "@goauthentik/elements/forms/SearchSelect";
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
     BackendsEnum,
@@ -56,26 +55,30 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
     renderForm(): TemplateResult {
         const backends = [
             {
-                name: BackendsEnum.CoreAuthInbuiltBackend,
+                name: BackendsEnum.AuthentikCoreAuthInbuiltBackend,
                 label: msg("User database + standard password"),
             },
             {
-                name: BackendsEnum.CoreAuthTokenBackend,
+                name: BackendsEnum.AuthentikCoreAuthTokenBackend,
                 label: msg("User database + app passwords"),
             },
             {
-                name: BackendsEnum.SourcesLdapAuthLdapBackend,
+                name: BackendsEnum.AuthentikSourcesLdapAuthLdapBackend,
                 label: msg("User database + LDAP password"),
+            },
+            {
+                name: BackendsEnum.AuthentikSourcesKerberosAuthKerberosBackend,
+                label: msg("User database + Kerberos password"),
             },
         ];
 
         return html` <span>
                 ${msg("Validate the user's password against the selected backend(s).")}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
-                    value="${ifDefined(this.instance?.name || "")}"
+                    value="${this.instance?.name || ""}"
                     class="pf-c-form-control"
                     required
                 />
@@ -97,9 +100,6 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                         ></ak-checkbox-group>
                         <p class="pf-c-form__helper-text">
                             ${msg("Selection of backends to test the password against.")}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Hold control/command to select multiple items.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
@@ -158,7 +158,7 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                     >
                         <input
                             type="number"
-                            value="${first(this.instance?.failedAttemptsBeforeCancel, 5)}"
+                            value="${this.instance?.failedAttemptsBeforeCancel ?? 5}"
                             class="pf-c-form-control"
                             required
                         />
@@ -168,7 +168,19 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                             )}
                         </p>
                     </ak-form-element-horizontal>
+                    <ak-switch-input
+                        name="allowShowPassword"
+                        label="Allow Show Password"
+                        ?checked=${this.instance?.allowShowPassword ?? false}
+                        help=${msg("Provide users with a 'show password' button.")}
+                    ></ak-switch-input>
                 </div>
             </ak-form-group>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-password-form": PasswordStageForm;
     }
 }

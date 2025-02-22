@@ -8,7 +8,12 @@ from rest_framework.serializers import BaseSerializer
 
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, Stage
-from authentik.stages.password import BACKEND_APP_PASSWORD, BACKEND_INBUILT, BACKEND_LDAP
+from authentik.stages.password import (
+    BACKEND_APP_PASSWORD,
+    BACKEND_INBUILT,
+    BACKEND_KERBEROS,
+    BACKEND_LDAP,
+)
 
 
 def get_authentication_backends():
@@ -26,6 +31,10 @@ def get_authentication_backends():
             BACKEND_LDAP,
             _("User database + LDAP password"),
         ),
+        (
+            BACKEND_KERBEROS,
+            _("User database + Kerberos password"),
+        ),
     ]
 
 
@@ -41,6 +50,12 @@ class PasswordStage(ConfigurableStage, Stage):
         help_text=_(
             "How many attempts a user has before the flow is canceled. "
             "To lock the user out, use a reputation policy and a user_write stage."
+        ),
+    )
+    allow_show_password = models.BooleanField(
+        default=False,
+        help_text=_(
+            "When enabled, provides a 'show password' button with the password input field."
         ),
     )
 

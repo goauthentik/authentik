@@ -1,15 +1,14 @@
 import { EVENT_LOCALE_CHANGE, EVENT_LOCALE_REQUEST } from "@goauthentik/common/constants";
+import { AKElement } from "@goauthentik/elements/Base";
 import { customEvent } from "@goauthentik/elements/utils/customEvents";
 
-import { LitElement, html } from "lit";
+import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { WithBrandConfig } from "../Interface/brandProvider";
 import { initializeLocalization } from "./configureLocale";
 import type { LocaleGetter, LocaleSetter } from "./configureLocale";
 import { DEFAULT_LOCALE, autoDetectLanguage, getBestMatchLocale } from "./helpers";
-
-const LocaleContextBase = WithBrandConfig(LitElement);
 
 /**
  * A component to manage your locale settings.
@@ -25,7 +24,7 @@ const LocaleContextBase = WithBrandConfig(LitElement);
  * @fires ak-locale-change - When a valid locale has been swapped in
  */
 @customElement("ak-locale-context")
-export class LocaleContext extends LocaleContextBase {
+export class LocaleContext extends WithBrandConfig(AKElement) {
     /// @attribute The text representation of the current locale */
     @property({ attribute: true, type: String })
     locale = DEFAULT_LOCALE;
@@ -78,7 +77,7 @@ export class LocaleContext extends LocaleContextBase {
             return;
         }
         locale.locale().then(() => {
-            console.debug(`Setting Locale to ... ${locale.label()} (${locale.code})`);
+            console.debug(`authentik/locale: Setting Locale to ${locale.label()} (${locale.code})`);
             this.setLocale(locale.code).then(() => {
                 window.setTimeout(this.notifyApplication, 0);
             });
@@ -97,3 +96,9 @@ export class LocaleContext extends LocaleContextBase {
 }
 
 export default LocaleContext;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-locale-context": LocaleContext;
+    }
+}

@@ -4,6 +4,8 @@ import os
 import sys
 import warnings
 
+from authentik.lib.config import CONFIG
+from cryptography.hazmat.backends.openssl.backend import backend
 from defusedxml import defuse_stdlib
 from django.utils.autoreload import DJANGO_AUTORELOAD_ENV
 
@@ -21,6 +23,10 @@ warnings.filterwarnings(
 )
 
 defuse_stdlib()
+
+if CONFIG.get_bool("compliance.fips.enabled", False):
+    backend._enable_fips()
+
 
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")

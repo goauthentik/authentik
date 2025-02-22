@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.utils.functional import cached_property
 
 from authentik.core.models import User
+from authentik.lib.models import CreatedUpdatedModel
 from authentik.stages.authenticator.util import random_number_token
 
 
@@ -18,7 +19,7 @@ class DeviceManager(models.Manager):
     ``Device.objects``.
     """
 
-    def devices_for_user(self, user, confirmed=None):
+    def devices_for_user(self, user: User, confirmed: bool | None = None):
         """
         Returns a queryset for all devices of this class that belong to the
         given user.
@@ -37,7 +38,7 @@ class DeviceManager(models.Manager):
         return devices
 
 
-class Device(models.Model):
+class Device(CreatedUpdatedModel):
     """
     Abstract base model for a :term:`device` attached to a user. Plugins must
     subclass this to define their OTP models.
@@ -84,6 +85,8 @@ class Device(models.Model):
     name = models.CharField(max_length=64, help_text="The human-readable name of this device.")
 
     confirmed = models.BooleanField(default=True, help_text="Is this device ready for use?")
+
+    last_used = models.DateTimeField(null=True)
 
     objects = DeviceManager()
 

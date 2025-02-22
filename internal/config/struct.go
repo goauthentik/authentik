@@ -14,6 +14,7 @@ type Config struct {
 	// Config for both core and outposts
 	Debug  bool         `yaml:"debug" env:"AUTHENTIK_DEBUG, overwrite"`
 	Listen ListenConfig `yaml:"listen" env:", prefix=AUTHENTIK_LISTEN__"`
+	Web    WebConfig    `yaml:"web" env:", prefix=AUTHENTIK_WEB__"`
 
 	// Outpost specific config
 	// These are only relevant for proxy/ldap outposts, and cannot be set via YAML
@@ -25,14 +26,14 @@ type Config struct {
 }
 
 type RedisConfig struct {
-	Host      string  `yaml:"host" env:"HOST, overwrite"`
-	Port      int     `yaml:"port" env:"PORT, overwrite"`
-	DB        int     `yaml:"db" env:"DB, overwrite"`
-	Username  string  `yaml:"username" env:"USERNAME, overwrite"`
-	Password  string  `yaml:"password" env:"PASSWORD, overwrite"`
-	TLS       bool    `yaml:"tls" env:"TLS, overwrite"`
-	TLSReqs   string  `yaml:"tls_reqs" env:"TLS_REQS, overwrite"`
-	TLSCaCert *string `yaml:"tls_ca_certs" env:"TLS_CA_CERT, overwrite"`
+	Host      string `yaml:"host" env:"HOST, overwrite"`
+	Port      int    `yaml:"port" env:"PORT, overwrite"`
+	DB        int    `yaml:"db" env:"DB, overwrite"`
+	Username  string `yaml:"username" env:"USERNAME, overwrite"`
+	Password  string `yaml:"password" env:"PASSWORD, overwrite"`
+	TLS       bool   `yaml:"tls" env:"TLS, overwrite"`
+	TLSReqs   string `yaml:"tls_reqs" env:"TLS_REQS, overwrite"`
+	TLSCaCert string `yaml:"tls_ca_certs" env:"TLS_CA_CERT, overwrite"`
 }
 
 type ListenConfig struct {
@@ -71,4 +72,8 @@ type OutpostConfig struct {
 	ContainerImageBase     string `yaml:"container_image_base" env:"CONTAINER_IMAGE_BASE, overwrite"`
 	Discover               bool   `yaml:"discover" env:"DISCOVER, overwrite"`
 	DisableEmbeddedOutpost bool   `yaml:"disable_embedded_outpost" env:"DISABLE_EMBEDDED_OUTPOST, overwrite"`
+}
+
+type WebConfig struct {
+	Path string `yaml:"path" env:"PATH, overwrite"`
 }

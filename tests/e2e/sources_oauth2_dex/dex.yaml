@@ -1,0 +1,23 @@
+---
+enablePasswordDB: true
+issuer: http://127.0.0.1:5556/dex
+logger:
+  level: debug
+staticClients:
+  - id: example-app
+    name: Example App
+    redirectURIs:
+      - "{{ .Env.AK_REDIRECT_URL }}"
+    secret: "{{ .Env.AK_CLIENT_SECRET }}"
+staticPasswords:
+  - email: admin@example.com
+    # hash for 'password', for testing
+    hash: "$2a$10$2b2cU8CPhOTaGrs1HRQuAueS7JTT5ZHsHSzYiFPm1leZck7Mc8T4W"
+    userID: "08a8684b-db88-4b73-90a9-3cd1661f5466"
+    username: admin
+storage:
+  config:
+    file: "/tmp/dex.db"
+  type: sqlite3
+web:
+  http: 0.0.0.0:5556

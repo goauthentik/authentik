@@ -1,7 +1,10 @@
 import "@goauthentik/admin/common/ak-flow-search/ak-source-flow-search";
 import { iconHelperText, placeholderHelperText } from "@goauthentik/admin/helperText";
 import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
-import { UserMatchingModeToLabel } from "@goauthentik/admin/sources/oauth/utils";
+import {
+    GroupMatchingModeToLabel,
+    UserMatchingModeToLabel,
+} from "@goauthentik/admin/sources/oauth/utils";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
@@ -10,6 +13,7 @@ import {
     CapabilitiesEnum,
     WithCapabilitiesConfig,
 } from "@goauthentik/elements/Interface/capabilitiesProvider";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -21,6 +25,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
     FlowsInstancesListDesignationEnum,
+    GroupMatchingModeEnum,
     OAuthSource,
     OAuthSourceRequest,
     ProviderTypeEnum,
@@ -28,6 +33,8 @@ import {
     SourcesApi,
     UserMatchingModeEnum,
 } from "@goauthentik/api";
+
+import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuthSourceFormHelpers.js";
 
 @customElement("ak-source-oauth-form")
 export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuthSource>) {
@@ -39,6 +46,8 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
         this.clearIcon = false;
         return source;
     }
+
+    _modelName?: string;
 
     @property()
     modelName?: string;
@@ -117,7 +126,9 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                             this.providerType.authorizationUrl,
                             "",
                         )}"
-                        class="pf-c-form-control"
+                        class="pf-c-form-control pf-m-monospace"
+                        autocomplete="off"
+                        spellcheck="false"
                     />
                     <p class="pf-c-form__helper-text">
                         ${msg("URL the user is redirect to to consent the authorization.")}
@@ -125,13 +136,15 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal label=${msg("Access token URL")} name="accessTokenUrl">
                     <input
-                        type="text"
+                        type="url"
                         value="${first(
                             this.instance?.accessTokenUrl,
                             this.providerType.accessTokenUrl,
                             "",
                         )}"
-                        class="pf-c-form-control"
+                        class="pf-c-form-control pf-m-monospace"
+                        autocomplete="off"
+                        spellcheck="false"
                     />
                     <p class="pf-c-form__helper-text">
                         ${msg("URL used by authentik to retrieve tokens.")}
@@ -139,13 +152,15 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal label=${msg("Profile URL")} name="profileUrl">
                     <input
-                        type="text"
+                        type="url"
                         value="${first(
                             this.instance?.profileUrl,
                             this.providerType.profileUrl,
                             "",
                         )}"
-                        class="pf-c-form-control"
+                        class="pf-c-form-control pf-m-monospace"
+                        autocomplete="off"
+                        spellcheck="false"
                     />
                     <p class="pf-c-form__helper-text">
                         ${msg("URL used by authentik to get user information.")}
@@ -157,9 +172,10 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                           name="requestTokenUrl"
                       >
                           <input
-                              type="text"
+                              type="url"
                               value="${first(this.instance?.requestTokenUrl, "")}"
-                              class="pf-c-form-control"
+                              class="pf-c-form-control pf-m-monospace"
+                              autocomplete="off"
                           />
                           <p class="pf-c-form__helper-text">
                               ${msg(
@@ -175,13 +191,15 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                           name="oidcWellKnownUrl"
                       >
                           <input
-                              type="text"
+                              type="url"
                               value="${first(
                                   this.instance?.oidcWellKnownUrl,
                                   this.providerType.oidcWellKnownUrl,
                                   "",
                               )}"
-                              class="pf-c-form-control"
+                              class="pf-c-form-control pf-m-monospace"
+                              autocomplete="off"
+                              spellcheck="false"
                           />
                           <p class="pf-c-form__helper-text">
                               ${msg(
@@ -197,13 +215,15 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                               name="oidcJwksUrl"
                           >
                               <input
-                                  type="text"
+                                  type="url"
                                   value="${first(
                                       this.instance?.oidcJwksUrl,
                                       this.providerType.oidcJwksUrl,
                                       "",
                                   )}"
-                                  class="pf-c-form-control"
+                                  class="pf-c-form-control pf-m-monospace"
+                                  autocomplete="off"
+                                  spellcheck="false"
                               />
                               <p class="pf-c-form__helper-text">
                                   ${msg(
@@ -237,7 +257,9 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.slug)}"
-                    class="pf-c-form-control"
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
                     required
                 />
             </ak-form-element-horizontal>
@@ -299,6 +321,35 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                     </option>
                 </select>
             </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${msg("Group matching mode")}
+                ?required=${true}
+                name="groupMatchingMode"
+            >
+                <select class="pf-c-form-control">
+                    <option
+                        value=${GroupMatchingModeEnum.Identifier}
+                        ?selected=${this.instance?.groupMatchingMode ===
+                        GroupMatchingModeEnum.Identifier}
+                    >
+                        ${UserMatchingModeToLabel(UserMatchingModeEnum.Identifier)}
+                    </option>
+                    <option
+                        value=${GroupMatchingModeEnum.NameLink}
+                        ?selected=${this.instance?.groupMatchingMode ===
+                        GroupMatchingModeEnum.NameLink}
+                    >
+                        ${GroupMatchingModeToLabel(GroupMatchingModeEnum.NameLink)}
+                    </option>
+                    <option
+                        value=${GroupMatchingModeEnum.NameDeny}
+                        ?selected=${this.instance?.groupMatchingMode ===
+                        GroupMatchingModeEnum.NameDeny}
+                    >
+                        ${GroupMatchingModeToLabel(GroupMatchingModeEnum.NameDeny)}
+                    </option>
+                </select>
+            </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("User path")} name="userPathTemplate">
                 <input
                     type="text"
@@ -306,7 +357,9 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                         this.instance?.userPathTemplate,
                         "goauthentik.io/sources/%(slug)s",
                     )}"
-                    class="pf-c-form-control"
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
                 />
                 <p class="pf-c-form__helper-text">${placeholderHelperText}</p>
             </ak-form-element-horizontal>
@@ -352,7 +405,9 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                       <input
                           type="text"
                           value="${first(this.instance?.icon, "")}"
-                          class="pf-c-form-control"
+                          class="pf-c-form-control pf-m-monospace"
+                          autocomplete="off"
+                          spellcheck="false"
                       />
                       <p class="pf-c-form__helper-text">${iconHelperText}</p>
                   </ak-form-element-horizontal>`}
@@ -368,7 +423,9 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                         <input
                             type="text"
                             value="${ifDefined(this.instance?.consumerKey)}"
-                            class="pf-c-form-control"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
                             required
                         />
                         <p class="pf-c-form__helper-text">${msg("Also known as Client ID.")}</p>
@@ -379,14 +436,20 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                         ?writeOnly=${this.instance !== undefined}
                         name="consumerSecret"
                     >
-                        <textarea class="pf-c-form-control"></textarea>
+                        <textarea
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
+                        ></textarea>
                         <p class="pf-c-form__helper-text">${msg("Also known as Client Secret.")}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Scopes")} name="additionalScopes">
                         <input
                             type="text"
                             value="${first(this.instance?.additionalScopes, "")}"
-                            class="pf-c-form-control"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
                         />
                         <p class="pf-c-form__helper-text">
                             ${msg(
@@ -397,12 +460,48 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                 </div>
             </ak-form-group>
             ${this.renderUrlOptions()}
+            <ak-form-group ?expanded=${true}>
+                <span slot="header"> ${msg("OAuth Attribute mapping")} </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("User Property Mappings")}
+                        name="userPropertyMappings"
+                    >
+                        <ak-dual-select-dynamic-selected
+                            .provider=${propertyMappingsProvider}
+                            .selector=${propertyMappingsSelector(
+                                this.instance?.userPropertyMappings,
+                            )}
+                            available-label="${msg("Available User Property Mappings")}"
+                            selected-label="${msg("Selected User Property Mappings")}"
+                        ></ak-dual-select-dynamic-selected>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Property mappings for user creation.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Group Property Mappings")}
+                        name="groupPropertyMappings"
+                    >
+                        <ak-dual-select-dynamic-selected
+                            .provider=${propertyMappingsProvider}
+                            .selector=${propertyMappingsSelector(
+                                this.instance?.groupPropertyMappings,
+                            )}
+                            available-label="${msg("Available Group Property Mappings")}"
+                            selected-label="${msg("Selected Group Property Mappings")}"
+                        ></ak-dual-select-dynamic-selected>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Property mappings for group creation.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
             <ak-form-group>
                 <span slot="header"> ${msg("Flow settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Authentication flow")}
-                        ?required=${true}
                         name="authenticationFlow"
                     >
                         <ak-source-flow-search
@@ -417,7 +516,6 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Enrollment flow")}
-                        ?required=${true}
                         name="enrollmentFlow"
                     >
                         <ak-source-flow-search
@@ -432,5 +530,11 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-source-oauth-form": OAuthSourceForm;
     }
 }

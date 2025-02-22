@@ -1,4 +1,5 @@
 import "@goauthentik/admin/groups/RelatedGroupList";
+import "@goauthentik/admin/rbac/ObjectPermissionsPage";
 import "@goauthentik/admin/roles/RoleForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
@@ -9,7 +10,6 @@ import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/PageHeader";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/forms/ModalForm";
-import "@goauthentik/elements/rbac/ObjectPermissionsPage";
 
 import { msg, str } from "@lit/localize";
 import { css, html, nothing } from "lit";
@@ -121,7 +121,7 @@ export class RoleViewPage extends AKElement {
                         <div class="pf-c-card__title">${msg("Changelog")}</div>
                         <div class="pf-c-card__body">
                             <ak-object-changelog
-                                targetModelPk=${this.roleId}
+                                targetModelPk=${this._role.pk}
                                 targetModelApp="authentik_rbac"
                                 targetModelName="role"
                             >
@@ -133,9 +133,15 @@ export class RoleViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.RbacRole}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikRbacRole}
                 objectPk=${this._role.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-role-view": RoleViewPage;
     }
 }

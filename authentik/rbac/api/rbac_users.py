@@ -6,7 +6,12 @@ from django_filters.filterset import FilterSet
 from guardian.models import UserObjectPermission
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.fields import SerializerMethodField
-from rest_framework.mixins import ListModelMixin
+from rest_framework.mixins import (
+    DestroyModelMixin,
+    ListModelMixin,
+    RetrieveModelMixin,
+    UpdateModelMixin,
+)
 from rest_framework.viewsets import GenericViewSet
 
 from authentik.api.pagination import SmallerPagination
@@ -48,7 +53,7 @@ class ExtraUserObjectPermissionSerializer(UserObjectPermissionSerializer):
         except LookupError:
             return None
         objects = get_objects_for_user(instance.user, f"{app_label}.view_{model}", model_class)
-        obj = objects.first()
+        obj = objects.filter(pk=instance.object_pk).first()
         if not obj:
             return None
         return str(obj)
@@ -64,10 +69,12 @@ class ExtraUserObjectPermissionSerializer(UserObjectPermissionSerializer):
 class UserPermissionFilter(FilterSet):
     """User-assigned permission filter"""
 
-    user_id = NumberFilter("user__id", required=True)
+    user_id = NumberFilter("user__id")
 
 
-class UserPermissionViewSet(ListModelMixin, GenericViewSet):
+class UserPermissionViewSet(
+    ListModelMixin, UpdateModelMixin, RetrieveModelMixin, DestroyModelMixin, GenericViewSet
+):
     """Get a users's assigned object permissions"""
 
     serializer_class = ExtraUserObjectPermissionSerializer

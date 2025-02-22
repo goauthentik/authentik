@@ -2,6 +2,7 @@ import { AdminInterface } from "@goauthentik/admin/AdminInterface";
 import "@goauthentik/admin/users/ServiceAccountForm";
 import "@goauthentik/admin/users/UserActiveForm";
 import "@goauthentik/admin/users/UserForm";
+import "@goauthentik/admin/users/UserImpersonateForm";
 import "@goauthentik/admin/users/UserPasswordForm";
 import "@goauthentik/admin/users/UserResetEmailForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
@@ -130,20 +131,18 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
 
     constructor() {
         super();
-        this.activePath = getURLParam<string>("path", "/");
+        const defaultPath = new DefaultUIConfig().defaults.userPath;
+        this.activePath = getURLParam<string>("path", defaultPath);
         uiConfig().then((c) => {
-            if (c.defaults.userPath !== new DefaultUIConfig().defaults.userPath) {
+            if (c.defaults.userPath !== defaultPath) {
                 this.activePath = c.defaults.userPath;
             }
         });
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<User>> {
+    async apiEndpoint(): Promise<PaginatedResponse<User>> {
         const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
+            ...(await this.defaultEndpointConfig()),
             pathStartswith: getURLParam("path", ""),
             isActive: this.hideDeactivated ? true : undefined,
             includeGroups: false,
@@ -269,20 +268,22 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                 </ak-forms-modal>
                 ${canImpersonate
                     ? html`
-                          <ak-action-button
-                              class="pf-m-tertiary"
-                              .apiRequest=${() => {
-                                  return new CoreApi(DEFAULT_CONFIG)
-                                      .coreUsersImpersonateCreate({
-                                          id: item.pk,
-                                      })
-                                      .then(() => {
-                                          window.location.href = "/";
-                                      });
-                              }}
-                          >
-                              ${msg("Impersonate")}
-                          </ak-action-button>
+                          <ak-forms-modal size=${PFSize.Medium} id="impersonate-request">
+                              <span slot="submit">${msg("Impersonate")}</span>
+                              <span slot="header">${msg("Impersonate")} ${item.username}</span>
+                              <ak-user-impersonate-form
+                                  slot="form"
+                                  .instancePk=${item.pk}
+                              ></ak-user-impersonate-form>
+                              <button slot="trigger" class="pf-c-button pf-m-tertiary">
+                                  <pf-tooltip
+                                      position="top"
+                                      content=${msg("Temporarily assume the identity of this user")}
+                                  >
+                                      <span>${msg("Impersonate")}</span>
+                                  </pf-tooltip>
+                              </button>
+                          </ak-forms-modal>
                       `
                     : html``}`,
         ];
@@ -377,7 +378,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                                           `
                                         : html` <p>
                                               ${msg(
-                                                  "To let a user directly reset a their password, configure a recovery flow on the currently active brand.",
+                                                  "To let a user directly reset their password, configure a recovery flow on the currently active brand.",
                                               )}
                                           </p>`}
                                 </div>
@@ -395,7 +396,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>
                 <span slot="header"> ${msg("Create User")} </span>
-                <ak-user-form slot="form"> </ak-user-form>
+                <ak-user-form defaultPath=${this.activePath} slot="form"> </ak-user-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>
             <ak-forms-modal .closeAfterSuccessfulSubmit=${false} .cancelText=${msg("Close")}>
@@ -417,9 +418,18 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                     <ak-treeview
                         .items=${this.userPaths?.paths || []}
                         activePath=${this.activePath}
+                        @ak-refresh=${(ev: CustomEvent<{ path: string }>) => {
+                            this.activePath = ev.detail.path;
+                        }}
                     ></ak-treeview>
                 </div>
             </div>
         </div>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-list": UserListPage;
     }
 }

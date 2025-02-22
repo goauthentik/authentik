@@ -156,7 +156,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
                         ? html`<p class="pf-m-block">
                               ${this.challenge.responseErrors["response"][0].string}
                           </p>`
-                        : html``}
+                        : nothing}
                     <div class="pf-c-form__group pf-m-action">
                         ${!this.registerRunning
                             ? html` <button
@@ -172,5 +172,11 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
                     </div>
                 </form>
             </div>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-authenticator-webauthn": WebAuthnAuthenticatorRegisterStage;
     }
 }

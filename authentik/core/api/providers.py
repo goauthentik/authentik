@@ -5,20 +5,14 @@ from django.db.models.query import Q
 from django.utils.translation import gettext_lazy as _
 from django_filters.filters import BooleanFilter
 from django_filters.filterset import FilterSet
-from drf_spectacular.utils import extend_schema
 from rest_framework import mixins
-from rest_framework.decorators import action
-from rest_framework.fields import ReadOnlyField
-from rest_framework.request import Request
-from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer, SerializerMethodField
+from rest_framework.fields import ReadOnlyField, SerializerMethodField
 from rest_framework.viewsets import GenericViewSet
 
+from authentik.core.api.object_types import TypesMixin
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import MetaNameSerializer, TypeCreateSerializer
+from authentik.core.api.utils import MetaNameSerializer, ModelSerializer
 from authentik.core.models import Provider
-from authentik.enterprise.apps import EnterpriseConfig
-from authentik.lib.utils.reflection import all_subclasses
 
 
 class ProviderSerializer(ModelSerializer, MetaNameSerializer):
@@ -44,6 +38,7 @@ class ProviderSerializer(ModelSerializer, MetaNameSerializer):
             "name",
             "authentication_flow",
             "authorization_flow",
+            "invalidation_flow",
             "property_mappings",
             "component",
             "assigned_application_slug",
@@ -56,6 +51,7 @@ class ProviderSerializer(ModelSerializer, MetaNameSerializer):
         ]
         extra_kwargs = {
             "authorization_flow": {"required": True, "allow_null": False},
+            "invalidation_flow": {"required": True, "allow_null": False},
         }
 
 
@@ -86,6 +82,7 @@ class ProviderFilter(FilterSet):
 
 
 class ProviderViewSet(
+    TypesMixin,
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
     UsedByMixin,
@@ -104,31 +101,3 @@ class ProviderViewSet(
 
     def get_queryset(self):  # pragma: no cover
         return Provider.objects.select_subclasses()
-
-    @extend_schema(responses={200: TypeCreateSerializer(many=True)})
-    @action(detail=False, pagination_class=None, filter_backends=[])
-    def types(self, request: Request) -> Response:
-        """Get all creatable provider types"""
-        data = []
-        for subclass in all_subclasses(self.queryset.model):
-            subclass: Provider
-            if subclass._meta.abstract:
-                continue
-            data.append(
-                {
-                    "name": subclass._meta.verbose_name,
-                    "description": subclass.__doc__,
-                    "component": subclass().component,
-                    "model_name": subclass._meta.model_name,
-                    "requires_enterprise": isinstance(subclass._meta.app_config, EnterpriseConfig),
-                }
-            )
-        data.append(
-            {
-                "name": _("SAML Provider from Metadata"),
-                "description": _("Create a SAML Provider by importing its Metadata."),
-                "component": "ak-provider-saml-import-form",
-                "model_name": "",
-            }
-        )
-        return Response(TypeCreateSerializer(data, many=True).data)

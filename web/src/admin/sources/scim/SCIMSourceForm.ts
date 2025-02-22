@@ -1,7 +1,8 @@
+import { placeholderHelperText } from "@goauthentik/admin/helperText";
 import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
-import { placeholderHelperText } from "@goauthentik/authentik/admin/helperText";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
@@ -11,6 +12,8 @@ import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import { SCIMSource, SCIMSourceRequest, SourcesApi } from "@goauthentik/api";
+
+import { propertyMappingsProvider, propertyMappingsSelector } from "./SCIMSourceFormHelpers.js";
 
 @customElement("ak-source-scim-form")
 export class SCIMSourceForm extends BaseSourceForm<SCIMSource> {
@@ -65,6 +68,43 @@ export class SCIMSourceForm extends BaseSourceForm<SCIMSource> {
                     <label class="pf-c-check__label"> ${msg("Enabled")} </label>
                 </div>
             </ak-form-element-horizontal>
+            <ak-form-group ?expanded=${true}>
+                <span slot="header"> ${msg("SCIM Attribute mapping")} </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("User Property Mappings")}
+                        name="userPropertyMappings"
+                    >
+                        <ak-dual-select-dynamic-selected
+                            .provider=${propertyMappingsProvider}
+                            .selector=${propertyMappingsSelector(
+                                this.instance?.userPropertyMappings,
+                            )}
+                            available-label="${msg("Available User Property Mappings")}"
+                            selected-label="${msg("Selected User Property Mappings")}"
+                        ></ak-dual-select-dynamic-selected>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Property mappings for user creation.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Group Property Mappings")}
+                        name="groupPropertyMappings"
+                    >
+                        <ak-dual-select-dynamic-selected
+                            .provider=${propertyMappingsProvider}
+                            .selector=${propertyMappingsSelector(
+                                this.instance?.groupPropertyMappings,
+                            )}
+                            available-label="${msg("Available Group Property Mappings")}"
+                            selected-label="${msg("Selected Group Property Mappings")}"
+                        ></ak-dual-select-dynamic-selected>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Property mappings for group creation.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
             <ak-form-group>
                 <span slot="header"> ${msg("Advanced protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
@@ -82,5 +122,11 @@ export class SCIMSourceForm extends BaseSourceForm<SCIMSource> {
                 </div>
             </ak-form-group>
         </form>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-source-scim-form": SCIMSourceForm;
     }
 }

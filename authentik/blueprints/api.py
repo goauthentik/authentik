@@ -51,9 +51,11 @@ class BlueprintInstanceSerializer(ModelSerializer):
         context = self.instance.context if self.instance else {}
         valid, logs = Importer.from_string(content, context).validate()
         if not valid:
-            text_logs = "\n".join([x["event"] for x in logs])
             raise ValidationError(
-                _("Failed to validate blueprint: {logs}".format_map({"logs": text_logs}))
+                [
+                    _("Failed to validate blueprint"),
+                    *[f"- {x.event}" for x in logs],
+                ]
             )
         return content
 

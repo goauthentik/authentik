@@ -1,0 +1,174 @@
+# -*- text -*-
+# Copyright (C) 2023 The FreeRADIUS Server project and contributors
+# This work is licensed under CC-BY version 4.0 https://creativecommons.org/licenses/by/4.0
+# Version $Id$
+#
+#	Microsoft's VSA's, from RFC 2548
+#
+#	$Id$
+#
+
+VENDOR		Microsoft			311
+
+BEGIN-VENDOR	Microsoft
+ATTRIBUTE	CHAP-Response				1	octets[50]
+ATTRIBUTE	CHAP-Error				2	string
+ATTRIBUTE	CHAP-CPW-1				3	octets[70]
+ATTRIBUTE	CHAP-CPW-2				4	octets[84]
+ATTRIBUTE	CHAP-LM-Enc-PW				5	octets
+ATTRIBUTE	CHAP-NT-Enc-PW				6	octets
+ATTRIBUTE	MPPE-Encryption-Policy			7	integer
+
+VALUE	MPPE-Encryption-Policy		Encryption-Allowed	1
+VALUE	MPPE-Encryption-Policy		Encryption-Required	2
+
+# This is referred to as both singular and plural in the RFC.
+# Plural seems to make more sense.
+ATTRIBUTE	MPPE-Encryption-Type			8	integer
+ATTRIBUTE	MPPE-Encryption-Types			8	integer
+
+VALUE	MPPE-Encryption-Types		RC4-40bit-Allowed	1
+VALUE	MPPE-Encryption-Types		RC4-128bit-Allowed	2
+VALUE	MPPE-Encryption-Types		RC4-40or128-bit-Allowed	6
+
+ATTRIBUTE	RAS-Vendor				9	integer	# content is Vendor-ID
+ATTRIBUTE	CHAP-Domain				10	string
+ATTRIBUTE	CHAP-Challenge				11	octets
+ATTRIBUTE	CHAP-MPPE-Keys				12	octets[24]  encrypt=1
+ATTRIBUTE	BAP-Usage				13	integer
+ATTRIBUTE	Link-Utilization-Threshold		14	integer # values are 1-100
+ATTRIBUTE	Link-Drop-Time-Limit			15	integer
+ATTRIBUTE	MPPE-Send-Key				16	octets	encrypt=2
+ATTRIBUTE	MPPE-Recv-Key				17	octets	encrypt=2
+ATTRIBUTE	RAS-Version				18	string
+ATTRIBUTE	Old-ARAP-Password			19	octets
+ATTRIBUTE	New-ARAP-Password			20	octets
+ATTRIBUTE	ARAP-PW-Change-Reason			21	integer
+
+ATTRIBUTE	Filter					22	octets
+ATTRIBUTE	Acct-Auth-Type				23	integer
+ATTRIBUTE	Acct-EAP-Type				24	integer
+
+ATTRIBUTE	CHAP2-Response				25	octets[50]
+ATTRIBUTE	CHAP2-Success				26	octets
+ATTRIBUTE	CHAP2-CPW				27	octets[68]
+
+ATTRIBUTE	Primary-DNS-Server			28	ipaddr
+ATTRIBUTE	Secondary-DNS-Server			29	ipaddr
+ATTRIBUTE	Primary-NBNS-Server			30	ipaddr
+ATTRIBUTE	Secondary-NBNS-Server			31	ipaddr
+
+#ATTRIBUTE	ARAP-Challenge			33	octets[8]
+
+## RNAP
+#
+# http://download.microsoft.com/download/9/5/E/95EF66AF-9026-4BB0-A41D-A4F81802D92C/%5BRNAP%5D.pdf
+
+ATTRIBUTE	RAS-Client-Name				34	string
+ATTRIBUTE	RAS-Client-Version			35	string
+ATTRIBUTE	Quarantine-IPFilter			36	octets
+ATTRIBUTE	Quarantine-Session-Timeout		37	integer
+ATTRIBUTE	User-Security-Identity			40	string
+ATTRIBUTE	Identity-Type				41	integer
+ATTRIBUTE	Service-Class				42	string
+ATTRIBUTE	Quarantine-User-Class			44	string
+ATTRIBUTE	Quarantine-State			45	integer
+ATTRIBUTE	Quarantine-Grace-Time			46	integer
+ATTRIBUTE	Network-Access-Server-Type		47	integer
+ATTRIBUTE	AFW-Zone				48	integer
+
+VALUE	AFW-Zone			AFW-Zone-Boundary-Policy 1
+VALUE	AFW-Zone			AFW-Zone-Unprotected-Policy 2
+VALUE	AFW-Zone			AFW-Zone-Protected-Policy 3
+
+ATTRIBUTE	AFW-Protection-Level			49	integer
+
+VALUE	AFW-Protection-Level		HECP-Response-Sign-Only	1
+VALUE	AFW-Protection-Level		HECP-Response-Sign-And-Encrypt 2
+
+ATTRIBUTE	Machine-Name				50	string
+ATTRIBUTE	IPv6-Filter				51	octets
+ATTRIBUTE	IPv4-Remediation-Servers		52	octets
+ATTRIBUTE	IPv6-Remediation-Servers		53	octets
+ATTRIBUTE	RNAP-Not-Quarantine-Capable		54	integer
+
+VALUE	RNAP-Not-Quarantine-Capable	SoH-Sent		0
+VALUE	RNAP-Not-Quarantine-Capable	SoH-Not-Sent		1
+
+ATTRIBUTE	Quarantine-SOH				55	octets
+ATTRIBUTE	RAS-Correlation				56	octets
+
+#  Or this might be 56?
+ATTRIBUTE	Extended-Quarantine-State		57	integer
+
+ATTRIBUTE	HCAP-User-Groups			58	string
+ATTRIBUTE	HCAP-Location-Group-Name		59	string
+ATTRIBUTE	HCAP-User-Name				60	string
+ATTRIBUTE	User-IPv4-Address			61	ipaddr
+ATTRIBUTE	User-IPv6-Address			62	ipv6addr
+ATTRIBUTE	TSG-Device-Redirection			63	integer
+
+#
+#	Integer Translations
+#
+
+#	BAP-Usage Values
+
+VALUE	BAP-Usage			Not-Allowed		0
+VALUE	BAP-Usage			Allowed			1
+VALUE	BAP-Usage			Required		2
+
+#	ARAP-Password-Change-Reason Values
+
+VALUE	ARAP-PW-Change-Reason		Just-Change-Password	1
+VALUE	ARAP-PW-Change-Reason		Expired-Password	2
+VALUE	ARAP-PW-Change-Reason		Admin-Requires-Password-Change 3
+VALUE	ARAP-PW-Change-Reason		Password-Too-Short	4
+
+#	Acct-Auth-Type Values
+
+VALUE	Acct-Auth-Type			PAP			1
+VALUE	Acct-Auth-Type			CHAP			2
+VALUE	Acct-Auth-Type			CHAP-1			3
+VALUE	Acct-Auth-Type			CHAP-2			4
+VALUE	Acct-Auth-Type			EAP			5
+
+#	Acct-EAP-Type Values
+
+VALUE	Acct-EAP-Type			MD5			4
+VALUE	Acct-EAP-Type			OTP			5
+VALUE	Acct-EAP-Type			Generic-Token-Card	6
+VALUE	Acct-EAP-Type			TLS			13
+
+#  Identity-Type Values
+
+VALUE	Identity-Type			Machine-Health-Check	1
+VALUE	Identity-Type			Ignore-User-Lookup-Failure 2
+
+#  Quarantine-State Values
+
+VALUE	Quarantine-State		Full-Access		0
+VALUE	Quarantine-State		Quarantine		1
+VALUE	Quarantine-State		Probation		2
+
+#  Network-Access-Server-Type Values
+
+VALUE	Network-Access-Server-Type	Unspecified		0
+VALUE	Network-Access-Server-Type	Terminal-Server-Gateway	1
+VALUE	Network-Access-Server-Type	Remote-Access-Server	2
+VALUE	Network-Access-Server-Type	DHCP-Server		3
+VALUE	Network-Access-Server-Type	Wireless-Access-Point	4
+VALUE	Network-Access-Server-Type	HRA			5
+VALUE	Network-Access-Server-Type	HCAP-Server		6
+
+#  Extended-Quarantine-State Values
+
+VALUE	Extended-Quarantine-State	Transition		1
+VALUE	Extended-Quarantine-State	Infected		2
+VALUE	Extended-Quarantine-State	Unknown			3
+VALUE	Extended-Quarantine-State	No-Data			4
+
+END-VENDOR Microsoft
+
+ALIAS		Microsoft				Vendor-Specific.Microsoft
+

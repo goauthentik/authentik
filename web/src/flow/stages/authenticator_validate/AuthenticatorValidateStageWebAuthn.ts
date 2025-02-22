@@ -107,7 +107,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
                     ?loading="${this.authenticating}"
                     header=${this.authenticating
                         ? msg("Authenticating...")
-                        : this.errorMessage || msg("Failed to authenticate")}
+                        : this.errorMessage || msg("Loading")}
                     icon="fa-times"
                 >
                 </ak-empty-state>
@@ -127,5 +127,11 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
                 </div>
             </form>
         </div>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-authenticator-validate-webauthn": AuthenticatorValidateStageWebAuthn;
     }
 }

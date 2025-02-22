@@ -1,6 +1,6 @@
 import { msg } from "@lit/localize";
 
-import { UserMatchingModeEnum } from "@goauthentik/api";
+import { GroupMatchingModeEnum, UserMatchingModeEnum } from "@goauthentik/api";
 
 export function UserMatchingModeToLabel(mode?: UserMatchingModeEnum): string {
     if (!mode) return "";
@@ -23,6 +23,22 @@ export function UserMatchingModeToLabel(mode?: UserMatchingModeEnum): string {
             return msg(
                 "Use the user's username, but deny enrollment when the username already exists",
             );
+        case UserMatchingModeEnum.UnknownDefaultOpenApi:
+            return msg("Unknown user matching mode");
+    }
+}
+
+export function GroupMatchingModeToLabel(mode?: GroupMatchingModeEnum): string {
+    if (!mode) return "";
+    switch (mode) {
+        case GroupMatchingModeEnum.Identifier:
+            return msg("Link users on unique identifier");
+        case GroupMatchingModeEnum.NameLink:
+            return msg(
+                "Link to a group with identical name. Can have security implications when a group is used with another source",
+            );
+        case GroupMatchingModeEnum.NameDeny:
+            return msg("Use the group's name, but deny enrollment when the name already exists");
         case UserMatchingModeEnum.UnknownDefaultOpenApi:
             return msg("Unknown user matching mode");
     }

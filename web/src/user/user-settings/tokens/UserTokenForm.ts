@@ -1,5 +1,5 @@
-import { dateTimeLocal } from "@goauthentik/authentik/common/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { dateTimeLocal } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
@@ -56,7 +56,9 @@ export class UserTokenForm extends ModelForm<Token, string> {
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.identifier)}"
-                    class="pf-c-form-control"
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
                     required
                 />
             </ak-form-element-horizontal>
@@ -77,5 +79,11 @@ export class UserTokenForm extends ModelForm<Token, string> {
                       />
                   </ak-form-element-horizontal>`
                 : html``}`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-token-form": UserTokenForm;
     }
 }

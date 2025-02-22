@@ -1,0 +1,24 @@
+---
+title: Caddy
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Placeholders from "./__placeholders.md";
+import CaddyStandalone from "./_caddy_standalone.md";
+
+The configuration template shown below apply to both single-application and domain-level forward auth.
+
+<Placeholders />
+
+<Tabs
+  defaultValue="caddy-standalone"
+  values={[
+    {label: 'Caddy (standalone)', value: 'caddy-standalone'},
+  ]}>
+  <TabItem value="caddy-standalone">
+
+<CaddyStandalone />
+
+  </TabItem>
+</Tabs>

@@ -7,7 +7,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { HorizontalLightComponent } from "./HorizontalLightComponent";
 
 @customElement("ak-slug-input")
-export class AkSlugInput extends HorizontalLightComponent {
+export class AkSlugInput extends HorizontalLightComponent<string> {
     @property({ type: String, reflect: true })
     value = "";
 
@@ -126,3 +126,9 @@ export class AkSlugInput extends HorizontalLightComponent {
 }
 
 export default AkSlugInput;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-slug-input": AkSlugInput;
+    }
+}

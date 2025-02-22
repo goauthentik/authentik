@@ -1,5 +1,7 @@
 """saml sp models"""
 
+from typing import Any
+
 from django.db import models
 from django.http import HttpRequest
 from django.templatetags.static import static
@@ -7,11 +9,17 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import Source, UserSourceConnection
+from authentik.core.models import (
+    GroupSourceConnection,
+    PropertyMapping,
+    Source,
+    UserSourceConnection,
+)
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.crypto.models import CertificateKeyPair
-from authentik.flows.challenge import ChallengeTypes, RedirectChallenge
+from authentik.flows.challenge import RedirectChallenge
 from authentik.flows.models import Flow
+from authentik.lib.expression.evaluator import BaseEvaluator
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.sources.saml.processors.constants import (
     DSA_SHA1,
@@ -19,10 +27,12 @@ from authentik.sources.saml.processors.constants import (
     ECDSA_SHA256,
     ECDSA_SHA384,
     ECDSA_SHA512,
+    NS_SAML_ASSERTION,
     RSA_SHA1,
     RSA_SHA256,
     RSA_SHA384,
     RSA_SHA512,
+    SAML_ATTRIBUTES_GROUP,
     SAML_BINDING_POST,
     SAML_BINDING_REDIRECT,
     SAML_NAME_ID_FORMAT_EMAIL,
@@ -146,6 +156,20 @@ class SAMLSource(Source):
         on_delete=models.SET_NULL,
         verbose_name=_("Signing Keypair"),
     )
+    encryption_kp = models.ForeignKey(
+        CertificateKeyPair,
+        default=None,
+        null=True,
+        blank=True,
+        help_text=_(
+            "When selected, incoming assertions are encrypted by the IdP using the public "
+            "key of the encryption keypair. The assertion is decrypted by the SP using the "
+            "the private key."
+        ),
+        on_delete=models.SET_NULL,
+        verbose_name=_("Encryption Keypair"),
+        related_name="+",
+    )
 
     digest_algorithm = models.TextField(
         choices=(
@@ -181,6 +205,41 @@ class SAMLSource(Source):
 
         return SAMLSourceSerializer
 
+    @property
+    def property_mapping_type(self) -> type[PropertyMapping]:
+        return SAMLSourcePropertyMapping
+
+    def get_base_user_properties(self, root: Any, name_id: Any, **kwargs):
+        attributes = {}
+        assertion = root.find(f"{{{NS_SAML_ASSERTION}}}Assertion")
+        if assertion is None:
+            raise ValueError("Assertion element not found")
+        attribute_statement = assertion.find(f"{{{NS_SAML_ASSERTION}}}AttributeStatement")
+        if attribute_statement is None:
+            raise ValueError("Attribute statement element not found")
+        # Get all attributes and their values into a dict
+        for attribute in attribute_statement.iterchildren():
+            key = attribute.attrib["Name"]
+            attributes.setdefault(key, [])
+            for value in attribute.iterchildren():
+                attributes[key].append(value.text)
+        if SAML_ATTRIBUTES_GROUP in attributes:
+            attributes["groups"] = attributes[SAML_ATTRIBUTES_GROUP]
+            del attributes[SAML_ATTRIBUTES_GROUP]
+        # Flatten all lists in the dict
+        for key, value in attributes.items():
+            if key == "groups":
+                continue
+            attributes[key] = BaseEvaluator.expr_flatten(value)
+        attributes["username"] = name_id.text
+
+        return attributes
+
+    def get_base_group_properties(self, group_id: str, **kwargs):
+        return {
+            "name": group_id,
+        }
+
     def get_issuer(self, request: HttpRequest) -> str:
         """Get Source's Issuer, falling back to our Metadata URL if none is set"""
         if self.issuer is None:
@@ -193,11 +252,17 @@ class SAMLSource(Source):
             reverse(f"authentik_sources_saml:{view}", kwargs={"source_slug": self.slug})
         )
 
+    @property
+    def icon_url(self) -> str:
+        icon = super().icon_url
+        if not icon:
+            return static("authentik/sources/saml.png")
+        return icon
+
     def ui_login_button(self, request: HttpRequest) -> UILoginButton:
         return UILoginButton(
             challenge=RedirectChallenge(
                 data={
-                    "type": ChallengeTypes.REDIRECT.value,
                     "to": reverse(
                         "authentik_sources_saml:login",
                         kwargs={"source_slug": self.slug},
@@ -209,9 +274,6 @@ class SAMLSource(Source):
         )
 
     def ui_user_settings(self) -> UserSettingSerializer | None:
-        icon = self.icon_url
-        if not icon:
-            icon = static(f"authentik/sources/{self.slug}.svg")
         return UserSettingSerializer(
             data={
                 "title": self.name,
@@ -220,7 +282,7 @@ class SAMLSource(Source):
                     "authentik_sources_saml:login",
                     kwargs={"source_slug": self.slug},
                 ),
-                "icon_url": icon,
+                "icon_url": self.icon_url,
             }
         )
 
@@ -230,6 +292,24 @@ class SAMLSource(Source):
     class Meta:
         verbose_name = _("SAML Source")
         verbose_name_plural = _("SAML Sources")
+
+
+class SAMLSourcePropertyMapping(PropertyMapping):
+    """Map SAML properties to User or Group object attributes"""
+
+    @property
+    def component(self) -> str:
+        return "ak-property-mapping-source-saml-form"
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.sources.saml.api.property_mappings import SAMLSourcePropertyMappingSerializer
+
+        return SAMLSourcePropertyMappingSerializer
+
+    class Meta:
+        verbose_name = _("SAML Source Property Mapping")
+        verbose_name_plural = _("SAML Source Property Mappings")
 
 
 class UserSAMLSourceConnection(UserSourceConnection):
@@ -246,3 +326,19 @@ class UserSAMLSourceConnection(UserSourceConnection):
     class Meta:
         verbose_name = _("User SAML Source Connection")
         verbose_name_plural = _("User SAML Source Connections")
+
+
+class GroupSAMLSourceConnection(GroupSourceConnection):
+    """Group-source connection"""
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.sources.saml.api.source_connection import (
+            GroupSAMLSourceConnectionSerializer,
+        )
+
+        return GroupSAMLSourceConnectionSerializer
+
+    class Meta:
+        verbose_name = _("Group SAML Source Connection")
+        verbose_name_plural = _("Group SAML Source Connections")

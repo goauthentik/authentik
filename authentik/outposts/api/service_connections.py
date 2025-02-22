@@ -12,17 +12,21 @@ from rest_framework.decorators import action
 from rest_framework.fields import BooleanField, CharField, ReadOnlyField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
+from authentik.core.api.object_types import TypesMixin
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import MetaNameSerializer, PassiveSerializer, TypeCreateSerializer
-from authentik.lib.utils.reflection import all_subclasses
+from authentik.core.api.utils import (
+    MetaNameSerializer,
+    ModelSerializer,
+    PassiveSerializer,
+)
 from authentik.outposts.models import (
     DockerServiceConnection,
     KubernetesServiceConnection,
     OutpostServiceConnection,
 )
+from authentik.rbac.filters import ObjectFilter
 
 
 class ServiceConnectionSerializer(ModelSerializer, MetaNameSerializer):
@@ -57,6 +61,7 @@ class ServiceConnectionStateSerializer(PassiveSerializer):
 
 
 class ServiceConnectionViewSet(
+    TypesMixin,
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
     UsedByMixin,
@@ -70,25 +75,8 @@ class ServiceConnectionViewSet(
     search_fields = ["name"]
     filterset_fields = ["name"]
 
-    @extend_schema(responses={200: TypeCreateSerializer(many=True)})
-    @action(detail=False, pagination_class=None, filter_backends=[])
-    def types(self, request: Request) -> Response:
-        """Get all creatable service connection types"""
-        data = []
-        for subclass in all_subclasses(self.queryset.model):
-            subclass: OutpostServiceConnection
-            data.append(
-                {
-                    "name": subclass._meta.verbose_name,
-                    "description": subclass.__doc__,
-                    "component": subclass().component,
-                    "model_name": subclass._meta.model_name,
-                }
-            )
-        return Response(TypeCreateSerializer(data, many=True).data)
-
     @extend_schema(responses={200: ServiceConnectionStateSerializer(many=False)})
-    @action(detail=True, pagination_class=None, filter_backends=[])
+    @action(detail=True, pagination_class=None, filter_backends=[ObjectFilter])
     def state(self, request: Request, pk: str) -> Response:
         """Get the service connection's state"""
         connection = self.get_object()

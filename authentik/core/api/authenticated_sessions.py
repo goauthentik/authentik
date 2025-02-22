@@ -2,18 +2,14 @@
 
 from typing import TypedDict
 
-from django_filters.rest_framework import DjangoFilterBackend
-from guardian.utils import get_anonymous_user
 from rest_framework import mixins
 from rest_framework.fields import SerializerMethodField
-from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.request import Request
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet
 from ua_parser import user_agent_parser
 
-from authentik.api.authorization import OwnerSuperuserPermissions
 from authentik.core.api.used_by import UsedByMixin
+from authentik.core.api.utils import ModelSerializer
 from authentik.core.models import AuthenticatedSession
 from authentik.events.context_processors.asn import ASN_CONTEXT_PROCESSOR, ASNDict
 from authentik.events.context_processors.geoip import GEOIP_CONTEXT_PROCESSOR, GeoIPDict
@@ -110,11 +106,4 @@ class AuthenticatedSessionViewSet(
     search_fields = ["user__username", "last_ip", "last_user_agent"]
     filterset_fields = ["user__username", "last_ip", "last_user_agent"]
     ordering = ["user__username"]
-    permission_classes = [OwnerSuperuserPermissions]
-    filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
-
-    def get_queryset(self):
-        user = self.request.user if self.request else get_anonymous_user()
-        if user.is_superuser:
-            return super().get_queryset()
-        return super().get_queryset().filter(user=user.pk)
+    owner_field = "user"

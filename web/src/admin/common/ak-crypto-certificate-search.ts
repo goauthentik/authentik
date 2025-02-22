@@ -5,8 +5,8 @@ import "@goauthentik/elements/forms/SearchSelect";
 import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
 
 import { html } from "lit";
-import { customElement } from "lit/decorators.js";
-import { property, query } from "lit/decorators.js";
+import { customElement, property, query } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
     CertificateKeyPair,
@@ -41,9 +41,8 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
     name: string | null | undefined;
 
     /**
-     * Set to `true` if you want to find pairs that don't have a valid key. Of our 14 searches, 11
-     * require the key, 3 do not (as of 2023-08-01).
-     *
+     * Set to `true` to allow certificates without private key to show up. When set to `false`,
+     * a private key is not required to be set.
      * @attr
      */
     @property({ type: Boolean, attribute: "nokey" })
@@ -115,6 +114,7 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
     render() {
         return html`
             <ak-search-select
+                name=${ifDefined(this.name ?? undefined)}
                 .fetchObjects=${this.fetchObjects}
                 .renderElement=${renderElement}
                 .value=${renderValue}
@@ -128,3 +128,9 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
 }
 
 export default AkCryptoCertificateSearch;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-crypto-certificate-search": AkCryptoCertificateSearch;
+    }
+}

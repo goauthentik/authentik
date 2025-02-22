@@ -43,16 +43,26 @@ jobs:
         uses: ./.github/actions/setup
       - name: run migrations
         run: poetry run python -m lifecycle.migrate
-  test-migrations-from-stable:
-    name: test-migrations-from-stable - PostgreSQL ${{ matrix.psql }}
+  test-make-seed:
     runs-on: ubuntu-latest
+    steps:
+      - id: seed
+        run: |
+          echo "seed=$(printf "%d\n" "0x$(openssl rand -hex 4)")" >> "$GITHUB_OUTPUT"
+    outputs:
+      seed: ${{ steps.seed.outputs.seed }}
+  test-migrations-from-stable:
+    name: test-migrations-from-stable - PostgreSQL ${{ matrix.psql }} - Run ${{ matrix.run_id }}/5
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: test-make-seed
     strategy:
       fail-fast: false
       matrix:
         psql:
-          - 12-alpine
           - 15-alpine
           - 16-alpine
+        run_id: [1, 2, 3, 4, 5]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -94,19 +104,23 @@ jobs:
         env:
           # Test in the main database that we just migrated from the previous stable version
           AUTHENTIK_POSTGRESQL__TEST__NAME: authentik
+          CI_TEST_SEED: ${{ needs.test-make-seed.outputs.seed }}
+          CI_RUN_ID: ${{ matrix.run_id }}
+          CI_TOTAL_RUNS: "5"
         run: |
-          poetry run make test
+          poetry run make ci-test
   test-unittest:
-    name: test-unittest - PostgreSQL ${{ matrix.psql }}
+    name: test-unittest - PostgreSQL ${{ matrix.psql }} - Run ${{ matrix.run_id }}/5
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
+    needs: test-make-seed
     strategy:
       fail-fast: false
       matrix:
         psql:
-          - 12-alpine
           - 15-alpine
           - 16-alpine
+        run_id: [1, 2, 3, 4, 5]
     steps:
       - uses: actions/checkout@v4
       - name: Setup authentik env
@@ -114,13 +128,22 @@ jobs:
         with:
           postgresql_version: ${{ matrix.psql }}
       - name: run unittest
+        env:
+          CI_TEST_SEED: ${{ needs.test-make-seed.outputs.seed }}
+          CI_RUN_ID: ${{ matrix.run_id }}
+          CI_TOTAL_RUNS: "5"
         run: |
-          poetry run make test
-          poetry run coverage xml
+          poetry run make ci-test
       - if: ${{ always() }}
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           flags: unit
+          token: ${{ secrets.CODECOV_TOKEN }}
+      - if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          flags: unit
+          file: unittest.xml
           token: ${{ secrets.CODECOV_TOKEN }}
   test-integration:
     runs-on: ubuntu-latest
@@ -130,15 +153,21 @@ jobs:
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: Create k8s Kind Cluster
-        uses: helm/kind-action@v1.10.0
+        uses: helm/kind-action@v1.12.0
       - name: run integration
         run: |
           poetry run coverage run manage.py test tests/integration
           poetry run coverage xml
       - if: ${{ always() }}
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           flags: integration
+          token: ${{ secrets.CODECOV_TOKEN }}
+      - if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          flags: integration
+          file: unittest.xml
           token: ${{ secrets.CODECOV_TOKEN }}
   test-e2e:
     name: test-e2e (${{ matrix.job.name }})
@@ -170,7 +199,7 @@ jobs:
         uses: ./.github/actions/setup
       - name: Setup e2e env (chrome, etc)
         run: |
-          docker compose -f tests/e2e/docker-compose.yml up -d
+          docker compose -f tests/e2e/docker-compose.yml up -d --quiet-pull
       - id: cache-web
         uses: actions/cache@v4
         with:
@@ -188,11 +217,18 @@ jobs:
           poetry run coverage run manage.py test ${{ matrix.job.glob }}
           poetry run coverage xml
       - if: ${{ always() }}
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           flags: e2e
           token: ${{ secrets.CODECOV_TOKEN }}
+      - if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          flags: e2e
+          file: unittest.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
   ci-core-mark:
+    if: always()
     needs:
       - lint
       - test-migrations
@@ -202,59 +238,22 @@ jobs:
       - test-e2e
     runs-on: ubuntu-latest
     steps:
-      - run: echo mark
+      - uses: re-actors/alls-green@release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}
   build:
-    strategy:
-      fail-fast: false
-      matrix:
-        arch:
-          - amd64
-          - arm64
-    needs: ci-core-mark
-    runs-on: ubuntu-latest
     permissions:
-      # Needed to upload contianer images to ghcr.io
+      # Needed to upload container images to ghcr.io
       packages: write
-    timeout-minutes: 120
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3.0.0
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - name: prepare variables
-        uses: ./.github/actions/docker-push-variables
-        id: ev
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        with:
-          image-name: ghcr.io/goauthentik/dev-server
-          image-arch: ${{ matrix.arch }}
-      - name: Login to Container Registry
-        if: ${{ steps.ev.outputs.shouldBuild == 'true' }}
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: generate ts client
-        run: make gen-client-ts
-      - name: Build Docker Image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          secrets: |
-            GEOIPUPDATE_ACCOUNT_ID=${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}
-            GEOIPUPDATE_LICENSE_KEY=${{ secrets.GEOIPUPDATE_LICENSE_KEY }}
-          tags: ${{ steps.ev.outputs.imageTags }}
-          push: ${{ steps.ev.outputs.shouldBuild == 'true' }}
-          build-args: |
-            GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          platforms: linux/${{ matrix.arch }}
+      # Needed for attestation
+      id-token: write
+      attestations: write
+    needs: ci-core-mark
+    uses: ./.github/workflows/_reusable-docker-build.yaml
+    secrets: inherit
+    with:
+      image_name: ghcr.io/goauthentik/dev-server
+      release: false
   pr-comment:
     needs:
       - build
@@ -276,6 +275,7 @@ jobs:
         with:
           image-name: ghcr.io/goauthentik/dev-server
       - name: Comment on PR
+        if: ${{ steps.ev.outputs.shouldPush == 'true' }}
         uses: ./.github/actions/comment-pr-instructions
         with:
-          tag: gh-${{ steps.ev.outputs.imageMainTag }}
+          tag: ${{ steps.ev.outputs.imageMainTag }}

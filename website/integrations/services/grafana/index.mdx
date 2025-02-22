@@ -1,8 +1,8 @@
 ---
-title: Grafana
+title: Integrate with Grafana
+sidebar_label: Grafana
+support_level: authentik
 ---
-
-<span class="badge badge--primary">Support level: authentik</span>
 
 ## What is Grafana
 
@@ -12,17 +12,21 @@ title: Grafana
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `grafana.company` is the FQDN of the Grafana install.
--   `authentik.company` is the FQDN of the authentik install.
+- `grafana.company` is the FQDN of the Grafana installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 Create an OAuth2/OpenID provider with the following parameters:
 
--   Client Type: `Confidential`
--   Scopes: OpenID, Email and Profile
--   Signing Key: Select any available key
--   Redirect URIs: `https://grafana.company/login/generic_oauth`
+- Client Type: `Confidential`
+- Scopes: OpenID, Email and Profile
+- Signing Key: Select any available key
+- Redirect URIs: `https://grafana.company/login/generic_oauth`
 
 Note the Client ID and Client Secret values.
 
@@ -35,15 +39,15 @@ data "authentik_flow" "default-provider-authorization-implicit-consent" {
   slug = "default-provider-authorization-implicit-consent"
 }
 
-data "authentik_scope_mapping" "scope-email" {
+data "authentik_property_mapping_provider_scope" "scope-email" {
   name = "authentik default OAuth Mapping: OpenID 'email'"
 }
 
-data "authentik_scope_mapping" "scope-profile" {
+data "authentik_property_mapping_provider_scope" "scope-profile" {
   name = "authentik default OAuth Mapping: OpenID 'profile'"
 }
 
-data "authentik_scope_mapping" "scope-openid" {
+data "authentik_property_mapping_provider_scope" "scope-openid" {
   name = "authentik default OAuth Mapping: OpenID 'openid'"
 }
 
@@ -61,9 +65,9 @@ resource "authentik_provider_oauth2" "grafana" {
   redirect_uris = ["https://grafana.company/login/generic_oauth"]
 
   property_mappings = [
-    data.authentik_scope_mapping.scope-email.id,
-    data.authentik_scope_mapping.scope-profile.id,
-    data.authentik_scope_mapping.scope-openid.id,
+    data.authentik_property_mapping_provider_scope.scope-email.id,
+    data.authentik_property_mapping_provider_scope.scope-profile.id,
+    data.authentik_property_mapping_provider_scope.scope-openid.id,
   ]
 }
 

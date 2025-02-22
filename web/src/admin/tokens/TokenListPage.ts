@@ -1,14 +1,13 @@
+import "@goauthentik/admin/rbac/ObjectPermissionModal";
 import "@goauthentik/admin/tokens/TokenForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { intentToLabel } from "@goauthentik/common/labels";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/buttons/TokenCopyButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
-import "@goauthentik/elements/rbac/ObjectPermissionModal";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
@@ -48,13 +47,8 @@ export class TokenListPage extends TablePage<Token> {
     @property()
     order = "expires";
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Token>> {
-        return new CoreApi(DEFAULT_CONFIG).coreTokensList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
-        });
+    async apiEndpoint(): Promise<PaginatedResponse<Token>> {
+        return new CoreApi(DEFAULT_CONFIG).coreTokensList(await this.defaultEndpointConfig());
     }
 
     columns(): TableColumn[] {
@@ -138,7 +132,7 @@ export class TokenListPage extends TablePage<Token> {
                           </pf-tooltip>
                       </button>`}
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.CoreToken}
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreToken}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>
@@ -152,5 +146,11 @@ export class TokenListPage extends TablePage<Token> {
                 </ak-token-copy-button>
             `,
         ];
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-token-list": TokenListPage;
     }
 }

@@ -1,10 +1,62 @@
-const generateVersionDropdown =
-    require("./src/utils.js").generateVersionDropdown;
+import { generateVersionDropdown } from "./src/utils.js";
+import apiReference from "./docs/developer-docs/api/reference/sidebar";
 
-const docsSidebar = {
+const releases = [
+    "releases/2024/v2024.12",
+    "releases/2024/v2024.10",
+    "releases/2024/v2024.8",
+    {
+        type: "category",
+        label: "Previous versions",
+        items: [
+            "releases/2024/v2024.6",
+            "releases/2024/v2024.4",
+            "releases/2024/v2024.2",
+            "releases/2023/v2023.10",
+            "releases/2023/v2023.8",
+            "releases/2023/v2023.6",
+            "releases/2023/v2023.5",
+            "releases/2023/v2023.4",
+            "releases/2023/v2023.3",
+            "releases/2023/v2023.2",
+            "releases/2023/v2023.1",
+            "releases/2022/v2022.12",
+            "releases/2022/v2022.11",
+            "releases/2022/v2022.10",
+            "releases/2022/v2022.9",
+            "releases/2022/v2022.8",
+            "releases/2022/v2022.7",
+            "releases/2022/v2022.6",
+            "releases/2022/v2022.5",
+            "releases/2022/v2022.4",
+            "releases/2022/v2022.2",
+            "releases/2022/v2022.1",
+            "releases/2021/v2021.12",
+            "releases/2021/v2021.10",
+            "releases/2021/v2021.9",
+            "releases/2021/v2021.8",
+            "releases/2021/v2021.7",
+            "releases/2021/v2021.6",
+            "releases/2021/v2021.5",
+            "releases/2021/v2021.4",
+            "releases/2021/v2021.3",
+            "releases/2021/v2021.2",
+            "releases/2021/v2021.1",
+            "releases/old/v0.14",
+            "releases/old/v0.13",
+            "releases/old/v0.12",
+            "releases/old/v0.11",
+            "releases/old/v0.10",
+            "releases/old/v0.9",
+        ],
+    },
+];
+
+export default {
     docs: [
         {
             type: "html",
+            value: generateVersionDropdown(releases),
         },
         {
             type: "doc",
@@ -12,36 +64,9 @@ const docsSidebar = {
         },
         {
             type: "category",
-            label: "Installation",
+            label: "Core Concepts",
             collapsed: true,
-            link: {
-                type: "doc",
-                id: "installation/index",
-            },
-            items: [
-                "installation/docker-compose",
-                "installation/kubernetes",
-                "installation/beta",
-                "installation/configuration",
-                "installation/reverse-proxy",
-                "installation/automated-install",
-                "installation/air-gapped",
-                "installation/monitoring",
-                "installation/storage-s3",
-            ],
-        },
-        {
-            type: "category",
-            label: "Core Concepts & Tasks",
-            collapsed: true,
-            items: [
-                "core/terminology",
-                "core/brands",
-                "core/certificates",
-                "core/geoip",
-                "core/architecture",
-                "core/settings",
-            ],
+            items: ["core/terminology", "core/architecture"],
         },
         {
             type: "category",
@@ -59,290 +84,366 @@ const docsSidebar = {
         },
         {
             type: "category",
-            label: "Applications",
+            label: "Installation and Configuration ",
+            collapsed: true,
             link: {
                 type: "doc",
-                id: "applications/index",
-            },
-            items: ["applications/manage_apps"],
-        },
-        {
-            type: "category",
-            label: "Providers",
-            link: {
-                type: "doc",
-                id: "providers/index",
+                id: "install-config/index",
             },
             items: [
                 {
                     type: "category",
-                    label: "OAuth2 Provider",
-                    link: {
-                        type: "doc",
-                        id: "providers/oauth2/index",
-                    },
+                    label: "Installation",
+                    collapsed: true,
                     items: [
-                        "providers/oauth2/client_credentials",
-                        "providers/oauth2/device_code",
+                        "install-config/install/docker-compose",
+                        "install-config/install/kubernetes",
+                        "install-config/install/aws",
                     ],
                 },
-                "providers/saml/index",
-                "providers/radius/index",
                 {
                     type: "category",
-                    label: "Proxy Provider",
+                    label: "Configuration",
                     link: {
                         type: "doc",
-                        id: "providers/proxy/index",
+                        id: "install-config/configuration/configuration",
+                    },
+                    items: [],
+                },
+                "install-config/upgrade",
+                "install-config/beta",
+                "install-config/reverse-proxy",
+                "install-config/automated-install",
+                "install-config/air-gapped",
+            ],
+        },
+        {
+            type: "category",
+            label: "Add and Secure Applications",
+            collapsed: true,
+            items: [
+                {
+                    type: "category",
+                    label: "Applications",
+                    link: {
+                        type: "doc",
+                        id: "add-secure-apps/applications/index",
+                    },
+                    items: ["add-secure-apps/applications/manage_apps"],
+                },
+                {
+                    type: "category",
+                    label: "Providers",
+                    link: {
+                        type: "doc",
+                        id: "add-secure-apps/providers/index",
                     },
                     items: [
-                        "providers/proxy/custom_headers",
-                        "providers/proxy/header_authentication",
                         {
                             type: "category",
-                            label: "Forward authentication",
+                            label: "Property Mappings",
                             link: {
                                 type: "doc",
-                                id: "providers/proxy/forward_auth",
+                                id: "add-secure-apps/providers/property-mappings/index",
                             },
                             items: [
-                                "providers/proxy/server_nginx",
-                                "providers/proxy/server_traefik",
-                                "providers/proxy/server_envoy",
-                                "providers/proxy/server_caddy",
+                                "add-secure-apps/providers/property-mappings/expression",
+                                ,
+                            ],
+                        },
+                        {
+                            type: "category",
+                            label: "Google Workspace Provider",
+                            link: {
+                                type: "doc",
+                                id: "add-secure-apps/providers/gws/index",
+                            },
+                            items: [
+                                "add-secure-apps/providers/gws/setup-gws",
+                                "add-secure-apps/providers/gws/add-gws-provider",
+                            ],
+                        },
+                        {
+                            type: "category",
+                            label: "LDAP Provider",
+                            link: {
+                                type: "doc",
+                                id: "add-secure-apps/providers/ldap/index",
+                            },
+                            items: [
+                                "add-secure-apps/providers/ldap/generic_setup",
+                            ],
+                        },
+                        {
+                            type: "category",
+                            label: "Microsoft Entra ID Provider",
+                            link: {
+                                type: "doc",
+                                id: "add-secure-apps/providers/entra/index",
+                            },
+                            items: [
+                                "add-secure-apps/providers/entra/setup-entra",
+                                "add-secure-apps/providers/entra/add-entra-provider",
+                            ],
+                        },
+                        {
+                            type: "category",
+                            label: "OAuth2 Provider",
+                            link: {
+                                type: "doc",
+                                id: "add-secure-apps/providers/oauth2/index",
+                            },
+                            items: [
+                                "add-secure-apps/providers/oauth2/create-oauth2-provider",
+                                "add-secure-apps/providers/oauth2/client_credentials",
+                                "add-secure-apps/providers/oauth2/device_code",
+                                "add-secure-apps/providers/oauth2/github-compatibility",
+                            ],
+                        },
+                        "add-secure-apps/providers/saml/index",
+                        "add-secure-apps/providers/radius/index",
+                        {
+                            type: "category",
+                            label: "Proxy Provider",
+                            link: {
+                                type: "doc",
+                                id: "add-secure-apps/providers/proxy/index",
+                            },
+                            items: [
+                                "add-secure-apps/providers/proxy/custom_headers",
+                                "add-secure-apps/providers/proxy/header_authentication",
+                                {
+                                    type: "category",
+                                    label: "Forward authentication",
+                                    link: {
+                                        type: "doc",
+                                        id: "add-secure-apps/providers/proxy/forward_auth",
+                                    },
+                                    items: [
+                                        "add-secure-apps/providers/proxy/server_nginx",
+                                        "add-secure-apps/providers/proxy/server_traefik",
+                                        "add-secure-apps/providers/proxy/server_envoy",
+                                        "add-secure-apps/providers/proxy/server_caddy",
+                                    ],
+                                },
+                            ],
+                        },
+                        "add-secure-apps/providers/scim/index",
+                        {
+                            type: "category",
+                            label: "RAC (Remote Access Control) Provider",
+                            link: {
+                                type: "doc",
+                                id: "add-secure-apps/providers/rac/index",
+                            },
+                            items: ["add-secure-apps/providers/rac/how-to-rac"],
+                        },
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "Flows and Stages",
+                    collapsed: true,
+                    items: [
+                        {
+                            type: "category",
+                            label: "Flows",
+                            link: {
+                                type: "doc",
+                                id: "add-secure-apps/flows-stages/flow/index",
+                            },
+                            items: [
+                                "add-secure-apps/flows-stages/flow/inspector",
+                                "add-secure-apps/flows-stages/flow/context/index",
+                                {
+                                    type: "category",
+                                    label: "Defaults and Examples",
+                                    items: [
+                                        "add-secure-apps/flows-stages/flow/examples/flows",
+                                        "add-secure-apps/flows-stages/flow/examples/default_flows",
+                                        "add-secure-apps/flows-stages/flow/examples/snippets",
+                                    ],
+                                },
+                                {
+                                    type: "category",
+                                    label: "Executors",
+                                    items: [
+                                        "add-secure-apps/flows-stages/flow/executors/if-flow",
+                                        "add-secure-apps/flows-stages/flow/executors/sfe",
+                                        "add-secure-apps/flows-stages/flow/executors/user-settings",
+                                        "add-secure-apps/flows-stages/flow/executors/headless",
+                                    ],
+                                },
+                            ],
+                        },
+                        {
+                            type: "category",
+                            label: "Stages",
+                            link: {
+                                type: "doc",
+                                id: "add-secure-apps/flows-stages/stages/index",
+                            },
+                            items: [
+                                "add-secure-apps/flows-stages/stages/authenticator_duo/index",
+                                "add-secure-apps/flows-stages/stages/authenticator_endpoint_gdtc/index",
+                                "add-secure-apps/flows-stages/stages/authenticator_sms/index",
+                                "add-secure-apps/flows-stages/stages/authenticator_static/index",
+                                "add-secure-apps/flows-stages/stages/authenticator_totp/index",
+                                "add-secure-apps/flows-stages/stages/authenticator_validate/index",
+                                "add-secure-apps/flows-stages/stages/authenticator_webauthn/index",
+                                "add-secure-apps/flows-stages/stages/captcha/index",
+                                "add-secure-apps/flows-stages/stages/deny",
+                                "add-secure-apps/flows-stages/stages/email/index",
+                                "add-secure-apps/flows-stages/stages/identification/index",
+                                "add-secure-apps/flows-stages/stages/invitation/index",
+                                "add-secure-apps/flows-stages/stages/password/index",
+                                "add-secure-apps/flows-stages/stages/prompt/index",
+                                "add-secure-apps/flows-stages/stages/redirect/index",
+                                "add-secure-apps/flows-stages/stages/source/index",
+                                "add-secure-apps/flows-stages/stages/user_delete",
+                                "add-secure-apps/flows-stages/stages/user_login/index",
+                                "add-secure-apps/flows-stages/stages/user_logout",
+                                "add-secure-apps/flows-stages/stages/user_write",
+                            ],
+                        },
+                        {
+                            type: "category",
+                            label: "Bindings",
+                            link: {
+                                type: "doc",
+                                id: "add-secure-apps/flows-stages/bindings/index",
+                            },
+                            items: [
+                                "add-secure-apps/flows-stages/bindings/work_with_bindings",
                             ],
                         },
                     ],
                 },
                 {
                     type: "category",
-                    label: "LDAP Provider",
+                    label: "Outposts",
                     link: {
                         type: "doc",
-                        id: "providers/ldap/index",
+                        id: "add-secure-apps/outposts/index",
                     },
-                    items: ["providers/ldap/generic_setup"],
-                },
-                "providers/scim/index",
-                {
-                    type: "category",
-                    label: "RAC (Remote Access Control) Provider",
-                    link: {
-                        type: "doc",
-                        id: "providers/rac/index",
-                    },
-                    items: ["providers/rac/how-to-rac"],
+                    items: [
+                        "add-secure-apps/outposts/embedded/embedded",
+                        {
+                            type: "category",
+                            label: "Integrations",
+                            items: [
+                                "add-secure-apps/outposts/integrations/docker",
+                                "add-secure-apps/outposts/integrations/kubernetes",
+                            ],
+                        },
+                        {
+                            type: "category",
+                            label: "Running and upgrading",
+                            items: [
+                                "add-secure-apps/outposts/manual-deploy-docker-compose",
+                                "add-secure-apps/outposts/manual-deploy-kubernetes",
+                                "add-secure-apps/outposts/upgrading",
+                            ],
+                        },
+                        "add-secure-apps/outposts/manual-deploy-docker-compose",
+                        "add-secure-apps/outposts/manual-deploy-kubernetes",
+                    ],
                 },
             ],
         },
         {
             type: "category",
-            label: "Sources",
+            label: "Customize your instance",
             collapsed: true,
-            link: {
-                type: "doc",
-                id: "sources/index",
-            },
             items: [
                 {
                     type: "category",
-                    label: "Directory synchronization",
-                    items: [
-                        "sources/active-directory/index",
-                        "sources/freeipa/index",
-                    ],
-                },
-                {
-                    type: "category",
-                    label: "Protocols",
-                    items: [
-                        "sources/ldap/index",
-                        "sources/oauth/index",
-                        "sources/saml/index",
-                        "sources/scim/index",
-                    ],
-                },
-                {
-                    type: "category",
-                    label: "Social Logins",
-                    items: [
-                        "sources/apple/index",
-                        "sources/azure-ad/index",
-                        "sources/discord/index",
-                        "sources/github/index",
-                        "sources/google/index",
-                        "sources/mailcow/index",
-                        "sources/twitch/index",
-                        "sources/plex/index",
-                        "sources/twitter/index",
-                    ],
-                },
-            ],
-        },
-        {
-            type: "category",
-            label: "Outposts",
-            link: {
-                type: "doc",
-                id: "outposts/index",
-            },
-            items: [
-                "outposts/embedded/embedded",
-                {
-                    type: "category",
-                    label: "Integrations",
-                    items: [
-                        "outposts/integrations/docker",
-                        "outposts/integrations/kubernetes",
-                    ],
-                },
-                {
-                    type: "category",
-                    label: "Running and upgrading",
-                    items: [
-                        "outposts/manual-deploy-docker-compose",
-                        "outposts/manual-deploy-kubernetes",
-                        "outposts/upgrading",
-                    ],
-                },
-            ],
-        },
-        {
-            type: "category",
-            label: "Flows",
-            link: {
-                type: "doc",
-                id: "flow/index",
-            },
-            items: [
-                "flow/layouts",
-                "flow/inspector",
-                "flow/context/index",
-                {
-                    type: "category",
-                    label: "Examples",
-                    items: ["flow/examples/flows", "flow/examples/snippets"],
-                },
-                {
-                    type: "category",
-                    label: "Executors",
-                    items: [
-                        "flow/executors/if-flow",
-                        "flow/executors/user-settings",
-                        "flow/executors/headless",
-                    ],
-                },
-            ],
-        },
-        {
-            type: "category",
-            label: "Stages",
-            link: {
-                type: "generated-index",
-                title: "Stages",
-                slug: "flow/stages",
-                description: "Overview of all available stages",
-            },
-            items: [
-                "flow/stages/authenticator_duo/index",
-                "flow/stages/authenticator_sms/index",
-                "flow/stages/authenticator_static/index",
-                "flow/stages/authenticator_totp/index",
-                "flow/stages/authenticator_validate/index",
-                "flow/stages/authenticator_webauthn/index",
-                "flow/stages/captcha/index",
-                "flow/stages/deny",
-                "flow/stages/email/index",
-                "flow/stages/identification/index",
-                "flow/stages/invitation/index",
-                "flow/stages/password/index",
-                "flow/stages/prompt/index",
-                "flow/stages/source/index",
-                "flow/stages/user_delete",
-                "flow/stages/user_login/index",
-                "flow/stages/user_logout",
-                "flow/stages/user_write",
-            ],
-        },
-        {
-            type: "category",
-            label: "Policies",
-            link: {
-                type: "doc",
-                id: "policies/index",
-            },
-            items: [
-                {
-                    type: "category",
-                    label: "Working with policies",
+                    label: "Policies",
+                    collapsed: true,
                     link: {
-                        type: "generated-index",
-                        title: "Working with policies",
-                        slug: "policies/working_with_policies",
-                        description: "Overview of policies configuration",
+                        type: "doc",
+                        id: "customize/policies/index",
                     },
                     items: [
-                        "policies/working_with_policies/whitelist_email",
-                        "policies/working_with_policies/unique_email",
+                        "customize/policies/working_with_policies",
+                        {
+                            type: "category",
+                            label: "Expression Policies",
+                            link: {
+                                type: "doc",
+                                id: "customize/policies/expression",
+                            },
+                            items: [
+                                "customize/policies/expression/unique_email",
+                                "customize/policies/expression/whitelist_email",
+                                "customize/policies/expression/managing_flow_context_keys",
+                            ],
+                        },
                     ],
                 },
-                "policies/expression",
+                {
+                    type: "category",
+                    label: "Interfaces",
+                    items: [
+                        {
+                            type: "category",
+                            label: "Flow",
+                            items: ["customize/interfaces/flow/customization"],
+                        },
+                        {
+                            type: "category",
+                            label: "User",
+                            items: ["customize/interfaces/user/customization"],
+                        },
+                        {
+                            type: "category",
+                            label: "Admin",
+                            items: ["customize/interfaces/admin/customization"],
+                        },
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "Blueprints",
+                    link: {
+                        type: "doc",
+                        id: "customize/blueprints/index",
+                    },
+                    items: [
+                        "customize/blueprints/export",
+                        "customize/blueprints/v1/structure",
+                        "customize/blueprints/v1/tags",
+                        "customize/blueprints/v1/example",
+                        {
+                            type: "category",
+                            label: "Models",
+                            link: {
+                                type: "doc",
+                                id: "customize/blueprints/v1/models",
+                            },
+                            items: ["customize/blueprints/v1/meta"],
+                        },
+                    ],
+                },
+                "customize/brands",
             ],
         },
         {
             type: "category",
-            label: "Property Mappings",
-            link: {
-                type: "doc",
-                id: "property-mappings/index",
-            },
-            items: ["property-mappings/expression"],
-        },
-        {
-            type: "category",
-            label: "Events",
-            link: {
-                type: "doc",
-                id: "events/index",
-            },
-            items: ["events/notifications", "events/transports"],
-        },
-        {
-            type: "category",
-            label: "Interfaces",
-            items: [
-                {
-                    type: "category",
-                    label: "Flow",
-                    items: ["interfaces/flow/customization"],
-                },
-                {
-                    type: "category",
-                    label: "User",
-                    items: ["interfaces/user/customization"],
-                },
-                {
-                    type: "category",
-                    label: "Admin",
-                    items: ["interfaces/admin/customization"],
-                },
-            ],
-        },
-        {
-            type: "category",
-            label: "Users, Groups, & Roles",
+            label: "Manage Users and Sources",
+            collapsed: true,
             items: [
                 {
                     type: "category",
                     label: "Users",
                     link: {
                         type: "doc",
-                        id: "user-group-role/user/index",
+                        id: "users-sources/user/index",
                     },
                     items: [
-                        "user-group-role/user/user_basic_operations",
-                        "user-group-role/user/user_ref",
-                        "user-group-role/user/invitations",
+                        "users-sources/user/user_basic_operations",
+                        "users-sources/user/user_ref",
+                        "users-sources/user/invitations",
                     ],
                 },
                 {
@@ -350,85 +451,280 @@ const docsSidebar = {
                     label: "Groups",
                     link: {
                         type: "doc",
-                        id: "user-group-role/groups/index",
+                        id: "users-sources/groups/index",
                     },
-                    items: ["user-group-role/groups/manage_groups"],
+                    items: [
+                        "users-sources/groups/manage_groups",
+                        "users-sources/groups/group_ref",
+                    ],
                 },
                 {
                     type: "category",
                     label: "Roles",
                     link: {
                         type: "doc",
-                        id: "user-group-role/roles/index",
+                        id: "users-sources/roles/index",
                     },
-                    items: ["user-group-role/roles/manage_roles"],
+                    items: ["users-sources/roles/manage_roles"],
                 },
                 {
                     type: "category",
-                    label: "Access control",
+                    label: "Access Control",
                     link: {
                         type: "doc",
-                        id: "user-group-role/access-control/index",
+                        id: "users-sources/access-control/index",
                     },
                     items: [
-                        "user-group-role/access-control/permissions",
-                        "user-group-role/access-control/manage_permissions",
+                        "users-sources/access-control/permissions",
+                        "users-sources/access-control/manage_permissions",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "Federated and Social Sources",
+                    collapsed: true,
+                    link: {
+                        type: "doc",
+                        id: "users-sources/sources/index",
+                    },
+                    items: [
+                        {
+                            type: "category",
+                            label: "Protocols",
+                            collapsed: true,
+                            items: [
+                                {
+                                    type: "category",
+                                    label: "Kerberos",
+                                    link: {
+                                        type: "doc",
+                                        id: "users-sources/sources/protocols/kerberos/index",
+                                    },
+                                    items: [
+                                        "users-sources/sources/protocols/kerberos/browser",
+                                    ],
+                                },
+                                "users-sources/sources/protocols/ldap/index",
+                                "users-sources/sources/protocols/oauth/index",
+                                "users-sources/sources/protocols/saml/index",
+                                "users-sources/sources/protocols/scim/index",
+                            ],
+                        },
+                        {
+                            type: "category",
+                            label: "Source Property Mappings",
+                            link: {
+                                type: "doc",
+                                id: "users-sources/sources/property-mappings/index",
+                            },
+                            items: [
+                                "users-sources/sources/property-mappings/expressions",
+                            ],
+                        },
+                        {
+                            type: "category",
+                            label: "Directory synchronization",
+                            items: [
+                                "users-sources/sources/directory-sync/active-directory/index",
+                                "users-sources/sources/directory-sync/freeipa/index",
+                            ],
+                        },
+                        {
+                            type: "category",
+                            label: "Identity Providers",
+                            link: {
+                                type: "doc",
+                                id: "users-sources/sources/social-logins/index",
+                            },
+                            items: [
+                                "users-sources/sources/social-logins/apple/index",
+                                "users-sources/sources/social-logins/azure-ad/index",
+                                "users-sources/sources/social-logins/discord/index",
+                                "users-sources/sources/social-logins/facebook/index",
+                                "users-sources/sources/social-logins/github/index",
+                                {
+                                    type: "category",
+                                    label: "Google",
+                                    link: {
+                                        type: "doc",
+                                        id: "users-sources/sources/social-logins/google/index",
+                                    },
+                                    items: [
+                                        "users-sources/sources/social-logins/google/cloud/index",
+                                        "users-sources/sources/social-logins/google/workspace/index",
+                                    ],
+                                },
+                                "users-sources/sources/social-logins/mailcow/index",
+                                "users-sources/sources/social-logins/twitch/index",
+                                "users-sources/sources/social-logins/plex/index",
+                                "users-sources/sources/social-logins/twitter/index",
+                            ],
+                        },
                     ],
                 },
             ],
         },
         {
             type: "category",
-            label: "Release Notes",
-            link: {
-                type: "generated-index",
-                title: "Releases",
-                slug: "releases",
-                description: "Release notes for recent authentik versions",
-            },
+            label: "System Management",
+            collapsed: true,
             items: [
-                "releases/2024/v2024.4",
-                "releases/2024/v2024.2",
-                "releases/2023/v2023.10",
                 {
                     type: "category",
-                    label: "Previous versions",
+                    label: "Operations",
+                    collapsed: true,
                     items: [
-                        "releases/2023/v2023.8",
-                        "releases/2023/v2023.6",
-                        "releases/2023/v2023.5",
-                        "releases/2023/v2023.4",
-                        "releases/2023/v2023.3",
-                        "releases/2023/v2023.2",
-                        "releases/2023/v2023.1",
-                        "releases/2022/v2022.12",
-                        "releases/2022/v2022.11",
-                        "releases/2022/v2022.10",
-                        "releases/2022/v2022.9",
-                        "releases/2022/v2022.8",
-                        "releases/2022/v2022.7",
-                        "releases/2022/v2022.6",
-                        "releases/2022/v2022.5",
-                        "releases/2022/v2022.4",
-                        "releases/2022/v2022.2",
-                        "releases/2022/v2022.1",
-                        "releases/2021/v2021.12",
-                        "releases/2021/v2021.10",
-                        "releases/2021/v2021.9",
-                        "releases/2021/v2021.8",
-                        "releases/2021/v2021.7",
-                        "releases/2021/v2021.6",
-                        "releases/2021/v2021.5",
-                        "releases/2021/v2021.4",
-                        "releases/2021/v2021.3",
-                        "releases/2021/v2021.2",
-                        "releases/2021/v2021.1",
-                        "releases/old/v0.14",
-                        "releases/old/v0.13",
-                        "releases/old/v0.12",
-                        "releases/old/v0.11",
-                        "releases/old/v0.10",
-                        "releases/old/v0.9",
+                        "sys-mgmt/ops/monitoring",
+                        "sys-mgmt/ops/storage-s3",
+                        "sys-mgmt/ops/geoip",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "Events",
+                    collapsed: true,
+                    link: {
+                        type: "doc",
+                        id: "sys-mgmt/events/index",
+                    },
+                    items: [
+                        "sys-mgmt/events/notifications",
+                        "sys-mgmt/events/transports",
+                    ],
+                },
+                "sys-mgmt/certificates",
+                "sys-mgmt/settings",
+            ],
+        },
+        {
+            type: "category",
+            label: "Developer Documentation",
+            collapsed: true,
+            link: {
+                type: "doc",
+                id: "developer-docs/index",
+            },
+            items: [
+                {
+                    type: "category",
+                    label: "Setup",
+                    items: [
+                        "developer-docs/setup/full-dev-environment",
+                        "developer-docs/setup/frontend-dev-environment",
+                        "developer-docs/setup/website-dev-environment",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "API",
+                    link: {
+                        type: "doc",
+                        id: "developer-docs/api/api",
+                    },
+                    items: [
+                        "developer-docs/api/flow-executor",
+                        "developer-docs/api/making-schema-changes",
+                        "developer-docs/api/websocket",
+                        {
+                            type: "category",
+                            label: "Reference",
+                            items: apiReference,
+                        },
+                        "developer-docs/api/clients",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "Writing documentation",
+                    link: {
+                        type: "doc",
+                        id: "developer-docs/docs/writing-documentation",
+                    },
+                    items: [
+                        "developer-docs/docs/style-guide",
+                        {
+                            type: "category",
+                            label: "Templates",
+                            link: {
+                                type: "doc",
+                                id: "developer-docs/docs/templates/index",
+                            },
+                            items: [
+                                "developer-docs/docs/templates/procedural",
+                                "developer-docs/docs/templates/conceptual",
+                                "developer-docs/docs/templates/reference",
+                                "developer-docs/docs/templates/combo",
+                            ],
+                        },
+                    ],
+                },
+                {
+                    type: "doc",
+                    id: "developer-docs/releases/index",
+                },
+                "developer-docs/translation",
+            ],
+        },
+        {
+            type: "category",
+            label: "Security",
+            collapsed: true,
+            link: {
+                type: "generated-index",
+                title: "Security",
+                slug: "security",
+            },
+            items: [
+                "security/policy",
+                "security/security-hardening",
+                {
+                    type: "category",
+                    label: "Audits and Certificates",
+                    items: [
+                        "security/audits-and-certs/2023-06-cure53",
+                        "security/audits-and-certs/2024-11-cobalt",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "CVEs",
+                    items: [
+                        {
+                            type: "category",
+                            label: "2024",
+                            items: [
+                                "security/cves/CVE-2024-52307",
+                                "security/cves/CVE-2024-52289",
+                                "security/cves/CVE-2024-52287",
+                                "security/cves/CVE-2024-47077",
+                                "security/cves/CVE-2024-47070",
+                                "security/cves/CVE-2024-42490",
+                                "security/cves/CVE-2024-38371",
+                                "security/cves/CVE-2024-37905",
+                                "security/cves/CVE-2024-23647",
+                                "security/cves/CVE-2024-21637",
+                            ],
+                        },
+                        {
+                            type: "category",
+                            label: "2023",
+                            items: [
+                                "security/cves/CVE-2023-48228",
+                                "security/cves/GHSA-rjvp-29xq-f62w",
+                                "security/cves/CVE-2023-39522",
+                                "security/cves/CVE-2023-36456",
+                                "security/cves/CVE-2023-26481",
+                            ],
+                        },
+                        {
+                            type: "category",
+                            label: "2022",
+                            items: [
+                                "security/cves/CVE-2022-46172",
+                                "security/cves/CVE-2022-46145",
+                                "security/cves/CVE-2022-23555",
+                            ],
+                        },
                     ],
                 },
             ],
@@ -458,7 +754,10 @@ const docsSidebar = {
                 {
                     type: "category",
                     label: "PostgreSQL",
-                    items: ["troubleshooting/postgres/upgrade_kubernetes"],
+                    items: [
+                        "troubleshooting/postgres/upgrade_kubernetes",
+                        "troubleshooting/postgres/upgrade_docker",
+                    ],
                 },
                 "troubleshooting/access",
                 "troubleshooting/login",
@@ -472,30 +771,14 @@ const docsSidebar = {
         },
         {
             type: "category",
-            label: "Security",
+            label: "Release Notes",
             link: {
                 type: "generated-index",
-                title: "Security",
-                slug: "security",
+                title: "Releases",
+                slug: "releases",
+                description: "Release Notes for recent authentik versions",
             },
-            items: [
-                "security/security-hardening",
-                "security/policy",
-                "security/CVE-2024-23647",
-                "security/CVE-2024-21637",
-                "security/CVE-2023-48228",
-                "security/GHSA-rjvp-29xq-f62w",
-                "security/CVE-2023-39522",
-                "security/CVE-2023-36456",
-                "security/2023-06-cure53",
-                "security/CVE-2023-26481",
-                "security/CVE-2022-23555",
-                "security/CVE-2022-46145",
-                "security/CVE-2022-46172",
-            ],
+            items: releases,
         },
     ],
 };
-
-docsSidebar.docs[0].value = generateVersionDropdown(docsSidebar);
-module.exports = docsSidebar;

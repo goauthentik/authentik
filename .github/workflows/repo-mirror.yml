@@ -1,0 +1,21 @@
+name: "authentik-repo-mirror"
+
+on: [push, delete]
+
+jobs:
+  to_internal:
+    if: ${{ github.repository != 'goauthentik/authentik-internal' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - if: ${{ env.MIRROR_KEY != '' }}
+        uses: pixta-dev/repository-mirroring-action@v1
+        with:
+          target_repo_url:
+            git@github.com:goauthentik/authentik-internal.git
+          ssh_private_key:
+            ${{ secrets.GH_MIRROR_KEY }}
+        env:
+          MIRROR_KEY: ${{ secrets.GH_MIRROR_KEY }}

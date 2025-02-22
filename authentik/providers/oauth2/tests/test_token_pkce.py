@@ -8,10 +8,14 @@ from django.urls import reverse
 
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
-from authentik.flows.challenge import ChallengeTypes
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.constants import GRANT_TYPE_AUTHORIZATION_CODE
-from authentik.providers.oauth2.models import AuthorizationCode, OAuth2Provider
+from authentik.providers.oauth2.models import (
+    AuthorizationCode,
+    OAuth2Provider,
+    RedirectURI,
+    RedirectURIMatchingMode,
+)
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 
 
@@ -31,7 +35,7 @@ class TestTokenPKCE(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=flow,
-            redirect_uris="foo://localhost",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "foo://localhost")],
             access_code_validity="seconds=100",
         )
         Application.objects.create(name="app", slug="app", provider=provider)
@@ -41,7 +45,7 @@ class TestTokenPKCE(OAuthTestCase):
         challenge = generate_id()
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
         # Step 1, initiate params and get redirect to flow
-        self.client.get(
+        response = self.client.get(
             reverse("authentik_providers_oauth2:authorize"),
             data={
                 "response_type": "code",
@@ -52,17 +56,10 @@ class TestTokenPKCE(OAuthTestCase):
                 "code_challenge_method": "S256",
             },
         )
-        response = self.client.get(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
-        )
         code: AuthorizationCode = AuthorizationCode.objects.filter(user=user).first()
-        self.assertJSONEqual(
-            response.content.decode(),
-            {
-                "component": "xak-flow-redirect",
-                "type": ChallengeTypes.REDIRECT.value,
-                "to": f"foo://localhost?code={code.code}&state={state}",
-            },
+        self.assertEqual(
+            response.url,
+            f"foo://localhost?code={code.code}&state={state}",
         )
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),
@@ -95,7 +92,7 @@ class TestTokenPKCE(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=flow,
-            redirect_uris="foo://localhost",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "foo://localhost")],
             access_code_validity="seconds=100",
         )
         Application.objects.create(name="app", slug="app", provider=provider)
@@ -104,7 +101,7 @@ class TestTokenPKCE(OAuthTestCase):
         self.client.force_login(user)
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
         # Step 1, initiate params and get redirect to flow
-        self.client.get(
+        response = self.client.get(
             reverse("authentik_providers_oauth2:authorize"),
             data={
                 "response_type": "code",
@@ -115,17 +112,10 @@ class TestTokenPKCE(OAuthTestCase):
                 # "code_challenge_method": "S256",
             },
         )
-        response = self.client.get(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
-        )
         code: AuthorizationCode = AuthorizationCode.objects.filter(user=user).first()
-        self.assertJSONEqual(
-            response.content.decode(),
-            {
-                "component": "xak-flow-redirect",
-                "type": ChallengeTypes.REDIRECT.value,
-                "to": f"foo://localhost?code={code.code}&state={state}",
-            },
+        self.assertEqual(
+            response.url,
+            f"foo://localhost?code={code.code}&state={state}",
         )
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),
@@ -157,7 +147,7 @@ class TestTokenPKCE(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=flow,
-            redirect_uris="foo://localhost",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "foo://localhost")],
             access_code_validity="seconds=100",
         )
         Application.objects.create(name="app", slug="app", provider=provider)
@@ -172,7 +162,7 @@ class TestTokenPKCE(OAuthTestCase):
         )
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
         # Step 1, initiate params and get redirect to flow
-        self.client.get(
+        response = self.client.get(
             reverse("authentik_providers_oauth2:authorize"),
             data={
                 "response_type": "code",
@@ -183,17 +173,10 @@ class TestTokenPKCE(OAuthTestCase):
                 "code_challenge_method": "S256",
             },
         )
-        response = self.client.get(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
-        )
         code: AuthorizationCode = AuthorizationCode.objects.filter(user=user).first()
-        self.assertJSONEqual(
-            response.content.decode(),
-            {
-                "component": "xak-flow-redirect",
-                "type": ChallengeTypes.REDIRECT.value,
-                "to": f"foo://localhost?code={code.code}&state={state}",
-            },
+        self.assertEqual(
+            response.url,
+            f"foo://localhost?code={code.code}&state={state}",
         )
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),
@@ -214,7 +197,7 @@ class TestTokenPKCE(OAuthTestCase):
             name=generate_id(),
             client_id="test",
             authorization_flow=flow,
-            redirect_uris="foo://localhost",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "foo://localhost")],
             access_code_validity="seconds=100",
         )
         Application.objects.create(name="app", slug="app", provider=provider)
@@ -224,7 +207,7 @@ class TestTokenPKCE(OAuthTestCase):
         verifier = generate_id()
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
         # Step 1, initiate params and get redirect to flow
-        self.client.get(
+        response = self.client.get(
             reverse("authentik_providers_oauth2:authorize"),
             data={
                 "response_type": "code",
@@ -234,17 +217,10 @@ class TestTokenPKCE(OAuthTestCase):
                 "code_challenge": verifier,
             },
         )
-        response = self.client.get(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
-        )
         code: AuthorizationCode = AuthorizationCode.objects.filter(user=user).first()
-        self.assertJSONEqual(
-            response.content.decode(),
-            {
-                "component": "xak-flow-redirect",
-                "type": ChallengeTypes.REDIRECT.value,
-                "to": f"foo://localhost?code={code.code}&state={state}",
-            },
+        self.assertEqual(
+            response.url,
+            f"foo://localhost?code={code.code}&state={state}",
         )
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),

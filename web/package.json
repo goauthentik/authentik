@@ -1,141 +1,367 @@
 {
     "name": "@goauthentik/web",
     "version": "0.0.0",
-    "private": true,
-    "license": "MIT",
-    "scripts": {
-        "extract-locales": "lit-localize extract",
-        "build-locales": "node scripts/build-locales.mjs",
-        "build-locales:build": "lit-localize build",
-        "build-locales:repair": "prettier --write ./src/locale-codes.ts",
-        "esbuild:build": "node build.mjs",
-        "esbuild:build-proxy": "node build.mjs --proxy",
-        "esbuild:watch": "node build.mjs --watch",
-        "build": "run-s build-locales esbuild:build",
-        "build-proxy": "run-s build-locales esbuild:build-proxy",
-        "watch": "run-s build-locales esbuild:watch",
-        "lint": "cross-env NODE_OPTIONS='--max_old_space_size=65536' eslint . --max-warnings 0 --fix",
-        "lint:precommit": "cross-env NODE_OPTIONS='--max_old_space_size=65536' node scripts/eslint-precommit.mjs",
-        "lint:spelling": "node scripts/check-spelling.mjs",
-        "lit-analyse": "lit-analyzer src",
-        "precommit": "npm-run-all --parallel tsc lit-analyse lint:spelling --sequential lint:precommit prettier",
-        "prequick": "run-s tsc:execute lit-analyse lint:precommit lint:spelling",
-        "prettier-check": "prettier --check .",
-        "prettier": "prettier --write .",
-        "pseudolocalize": "node scripts/pseudolocalize.mjs",
-        "tsc:execute": "tsc --noEmit -p .",
-        "tsc": "run-s build-locales tsc:execute",
-        "storybook": "storybook dev -p 6006",
-        "storybook:build": "cross-env NODE_OPTIONS='--max_old_space_size=8192' storybook build",
-        "storybook:build-import-map": "node scripts/build-storybook-import-maps.mjs"
-    },
     "dependencies": {
         "@codemirror/lang-html": "^6.4.9",
         "@codemirror/lang-javascript": "^6.2.2",
         "@codemirror/lang-python": "^6.1.6",
         "@codemirror/lang-xml": "^6.1.0",
-        "@codemirror/legacy-modes": "^6.4.0",
+        "@codemirror/legacy-modes": "^6.4.1",
         "@codemirror/theme-one-dark": "^6.1.2",
-        "@formatjs/intl-listformat": "^7.5.5",
-        "@fortawesome/fontawesome-free": "^6.5.2",
-        "@goauthentik/api": "^2024.4.2-1715271029",
-        "@lit-labs/task": "^3.1.0",
-        "@lit/context": "^1.1.1",
-        "@lit/localize": "^0.12.1",
+        "@floating-ui/dom": "^1.6.11",
+        "@formatjs/intl-listformat": "^7.5.7",
+        "@fortawesome/fontawesome-free": "^6.6.0",
+        "@goauthentik/api": "^2024.12.3-1739965710",
+        "@lit-labs/ssr": "^3.2.2",
+        "@lit/context": "^1.1.2",
+        "@lit/localize": "^0.12.2",
         "@lit/reactive-element": "^2.0.4",
+        "@lit/task": "^1.0.1",
         "@open-wc/lit-helpers": "^0.7.0",
         "@openlayers-elements/core": "^0.3.0",
         "@openlayers-elements/maps": "^0.3.0",
-        "@patternfly/elements": "^3.0.1",
+        "@patternfly/elements": "^4.0.2",
         "@patternfly/patternfly": "^4.224.2",
-        "@sentry/browser": "^7.114.0",
+        "@sentry/browser": "^8.32.0",
+        "@spotlightjs/spotlight": "^2.4.2",
         "@webcomponents/webcomponentsjs": "^2.8.0",
         "base64-js": "^1.5.1",
-        "chart.js": "^4.4.2",
+        "chart.js": "^4.4.4",
         "chartjs-adapter-moment": "^1.0.1",
         "codemirror": "^6.0.1",
         "construct-style-sheets-polyfill": "^3.1.0",
-        "core-js": "^3.37.0",
-        "country-flag-icons": "^1.5.11",
+        "core-js": "^3.38.1",
+        "country-flag-icons": "^1.5.13",
+        "dompurify": "^3.2.4",
         "fuse.js": "^7.0.0",
         "guacamole-common-js": "^1.5.0",
-        "lit": "^3.1.3",
+        "lit": "^3.2.0",
         "md-front-matter": "^1.0.4",
-        "mermaid": "^10.9.0",
-        "rapidoc": "^9.3.4",
+        "mermaid": "^11.4.1",
+        "rapidoc": "^9.3.7",
         "showdown": "^2.1.0",
         "style-mod": "^4.1.2",
-        "ts-pattern": "^5.1.1",
+        "ts-pattern": "^5.4.0",
         "webcomponent-qr-code": "^1.2.0",
-        "yaml": "^2.4.2"
+        "yaml": "^2.5.1"
     },
     "devDependencies": {
-        "@babel/core": "^7.24.5",
-        "@babel/plugin-proposal-class-properties": "^7.18.6",
-        "@babel/plugin-proposal-decorators": "^7.24.1",
-        "@babel/plugin-transform-private-methods": "^7.24.1",
-        "@babel/plugin-transform-private-property-in-object": "^7.24.5",
-        "@babel/plugin-transform-runtime": "^7.24.3",
-        "@babel/preset-env": "^7.24.5",
-        "@babel/preset-typescript": "^7.24.1",
-        "@hcaptcha/types": "^1.0.3",
-        "@jeysal/storybook-addon-css-user-preferences": "^0.2.0",
-        "@lit/localize-tools": "^0.7.2",
-        "@rollup/plugin-replace": "^5.0.5",
-        "@spotlightjs/spotlight": "^1.2.17",
-        "@storybook/addon-essentials": "^8.0.10",
-        "@storybook/addon-links": "^8.0.10",
+        "@eslint/js": "^9.11.1",
+        "@hcaptcha/types": "^1.0.4",
+        "@lit/localize-tools": "^0.8.0",
+        "@rollup/plugin-replace": "^6.0.1",
+        "@storybook/addon-essentials": "^8.3.4",
+        "@storybook/addon-links": "^8.3.4",
         "@storybook/api": "^7.6.17",
-        "@storybook/blocks": "^8.0.8",
-        "@storybook/manager-api": "^8.0.10",
-        "@storybook/web-components": "^8.0.10",
-        "@storybook/web-components-vite": "^8.0.10",
+        "@storybook/blocks": "^8.3.4",
+        "@storybook/builder-vite": "^8.3.4",
+        "@storybook/manager-api": "^8.3.4",
+        "@storybook/web-components": "^8.3.4",
+        "@storybook/web-components-vite": "^8.3.4",
         "@trivago/prettier-plugin-sort-imports": "^4.3.0",
         "@types/chart.js": "^2.9.41",
-        "@types/codemirror": "5.60.15",
+        "@types/codemirror": "^5.60.15",
+        "@types/dompurify": "^3.0.5",
+        "@types/eslint__js": "^8.42.3",
         "@types/grecaptcha": "^3.0.9",
-        "@types/guacamole-common-js": "1.5.2",
+        "@types/guacamole-common-js": "^1.5.2",
+        "@types/mocha": "^10.0.8",
+        "@types/node": "^22.7.4",
         "@types/showdown": "^2.0.6",
-        "@typescript-eslint/eslint-plugin": "^7.5.0",
-        "@typescript-eslint/parser": "^7.5.0",
-        "babel-plugin-macros": "^3.1.0",
-        "babel-plugin-tsconfig-paths": "^1.0.3",
-        "chokidar": "^3.6.0",
-        "cross-env": "^7.0.3",
-        "esbuild": "^0.21.1",
-        "eslint": "^8.57.0",
-        "eslint-config-google": "^0.14.0",
-        "eslint-plugin-custom-elements": "0.0.8",
-        "eslint-plugin-lit": "^1.11.0",
-        "eslint-plugin-sonarjs": "^0.25.1",
-        "eslint-plugin-storybook": "^0.8.0",
+        "@typescript-eslint/eslint-plugin": "^8.8.0",
+        "@typescript-eslint/parser": "^8.8.0",
+        "@wdio/browser-runner": "9.4",
+        "@wdio/cli": "9.4",
+        "@wdio/spec-reporter": "^9.1.2",
+        "chokidar": "^4.0.1",
+        "chromedriver": "^131.0.1",
+        "esbuild": "^0.25.0",
+        "eslint": "^9.11.1",
+        "eslint-plugin-lit": "^1.15.0",
+        "eslint-plugin-wc": "^2.1.1",
         "github-slugger": "^2.0.0",
-        "glob": "^10.3.14",
+        "glob": "^11.0.0",
+        "globals": "^15.10.0",
+        "knip": "^5.30.6",
         "lit-analyzer": "^2.0.3",
         "npm-run-all": "^4.1.5",
-        "prettier": "^3.2.5",
-        "pseudolocale": "^2.0.0",
-        "react": "^18.2.0",
-        "react-dom": "^18.3.1",
+        "prettier": "^3.3.3",
+        "pseudolocale": "^2.1.0",
         "rollup-plugin-modify": "^3.0.0",
         "rollup-plugin-postcss-lit": "^2.1.0",
-        "storybook": "^8.0.10",
+        "storybook": "^8.3.4",
         "storybook-addon-mock": "^5.0.0",
-        "ts-lit-plugin": "^2.0.2",
-        "tslib": "^2.6.2",
-        "turnstile-types": "^1.2.1",
-        "typescript": "^5.4.5",
-        "vite-tsconfig-paths": "^4.3.2"
-    },
-    "optionalDependencies": {
-        "@esbuild/darwin-arm64": "^0.21.1",
-        "@esbuild/linux-amd64": "^0.18.11",
-        "@esbuild/linux-arm64": "^0.21.1",
-        "@rollup/rollup-darwin-arm64": "4.17.2",
-        "@rollup/rollup-linux-arm64-gnu": "4.17.2",
-        "@rollup/rollup-linux-x64-gnu": "4.17.2"
+        "syncpack": "^13.0.0",
+        "turnstile-types": "^1.2.3",
+        "typescript": "^5.6.2",
+        "typescript-eslint": "^8.8.0",
+        "vite-plugin-lit-css": "^2.0.0",
+        "vite-tsconfig-paths": "^5.0.1",
+        "wireit": "^0.14.9"
     },
     "engines": {
         "node": ">=20"
-    }
+    },
+    "license": "MIT",
+    "optionalDependencies": {
+        "@esbuild/darwin-arm64": "^0.24.0",
+        "@esbuild/linux-amd64": "^0.18.11",
+        "@esbuild/linux-arm64": "^0.24.0",
+        "@rollup/rollup-darwin-arm64": "4.23.0",
+        "@rollup/rollup-linux-arm64-gnu": "4.23.0",
+        "@rollup/rollup-linux-x64-gnu": "4.23.0"
+    },
+    "private": true,
+    "scripts": {
+        "build": "wireit",
+        "build-locales": "wireit",
+        "build-locales:build": "wireit",
+        "build-proxy": "wireit",
+        "build:sfe": "wireit",
+        "esbuild:watch": "node build.mjs --watch",
+        "extract-locales": "wireit",
+        "format": "wireit",
+        "lint": "wireit",
+        "lint:imports": "wireit",
+        "lint:lockfile": "wireit",
+        "lint:nightmare": "wireit",
+        "lint:package": "wireit",
+        "lint:precommit": "wireit",
+        "lint:types": "wireit",
+        "lit-analyse": "wireit",
+        "postinstall": "bash scripts/patch-spotlight.sh",
+        "precommit": "wireit",
+        "prettier": "wireit",
+        "prettier-check": "wireit",
+        "pseudolocalize": "wireit",
+        "storybook": "storybook dev -p 6006",
+        "storybook:build": "wireit",
+        "test": "wireit",
+        "test:e2e": "wireit",
+        "test:e2e:watch": "wireit",
+        "test:watch": "wireit",
+        "tsc": "wireit",
+        "watch": "run-s build-locales esbuild:watch"
+    },
+    "type": "module",
+    "wireit": {
+        "build": {
+            "#comment": [
+                "`npm run build` and `npm run watch` are the most common ",
+                "commands you should be using when working on the front-end ",
+                "The files and output spec here expect you to use `npm run build --watch` ",
+                "instead of `npm run watch`. The former is more comprehensive, but ",
+                "the latter is faster."
+            ],
+            "command": "${NODE_RUNNER} build.mjs",
+            "files": [
+                "src/**/*.{css,jpg,png,ts,js,json}",
+                "!src/**/*.stories.ts",
+                "!src/**/*.tests.ts",
+                "!src/locales/*.ts",
+                "!src/locale-codes.ts",
+                "icons/**/*"
+            ],
+            "output": [
+                "./dist/admin/**",
+                "./dist/user/**",
+                "./dist/flow/**",
+                "./dist/standalone/api-browser/**",
+                "./dist/standalone/loading/**",
+                "./dist/enterprise/**",
+                "./dist/poly-*.js",
+                "./dist/poly-*.js.map",
+                "./dist/custom.css",
+                "./dist/theme-dark.css",
+                "./dist/patternfly.min.css"
+            ],
+            "dependencies": [
+                "build-locales",
+                "./packages/sfe:build"
+            ],
+            "env": {
+                "NODE_RUNNER": {
+                    "external": true,
+                    "default": "node"
+                }
+            }
+        },
+        "build:sfe": {
+            "dependencies": [
+                "./packages/sfe:build"
+            ],
+            "files": [
+                "./packages/sfe/**/*.ts"
+            ]
+        },
+        "build-proxy": {
+            "command": "node build.mjs --proxy",
+            "dependencies": [
+                "build-locales"
+            ]
+        },
+        "build-locales:build": {
+            "command": "lit-localize build"
+        },
+        "build-locales:repair": {
+            "command": "prettier --write ./src/locale-codes.ts"
+        },
+        "build-locales": {
+            "command": "node scripts/build-locales.mjs",
+            "files": [
+                "./xliff/*.xlf"
+            ],
+            "output": [
+                "./src/locales/*.ts",
+                "./src/locale-codes.ts"
+            ]
+        },
+        "extract-locales": {
+            "command": "lit-localize extract"
+        },
+        "format": {
+            "command": "prettier --write .",
+            "dependencies": [
+                "lint:package"
+            ]
+        },
+        "format:packages": {
+            "dependencies": [
+                "./packages/sfe:prettier"
+            ]
+        },
+        "lint": {
+            "command": "eslint --max-warnings 0 --fix",
+            "env": {
+                "NODE_OPTIONS": "--max_old_space_size=65536"
+            }
+        },
+        "lint:components": {
+            "command": "lit-analyzer src"
+        },
+        "lint:imports": {
+            "command": "knip --config scripts/knip.config.ts"
+        },
+        "lint:types:tests": {
+            "command": "tsc --noEmit -p ./tests"
+        },
+        "lint:types": {
+            "command": "tsc --noEmit -p .",
+            "dependencies": [
+                "build-locales",
+                "lint:types:tests"
+            ]
+        },
+        "lint:lockfile": {
+            "__comment": "The lockfile-lint package does not have an option to ensure resolved hashes are set everywhere",
+            "shell": true,
+            "command": "sh ./scripts/lint-lockfile.sh package-lock.json"
+        },
+        "lint:lockfiles": {
+            "dependencies": [
+                "./packages/sfe:lint:lockfile"
+            ]
+        },
+        "lint:package": {
+            "command": "syncpack format -i '    '"
+        },
+        "lint:nightmare": {
+            "command": "${NODE_RUNNER} ./scripts/eslint.mjs --nightmare",
+            "env": {
+                "NODE_RUNNER": {
+                    "external": true,
+                    "default": "node"
+                }
+            }
+        },
+        "lint:precommit": {
+            "command": "${NODE_RUNNER} ./scripts/eslint.mjs --precommit",
+            "env": {
+                "NODE_RUNNER": {
+                    "external": true,
+                    "default": "node"
+                }
+            }
+        },
+        "lint:spelling": {
+            "command": "node scripts/check-spelling.mjs"
+        },
+        "lit-analyse": {
+            "command": "lit-analyzer src"
+        },
+        "precommit": {
+            "command": "prettier --write .",
+            "dependencies": [
+                "lint:types",
+                "lint:components",
+                "lint:spelling",
+                "lint:package",
+                "lint:lockfile",
+                "lint:lockfiles",
+                "lint:precommit",
+                "format:packages"
+            ]
+        },
+        "prettier": {
+            "dependencies": [
+                "format"
+            ]
+        },
+        "prettier-check": {
+            "command": "prettier --check ."
+        },
+        "pseudolocalize": {
+            "command": "node scripts/pseudolocalize.mjs"
+        },
+        "storybook:build": {
+            "command": "storybook build",
+            "env": {
+                "NODE_OPTIONS": "--max_old_space_size=8192"
+            }
+        },
+        "test": {
+            "command": "wdio ./wdio.conf.ts --logLevel=warn",
+            "env": {
+                "CI": "true",
+                "TS_NODE_PROJECT": "tsconfig.test.json"
+            }
+        },
+        "test:e2e": {
+            "command": "wdio run ./tests/wdio.conf.ts",
+            "dependencies": [
+                "build"
+            ],
+            "env": {
+                "CI": "true",
+                "TS_NODE_PROJECT": "./tests/tsconfig.test.json"
+            }
+        },
+        "test:e2e:watch": {
+            "command": "wdio run ./tests/wdio.conf.ts",
+            "dependencies": [
+                "build"
+            ],
+            "env": {
+                "TS_NODE_PROJECT": "./tests/tsconfig.test.json"
+            }
+        },
+        "test:watch": {
+            "command": "wdio run ./wdio.conf.ts",
+            "dependencies": [
+                "build"
+            ],
+            "env": {
+                "TS_NODE_PROJECT": "tsconfig.test.json"
+            }
+        },
+        "tsc": {
+            "dependencies": [
+                "lint:types"
+            ]
+        }
+    },
+    "workspaces": [
+        ".",
+        "./packages/*"
+    ]
 }

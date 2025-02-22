@@ -3,6 +3,7 @@ import "@goauthentik/admin/providers/rac/ConnectionTokenList";
 import "@goauthentik/admin/providers/rac/EndpointForm";
 import "@goauthentik/admin/providers/rac/EndpointList";
 import "@goauthentik/admin/providers/rac/RACProviderForm";
+import "@goauthentik/admin/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/ak-status-label";
@@ -12,7 +13,6 @@ import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/rbac/ObjectPermissionsPage";
 
 import { msg } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
@@ -119,7 +119,7 @@ export class RACProviderViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.ProvidersRacRacprovider}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersRacRacprovider}
                 objectPk=${this.provider.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;
@@ -129,11 +129,7 @@ export class RACProviderViewPage extends AKElement {
         if (!this.provider) {
             return html``;
         }
-        return html`<div slot="header" class="pf-c-banner pf-m-info">
-                ${msg("RAC is in preview.")}
-                <a href="mailto:hello+feature/rac@goauthentik.io">${msg("Send us feedback!")}</a>
-            </div>
-            ${this.provider?.assignedApplicationName
+        return html`${this.provider?.assignedApplicationName
                 ? html``
                 : html`<div slot="header" class="pf-c-banner pf-m-warning">
                       ${msg("Warning: Provider is not used by an Application.")}
@@ -192,5 +188,11 @@ export class RACProviderViewPage extends AKElement {
                     </div>
                 </div>
             </div>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-rac-view": RACProviderViewPage;
     }
 }

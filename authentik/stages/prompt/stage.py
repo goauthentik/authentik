@@ -5,6 +5,7 @@ from email.policy import Policy
 from types import MethodType
 from typing import Any
 
+from django.contrib.messages import INFO, add_message
 from django.db.models.query import QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
@@ -21,7 +22,7 @@ from rest_framework.serializers import ValidationError
 
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import User
-from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
+from authentik.flows.challenge import Challenge, ChallengeResponse
 from authentik.flows.planner import FlowPlan
 from authentik.flows.stage import ChallengeStageView
 from authentik.policies.engine import PolicyEngine
@@ -147,6 +148,9 @@ class PromptChallengeResponse(ChallengeResponse):
         result = engine.result
         if not result.passing:
             raise ValidationError(list(result.messages))
+        else:
+            for msg in result.messages:
+                add_message(self.request, INFO, msg)
         return attrs
 
 
@@ -227,7 +231,6 @@ class PromptStageView(ChallengeStageView):
         serializers = self.get_prompt_challenge_fields(fields, context_prompt)
         challenge = PromptChallenge(
             data={
-                "type": ChallengeTypes.NATIVE.value,
                 "fields": serializers,
             },
         )

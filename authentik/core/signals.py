@@ -52,6 +52,8 @@ def user_logged_in_session(sender, request: HttpRequest, user: User, **_):
 @receiver(user_logged_out)
 def user_logged_out_session(sender, request: HttpRequest, user: User, **_):
     """Delete AuthenticatedSession if it exists"""
+    if not request.session or not request.session.session_key:
+        return
     AuthenticatedSession.objects.filter(session_key=request.session.session_key).delete()
 
 

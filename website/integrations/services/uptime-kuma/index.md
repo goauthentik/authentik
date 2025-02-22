@@ -1,8 +1,8 @@
 ---
-title: Uptime Kuma
+title: Integrate with Uptime Kuma
+sidebar_label: Uptime Kuma
+support_level: community
 ---
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Uptime Kuma
 
@@ -14,37 +14,52 @@ Uptime Kuma currently supports only a single user and no native SSO solution. To
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `uptime-kuma.company` is the FQDN of the Uptime Kuma install.
--   `authentik.company` is the FQDN of the authentik install.
+- `uptime-kuma.company` is the FQDN of the Uptime Kuma installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 Create an application in authentik. Create a Proxy provider with the following parameters:
 
--   Internal host
+- Internal host
 
     If Uptime Kuma is running in docker, and you're deploying the authentik proxy on the same host, set the value to `http://uptime-kuma:3001`, where uptime-kuma is the name of your container.
 
     If Uptime Kuma is running on a different server to where you are deploying the authentik proxy, set the value to `http://<Other Host>:3001`.
 
--   External host
+- External host
 
     `https://uptime-kuma.company`
     Set this to the external URL you will be accessing Uptime Kuma from.
 
--   Skip path regex
+- Skip path regex
 
     Add the following regex rules to keep the public status page accessible without authentication.
 
     ```
-    ^/$
-    ^/status
-    ^/assets/
-    ^/assets
+    ^/status/.*
+    ^/assets/.*
+    ^/api/push/.*
+    ^/api/badge/.*
+    ^/api/status-page/heartbeat/.*
     ^/icon.svg
-    ^/api/.*
     ^/upload/.*
-    ^/metrics
+    ```
+
+    Alternatively, you can get even more specific by analyzing the requests for your status pages and modifying the regex rules above accordingly.
+    For example:
+
+    ```
+    ^/status/<slug>$
+    ^/assets/.*
+    ^/api/push/.*
+    ^/api/badge/.*
+    ^/api/status-page/heartbeat/<slug>$
+    ^/upload/<file>$
     ```
 
 To avoid that all users get admin access to Uptime Kuma create a group in authentik for the admin user. Next set in authentik for the application under `Policy / Group / User Bindings` a group binding with the group created above.

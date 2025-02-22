@@ -1,0 +1,32 @@
+---
+title: Envoy
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import Placeholders from "./__placeholders.md";
+import EnvoyIstio from "./_envoy_istio.md";
+
+# Envoy
+
+The configuration template shown below apply to both single-application and domain-level forward auth.
+
+:::info
+If you are using Istio and Kubernetes, use the port number that is exposed for your cluster.
+:::
+
+<Placeholders />
+
+<Tabs
+    defaultValue="envoy-istio"
+    values={[
+        {
+            label: "Envoy (Istio)",
+            value: "envoy-istio",
+        },
+    ]}
+>
+    <TabItem value="envoy-istio">
+        <EnvoyIstio />
+    </TabItem>
+</Tabs>

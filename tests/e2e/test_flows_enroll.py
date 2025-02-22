@@ -37,14 +37,7 @@ class TestFlowsEnroll(SeleniumTestCase):
         self.driver.get(self.live_server_url)
 
         self.initial_stages()
-
-        interface_user = self.get_shadow_root("ak-interface-user")
-        wait = WebDriverWait(interface_user, self.wait_timeout)
-
-        wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, "ak-interface-user-presentation"))
-        )
-        self.driver.get(self.if_user_url("/settings"))
+        sleep(2)
 
         user = User.objects.get(username="foo")
         self.assertEqual(user.username, "foo")
@@ -93,13 +86,6 @@ class TestFlowsEnroll(SeleniumTestCase):
         self.driver.switch_to.window(self.driver.window_handles[0])
 
         sleep(2)
-        # We're now logged in
-        wait = WebDriverWait(self.get_shadow_root("ak-interface-user"), self.wait_timeout)
-
-        wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, "ak-interface-user-presentation"))
-        )
-        self.driver.get(self.if_user_url("/settings"))
 
         self.assert_user(User.objects.get(username="foo"))
 

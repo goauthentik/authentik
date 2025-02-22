@@ -10,7 +10,15 @@ from django.utils import timezone
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
 from authentik.lib.generators import generate_id
-from authentik.providers.oauth2.models import AccessToken, IDToken, OAuth2Provider, RefreshToken
+from authentik.providers.oauth2.models import (
+    AccessToken,
+    ClientTypes,
+    IDToken,
+    OAuth2Provider,
+    RedirectURI,
+    RedirectURIMatchingMode,
+    RefreshToken,
+)
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 
 
@@ -22,7 +30,7 @@ class TesOAuth2Revoke(OAuthTestCase):
         self.provider: OAuth2Provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
-            redirect_uris="",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "")],
             signing_key=create_test_cert(),
         )
         self.app = Application.objects.create(
@@ -101,3 +109,29 @@ class TesOAuth2Revoke(OAuthTestCase):
             },
         )
         self.assertEqual(res.status_code, 401)
+
+    def test_revoke_public(self):
+        """Test revoke public client"""
+        self.provider.client_type = ClientTypes.PUBLIC
+        self.provider.save()
+        token: AccessToken = AccessToken.objects.create(
+            provider=self.provider,
+            user=self.user,
+            token=generate_id(),
+            auth_time=timezone.now(),
+            _scope="openid user profile",
+            _id_token=json.dumps(
+                asdict(
+                    IDToken("foo", "bar"),
+                )
+            ),
+        )
+        auth_public = b64encode(f"{self.provider.client_id}:{generate_id()}".encode()).decode()
+        res = self.client.post(
+            reverse("authentik_providers_oauth2:token-revoke"),
+            HTTP_AUTHORIZATION=f"Basic {auth_public}",
+            data={
+                "token": token.token,
+            },
+        )
+        self.assertEqual(res.status_code, 200)

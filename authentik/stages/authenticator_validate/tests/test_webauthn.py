@@ -32,10 +32,7 @@ from authentik.stages.authenticator_webauthn.models import (
     WebAuthnDeviceType,
 )
 from authentik.stages.authenticator_webauthn.stage import SESSION_KEY_WEBAUTHN_CHALLENGE
-from authentik.stages.authenticator_webauthn.tasks import (
-    webauthn_aaguid_import,
-    webauthn_mds_import,
-)
+from authentik.stages.authenticator_webauthn.tasks import webauthn_mds_import
 from authentik.stages.identification.models import IdentificationStage, UserFields
 from authentik.stages.user_login.models import UserLoginStage
 
@@ -131,8 +128,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
     def test_device_challenge_webauthn_restricted(self):
         """Test webauthn (getting device challenges with a webauthn
         device that is not allowed due to aaguid restrictions)"""
-        webauthn_mds_import(force=True)
-        webauthn_aaguid_import()
+        webauthn_mds_import.delay(force=True).get()
         request = get_request("/")
         request.user = self.user
 
@@ -249,8 +245,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
 
     def test_validate_challenge_unrestricted(self):
         """Test webauthn authentication (unrestricted webauthn device)"""
-        webauthn_mds_import(force=True)
-        webauthn_aaguid_import()
+        webauthn_mds_import.delay(force=True).get()
         device = WebAuthnDevice.objects.create(
             user=self.user,
             public_key=(
@@ -279,6 +274,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
                 "device_class": device.__class__.__name__.lower().replace("device", ""),
                 "device_uid": device.pk,
                 "challenge": {},
+                "last_used": None,
             }
         ]
         session[SESSION_KEY_PLAN] = plan
@@ -323,8 +319,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
 
     def test_validate_challenge_restricted(self):
         """Test webauthn authentication (restricted device type, failure)"""
-        webauthn_mds_import(force=True)
-        webauthn_aaguid_import()
+        webauthn_mds_import.delay(force=True).get()
         device = WebAuthnDevice.objects.create(
             user=self.user,
             public_key=(
@@ -358,6 +353,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
                 "device_class": device.__class__.__name__.lower().replace("device", ""),
                 "device_uid": device.pk,
                 "challenge": {},
+                "last_used": None,
             }
         ]
         session[SESSION_KEY_PLAN] = plan
@@ -438,6 +434,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
                 "device_class": device.__class__.__name__.lower().replace("device", ""),
                 "device_uid": device.pk,
                 "challenge": {},
+                "last_used": None,
             }
         ]
         session[SESSION_KEY_PLAN] = plan

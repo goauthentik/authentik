@@ -2,13 +2,17 @@ import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-source-flow-search";
 import { iconHelperText, placeholderHelperText } from "@goauthentik/admin/helperText";
 import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
-import { UserMatchingModeToLabel } from "@goauthentik/admin/sources/oauth/utils";
+import {
+    GroupMatchingModeToLabel,
+    UserMatchingModeToLabel,
+} from "@goauthentik/admin/sources/oauth/utils";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import {
     CapabilitiesEnum,
     WithCapabilitiesConfig,
 } from "@goauthentik/elements/Interface/capabilitiesProvider";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
@@ -23,12 +27,15 @@ import {
     BindingTypeEnum,
     DigestAlgorithmEnum,
     FlowsInstancesListDesignationEnum,
+    GroupMatchingModeEnum,
     NameIdPolicyEnum,
     SAMLSource,
     SignatureAlgorithmEnum,
     SourcesApi,
     UserMatchingModeEnum,
 } from "@goauthentik/api";
+
+import { propertyMappingsProvider, propertyMappingsSelector } from "./SAMLSourceFormHelpers.js";
 
 @customElement("ak-source-saml-form")
 export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSource>) {
@@ -148,6 +155,35 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                         UserMatchingModeEnum.UsernameDeny}
                     >
                         ${UserMatchingModeToLabel(UserMatchingModeEnum.UsernameDeny)}
+                    </option>
+                </select>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${msg("Group matching mode")}
+                ?required=${true}
+                name="groupMatchingMode"
+            >
+                <select class="pf-c-form-control">
+                    <option
+                        value=${GroupMatchingModeEnum.Identifier}
+                        ?selected=${this.instance?.groupMatchingMode ===
+                        GroupMatchingModeEnum.Identifier}
+                    >
+                        ${UserMatchingModeToLabel(UserMatchingModeEnum.Identifier)}
+                    </option>
+                    <option
+                        value=${GroupMatchingModeEnum.NameLink}
+                        ?selected=${this.instance?.groupMatchingMode ===
+                        GroupMatchingModeEnum.NameLink}
+                    >
+                        ${GroupMatchingModeToLabel(GroupMatchingModeEnum.NameLink)}
+                    </option>
+                    <option
+                        value=${GroupMatchingModeEnum.NameDeny}
+                        ?selected=${this.instance?.groupMatchingMode ===
+                        GroupMatchingModeEnum.NameDeny}
+                    >
+                        ${GroupMatchingModeToLabel(GroupMatchingModeEnum.NameDeny)}
                     </option>
                 </select>
             </ak-form-element-horizontal>
@@ -322,37 +358,37 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     >
                         <select class="pf-c-form-control">
                             <option
-                                value=${NameIdPolicyEnum._20nameidFormatpersistent}
+                                value=${NameIdPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent}
                                 ?selected=${this.instance?.nameIdPolicy ===
-                                NameIdPolicyEnum._20nameidFormatpersistent}
+                                NameIdPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent}
                             >
                                 ${msg("Persistent")}
                             </option>
                             <option
-                                value=${NameIdPolicyEnum._11nameidFormatemailAddress}
+                                value=${NameIdPolicyEnum.UrnOasisNamesTcSaml11NameidFormatEmailAddress}
                                 ?selected=${this.instance?.nameIdPolicy ===
-                                NameIdPolicyEnum._11nameidFormatemailAddress}
+                                NameIdPolicyEnum.UrnOasisNamesTcSaml11NameidFormatEmailAddress}
                             >
                                 ${msg("Email address")}
                             </option>
                             <option
-                                value=${NameIdPolicyEnum._20nameidFormatWindowsDomainQualifiedName}
+                                value=${NameIdPolicyEnum.UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName}
                                 ?selected=${this.instance?.nameIdPolicy ===
-                                NameIdPolicyEnum._20nameidFormatWindowsDomainQualifiedName}
+                                NameIdPolicyEnum.UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName}
                             >
                                 ${msg("Windows")}
                             </option>
                             <option
-                                value=${NameIdPolicyEnum._20nameidFormatX509SubjectName}
+                                value=${NameIdPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName}
                                 ?selected=${this.instance?.nameIdPolicy ===
-                                NameIdPolicyEnum._20nameidFormatX509SubjectName}
+                                NameIdPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName}
                             >
                                 ${msg("X509 Subject")}
                             </option>
                             <option
-                                value=${NameIdPolicyEnum._20nameidFormattransient}
+                                value=${NameIdPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient}
                                 ?selected=${this.instance?.nameIdPolicy ===
-                                NameIdPolicyEnum._20nameidFormattransient}
+                                NameIdPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient}
                             >
                                 ${msg("Transient")}
                             </option>
@@ -396,20 +432,20 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                             .options=${[
                                 {
                                     label: "SHA1",
-                                    value: DigestAlgorithmEnum._200009Xmldsigsha1,
+                                    value: DigestAlgorithmEnum.HttpWwwW3Org200009Xmldsigsha1,
                                 },
                                 {
                                     label: "SHA256",
-                                    value: DigestAlgorithmEnum._200104Xmlencsha256,
+                                    value: DigestAlgorithmEnum.HttpWwwW3Org200104Xmlencsha256,
                                     default: true,
                                 },
                                 {
                                     label: "SHA384",
-                                    value: DigestAlgorithmEnum._200104XmldsigMoresha384,
+                                    value: DigestAlgorithmEnum.HttpWwwW3Org200104XmldsigMoresha384,
                                 },
                                 {
                                     label: "SHA512",
-                                    value: DigestAlgorithmEnum._200104Xmlencsha512,
+                                    value: DigestAlgorithmEnum.HttpWwwW3Org200104Xmlencsha512,
                                 },
                             ]}
                             .value=${this.instance?.digestAlgorithm}
@@ -425,29 +461,79 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                             .options=${[
                                 {
                                     label: "RSA-SHA1",
-                                    value: SignatureAlgorithmEnum._200009XmldsigrsaSha1,
+                                    value: SignatureAlgorithmEnum.HttpWwwW3Org200009XmldsigrsaSha1,
                                 },
                                 {
                                     label: "RSA-SHA256",
-                                    value: SignatureAlgorithmEnum._200104XmldsigMorersaSha256,
+                                    value: SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMorersaSha256,
                                     default: true,
                                 },
                                 {
                                     label: "RSA-SHA384",
-                                    value: SignatureAlgorithmEnum._200104XmldsigMorersaSha384,
+                                    value: SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMorersaSha384,
                                 },
                                 {
                                     label: "RSA-SHA512",
-                                    value: SignatureAlgorithmEnum._200104XmldsigMorersaSha512,
+                                    value: SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMorersaSha512,
                                 },
                                 {
                                     label: "DSA-SHA1",
-                                    value: SignatureAlgorithmEnum._200009XmldsigdsaSha1,
+                                    value: SignatureAlgorithmEnum.HttpWwwW3Org200009XmldsigdsaSha1,
                                 },
                             ]}
                             .value=${this.instance?.signatureAlgorithm}
                         >
                         </ak-radio>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Encryption Certificate")}
+                        name="encryptionKp"
+                    >
+                        <ak-crypto-certificate-search
+                            .certificate=${this.instance?.encryptionKp}
+                        ></ak-crypto-certificate-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "When selected, encrypted assertions will be decrypted using this keypair.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+            <ak-form-group ?expanded=${true}>
+                <span slot="header"> ${msg("SAML Attribute mapping")} </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("User Property Mappings")}
+                        name="userPropertyMappings"
+                    >
+                        <ak-dual-select-dynamic-selected
+                            .provider=${propertyMappingsProvider}
+                            .selector=${propertyMappingsSelector(
+                                this.instance?.userPropertyMappings,
+                            )}
+                            available-label="${msg("Available User Property Mappings")}"
+                            selected-label="${msg("Selected User Property Mappings")}"
+                        ></ak-dual-select-dynamic-selected>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Property mappings for user creation.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Group Property Mappings")}
+                        name="groupPropertyMappings"
+                    >
+                        <ak-dual-select-dynamic-selected
+                            .provider=${propertyMappingsProvider}
+                            .selector=${propertyMappingsSelector(
+                                this.instance?.groupPropertyMappings,
+                            )}
+                            available-label="${msg("Available Group Property Mappings")}"
+                            selected-label="${msg("Selected Group Property Mappings")}"
+                        ></ak-dual-select-dynamic-selected>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Property mappings for group creation.")}
+                        </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
@@ -471,7 +557,6 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Authentication flow")}
-                        ?required=${true}
                         name="authenticationFlow"
                     >
                         <ak-source-flow-search
@@ -486,7 +571,6 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Enrollment flow")}
-                        ?required=${true}
                         name="enrollmentFlow"
                     >
                         <ak-source-flow-search
@@ -501,5 +585,11 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-source-saml-form": SAMLSourceForm;
     }
 }

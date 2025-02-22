@@ -27,12 +27,10 @@ export class RecentEventsCard extends Table<Event> {
     @property({ type: Number })
     pageSize = 10;
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Event>> {
+    async apiEndpoint(): Promise<PaginatedResponse<Event>> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsList({
-            ordering: this.order,
-            page: page,
+            ...(await this.defaultEndpointConfig()),
             pageSize: this.pageSize,
-            search: this.search || "",
         });
     }
 
@@ -89,5 +87,11 @@ export class RecentEventsCard extends Table<Event> {
                 <div slot="body">${msg("No matching events could be found.")}</div>
             </ak-empty-state>`,
         );
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-recent-events": RecentEventsCard;
     }
 }

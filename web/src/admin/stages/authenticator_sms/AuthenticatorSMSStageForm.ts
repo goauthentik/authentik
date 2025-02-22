@@ -67,7 +67,9 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                 <input
                     type="text"
                     value="${first(this.instance?.accountSid, "")}"
-                    class="pf-c-form-control"
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
                     required
                 />
                 <p class="pf-c-form__helper-text">
@@ -82,7 +84,9 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                 <input
                     type="text"
                     value="${first(this.instance?.auth, "")}"
-                    class="pf-c-form-control"
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
                     required
                 />
                 <p class="pf-c-form__helper-text">
@@ -126,7 +130,9 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                 <input
                     type="text"
                     value="${first(this.instance?.accountSid, "")}"
-                    class="pf-c-form-control"
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
                     required
                 />
                 <p class="pf-c-form__helper-text">
@@ -141,7 +147,9 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                 <input
                     type="text"
                     value="${first(this.instance?.auth, "")}"
-                    class="pf-c-form-control"
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
                 />
                 <p class="pf-c-form__helper-text">
                     ${msg(
@@ -157,7 +165,9 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                 <input
                     type="text"
                     value="${first(this.instance?.authPassword, "")}"
-                    class="pf-c-form-control"
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
                 />
                 <p class="pf-c-form__helper-text">
                     ${msg("This is the password to be used with basic auth")}
@@ -263,7 +273,9 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                         <input
                             type="text"
                             value="${first(this.instance?.fromNumber, "")}"
-                            class="pf-c-form-control"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
                             required
                         />
                         <p class="pf-c-form__helper-text">
@@ -335,5 +347,11 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-authenticator-sms-form": AuthenticatorSMSStageForm;
     }
 }

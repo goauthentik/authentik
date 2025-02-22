@@ -10,7 +10,6 @@ from rest_framework.fields import BooleanField, CharField, IntegerField
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
-    ChallengeTypes,
     WithUserInfoChallenge,
 )
 from authentik.flows.stage import ChallengeStageView
@@ -90,7 +89,6 @@ class AuthenticatorSMSStageView(ChallengeStageView):
     def get_challenge(self, *args, **kwargs) -> Challenge:
         return AuthenticatorSMSChallenge(
             data={
-                "type": ChallengeTypes.NATIVE.value,
                 "phone_number_required": self._has_phone_number() is None,
             }
         )

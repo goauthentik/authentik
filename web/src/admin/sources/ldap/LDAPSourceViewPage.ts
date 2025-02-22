@@ -1,3 +1,4 @@
+import "@goauthentik/admin/rbac/ObjectPermissionsPage";
 import "@goauthentik/admin/sources/ldap/LDAPSourceConnectivity";
 import "@goauthentik/admin/sources/ldap/LDAPSourceForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
@@ -10,7 +11,6 @@ import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/ModalForm";
-import "@goauthentik/elements/rbac/ObjectPermissionsPage";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -192,9 +192,15 @@ export class LDAPSourceViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.SourcesLdapLdapsource}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikSourcesLdapLdapsource}
                 objectPk=${this.source.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-source-ldap-view": LDAPSourceViewPage;
     }
 }

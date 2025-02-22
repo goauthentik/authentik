@@ -1,0 +1,46 @@
+name: authentik-ci-aws-cfn
+
+on:
+  push:
+    branches:
+      - main
+      - next
+      - version-*
+  pull_request:
+    branches:
+      - main
+      - version-*
+
+env:
+  POSTGRES_DB: authentik
+  POSTGRES_USER: authentik
+  POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
+
+jobs:
+  check-changes-applied:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: lifecycle/aws/package.json
+          cache: "npm"
+          cache-dependency-path: lifecycle/aws/package-lock.json
+      - working-directory: lifecycle/aws/
+        run: |
+          npm ci
+      - name: Check changes have been applied
+        run: |
+          poetry run make aws-cfn
+          git diff --exit-code
+  ci-aws-cfn-mark:
+    if: always()
+    needs:
+      - check-changes-applied
+    runs-on: ubuntu-latest
+    steps:
+      - uses: re-actors/alls-green@release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}

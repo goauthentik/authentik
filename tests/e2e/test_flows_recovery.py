@@ -97,15 +97,9 @@ class TestFlowsRecovery(SeleniumTestCase):
             new_password
         )
         prompt_stage.find_element(By.CSS_SELECTOR, ".pf-c-button").click()
+        sleep(2)
 
         # We're now logged in
-        wait = WebDriverWait(self.get_shadow_root("ak-interface-user"), self.wait_timeout)
-
-        wait.until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, "ak-interface-user-presentation"))
-        )
-        self.driver.get(self.if_user_url("/settings"))
-
         self.assert_user(user)
         user.refresh_from_db()
         self.assertTrue(user.check_password(new_password))

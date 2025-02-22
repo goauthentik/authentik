@@ -1,7 +1,9 @@
 import { EVENT_SIDEBAR_TOGGLE } from "@goauthentik/common/constants";
 import { AKElement } from "@goauthentik/elements/Base";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
+import { themeImage } from "@goauthentik/elements/utils/images";
 
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
@@ -41,6 +43,9 @@ export class SidebarBrand extends WithBrandConfig(AKElement) {
                     align-items: center;
                     height: 114px;
                     min-height: 114px;
+                    border-bottom: var(--pf-global--BorderWidth--sm);
+                    border-bottom-style: solid;
+                    border-bottom-color: var(--pf-global--BorderColor--100);
                 }
                 .pf-c-brand img {
                     padding: 0 0.5rem;
@@ -84,11 +89,17 @@ export class SidebarBrand extends WithBrandConfig(AKElement) {
             <a href="#/" class="pf-c-page__header-brand-link">
                 <div class="pf-c-brand ak-brand">
                     <img
-                        src=${this.brand?.brandingLogo ?? DefaultBrand.brandingLogo}
-                        alt="authentik Logo"
+                        src=${themeImage(this.brand?.brandingLogo ?? DefaultBrand.brandingLogo)}
+                        alt="${msg("authentik Logo")}"
                         loading="lazy"
                     />
                 </div>
             </a>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-sidebar-brand": SidebarBrand;
     }
 }

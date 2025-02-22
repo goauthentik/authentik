@@ -1,6 +1,11 @@
 """Authenticator devices helpers"""
 
+from typing import TYPE_CHECKING
+
 from django.db import transaction
+
+if TYPE_CHECKING:
+    from authentik.core.models import User
 
 
 def verify_token(user, device_id, token):
@@ -63,7 +68,7 @@ def match_token(user, token):
     return device
 
 
-def devices_for_user(user, confirmed=True, for_verify=False):
+def devices_for_user(user: "User", confirmed: bool | None = True, for_verify: bool = False):
     """
     Return an iterable of all devices registered to the given user.
 

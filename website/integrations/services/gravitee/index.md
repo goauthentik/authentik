@@ -1,8 +1,8 @@
 ---
-title: Gravitee
+title: Integrate with Gravitee
+sidebar_label: Gravitee
+support_level: community
 ---
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Gravitee
 
@@ -14,10 +14,14 @@ title: Gravitee
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `gravitee.company` is the FQDN of the Gravitee install.
--   `authentik.company` is the FQDN of the authentik install.
+- `gravitee.company` is the FQDN of the Gravitee installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik configuration
 
@@ -51,11 +55,11 @@ In the Gravitee Management Console, navigate to _Organizations_ (gravitee.compan
 Only settings that have been modified from default have been listed.
 :::
 
--   **Allow portal authentication to use this identity provider**: enable this
--   **Client ID**: Enter the Client ID from authentik that you noted in step 1
--   **Client Secret**: Enter the Client Secret from authentik that you noted in step 1
--   **Token Endpoint**: Populate this field with the **Token URL**
--   **Authorize Endpoint**: Populate this field with the **Authorize URL**
--   **Userinfo Endpoint**: Populate this field with the **Userinfo URL**
--   **Userinfo Logout Endpoint**: Populate this field with the **Logout URL**
--   **Scopes**: `email openid profile`
+- **Allow portal authentication to use this identity provider**: enable this
+- **Client ID**: Enter the Client ID from authentik that you noted in step 1
+- **Client Secret**: Enter the Client Secret from authentik that you noted in step 1
+- **Token Endpoint**: Populate this field with the **Token URL**
+- **Authorize Endpoint**: Populate this field with the **Authorize URL**
+- **Userinfo Endpoint**: Populate this field with the **Userinfo URL**
+- **Userinfo Logout Endpoint**: Populate this field with the **Logout URL**
+- **Scopes**: `email openid profile`

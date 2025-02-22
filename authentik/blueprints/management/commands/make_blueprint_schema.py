@@ -113,17 +113,20 @@ class Command(BaseCommand):
             )
             model_path = f"{model._meta.app_label}.{model._meta.model_name}"
             self.schema["properties"]["entries"]["items"]["oneOf"].append(
-                self.template_entry(model_path, serializer)
+                self.template_entry(model_path, model, serializer)
             )
 
-    def template_entry(self, model_path: str, serializer: Serializer) -> dict:
+    def template_entry(self, model_path: str, model: type[Model], serializer: Serializer) -> dict:
         """Template entry for a single model"""
         model_schema = self.to_jsonschema(serializer)
         model_schema["required"] = []
         def_name = f"model_{model_path}"
         def_path = f"#/$defs/{def_name}"
         self.schema["$defs"][def_name] = model_schema
-        return {
+        def_name_perm = f"model_{model_path}_permissions"
+        def_path_perm = f"#/$defs/{def_name_perm}"
+        self.schema["$defs"][def_name_perm] = self.model_permissions(model)
+        template = {
             "type": "object",
             "required": ["model", "identifiers"],
             "properties": {
@@ -135,10 +138,16 @@ class Command(BaseCommand):
                     "default": "present",
                 },
                 "conditions": {"type": "array", "items": {"type": "boolean"}},
+                "permissions": {"$ref": def_path_perm},
                 "attrs": {"$ref": def_path},
                 "identifiers": {"$ref": def_path},
             },
         }
+        # Meta models don't require identifiers, as there's no matching database model to find
+        if issubclass(model, BaseMetaModel):
+            del template["properties"]["identifiers"]
+            template["required"].remove("identifiers")
+        return template
 
     def field_to_jsonschema(self, field: Field) -> dict:
         """Convert a single field to json schema"""
@@ -185,3 +194,20 @@ class Command(BaseCommand):
         if required:
             result["required"] = required
         return result
+
+    def model_permissions(self, model: type[Model]) -> dict:
+        perms = [x[0] for x in model._meta.permissions]
+        for action in model._meta.default_permissions:
+            perms.append(f"{action}_{model._meta.model_name}")
+        return {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": ["permission"],
+                "properties": {
+                    "permission": {"type": "string", "enum": perms},
+                    "user": {"type": "integer"},
+                    "role": {"type": "string"},
+                },
+            },
+        }

@@ -2,7 +2,6 @@
 
 from pprint import pformat
 from time import sleep
-from typing import Any
 
 from docker.types import Healthcheck
 
@@ -20,22 +19,18 @@ class TestSourceSCIM(SeleniumTestCase):
     def setUp(self):
         self.slug = generate_id()
         super().setUp()
-
-    def get_container_specs(self) -> dict[str, Any] | None:
-        return {
-            "image": (
+        self.run_container(
+            image=(
                 "ghcr.io/suvera/scim2-compliance-test-utility@sha256:eca913bb73"
                 "c46892cd1fb2dfd2fef1c5881e6abc5cb0eec7e92fb78c1b933ece"
             ),
-            "detach": True,
-            "ports": {"8080": "8080"},
-            "auto_remove": True,
-            "healthcheck": Healthcheck(
+            ports={"8080": "8080"},
+            healthcheck=Healthcheck(
                 test=["CMD", "curl", "http://localhost:8080"],
                 interval=5 * 1_000 * 1_000_000,
                 start_period=1 * 1_000 * 1_000_000,
             ),
-        }
+        )
 
     @retry()
     def test_scim_conformance(self):

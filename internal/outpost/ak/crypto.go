@@ -38,7 +38,6 @@ func (cs *CryptoStore) AddKeypair(uuid string) error {
 	if err != nil {
 		return err
 	}
-	cs.fingerprints[uuid] = cs.getFingerprint(uuid)
 	return nil
 }
 
@@ -73,6 +72,7 @@ func (cs *CryptoStore) Fetch(uuid string) error {
 		return err
 	}
 	cs.certificates[uuid] = &x509cert
+	cs.fingerprints[uuid] = cfp
 	return nil
 }
 

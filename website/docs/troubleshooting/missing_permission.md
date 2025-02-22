@@ -15,7 +15,7 @@ docker compose run --rm worker repair_permissions
 or, for Kubernetes, run
 
 ```shell
-kubectl exec -it deployment/authentik-worker -c authentik -- ak repair_permissions
+kubectl exec -it deployment/authentik-worker -c worker -- ak repair_permissions
 ```
 
 If the error persists after running this command, please open an Issue on [GitHub](https://github.com/goauthentik/authentik/issues/)

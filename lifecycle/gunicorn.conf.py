@@ -7,10 +7,13 @@ from pathlib import Path
 from tempfile import gettempdir
 from typing import TYPE_CHECKING
 
+from cryptography.hazmat.backends.openssl.backend import backend
+from defusedxml import defuse_stdlib
 from prometheus_client.values import MultiProcessValue
 
 from authentik import get_full_version
 from authentik.lib.config import CONFIG
+from authentik.lib.debug import start_debug_server
 from authentik.lib.logging import get_logger_config
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.reflection import get_env
@@ -24,6 +27,11 @@ if TYPE_CHECKING:
     from gunicorn.arbiter import Arbiter
 
     from authentik.root.asgi import AuthentikAsgi
+
+defuse_stdlib()
+
+if CONFIG.get_bool("compliance.fips.enabled", False):
+    backend._enable_fips()
 
 wait_for_db()
 
@@ -109,8 +117,8 @@ def post_worker_init(worker: DjangoUvicornWorker):
     # does not use this signal, so we can skip this safely
     if worker._worker_id != 1:
         return
-    app: "WSGIApplication" = worker.app
-    root_app: "AuthentikAsgi" = app.callable
+    app: WSGIApplication = worker.app
+    root_app: AuthentikAsgi = app.callable
     root_app.call_startup()
 
 
@@ -139,9 +147,5 @@ if not CONFIG.get_bool("disable_startup_analytics", False):
         except Exception:  # nosec
             pass
 
-if CONFIG.get_bool("remote_debug"):
-    import debugpy
-
-    debugpy.listen(("0.0.0.0", 6800))  # nosec
-
+start_debug_server()
 run_migrations()

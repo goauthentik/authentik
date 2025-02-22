@@ -1,11 +1,13 @@
-"""authentik saml_idp Models"""
+"""authentik SAML Provider Models"""
 
 from django.db import models
+from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
+from authentik.core.api.object_types import CreatableType
 from authentik.core.models import PropertyMapping, Provider
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.utils.time import timedelta_string_validator
@@ -142,10 +144,27 @@ class SAMLProvider(Provider):
         on_delete=models.SET_NULL,
         verbose_name=_("Signing Keypair"),
     )
+    encryption_kp = models.ForeignKey(
+        CertificateKeyPair,
+        default=None,
+        null=True,
+        blank=True,
+        help_text=_(
+            "When selected, incoming assertions are encrypted by the IdP using the public "
+            "key of the encryption keypair. The assertion is decrypted by the SP using the "
+            "the private key."
+        ),
+        on_delete=models.SET_NULL,
+        verbose_name=_("Encryption Keypair"),
+        related_name="+",
+    )
 
     default_relay_state = models.TextField(
         default="", blank=True, help_text=_("Default relay_state value for IDP-initiated logins")
     )
+
+    sign_assertion = models.BooleanField(default=True)
+    sign_response = models.BooleanField(default=False)
 
     @property
     def launch_url(self) -> str | None:
@@ -158,6 +177,10 @@ class SAMLProvider(Provider):
             )
         except Provider.application.RelatedObjectDoesNotExist:
             return None
+
+    @property
+    def icon_url(self) -> str | None:
+        return static("authentik/sources/saml.png")
 
     @property
     def serializer(self) -> type[Serializer]:
@@ -185,11 +208,11 @@ class SAMLPropertyMapping(PropertyMapping):
 
     @property
     def component(self) -> str:
-        return "ak-property-mapping-saml-form"
+        return "ak-property-mapping-provider-saml-form"
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.providers.saml.api.property_mapping import SAMLPropertyMappingSerializer
+        from authentik.providers.saml.api.property_mappings import SAMLPropertyMappingSerializer
 
         return SAMLPropertyMappingSerializer
 
@@ -198,5 +221,22 @@ class SAMLPropertyMapping(PropertyMapping):
         return f"{self.name} ({name})"
 
     class Meta:
-        verbose_name = _("SAML Property Mapping")
-        verbose_name_plural = _("SAML Property Mappings")
+        verbose_name = _("SAML Provider Property Mapping")
+        verbose_name_plural = _("SAML Provider Property Mappings")
+
+
+class SAMLProviderImportModel(CreatableType, Provider):
+    """Create a SAML Provider by importing its Metadata."""
+
+    @property
+    def component(self):
+        return "ak-provider-saml-import-form"
+
+    @property
+    def icon_url(self) -> str | None:
+        return static("authentik/sources/saml.png")
+
+    class Meta:
+        abstract = True
+        verbose_name = _("SAML Provider from Metadata")
+        verbose_name_plural = _("SAML Providers from Metadata")

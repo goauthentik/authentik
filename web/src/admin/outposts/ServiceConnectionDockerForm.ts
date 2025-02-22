@@ -72,12 +72,17 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.url)}"
-                    class="pf-c-form-control"
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
+                    inputmode="url"
                     required
                 />
                 <p class="pf-c-form__helper-text">
                     ${msg(
-                        "Can be in the format of 'unix://' when connecting to a local docker daemon, using 'ssh://' to connect via SSH, or 'https://:2376' when connecting to a remote system.",
+                        html`Can be in the format of <code>unix://</code> when connecting to a local
+                            docker daemon, using <code>ssh://</code> to connect via SSH, or
+                            <code>https://:2376</code> when connecting to a remote system.`,
                     )}
                 </p>
             </ak-form-element-horizontal>
@@ -110,5 +115,11 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                     ${msg("When connecting via SSH, this keypair is used for authentication.")}
                 </p>
             </ak-form-element-horizontal>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-service-connection-docker-form": ServiceConnectionDockerForm;
     }
 }

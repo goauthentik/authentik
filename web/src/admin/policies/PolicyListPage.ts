@@ -6,14 +6,13 @@ import "@goauthentik/admin/policies/expiry/ExpiryPolicyForm";
 import "@goauthentik/admin/policies/expression/ExpressionPolicyForm";
 import "@goauthentik/admin/policies/password/PasswordPolicyForm";
 import "@goauthentik/admin/policies/reputation/ReputationPolicyForm";
+import "@goauthentik/admin/rbac/ObjectPermissionModal";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/forms/ConfirmationForm";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import "@goauthentik/elements/forms/ProxyForm";
-import "@goauthentik/elements/rbac/ObjectPermissionModal";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
@@ -49,13 +48,8 @@ export class PolicyListPage extends TablePage<Policy> {
     @property()
     order = "name";
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Policy>> {
-        return new PoliciesApi(DEFAULT_CONFIG).policiesAllList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
-        });
+    async apiEndpoint(): Promise<PaginatedResponse<Policy>> {
+        return new PoliciesApi(DEFAULT_CONFIG).policiesAllList(await this.defaultEndpointConfig());
     }
 
     columns(): TableColumn[] {
@@ -157,5 +151,11 @@ export class PolicyListPage extends TablePage<Policy> {
                 </button>
                 <div slot="modal"></div>
             </ak-forms-confirm>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-policy-list": PolicyListPage;
     }
 }

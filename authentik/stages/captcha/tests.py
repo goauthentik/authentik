@@ -1,6 +1,7 @@
 """captcha tests"""
 
 from django.urls import reverse
+from requests_mock import Mocker
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.markers import StageMarker
@@ -30,8 +31,89 @@ class TestCaptchaStage(FlowTestCase):
         )
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
-    def test_valid(self):
+    @Mocker()
+    def test_valid(self, mock: Mocker):
         """Test valid captcha"""
+        mock.post(
+            "https://www.recaptcha.net/recaptcha/api/siteverify",
+            json={
+                "success": True,
+                "score": 0.5,
+            },
+        )
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            {"token": "PASSED"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+
+    @Mocker()
+    def test_invalid_score_high(self, mock: Mocker):
+        """Test invalid captcha (score too high)"""
+        mock.post(
+            "https://www.recaptcha.net/recaptcha/api/siteverify",
+            json={
+                "success": True,
+                "score": 99,
+            },
+        )
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            {"token": "PASSED"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertStageResponse(
+            response,
+            component="ak-stage-captcha",
+            response_errors={"token": [{"string": "Invalid captcha response", "code": "invalid"}]},
+        )
+
+    @Mocker()
+    def test_invalid_score_low(self, mock: Mocker):
+        """Test invalid captcha (score too low)"""
+        mock.post(
+            "https://www.recaptcha.net/recaptcha/api/siteverify",
+            json={
+                "success": True,
+                "score": -3,
+            },
+        )
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            {"token": "PASSED"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertStageResponse(
+            response,
+            component="ak-stage-captcha",
+            response_errors={"token": [{"string": "Invalid captcha response", "code": "invalid"}]},
+        )
+
+    @Mocker()
+    def test_invalid_score_low_continue(self, mock: Mocker):
+        """Test invalid captcha (score too low, but continue)"""
+        self.stage.error_on_invalid_score = False
+        self.stage.save()
+        mock.post(
+            "https://www.recaptcha.net/recaptcha/api/siteverify",
+            json={
+                "success": True,
+                "score": -3,
+            },
+        )
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan

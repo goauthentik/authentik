@@ -1,6 +1,7 @@
-import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderFormPage";
+import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderForm";
 import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderGroupList";
 import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderUserList";
+import "@goauthentik/admin/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/events/ObjectChangelog";
@@ -10,13 +11,11 @@ import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/events/LogViewer";
-import "@goauthentik/elements/rbac/ObjectPermissionsPage";
 
 import { msg } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -51,7 +50,6 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
         return [
             PFBase,
             PFButton,
-            PFBanner,
             PFForm,
             PFFormControl,
             PFStack,
@@ -147,7 +145,7 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.ProvidersMicrosoftEntraMicrosoftentraprovider}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersMicrosoftEntraMicrosoftentraprovider}
                 objectPk=${this.provider.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;
@@ -157,11 +155,7 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
         if (!this.provider) {
             return html``;
         }
-        return html`<div slot="header" class="pf-c-banner pf-m-info">
-                ${msg("Microsoft Entra Provider is in preview.")}
-                <a href="mailto:hello+feature/mse@goauthentik.io">${msg("Send us feedback!")}</a>
-            </div>
-            ${!this.provider?.assignedBackchannelApplicationName
+        return html`${!this.provider?.assignedBackchannelApplicationName
                 ? html`<div slot="header" class="pf-c-banner pf-m-warning">
                       ${msg(
                           "Warning: Provider is not assigned to an application as backchannel provider.",
@@ -220,5 +214,11 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
                     ></ak-sync-status-card>
                 </div>
             </div>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-microsoft-entra-view": MicrosoftEntraProviderViewPage;
     }
 }

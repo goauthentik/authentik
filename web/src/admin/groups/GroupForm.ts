@@ -39,6 +39,7 @@ export class GroupForm extends ModelForm<Group, string> {
     loadInstance(pk: string): Promise<Group> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsRetrieve({
             groupUuid: pk,
+            includeUsers: false,
         });
     }
 
@@ -156,5 +157,11 @@ export class GroupForm extends ModelForm<Group, string> {
                     ${msg("Set custom attributes using YAML or JSON.")}
                 </p>
             </ak-form-element-horizontal>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-group-form": GroupForm;
     }
 }

@@ -7,7 +7,6 @@ import (
 
 	goldap "github.com/go-ldap/ldap/v3"
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/flow"
 	"goauthentik.io/internal/outpost/ldap/server"
 	"goauthentik.io/internal/outpost/ldap/utils"
@@ -45,22 +44,6 @@ func (db *DirectBinder) GetUsername(dn string) (string, error) {
 		}
 	}
 	return "", errors.New("failed to find cn")
-}
-
-// SearchAccessCheck Check if the current user is allowed to search
-func (db *DirectBinder) SearchAccessCheck(user api.UserSelf) *string {
-	for _, group := range user.Groups {
-		for _, allowedGroup := range db.si.GetSearchAllowedGroups() {
-			if allowedGroup == nil {
-				continue
-			}
-			db.log.WithField("userGroup", group.Pk).WithField("allowedGroup", allowedGroup).Trace("Checking search access")
-			if group.Pk == allowedGroup.String() {
-				return &group.Name
-			}
-		}
-	}
-	return nil
 }
 
 func (db *DirectBinder) TimerFlowCacheExpiry(ctx context.Context) {

@@ -1,8 +1,8 @@
 ---
-title: FreshRSS
+title: Integrate with FreshRSS
+sidebar_label: FreshRSS
+support_level: community
 ---
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is FreshRSS
 
@@ -12,11 +12,15 @@ title: FreshRSS
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `freshrss.company` is the FQDN of the FreshRSS install.
--   `port` is the port on which the FreshRSS install is running (usually 443)
--   `authentik.company` is the FQDN of the authentik install.
+- `freshrss.company` is the FQDN of the FreshRSS installation.
+- `port` is the port on which the FreshRSS install is running (usually 443)
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik configuration
 
@@ -51,12 +55,12 @@ This integration only works with the Docker or Kubernetes install of FreshRSS, u
 
 Add those environment variables to your _Docker_ image :
 
--   `OIDC_ENABLED` : `1`
--   `OIDC_PROVIDER_METADATA_URL` : `https://authentik.company/application/o/<application-slug>/.well-known/openid-configuration` replacing `<application-slug>` with the slug of your created application
--   `OIDC_CLIENT_ID` : the client ID of your provider
--   `OIDC_CLIENT_SECRET` : the client secret of your provider
--   `OIDC_X_FORWARDED_HEADERS` : `X-Forwarded-Port X-Forwarded-Proto X-Forwarded-Host`
--   `OIDC_SCOPES` : `openid email profile`
+- `OIDC_ENABLED` : `1`
+- `OIDC_PROVIDER_METADATA_URL` : `https://authentik.company/application/o/<application-slug>/.well-known/openid-configuration` replacing `<application-slug>` with the slug of your created application
+- `OIDC_CLIENT_ID` : the client ID of your provider
+- `OIDC_CLIENT_SECRET` : the client secret of your provider
+- `OIDC_X_FORWARDED_HEADERS` : `X-Forwarded-Port X-Forwarded-Proto X-Forwarded-Host`
+- `OIDC_SCOPES` : `openid email profile`
 
 Before restarting your Docker container, ensure that one of the Admin users of your FreshRSS instance has the same login as one of your Authentik user.
 

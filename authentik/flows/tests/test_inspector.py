@@ -7,8 +7,8 @@ from django.urls.base import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
-from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.models import FlowDesignation, FlowStageBinding, InvalidResponseAction
+from authentik.lib.generators import generate_id
 from authentik.stages.dummy.models import DummyStage
 from authentik.stages.identification.models import IdentificationStage, UserFields
 
@@ -27,7 +27,7 @@ class TestFlowInspector(APITestCase):
 
         # Stage 1 is an identification stage
         ident_stage = IdentificationStage.objects.create(
-            name="ident",
+            name=generate_id(),
             user_fields=[UserFields.USERNAME],
         )
         FlowStageBinding.objects.create(
@@ -36,9 +36,8 @@ class TestFlowInspector(APITestCase):
             order=1,
             invalid_response_action=InvalidResponseAction.RESTART_WITH_CONTEXT,
         )
-        FlowStageBinding.objects.create(
-            target=flow, stage=DummyStage.objects.create(name="dummy2"), order=1
-        )
+        dummy_stage = DummyStage.objects.create(name=generate_id())
+        FlowStageBinding.objects.create(target=flow, stage=dummy_stage, order=1)
 
         res = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
@@ -46,6 +45,8 @@ class TestFlowInspector(APITestCase):
         self.assertJSONEqual(
             res.content,
             {
+                "allow_show_password": False,
+                "captcha_stage": None,
                 "component": "ak-stage-identification",
                 "flow_info": {
                     "background": flow.background_url,
@@ -54,7 +55,6 @@ class TestFlowInspector(APITestCase):
                     "layout": "stacked",
                 },
                 "flow_designation": "authentication",
-                "type": ChallengeTypes.NATIVE.value,
                 "password_fields": False,
                 "primary_action": "Log in",
                 "sources": [],
@@ -68,9 +68,11 @@ class TestFlowInspector(APITestCase):
         )
         content = loads(ins.content)
         self.assertEqual(content["is_completed"], False)
-        self.assertEqual(content["current_plan"]["current_stage"]["stage_obj"]["name"], "ident")
         self.assertEqual(
-            content["current_plan"]["next_planned_stage"]["stage_obj"]["name"], "dummy2"
+            content["current_plan"]["current_stage"]["stage_obj"]["name"], ident_stage.name
+        )
+        self.assertEqual(
+            content["current_plan"]["next_planned_stage"]["stage_obj"]["name"], dummy_stage.name
         )
 
         self.client.post(
@@ -84,8 +86,12 @@ class TestFlowInspector(APITestCase):
         )
         content = loads(ins.content)
         self.assertEqual(content["is_completed"], False)
-        self.assertEqual(content["plans"][0]["current_stage"]["stage_obj"]["name"], "ident")
-        self.assertEqual(content["current_plan"]["current_stage"]["stage_obj"]["name"], "dummy2")
+        self.assertEqual(
+            content["plans"][0]["current_stage"]["stage_obj"]["name"], ident_stage.name
+        )
+        self.assertEqual(
+            content["current_plan"]["current_stage"]["stage_obj"]["name"], dummy_stage.name
+        )
         self.assertEqual(
             content["current_plan"]["plan_context"]["pending_user"]["username"], self.admin.username
         )

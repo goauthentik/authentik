@@ -1,7 +1,7 @@
 import { createContext } from "@lit/context";
 
-import { ApplicationWizardState } from "./types";
+import { LocalTypeCreate } from "./steps/ProviderChoices.js";
 
-export const applicationWizardContext = createContext<ApplicationWizardState>(
-    Symbol("ak-application-wizard-state-context"),
+export const applicationWizardProvidersContext = createContext<LocalTypeCreate[]>(
+    Symbol("ak-application-wizard-providers-context"),
 );

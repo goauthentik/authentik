@@ -2,7 +2,9 @@
 
 from json import loads
 
+from django.db.models import Prefetch
 from django.http import Http404
+from django.utils.translation import gettext as _
 from django_filters.filters import CharFilter, ModelMultipleChoiceFilter
 from django_filters.filterset import FilterSet
 from drf_spectacular.utils import (
@@ -16,12 +18,12 @@ from rest_framework.decorators import action
 from rest_framework.fields import CharField, IntegerField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ListSerializer, ModelSerializer, ValidationError
+from rest_framework.serializers import ListSerializer, ValidationError
 from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import JSONDictField, PassiveSerializer
+from authentik.core.api.utils import JSONDictField, ModelSerializer, PassiveSerializer
 from authentik.core.models import Group, User
 from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
@@ -80,8 +82,36 @@ class GroupSerializer(ModelSerializer):
         if not self.instance or not parent:
             return parent
         if str(parent.group_uuid) == str(self.instance.group_uuid):
-            raise ValidationError("Cannot set group as parent of itself.")
+            raise ValidationError(_("Cannot set group as parent of itself."))
         return parent
+
+    def validate_is_superuser(self, superuser: bool):
+        """Ensure that the user creating this group has permissions to set the superuser flag"""
+        request: Request = self.context.get("request", None)
+        if not request:
+            return superuser
+        # If we're updating an instance, and the state hasn't changed, we don't need to check perms
+        if self.instance and superuser == self.instance.is_superuser:
+            return superuser
+        user: User = request.user
+        perm = (
+            "authentik_core.enable_group_superuser"
+            if superuser
+            else "authentik_core.disable_group_superuser"
+        )
+        has_perm = user.has_perm(perm)
+        if self.instance and not has_perm:
+            has_perm = user.has_perm(perm, self.instance)
+        if not has_perm:
+            raise ValidationError(
+                _(
+                    (
+                        "User does not have permission to set "
+                        "superuser status to {superuser_status}."
+                    ).format_map({"superuser_status": superuser})
+                )
+            )
+        return superuser
 
     class Meta:
         model = Group
@@ -166,8 +196,14 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
 
     def get_queryset(self):
         base_qs = Group.objects.all().select_related("parent").prefetch_related("roles")
+
         if self.serializer_class(context={"request": self.request})._should_include_users:
             base_qs = base_qs.prefetch_related("users")
+        else:
+            base_qs = base_qs.prefetch_related(
+                Prefetch("users", queryset=User.objects.all().only("id"))
+            )
+
         return base_qs
 
     @extend_schema(
@@ -177,6 +213,14 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
     )
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter("include_users", bool, default=True),
+        ]
+    )
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
 
     @permission_required("authentik_core.add_user_to_group")
     @extend_schema(

@@ -3,16 +3,18 @@
 from unittest.mock import AsyncMock, MagicMock, patch
 
 from azure.identity.aio import ClientSecretCredential
-from django.test import TestCase
+from django.urls import reverse
 from msgraph.generated.models.group_collection_response import GroupCollectionResponse
 from msgraph.generated.models.organization import Organization
 from msgraph.generated.models.organization_collection_response import OrganizationCollectionResponse
 from msgraph.generated.models.user import User as MSUser
 from msgraph.generated.models.user_collection_response import UserCollectionResponse
 from msgraph.generated.models.verified_domain import VerifiedDomain
+from rest_framework.test import APITestCase
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
+from authentik.core.tests.utils import create_test_admin_user
 from authentik.enterprise.providers.microsoft_entra.models import (
     MicrosoftEntraProvider,
     MicrosoftEntraProviderMapping,
@@ -25,11 +27,12 @@ from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction
 from authentik.tenants.models import Tenant
 
 
-class MicrosoftEntraUserTests(TestCase):
+class MicrosoftEntraUserTests(APITestCase):
     """Microsoft Entra User tests"""
 
     @apply_blueprint("system/providers-microsoft-entra.yaml")
     def setUp(self) -> None:
+
         # Delete all users and groups as the mocked HTTP responses only return one ID
         # which will cause errors with multiple users
         Tenant.objects.update(avatars="none")
@@ -93,6 +96,42 @@ class MicrosoftEntraUserTests(TestCase):
             self.assertIsNotNone(microsoft_user)
             self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
             user_create.assert_called_once()
+
+    def test_user_not_created(self):
+        """Test without property mappings, no group is created"""
+        self.provider.property_mappings.clear()
+        uid = generate_id()
+        with (
+            patch(
+                "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
+                MagicMock(return_value={"credentials": self.creds}),
+            ),
+            patch(
+                "msgraph.generated.organization.organization_request_builder.OrganizationRequestBuilder.get",
+                AsyncMock(
+                    return_value=OrganizationCollectionResponse(
+                        value=[
+                            Organization(verified_domains=[VerifiedDomain(name="goauthentik.io")])
+                        ]
+                    )
+                ),
+            ),
+            patch(
+                "msgraph.generated.users.users_request_builder.UsersRequestBuilder.post",
+                AsyncMock(return_value=MSUser(id=generate_id())),
+            ) as user_create,
+        ):
+            user = User.objects.create(
+                username=uid,
+                name=f"{uid} {uid}",
+                email=f"{uid}@goauthentik.io",
+            )
+            microsoft_user = MicrosoftEntraProviderUser.objects.filter(
+                provider=self.provider, user=user
+            ).first()
+            self.assertIsNone(microsoft_user)
+            self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
+            user_create.assert_not_called()
 
     def test_user_create_update(self):
         """Test user updating"""
@@ -335,3 +374,45 @@ class MicrosoftEntraUserTests(TestCase):
             )
             self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
             user_list.assert_called_once()
+
+    def test_connect_manual(self):
+        """test manual user connection"""
+        uid = generate_id()
+        self.app.backchannel_providers.remove(self.provider)
+        admin = create_test_admin_user()
+        different_user = User.objects.create(
+            username=uid,
+            email=f"{uid}@goauthentik.io",
+        )
+        self.app.backchannel_providers.add(self.provider)
+        with (
+            patch(
+                "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
+                MagicMock(return_value={"credentials": self.creds}),
+            ),
+            patch(
+                "msgraph.generated.organization.organization_request_builder.OrganizationRequestBuilder.get",
+                AsyncMock(
+                    return_value=OrganizationCollectionResponse(
+                        value=[
+                            Organization(verified_domains=[VerifiedDomain(name="goauthentik.io")])
+                        ]
+                    )
+                ),
+            ),
+            patch(
+                "authentik.enterprise.providers.microsoft_entra.clients.users.MicrosoftEntraUserClient.update_single_attribute",
+                MagicMock(),
+            ) as user_get,
+        ):
+            self.client.force_login(admin)
+            response = self.client.post(
+                reverse("authentik_api:microsoftentraprovideruser-list"),
+                data={
+                    "microsoft_id": generate_id(),
+                    "user": different_user.pk,
+                    "provider": self.provider.pk,
+                },
+            )
+            self.assertEqual(response.status_code, 201)
+            user_get.assert_called_once()

@@ -78,7 +78,7 @@ export class Markdown extends AKElement {
             const pathName = path.replace(".md", "");
             const link = `docs/${baseName}${pathName}`;
             const url = new URL(link, baseUrl).toString();
-            return `href="${url}" _target="blank"`;
+            return `href="${url}" _target="blank" rel="noopener noreferrer"`;
         });
     }
 
@@ -102,5 +102,11 @@ export class Markdown extends AKElement {
 
         return html`${this.docTitle ? html`<h2>${this.docTitle}</h2>` : nothing}
         ${unsafeHTML(this.docHtml)}`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-markdown": Markdown;
     }
 }

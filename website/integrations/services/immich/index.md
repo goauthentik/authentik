@@ -1,8 +1,8 @@
 ---
-title: Immich
+title: Integrate with Immich
+sidebar_label: Immich
+support_level: community
 ---
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Immich
 
@@ -12,10 +12,14 @@ title: Immich
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `https://immich.company` is the URL used to access the Immich instance.
--   `authentik.company` is the FQDN of the authentik install.
+- `https://immich.company` is the URL used to access the Immich instance.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik configuration
 
@@ -33,7 +37,7 @@ The following placeholders will be used:
       :::note
       Please note that the following URIs are just examples. Be sure to include all of the domains / URLs that you will use to access Immich.
       :::
-        - app.immich:/
+        - app.immich:///oauth-callback
         - https://immich.company/auth/login
         - https://immich.company/user-settings
     - **Signing Key**: authentik Self-signed Certificate

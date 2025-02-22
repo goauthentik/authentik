@@ -1,9 +1,21 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build
-FROM docker.io/golang:1.22.3-bookworm AS builder
+FROM --platform=${BUILDPLATFORM} mcr.microsoft.com/oss/go/microsoft/golang:1.23-fips-bookworm AS builder
+
+ARG TARGETOS
+ARG TARGETARCH
+ARG TARGETVARIANT
+
+ARG GOOS=$TARGETOS
+ARG GOARCH=$TARGETARCH
 
 WORKDIR /go/src/goauthentik.io
+
+RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/var/cache/apt \
+    dpkg --add-architecture arm64 && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends crossbuild-essential-arm64 gcc-aarch64-linux-gnu
 
 RUN --mount=type=bind,target=/go/src/goauthentik.io/go.mod,src=./go.mod \
     --mount=type=bind,target=/go/src/goauthentik.io/go.sum,src=./go.sum \
@@ -11,28 +23,39 @@ RUN --mount=type=bind,target=/go/src/goauthentik.io/go.mod,src=./go.mod \
     --mount=type=cache,target=/go/pkg/mod \
     go mod download
 
-ENV CGO_ENABLED=0
 COPY . .
 RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     --mount=type=cache,id=go-build-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/root/.cache/go-build \
+    if [ "$TARGETARCH" = "arm64" ]; then export CC=aarch64-linux-gnu-gcc && export CC_FOR_TARGET=gcc-aarch64-linux-gnu; fi && \
+    CGO_ENABLED=1 GOEXPERIMENT="systemcrypto" GOFLAGS="-tags=requirefips" GOARM="${TARGETVARIANT#v}" \
     go build -o /go/rac ./cmd/rac
 
 # Stage 2: Run
-FROM ghcr.io/beryju/guacd:1.5.5
+FROM ghcr.io/beryju/guacd:1.5.5-fips
 
+ARG VERSION
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
 
-LABEL org.opencontainers.image.url https://goauthentik.io
-LABEL org.opencontainers.image.description goauthentik.io RAC outpost, see https://goauthentik.io for more info.
-LABEL org.opencontainers.image.source https://github.com/goauthentik/authentik
-LABEL org.opencontainers.image.version ${VERSION}
-LABEL org.opencontainers.image.revision ${GIT_BUILD_HASH}
+LABEL org.opencontainers.image.url=https://goauthentik.io
+LABEL org.opencontainers.image.description="goauthentik.io RAC outpost, see https://goauthentik.io for more info."
+LABEL org.opencontainers.image.source=https://github.com/goauthentik/authentik
+LABEL org.opencontainers.image.version=${VERSION}
+LABEL org.opencontainers.image.revision=${GIT_BUILD_HASH}
+
+USER root
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get clean && \
+    rm -rf /tmp/* /var/lib/apt/lists/*
+USER 1000
 
 COPY --from=builder /go/rac /
 
 HEALTHCHECK --interval=5s --retries=20 --start-period=3s CMD [ "/rac", "healthcheck" ]
 
 USER 1000
+
+ENV GOFIPS=1
 
 ENTRYPOINT ["/rac"]

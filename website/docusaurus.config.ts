@@ -2,10 +2,14 @@ import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
 import { themes as prismThemes } from "prism-react-renderer";
 import type * as OpenApiPlugin from "docusaurus-plugin-openapi-docs";
+import remarkGithub, { BuildUrlValues } from "remark-github";
+import { defaultBuildUrl } from "remark-github";
+import remarkDirective from "remark-directive";
+import remarkVersionDirective from "./remark/version-directive";
+import remarkPreviewDirective from "./remark/preview-directive";
+import remarkSupportDirective from "./remark/support-directive";
 
-module.exports = async function (): Promise<Config> {
-    const remarkGithub = (await import("remark-github")).default;
-    const defaultBuildUrl = (await import("remark-github")).defaultBuildUrl;
+const createConfig = (): Config => {
     return {
         title: "authentik",
         tagline: "Bring all of your authentication into a unified platform.",
@@ -34,17 +38,12 @@ module.exports = async function (): Promise<Config> {
                     },
                     {
                         to: "docs/",
-                        label: "Docs",
+                        label: "Documentation",
                         position: "left",
                     },
                     {
                         to: "integrations/",
                         label: "Integrations",
-                        position: "left",
-                    },
-                    {
-                        to: "developer-docs/",
-                        label: "Developer",
                         position: "left",
                     },
                     {
@@ -85,7 +84,15 @@ module.exports = async function (): Promise<Config> {
             prism: {
                 theme: prismThemes.oneLight,
                 darkTheme: prismThemes.oneDark,
-                additionalLanguages: ["python", "diff", "json"],
+                additionalLanguages: [
+                    // ---
+                    "apacheconf",
+                    "diff",
+                    "http",
+                    "json",
+                    "nginx",
+                    "python",
+                ],
             },
         },
         presets: [
@@ -97,13 +104,20 @@ module.exports = async function (): Promise<Config> {
                         sidebarPath: "./sidebars.js",
                         editUrl:
                             "https://github.com/goauthentik/authentik/edit/main/website/",
+                        docItemComponent: "@theme/ApiItem",
+                        beforeDefaultRemarkPlugins: [
+                            remarkDirective,
+                            remarkVersionDirective,
+                            remarkPreviewDirective,
+                            remarkSupportDirective,
+                        ],
                         remarkPlugins: [
                             [
                                 remarkGithub,
                                 {
                                     repository: "goauthentik/authentik",
                                     // Only replace issues and PR links
-                                    buildUrl: function (values) {
+                                    buildUrl: (values: BuildUrlValues) => {
                                         return values.type === "issue" ||
                                             values.type === "mention"
                                             ? defaultBuildUrl(values)
@@ -132,26 +146,14 @@ module.exports = async function (): Promise<Config> {
                 },
             ],
             [
-                "@docusaurus/plugin-content-docs",
-                {
-                    id: "docsDevelopers",
-                    path: "developer-docs",
-                    routeBasePath: "developer-docs",
-                    sidebarPath: "./sidebarsDev.js",
-                    docItemComponent: "@theme/ApiItem",
-                    editUrl:
-                        "https://github.com/goauthentik/authentik/edit/main/website/",
-                },
-            ],
-            [
                 "docusaurus-plugin-openapi-docs",
                 {
                     id: "api",
-                    docsPluginId: "docsDevelopers",
+                    docsPluginId: "docs",
                     config: {
                         authentik: {
                             specPath: "static/schema.yaml",
-                            outputDir: "developer-docs/api/reference/",
+                            outputDir: "docs/developer-docs/api/reference/",
                             hideSendButton: true,
                             sidebarOptions: {
                                 groupPathsBy: "tag",
@@ -164,6 +166,8 @@ module.exports = async function (): Promise<Config> {
         markdown: {
             mermaid: true,
         },
-        themes: ["docusaurus-theme-openapi-docs"],
+        themes: ["@docusaurus/theme-mermaid", "docusaurus-theme-openapi-docs"],
     };
 };
+
+module.exports = createConfig;

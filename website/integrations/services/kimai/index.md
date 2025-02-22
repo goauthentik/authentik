@@ -1,8 +1,8 @@
 ---
-title: Kimai
+title: Integrate with Kimai
+sidebar_label: Kimai
+support_level: community
 ---
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Kimai
 
@@ -12,22 +12,26 @@ title: Kimai
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `kimai.company` is the FQDN of the Kimai Install
--   `authentik.company` is the FQDN of the authentik Install
--   `admin.group` is the authentik group to be made Admin in Kimai
+- `kimai.company` is the FQDN of the Kimai Install
+- `authentik.company` is the FQDN of the authentik Install
+- `admin.group` is the authentik group to be made Admin in Kimai
 
 Create an application in authentik and use the slug for later as `<application-slug>`.
 
 Create a SAML provider with the following parameters:
 
--   ACS URL: `https://kimai.company/auth/saml/acs`
--   Audience: `https://kimai.company/auth/saml`
--   Issuer: `https://authentik.company`
--   Binding: `Post`
+- ACS URL: `https://kimai.company/auth/saml/acs`
+- Audience: `https://kimai.company/auth/saml`
+- Issuer: `https://authentik.company`
+- Binding: `Post`
 
 Under _Advanced protocol settings_, set a certificate for _Signing Certificate_.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## Kimai Configuration
 

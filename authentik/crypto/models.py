@@ -92,7 +92,11 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
     @property
     def kid(self):
         """Get Key ID used for JWKS"""
-        return md5(self.key_data.encode("utf-8")).hexdigest() if self.key_data else ""  # nosec
+        return (
+            md5(self.key_data.encode("utf-8"), usedforsecurity=False).hexdigest()
+            if self.key_data
+            else ""
+        )  # nosec
 
     def __str__(self) -> str:
         return f"Certificate-Key Pair {self.name}"

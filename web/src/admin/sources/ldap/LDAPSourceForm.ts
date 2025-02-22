@@ -3,6 +3,7 @@ import { placeholderHelperText } from "@goauthentik/admin/helperText";
 import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -18,10 +19,10 @@ import {
     Group,
     LDAPSource,
     LDAPSourceRequest,
-    PaginatedLDAPPropertyMappingList,
-    PropertymappingsApi,
     SourcesApi,
 } from "@goauthentik/api";
+
+import { propertyMappingsProvider, propertyMappingsSelector } from "./LDAPSourceFormHelpers.js";
 
 @customElement("ak-source-ldap-form")
 export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
@@ -31,27 +32,17 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
         });
     }
 
-    async load(): Promise<void> {
-        this.propertyMappings = await new PropertymappingsApi(
-            DEFAULT_CONFIG,
-        ).propertymappingsLdapList({
-            ordering: "managed,object_field",
-        });
-    }
-
-    propertyMappings?: PaginatedLDAPPropertyMappingList;
-
     async send(data: LDAPSource): Promise<LDAPSource> {
         if (this.instance) {
             return new SourcesApi(DEFAULT_CONFIG).sourcesLdapPartialUpdate({
                 slug: this.instance.slug,
                 patchedLDAPSourceRequest: data,
             });
-        } else {
-            return new SourcesApi(DEFAULT_CONFIG).sourcesLdapCreate({
-                lDAPSourceRequest: data as unknown as LDAPSourceRequest,
-            });
         }
+
+        return new SourcesApi(DEFAULT_CONFIG).sourcesLdapCreate({
+            lDAPSourceRequest: data as unknown as LDAPSourceRequest,
+        });
     }
 
     renderForm(): TemplateResult {
@@ -275,73 +266,34 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("User Property Mappings")}
-                        name="propertyMappings"
+                        name="userPropertyMappings"
                     >
-                        <select class="pf-c-form-control" multiple>
-                            ${this.propertyMappings?.results.map((mapping) => {
-                                let selected = false;
-                                if (!this.instance?.propertyMappings) {
-                                    selected =
-                                        mapping.managed?.startsWith(
-                                            "goauthentik.io/sources/ldap/default",
-                                        ) ||
-                                        mapping.managed?.startsWith(
-                                            "goauthentik.io/sources/ldap/ms",
-                                        ) ||
-                                        false;
-                                } else {
-                                    selected = Array.from(this.instance?.propertyMappings).some(
-                                        (su) => {
-                                            return su == mapping.pk;
-                                        },
-                                    );
-                                }
-                                return html`<option
-                                    value=${ifDefined(mapping.pk)}
-                                    ?selected=${selected}
-                                >
-                                    ${mapping.name}
-                                </option>`;
-                            })}
-                        </select>
+                        <ak-dual-select-dynamic-selected
+                            .provider=${propertyMappingsProvider}
+                            .selector=${propertyMappingsSelector(
+                                this.instance?.userPropertyMappings,
+                            )}
+                            available-label="${msg("Available User Property Mappings")}"
+                            selected-label="${msg("Selected User Property Mappings")}"
+                        ></ak-dual-select-dynamic-selected>
                         <p class="pf-c-form__helper-text">
-                            ${msg("Property mappings used to user creation.")}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Hold control/command to select multiple items.")}
+                            ${msg("Property mappings for user creation.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Group Property Mappings")}
-                        name="propertyMappingsGroup"
+                        name="groupPropertyMappings"
                     >
-                        <select class="pf-c-form-control" multiple>
-                            ${this.propertyMappings?.results.map((mapping) => {
-                                let selected = false;
-                                if (!this.instance?.propertyMappingsGroup) {
-                                    selected =
-                                        mapping.managed ===
-                                        "goauthentik.io/sources/ldap/default-name";
-                                } else {
-                                    selected = Array.from(
-                                        this.instance?.propertyMappingsGroup,
-                                    ).some((su) => {
-                                        return su == mapping.pk;
-                                    });
-                                }
-                                return html`<option
-                                    value=${ifDefined(mapping.pk)}
-                                    ?selected=${selected}
-                                >
-                                    ${mapping.name}
-                                </option>`;
-                            })}
-                        </select>
+                        <ak-dual-select-dynamic-selected
+                            .provider=${propertyMappingsProvider}
+                            .selector=${propertyMappingsSelector(
+                                this.instance?.groupPropertyMappings,
+                            )}
+                            available-label="${msg("Available Group Property Mappings")}"
+                            selected-label="${msg("Selected Group Property Mappings")}"
+                        ></ak-dual-select-dynamic-selected>
                         <p class="pf-c-form__helper-text">
-                            ${msg("Property mappings used to group creation.")}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Hold control/command to select multiple items.")}
+                            ${msg("Property mappings for group creation.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>
@@ -349,11 +301,12 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
             <ak-form-group>
                 <span slot="header"> ${msg("Additional settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal label=${msg("Group")} name="syncParentGroup">
+                    <ak-form-element-horizontal label=${msg("Parent Group")} name="syncParentGroup">
                         <ak-search-select
                             .fetchObjects=${async (query?: string): Promise<Group[]> => {
                                 const args: CoreGroupsListRequest = {
                                     ordering: "name",
+                                    includeUsers: false,
                                 };
                                 if (query !== undefined) {
                                     args.search = query;
@@ -480,5 +433,11 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-source-ldap-form": LDAPSourceForm;
     }
 }

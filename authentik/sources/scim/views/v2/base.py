@@ -5,7 +5,7 @@ from urllib.parse import urlparse
 
 from django.conf import settings
 from django.core.paginator import Page, Paginator
-from django.db.models import Model, Q, QuerySet
+from django.db.models import Q, QuerySet
 from django.http import HttpRequest
 from django.urls import resolve
 from rest_framework.parsers import JSONParser
@@ -19,6 +19,8 @@ from structlog import BoundLogger
 from structlog.stdlib import get_logger
 
 from authentik.core.models import Group, User
+from authentik.core.sources.mapper import SourceMapper
+from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.sources.scim.models import SCIMSource
 from authentik.sources.scim.views.v2.auth import SCIMTokenAuth
 
@@ -47,11 +49,9 @@ class SCIMView(APIView):
     parser_classes = [SCIMParser]
     renderer_classes = [SCIMRenderer]
 
-    model: type[Model]
-
     def setup(self, request: HttpRequest, *args: Any, **kwargs: Any) -> None:
         self.logger = get_logger().bind()
-        return super().setup(request, *args, **kwargs)
+        super().setup(request, *args, **kwargs)
 
     def get_authenticators(self):
         return [SCIMTokenAuth(self)]
@@ -111,6 +111,31 @@ class SCIMView(APIView):
         paginator = Paginator(query, per_page=per_page)
         page = paginator.page(int(max(start_index / per_page, 1)))
         return page
+
+
+class SCIMObjectView(SCIMView):
+    """Base SCIM View for object management"""
+
+    mapper: SourceMapper
+    manager: PropertyMappingManager
+
+    model: type[User | Group]
+
+    def initial(self, request: Request, *args, **kwargs) -> None:
+        super().initial(request, *args, **kwargs)
+        # This needs to happen after authentication has happened, because we don't have
+        # a source attribute before
+        self.mapper = SourceMapper(self.source)
+        self.manager = self.mapper.get_manager(self.model, ["data"])
+
+    def build_object_properties(self, data: dict[str, Any]) -> dict[str, Any | dict[str, Any]]:
+        return self.mapper.build_object_properties(
+            object_type=self.model,
+            manager=self.manager,
+            user=None,
+            request=self.request,
+            data=data,
+        )
 
 
 class SCIMRootView(SCIMView):

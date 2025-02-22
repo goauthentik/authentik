@@ -19,6 +19,7 @@ import (
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/gounicorn"
 	"goauthentik.io/internal/outpost/proxyv2"
+	"goauthentik.io/internal/utils"
 	"goauthentik.io/internal/utils/web"
 	"goauthentik.io/internal/web/brand_tls"
 )
@@ -32,13 +33,13 @@ type WebServer struct {
 	ProxyServer *proxyv2.ProxyServer
 	BrandTLS    *brand_tls.Watcher
 
-	g   *gounicorn.GoUnicorn
-	gr  bool
-	m   *mux.Router
-	lh  *mux.Router
-	log *log.Entry
-	uc  *http.Client
-	ul  *url.URL
+	g              *gounicorn.GoUnicorn
+	gunicornReady  bool
+	mainRouter     *mux.Router
+	loggingRouter  *mux.Router
+	log            *log.Entry
+	upstreamClient *http.Client
+	upstreamURL    *url.URL
 }
 
 const UnixSocketName = "authentik-core.sock"
@@ -52,7 +53,7 @@ func NewWebServer() *WebServer {
 	loggingHandler.Use(web.NewLoggingHandler(l, nil))
 
 	tmp := os.TempDir()
-	socketPath := path.Join(tmp, "authentik-core.sock")
+	socketPath := path.Join(tmp, UnixSocketName)
 
 	// create http client to talk to backend, normal client if we're in debug more
 	// and a client that connects to our socket when in non debug mode
@@ -72,24 +73,29 @@ func NewWebServer() *WebServer {
 	u, _ := url.Parse("http://localhost:8000")
 
 	ws := &WebServer{
-		m:   mainHandler,
-		lh:  loggingHandler,
-		log: l,
-		gr:  true,
-		uc:  upstreamClient,
-		ul:  u,
+		mainRouter:     mainHandler,
+		loggingRouter:  loggingHandler,
+		log:            l,
+		gunicornReady:  true,
+		upstreamClient: upstreamClient,
+		upstreamURL:    u,
 	}
 	ws.configureStatic()
 	ws.configureProxy()
+	// Redirect for sub-folder
+	if sp := config.Get().Web.Path; sp != "/" {
+		ws.mainRouter.Path("/").Handler(http.RedirectHandler(sp, http.StatusFound))
+	}
+	hcUrl := fmt.Sprintf("%s%s-/health/live/", ws.upstreamURL.String(), config.Get().Web.Path)
 	ws.g = gounicorn.New(func() bool {
-		req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("%s/-/health/live/", ws.ul.String()), nil)
+		req, err := http.NewRequest(http.MethodGet, hcUrl, nil)
 		if err != nil {
 			ws.log.WithError(err).Warning("failed to create request for healthcheck")
 			return false
 		}
 		req.Header.Set("User-Agent", "goauthentik.io/router/healthcheck")
 		res, err := ws.upstreamHttpClient().Do(req)
-		if err == nil && res.StatusCode == 204 {
+		if err == nil && res.StatusCode >= 200 && res.StatusCode < 300 {
 			return true
 		}
 		return false
@@ -106,7 +112,7 @@ func (ws *WebServer) Start() {
 
 func (ws *WebServer) attemptStartBackend() {
 	for {
-		if !ws.gr {
+		if !ws.gunicornReady {
 			return
 		}
 		err := ws.g.Start()
@@ -134,7 +140,7 @@ func (ws *WebServer) Core() *gounicorn.GoUnicorn {
 }
 
 func (ws *WebServer) upstreamHttpClient() *http.Client {
-	return ws.uc
+	return ws.upstreamClient
 }
 
 func (ws *WebServer) Shutdown() {
@@ -149,7 +155,7 @@ func (ws *WebServer) listenPlain() {
 		ws.log.WithError(err).Warning("failed to listen")
 		return
 	}
-	proxyListener := &proxyproto.Listener{Listener: ln}
+	proxyListener := &proxyproto.Listener{Listener: ln, ConnPolicy: utils.GetProxyConnectionPolicy()}
 	defer proxyListener.Close()
 
 	ws.log.WithField("listen", config.Get().Listen.HTTP).Info("Starting HTTP server")
@@ -159,7 +165,7 @@ func (ws *WebServer) listenPlain() {
 
 func (ws *WebServer) serve(listener net.Listener) {
 	srv := &http.Server{
-		Handler: ws.m,
+		Handler: ws.mainRouter,
 	}
 
 	// See https://golang.org/pkg/net/http/#Server.Shutdown

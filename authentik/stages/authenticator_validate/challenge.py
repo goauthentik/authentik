@@ -8,7 +8,7 @@ from django.http.response import Http404
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
-from rest_framework.fields import CharField
+from rest_framework.fields import CharField, DateTimeField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 from webauthn import options_to_json
@@ -26,10 +26,13 @@ from authentik.events.middleware import audit_ignore
 from authentik.events.models import Event, EventAction
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE
+from authentik.lib.utils.email import mask_email
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.authenticator import match_token
 from authentik.stages.authenticator.models import Device
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
+from authentik.stages.authenticator_email.models import EmailDevice
 from authentik.stages.authenticator_sms.models import SMSDevice
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 from authentik.stages.authenticator_webauthn.models import UserVerification, WebAuthnDevice
@@ -45,6 +48,7 @@ class DeviceChallenge(PassiveSerializer):
     device_class = CharField()
     device_uid = CharField()
     challenge = JSONDictField()
+    last_used = DateTimeField(allow_null=True)
 
 
 def get_challenge_for_device(
@@ -53,6 +57,8 @@ def get_challenge_for_device(
     """Generate challenge for a single device"""
     if isinstance(device, WebAuthnDevice):
         return get_webauthn_challenge(request, stage, device)
+    if isinstance(device, EmailDevice):
+        return {"email": mask_email(device.email)}
     # Code-based challenges have no hints
     return {}
 
@@ -102,12 +108,21 @@ def select_challenge(request: HttpRequest, device: Device):
     """Callback when the user selected a challenge in the frontend."""
     if isinstance(device, SMSDevice):
         select_challenge_sms(request, device)
+    elif isinstance(device, EmailDevice):
+        select_challenge_email(request, device)
 
 
 def select_challenge_sms(request: HttpRequest, device: SMSDevice):
     """Send SMS"""
     device.generate_token()
     device.stage.send(device.token, device)
+
+
+def select_challenge_email(request: HttpRequest, device: EmailDevice):
+    """Send Email"""
+    valid_secs: int = timedelta_from_string(device.stage.token_expiry).total_seconds()
+    device.generate_token(valid_secs=valid_secs)
+    device.stage.send(device)
 
 
 def validate_challenge_code(code: str, stage_view: StageView, user: User) -> Device:
