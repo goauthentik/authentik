@@ -537,11 +537,10 @@ export class FlowExecutor extends Interface implements StageHost {
                                             </div>
                                             ${until(this.renderChallenge())}
                                         </div>
-                                        <footer class="pf-c-login__footer">
-                                            <ak-brand-links
-                                                .links=${this.brand?.uiFooterLinks ?? []}
-                                            ></ak-brand-links>
-                                        </footer>
+                                        <ak-brand-links
+                                            class="pf-c-login__footer"
+                                            .links=${this.brand?.uiFooterLinks ?? []}
+                                        ></ak-brand-links>
                                     </div>
                                 </div>
                             </div>
