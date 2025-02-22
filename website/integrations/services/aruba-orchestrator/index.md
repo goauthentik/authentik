@@ -26,10 +26,10 @@ This documentation lists only the settings that you need to change from their de
 
 To support the integration of Aruba Orchestrator with authentik, you need to create an application/provider pair in authentik.
 
-### Create proprety mappings
+### Create property mappings
 
 1. Log in to authentik as an admin, and open the authentik Admin interface.
-2. Navigate to **Customization** > **Proprety Mappings** and click **Create**. Create a **SAML Provider Property Mapping** with the following settings:
+2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **SAML Provider Property Mapping** with the following settings:
     - **Name**: Set an apropriate name
     - **SAML Attribute Name**: <kbd>sp-roles</kbd>
     - **Friendly Name**: Leave blank
@@ -51,7 +51,7 @@ To support the integration of Aruba Orchestrator with authentik, you need to cre
     - Set the **ACS URL** and **Issuer** to <kbd>https://<em>arubaorchestrator.company</em>/gms/rest/authentication/saml2/consume</kbd>.
     - Set the **Service Provider Binding** to `Post`.
     - Under **Advanced protocol settings**, select an available signing certificate.
-    - Under **Advanced protocol settings**, add the newly created proprety mapping under **Proprety Mappings**.
+    - Under **Advanced protocol settings**, add the newly created property mapping under **Property Mappings**.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
