@@ -38,7 +38,7 @@ To support the integration of GitHub Enterprise Cloud with authentik, you need t
 - **Choose a Provider type**: select **SAML Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Set the **ACS URL** to <kbd>https://github.com/enterprises/foo/saml/consume</kbd>.
-    - Set the **Audience** to <kbd>https://github.com/enterprises/foo</kbd>
+    - Set the **Audience** to <kbd>https://github.com/enterprises/foo</kbd>.
     - Set the **Issuer** to <kbd>https://github.com/enterprises/foo</kbd>.
     - Set the **Service Provider Binding** to `Post`.
     - Under **Advanced protocol settings**, select an available signing certificate. It is advised to download this certificate as it will be required later. It can be found under **System** > **Certificates** in the Admin Interface.
