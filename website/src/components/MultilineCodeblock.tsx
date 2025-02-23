@@ -59,7 +59,7 @@ const IntegrationsMultilineCodeblock: React.FC<
      * @returns Flattened string representation
      */
     const childrenAsString = useCallback((nodes: ReactNode): string => {
-        return React.Children.toArray(nodes).reduce((acc: string, node) => {
+        return React.Children.toArray(nodes).reduce<string>((acc, node) => {
             if (typeof node === "string") {
                 return acc + node;
             } else if (isValidElement(node)) {
