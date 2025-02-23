@@ -82,7 +82,7 @@ To check if your config has been applied correctly, you can run the following co
 
 The PostgreSQL settings `HOST`, `PORT`, `USER`, and `PASSWORD` support hot-reloading. Adding and removing read replicas doesn't support hot-reloading.
 
-- `AUTHENTIK_POSTGRESQL__DEFAULT_SCHEMA` <span class="badge badge--version">authentik 2024.12+</span>
+- `AUTHENTIK_POSTGRESQL__DEFAULT_SCHEMA`:ak-version[2024.12]
 
     The name of the schema used by default in the database. Defaults to `public`.
 
@@ -151,7 +151,7 @@ Additionally, you can set `AUTHENTIK_POSTGRESQL__CONN_HEALTH_CHECK` to perform h
 - `AUTHENTIK_CACHE__TIMEOUT_REPUTATION`: Timeout for cached reputation until they expire in seconds, defaults to 300
 
     :::info
-    `AUTHENTIK_CACHE__TIMEOUT_REPUTATION` only applies to the cache expiry, see [`AUTHENTIK_REPUTATION__EXPIRY`](#authentik_reputation__expiry-authentik-202382) to control how long reputation is persisted for.
+    `AUTHENTIK_CACHE__TIMEOUT_REPUTATION` only applies to the cache expiry, see [`AUTHENTIK_REPUTATION__EXPIRY`](#authentik_reputation__expiry) to control how long reputation is persisted for.
     :::
 
 ## Channel Layer Settings (inter-instance communication)
@@ -164,7 +164,7 @@ Additionally, you can set `AUTHENTIK_POSTGRESQL__CONN_HEALTH_CHECK` to perform h
 - `AUTHENTIK_BROKER__TRANSPORT_OPTIONS`: Base64-encoded broker transport options
 
     :::info
-    `AUTHENTIK_REDIS__CACHE_TIMEOUT_REPUTATION` only applies to the cache expiry, see [`AUTHENTIK_REPUTATION__EXPIRY`](#authentik_reputation__expiry-authentik-202382) to control how long reputation is persisted for.
+    `AUTHENTIK_REDIS__CACHE_TIMEOUT_REPUTATION` only applies to the cache expiry, see [`AUTHENTIK_REPUTATION__EXPIRY`](#authentik_reputation__expiry) to control how long reputation is persisted for.
     :::
 
 ## Listen Settings
@@ -327,47 +327,53 @@ Disable the inbuilt update-checker. Defaults to `false`.
     - Kubeconfig
     - Existence of a docker socket
 
-### `AUTHENTIK_LDAP__TASK_TIMEOUT_HOURS` <span class="badge badge--version">authentik 2023.1+</span>
+### `AUTHENTIK_LDAP__TASK_TIMEOUT_HOURS`
 
 Timeout in hours for LDAP synchronization tasks.
 
 Defaults to `2`.
 
-### `AUTHENTIK_LDAP__PAGE_SIZE` <span class="badge badge--version">authentik 2023.6.1+</span>
+### `AUTHENTIK_LDAP__PAGE_SIZE`
 
 Page size for LDAP synchronization. Controls the number of objects created in a single task.
 
 Defaults to `50`.
 
-### `AUTHENTIK_LDAP__TLS__CIPHERS` <span class="badge badge--version">authentik 2022.7+</span>
+### `AUTHENTIK_LDAP__TLS__CIPHERS`
 
 Allows configuration of TLS Cliphers for LDAP connections used by LDAP sources. Setting applies to all sources.
 
 Defaults to `null`.
 
-### `AUTHENTIK_REPUTATION__EXPIRY` <span class="badge badge--version">authentik 2023.8.2+</span>
+### `AUTHENTIK_REPUTATION__EXPIRY`
 
 Configure how long reputation scores should be saved for in seconds. Note that this is different than [`AUTHENTIK_REDIS__CACHE_TIMEOUT_REPUTATION`](#redis-settings), as reputation is saved to the database every 5 minutes.
 
 Defaults to `86400`.
 
-### `AUTHENTIK_SESSION_STORAGE` <span class="badge badge--version">authentik 2024.4+</span>
+### `AUTHENTIK_SESSION_STORAGE`:ak-version[2024.4]
 
 Configure if the sessions are stored in the cache or the database. Defaults to `cache`. Allowed values are `cache` and `db`. Note that changing this value will invalidate all previous sessions.
 
-### `AUTHENTIK_WEB__WORKERS` <span class="badge badge--version">authentik 2022.9+</span>
+### `AUTHENTIK_SESSIONS__UNAUTHENTICATED_AGE`:ak-version[2025.4]
+
+Configure how long unauthenticated sessions last for. Does not impact how long authenticated sessions are valid for. See [../../add-secure-apps/flows-stages/stages/user_login/index.md](the User login stage) for session validity.
+
+Defaults to `days=1`.
+
+### `AUTHENTIK_WEB__WORKERS`
 
 Configure how many gunicorn worker processes should be started (see https://docs.gunicorn.org/en/stable/design.html).
 
 Defaults to 2. A value below 2 workers is not recommended. In environments where scaling with multiple replicas of the authentik server is not possible, this number can be increased to handle higher loads.
 
-### `AUTHENTIK_WEB__THREADS` <span class="badge badge--version">authentik 2022.9+</span>
+### `AUTHENTIK_WEB__THREADS`
 
 Configure how many gunicorn threads a worker processes should have (see https://docs.gunicorn.org/en/stable/design.html).
 
 Defaults to 4.
 
-### `AUTHENTIK_WORKER__CONCURRENCY` <span class="badge badge--version">authentik 2023.9+</span>
+### `AUTHENTIK_WORKER__CONCURRENCY`
 
 Configure Celery worker concurrency for authentik worker (see https://docs.celeryq.dev/en/latest/userguide/configuration.html#worker-concurrency). This essentially defines the number of worker processes spawned for a single worker.
 
@@ -383,7 +389,7 @@ Configure the path under which authentik is serverd. For example to access authe
 
 Defaults to `/`.
 
-## System settings <span class="badge badge--version">authentik 2024.2+</span>
+## System settings:ak-version[2024.2]
 
 Additional settings are configurable using the Admin interface, under **System** -> **Settings** or using the API.
 

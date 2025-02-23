@@ -1,11 +1,8 @@
 ---
 title: Integrate with Writefreely
 sidebar_label: Writefreely
+support_level: community
 ---
-
-# Integrate with Writefreely
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Writefreely
 

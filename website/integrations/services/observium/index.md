@@ -1,11 +1,8 @@
 ---
 title: Integrate with Observium
 sidebar_label: Observium
+support_level: community
 ---
-
-# Integrate with Observium
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Observium
 
