@@ -8,7 +8,7 @@ authentik provides several [standard policy types](./index.md#standard-policies)
 
 We also document how to use a policy to [whitelist email domains](./expression/whitelist_email.md) and to [ensure unique email addresses](./expression/unique_email.md).
 
-To learn more see also [bindings](../../add-secure-apps/flows-stages/bindings/index.md) and how to use the [Application modal to bind policy bindings to the new application](../../add-secure-apps/applications/manage_apps.mdx#instructions) (for example, to configure application-specific access).
+To learn more see also [bindings](../../add-secure-apps/flows-stages/bindings/index.md) and how to [bind policy bindings to a new application when yo create the application](../../add-secure-apps/applications/manage_apps.mdx#instructions) (for example, to configure application-specific access).
 
 ## Create a policy
 

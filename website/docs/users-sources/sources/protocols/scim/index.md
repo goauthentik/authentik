@@ -8,7 +8,7 @@ The base SCIM URL is in the format of `https://authentik.company/source/scim/<so
 
 ## First steps
 
-To set up an SCIM source, log in as an administrator into authentik. Navigate to **Directory->Federation & Social login**, and click on **Create**. Select the **SCIM Source** type in the modal, and give the source a name.
+To set up an SCIM source, log in as an administrator into authentik. Navigate to **Directory->Federation & Social login**, and click on **Create**. Select the **SCIM Source** type, and give the source a name.
 
 After the source is created, click on the name of the source in the list, and you will see the **SCIM Base URL** which is used by the SCIM client. Use the **Click to copy token** button to copy the token which is used by the client to authenticate SCIM requests.
 
