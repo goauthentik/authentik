@@ -28,6 +28,10 @@ Output of docker-compose logs or kubectl logs respectively
 
 **Version and Deployment (please complete the following information):**
 
+<!--
+Warning: Docker and Kubernetes are the only supported installation methods. We cannot provide support for other methods. For installation and configuration documentation, see https://docs.goauthentik.io/docs/install-config/.
+-->
+
 -   authentik version: [e.g. 2021.8.5]
 -   Deployment: [e.g. docker-compose, helm]
 
