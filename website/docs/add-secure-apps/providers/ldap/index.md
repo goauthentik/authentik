@@ -64,7 +64,7 @@ Starting with 2023.3, periods and slashes in custom attributes will be sanitized
 
 You can also configure SSL for your LDAP Providers by selecting a certificate and a server name in the provider settings.
 
-Starting with authentik 2023.6, StartTLS is supported, and the provider will pick the correct certificate based on the configured _TLS Server name_ field. The certificate is not picked based on the Bind DN, as the StartTLS operation should happen be the bind request to ensure bind credentials are transmitted over TLS.
+Starting with authentik 2023.6, StartTLS is supported, and the provider will pick the correct certificate based on the configured _TLS Server name_ field. The certificate is not picked based on the Bind DN, as the StartTLS operation should happen before the bind request to ensure bind credentials are transmitted over TLS.
 
 This enables you to bind on port 636 using LDAPS.
 
@@ -78,9 +78,9 @@ All bind modes rely on flows.
 
 The following stages are supported:
 
-- [Identification](../../flows-stages/stages/identification/index.md)
+- [Identification](../../flows-stages/stages/identification/index.mdx)
 - [Password](../../flows-stages/stages/password/index.md)
-- [Authenticator validation](../../flows-stages/stages/authenticator_validate/index.md)
+- [Authenticator validation](../../flows-stages/stages/authenticator_validate/index.mdx)
 
     Note: Authenticator validation currently only supports DUO, TOTP and static authenticators.
 

@@ -1,11 +1,8 @@
 ---
 title: Integrate with Ubuntu Landscape
 sidebar_label: Ubuntu Landscape
+support_level: community
 ---
-
-# Integrate with Ubuntu Landscape
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Ubuntu Landscape
 

@@ -1,11 +1,8 @@
 ---
 title: Integrate with GitLab
 sidebar_label: GitLab
+support_level: authentik
 ---
-
-# Integrate with GitLab
-
-<span class="badge badge--primary">Support level: authentik</span>
 
 ## What is GitLab
 

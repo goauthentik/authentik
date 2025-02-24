@@ -1,11 +1,8 @@
 ---
 title: Integrate with Weblate
 sidebar_label: Weblate
+support_level: community
 ---
-
-# Integrate with Weblate
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Weblate
 

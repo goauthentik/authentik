@@ -2,9 +2,8 @@
 title: Google Workspace (with SAML)
 sidebar_label: Google Workspace (SAML)
 tags: [integration, saml, google]
+support_level: authentik
 ---
-
-<span className="badge badge--primary">Support level: authentik</span>
 
 This topic covers configuring authentik to authenticate users with their Google Workspace credentials.
 

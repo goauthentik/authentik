@@ -64,6 +64,8 @@ debugger: false
 log_level: info
 
 session_storage: cache
+sessions:
+  unauthenticated_age: days=1
 
 error_reporting:
   enabled: false

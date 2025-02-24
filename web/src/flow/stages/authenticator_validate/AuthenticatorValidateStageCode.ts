@@ -3,7 +3,7 @@ import "@goauthentik/elements/forms/FormElement";
 import { BaseDeviceStage } from "@goauthentik/flow/stages/authenticator_validate/base";
 import { PasswordManagerPrefill } from "@goauthentik/flow/stages/identification/IdentificationStage";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
@@ -33,6 +33,10 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
 
     deviceMessage(): string {
         switch (this.deviceChallenge?.deviceClass) {
+            case DeviceClassesEnum.Email: {
+                const email = this.deviceChallenge.challenge?.email;
+                return msg(str`A code has been sent to you via email${email ? ` ${email}` : ""}`);
+            }
             case DeviceClassesEnum.Sms:
                 return msg("A code has been sent to you via SMS.");
             case DeviceClassesEnum.Totp:
@@ -48,12 +52,14 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
 
     deviceIcon(): string {
         switch (this.deviceChallenge?.deviceClass) {
+            case DeviceClassesEnum.Email:
+                return "fa-envelope-o";
             case DeviceClassesEnum.Sms:
-                return "fa-key";
-            case DeviceClassesEnum.Totp:
                 return "fa-mobile-alt";
+            case DeviceClassesEnum.Totp:
+                return "fa-clock";
             case DeviceClassesEnum.Static:
-                return "fa-sticky-note";
+                return "fa-key";
         }
 
         return "fa-mobile-alt";
