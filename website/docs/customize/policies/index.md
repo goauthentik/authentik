@@ -36,7 +36,7 @@ With the GeoIP policy, you can use the **Distance Settings** options to set trav
 
     -   **Check impossible travel**: this option, when enabled, provides an additional layer of calculations to the policy. With Impossible travel, a built-in value of 1000 kilomeeters is used as the base distance. This distance, PLUS the value defined for **Impossible travel tolerance**, is the maximum allowed distance for the policy to pass. Note that the value defined in **Historical Login Count** (the number of login events to check) is also used for Impossible travel calculations.
 
-    -   **Impossible travel tolerance**: optionally, add an additional "tolerance" distance. This value is added to the built-in allowance of 1000 kilometers per hour, then the total is used in the calculations that run against each of the login events (to determine if the travel would have been possible in the amount of time since the previous login event) to determine if the policy fails or passes.
+    -   **Impossible travel tolerance**: optionally, you can add an additional "tolerance" distance. This value is added to the built-in allowance of 1000 kilometers per hour, then the total is used in the calculations that run against each of the login events (to determine if the travel would have been possible in the amount of time since the previous login event) to determine if the policy fails or passes.
 
 :::info
 GeoIP is included in every release of authentik and does not require any additional setup for creating GeoIP policies. For information about advanced uses (configuring your own database, etc.) and system management of GeoIP data, refer to our [GeoIP documentation](../../sys-mgmt/ops/geoip.mdx).
