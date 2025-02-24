@@ -70,7 +70,7 @@
         "@rspack/binding-linux-x64-gnu": "1.1.6",
         "lightningcss-darwin-arm64": "1.28.2",
         "lightningcss-linux-arm64-gnu": "1.28.2",
-        "lightningcss-linux-x64-gnu": "1.28.2",
+        "lightningcss-linux-x64-gnu": "1.29.1",
         "@swc/core-darwin-arm64": "1.10.1",
         "@swc/core-linux-arm64-gnu": "1.10.1",
         "@swc/core-linux-x64-gnu": "1.10.1",
