@@ -46,7 +46,7 @@ Note: The `default-authentication-flow` validates MFA by default, and currently 
 
 ### Create LDAP Application & Provider
 
-1. Create the LDAP Application under _Applications_ -> _Applications_ -> _Create With Wizard_ and name it `LDAP`.
+1. Create the LDAP Application under _Applications_ -> _Applications_ -> _Create With provider_ and name it `LDAP`.
    ![](./general_setup14.png)
    ![](./general_setup15.png)
 
@@ -55,7 +55,7 @@ Note: The `default-authentication-flow` validates MFA by default, and currently 
 1. Navigate to the LDAP Provider under _Applications_ -> _Providers_ -> `Provider for LDAP`.
 2. Switch to the _Permissions_ tab.
 3. Click the _Assign to new user_ button to select a user to assign the full directory search permission to.
-4. Select the `ldapservice` user in the modal by typing in its username. Select the _Search full LDAP directory_ permission and click _Assign_
+4. Select the `ldapservice` user typing in its username. Select the _Search full LDAP directory_ permission and click _Assign_
 
 ### Create LDAP Outpost
 
