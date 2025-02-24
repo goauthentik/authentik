@@ -9,5 +9,5 @@ For instructions to create a binding, refer to the documentation for the specifi
 - [Bind a stage to a flow](../stages/index.md#bind-a-stage-to-a-flow)
 - [Bind a policy to a flow or stage](../../../customize/policies/working_with_policies#bind-a-policy-to-a-flow-or-stage)
 - [Bind users or groups to a specific application with an Application Entitlement](../../applications/manage_apps.md#application-entitlements)
-- [Bind a policy to a specific application when you create a new app using the Wizard](../../applications/manage_apps.md#instructions)
+- [Bind a policy to a specific application when you create a new application and provider](../../applications/manage_apps.md#instructions)
 - [Bind users and groups to a stage binding, to define whether or not that stage is shown](../stages/index.md#bind-users-and-groups-to-a-flows-stage-binding)

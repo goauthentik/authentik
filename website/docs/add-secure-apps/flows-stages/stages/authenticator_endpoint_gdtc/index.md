@@ -28,7 +28,7 @@ For detailed instructions, refer to Google documentation.
 ### Create a Google cloud project
 
 1. Open the Google Cloud Console (https://cloud.google.com/cloud-console).
-2. In upper left, click the drop-down box to open the **Select a project** modal box, and then select **New Project**.
+2. In upper left, click the drop-down box to open the **Select a project** box, and then select **New Project**.
 3. Create a new project and give it a name like "authentik GWS".
 4. Use the search bar at the top of your new project page to search for "API Library".
 5. On the **API Library** page, use the search bar again to find "Chrome Verified Access API".
@@ -49,7 +49,7 @@ For detailed instructions, refer to Google documentation.
 
 1. On the **Service accounts** page, click the account that you just created.
 2. Click the **Keys** tab at top of the page, the click **Add Key -> Create new key**.
-3. In the Create modal box, select JSON as the key type, and then click **Create**.
+3. In the Create box, select JSON as the key type, and then click **Create**.
    A pop-up displays with the private key, and the key is saved to your computer as a JSON file.
    Later, when you create the stage in authentik, you will add this key in the **Credentials** field.
 4. On the service account page, click the **Details** tab, and expand the **Advanced settings** area.
@@ -66,7 +66,7 @@ For detailed instructions, refer to Google documentation.
 
 2. In the Admin interface, navigate to **Flows -> Stages**.
 
-3. Click **Create**, and select **Endpoint Authenticator Google Device Trust Connector Stage**, and in the **New stage** modal box, define the following fields:
+3. Click **Create**, and select **Endpoint Authenticator Google Device Trust Connector Stage**, and in the **New stage** box, define the following fields:
 
     - **Name**: define a descriptive name, such as "chrome-device-trust".
 
