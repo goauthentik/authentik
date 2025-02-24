@@ -9,7 +9,7 @@ title: Create an LDAP provider
     Note the DN of this user will be `cn=ldapservice,ou=users,dc=ldap,dc=goauthentik,dc=io`
 
 :::info
-Note: The `default-authentication-flow` validates MFA by default, and currently everything but SMS-based devices and WebAuthn (Passkeys) devices are supported by LDAP. If you plan to use only dedicated service accounts to bind to LDAP, or don't use SMS-based authenticators, then you can use the default flow and skip the extra steps below and continue at [Create LDAP Application & Provider](#create-ldap-application--provider)
+Note: The `default-authentication-flow` validates MFA by default, and currently everything but SMS-based devices and WebAuthn (which enables passkey-based authentication) devices are supported by LDAP. If you plan to use only dedicated service accounts to bind to LDAP, or don't use SMS-based authenticators, then you can use the default flow and skip the extra steps below and continue at [Create LDAP Application & Provider](#create-ldap-application--provider)
 :::
 
 ### LDAP Flow
