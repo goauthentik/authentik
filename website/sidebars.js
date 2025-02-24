@@ -200,8 +200,6 @@ export default {
                                 "add-secure-apps/providers/oauth2/github-compatibility",
                             ],
                         },
-                        "add-secure-apps/providers/saml/index",
-                        "add-secure-apps/providers/radius/index",
                         {
                             type: "category",
                             label: "Proxy Provider",
@@ -228,7 +226,6 @@ export default {
                                 },
                             ],
                         },
-                        "add-secure-apps/providers/scim/index",
                         {
                             type: "category",
                             label: "RAC (Remote Access Control) Provider",
@@ -237,6 +234,20 @@ export default {
                                 id: "add-secure-apps/providers/rac/index",
                             },
                             items: ["add-secure-apps/providers/rac/how-to-rac"],
+                        },
+                        "add-secure-apps/providers/radius/index",
+                        "add-secure-apps/providers/saml/index",
+                        "add-secure-apps/providers/scim/index",
+                        {
+                            type: "category",
+                            label: "SSF Provider",
+                            link: {
+                                type: "doc",
+                                id: "add-secure-apps/providers/ssf/index",
+                            },
+                            items: [
+                                "add-secure-apps/providers/ssf/create-ssf-provider",
+                            ],
                         },
                     ],
                 },
