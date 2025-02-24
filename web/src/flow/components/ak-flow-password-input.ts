@@ -269,7 +269,7 @@ export class InputPassword extends AKElement {
 
         toggleElement.setAttribute(
             "aria-label",
-            msg(masked ? Visibility.Reveal.label : Visibility.Mask.label),
+            masked ? Visibility.Reveal.label : Visibility.Mask.label,
         );
 
         const iconElement = toggleElement.querySelector("i")!;
@@ -285,7 +285,7 @@ export class InputPassword extends AKElement {
 
         return html`<button
             ${ref(this.toggleVisibilityRef)}
-            aria-label=${msg(label)}
+            aria-label=${label}
             @click=${this.togglePasswordVisibility}
             class="pf-c-button pf-m-control"
             type="button"
