@@ -6,12 +6,12 @@ authors = ["authentik Team <hello@goauthentik.io>"]
 
 [tool.black]
 line-length = 100
-target-version = ['py312']
-exclude = 'node_modules'
+target-version = ["py313"]
+exclude = "node_modules"
 
 [tool.ruff]
 line-length = 100
-target-version = "py312"
+target-version = "py313"
 exclude = ["**/migrations/**", "**/node_modules/**"]
 
 [tool.ruff.lint]
@@ -131,7 +131,7 @@ pydantic = "*"
 pydantic-scim = "*"
 pyjwt = "*"
 pyrad = "*"
-python = "~3.12"
+python = "~3.13"
 python-kadmin-rs = "0.5.3"
 pyyaml = "*"
 requests-oauthlib = "*"

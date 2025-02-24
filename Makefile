@@ -65,6 +65,7 @@ lint: ## Lint the python and golang sources
 	golangci-lint run -v
 
 core-install:
+	poetry config --local installer.no-binary xmlsec,lxml
 	poetry install
 
 migrate: ## Run the Authentik Django server's migrations
