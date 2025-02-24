@@ -11,7 +11,7 @@ To create a new group, follow these steps:
 
 1. In the Admin interface, navigate to **Directory > Groups**.
 2. Click **Create** at the top of the Groups page.
-3. In the Create modal, define the following:
+3. In the Create box, define the following:
     - **Name** of the group
     - Whether or not users in that group will all be **super-users** (means anyone in that group has all permissions on everything)
     - The **Parent** group
