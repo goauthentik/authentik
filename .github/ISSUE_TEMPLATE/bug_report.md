@@ -29,7 +29,7 @@ Output of docker-compose logs or kubectl logs respectively
 **Version and Deployment (please complete the following information):**
 
 <!--
-Warning: Docker and Kubernetes are the only supported installation methods. We cannot provide support for other methods. For installation and configuration documentation, see https://docs.goauthentik.io/docs/install-config/.
+Notice: authentik supports installation via Docker, Kubernetes, and AWS CloudFormation only. Support is not available for other methods. For detailed installation and configuration instructions, please refer to the official documentation at https://docs.goauthentik.io/docs/install-config/.
 -->
 
 -   authentik version: [e.g. 2021.8.5]
