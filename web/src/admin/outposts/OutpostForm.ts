@@ -73,6 +73,9 @@ const radiusListFetch = async (page: number, search = "") =>
 const racListProvider = async (page: number, search = "") =>
     provisionMaker(await api().providersRacList(providerListArgs(page, search)));
 
+const scimListProvider = async (page: number, search = "") =>
+    provisionMaker(await api().providersScimList(providerListArgs(page, search)));
+
 function providerProvider(type: OutpostTypeEnum): DataProvider {
     switch (type) {
         case OutpostTypeEnum.Proxy:
@@ -83,6 +86,8 @@ function providerProvider(type: OutpostTypeEnum): DataProvider {
             return radiusListFetch;
         case OutpostTypeEnum.Rac:
             return racListProvider;
+        case OutpostTypeEnum.Scim:
+            return scimListProvider;
         default:
             throw new Error(`Unrecognized OutputType: ${type}`);
     }
@@ -142,6 +147,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
             [OutpostTypeEnum.Ldap, msg("LDAP")],
             [OutpostTypeEnum.Radius, msg("Radius")],
             [OutpostTypeEnum.Rac, msg("RAC")],
+            [OutpostTypeEnum.Scim, msg("SCIM")],
         ];
 
         return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
