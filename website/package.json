@@ -76,7 +76,7 @@
         "@swc/core-linux-x64-gnu": "1.10.1",
         "@swc/html-darwin-arm64": "1.10.1",
         "@swc/html-linux-arm64-gnu": "1.10.1",
-        "@swc/html-linux-x64-gnu": "1.10.1"
+        "@swc/html-linux-x64-gnu": "1.10.18"
     },
     "wireit": {
         "lint:lockfile": {
