@@ -30,6 +30,9 @@ class DryRunRejected(BaseSyncException):
         self.method = method
         self.body = body
 
+    def __str__(self):
+        return f"{self.method} {self.url}"
+
 
 class StopSync(BaseSyncException):
     """Exception raised when a configuration error should stop the sync process"""
