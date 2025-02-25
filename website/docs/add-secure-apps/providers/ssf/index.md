@@ -1,7 +1,7 @@
 ---
 title: Shared Signals Framework (SSF) Provider
 sidebar_label: SSF Provider
-authentik_version: "2025.02.00"
+authentik_version: "2025.02.0"
 authentik_enterprise: true
 authentik_preview: true
 ---
