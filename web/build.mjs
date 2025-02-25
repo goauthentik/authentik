@@ -42,7 +42,6 @@ const definitions = {
 const otherFiles = [
     ["node_modules/@patternfly/patternfly/patternfly.min.css", "."],
     ["node_modules/@patternfly/patternfly/assets/**", ".", "node_modules/@patternfly/patternfly/"],
-    ["src/custom.css", "."],
     ["src/common/styles/**", "."],
     ["src/assets/images/**", "./assets/images"],
     ["./icons/*", "./assets/icons"],

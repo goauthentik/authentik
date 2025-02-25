@@ -169,7 +169,6 @@
                 "./dist/enterprise/**",
                 "./dist/poly-*.js",
                 "./dist/poly-*.js.map",
-                "./dist/custom.css",
                 "./dist/theme-dark.css",
                 "./dist/patternfly.min.css"
             ],
