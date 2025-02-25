@@ -21,6 +21,15 @@ class BadRequestSyncException(BaseSyncException):
     """Exception when invalid data was sent to the remote system"""
 
 
+class DryRunRejected(BaseSyncException):
+    """When dry_run is enabled and a provider dropped a mutating request"""
+
+    def __init__(self, url: str, method: str, body: dict):
+        super().__init__()
+        self.url = url
+        self.method = method
+        self.body = body
+
 class StopSync(BaseSyncException):
     """Exception raised when a configuration error should stop the sync process"""
 
