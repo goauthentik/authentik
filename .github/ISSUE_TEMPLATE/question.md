@@ -25,7 +25,7 @@ Notice: authentik supports installation via Docker, Kubernetes, and AWS CloudFor
 -->
 
 
--   authentik version: [e.g. 2021.8.5]
+-   authentik version: [e.g. 2025.2.0]
 -   Deployment: [e.g. docker-compose, helm]
 
 **Additional context**
