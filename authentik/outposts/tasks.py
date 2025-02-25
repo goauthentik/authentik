@@ -43,13 +43,15 @@ from authentik.providers.rac.controllers.docker import RACDockerController
 from authentik.providers.rac.controllers.kubernetes import RACKubernetesController
 from authentik.providers.radius.controllers.docker import RadiusDockerController
 from authentik.providers.radius.controllers.kubernetes import RadiusKubernetesController
+from authentik.providers.scim.controllers.docker import SCIMDockerController
+from authentik.providers.scim.controllers.kubernetes import SCIMKubernetesController
 from authentik.root.celery import CELERY_APP
 
 LOGGER = get_logger()
 CACHE_KEY_OUTPOST_DOWN = "goauthentik.io/outposts/teardown/%s"
 
 
-def controller_for_outpost(outpost: Outpost) -> type[BaseController] | None:
+def controller_for_outpost(outpost: Outpost) -> type[BaseController] | None:  # noqa: PLR0911
     """Get a controller for the outpost, when a service connection is defined"""
     if not outpost.service_connection:
         return None
@@ -74,6 +76,11 @@ def controller_for_outpost(outpost: Outpost) -> type[BaseController] | None:
             return RACDockerController
         if isinstance(service_connection, KubernetesServiceConnection):
             return RACKubernetesController
+    if outpost.type == OutpostType.SCIM:
+        if isinstance(service_connection, DockerServiceConnection):
+            return SCIMDockerController
+        if isinstance(service_connection, KubernetesServiceConnection):
+            return SCIMKubernetesController
     return None
 
 
