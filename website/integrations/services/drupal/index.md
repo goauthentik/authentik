@@ -63,7 +63,7 @@ in this guide could cause issues accessing your application.
 - Fill out the following endpoints:
   - Authorization endpoint: <kbd>https://<em>authentik.company</em>/application/o/authorize/</kbd>
   - Token endpoint: <kbd>https://<em>authentik.company</em>/application/o/token/</kbd>
-  - UserInfo endpoint: <kbd><em>https://authentik.company</em>/application/o/userinfo/</kbd>
+  - UserInfo endpoint: <kbd>https://<em>authentik.company</em>/application/o/userinfo/</kbd>
 
 :::info
 If you are developing Drupal locally with DDEV and authentik is also running
