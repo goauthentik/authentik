@@ -1,14 +1,21 @@
 import { EventWithContext } from "@goauthentik/common/events";
 import { truncate } from "@goauthentik/common/utils";
-import { KeyUnknown } from "@goauthentik/elements/forms/Form";
 
 import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 
-export function EventGeo(event: EventWithContext): TemplateResult {
-    let geo: KeyUnknown | undefined = undefined;
+export interface EventGeo {
+    city: string;
+    country: string;
+    continent: string;
+    lat: number;
+    long: number;
+}
+
+export function EventGeoText(event: EventWithContext): TemplateResult {
+    let geo: EventGeo | undefined = undefined;
     if (Object.hasOwn(event.context, "geo")) {
-        geo = event.context.geo as KeyUnknown;
+        geo = event.context.geo as unknown as EventGeo;
         const parts = [geo.city, geo.country, geo.continent].filter(
             (v) => v !== "" && v !== undefined,
         );
