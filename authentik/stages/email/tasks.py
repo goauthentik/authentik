@@ -70,8 +70,14 @@ def send_mail(
     message_id = make_msgid(domain=DNS_NAME)
     self.set_uid(slugify(message_id.replace(".", "_").replace("@", "_")))
     try:
-        # Get the actual stage class from the name
-        stage_class = globals()[stage_class_name]
+        # Map stage class name to the actual class
+        if stage_class_name == "EmailStage":
+            stage_class = EmailStage
+        elif stage_class_name == "AuthenticatorEmailStage":
+            stage_class = AuthenticatorEmailStage
+        else:
+            raise ValueError(f"Invalid stage class name: {stage_class_name}")
+
         if not email_stage_pk:
             stage: EmailStage | AuthenticatorEmailStage = stage_class(use_global_settings=True)
         else:
