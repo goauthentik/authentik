@@ -1,6 +1,9 @@
 module goauthentik.io
 
-go 1.23
+go 1.23.0
+
+toolchain go1.24.0
+
 require (
 	beryju.io/ldap v0.1.0
 	github.com/coreos/go-oidc/v3 v3.12.0
