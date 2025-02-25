@@ -118,7 +118,7 @@ export class ProxyProviderViewPage extends AKElement {
     }
 
     renderConfig(): TemplateResult {
-        const serves = [
+        const servers = [
             {
                 label: msg("Nginx (Ingress)"),
                 md: MDNginxIngress,
@@ -184,7 +184,7 @@ export class ProxyProviderViewPage extends AKElement {
             },
         ];
         return html`<ak-tabs pageIdentifier="proxy-setup">
-            ${serves.map((server) => {
+            ${servers.map((server) => {
                 return html`<section
                     slot="page-${convertToSlug(server.label)}"
                     data-tab-title="${server.label}"
