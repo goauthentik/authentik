@@ -41140,6 +41140,8 @@ components:
           type: string
         branding_favicon:
           type: string
+        branding_custom_css:
+          type: string
         flow_authentication:
           type: string
           format: uuid
@@ -41199,6 +41201,8 @@ components:
         branding_favicon:
           type: string
           minLength: 1
+        branding_custom_css:
+          type: string
         flow_authentication:
           type: string
           format: uuid
@@ -42085,6 +42089,8 @@ components:
           type: string
         branding_favicon:
           type: string
+        branding_custom_css:
+          type: string
         ui_footer_links:
           type: array
           items:
@@ -42111,6 +42117,7 @@ components:
           type: string
           readOnly: true
       required:
+      - branding_custom_css
       - branding_favicon
       - branding_logo
       - branding_title
@@ -50101,6 +50108,8 @@ components:
         branding_favicon:
           type: string
           minLength: 1
+        branding_custom_css:
+          type: string
         flow_authentication:
           type: string
           format: uuid
