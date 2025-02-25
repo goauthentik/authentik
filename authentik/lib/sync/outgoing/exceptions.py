@@ -30,6 +30,7 @@ class DryRunRejected(BaseSyncException):
         self.method = method
         self.body = body
 
+
 class StopSync(BaseSyncException):
     """Exception raised when a configuration error should stop the sync process"""
 

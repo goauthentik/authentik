@@ -136,7 +136,7 @@ export class SyncObjectForm extends Form<SyncObjectRequest> {
                 </label>
                 <p class="pf-c-form__helper-text">
                     ${msg(
-                        "When enabled, this sync will still execute mutating requests irregardless of the dry-run mode in the provider.",
+                        "When enabled, this sync will still execute mutating requests regardless of the dry-run mode in the provider.",
                     )}
                 </p>
             </ak-form-element-horizontal>

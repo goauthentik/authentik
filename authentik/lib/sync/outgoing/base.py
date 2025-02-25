@@ -35,6 +35,7 @@ SAFE_METHODS = [
     "TRACE",
 ]
 
+
 class BaseOutgoingSyncClient[
     TModel: "Model", TConnection: "Model", TSchema: dict, TProvider: "OutgoingSyncProvider"
 ]:
