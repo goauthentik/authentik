@@ -32,9 +32,10 @@ def send_mails(
         Celery group promise for the email sending tasks
     """
     tasks = []
-    stage_class = stage.__class__
+    # Use the class name instead of the class itself for serialization
+    stage_class_name = stage.__class__.__name__
     for message in messages:
-        tasks.append(send_mail.s(message.__dict__, stage_class, str(stage.pk)))
+        tasks.append(send_mail.s(message.__dict__, stage_class_name, str(stage.pk)))
     lazy_group = group(*tasks)
     promise = lazy_group()
     return promise
@@ -61,7 +62,7 @@ def get_email_body(email: EmailMultiAlternatives) -> str:
 def send_mail(
     self: SystemTask,
     message: dict[Any, Any],
-    stage_class: EmailStage | AuthenticatorEmailStage = EmailStage,
+    stage_class_name: str = "EmailStage",
     email_stage_pk: str | None = None,
 ):
     """Send Email for Email Stage. Retries are scheduled automatically."""
@@ -69,6 +70,8 @@ def send_mail(
     message_id = make_msgid(domain=DNS_NAME)
     self.set_uid(slugify(message_id.replace(".", "_").replace("@", "_")))
     try:
+        # Get the actual stage class from the name
+        stage_class = globals()[stage_class_name]
         if not email_stage_pk:
             stage: EmailStage | AuthenticatorEmailStage = stage_class(use_global_settings=True)
         else:
