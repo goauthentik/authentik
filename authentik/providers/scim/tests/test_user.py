@@ -330,3 +330,29 @@ class SCIMUserTests(TestCase):
                 "userName": uid,
             },
         )
+
+    def test_user_create_dry_run(self):
+        """Test user creation (dry_run)"""
+        # Update the provider before we start mocking as saving the provider triggers a full sync
+        self.provider.dry_run = True
+        self.provider.save()
+        with Mocker() as mock:
+            scim_id = generate_id()
+            mock.get(
+                "https://localhost/ServiceProviderConfig",
+                json={},
+            )
+            mock.post(
+                "https://localhost/Users",
+                json={
+                    "id": scim_id,
+                },
+            )
+            uid = generate_id()
+            User.objects.create(
+                username=uid,
+                name=f"{uid} {uid}",
+                email=f"{uid}@goauthentik.io",
+            )
+            self.assertEqual(mock.call_count, 1, mock.request_history)
+            self.assertEqual(mock.request_history[0].method, "GET")
