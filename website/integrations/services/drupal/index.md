@@ -1,11 +1,8 @@
 ---
 title: Integrate with Drupal
 sidebar_label: Drupal
+support_level: community
 ---
-
-# Integrate with Drupal
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Drupal
 
@@ -60,12 +57,13 @@ in this guide could cause issues accessing your application.
 
 ## Drupal configuration
 
-- Go to https://drupal.company/admin/config/services/openid-connect
+- From the Admin Toolbar or admin page at https://drupal.company/admin go to
+  Configuration -> OpenID Connect or directly at https://drupal.company/admin/config/services/openid-connect
 - Input the Client ID and Secret you noted above
 - Fill out the following endpoints:
-  - Authorization endpoint: `https://authentik.company/application/o/authorize/`
-  - Token endpoint: `https://authentik.company/application/o/token/`
-  - UserInfo endpoint: `https://authentik.company/application/o/userinfo/`
+  - Authorization endpoint: <kbd>https://<em>authentik.company</em>/application/o/authorize/</kbd>
+  - Token endpoint: <kbd>https://<em>authentik.company</em>/application/o/token/</kbd>
+  - UserInfo endpoint: <kbd><em>https://authentik.company</em>/application/o/userinfo/</kbd>
 
 :::info
 If you are developing Drupal locally with DDEV and authentik is also running
@@ -75,9 +73,9 @@ locally, use `host.docker.internal:9000` as the hostname for the Token and UserI
 - Enable the OpenID button on user login form
 
 ## Configuration verification
-To confirm that authentik is properly configured with Drupal, log out at
-https://drupal.company/user/logout and log back in via authentik at
-https://drupal.company/user/login.
+To confirm that authentik is properly configured with Drupal, log out from the
+Admin Toolbar link under your username, or go directly to
+https://drupal.company/user/logout, and log back in via authentik at https://drupal.company/user/login.
 
 After logging in for the first time, if your user registration settings do not
 allow new users to be created then you will get a message saying you've
