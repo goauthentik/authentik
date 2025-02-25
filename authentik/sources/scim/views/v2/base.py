@@ -114,7 +114,7 @@ class SCIMView(APIView):
 
 
 class SCIMObjectView(SCIMView):
-    """Base SCIM View for object management"""
+    """Base SCIM View for object management"""
 
     mapper: SourceMapper
     manager: PropertyMappingManager

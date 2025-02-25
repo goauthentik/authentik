@@ -1,11 +1,8 @@
 ---
 title: Integrate with What's Up Docker
 sidebar_label: What's Up Docker
+support_level: community
 ---
-
-# What's Up Docker
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is What's Up Docker
 
@@ -17,8 +14,12 @@ sidebar_label: What's Up Docker
 
 The following placeholders are used in this guide:
 
-- `wud.company` is the FQDN of the WUD install.
-- `authentik.company` is the FQDN of the authentik install.
+- `wud.company` is the FQDN of the WUD installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## WUD configuration
 
@@ -35,7 +36,7 @@ After making these changes, restart your Docker containers to apply the new conf
 
 ## authentik configuration
 
-1. Access the **Admin Interface** in on your authentik install.
+1. Access the **Admin Interface** in on your authentik installation.
 2. Create a new **OAuth2 / OpenID Provider**.
 3. Note the generated **Client ID** and **Client Secret**.
 4. In the provider settings, add this redirect URL under **Redirect URIs/Origins (RegEx)**: `https://wud.company/auth/oidc/authentik/cb`

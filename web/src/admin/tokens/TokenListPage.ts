@@ -132,7 +132,7 @@ export class TokenListPage extends TablePage<Token> {
                           </pf-tooltip>
                       </button>`}
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.CoreToken}
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreToken}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>

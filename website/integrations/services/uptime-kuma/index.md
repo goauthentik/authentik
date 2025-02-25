@@ -1,11 +1,8 @@
 ---
 title: Integrate with Uptime Kuma
 sidebar_label: Uptime Kuma
+support_level: community
 ---
-
-# Uptime Kuma
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Uptime Kuma
 
@@ -19,8 +16,12 @@ Uptime Kuma currently supports only a single user and no native SSO solution. To
 
 The following placeholders are used in this guide:
 
-- `uptime-kuma.company` is the FQDN of the Uptime Kuma install.
-- `authentik.company` is the FQDN of the authentik install.
+- `uptime-kuma.company` is the FQDN of the Uptime Kuma installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 Create an application in authentik. Create a Proxy provider with the following parameters:
 
@@ -40,14 +41,25 @@ Create an application in authentik. Create a Proxy provider with the following p
     Add the following regex rules to keep the public status page accessible without authentication.
 
     ```
-    ^/$
-    ^/status
-    ^/assets/
-    ^/assets
+    ^/status/.*
+    ^/assets/.*
+    ^/api/push/.*
+    ^/api/badge/.*
+    ^/api/status-page/heartbeat/.*
     ^/icon.svg
-    ^/api/.*
     ^/upload/.*
-    ^/metrics
+    ```
+
+    Alternatively, you can get even more specific by analyzing the requests for your status pages and modifying the regex rules above accordingly.
+    For example:
+
+    ```
+    ^/status/<slug>$
+    ^/assets/.*
+    ^/api/push/.*
+    ^/api/badge/.*
+    ^/api/status-page/heartbeat/<slug>$
+    ^/upload/<file>$
     ```
 
 To avoid that all users get admin access to Uptime Kuma create a group in authentik for the admin user. Next set in authentik for the application under `Policy / Group / User Bindings` a group binding with the group created above.

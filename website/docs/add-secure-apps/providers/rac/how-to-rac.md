@@ -26,7 +26,7 @@ The first step is to create the RAC app and provider.
 
 2. In the Admin interface, navigate to **Applications -> Applications**.
 
-3. Click **Create with Wizard**. Follow the [instructions](../../applications/manage_apps.md#instructions) to create your RAC application and provider.
+3. Click **Create with provider**. Follow the [instructions](../../applications/manage_apps.mdx#instructions) to create your RAC application and provider.
 
 ### Step 2. Create RAC property mapping
 
@@ -36,7 +36,7 @@ Next, you need to add a property mapping for each of the remote machines you wan
 
 2. On the **Property Mappings** page, click **Create**.
 
-3. On the **New property mapping** modal, set the following:
+3. On the **New property mapping** box, set the following:
 
     - **Select Type**: RAC Property Mappings
     - **Create RAC Property Mapping**:
@@ -52,7 +52,7 @@ Next, you need to add a property mapping for each of the remote machines you wan
         - Advanced settings:
             - **Expressions**: optional, using Python you can define custom [expressions](../property-mappings/expression.mdx).
 
-4. Click **Finish** to save your settings and close the modal.
+4. Click **Finish** to save your settings and close the box.
 
 ### Step 3. Create Endpoints for the Provider
 
@@ -64,7 +64,7 @@ Finally, you need to create an endpoint for each remote machine. Endpoints are d
 
 3. On the Provider page, under **Endpoints**, click **Create**.
 
-4. On the **Create Endpoint** modal, provide the following settings:
+4. On the **Create Endpoint** box, provide the following settings:
 
     - **Name**: define a name for the endpoint, perhaps include the type of connection (RDP, SSH, VNC)
     - **Protocol**: select the appropriate protocol
@@ -73,7 +73,7 @@ Finally, you need to create an endpoint for each remote machine. Endpoints are d
     - **Property mapping**: select either the property mapping that you created in Step 2, or use one of the default settings.
     - **Advance settings**: optional
 
-5. Click **Create** to save your settings and close the modal.
+5. Click **Create** to save your settings and close the box.
 
 ### Access the remote machine
 

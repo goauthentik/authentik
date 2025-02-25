@@ -5,7 +5,6 @@ import {
     TITLE_DEFAULT,
 } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
-import { purify } from "@goauthentik/common/purify";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { first } from "@goauthentik/common/utils";
 import { WebsocketClient } from "@goauthentik/common/ws";
@@ -14,6 +13,7 @@ import "@goauthentik/elements/LoadingOverlay";
 import "@goauthentik/elements/ak-locale-context";
 import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
 import { themeImage } from "@goauthentik/elements/utils/images";
+import "@goauthentik/flow/components/ak-brand-footer";
 import "@goauthentik/flow/sources/apple/AppleLoginInit";
 import "@goauthentik/flow/sources/plex/PlexLoginInit";
 import "@goauthentik/flow/stages/FlowErrorStage";
@@ -76,6 +76,9 @@ export class FlowExecutor extends Interface implements StageHost {
 
     @state()
     inspectorOpen = false;
+
+    @state()
+    inspectorAvailable = false;
 
     @state()
     flowInfo?: ContextualFlowInfo;
@@ -160,14 +163,24 @@ export class FlowExecutor extends Interface implements StageHost {
                 padding: 0 2rem;
                 max-height: inherit;
             }
+            .inspector-toggle {
+                position: absolute;
+                top: 1rem;
+                right: 1rem;
+                z-index: 100;
+            }
         `);
     }
 
     constructor() {
         super();
         this.ws = new WebsocketClient();
-        if (window.location.search.includes("inspector")) {
+        const inspector = new URL(window.location.toString()).searchParams.get("inspector");
+        if (inspector === "" || inspector === "open") {
             this.inspectorOpen = true;
+            this.inspectorAvailable = true;
+        } else if (inspector === "available") {
+            this.inspectorAvailable = true;
         }
         this.addEventListener(EVENT_FLOW_INSPECTOR_TOGGLE, () => {
             this.inspectorOpen = !this.inspectorOpen;
@@ -231,12 +244,8 @@ export class FlowExecutor extends Interface implements StageHost {
 
     async firstUpdated(): Promise<void> {
         configureSentry();
-        if (
-            this.config?.capabilities.includes(CapabilitiesEnum.CanDebug) &&
-            // Only open inspector automatically in debug when we have enough space for it
-            window.innerWidth >= 768
-        ) {
-            this.inspectorOpen = true;
+        if (this.config?.capabilities.includes(CapabilitiesEnum.CanDebug)) {
+            this.inspectorAvailable = true;
         }
         this.loading = true;
         try {
@@ -383,6 +392,14 @@ export class FlowExecutor extends Interface implements StageHost {
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-authenticator-webauthn>`;
+            case "ak-stage-authenticator-email":
+                await import(
+                    "@goauthentik/flow/stages/authenticator_email/AuthenticatorEmailStage"
+                );
+                return html`<ak-stage-authenticator-email
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-stage-authenticator-email>`;
             case "ak-stage-authenticator-sms":
                 await import("@goauthentik/flow/stages/authenticator_sms/AuthenticatorSMSStage");
                 return html`<ak-stage-authenticator-sms
@@ -520,31 +537,24 @@ export class FlowExecutor extends Interface implements StageHost {
                                             </div>
                                             ${until(this.renderChallenge())}
                                         </div>
-                                        <footer class="pf-c-login__footer">
-                                            <ul class="pf-c-list pf-m-inline">
-                                                ${this.brand?.uiFooterLinks?.map((link) => {
-                                                    if (link.href) {
-                                                        return html`${purify(
-                                                            html`<li>
-                                                                <a href="${link.href}"
-                                                                    >${link.name}</a
-                                                                >
-                                                            </li>`,
-                                                        )}`;
-                                                    }
-                                                    return html`<li>
-                                                        <span>${link.name}</span>
-                                                    </li>`;
-                                                })}
-                                                <li>
-                                                    <span>${msg("Powered by authentik")}</span>
-                                                </li>
-                                            </ul>
-                                        </footer>
+                                        <ak-brand-links
+                                            class="pf-c-login__footer"
+                                            .links=${this.brand?.uiFooterLinks ?? []}
+                                        ></ak-brand-links>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        ${(this.inspectorAvailable ?? !this.inspectorOpen)
+                            ? html`<button
+                                  class="inspector-toggle pf-c-button pf-m-primary"
+                                  @click=${() => {
+                                      this.inspectorOpen = true;
+                                  }}
+                              >
+                                  <i class="fa fa-search-plus" aria-hidden="true"></i>
+                              </button>`
+                            : nothing}
                         ${until(this.renderInspector())}
                     </div>
                 </div>

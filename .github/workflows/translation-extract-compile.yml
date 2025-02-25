@@ -1,9 +1,13 @@
 ---
-name: authentik-backend-translate-extract-compile
+name: authentik-translate-extract-compile
 on:
   schedule:
     - cron: "0 0 * * *" # every day at midnight
   workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+      - version-*
 
 env:
   POSTGRES_DB: authentik
@@ -32,6 +36,7 @@ jobs:
           poetry run ak compilemessages
           make web-check-compile
       - name: Create Pull Request
+        if: ${{ github.event_name != 'pull_request' }}
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ steps.generate_token.outputs.token }}

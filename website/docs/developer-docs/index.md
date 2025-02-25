@@ -73,7 +73,7 @@ authentik
 │   ├── authenticator_static - Configure TOTP backup keys
 │   ├── authenticator_totp - Configure a TOTP authenticator
 │   ├── authenticator_validate - Validate any authenticator
-│   ├── authenticator_webauthn - Configure a WebAuthn authenticator
+│   ├── authenticator_webauthn - Configure a WebAuthn / Passkeys authenticator
 │   ├── captcha - Make the user pass a captcha
 │   ├── consent - Let the user decide if they want to consent to an action
 │   ├── deny - Static deny, can be used with policies

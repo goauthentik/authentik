@@ -281,7 +281,6 @@ class OAuth2Provider(WebfingerProvider, Provider):
                 },
             )
             return request.build_absolute_uri(url)
-
         except Provider.application.RelatedObjectDoesNotExist:
             return None
 
@@ -425,6 +424,7 @@ class AuthorizationCode(SerializerModel, ExpiringModel, BaseGrantModel):
     class Meta:
         verbose_name = _("Authorization Code")
         verbose_name_plural = _("Authorization Codes")
+        indexes = ExpiringModel.Meta.indexes
 
     def __str__(self):
         return f"Authorization code for {self.provider_id} for user {self.user_id}"
@@ -453,7 +453,7 @@ class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
     _id_token = models.TextField()
 
     class Meta:
-        indexes = [
+        indexes = ExpiringModel.Meta.indexes + [
             HashIndex(fields=["token"]),
         ]
         verbose_name = _("OAuth2 Access Token")
@@ -504,7 +504,7 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
     )
 
     class Meta:
-        indexes = [
+        indexes = ExpiringModel.Meta.indexes + [
             HashIndex(fields=["token"]),
         ]
         verbose_name = _("OAuth2 Refresh Token")
@@ -556,6 +556,7 @@ class DeviceToken(ExpiringModel):
     class Meta:
         verbose_name = _("Device Token")
         verbose_name_plural = _("Device Tokens")
+        indexes = ExpiringModel.Meta.indexes
 
     def __str__(self):
         return f"Device Token for {self.provider_id}"

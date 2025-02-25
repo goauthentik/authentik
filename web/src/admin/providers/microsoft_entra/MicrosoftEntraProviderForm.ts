@@ -67,7 +67,7 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                         <input
                             type="text"
                             value="${first(this.instance?.clientId, "")}"
-                            class="pf-c-form-control"
+                            class="pf-c-form-control pf-m-monospace"
                             required
                         />
                         <p class="pf-c-form__helper-text">
@@ -82,7 +82,7 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                         <input
                             type="text"
                             value="${first(this.instance?.clientSecret, "")}"
-                            class="pf-c-form-control"
+                            class="pf-c-form-control pf-m-monospace"
                             required
                         />
                         <p class="pf-c-form__helper-text">
@@ -97,7 +97,7 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                         <input
                             type="text"
                             value="${first(this.instance?.tenantId, "")}"
-                            class="pf-c-form-control"
+                            class="pf-c-form-control pf-m-monospace"
                             required
                         />
                         <p class="pf-c-form__helper-text">

@@ -1,11 +1,8 @@
 ---
 title: Integrate with NetBird
 sidebar_label: NetBird
+support_level: community
 ---
-
-# NetBird
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is NetBird?
 
@@ -17,8 +14,12 @@ sidebar_label: NetBird
 
 The following placeholders are used in this guide:
 
-- `netbird.company` is the FQDN of the NetBird install.
-- `authentik.company` is the FQDN of the authentik install.
+- `netbird.company` is the FQDN of the NetBird installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik configuration
 

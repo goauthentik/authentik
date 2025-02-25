@@ -1,9 +1,8 @@
 ---
 title: Integrate with MeshCentral
 sidebar_label: MeshCentral
+support_level: community
 ---
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is MeshCentral
 
@@ -15,8 +14,12 @@ sidebar_label: MeshCentral
 
 The following placeholders are used in this guide:
 
-- `meshcentral.company` is the FQDN of the MeshCentral install.
-- `authentik.company` is the FQDN of the authentik install.
+- `meshcentral.company` is the FQDN of the MeshCentral installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik configuration
 
@@ -35,7 +38,7 @@ Next, create an application, using the provider you've created above.
 
 Edit the `config.json` file for your MeshCentral deployment, and add the following code in the `domains:` subsection:
 
-:::info  
+:::info
 For Docker deployments, the `config.json` should be located in the directory on the host machine you mapped to `/opt/meshcentral/meshcentral-data`.
 :::
 

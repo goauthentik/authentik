@@ -1,11 +1,8 @@
 ---
 title: Integrate with ArgoCD
 sidebar_label: ArgoCD
+support_level: community
 ---
-
-# ArgoCD
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is ArgoCD
 
@@ -17,11 +14,11 @@ sidebar_label: ArgoCD
 
 The following placeholders are used in this guide:
 
-- `argocd.company` is the FQDN of the ArgoCD install.
-- `authentik.company` is the FQDN of the authentik install.
+- `argocd.company` is the FQDN of the ArgoCD installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 :::note
-Only settings that have been modified from default have been listed.
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
 ## authentik Configuration
@@ -86,6 +83,10 @@ data "authentik_property_mapping_provider_scope" "scope-openid" {
   name = "authentik default OAuth Mapping: OpenID 'openid'"
 }
 
+data "authentik_certificate_key_pair" "generated" {
+  name = "authentik Self-signed Certificate"
+}
+
 resource "authentik_provider_oauth2" "argocd" {
   name          = "ArgoCD"
   #  Required. You can use the output of:
@@ -97,6 +98,8 @@ resource "authentik_provider_oauth2" "argocd" {
 
   authorization_flow = data.authentik_flow.default-provider-authorization-implicit_consent.id
   invalidation_flow  = data.authentik_flow.default-provider-invalidation.id
+
+  signing_key = data.authentik_certificate_key_pair.generated.id
 
   allowed_redirect_uris = [
     {

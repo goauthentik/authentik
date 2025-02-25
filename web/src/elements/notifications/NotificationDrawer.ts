@@ -6,6 +6,7 @@ import { MessageLevel } from "@goauthentik/common/messages";
 import { me } from "@goauthentik/common/users";
 import { getRelativeTime } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
+import "@goauthentik/elements/EmptyState";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
@@ -50,9 +51,6 @@ export class NotificationDrawer extends AKElement {
             }
             .pf-c-notification-drawer__list-item-description {
                 white-space: pre-wrap;
-            }
-            .pf-c-notification-drawer__footer {
-                margin: 1rem;
             }
         `);
     }
@@ -142,6 +140,34 @@ export class NotificationDrawer extends AKElement {
         </li>`;
     }
 
+    clearNotifications() {
+        new EventsApi(DEFAULT_CONFIG).eventsNotificationsMarkAllSeenCreate().then(() => {
+            showMessage({
+                level: MessageLevel.success,
+                message: msg("Successfully cleared notifications"),
+            });
+            this.firstUpdated();
+            this.dispatchEvent(
+                new CustomEvent(EVENT_REFRESH, {
+                    bubbles: true,
+                    composed: true,
+                }),
+            );
+            this.dispatchEvent(
+                new CustomEvent(EVENT_NOTIFICATION_DRAWER_TOGGLE, {
+                    bubbles: true,
+                    composed: true,
+                }),
+            );
+        });
+    }
+
+    renderEmpty() {
+        return html`<ak-empty-state header=${msg("No notifications found.")}>
+            <div slot="body">${msg("You don't have any notifications currently.")}</div>
+        </ak-empty-state>`;
+    }
+
     render(): TemplateResult {
         if (!this.notifications) {
             return html``;
@@ -156,6 +182,18 @@ export class NotificationDrawer extends AKElement {
                         <span> ${msg(str`${this.unread} unread`)} </span>
                     </div>
                     <div class="pf-c-notification-drawer__header-action">
+                        <div>
+                            <button
+                                @click=${() => {
+                                    this.clearNotifications();
+                                }}
+                                class="pf-c-button pf-m-plain"
+                                type="button"
+                                aria-label=${msg("Clear all")}
+                            >
+                                <i class="fa fa-trash" aria-hidden="true"></i>
+                            </button>
+                        </div>
                         <div class="pf-c-notification-drawer__header-action-close">
                             <button
                                 @click=${() => {
@@ -177,40 +215,10 @@ export class NotificationDrawer extends AKElement {
                 </div>
                 <div class="pf-c-notification-drawer__body">
                     <ul class="pf-c-notification-drawer__list">
-                        ${this.notifications.results.map((n) => this.renderItem(n))}
+                        ${this.notifications.pagination.count < 1
+                            ? this.renderEmpty()
+                            : this.notifications.results.map((n) => this.renderItem(n))}
                     </ul>
-                </div>
-                <div class="pf-c-notification-drawer__footer">
-                    <button
-                        @click=${() => {
-                            new EventsApi(DEFAULT_CONFIG)
-                                .eventsNotificationsMarkAllSeenCreate()
-                                .then(() => {
-                                    showMessage({
-                                        level: MessageLevel.success,
-                                        message: msg("Successfully cleared notifications"),
-                                    });
-                                    this.firstUpdated();
-                                    this.dispatchEvent(
-                                        new CustomEvent(EVENT_REFRESH, {
-                                            bubbles: true,
-                                            composed: true,
-                                        }),
-                                    );
-                                    this.dispatchEvent(
-                                        new CustomEvent(EVENT_NOTIFICATION_DRAWER_TOGGLE, {
-                                            bubbles: true,
-                                            composed: true,
-                                        }),
-                                    );
-                                });
-                        }}
-                        class="pf-c-button pf-m-primary pf-m-block"
-                        type="button"
-                        aria-label=${msg("Clear all")}
-                    >
-                        ${msg("Clear all")}
-                    </button>
                 </div>
             </div>
         </div>`;

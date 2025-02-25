@@ -1,11 +1,8 @@
 ---
 title: Integrate with GitHub Enterprise Cloud - Enterprise Managed Users
 sidebar_label: GitHub Enterprise Cloud EMU
+support_level: community
 ---
-
-# GitHub Enterprise Cloud - Enterprise Managed Users
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is GitHub Enterprise Cloud - Enterprise Managed Users
 
@@ -24,13 +21,17 @@ sidebar_label: GitHub Enterprise Cloud EMU
 The following placeholders are used in this guide:
 
 - `github.com/enterprises/foo` is your GitHub organization, where `foo` is the name of your enterprise
-- `authentik.company` is the FQDN of the authentik Install
+- `authentik.company` is the FQDN of the authentik installation.
 - `GitHub Users` is an authentik group used for holding GitHub users.
 - `GitHub Admins` is an authentik group used for indicating GitHub administrators.
 
 Note that in order to use the EMU Enterprise, you _must_ set up both SAML and SCIM.
 
 First, create the two groups, in authentik, go to _Groups_, click _Create_ and put in `GitHub Users`, or your chosen user group name. Repeat this step with your Admin group as well.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## SAML Provider
 

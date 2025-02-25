@@ -70,11 +70,14 @@ Formatting in documentation is important; it improves comprehension and readabil
     - directory names
     - code snippets (single line or a block of code)
 
-- For variables or placeholders use _italic_ font for the variable, and use place-holder names that makes it obvious that the user needs to replace it.
+- Use _italic_ font for variables or placeholders to make it clear they need to be replaced. Choose placeholder names that highlight their purpose, ensuring users understand what to update.
 
-    Example: <kbd>https://<em>company-domain</em>/source/oauth/callback/<em>source-slug</em></kbd>
+- When handling URLs:
 
-    When using variables in code snippets, make sure to specify if the value is something the user needs to define, is system-defined or generated.
+    - For URLs entered as values or defined in fields, apply `code formatting` and _italicize_ any variables within them to emphasize that placeholders require user input. Example: `<kbd>https://<em>company-domain</em>/source/oauth/callback/<em>source-slug</em></kbd>`.
+    - When mentioning URLs in text or within procedural instructions, omit code formatting. For instance: "In your browser, go to https://example.com."
+
+    Clearly indicate whether variables in code snippets need to be defined by the user, are system-provided, or generated.
 
 - When referring to authentik functionality and features, such as flows, stages, sources, or policies, do not capitalize and do not use bold or italic text. When possible link to the corresponding documentation.
 

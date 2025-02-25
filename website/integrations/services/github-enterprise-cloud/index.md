@@ -1,11 +1,8 @@
 ---
 title: Integrate with GitHub Enterprise Cloud
 sidebar_label: GitHub Enterprise Cloud
+support_level: community
 ---
-
-# GitHub Enterprise Cloud
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is GitHub Enterprise Cloud
 
@@ -22,7 +19,7 @@ GitHub Enterprise Cloud EMU (Enterprise Managed Users) are not compatible with a
 The following placeholders are used in this guide:
 
 - `github.com/enterprises/foo` is your GitHub organization, where `foo` is the name of your enterprise
-- `authentik.company` is the FQDN of the authentik Install
+- `authentik.company` is the FQDN of the authentik installation.
 
 Create an application in authentik and note the slug, as this will be used later. Create a SAML provider with the following parameters:
 
@@ -34,6 +31,10 @@ Create an application in authentik and note the slug, as this will be used later
 Under _Advanced protocol settings_, set a certificate for _Signing Certificate_.
 
 Once the provider is created, it is advised to download the signing certificate as you will need it later.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## GitHub Configuration
 

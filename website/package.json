@@ -4,7 +4,6 @@
     "private": true,
     "license": "MIT",
     "scripts": {
-        "aws-cfn": "cd docs/install-config/install/aws && cdk synth > template.yaml && ./fix_template.py",
         "build": "cp ../docker-compose.yml static/docker-compose.yml && cp ../schema.yml static/schema.yaml && docusaurus gen-api-docs all && cross-env NODE_OPTIONS='--max_old_space_size=65536' docusaurus build",
         "build-bundled": "cp ../schema.yml static/schema.yaml && docusaurus gen-api-docs all && cross-env NODE_OPTIONS='--max_old_space_size=65536' docusaurus build",
         "deploy": "docusaurus deploy",
@@ -18,6 +17,7 @@
         "watch": "docusaurus gen-api-docs all && docusaurus start"
     },
     "dependencies": {
+        "semver": "^7.7.1",
         "@docusaurus/core": "^3.7.0",
         "@docusaurus/plugin-client-redirects": "^3.7.0",
         "@docusaurus/plugin-content-docs": "^3.7.0",
@@ -26,10 +26,10 @@
         "@docusaurus/theme-mermaid": "^3.7.0",
         "@mdx-js/react": "^3.1.0",
         "clsx": "^2.1.1",
-        "disqus-react": "^1.1.5",
-        "docusaurus-plugin-openapi-docs": "^4.3.1",
-        "docusaurus-theme-openapi-docs": "^4.3.1",
-        "postcss": "^8.4.49",
+        "disqus-react": "^1.1.6",
+        "docusaurus-plugin-openapi-docs": "^4.3.5",
+        "docusaurus-theme-openapi-docs": "^4.3.5",
+        "postcss": "^8.5.3",
         "prism-react-renderer": "^2.4.1",
         "react": "^18.3.1",
         "react-before-after-slider-component": "^1.1.8",
@@ -37,6 +37,7 @@
         "react-feather": "^2.0.10",
         "react-toggle": "^4.1.3",
         "react-tooltip": "^5.28.0",
+        "remark-directive": "^3.0.1",
         "remark-github": "^12.0.0"
     },
     "browserslist": {
@@ -52,15 +53,15 @@
         ]
     },
     "devDependencies": {
+        "@types/semver": "^7.5.8",
         "@docusaurus/module-type-aliases": "^3.3.2",
         "@docusaurus/tsconfig": "^3.7.0",
         "@docusaurus/types": "^3.3.2",
         "@types/react": "^18.3.13",
-        "aws-cdk": "^2.175.0",
         "cross-env": "^7.0.3",
-        "prettier": "3.4.2",
+        "prettier": "3.5.2",
         "typescript": "~5.7.3",
-        "wireit": "^0.14.9"
+        "wireit": "^0.14.11"
     },
     "wireit": {
         "lint:lockfile": {

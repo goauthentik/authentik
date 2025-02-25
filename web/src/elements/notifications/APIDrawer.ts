@@ -1,6 +1,7 @@
 import { RequestInfo } from "@goauthentik/common/api/middleware";
 import { EVENT_API_DRAWER_TOGGLE, EVENT_REQUEST_POST } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
+import { getRelativeTime } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 
 import { msg } from "@lit/localize";
@@ -55,7 +56,8 @@ export class APIDrawer extends AKElement {
     constructor() {
         super();
         window.addEventListener(EVENT_REQUEST_POST, ((e: CustomEvent<RequestInfo>) => {
-            this.requests.splice(0, 0, e.detail);
+            this.requests.push(e.detail);
+            this.requests.sort((a, b) => a.time - b.time).reverse();
             if (this.requests.length > 50) {
                 this.requests.shift();
             }
@@ -76,6 +78,9 @@ export class APIDrawer extends AKElement {
                 href=${item.path}
                 >${item.path}</a
             >
+            <div class="pf-c-notification-drawer__list-item-timestamp">
+                ${getRelativeTime(new Date(item.time))}
+            </div>
         </li>`;
     }
 

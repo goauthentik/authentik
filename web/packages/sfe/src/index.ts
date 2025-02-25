@@ -168,7 +168,7 @@ class IdentificationStage extends Stage<IdentificationChallenge> {
                 ${
                     this.challenge.applicationPre
                         ? `<p>
-                              Login to continue to ${this.challenge.applicationPre}.
+                              Log in to continue to ${this.challenge.applicationPre}.
                           </p>`
                         : ""
                 }

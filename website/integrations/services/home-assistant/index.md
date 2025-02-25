@@ -1,11 +1,8 @@
 ---
 title: Integrate with Home Assistant
 sidebar_label: Home Assistant
+support_level: community
 ---
-
-# Home Assistant
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Home Assistant
 
@@ -27,8 +24,12 @@ For Home Assistant to work with authentik, a custom integration needs to be inst
 
 The following placeholders are used in this guide:
 
-- `hass.company` is the FQDN of the Home Assistant install.
-- `authentik.company` is the FQDN of the authentik install.
+- `hass.company` is the FQDN of the Home Assistant installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik configuration
 

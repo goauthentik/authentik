@@ -13,7 +13,7 @@ import MDNginxStandalone from "@goauthentik/docs/add-secure-apps/providers/proxy
 import MDTraefikCompose from "@goauthentik/docs/add-secure-apps/providers/proxy/_traefik_compose.md";
 import MDTraefikIngress from "@goauthentik/docs/add-secure-apps/providers/proxy/_traefik_ingress.md";
 import MDTraefikStandalone from "@goauthentik/docs/add-secure-apps/providers/proxy/_traefik_standalone.md";
-import MDHeaderAuthentication from "@goauthentik/docs/add-secure-apps/providers/proxy/header_authentication.md";
+import MDHeaderAuthentication from "@goauthentik/docs/add-secure-apps/providers/proxy/header_authentication.mdx";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/Markdown";
@@ -118,7 +118,7 @@ export class ProxyProviderViewPage extends AKElement {
     }
 
     renderConfig(): TemplateResult {
-        const serves = [
+        const servers = [
             {
                 label: msg("Nginx (Ingress)"),
                 md: MDNginxIngress,
@@ -184,7 +184,7 @@ export class ProxyProviderViewPage extends AKElement {
             },
         ];
         return html`<ak-tabs pageIdentifier="proxy-setup">
-            ${serves.map((server) => {
+            ${servers.map((server) => {
                 return html`<section
                     slot="page-${convertToSlug(server.label)}"
                     data-tab-title="${server.label}"
@@ -229,7 +229,7 @@ export class ProxyProviderViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.ProvidersProxyProxyprovider}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersProxyProxyprovider}
                 objectPk=${this.provider.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;

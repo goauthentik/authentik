@@ -28,14 +28,14 @@ class KerberosBackend(InbuiltBackend):
         if "@" in username:
             username, realm = username.rsplit("@", 1)
 
-        user, source = self.auth_user(username, realm, **kwargs)
+        user, source = self.auth_user(request, username, realm, **kwargs)
         if user:
             self.set_method("kerberos", request, source=source)
             return user
         return None
 
     def auth_user(
-        self, username: str, realm: str | None, password: str, **filters
+        self, request: HttpRequest, username: str, realm: str | None, password: str, **filters
     ) -> tuple[User | None, KerberosSource | None]:
         sources = KerberosSource.objects.filter(enabled=True)
         user = User.objects.filter(
@@ -76,7 +76,7 @@ class KerberosBackend(InbuiltBackend):
                         user=user_source_connection.user,
                     )
                     user_source_connection.user.set_password(
-                        password, sender=user_source_connection.source
+                        password, sender=user_source_connection.source, request=request
                     )
                     user_source_connection.user.save()
                 return user_source_connection.user, user_source_connection.source

@@ -1,11 +1,8 @@
 ---
 title: Integrate with TrueNAS TrueCommand
 sidebar_label: TrueNAS TrueCommand
+support_level: community
 ---
-
-# TrueNAS TrueCommand
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is TrueNAS TrueCommand
 
@@ -21,8 +18,12 @@ This setup assumes you will be using HTTPS as TrueCommand generates ACS and Redi
 
 The following placeholders are used in this guide:
 
-- `truecommand.company` is the FQDN of the snipe-it install.
-- `authentik.company` is the FQDN of the authentik install.
+- `truecommand.company` is the FQDN of the snipe-it installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 Create an application in authentik and use the slug for later as `truenas-truecommand`.
 
