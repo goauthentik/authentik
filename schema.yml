@@ -44154,6 +44154,10 @@ components:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
         default_group_email_domain:
           type: string
+        dry_run:
+          type: boolean
+          description: When enabled, provider will not modify or create objects in
+            the remote system.
       required:
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
@@ -44317,6 +44321,10 @@ components:
         default_group_email_domain:
           type: string
           minLength: 1
+        dry_run:
+          type: boolean
+          description: When enabled, provider will not modify or create objects in
+            the remote system.
       required:
       - credentials
       - default_group_email_domain
@@ -50679,6 +50687,10 @@ components:
         default_group_email_domain:
           type: string
           minLength: 1
+        dry_run:
+          type: boolean
+          description: When enabled, provider will not modify or create objects in
+            the remote system.
     PatchedGroupKerberosSourceConnectionRequest:
       type: object
       description: OAuth Group-Source connection Serializer
@@ -52427,6 +52439,10 @@ components:
           type: string
           format: uuid
           nullable: true
+        dry_run:
+          type: boolean
+          description: When enabled, provider will not modify or create objects in
+            the remote system.
     PatchedSCIMSourceGroupRequest:
       type: object
       description: SCIMSourceGroup Serializer
@@ -55823,6 +55839,10 @@ components:
           type: string
           format: uuid
           nullable: true
+        dry_run:
+          type: boolean
+          description: When enabled, provider will not modify or create objects in
+            the remote system.
       required:
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
@@ -55909,6 +55929,10 @@ components:
           type: string
           format: uuid
           nullable: true
+        dry_run:
+          type: boolean
+          description: When enabled, provider will not modify or create objects in
+            the remote system.
       required:
       - name
       - token
@@ -57105,6 +57129,9 @@ components:
         sync_object_id:
           type: string
           minLength: 1
+        override_dry_run:
+          type: boolean
+          default: false
       required:
       - sync_object_id
       - sync_object_model
