@@ -1,5 +1,5 @@
 ---
-title: Duo authenticator setup stage
+title: Duo Authenticator Setup stage
 ---
 
 This stage configures a Duo authenticator. To get the API Credentials for this stage, open your Duo Admin dashboard.

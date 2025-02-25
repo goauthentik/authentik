@@ -97,9 +97,7 @@ export class LibraryApplication extends AKElement {
             return html``;
         }
         if (this.application?.launchUrl === "goauthentik.io://providers/rac/launch") {
-            return html`<ak-library-rac-endpoint-launch .app=${this.application}>
-                </ak-library-rac-endpoint-launch>
-                <div class="pf-c-card__header">
+            return html`<div class="pf-c-card__header">
                     <a
                         @click=${() => {
                             this.racEndpointLaunch?.onClick();
@@ -120,7 +118,9 @@ export class LibraryApplication extends AKElement {
                     >
                         ${this.application.name}
                     </a>
-                </div>`;
+                </div>
+                <ak-library-rac-endpoint-launch .app=${this.application}>
+                </ak-library-rac-endpoint-launch>`;
         }
         return html`<div class="pf-c-card__header">
                 <a
