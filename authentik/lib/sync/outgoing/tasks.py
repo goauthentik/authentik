@@ -20,6 +20,7 @@ from authentik.lib.sync.outgoing import PAGE_SIZE, PAGE_TIMEOUT
 from authentik.lib.sync.outgoing.base import Direction
 from authentik.lib.sync.outgoing.exceptions import (
     BadRequestSyncException,
+    DryRunRejected,
     StopSync,
     TransientSyncException,
 )
@@ -132,6 +133,22 @@ class SyncTasks:
             except SkipObjectException:
                 self.logger.debug("skipping object due to SkipObject", obj=obj)
                 continue
+            except DryRunRejected as exc:
+                messages.append(
+                    asdict(
+                        LogEvent(
+                            _("Dropping mutating request due to dry run"),
+                            log_level="info",
+                            logger=f"{provider._meta.verbose_name}@{object_type}",
+                            attributes={
+                                "obj": sanitize_item(obj),
+                                "method": exc.method,
+                                "url": exc.url,
+                                "body": exc.body,
+                            },
+                        )
+                    )
+                )
             except BadRequestSyncException as exc:
                 self.logger.warning("failed to sync object", exc=exc, obj=obj)
                 messages.append(
