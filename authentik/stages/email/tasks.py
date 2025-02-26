@@ -12,11 +12,11 @@ from structlog.stdlib import get_logger
 
 from authentik.events.models import Event, EventAction, TaskStatus
 from authentik.events.system_tasks import SystemTask
+from authentik.lib.utils.reflection import class_to_path, path_to_class
 from authentik.root.celery import CELERY_APP
 from authentik.stages.authenticator_email.models import AuthenticatorEmailStage
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.utils import logo_data
-from authentik.lib.utils.reflection import class_to_path, path_to_class
 
 LOGGER = get_logger()
 
