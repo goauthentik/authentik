@@ -70,7 +70,7 @@ If you are developing Drupal locally with DDEV and authentik is also running
 locally, use `host.docker.internal:9000` as the hostname for the Token and UserInfo endpoints.
 :::
 - Select the "Override registration settings" checkbox
-- Enable the OpenID button on user login form
+- Enable the OpenID button on user login form.
 
 ## Configuration verification
 To confirm that authentik is properly configured with Drupal, log out from the
