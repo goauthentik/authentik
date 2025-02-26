@@ -141,6 +141,7 @@ module.exports = {
                         "services/sonarr/index",
                         "services/tautulli/index",
                         "services/weblate/index",
+                        "services/zipline/index",
                     ],
                 },
                 {
