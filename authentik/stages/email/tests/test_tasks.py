@@ -45,9 +45,7 @@ class TestEmailTasks(TestCase):
         with patch("authentik.stages.email.tasks.send_mail") as mock_send:
             send_mails(self.stage, message)
             mock_send.s.assert_called_once_with(
-                message.__dict__,
-                "authentik.stages.email.models.EmailStage",
-                str(self.stage.pk)
+                message.__dict__, class_to_path(EmailStage), str(self.stage.pk)
             )
 
     def test_send_mails_authenticator_stage(self):
@@ -56,7 +54,5 @@ class TestEmailTasks(TestCase):
         with patch("authentik.stages.email.tasks.send_mail") as mock_send:
             send_mails(self.auth_stage, message)
             mock_send.s.assert_called_once_with(
-                message.__dict__,
-                "authentik.stages.authenticator_email.models.AuthenticatorEmailStage",
-                str(self.auth_stage.pk)
+                message.__dict__, class_to_path(AuthenticatorEmailStage), str(self.auth_stage.pk)
             )
