@@ -6,9 +6,10 @@ from django.core.mail import EmailMultiAlternatives
 from django.test import TestCase
 
 from authentik.core.tests.utils import create_test_admin_user
+from authentik.lib.utils.reflection import class_to_path
 from authentik.stages.authenticator_email.models import AuthenticatorEmailStage
 from authentik.stages.email.models import EmailStage
-from authentik.stages.email.tasks import get_email_body, send_mail, send_mails
+from authentik.stages.email.tasks import get_email_body, send_mails
 
 
 class TestEmailTasks(TestCase):
