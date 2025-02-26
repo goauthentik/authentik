@@ -38,6 +38,27 @@ func TestConfigEnv_File(t *testing.T) {
 	assert.Equal(t, "bar", Get().SecretKey)
 }
 
+func TestConfigEnv_InvalidPath(t *testing.T) {
+	cfg = &Config{}
+	err := cfg.LoadConfigFromFile("")
+	assert.Nil(t, err)
+}
+
+func TestConfigEnv_InvalidConfig(t *testing.T) {
+	cfg = &Config{}
+	file, err := os.CreateTemp("", "")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer os.Remove(file.Name())
+	_, err = file.Write([]byte("bar"))
+	if err != nil {
+		panic(err)
+	}
+	err = cfg.LoadConfigFromFile(file.Name())
+	assert.Error(t, err)
+}
+
 func TestConfig_UpdateRedisURL_SetDefault(t *testing.T) {
 	cfg = nil
 	os.Setenv("AUTHENTIK_REDIS__HOST", "myredis")
