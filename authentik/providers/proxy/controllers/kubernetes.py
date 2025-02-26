@@ -4,6 +4,7 @@ from authentik.outposts.controllers.base import DeploymentPort
 from authentik.outposts.controllers.kubernetes import KubernetesController
 from authentik.outposts.models import KubernetesServiceConnection, Outpost
 from authentik.providers.proxy.controllers.k8s.ingress import IngressReconciler
+from authentik.providers.proxy.controllers.k8s.route import HTTPRouteReconciler
 from authentik.providers.proxy.controllers.k8s.traefik import TraefikMiddlewareReconciler
 
 
@@ -18,8 +19,10 @@ class ProxyKubernetesController(KubernetesController):
             DeploymentPort(9443, "https", "tcp"),
         ]
         self.reconcilers[IngressReconciler.reconciler_name()] = IngressReconciler
+        self.reconcilers[HTTPRouteReconciler.reconciler_name()] = HTTPRouteReconciler
         self.reconcilers[TraefikMiddlewareReconciler.reconciler_name()] = (
             TraefikMiddlewareReconciler
         )
         self.reconcile_order.append(IngressReconciler.reconciler_name())
+        self.reconcile_order.append(HTTPRouteReconciler.reconciler_name())
         self.reconcile_order.append(TraefikMiddlewareReconciler.reconciler_name())
