@@ -12,8 +12,8 @@ from typing import Any
 from unittest.case import TestCase
 from urllib.parse import urlencode
 
+from channels.testing import ChannelsLiveServerTestCase
 from django.apps import apps
-from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.db import connection
 from django.db.migrations.loader import MigrationLoader
 from django.test.testcases import TransactionTestCase
@@ -35,6 +35,8 @@ from authentik.core.api.users import UserSerializer
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.lib.generators import generate_id
+from authentik.outposts.models import Outpost
+from tests.e2e._process import TestDatabaseProcess
 
 RETRIES = int(environ.get("RETRIES", "3"))
 IS_CI = "CI" in environ
@@ -58,10 +60,13 @@ def get_local_ip() -> str:
     return ip_addr
 
 
+class ContainerException(Exception): ...
+
+
 class DockerTestCase(TestCase):
     """Mixin for dealing with containers"""
 
-    max_healthcheck_attempts = 30
+    max_healthcheck_attempts = 50
 
     __client: DockerClient
     __network: Network
@@ -95,7 +100,7 @@ class DockerTestCase(TestCase):
             sleep(1)
             attempt += 1
             if attempt >= self.max_healthcheck_attempts:
-                self.failureException("Container failed to start")
+                raise ContainerException("Container failed to start")
 
     def get_container_image(self, base: str) -> str:
         """Try to pull docker image based on git branch, fallback to main if not found."""
@@ -152,12 +157,16 @@ class DockerTestCase(TestCase):
         self.__network.remove()
 
 
-class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
-    """StaticLiveServerTestCase which automatically creates a Webdriver instance"""
+class SeleniumTestCase(DockerTestCase, ChannelsLiveServerTestCase):
+    """ChannelsLiveServerTestCase which automatically creates a Webdriver instance"""
+
+    ProtocolServerProcess = TestDatabaseProcess
 
     host = get_local_ip()
     wait_timeout: int
     user: User
+
+    serve_static = True
 
     def setUp(self):
         if IS_CI:
@@ -265,6 +274,18 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
         self.assertEqual(user["name"].value, expected_user.name)
         self.assertEqual(user["email"].value, expected_user.email)
 
+    def wait_for_outpost(self, outpost: Outpost, tries=50):
+        """Wait until outpost healthcheck succeeds"""
+        healthcheck_retries = 0
+        while healthcheck_retries < tries:
+            if len(outpost.state) > 0:
+                state = outpost.state[0]
+                if state.last_seen:
+                    return
+            healthcheck_retries += 1
+            sleep(0.5)
+        raise ContainerException("Outpost failed to become healthy")
+
 
 @lru_cache
 def get_loader():
@@ -277,7 +298,12 @@ def retry(max_retires=RETRIES, exceptions=None):
     """Retry test multiple times. Default to catching Selenium Timeout Exception"""
 
     if not exceptions:
-        exceptions = [WebDriverException, TimeoutException, NoSuchElementException]
+        exceptions = [
+            WebDriverException,
+            TimeoutException,
+            NoSuchElementException,
+            ContainerException,
+        ]
 
     logger = get_logger()
 
