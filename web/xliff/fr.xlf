@@ -6572,7 +6572,7 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
       </trans-unit>
       <trans-unit id="s0e516232f2ab4e04">
         <source>Tokens sent via SMS.</source>
-        <target>Jeton envoyé par SMS</target>
+        <target>Jetons envoyés par SMS.</target>
         
       </trans-unit>
       <trans-unit id="s6ae0d087036e6d6d">
@@ -9601,7 +9601,7 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="s833cfe815918c143">
   <source>Tokens sent via email.</source>
-  <target>Jetons envoyé par courriel.</target>
+  <target>Jetons envoyés par courriel.</target>
 </trans-unit>
     </body>
   </file>
