@@ -16,6 +16,7 @@ from authentik.root.celery import CELERY_APP
 from authentik.stages.authenticator_email.models import AuthenticatorEmailStage
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.utils import logo_data
+from authentik.lib.utils.reflection import class_to_path, path_to_class
 
 LOGGER = get_logger()
 
@@ -32,10 +33,10 @@ def send_mails(
         Celery group promise for the email sending tasks
     """
     tasks = []
-    # Use the class name instead of the class itself for serialization
-    stage_class_name = stage.__class__.__name__
+    # Use the class path instead of the class itself for serialization
+    stage_class_path = class_to_path(stage.__class__)
     for message in messages:
-        tasks.append(send_mail.s(message.__dict__, stage_class_name, str(stage.pk)))
+        tasks.append(send_mail.s(message.__dict__, stage_class_path, str(stage.pk)))
     lazy_group = group(*tasks)
     promise = lazy_group()
     return promise
@@ -62,7 +63,7 @@ def get_email_body(email: EmailMultiAlternatives) -> str:
 def send_mail(
     self: SystemTask,
     message: dict[Any, Any],
-    stage_class_name: str = "EmailStage",
+    stage_class_path: str,
     email_stage_pk: str | None = None,
 ):
     """Send Email for Email Stage. Retries are scheduled automatically."""
@@ -70,13 +71,8 @@ def send_mail(
     message_id = make_msgid(domain=DNS_NAME)
     self.set_uid(slugify(message_id.replace(".", "_").replace("@", "_")))
     try:
-        # Map stage class name to the actual class
-        if stage_class_name == "EmailStage":
-            stage_class = EmailStage
-        elif stage_class_name == "AuthenticatorEmailStage":
-            stage_class = AuthenticatorEmailStage
-        else:
-            raise ValueError(f"Invalid stage class name: {stage_class_name}")
+        # Map stage class path to the actual class
+        stage_class = path_to_class(stage_class_path)
 
         if not email_stage_pk:
             stage: EmailStage | AuthenticatorEmailStage = stage_class(use_global_settings=True)
