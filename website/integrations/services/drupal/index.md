@@ -58,7 +58,7 @@ in this guide could cause issues accessing your application.
 ## Drupal configuration
 
 - From the Admin Toolbar or admin page at https://drupal.company/admin go to
-  Configuration -> OpenID Connect or directly at https://drupal.company/admin/config/services/openid-connect
+  **Configuration -> OpenID Connect** or directly at https://drupal.company/admin/config/services/openid-connect.
 - Input the Client ID and Secret you noted above
 - Fill out the following endpoints:
   - Authorization endpoint: <kbd>https://<em>authentik.company</em>/application/o/authorize/</kbd>
