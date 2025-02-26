@@ -62,7 +62,7 @@ in this guide could cause issues accessing your application.
 - Input the Client ID and Secret you noted above.
 - Fill out the following endpoints:
   - **Authorization endpoint**: <kbd>https://<em>authentik.company</em>/application/o/authorize/</kbd>
-  - Token endpoint: <kbd>https://<em>authentik.company</em>/application/o/token/</kbd>
+  - **Token endpoint**: <kbd>https://<em>authentik.company</em>/application/o/token/</kbd>
   - UserInfo endpoint: <kbd>https://<em>authentik.company</em>/application/o/userinfo/</kbd>
 
 :::info
