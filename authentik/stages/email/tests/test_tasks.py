@@ -1,11 +1,11 @@
 """Test email stage tasks"""
-from unittest.mock import MagicMock, patch
+
+from unittest.mock import patch
 
 from django.core.mail import EmailMultiAlternatives
 from django.test import TestCase
 
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.events.models import TaskStatus
 from authentik.stages.authenticator_email.models import AuthenticatorEmailStage
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import get_email_body, send_mail, send_mails
@@ -50,9 +50,7 @@ class TestEmailTasks(TestCase):
         message = EmailMultiAlternatives()
         with patch("authentik.stages.email.tasks.send_mail") as mock_send:
             send_mails(self.stage, message)
-            mock_send.s.assert_called_once_with(
-                message.__dict__, "EmailStage", str(self.stage.pk)
-            )
+            mock_send.s.assert_called_once_with(message.__dict__, "EmailStage", str(self.stage.pk))
 
     def test_send_mails_authenticator_stage(self):
         """Test send_mails with AuthenticatorEmailStage"""
