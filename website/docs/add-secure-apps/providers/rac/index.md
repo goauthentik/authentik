@@ -1,6 +1,5 @@
 ---
 title: Remote Access Control (RAC) Provider
-authentik_enterprise: true
 ---
 
 :::info
